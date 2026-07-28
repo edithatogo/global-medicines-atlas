@@ -9,7 +9,10 @@ from pathlib import Path
 from pydantic import Field, HttpUrl, model_validator
 
 from .countries import SourceDimension
+from .logging import get_logger
 from .models import FrozenModel
+
+LOGGER = get_logger("source_catalog", component="source-catalog")
 
 
 class AccessMode(StrEnum):
@@ -66,6 +69,9 @@ def load_source_catalog() -> tuple[MedicineDataSource, ...]:
     ids = [source.source_id for source in sources]
     if len(ids) != len(set(ids)):
         raise ValueError("Source catalog contains duplicate source_id values")
+    LOGGER.debug(
+        "Loaded governed medicine source catalog", extra={"source_id": str(path)}
+    )
     return tuple(sorted(sources, key=lambda source: source.source_id))
 
 

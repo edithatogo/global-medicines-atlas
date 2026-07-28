@@ -9,6 +9,7 @@ from .models import (
     Provenance,
     StatusAssertion,
 )
+from .version import __version__
 
 __all__ = [
     "AssertionKind",
@@ -18,4 +19,5 @@ __all__ = [
     "MedicineConcept",
     "Provenance",
     "StatusAssertion",
+    "__version__",
 ]

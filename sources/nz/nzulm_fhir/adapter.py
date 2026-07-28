@@ -14,8 +14,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
 
+from global_medicines_atlas.logging import get_logger
+
 UPSTREAM_REPOSITORY = "https://github.com/edithatogo/nzmedicines"
 UPSTREAM_COMMIT = "6a8ecfae67f15d635750d11d5f446b93d76c1865"
+LOGGER = get_logger("nz.fhir", component="nz-fhir-adapter", jurisdiction="NZL")
 
 
 @dataclass(frozen=True, slots=True)
@@ -90,6 +93,10 @@ def iter_fhir_resources(
                     f"{source_path}: duplicate FHIR identity {resource_type}/{resource_id}"
                 )
             seen.add(identity)
+            LOGGER.debug(
+                "Loaded source-native FHIR resource",
+                extra={"source_id": source_path},
+            )
             yield FhirResourceRecord(
                 resource_type=resource_type,
                 resource_id=resource_id,

@@ -14,7 +14,8 @@ The harness exposes explicit `unit`, `integration`, `e2e`, `smoke`,
 formatting, linting, import ordering, modernization, security-style checks,
 pytest conventions, and fast typing into Ruff plus `ty`. The final `strict`
 lane runs `basedpyright` strict mode. Full-project branch `coverage`, Linux
-`mutation`, and deterministic network-free Scalene `profile` remain separate.
+`mutation`, dynamic wheel/sdist `package`, and deterministic network-free
+Scalene `profile` remain separate.
 
 ## Local Commands
 
@@ -24,6 +25,7 @@ uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py quick
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py coverage
 uv run --python 3.14.6 --group dev python scripts/test_goblin.py routine
 uv run --python 3.14.6 --group dev python scripts/test_goblin.py strict
+uv run --python 3.14.6 --group dev python scripts/test_goblin.py package
 uv run --python 3.14.6 --group dev python scripts/test_goblin.py profile
 ```
 
