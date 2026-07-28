@@ -1,0 +1,2 @@
+# Reproduce the imported Windows worktree bytes on every CI platform.
+vendor/nzmedicines/** text eol=crlf

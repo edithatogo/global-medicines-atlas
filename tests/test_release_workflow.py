@@ -21,7 +21,7 @@ def test_provenance_attestation_is_release_only_and_sha_pinned() -> None:
     assert "github.event.release.draft == false" in workflow
     assert (
         "actions/attest-build-provenance@"
-        "43d14bc2b83dec42d39ecae14e916627a18bb661" in workflow
+        "977bb373ede98d70efdf65b84cb5f73e068dcc2a" in workflow
     )
 
 
