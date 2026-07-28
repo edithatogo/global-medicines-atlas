@@ -169,6 +169,6 @@ pytest_add_cli_args_test_selection = [
   "tests/test_nzulm_fhir_adapter.py",
   "tests/test_nzulm_fhir_properties.py",
 ]
-also_copy = ["vendor/nzmedicines/"]
+also_copy = ["vendor/nzmedicines/", "src/global_medicines_atlas/"]
 mutate_only_covered_lines = true
 use_git_change_detection = false
