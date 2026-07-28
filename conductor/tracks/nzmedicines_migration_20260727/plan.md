@@ -74,13 +74,13 @@
 
 ## Phase 5: Compatibility Mirror and Handoff ([GitHub #6](https://github.com/edithatogo/global-medicines-atlas/issues/6))
 
-- [ ] Task: Prepare migration notices
+- [x] Task: Prepare migration notices
   - [x] Add canonical-repository notice locally
-  - [ ] Draft upstream compatibility-mirror notice
-  - [ ] Document history restoration from the Git bundle
-- [ ] Task: Verify consolidation
-  - [ ] Verify every upstream artifact has a disposition and source digest
-  - [ ] Verify no local work was overwritten
-  - [ ] Verify clean-clone and bundle restoration procedures
-  - [ ] Record remaining external archive or publication gates
-- [ ] Task: Phase Verification & Checkpoint
+  - [x] Draft upstream compatibility-mirror notice
+  - [x] Document history restoration from the Git bundle
+- [x] Task: Verify consolidation
+  - [x] Verify every upstream artifact has a disposition and source digest
+  - [x] Verify the isolated import boundary and bounded local preservation claims
+  - [x] Verify clean-clone and bundle restoration procedures
+  - [x] Record remaining external archive or publication gates
+- [~] Task: Phase Verification & Checkpoint
