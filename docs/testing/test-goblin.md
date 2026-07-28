@@ -3,6 +3,10 @@
 This repository reuses the maintainer-owned test-goblin profile established in
 `edithatogo/reimbursement-atlas`.
 
+The profile now includes pytest-gremlins as a fast pytest-native mutation lane,
+alongside the independent mutmut lane. Edgetest separately validates the newest
+resolvable Pydantic and columnar dependency cohorts in isolated environments.
+
 ## Profile
 
 The executable profile is declared as a PEP 735 dependency group in

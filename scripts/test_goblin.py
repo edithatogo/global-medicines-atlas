@@ -13,6 +13,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 TEST_LANES: dict[str, tuple[str, ...]] = {
     "unit": (
         "tests/test_country_adapter_registry.py",
+        "tests/test_settings.py",
         "tests/test_logging.py",
         "tests/test_source_catalog.py",
         "tests/test_terminology_resolver.py",
@@ -22,6 +23,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_nz_asset_inventory.py",
         "tests/test_nzulm_fhir_adapter.py",
         "tests/test_us_drugsfda_adapter.py",
+        "tests/test_columnar.py",
     ),
     "e2e": ("tests/test_canonical_nz_adapter.py",),
     "smoke": ("tests/test_smoke.py",),
@@ -120,6 +122,43 @@ def mutation() -> None:
     run([sys.executable, "-m", "mutmut", "run"])
 
 
+def gremlins() -> None:
+    """Run fast pytest-native mutation testing on frontier data contracts."""
+    run(
+        pytest_command(
+            ("tests/test_columnar.py", "tests/test_settings.py"),
+            "--gremlins",
+            "--gremlin-executor=subprocess",
+        )
+    )
+
+
+def dependencies() -> None:
+    """Test declared contracts against newest resolvable dependencies."""
+    run([
+        "uv",
+        "run",
+        "--group",
+        "edge",
+        "edgetest",
+        "-c",
+        "pyproject.toml",
+        "--environment",
+        "contracts",
+    ])
+    run([
+        "uv",
+        "run",
+        "--group",
+        "edge",
+        "edgetest",
+        "-c",
+        "pyproject.toml",
+        "--environment",
+        "columnar",
+    ])
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -132,6 +171,8 @@ def main() -> None:
             "strict",
             "package",
             "mutation",
+            "gremlins",
+            "dependencies",
             "profile",
             "full",
         ),
@@ -147,6 +188,10 @@ def main() -> None:
         coverage()
     elif selected_profile == "mutation":
         mutation()
+    elif selected_profile == "gremlins":
+        gremlins()
+    elif selected_profile == "dependencies":
+        dependencies()
     elif selected_profile == "routine":
         routine()
     elif selected_profile == "strict":
@@ -161,6 +206,7 @@ def main() -> None:
         package()
         coverage()
         mutation()
+        gremlins()
         profile()
 
 

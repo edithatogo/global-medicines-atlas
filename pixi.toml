@@ -1,0 +1,19 @@
+[workspace]
+name = "global-medicines-atlas"
+channels = [
+  "https://conda.modular.com/max-nightly",
+  "https://prefix.dev/modular-community",
+  "conda-forge",
+]
+platforms = ["linux-64"]
+
+[dependencies]
+mojo = "*"
+python = "3.14.*"
+uv = ">=0.11"
+
+[tasks]
+python-sync = "uv sync --python 3.14 --group dev --locked"
+python-test = "uv run --python 3.14 python scripts/test_goblin.py quick"
+mojo-check = "mojo run mojo/smoke.mojo"
+check = { depends-on = ["python-test", "mojo-check"] }
