@@ -87,6 +87,10 @@
 - **M-068:** Maintain a machine-readable repository context manifest, root
   agent contract, context-drift validation, and durable CI receipt designed
   for one accountable maintainer without invented reviewer roles.
+- **M-069:** Maintain a validated authority registry for relevant maintainer-owned
+  GitHub and Hugging Face resources, requiring reuse-before-build dispositions,
+  immutable GitHub snapshots, licensing gates, and non-overlapping capability
+  ownership.
 
 ## Should Have
 

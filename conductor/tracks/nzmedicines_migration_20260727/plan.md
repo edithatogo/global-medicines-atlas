@@ -70,6 +70,7 @@
   - [x] Add root agent contract and machine-readable context manifest
   - [x] Add context-drift tests and CI receipt
   - [x] Add sole-maintainer pull-request and ownership policy
+  - [x] Add validated GitHub/Hugging Face authority and reuse registry
 
 ## Phase 5: Compatibility Mirror and Handoff ([GitHub #6](https://github.com/edithatogo/global-medicines-atlas/issues/6))
 
