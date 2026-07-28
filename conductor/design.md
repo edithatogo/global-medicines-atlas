@@ -198,3 +198,57 @@ flowchart LR
 Automation supplies independent evidence, not a fictional independent
 reviewer. Credentials, licensing, publication, release, archival, and
 consequential-interpretation decisions remain explicit maintainer gates.
+
+## Version and Maturity Control Plane
+
+```mermaid
+flowchart TB
+    ROADMAP["Versioned roadmap v0.1 to v1.0"]
+    MOSCOW["MoSCoW requirements"]
+    MODEL["M0 to M5 maturity model"]
+    TRACKS["Non-overlapping Conductor tracks"]
+    ISSUES["GitHub parent issues and subissues"]
+    HARNESS["Tests, security, coverage and performance"]
+    RECEIPTS["Source, build and release receipts"]
+    GATE{"Release gate satisfied?"}
+    RELEASE["Promoted version"]
+    HOLD["Remain at current maturity"]
+
+    ROADMAP --> MOSCOW
+    MOSCOW --> TRACKS
+    MODEL --> TRACKS
+    TRACKS <--> ISSUES
+    ISSUES --> HARNESS
+    HARNESS --> RECEIPTS
+    RECEIPTS --> GATE
+    GATE -->|Yes| RELEASE
+    GATE -->|No| HOLD
+    HOLD --> TRACKS
+```
+
+## Product Delivery and Hardening
+
+```mermaid
+flowchart LR
+    SOURCES["Receipt-backed jurisdiction sources"]
+    TEMPORAL["Bitemporal evidence and conflicts"]
+    MATCH["Reviewable medicine mappings"]
+    QUERY["DuckDB and portable query layer"]
+    API["Versioned read-only API and CLI"]
+    ATLAS["Accessible comparison atlas"]
+    PUBLICATION["Governed Parquet and Hugging Face package"]
+    OBSERVE["Source health and schema drift"]
+    QUALIFY["Clean-room reproduction and stable-v1 qualification"]
+
+    SOURCES --> TEMPORAL
+    TEMPORAL --> MATCH
+    TEMPORAL --> QUERY
+    MATCH --> QUERY
+    QUERY --> API
+    API --> ATLAS
+    QUERY --> PUBLICATION
+    OBSERVE --> SOURCES
+    OBSERVE --> API
+    PUBLICATION --> QUALIFY
+    ATLAS --> QUALIFY
+```

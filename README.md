@@ -36,6 +36,10 @@ Relevant maintainer-owned GitHub and Hugging Face resources are governed by the
 [ecosystem reuse registry](docs/ECOSYSTEM_REUSE.md), which runs in the routine
 harness to prevent parallel implementations and untracked copying.
 
+The evidence-gated [v0.1-to-v1.0 roadmap](conductor/roadmap.md) maps product
+features and maturity levels to Conductor tracks and the native GitHub
+[roadmap issue hierarchy](https://github.com/edithatogo/global-medicines-atlas/issues/44).
+
 ## Data boundaries
 
 The repository does not publish the local NZULM release, restricted
