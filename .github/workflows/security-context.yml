@@ -1,0 +1,98 @@
+name: Security and Context
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 16 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-context-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  context:
+    name: Context and repository policy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.29"
+          enable-cache: true
+      - run: uv sync --python 3.14.6 --group dev --locked
+      - name: Validate governed context
+        run: uv run python scripts/validate_context.py
+      - name: Install and run actionlint
+        env:
+          ACTIONLINT_ARCHIVE_SHA256: 8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8
+          ACTIONLINT_VERSION: 1.7.12
+        run: |
+          archive="actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          curl --fail --location --silent --show-error \
+            --output "$archive" \
+            "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/${archive}"
+          echo "${ACTIONLINT_ARCHIVE_SHA256}  ${archive}" | sha256sum --check
+          tar --extract --gzip --file "$archive" actionlint
+          ./actionlint
+      - name: Audit GitHub Actions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: uv run --group security zizmor --pedantic .github
+      - name: Upload context receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: context-validation
+          path: build/context-validation.json
+          if-no-files-found: error
+          retention-days: 30
+
+  supply-chain:
+    name: Dependency audit and SBOM
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.29"
+          enable-cache: true
+      - run: uv sync --python 3.14.6 --group dev --group security --locked
+      - name: Audit locked Python environment
+        run: uv run --group security pip-audit
+      - name: Generate CycloneDX SBOM
+        run: mkdir -p build && uv run --group security cyclonedx-py environment --output-file build/sbom.cdx.json
+      - name: Upload SBOM
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: python-cyclonedx-sbom
+          path: build/sbom.cdx.json
+          if-no-files-found: error
+          retention-days: 30
+
+  codeql:
+    name: CodeQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      security-events: write # Required to upload CodeQL SARIF results.
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: github/codeql-action/init@adfda868f108ac4222129de456ea554034a27db7 # v4
+        with:
+          languages: python
+          queries: security-extended
+      - uses: github/codeql-action/analyze@adfda868f108ac4222129de456ea554034a27db7 # v4

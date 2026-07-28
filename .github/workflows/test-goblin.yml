@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 concurrency:
   group: test-goblin-${{ github.workflow }}-${{ github.ref }}
@@ -24,7 +23,9 @@ jobs:
       matrix:
         lane: [unit, integration, e2e, smoke, property, edge]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           version: "0.11.29"
@@ -32,18 +33,25 @@ jobs:
       - name: Synchronize Python 3.14 Test-Goblin environment
         run: uv sync --python 3.14.6 --group test-goblin --locked
       - name: Run ${{ matrix.lane }} tests
-        run: uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py ${{ matrix.lane }}
+        env:
+          TEST_GOBLIN_LANE: ${{ matrix.lane }}
+        run: uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py "$TEST_GOBLIN_LANE"
 
   quality:
     name: Python 3.14 / ${{ matrix.profile }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    permissions:
+      contents: read
+      id-token: write # Required only for keyless Codecov OIDC upload.
     strategy:
       fail-fast: false
       matrix:
         profile: [routine, strict, package, coverage, mutation, gremlins, dependencies, profile]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           version: "0.11.29"
@@ -51,17 +59,19 @@ jobs:
       - name: Synchronize Python 3.14 development environment
         run: uv sync --python 3.14.6 --group dev --locked
       - name: Run Test-Goblin ${{ matrix.profile }} profile
-        run: uv run --python 3.14.6 --group dev python scripts/test_goblin.py ${{ matrix.profile }}
+        env:
+          TEST_GOBLIN_PROFILE: ${{ matrix.profile }}
+        run: uv run --python 3.14.6 --group dev python scripts/test_goblin.py "$TEST_GOBLIN_PROFILE"
       - name: Upload coverage
         if: matrix.profile == 'coverage'
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@f2274c2c340e0c81c8f7dc407b2a477b8935f171 # v6
         with:
           files: coverage.xml
           fail_ci_if_error: true
           use_oidc: true
       - name: Upload Scalene profile
         if: matrix.profile == 'profile'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: scalene-profile
           path: scalene-profile.json
@@ -74,7 +84,9 @@ jobs:
     timeout-minutes: 20
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
       - uses: prefix-dev/setup-pixi@a09b6247153796b190642a2b53fac4241043cf6f # v0.10.0
         with:
           pixi-version: "v0.73.0"

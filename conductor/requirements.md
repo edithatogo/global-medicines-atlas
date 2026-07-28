@@ -84,6 +84,9 @@
   regulatory-authority coverage and national health-technology assessment or
   reimbursement authorities; never claim the catalog is globally complete
   without a measured denominator and review date.
+- **M-068:** Maintain a machine-readable repository context manifest, root
+  agent contract, context-drift validation, and durable CI receipt designed
+  for one accountable maintainer without invented reviewer roles.
 
 ## Should Have
 

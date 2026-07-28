@@ -53,6 +53,11 @@ dev = [
 edge = [
   "edgetest>=2026.5.1",
 ]
+security = [
+    "cyclonedx-bom>=7.1",
+    "pip-audit>=2.9",
+    "zizmor>=1.13",
+]
 
 [tool.uv]
 package = true
@@ -65,6 +70,7 @@ typing = { requires-python = ">=3.14,<3.15" }
 profiling = { requires-python = ">=3.14,<3.15" }
 dev = { requires-python = ">=3.14,<3.15" }
 edge = { requires-python = ">=3.14,<3.15" }
+security = { requires-python = ">=3.14,<3.15" }
 
 [tool.hatch.version]
 source = "vcs"
