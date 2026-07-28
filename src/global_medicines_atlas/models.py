@@ -5,7 +5,13 @@ from __future__ import annotations
 from datetime import datetime
 from enum import StrEnum
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import (
+    AwareDatetime,
+    BaseModel,
+    ConfigDict,
+    Field,
+    model_validator,
+)
 
 
 class FrozenModel(BaseModel):
@@ -70,8 +76,8 @@ class StatusAssertion(FrozenModel):
 class TimeInterval(FrozenModel):
     """Half-open temporal interval with an optional unbounded end."""
 
-    start: datetime
-    end: datetime | None = None
+    start: AwareDatetime
+    end: AwareDatetime | None = None
 
     @model_validator(mode="after")
     def end_follows_start(self) -> TimeInterval:
@@ -92,15 +98,11 @@ class TemporalStatusAssertion(FrozenModel):
     @model_validator(mode="after")
     def temporal_fields_match_assertion(self) -> TemporalStatusAssertion:
         assertion = self.assertion
-        if (
-            assertion.effective_from is not None
-            and assertion.effective_from != self.valid_time.start
-        ):
-            raise ValueError("valid_time.start must match assertion.effective_from")
-        if (
-            assertion.effective_to is not None
-            and assertion.effective_to != self.valid_time.end
-        ):
+        if assertion.effective_from != self.valid_time.start:
+            message = "valid_time.start must match "
+            message += "assertion.effective_from"
+            raise ValueError(message)
+        if assertion.effective_to != self.valid_time.end:
             raise ValueError("valid_time.end must match assertion.effective_to")
         return self
 
