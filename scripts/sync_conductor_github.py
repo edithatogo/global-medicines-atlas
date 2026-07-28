@@ -568,7 +568,9 @@ def synchronise(
 
 
 def _repository_from_metadata(root: Path) -> str:
-    candidates = sorted((root / "conductor" / "tracks").glob("*/metadata.json"))
+    conductor = root / "conductor"
+    candidates = sorted((conductor / "tracks").glob("*/metadata.json"))
+    candidates.extend(sorted((conductor / "archive").glob("*/metadata.json")))
     for candidate in candidates:
         raw: object = json.loads(candidate.read_text(encoding="utf-8"))
         if isinstance(raw, dict):

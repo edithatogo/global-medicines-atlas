@@ -13,7 +13,7 @@ from scripts import generate_nz_asset_inventory as generator
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 INVENTORY_PATH = (
     PROJECT_ROOT
-    / "conductor/tracks/nzmedicines_migration_20260727/nz-asset-inventory.json"
+    / "conductor/archive/nzmedicines_migration_20260727/nz-asset-inventory.json"
 )
 UPSTREAM_ROOT = PROJECT_ROOT / "vendor/nzmedicines"
 ALLOWED_DISPOSITIONS = {
