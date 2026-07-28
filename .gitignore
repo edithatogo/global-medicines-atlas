@@ -25,6 +25,7 @@ dist/
 gremlin-report.*
 .gremlins_cache/
 coverage/gremlins/
+build/
 src/global_medicines_atlas/_version.py
 htmlcov/
 mutants/

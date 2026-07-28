@@ -1,0 +1,54 @@
+schema_version = 1
+repository = "edithatogo/global-medicines-atlas"
+maintainer_model = "single-accountable-maintainer"
+python = "3.14"
+coverage_floor = 91
+
+required_context = [
+  "AGENTS.md",
+  "conductor/index.md",
+  "conductor/product.md",
+  "conductor/product-guidelines.md",
+  "conductor/requirements.md",
+  "conductor/design.md",
+  "conductor/tech-stack.md",
+  "conductor/workflow.md",
+  "conductor/tracks.md",
+]
+
+required_manifests = [
+  "pyproject.toml",
+  "uv.lock",
+  "pylock.toml",
+  "pixi.toml",
+  "pixi.lock",
+  "renovate.json",
+  "codecov.yml",
+]
+
+required_harness_profiles = [
+  "unit",
+  "integration",
+  "e2e",
+  "smoke",
+  "property",
+  "edge",
+  "coverage",
+  "mutation",
+  "gremlins",
+  "dependencies",
+  "routine",
+  "strict",
+  "package",
+  "profile",
+  "security",
+]
+
+human_gates = [
+  "credentials",
+  "licensing",
+  "public-release",
+  "external-publication",
+  "compatibility-archive",
+  "consequential-interpretation",
+]

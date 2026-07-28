@@ -13,6 +13,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 TEST_LANES: dict[str, tuple[str, ...]] = {
     "unit": (
         "tests/test_country_adapter_registry.py",
+        "tests/test_context_validation.py",
         "tests/test_settings.py",
         "tests/test_logging.py",
         "tests/test_source_catalog.py",
@@ -82,6 +83,7 @@ def routine() -> None:
     run(["uv", "run", "--group", "typing", "ruff", "format", "--check", "."])
     run(["uv", "run", "--group", "typing", "ruff", "check", "."])
     run(["uv", "run", "--group", "typing", "ty", "check"])
+    run([sys.executable, "scripts/validate_context.py"])
 
 
 def strict() -> None:
@@ -159,6 +161,23 @@ def dependencies() -> None:
     ])
 
 
+def security() -> None:
+    """Audit workflow and dependency supply-chain state and emit an SBOM."""
+    (PROJECT_ROOT / "build").mkdir(exist_ok=True)
+    run(["uv", "run", "--group", "security", "zizmor", "--pedantic", ".github"])
+    run(["uv", "run", "--group", "security", "pip-audit"])
+    run([
+        "uv",
+        "run",
+        "--group",
+        "security",
+        "cyclonedx-py",
+        "environment",
+        "--output-file",
+        "build/sbom.cdx.json",
+    ])
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -173,6 +192,7 @@ def main() -> None:
             "mutation",
             "gremlins",
             "dependencies",
+            "security",
             "profile",
             "full",
         ),
@@ -192,6 +212,8 @@ def main() -> None:
         gremlins()
     elif selected_profile == "dependencies":
         dependencies()
+    elif selected_profile == "security":
+        security()
     elif selected_profile == "routine":
         routine()
     elif selected_profile == "strict":
@@ -208,6 +230,7 @@ def main() -> None:
         mutation()
         gremlins()
         profile()
+        security()
 
 
 if __name__ == "__main__":

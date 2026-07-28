@@ -171,3 +171,30 @@ flowchart LR
 - DuckDB, LanceDB, and optional lexical indexes are regenerable from portable governed artifacts.
 - Public datasets contain only reviewed redistributable material.
 - Credentials, restricted terminology payloads, and local source caches remain outside Git.
+
+## Single-Maintainer Context Control Plane
+
+```mermaid
+flowchart LR
+    AGENT["AGENTS.md invariants and human gates"]
+    MANIFEST[".context/project.toml"]
+    CONDUCTOR["Requirements, design, tracks, and evidence"]
+    VALIDATOR["Context-drift validator"]
+    HARNESS["Test-Goblin profiles"]
+    SECURITY["Zizmor, dependency audit, CodeQL, and SBOM"]
+    PR["Sole-maintainer pull request"]
+    RECEIPT["Hosted checks and durable receipts"]
+
+    AGENT --> VALIDATOR
+    MANIFEST --> VALIDATOR
+    CONDUCTOR --> VALIDATOR
+    VALIDATOR --> HARNESS
+    HARNESS --> PR
+    SECURITY --> PR
+    PR --> RECEIPT
+    RECEIPT --> CONDUCTOR
+```
+
+Automation supplies independent evidence, not a fictional independent
+reviewer. Credentials, licensing, publication, release, archival, and
+consequential-interpretation decisions remain explicit maintainer gates.

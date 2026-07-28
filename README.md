@@ -22,6 +22,16 @@ Detailed requirements, design, plans, and evidence are under
 track in the
 [Global Medicines Atlas Conductor Project](https://github.com/users/edithatogo/projects/35).
 
+## Maintainer workflow
+
+This is a single-accountable-maintainer repository with automated evidence
+rather than invented reviewer roles. Start with [`AGENTS.md`](AGENTS.md) and
+the machine-readable [context manifest](.context/project.toml). Pull requests
+run the complete Python 3.14 harness, locked Mojo canary, context-drift checks,
+CodeQL, Zizmor, dependency audit, and SBOM generation. Licensing, credentials,
+public release, external publication, compatibility archival, and
+consequential interpretation remain explicit human gates.
+
 ## Data boundaries
 
 The repository does not publish the local NZULM release, restricted
