@@ -1,5 +1,7 @@
 # Specification: Cross-Jurisdiction Matching
 
+Archived implementation specification.
+
 ## Outcome
 
 Deliver v0.5 reviewable mappings across ingredients, medicines and products

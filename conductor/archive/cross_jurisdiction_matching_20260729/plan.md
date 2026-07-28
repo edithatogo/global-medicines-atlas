@@ -1,5 +1,7 @@
 # Implementation Plan
 
+Archived after reviewed implementation merged in PR #59.
+
 ## Phase 1: Evaluation contract
 
 - [x] Task: Define mapping candidate, feature and adjudication schemas
