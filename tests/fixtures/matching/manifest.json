@@ -1,0 +1,11 @@
+{
+  "schema_version": "matching-evaluation-v1",
+  "fixture_file": "cases.jsonl",
+  "fixture_count": 6,
+  "classes": ["positive", "negative", "ambiguous"],
+  "languages": ["de", "en", "ja", "mi", "pt"],
+  "mapping_levels": ["ingredient", "clinical_drug", "medicinal_product", "presentation", "pack"],
+  "synthetic": true,
+  "clinical_equivalence_claims": false,
+  "purpose": "Synthetic evaluation only; candidates require review and are not therapeutic-equivalence or substitution recommendations."
+}
