@@ -1,5 +1,8 @@
 # Global Country Adapters Track
 
+Status: archived after PR #55 merged; external live qualification continues in
+GitHub issue #54.
+
 - [GitHub parent issue #7](https://github.com/edithatogo/global-medicines-atlas/issues/7)
 - [Phase 1 issue #8](https://github.com/edithatogo/global-medicines-atlas/issues/8) — registry, catalog, and first cohort
 - [Phase 2 issue #9](https://github.com/edithatogo/global-medicines-atlas/issues/9) — receipt-backed ingestors

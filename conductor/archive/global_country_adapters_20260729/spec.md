@@ -1,5 +1,8 @@
 # Global Country-Adapter Framework
 
+Archived implementation specification. Current live-source qualification is
+tracked separately in GitHub issue #54.
+
 ## Objective
 
 Create a globally extensible adapter framework that compares medicines using

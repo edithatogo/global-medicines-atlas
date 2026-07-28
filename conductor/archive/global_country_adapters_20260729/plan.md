@@ -1,5 +1,8 @@
 # Implementation Plan
 
+Archived after reviewed implementation merged in PR #55. External qualification
+continues in GitHub issue #54.
+
 ## Phase 1: Registry and first cohort
 
 - [x] Define jurisdiction source and adapter protocols.
