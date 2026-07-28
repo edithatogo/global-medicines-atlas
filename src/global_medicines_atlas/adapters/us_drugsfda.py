@@ -31,7 +31,6 @@ def project_drugsfda_bulk(
     retrieved_at: datetime,
 ) -> tuple[CanonicalMedicineRecord, ...]:
     """Project the four public Drugs@FDA tables needed for product status."""
-
     applications = {row["ApplNo"]: row for row in _rows(applications_tsv)}
     statuses = {
         row["MarketingStatusID"]: row["MarketingStatusDescription"]
@@ -45,8 +44,7 @@ def project_drugsfda_bulk(
     provenance = Provenance(
         source_id="us-drugsfda",
         source_uri=(
-            "https://www.fda.gov/drugs/drug-approvals-and-databases/"
-            "drugsfda-data-files"
+            "https://www.fda.gov/drugs/drug-approvals-and-databases/drugsfda-data-files"
         ),
         retrieved_at=retrieved_at,
         source_sha256=source_sha256,
@@ -74,7 +72,9 @@ def project_drugsfda_bulk(
                         Identifier(
                             system="https://www.fda.gov/drugsatfda/application",
                             value=application_number,
-                            identifier_type=applications[application_number]["ApplType"],
+                            identifier_type=applications[application_number][
+                                "ApplType"
+                            ],
                         ),
                     ),
                 ),

@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
+import json
+import re
 from collections.abc import Mapping
 from enum import StrEnum
-import json
 from pathlib import Path
-import re
-from typing import Protocol
+from typing import Protocol, cast
 
 import httpx
 from pydantic import Field
@@ -38,6 +38,15 @@ class TerminologyResolver(Protocol):
 
 def normalize_name(value: str) -> str:
     return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9]+", " ", value.casefold())).strip()
+
+
+def _string_mapping(value: object) -> Mapping[str, object] | None:
+    if not isinstance(value, Mapping):
+        return None
+    candidate = cast("Mapping[object, object]", value)
+    if not all(isinstance(key, str) for key in candidate):
+        return None
+    return cast("Mapping[str, object]", value)
 
 
 class LocalRxNormResolver:
@@ -97,9 +106,12 @@ class RxNavApiResolver:
         normalized = normalize_name(query)
         response = self._client.get("/rxcui.json", params={"name": query, "search": 2})
         response.raise_for_status()
-        ids = response.json().get("idGroup", {}).get("rxnormId", [])
-        if not isinstance(ids, list):
+        payload = _string_mapping(cast("object", response.json()))
+        id_group = _string_mapping(payload.get("idGroup")) if payload else None
+        ids_value = id_group.get("rxnormId") if id_group else None
+        if not isinstance(ids_value, list):
             return ()
+        ids = cast("list[object]", ids_value)
         return tuple(
             TerminologyMatch(
                 query=query,
@@ -134,7 +146,7 @@ class TieredResolver:
             return local
         try:
             return self._remote.resolve(query)
-        except (httpx.HTTPError, TimeoutError):
+        except httpx.HTTPError, TimeoutError:
             return ()
 
 
@@ -144,7 +156,6 @@ def bootstrap_rxnorm_resolver(
     fixture_path = Path(__file__).with_name("data") / "rxnorm_bootstrap.json"
     payload = json.loads(fixture_path.read_text(encoding="utf-8"))
     concepts = {
-        alias: (values[0], values[1])
-        for alias, values in payload["concepts"].items()
+        alias: (values[0], values[1]) for alias, values in payload["concepts"].items()
     }
     return TieredResolver(LocalRxNormResolver(concepts), remote)

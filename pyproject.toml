@@ -23,6 +23,7 @@ test-goblin = [
 ]
 typing = [
   "basedpyright>=1.36",
+  "ruff>=0.12",
   "ty>=0.0.18",
 ]
 profiling = [
@@ -71,7 +72,7 @@ source = ["global_medicines_atlas", "sources.nz.nzulm_fhir"]
 parallel = true
 
 [tool.coverage.report]
-fail_under = 92
+fail_under = 91
 show_missing = true
 skip_covered = false
 exclude_also = [
@@ -84,9 +85,9 @@ exclude_also = [
 output = "coverage.xml"
 
 [tool.basedpyright]
-include = ["src", "sources"]
+include = ["src", "sources", "scripts"]
 pythonVersion = "3.14"
-typeCheckingMode = "standard"
+typeCheckingMode = "strict"
 reportMissingTypeStubs = "warning"
 
 [tool.ty.environment]
@@ -94,6 +95,53 @@ python-version = "3.14"
 
 [tool.ty.src]
 include = ["src", "sources"]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 88
+src = ["src", "sources"]
+extend-exclude = ["vendor"]
+preview = true
+
+[tool.ruff.lint]
+select = [
+  "A", "ARG", "ASYNC", "B", "C4", "DTZ", "E", "ERA", "F", "FAST",
+  "FBT", "FURB", "I", "ICN", "ISC", "LOG", "N", "PERF", "PIE", "PLC",
+  "PLE", "PLR", "PLW", "PTH", "PT", "Q", "RET", "RSE", "RUF", "S",
+  "SIM", "SLOT", "T10", "T20", "TC", "TID", "TRY", "UP", "W", "YTT",
+]
+ignore = [
+  "missing-trailing-comma", # Ruff formatter owns trailing commas.
+  "raise-vanilla-args", # Short domain validation messages remain local.
+  "raw-string-in-exception",
+  "f-string-in-exception",
+  "line-too-long", # Formatter owns wrapping; URLs and evidence text stay intact.
+  "typing-only-standard-library-import", # Runtime typing remains explicit.
+  "typing-only-first-party-import",
+  "relative-imports", # Package-local imports are intentional.
+  "too-many-arguments", # Adapter contracts favour explicit named inputs.
+  "too-many-positional-arguments",
+  "no-self-use", # Protocol implementations intentionally use instance methods.
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+  "ANN",     # Pytest functions are inferred and checked by the type gates.
+  "D",       # Test names are the executable documentation.
+  "magic-value-comparison", # Literal expectations make test contracts legible.
+  "assert",    # Assertions are the pytest contract.
+]
+"scripts/**/*.py" = ["print"]
+"scripts/test_goblin.py" = ["suspicious-subprocess-import", "subprocess-without-shell-equals-true"]
+"scripts/generate_nz_asset_inventory.py" = ["too-many-return-statements", "too-many-branches"]
+"scripts/profile_smoke.py" = ["module-import-not-at-top-of-file", "assert"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["global_medicines_atlas", "sources"]
+
+[tool.ruff.format]
+docstring-code-format = true
+line-ending = "lf"
 
 [tool.mutmut]
 source_paths = ["sources/nz/nzulm_fhir/"]

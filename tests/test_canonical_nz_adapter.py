@@ -23,7 +23,6 @@ from global_medicines_atlas.nz import (
 )
 from sources.nz.nzulm_fhir import FhirResourceRecord, load_upstream_fixture_records
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -33,7 +32,10 @@ def test_nz_projection_emits_deterministic_provenance_bearing_records() -> None:
     assert len(records) == 42
     assert list(records) == sorted(records, key=lambda row: row.concept.concept_id)
     assert all(record.concept.jurisdiction == "NZ" for record in records)
-    assert all(record.concept.identifiers[0].system == "http://nzmt.org.nz" for record in records)
+    assert all(
+        record.concept.identifiers[0].system == "http://nzmt.org.nz"
+        for record in records
+    )
     assert all(record.provenance[0].source_sha256 for record in records)
     assert all(record.assertions == () for record in records)
 

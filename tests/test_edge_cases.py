@@ -31,15 +31,13 @@ def test_declarative_adapter_without_regulatory_source_is_rejected() -> None:
 
 def test_api_source_requires_an_access_surface() -> None:
     with pytest.raises(ValidationError):
-        MedicineDataSource.model_validate(
-            {
-                "source_id": "edge.invalid",
-                "jurisdiction": "ZZZ",
-                "authority": "Example",
-                "dataset": "Example",
-                "dimension": "regulatory",
-                "access_mode": "api",
-                "readiness": "candidate",
-                "evidence_limit": "Test-only invalid source.",
-            }
-        )
+        MedicineDataSource.model_validate({
+            "source_id": "edge.invalid",
+            "jurisdiction": "ZZZ",
+            "authority": "Example",
+            "dataset": "Example",
+            "dimension": "regulatory",
+            "access_mode": "api",
+            "readiness": "candidate",
+            "evidence_limit": "Test-only invalid source.",
+        })

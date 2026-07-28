@@ -9,7 +9,6 @@ import pytest
 
 from sources.nz.nzulm_fhir import iter_fhir_resources, load_upstream_fixture_records
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -24,7 +23,10 @@ def test_upstream_snapshot_has_expected_unique_fhir_resources() -> None:
         "DocumentReference": 4,
         "Substance": 2,
     }
-    assert all(record.source_commit == "6a8ecfae67f15d635750d11d5f446b93d76c1865" for record in records)
+    assert all(
+        record.source_commit == "6a8ecfae67f15d635750d11d5f446b93d76c1865"
+        for record in records
+    )
     assert all(len(record.source_sha256) == 64 for record in records)
 
 
