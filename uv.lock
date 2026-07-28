@@ -356,6 +356,7 @@ dev = [
     { name = "basedpyright" },
     { name = "edgetest" },
     { name = "hypothesis" },
+    { name = "jsonschema" },
     { name = "mutmut" },
     { name = "packaging" },
     { name = "pyarrow-stubs" },
@@ -381,6 +382,7 @@ security = [
     { name = "zizmor" },
 ]
 test = [
+    { name = "jsonschema" },
     { name = "packaging" },
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -388,6 +390,7 @@ test = [
 ]
 test-goblin = [
     { name = "hypothesis" },
+    { name = "jsonschema" },
     { name = "mutmut" },
     { name = "packaging" },
     { name = "pytest" },
@@ -423,6 +426,7 @@ dev = [
     { name = "basedpyright", marker = "python_full_version == '3.14.*'", specifier = ">=1.36" },
     { name = "edgetest", marker = "python_full_version == '3.14.*'", specifier = ">=2026.5.1" },
     { name = "hypothesis", marker = "python_full_version == '3.14.*'", specifier = ">=6.151" },
+    { name = "jsonschema", marker = "python_full_version == '3.14.*'", specifier = ">=4.25" },
     { name = "mutmut", marker = "python_full_version == '3.14.*'", specifier = ">=3.5" },
     { name = "packaging", marker = "python_full_version == '3.14.*'", specifier = ">=26" },
     { name = "pyarrow-stubs", marker = "python_full_version == '3.14.*'", specifier = ">=20.0.0.20260625" },
@@ -439,11 +443,12 @@ dev = [
 edge = [{ name = "edgetest", marker = "python_full_version == '3.14.*'", specifier = ">=2026.5.1" }]
 profiling = [{ name = "scalene", marker = "python_full_version == '3.14.*'", specifier = ">=1.5.55" }]
 security = [
-    { name = "cyclonedx-bom", specifier = ">=7.1" },
-    { name = "pip-audit", specifier = ">=2.9" },
-    { name = "zizmor", specifier = ">=1.13" },
+    { name = "cyclonedx-bom", marker = "python_full_version == '3.14.*'", specifier = ">=7.1" },
+    { name = "pip-audit", marker = "python_full_version == '3.14.*'", specifier = ">=2.9" },
+    { name = "zizmor", marker = "python_full_version == '3.14.*'", specifier = ">=1.13" },
 ]
 test = [
+    { name = "jsonschema", marker = "python_full_version == '3.14.*'", specifier = ">=4.25" },
     { name = "packaging", marker = "python_full_version == '3.14.*'", specifier = ">=26" },
     { name = "pytest", marker = "python_full_version == '3.14.*'", specifier = ">=9.1" },
     { name = "pytest-cov", marker = "python_full_version == '3.14.*'", specifier = ">=7.0" },
@@ -451,6 +456,7 @@ test = [
 ]
 test-goblin = [
     { name = "hypothesis", marker = "python_full_version == '3.14.*'", specifier = ">=6.151" },
+    { name = "jsonschema", marker = "python_full_version == '3.14.*'", specifier = ">=4.25" },
     { name = "mutmut", marker = "python_full_version == '3.14.*'", specifier = ">=3.5" },
     { name = "packaging", marker = "python_full_version == '3.14.*'", specifier = ">=26" },
     { name = "pytest", marker = "python_full_version == '3.14.*'", specifier = ">=9.1" },
