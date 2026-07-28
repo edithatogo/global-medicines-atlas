@@ -19,6 +19,8 @@ coverage.xml
 .coverage.*
 htmlcov/
 scalene-profile.json
+dist/
+src/global_medicines_atlas/_version.py
 htmlcov/
 mutants/
 

@@ -1,6 +1,10 @@
+[build-system]
+requires = ["hatchling>=1.27", "hatch-vcs>=0.5"]
+build-backend = "hatchling.build"
+
 [project]
 name = "global-medicines-atlas"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Global comparison of medicine registration, approval, funding, and reimbursement systems"
 requires-python = ">=3.14,<3.15"
 dependencies = [
@@ -10,6 +14,7 @@ dependencies = [
 
 [dependency-groups]
 test = [
+  "packaging>=26",
   "pytest>=9.1",
   "pytest-cov>=7.0",
   "pytest-xdist>=3.8",
@@ -36,7 +41,7 @@ dev = [
 ]
 
 [tool.uv]
-package = false
+package = true
 default-groups = ["test-goblin"]
 
 [tool.uv.dependency-groups]
@@ -45,6 +50,20 @@ test-goblin = { requires-python = ">=3.14,<3.15" }
 typing = { requires-python = ">=3.14,<3.15" }
 profiling = { requires-python = ">=3.14,<3.15" }
 dev = { requires-python = ">=3.14,<3.15" }
+
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0+unknown"
+
+[tool.hatch.version.raw-options]
+version_scheme = "no-guess-dev"
+local_scheme = "node-and-date"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/global_medicines_atlas/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/global_medicines_atlas"]
 
 [tool.pytest.ini_options]
 addopts = [
@@ -70,6 +89,7 @@ timeout = 30
 branch = true
 source = ["global_medicines_atlas", "sources.nz.nzulm_fhir"]
 parallel = true
+omit = ["src/global_medicines_atlas/_version.py"]
 
 [tool.coverage.report]
 fail_under = 91
@@ -149,6 +169,6 @@ pytest_add_cli_args_test_selection = [
   "tests/test_nzulm_fhir_adapter.py",
   "tests/test_nzulm_fhir_properties.py",
 ]
-also_copy = ["vendor/nzmedicines/"]
+also_copy = ["vendor/nzmedicines/", "src/global_medicines_atlas/"]
 mutate_only_covered_lines = true
 use_git_change_detection = false

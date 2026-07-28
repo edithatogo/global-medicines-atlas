@@ -13,8 +13,10 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 TEST_LANES: dict[str, tuple[str, ...]] = {
     "unit": (
         "tests/test_country_adapter_registry.py",
+        "tests/test_logging.py",
         "tests/test_source_catalog.py",
         "tests/test_terminology_resolver.py",
+        "tests/test_version.py",
     ),
     "integration": (
         "tests/test_nz_asset_inventory.py",
@@ -85,6 +87,12 @@ def strict() -> None:
     run(["uv", "run", "--group", "typing", "basedpyright"])
 
 
+def package() -> None:
+    """Build wheel and source distribution with VCS-derived metadata."""
+
+    run(["uv", "build", "--out-dir", "dist"])
+
+
 def profile() -> None:
     """Exercise the canonical workload under Scalene and emit an HTML report."""
     run([
@@ -122,6 +130,7 @@ def main() -> None:
             "coverage",
             "routine",
             "strict",
+            "package",
             "mutation",
             "profile",
             "full",
@@ -142,11 +151,14 @@ def main() -> None:
         routine()
     elif selected_profile == "strict":
         strict()
+    elif selected_profile == "package":
+        package()
     elif selected_profile == "profile":
         profile()
     else:
         routine()
         strict()
+        package()
         coverage()
         mutation()
         profile()
