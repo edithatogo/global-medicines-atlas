@@ -1,0 +1,57 @@
+{
+  "resourceType": "DocumentReference",
+  "id": "nzf-pil-ibuprofen",
+  "meta": {
+    "lastUpdated": "2026-05-18T00:00:00Z"
+  },
+  "status": "current",
+  "type": {
+    "coding": [
+      {
+        "system": "https://standards.digital.health.nz/ns/nzf-document-type-code",
+        "code": "PIL"
+      }
+    ]
+  },
+  "content": [
+    {
+      "attachment": {
+        "extension": [
+          {
+            "url": "http://hl7.org.nz/fhir/StructureDefinition/nzf-page-size",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://standards.digital.health.nz/ns/nzf-page-size-code",
+                  "code": "A4",
+                  "display": "A4"
+                }
+              ],
+              "text": "A4"
+            }
+          }
+        ],
+        "contentType": "application/pdf",
+        "language": "en-NZ",
+        "url": "http://www.mymedicines.nz/home/sheet/Ibuprofen?format=pdfA4&inline=true",
+        "title": "Ibuprofen"
+      }
+    }
+  ],
+  "context": {
+    "extension": [
+      {
+        "url": "http://hl7.org.nz/fhir/StructureDefinition/nzf-pil-source",
+        "valueCodeableConcept": {
+          "text": "MyMedicine"
+        }
+      },
+      {
+        "url": "http://hl7.org.nz/fhir/StructureDefinition/nzf-pil-formulary",
+        "valueCodeableConcept": {
+          "text": "NZF"
+        }
+      }
+    ]
+  }
+}

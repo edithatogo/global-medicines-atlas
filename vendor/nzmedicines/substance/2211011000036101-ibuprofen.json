@@ -1,0 +1,17 @@
+{
+  "resourceType": "Substance",
+  "id": "2211011000036101",
+  "meta": {
+    "lastUpdated": "2026-05-18T00:00:00Z"
+  },
+  "status": "active",
+  "code": {
+    "coding": [
+      {
+        "system": "http://nzmt.org.nz",
+        "code": "2211011000036101",
+        "display": "ibuprofen"
+      }
+    ]
+  }
+}
