@@ -64,7 +64,7 @@ jobs:
         run: uv run --python 3.14.6 --group dev python scripts/test_goblin.py "$TEST_GOBLIN_PROFILE"
       - name: Upload coverage
         if: matrix.profile == 'coverage'
-        uses: codecov/codecov-action@f2274c2c340e0c81c8f7dc407b2a477b8935f171 # v6
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
         with:
           files: coverage.xml
           fail_ci_if_error: true
