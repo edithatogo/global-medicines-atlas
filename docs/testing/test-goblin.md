@@ -9,12 +9,19 @@ The executable profile is declared as a PEP 735 dependency group in
 `pyproject.toml`. Resolved versions are committed in `uv.lock`; the
 tool-independent environment is exported to PEP 751 `pylock.toml`.
 
+The harness exposes explicit `unit`, `integration`, `e2e`, `smoke`,
+`property`, and `edge` test lanes. Its quality lanes are `typing` (`ty`
+followed by formal `basedpyright`), full-project branch `coverage`, Linux
+`mutation`, and deterministic network-free Scalene `profile` generation.
+
 ## Local Commands
 
 ```powershell
 uv sync --python 3.14.6 --group test-goblin --locked
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py quick
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py coverage
+uv run --python 3.14.6 --group dev python scripts/test_goblin.py typing
+uv run --python 3.14.6 --group dev python scripts/test_goblin.py profile
 ```
 
 Run the mutation profile on Linux CI or in WSL:
@@ -36,6 +43,10 @@ on native Windows. The harness reports that boundary explicitly.
 | Order-sensitivity detection | pytest-randomly |
 | Parallel execution | pytest-xdist |
 | Coverage and Codecov input | pytest-cov |
+| Fast typing | ty |
+| Formal typing | basedpyright |
+| CPU profiling | Scalene |
+| Dependency maintenance | Renovate |
 
 ## Required Targets
 
@@ -56,7 +67,11 @@ on native Windows. The harness reports that boundary explicitly.
   cancellation behavior.
 - Mutation-score thresholds begin as measured evidence and become blocking once
   calibrated against the governed core.
-- Coverage remains independently blocking above 90%.
+- Coverage is independently blocking at 92% for both project and patch
+  coverage. Codecov uploads authenticate with GitHub OIDC.
+- Scalene profiles are retained as CI artifacts for 14 days.
+- Renovate groups frontier dependency updates, rate-limits pull requests,
+  requires Dependency Dashboard approval for majors, and never automerges.
 
 The initial governed NZ FHIR adapter suite is the first operational slice.
 Additional source adapters enter the profile as their contracts are migrated.

@@ -12,7 +12,7 @@ from dataclasses import dataclass
 import hashlib
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 
 UPSTREAM_REPOSITORY = "https://github.com/edithatogo/nzmedicines"
@@ -45,7 +45,7 @@ def _resource_dicts(document: object) -> Iterator[Mapping[str, Any]]:
         return
     resource_type = document.get("resourceType")
     if isinstance(resource_type, str):
-        yield document
+        yield cast(Mapping[str, Any], document)
     entries = document.get("entry")
     if not isinstance(entries, list):
         return
@@ -54,7 +54,7 @@ def _resource_dicts(document: object) -> Iterator[Mapping[str, Any]]:
             continue
         resource = entry.get("resource")
         if isinstance(resource, Mapping):
-            yield resource
+            yield cast(Mapping[str, Any], resource)
 
 
 def iter_fhir_resources(paths: Iterable[Path], *, source_root: Path) -> Iterator[FhirResourceRecord]:

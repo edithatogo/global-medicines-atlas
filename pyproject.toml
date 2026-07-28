@@ -19,6 +19,7 @@ test-goblin = [
   "hypothesis>=6.151",
   "mutmut>=3.5",
   "pytest-randomly>=4.0",
+  "pytest-timeout>=2.4",
 ]
 typing = [
   "basedpyright>=1.36",
@@ -54,15 +55,45 @@ minversion = "9.1"
 pythonpath = [".", "src"]
 testpaths = ["tests"]
 xfail_strict = true
+markers = [
+  "unit: isolated domain and utility tests",
+  "integration: adapter, fixture, and component-boundary tests",
+  "e2e: complete governed medicine projection workflows",
+  "smoke: fast installation and critical-path checks",
+  "property: generative invariant tests",
+  "edge: malformed, boundary, and failure-mode tests",
+]
+timeout = 30
 
 [tool.coverage.run]
 branch = true
-source = ["sources.nz.nzulm_fhir"]
+source = ["global_medicines_atlas", "sources.nz.nzulm_fhir"]
+parallel = true
 
 [tool.coverage.report]
-fail_under = 91
+fail_under = 92
 show_missing = true
 skip_covered = false
+exclude_also = [
+  "if TYPE_CHECKING:",
+  "@overload",
+  "\\.\\.\\.",
+]
+
+[tool.coverage.xml]
+output = "coverage.xml"
+
+[tool.basedpyright]
+include = ["src", "sources"]
+pythonVersion = "3.14"
+typeCheckingMode = "standard"
+reportMissingTypeStubs = "warning"
+
+[tool.ty.environment]
+python-version = "3.14"
+
+[tool.ty.src]
+include = ["src", "sources"]
 
 [tool.mutmut]
 source_paths = ["sources/nz/nzulm_fhir/"]
