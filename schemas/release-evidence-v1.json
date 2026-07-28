@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/release-evidence-v1.json",
+  "title": "Global Medicines Atlas release evidence v1",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "schema_version",
+    "git",
+    "requirement_map",
+    "dataset_schema_versions",
+    "migration_versions",
+    "input_evidence",
+    "receipt_digests",
+    "snapshot_manifest_digests",
+    "gate_outcomes",
+    "receipt_counts",
+    "coverage_unknown_denominators",
+    "rights_states",
+    "snapshot_scopes",
+    "release_state",
+    "unresolved_gates"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "global-medicines-atlas.release-evidence"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "git": {
+      "$ref": "#/$defs/gitState"
+    },
+    "requirement_map": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "$ref": "#/$defs/requirementEvidence"
+      }
+    },
+    "dataset_schema_versions": {
+      "$ref": "#/$defs/nonemptyUniqueStrings"
+    },
+    "migration_versions": {
+      "$ref": "#/$defs/nonemptyUniqueStrings"
+    },
+    "input_evidence": {
+      "$ref": "#/$defs/inputEvidenceDigests"
+    },
+    "receipt_digests": {
+      "$ref": "#/$defs/digestArray"
+    },
+    "snapshot_manifest_digests": {
+      "$ref": "#/$defs/digestArray"
+    },
+    "gate_outcomes": {
+      "type": "object",
+      "propertyNames": {
+        "minLength": 1
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/gateStatus"
+      }
+    },
+    "receipt_counts": {
+      "type": "object",
+      "propertyNames": {
+        "enum": ["fixture", "synthetic", "dry_run", "live", "unavailable"]
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/nonnegativeInteger"
+      }
+    },
+    "coverage_unknown_denominators": {
+      "$ref": "#/$defs/nonnegativeInteger"
+    },
+    "rights_states": {
+      "type": "object",
+      "propertyNames": {
+        "enum": ["unknown", "permitted", "restricted", "prohibited"]
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/nonnegativeInteger"
+      }
+    },
+    "snapshot_scopes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "const": "fixture_only_not_live_evidence"
+      }
+    },
+    "release_state": {
+      "enum": ["fixture-qualified", "live-qualified", "blocked"]
+    },
+    "unresolved_gates": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "digestArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/digest"
+      }
+    },
+    "gateStatus": {
+      "enum": ["passed", "failed", "unverified"]
+    },
+    "gitState": {
+      "type": "object",
+      "required": ["commit", "dirty"],
+      "properties": {
+        "commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "dirty": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "inputEvidenceDigests": {
+      "type": "object",
+      "required": [
+        "receipts_sha256",
+        "coverage_sha256",
+        "snapshots_sha256",
+        "gates_sha256"
+      ],
+      "properties": {
+        "receipts_sha256": {
+          "$ref": "#/$defs/digest"
+        },
+        "coverage_sha256": {
+          "$ref": "#/$defs/digest"
+        },
+        "snapshots_sha256": {
+          "$ref": "#/$defs/digest"
+        },
+        "gates_sha256": {
+          "$ref": "#/$defs/digest"
+        }
+      },
+      "additionalProperties": false
+    },
+    "nonemptyUniqueStrings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "nonnegativeInteger": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "requirementEvidence": {
+      "type": "object",
+      "required": ["requirement_id", "gates", "satisfied"],
+      "properties": {
+        "requirement_id": {
+          "enum": [
+            "M-001",
+            "M-002",
+            "M-003",
+            "M-004",
+            "M-005",
+            "M-030",
+            "M-035",
+            "M-071",
+            "M-078"
+          ]
+        },
+        "gates": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "satisfied": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

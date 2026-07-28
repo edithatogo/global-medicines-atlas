@@ -108,7 +108,10 @@ timeout = 30
 
 [tool.pytest-gremlins]
 paths = [
-  "src/global_medicines_atlas/columnar.py",
+    "src/global_medicines_atlas/columnar.py",
+    "src/global_medicines_atlas/coverage.py",
+    "src/global_medicines_atlas/receipts.py",
+    "src/global_medicines_atlas/release_evidence.py",
   "src/global_medicines_atlas/settings.py",
 ]
 exclude = ["**/_version.py"]
