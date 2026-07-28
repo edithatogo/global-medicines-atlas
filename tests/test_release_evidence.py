@@ -120,7 +120,9 @@ def snapshot() -> SnapshotManifest:
             package_commit=SHA[:40],
         ),
         artifacts=(
-            SnapshotArtifact(role="input", path="input.json", sha256=SHA, size_bytes=1),
+            SnapshotArtifact(
+                role="input", path="input.json", sha256=SHA, size_bytes=1
+            ),
             SnapshotArtifact(
                 role="output", path="output.parquet", sha256=SHA, size_bytes=1
             ),

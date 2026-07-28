@@ -26,7 +26,9 @@ class JsonFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         payload: dict[str, object] = {
-            "timestamp": datetime.fromtimestamp(record.created, tz=UTC).isoformat(),
+            "timestamp": datetime.fromtimestamp(
+                record.created, tz=UTC
+            ).isoformat(),
             "level": record.levelname,
             "logger": record.name,
             "message": record.getMessage(),
@@ -63,7 +65,9 @@ def configure_logging(
     return logger
 
 
-def get_logger(name: str, **context: str) -> logging.LoggerAdapter[logging.Logger]:
+def get_logger(
+    name: str, **context: str
+) -> logging.LoggerAdapter[logging.Logger]:
     """Return a package-child logger carrying validated structured context."""
 
     unknown = set(context).difference(_CONTEXT_FIELDS)

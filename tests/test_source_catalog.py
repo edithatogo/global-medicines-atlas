@@ -30,15 +30,22 @@ def test_funding_and_regulatory_sources_are_independent() -> None:
     nz_regulatory = sources_for("NZL", SourceDimension.REGULATORY)
     nz_funding = sources_for("NZL", SourceDimension.FUNDING)
 
-    assert {source.source_id for source in nz_regulatory} == {"nz-medsafe-products"}
-    assert {source.source_id for source in nz_funding} == {"nz-pharmac-schedule"}
+    assert {source.source_id for source in nz_regulatory} == {
+        "nz-medsafe-products"
+    }
+    assert {source.source_id for source in nz_funding} == {
+        "nz-pharmac-schedule"
+    }
 
 
 def test_api_and_download_modes_have_declared_endpoints() -> None:
     for source in load_source_catalog():
         if source.access_mode in {AccessMode.API, AccessMode.API_AND_DOWNLOAD}:
             assert source.api_url is not None
-        if source.access_mode in {AccessMode.DOWNLOAD, AccessMode.API_AND_DOWNLOAD}:
+        if source.access_mode in {
+            AccessMode.DOWNLOAD,
+            AccessMode.API_AND_DOWNLOAD,
+        }:
             assert source.download_url is not None
 
 

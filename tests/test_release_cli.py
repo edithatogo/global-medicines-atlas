@@ -14,8 +14,12 @@ import pytest
 
 
 def _load_cli() -> ModuleType:
-    script = Path(__file__).parents[1] / "scripts" / "qualify_temporal_release.py"
-    specification = importlib.util.spec_from_file_location("release_cli", script)
+    script = (
+        Path(__file__).parents[1] / "scripts" / "qualify_temporal_release.py"
+    )
+    specification = importlib.util.spec_from_file_location(
+        "release_cli", script
+    )
     assert specification is not None
     assert specification.loader is not None
     module = importlib.util.module_from_spec(specification)
@@ -129,7 +133,9 @@ def test_input_evidence_matches_exact_file_bytes(tmp_path: Path) -> None:
         assert evidence[f"{name}_sha256"] == expected
 
 
-def test_atomic_write_replaces_without_temporary_files(repository: Path) -> None:
+def test_atomic_write_replaces_without_temporary_files(
+    repository: Path,
+) -> None:
     output = CLI._safe_output(repository, Path("build/evidence.json"))
     CLI._atomic_write(output, b"first")
     CLI._atomic_write(output, b"second")

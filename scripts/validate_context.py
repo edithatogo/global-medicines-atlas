@@ -59,7 +59,9 @@ def _validate_maturity(track_indexes: tuple[Path, ...]) -> int:
         raise TypeError("Maturity releases must be a list")
     releases = cast("list[object]", raw_releases)
     if len(releases) < MINIMUM_RELEASES:
-        raise ValueError("Maturity model must define the v0.1-to-v1.0 release train")
+        raise ValueError(
+            "Maturity model must define the v0.1-to-v1.0 release train"
+        )
     versions: set[str] = set()
     for raw_release in releases:
         if not isinstance(raw_release, dict):
@@ -69,19 +71,31 @@ def _validate_maturity(track_indexes: tuple[Path, ...]) -> int:
             raise TypeError("Every release requires a string version")
         versions.add(version)
     if len(versions) != len(releases) or "1.0.0" not in versions:
-        raise ValueError("Release versions must be unique and include stable 1.0.0")
+        raise ValueError(
+            "Release versions must be unique and include stable 1.0.0"
+        )
     for index in track_indexes:
         metadata = cast(
             "dict[str, object]",
-            json.loads((index.parent / "metadata.json").read_text(encoding="utf-8")),
+            json.loads(
+                (index.parent / "metadata.json").read_text(encoding="utf-8")
+            ),
         )
         if not metadata.get("github_issue"):
-            raise ValueError(f"{index.parent.name} requires a GitHub parent issue")
+            raise ValueError(
+                f"{index.parent.name} requires a GitHub parent issue"
+            )
         targets = metadata.get("target_versions", [])
         if not isinstance(targets, list):
-            raise TypeError(f"{index.parent.name} target_versions must be a list")
-        if any(target not in versions for target in cast("list[object]", targets)):
-            raise ValueError(f"{index.parent.name} targets an undefined release")
+            raise TypeError(
+                f"{index.parent.name} target_versions must be a list"
+            )
+        if any(
+            target not in versions for target in cast("list[object]", targets)
+        ):
+            raise ValueError(
+                f"{index.parent.name} targets an undefined release"
+            )
     return len(releases)
 
 
@@ -91,7 +105,9 @@ def _validate_track_requirements(
     for index in track_indexes:
         metadata = cast(
             "dict[str, object]",
-            json.loads((index.parent / "metadata.json").read_text(encoding="utf-8")),
+            json.loads(
+                (index.parent / "metadata.json").read_text(encoding="utf-8")
+            ),
         )
         references = metadata.get("requirements", [])
         if not isinstance(references, list):
@@ -99,7 +115,8 @@ def _validate_track_requirements(
         unknown = {
             reference
             for reference in cast("list[object]", references)
-            if not isinstance(reference, str) or reference not in requirement_ids
+            if not isinstance(reference, str)
+            or reference not in requirement_ids
         }
         if unknown:
             raise ValueError(
@@ -122,7 +139,9 @@ def validate_context() -> ContextReceipt:
     if missing:
         raise FileNotFoundError(f"Missing governed files: {', '.join(missing)}")
 
-    tracks_text = (PROJECT_ROOT / "conductor" / "tracks.md").read_text(encoding="utf-8")
+    tracks_text = (PROJECT_ROOT / "conductor" / "tracks.md").read_text(
+        encoding="utf-8"
+    )
     track_indexes = tuple(
         PROJECT_ROOT / "conductor" / match.group("path").removeprefix("./")
         for match in TRACK_PATTERN.finditer(tracks_text)
@@ -131,14 +150,23 @@ def validate_context() -> ContextReceipt:
         raise ValueError("Every registered track must resolve to an index")
     for index in track_indexes:
         track_root = index.parent
-        for filename in ("spec.md", "plan.md", "metadata.json", "evidence.jsonl"):
+        for filename in (
+            "spec.md",
+            "plan.md",
+            "metadata.json",
+            "evidence.jsonl",
+        ):
             if not (track_root / filename).is_file():
-                raise FileNotFoundError(f"{index.parent.name} missing {filename}")
+                raise FileNotFoundError(
+                    f"{index.parent.name} missing {filename}"
+                )
 
     release_count = _validate_maturity(track_indexes)
 
     requirement_ids = REQUIREMENT_PATTERN.findall(
-        (PROJECT_ROOT / "conductor" / "requirements.md").read_text(encoding="utf-8")
+        (PROJECT_ROOT / "conductor" / "requirements.md").read_text(
+            encoding="utf-8"
+        )
     )
     if not requirement_ids or len(requirement_ids) != len(set(requirement_ids)):
         raise ValueError("Requirement identifiers must exist and be unique")
@@ -147,9 +175,13 @@ def validate_context() -> ContextReceipt:
     harness_text = (PROJECT_ROOT / "scripts" / "test_goblin.py").read_text(
         encoding="utf-8"
     )
-    undeclared = [profile for profile in profiles if f'"{profile}"' not in harness_text]
+    undeclared = [
+        profile for profile in profiles if f'"{profile}"' not in harness_text
+    ]
     if undeclared:
-        raise ValueError(f"Harness profiles not declared: {', '.join(undeclared)}")
+        raise ValueError(
+            f"Harness profiles not declared: {', '.join(undeclared)}"
+        )
 
     schema_version = context.get("schema_version")
     if not isinstance(schema_version, int):

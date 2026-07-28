@@ -232,7 +232,11 @@ def test_payload_digest_contract_accepts_any_payload_bytes(data: bytes) -> None:
 def test_receipt_digest_changes_when_identity_changes(source_id: str) -> None:
     baseline = source_receipt()
     changed = baseline.model_copy(
-        update={"source": baseline.source.model_copy(update={"source_id": source_id})}
+        update={
+            "source": baseline.source.model_copy(
+                update={"source_id": source_id}
+            )
+        }
     )
 
     if source_id != baseline.source.source_id:

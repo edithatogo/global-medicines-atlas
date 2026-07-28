@@ -11,7 +11,13 @@ from typing import cast
 import duckdb
 import polars as pl
 import pyarrow as pa
-from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_validator
+from pydantic import (
+    AwareDatetime,
+    BaseModel,
+    ConfigDict,
+    Field,
+    model_validator,
+)
 
 from .models import AssertionKind, TimeInterval
 
@@ -88,8 +94,9 @@ class CoverageObservation(BaseModel):
 
     @model_validator(mode="after")
     def counts_are_coherent(self) -> CoverageObservation:
-        if self.medicine_concept_id is None and not self.concept_population.startswith(
-            "aggregate:"
+        if (
+            self.medicine_concept_id is None
+            and not self.concept_population.startswith("aggregate:")
         ):
             raise ValueError(
                 "medicine_concept_id may be omitted only for an aggregate population"
@@ -98,9 +105,13 @@ class CoverageObservation(BaseModel):
             self.eligible_denominator is not None
             and self.concept_numerator > self.eligible_denominator
         ):
-            raise ValueError("concept_numerator cannot exceed eligible_denominator")
+            raise ValueError(
+                "concept_numerator cannot exceed eligible_denominator"
+            )
         if self.exclusion_count > 0 and not self.exclusion_reasons:
-            raise ValueError("exclusion reasons are required when exclusions exist")
+            raise ValueError(
+                "exclusion reasons are required when exclusions exist"
+            )
         if any(not reason.strip() for reason in self.exclusion_reasons):
             raise ValueError("exclusion reasons must not be blank")
         if not self.assertion_type.strip() or not self.assertion_status.strip():
@@ -167,7 +178,9 @@ def aggregate_coverage(
         return cast("pl.DataFrame", empty)
 
     frame = pl.from_dicts(rows, schema=pl.Schema(COVERAGE_SCHEMA))
-    return frame.select(COVERAGE_SCHEMA.names).sort(_KEY_COLUMNS, nulls_last=True)
+    return frame.select(COVERAGE_SCHEMA.names).sort(
+        _KEY_COLUMNS, nulls_last=True
+    )
 
 
 def coverage_as_of(
@@ -182,7 +195,10 @@ def coverage_as_of(
         (pl.col("valid_from") <= valid_at)
         & (pl.col("valid_to").is_null() | (valid_at < pl.col("valid_to")))
         & (pl.col("observed_from") <= observed_at)
-        & (pl.col("observed_to").is_null() | (observed_at < pl.col("observed_to")))
+        & (
+            pl.col("observed_to").is_null()
+            | (observed_at < pl.col("observed_to"))
+        )
     )
 
 

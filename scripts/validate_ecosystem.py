@@ -29,7 +29,9 @@ class EcosystemReceipt(TypedDict):
     status: str
 
 
-def _tables(document: dict[str, object], key: str) -> tuple[dict[str, object], ...]:
+def _tables(
+    document: dict[str, object], key: str
+) -> tuple[dict[str, object], ...]:
     value = document.get(key)
     if not isinstance(value, list):
         raise TypeError(f"{key} must be an array of tables")
@@ -47,7 +49,9 @@ def validate_ecosystem() -> EcosystemReceipt:
         document = tomllib.load(stream)
     owner = document.get("owner")
     if owner != "edithatogo" or document.get("policy") != "reuse-before-build":
-        raise ValueError("Ecosystem owner and reuse-before-build policy are mandatory")
+        raise ValueError(
+            "Ecosystem owner and reuse-before-build policy are mandatory"
+        )
 
     github = _tables(document, "github")
     hugging_face = _tables(document, "hugging_face")
@@ -64,12 +68,18 @@ def validate_ecosystem() -> EcosystemReceipt:
     for resource in resources:
         missing = required.difference(resource)
         if missing:
-            raise ValueError(f"Ecosystem resource missing fields: {sorted(missing)}")
+            raise ValueError(
+                f"Ecosystem resource missing fields: {sorted(missing)}"
+            )
         repository = resource["repository"]
-        if not isinstance(repository, str) or not repository.startswith(f"{owner}/"):
+        if not isinstance(repository, str) or not repository.startswith(
+            f"{owner}/"
+        ):
             raise ValueError(f"Resource is not maintainer-owned: {repository}")
         if resource["disposition"] not in ALLOWED_DISPOSITIONS:
-            raise ValueError(f"Unsupported disposition: {resource['disposition']}")
+            raise ValueError(
+                f"Unsupported disposition: {resource['disposition']}"
+            )
 
     github_snapshots = tuple(resource["snapshot"] for resource in github)
     if any(
@@ -80,10 +90,14 @@ def validate_ecosystem() -> EcosystemReceipt:
 
     authorities = tuple(str(resource["authority"]) for resource in resources)
     if len(authorities) != len(set(authorities)):
-        raise ValueError("Each reusable capability must have one declared authority")
+        raise ValueError(
+            "Each reusable capability must have one declared authority"
+        )
 
     integrated = (
-        resource for resource in github if resource["disposition"] == "integrated"
+        resource
+        for resource in github
+        if resource["disposition"] == "integrated"
     )
     for resource in integrated:
         boundary = PROJECT_ROOT / str(resource.get("local_boundary", ""))

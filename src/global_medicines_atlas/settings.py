@@ -19,5 +19,7 @@ class AtlasSettings(BaseSettings):
     )
 
     data_dir: Path = Path("data")
-    log_level: str = Field(default="INFO", pattern=r"^(DEBUG|INFO|WARNING|ERROR)$")
+    log_level: str = Field(
+        default="INFO", pattern=r"^(DEBUG|INFO|WARNING|ERROR)$"
+    )
     enable_lance_index: bool = False

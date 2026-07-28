@@ -119,12 +119,16 @@ class ReleaseEvidence(FrozenModel):
                     "live-qualified evidence cannot contain non-live receipts"
                 )
             if self.snapshot_scopes:
-                raise ValueError("fixture snapshots cannot qualify a live release")
+                raise ValueError(
+                    "fixture snapshots cannot qualify a live release"
+                )
             if (
                 self.gate_outcomes.get("live_lineage_verification")
                 is not GateStatus.PASSED
             ):
-                raise ValueError("live-qualified requires verified live lineage")
+                raise ValueError(
+                    "live-qualified requires verified live lineage"
+                )
         if self.release_state is ReleaseState.APPROVED:
             raise ValueError(
                 "ordinary release qualification cannot produce approved evidence"
@@ -169,7 +173,9 @@ def _coverage_matches_receipt(
         receipt_id != receipt.receipt_id
         or observation.source_id != receipt.source.source_id
         or observation.jurisdiction != receipt.source.jurisdiction
-        or not observation.assertion_type.startswith(f"{observation.dimension.value}:")
+        or not observation.assertion_type.startswith(
+            f"{observation.dimension.value}:"
+        )
     ):
         return False
     if receipt.effective_from is None:
@@ -190,7 +196,9 @@ def inspect_git_state(repository: Path) -> GitState:
     def run(*arguments: str) -> str:
         git_executable = shutil.which("git")
         if git_executable is None:
-            raise RuntimeError("git executable is required for release evidence")
+            raise RuntimeError(
+                "git executable is required for release evidence"
+            )
         result = subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
             [git_executable, "-C", str(repository.resolve()), *arguments],
             check=True,
@@ -235,16 +243,23 @@ def qualify_release(  # ruff: ignore[too-many-branches, too-many-locals, too-man
         if outcomes.get(gate, GateStatus.UNVERIFIED) is not GateStatus.PASSED
     }
     unresolved.update(
-        gate for gate, status in outcomes.items() if status is not GateStatus.PASSED
+        gate
+        for gate, status in outcomes.items()
+        if status is not GateStatus.PASSED
     )
 
-    receipt_counts = Counter(receipt.evidence_class for receipt in receipt_items)
+    receipt_counts = Counter(
+        receipt.evidence_class for receipt in receipt_items
+    )
     rights_counts = Counter(receipt.rights_state for receipt in receipt_items)
     unknown_denominators = sum(
-        observation.eligible_denominator is None for observation in coverage_items
+        observation.eligible_denominator is None
+        for observation in coverage_items
     )
     source_receipts = tuple(
-        receipt for receipt in receipt_items if isinstance(receipt, SourceReceipt)
+        receipt
+        for receipt in receipt_items
+        if isinstance(receipt, SourceReceipt)
     )
     failure_count = sum(
         isinstance(receipt, FailureReceipt) for receipt in receipt_items
@@ -270,7 +285,11 @@ def qualify_release(  # ruff: ignore[too-many-branches, too-many-locals, too-man
         observation
         for observation in coverage_items
         if (
-            (matched := qualifying_receipts.get(getattr(observation, "receipt_id", "")))
+            (
+                matched := qualifying_receipts.get(
+                    getattr(observation, "receipt_id", "")
+                )
+            )
             is None
             or not _coverage_matches_receipt(observation, matched)
         )
@@ -279,7 +298,8 @@ def qualify_release(  # ruff: ignore[too-many-branches, too-many-locals, too-man
         unresolved.add("coverage_receipt_reconciliation")
 
     has_non_live = any(
-        receipt.evidence_class is not EvidenceClass.LIVE for receipt in receipt_items
+        receipt.evidence_class is not EvidenceClass.LIVE
+        for receipt in receipt_items
     )
     all_live = (
         bool(source_receipts)
@@ -310,7 +330,10 @@ def qualify_release(  # ruff: ignore[too-many-branches, too-many-locals, too-man
         and fixture_lineage
     )
     live_ready = (
-        all_live and bool(schema_versions) and bool(migrations) and not live_blockers
+        all_live
+        and bool(schema_versions)
+        and bool(migrations)
+        and not live_blockers
     )
     if request_approval and live_ready:
         state = ReleaseState.BLOCKED
@@ -329,11 +352,15 @@ def qualify_release(  # ruff: ignore[too-many-branches, too-many-locals, too-man
         RequirementEvidence(
             requirement_id=requirement,
             gates=gates,
-            satisfied=all(outcomes.get(gate) is GateStatus.PASSED for gate in gates),
+            satisfied=all(
+                outcomes.get(gate) is GateStatus.PASSED for gate in gates
+            ),
         )
         for requirement, gates in _REQUIREMENT_GATES.items()
     )
-    receipt_digests = tuple(sorted(receipt.digest() for receipt in receipt_items))
+    receipt_digests = tuple(
+        sorted(receipt.digest() for receipt in receipt_items)
+    )
     snapshot_digests = tuple(
         sorted(
             sha256(canonical_json_bytes(snapshot)).hexdigest()

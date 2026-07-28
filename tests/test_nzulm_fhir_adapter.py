@@ -7,7 +7,10 @@ from pathlib import Path
 
 import pytest
 
-from sources.nz.nzulm_fhir import iter_fhir_resources, load_upstream_fixture_records
+from sources.nz.nzulm_fhir import (
+    iter_fhir_resources,
+    load_upstream_fixture_records,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
@@ -16,7 +19,10 @@ def test_upstream_snapshot_has_expected_unique_fhir_resources() -> None:
     records = load_upstream_fixture_records(PROJECT_ROOT)
 
     assert len(records) == 51
-    assert len({(record.resource_type, record.resource_id) for record in records}) == 51
+    assert (
+        len({(record.resource_type, record.resource_id) for record in records})
+        == 51
+    )
     assert Counter(record.resource_type for record in records) == {
         "Medication": 42,
         "Bundle": 3,

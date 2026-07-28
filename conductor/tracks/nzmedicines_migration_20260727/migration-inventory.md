@@ -85,8 +85,15 @@ inputs. They do not supersede the richer local source ingestion surface.
 
 ## Verification
 
-`scripts/generate_nz_asset_inventory.py --check` compares the committed JSON
-manifest with a fresh metadata-only scan. Tests require exactly one
-disposition and SHA-256 digest for every upstream file, unique paths for every
-row, non-empty rationale/conflict/enhancement fields, and fail-closed
-local-only rights boundaries for source payloads.
+`scripts/generate_nz_asset_inventory.py --check` verifies the preserved
+upstream tree without requiring local-only payloads. It binds every upstream
+path, size, SHA-256 digest, source commit, and disposition to a fixed aggregate
+tree digest and the independently verified Git bundle identity recorded in
+`nzmedicines-preservation.json`.
+
+`scripts/generate_nz_asset_inventory.py --check --check-local` additionally
+requires governed local assets and compares the complete inventory with a
+fresh metadata-only scan. Tests require exactly one disposition and SHA-256
+digest for every upstream file, unique paths for every row, non-empty
+rationale/conflict/enhancement fields, and fail-closed local-only rights
+boundaries for source payloads.

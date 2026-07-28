@@ -84,7 +84,9 @@ def iter_fhir_resources(
             resource_type = resource.get("resourceType")
             resource_id = resource.get("id")
             if not isinstance(resource_type, str) or not resource_type.strip():
-                raise ValueError(f"{source_path}: FHIR resourceType is required")
+                raise ValueError(
+                    f"{source_path}: FHIR resourceType is required"
+                )
             if not isinstance(resource_id, str) or not resource_id.strip():
                 raise ValueError(f"{source_path}: FHIR id is required")
             identity = (resource_type, resource_id)
@@ -106,7 +108,9 @@ def iter_fhir_resources(
             )
 
 
-def load_upstream_fixture_records(project_root: Path) -> tuple[FhirResourceRecord, ...]:
+def load_upstream_fixture_records(
+    project_root: Path,
+) -> tuple[FhirResourceRecord, ...]:
     """Load preserved upstream JSON fixtures from the immutable vendor snapshot."""
     source_root = project_root / "vendor" / "nzmedicines"
     paths = (

@@ -5,12 +5,17 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from global_medicines_atlas.countries import AdapterRegistry, DeclarativeCountryAdapter
+from global_medicines_atlas.countries import (
+    AdapterRegistry,
+    DeclarativeCountryAdapter,
+)
 from global_medicines_atlas.source_catalog import MedicineDataSource
 from sources.nz.nzulm_fhir import iter_fhir_resources
 
 
-def test_empty_fhir_document_yields_no_inferred_resources(tmp_path: Path) -> None:
+def test_empty_fhir_document_yields_no_inferred_resources(
+    tmp_path: Path,
+) -> None:
     payload = tmp_path / "empty.json"
     payload.write_text("{}", encoding="utf-8")
 
