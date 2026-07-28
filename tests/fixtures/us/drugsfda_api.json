@@ -1,0 +1,15 @@
+{
+  "results": [
+    {
+      "application_number": "012345",
+      "application_type": "NDA",
+      "products": [
+        {
+          "product_number": "001",
+          "brand_name": "Example Drug",
+          "marketing_status": "Prescription"
+        }
+      ]
+    }
+  ]
+}

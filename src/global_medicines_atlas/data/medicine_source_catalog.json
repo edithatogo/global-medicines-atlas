@@ -1,6 +1,233 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "reviewed_at": "2026-07-29",
+  "monitoring_contract": {
+    "source_health": "weekly",
+    "schema_drift": "monthly"
+  },
+  "jurisdictions": [
+    {
+      "jurisdiction": "ARG",
+      "name": "Argentina",
+      "priority_cohorts": ["latin_america"],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "AUS",
+      "name": "Australia",
+      "priority_cohorts": ["first_cohort"],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "BRA",
+      "name": "Brazil",
+      "priority_cohorts": ["brazil", "latin_america"],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "CAN",
+      "name": "Canada",
+      "priority_cohorts": ["first_cohort"],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "CHE",
+      "name": "Switzerland",
+      "priority_cohorts": ["switzerland"],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "EU",
+      "name": "European Union",
+      "priority_cohorts": ["first_cohort"],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "not_a_national_who_denominator",
+        "evidence_limit": "Regional catalog row; WHO national maturity classifications do not apply directly."
+      }
+    },
+    {
+      "jurisdiction": "GBR",
+      "name": "United Kingdom",
+      "priority_cohorts": ["first_cohort"],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "IND",
+      "name": "India",
+      "priority_cohorts": ["india"],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "JPN",
+      "name": "Japan",
+      "priority_cohorts": ["first_cohort"],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "KOR",
+      "name": "South Korea",
+      "priority_cohorts": ["south_korea"],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "MEX",
+      "name": "Mexico",
+      "priority_cohorts": ["latin_america"],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "NGA",
+      "name": "Nigeria",
+      "priority_cohorts": ["africa"],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "NZL",
+      "name": "New Zealand",
+      "priority_cohorts": ["first_cohort"],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "SAU",
+      "name": "Saudi Arabia",
+      "priority_cohorts": ["gulf"],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "SGP",
+      "name": "Singapore",
+      "priority_cohorts": ["singapore"],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "USA",
+      "name": "United States",
+      "priority_cohorts": ["first_cohort"],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "ZAF",
+      "name": "South Africa",
+      "priority_cohorts": ["south_africa", "africa"],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    }
+  ],
   "sources": [
     {
       "source_id": "au-artg",
@@ -58,6 +285,59 @@
       "rights_status": "terms_review_required",
       "readiness": "verified",
       "evidence_limit": "NOC dates complement rather than replace current DPD product status."
+    },
+    {
+      "source_id": "br-anvisa-medicines",
+      "jurisdictions": ["BRA"],
+      "authority": "Agencia Nacional de Vigilancia Sanitaria",
+      "title": "Anvisa medicines consultation and open-data surfaces",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://consultas.anvisa.gov.br/#/medicamentos/",
+      "update_cadence": "unknown_pending_source_contract",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Discovery-only declaration from the priority-census context; endpoint, scope, rights, and currency require a receipt."
+    },
+    {
+      "source_id": "br-conitec-decisions",
+      "jurisdictions": ["BRA"],
+      "authority": "Comissao Nacional de Incorporacao de Tecnologias no Sistema Unico de Saude",
+      "title": "CONITEC recommendations and SUS incorporation decisions",
+      "dimension": "funding",
+      "access_mode": "web_search",
+      "landing_page": "https://www.gov.br/conitec/pt-br",
+      "update_cadence": "unknown_pending_source_contract",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Discovery only; recommendations and incorporation decisions are indication-specific and are not marketing authorisations."
+    },
+    {
+      "source_id": "ch-swissmedic-authorised",
+      "jurisdictions": ["CHE"],
+      "authority": "Swissmedic",
+      "title": "Authorised medicinal products",
+      "dimension": "regulatory",
+      "access_mode": "download",
+      "landing_page": "https://www.swissmedic.ch/swissmedic/en/home/services/listen_neu.html",
+      "download_url": "https://www.swissmedic.ch/swissmedic/en/home/services/listen_neu.html",
+      "update_cadence": "unknown_pending_source_contract",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Discovery-only declaration; file semantics, rights, and current coverage require a receipt."
+    },
+    {
+      "source_id": "ch-foph-specialities",
+      "jurisdictions": ["CHE"],
+      "authority": "Federal Office of Public Health",
+      "title": "Specialities List",
+      "dimension": "funding",
+      "access_mode": "web_search",
+      "landing_page": "https://www.spezialitaetenliste.ch/",
+      "update_cadence": "unknown_pending_source_contract",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Discovery only; list inclusion and limitations are reimbursement evidence, not Swissmedic authorisation."
     },
     {
       "source_id": "eu-ema-medicines",
@@ -141,6 +421,7 @@
       "update_cadence": "monthly/full; weekly updates",
       "rights_status": "UMLS/RxNorm terms apply",
       "readiness": "implemented",
+      "implemented_ingestion": true,
       "evidence_limit": "Terminology matching never establishes approval, marketing, or reimbursement."
     },
     {
@@ -198,6 +479,111 @@
       "evidence_limit": "English review reports are selected; complete Japanese source coverage needs separate assessment."
     },
     {
+      "source_id": "in-cdsco-approved-drugs",
+      "jurisdictions": ["IND"],
+      "authority": "Central Drugs Standard Control Organisation",
+      "title": "CDSCO approved new drugs",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://cdsco.gov.in/opencms/opencms/en/Approval_new/Approved-New-Drugs/",
+      "update_cadence": "unknown_pending_source_contract",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Discovery only; central lists do not by themselves establish complete national or state licensing coverage."
+    },
+    {
+      "source_id": "in-nlem",
+      "jurisdictions": ["IND"],
+      "authority": "Government of India Ministry of Health and Family Welfare",
+      "title": "National List of Essential Medicines",
+      "dimension": "formulary",
+      "access_mode": "download",
+      "landing_page": "https://main.mohfw.gov.in/newshighlights-104",
+      "download_url": "https://main.mohfw.gov.in/newshighlights-104",
+      "update_cadence": "at_list_revisions",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Discovery only; essential-list inclusion is not a universal reimbursement or procurement entitlement."
+    },
+    {
+      "source_id": "kr-mfds-nedrug",
+      "jurisdictions": ["KOR"],
+      "authority": "Ministry of Food and Drug Safety",
+      "title": "NEDrug medicine product information",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://nedrug.mfds.go.kr/",
+      "update_cadence": "unknown_pending_source_contract",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Discovery-only declaration; access, language, product status, rights, and current coverage require a receipt."
+    },
+    {
+      "source_id": "kr-hira-reimbursement",
+      "jurisdictions": ["KOR"],
+      "authority": "Health Insurance Review and Assessment Service",
+      "title": "HIRA reimbursed medicines and price information",
+      "dimension": "funding",
+      "access_mode": "web_search",
+      "landing_page": "https://www.hira.or.kr/",
+      "update_cadence": "unknown_pending_source_contract",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Discovery only; reimbursement and price scope must remain separate from MFDS authorisation."
+    },
+    {
+      "source_id": "mx-cofepris-register",
+      "jurisdictions": ["MEX"],
+      "authority": "Comision Federal para la Proteccion contra Riesgos Sanitarios",
+      "title": "COFEPRIS sanitary registration consultation",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.gob.mx/cofepris",
+      "update_cadence": "unknown_pending_source_contract",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Latin-America cohort discovery declaration only; product register endpoint and current scope require a receipt."
+    },
+    {
+      "source_id": "mx-csg-compendium",
+      "jurisdictions": ["MEX"],
+      "authority": "Consejo de Salubridad General",
+      "title": "National Health Supplies Compendium",
+      "dimension": "formulary",
+      "access_mode": "web_search",
+      "landing_page": "https://www.csg.gob.mx/Compendio/CNIS/cnis.html",
+      "update_cadence": "unknown_pending_source_contract",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Discovery only; compendium inclusion does not establish universal reimbursement or procurement."
+    },
+    {
+      "source_id": "ng-nafdac-products",
+      "jurisdictions": ["NGA"],
+      "authority": "National Agency for Food and Drug Administration and Control",
+      "title": "NAFDAC registered products search",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://greenbook.nafdac.gov.ng/",
+      "update_cadence": "unknown_pending_source_contract",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "African cohort discovery declaration only; availability, rights, and current completeness require a receipt."
+    },
+    {
+      "source_id": "ng-nhia-medicines",
+      "jurisdictions": ["NGA"],
+      "authority": "National Health Insurance Authority",
+      "title": "NHIA medicines and benefit-package publications",
+      "dimension": "funding",
+      "access_mode": "web_search",
+      "landing_page": "https://www.nhia.gov.ng/",
+      "update_cadence": "unknown_pending_source_contract",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Discovery only; benefit-package scope and population coverage require source-specific review."
+    },
+    {
       "source_id": "nz-medsafe-products",
       "jurisdictions": ["NZL"],
       "authority": "Medsafe",
@@ -223,6 +609,85 @@
       "rights_status": "production_terms_and_schema_review_required",
       "readiness": "verified",
       "evidence_limit": "Use production XML rather than the explicitly non-production Excel report."
+    },
+    {
+      "source_id": "sa-sfda-drug-list",
+      "jurisdictions": ["SAU"],
+      "authority": "Saudi Food and Drug Authority",
+      "title": "Registered drugs list and search",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.sfda.gov.sa/en/drugs-list",
+      "update_cadence": "unknown_pending_source_contract",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Gulf cohort discovery declaration only; status semantics, access, rights, and currency require a receipt."
+    },
+    {
+      "source_id": "sa-chi-formulary",
+      "jurisdictions": ["SAU"],
+      "authority": "Council of Health Insurance",
+      "title": "Health insurance formulary and benefit publications",
+      "dimension": "formulary",
+      "access_mode": "web_search",
+      "landing_page": "https://www.chi.gov.sa/",
+      "update_cadence": "unknown_pending_source_contract",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Discovery only; insurance formulary scope is not a national marketing-authorisation claim."
+    },
+    {
+      "source_id": "sg-hsa-register",
+      "jurisdictions": ["SGP"],
+      "authority": "Health Sciences Authority",
+      "title": "Register of therapeutic products",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.hsa.gov.sg/therapeutic-products/register",
+      "update_cadence": "unknown_pending_source_contract",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Discovery-only declaration; query contract, rights, status semantics, and currency require a receipt."
+    },
+    {
+      "source_id": "sg-moh-drug-list",
+      "jurisdictions": ["SGP"],
+      "authority": "Ministry of Health Singapore",
+      "title": "Standard Drug List and subsidy information",
+      "dimension": "funding",
+      "access_mode": "web_search",
+      "landing_page": "https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/drug-subsidies-schemes",
+      "update_cadence": "unknown_pending_source_contract",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Discovery only; subsidy eligibility and clinical restrictions require source-specific interpretation."
+    },
+    {
+      "source_id": "za-sahpra-register",
+      "jurisdictions": ["ZAF"],
+      "authority": "South African Health Products Regulatory Authority",
+      "title": "Registered health products",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.sahpra.org.za/registered-health-products/",
+      "update_cadence": "unknown_pending_source_contract",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "African cohort discovery declaration only; completeness, status semantics, and currency require a receipt."
+    },
+    {
+      "source_id": "za-national-eml",
+      "jurisdictions": ["ZAF"],
+      "authority": "South African National Department of Health",
+      "title": "National Essential Medicines List and standard treatment guidelines",
+      "dimension": "formulary",
+      "access_mode": "download",
+      "landing_page": "https://www.health.gov.za/national-essential-medicine-list/",
+      "download_url": "https://www.health.gov.za/national-essential-medicine-list/",
+      "update_cadence": "at_list_revisions",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Discovery only; essential-list inclusion does not establish registration, procurement, or patient entitlement."
     },
     {
       "source_id": "us-cms-partd-formulary",
@@ -251,6 +716,7 @@
       "update_cadence": "weekday bulk updates; API cadence varies",
       "rights_status": "US government data; verify endpoint terms",
       "readiness": "implemented",
+      "implemented_ingestion": true,
       "evidence_limit": "Use application/submission status; do not infer approval from NDC listing."
     },
     {

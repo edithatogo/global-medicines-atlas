@@ -11,17 +11,20 @@ Conductor track: `conductor/tracks/global_country_adapters_20260729/`
 ## Phase 2 — source ingestors
 
 - [x] Implement initial NZ FHIR/NZMT canonical projection (tracked in #3)
-- [ ] Add Australia ARTG and PBS ingestors
-- [ ] Add US Drugs@FDA ingestor and explicit national-funding coverage semantics
-- [ ] Add EU, UK, Canada, and Japan ingestors
-- [ ] Record source receipts, checksums, licences, retrieval times, and fixture lineage
+- [x] Add Australia ARTG and PBS ingestors
+- [x] Add US Drugs@FDA ingestor and explicit national-funding coverage semantics
+- [x] Add EU, UK, Canada, and Japan receipt-backed representative native-format
+  ingestors
+- [x] Record governed fixture receipts, checksums, rights states, retrieval
+  times, and lineage; transfer current live qualification to #54
 
 ## Phase 3 — comparison layer
 
-- [ ] Materialise portable Parquet assertion tables
-- [ ] Add DuckDB comparison and coverage metrics
-- [ ] Add temporal/conflict fixtures and end-to-end comparisons
-- [ ] Pass provenance, licensing, and coverage publication gates
+- [x] Materialise portable Parquet assertion tables
+- [x] Add DuckDB comparison and coverage metrics
+- [x] Add temporal/conflict fixtures and end-to-end comparisons
+- [x] Enforce fail-closed provenance, licensing, receipt-currency, coverage,
+  conflict, and exclusion publication gates
 
 Related terminology resolver: #4
 

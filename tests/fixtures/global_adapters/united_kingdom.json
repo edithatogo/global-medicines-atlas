@@ -1,0 +1,37 @@
+{
+  "fixture_version": "synthetic-1",
+  "sources": [
+    {
+      "source_id": "uk-mhra",
+      "title": "Synthetic MHRA products contract",
+      "evidence_limit": "Synthetic schema example only; it is not an MHRA product extract or evidence of a live licence."
+    },
+    {
+      "source_id": "uk-nice",
+      "title": "Synthetic NICE guidance contract",
+      "evidence_limit": "Synthetic schema example only; a NICE recommendation is kept separate from licensing and does not establish local formulary inclusion."
+    }
+  ],
+  "medicines": [
+    {
+      "id": "UK-SYNTH-0001",
+      "level": "product",
+      "name": "Britmed synthetic capsule",
+      "identifier_system": "urn:global-medicines-atlas:synthetic:uk:pl",
+      "identifier": "UK-SYNTH-0001",
+      "assertions": [
+        {
+          "source_id": "uk-mhra",
+          "status_code": "licensed"
+        },
+        {
+          "source_id": "uk-nice",
+          "status_code": "recommended-with-restrictions",
+          "restrictions": [
+            "synthetic indication restriction"
+          ]
+        }
+      ]
+    }
+  ]
+}

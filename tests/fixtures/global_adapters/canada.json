@@ -1,0 +1,34 @@
+{
+  "fixture_version": "synthetic-1",
+  "sources": [
+    {
+      "source_id": "ca-dpd",
+      "title": "Synthetic Drug Product Database contract",
+      "evidence_limit": "Synthetic schema example only; it is not a DPD extract or evidence of a live authorization."
+    },
+    {
+      "source_id": "ca-noc",
+      "title": "Synthetic Notice of Compliance contract",
+      "evidence_limit": "Synthetic schema example only; it is not an NOC extract or evidence of a live notice."
+    }
+  ],
+  "medicines": [
+    {
+      "id": "DIN-SYNTH-0001",
+      "level": "product",
+      "name": "Canadamed synthetic tablet",
+      "identifier_system": "urn:global-medicines-atlas:synthetic:ca:din",
+      "identifier": "DIN-SYNTH-0001",
+      "assertions": [
+        {
+          "source_id": "ca-dpd",
+          "status_code": "marketed"
+        },
+        {
+          "source_id": "ca-noc",
+          "status_code": "notice-issued"
+        }
+      ]
+    }
+  ]
+}

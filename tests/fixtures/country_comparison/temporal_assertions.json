@@ -1,0 +1,82 @@
+[
+  {
+    "assertion_id": "aus-reg-tga",
+    "concept_id": "rxnorm:860975",
+    "jurisdiction": "AUS",
+    "kind": "regulatory",
+    "authority": "Therapeutic Goods Administration",
+    "status_code": "registered",
+    "evidence_status": "conflicting",
+    "valid_from": "2025-01-01T00:00:00Z",
+    "observed_from": "2025-02-01T00:00:00Z",
+    "conflict_id": "aus-registration-conflict",
+    "source_id": "au-artg",
+    "source_uri": "https://example.test/au/artg"
+  },
+  {
+    "assertion_id": "aus-reg-recall",
+    "concept_id": "rxnorm:860975",
+    "jurisdiction": "AUS",
+    "kind": "regulatory",
+    "authority": "Therapeutic Goods Administration",
+    "status_code": "cancelled",
+    "evidence_status": "conflicting",
+    "valid_from": "2025-01-01T00:00:00Z",
+    "observed_from": "2025-02-02T00:00:00Z",
+    "conflict_id": "aus-registration-conflict",
+    "source_id": "au-artg-cancellations",
+    "source_uri": "https://example.test/au/cancellations"
+  },
+  {
+    "assertion_id": "nzl-reg-medsafe",
+    "concept_id": "rxnorm:860975",
+    "jurisdiction": "NZL",
+    "kind": "regulatory",
+    "authority": "Medsafe",
+    "status_code": "approved",
+    "evidence_status": "confirmed",
+    "valid_from": "2025-01-01T00:00:00Z",
+    "observed_from": "2025-02-01T00:00:00Z",
+    "source_id": "nz-medsafe",
+    "source_uri": "https://example.test/nz/medsafe"
+  },
+  {
+    "assertion_id": "nzl-funding-pharmac",
+    "concept_id": "rxnorm:860975",
+    "jurisdiction": "NZL",
+    "kind": "funding",
+    "authority": "Pharmac",
+    "status_code": "funded_with_restrictions",
+    "evidence_status": "confirmed",
+    "valid_from": "2025-01-01T00:00:00Z",
+    "observed_from": "2025-02-01T00:00:00Z",
+    "source_id": "nz-pharmac",
+    "source_uri": "https://example.test/nz/pharmac"
+  },
+  {
+    "assertion_id": "usa-reg-fda",
+    "concept_id": "rxnorm:860975",
+    "jurisdiction": "USA",
+    "kind": "regulatory",
+    "authority": "Food and Drug Administration",
+    "status_code": "approved",
+    "evidence_status": "confirmed",
+    "valid_from": "2025-01-01T00:00:00Z",
+    "observed_from": "2025-02-01T00:00:00Z",
+    "source_id": "us-drugs-at-fda",
+    "source_uri": "https://example.test/us/drugs-at-fda"
+  },
+  {
+    "assertion_id": "usa-funding-scope",
+    "concept_id": "rxnorm:860975",
+    "jurisdiction": "USA",
+    "kind": "funding",
+    "authority": "Fixture coverage declaration",
+    "status_code": "no_single_national_funding_determination",
+    "evidence_status": "not_covered",
+    "valid_from": "2025-01-01T00:00:00Z",
+    "observed_from": "2025-02-01T00:00:00Z",
+    "source_id": "us-funding-scope-declaration",
+    "source_uri": "https://example.test/us/funding-scope"
+  }
+]

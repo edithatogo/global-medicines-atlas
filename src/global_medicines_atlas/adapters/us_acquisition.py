@@ -1,0 +1,109 @@
+"""Receipt-backed acquisition entry points for United States sources."""
+
+from __future__ import annotations
+
+from collections.abc import Iterable
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+from ..acquisition import (
+    DEFAULT_ACQUISITION_POLICY,
+    AcquisitionPolicy,
+    Clock,
+    Receipt,
+    acquire_source,
+)
+from ..receipts import EvidenceClass
+from ..source_catalog import (
+    AccessMode,
+    MedicineDataSource,
+    load_source_catalog,
+)
+
+if TYPE_CHECKING:
+    import httpx
+
+DRUGSFDA_BULK_URL = "https://www.fda.gov/media/89850/download?attachment"
+DRUGSFDA_API_URL = "https://api.fda.gov/drug/drugsfda.json?limit=100"
+
+
+def _drugsfda_source(
+    *,
+    access_mode: AccessMode,
+    uri: str,
+    catalog: Iterable[MedicineDataSource] | None,
+) -> MedicineDataSource:
+    sources = load_source_catalog() if catalog is None else tuple(catalog)
+    matches = [
+        source for source in sources if source.source_id == "us-drugsfda"
+    ]
+    if len(matches) != 1:
+        raise LookupError(
+            "catalog source_id must resolve exactly once: us-drugsfda"
+        )
+    source = matches[0]
+    updates: dict[str, object] = {"access_mode": access_mode}
+    if access_mode is AccessMode.API:
+        updates.update(api_url=uri, download_url=None)
+    else:
+        updates.update(download_url=uri, api_url=None)
+    return source.model_copy(update=updates)
+
+
+def acquire_drugsfda_bulk(
+    destination: Path,
+    *,
+    repository_root: Path,
+    bulk_url: str = DRUGSFDA_BULK_URL,
+    policy: AcquisitionPolicy = DEFAULT_ACQUISITION_POLICY,
+    catalog: Iterable[MedicineDataSource] | None = None,
+    transport: httpx.BaseTransport | None = None,
+    evidence_class: EvidenceClass = EvidenceClass.FIXTURE,
+    clock: Clock = lambda: datetime.now(UTC),
+) -> Receipt:
+    """Acquire the official Drugs@FDA bulk archive with a durable receipt."""
+    source = _drugsfda_source(
+        access_mode=AccessMode.DOWNLOAD,
+        uri=bulk_url,
+        catalog=catalog,
+    )
+    return acquire_source(
+        "us-drugsfda",
+        destination,
+        repository_root=repository_root,
+        policy=policy,
+        catalog=(source,),
+        transport=transport,
+        evidence_class=evidence_class,
+        clock=clock,
+    )
+
+
+def acquire_drugsfda_api(
+    destination: Path,
+    *,
+    repository_root: Path,
+    api_url: str = DRUGSFDA_API_URL,
+    policy: AcquisitionPolicy = DEFAULT_ACQUISITION_POLICY,
+    catalog: Iterable[MedicineDataSource] | None = None,
+    transport: httpx.BaseTransport | None = None,
+    evidence_class: EvidenceClass = EvidenceClass.FIXTURE,
+    clock: Clock = lambda: datetime.now(UTC),
+) -> Receipt:
+    """Acquire one bounded openFDA Drugs@FDA response with a durable receipt."""
+    source = _drugsfda_source(
+        access_mode=AccessMode.API,
+        uri=api_url,
+        catalog=catalog,
+    )
+    return acquire_source(
+        "us-drugsfda",
+        destination,
+        repository_root=repository_root,
+        policy=policy,
+        catalog=(source,),
+        transport=transport,
+        evidence_class=evidence_class,
+        clock=clock,
+    )
