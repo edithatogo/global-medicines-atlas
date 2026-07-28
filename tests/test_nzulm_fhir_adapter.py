@@ -59,7 +59,11 @@ def test_adapter_rejects_resource_without_id(tmp_path: Path) -> None:
 
 def test_adapter_rejects_resource_without_type(tmp_path: Path) -> None:
     path = tmp_path / "missing-type.json"
-    path.write_text('{"id":"medicine-1"}', encoding="utf-8")
+    path.write_text(
+        '{"resourceType":"Bundle","id":"bundle-1",'
+        '"entry":[{"resource":{"id":"medicine-1"}}]}',
+        encoding="utf-8",
+    )
 
     with pytest.raises(ValueError, match="FHIR resourceType is required"):
         tuple(iter_fhir_resources([path], source_root=tmp_path))
