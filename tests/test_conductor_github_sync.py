@@ -511,3 +511,31 @@ def test_fixture_rejects_duplicate_issue_numbers(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="unique"):
         module.load_fixture(fixture_path)
+
+
+@pytest.mark.unit
+def test_repository_identity_can_be_read_from_archived_track(
+    tmp_path: Path,
+) -> None:
+    module = _load_module()
+    metadata = (
+        tmp_path
+        / "conductor"
+        / "archive"
+        / "migration"
+        / "metadata.json"
+    )
+    metadata.parent.mkdir(parents=True)
+    metadata.write_text(
+        json.dumps({
+            "canonical_repository": {
+                "full_name": "edithatogo/global-medicines-atlas"
+            }
+        }),
+        encoding="utf-8",
+    )
+
+    assert (
+        module._repository_from_metadata(tmp_path)
+        == "edithatogo/global-medicines-atlas"
+    )

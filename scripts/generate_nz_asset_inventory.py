@@ -15,7 +15,7 @@ from typing import Final, cast
 
 PROJECT_ROOT: Final = Path(__file__).resolve().parents[1]
 TRACK_ROOT: Final = (
-    PROJECT_ROOT / "conductor/tracks/nzmedicines_migration_20260727"
+    PROJECT_ROOT / "conductor/archive/nzmedicines_migration_20260727"
 )
 JSON_OUTPUT: Final = TRACK_ROOT / "nz-asset-inventory.json"
 CSV_OUTPUT: Final = TRACK_ROOT / "nz-asset-disposition.csv"

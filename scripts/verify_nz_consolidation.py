@@ -12,7 +12,7 @@ from typing import Final, cast
 
 PROJECT_ROOT: Final = Path(__file__).resolve().parents[1]
 TRACK_ROOT: Final = (
-    PROJECT_ROOT / "conductor/tracks/nzmedicines_migration_20260727"
+    PROJECT_ROOT / "conductor/archive/nzmedicines_migration_20260727"
 )
 INVENTORY_PATH: Final = TRACK_ROOT / "nz-asset-inventory.json"
 PRESERVATION_PATH: Final = TRACK_ROOT / "nzmedicines-preservation.json"

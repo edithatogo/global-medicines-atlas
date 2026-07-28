@@ -1,10 +1,10 @@
 {
   "track_id": "nzmedicines_migration_20260727",
   "type": "refactor",
-  "status": "active",
+  "status": "complete",
   "created_at": "2026-07-27T00:00:00+10:00",
-  "updated_at": "2026-07-29T04:59:24+10:00",
-  "last_reconciled_at": "2026-07-29T04:59:24+10:00",
+  "updated_at": "2026-07-29T05:03:00+10:00",
+  "last_reconciled_at": "2026-07-29T05:03:00+10:00",
   "requirements": [
     "M-010",
     "M-011",
