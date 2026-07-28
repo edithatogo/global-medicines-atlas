@@ -27,6 +27,10 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_review_queue.py",
         "tests/test_rxnorm_lineage.py",
         "tests/test_matching_release.py",
+        "tests/test_product_contracts.py",
+        "tests/test_product_release.py",
+        "tests/test_product_security.py",
+        "tests/test_product_performance.py",
         "tests/test_source_catalog.py",
         "tests/test_source_census.py",
         "tests/test_ingestor_contracts.py",
@@ -59,6 +63,9 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_matching_review_queue_generation.py",
         "tests/test_matching_benchmarks.py",
         "tests/test_matching_engine_parity.py",
+        "tests/test_query_service.py",
+        "tests/test_product_api.py",
+        "tests/test_product_cli.py",
         "tests/test_canada_native_adapters.py",
         "tests/test_eu_uk_native_adapters.py",
         "tests/test_japan_native_adapters.py",
@@ -70,8 +77,13 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_canonical_nz_adapter.py",
         "tests/test_country_comparison_e2e.py",
         "tests/test_matching_e2e.py",
+        "tests/test_atlas_e2e.py",
     ),
-    "smoke": ("tests/test_smoke.py",),
+    "smoke": (
+        "tests/test_smoke.py",
+        "tests/test_product_api.py",
+        "tests/test_product_cli.py",
+    ),
     "property": (
         "tests/test_nzulm_fhir_properties.py",
         "tests/test_matching_properties.py",
@@ -79,6 +91,8 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
     "edge": (
         "tests/test_edge_cases.py",
         "tests/test_matching_adversarial.py",
+        "tests/test_atlas_accessibility.py",
+        "tests/test_product_security.py",
     ),
 }
 ALL_TESTS = tuple(path for paths in TEST_LANES.values() for path in paths)
@@ -192,6 +206,15 @@ def gremlins() -> None:
                 "tests/test_matching_policy.py",
                 "tests/test_matching_release.py",
                 "tests/test_review_queue.py",
+                "tests/test_product_contracts.py",
+                "tests/test_query_service.py",
+                "tests/test_product_api.py",
+                "tests/test_product_cli.py",
+                "tests/test_atlas_accessibility.py",
+                "tests/test_atlas_e2e.py",
+                "tests/test_product_security.py",
+                "tests/test_product_performance.py",
+                "tests/test_product_release.py",
             ),
             "--gremlins",
             "--gremlin-executor=subprocess",
@@ -222,6 +245,17 @@ def dependencies() -> None:
         "pyproject.toml",
         "--environment",
         "columnar",
+    ])
+    run([
+        "uv",
+        "run",
+        "--group",
+        "edge",
+        "edgetest",
+        "-c",
+        "pyproject.toml",
+        "--environment",
+        "product",
     ])
 
 

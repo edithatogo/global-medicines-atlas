@@ -1,0 +1,415 @@
+"""Versioned, evidence-preserving contracts for public product surfaces."""
+
+from __future__ import annotations
+
+from enum import StrEnum
+from typing import Annotated, Literal, Self
+
+from pydantic import (
+    AwareDatetime,
+    BaseModel,
+    BeforeValidator,
+    ConfigDict,
+    Field,
+    StringConstraints,
+    model_validator,
+)
+
+API_VERSION = "v1"
+API_BASE_PATH = f"/api/{API_VERSION}"
+PRODUCT_EVIDENCE_VERSION = "0.6"
+DEFAULT_PAGE_SIZE = 50
+MAX_PAGE_SIZE = 250
+MAX_EXPORT_ROWS = 10_000
+
+NonBlank = Annotated[
+    str,
+    StringConstraints(strip_whitespace=True, min_length=1, max_length=512),
+]
+
+
+def _normalize_jurisdiction(value: object) -> object:
+    if isinstance(value, str):
+        return value.strip().upper()
+    return value
+
+
+JurisdictionCode = Annotated[
+    str,
+    BeforeValidator(_normalize_jurisdiction),
+    StringConstraints(
+        strip_whitespace=True,
+        pattern=r"^[A-Z]{2,3}$",
+    ),
+]
+CursorToken = Annotated[
+    str,
+    StringConstraints(
+        strip_whitespace=True,
+        min_length=16,
+        max_length=2048,
+        pattern=r"^[A-Za-z0-9_-]+$",
+    ),
+]
+
+
+class ProductModel(BaseModel):
+    """Immutable public model that rejects undocumented input fields."""
+
+    model_config = ConfigDict(
+        extra="forbid",
+        frozen=True,
+        str_strip_whitespace=True,
+        validate_default=True,
+    )
+
+
+class ProductState(StrEnum):
+    """States that must never be collapsed into a negative conclusion."""
+
+    CONFIRMED = "confirmed"
+    INFERRED = "inferred"
+    UNKNOWN = "unknown"
+    NOT_COVERED = "not_covered"
+    CONFLICTING = "conflicting"
+    NOT_APPLICABLE = "not_applicable"
+
+
+class EvidenceDimension(StrEnum):
+    REGULATORY = "regulatory"
+    FUNDING = "funding"
+    FORMULARY = "formulary"
+
+
+class EvidenceAvailability(StrEnum):
+    AVAILABLE = "available"
+    UNAVAILABLE = "unavailable"
+    NOT_REQUIRED = "not_required"
+
+
+class UncertaintyLevel(StrEnum):
+    NONE = "none"
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    UNKNOWN = "unknown"
+
+
+class ExportFormat(StrEnum):
+    JSON = "json"
+    JSONL = "jsonl"
+
+
+class ErrorCode(StrEnum):
+    INVALID_REQUEST = "invalid_request"
+    INVALID_CURSOR = "invalid_cursor"
+    NOT_FOUND = "not_found"
+    LIMIT_EXCEEDED = "limit_exceeded"
+    EVIDENCE_UNAVAILABLE = "evidence_unavailable"
+    SERVICE_UNAVAILABLE = "service_unavailable"
+    INTERNAL_ERROR = "internal_error"
+
+
+class HealthState(StrEnum):
+    OK = "ok"
+    DEGRADED = "degraded"
+    UNAVAILABLE = "unavailable"
+
+
+class PageRequest(ProductModel):
+    """Bounded cursor pagination; offset pagination is intentionally absent."""
+
+    limit: int = Field(default=DEFAULT_PAGE_SIZE, ge=1, le=MAX_PAGE_SIZE)
+    cursor: CursorToken | None = None
+
+
+class ExportRequest(ProductModel):
+    """Safe, bounded export controls shared by CLI and API."""
+
+    format: ExportFormat = ExportFormat.JSON
+    max_rows: int = Field(default=1_000, ge=1, le=MAX_EXPORT_ROWS)
+
+
+class AsOfClocks(ProductModel):
+    """Independent valid-time and observation-time query clocks."""
+
+    valid_at: AwareDatetime
+    observed_at: AwareDatetime
+
+
+class ComparisonQuery(PageRequest, AsOfClocks):
+    concept_id: NonBlank
+    jurisdictions: tuple[JurisdictionCode, ...] = Field(
+        min_length=1,
+        max_length=50,
+    )
+    dimensions: tuple[EvidenceDimension, ...] = (
+        EvidenceDimension.REGULATORY,
+        EvidenceDimension.FUNDING,
+    )
+    export: ExportRequest | None = None
+
+    @model_validator(mode="after")
+    def unique_filters(self) -> Self:
+        if len(set(self.jurisdictions)) != len(self.jurisdictions):
+            raise ValueError("jurisdictions must be unique")
+        if len(set(self.dimensions)) != len(self.dimensions):
+            raise ValueError("dimensions must be unique")
+        return self
+
+
+class CoverageQuery(PageRequest, AsOfClocks):
+    jurisdictions: tuple[JurisdictionCode, ...] = Field(
+        min_length=1,
+        max_length=50,
+    )
+    dimensions: tuple[EvidenceDimension, ...] = ()
+
+
+class EvidenceQuery(PageRequest, AsOfClocks):
+    assertion_id: NonBlank | None = None
+    concept_id: NonBlank | None = None
+
+    @model_validator(mode="after")
+    def exactly_one_lookup_key(self) -> Self:
+        if (self.assertion_id is None) == (self.concept_id is None):
+            raise ValueError(
+                "exactly one of assertion_id or concept_id is required",
+            )
+        return self
+
+
+class Terminology(ProductModel):
+    """Source-native terminology retained beside canonical mapping."""
+
+    native_code: NonBlank
+    native_label: NonBlank
+    native_system: NonBlank
+    canonical_code: NonBlank | None = None
+    canonical_label: NonBlank | None = None
+    canonical_system: NonBlank | None = None
+
+    @model_validator(mode="after")
+    def canonical_fields_are_atomic(self) -> Self:
+        canonical = (
+            self.canonical_code,
+            self.canonical_label,
+            self.canonical_system,
+        )
+        if any(value is not None for value in canonical) and not all(
+            value is not None for value in canonical
+        ):
+            raise ValueError(
+                "canonical code, label, and system must be supplied together",
+            )
+        return self
+
+
+class ProvenanceLink(ProductModel):
+    source_id: NonBlank
+    source_uri: NonBlank
+    retrieved_at: AwareDatetime
+    source_version: NonBlank | None = None
+    source_sha256: Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")] | None = (
+        None
+    )
+    transformation_id: NonBlank | None = None
+
+
+class Uncertainty(ProductModel):
+    level: UncertaintyLevel
+    confidence: float | None = Field(default=None, ge=0.0, le=1.0)
+    reason: NonBlank | None = None
+
+    @model_validator(mode="after")
+    def qualified_uncertainty_has_reason(self) -> Self:
+        if (
+            self.level
+            in {
+                UncertaintyLevel.MEDIUM,
+                UncertaintyLevel.HIGH,
+                UncertaintyLevel.UNKNOWN,
+            }
+            and self.reason is None
+        ):
+            raise ValueError(
+                "material or unknown uncertainty requires a reason"
+            )
+        return self
+
+
+class ProductConclusion(ProductModel):
+    """One jurisdiction and one evidence dimension; never a merged status."""
+
+    concept_id: NonBlank
+    jurisdiction: JurisdictionCode
+    dimension: EvidenceDimension
+    state: ProductState
+    status_code: NonBlank | None = None
+    terminology: Terminology
+    provenance: tuple[ProvenanceLink, ...] = ()
+    evidence_availability: EvidenceAvailability
+    evidence_unavailable_reason: NonBlank | None = None
+    uncertainty: Uncertainty
+    valid_time: AsOfClocks
+
+    @model_validator(mode="after")
+    def evidence_is_explicit(self) -> Self:
+        if self.evidence_availability is EvidenceAvailability.AVAILABLE:
+            if not self.provenance:
+                raise ValueError(
+                    "available evidence requires at least one provenance link",
+                )
+            if self.evidence_unavailable_reason is not None:
+                raise ValueError(
+                    "available evidence cannot have an unavailable reason",
+                )
+        elif self.evidence_availability is EvidenceAvailability.UNAVAILABLE:
+            if self.provenance:
+                raise ValueError(
+                    "unavailable evidence cannot include provenance links",
+                )
+            if self.evidence_unavailable_reason is None:
+                raise ValueError(
+                    "unavailable evidence requires an explicit reason",
+                )
+        elif self.evidence_unavailable_reason is not None:
+            raise ValueError(
+                "not-required evidence cannot have an unavailable reason",
+            )
+
+        if (
+            self.state
+            in {
+                ProductState.CONFIRMED,
+                ProductState.INFERRED,
+                ProductState.CONFLICTING,
+            }
+            and self.evidence_availability is not EvidenceAvailability.AVAILABLE
+        ):
+            raise ValueError(f"{self.state} conclusions require evidence")
+        if (
+            self.state
+            in {
+                ProductState.UNKNOWN,
+                ProductState.NOT_COVERED,
+            }
+            and self.status_code is not None
+        ):
+            raise ValueError(
+                "unknown and not-covered conclusions cannot imply a status",
+            )
+        return self
+
+
+class CoverageItem(ProductModel):
+    jurisdiction: JurisdictionCode
+    dimension: EvidenceDimension
+    state: ProductState
+    covered_count: int = Field(ge=0)
+    denominator: int | None = Field(default=None, ge=0)
+    provenance: tuple[ProvenanceLink, ...] = ()
+    valid_time: AsOfClocks
+
+    @model_validator(mode="after")
+    def count_does_not_exceed_denominator(self) -> Self:
+        if (
+            self.denominator is not None
+            and self.covered_count > self.denominator
+        ):
+            raise ValueError("covered_count cannot exceed denominator")
+        return self
+
+
+class EvidenceItem(ProductModel):
+    assertion_id: NonBlank
+    concept_id: NonBlank
+    jurisdiction: JurisdictionCode
+    dimension: EvidenceDimension
+    state: ProductState
+    status_code: NonBlank
+    terminology: Terminology
+    provenance: ProvenanceLink
+    uncertainty: Uncertainty
+    valid_time: AsOfClocks
+
+
+class PageMetadata(ProductModel):
+    limit: int = Field(ge=1, le=MAX_PAGE_SIZE)
+    returned: int = Field(ge=0, le=MAX_PAGE_SIZE)
+    next_cursor: CursorToken | None = None
+
+    @model_validator(mode="after")
+    def returned_fits_page(self) -> Self:
+        if self.returned > self.limit:
+            raise ValueError("returned count cannot exceed page limit")
+        return self
+
+
+class ResponseMetadata(ProductModel):
+    api_version: Literal["v1"] = API_VERSION
+    evidence_version: Literal["0.6"] = PRODUCT_EVIDENCE_VERSION
+    generated_at: AwareDatetime
+    clocks: AsOfClocks
+    page: PageMetadata
+
+
+class ComparisonResponse(ProductModel):
+    metadata: ResponseMetadata
+    conclusions: tuple[ProductConclusion, ...]
+
+    @model_validator(mode="after")
+    def page_matches_payload(self) -> Self:
+        if self.metadata.page.returned != len(self.conclusions):
+            raise ValueError("page returned count must match conclusions")
+        return self
+
+
+class CoverageResponse(ProductModel):
+    metadata: ResponseMetadata
+    coverage: tuple[CoverageItem, ...]
+
+    @model_validator(mode="after")
+    def page_matches_payload(self) -> Self:
+        if self.metadata.page.returned != len(self.coverage):
+            raise ValueError("page returned count must match coverage")
+        return self
+
+
+class EvidenceResponse(ProductModel):
+    metadata: ResponseMetadata
+    evidence: tuple[EvidenceItem, ...]
+
+    @model_validator(mode="after")
+    def page_matches_payload(self) -> Self:
+        if self.metadata.page.returned != len(self.evidence):
+            raise ValueError("page returned count must match evidence")
+        return self
+
+
+class HealthCheck(ProductModel):
+    name: NonBlank
+    state: HealthState
+    detail: NonBlank | None = None
+
+
+class HealthResponse(ProductModel):
+    api_version: Literal["v1"] = API_VERSION
+    evidence_version: Literal["0.6"] = PRODUCT_EVIDENCE_VERSION
+    state: HealthState
+    checked_at: AwareDatetime
+    checks: tuple[HealthCheck, ...] = ()
+
+
+class ErrorDetail(ProductModel):
+    field: NonBlank | None = None
+    message: NonBlank
+
+
+class ErrorEnvelope(ProductModel):
+    api_version: Literal["v1"] = API_VERSION
+    error: ErrorCode
+    message: NonBlank
+    request_id: NonBlank
+    details: tuple[ErrorDetail, ...] = ()
+    retryable: bool = False

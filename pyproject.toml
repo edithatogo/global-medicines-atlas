@@ -9,22 +9,31 @@ description = "Global comparison of medicine registration, approval, funding, an
 requires-python = ">=3.14,<3.15"
 dependencies = [
   "duckdb>=1.4",
+  "fastapi>=0.116",
   "httpx>=0.28",
+  "jinja2>=3.1",
   "lancedb>=0.27",
   "orjson>=3.11",
   "polars[pyarrow]>=1.35",
   "pyarrow>=21",
   "pydantic>=2.12",
   "pydantic-settings>=2.11",
+  "rich>=14.2",
   "structlog>=25.4",
   "tenacity>=9.1",
+  "typer>=0.16",
   "tzdata>=2026.2; platform_system == 'Windows'",
 ]
 
+[project.scripts]
+global-medicines-atlas = "global_medicines_atlas.cli:app"
+
 [dependency-groups]
 test = [
+  "beautifulsoup4>=4.13",
   "jsonschema>=4.25",
   "packaging>=26",
+  "pytest-playwright>=0.7",
   "pytest>=9.1",
   "pytest-cov>=7.0",
   "pytest-xdist>=3.8",
@@ -121,6 +130,12 @@ paths = [
   "src/global_medicines_atlas/matching_normalization.py",
   "src/global_medicines_atlas/matching_policy.py",
   "src/global_medicines_atlas/review_queue.py",
+  "src/global_medicines_atlas/product_contracts.py",
+  "src/global_medicines_atlas/query_service.py",
+  "src/global_medicines_atlas/cli.py",
+  "src/global_medicines_atlas/api.py",
+  "src/global_medicines_atlas/atlas.py",
+  "src/global_medicines_atlas/product_release.py",
 ]
 exclude = ["**/_version.py"]
 operators = ["comparison", "boundary", "boolean", "arithmetic", "return"]
@@ -130,7 +145,7 @@ report = ["console", "json"]
 max_pardons = 0
 
 [tool.edgetest]
-command = "pytest -q tests/test_columnar.py tests/test_settings.py"
+command = "pytest -q tests/test_columnar.py tests/test_settings.py tests/test_product_contracts.py tests/test_product_api.py tests/test_product_cli.py"
 
 [[tool.edgetest.env]]
 name = "contracts"
@@ -142,6 +157,12 @@ python_version = "3.14"
 name = "columnar"
 upgrade = ["duckdb", "polars", "pyarrow"]
 deps = ["pytest", "pytest-timeout"]
+python_version = "3.14"
+
+[[tool.edgetest.env]]
+name = "product"
+upgrade = ["fastapi", "httpx", "jinja2", "pydantic", "rich", "typer"]
+deps = ["beautifulsoup4", "pytest", "pytest-playwright", "pytest-timeout"]
 python_version = "3.14"
 
 [tool.coverage.run]
@@ -235,6 +256,7 @@ source_paths = [
   "src/global_medicines_atlas/matching_policy.py",
   "src/global_medicines_atlas/matching_release.py",
   "src/global_medicines_atlas/review_queue.py",
+  "src/global_medicines_atlas/product_contracts.py",
 ]
 pytest_add_cli_args_test_selection = [
   "tests/test_source_parity.py",
@@ -247,6 +269,7 @@ pytest_add_cli_args_test_selection = [
   "tests/test_matching_normalization.py",
   "tests/test_matching_policy.py",
   "tests/test_review_queue.py",
+  "tests/test_product_contracts.py",
 ]
 also_copy = ["src/global_medicines_atlas/", "tests/fixtures/"]
 mutate_only_covered_lines = true
