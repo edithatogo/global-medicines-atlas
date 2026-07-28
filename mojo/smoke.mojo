@@ -1,5 +1,5 @@
 """Minimal Mojo toolchain canary; Python remains the complete fallback."""
 
 
-fn main():
+def main():
     print("global-medicines-atlas mojo canary")
