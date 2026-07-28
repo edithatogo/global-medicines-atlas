@@ -1,20 +1,45 @@
-# RxNorm and RxNav-compatible resolution
+# RxNorm resolution and lineage
 
-The atlas uses a tiered resolver instead of requiring the complete
-RxNav-in-a-Box distribution.
+RxNorm is used to generate terminology candidates. A result is not a reviewed
+cross-jurisdiction medicine mapping and does not establish clinical,
+therapeutic, or substitution equivalence.
 
-1. A versioned, offline bootstrap fixture resolves known aliases
-   deterministically.
-2. An optional RxNav-compatible HTTP endpoint handles misses. The endpoint may
-   be the public NLM service, a local RxNav-in-a-Box deployment, or another
-   contract-compatible service.
-3. Network errors and timeouts fail closed to no match. They never change a
-   medicine's regulatory or funding status.
+## Resolution order
 
-The local fixture is intentionally small. Production extracts must record their
-RxNorm release, source receipt, checksum, generation command, and licensing
-disposition before promotion.
+Resolution is deterministic and stops at the first tier that returns candidates:
 
-RxNorm identifiers are terminology links only. A terminology match is not
-evidence that a product is approved, marketed, funded, or listed on a
-formulary.
+1. The governed local fixture or extract.
+2. An optional locally configured RxNav-compatible service.
+3. An optional public NLM RxNav endpoint.
+4. An empty tuple when every configured tier is unavailable or has no result.
+
+Remote failures do not alter results available from the local fixture. A failed
+local service does not prevent a separately configured public fallback.
+
+## Lineage contract
+
+Every candidate carries:
+
+- RxNorm release identity, including an explicit `unverified-current` value
+  when an endpoint does not expose a pinned release;
+- a deterministic receipt identifier and SHA-256 of the exact fixture or API
+  response bytes;
+- the query method and endpoint class;
+- source URI and timezone-aware retrieval time;
+- rights state and, when rights are marked permitted, a rights reference; and
+- `candidate_only=true`.
+
+The local fixture uses a fixed retrieval clock to keep regeneration
+deterministic. API retrievals use the observed UTC time and hash the exact
+response body. Rights default to `unknown`; network success does not qualify
+licensing or redistribution.
+
+## Production qualification
+
+A production local extract needs a lawful current release, immutable source
+receipt, checksum, release identity, and reviewed rights disposition. Public or
+local RxNav availability alone is not evidence that an API and bulk release
+describe the same population.
+
+Terminology candidates must pass the matching feature, confidence, abstention,
+and adjudication workflow before they can become reviewed mapping assertions.

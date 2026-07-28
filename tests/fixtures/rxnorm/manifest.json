@@ -1,0 +1,13 @@
+{
+  "fixture_id": "rxnorm-tiered-lineage-v1",
+  "release_identity": "bootstrap-v1",
+  "endpoint_class": "local_fixture",
+  "query_method": "normalized_exact",
+  "rights_state": "unknown",
+  "candidate_only": true,
+  "limitations": [
+    "Synthetic bootstrap fixture; not a current RxNorm release.",
+    "Terminology candidates are not reviewed medicine mappings.",
+    "No therapeutic or substitution equivalence is asserted."
+  ]
+}
