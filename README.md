@@ -32,6 +32,10 @@ CodeQL, Zizmor, dependency audit, and SBOM generation. Licensing, credentials,
 public release, external publication, compatibility archival, and
 consequential interpretation remain explicit human gates.
 
+Relevant maintainer-owned GitHub and Hugging Face resources are governed by the
+[ecosystem reuse registry](docs/ECOSYSTEM_REUSE.md), which runs in the routine
+harness to prevent parallel implementations and untracked copying.
+
 ## Data boundaries
 
 The repository does not publish the local NZULM release, restricted

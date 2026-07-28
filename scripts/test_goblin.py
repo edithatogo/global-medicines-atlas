@@ -14,6 +14,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
     "unit": (
         "tests/test_country_adapter_registry.py",
         "tests/test_context_validation.py",
+        "tests/test_ecosystem_reuse.py",
         "tests/test_settings.py",
         "tests/test_logging.py",
         "tests/test_source_catalog.py",
@@ -84,6 +85,7 @@ def routine() -> None:
     run(["uv", "run", "--group", "typing", "ruff", "check", "."])
     run(["uv", "run", "--group", "typing", "ty", "check"])
     run([sys.executable, "scripts/validate_context.py"])
+    run([sys.executable, "scripts/validate_ecosystem.py"])
 
 
 def strict() -> None:

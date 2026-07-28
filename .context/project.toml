@@ -14,6 +14,7 @@ required_context = [
   "conductor/tech-stack.md",
   "conductor/workflow.md",
   "conductor/tracks.md",
+  "docs/ECOSYSTEM_REUSE.md",
 ]
 
 required_manifests = [
@@ -24,6 +25,7 @@ required_manifests = [
   "pixi.lock",
   "renovate.json",
   "codecov.yml",
+  ".context/ecosystem.toml",
 ]
 
 required_harness_profiles = [

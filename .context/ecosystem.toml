@@ -1,0 +1,103 @@
+schema_version = 1
+owner = "edithatogo"
+policy = "reuse-before-build"
+
+[[github]]
+id = "nzmedicines"
+repository = "edithatogo/nzmedicines"
+url = "https://github.com/edithatogo/nzmedicines"
+snapshot = "6a8ecfae67f15d635750d11d5f446b93d76c1865"
+licence = "review-required"
+authority = "nz-fhir-fixtures"
+disposition = "integrated"
+local_boundary = "vendor/nzmedicines"
+
+[[github]]
+id = "reimbursement-atlas"
+repository = "edithatogo/reimbursement-atlas"
+url = "https://github.com/edithatogo/reimbursement-atlas"
+snapshot = "e4da80a7d27a95f985f5c1e7a44e1c7acf9e5299"
+licence = "Apache-2.0"
+authority = "reimbursement-source-and-publication-contracts"
+disposition = "consume-contract"
+local_boundary = "sources"
+
+[[github]]
+id = "riopa-infrastructure"
+repository = "edithatogo/riopa-infrastructure"
+url = "https://github.com/edithatogo/riopa-infrastructure"
+snapshot = "62b9249e726c7416c3eb19c85abc6f95e54b11ff"
+licence = "MIT"
+authority = "evidence-maturity-and-release-receipts"
+disposition = "adopt-pattern"
+local_boundary = "conductor"
+
+[[github]]
+id = "rareburden-commons"
+repository = "edithatogo/rareburden-commons"
+url = "https://github.com/edithatogo/rareburden-commons"
+snapshot = "f0a25b1cc8f3dcd259dc739cff8b56bb19f897af"
+licence = "review-required"
+authority = "public-source-catalogue-governance"
+disposition = "adopt-pattern"
+local_boundary = "src/global_medicines_atlas/source_catalog.py"
+
+[[github]]
+id = "new-drug-reimbursement-game"
+repository = "edithatogo/new-drug-reimbursement-game"
+url = "https://github.com/edithatogo/new-drug-reimbursement-game"
+snapshot = "a31207b520e221a4b2334ae2ae8f7f627be00854"
+licence = "review-required"
+authority = "reimbursement-game-interchange"
+disposition = "interoperate"
+local_boundary = "docs/contracts"
+
+[[github]]
+id = "voiage"
+repository = "edithatogo/voiage"
+url = "https://github.com/edithatogo/voiage"
+snapshot = "64ef08e35f7d51d5519377095b8690992a0fa73a"
+licence = "Apache-2.0"
+authority = "value-of-information"
+disposition = "interoperate"
+local_boundary = "docs/contracts"
+
+[[github]]
+id = "healthpoint-rs"
+repository = "edithatogo/healthpoint-rs"
+url = "https://github.com/edithatogo/healthpoint-rs"
+snapshot = "82c83b0b7bcac739ff143e730e20889d3919c880"
+licence = "Apache-2.0"
+authority = "licensed-healthpoint-fhir-client"
+disposition = "evaluate"
+local_boundary = "sources/nz"
+
+[[hugging_face]]
+id = "reimbursement-atlas"
+repository = "edithatogo/reimbursement-atlas"
+url = "https://huggingface.co/datasets/edithatogo/reimbursement-atlas"
+snapshot = "2026-07-06T11:13:30Z"
+licence = "other"
+authority = "reimbursement-publication-candidate"
+disposition = "extend-in-place"
+publication_gate = "licence-and-data-card-review"
+
+[[hugging_face]]
+id = "corpus-legislation-nz"
+repository = "edithatogo/corpus-legislation-nz"
+url = "https://huggingface.co/datasets/edithatogo/corpus-legislation-nz"
+snapshot = "2026-07-22T12:53:20Z"
+licence = "other"
+authority = "parquet-croissant-xet-publication-pattern"
+disposition = "adopt-pattern"
+publication_gate = "no-medicines-data-copy"
+
+[[hugging_face]]
+id = "foi-process-event-logs"
+repository = "edithatogo/foi-process-event-logs"
+url = "https://huggingface.co/datasets/edithatogo/foi-process-event-logs"
+snapshot = "2026-07-22T13:41:39Z"
+licence = "other"
+authority = "synthetic-fixture-publication-pattern"
+disposition = "adopt-pattern"
+publication_gate = "no-domain-data-copy"
