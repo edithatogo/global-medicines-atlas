@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nice-guidance>
+  <appraisal>
+    <guidance-id>TA999</guidance-id>
+    <medicine>Synthetic Delta</medicine>
+    <recommendation>Recommended with restrictions</recommendation>
+    <conditions>
+      <condition>Specialist initiation only</condition>
+    </conditions>
+  </appraisal>
+</nice-guidance>

@@ -1,0 +1,10 @@
+{
+  "results": [
+    {
+      "drug_code": 12345,
+      "brand_name": "Examplemab",
+      "status": "MARKETED",
+      "din": "01234567"
+    }
+  ]
+}

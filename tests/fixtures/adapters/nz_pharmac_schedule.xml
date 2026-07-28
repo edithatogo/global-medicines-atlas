@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pharmaceutical-schedule effective-date="2026-07-01">
+  <products>
+    <presentation>
+      <pharmacode>1234567</pharmacode>
+      <name>Exampleline 10 mg tablet</name>
+      <funding-status>Funded</funding-status>
+      <restrictions>
+        <restriction>Special Authority required</restriction>
+      </restrictions>
+    </presentation>
+  </products>
+</pharmaceutical-schedule>

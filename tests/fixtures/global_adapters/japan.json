@@ -1,0 +1,34 @@
+{
+  "fixture_version": "synthetic-1",
+  "sources": [
+    {
+      "source_id": "jp-pmda",
+      "title": "Synthetic PMDA approval contract",
+      "evidence_limit": "Synthetic schema example only; it is not PMDA data or evidence of a live approval."
+    },
+    {
+      "source_id": "jp-mhlw-nhi",
+      "title": "Synthetic MHLW NHI price-list contract",
+      "evidence_limit": "Synthetic schema example only; it is not an NHI price-list extract and does not imply regulatory approval."
+    }
+  ],
+  "medicines": [
+    {
+      "id": "JP-SYNTH-0001",
+      "level": "product",
+      "name": "Nihonmed synthetic injection",
+      "identifier_system": "urn:global-medicines-atlas:synthetic:jp:yj",
+      "identifier": "JP-SYNTH-0001",
+      "assertions": [
+        {
+          "source_id": "jp-pmda",
+          "status_code": "approved"
+        },
+        {
+          "source_id": "jp-mhlw-nhi",
+          "status_code": "nhi-listed"
+        }
+      ]
+    }
+  ]
+}

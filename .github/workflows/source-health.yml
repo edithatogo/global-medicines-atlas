@@ -1,0 +1,89 @@
+name: Source health and schema drift
+
+on:
+  schedule:
+    - cron: "23 16 * * 1" # Weekly source-health observation.
+    - cron: "41 16 1 * *" # Monthly schema-drift observation.
+  workflow_dispatch:
+
+permissions:
+  actions: read # Required to retrieve the prior fingerprint artifact.
+  contents: read # Required by actions/checkout.
+
+concurrency:
+  group: source-health-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  observe:
+    name: Bounded source observation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.29"
+          enable-cache: true
+      - run: uv sync --python 3.14.6 --locked
+      - name: Retrieve previous metadata baseline
+        id: baseline
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/previous
+          artifact_url="$(
+            gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=source-health-baseline&per_page=100" \
+              --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[0].archive_download_url // ""'
+          )"
+          if [[ -z "${artifact_url}" ]]; then
+            echo "path=" >> "${GITHUB_OUTPUT}"
+            echo "No previous metadata baseline is available."
+            exit 0
+          fi
+          gh api "${artifact_url}" > build/previous/baseline.zip
+          unzip -q build/previous/baseline.zip -d build/previous
+          test -f build/previous/source-health.json
+          echo "path=build/previous/source-health.json" >> "${GITHUB_OUTPUT}"
+      - name: Run bounded metadata-only probes
+        id: probe
+        continue-on-error: true
+        env:
+          BASELINE_PATH: ${{ steps.baseline.outputs.path }}
+        shell: bash
+        run: |
+          baseline_args=()
+          if [[ -n "${BASELINE_PATH}" ]]; then
+            baseline_args=(--baseline "${BASELINE_PATH}")
+          fi
+          uv run --python 3.14.6 python scripts/check_source_health.py \
+            "${baseline_args[@]}"
+      - name: Summarize schema drift
+        if: always() && hashFiles('build/source-health.json') != ''
+        shell: bash
+        run: |
+          {
+            echo "## Source health and schema drift"
+            echo
+            echo '```json'
+            jq '.summary' build/source-health.json
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"
+      - name: Upload durable metadata baseline
+        if: always() && hashFiles('build/source-health.json') != ''
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: source-health-baseline
+          path: build/source-health.json
+          if-no-files-found: error
+          retention-days: 90
+          overwrite: true
+      - name: Escalate detected schema drift
+        if: steps.probe.outcome == 'failure'
+        run: |
+          echo "::error title=Schema drift detected::One or more comparable source schemas changed. Review the metadata-only report."
+          exit 1

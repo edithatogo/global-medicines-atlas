@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pbs-schedule effective-date="2026-07-01">
+  <items>
+    <item>
+      <item-code>1234A</item-code>
+      <product-name>Exampleline 10 mg tablet</product-name>
+      <listing-status>Listed</listing-status>
+      <restrictions>
+        <restriction>Authority required</restriction>
+      </restrictions>
+    </item>
+  </items>
+</pbs-schedule>

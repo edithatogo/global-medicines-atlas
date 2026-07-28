@@ -1,0 +1,3 @@
+contract_id,plan_id,ndc,drug_name,formulary_status,tier,retail_price_usd,prior_authorization,step_therapy
+S1234,001,00011-1111-11,Example Drug,covered,2,12.34,true,false
+S9876,042,00011-1111-11,Example Drug,covered,3,27.50,false,true
