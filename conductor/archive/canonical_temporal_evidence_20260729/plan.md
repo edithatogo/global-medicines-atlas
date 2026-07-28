@@ -1,5 +1,7 @@
 # Implementation Plan
 
+Archived after reviewed fixture/software qualification merged in PR #57.
+
 ## Phase 1: Contracts and tests
 
 - [x] Task: Define bitemporal assertion and conflict schemas

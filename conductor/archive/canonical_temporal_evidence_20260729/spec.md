@@ -1,5 +1,7 @@
 # Specification: Canonical Temporal Evidence
 
+Archived implementation specification; live promotion remains governed by #54.
+
 ## Outcome
 
 Deliver v0.4 evidence storage that preserves source-effective and

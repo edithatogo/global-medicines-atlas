@@ -4,8 +4,8 @@
 
 - [x] **Track: Establish the global country-adapter framework and first source cohort**
   *Archived: [archive/global_country_adapters_20260729/index.md](./archive/global_country_adapters_20260729/index.md); live qualification continues in GitHub issue #54.*
-- [~] **Track: Build canonical bitemporal evidence and conflict handling**
-  *Link: [tracks/canonical_temporal_evidence_20260729/index.md](./tracks/canonical_temporal_evidence_20260729/index.md)*
+- [x] **Track: Build canonical bitemporal evidence and conflict handling**
+  *Archived: [archive/canonical_temporal_evidence_20260729/index.md](./archive/canonical_temporal_evidence_20260729/index.md); live qualification remains open in #54.*
 - [ ] **Track: Qualify cross-jurisdiction medicine matching**
   *Link: [tracks/cross_jurisdiction_matching_20260729/index.md](./tracks/cross_jurisdiction_matching_20260729/index.md)*
 - [ ] **Track: Deliver the comparison API, CLI and accessible atlas**
