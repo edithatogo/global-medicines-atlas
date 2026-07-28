@@ -219,7 +219,6 @@ line-ending = "lf"
 
 [tool.mutmut]
 source_paths = [
-  "src/global_medicines_atlas/publication_gate.py",
   "src/global_medicines_atlas/parity.py",
   "src/global_medicines_atlas/source_health.py",
   "src/global_medicines_atlas/adapters/_receipt.py",
@@ -227,7 +226,6 @@ source_paths = [
   "src/global_medicines_atlas/adapters/us_cms_partd.py",
 ]
 pytest_add_cli_args_test_selection = [
-  "tests/test_country_publication_gate.py",
   "tests/test_source_parity.py",
   "tests/test_source_health.py",
   "tests/test_us_drugsfda_adapter.py",

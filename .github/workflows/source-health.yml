@@ -48,16 +48,20 @@ jobs:
           gh api "${artifact_url}" > build/previous/baseline.zip
           unzip -q build/previous/baseline.zip -d build/previous
           test -f build/previous/source-health.json
-          echo "path=--baseline build/previous/source-health.json" >> "${GITHUB_OUTPUT}"
+          echo "path=build/previous/source-health.json" >> "${GITHUB_OUTPUT}"
       - name: Run bounded metadata-only probes
         id: probe
         continue-on-error: true
         env:
-          BASELINE_ARGUMENT: ${{ steps.baseline.outputs.path }}
+          BASELINE_PATH: ${{ steps.baseline.outputs.path }}
         shell: bash
         run: |
+          baseline_args=()
+          if [[ -n "${BASELINE_PATH}" ]]; then
+            baseline_args=(--baseline "${BASELINE_PATH}")
+          fi
           uv run --python 3.14.6 python scripts/check_source_health.py \
-            ${BASELINE_ARGUMENT}
+            "${baseline_args[@]}"
       - name: Summarize schema drift
         if: always() && hashFiles('build/source-health.json') != ''
         shell: bash
