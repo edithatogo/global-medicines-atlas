@@ -189,6 +189,26 @@ def test_clean_live_evidence_can_qualify_but_not_self_approve() -> None:
     assert requested.unresolved_gates == ("external_approval_receipt",)
 
 
+@pytest.mark.edge
+def test_live_evidence_requires_verified_lineage() -> None:
+    live = qualify(EvidenceClass.LIVE)
+    payload = live.model_dump()
+    payload["gate_outcomes"]["live_lineage_verification"] = GateStatus.FAILED
+
+    with pytest.raises(ValidationError, match="verified live lineage"):
+        ReleaseEvidence.model_validate(payload)
+
+
+@pytest.mark.edge
+def test_live_evidence_rejects_fixture_snapshot_scope() -> None:
+    live = qualify(EvidenceClass.LIVE)
+    payload = live.model_dump()
+    payload["snapshot_scopes"] = ("fixture-only qualification evidence",)
+
+    with pytest.raises(ValidationError, match="fixture snapshots"):
+        ReleaseEvidence.model_validate(payload)
+
+
 @pytest.mark.unit
 def test_forged_approval_gate_cannot_approve_live_evidence() -> None:
     gates = {**ALL_GATES, "maintainer_release_approval": GateStatus.PASSED}
