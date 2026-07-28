@@ -35,7 +35,9 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--coverage", type=Path, required=True)
     parser.add_argument("--snapshots", type=Path, required=True)
     parser.add_argument("--gates", type=Path, required=True)
-    parser.add_argument("--dataset-schema-version", action="append", required=True)
+    parser.add_argument(
+        "--dataset-schema-version", action="append", required=True
+    )
     parser.add_argument("--migration-version", action="append", required=True)
     parser.add_argument(
         "--output",
@@ -162,14 +164,18 @@ def main() -> None:
         snapshots=arguments.snapshots,
         gates=arguments.gates,
     )
-    receipts = TypeAdapter(list[Receipt]).validate_python(_json(arguments.receipts))
+    receipts = TypeAdapter(list[Receipt]).validate_python(
+        _json(arguments.receipts)
+    )
     coverage = TypeAdapter(list[CoverageObservation]).validate_python(
         _json(arguments.coverage)
     )
     snapshots = TypeAdapter(list[SnapshotManifest]).validate_python(
         _json(arguments.snapshots)
     )
-    gates = TypeAdapter(dict[str, GateStatus]).validate_python(_json(arguments.gates))
+    gates = TypeAdapter(dict[str, GateStatus]).validate_python(
+        _json(arguments.gates)
+    )
     evidence = qualify_release(
         git=inspect_git_state(repository),
         receipts=receipts,

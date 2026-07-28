@@ -15,7 +15,9 @@ PRODUCTS = (
     "999999\t001\tTABLET;ORAL\t10MG\t0\tOrphan Row\tORPHANINE\t0\n"
 )
 MARKETING = "ApplNo\tProductNo\tMarketingStatusID\n012345\t001\t1\n"
-STATUS_LOOKUP = "MarketingStatusID\tMarketingStatusDescription\n1\tPrescription\n"
+STATUS_LOOKUP = (
+    "MarketingStatusID\tMarketingStatusDescription\n1\tPrescription\n"
+)
 
 
 def test_drugsfda_bulk_projects_confirmed_regulatory_status() -> None:

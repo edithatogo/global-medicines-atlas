@@ -88,7 +88,9 @@ def test_arrow_contract_is_versioned_and_keeps_counts_separate() -> None:
 
 def test_unknown_denominator_remains_unknown_during_aggregation() -> None:
     frame = aggregate_coverage([
-        observation(denominator=5, observation_id="known", partition_id="known"),
+        observation(
+            denominator=5, observation_id="known", partition_id="known"
+        ),
         observation(
             denominator=None,
             observation_id="unknown",
@@ -179,7 +181,9 @@ def test_duplicate_population_partition_is_rejected() -> None:
         ])
 
 
-def test_medicine_identity_is_required_except_for_aggregate_population() -> None:
+def test_medicine_identity_is_required_except_for_aggregate_population() -> (
+    None
+):
     with pytest.raises(ValidationError, match="medicine_concept_id"):
         observation(medicine_concept_id=None)
 

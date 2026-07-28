@@ -53,7 +53,8 @@ class MedicineDataSource(FrozenModel):
         ):
             raise ValueError("API access mode requires api_url")
         if (
-            self.access_mode in {AccessMode.DOWNLOAD, AccessMode.API_AND_DOWNLOAD}
+            self.access_mode
+            in {AccessMode.DOWNLOAD, AccessMode.API_AND_DOWNLOAD}
             and self.download_url is None
         ):
             raise ValueError("download access mode requires download_url")
@@ -70,7 +71,8 @@ def load_source_catalog() -> tuple[MedicineDataSource, ...]:
     if len(ids) != len(set(ids)):
         raise ValueError("Source catalog contains duplicate source_id values")
     LOGGER.debug(
-        "Loaded governed medicine source catalog", extra={"source_id": str(path)}
+        "Loaded governed medicine source catalog",
+        extra={"source_id": str(path)},
     )
     return tuple(sorted(sources, key=lambda source: source.source_id))
 

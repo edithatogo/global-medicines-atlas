@@ -21,16 +21,23 @@ from global_medicines_atlas.nz import (
     project_nz_fhir_records,
     write_canonical_index,
 )
-from sources.nz.nzulm_fhir import FhirResourceRecord, load_upstream_fixture_records
+from sources.nz.nzulm_fhir import (
+    FhirResourceRecord,
+    load_upstream_fixture_records,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_nz_projection_emits_deterministic_provenance_bearing_records() -> None:
-    records = project_nz_fhir_records(load_upstream_fixture_records(PROJECT_ROOT))
+    records = project_nz_fhir_records(
+        load_upstream_fixture_records(PROJECT_ROOT)
+    )
 
     assert len(records) == 42
-    assert list(records) == sorted(records, key=lambda row: row.concept.concept_id)
+    assert list(records) == sorted(
+        records, key=lambda row: row.concept.concept_id
+    )
     assert all(record.concept.jurisdiction == "NZ" for record in records)
     assert all(
         record.concept.identifiers[0].system == "http://nzmt.org.nz"
@@ -108,7 +115,9 @@ def test_assertion_cannot_target_a_different_concept() -> None:
 
 
 def test_canonical_index_is_byte_deterministic(tmp_path: Path) -> None:
-    records = project_nz_fhir_records(load_upstream_fixture_records(PROJECT_ROOT))
+    records = project_nz_fhir_records(
+        load_upstream_fixture_records(PROJECT_ROOT)
+    )
     first = tmp_path / "first.json"
     second = tmp_path / "second.json"
 

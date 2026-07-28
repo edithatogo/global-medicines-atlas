@@ -18,7 +18,9 @@ from ..models import (
 
 
 def _rows(payload: str) -> tuple[dict[str, str], ...]:
-    return tuple(dict(row) for row in csv.DictReader(StringIO(payload), delimiter="\t"))
+    return tuple(
+        dict(row) for row in csv.DictReader(StringIO(payload), delimiter="\t")
+    )
 
 
 def project_drugsfda_bulk(

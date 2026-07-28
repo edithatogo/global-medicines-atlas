@@ -37,7 +37,9 @@ class TerminologyResolver(Protocol):
 
 
 def normalize_name(value: str) -> str:
-    return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9]+", " ", value.casefold())).strip()
+    return re.sub(
+        r"\s+", " ", re.sub(r"[^a-z0-9]+", " ", value.casefold())
+    ).strip()
 
 
 def _string_mapping(value: object) -> Mapping[str, object] | None:
@@ -104,7 +106,9 @@ class RxNavApiResolver:
 
     def resolve(self, query: str) -> tuple[TerminologyMatch, ...]:
         normalized = normalize_name(query)
-        response = self._client.get("/rxcui.json", params={"name": query, "search": 2})
+        response = self._client.get(
+            "/rxcui.json", params={"name": query, "search": 2}
+        )
         response.raise_for_status()
         payload = _string_mapping(cast("object", response.json()))
         id_group = _string_mapping(payload.get("idGroup")) if payload else None
@@ -156,6 +160,7 @@ def bootstrap_rxnorm_resolver(
     fixture_path = Path(__file__).with_name("data") / "rxnorm_bootstrap.json"
     payload = json.loads(fixture_path.read_text(encoding="utf-8"))
     concepts = {
-        alias: (values[0], values[1]) for alias, values in payload["concepts"].items()
+        alias: (values[0], values[1])
+        for alias, values in payload["concepts"].items()
     }
     return TieredResolver(LocalRxNormResolver(concepts), remote)

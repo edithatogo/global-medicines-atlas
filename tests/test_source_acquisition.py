@@ -8,7 +8,11 @@ import pytest
 
 from global_medicines_atlas.acquisition import AcquisitionPolicy, acquire_source
 from global_medicines_atlas.countries import SourceDimension
-from global_medicines_atlas.receipts import EvidenceClass, FailureReceipt, SourceReceipt
+from global_medicines_atlas.receipts import (
+    EvidenceClass,
+    FailureReceipt,
+    SourceReceipt,
+)
 from global_medicines_atlas.source_catalog import (
     AccessMode,
     MedicineDataSource,
@@ -33,7 +37,9 @@ def catalog_source(
         access_mode=access_mode,
         landing_page="https://example.test/",
         download_url=download_url,
-        api_url="https://example.test/api" if access_mode is AccessMode.API else None,
+        api_url="https://example.test/api"
+        if access_mode is AccessMode.API
+        else None,
         update_cadence="daily",
         rights_status="review_required",
         readiness=SourceReadiness.CANDIDATE,
@@ -62,7 +68,9 @@ def acquire(
 
 
 @pytest.mark.integration
-def test_acquisition_stages_hashes_and_atomically_promotes(tmp_path: Path) -> None:
+def test_acquisition_stages_hashes_and_atomically_promotes(
+    tmp_path: Path,
+) -> None:
     payload = b"governed fixture"
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -84,7 +92,9 @@ def test_acquisition_stages_hashes_and_atomically_promotes(tmp_path: Path) -> No
 
 
 @pytest.mark.unit
-def test_api_catalog_surface_is_selected_without_arbitrary_url(tmp_path: Path) -> None:
+def test_api_catalog_surface_is_selected_without_arbitrary_url(
+    tmp_path: Path,
+) -> None:
     seen: list[str] = []
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -99,7 +109,9 @@ def test_api_catalog_surface_is_selected_without_arbitrary_url(tmp_path: Path) -
         "test-regulator",
         Path("runs/api.json"),
         repository_root=tmp_path,
-        catalog=(catalog_source(access_mode=AccessMode.API, download_url=None),),
+        catalog=(
+            catalog_source(access_mode=AccessMode.API, download_url=None),
+        ),
         transport=httpx.MockTransport(handler),
         clock=lambda: NOW,
     )
@@ -117,7 +129,9 @@ def test_api_catalog_surface_is_selected_without_arbitrary_url(tmp_path: Path) -
             "redirect_rejected",
         ),
         (
-            httpx.Response(200, headers={"content-type": "text/html"}, text="no"),
+            httpx.Response(
+                200, headers={"content-type": "text/html"}, text="no"
+            ),
             "content_type_rejected",
         ),
         (httpx.Response(503, text="down"), "http_status"),
@@ -153,7 +167,9 @@ def test_oversized_stream_is_removed_without_promotion(tmp_path: Path) -> None:
 
 
 @pytest.mark.edge
-def test_timeout_is_recorded_once_without_implicit_retry(tmp_path: Path) -> None:
+def test_timeout_is_recorded_once_without_implicit_retry(
+    tmp_path: Path,
+) -> None:
     attempts = 0
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -211,7 +227,9 @@ def test_unknown_or_non_automatable_source_is_rejected(tmp_path: Path) -> None:
 
 
 @pytest.mark.unit
-def test_requested_live_class_remains_distinct_from_live_gate(tmp_path: Path) -> None:
+def test_requested_live_class_remains_distinct_from_live_gate(
+    tmp_path: Path,
+) -> None:
     receipt = acquire(
         tmp_path,
         lambda _: httpx.Response(

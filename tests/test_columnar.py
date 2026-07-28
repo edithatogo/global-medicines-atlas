@@ -74,7 +74,9 @@ def test_arrow_polars_duckdb_interoperate_without_pandas() -> None:
 
 
 def test_parquet_round_trip_preserves_schema_metadata(tmp_path: Path) -> None:
-    destination = write_assertions_parquet([record()], tmp_path / "assertions.parquet")
+    destination = write_assertions_parquet(
+        [record()], tmp_path / "assertions.parquet"
+    )
     restored = pq.read_table(destination)
 
     assert restored.schema.metadata == ASSERTION_SCHEMA.metadata

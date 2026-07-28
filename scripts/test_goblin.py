@@ -24,6 +24,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_temporal_evidence.py",
         "tests/test_release_evidence.py",
         "tests/test_release_cli.py",
+        "tests/test_release_workflow.py",
         "tests/test_version.py",
     ),
     "integration": (
@@ -173,6 +174,9 @@ def dependencies() -> None:
 def regeneration() -> None:
     """Verify deterministic qualification and release-evidence regeneration."""
     tests = (
+        "tests/test_nz_asset_inventory.py",
+        "tests/test_nz_fixture_indexes.py",
+        "tests/test_conductor_github_sync.py",
         "tests/test_temporal_snapshots.py",
         "tests/test_release_evidence.py",
     )

@@ -120,7 +120,9 @@ def snapshot() -> SnapshotManifest:
             package_commit=SHA[:40],
         ),
         artifacts=(
-            SnapshotArtifact(role="input", path="input.json", sha256=SHA, size_bytes=1),
+            SnapshotArtifact(
+                role="input", path="input.json", sha256=SHA, size_bytes=1
+            ),
             SnapshotArtifact(
                 role="output", path="output.parquet", sha256=SHA, size_bytes=1
             ),
@@ -185,6 +187,26 @@ def test_clean_live_evidence_can_qualify_but_not_self_approve() -> None:
     requested = qualify(EvidenceClass.LIVE, request_approval=True)
     assert requested.release_state is ReleaseState.BLOCKED
     assert requested.unresolved_gates == ("external_approval_receipt",)
+
+
+@pytest.mark.edge
+def test_live_evidence_requires_verified_lineage() -> None:
+    live = qualify(EvidenceClass.LIVE)
+    payload = live.model_dump()
+    payload["gate_outcomes"]["live_lineage_verification"] = GateStatus.FAILED
+
+    with pytest.raises(ValidationError, match="verified live lineage"):
+        ReleaseEvidence.model_validate(payload)
+
+
+@pytest.mark.edge
+def test_live_evidence_rejects_fixture_snapshot_scope() -> None:
+    live = qualify(EvidenceClass.LIVE)
+    payload = live.model_dump()
+    payload["snapshot_scopes"] = ("fixture-only qualification evidence",)
+
+    with pytest.raises(ValidationError, match="fixture snapshots"):
+        ReleaseEvidence.model_validate(payload)
 
 
 @pytest.mark.unit

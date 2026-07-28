@@ -9,11 +9,18 @@ from typing import Any, cast
 
 from sources.nz.nzulm_fhir import FhirResourceRecord
 
-from .models import CanonicalMedicineRecord, Identifier, MedicineConcept, Provenance
+from .models import (
+    CanonicalMedicineRecord,
+    Identifier,
+    MedicineConcept,
+    Provenance,
+)
 
 NZMT_SYSTEM = "http://nzmt.org.nz"
 NZMT_TYPE_EXTENSION = "http://hl7.org.nz/fhir/StructureDefinition/nzf-nzmt-type"
-RELATED_EXTENSION = "http://hl7.org.nz/fhir/StructureDefinition/nzf-related-medication"
+RELATED_EXTENSION = (
+    "http://hl7.org.nz/fhir/StructureDefinition/nzf-related-medication"
+)
 
 
 def _string_mapping(value: object) -> Mapping[str, Any] | None:
@@ -81,7 +88,9 @@ def _display(resource: Mapping[str, Any], resource_id: str) -> str:
     return resource_id
 
 
-def project_nz_fhir_record(record: FhirResourceRecord) -> CanonicalMedicineRecord:
+def project_nz_fhir_record(
+    record: FhirResourceRecord,
+) -> CanonicalMedicineRecord:
     """Project a Medication fixture without inferring approval or funding."""
     if record.resource_type != "Medication":
         raise ValueError(f"Expected Medication, got {record.resource_type}")

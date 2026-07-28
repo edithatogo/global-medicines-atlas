@@ -57,13 +57,18 @@ def test_fixture_manifest_is_deterministic_and_explicit(tmp_path: Path) -> None:
     payload = json.loads(canonical_json_bytes(first))
     assert payload["qualification_scope"] == FIXTURE_EVIDENCE_LABEL
     assert payload["dataset_schema_version"] == "2"
-    assert [item["role"] for item in payload["artifacts"]] == ["input", "output"]
+    assert [item["role"] for item in payload["artifacts"]] == [
+        "input",
+        "output",
+    ]
     assert all(len(item["sha256"]) == 64 for item in payload["artifacts"])
     assert len(payload["source_catalog_sha256"]) == 64
 
 
 @pytest.mark.integration
-def test_written_manifest_verifies_without_copying_payloads(tmp_path: Path) -> None:
+def test_written_manifest_verifies_without_copying_payloads(
+    tmp_path: Path,
+) -> None:
     root, input_path, output_path, catalog_path = _fixture_files(tmp_path)
     manifest = build_fixture_snapshot_manifest(
         fixture_root=root,
@@ -187,7 +192,9 @@ def test_manifest_requires_input_and_output_artifacts(tmp_path: Path) -> None:
     manifest = _manifest(tmp_path)
     payload = manifest.model_dump(mode="json")
     payload["artifacts"] = [
-        artifact for artifact in payload["artifacts"] if artifact["role"] == "input"
+        artifact
+        for artifact in payload["artifacts"]
+        if artifact["role"] == "input"
     ]
 
     with pytest.raises(ValidationError, match="at least one output"):

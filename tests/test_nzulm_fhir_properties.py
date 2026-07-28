@@ -46,9 +46,9 @@ def test_bundle_round_trip_preserves_unique_resource_identities(
     assert records[0].resource_type == "Bundle"
     assert records[0].resource_id == "property-bundle"
     assert [record.resource_id for record in records[1:]] == resource_ids
-    assert len({(record.resource_type, record.resource_id) for record in records}) == (
-        len(resource_ids) + 1
-    )
+    assert len({
+        (record.resource_type, record.resource_id) for record in records
+    }) == (len(resource_ids) + 1)
     assert all(record.source_path == "bundle.json" for record in records)
     assert len({record.source_sha256 for record in records}) == 1
 
@@ -70,7 +70,9 @@ def test_input_path_order_does_not_change_output_order(
             paths.append(path)
 
         forward = tuple(iter_fhir_resources(paths, source_root=source_root))
-        reverse = tuple(iter_fhir_resources(reversed(paths), source_root=source_root))
+        reverse = tuple(
+            iter_fhir_resources(reversed(paths), source_root=source_root)
+        )
 
     assert [
         (record.resource_type, record.resource_id, record.source_path)

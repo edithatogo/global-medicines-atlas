@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "source_repository": "https://github.com/edithatogo/nzmedicines",
+  "source_commit": "6a8ecfae67f15d635750d11d5f446b93d76c1865",
+  "upstream_asset_count": 25,
+  "upstream_tree_sha256": "0217b32a00b231b910d07df8d85b25aa2a884404e1b823b71d222259ceba150e",
+  "bundle_filename": "nzmedicines-all.bundle",
+  "bundle_size_bytes": 37832,
+  "bundle_sha256": "f4414798f1b35558c69472d86d29b0b83facb2e799c9a20692b62fc889847223",
+  "bundle_policy": "Local preservation evidence; not redistributed by this repository."
+}

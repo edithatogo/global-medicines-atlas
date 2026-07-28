@@ -7,7 +7,10 @@ from pathlib import Path
 
 import pytest
 
-from sources.nz.nzulm_fhir import iter_fhir_resources, load_upstream_fixture_records
+from sources.nz.nzulm_fhir import (
+    iter_fhir_resources,
+    load_upstream_fixture_records,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
@@ -16,7 +19,10 @@ def test_upstream_snapshot_has_expected_unique_fhir_resources() -> None:
     records = load_upstream_fixture_records(PROJECT_ROOT)
 
     assert len(records) == 51
-    assert len({(record.resource_type, record.resource_id) for record in records}) == 51
+    assert (
+        len({(record.resource_type, record.resource_id) for record in records})
+        == 51
+    )
     assert Counter(record.resource_type for record in records) == {
         "Medication": 42,
         "Bundle": 3,
@@ -48,4 +54,16 @@ def test_adapter_rejects_resource_without_id(tmp_path: Path) -> None:
     path.write_text('{"resourceType":"Medication"}', encoding="utf-8")
 
     with pytest.raises(ValueError, match="FHIR id is required"):
+        tuple(iter_fhir_resources([path], source_root=tmp_path))
+
+
+def test_adapter_rejects_resource_without_type(tmp_path: Path) -> None:
+    path = tmp_path / "missing-type.json"
+    path.write_text(
+        '{"resourceType":"Bundle","id":"bundle-1",'
+        '"entry":[{"resource":{"id":"medicine-1"}}]}',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="FHIR resourceType is required"):
         tuple(iter_fhir_resources([path], source_root=tmp_path))

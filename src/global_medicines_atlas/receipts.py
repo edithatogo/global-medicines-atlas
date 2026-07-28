@@ -131,7 +131,10 @@ class SourceReceipt(DeterministicReceipt):
             and self.effective_to <= self.effective_from
         ):
             raise ValueError("effective_to must follow effective_from")
-        if self.rights_state is RightsState.PERMITTED and self.rights_reference is None:
+        if (
+            self.rights_state is RightsState.PERMITTED
+            and self.rights_reference is None
+        ):
             raise ValueError("permitted rights require a rights reference")
         return self
 
@@ -161,7 +164,9 @@ class FailureReceipt(DeterministicReceipt):
     @model_validator(mode="after")
     def validate_failure_contract(self) -> FailureReceipt:
         if self.retrieval.status is AcquisitionStatus.SUCCEEDED:
-            raise ValueError("FailureReceipt cannot record a succeeded retrieval")
+            raise ValueError(
+                "FailureReceipt cannot record a succeeded retrieval"
+            )
         if self.evidence_class is EvidenceClass.LIVE:
             raise ValueError("FailureReceipt cannot claim live evidence")
         return self

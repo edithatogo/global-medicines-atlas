@@ -92,11 +92,15 @@ def _catalog_source(
 ) -> MedicineDataSource:
     matches = [source for source in catalog if source.source_id == source_id]
     if len(matches) != 1:
-        raise LookupError(f"catalog source_id must resolve exactly once: {source_id}")
+        raise LookupError(
+            f"catalog source_id must resolve exactly once: {source_id}"
+        )
     return matches[0]
 
 
-def _download_surface(source: MedicineDataSource) -> tuple[str, AcquisitionMethod]:
+def _download_surface(
+    source: MedicineDataSource,
+) -> tuple[str, AcquisitionMethod]:
     if source.download_url is not None and source.access_mode in {
         AccessMode.DOWNLOAD,
         AccessMode.API_AND_DOWNLOAD,
@@ -107,7 +111,9 @@ def _download_surface(source: MedicineDataSource) -> tuple[str, AcquisitionMetho
         AccessMode.API_AND_DOWNLOAD,
     }:
         return str(source.api_url), AcquisitionMethod.API
-    raise ValueError("catalog source has no automatable API or download surface")
+    raise ValueError(
+        "catalog source has no automatable API or download surface"
+    )
 
 
 def _local_destination(repository_root: Path, destination: Path) -> Path:
@@ -120,7 +126,9 @@ def _local_destination(repository_root: Path, destination: Path) -> Path:
     try:
         relative = target.relative_to(root)
     except ValueError as error:
-        raise ValueError("destination must remain inside the repository") from error
+        raise ValueError(
+            "destination must remain inside the repository"
+        ) from error
     if not relative.parts or relative.parts[0] not in _LOCAL_PAYLOAD_ROOTS:
         raise ValueError(
             "destination must be within a governed git-ignored payload root"
@@ -168,7 +176,9 @@ def _failure(
 
 
 def _reject_oversize() -> None:
-    raise _ResponseRejectedError("max_bytes_exceeded", "response exceeded max_bytes")
+    raise _ResponseRejectedError(
+        "max_bytes_exceeded", "response exceeded max_bytes"
+    )
 
 
 def _write_bounded(
@@ -202,7 +212,9 @@ def _stage_response(
             "Redirect responses are not accepted.",
         )
     response.raise_for_status()
-    content_type = response.headers.get("content-type", "").split(";", 1)[0].lower()
+    content_type = (
+        response.headers.get("content-type", "").split(";", 1)[0].lower()
+    )
     if content_type not in policy.allowed_content_types:
         raise _ResponseRejectedError(
             "content_type_rejected",
@@ -254,7 +266,9 @@ def _success(
         evidence_class=evidence_class,
         transformation=TransformationEvidence(
             transformation_id=transformation_id,
-            transformation_sha256=sha256(transformation_id.encode()).hexdigest(),
+            transformation_sha256=sha256(
+                transformation_id.encode()
+            ).hexdigest(),
             output_sha256=payload.sha256,
             output_byte_count=payload.byte_count,
         ),

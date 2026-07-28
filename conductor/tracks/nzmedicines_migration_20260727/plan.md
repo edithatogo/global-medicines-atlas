@@ -47,26 +47,26 @@
 
 ## Phase 4: Harness, CI/CD, and Traceability ([GitHub #5](https://github.com/edithatogo/global-medicines-atlas/issues/5))
 
-- [ ] Task: Integrate quality harness
+- [x] Task: Integrate quality harness
   - [x] Add unit, integration, end-to-end, smoke, property, and mutation lanes
   - [x] Add the maintainer-owned test-goblin dependency and CI profile
   - [x] Document the maintainer-owned Test-Goblin compatibility profile
   - [x] Add `ty`, BasedPyright, Scalene, and >90% Codecov gates
-  - [ ] Add deterministic generation and source-boundary checks
-- [ ] Task: Add GitHub automation
+  - [x] Add deterministic generation and source-boundary checks
+- [x] Task: Add GitHub automation
   - [x] Add Renovate configuration
-  - [~] Add SHA-pinned CI, CodeQL, actionlint, zizmor, SBOM, and attestations
+  - [x] Add SHA-pinned CI, CodeQL, actionlint, zizmor, SBOM, and attestations
     - [x] SHA-pin active GitHub Actions
     - [x] Add CodeQL, actionlint, zizmor, dependency audit, and CycloneDX SBOM lanes
-    - [ ] Add release-only provenance attestations
+    - [x] Add release-only provenance attestations
   - [x] Add structured issue forms and labels
-  - [ ] Add dry-run track/issue synchronization
+  - [x] Add dry-run track/issue synchronization
 - [x] Task: Create issue hierarchy
   - [x] Prepare parent and phase issue drafts for later publication
   - [x] Create parent migration issue
   - [x] Create linked phase/task subissues
   - [x] Backfill issue URLs into track metadata and plans
-- [~] Task: Phase Verification & Checkpoint
+- [x] Task: Phase Verification & Checkpoint
   - [x] Add root agent contract and machine-readable context manifest
   - [x] Add context-drift tests and CI receipt
   - [x] Add sole-maintainer pull-request and ownership policy

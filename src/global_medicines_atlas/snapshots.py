@@ -48,7 +48,9 @@ class TransformationLineage(FrozenModel):
 class SnapshotManifest(FrozenModel):
     """Qualification receipt that makes its fixture-only scope explicit."""
 
-    schema_id: Literal["global-medicines-atlas.snapshot-lineage"] = MANIFEST_SCHEMA_ID
+    schema_id: Literal["global-medicines-atlas.snapshot-lineage"] = (
+        MANIFEST_SCHEMA_ID
+    )
     schema_version: Literal[1] = MANIFEST_SCHEMA_VERSION
     qualification_scope: Literal["fixture_only_not_live_evidence"] = (
         FIXTURE_EVIDENCE_LABEL
@@ -61,7 +63,9 @@ class SnapshotManifest(FrozenModel):
 
     @model_validator(mode="after")
     def artifact_paths_are_unique(self) -> SnapshotManifest:
-        identities = [(artifact.role, artifact.path) for artifact in self.artifacts]
+        identities = [
+            (artifact.role, artifact.path) for artifact in self.artifacts
+        ]
         if len(identities) != len(set(identities)):
             raise ValueError("Snapshot artifact role/path pairs must be unique")
         if not any(artifact.role == "input" for artifact in self.artifacts):
@@ -109,12 +113,15 @@ def _qualified_artifact(
     try:
         relative = resolved.relative_to(root)
     except ValueError as error:
-        raise ValueError(f"Artifact is outside the fixture root: {path}") from error
+        raise ValueError(
+            f"Artifact is outside the fixture root: {path}"
+        ) from error
     normalized = PurePosixPath(relative.as_posix())
     forbidden = {
         part.casefold()
         for part in normalized.parts
-        if part.casefold() in FORBIDDEN_PATH_PARTS or part.casefold().startswith(".env")
+        if part.casefold() in FORBIDDEN_PATH_PARTS
+        or part.casefold().startswith(".env")
     }
     if forbidden:
         names = ", ".join(sorted(forbidden))
@@ -154,7 +161,9 @@ def build_fixture_snapshot_manifest(
     return SnapshotManifest(
         dataset_schema_id=dataset_schema_id,
         dataset_schema_version=dataset_schema_version,
-        source_catalog_sha256=sha256_file(source_catalog_path.resolve(strict=True)),
+        source_catalog_sha256=sha256_file(
+            source_catalog_path.resolve(strict=True)
+        ),
         transformation=TransformationLineage(
             command=command,
             package_commit=package_commit,
@@ -194,5 +203,7 @@ def verify_snapshot_manifest(
             role=artifact.role,
         )
         if qualified != artifact:
-            raise ValueError(f"Artifact digest or size mismatch: {artifact.path}")
+            raise ValueError(
+                f"Artifact digest or size mismatch: {artifact.path}"
+            )
     return manifest
