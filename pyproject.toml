@@ -18,6 +18,7 @@ dependencies = [
   "pydantic-settings>=2.11",
   "structlog>=25.4",
   "tenacity>=9.1",
+  "tzdata>=2026.2; platform_system == 'Windows'",
 ]
 
 [dependency-groups]
