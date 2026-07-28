@@ -35,7 +35,7 @@
     "visibility": "private",
     "remote": "origin",
     "default_branch": "main",
-    "initial_push_status": "gated_pending_publication_audit"
+    "initial_push_status": "published_private_governed_baseline"
   },
   "python_environment": {
     "implementation": "CPython",
@@ -56,6 +56,7 @@
     "matrix_sha256": "ab476957e51dd648ac72db1d134115f29c2acf46ea5ddcc616456e8019bb2729"
   },
   "github_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/1",
+  "github_project": "https://github.com/users/edithatogo/projects/35",
   "github_issues": {
     "parent": {
       "number": 1,

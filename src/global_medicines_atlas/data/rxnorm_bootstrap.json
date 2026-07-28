@@ -1,0 +1,9 @@
+{
+  "fixture_version": "v1",
+  "concepts": {
+    "acetaminophen": ["161", "Acetaminophen"],
+    "paracetamol": ["161", "Acetaminophen"],
+    "ibuprofen": ["5640", "Ibuprofen"],
+    "warfarin": ["11289", "Warfarin"]
+  }
+}

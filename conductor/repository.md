@@ -12,7 +12,9 @@
 - **Remote URL:** `https://github.com/edithatogo/global-medicines-atlas.git`
 - **Visibility:** private
 - **Issue tracking:** enabled
-- **Reserved default branch:** `main`
+- **Default branch:** `main`
+- **GitHub Project:** [Global Medicines Atlas Conductor](https://github.com/users/edithatogo/projects/35)
+- **Canonical clean checkout:** `C:\Users\60217257\repos\global-medicines-atlas`
 
 ## Role
 
@@ -26,17 +28,11 @@ package. It is not the canonical repository for the global product.
 
 ## Publication Boundary
 
-The canonical repository was intentionally created empty. Connecting `origin`
-does not authorize publishing the current branch or historical objects.
+The governed baseline was published to `main` after excluding local-only,
+licensed, source, generated, secret, and large payloads. Implementation changes
+flow through pull requests and hosted checks. The repository remains private
+until an explicit public-release review and approval.
 
-Before the first push:
-
-1. verify tracked files and history against the NZ asset rights matrix;
-2. exclude local-only, licensed, source, generated, and large payloads;
-3. verify the preserved `nzmedicines` bundle strategy;
-4. establish the intended clean `main` history and branch policy;
-5. run secret, large-file, licence, provenance, and workflow checks.
-
-The repository remains private until an explicit public-release review and
-approval.
-
+The original OneDrive workspace is retained as migration evidence and a source
+for resident, reviewed assets. Its degraded placeholder-backed Git database is
+not the canonical operational checkout.

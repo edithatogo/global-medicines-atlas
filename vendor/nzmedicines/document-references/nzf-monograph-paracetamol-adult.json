@@ -1,0 +1,24 @@
+{
+  "resourceType": "DocumentReference",
+  "id": "nzf-monograph-paracetamol-adult",
+  "meta": {
+    "lastUpdated": "2026-05-18T00:00:00Z"
+  },
+  "status": "current",
+  "type": {
+    "coding": [
+      {
+        "system": "https://standards.digital.health.nz/ns/nzf-document-type-code",
+        "code": "AdultMonograph"
+      }
+    ]
+  },
+  "content": [
+    {
+      "attachment": {
+        "url": "https://nzformulary.org/nzf_2439",
+        "title": "paracetamol"
+      }
+    }
+  ]
+}

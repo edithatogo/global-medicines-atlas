@@ -1,0 +1,176 @@
+{
+  "resourceType": "Medication",
+  "id": "10037191000116105",
+  "meta": {
+    "profile": [
+      "http://hl7.org.nz/fhir/StructureDefinition/NzfMedication"
+    ],
+    "lastUpdated": "2026-05-18T00:00:00Z"
+  },
+  "extension": [
+    {
+      "url": "http://hl7.org.nz/fhir/StructureDefinition/nzf-nzmt-type",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "https://standards.digital.health.nz/ns/nzmt-type-code",
+            "code": "mp"
+          }
+        ]
+      }
+    },
+    {
+      "url": "http://hl7.org.nz/fhir/StructureDefinition/nzf-atc",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://www.whocc.no/atc",
+            "code": "N02BE01",
+            "display": "Paracetamol"
+          }
+        ],
+        "text": "Paracetamol"
+      }
+    },
+    {
+      "extension": [
+        {
+          "url": "substance",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://nzmt.org.nz",
+                "code": "2442011000036104"
+              }
+            ],
+            "text": "paracetamol"
+          }
+        },
+        {
+          "url": "classification",
+          "valueCodeableConcept": {
+            "text": "Prescription"
+          }
+        },
+        {
+          "url": "conditions",
+          "valueString": "<strong>except</strong> when specified elsewhere in this schedule"
+        }
+      ],
+      "url": "http://hl7.org.nz/fhir/StructureDefinition/nzf-legalclass"
+    },
+    {
+      "extension": [
+        {
+          "url": "type",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://nzmt.org.nz",
+                "code": "20069011000116101",
+                "display": "Preferred term"
+              }
+            ],
+            "text": "Preferred term"
+          }
+        },
+        {
+          "url": "term",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://nzmt.org.nz",
+                "code": "10037191000116105",
+                "display": "paracetamol"
+              }
+            ],
+            "text": "paracetamol"
+          }
+        }
+      ],
+      "url": "http://hl7.org.nz/fhir/StructureDefinition/nzf-description"
+    },
+    {
+      "extension": [
+        {
+          "url": "type",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://nzmt.org.nz",
+                "code": "20069021000116103",
+                "display": "Synonym"
+              }
+            ],
+            "text": "Synonym"
+          }
+        },
+        {
+          "url": "term",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://nzmt.org.nz",
+                "code": "10037191000116109",
+                "display": "acetaminophen"
+              }
+            ],
+            "text": "acetaminophen"
+          }
+        }
+      ],
+      "url": "http://hl7.org.nz/fhir/StructureDefinition/nzf-description"
+    },
+    {
+      "url": "http://hl7.org.nz/fhir/StructureDefinition/nzf-link",
+      "valueReference": {
+        "reference": "DocumentReference/nzf-monograph-paracetamol-adult",
+        "identifier": {
+          "system": "https://standards.digital.health.nz/ns/nzf-monograph-code",
+          "value": "nzf_2439"
+        },
+        "display": "nzf_2439"
+      }
+    },
+    {
+      "url": "http://hl7.org.nz/fhir/StructureDefinition/nzf-link",
+      "valueReference": {
+        "reference": "DocumentReference/nzfc-monograph-paracetamol-child",
+        "identifier": {
+          "system": "https://standards.digital.health.nz/ns/nzf-monograph-code",
+          "value": "nzf_9575"
+        },
+        "display": "nzf_9575"
+      }
+    }
+  ],
+  "code": {
+    "coding": [
+      {
+        "system": "http://nzmt.org.nz",
+        "code": "10037191000116105",
+        "display": "paracetamol"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "90332006",
+        "display": "Product containing paracetamol (medicinal product)"
+      }
+    ]
+  },
+  "status": "active",
+  "ingredient": [
+    {
+      "itemCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://nzmt.org.nz",
+            "code": "2442011000036104",
+            "display": "paracetamol"
+          }
+        ]
+      },
+      "isActive": true
+    }
+  ]
+}
