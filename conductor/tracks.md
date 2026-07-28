@@ -6,8 +6,8 @@
   *Archived: [archive/global_country_adapters_20260729/index.md](./archive/global_country_adapters_20260729/index.md); live qualification continues in GitHub issue #54.*
 - [x] **Track: Build canonical bitemporal evidence and conflict handling**
   *Archived: [archive/canonical_temporal_evidence_20260729/index.md](./archive/canonical_temporal_evidence_20260729/index.md); live qualification remains open in #54.*
-- [ ] **Track: Qualify cross-jurisdiction medicine matching**
-  *Link: [tracks/cross_jurisdiction_matching_20260729/index.md](./tracks/cross_jurisdiction_matching_20260729/index.md)*
+- [x] **Track: Qualify cross-jurisdiction medicine matching**
+  *Archived: [archive/cross_jurisdiction_matching_20260729/index.md](./archive/cross_jurisdiction_matching_20260729/index.md).*
 - [ ] **Track: Deliver the comparison API, CLI and accessible atlas**
   *Link: [tracks/comparison_api_atlas_20260729/index.md](./tracks/comparison_api_atlas_20260729/index.md)*
 - [ ] **Track: Produce governed reproducible publication packages**
