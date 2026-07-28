@@ -11,10 +11,23 @@ import sys
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-GOVERNED_TESTS = (
-    "tests/test_nzulm_fhir_adapter.py",
-    "tests/test_nzulm_fhir_properties.py",
-)
+TEST_LANES: dict[str, tuple[str, ...]] = {
+    "unit": (
+        "tests/test_country_adapter_registry.py",
+        "tests/test_source_catalog.py",
+        "tests/test_terminology_resolver.py",
+    ),
+    "integration": (
+        "tests/test_nz_asset_inventory.py",
+        "tests/test_nzulm_fhir_adapter.py",
+        "tests/test_us_drugsfda_adapter.py",
+    ),
+    "e2e": ("tests/test_canonical_nz_adapter.py",),
+    "smoke": ("tests/test_smoke.py",),
+    "property": ("tests/test_nzulm_fhir_properties.py",),
+    "edge": ("tests/test_edge_cases.py",),
+}
+ALL_TESTS = tuple(path for paths in TEST_LANES.values() for path in paths)
 
 
 def run(command: Sequence[str]) -> None:
@@ -25,14 +38,14 @@ def run(command: Sequence[str]) -> None:
         raise SystemExit(completed.returncode)
 
 
-def pytest_command(*extra: str) -> list[str]:
+def pytest_command(tests: Sequence[str], *extra: str) -> list[str]:
     """Build a pytest command using the active Python 3.14 environment."""
 
     return [
         sys.executable,
         "-m",
         "pytest",
-        *GOVERNED_TESTS,
+        *tests,
         "-q",
         *extra,
     ]
@@ -41,7 +54,13 @@ def pytest_command(*extra: str) -> list[str]:
 def quick() -> None:
     """Run examples, properties, negative controls, and randomized ordering."""
 
-    run(pytest_command())
+    run(pytest_command(ALL_TESTS))
+
+
+def lane(name: str) -> None:
+    """Run one explicit test architecture lane."""
+
+    run(pytest_command(TEST_LANES[name]))
 
 
 def coverage() -> None:
@@ -49,12 +68,41 @@ def coverage() -> None:
 
     run(
         pytest_command(
+            ALL_TESTS,
+            "--cov=global_medicines_atlas",
             "--cov=sources.nz.nzulm_fhir",
             "--cov-branch",
             "--cov-report=term-missing",
             "--cov-report=xml",
-            "--cov-fail-under=91",
+            "--cov-fail-under=92",
         )
+    )
+
+
+def typing() -> None:
+    """Run fast typing first and strict basedpyright as the formal gate."""
+
+    run(["uv", "run", "--group", "typing", "ty", "check"])
+    run(["uv", "run", "--group", "typing", "basedpyright"])
+
+
+def profile() -> None:
+    """Exercise the canonical workload under Scalene and emit an HTML report."""
+
+    run(
+        [
+            "uv",
+            "run",
+            "--group",
+            "profiling",
+            "scalene",
+            "run",
+            "--cpu-only",
+            "--profile-all",
+            "--outfile",
+            "scalene-profile.json",
+            "scripts/profile_smoke.py",
+        ]
     )
 
 
@@ -73,20 +121,36 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "profile",
-        choices=("quick", "coverage", "mutation", "full"),
+        choices=(
+            *TEST_LANES,
+            "quick",
+            "coverage",
+            "typing",
+            "mutation",
+            "profile",
+            "full",
+        ),
         default="quick",
         nargs="?",
     )
-    profile = parser.parse_args().profile
-    if profile == "quick":
+    selected_profile = parser.parse_args().profile
+    if selected_profile in TEST_LANES:
+        lane(selected_profile)
+    elif selected_profile == "quick":
         quick()
-    elif profile == "coverage":
+    elif selected_profile == "coverage":
         coverage()
-    elif profile == "mutation":
+    elif selected_profile == "mutation":
         mutation()
+    elif selected_profile == "typing":
+        typing()
+    elif selected_profile == "profile":
+        profile()
     else:
+        typing()
         coverage()
         mutation()
+        profile()
 
 
 if __name__ == "__main__":
