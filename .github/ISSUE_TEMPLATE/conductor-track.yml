@@ -1,0 +1,44 @@
+name: Conductor track
+description: Track work linked to requirements, design, plan, and evidence
+title: "[Track] "
+labels:
+  - "type:track"
+body:
+  - type: input
+    id: track
+    attributes:
+      label: Conductor track ID
+      placeholder: nzmedicines_migration_20260727
+    validations:
+      required: true
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Requirement identifiers
+      description: List the MoSCoW requirement IDs this issue implements.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Observable outcome
+      description: State the result and evidence, not merely the activity.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance evidence
+      description: Tests, fixtures, artifacts, receipts, or external observations required.
+    validations:
+      required: true
+  - type: checkboxes
+    id: gates
+    attributes:
+      label: Required gates
+      options:
+        - label: Source rights and licensing reviewed
+        - label: Privacy and governance triggers reviewed
+        - label: Schema and migration impact reviewed
+        - label: Reproducibility evidence specified
+        - label: External actions accurately classified

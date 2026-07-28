@@ -1,0 +1,77 @@
+# OpenMemory - IDE/Assistant specific rules
+.qoder/rules/openmemory.md
+
+# Python and uv environments
+__pycache__/
+*.py[cod]
+.venv/
+
+# Test, typing, profiling, and coverage outputs
+.pytest_cache/
+.hypothesis/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+mutants/
+
+# Build and package outputs
+build/
+dist/
+*.egg-info/
+
+# Local editor and operating-system debris
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# Credentials and machine-local configuration
+.env
+.env.*
+!.env.example
+
+# Preserved legacy Git database (recoverable local migration evidence)
+.git-legacy-*/
+
+# Governed or restricted local medicine source payloads
+NZULM/
+nzulm_2023_data/
+nzulm_2023.zip
+nzulm.db
+medsafe_exports/
+pbs_data/
+tga_exports/
+ema_data/
+drugbank/
+gtop_data/
+artifacts/
+vendor/history/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# Derived analyses, reports, and local research outputs
+Australia vs NZ Study 1/
+comparisons/
+corrected_statistical_results/
+formal_statistical_results/
+logs/
+manuscripts/
+notebooks/
+reports/
+research_outputs/
+runs/
+unified_analysis/
+visualizations/
+manual_review_candidates.csv
+manual_review_candidates_summary.txt
+medsafe_applications_paracetamol.csv
+medsafe_products_paracetamol.csv
+*.log
+
+# JavaScript dependency installations
+node_modules/

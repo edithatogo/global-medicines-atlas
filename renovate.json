@@ -1,0 +1,76 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "Dependency update dashboard",
+  "labels": [
+    "dependencies"
+  ],
+  "rangeStrategy": "pin",
+  "schedule": [
+    "after 6am and before 9am on monday"
+  ],
+  "timezone": "Australia/Sydney",
+  "enabledManagers": [
+    "pep621",
+    "pip_requirements",
+    "github-actions",
+    "cargo",
+    "npm",
+    "dockerfile"
+  ],
+  "packageRules": [
+    {
+      "matchManagers": [
+        "pep621",
+        "pip_requirements"
+      ],
+      "groupName": "Python runtime and data stack",
+      "dependencyDashboardApproval": true,
+      "separateMinorPatch": true
+    },
+    {
+      "matchManagers": [
+        "pep621",
+        "pip_requirements"
+      ],
+      "matchPackageNames": [
+        "hypothesis",
+        "mutmut",
+        "pytest",
+        "pytest-cov",
+        "pytest-randomly",
+        "pytest-xdist"
+      ],
+      "groupName": "Test-goblin and pytest toolchain",
+      "dependencyDashboardApproval": true,
+      "separateMinorPatch": true
+    },
+    {
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "GitHub Actions",
+      "dependencyDashboardApproval": true,
+      "separateMinorPatch": true
+    },
+    {
+      "matchManagers": [
+        "cargo"
+      ],
+      "groupName": "Rust dependencies",
+      "dependencyDashboardApproval": true,
+      "separateMinorPatch": true
+    },
+    {
+      "matchManagers": [
+        "npm"
+      ],
+      "groupName": "Node dependencies",
+      "dependencyDashboardApproval": true,
+      "separateMinorPatch": true
+    }
+  ]
+}

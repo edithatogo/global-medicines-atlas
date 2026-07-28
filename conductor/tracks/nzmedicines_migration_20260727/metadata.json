@@ -1,0 +1,125 @@
+{
+  "track_id": "nzmedicines_migration_20260727",
+  "type": "refactor",
+  "status": "active",
+  "created_at": "2026-07-27T00:00:00+10:00",
+  "updated_at": "2026-07-29T00:44:17+10:00",
+  "last_reconciled_at": "2026-07-29T00:44:17+10:00",
+  "requirements": [
+    "M-010",
+    "M-011",
+    "M-012",
+    "M-013",
+    "M-014",
+    "M-020",
+    "M-021",
+    "M-022",
+    "M-023",
+    "M-024",
+    "M-025",
+    "M-050",
+    "M-051",
+    "M-052",
+    "M-053",
+    "M-054",
+    "M-055"
+  ],
+  "upstream_repository": "https://github.com/edithatogo/nzmedicines",
+  "upstream_commit": "6a8ecfae67f15d635750d11d5f446b93d76c1865",
+  "canonical_repository": {
+    "full_name": "edithatogo/global-medicines-atlas",
+    "url": "https://github.com/edithatogo/global-medicines-atlas",
+    "git_url": "https://github.com/edithatogo/global-medicines-atlas.git",
+    "repository_id": 1315059642,
+    "node_id": "R_kgDOTmI3ug",
+    "visibility": "private",
+    "remote": "origin",
+    "default_branch": "main",
+    "initial_push_status": "gated_pending_publication_audit"
+  },
+  "python_environment": {
+    "implementation": "CPython",
+    "version": "3.14.6",
+    "manager": "uv 0.11.29",
+    "lockfile": "uv.lock",
+    "interoperable_lockfile": "pylock.toml",
+    "test_profile": "test-goblin"
+  },
+  "nz_asset_inventory": {
+    "manifest": "conductor/tracks/nzmedicines_migration_20260727/nz-asset-inventory.json",
+    "matrix": "conductor/tracks/nzmedicines_migration_20260727/nz-asset-disposition.csv",
+    "asset_count": 162,
+    "local_asset_count": 137,
+    "upstream_asset_count": 25,
+    "local_placeholder_count": 132,
+    "manifest_sha256": "19aa2103407c77a55a072f69a8c5a77ea644329d2f361e08f234b4eae4f61493",
+    "matrix_sha256": "ab476957e51dd648ac72db1d134115f29c2acf46ea5ddcc616456e8019bb2729"
+  },
+  "github_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/1",
+  "github_issues": {
+    "parent": {
+      "number": 1,
+      "rest_id": 4999581861,
+      "node_id": "I_kwDOTmI3us8AAAABKf-QpQ",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/issues/1",
+      "state": "open"
+    },
+    "phases": [
+      {
+        "phase": 1,
+        "number": 2,
+        "rest_id": 4999584595,
+        "node_id": "I_kwDOTmI3us8AAAABKf-bUw",
+        "url": "https://github.com/edithatogo/global-medicines-atlas/issues/2",
+        "state": "closed"
+      },
+      {
+        "phase": 2,
+        "number": 3,
+        "rest_id": 4999585072,
+        "node_id": "I_kwDOTmI3us8AAAABKf-dMA",
+        "url": "https://github.com/edithatogo/global-medicines-atlas/issues/3",
+        "state": "closed"
+      },
+      {
+        "phase": 3,
+        "number": 4,
+        "rest_id": 4999585716,
+        "node_id": "I_kwDOTmI3us8AAAABKf-ftA",
+        "url": "https://github.com/edithatogo/global-medicines-atlas/issues/4",
+        "state": "closed"
+      },
+      {
+        "phase": 4,
+        "number": 5,
+        "rest_id": 4999586317,
+        "node_id": "I_kwDOTmI3us8AAAABKf-iDQ",
+        "url": "https://github.com/edithatogo/global-medicines-atlas/issues/5",
+        "state": "open"
+      },
+      {
+        "phase": 5,
+        "number": 6,
+        "rest_id": 4999586794,
+        "node_id": "I_kwDOTmI3us8AAAABKf-j6g",
+        "url": "https://github.com/edithatogo/global-medicines-atlas/issues/6",
+        "state": "open"
+      }
+    ]
+  },
+  "github_issue_drafts": [
+    ".github/generated-issues/nzmedicines-migration-parent.md",
+    ".github/generated-issues/nzmedicines-migration-01-preserve-reconcile.md",
+    ".github/generated-issues/nzmedicines-migration-02-nz-adapter-fixtures.md",
+    ".github/generated-issues/nzmedicines-migration-03-rxnav-in-a-box.md",
+    ".github/generated-issues/nzmedicines-migration-04-harness-cicd.md",
+    ".github/generated-issues/nzmedicines-migration-05-compatibility-handoff.md"
+  ],
+  "blockers": [
+    {
+      "id": "onedrive-git-index",
+      "status": "degraded",
+      "detail": "Git index operations may time out while the repository is backed by OneDrive placeholders."
+    }
+  ]
+}
