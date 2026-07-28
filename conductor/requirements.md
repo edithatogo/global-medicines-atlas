@@ -91,6 +91,25 @@
   GitHub and Hugging Face resources, requiring reuse-before-build dispositions,
   immutable GitHub snapshots, licensing gates, and non-overlapping capability
   ownership.
+- **M-070:** Maintain an evidence-gated v0.1-to-v1.0 roadmap and machine-readable
+  maturity model covering every blocking product dimension.
+- **M-071:** Store regulatory and funding assertions bitemporally, preserving
+  source-effective time, system-observation time, supersession and conflicts.
+- **M-072:** Produce deterministic, confidence-scored cross-jurisdiction mapping
+  candidates with explainable features, negative controls and adjudication state.
+- **M-073:** Provide a versioned read-only API, CLI and accessible atlas that expose
+  provenance, uncertainty, temporal scope and measured coverage.
+- **M-074:** Generate governed Parquet, Croissant, data-card, citation, SBOM and
+  provenance-attestation release artifacts without publishing by default.
+- **M-075:** Monitor source availability, schema drift, data freshness and adapter
+  health with bounded retries, durable receipts and actionable escalation.
+- **M-076:** Enforce security, performance, compatibility, backup and recovery
+  budgets before release-candidate promotion.
+- **M-077:** Require clean-room reproduction, migration rehearsal, documentation,
+  support and residual-risk evidence before stable v1.
+- **M-078:** Maintain bidirectional traceability among releases, MoSCoW
+  requirements, design components, Conductor tracks, GitHub parent/subissues,
+  tests and evidence receipts.
 
 ## Should Have
 

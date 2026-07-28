@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "stable_target": "1.0.0",
+  "levels": [
+    {"id": "M0", "name": "proposed", "evidence": ["requirement", "authority"]},
+    {"id": "M1", "name": "contracted", "evidence": ["schema", "source_contract", "acceptance_tests"]},
+    {"id": "M2", "name": "implemented", "evidence": ["reference_implementation", "fixture_tests"]},
+    {"id": "M3", "name": "integrated", "evidence": ["end_to_end_tests", "provenance_receipt"]},
+    {"id": "M4", "name": "qualified", "evidence": ["live_source_receipt", "drift_control", "performance_budget"]},
+    {"id": "M5", "name": "stable", "evidence": ["independent_reproduction", "support_readiness", "release_approval"]}
+  ],
+  "releases": [
+    {"version": "0.1.0", "outcome": "governed-foundation", "target_level": "M3"},
+    {"version": "0.2.0", "outcome": "nz-evidence-alpha", "target_level": "M3"},
+    {"version": "0.3.0", "outcome": "first-cohort-alpha", "target_level": "M3"},
+    {"version": "0.4.0", "outcome": "temporal-evidence-beta", "target_level": "M3"},
+    {"version": "0.5.0", "outcome": "matching-beta", "target_level": "M3"},
+    {"version": "0.6.0", "outcome": "product-beta", "target_level": "M3"},
+    {"version": "0.7.0", "outcome": "reproducible-release-beta", "target_level": "M4"},
+    {"version": "0.8.0", "outcome": "hardened-release-candidate", "target_level": "M4"},
+    {"version": "0.9.0", "outcome": "stable-candidate", "target_level": "M5"},
+    {"version": "1.0.0", "outcome": "stable-global-medicines-atlas", "target_level": "M5"}
+  ],
+  "blocking_dimensions": [
+    "canonical_evidence",
+    "source_coverage",
+    "matching_quality",
+    "provenance_and_rights",
+    "product_accessibility",
+    "security_and_supply_chain",
+    "operations_and_recovery",
+    "reproducibility_and_support"
+  ]
+}
