@@ -519,11 +519,7 @@ def test_repository_identity_can_be_read_from_archived_track(
 ) -> None:
     module = _load_module()
     metadata = (
-        tmp_path
-        / "conductor"
-        / "archive"
-        / "migration"
-        / "metadata.json"
+        tmp_path / "conductor" / "archive" / "migration" / "metadata.json"
     )
     metadata.parent.mkdir(parents=True)
     metadata.write_text(
