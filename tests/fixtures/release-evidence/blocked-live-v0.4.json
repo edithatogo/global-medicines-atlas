@@ -1,0 +1,57 @@
+{
+  "schema_version": "1",
+  "release": "v0.4",
+  "external_gate_issue": 54,
+  "cases": [
+    {
+      "id": "fixture",
+      "evidence_class": "fixture",
+      "rights_state": "permitted",
+      "denominator": 1,
+      "retrieved_at": "2026-07-29T00:00:00Z",
+      "gate_overrides": {},
+      "expected_blockers": ["live_evidence_only"]
+    },
+    {
+      "id": "synthetic",
+      "evidence_class": "synthetic",
+      "rights_state": "permitted",
+      "denominator": 1,
+      "retrieved_at": "2026-07-29T00:00:00Z",
+      "gate_overrides": {},
+      "expected_blockers": ["live_evidence_only"]
+    },
+    {
+      "id": "unknown-rights",
+      "evidence_class": "live",
+      "rights_state": "unknown",
+      "denominator": 1,
+      "retrieved_at": "2026-07-29T00:00:00Z",
+      "gate_overrides": {},
+      "expected_blockers": [
+        "coverage_receipt_reconciliation",
+        "rights_permitted"
+      ]
+    },
+    {
+      "id": "stale",
+      "evidence_class": "live",
+      "rights_state": "permitted",
+      "denominator": 1,
+      "retrieved_at": "2025-07-29T00:00:00Z",
+      "gate_overrides": {
+        "live_lineage_verification": "failed"
+      },
+      "expected_blockers": ["live_lineage_verification"]
+    },
+    {
+      "id": "denominator-free",
+      "evidence_class": "live",
+      "rights_state": "permitted",
+      "denominator": null,
+      "retrieved_at": "2026-07-29T00:00:00Z",
+      "gate_overrides": {},
+      "expected_blockers": ["known_coverage_denominators"]
+    }
+  ]
+}
