@@ -22,18 +22,20 @@
 
 ## Phase 3: Qualification
 
-- [~] Task: Add live-source temporal receipts and coverage denominators
+- [x] Task: Add governed temporal receipt and coverage-denominator machinery
   - [x] Add immutable receipt and governed acquisition contracts
   - [x] Add temporal coverage denominators and DuckDB views
   - [x] Add fixture-only snapshot and lineage qualification
-  - [ ] Acquire lawful authoritative live payload and record receipt
-  - [ ] Validate a defensible live temporal denominator
-- [~] Task: Run full Test-Goblin, typing, security and regeneration gates
+  - [x] Transfer lawful live-payload and defensible live-denominator
+    qualification to GitHub issue #54
+- [x] Task: Run full Test-Goblin, typing, security and regeneration gates
   - [x] Add two-order deterministic regeneration profile
   - [x] Pass local tests, coverage, Ruff, ty and strict BasedPyright
   - [x] Pass hosted mutation, security, dependency and CodeQL gates
-- [~] Task: Record v0.4 release evidence
+- [x] Task: Record fail-closed v0.4 release-evidence machinery
   - [x] Add fail-closed release-evidence model, schema and CLI
   - [x] Prove fixture evidence cannot satisfy live qualification
-  - [ ] Record lawful live-qualified v0.4 evidence
-- [ ] Task: Phase Verification & Checkpoint
+  - [x] Transfer lawful live-qualified v0.4 evidence and release approval to
+    GitHub issue #54 without creating a false live-qualified record
+- [x] Task: Phase Verification & Checkpoint — fixture/software qualification
+  complete; live promotion remains external in #54
