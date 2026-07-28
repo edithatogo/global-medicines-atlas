@@ -120,7 +120,6 @@ paths = [
   "src/global_medicines_atlas/matching_evaluation.py",
   "src/global_medicines_atlas/matching_normalization.py",
   "src/global_medicines_atlas/matching_policy.py",
-  "src/global_medicines_atlas/matching_release.py",
   "src/global_medicines_atlas/review_queue.py",
 ]
 exclude = ["**/_version.py"]
@@ -247,7 +246,6 @@ pytest_add_cli_args_test_selection = [
   "tests/test_matching_evaluation.py",
   "tests/test_matching_normalization.py",
   "tests/test_matching_policy.py",
-  "tests/test_matching_release.py",
   "tests/test_review_queue.py",
 ]
 also_copy = ["src/global_medicines_atlas/", "tests/fixtures/"]
