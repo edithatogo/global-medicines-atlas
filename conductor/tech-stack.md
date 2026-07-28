@@ -128,6 +128,13 @@ LanceDB is a derived semantic and vector index.
 
 Dependencies must be introduced through a documented requirement, compatibility check, lock update, and harness evidence.
 
+The first executable frontier cohort is locked and exercised: Pydantic v2 and
+pydantic-settings for contracts, PyArrow schemas and Parquet interchange,
+Polars transformations, DuckDB coverage queries, and LanceDB as a reserved
+derived-index dependency. Pytest-gremlins and Edgetest provide mutation and
+latest-dependency compatibility evidence. Pixi locks the Linux Mojo nightly
+canary while `uv` remains the independent Python-only path.
+
 ## Internal Ecosystem Components
 
 Initial reuse candidates include:

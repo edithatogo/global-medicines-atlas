@@ -41,7 +41,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        profile: [routine, strict, package, coverage, mutation, profile]
+        profile: [routine, strict, package, coverage, mutation, gremlins, dependencies, profile]
     steps:
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
@@ -67,3 +67,18 @@ jobs:
           path: scalene-profile.json
           if-no-files-found: error
           retention-days: 14
+
+  mojo:
+    name: Mojo nightly / smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v6
+      - uses: prefix-dev/setup-pixi@a09b6247153796b190642a2b53fac4241043cf6f # v0.10.0
+        with:
+          pixi-version: "v0.73.0"
+          cache: true
+          frozen: true
+      - name: Run locked Mojo canary
+        run: pixi run mojo-check

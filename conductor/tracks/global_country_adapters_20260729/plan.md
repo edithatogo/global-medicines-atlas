@@ -34,8 +34,8 @@
 
 ## Phase 3: Global comparison
 
-- [ ] Materialise portable Parquet assertion tables.
-- [ ] Add DuckDB queries and coverage metrics.
+- [x] Materialise portable Parquet assertion tables.
+- [x] Add DuckDB queries and coverage metrics.
 - [ ] Add temporal and conflicting-source fixtures.
 - [ ] Add end-to-end country comparison tests.
 - [ ] Publish only after provenance, licence, and coverage gates pass.

@@ -20,6 +20,11 @@ coverage.xml
 htmlcov/
 scalene-profile.json
 dist/
+.edgetest/
+.pixi/
+gremlin-report.*
+.gremlins_cache/
+coverage/gremlins/
 src/global_medicines_atlas/_version.py
 htmlcov/
 mutants/
