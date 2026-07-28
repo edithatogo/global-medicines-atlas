@@ -31,7 +31,7 @@
 - [~] Task: Run full Test-Goblin, typing, security and regeneration gates
   - [x] Add two-order deterministic regeneration profile
   - [x] Pass local tests, coverage, Ruff, ty and strict BasedPyright
-  - [ ] Pass hosted mutation, security, dependency and CodeQL gates
+  - [x] Pass hosted mutation, security, dependency and CodeQL gates
 - [~] Task: Record v0.4 release evidence
   - [x] Add fail-closed release-evidence model, schema and CLI
   - [x] Prove fixture evidence cannot satisfy live qualification
