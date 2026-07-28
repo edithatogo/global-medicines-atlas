@@ -19,6 +19,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_logging.py",
         "tests/test_source_catalog.py",
         "tests/test_terminology_resolver.py",
+        "tests/test_temporal_evidence.py",
         "tests/test_version.py",
     ),
     "integration": (

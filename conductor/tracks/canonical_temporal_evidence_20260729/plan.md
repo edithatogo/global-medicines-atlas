@@ -2,9 +2,9 @@
 
 ## Phase 1: Contracts and tests
 
-- [~] Task: Define bitemporal assertion and conflict schemas
-- [ ] Task: Write golden, property and malformed-input tests
-- [ ] Task: Phase Verification & Checkpoint
+- [x] Task: Define bitemporal assertion and conflict schemas
+- [x] Task: Write golden, property and malformed-input tests
+- [x] Task: Phase Verification & Checkpoint
 
 ## Phase 2: Reference implementation
 
