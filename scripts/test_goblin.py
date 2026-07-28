@@ -18,8 +18,12 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_settings.py",
         "tests/test_logging.py",
         "tests/test_source_catalog.py",
+        "tests/test_source_receipts.py",
+        "tests/test_temporal_coverage.py",
         "tests/test_terminology_resolver.py",
         "tests/test_temporal_evidence.py",
+        "tests/test_release_evidence.py",
+        "tests/test_release_cli.py",
         "tests/test_version.py",
     ),
     "integration": (
@@ -27,6 +31,8 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_nzulm_fhir_adapter.py",
         "tests/test_us_drugsfda_adapter.py",
         "tests/test_columnar.py",
+        "tests/test_source_acquisition.py",
+        "tests/test_temporal_snapshots.py",
     ),
     "e2e": ("tests/test_canonical_nz_adapter.py",),
     "smoke": ("tests/test_smoke.py",),
@@ -164,6 +170,16 @@ def dependencies() -> None:
     ])
 
 
+def regeneration() -> None:
+    """Verify deterministic qualification and release-evidence regeneration."""
+    tests = (
+        "tests/test_temporal_snapshots.py",
+        "tests/test_release_evidence.py",
+    )
+    run(pytest_command(tests))
+    run(pytest_command(tuple(reversed(tests))))
+
+
 def security() -> None:
     """Audit workflow and dependency supply-chain state and emit an SBOM."""
     (PROJECT_ROOT / "build").mkdir(exist_ok=True)
@@ -181,7 +197,7 @@ def security() -> None:
     ])
 
 
-def main() -> None:
+def main() -> None:  # ruff: ignore[too-many-branches]
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "profile",
@@ -195,6 +211,7 @@ def main() -> None:
             "mutation",
             "gremlins",
             "dependencies",
+            "regeneration",
             "security",
             "profile",
             "full",
@@ -215,6 +232,8 @@ def main() -> None:
         gremlins()
     elif selected_profile == "dependencies":
         dependencies()
+    elif selected_profile == "regeneration":
+        regeneration()
     elif selected_profile == "security":
         security()
     elif selected_profile == "routine":
@@ -232,6 +251,7 @@ def main() -> None:
         coverage()
         mutation()
         gremlins()
+        regeneration()
         profile()
         security()
 

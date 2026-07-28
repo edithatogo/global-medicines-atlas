@@ -18,10 +18,12 @@ dependencies = [
   "pydantic-settings>=2.11",
   "structlog>=25.4",
   "tenacity>=9.1",
+  "tzdata>=2026.2; platform_system == 'Windows'",
 ]
 
 [dependency-groups]
 test = [
+  "jsonschema>=4.25",
   "packaging>=26",
   "pytest>=9.1",
   "pytest-cov>=7.0",
@@ -108,7 +110,10 @@ timeout = 30
 
 [tool.pytest-gremlins]
 paths = [
-  "src/global_medicines_atlas/columnar.py",
+    "src/global_medicines_atlas/columnar.py",
+    "src/global_medicines_atlas/coverage.py",
+    "src/global_medicines_atlas/receipts.py",
+    "src/global_medicines_atlas/release_evidence.py",
   "src/global_medicines_atlas/settings.py",
 ]
 exclude = ["**/_version.py"]
