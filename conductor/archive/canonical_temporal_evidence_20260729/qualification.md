@@ -1,5 +1,7 @@
 # Temporal qualification procedure
 
+Archived procedure. External live qualification remains open in issue #54.
+
 The Phase 3 tooling separates executable fixture qualification from live
 evidence. Fixture, synthetic, dry-run and failed receipts cannot satisfy the
 live gate.
