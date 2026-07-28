@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from enum import StrEnum
 import json
+from enum import StrEnum
 from pathlib import Path
 
 from pydantic import Field, HttpUrl, model_validator
@@ -44,19 +44,25 @@ class MedicineDataSource(FrozenModel):
 
     @model_validator(mode="after")
     def access_surface_matches_mode(self) -> MedicineDataSource:
-        if self.access_mode in {AccessMode.API, AccessMode.API_AND_DOWNLOAD}:
-            if self.api_url is None:
-                raise ValueError("API access mode requires api_url")
-        if self.access_mode in {AccessMode.DOWNLOAD, AccessMode.API_AND_DOWNLOAD}:
-            if self.download_url is None:
-                raise ValueError("download access mode requires download_url")
+        if (
+            self.access_mode in {AccessMode.API, AccessMode.API_AND_DOWNLOAD}
+            and self.api_url is None
+        ):
+            raise ValueError("API access mode requires api_url")
+        if (
+            self.access_mode in {AccessMode.DOWNLOAD, AccessMode.API_AND_DOWNLOAD}
+            and self.download_url is None
+        ):
+            raise ValueError("download access mode requires download_url")
         return self
 
 
 def load_source_catalog() -> tuple[MedicineDataSource, ...]:
     path = Path(__file__).with_name("data") / "medicine_source_catalog.json"
     payload = json.loads(path.read_text(encoding="utf-8"))
-    sources = tuple(MedicineDataSource.model_validate(row) for row in payload["sources"])
+    sources = tuple(
+        MedicineDataSource.model_validate(row) for row in payload["sources"]
+    )
     ids = [source.source_id for source in sources]
     if len(ids) != len(set(ids)):
         raise ValueError("Source catalog contains duplicate source_id values")

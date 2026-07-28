@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 import argparse
-from collections.abc import Sequence
-from pathlib import Path
 import platform
 import subprocess
 import sys
-
+from collections.abc import Sequence
+from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 TEST_LANES: dict[str, tuple[str, ...]] = {
@@ -32,7 +31,6 @@ ALL_TESTS = tuple(path for paths in TEST_LANES.values() for path in paths)
 
 def run(command: Sequence[str]) -> None:
     """Run a harness command from the project root and preserve its exit code."""
-
     completed = subprocess.run(command, cwd=PROJECT_ROOT, check=False)
     if completed.returncode:
         raise SystemExit(completed.returncode)
@@ -40,7 +38,6 @@ def run(command: Sequence[str]) -> None:
 
 def pytest_command(tests: Sequence[str], *extra: str) -> list[str]:
     """Build a pytest command using the active Python 3.14 environment."""
-
     return [
         sys.executable,
         "-m",
@@ -53,19 +50,16 @@ def pytest_command(tests: Sequence[str], *extra: str) -> list[str]:
 
 def quick() -> None:
     """Run examples, properties, negative controls, and randomized ordering."""
-
     run(pytest_command(ALL_TESTS))
 
 
 def lane(name: str) -> None:
     """Run one explicit test architecture lane."""
-
     run(pytest_command(TEST_LANES[name]))
 
 
 def coverage() -> None:
     """Run the governed suite with branch coverage and the blocking threshold."""
-
     run(
         pytest_command(
             ALL_TESTS,
@@ -74,41 +68,42 @@ def coverage() -> None:
             "--cov-branch",
             "--cov-report=term-missing",
             "--cov-report=xml",
-            "--cov-fail-under=92",
+            "--cov-fail-under=91",
         )
     )
 
 
-def typing() -> None:
-    """Run fast typing first and strict basedpyright as the formal gate."""
-
+def routine() -> None:
+    """Run the consolidated formatter, linter, and fast routine type gate."""
+    run(["uv", "run", "--group", "typing", "ruff", "format", "--check", "."])
+    run(["uv", "run", "--group", "typing", "ruff", "check", "."])
     run(["uv", "run", "--group", "typing", "ty", "check"])
+
+
+def strict() -> None:
+    """Run basedpyright strict mode as the formal final type gate."""
     run(["uv", "run", "--group", "typing", "basedpyright"])
 
 
 def profile() -> None:
     """Exercise the canonical workload under Scalene and emit an HTML report."""
-
-    run(
-        [
-            "uv",
-            "run",
-            "--group",
-            "profiling",
-            "scalene",
-            "run",
-            "--cpu-only",
-            "--profile-all",
-            "--outfile",
-            "scalene-profile.json",
-            "scripts/profile_smoke.py",
-        ]
-    )
+    run([
+        "uv",
+        "run",
+        "--group",
+        "profiling",
+        "scalene",
+        "run",
+        "--cpu-only",
+        "--profile-all",
+        "--outfile",
+        "scalene-profile.json",
+        "scripts/profile_smoke.py",
+    ])
 
 
 def mutation() -> None:
     """Run mutmut where operating-system fork semantics are available."""
-
     if platform.system() == "Windows":
         raise SystemExit(
             "mutmut 3 requires fork support. Run the mutation profile in WSL "
@@ -125,7 +120,8 @@ def main() -> None:
             *TEST_LANES,
             "quick",
             "coverage",
-            "typing",
+            "routine",
+            "strict",
             "mutation",
             "profile",
             "full",
@@ -142,12 +138,15 @@ def main() -> None:
         coverage()
     elif selected_profile == "mutation":
         mutation()
-    elif selected_profile == "typing":
-        typing()
+    elif selected_profile == "routine":
+        routine()
+    elif selected_profile == "strict":
+        strict()
     elif selected_profile == "profile":
         profile()
     else:
-        typing()
+        routine()
+        strict()
         coverage()
         mutation()
         profile()

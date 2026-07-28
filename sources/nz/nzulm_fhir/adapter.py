@@ -7,13 +7,12 @@ canonical medicines data model.
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Iterator, Mapping
-from dataclasses import dataclass
 import hashlib
 import json
+from collections.abc import Iterable, Iterator, Mapping
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
-
 
 UPSTREAM_REPOSITORY = "https://github.com/edithatogo/nzmedicines"
 UPSTREAM_COMMIT = "6a8ecfae67f15d635750d11d5f446b93d76c1865"
@@ -40,26 +39,39 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _string_mapping(value: object) -> Mapping[str, Any] | None:
+    if not isinstance(value, Mapping):
+        return None
+    candidate = cast("Mapping[object, object]", value)
+    if not all(isinstance(key, str) for key in candidate):
+        return None
+    return cast("Mapping[str, Any]", value)
+
+
 def _resource_dicts(document: object) -> Iterator[Mapping[str, Any]]:
-    if not isinstance(document, Mapping):
+    document_mapping = _string_mapping(document)
+    if document_mapping is None:
         return
-    resource_type = document.get("resourceType")
+    resource_type = document_mapping.get("resourceType")
     if isinstance(resource_type, str):
-        yield cast(Mapping[str, Any], document)
-    entries = document.get("entry")
+        yield document_mapping
+    entries = document_mapping.get("entry")
     if not isinstance(entries, list):
         return
-    for entry in entries:
-        if not isinstance(entry, Mapping):
+    for entry_value in cast("list[object]", entries):
+        entry = _string_mapping(entry_value)
+        if entry is None:
             continue
         resource = entry.get("resource")
-        if isinstance(resource, Mapping):
-            yield cast(Mapping[str, Any], resource)
+        resource_mapping = _string_mapping(resource)
+        if resource_mapping is not None:
+            yield resource_mapping
 
 
-def iter_fhir_resources(paths: Iterable[Path], *, source_root: Path) -> Iterator[FhirResourceRecord]:
+def iter_fhir_resources(
+    paths: Iterable[Path], *, source_root: Path
+) -> Iterator[FhirResourceRecord]:
     """Yield unique FHIR resources from source-native documents and bundles."""
-
     seen: set[tuple[str, str]] = set()
     for path in sorted(paths):
         document = json.loads(path.read_text(encoding="utf-8"))
@@ -89,7 +101,6 @@ def iter_fhir_resources(paths: Iterable[Path], *, source_root: Path) -> Iterator
 
 def load_upstream_fixture_records(project_root: Path) -> tuple[FhirResourceRecord, ...]:
     """Load preserved upstream JSON fixtures from the immutable vendor snapshot."""
-
     source_root = project_root / "vendor" / "nzmedicines"
     paths = (
         path

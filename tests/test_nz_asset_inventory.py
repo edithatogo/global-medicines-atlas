@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 INVENTORY_PATH = (
     PROJECT_ROOT
@@ -76,6 +75,5 @@ def test_source_payloads_are_not_classified_for_unreviewed_publication() -> None
 
     assert payload_rows
     assert all(
-        row["rights_boundary"] == "local-only-review-required"
-        for row in payload_rows
+        row["rights_boundary"] == "local-only-review-required" for row in payload_rows
     )

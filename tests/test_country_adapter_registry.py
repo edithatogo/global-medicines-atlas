@@ -8,9 +8,9 @@ import pytest
 
 from global_medicines_atlas.countries import (
     AdapterRegistry,
-    builtin_registry,
     JurisdictionSource,
     SourceDimension,
+    builtin_registry,
 )
 
 
@@ -93,12 +93,12 @@ def test_builtin_sources_do_not_conflate_regulation_and_funding() -> None:
     nz_sources = registry.get("NZL").sources
 
     regulatory = [
-        source for source in nz_sources
+        source
+        for source in nz_sources
         if source.dimension == SourceDimension.REGULATORY
     ]
     funding = [
-        source for source in nz_sources
-        if source.dimension == SourceDimension.FUNDING
+        source for source in nz_sources if source.dimension == SourceDimension.FUNDING
     ]
     assert [source.source_id for source in regulatory] == ["nz-medsafe"]
     assert [source.source_id for source in funding] == ["nz-pharmac"]

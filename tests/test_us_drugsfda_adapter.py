@@ -7,7 +7,6 @@ from datetime import UTC, datetime
 from global_medicines_atlas.adapters.us_drugsfda import project_drugsfda_bulk
 from global_medicines_atlas.models import AssertionKind
 
-
 APPLICATIONS = "ApplNo\tApplType\tSponsorName\n012345\tNDA\tExample Sponsor\n"
 PRODUCTS = (
     "ApplNo\tProductNo\tForm\tStrength\tReferenceDrug\tDrugName\t"
@@ -15,14 +14,8 @@ PRODUCTS = (
     "012345\t001\tTABLET;ORAL\t500MG\t1\tExample Drug\tEXAMPLINE\t1\n"
     "999999\t001\tTABLET;ORAL\t10MG\t0\tOrphan Row\tORPHANINE\t0\n"
 )
-MARKETING = (
-    "ApplNo\tProductNo\tMarketingStatusID\n"
-    "012345\t001\t1\n"
-)
-STATUS_LOOKUP = (
-    "MarketingStatusID\tMarketingStatusDescription\n"
-    "1\tPrescription\n"
-)
+MARKETING = "ApplNo\tProductNo\tMarketingStatusID\n012345\t001\t1\n"
+STATUS_LOOKUP = "MarketingStatusID\tMarketingStatusDescription\n1\tPrescription\n"
 
 
 def test_drugsfda_bulk_projects_confirmed_regulatory_status() -> None:

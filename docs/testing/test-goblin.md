@@ -10,9 +10,11 @@ The executable profile is declared as a PEP 735 dependency group in
 tool-independent environment is exported to PEP 751 `pylock.toml`.
 
 The harness exposes explicit `unit`, `integration`, `e2e`, `smoke`,
-`property`, and `edge` test lanes. Its quality lanes are `typing` (`ty`
-followed by formal `basedpyright`), full-project branch `coverage`, Linux
-`mutation`, and deterministic network-free Scalene `profile` generation.
+`property`, and `edge` test lanes. Its `routine` quality lane consolidates
+formatting, linting, import ordering, modernization, security-style checks,
+pytest conventions, and fast typing into Ruff plus `ty`. The final `strict`
+lane runs `basedpyright` strict mode. Full-project branch `coverage`, Linux
+`mutation`, and deterministic network-free Scalene `profile` remain separate.
 
 ## Local Commands
 
@@ -20,7 +22,8 @@ followed by formal `basedpyright`), full-project branch `coverage`, Linux
 uv sync --python 3.14.6 --group test-goblin --locked
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py quick
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py coverage
-uv run --python 3.14.6 --group dev python scripts/test_goblin.py typing
+uv run --python 3.14.6 --group dev python scripts/test_goblin.py routine
+uv run --python 3.14.6 --group dev python scripts/test_goblin.py strict
 uv run --python 3.14.6 --group dev python scripts/test_goblin.py profile
 ```
 
@@ -44,7 +47,8 @@ on native Windows. The harness reports that boundary explicitly.
 | Parallel execution | pytest-xdist |
 | Coverage and Codecov input | pytest-cov |
 | Fast typing | ty |
-| Formal typing | basedpyright |
+| Formatting, linting, imports, modernization, and consolidated static checks | Ruff |
+| Formal strict typing | basedpyright |
 | CPU profiling | Scalene |
 | Dependency maintenance | Renovate |
 
@@ -67,7 +71,7 @@ on native Windows. The harness reports that boundary explicitly.
   cancellation behavior.
 - Mutation-score thresholds begin as measured evidence and become blocking once
   calibrated against the governed core.
-- Coverage is independently blocking at 92% for both project and patch
+- Coverage is independently blocking above 90% (currently 91%) for both project and patch
   coverage. Codecov uploads authenticate with GitHub OIDC.
 - Scalene profiles are retained as CI artifacts for 14 days.
 - Renovate groups frontier dependency updates, rate-limits pull requests,

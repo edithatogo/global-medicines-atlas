@@ -89,7 +89,6 @@ def _source(
 
 def builtin_registry() -> AdapterRegistry:
     """Return the first evidence-source cohort; declarations are not ingestors."""
-
     adapters = (
         DeclarativeCountryAdapter(
             "NZL",

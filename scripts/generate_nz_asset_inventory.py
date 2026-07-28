@@ -4,14 +4,13 @@ from __future__ import annotations
 
 import argparse
 import csv
-from dataclasses import asdict, dataclass
-from datetime import UTC, datetime
 import hashlib
 import json
-from pathlib import Path
 import stat
-from typing import Final
-
+from dataclasses import asdict, dataclass
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Final, cast
 
 PROJECT_ROOT: Final = Path(__file__).resolve().parents[1]
 TRACK_ROOT: Final = PROJECT_ROOT / "conductor/tracks/nzmedicines_migration_20260727"
@@ -107,7 +106,6 @@ def sha256(path: Path) -> str:
 
 
 def local_classification(path: Path) -> tuple[str, str, str, str, str, str]:
-    name = path.name.lower()
     stem = path.stem.lower()
     suffix = path.suffix.lower()
     relative_path = relative(path)
@@ -208,10 +206,10 @@ def local_classification(path: Path) -> tuple[str, str, str, str, str, str]:
     if path.parent.name == "nzulm_2023_data":
         if stem.startswith("ms_") or stem == "medsafe_restrictions_dump":
             family = "medsafe_regulatory_source"
-        elif (
-            stem.startswith(("hml_", "ps_"))
-            or stem in {"nzmt_pharmac_subsidy_codes_dump", "prescribing_term_selection_list_dump"}
-        ):
+        elif stem.startswith(("hml_", "ps_")) or stem in {
+            "nzmt_pharmac_subsidy_codes_dump",
+            "prescribing_term_selection_list_dump",
+        }:
             family = "funding_formulary_source"
         elif stem in NZMT_HIERARCHY_STEMS:
             family = "nzmt_hierarchy_source"
@@ -296,7 +294,9 @@ def upstream_classification(path: Path) -> tuple[str, str, str, str, str, str]:
 
 def asset(path: Path, *, scope: str) -> Asset:
     stat_result = path.stat()
-    classifier = upstream_classification if scope == "upstream" else local_classification
+    classifier = (
+        upstream_classification if scope == "upstream" else local_classification
+    )
     family, disposition, rights, rationale, conflict, enhancement = classifier(path)
     return Asset(
         path=relative(path),
@@ -313,9 +313,7 @@ def asset(path: Path, *, scope: str) -> Asset:
         local_enhancement=enhancement,
         sha256=sha256(path) if scope == "upstream" else None,
         upstream_commit=(
-            "6a8ecfae67f15d635750d11d5f446b93d76c1865"
-            if scope == "upstream"
-            else None
+            "6a8ecfae67f15d635750d11d5f446b93d76c1865" if scope == "upstream" else None
         ),
     )
 
@@ -327,12 +325,16 @@ def discover_local() -> list[Path]:
         paths.update(
             path
             for path in absolute.rglob("*")
-            if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc"
+            if path.is_file()
+            and "__pycache__" not in path.parts
+            and path.suffix != ".pyc"
         )
     for relative_path in LOCAL_FILES:
         path = PROJECT_ROOT / relative_path
         if not path.is_file():
-            raise FileNotFoundError(f"Required local inventory asset is missing: {relative_path}")
+            raise FileNotFoundError(
+                f"Required local inventory asset is missing: {relative_path}"
+            )
         paths.add(path)
     return sorted(paths)
 
@@ -367,11 +369,24 @@ def write_outputs(inventory: dict[str, object]) -> None:
         json.dumps(inventory, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
-    rows = inventory["assets"]
-    if not isinstance(rows, list) or not rows:
+    rows_value = inventory["assets"]
+    if not isinstance(rows_value, list):
+        raise TypeError("Inventory assets must be a list")
+    row_values = cast("list[object]", rows_value)
+    rows: list[dict[str, object]] = []
+    for row_value in row_values:
+        if not isinstance(row_value, dict):
+            raise TypeError("Inventory contains a non-mapping asset row")
+        candidate = cast("dict[object, object]", row_value)
+        if not all(isinstance(key, str) for key in candidate):
+            raise ValueError("Inventory asset row has a non-string key")
+        rows.append(cast("dict[str, object]", row_value))
+    if not rows:
         raise ValueError("Inventory has no asset rows")
     with CSV_OUTPUT.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+        writer: csv.DictWriter[str] = csv.DictWriter(
+            handle, fieldnames=list(rows[0].keys())
+        )
         writer.writeheader()
         writer.writerows(rows)
 

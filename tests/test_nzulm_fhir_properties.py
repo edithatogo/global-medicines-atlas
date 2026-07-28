@@ -3,15 +3,14 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 import string
+from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from sources.nz.nzulm_fhir import iter_fhir_resources
-
 
 FHIR_IDS = st.text(
     alphabet=string.ascii_letters + string.digits + "-.",
@@ -71,9 +70,7 @@ def test_input_path_order_does_not_change_output_order(
             paths.append(path)
 
         forward = tuple(iter_fhir_resources(paths, source_root=source_root))
-        reverse = tuple(
-            iter_fhir_resources(reversed(paths), source_root=source_root)
-        )
+        reverse = tuple(iter_fhir_resources(reversed(paths), source_root=source_root))
 
     assert [
         (record.resource_type, record.resource_id, record.source_path)
