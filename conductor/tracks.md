@@ -6,7 +6,7 @@
   *Link: [tracks/nzmedicines_migration_20260727/index.md](./tracks/nzmedicines_migration_20260727/index.md)*
 - [~] **Track: Establish the global country-adapter framework and first source cohort**  
   *Link: [tracks/global_country_adapters_20260729/index.md](./tracks/global_country_adapters_20260729/index.md)*
-- [ ] **Track: Build canonical bitemporal evidence and conflict handling**
+- [~] **Track: Build canonical bitemporal evidence and conflict handling**
   *Link: [tracks/canonical_temporal_evidence_20260729/index.md](./tracks/canonical_temporal_evidence_20260729/index.md)*
 - [ ] **Track: Qualify cross-jurisdiction medicine matching**
   *Link: [tracks/cross_jurisdiction_matching_20260729/index.md](./tracks/cross_jurisdiction_matching_20260729/index.md)*
