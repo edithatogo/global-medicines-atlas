@@ -99,9 +99,8 @@ class TemporalStatusAssertion(FrozenModel):
     def temporal_fields_match_assertion(self) -> TemporalStatusAssertion:
         assertion = self.assertion
         if assertion.effective_from != self.valid_time.start:
-            message = (
-                "valid_time.start must match assertion.effective_from"
-            )
+            message = "valid_time.start must match "
+            message += "assertion.effective_from"
             raise ValueError(message)
         if assertion.effective_to != self.valid_time.end:
             raise ValueError("valid_time.end must match assertion.effective_to")

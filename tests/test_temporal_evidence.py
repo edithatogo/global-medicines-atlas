@@ -263,9 +263,8 @@ def test_temporal_wrapper_rejects_mismatched_source_effective_time() -> None:
 
 
 def test_temporal_wrapper_rejects_mismatched_effective_end() -> None:
-    bounded = temporal_assertion(
-        valid_to=VALID_FROM + timedelta(days=2)
-    )
+    effective_end = VALID_FROM + timedelta(days=2)
+    bounded = temporal_assertion(valid_to=effective_end)
     assertion = bounded.assertion
     with pytest.raises(ValidationError, match=r"valid_time\.end"):
         TemporalStatusAssertion(

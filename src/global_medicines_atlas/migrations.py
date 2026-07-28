@@ -38,18 +38,17 @@ def migrate_assertions_v1_to_v2(
         msg = "migration clocks must be timezone-aware"
         raise ValueError(msg)
 
+    utc_timestamp = pl.Datetime("us", "UTC")
     frame = cast("pl.DataFrame", pl.from_arrow(table)).with_columns(
         pl.lit(valid_from).alias("valid_from"),
-        pl.lit(None, dtype=pl.Datetime("us", "UTC")).alias("valid_to"),
+        pl.lit(None, dtype=utc_timestamp).alias("valid_to"),
         pl.lit(observed_from).alias("observed_from"),
-        pl.lit(None, dtype=pl.Datetime("us", "UTC")).alias("observed_to"),
+        pl.lit(None, dtype=utc_timestamp).alias("observed_to"),
         pl.lit(None, dtype=pl.String).alias("supersedes_assertion_id"),
         pl.lit(None, dtype=pl.String).alias("conflict_id"),
         pl.lit([], dtype=pl.List(pl.String)).alias("restrictions"),
-        pl.lit(None, dtype=pl.Datetime("us", "UTC")).alias("retrieved_at"),
-        pl.lit(None, dtype=pl.Datetime("us", "UTC")).alias(
-            "source_effective_at"
-        ),
+        pl.lit(None, dtype=utc_timestamp).alias("retrieved_at"),
+        pl.lit(None, dtype=utc_timestamp).alias("source_effective_at"),
         pl.lit(None, dtype=pl.String).alias("source_path"),
         pl.lit(None, dtype=pl.String).alias("source_sha256"),
         pl.lit(None, dtype=pl.String).alias("source_version"),
