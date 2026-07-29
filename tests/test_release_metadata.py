@@ -285,6 +285,28 @@ def test_citation_requires_matching_version_and_valid_date(
     assert code in {finding.code for finding in report.findings}
 
 
+@pytest.mark.unit
+def test_changelog_and_citation_release_dates_must_agree(
+    tmp_path: Path,
+) -> None:
+    _write_release_metadata(tmp_path, citation_date="2026-07-30")
+    artifact = _artifact(tmp_path)
+
+    report = validate_release_metadata(
+        root=tmp_path,
+        release_version=VERSION,
+        dynamic_version=VERSION,
+        artifacts=(artifact,),
+        qualification=_qualification(artifact),
+    )
+
+    assert "release-date-mismatch" in {
+        finding.code for finding in report.findings
+    }
+    assert report.gates[MetadataGate.CITATION] is GateResult.FAILED
+    assert not report.qualified
+
+
 @pytest.mark.parametrize(
     (
         "project_license",
@@ -404,6 +426,65 @@ def test_artifacts_require_verified_immutable_identities(
 
     assert code in {finding.code for finding in report.findings}
     assert report.gates[MetadataGate.ARTIFACT_IDENTITIES] is GateResult.FAILED
+
+
+@pytest.mark.unit
+def test_safe_in_root_symlink_artifact_is_accepted(tmp_path: Path) -> None:
+    _write_release_metadata(tmp_path)
+    target = _artifact(tmp_path)
+    link = tmp_path / "dist" / "release-link.tar.gz"
+    try:
+        link.symlink_to("release.tar.gz")
+    except OSError as error:
+        pytest.skip(f"symlinks are unavailable on this platform: {error}")
+    linked = target.model_copy(update={"path": "dist/release-link.tar.gz"})
+
+    report = validate_release_metadata(
+        root=tmp_path,
+        release_version=VERSION,
+        dynamic_version=VERSION,
+        artifacts=(linked,),
+        qualification=_qualification(linked),
+    )
+
+    assert report.qualified
+    assert report.gates[MetadataGate.ARTIFACT_IDENTITIES] is GateResult.PASSED
+
+
+@pytest.mark.unit
+def test_symlink_artifact_escape_is_rejected(tmp_path: Path) -> None:
+    _write_release_metadata(tmp_path)
+    outside = tmp_path.parent / f"{tmp_path.name}-outside-release.tar.gz"
+    payload = b"outside controlled root\n"
+    outside.write_bytes(payload)
+    link = tmp_path / "dist" / "release-link.tar.gz"
+    link.parent.mkdir()
+    try:
+        link.symlink_to(outside)
+    except OSError as error:
+        outside.unlink(missing_ok=True)
+        pytest.skip(f"symlinks are unavailable on this platform: {error}")
+    artifact = ImmutableArtifact(
+        path="dist/release-link.tar.gz",
+        sha256=sha256(payload).hexdigest(),
+        size=len(payload),
+    )
+    try:
+        report = validate_release_metadata(
+            root=tmp_path,
+            release_version=VERSION,
+            dynamic_version=VERSION,
+            artifacts=(artifact,),
+            qualification=_qualification(artifact),
+        )
+    finally:
+        outside.unlink(missing_ok=True)
+
+    assert "artifact-path-escape" in {
+        finding.code for finding in report.findings
+    }
+    assert report.gates[MetadataGate.ARTIFACT_IDENTITIES] is GateResult.FAILED
+    assert not report.qualified
 
 
 @pytest.mark.parametrize(

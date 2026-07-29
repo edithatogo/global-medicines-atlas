@@ -246,10 +246,10 @@ def _validate_changelog(
     root: Path,
     release_version: str,
     findings: list[MetadataFinding],
-) -> None:
+) -> str | None:
     text = _read_text(root, "CHANGELOG.md", MetadataGate.CHANGELOG, findings)
     if text is None:
-        return
+        return None
     version = re.escape(release_version.removeprefix("v"))
     heading = re.compile(
         rf"^## \[?{version}\]?(?: - (?P<date>\d{{4}}-\d{{2}}-\d{{2}}))?\s*$",
@@ -263,7 +263,7 @@ def _validate_changelog(
             message="changelog must contain a heading for the exact release",
             path="CHANGELOG.md",
         )
-        return
+        return None
     released_on = heading.group("date")
     if released_on is None:
         _add_finding(
@@ -273,7 +273,7 @@ def _validate_changelog(
             message="release changelog heading must include an ISO date",
             path="CHANGELOG.md",
         )
-        return
+        return None
     try:
         date.fromisoformat(released_on)
     except ValueError:
@@ -284,16 +284,18 @@ def _validate_changelog(
             message="release changelog date must be a valid ISO date",
             path="CHANGELOG.md",
         )
+        return None
+    return released_on
 
 
 def _validate_citation(
     root: Path,
     release_version: str,
     findings: list[MetadataFinding],
-) -> dict[str, str]:
+) -> tuple[dict[str, str], str | None]:
     text = _read_text(root, "CITATION.cff", MetadataGate.CITATION, findings)
     if text is None:
-        return {}
+        return {}, None
     citation = _top_level_cff_scalars(text)
     expected = release_version.removeprefix("v")
     if citation.get("version") != expected:
@@ -313,7 +315,29 @@ def _validate_citation(
             message="CITATION.cff must contain a valid date-released",
             path="CITATION.cff",
         )
-    return citation
+        released_on = None
+    return citation, released_on
+
+
+def _validate_release_dates_agree(
+    *,
+    changelog_date: str | None,
+    citation_date: str | None,
+    findings: list[MetadataFinding],
+) -> None:
+    if (
+        changelog_date is not None
+        and citation_date is not None
+        and changelog_date != citation_date
+    ):
+        _add_finding(
+            findings,
+            gate=MetadataGate.CITATION,
+            code="release-date-mismatch",
+            message=(
+                "CHANGELOG.md and CITATION.cff must record the same release date"
+            ),
+        )
 
 
 def _validate_licence(
@@ -384,6 +408,15 @@ def _validate_artifacts(
     artifacts: tuple[ImmutableArtifact, ...],
     findings: list[MetadataFinding],
 ) -> None:
+    """Validate content through strictly resolved, root-contained paths.
+
+    Resolution rejects symlink and junction escapes before the resolved target
+    is opened. The digest and size are computed from that same open target.
+    This limits, but cannot eliminate, a privileged concurrent filesystem
+    mutation between resolution and open; publication must therefore run in a
+    controlled workspace without concurrent writers.
+    """
+
     if not artifacts:
         _add_finding(
             findings,
@@ -401,6 +434,17 @@ def _validate_artifacts(
             code="duplicate-artifact-path",
             message="release artifact paths must be unique",
         )
+    try:
+        resolved_root = root.resolve(strict=True)
+    except OSError as error:
+        _add_finding(
+            findings,
+            gate=MetadataGate.ARTIFACT_IDENTITIES,
+            code="artifact-root-unreadable",
+            message=f"artifact root cannot be resolved: {error}",
+        )
+        return
+
     for artifact in artifacts:
         relative = Path(artifact.path)
         if relative.is_absolute() or ".." in relative.parts:
@@ -412,15 +456,38 @@ def _validate_artifacts(
                 path=artifact.path,
             )
             continue
-        path = root / relative
         try:
-            payload = path.read_bytes()
+            resolved_path = (resolved_root / relative).resolve(strict=True)
+            resolved_path.relative_to(resolved_root)
+        except ValueError:
+            _add_finding(
+                findings,
+                gate=MetadataGate.ARTIFACT_IDENTITIES,
+                code="artifact-path-escape",
+                message=(
+                    "resolved artifact path escapes the controlled release root"
+                ),
+                path=artifact.path,
+            )
+            continue
         except OSError as error:
             _add_finding(
                 findings,
                 gate=MetadataGate.ARTIFACT_IDENTITIES,
                 code="artifact-unreadable",
                 message=f"release artifact is not readable: {error}",
+                path=artifact.path,
+            )
+            continue
+        try:
+            # Read the already-resolved target, not the caller-provided path.
+            payload = resolved_path.read_bytes()
+        except OSError as error:
+            _add_finding(
+                findings,
+                gate=MetadataGate.ARTIFACT_IDENTITIES,
+                code="artifact-unreadable",
+                message=f"resolved release artifact is not readable: {error}",
                 path=artifact.path,
             )
             continue
@@ -500,8 +567,15 @@ def validate_release_metadata(
         dynamic_version=dynamic_version,
         findings=findings,
     )
-    _validate_changelog(root, release_version, findings)
-    citation = _validate_citation(root, release_version, findings)
+    changelog_date = _validate_changelog(root, release_version, findings)
+    citation, citation_date = _validate_citation(
+        root, release_version, findings
+    )
+    _validate_release_dates_agree(
+        changelog_date=changelog_date,
+        citation_date=citation_date,
+        findings=findings,
+    )
     _validate_licence(root, citation, findings)
     _validate_artifacts(root, artifacts, findings)
     _validate_qualification(

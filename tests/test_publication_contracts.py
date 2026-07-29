@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from hypothesis import given
@@ -22,6 +22,7 @@ from global_medicines_atlas.publication_contracts import (
     PublicationVerificationReceipt,
     RightsDeclaration,
     RightsDisposition,
+    VerificationCheck,
     VerificationEvidence,
     VerificationOutcome,
     canonical_sha256,
@@ -110,14 +111,52 @@ def _package(
 
 
 def _evidence(
+    check_id: VerificationCheck = VerificationCheck.PACKAGE_CHECKSUM,
     outcome: VerificationOutcome = VerificationOutcome.PASSED,
+    *,
+    artifact_sha256: str | None = None,
+    checked_at: datetime | None = None,
+    valid_until: datetime | None = None,
 ) -> VerificationEvidence:
-    return VerificationEvidence(
-        check_id="package-checksum",
-        outcome=outcome,
-        evidence_uri="evidence/checksum.json",
-        evidence_sha256=SHA_B,
+    privacy_approved = (
+        True if check_id is VerificationCheck.PRIVACY_REVIEW else None
     )
+    forbidden_content_detected = (
+        False if check_id is VerificationCheck.FORBIDDEN_CONTENT_SCAN else None
+    )
+    return VerificationEvidence(
+        check_id=check_id,
+        outcome=outcome,
+        evidence_uri=f"https://evidence.example.test/{check_id.value}.json",
+        evidence_sha256=SHA_B,
+        artifact_sha256=artifact_sha256 or _package().sha256(),
+        checked_at=checked_at or NOW - timedelta(hours=1),
+        valid_until=valid_until or NOW + timedelta(days=1),
+        privacy_approved=privacy_approved,
+        forbidden_content_detected=forbidden_content_detected,
+    )
+
+
+def _state_evidence(
+    state: PublicationState,
+) -> tuple[VerificationEvidence, ...]:
+    checks = [
+        VerificationCheck.PACKAGE_CHECKSUM,
+        VerificationCheck.RIGHTS_REVIEW,
+        VerificationCheck.PRIVACY_REVIEW,
+        VerificationCheck.FORBIDDEN_CONTENT_SCAN,
+    ]
+    if state in {
+        PublicationState.QUALIFIED,
+        PublicationState.UPLOADED,
+        PublicationState.PUBLIC,
+    }:
+        checks.append(VerificationCheck.QUALIFICATION)
+    if state in {PublicationState.UPLOADED, PublicationState.PUBLIC}:
+        checks.append(VerificationCheck.UPLOAD_VERIFICATION)
+    if state is PublicationState.PUBLIC:
+        checks.append(VerificationCheck.PUBLIC_VERIFICATION)
+    return tuple(_evidence(check) for check in checks)
 
 
 def test_complete_package_is_deterministic_and_content_addressed() -> None:
@@ -209,54 +248,32 @@ def test_missing_coverage_and_provenance_fail_validation() -> None:
 
 
 @pytest.mark.parametrize(
-    ("state", "outcome", "public_uri", "valid"),
+    ("state", "public_uri"),
     [
-        (PublicationState.PREPARED, VerificationOutcome.PASSED, None, True),
-        (PublicationState.QUALIFIED, VerificationOutcome.PASSED, None, True),
-        (PublicationState.UPLOADED, VerificationOutcome.PASSED, None, True),
+        (PublicationState.PREPARED, None),
+        (PublicationState.QUALIFIED, None),
+        (PublicationState.UPLOADED, None),
         (
             PublicationState.PUBLIC,
-            VerificationOutcome.PASSED,
             "https://example.test/datasets/0.7.0",
-            True,
-        ),
-        (
-            PublicationState.VERIFICATION_FAILED,
-            VerificationOutcome.FAILED,
-            None,
-            True,
-        ),
-        (PublicationState.PUBLIC, VerificationOutcome.PASSED, None, False),
-        (PublicationState.PREPARED, VerificationOutcome.FAILED, None, False),
-        (
-            PublicationState.VERIFICATION_FAILED,
-            VerificationOutcome.PASSED,
-            None,
-            False,
         ),
     ],
 )
-def test_receipt_states_require_matching_evidence(
+def test_each_success_state_accepts_its_complete_evidence_ladder(
     state: PublicationState,
-    outcome: VerificationOutcome,
     public_uri: str | None,
-    *,
-    valid: bool,
 ) -> None:
-    values = {
-        "receipt_id": "receipt-1",
-        "package_sha256": _package().sha256(),
-        "state": state,
-        "verified_at": NOW,
-        "verifier": "qualification-workflow",
-        "evidence": (_evidence(outcome),),
-        "public_uri": public_uri,
-    }
-    if not valid:
-        with pytest.raises(ValidationError):
-            PublicationVerificationReceipt(**values)
-        return
-    assert PublicationVerificationReceipt(**values).state is state
+    receipt = PublicationVerificationReceipt(
+        receipt_id="receipt-1",
+        package_sha256=_package().sha256(),
+        state=state,
+        verified_at=NOW,
+        verifier="qualification-workflow",
+        evidence=_state_evidence(state),
+        public_uri=public_uri,
+    )
+
+    assert receipt.state is state
 
 
 def test_receipt_is_bound_to_exact_package_digest() -> None:
@@ -267,7 +284,7 @@ def test_receipt_is_bound_to_exact_package_digest() -> None:
         state=PublicationState.QUALIFIED,
         verified_at=NOW,
         verifier="qualification-workflow",
-        evidence=(_evidence(),),
+        evidence=_state_evidence(PublicationState.QUALIFIED),
     )
     other_payload = package.model_dump()
     other_payload["dataset_card"]["summary"] = "Changed content."
@@ -367,7 +384,252 @@ def test_receipt_rejects_duplicate_checks_and_non_public_uri() -> None:
     with pytest.raises(ValidationError, match="check_ids must be unique"):
         PublicationVerificationReceipt(**values)
 
-    values["evidence"] = (_evidence(),)
+    values["evidence"] = _state_evidence(PublicationState.QUALIFIED)
     values["public_uri"] = "https://example.test/not-yet-public"
     with pytest.raises(ValidationError, match="only public state"):
         PublicationVerificationReceipt(**values)
+
+
+@pytest.mark.parametrize(
+    ("state", "missing"),
+    [
+        (PublicationState.PREPARED, VerificationCheck.PACKAGE_CHECKSUM),
+        (PublicationState.PREPARED, VerificationCheck.RIGHTS_REVIEW),
+        (PublicationState.PREPARED, VerificationCheck.PRIVACY_REVIEW),
+        (
+            PublicationState.PREPARED,
+            VerificationCheck.FORBIDDEN_CONTENT_SCAN,
+        ),
+        (PublicationState.QUALIFIED, VerificationCheck.QUALIFICATION),
+        (PublicationState.UPLOADED, VerificationCheck.UPLOAD_VERIFICATION),
+        (PublicationState.PUBLIC, VerificationCheck.PUBLIC_VERIFICATION),
+    ],
+)
+def test_each_state_fails_closed_when_a_required_check_is_missing(
+    state: PublicationState,
+    missing: VerificationCheck,
+) -> None:
+    evidence = tuple(
+        item for item in _state_evidence(state) if item.check_id is not missing
+    )
+
+    with pytest.raises(ValidationError, match="missing checks"):
+        PublicationVerificationReceipt(
+            receipt_id="receipt-missing",
+            package_sha256=_package().sha256(),
+            state=state,
+            verified_at=NOW,
+            verifier="qualification-workflow",
+            evidence=evidence,
+            public_uri=(
+                "https://example.test/public"
+                if state is PublicationState.PUBLIC
+                else None
+            ),
+        )
+
+
+@pytest.mark.parametrize(
+    "outcome",
+    [VerificationOutcome.FAILED, VerificationOutcome.UNKNOWN],
+)
+def test_failed_or_unknown_checks_fail_closed(
+    outcome: VerificationOutcome,
+) -> None:
+    evidence = list(_state_evidence(PublicationState.PREPARED))
+    evidence[0] = _evidence(outcome=outcome)
+
+    with pytest.raises(
+        ValidationError,
+        match="failed or unknown evidence requires",
+    ):
+        PublicationVerificationReceipt(
+            receipt_id="receipt-nonpassing",
+            package_sha256=_package().sha256(),
+            state=PublicationState.PREPARED,
+            verified_at=NOW,
+            verifier="qualification-workflow",
+            evidence=tuple(evidence),
+        )
+
+    failed_receipt = PublicationVerificationReceipt(
+        receipt_id="receipt-failed",
+        package_sha256=_package().sha256(),
+        state=PublicationState.VERIFICATION_FAILED,
+        verified_at=NOW,
+        verifier="qualification-workflow",
+        evidence=(_evidence(outcome=outcome),),
+    )
+    assert failed_receipt.state is PublicationState.VERIFICATION_FAILED
+
+
+def test_verification_failed_requires_nonpassing_evidence() -> None:
+    with pytest.raises(
+        ValidationError,
+        match="requires failed or unknown evidence",
+    ):
+        PublicationVerificationReceipt(
+            receipt_id="receipt-failed",
+            package_sha256=_package().sha256(),
+            state=PublicationState.VERIFICATION_FAILED,
+            verified_at=NOW,
+            verifier="qualification-workflow",
+            evidence=(_evidence(),),
+        )
+
+
+@pytest.mark.parametrize(
+    ("check", "field", "value", "message"),
+    [
+        (
+            VerificationCheck.PRIVACY_REVIEW,
+            "privacy_approved",
+            False,
+            "privacy review must explicitly approve",
+        ),
+        (
+            VerificationCheck.PRIVACY_REVIEW,
+            "privacy_approved",
+            None,
+            "privacy review must explicitly approve",
+        ),
+        (
+            VerificationCheck.FORBIDDEN_CONTENT_SCAN,
+            "forbidden_content_detected",
+            True,
+            "must explicitly report none",
+        ),
+        (
+            VerificationCheck.FORBIDDEN_CONTENT_SCAN,
+            "forbidden_content_detected",
+            None,
+            "must explicitly report none",
+        ),
+    ],
+)
+def test_privacy_and_forbidden_content_findings_are_explicit(
+    check: VerificationCheck,
+    field: str,
+    *,
+    value: bool | None,
+    message: str,
+) -> None:
+    payload = _evidence(check).model_dump()
+    payload[field] = value
+
+    with pytest.raises(ValidationError, match=message):
+        VerificationEvidence.model_validate(payload)
+
+
+@pytest.mark.parametrize(
+    ("check", "field"),
+    [
+        (VerificationCheck.PACKAGE_CHECKSUM, "privacy_approved"),
+        (
+            VerificationCheck.RIGHTS_REVIEW,
+            "forbidden_content_detected",
+        ),
+    ],
+)
+def test_review_findings_cannot_be_attached_to_the_wrong_check(
+    check: VerificationCheck,
+    field: str,
+) -> None:
+    payload = _evidence(check).model_dump()
+    payload[field] = False
+
+    with pytest.raises(ValidationError, match="only valid"):
+        VerificationEvidence.model_validate(payload)
+
+
+def test_evidence_must_be_bound_to_the_receipted_artifact() -> None:
+    evidence = list(_state_evidence(PublicationState.PREPARED))
+    evidence[0] = _evidence(artifact_sha256="c" * 64)
+
+    with pytest.raises(ValidationError, match="bound to the package"):
+        PublicationVerificationReceipt(
+            receipt_id="receipt-unbound",
+            package_sha256=_package().sha256(),
+            state=PublicationState.PREPARED,
+            verified_at=NOW,
+            verifier="qualification-workflow",
+            evidence=tuple(evidence),
+        )
+
+
+@pytest.mark.parametrize(
+    ("checked_at", "valid_until"),
+    [
+        (NOW + timedelta(seconds=1), NOW + timedelta(days=1)),
+        (NOW - timedelta(days=2), NOW - timedelta(seconds=1)),
+    ],
+)
+def test_future_or_stale_evidence_fails_closed(
+    checked_at: datetime,
+    valid_until: datetime,
+) -> None:
+    evidence = list(_state_evidence(PublicationState.PREPARED))
+    evidence[0] = _evidence(
+        checked_at=checked_at,
+        valid_until=valid_until,
+    )
+
+    with pytest.raises(ValidationError, match="current at verification"):
+        PublicationVerificationReceipt(
+            receipt_id="receipt-stale",
+            package_sha256=_package().sha256(),
+            state=PublicationState.PREPARED,
+            verified_at=NOW,
+            verifier="qualification-workflow",
+            evidence=tuple(evidence),
+        )
+
+
+def test_evidence_validity_window_must_be_ordered() -> None:
+    payload = _evidence().model_dump()
+    payload["valid_until"] = payload["checked_at"]
+
+    with pytest.raises(ValidationError, match="valid window"):
+        VerificationEvidence.model_validate(payload)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("evidence_uri", "file:///tmp/evidence.json"),
+        ("evidence_uri", "javascript:alert(1)"),
+        ("evidence_uri", "https://user:secret@example.test/evidence.json"),
+    ],
+)
+def test_evidence_uri_rejects_unsafe_locations(
+    field: str,
+    value: str,
+) -> None:
+    payload = _evidence().model_dump()
+    payload[field] = value
+
+    with pytest.raises(ValidationError):
+        VerificationEvidence.model_validate(payload)
+
+
+@pytest.mark.parametrize(
+    "public_uri",
+    [
+        None,
+        "file:///tmp/public",
+        "https://user:secret@example.test/public",
+    ],
+)
+def test_public_state_requires_safe_observable_http_location(
+    public_uri: str | None,
+) -> None:
+    with pytest.raises(ValidationError):
+        PublicationVerificationReceipt(
+            receipt_id="receipt-public",
+            package_sha256=_package().sha256(),
+            state=PublicationState.PUBLIC,
+            verified_at=NOW,
+            verifier="qualification-workflow",
+            evidence=_state_evidence(PublicationState.PUBLIC),
+            public_uri=public_uri,
+        )

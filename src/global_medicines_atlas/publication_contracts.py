@@ -8,11 +8,13 @@ from enum import StrEnum
 from typing import Annotated, Any, Self
 
 from pydantic import (
+    AnyHttpUrl,
     AwareDatetime,
     BaseModel,
     ConfigDict,
     Field,
     StringConstraints,
+    field_validator,
     model_validator,
 )
 
@@ -58,6 +60,19 @@ class PublicationState(StrEnum):
 class VerificationOutcome(StrEnum):
     PASSED = "passed"
     FAILED = "failed"
+    UNKNOWN = "unknown"
+
+
+class VerificationCheck(StrEnum):
+    """Named checks required at publication-state boundaries."""
+
+    PACKAGE_CHECKSUM = "package-checksum"
+    RIGHTS_REVIEW = "rights-review"
+    PRIVACY_REVIEW = "privacy-review"
+    FORBIDDEN_CONTENT_SCAN = "forbidden-content-scan"
+    QUALIFICATION = "qualification"
+    UPLOAD_VERIFICATION = "upload-verification"
+    PUBLIC_VERIFICATION = "public-verification"
 
 
 class FieldContract(PublicationContractModel):
@@ -245,10 +260,44 @@ class PublicationPackage(PublicationContractModel):
 
 
 class VerificationEvidence(PublicationContractModel):
-    check_id: NonBlank
+    check_id: VerificationCheck
     outcome: VerificationOutcome
-    evidence_uri: NonBlank
+    evidence_uri: AnyHttpUrl
     evidence_sha256: Sha256
+    artifact_sha256: Sha256
+    checked_at: AwareDatetime
+    valid_until: AwareDatetime
+    privacy_approved: bool | None = None
+    forbidden_content_detected: bool | None = None
+
+    @field_validator("evidence_uri")
+    @classmethod
+    def evidence_uri_is_safe(cls, value: AnyHttpUrl) -> AnyHttpUrl:
+        if value.username is not None or value.password is not None:
+            raise ValueError("evidence_uri must not contain credentials")
+        return value
+
+    @model_validator(mode="after")
+    def review_result_is_explicit(self) -> Self:
+        if self.valid_until <= self.checked_at:
+            raise ValueError("verification evidence must have a valid window")
+        if self.check_id is VerificationCheck.PRIVACY_REVIEW:
+            if self.privacy_approved is not True:
+                raise ValueError("privacy review must explicitly approve")
+        elif self.privacy_approved is not None:
+            raise ValueError(
+                "privacy_approved is only valid for privacy review"
+            )
+        if self.check_id is VerificationCheck.FORBIDDEN_CONTENT_SCAN:
+            if self.forbidden_content_detected is not False:
+                raise ValueError(
+                    "forbidden-content scan must explicitly report none"
+                )
+        elif self.forbidden_content_detected is not None:
+            raise ValueError(
+                "forbidden_content_detected is only valid for content scan"
+            )
+        return self
 
 
 class PublicationVerificationReceipt(PublicationContractModel):
@@ -260,25 +309,85 @@ class PublicationVerificationReceipt(PublicationContractModel):
     verified_at: AwareDatetime
     verifier: NonBlank
     evidence: tuple[VerificationEvidence, ...] = Field(min_length=1)
-    public_uri: NonBlank | None = None
+    public_uri: AnyHttpUrl | None = None
+
+    @field_validator("public_uri")
+    @classmethod
+    def public_uri_is_safe(cls, value: AnyHttpUrl | None) -> AnyHttpUrl | None:
+        if value is not None and (
+            value.username is not None or value.password is not None
+        ):
+            raise ValueError("public_uri must not contain credentials")
+        return value
 
     @model_validator(mode="after")
     def state_is_supported_by_evidence(self) -> Self:
         check_ids = tuple(item.check_id for item in self.evidence)
         if len(check_ids) != len(set(check_ids)):
             raise ValueError("verification check_ids must be unique")
-        failed = any(
-            item.outcome is VerificationOutcome.FAILED for item in self.evidence
+        non_passing = tuple(
+            item
+            for item in self.evidence
+            if item.outcome is not VerificationOutcome.PASSED
         )
-        if failed and self.state is not PublicationState.VERIFICATION_FAILED:
-            raise ValueError("failed evidence requires verification_failed")
-        if not failed and self.state is PublicationState.VERIFICATION_FAILED:
-            raise ValueError("verification_failed requires failed evidence")
+        if (
+            non_passing
+            and self.state is not PublicationState.VERIFICATION_FAILED
+        ):
+            raise ValueError(
+                "failed or unknown evidence requires verification_failed"
+            )
+        if (
+            not non_passing
+            and self.state is PublicationState.VERIFICATION_FAILED
+        ):
+            raise ValueError(
+                "verification_failed requires failed or unknown evidence"
+            )
+        if any(
+            item.artifact_sha256 != self.package_sha256
+            for item in self.evidence
+        ):
+            raise ValueError("all evidence must be bound to the package")
+        if any(
+            item.checked_at > self.verified_at
+            or item.valid_until < self.verified_at
+            for item in self.evidence
+        ):
+            raise ValueError("all evidence must be current at verification")
+        if self.state is not PublicationState.VERIFICATION_FAILED:
+            required = _required_checks(self.state)
+            missing = required.difference(check_ids)
+            if missing:
+                names = ", ".join(sorted(item.value for item in missing))
+                raise ValueError(
+                    f"publication state is missing checks: {names}"
+                )
         if self.state is PublicationState.PUBLIC and self.public_uri is None:
             raise ValueError("public state requires an observable public_uri")
         if self.state is not PublicationState.PUBLIC and self.public_uri:
             raise ValueError("only public state may declare public_uri")
         return self
+
+
+def _required_checks(state: PublicationState) -> frozenset[VerificationCheck]:
+    baseline = {
+        VerificationCheck.PACKAGE_CHECKSUM,
+        VerificationCheck.RIGHTS_REVIEW,
+        VerificationCheck.PRIVACY_REVIEW,
+        VerificationCheck.FORBIDDEN_CONTENT_SCAN,
+    }
+    if state in {
+        PublicationState.QUALIFIED,
+        PublicationState.UPLOADED,
+        PublicationState.PUBLIC,
+    }:
+        baseline.add(VerificationCheck.QUALIFICATION)
+    if state in {PublicationState.UPLOADED, PublicationState.PUBLIC}:
+        baseline.add(VerificationCheck.UPLOAD_VERIFICATION)
+    if state is PublicationState.PUBLIC:
+        baseline.add(VerificationCheck.PUBLIC_VERIFICATION)
+    return frozenset(baseline)
 
 
 def canonical_sha256(value: PublicationContractModel) -> str:
