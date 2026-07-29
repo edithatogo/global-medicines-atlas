@@ -1,0 +1,26 @@
+{
+  "adapter_output_fingerprint": null,
+  "adapter_output_parity": "not_assessed",
+  "consecutive_failures": 3,
+  "deduplication_key": "source-health:example-source:unavailable:503:HTTPStatusError",
+  "escalation": "open",
+  "expected_adapter_output_fingerprint": null,
+  "observation": {
+    "bytes_sampled": 0,
+    "checked_at": "2026-07-29T00:00:00Z",
+    "content_type": null,
+    "detail": "HTTPStatusError: source unavailable",
+    "endpoint": null,
+    "expected_cadence_seconds": 86400,
+    "freshness_age_seconds": 172800,
+    "is_fresh": false,
+    "schema_fingerprint": null,
+    "source_id": "example-source",
+    "source_updated_at": "2026-07-27T00:00:00Z",
+    "state": "unavailable",
+    "status_code": 503
+  },
+  "receipt_id": "sha256:df10feacfb44dc9fc418a63ae45742c1d4b7665bf1189908d26e0c1dc092a3ff",
+  "retry_history": [],
+  "schema_version": 1
+}
