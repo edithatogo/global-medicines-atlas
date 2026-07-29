@@ -2,17 +2,17 @@
 
 ## Phase 1: Observability contracts
 
-- [ ] Task: Define source-health, freshness and schema-drift receipts ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37))
-- [ ] Task: Write failure, retry, deduplication and escalation tests ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37))
-- [ ] Task: Define security, privacy, performance and reliability budgets ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37))
-- [ ] Task: Publish the international-resource information schema and validate all catalog entries against it ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37))
-- [ ] Task: Unify catalog, adapter and ingestor capability declarations and prove one source-ID mapping per implementation ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37))
-- [ ] Task: Make Test-Goblin collection declarative, marker-aware and complete, with exactly one primary lane per test ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37))
-- [ ] Task: Define numeric mutation, coverage, latency, throughput, CPU, memory and allocation budgets ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37))
-- [ ] Task: Standardize structured run/source/adapter/receipt logging and verify deterministic redaction ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37))
-- [ ] Task: Define acquisition policy for schemes, redirects, DNS/IP resolution, private-network rejection, per-host budgets, retry jitter and cache integrity ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37))
-- [ ] Task: Qualify every catalogued API/bulk surface and record unsupported portal-only sources ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37))
-- [ ] Task: Phase Verification & Checkpoint
+- [x] Task: Define source-health, freshness and schema-drift receipts ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `903dee3`
+- [x] Task: Write failure, retry, deduplication and escalation tests ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `903dee3`
+- [x] Task: Define security, privacy, performance and reliability budgets ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `aabba52`
+- [x] Task: Publish the international-resource information schema and validate all catalog entries against it ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `e8f588e`
+- [x] Task: Unify catalog, adapter and ingestor capability declarations and prove one source-ID mapping per implementation ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `e8f588e`
+- [x] Task: Make Test-Goblin collection declarative, marker-aware and complete, with exactly one primary lane per test ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `aabba52`
+- [x] Task: Define numeric mutation, coverage, latency, throughput, CPU, memory and allocation budgets ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `aabba52`
+- [x] Task: Standardize structured run/source/adapter/receipt logging and verify deterministic redaction ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `9a64332`
+- [x] Task: Define acquisition policy for schemes, redirects, DNS/IP resolution, private-network rejection, per-host budgets, retry jitter and cache integrity ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `9a64332`
+- [x] Task: Qualify every catalogued API/bulk surface and record unsupported portal-only sources ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `e8f588e`
+- [x] Task: Phase Verification & Checkpoint — 845 passed, 7 expected Windows symlink skips; 93.95% branch coverage; Ruff, ty and BasedPyright strict passed
 
 ## Phase 2: Hardened operations
 
