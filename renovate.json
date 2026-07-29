@@ -1,31 +1,49 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ],
+  "extends": ["config:best-practices", ":dependencyDashboard"],
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Dependency update dashboard",
   "labels": [
     "dependencies"
   ],
-  "rangeStrategy": "pin",
+  "rangeStrategy": "bump",
+  "minimumReleaseAge": "7 days",
+  "internalChecksFilter": "strict",
+  "automerge": false,
+  "platformAutomerge": false,
+  "rebaseWhen": "behind-base-branch",
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
   "schedule": [
     "after 6am and before 9am on monday"
   ],
   "timezone": "Australia/Sydney",
   "enabledManagers": [
     "pep621",
+    "pixi",
+    "custom.regex",
     "pip_requirements",
     "github-actions",
     "cargo",
     "npm",
     "dockerfile"
   ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^\\.python-version$/"],
+      "matchStrings": ["(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
+      "depNameTemplate": "python",
+      "datasourceTemplate": "python-version"
+    }
+  ],
   "packageRules": [
     {
       "matchManagers": [
         "pep621",
-        "pip_requirements"
+        "pixi",
+        "pip_requirements",
+        "custom.regex"
       ],
       "groupName": "Python runtime and data stack",
       "dependencyDashboardApproval": true,
@@ -53,8 +71,25 @@
         "github-actions"
       ],
       "groupName": "GitHub Actions",
+      "pinDigests": true,
       "dependencyDashboardApproval": true,
       "separateMinorPatch": true
+    },
+    {
+      "description": "Never adopt prereleases implicitly",
+      "matchCurrentVersion": "!/^0/",
+      "ignoreUnstable": true
+    },
+    {
+      "description": "Require dashboard approval for major and unstable updates",
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Keep explicitly experimental dependencies review-gated",
+      "matchPackageNames": ["pytest-gremlins", "mojo"],
+      "dependencyDashboardApproval": true,
+      "minimumReleaseAge": "14 days"
     },
     {
       "matchManagers": [

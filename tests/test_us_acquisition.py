@@ -75,7 +75,7 @@ def bulk_payloads(receipt: SourceReceipt) -> PayloadSet:
 
 
 def source() -> MedicineDataSource:
-    return MedicineDataSource(
+    return MedicineDataSource.from_legacy(
         source_id="us-drugsfda",
         jurisdictions=("USA",),
         authority="US Food and Drug Administration",

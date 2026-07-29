@@ -1,0 +1,39 @@
+name: Medicine data source onboarding
+description: Propose an official regulatory, funding, terminology, price, or evidence source.
+title: "source: "
+labels: ["type:data-source", "status:triage"]
+body:
+  - type: input
+    id: jurisdiction
+    attributes: {label: Jurisdiction, description: Country, region, or programme}
+    validations: {required: true}
+  - type: input
+    id: authority
+    attributes: {label: Authority, description: Regulator, funder, or official publisher}
+    validations: {required: true}
+  - type: dropdown
+    id: dimension
+    attributes:
+      label: Evidence dimension
+      options: [regulatory, reimbursement, formulary, terminology, price, procurement, availability, product-information]
+    validations: {required: true}
+  - type: input
+    id: url
+    attributes: {label: Official source URL}
+    validations: {required: true}
+  - type: textarea
+    id: access
+    attributes: {label: Access, format, authentication, and cadence}
+    validations: {required: true}
+  - type: textarea
+    id: rights
+    attributes: {label: Licence and redistribution rights}
+    validations: {required: true}
+  - type: textarea
+    id: time
+    attributes: {label: Valid-time, observed-time, history, and update semantics}
+    validations: {required: true}
+  - type: textarea
+    id: limitations
+    attributes: {label: Known coverage and interpretation limitations}
+    validations: {required: true}

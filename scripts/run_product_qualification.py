@@ -1,9 +1,11 @@
 """Execute fixture product qualification and emit atomic durable receipts."""
+# ruff: file-ignore[module-import-not-at-top-of-file]
 
 from __future__ import annotations
 
 import argparse
 import json
+import sys
 import tempfile
 from collections.abc import Callable, Iterable
 from datetime import UTC, datetime
@@ -12,6 +14,12 @@ from pathlib import Path
 from statistics import quantiles
 from time import perf_counter_ns
 from typing import TYPE_CHECKING, Literal, cast
+
+# Support direct repository-root execution before the package is installed.
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE_ROOT = ROOT / "src"
+if str(SOURCE_ROOT) not in sys.path:
+    sys.path.insert(0, str(SOURCE_ROOT))
 
 import duckdb
 from fastapi.testclient import TestClient
@@ -42,7 +50,6 @@ from global_medicines_atlas.query_service import (
     ReadOnlyQueryService,
 )
 
-ROOT = Path(__file__).resolve().parents[1]
 NOW = datetime(2026, 7, 29, tzinfo=UTC)
 SECRET = b"product-qualification-secret"
 SAMPLES = 20
