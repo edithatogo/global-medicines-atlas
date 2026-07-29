@@ -137,7 +137,8 @@ def _fixture(root: Path) -> Path:
     )
     fake = root.parent / "fake_gh.py"
     fake.write_text(
-        """from __future__ import annotations
+        """#!/usr/bin/env python3
+from __future__ import annotations
 import hashlib, json, pathlib, sys
 args = sys.argv[1:]
 with pathlib.Path(__file__).with_name("verifier-commands.jsonl").open("a") as log:
@@ -187,6 +188,7 @@ print(json.dumps([] if mode == "unsigned" else result))
 """,
         encoding="utf-8",
     )
+    fake.chmod(0o755)
     (root.parent / "fake-gh.cmd").write_text(
         f'@"{sys.executable}" "{fake}" %*\n', encoding="utf-8"
     )
@@ -1003,6 +1005,11 @@ def test_cli_runs_offline_and_does_not_mutate_source(tmp_path: Path) -> None:
     declaration = _fixture(source)
     before = {path.name: path.read_bytes() for path in source.iterdir()}
     receipt = tmp_path / "receipt.json"
+    verifier = (
+        tmp_path / "fake-gh.cmd"
+        if sys.platform == "win32"
+        else tmp_path / "fake_gh.py"
+    )
 
     result = __import__("subprocess").run(
         [
@@ -1015,7 +1022,7 @@ def test_cli_runs_offline_and_does_not_mutate_source(tmp_path: Path) -> None:
             "--trust-policy",
             str(tmp_path / "trust-policy.json"),
             "--verifier",
-            str(tmp_path / "fake-gh.cmd"),
+            str(verifier),
             "--receipt",
             str(receipt),
         ],
