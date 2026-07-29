@@ -30,3 +30,9 @@
 - Package contracts: [#33](https://github.com/edithatogo/global-medicines-atlas/issues/33)
 - Qualified release pipeline: [#34](https://github.com/edithatogo/global-medicines-atlas/issues/34)
 - Publication qualification: [#35](https://github.com/edithatogo/global-medicines-atlas/issues/35)
+
+## Phase 1 Review Fixes
+
+- [x] Task: Require state-specific safe-URL verification evidence and explicit privacy/forbidden-content checks `7ad6ccd`
+- [x] Task: Enforce changelog/citation date agreement and resolved artifact-root containment `7ad6ccd`
+- [x] Task: Re-run focused review-fix verification — 85 passed, 2 expected Windows symlink skips; Ruff, ty and BasedPyright passed
