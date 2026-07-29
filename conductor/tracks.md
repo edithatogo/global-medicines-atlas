@@ -12,7 +12,7 @@
   *Archived: [archive/comparison_api_atlas_20260729/index.md](./archive/comparison_api_atlas_20260729/index.md); external product qualification remains open in GitHub issue #61.*
 - [x] **Track: Produce governed reproducible publication packages**
   *Archived: [archive/governed_publication_20260729/index.md](./archive/governed_publication_20260729/index.md); production publication remains externally gated.*
-- [ ] **Track: Harden source operations, security, performance and recovery**
+- [~] **Track: Harden source operations, security, performance and recovery**
   *Link: [tracks/operational_hardening_20260729/index.md](./tracks/operational_hardening_20260729/index.md)*
 - [ ] **Track: Qualify the v0.9 candidate and stable v1 release**
   *Link: [tracks/stable_v1_qualification_20260729/index.md](./tracks/stable_v1_qualification_20260729/index.md)*
