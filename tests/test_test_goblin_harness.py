@@ -69,8 +69,8 @@ def test_collection_assigns_the_manifest_primary_marker() -> None:
     assert [marker.name for marker in item.markers] == ["smoke"]
 
 
-def test_collection_rejects_marker_manifest_disagreement() -> None:
-    """An explicit conflicting primary marker fails collection."""
+def test_collection_preserves_one_explicit_item_marker() -> None:
+    """An explicit item marker may refine its file's fallback lane."""
 
     class Marker:
         name = "unit"
@@ -87,8 +87,7 @@ def test_collection_rejects_marker_manifest_disagreement() -> None:
         def add_marker(_name: str) -> None:
             raise AssertionError("existing marker must not be replaced")
 
-    with pytest.raises(ValueError, match="expected smoke"):
-        HARNESS.pytest_collection_modifyitems([Item()])
+    HARNESS.pytest_collection_modifyitems([Item()])
 
 
 def test_quality_budgets_are_machine_readable_contracts() -> None:

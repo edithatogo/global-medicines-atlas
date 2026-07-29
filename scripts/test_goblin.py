@@ -193,7 +193,7 @@ def primary_lane_for_path(path: Path) -> str:
 def pytest_collection_modifyitems(
     items: list[ItemLike],
 ) -> None:
-    """Assign and validate generated primary markers against the manifest."""
+    """Ensure each item has exactly one explicit or generated primary lane."""
     problems: list[str] = []
     for item in items:
         expected = primary_lane_for_path(Path(str(item.path)))
@@ -205,9 +205,10 @@ def pytest_collection_modifyitems(
         if not existing:
             item.add_marker(expected)
             existing = {expected}
-        if existing != {expected}:
+        if len(existing) != 1:
             problems.append(
-                f"{item.nodeid}: expected {expected}, found {sorted(existing)}"
+                f"{item.nodeid}: expected one primary lane, "
+                f"found {sorted(existing)}"
             )
     if problems:
         raise ValueError(
@@ -218,7 +219,7 @@ def pytest_collection_modifyitems(
 def validate_collection() -> None:
     """Collect all tests with generated marker/manifest validation enabled."""
     run(
-        pytest_command(
+        build_pytest_command(
             ALL_TESTS,
             "--collect-only",
             "-p",
@@ -278,7 +279,7 @@ def run(command: Sequence[str]) -> None:
         raise SystemExit(completed.returncode)
 
 
-def pytest_command(tests: Sequence[str], *extra: str) -> list[str]:
+def build_pytest_command(tests: Sequence[str], *extra: str) -> list[str]:
     """Build a pytest command using the active Python 3.14 environment."""
     return [
         sys.executable,
@@ -292,12 +293,12 @@ def pytest_command(tests: Sequence[str], *extra: str) -> list[str]:
 
 def quick() -> None:
     """Run examples, properties, negative controls, and randomized ordering."""
-    run(pytest_command(ALL_TESTS))
+    run(build_pytest_command(ALL_TESTS))
 
 
 def lane(name: str) -> None:
     """Run one explicit test architecture lane."""
-    run(pytest_command(TEST_LANES[name]))
+    run(build_pytest_command(TEST_LANES[name]))
 
 
 def coverage() -> None:
@@ -309,7 +310,7 @@ def coverage() -> None:
     )
     minimum = line_percent["minimum"]
     run(
-        pytest_command(
+        build_pytest_command(
             ALL_TESTS,
             "--cov=global_medicines_atlas",
             "--cov=sources.nz.nzulm_fhir",
@@ -373,7 +374,7 @@ def mutation() -> None:
 def gremlins() -> None:
     """Run fast pytest-native mutation testing on frontier data contracts."""
     run(
-        pytest_command(
+        build_pytest_command(
             (
                 "tests/test_country_publication_gate.py",
                 "tests/test_source_parity.py",
@@ -451,8 +452,8 @@ def regeneration() -> None:
         "tests/test_temporal_snapshots.py",
         "tests/test_release_evidence.py",
     )
-    run(pytest_command(tests))
-    run(pytest_command(tuple(reversed(tests))))
+    run(build_pytest_command(tests))
+    run(build_pytest_command(tuple(reversed(tests))))
 
 
 def security() -> None:
