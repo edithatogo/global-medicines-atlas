@@ -36,3 +36,10 @@
 - [x] Task: Require state-specific safe-URL verification evidence and explicit privacy/forbidden-content checks `7ad6ccd`
 - [x] Task: Enforce changelog/citation date agreement and resolved artifact-root containment `7ad6ccd`
 - [x] Task: Re-run focused review-fix verification — 85 passed, 2 expected Windows symlink skips; Ruff, ty and BasedPyright passed
+
+## Phase 2 Review Fixes
+
+- [x] Task: Bind privacy and forbidden-content qualification to exact staged package bytes `b5ad86c`
+- [x] Task: Integrate governed dataset generation and qualification into the release workflow `b5ad86c`
+- [x] Task: Validate release tag, commit, dynamic version, changelog, citation, licence, wheel and SBOM agreement `b5ad86c`
+- [x] Task: Re-run focused review-fix verification — 42 passed; Zizmor, Ruff, ty and BasedPyright passed
