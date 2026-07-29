@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/blob/main/release-inputs/v0.7-qualification-matrix.schema.json",
+  "title": "Global Medicines Atlas v0.7 qualification matrix",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "release",
+    "traceability",
+    "fixture_qualification",
+    "production_qualification",
+    "publication_states",
+    "source_rights"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "classification", "publication_performed"],
+      "properties": {
+        "target": {"const": "0.7.0"},
+        "classification": {"const": "fixture-qualified-production-blocked"},
+        "publication_performed": {"const": false}
+      }
+    },
+    "traceability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requirements", "github_issues"],
+      "properties": {
+        "requirements": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 9,
+          "items": {
+            "enum": [
+              "M-004",
+              "M-005",
+              "M-052",
+              "M-061",
+              "M-062",
+              "M-074",
+              "M-080",
+              "M-083",
+              "S-004"
+            ]
+          }
+        },
+        "github_issues": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 4,
+          "items": {"enum": [32, 33, 34, 35]}
+        }
+      }
+    },
+    "fixture_qualification": {"$ref": "#/$defs/gateSet"},
+    "production_qualification": {"$ref": "#/$defs/gateSet"},
+    "publication_states": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {"$ref": "#/$defs/publicationState"}
+    },
+    "source_rights": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/sourceRight"}
+    }
+  },
+  "$defs": {
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["gate_id", "status", "reason", "evidence"],
+      "properties": {
+        "gate_id": {
+          "enum": [
+            "rights",
+            "privacy",
+            "provenance",
+            "software-licence",
+            "maintainer-release-approval"
+          ]
+        },
+        "status": {"enum": ["passed", "blocked", "not_applicable"]},
+        "reason": {"type": "string", "minLength": 1},
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "gateSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "overall_status", "gates"],
+      "properties": {
+        "scope": {"enum": ["fixture", "production"]},
+        "overall_status": {"enum": ["passed", "blocked"]},
+        "gates": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {"$ref": "#/$defs/gate"}
+        }
+      }
+    },
+    "publicationState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "status", "evidence"],
+      "properties": {
+        "state": {"enum": ["prepared", "uploaded", "public"]},
+        "status": {"enum": ["passed_fixture", "not_performed", "blocked"]},
+        "evidence": {"type": "string", "minLength": 1}
+      }
+    },
+    "sourceRight": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "payload_class",
+        "redistribution_status",
+        "production_disposition",
+        "basis"
+      ],
+      "properties": {
+        "source_id": {"type": "string", "minLength": 1},
+        "payload_class": {
+          "enum": [
+            "self-authored-fixture",
+            "terminology",
+            "regulatory",
+            "funding",
+            "derived-metadata"
+          ]
+        },
+        "redistribution_status": {
+          "enum": ["permitted_fixture_only", "restricted", "unresolved"]
+        },
+        "production_disposition": {
+          "enum": [
+            "exclude_payload",
+            "metadata_only_pending_review",
+            "blocked_pending_rights_review"
+          ]
+        },
+        "basis": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}
