@@ -356,7 +356,7 @@ def _source_updated_at(response: httpx.Response) -> datetime | None:
         return None
     try:
         parsed = parsedate_to_datetime(value)
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return None
     if parsed.tzinfo is None:
         parsed = parsed.replace(tzinfo=UTC)
@@ -377,10 +377,7 @@ def probe_source(
     observed_at = checked_at or datetime.now(tz=UTC)
     if max_bytes < 1:
         raise ValueError("max_bytes must be positive")
-    if (
-        expected_cadence is not None
-        and expected_cadence.total_seconds() <= 0
-    ):
+    if expected_cadence is not None and expected_cadence.total_seconds() <= 0:
         raise ValueError("expected_cadence must be positive")
     cadence_seconds = (
         int(expected_cadence.total_seconds())
@@ -614,9 +611,7 @@ def build_source_health_receipt(
         raise ValueError("retry attempt numbers must be unique")
 
     failed = observation.state is ProbeState.UNAVAILABLE
-    consecutive_failures = (
-        previous_consecutive_failures + 1 if failed else 0
-    )
+    consecutive_failures = previous_consecutive_failures + 1 if failed else 0
     if failed and consecutive_failures >= escalation_threshold:
         escalation = (
             EscalationState.DEDUPLICATED
@@ -635,8 +630,7 @@ def build_source_health_receipt(
     ):
         parity = (
             AdapterParityState.MATCHED
-            if adapter_output_fingerprint
-            == expected_adapter_output_fingerprint
+            if adapter_output_fingerprint == expected_adapter_output_fingerprint
             else AdapterParityState.CHANGED
         )
 
@@ -652,9 +646,7 @@ def build_source_health_receipt(
         "schema_version": 1,
         "observation": safe_observation.model_dump(mode="json"),
         "consecutive_failures": consecutive_failures,
-        "retry_history": [
-            item.model_dump(mode="json") for item in attempts
-        ],
+        "retry_history": [item.model_dump(mode="json") for item in attempts],
         "deduplication_key": deduplication_key,
         "escalation": escalation.value,
         "adapter_output_parity": parity.value,
@@ -684,8 +676,11 @@ def build_source_health_receipt(
 def source_health_receipt_json(receipt: SourceHealthReceipt) -> str:
     """Serialize one deterministic, metadata-only receipt."""
 
-    return json.dumps(
-        receipt.model_dump(mode="json"),
-        indent=2,
-        sort_keys=True,
-    ) + "\n"
+    return (
+        json.dumps(
+            receipt.model_dump(mode="json"),
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n"
+    )

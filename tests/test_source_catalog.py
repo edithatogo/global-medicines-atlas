@@ -68,7 +68,9 @@ def test_information_schema_uses_versioned_controlled_labels() -> None:
         )
         assert isinstance(source.geographic_scope, GeographicScope)
         assert isinstance(source.population_scope, PopulationScope)
-        assert all(isinstance(value, LanguageCode) for value in source.languages)
+        assert all(
+            isinstance(value, LanguageCode) for value in source.languages
+        )
         assert isinstance(source.change_semantics, ChangeSemantics)
         assert all(
             isinstance(value, AvailableField)
@@ -78,9 +80,7 @@ def test_information_schema_uses_versioned_controlled_labels() -> None:
 
 def test_published_information_schema_matches_model() -> None:
     schema_path = (
-        Path(__file__).parents[1]
-        / "schemas"
-        / "international-resource-v4.json"
+        Path(__file__).parents[1] / "schemas" / "international-resource-v4.json"
     )
 
     assert json.loads(schema_path.read_text(encoding="utf-8")) == (

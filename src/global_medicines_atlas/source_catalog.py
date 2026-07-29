@@ -220,9 +220,7 @@ class MedicineDataSource(FrozenModel):
     population_scope: PopulationScope = PopulationScope.UNKNOWN
     languages: tuple[LanguageCode, ...] = (LanguageCode.UNDETERMINED,)
     change_semantics: ChangeSemantics = ChangeSemantics.UNKNOWN
-    available_fields: tuple[AvailableField, ...] = (
-        AvailableField.IDENTIFIERS,
-    )
+    available_fields: tuple[AvailableField, ...] = (AvailableField.IDENTIFIERS,)
 
     @classmethod
     def from_legacy(

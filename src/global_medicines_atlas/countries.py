@@ -346,9 +346,7 @@ def builtin_source_capabilities() -> SourceCapabilityRegistry:
         SourceCapabilityDeclaration(
             source_id="jp-pmda-approvals",
             capabilities=projected,
-            implementations=(
-                "adapters.japan:project_pmda_approval_csv",
-            ),
+            implementations=("adapters.japan:project_pmda_approval_csv",),
         ),
         SourceCapabilityDeclaration(
             source_id="jp-mhlw-nhi-price",
@@ -386,9 +384,7 @@ def builtin_source_capabilities() -> SourceCapabilityRegistry:
         SourceCapabilityDeclaration(
             source_id="us-cms-partd-formulary",
             capabilities=parser,
-            implementations=(
-                "adapters.us_cms_partd:project_cms_partd_csv",
-            ),
+            implementations=("adapters.us_cms_partd:project_cms_partd_csv",),
         ),
         SourceCapabilityDeclaration(
             source_id="us-drugsfda",

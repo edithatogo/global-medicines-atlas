@@ -121,7 +121,9 @@ def test_every_implementation_maps_to_exactly_one_catalog_source() -> None:
 
     assert implementation_ids
     assert len(implementation_ids) == len(set(implementation_ids))
-    assert all(declaration.source_id in catalog_ids for declaration in declarations)
+    assert all(
+        declaration.source_id in catalog_ids for declaration in declarations
+    )
     assert all(declaration.capabilities for declaration in declarations)
     declarations.validate_catalog(catalog_ids)
     for implementation in implementation_ids:
@@ -146,7 +148,9 @@ def test_capability_registry_distinguishes_evidence_layers() -> None:
         Capability.SYNTHETIC_FIXTURE
         in declarations["eu-ema-medicines"].capabilities
     )
-    assert Capability.LIVE_RECEIPT not in declarations["us-drugsfda"].capabilities
+    assert (
+        Capability.LIVE_RECEIPT not in declarations["us-drugsfda"].capabilities
+    )
     assert all(
         Capability.PRODUCTION_QUALIFICATION not in declaration.capabilities
         for declaration in declarations.values()

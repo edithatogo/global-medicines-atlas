@@ -501,7 +501,9 @@ def test_adapter_output_parity_is_explicit_without_payload_retention() -> None:
     assert unknown.adapter_output_parity is AdapterParityState.NOT_ASSESSED
 
 
-def test_receipt_serialization_is_stable_metadata_only_and_self_identifying() -> None:
+def test_receipt_serialization_is_stable_metadata_only_and_self_identifying() -> (
+    None
+):
     receipt = build_source_health_receipt(
         SourceHealthObservation(
             source_id="example",
@@ -547,6 +549,6 @@ def test_receipt_contract_matches_committed_golden_fixture() -> None:
         )
     )
 
-    assert actual == (
-        FIXTURES / "unavailable-escalation-v1.json"
-    ).read_text(encoding="utf-8")
+    assert actual == (FIXTURES / "unavailable-escalation-v1.json").read_text(
+        encoding="utf-8"
+    )
