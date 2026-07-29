@@ -10,7 +10,7 @@
   *Archived: [archive/cross_jurisdiction_matching_20260729/index.md](./archive/cross_jurisdiction_matching_20260729/index.md).*
 - [x] **Track: Deliver the comparison API, CLI and accessible atlas**
   *Archived: [archive/comparison_api_atlas_20260729/index.md](./archive/comparison_api_atlas_20260729/index.md); external product qualification remains open in GitHub issue #61.*
-- [ ] **Track: Produce governed reproducible publication packages**
+- [x] **Track: Produce governed reproducible publication packages**
   *Link: [tracks/governed_publication_20260729/index.md](./tracks/governed_publication_20260729/index.md)*
 - [ ] **Track: Harden source operations, security, performance and recovery**
   *Link: [tracks/operational_hardening_20260729/index.md](./tracks/operational_hardening_20260729/index.md)*

@@ -1,0 +1,65 @@
+{
+  "evidence": [
+    {
+      "artifact_sha256": "c1ba9fb0b292ad6a691ca37856fba76ce91556b4d1a76baa96df82e7baa3ce0b",
+      "check_id": "package-checksum",
+      "checked_at": "2026-07-29T00:00:00Z",
+      "evidence_sha256": "b114262d9b15afbf01d7bc956c24cc591912f8db3238911f2df7f11be5659763",
+      "evidence_uri": "https://fixtures.invalid/evidence/package-checksum",
+      "forbidden_content_detected": null,
+      "outcome": "passed",
+      "privacy_approved": null,
+      "valid_until": "2036-07-26T00:00:00Z"
+    },
+    {
+      "artifact_sha256": "c1ba9fb0b292ad6a691ca37856fba76ce91556b4d1a76baa96df82e7baa3ce0b",
+      "check_id": "rights-review",
+      "checked_at": "2026-07-29T00:00:00Z",
+      "evidence_sha256": "f9ebcc22d3c0b5dfc7eaa5275e9052485398677c640002a887a6f9f1ccfc7ca1",
+      "evidence_uri": "https://fixtures.invalid/evidence/rights-review",
+      "forbidden_content_detected": null,
+      "outcome": "passed",
+      "privacy_approved": null,
+      "valid_until": "2036-07-26T00:00:00Z"
+    },
+    {
+      "artifact_sha256": "c1ba9fb0b292ad6a691ca37856fba76ce91556b4d1a76baa96df82e7baa3ce0b",
+      "check_id": "privacy-review",
+      "checked_at": "2026-07-29T00:00:00Z",
+      "evidence_sha256": "f231a957f0d5f5fd028851b09b631ae370b0d6a31f7d3c3c9197fd82d5fd6a74",
+      "evidence_uri": "https://fixtures.invalid/evidence/privacy-review",
+      "forbidden_content_detected": null,
+      "outcome": "passed",
+      "privacy_approved": true,
+      "valid_until": "2036-07-26T00:00:00Z"
+    },
+    {
+      "artifact_sha256": "c1ba9fb0b292ad6a691ca37856fba76ce91556b4d1a76baa96df82e7baa3ce0b",
+      "check_id": "forbidden-content-scan",
+      "checked_at": "2026-07-29T00:00:00Z",
+      "evidence_sha256": "0300c383b3e494cde829dd83cdf2cedb167fd63d8a7883b69c2f63037e0a1d15",
+      "evidence_uri": "https://fixtures.invalid/evidence/forbidden-content-scan",
+      "forbidden_content_detected": false,
+      "outcome": "passed",
+      "privacy_approved": null,
+      "valid_until": "2036-07-26T00:00:00Z"
+    },
+    {
+      "artifact_sha256": "c1ba9fb0b292ad6a691ca37856fba76ce91556b4d1a76baa96df82e7baa3ce0b",
+      "check_id": "qualification",
+      "checked_at": "2026-07-29T00:00:00Z",
+      "evidence_sha256": "434948cd194a10f8f9314e231c059b2e99b0775cee12baf4986458ed5593113e",
+      "evidence_uri": "https://fixtures.invalid/evidence/qualification",
+      "forbidden_content_detected": null,
+      "outcome": "passed",
+      "privacy_approved": null,
+      "valid_until": "2036-07-26T00:00:00Z"
+    }
+  ],
+  "package_sha256": "c1ba9fb0b292ad6a691ca37856fba76ce91556b4d1a76baa96df82e7baa3ce0b",
+  "public_uri": null,
+  "receipt_id": "synthetic-fixture-dry-run-qualification-v1",
+  "state": "qualified",
+  "verified_at": "2026-07-29T00:00:00Z",
+  "verifier": "synthetic-fixture-no-maintainer-approval"
+}

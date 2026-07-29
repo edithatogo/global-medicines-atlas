@@ -1,4 +1,4 @@
-"""Policy checks for release-only provenance attestations."""
+"""Policy checks for qualified, dry-run-first release provenance."""
 
 from __future__ import annotations
 
@@ -73,36 +73,131 @@ NEGATIVE_CONTROLS = cast(
 )
 
 
-def test_provenance_attestation_is_release_only_and_sha_pinned() -> None:
+def test_release_qualification_is_manual_dry_run_and_sha_pinned() -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
 
-    assert "release:" in workflow
-    assert "types: [published]" in workflow
-    assert "workflow_dispatch:" not in workflow
+    assert "workflow_dispatch:" in workflow
+    assert "default: false" in workflow
+    assert "\n  release:" not in workflow
     assert "push:" not in workflow
     assert "pull_request:" not in workflow
-    assert "github.event.release.draft == false" in workflow
+    assert (
+        "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803" in workflow
+    )
+    assert (
+        "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b"
+        in workflow
+    )
     assert (
         "actions/attest-build-provenance@"
         "977bb373ede98d70efdf65b84cb5f73e068dcc2a" in workflow
     )
+    assert (
+        "actions/download-artifact@"
+        "37930b1c2abaa49bbe596cd826c3c89aef350131" in workflow
+    )
 
 
-def test_provenance_job_has_minimal_required_permissions() -> None:
+def test_qualification_precedes_environment_protected_draft() -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
 
+    qualify = workflow.index("  qualify:")
+    draft = workflow.index("  draft-release:")
+    assert qualify < workflow.index("uv build --out-dir build/dist") < draft
+    assert (
+        qualify
+        < workflow.index("sha256sum --check --strict SHA256SUMS")
+        < draft
+    )
+    assert "needs: qualify" in workflow[draft:]
+    assert "if: ${{ inputs.publish }}" in workflow[draft:]
+    assert "environment: release-publication" in workflow[draft:]
+    assert 'test -n "$RELEASE_TAG"' in workflow[draft:]
+    assert "--draft" in workflow[draft:]
+
+
+def test_qualified_assets_are_exact_attested_and_never_overwritten() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+
+    assert "build/release-stage/sbom.cdx.json" in workflow
+    assert "scripts/qualify_release.py qualify" in workflow
+    assert "scripts/qualify_release.py build-package" in workflow
+    assert "release-inputs/publication-contract.json" in workflow
+    assert "release-inputs/publication-qualification.json" in workflow
+    assert "release-inputs/reviewed-rows.jsonl" in workflow
+    assert '--publication-mode "$PUBLICATION_MODE"' in workflow
+    assert "inputs.publish && 'production' || 'dry-run'" in workflow
+    assert "--sort=name" in workflow
+    assert "--mtime='UTC 1970-01-01'" in workflow
+    assert "gzip -n" in workflow
+    assert (
+        "global-medicines-atlas-dataset-${dataset_version}.tar.gz" in workflow
+    )
+    assert "scripts/qualify_release.py qualify-fixture" in workflow
+    assert '"production_release_qualified": False' in (
+        Path(__file__).resolve().parents[1] / "scripts" / "qualify_release.py"
+    ).read_text(encoding="utf-8")
+    assert "SHA256SUMS" in workflow
+    assert "sha256sum --check --strict SHA256SUMS" in workflow
+    assert "chmod -R a-w build/release-stage" in workflow
+    assert "\n          path: build/release-stage/**" in workflow
+    assert "subject-path: build/release-stage/**" in workflow
+    assert "gh release create \\\n            --draft" in workflow
+    assert '-- "$RELEASE_TAG" "${assets[@]}"' in workflow
+    assert "--clobber" not in workflow
+    assert "gh release upload" not in workflow
+    assert "--draft" in workflow
+
+
+def test_release_identity_and_sbom_are_semantically_qualified() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+
+    assert "fetch-depth: 0" in workflow
+    assert 'git rev-parse "refs/tags/${RELEASE_TAG}^{commit}"' in workflow
+    assert "uv version --short" in workflow
+    assert '--release-tag "$RELEASE_TAG"' in workflow
+    assert '--commit "$GITHUB_SHA"' in workflow
+    assert '--dynamic-version "$DYNAMIC_VERSION"' in workflow
+    assert "--no-default-groups" in workflow
+    assert "--no-dev" in workflow
+    assert "--format cyclonedx1.5" in workflow
+    assert "--preview-features sbom-export" in workflow
+    assert 'sbom.pop("serialNumber", None)' in workflow
+    assert 'metadata.pop("timestamp", None)' in workflow
+    assert 'metadata["component"]["version"]' in workflow
+    assert "cp -- uv.lock build/release-stage/uv.lock" in workflow
+
+
+def test_release_jobs_have_least_permissions() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    qualify = workflow[
+        workflow.index("  qualify:") : workflow.index("  draft-release:")
+    ]
+    draft = workflow[workflow.index("  draft-release:") :]
+
     assert "contents: read" in workflow
-    assert "id-token: write" in workflow
-    assert "attestations: write" in workflow
-    assert "contents: write" in workflow
-    assert "persist-credentials: false" in workflow
+    assert "id-token: write" in qualify
+    assert "attestations: write" in qualify
+    assert "contents: write" not in qualify
+    assert "persist-credentials: false" in qualify
+    assert "actions: read" in draft
+    assert "contents: write" in draft
+    assert "id-token: write" not in draft
+    assert "attestations: write" not in draft
     assert (
         "actions/upload-artifact@"
         "b7c566a772e6b6bfb58ed0dc250532a479d7789f" in workflow
     )
-    assert "\n          path: dist/*" in workflow
-    assert 'gh release upload "$RELEASE_TAG" dist/* --clobber' in workflow
-    assert "subject-path: dist/*" in workflow
+
+
+def test_failed_qualification_cannot_reach_release_job() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    draft = workflow[workflow.index("  draft-release:") :]
+
+    assert "needs: qualify" in draft
+    assert "continue-on-error" not in workflow
+    assert "if: ${{ inputs.publish }}" in draft
+    assert "always()" not in draft
 
 
 @pytest.mark.edge

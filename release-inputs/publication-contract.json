@@ -1,0 +1,103 @@
+{
+  "contract_version": "fixture-dry-run-v1",
+  "croissant": {
+    "@context": [
+      "https://schema.org/",
+      "https://mlcommons.org/croissant/"
+    ],
+    "dct:conformsTo": "http://mlcommons.org/croissant/1.0",
+    "description": "Self-authored synthetic rows for deterministic workflow rehearsal only.",
+    "distributions": [
+      {
+        "content_url": "data/medicines.parquet",
+        "encoding_format": "application/vnd.apache.parquet",
+        "name": "data/medicines.parquet",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    ],
+    "license": "fixture-self-authored-not-a-software-license",
+    "name": "Synthetic medicines dry-run fixture",
+    "version": "0.7.0"
+  },
+  "data_dictionary": {
+    "fields": [
+      {
+        "data_type": "string",
+        "description": "Synthetic fixture source identifier",
+        "name": "source_id",
+        "nullable": false,
+        "semantic_role": "provenance",
+        "source_fields": [
+          "synthetic.source_id"
+        ]
+      },
+      {
+        "data_type": "string",
+        "description": "Synthetic fixture medicine identifier",
+        "name": "medicine_id",
+        "nullable": false,
+        "semantic_role": "identifier",
+        "source_fields": [
+          "synthetic.medicine_id"
+        ]
+      },
+      {
+        "data_type": "string",
+        "description": "Obviously synthetic fixture medicine name",
+        "name": "name",
+        "nullable": false,
+        "semantic_role": "label",
+        "source_fields": [
+          "synthetic.name"
+        ]
+      }
+    ],
+    "schema_version": "fixture-v1"
+  },
+  "dataset_card": {
+    "coverage": [
+      {
+        "denominator": 2,
+        "exclusions": [
+          "All real medicines and jurisdictions are out of scope"
+        ],
+        "jurisdictions": [
+          "ZZ-FIXTURE"
+        ],
+        "numerator": 2,
+        "scope": "two self-authored synthetic rows"
+      }
+    ],
+    "created_at": "2026-07-29T00:00:00Z",
+    "intended_uses": [
+      "Local and CI dry-run package generation tests only"
+    ],
+    "limitations": [
+      "Fixture only; not real medicine evidence and not for production or public release",
+      "Does not represent any jurisdiction, approval, funding, or reimbursement decision",
+      "Does not record or imply maintainer publication approval"
+    ],
+    "provenance": [
+      {
+        "retrieved_at": "2026-07-29T00:00:00Z",
+        "source_id": "synthetic-fixture",
+        "source_sha256": "0969818f7ceb6d3c1913ae44ed1674437bb730228d7fc6507fd64205d989368a",
+        "source_uri": "https://fixtures.invalid/global-medicines-atlas/synthetic-v1",
+        "transformation_id": "identity-synthetic-fixture-v1",
+        "transformation_sha256": "975083958101b13351dd08dbfabc4ae38099f7d0df82d18b8f3956f262296160"
+      }
+    ],
+    "rights": [
+      {
+        "disposition": "permitted",
+        "reference_uri": "https://fixtures.invalid/rights/self-authored-synthetic",
+        "review_note": "Self-authored synthetic fixture; dry-run tests only; no third-party payload.",
+        "reviewed_at": "2026-07-29T00:00:00Z",
+        "source_id": "synthetic-fixture"
+      }
+    ],
+    "summary": "Self-authored synthetic rows for deterministic workflow rehearsal only.",
+    "title": "Synthetic medicines dry-run fixture",
+    "version": "0.7.0"
+  }
+}

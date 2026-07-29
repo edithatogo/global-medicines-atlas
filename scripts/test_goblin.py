@@ -46,6 +46,10 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_release_evidence.py",
         "tests/test_release_cli.py",
         "tests/test_release_workflow.py",
+        "tests/test_publication_contracts.py",
+        "tests/test_release_metadata.py",
+        "tests/test_release_qualification.py",
+        "tests/test_v07_fixture_production_qualification.py",
         "tests/test_version.py",
     ),
     "integration": (
@@ -74,6 +78,9 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_columnar.py",
         "tests/test_source_acquisition.py",
         "tests/test_temporal_snapshots.py",
+        "tests/test_publication_package.py",
+        "tests/test_publication_transport.py",
+        "tests/test_clean_room_rehearsal.py",
     ),
     "e2e": (
         "tests/test_canonical_nz_adapter.py",

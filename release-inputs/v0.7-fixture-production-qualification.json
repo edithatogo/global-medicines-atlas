@@ -1,0 +1,158 @@
+{
+  "schema_version": "1.0.0",
+  "release": {
+    "target": "0.7.0",
+    "classification": "fixture-qualified-production-blocked",
+    "publication_performed": false
+  },
+  "traceability": {
+    "requirements": [
+      "M-004",
+      "M-005",
+      "M-052",
+      "M-061",
+      "M-062",
+      "M-074",
+      "M-080",
+      "M-083",
+      "S-004"
+    ],
+    "github_issues": [32, 33, 34, 35]
+  },
+  "fixture_qualification": {
+    "scope": "fixture",
+    "overall_status": "passed",
+    "gates": [
+      {
+        "gate_id": "rights",
+        "status": "passed",
+        "reason": "The two ZZ-FIXTURE rows are self-authored synthetic test data.",
+        "evidence": ["release-inputs/publication-contract.json"]
+      },
+      {
+        "gate_id": "privacy",
+        "status": "passed",
+        "reason": "The content-bound fixture receipt records privacy approval and no personal or confidential data.",
+        "evidence": ["release-inputs/publication-qualification.json"]
+      },
+      {
+        "gate_id": "provenance",
+        "status": "passed",
+        "reason": "The fixture contract records source, transformation, row-input and staged-package identities.",
+        "evidence": [
+          "release-inputs/publication-contract.json",
+          "release-inputs/publication-qualification.json"
+        ]
+      },
+      {
+        "gate_id": "software-licence",
+        "status": "not_applicable",
+        "reason": "Fixture package rehearsal does not select or grant a software licence.",
+        "evidence": ["docs/data-sources/SOURCE_RIGHTS.md"]
+      },
+      {
+        "gate_id": "maintainer-release-approval",
+        "status": "not_applicable",
+        "reason": "Fixture qualification is a local dry run and is not release approval.",
+        "evidence": ["release-inputs/README.md"]
+      }
+    ]
+  },
+  "production_qualification": {
+    "scope": "production",
+    "overall_status": "blocked",
+    "gates": [
+      {
+        "gate_id": "rights",
+        "status": "blocked",
+        "reason": "No source-by-source production redistribution review has approved a release payload.",
+        "evidence": ["docs/data-sources/SOURCE_RIGHTS.md"]
+      },
+      {
+        "gate_id": "privacy",
+        "status": "blocked",
+        "reason": "No content-bound privacy and forbidden-content receipt exists for production bytes.",
+        "evidence": ["release-inputs/publication-qualification.json"]
+      },
+      {
+        "gate_id": "provenance",
+        "status": "blocked",
+        "reason": "No immutable production package manifest and consumer receipt exists.",
+        "evidence": ["release-inputs/README.md"]
+      },
+      {
+        "gate_id": "software-licence",
+        "status": "blocked",
+        "reason": "The copyright holder has not selected a repository software licence.",
+        "evidence": ["docs/data-sources/SOURCE_RIGHTS.md"]
+      },
+      {
+        "gate_id": "maintainer-release-approval",
+        "status": "blocked",
+        "reason": "No maintainer approval for a v0.7 public release or dataset publication has been recorded.",
+        "evidence": ["release-inputs/README.md"]
+      }
+    ]
+  },
+  "publication_states": [
+    {
+      "state": "prepared",
+      "status": "passed_fixture",
+      "evidence": "Synthetic fixture inputs and a content-bound qualification receipt are committed for dry-run rehearsal."
+    },
+    {
+      "state": "uploaded",
+      "status": "not_performed",
+      "evidence": "No GitHub, Hugging Face or archival upload was performed."
+    },
+    {
+      "state": "public",
+      "status": "not_performed",
+      "evidence": "No externally observable v0.7 dataset or release was created."
+    }
+  ],
+  "source_rights": [
+    {
+      "source_id": "synthetic-fixture",
+      "payload_class": "self-authored-fixture",
+      "redistribution_status": "permitted_fixture_only",
+      "production_disposition": "exclude_payload",
+      "basis": "Self-authored ZZ-FIXTURE rows are permitted only for deterministic test and dry-run evidence."
+    },
+    {
+      "source_id": "rxnorm",
+      "payload_class": "terminology",
+      "redistribution_status": "restricted",
+      "production_disposition": "exclude_payload",
+      "basis": "RxNorm payloads remain local or separately licensed; the repository must not imply redistribution permission."
+    },
+    {
+      "source_id": "nzmt-snomed-ct",
+      "payload_class": "terminology",
+      "redistribution_status": "restricted",
+      "production_disposition": "exclude_payload",
+      "basis": "NZMT and SNOMED CT terminology content retains source-specific licensing and access boundaries."
+    },
+    {
+      "source_id": "amt",
+      "payload_class": "terminology",
+      "redistribution_status": "restricted",
+      "production_disposition": "exclude_payload",
+      "basis": "Australian Medicines Terminology content requires its own licence and redistribution assessment."
+    },
+    {
+      "source_id": "nzulm",
+      "payload_class": "regulatory",
+      "redistribution_status": "unresolved",
+      "production_disposition": "blocked_pending_rights_review",
+      "basis": "No production release disposition is inferred from access to NZULM artifacts."
+    },
+    {
+      "source_id": "official-regulator-and-funder-sources",
+      "payload_class": "derived-metadata",
+      "redistribution_status": "unresolved",
+      "production_disposition": "metadata_only_pending_review",
+      "basis": "Each authority's bulk data, API response, document and derived output requires a source-specific review."
+    }
+  ]
+}
