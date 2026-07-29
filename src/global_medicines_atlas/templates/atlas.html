@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Global Medicines Atlas</title>
+    <link rel="stylesheet" href="/static/atlas.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#atlas-results">Skip to comparison results</a>
+    <header>
+      <p class="eyebrow">Evidence-backed comparison</p>
+      <h1>Global Medicines Atlas</h1>
+      <p>Compare regulatory and funding evidence without treating missing data as a negative result.</p>
+    </header>
+    <main id="atlas-results" tabindex="-1">
+      <section aria-labelledby="comparison-heading">
+        <h2 id="comparison-heading">Choose a medicine and observation clocks</h2>
+        <form method="get">
+          <div class="form-grid">
+            <label>Canonical medicine identifier
+              <input name="concept_id" value="{{ concept_id }}" maxlength="512" required>
+            </label>
+            <label>Jurisdictions (comma separated)
+              <input name="jurisdiction" value="{{ jurisdictions }}" aria-describedby="jurisdiction-help">
+            </label>
+            <p id="jurisdiction-help" class="hint">Use two- or three-letter jurisdiction codes, for example NZ, AU, US.</p>
+            <label>Valid at (ISO 8601 with timezone)
+              <input name="valid_at" value="{{ valid_at }}">
+            </label>
+            <label>Observed at (ISO 8601 with timezone)
+              <input name="observed_at" value="{{ observed_at }}">
+            </label>
+          </div>
+          <button type="submit">Compare evidence</button>
+        </form>
+      </section>
+
+      {% if error %}
+        <section class="notice error" role="alert" aria-labelledby="error-heading">
+          <h2 id="error-heading">Comparison unavailable</h2>
+          <p>{{ error }}</p>
+        </section>
+      {% endif %}
+
+      {% if concept_id and not error %}
+        <section aria-labelledby="results-heading">
+          <h2 id="results-heading">Comparison results for {{ concept_id }}</h2>
+          <p class="clock-summary">
+            Valid at <time datetime="{{ valid_at }}">{{ valid_at }}</time>;
+            observed at <time datetime="{{ observed_at }}">{{ observed_at }}</time>.
+          </p>
+          {% if conclusions %}
+            <div class="card-grid">
+              {% for item in conclusions %}
+                <article class="result-card" data-state="{{ item.state }}" aria-labelledby="result-{{ loop.index }}">
+                  <header>
+                    <h3 id="result-{{ loop.index }}">{{ item.jurisdiction }} — {{ item.dimension }}</h3>
+                    <p class="status"><span aria-hidden="true">●</span> Status: {{ item.state_label }}</p>
+                  </header>
+                  {% if item.state in ["unknown", "not_covered", "conflicting", "not_applicable"] %}
+                    <p class="notice">This is explicitly {{ item.state_label }}. It is not evidence of a negative regulatory or funding decision.</p>
+                  {% endif %}
+                  <dl>
+                    <div><dt>Source-native term</dt><dd>{{ item.native_label }} ({{ item.native_code }}), {{ item.native_system }}</dd></div>
+                    <div><dt>Canonical mapping</dt><dd>{{ item.canonical_label or "Not mapped" }}{% if item.canonical_code %} ({{ item.canonical_code }}){% endif %}</dd></div>
+                    <div><dt>Uncertainty</dt><dd>{{ item.uncertainty }}{% if item.uncertainty_reason %}: {{ item.uncertainty_reason }}{% endif %}</dd></div>
+                    <div><dt>Valid time</dt><dd><time datetime="{{ item.valid_at }}">{{ item.valid_at }}</time></dd></div>
+                    <div><dt>Observation time</dt><dd><time datetime="{{ item.observed_at }}">{{ item.observed_at }}</time></dd></div>
+                  </dl>
+                  <details>
+                    <summary>Review source evidence</summary>
+                    <ul class="evidence-list">
+                      {% for evidence in item.evidence %}
+                        <li>
+                          {% if evidence.uri %}
+                            <a href="{{ evidence.uri }}" rel="noopener noreferrer">{{ evidence.label }}</a>
+                          {% else %}
+                            <strong>{{ evidence.label }}</strong>
+                          {% endif %}
+                          <span>{{ evidence.detail }}</span>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </details>
+                </article>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="notice" role="status">No conclusion is available for these filters. Absence is not a negative status.</p>
+          {% endif %}
+        </section>
+
+        <section aria-labelledby="coverage-heading">
+          <h2 id="coverage-heading">Measured source coverage</h2>
+          {% if coverage %}
+            <div class="table-scroll" role="region" aria-label="Measured source coverage table" tabindex="0">
+              <table>
+                <thead><tr><th scope="col">Jurisdiction</th><th scope="col">Dimension</th><th scope="col">State</th><th scope="col">Measured coverage</th></tr></thead>
+                <tbody>
+                  {% for item in coverage %}
+                    <tr>
+                      <th scope="row">{{ item.jurisdiction }}</th>
+                      <td>{{ item.dimension }}</td>
+                      <td><span class="status" data-state="{{ item.state }}">Status: {{ item.state_label }}</span></td>
+                      <td>
+                        {% if item.denominator is none %}
+                          {{ item.covered_count }} observed; denominator unknown, so no percentage is calculated
+                        {% else %}
+                          {{ item.covered_count }} of {{ item.denominator }}
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <p class="notice">No measured coverage observations are available for these filters.</p>
+          {% endif %}
+        </section>
+      {% endif %}
+
+      <aside aria-labelledby="limits-heading">
+        <h2 id="limits-heading">Interpretation limits</h2>
+        <p>This fixture-qualified interface is not prescribing advice and does not claim WCAG conformance or complete global coverage.</p>
+      </aside>
+    </main>
+    <footer><p>Global Medicines Atlas, product evidence version 0.6.</p></footer>
+  </body>
+</html>
