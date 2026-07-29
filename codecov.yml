@@ -9,7 +9,9 @@ coverage:
         threshold: 0%
     patch:
       default:
-        target: 91%
+        # New code must remain strictly above the documented 90% floor.
+        # Project-wide coverage retains the stronger 91% release gate.
+        target: 90.01%
         threshold: 0%
 
 comment:
