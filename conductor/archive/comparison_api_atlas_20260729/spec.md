@@ -1,4 +1,4 @@
-# Specification: Comparison API and Atlas
+# Specification: Comparison API and Atlas (Archived)
 
 ## Outcome
 
