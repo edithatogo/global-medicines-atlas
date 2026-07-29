@@ -30,6 +30,7 @@ from global_medicines_atlas.publication_contracts import (
 from global_medicines_atlas.publication_package import (
     PackageGenerationError,
     generate_publication_package,
+    stage_publication_package,
 )
 
 SHA = "a" * 64
@@ -119,16 +120,14 @@ def _contract() -> PublicationPackage:
     )
 
 
-def _receipt(
-    contract: PublicationPackage,
-) -> PublicationVerificationReceipt:
+def _receipt(staged_sha256: str) -> PublicationVerificationReceipt:
     evidence = tuple(
         VerificationEvidence(
             check_id=check,
             outcome=VerificationOutcome.PASSED,
             evidence_uri=f"https://example.test/evidence/{check.value}",
             evidence_sha256="c" * 64,
-            artifact_sha256=contract.sha256(),
+            artifact_sha256=staged_sha256,
             checked_at=NOW,
             valid_until=NOW + timedelta(days=1),
             privacy_approved=True
@@ -148,7 +147,7 @@ def _receipt(
     )
     return PublicationVerificationReceipt(
         receipt_id="qualification-1",
-        package_sha256=contract.sha256(),
+        package_sha256=staged_sha256,
         state=PublicationState.QUALIFIED,
         verified_at=NOW,
         verifier="test-suite",
@@ -163,12 +162,22 @@ def _rows() -> list[dict[str, str]]:
     ]
 
 
+def _receipt_for(
+    contract: PublicationPackage,
+    rows: list[dict[str, str]] | tuple[dict[str, str], ...] | None = None,
+) -> PublicationVerificationReceipt:
+    reviewed_rows = _rows() if rows is None else rows
+    staged = stage_publication_package(contract, reviewed_rows)
+    return _receipt(staged.sha256)
+
+
 @pytest.mark.integration
 def test_generates_complete_readable_deterministic_package():
     contract = _contract()
-    first = generate_publication_package(contract, _receipt(contract), _rows())
+    qualification = _receipt_for(contract)
+    first = generate_publication_package(contract, qualification, _rows())
     second = generate_publication_package(
-        contract, _receipt(contract), reversed(_rows())
+        contract, qualification, reversed(_rows())
     )
 
     assert first == second
@@ -194,7 +203,7 @@ def test_generates_complete_readable_deterministic_package():
 def test_manifest_and_checksums_bind_exact_emitted_bytes():
     contract = _contract()
     generated = generate_publication_package(
-        contract, _receipt(contract), _rows()
+        contract, _receipt_for(contract), _rows()
     )
     manifest = json.loads(generated.file("package-manifest.json").content)
     entries = {item["path"]: item for item in manifest["files"]}
@@ -206,6 +215,7 @@ def test_manifest_and_checksums_bind_exact_emitted_bytes():
             "size": member.size,
         }
     assert manifest["contract_sha256"] == contract.sha256()
+    assert manifest["staged_sha256"] == _receipt_for(contract).package_sha256
     expected_sums = "".join(
         f"{item.sha256}  {item.path}\n"
         for item in generated.files
@@ -217,7 +227,7 @@ def test_manifest_and_checksums_bind_exact_emitted_bytes():
 def test_croissant_is_bound_to_canonical_parquet():
     contract = _contract()
     generated = generate_publication_package(
-        contract, _receipt(contract), _rows()
+        contract, _receipt_for(contract), _rows()
     )
     parquet = generated.file("data/medicines.parquet")
     croissant = json.loads(generated.file("metadata/croissant.json").content)
@@ -237,16 +247,28 @@ def test_croissant_is_bound_to_canonical_parquet():
 )
 def test_rejects_every_nonqualified_state(state):
     contract = _contract()
-    receipt = _receipt(contract).model_copy(update={"state": state})
+    receipt = _receipt_for(contract).model_copy(update={"state": state})
     with pytest.raises(PackageGenerationError, match="qualified receipt"):
         generate_publication_package(contract, receipt, _rows())
 
 
-def test_rejects_receipt_for_different_contract():
+def test_changed_row_values_invalidate_prior_qualification():
     contract = _contract()
-    altered = contract.model_copy(update={"contract_version": "2"})
-    with pytest.raises(PackageGenerationError, match="not bound"):
-        generate_publication_package(altered, _receipt(contract), _rows())
+    qualification = _receipt_for(contract)
+    changed = _rows()
+    changed[0]["name"] = "Changed after review"
+    with pytest.raises(PackageGenerationError, match="exact staged bytes"):
+        generate_publication_package(contract, qualification, changed)
+
+
+def test_exact_staged_bytes_pass_prior_qualification():
+    contract = _contract()
+    staged = stage_publication_package(contract, _rows())
+    qualification = _receipt(staged.sha256)
+    generated = generate_publication_package(contract, qualification, _rows())
+    manifest = json.loads(generated.file("package-manifest.json").content)
+    assert manifest["staged_sha256"] == staged.sha256
+    assert qualification.package_sha256 == staged.sha256
 
 
 @pytest.mark.parametrize(
@@ -266,7 +288,7 @@ def test_rejects_receipt_for_different_contract():
 def test_rejects_unpermitted_or_undeclared_payload(row):
     contract = _contract()
     with pytest.raises(PackageGenerationError):
-        generate_publication_package(contract, _receipt(contract), [row])
+        stage_publication_package(contract, [row])
 
 
 def test_requires_source_id_in_dictionary():
@@ -276,7 +298,7 @@ def test_requires_source_id_in_dictionary():
     )
     altered = contract.model_copy(update={"data_dictionary": dictionary})
     with pytest.raises(PackageGenerationError, match="declare source_id"):
-        generate_publication_package(altered, _receipt(altered), [])
+        stage_publication_package(altered, [])
 
 
 def test_requires_exactly_one_canonical_croissant_distribution():
@@ -292,7 +314,7 @@ def test_requires_exactly_one_canonical_croissant_distribution():
     )
     altered = contract.model_copy(update={"croissant": croissant})
     with pytest.raises(PackageGenerationError, match="canonical Parquet"):
-        generate_publication_package(altered, _receipt(altered), _rows())
+        stage_publication_package(altered, _rows())
 
 
 def test_rejects_unsupported_reviewed_data_type():
@@ -307,7 +329,7 @@ def test_rejects_unsupported_reviewed_data_type():
     )
     altered = contract.model_copy(update={"data_dictionary": dictionary})
     with pytest.raises(PackageGenerationError, match="unsupported"):
-        generate_publication_package(altered, _receipt(altered), _rows())
+        stage_publication_package(altered, _rows())
 
 
 def test_rejects_null_in_non_nullable_reviewed_field():
@@ -315,12 +337,12 @@ def test_rejects_null_in_non_nullable_reviewed_field():
     rows = _rows()
     rows[0]["name"] = None  # type: ignore[assignment]
     with pytest.raises(PackageGenerationError, match="non-nullable"):
-        generate_publication_package(contract, _receipt(contract), rows)
+        stage_publication_package(contract, rows)
 
 
 def test_empty_package_retains_reviewed_semantic_schema():
     contract = _contract()
-    generated = generate_publication_package(contract, _receipt(contract), [])
+    generated = stage_publication_package(contract, [])
     table = pq.read_table(
         pa.BufferReader(generated.file("data/medicines.parquet").content)
     )
@@ -335,17 +357,16 @@ def test_empty_package_retains_reviewed_semantic_schema():
 @pytest.mark.property
 def test_row_order_never_changes_any_package_byte(rows):
     contract = _contract()
-    expected = generate_publication_package(
-        contract, _receipt(contract), _rows()
-    )
-    actual = generate_publication_package(contract, _receipt(contract), rows)
+    qualification = _receipt_for(contract)
+    expected = generate_publication_package(contract, qualification, _rows())
+    actual = generate_publication_package(contract, qualification, rows)
     assert actual.files == expected.files
 
 
 def test_package_identity_is_content_addressed():
     contract = _contract()
     generated = generate_publication_package(
-        contract, _receipt(contract), _rows()
+        contract, _receipt_for(contract), _rows()
     )
     digest = hashlib.sha256()
     for item in generated.files:
@@ -359,7 +380,7 @@ def test_package_identity_is_content_addressed():
 def test_missing_file_lookup_is_explicit():
     contract = _contract()
     generated = generate_publication_package(
-        contract, _receipt(contract), _rows()
+        contract, _receipt_for(contract), _rows()
     )
     with pytest.raises(KeyError, match="absent"):
         generated.file("absent")

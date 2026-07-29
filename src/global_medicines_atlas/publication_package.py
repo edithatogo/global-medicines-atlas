@@ -17,7 +17,6 @@ from .publication_contracts import (
     PublicationState,
     PublicationVerificationReceipt,
     RightsDisposition,
-    receipt_is_for_package,
 )
 
 _PARQUET_NAME = "data/medicines.parquet"
@@ -79,14 +78,38 @@ def generate_publication_package(
     qualification: PublicationVerificationReceipt,
     rows: Iterable[Mapping[str, Any]],
 ) -> GeneratedPublicationPackage:
-    """Generate canonical reviewed package files without touching the filesystem."""
+    """Seal staged bytes only when qualification binds to their exact identity."""
 
-    _require_qualified(contract, qualification)
+    staged = stage_publication_package(contract, rows)
+    _require_qualified(staged, qualification)
+    preliminary = {item.path: item.content for item in staged.files}
+    preliminary["metadata/qualification.json"] = _canonical_json(
+        qualification.model_dump(mode="json")
+    )
+    checksums = _checksum_lines(preliminary)
+    preliminary["SHA256SUMS"] = checksums
+    preliminary["package-manifest.json"] = _manifest_bytes(
+        contract,
+        preliminary,
+        staged_sha256=staged.sha256,
+    )
+    files = tuple(
+        GeneratedFile(path=path, content=content)
+        for path, content in sorted(preliminary.items())
+    )
+    return GeneratedPublicationPackage(files=files)
+
+
+def stage_publication_package(
+    contract: PublicationPackage,
+    rows: Iterable[Mapping[str, Any]],
+) -> GeneratedPublicationPackage:
+    """Create deterministic bytes that privacy and content checks must review."""
+
     materialized = tuple(dict(row) for row in rows)
     _validate_rows(contract, materialized)
     parquet = _canonical_parquet(contract, materialized)
-
-    preliminary: dict[str, bytes] = {
+    staged: dict[str, bytes] = {
         _PARQUET_NAME: parquet,
         "metadata/citations.json": _canonical_json({
             "sources": [
@@ -118,33 +141,25 @@ def generate_publication_package(
         "metadata/dataset-card.json": _canonical_json(
             contract.dataset_card.model_dump(mode="json")
         ),
-        "metadata/qualification.json": _canonical_json(
-            qualification.model_dump(mode="json")
-        ),
     }
-    checksums = _checksum_lines(preliminary)
-    preliminary["SHA256SUMS"] = checksums
-    preliminary["package-manifest.json"] = _manifest_bytes(
-        contract, preliminary
-    )
     files = tuple(
         GeneratedFile(path=path, content=content)
-        for path, content in sorted(preliminary.items())
+        for path, content in sorted(staged.items())
     )
     return GeneratedPublicationPackage(files=files)
 
 
 def _require_qualified(
-    contract: PublicationPackage,
+    staged: GeneratedPublicationPackage,
     receipt: PublicationVerificationReceipt,
 ) -> None:
     if receipt.state is not PublicationState.QUALIFIED:
         raise PackageGenerationError(
             "package generation requires a qualified receipt"
         )
-    if not receipt_is_for_package(contract, receipt):
+    if receipt.package_sha256 != staged.sha256:
         raise PackageGenerationError(
-            "qualification receipt is not bound to the package contract"
+            "qualification receipt is not bound to the exact staged bytes"
         )
 
 
@@ -266,6 +281,8 @@ def _checksum_lines(files: Mapping[str, bytes]) -> bytes:
 def _manifest_bytes(
     contract: PublicationPackage,
     files: Mapping[str, bytes],
+    *,
+    staged_sha256: str,
 ) -> bytes:
     return _canonical_json({
         "contract_sha256": contract.sha256(),
@@ -278,6 +295,7 @@ def _manifest_bytes(
             for path, content in sorted(files.items())
         ],
         "format_version": "1",
+        "staged_sha256": staged_sha256,
     })
 
 

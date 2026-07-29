@@ -119,17 +119,40 @@ def test_qualification_precedes_environment_protected_draft() -> None:
 def test_qualified_assets_are_exact_attested_and_never_overwritten() -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
 
-    assert "stage/sbom.cdx.json" in workflow
-    assert "stage/qualification.json" in workflow
+    assert "build/release-stage/sbom.cdx.json" in workflow
+    assert "scripts/qualify_release.py qualify" in workflow
+    assert "scripts/qualify_release.py build-package" in workflow
+    assert "release-inputs/publication-contract.json" in workflow
+    assert "release-inputs/publication-qualification.json" in workflow
+    assert "release-inputs/reviewed-rows.jsonl" in workflow
+    assert "--sort=name" in workflow
+    assert "--mtime='UTC 1970-01-01'" in workflow
+    assert "gzip -n" in workflow
+    assert "global-medicines-atlas-dataset-${RELEASE_TAG#v}.tar.gz" in workflow
     assert "SHA256SUMS" in workflow
     assert "sha256sum --check --strict SHA256SUMS" in workflow
-    assert "chmod -R a-w stage" in workflow
-    assert "\n          path: stage/*" in workflow
-    assert "subject-path: stage/*" in workflow
-    assert 'gh release create "$RELEASE_TAG" stage/*' in workflow
+    assert "chmod -R a-w build/release-stage" in workflow
+    assert "\n          path: build/release-stage/**" in workflow
+    assert "subject-path: build/release-stage/**" in workflow
+    assert "gh release create \\\n            --draft" in workflow
+    assert '-- "$RELEASE_TAG" "${assets[@]}"' in workflow
     assert "--clobber" not in workflow
     assert "gh release upload" not in workflow
     assert "--draft" in workflow
+
+
+def test_release_identity_and_sbom_are_semantically_qualified() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+
+    assert "fetch-depth: 0" in workflow
+    assert 'git rev-parse "refs/tags/${RELEASE_TAG}^{commit}"' in workflow
+    assert "uv version --short" in workflow
+    assert '--release-tag "$RELEASE_TAG"' in workflow
+    assert '--commit "$GITHUB_SHA"' in workflow
+    assert '--dynamic-version "$DYNAMIC_VERSION"' in workflow
+    assert "--pyproject pyproject.toml" in workflow
+    assert "--output-reproducible" in workflow
+    assert "cp -- uv.lock build/release-stage/uv.lock" in workflow
 
 
 def test_release_jobs_have_least_permissions() -> None:

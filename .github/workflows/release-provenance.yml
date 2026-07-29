@@ -9,8 +9,8 @@ on:
         type: boolean
         default: false
       release_tag:
-        description: New release tag (required only when publish is true)
-        required: false
+        description: Existing canonical vSemVer tag at the selected commit
+        required: true
         type: string
 
 permissions:
@@ -33,68 +33,95 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: ${{ github.sha }}
+          fetch-depth: 0
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           version: "0.11.29"
           enable-cache: false
       - name: Install locked qualification tools
-        run: uv sync --locked --group security
-      - name: Build distributions
-        run: uv build --out-dir build/dist
-      - name: Stage exact release assets
+        run: uv sync --locked --all-groups
+      - name: Resolve VCS-derived version
+        id: version
         shell: bash
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
           set -euo pipefail
-          mkdir -p stage
+          version="$(uv version --short)"
+          test -n "$version"
+          printf 'value=%s\n' "$version" >> "$GITHUB_OUTPUT"
+          test "$(git rev-parse "refs/tags/${RELEASE_TAG}^{commit}")" = "$GITHUB_SHA"
+      - name: Generate governed dataset package
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          rm -rf -- build/release-stage
+          rm -rf -- build/governed-dataset
+          mkdir -p build/release-stage build/governed-dataset
+          uv run python scripts/qualify_release.py build-package \
+            --root . \
+            --contract release-inputs/publication-contract.json \
+            --qualification release-inputs/publication-qualification.json \
+            --rows release-inputs/reviewed-rows.jsonl \
+            --output build/governed-dataset
+          tar \
+            --sort=name \
+            --mtime='UTC 1970-01-01' \
+            --owner=0 \
+            --group=0 \
+            --numeric-owner \
+            -C build/governed-dataset \
+            -cf - . |
+            gzip -n > \
+              "build/release-stage/global-medicines-atlas-dataset-${RELEASE_TAG#v}.tar.gz"
+      - name: Build and stage software distributions
+        run: |
+          set -euo pipefail
+          uv build --out-dir build/dist
           find build/dist -maxdepth 1 -type f -print0 |
             sort -z |
-            xargs -0 -r cp --target-directory=stage
-          test -n "$(find stage -maxdepth 1 -type f -print -quit)"
+            xargs -0 -r cp --target-directory=build/release-stage
+          cp -- uv.lock build/release-stage/uv.lock
+      - name: Generate reproducible CycloneDX SBOM
+        run: |
+          set -euo pipefail
           uv run --group security cyclonedx-py environment \
-            --output-file stage/sbom.cdx.json
-          python - <<'PY'
-          import json
-          import os
-          from pathlib import Path
-
-          staged = sorted(
-              item.name for item in Path("stage").iterdir() if item.is_file()
-          )
-          receipt = {
-              "commit": os.environ["GITHUB_SHA"],
-              "dry_run": os.environ["PUBLISH"] != "true",
-              "qualified_files": staged,
-              "workflow_run_id": os.environ["GITHUB_RUN_ID"],
-          }
-          Path("stage/qualification.json").write_text(
-              json.dumps(receipt, indent=2, sort_keys=True) + "\n",
-              encoding="utf-8",
-          )
-          PY
+            --pyproject pyproject.toml \
+            --output-reproducible \
+            --output-format JSON \
+            --output-file build/release-stage/sbom.cdx.json
+      - name: Qualify exact staged bytes
+        env:
+          DYNAMIC_VERSION: ${{ steps.version.outputs.value }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          uv run python scripts/qualify_release.py qualify \
+            --root . \
+            --stage build/release-stage \
+            --release-tag "$RELEASE_TAG" \
+            --commit "$GITHUB_SHA" \
+            --dynamic-version "$DYNAMIC_VERSION"
           (
-            cd stage
-            find . -maxdepth 1 -type f ! -name SHA256SUMS -printf '%P\0' |
-              sort -z |
-              xargs -0 sha256sum > SHA256SUMS
+            cd build/release-stage
             sha256sum --check --strict SHA256SUMS
-            test "$(find . -maxdepth 1 -type f | wc -l)" \
+            test "$(find . -type f | wc -l)" \
               -eq "$(( $(wc -l < SHA256SUMS) + 1 ))"
           )
-          chmod -R a-w stage
-        env:
-          PUBLISH: ${{ inputs.publish }}
+          chmod -R a-w build/release-stage
       - name: Persist exact qualified assets
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: qualified-release-assets-${{ github.run_id }}
-          path: stage/*
+          path: build/release-stage/**
           if-no-files-found: error
           retention-days: 90
       - name: Attest exact qualified assets
         uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3
         with:
-          subject-path: stage/*
+          subject-path: build/release-stage/**
 
   draft-release:
     name: Create protected draft release
@@ -126,7 +153,7 @@ jobs:
           (
             cd stage
             sha256sum --check --strict SHA256SUMS
-            test "$(find . -maxdepth 1 -type f | wc -l)" \
+            test "$(find . -type f | wc -l)" \
               -eq "$(( $(wc -l < SHA256SUMS) + 1 ))"
             chmod -R a-w .
           )
@@ -138,8 +165,11 @@ jobs:
           QUALIFIED_COMMIT: ${{ github.sha }}
         run: |
           set -euo pipefail
-          gh release create "$RELEASE_TAG" stage/* \
+          mapfile -d '' assets < <(find stage -type f -print0 | sort -z)
+          test "${#assets[@]}" -gt 0
+          gh release create \
             --draft \
             --target "$QUALIFIED_COMMIT" \
             --title "$RELEASE_TAG" \
-            --notes "Qualified immutable assets from $QUALIFIED_COMMIT"
+            --notes "Qualified immutable assets from $QUALIFIED_COMMIT" \
+            -- "$RELEASE_TAG" "${assets[@]}"
