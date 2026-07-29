@@ -43,3 +43,4 @@
 - [x] Task: Integrate governed dataset generation and qualification into the release workflow `b5ad86c`
 - [x] Task: Validate release tag, commit, dynamic version, changelog, citation, licence, wheel and SBOM agreement `b5ad86c`
 - [x] Task: Re-run focused review-fix verification — 42 passed; Zizmor, Ruff, ty and BasedPyright passed
+- [x] Task: Add rights-safe synthetic dry-run inputs and complete runtime-SBOM closure validation `84fedd4`
