@@ -1,49 +1,145 @@
-name: Release provenance
+name: Qualify release provenance
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Create an environment-approved draft GitHub release
+        required: true
+        type: boolean
+        default: false
+      release_tag:
+        description: New release tag (required only when publish is true)
+        required: false
+        type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: release-provenance-${{ github.event.release.tag_name }}
+  group: release-provenance-${{ github.sha }}
   cancel-in-progress: false
 
 jobs:
-  attest:
-    name: Build and attest published release
-    if: github.event.release.draft == false
+  qualify:
+    name: Build, stage and qualify immutable bytes
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     permissions:
-      contents: write # Required to attach the attested bytes to the release.
-      id-token: write # Required for keyless Sigstore identity.
-      attestations: write # Required to store the GitHub artifact attestation.
+      contents: read
+      id-token: write # Required for keyless provenance.
+      attestations: write # Required to attest the qualified bytes.
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          ref: ${{ github.sha }}
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           version: "0.11.29"
           enable-cache: false
-      - name: Build release distributions
-        run: uv build --out-dir dist
-      - name: Persist attested release distributions
+      - name: Install locked qualification tools
+        run: uv sync --locked --group security
+      - name: Build distributions
+        run: uv build --out-dir build/dist
+      - name: Stage exact release assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p stage
+          find build/dist -maxdepth 1 -type f -print0 |
+            sort -z |
+            xargs -0 -r cp --target-directory=stage
+          test -n "$(find stage -maxdepth 1 -type f -print -quit)"
+          uv run --group security cyclonedx-py environment \
+            --output-file stage/sbom.cdx.json
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          staged = sorted(
+              item.name for item in Path("stage").iterdir() if item.is_file()
+          )
+          receipt = {
+              "commit": os.environ["GITHUB_SHA"],
+              "dry_run": os.environ["PUBLISH"] != "true",
+              "qualified_files": staged,
+              "workflow_run_id": os.environ["GITHUB_RUN_ID"],
+          }
+          Path("stage/qualification.json").write_text(
+              json.dumps(receipt, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+          (
+            cd stage
+            find . -maxdepth 1 -type f ! -name SHA256SUMS -printf '%P\0' |
+              sort -z |
+              xargs -0 sha256sum > SHA256SUMS
+            sha256sum --check --strict SHA256SUMS
+            test "$(find . -maxdepth 1 -type f | wc -l)" \
+              -eq "$(( $(wc -l < SHA256SUMS) + 1 ))"
+          )
+          chmod -R a-w stage
+        env:
+          PUBLISH: ${{ inputs.publish }}
+      - name: Persist exact qualified assets
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
-          name: release-distributions-${{ github.event.release.tag_name }}
-          path: dist/*
+          name: qualified-release-assets-${{ github.run_id }}
+          path: stage/*
           if-no-files-found: error
           retention-days: 90
-      - name: Publish exact distributions as release assets
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
-        run: gh release upload "$RELEASE_TAG" dist/* --clobber
-      - name: Attest release distributions
+      - name: Attest exact qualified assets
         uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3
         with:
-          subject-path: dist/*
+          subject-path: stage/*
+
+  draft-release:
+    name: Create protected draft release
+    needs: qualify
+    if: ${{ inputs.publish }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: release-publication
+    permissions:
+      actions: read # Required to download this run's qualified artifact.
+      contents: write # Required to create the new draft release.
+    steps:
+      - name: Require an explicit new release tag
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          test -n "$RELEASE_TAG"
+      - name: Download exact qualified assets
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: qualified-release-assets-${{ github.run_id }}
+          path: stage
+      - name: Re-verify immutable asset set
+        shell: bash
+        run: |
+          set -euo pipefail
+          (
+            cd stage
+            sha256sum --check --strict SHA256SUMS
+            test "$(find . -maxdepth 1 -type f | wc -l)" \
+              -eq "$(( $(wc -l < SHA256SUMS) + 1 ))"
+            chmod -R a-w .
+          )
+      - name: Create a new draft release with qualified assets
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          QUALIFIED_COMMIT: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          gh release create "$RELEASE_TAG" stage/* \
+            --draft \
+            --target "$QUALIFIED_COMMIT" \
+            --title "$RELEASE_TAG" \
+            --notes "Qualified immutable assets from $QUALIFIED_COMMIT"
