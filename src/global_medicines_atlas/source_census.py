@@ -35,9 +35,9 @@ class CensusCoverage(FrozenModel):
     current_receipt: int = Field(ge=0)
     source_health_scheduled: int = Field(ge=0)
     schema_drift_scheduled: int = Field(ge=0)
-    parser_capable_sources: int = Field(ge=0)
-    live_receipt_sources: int = Field(ge=0)
-    production_qualified_sources: int = Field(ge=0)
+    parser_capable_sources: int = Field(default=0, ge=0)
+    live_receipt_sources: int = Field(default=0, ge=0)
+    production_qualified_sources: int = Field(default=0, ge=0)
 
 
 def jurisdiction_coverage(
@@ -118,7 +118,8 @@ def aggregate_census_coverage(
     }
     capability_registry = builtin_source_capabilities()
     capability_registry.validate_catalog(
-        source.source_id for source in (load_catalog() if catalog is None else catalog).sources
+        source.source_id
+        for source in (load_catalog() if catalog is None else catalog).sources
     )
     return CensusCoverage(
         denominator=len(rows),

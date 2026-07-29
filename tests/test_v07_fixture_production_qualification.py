@@ -102,12 +102,22 @@ def test_traceability_is_exact_and_documented() -> None:
     requirements_text = (ROOT / "conductor" / "requirements.md").read_text(
         encoding="utf-8"
     )
-    track_text = (
+    active_plan = (
         ROOT
         / "conductor"
         / "tracks"
         / "governed_publication_20260729"
         / "plan.md"
+    )
+    archived_plan = (
+        ROOT
+        / "conductor"
+        / "archive"
+        / "governed_publication_20260729"
+        / "plan.md"
+    )
+    track_text = (
+        active_plan if active_plan.exists() else archived_plan
     ).read_text(encoding="utf-8")
     evidence_doc = DOC_PATH.read_text(encoding="utf-8")
     for requirement in REQUIREMENTS:
