@@ -121,8 +121,8 @@ def _fixture(root: Path) -> Path:
     }
     declaration_path = root.parent / "declaration.json"
     declaration_path.write_bytes(_canonical(declaration))
-    trusted_root = b'{"mediaType":"application/vnd.dev.sigstore.trustedroot+json;version=0.1"}\n'
-    (root.parent / "trusted-root.jsonl").write_bytes(trusted_root)
+    sigstore_fixture = b'{"mediaType":"application/vnd.dev.sigstore.trustedroot+json;version=0.1"}\n'
+    (root.parent / "trusted-root.jsonl").write_bytes(sigstore_fixture)
     (root.parent / "trust-policy.json").write_bytes(
         _canonical({
             "certificate_identity": "https://github.com/edithatogo/gma/.github/workflows/release.yml@refs/heads/main",
@@ -132,7 +132,7 @@ def _fixture(root: Path) -> Path:
             "schema_version": "1",
             "signer_workflow": "github.com/edithatogo/gma/.github/workflows/release.yml",
             "trusted_root_path": "trusted-root.jsonl",
-            "trusted_root_sha256": _sha(trusted_root),
+            "trusted_root_sha256": _sha(sigstore_fixture),
         })
     )
     fake = root.parent / "fake_gh.py"
