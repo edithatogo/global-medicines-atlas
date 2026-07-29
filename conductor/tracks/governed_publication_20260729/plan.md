@@ -10,11 +10,11 @@
 
 ## Phase 2: Release pipeline
 
-- [ ] Task: Generate reviewed Parquet configs and coverage manifests ([#34](https://github.com/edithatogo/global-medicines-atlas/issues/34))
-- [ ] Task: Generate citations, SBOM, checksums and attestations ([#34](https://github.com/edithatogo/global-medicines-atlas/issues/34))
-- [ ] Task: Add dry-run Hugging Face and archival workflows ([#34](https://github.com/edithatogo/global-medicines-atlas/issues/34))
-- [ ] Task: Replace post-publication checks with pre-publication qualification and immutable assets ([#34](https://github.com/edithatogo/global-medicines-atlas/issues/34))
-- [ ] Task: Phase Verification & Checkpoint
+- [x] Task: Generate reviewed Parquet configs and coverage manifests ([#34](https://github.com/edithatogo/global-medicines-atlas/issues/34)) `6919040`
+- [x] Task: Generate citations, SBOM, checksums and attestations ([#34](https://github.com/edithatogo/global-medicines-atlas/issues/34)) `6919040`
+- [x] Task: Add dry-run Hugging Face and archival workflows ([#34](https://github.com/edithatogo/global-medicines-atlas/issues/34)) `6919040`
+- [x] Task: Replace post-publication checks with pre-publication qualification and immutable assets ([#34](https://github.com/edithatogo/global-medicines-atlas/issues/34)) `6919040`
+- [x] Task: Phase Verification & Checkpoint — 727 passed, 6 expected Windows symlink skips; 94.28% branch coverage; Zizmor, Ruff, ty and BasedPyright passed
 
 ## Phase 3: Qualification
 
