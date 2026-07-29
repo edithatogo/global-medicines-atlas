@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.example/schemas/quality-evidence-receipt-v1.json",
+  "title": "Test-Goblin mutation or performance evidence receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "kind", "evidence_state"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "kind": {"enum": ["mutation", "performance"]},
+    "evidence_state": {"enum": ["contract_only", "measured"]},
+    "commit": {"type": "string", "minLength": 7},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "observations": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "number"}
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"evidence_state": {"const": "contract_only"}},
+        "required": ["evidence_state"]
+      },
+      "then": {
+        "not": {
+          "anyOf": [
+            {"required": ["commit"]},
+            {"required": ["generated_at"]},
+            {"required": ["observations"]}
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"evidence_state": {"const": "measured"}},
+        "required": ["evidence_state"]
+      },
+      "then": {
+        "required": ["commit", "generated_at", "observations"]
+      }
+    }
+  ]
+}

@@ -4,14 +4,48 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import platform
 import subprocess
 import sys
 from collections.abc import Sequence
 from pathlib import Path
+from typing import Any, Protocol, cast
+
+import jsonschema
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 QUALITY_BUDGETS_PATH = PROJECT_ROOT / "quality" / "budgets.json"
+QUALITY_BUDGETS_SCHEMA_PATH = PROJECT_ROOT / "quality" / "budgets.schema.json"
+QUALITY_RECEIPT_SCHEMA_PATH = (
+    PROJECT_ROOT / "quality" / "evidence-receipt.schema.json"
+)
+PRIMARY_LANES = frozenset(
+    {"unit", "integration", "e2e", "smoke", "property", "edge"}
+)
+
+
+class MarkerLike(Protocol):
+    """Minimal marker shape consumed by the collection validator."""
+
+    name: str
+
+
+class ItemLike(Protocol):
+    """Minimal pytest item shape consumed by the collection validator."""
+
+    path: object
+    nodeid: str
+
+    def iter_markers(self) -> Sequence[MarkerLike]:
+        """Return attached markers."""
+        ...
+
+    def add_marker(self, marker: str) -> None:
+        """Attach a generated primary marker."""
+        ...
+
+
 TEST_LANES: dict[str, tuple[str, ...]] = {
     "unit": (
         "tests/test_conductor_github_sync.py",
@@ -133,18 +167,108 @@ def validate_test_inventory() -> tuple[str, ...]:
 def load_quality_budgets() -> dict[str, object]:
     """Load numeric promotion contracts without manufacturing observations."""
     document = json.loads(QUALITY_BUDGETS_PATH.read_text(encoding="utf-8"))
-    if document.get("evidence_state") != "contract_only":
-        raise ValueError("Phase 1 budgets must remain contract_only")
+    schema = json.loads(QUALITY_BUDGETS_SCHEMA_PATH.read_text(encoding="utf-8"))
+    jsonschema.validate(  # pyright: ignore[reportUnknownMemberType]
+        document, schema
+    )
     return document
 
 
 ALL_TESTS = validate_test_inventory()
 
 
+def primary_lane_for_path(path: Path) -> str:
+    """Resolve one manifest lane for a collected test path."""
+    relative = path.resolve().relative_to(PROJECT_ROOT).as_posix()
+    matches = [
+        name for name, paths in TEST_LANES.items() if relative in paths
+    ]
+    if len(matches) != 1:
+        raise ValueError(
+            f"{relative} must have exactly one manifest lane; got {matches}"
+        )
+    return matches[0]
+
+
+def pytest_collection_modifyitems(
+    items: list[ItemLike],
+) -> None:
+    """Assign and validate generated primary markers against the manifest."""
+    problems: list[str] = []
+    for item in items:
+        expected = primary_lane_for_path(Path(str(item.path)))
+        existing = {
+            marker.name
+            for marker in item.iter_markers()
+            if marker.name in PRIMARY_LANES
+        }
+        if not existing:
+            item.add_marker(expected)
+            existing = {expected}
+        if existing != {expected}:
+            problems.append(
+                f"{item.nodeid}: expected {expected}, found {sorted(existing)}"
+            )
+    if problems:
+        raise ValueError(
+            "primary lane marker validation failed:\n" + "\n".join(problems)
+        )
+
+
+def validate_collection() -> None:
+    """Collect all tests with generated marker/manifest validation enabled."""
+    run(
+        pytest_command(
+            ALL_TESTS,
+            "--collect-only",
+            "-p",
+            "scripts.test_goblin",
+        )
+    )
+
+
+def validate_quality_receipt(
+    receipt_path: Path,
+    *,
+    expected_kind: str,
+    enforce: bool,
+) -> dict[str, Any]:
+    """Validate a quality receipt and optionally require measured evidence."""
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    schema = json.loads(
+        QUALITY_RECEIPT_SCHEMA_PATH.read_text(encoding="utf-8")
+    )
+    jsonschema.validate(  # pyright: ignore[reportUnknownMemberType]
+        receipt, schema
+    )
+    if receipt["kind"] != expected_kind:
+        raise ValueError(
+            f"expected {expected_kind} receipt, got {receipt['kind']}"
+        )
+    if enforce and receipt["evidence_state"] != "measured":
+        raise ValueError(
+            f"{expected_kind} evidence remains contract_only; "
+            "promotion enforcement requires a measured receipt"
+        )
+    return receipt
+
+
+def enforce_optional_receipt(kind: str) -> None:
+    """Enforce a supplied measured receipt without inventing an observation."""
+    variable = f"TEST_GOBLIN_{kind.upper()}_RECEIPT"
+    configured = os.environ.get(variable)
+    if configured is None:
+        return
+    validate_quality_receipt(
+        Path(configured), expected_kind=kind, enforce=True
+    )
+
+
 def contracts() -> None:
     """Validate cheap inventory and budget contracts without executing evidence."""
     validate_test_inventory()
     load_quality_budgets()
+    validate_collection()
 
 
 def run(command: Sequence[str]) -> None:
@@ -178,6 +302,12 @@ def lane(name: str) -> None:
 
 def coverage() -> None:
     """Run the governed suite with branch coverage and the blocking threshold."""
+    budgets = load_quality_budgets()
+    coverage_budget = cast("dict[str, object]", budgets["coverage"])
+    line_percent = cast(
+        "dict[str, float]", coverage_budget["line_percent"]
+    )
+    minimum = line_percent["minimum"]
     run(
         pytest_command(
             ALL_TESTS,
@@ -186,7 +316,7 @@ def coverage() -> None:
             "--cov-branch",
             "--cov-report=term-missing",
             "--cov-report=xml",
-            "--cov-fail-under=91",
+            f"--cov-fail-under={minimum}",
         )
     )
 
@@ -226,6 +356,7 @@ def profile() -> None:
         "scalene-profile.json",
         "scripts/profile_smoke.py",
     ])
+    enforce_optional_receipt("performance")
 
 
 def mutation() -> None:
@@ -236,6 +367,7 @@ def mutation() -> None:
             "or use the authoritative Linux CI lane."
         )
     run([sys.executable, "-m", "mutmut", "run"])
+    enforce_optional_receipt("mutation")
 
 
 def gremlins() -> None:

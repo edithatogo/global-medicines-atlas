@@ -21,17 +21,25 @@ lane runs `basedpyright` strict mode. Full-project branch `coverage`, Linux
 `mutation`, dynamic wheel/sdist `package`, and deterministic network-free
 Scalene `profile` remain separate.
 
-Every `tests/test_*.py` module has exactly one primary lane in
-`scripts/test_goblin.py`. Markers may describe secondary test traits, but they
-do not create a second primary execution assignment. The harness validates the
-inventory at import time and through the cheap `contracts` profile.
+Every collected test item receives exactly one generated primary marker from
+the manifest in `scripts/test_goblin.py`. The `contracts` profile performs a
+real `pytest --collect-only` pass and fails if an explicit primary marker
+disagrees with the module's manifest lane. Other markers may describe secondary
+traits but cannot create a second primary execution assignment.
 
 Numeric promotion thresholds are machine-readable in `quality/budgets.json`
 and constrained by `quality/budgets.schema.json`. Phase 1 deliberately labels
 them `contract_only`: they define thresholds but do not claim that mutation or
 representative-scale performance evidence has been collected. Later phases
 must produce durable observations before using these contracts as promotion
-evidence.
+evidence. Mutation and performance receipts are validated against
+`quality/evidence-receipt.schema.json`. A `contract_only` receipt is forbidden
+from carrying observations and cannot satisfy enforcement; a `measured`
+receipt requires a commit, timestamp, and numeric observations. The mutation
+and profiling lanes enforce supplied receipts through
+`TEST_GOBLIN_MUTATION_RECEIPT` and `TEST_GOBLIN_PERFORMANCE_RECEIPT`
+respectively, without manufacturing a receipt when none is supplied. Coverage
+is already blocking and reads its threshold directly from the validated budget.
 
 ## Local Commands
 

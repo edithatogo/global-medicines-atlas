@@ -18,7 +18,10 @@
   "properties": {
     "$schema": {"type": "string"},
     "schema_version": {"const": "1.0.0"},
-    "evidence_state": {"const": "contract_only"},
+    "evidence_state": {
+      "const": "contract_only",
+      "description": "Threshold contracts only; not measured qualification evidence."
+    },
     "coverage": {
       "type": "object",
       "additionalProperties": false,
