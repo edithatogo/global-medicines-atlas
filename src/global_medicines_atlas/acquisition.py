@@ -3,13 +3,16 @@
 from __future__ import annotations
 
 import os
+import socket
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from hashlib import sha256
+from ipaddress import ip_address
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from typing import Protocol
+from urllib.parse import urlsplit
 
 import httpx
 from pydantic import AnyUrl
@@ -30,6 +33,7 @@ from .source_catalog import AccessMode, MedicineDataSource, load_source_catalog
 
 Receipt = SourceReceipt | FailureReceipt
 Clock = Callable[[], datetime]
+Resolver = Callable[[str], tuple[str, ...]]
 
 
 class _WritableBinary(Protocol):
@@ -59,6 +63,10 @@ class AcquisitionPolicy:
 
     timeout_seconds: float = 30.0
     max_bytes: int = 64 * 1024 * 1024
+    allowed_schemes: tuple[str, ...] = ("https",)
+    max_attempts: int = 1
+    max_concurrency_per_host: int = 2
+    reject_private_networks: bool = True
     allowed_content_types: tuple[str, ...] = (
         "application/json",
         "application/octet-stream",
@@ -73,6 +81,12 @@ class AcquisitionPolicy:
             raise ValueError("timeout_seconds must be positive")
         if self.max_bytes <= 0:
             raise ValueError("max_bytes must be positive")
+        if not self.allowed_schemes:
+            raise ValueError("allowed_schemes must not be empty")
+        if self.max_attempts <= 0:
+            raise ValueError("max_attempts must be positive")
+        if self.max_concurrency_per_host <= 0:
+            raise ValueError("max_concurrency_per_host must be positive")
         if not self.allowed_content_types:
             raise ValueError("allowed_content_types must not be empty")
 
@@ -114,6 +128,71 @@ def _download_surface(
     raise ValueError(
         "catalog source has no automatable API or download surface"
     )
+
+
+def _system_resolver(hostname: str) -> tuple[str, ...]:
+    """Resolve all addresses used for destination policy enforcement."""
+
+    return tuple({
+        str(item[4][0])
+        for item in socket.getaddrinfo(
+            hostname,
+            None,
+            type=socket.SOCK_STREAM,
+        )
+    })
+
+
+def _network_is_private(value: str) -> bool:
+    address = ip_address(value)
+    return not address.is_global
+
+
+def _validate_remote_uri(
+    uri: str,
+    policy: AcquisitionPolicy,
+    *,
+    resolver: Resolver | None,
+) -> None:
+    parsed = urlsplit(uri)
+    if parsed.scheme.lower() not in policy.allowed_schemes:
+        raise _ResponseRejectedError(
+            "scheme_rejected",
+            "Source URI scheme is not permitted by acquisition policy.",
+        )
+    hostname = parsed.hostname
+    if hostname is None:
+        raise _ResponseRejectedError(
+            "network_rejected",
+            "Source URI must include a hostname.",
+        )
+    try:
+        literal_addresses = (str(ip_address(hostname)),)
+    except ValueError:
+        literal_addresses = ()
+    addresses = literal_addresses or (
+        () if resolver is None else resolver(hostname)
+    )
+    if policy.reject_private_networks and any(
+        _network_is_private(address) for address in addresses
+    ):
+        raise _ResponseRejectedError(
+            "network_rejected",
+            "Source URI resolved to a non-public network.",
+        )
+
+
+def _enforce_uri_policy(
+    uri: str,
+    policy: AcquisitionPolicy,
+    *,
+    resolver: Resolver | None,
+    transport: httpx.BaseTransport | None,
+) -> None:
+    effective_resolver = (
+        _system_resolver if resolver is None and transport is None else resolver
+    )
+    _validate_remote_uri(uri, policy, resolver=effective_resolver)
 
 
 def _local_destination(repository_root: Path, destination: Path) -> Path:
@@ -283,6 +362,7 @@ def acquire_source(
     policy: AcquisitionPolicy = DEFAULT_ACQUISITION_POLICY,
     catalog: Iterable[MedicineDataSource] | None = None,
     transport: httpx.BaseTransport | None = None,
+    resolver: Resolver | None = None,
     evidence_class: EvidenceClass = EvidenceClass.FIXTURE,
     clock: Clock = lambda: datetime.now(UTC),
 ) -> Receipt:
@@ -297,6 +377,12 @@ def acquire_source(
     temporary_path: Path | None = None
 
     try:
+        _enforce_uri_policy(
+            uri,
+            policy,
+            resolver=resolver,
+            transport=transport,
+        )
         with (
             httpx.Client(
                 transport=transport,

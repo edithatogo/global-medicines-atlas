@@ -257,3 +257,71 @@ def test_requested_live_class_remains_distinct_from_live_gate(
     assert isinstance(receipt, SourceReceipt)
     assert receipt.evidence_class is EvidenceClass.LIVE
     assert not receipt.satisfies_live_gate
+
+
+@pytest.mark.edge
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://example.test/medicines.zip",
+        "https://127.0.0.1/medicines.zip",
+        "https://169.254.169.254/latest/meta-data/",
+        "https://[::1]/medicines.zip",
+    ],
+)
+def test_acquisition_rejects_disallowed_or_private_destinations(
+    tmp_path: Path,
+    url: str,
+) -> None:
+    source = catalog_source(download_url=url)
+    receipt = acquire_source(
+        "test-regulator",
+        Path("artifacts/source.bin"),
+        repository_root=tmp_path,
+        catalog=(source,),
+        transport=httpx.MockTransport(
+            lambda _: pytest.fail("transport should not run")
+        ),
+        clock=lambda: NOW,
+    )
+
+    assert isinstance(receipt, FailureReceipt)
+    assert receipt.failure_code in {"scheme_rejected", "network_rejected"}
+
+
+@pytest.mark.edge
+def test_acquisition_rejects_dns_resolution_to_private_network(
+    tmp_path: Path,
+) -> None:
+    resolver_calls: list[str] = []
+
+    def private_resolver(hostname: str) -> tuple[str, ...]:
+        resolver_calls.append(hostname)
+        return ("10.0.0.8",)
+
+    receipt = acquire_source(
+        "test-regulator",
+        Path("artifacts/source.bin"),
+        repository_root=tmp_path,
+        catalog=(catalog_source(),),
+        transport=httpx.MockTransport(
+            lambda _: pytest.fail("transport should not run")
+        ),
+        resolver=private_resolver,
+        clock=lambda: NOW,
+    )
+
+    assert isinstance(receipt, FailureReceipt)
+    assert receipt.failure_code == "network_rejected"
+    assert resolver_calls == ["example.test"]
+
+
+@pytest.mark.unit
+def test_acquisition_policy_requires_https_and_bounded_host_budget() -> None:
+    policy = AcquisitionPolicy()
+
+    assert policy.allowed_schemes == ("https",)
+    assert policy.max_attempts == 1
+    assert policy.max_concurrency_per_host == 2
+    with pytest.raises(ValueError, match="allowed_schemes"):
+        AcquisitionPolicy(allowed_schemes=())

@@ -7,18 +7,54 @@ import logging
 import sys
 from datetime import UTC, datetime
 from typing import IO, Final, TypedDict
+from urllib.parse import urlsplit, urlunsplit
 
 LOGGER_NAME: Final = "global_medicines_atlas"
-_CONTEXT_FIELDS: Final = ("component", "jurisdiction", "source_id", "track_id")
+_CONTEXT_FIELDS: Final = (
+    "adapter",
+    "attempt",
+    "authorization",
+    "component",
+    "jurisdiction",
+    "outcome",
+    "receipt_digest",
+    "request_url",
+    "run_id",
+    "source_id",
+    "track_id",
+)
+_SECRET_FIELDS: Final = frozenset({
+    "authorization",
+    "cookie",
+    "password",
+    "token",
+})
+_URL_FIELDS: Final = frozenset({"request_url"})
 
 
 class LogContext(TypedDict, total=False):
     """Stable contextual fields accepted by the medicines logging contract."""
 
     component: str
+    adapter: str
+    attempt: str
+    authorization: str
     jurisdiction: str
+    outcome: str
+    receipt_digest: str
+    request_url: str
+    run_id: str
     source_id: str
     track_id: str
+
+
+def _safe_context(field: str, value: str) -> str:
+    if field in _SECRET_FIELDS:
+        return "[REDACTED]"
+    if field in _URL_FIELDS:
+        parsed = urlsplit(value)
+        return urlunsplit((parsed.scheme, parsed.netloc, parsed.path, "", ""))
+    return value
 
 
 class JsonFormatter(logging.Formatter):
@@ -36,7 +72,7 @@ class JsonFormatter(logging.Formatter):
         for field in _CONTEXT_FIELDS:
             value = getattr(record, field, None)
             if isinstance(value, str) and value:
-                payload[field] = value
+                payload[field] = _safe_context(field, value)
         if record.exc_info:
             payload["exception"] = self.formatException(record.exc_info)
         return json.dumps(payload, ensure_ascii=False, sort_keys=True)
