@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import tempfile
 import tomllib
 import zipfile
@@ -35,7 +37,7 @@ class DeclaredArtifact(BaseModel):
         "asset-manifest",
         "checksums",
         "package",
-        "provenance-attestation",
+        "provenance-bundle",
         "qualification",
         "runtime-lock",
         "sbom",
@@ -52,8 +54,20 @@ class RehearsalDeclaration(BaseModel):
     schema_version: Literal["2"]
     expected_project: Annotated[str, StringConstraints(min_length=1)]
     expected_version: Annotated[str, StringConstraints(min_length=1)]
-    trusted_builder_id: Annotated[str, StringConstraints(min_length=1)]
     artifacts: tuple[DeclaredArtifact, ...] = Field(min_length=7)
+
+
+class TrustedProvenancePolicy(BaseModel):
+    """Trust roots supplied independently from governed artifacts."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    schema_version: Literal["1"]
+    repository: Annotated[str, StringConstraints(pattern=r"^[^/\s]+/[^/\s]+$")]
+    signer_workflow: Annotated[str, StringConstraints(min_length=1)]
+    certificate_identity: Annotated[str, StringConstraints(min_length=1)]
+    oidc_issuer: Annotated[str, StringConstraints(min_length=1)]
+    predicate_type: Literal["https://slsa.dev/provenance/v1"]
 
 
 class VerifiedArtifact(BaseModel):
@@ -163,7 +177,7 @@ def _copy_declared(
         "asset-manifest",
         "checksums",
         "package",
-        "provenance-attestation",
+        "provenance-bundle",
         "qualification",
         "runtime-lock",
         "sbom",
@@ -409,42 +423,33 @@ def _verify_sbom(
         )
 
 
-def _verify_attestation(
-    path: Path,
+def _verified_result(value: object) -> dict[str, object]:
+    if not isinstance(value, dict):
+        raise RehearsalError("verifier output entry must be an object")
+    result = cast("dict[str, object]", value).get("verificationResult")
+    if not isinstance(result, dict):
+        raise RehearsalError("verifier output lacks verificationResult")
+    return cast("dict[str, object]", result)
+
+
+def _certificate_fields(result: Mapping[str, object]) -> dict[str, object]:
+    signature = result.get("signature")
+    if not isinstance(signature, dict):
+        raise RehearsalError("verified output lacks signature")
+    certificate = cast("dict[str, object]", signature).get("certificate")
+    if not isinstance(certificate, dict):
+        raise RehearsalError("verified output lacks certificate")
+    return cast("dict[str, object]", certificate)
+
+
+def _verify_provenance_bundle(  # ruff: ignore[too-many-branches, too-many-locals]
+    bundle: Path,
     *,
     root: Path,
     declared: Mapping[str, DeclaredArtifact],
-    trusted_builder_id: str,
+    policy: TrustedProvenancePolicy,
+    verifier_command: tuple[str, ...],
 ) -> None:
-    statement = _load_object(path, "provenance attestation")
-    if statement.get("_type") != "https://in-toto.io/Statement/v1":
-        raise RehearsalError("attestation must be an in-toto v1 statement")
-    if statement.get("predicateType") != "https://slsa.dev/provenance/v1":
-        raise RehearsalError("attestation must use SLSA provenance v1")
-    predicate = statement.get("predicate")
-    if not isinstance(predicate, dict):
-        raise RehearsalError("attestation predicate must be an object")
-    builder = cast("dict[str, object]", predicate).get("builder")
-    if (
-        not isinstance(builder, dict)
-        or cast("dict[str, object]", builder).get("id") != trusted_builder_id
-    ):
-        raise RehearsalError("attestation builder identity is not trusted")
-    subjects = statement.get("subject")
-    if not isinstance(subjects, list):
-        raise RehearsalError("attestation subjects must be a list")
-    observed: dict[str, str] = {}
-    for item in cast("list[object]", subjects):
-        if not isinstance(item, dict):
-            raise RehearsalError("attestation subject must be an object")
-        subject = cast("dict[str, object]", item)
-        name, digest = subject.get("name"), subject.get("digest")
-        if not isinstance(name, str) or not isinstance(digest, dict):
-            raise RehearsalError("attestation subject is malformed")
-        sha256 = cast("dict[str, object]", digest).get("sha256")
-        if not isinstance(sha256, str) or name in observed:
-            raise RehearsalError("attestation subject digest is invalid")
-        observed[name] = sha256
     expected = {
         item.path: _digest(
             root.joinpath(*PurePosixPath(item.path).parts).read_bytes()
@@ -452,9 +457,106 @@ def _verify_attestation(
         for item in declared.values()
         if item.role in {"package", "runtime-lock", "sbom"}
     }
+    if not verifier_command:
+        raise RehearsalError("provenance verifier command is empty")
+    observed: dict[str, str] = {}
+    for name, expected_digest in sorted(expected.items()):
+        artifact = root.joinpath(*PurePosixPath(name).parts)
+        command = [
+            *verifier_command,
+            "attestation",
+            "verify",
+            str(artifact),
+            "--bundle",
+            str(bundle),
+            "--repo",
+            policy.repository,
+            "--signer-workflow",
+            policy.signer_workflow,
+            "--cert-identity",
+            policy.certificate_identity,
+            "--cert-oidc-issuer",
+            policy.oidc_issuer,
+            "--predicate-type",
+            policy.predicate_type,
+            "--format=json",
+        ]
+        environment = {
+            "GH_NO_UPDATE_NOTIFIER": "1",
+            "NO_PROXY": "*",
+            "PATH": os.environ.get("PATH", ""),
+        }
+        try:
+            completed = subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
+                command,
+                check=False,
+                capture_output=True,
+                env=environment,
+                text=True,
+                timeout=30,
+            )
+        except (FileNotFoundError, OSError, subprocess.TimeoutExpired) as error:
+            raise RehearsalError(
+                "local provenance verifier is unavailable"
+            ) from error
+        if completed.returncode != 0:
+            raise RehearsalError("local provenance verification failed")
+        try:
+            output: object = json.loads(completed.stdout)
+        except json.JSONDecodeError as error:
+            raise RehearsalError("verifier output is not valid JSON") from error
+        if not isinstance(output, list) or not output:
+            raise RehearsalError("verifier returned no verified attestations")
+        matching = False
+        for entry in cast("list[object]", output):
+            result = _verified_result(entry)
+            timestamps = result.get("verifiedTimestamps")
+            if not isinstance(timestamps, list) or not timestamps:
+                raise RehearsalError(
+                    "verified attestation lacks transparency timestamps"
+                )
+            certificate = _certificate_fields(result)
+            if (
+                certificate.get("sourceRepository") != policy.repository
+                or certificate.get("subjectAlternativeName")
+                != policy.certificate_identity
+                or certificate.get("issuer") != policy.oidc_issuer
+                or certificate.get("signerWorkflow") != policy.signer_workflow
+            ):
+                raise RehearsalError(
+                    "verified certificate identity violates trust policy"
+                )
+            statement = result.get("statement")
+            if not isinstance(statement, dict):
+                raise RehearsalError("verified output lacks statement")
+            statement_fields = cast("dict[str, object]", statement)
+            if statement_fields.get("predicateType") != policy.predicate_type:
+                raise RehearsalError(
+                    "verified predicate type violates trust policy"
+                )
+            subjects = statement_fields.get("subject")
+            if not isinstance(subjects, list):
+                raise RehearsalError("verified statement lacks subjects")
+            for subject_value in cast("list[object]", subjects):
+                if not isinstance(subject_value, dict):
+                    raise RehearsalError("verified subject is malformed")
+                subject = cast("dict[str, object]", subject_value)
+                digest = subject.get("digest")
+                sha256 = (
+                    cast("dict[str, object]", digest).get("sha256")
+                    if isinstance(digest, dict)
+                    else None
+                )
+                if subject.get("name") == name and sha256 == expected_digest:
+                    matching = True
+        if not matching:
+            raise RehearsalError(
+                "verified subjects do not match exact governed bytes"
+            )
+        observed[name] = expected_digest
     if observed != expected:
         raise RehearsalError(
-            "attestation subjects do not match exact governed bytes"
+            "verified provenance does not cover exact subjects"
         )
 
 
@@ -478,12 +580,17 @@ def rehearse_publication(
     *,
     source_root: Path,
     declaration_path: Path,
+    trust_policy_path: Path,
     receipt_path: Path,
+    verifier_command: tuple[str, ...] = ("gh",),
 ) -> CleanRoomReceipt:
     """Verify declared publication bytes offline in an isolated directory."""
 
     declaration_bytes = declaration_path.read_bytes()
     declaration = RehearsalDeclaration.model_validate_json(declaration_bytes)
+    policy = TrustedProvenancePolicy.model_validate_json(
+        trust_policy_path.read_bytes()
+    )
     output = receipt_path.resolve()
     source = source_root.resolve(strict=True)
     if output.is_relative_to(source):
@@ -523,11 +630,12 @@ def rehearse_publication(
             version=package_version,
             runtime_closure=runtime_closure,
         )
-        _verify_attestation(
-            _by_role(clean_root, declared, "provenance-attestation"),
+        _verify_provenance_bundle(
+            _by_role(clean_root, declared, "provenance-bundle"),
             root=clean_root,
             declared=declared,
-            trusted_builder_id=declaration.trusted_builder_id,
+            policy=policy,
+            verifier_command=verifier_command,
         )
         _verify_qualification(
             _by_role(clean_root, declared, "qualification"), manifest_digest

@@ -14,8 +14,11 @@ from hypothesis import given
 from hypothesis import strategies as st
 
 from global_medicines_atlas.clean_room_rehearsal import (
+    CleanRoomReceipt,
     RehearsalError,
-    rehearse_publication,
+)
+from global_medicines_atlas.clean_room_rehearsal import (
+    rehearse_publication as _rehearse_publication,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -74,22 +77,7 @@ def _fixture(root: Path) -> Path:
             "specVersion": "1.6",
         }),
     }
-    subject_names = (
-        "global_medicines_atlas-0.7.0-py3-none-any.whl",
-        "sbom.cdx.json",
-        "uv.lock",
-    )
-    payloads["provenance.intoto.json"] = _canonical({
-        "_type": "https://in-toto.io/Statement/v1",
-        "predicate": {
-            "builder": {"id": "https://github.com/edithatogo/gma/builder"}
-        },
-        "predicateType": "https://slsa.dev/provenance/v1",
-        "subject": [
-            {"digest": {"sha256": _sha(payloads[name])}, "name": name}
-            for name in subject_names
-        ],
-    })
+    payloads["provenance.bundle.json"] = _canonical({"mode": "valid"})
     manifest = _canonical({
         "files": [
             {"path": path, "sha256": _sha(payload), "size": len(payload)}
@@ -108,7 +96,7 @@ def _fixture(root: Path) -> Path:
     ).encode()
     roles = {
         "global_medicines_atlas-0.7.0-py3-none-any.whl": "package",
-        "provenance.intoto.json": "provenance-attestation",
+        "provenance.bundle.json": "provenance-bundle",
         "qualified-assets.json": "asset-manifest",
         "qualification.json": "qualification",
         "sbom.cdx.json": "sbom",
@@ -130,11 +118,86 @@ def _fixture(root: Path) -> Path:
         "expected_project": "global-medicines-atlas",
         "expected_version": "0.7.0",
         "schema_version": "2",
-        "trusted_builder_id": "https://github.com/edithatogo/gma/builder",
     }
     declaration_path = root.parent / "declaration.json"
     declaration_path.write_bytes(_canonical(declaration))
+    (root.parent / "trust-policy.json").write_bytes(
+        _canonical({
+            "certificate_identity": "https://github.com/edithatogo/gma/.github/workflows/release.yml@refs/heads/main",
+            "oidc_issuer": "https://token.actions.githubusercontent.com",
+            "predicate_type": "https://slsa.dev/provenance/v1",
+            "repository": "edithatogo/global-medicines-atlas",
+            "schema_version": "1",
+            "signer_workflow": "github.com/edithatogo/gma/.github/workflows/release.yml",
+        })
+    )
+    fake = root.parent / "fake_gh.py"
+    fake.write_text(
+        """from __future__ import annotations
+import hashlib, json, pathlib, sys
+args = sys.argv[1:]
+with pathlib.Path(__file__).with_name("verifier-commands.jsonl").open("a") as log:
+    log.write(json.dumps(args) + "\\n")
+artifact = pathlib.Path(args[2])
+bundle = pathlib.Path(args[args.index("--bundle") + 1])
+mode = json.loads(bundle.read_text())["mode"]
+if mode == "fail":
+    raise SystemExit(1)
+if mode == "invalid-json":
+    print("not-json")
+    raise SystemExit(0)
+if mode == "not-list":
+    print("{}")
+    raise SystemExit(0)
+if mode == "missing-result":
+    print("[{}]")
+    raise SystemExit(0)
+digest = hashlib.sha256(artifact.read_bytes()).hexdigest()
+certificate = {
+    "sourceRepository": "edithatogo/global-medicines-atlas",
+    "subjectAlternativeName": "https://github.com/edithatogo/gma/.github/workflows/release.yml@refs/heads/main",
+    "issuer": "https://token.actions.githubusercontent.com",
+    "signerWorkflow": "github.com/edithatogo/gma/.github/workflows/release.yml",
+}
+if mode == "wrong-identity":
+    certificate["sourceRepository"] = "attacker/repo"
+subject_digest = "0" * 64 if mode == "wrong-subject" else digest
+result = [{
+    "verificationResult": {
+        "signature": {"certificate": certificate},
+        "verifiedTimestamps": [] if mode == "no-timestamps" else [{"type": "tlog"}],
+        "statement": {
+            "predicateType": "https://slsa.dev/provenance/v1",
+            "subject": [{"name": artifact.name, "digest": {"sha256": subject_digest}}],
+        },
+    }
+}]
+print(json.dumps([] if mode == "unsigned" else result))
+""",
+        encoding="utf-8",
+    )
+    (root.parent / "fake-gh.cmd").write_text(
+        f'@"{sys.executable}" "{fake}" %*\n', encoding="utf-8"
+    )
     return declaration_path
+
+
+def rehearse_publication(
+    *,
+    source_root: Path,
+    declaration_path: Path,
+    receipt_path: Path,
+) -> CleanRoomReceipt:
+    return _rehearse_publication(
+        source_root=source_root,
+        declaration_path=declaration_path,
+        trust_policy_path=source_root.parent / "trust-policy.json",
+        receipt_path=receipt_path,
+        verifier_command=(
+            sys.executable,
+            str(source_root.parent / "fake_gh.py"),
+        ),
+    )
 
 
 def _refresh_checksums_and_declaration(source: Path, declaration: Path) -> None:
@@ -178,19 +241,21 @@ def _rebind_governed_controls(source: Path, declaration: Path) -> None:
     _refresh_checksums_and_declaration(source, declaration)
 
 
-def _rebind_attestation(source: Path) -> None:
-    attestation: dict[str, object] = json.loads(
-        (source / "provenance.intoto.json").read_text(encoding="utf-8")
+def _bind_raw_manifest(
+    source: Path, declaration: Path, manifest: dict[str, object]
+) -> None:
+    manifest_payload = _canonical(manifest)
+    (source / "qualified-assets.json").write_bytes(manifest_payload)
+    qualification: dict[str, object] = json.loads(
+        (source / "qualification.json").read_text(encoding="utf-8")
     )
-    attestation["subject"] = [
-        {"digest": {"sha256": _sha((source / name).read_bytes())}, "name": name}
-        for name in (
-            "global_medicines_atlas-0.7.0-py3-none-any.whl",
-            "sbom.cdx.json",
-            "uv.lock",
-        )
-    ]
-    (source / "provenance.intoto.json").write_bytes(_canonical(attestation))
+    qualification["qualified_assets_sha256"] = _sha(manifest_payload)
+    (source / "qualification.json").write_bytes(_canonical(qualification))
+    _refresh_checksums_and_declaration(source, declaration)
+
+
+def _rebind_attestation(source: Path) -> None:
+    assert (source / "provenance.bundle.json").is_file()
 
 
 def test_rehearsal_emits_deterministic_durable_receipt(tmp_path: Path) -> None:
@@ -216,6 +281,24 @@ def test_rehearsal_emits_deterministic_durable_receipt(tmp_path: Path) -> None:
     assert first.network_accessed is False
     assert first.published is False
     assert len(first.artifacts) == 7
+    commands = [
+        json.loads(line)
+        for line in (tmp_path / "verifier-commands.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+    ]
+    assert len(commands) == 6
+    for command in commands:
+        assert command[:2] == ["attestation", "verify"]
+        assert command[3] == "--bundle"
+        assert Path(command[4]).name == "provenance.bundle.json"
+        assert command[command.index("--repo") + 1] == (
+            "edithatogo/global-medicines-atlas"
+        )
+        assert command[command.index("--signer-workflow") + 1] == (
+            "github.com/edithatogo/gma/.github/workflows/release.yml"
+        )
+        assert command[-1] == "--format=json"
 
 
 @pytest.mark.parametrize(
@@ -226,7 +309,7 @@ def test_rehearsal_emits_deterministic_durable_receipt(tmp_path: Path) -> None:
             b"tampered",
             "declared identity mismatch",
         ),
-        ("provenance.intoto.json", b"{}", "declared identity mismatch"),
+        ("provenance.bundle.json", b"{}", "declared identity mismatch"),
         ("uv.lock", b"", "declared identity mismatch"),
         ("sbom.cdx.json", b"{}", "declared identity mismatch"),
         ("qualification.json", b"{}", "declared identity mismatch"),
@@ -573,6 +656,70 @@ def test_rehearsal_rejects_malformed_asset_manifest(tmp_path: Path) -> None:
         )
 
 
+@pytest.mark.parametrize(
+    ("files", "message"),
+    [
+        (["invalid"], "entry must be an object"),
+        ([{"path": 1, "sha256": "0" * 64, "size": 0}], "invalid fields"),
+        (
+            [
+                {"path": "uv.lock", "sha256": "0" * 64, "size": 0},
+                {"path": "uv.lock", "sha256": "0" * 64, "size": 0},
+            ],
+            "duplicate asset manifest",
+        ),
+    ],
+)
+def test_rehearsal_rejects_malformed_asset_entries(
+    tmp_path: Path, files: list[object], message: str
+) -> None:
+    source = tmp_path / "source"
+    declaration = _fixture(source)
+    _bind_raw_manifest(source, declaration, {"files": files})
+    with pytest.raises(RehearsalError, match=message):
+        rehearse_publication(
+            source_root=source,
+            declaration_path=declaration,
+            receipt_path=tmp_path / "receipt.json",
+        )
+
+
+def test_rehearsal_rejects_manifest_identity_mismatch(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    declaration = _fixture(source)
+    manifest: dict[str, object] = json.loads(
+        (source / "qualified-assets.json").read_text(encoding="utf-8")
+    )
+    entries = cast("list[dict[str, object]]", manifest["files"])
+    entries[0]["sha256"] = "0" * 64
+    _bind_raw_manifest(source, declaration, manifest)
+    with pytest.raises(RehearsalError, match="identity mismatch"):
+        rehearse_publication(
+            source_root=source,
+            declaration_path=declaration,
+            receipt_path=tmp_path / "receipt.json",
+        )
+
+
+def test_rehearsal_rejects_complete_but_wrong_checksum(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    declaration = _fixture(source)
+    lines = []
+    for path in sorted(source.iterdir()):
+        if path.name == "SHA256SUMS":
+            continue
+        digest = "0" * 64 if path.name == "uv.lock" else _sha(path.read_bytes())
+        lines.append(f"{digest}  {path.name}\n")
+    (source / "SHA256SUMS").write_text("".join(lines), encoding="utf-8")
+    _refresh_declaration(source, declaration)
+    with pytest.raises(RehearsalError, match="checksum mismatch"):
+        rehearse_publication(
+            source_root=source,
+            declaration_path=declaration,
+            receipt_path=tmp_path / "receipt.json",
+        )
+
+
 def test_rehearsal_rejects_arbitrary_but_well_formed_sbom(
     tmp_path: Path,
 ) -> None:
@@ -687,37 +834,43 @@ def test_rehearsal_rejects_invalid_runtime_lock(
 
 
 @pytest.mark.parametrize(
-    ("mutation", "message"),
+    ("mode", "message"),
     [
-        ("type", "in-toto"),
-        ("predicate-type", "SLSA"),
-        ("predicate", "predicate must"),
-        ("subjects", "subjects must"),
+        ("fail", "verification failed"),
+        ("unsigned", "no verified attestations"),
+        ("wrong-identity", "violates trust policy"),
+        ("no-timestamps", "transparency timestamps"),
+        ("wrong-subject", "do not match exact governed bytes"),
+        ("invalid-json", "not valid JSON"),
+        ("not-list", "no verified attestations"),
+        ("missing-result", "lacks verificationResult"),
     ],
 )
-def test_rehearsal_rejects_malformed_attestation(
-    tmp_path: Path, mutation: str, message: str
+def test_rehearsal_rejects_unverified_provenance_bundle(
+    tmp_path: Path, mode: str, message: str
 ) -> None:
     source = tmp_path / "source"
     declaration = _fixture(source)
-    attestation: dict[str, object] = json.loads(
-        (source / "provenance.intoto.json").read_text(encoding="utf-8")
-    )
-    if mutation == "type":
-        attestation["_type"] = "arbitrary"
-    elif mutation == "predicate-type":
-        attestation["predicateType"] = "arbitrary"
-    elif mutation == "predicate":
-        attestation["predicate"] = "arbitrary"
-    else:
-        attestation["subject"] = "arbitrary"
-    (source / "provenance.intoto.json").write_bytes(_canonical(attestation))
+    (source / "provenance.bundle.json").write_bytes(_canonical({"mode": mode}))
     _rebind_governed_controls(source, declaration)
     with pytest.raises(RehearsalError, match=message):
         rehearse_publication(
             source_root=source,
             declaration_path=declaration,
             receipt_path=tmp_path / "receipt.json",
+        )
+
+
+def test_rehearsal_fails_closed_when_gh_is_missing(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    declaration = _fixture(source)
+    with pytest.raises(RehearsalError, match="verifier is unavailable"):
+        _rehearse_publication(
+            source_root=source,
+            declaration_path=declaration,
+            trust_policy_path=tmp_path / "trust-policy.json",
+            receipt_path=tmp_path / "receipt.json",
+            verifier_command=("definitely-missing-gh-executable",),
         )
 
 
@@ -791,64 +944,6 @@ def test_rehearsal_rejects_additional_sbom_failures(
         )
 
 
-@pytest.mark.parametrize(
-    ("subject", "message"),
-    [
-        ("invalid", "subject must"),
-        ({"name": 1, "digest": {}}, "subject is malformed"),
-        ({"name": "uv.lock", "digest": {}}, "subject digest"),
-    ],
-)
-def test_rehearsal_rejects_malformed_attestation_subject(
-    tmp_path: Path, subject: object, message: str
-) -> None:
-    source = tmp_path / "source"
-    declaration = _fixture(source)
-    attestation: dict[str, object] = json.loads(
-        (source / "provenance.intoto.json").read_text(encoding="utf-8")
-    )
-    attestation["subject"] = [subject]
-    (source / "provenance.intoto.json").write_bytes(_canonical(attestation))
-    _rebind_governed_controls(source, declaration)
-    with pytest.raises(RehearsalError, match=message):
-        rehearse_publication(
-            source_root=source,
-            declaration_path=declaration,
-            receipt_path=tmp_path / "receipt.json",
-        )
-
-
-@pytest.mark.parametrize(
-    ("mutation", "message"),
-    [
-        ("builder", "builder identity"),
-        ("subject", "subjects do not match"),
-    ],
-)
-def test_rehearsal_rejects_rebound_untrusted_attestation(
-    tmp_path: Path, mutation: str, message: str
-) -> None:
-    source = tmp_path / "source"
-    declaration = _fixture(source)
-    attestation: dict[str, object] = json.loads(
-        (source / "provenance.intoto.json").read_text(encoding="utf-8")
-    )
-    if mutation == "builder":
-        predicate = cast("dict[str, object]", attestation["predicate"])
-        predicate["builder"] = {"id": "https://attacker.invalid/builder"}
-    else:
-        subjects = cast("list[dict[str, object]]", attestation["subject"])
-        subjects[0]["digest"] = {"sha256": "0" * 64}
-    (source / "provenance.intoto.json").write_bytes(_canonical(attestation))
-    _rebind_governed_controls(source, declaration)
-    with pytest.raises(RehearsalError, match=message):
-        rehearse_publication(
-            source_root=source,
-            declaration_path=declaration,
-            receipt_path=tmp_path / "receipt.json",
-        )
-
-
 def test_cli_runs_offline_and_does_not_mutate_source(tmp_path: Path) -> None:
     source = tmp_path / "source"
     declaration = _fixture(source)
@@ -863,6 +958,10 @@ def test_cli_runs_offline_and_does_not_mutate_source(tmp_path: Path) -> None:
             str(source),
             "--declaration",
             str(declaration),
+            "--trust-policy",
+            str(tmp_path / "trust-policy.json"),
+            "--verifier",
+            str(tmp_path / "fake-gh.cmd"),
             "--receipt",
             str(receipt),
         ],

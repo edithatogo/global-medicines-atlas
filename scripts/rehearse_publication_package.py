@@ -33,6 +33,8 @@ def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--declaration", type=Path, required=True)
+    parser.add_argument("--trust-policy", type=Path, required=True)
+    parser.add_argument("--verifier", default="gh")
     parser.add_argument("--receipt", type=Path, required=True)
     return parser
 
@@ -43,7 +45,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     receipt = rehearse_publication(
         source_root=args.source_root,
         declaration_path=args.declaration,
+        trust_policy_path=args.trust_policy,
         receipt_path=args.receipt,
+        verifier_command=(args.verifier,),
     )
     print(json.dumps(receipt.model_dump(mode="json"), sort_keys=True))
     return 0
