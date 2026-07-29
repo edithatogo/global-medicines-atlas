@@ -10,8 +10,8 @@
 - [x] Task: Make Test-Goblin collection declarative, marker-aware and complete, with exactly one primary lane per test ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `aabba52`
 - [x] Task: Define numeric mutation, coverage, latency, throughput, CPU, memory and allocation budgets ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `aabba52`
 - [x] Task: Standardize structured run/source/adapter/receipt logging and verify deterministic redaction ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `9a64332`
-- [x] Task: Define acquisition policy for schemes, redirects, DNS/IP resolution, private-network rejection, per-host budgets, retry jitter and cache integrity ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `9a64332`
-- [x] Task: Qualify every catalogued API/bulk surface and record unsupported portal-only sources ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `e8f588e`
+- [x] Task: Define acquisition-policy contracts for schemes, redirects, DNS/IP resolution, private-network rejection, per-host budgets, retry jitter and cache integrity; operational enforcement continues in Phase 2 ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `9a64332`
+- [x] Task: Classify every catalogued API/bulk surface by declared, documentation, fixture or live qualification and record unsupported portal-only sources ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `0cebcdf`
 - [x] Task: Phase Verification & Checkpoint — 845 passed, 7 expected Windows symlink skips; 93.95% branch coverage; Ruff, ty and BasedPyright strict passed
 
 ## Phase 2: Hardened operations
@@ -46,3 +46,11 @@
 - Observability and source qualification: [#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)
 - Hardened operations and supply chain: [#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)
 - Independent release-candidate evidence: [#39](https://github.com/edithatogo/global-medicines-atlas/issues/39)
+
+## Phase 1 Review Fixes
+
+- [x] Task: Share fail-closed destination validation between acquisition and source-health probes, reject non-public networks and require explicit live-host admission `c2dcbbd`
+- [x] Task: Align source capability claims with catalog integration maturity and add semantic qualification states without inventing live evidence `0cebcdf`
+- [x] Task: Validate marker-aware pytest collection and wire machine-readable coverage and evidence-budget boundaries into Test-Goblin `30763b1`
+- [x] Task: Preserve legacy dimension-aware source declarations and archived publication qualification tests `0cebcdf`
+- [x] Task: Re-run complete Phase 1 verification after review fixes — 870 passed, 7 expected Windows symlink skips; 93.96% branch coverage; Test-Goblin contracts, Ruff format/check, ty and BasedPyright strict passed `fde1be3` `f59ebd7`
