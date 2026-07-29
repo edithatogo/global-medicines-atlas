@@ -182,8 +182,72 @@
     "MedicineDataSource": {
       "additionalProperties": false,
       "properties": {
+        "source_id": {
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
+        },
+        "jurisdictions": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Jurisdictions",
+          "type": "array"
+        },
+        "authority": {
+          "minLength": 1,
+          "title": "Authority",
+          "type": "string"
+        },
+        "title": {
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "dimension": {
+          "$ref": "#/$defs/SourceDimension"
+        },
         "access_mode": {
           "$ref": "#/$defs/AccessMode"
+        },
+        "interface_status": {
+          "$ref": "#/$defs/InterfaceStatus"
+        },
+        "formats": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Formats",
+          "type": "array"
+        },
+        "authentication": {
+          "$ref": "#/$defs/AuthenticationMode"
+        },
+        "product_grain": {
+          "minLength": 1,
+          "title": "Product Grain",
+          "type": "string"
+        },
+        "historical_scope": {
+          "minLength": 1,
+          "title": "Historical Scope",
+          "type": "string"
+        },
+        "native_identifier": {
+          "minLength": 1,
+          "title": "Native Identifier",
+          "type": "string"
+        },
+        "last_verified_at": {
+          "format": "date",
+          "title": "Last Verified At",
+          "type": "string"
+        },
+        "integration_layer": {
+          "$ref": "#/$defs/IntegrationLayer",
+          "default": "catalogued"
         },
         "acquisition_profile": {
           "anyOf": [
@@ -197,6 +261,20 @@
           ],
           "default": null,
           "title": "Acquisition Profile"
+        },
+        "landing_page": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Landing Page",
+          "type": "string"
+        },
+        "documentation_url": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Documentation Url",
+          "type": "string"
         },
         "api_url": {
           "anyOf": [
@@ -213,55 +291,6 @@
           "default": null,
           "title": "Api Url"
         },
-        "authentication": {
-          "$ref": "#/$defs/AuthenticationMode"
-        },
-        "authority": {
-          "minLength": 1,
-          "title": "Authority",
-          "type": "string"
-        },
-        "available_fields": {
-          "default": [
-            "identifiers"
-          ],
-          "items": {
-            "$ref": "#/$defs/AvailableField"
-          },
-          "title": "Available Fields",
-          "type": "array"
-        },
-        "change_semantics": {
-          "$ref": "#/$defs/ChangeSemantics",
-          "default": "unknown"
-        },
-        "current_receipt_id": {
-          "anyOf": [
-            {
-              "minLength": 1,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Current Receipt Id"
-        },
-        "dimension": {
-          "$ref": "#/$defs/SourceDimension"
-        },
-        "discovery_status": {
-          "$ref": "#/$defs/DiscoveryStatus",
-          "default": "discovery_only"
-        },
-        "documentation_url": {
-          "format": "uri",
-          "maxLength": 2083,
-          "minLength": 1,
-          "title": "Documentation Url",
-          "type": "string"
-        },
         "download_url": {
           "anyOf": [
             {
@@ -277,32 +306,64 @@
           "default": null,
           "title": "Download Url"
         },
-        "evidence_limit": {
+        "update_cadence": {
           "minLength": 1,
-          "title": "Evidence Limit",
+          "title": "Update Cadence",
           "type": "string"
         },
-        "formats": {
+        "rights_status": {
+          "minLength": 1,
+          "title": "Rights Status",
+          "type": "string"
+        },
+        "readiness": {
+          "$ref": "#/$defs/SourceReadiness"
+        },
+        "discovery_status": {
+          "$ref": "#/$defs/DiscoveryStatus",
+          "default": "discovery_only"
+        },
+        "qualification_state": {
+          "$ref": "#/$defs/QualificationState",
+          "default": "declared"
+        },
+        "qualification_references": {
+          "default": [],
           "items": {
             "type": "string"
           },
-          "minItems": 1,
-          "title": "Formats",
+          "title": "Qualification References",
           "type": "array"
-        },
-        "geographic_scope": {
-          "$ref": "#/$defs/GeographicScope",
-          "default": "national"
-        },
-        "historical_scope": {
-          "minLength": 1,
-          "title": "Historical Scope",
-          "type": "string"
         },
         "implemented_ingestion": {
           "default": false,
           "title": "Implemented Ingestion",
           "type": "boolean"
+        },
+        "current_receipt_id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Current Receipt Id"
+        },
+        "monitoring": {
+          "$ref": "#/$defs/MonitoringSchedule",
+          "default": {
+            "source_health": "weekly",
+            "schema_drift": "monthly"
+          }
+        },
+        "evidence_limit": {
+          "minLength": 1,
+          "title": "Evidence Limit",
+          "type": "string"
         },
         "information_domains": {
           "default": [
@@ -314,67 +375,6 @@
           "title": "Information Domains",
           "type": "array"
         },
-        "integration_layer": {
-          "$ref": "#/$defs/IntegrationLayer",
-          "default": "catalogued"
-        },
-        "interface_status": {
-          "$ref": "#/$defs/InterfaceStatus"
-        },
-        "jurisdictions": {
-          "items": {
-            "type": "string"
-          },
-          "minItems": 1,
-          "title": "Jurisdictions",
-          "type": "array"
-        },
-        "landing_page": {
-          "format": "uri",
-          "maxLength": 2083,
-          "minLength": 1,
-          "title": "Landing Page",
-          "type": "string"
-        },
-        "languages": {
-          "default": [
-            "und"
-          ],
-          "items": {
-            "$ref": "#/$defs/LanguageCode"
-          },
-          "title": "Languages",
-          "type": "array"
-        },
-        "last_verified_at": {
-          "format": "date",
-          "title": "Last Verified At",
-          "type": "string"
-        },
-        "monitoring": {
-          "$ref": "#/$defs/MonitoringSchedule",
-          "default": {
-            "schema_drift": "monthly",
-            "source_health": "weekly"
-          }
-        },
-        "native_identifier": {
-          "minLength": 1,
-          "title": "Native Identifier",
-          "type": "string"
-        },
-        "population_scope": {
-          "$ref": "#/$defs/PopulationScope",
-          "default": "unknown"
-        },
-        "product_grain": {
-          "minLength": 1,
-          "title": "Product Grain",
-          "type": "string"
-        },
-        "readiness": {
-          "$ref": "#/$defs/SourceReadiness"
-        },
         "record_entities": {
           "default": [
             "medicinal_product"
@@ -384,16 +384,6 @@
           },
           "title": "Record Entities",
           "type": "array"
-        },
-        "rights_status": {
-          "minLength": 1,
-          "title": "Rights Status",
-          "type": "string"
-        },
-        "source_id": {
-          "minLength": 1,
-          "title": "Source Id",
-          "type": "string"
         },
         "status_semantics": {
           "default": [
@@ -405,15 +395,37 @@
           "title": "Status Semantics",
           "type": "array"
         },
-        "title": {
-          "minLength": 1,
-          "title": "Title",
-          "type": "string"
+        "geographic_scope": {
+          "$ref": "#/$defs/GeographicScope",
+          "default": "national"
         },
-        "update_cadence": {
-          "minLength": 1,
-          "title": "Update Cadence",
-          "type": "string"
+        "population_scope": {
+          "$ref": "#/$defs/PopulationScope",
+          "default": "unknown"
+        },
+        "languages": {
+          "default": [
+            "und"
+          ],
+          "items": {
+            "$ref": "#/$defs/LanguageCode"
+          },
+          "title": "Languages",
+          "type": "array"
+        },
+        "change_semantics": {
+          "$ref": "#/$defs/ChangeSemantics",
+          "default": "unknown"
+        },
+        "available_fields": {
+          "default": [
+            "identifiers"
+          ],
+          "items": {
+            "$ref": "#/$defs/AvailableField"
+          },
+          "title": "Available Fields",
+          "type": "array"
         }
       },
       "required": [
@@ -444,14 +456,14 @@
       "additionalProperties": false,
       "description": "Cadence contract for non-mutating source checks.",
       "properties": {
-        "schema_drift": {
-          "minLength": 1,
-          "title": "Schema Drift",
-          "type": "string"
-        },
         "source_health": {
           "minLength": 1,
           "title": "Source Health",
+          "type": "string"
+        },
+        "schema_drift": {
+          "minLength": 1,
+          "title": "Schema Drift",
           "type": "string"
         }
       },
@@ -471,6 +483,17 @@
         "unknown"
       ],
       "title": "PopulationScope",
+      "type": "string"
+    },
+    "QualificationState": {
+      "description": "Evidence-backed qualification of a catalog declaration.",
+      "enum": [
+        "declared",
+        "documentation_verified",
+        "fixture_verified",
+        "live_verified"
+      ],
+      "title": "QualificationState",
       "type": "string"
     },
     "RecordEntity": {
@@ -494,14 +517,21 @@
       "additionalProperties": false,
       "description": "WHO discovery-denominator fields awaiting receipt-backed verification.",
       "properties": {
-        "evidence_limit": {
-          "minLength": 1,
-          "title": "Evidence Limit",
-          "type": "string"
-        },
         "included": {
           "title": "Included",
           "type": "boolean"
+        },
+        "wla": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Wla"
         },
         "ml3": {
           "anyOf": [
@@ -532,17 +562,10 @@
           "title": "Status",
           "type": "string"
         },
-        "wla": {
-          "anyOf": [
-            {
-              "type": "boolean"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Wla"
+        "evidence_limit": {
+          "minLength": 1,
+          "title": "Evidence Limit",
+          "type": "string"
         }
       },
       "required": [
@@ -594,25 +617,25 @@
   },
   "additionalProperties": false,
   "properties": {
-    "jurisdictions": {
-      "items": {
-        "$ref": "#/$defs/JurisdictionCensusEntry"
-      },
-      "title": "Jurisdictions",
-      "type": "array"
-    },
-    "monitoring_contract": {
-      "$ref": "#/$defs/MonitoringSchedule"
+    "schema_version": {
+      "minimum": 1,
+      "title": "Schema Version",
+      "type": "integer"
     },
     "reviewed_at": {
       "format": "date",
       "title": "Reviewed At",
       "type": "string"
     },
-    "schema_version": {
-      "minimum": 1,
-      "title": "Schema Version",
-      "type": "integer"
+    "monitoring_contract": {
+      "$ref": "#/$defs/MonitoringSchedule"
+    },
+    "jurisdictions": {
+      "items": {
+        "$ref": "#/$defs/JurisdictionCensusEntry"
+      },
+      "title": "Jurisdictions",
+      "type": "array"
     },
     "sources": {
       "items": {

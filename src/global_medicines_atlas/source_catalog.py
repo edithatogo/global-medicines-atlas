@@ -16,7 +16,7 @@ from .models import FrozenModel
 from .source_profiles import PROFILES, AuthenticationMode
 
 LOGGER = get_logger("source_catalog", component="source-catalog")
-STRICT_SOURCE_SCHEMA_VERSION = 4
+STRICT_SOURCE_SCHEMA_VERSION = 5
 
 
 class AccessMode(StrEnum):
@@ -61,6 +61,15 @@ class DiscoveryStatus(StrEnum):
     DISCOVERY_ONLY = "discovery_only"
     DECLARATION_VERIFIED = "declaration_verified"
     RECEIPT_BACKED = "receipt_backed"
+
+
+class QualificationState(StrEnum):
+    """Evidence-backed qualification of a catalog declaration."""
+
+    DECLARED = "declared"
+    DOCUMENTATION_VERIFIED = "documentation_verified"
+    FIXTURE_VERIFIED = "fixture_verified"
+    LIVE_VERIFIED = "live_verified"
 
 
 class InformationDomain(StrEnum):
@@ -202,6 +211,8 @@ class MedicineDataSource(FrozenModel):
     rights_status: str = Field(min_length=1)
     readiness: SourceReadiness
     discovery_status: DiscoveryStatus = DiscoveryStatus.DISCOVERY_ONLY
+    qualification_state: QualificationState = QualificationState.DECLARED
+    qualification_references: tuple[str, ...] = ()
     implemented_ingestion: bool = False
     current_receipt_id: str | None = Field(default=None, min_length=1)
     monitoring: MonitoringSchedule = MonitoringSchedule(
@@ -264,17 +275,66 @@ class MedicineDataSource(FrozenModel):
             if payload.get("implemented_ingestion")
             else IntegrationLayer.CATALOGUED,
         )
-        payload.setdefault(
-            "information_domains",
-            (InformationDomain.PRODUCT_IDENTITY,),
+        raw_dimension = payload.get("dimension")
+        dimension = (
+            raw_dimension
+            if isinstance(raw_dimension, SourceDimension)
+            else SourceDimension(str(raw_dimension))
         )
-        payload.setdefault("record_entities", (RecordEntity.MEDICINAL_PRODUCT,))
-        payload.setdefault("status_semantics", (StatusSemantics.NONE,))
+        semantic_defaults = {
+            SourceDimension.REGULATORY: (
+                (
+                    InformationDomain.PRODUCT_IDENTITY,
+                    InformationDomain.REGULATORY_STATUS,
+                ),
+                (RecordEntity.MEDICINAL_PRODUCT, RecordEntity.APPROVAL),
+                (StatusSemantics.AUTHORIZATION,),
+            ),
+            SourceDimension.FUNDING: (
+                (
+                    InformationDomain.PRODUCT_IDENTITY,
+                    InformationDomain.FUNDING_STATUS,
+                ),
+                (
+                    RecordEntity.MEDICINAL_PRODUCT,
+                    RecordEntity.FUNDING_LISTING,
+                ),
+                (StatusSemantics.REIMBURSEMENT,),
+            ),
+            SourceDimension.FORMULARY: (
+                (
+                    InformationDomain.PRODUCT_IDENTITY,
+                    InformationDomain.FORMULARY_STATUS,
+                ),
+                (
+                    RecordEntity.MEDICINAL_PRODUCT,
+                    RecordEntity.FORMULARY_ENTRY,
+                ),
+                (StatusSemantics.FORMULARY_INCLUSION,),
+            ),
+            SourceDimension.TERMINOLOGY: (
+                (
+                    InformationDomain.PRODUCT_IDENTITY,
+                    InformationDomain.TERMINOLOGY,
+                ),
+                (
+                    RecordEntity.MEDICINAL_PRODUCT,
+                    RecordEntity.TERMINOLOGY_CONCEPT,
+                ),
+                (StatusSemantics.TERMINOLOGY_ONLY,),
+            ),
+        }
+        domains, entities, semantics = semantic_defaults[dimension]
+        payload.setdefault("information_domains", domains)
+        payload.setdefault("record_entities", entities)
+        payload.setdefault("status_semantics", semantics)
         payload.setdefault("geographic_scope", GeographicScope.NATIONAL)
         payload.setdefault("population_scope", PopulationScope.UNKNOWN)
         payload.setdefault("languages", (LanguageCode.UNDETERMINED,))
         payload.setdefault("change_semantics", ChangeSemantics.UNKNOWN)
         payload.setdefault("available_fields", (AvailableField.IDENTIFIERS,))
+        payload.setdefault("qualification_state", QualificationState.DECLARED)
+        payload.setdefault("qualification_references", ())
         return cls.model_validate(payload)
 
     @model_validator(mode="after")
@@ -321,6 +381,20 @@ class MedicineDataSource(FrozenModel):
                 "current receipt requires live-receipt integration layer"
             )
         if (
+            self.qualification_state == QualificationState.LIVE_VERIFIED
+            and self.current_receipt_id is None
+        ):
+            raise ValueError(
+                "live-verified qualification requires a current receipt"
+            )
+        if (
+            self.qualification_state != QualificationState.DECLARED
+            and not self.qualification_references
+        ):
+            raise ValueError(
+                "verified qualification requires evidence references"
+            )
+        if (
             self.access_mode
             in {
                 AccessMode.WEB_SEARCH,
@@ -340,6 +414,95 @@ class MedicineDataSource(FrozenModel):
             raise ValueError(
                 "acquisition profiles require an automatable access mode"
             )
+        return self
+
+    @model_validator(mode="after")
+    def information_schema_is_semantically_coherent(
+        self,
+    ) -> MedicineDataSource:
+        domains = set(self.information_domains)
+        entities = set(self.record_entities)
+        semantics = set(self.status_semantics)
+        fields = set(self.available_fields)
+        required_domain = {
+            SourceDimension.REGULATORY: InformationDomain.REGULATORY_STATUS,
+            SourceDimension.FUNDING: InformationDomain.FUNDING_STATUS,
+            SourceDimension.FORMULARY: InformationDomain.FORMULARY_STATUS,
+            SourceDimension.TERMINOLOGY: InformationDomain.TERMINOLOGY,
+        }[self.dimension]
+        if required_domain not in domains:
+            raise ValueError(
+                f"{self.dimension.value} sources require "
+                f"{required_domain.value} information"
+            )
+        domain_contracts = {
+            InformationDomain.REGULATORY_STATUS: (
+                {RecordEntity.APPROVAL},
+                {
+                    StatusSemantics.AUTHORIZATION,
+                    StatusSemantics.REGISTRATION,
+                    StatusSemantics.APPROVAL_HISTORY,
+                    StatusSemantics.MIXED,
+                },
+            ),
+            InformationDomain.FUNDING_STATUS: (
+                {RecordEntity.FUNDING_LISTING},
+                {
+                    StatusSemantics.REIMBURSEMENT,
+                    StatusSemantics.SUBSIDY,
+                    StatusSemantics.PRICE_LISTING,
+                    StatusSemantics.MIXED,
+                },
+            ),
+            InformationDomain.FORMULARY_STATUS: (
+                {RecordEntity.FORMULARY_ENTRY},
+                {
+                    StatusSemantics.FORMULARY_INCLUSION,
+                    StatusSemantics.MIXED,
+                },
+            ),
+            InformationDomain.TERMINOLOGY: (
+                {RecordEntity.TERMINOLOGY_CONCEPT},
+                {StatusSemantics.TERMINOLOGY_ONLY, StatusSemantics.MIXED},
+            ),
+        }
+        for domain, (required_entities, allowed_semantics) in (
+            domain_contracts.items()
+        ):
+            if domain not in domains:
+                continue
+            if not required_entities <= entities:
+                raise ValueError(
+                    f"{domain.value} requires record entities "
+                    f"{sorted(item.value for item in required_entities)}"
+                )
+            if (
+                domain != InformationDomain.TERMINOLOGY
+                or self.dimension == SourceDimension.TERMINOLOGY
+            ) and semantics.isdisjoint(allowed_semantics):
+                raise ValueError(
+                    f"{domain.value} requires compatible status semantics"
+                )
+        field_contracts = {
+            AvailableField.PRICES: (
+                InformationDomain.PRICING,
+                RecordEntity.PRICE,
+            ),
+            AvailableField.SAFETY_NOTICES: (
+                InformationDomain.SAFETY,
+                RecordEntity.DOCUMENT,
+            ),
+            AvailableField.TERMINOLOGY_RELATIONSHIPS: (
+                InformationDomain.TERMINOLOGY,
+                RecordEntity.TERMINOLOGY_CONCEPT,
+            ),
+        }
+        for field, (domain, entity) in field_contracts.items():
+            if field in fields and (domain not in domains or entity not in entities):
+                raise ValueError(
+                    f"{field.value} requires {domain.value} and "
+                    f"{entity.value}"
+                )
         return self
 
 
@@ -370,7 +533,7 @@ class SourceCatalog(FrozenModel):
 
     @model_validator(mode="before")
     @classmethod
-    def schema_v3_rows_are_explicit(cls, value: Any) -> Any:
+    def governed_rows_are_explicit(cls, value: Any) -> Any:
         """Reject incomplete governed rows before model defaults can apply."""
         if not isinstance(value, dict):
             return value
@@ -395,6 +558,8 @@ class SourceCatalog(FrozenModel):
             "languages",
             "change_semantics",
             "available_fields",
+            "qualification_state",
+            "qualification_references",
         }
         raw_sources_value: object = payload.get("sources", ())
         if not isinstance(raw_sources_value, (list, tuple)):

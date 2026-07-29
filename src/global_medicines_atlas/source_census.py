@@ -118,14 +118,13 @@ def aggregate_census_coverage(
     }
     capability_registry = builtin_source_capabilities()
     capability_registry.validate_catalog(
-        source.source_id
-        for source in (load_catalog() if catalog is None else catalog).sources
+        (load_catalog() if catalog is None else catalog).sources
     )
     return CensusCoverage(
         denominator=len(rows),
         **counts,
         parser_capable_sources=sum(
-            Capability.PARSER in declaration.capabilities
+            Capability.SOURCE_PARSER in declaration.capabilities
             for declaration in capability_registry
         ),
         live_receipt_sources=sum(

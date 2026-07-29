@@ -21,7 +21,8 @@ class SourceDimension(StrEnum):
 
 class Capability(StrEnum):
     ACQUISITION = "acquisition"
-    PARSER = "parser"
+    FIXTURE_PARSER = "fixture_parser"
+    SOURCE_PARSER = "source_parser"
     SYNTHETIC_FIXTURE = "synthetic_fixture"
     CANONICAL_PROJECTION = "canonical_projection"
     LIVE_RECEIPT = "live_receipt"
@@ -34,6 +35,14 @@ class SourceCapabilityDeclaration(FrozenModel):
     source_id: str = Field(min_length=1)
     capabilities: frozenset[Capability] = Field(min_length=1)
     implementations: tuple[str, ...] = Field(min_length=1)
+
+
+class CatalogCapabilitySource(Protocol):
+    @property
+    def source_id(self) -> str: ...
+
+    @property
+    def integration_layer(self) -> object: ...
 
 
 class SourceCapabilityRegistry:
@@ -72,8 +81,12 @@ class SourceCapabilityRegistry:
             for capability in declaration.capabilities
         )
 
-    def validate_catalog(self, source_ids: Iterable[str]) -> None:
-        catalog_ids = set(source_ids)
+    def validate_catalog(
+        self,
+        sources: Iterable[CatalogCapabilitySource],
+    ) -> None:
+        catalog = {source.source_id: source for source in sources}
+        catalog_ids = set(catalog)
         missing = sorted({
             declaration.source_id
             for declaration in self._declarations
@@ -83,6 +96,32 @@ class SourceCapabilityRegistry:
             raise ValueError(
                 f"capability registry uses unknown source IDs: {missing}"
             )
+        mature_layers = {"parser", "live_receipt"}
+        for declaration in self._declarations:
+            source = catalog[declaration.source_id]
+            capabilities = declaration.capabilities
+            fixture_only = Capability.FIXTURE_PARSER in capabilities
+            source_parser = Capability.SOURCE_PARSER in capabilities
+            if fixture_only and Capability.SYNTHETIC_FIXTURE not in capabilities:
+                raise ValueError(
+                    f"{source.source_id} fixture parser requires synthetic "
+                    "fixture capability"
+                )
+            integration_layer = str(source.integration_layer)
+            if source_parser and integration_layer not in mature_layers:
+                raise ValueError(
+                    f"{source.source_id} source parser conflicts with catalog "
+                    f"integration layer {integration_layer}"
+                )
+            if (
+                Capability.CANONICAL_PROJECTION in capabilities
+                and not fixture_only
+                and not source_parser
+            ):
+                raise ValueError(
+                    f"{source.source_id} canonical projection requires a "
+                    "fixture or source parser"
+                )
 
 
 class JurisdictionSource(FrozenModel):
@@ -296,29 +335,29 @@ def builtin_source_capabilities() -> SourceCapabilityRegistry:
     """
 
     acquisition = frozenset({Capability.ACQUISITION})
-    projected = frozenset({
-        Capability.PARSER,
+    fixture_projected = frozenset({
+        Capability.FIXTURE_PARSER,
         Capability.SYNTHETIC_FIXTURE,
         Capability.CANONICAL_PROJECTION,
     })
-    parser = frozenset({
-        Capability.PARSER,
+    source_projected = frozenset({
+        Capability.SOURCE_PARSER,
         Capability.CANONICAL_PROJECTION,
     })
     return SourceCapabilityRegistry((
         SourceCapabilityDeclaration(
             source_id="au-artg",
-            capabilities=parser,
+            capabilities=fixture_projected,
             implementations=("adapters.au_artg:project_artg_csv",),
         ),
         SourceCapabilityDeclaration(
             source_id="au-pbs-historical-xml",
-            capabilities=parser,
+            capabilities=fixture_projected,
             implementations=("adapters.au_pbs:project_pbs_xml",),
         ),
         SourceCapabilityDeclaration(
             source_id="ca-dpd",
-            capabilities=projected,
+            capabilities=fixture_projected,
             implementations=(
                 "adapters.canada:project_dpd_api",
                 "adapters.canada:project_dpd_bulk",
@@ -326,69 +365,69 @@ def builtin_source_capabilities() -> SourceCapabilityRegistry:
         ),
         SourceCapabilityDeclaration(
             source_id="ca-noc",
-            capabilities=parser,
+            capabilities=fixture_projected,
             implementations=("adapters.canada:project_noc_extract",),
         ),
         SourceCapabilityDeclaration(
             source_id="eu-ema-medicines",
-            capabilities=projected,
+            capabilities=fixture_projected,
             implementations=(
                 "adapters.european_union:project_ema_medicine_csv",
             ),
         ),
         SourceCapabilityDeclaration(
             source_id="eu-union-register",
-            capabilities=parser,
+            capabilities=fixture_projected,
             implementations=(
                 "adapters.european_union:project_union_register_xml",
             ),
         ),
         SourceCapabilityDeclaration(
             source_id="jp-pmda-approvals",
-            capabilities=projected,
+            capabilities=fixture_projected,
             implementations=("adapters.japan:project_pmda_approval_csv",),
         ),
         SourceCapabilityDeclaration(
             source_id="jp-mhlw-nhi-price",
-            capabilities=parser,
+            capabilities=fixture_projected,
             implementations=("adapters.japan:project_mhlw_nhi_price_csv",),
         ),
         SourceCapabilityDeclaration(
             source_id="nz-medsafe-products",
-            capabilities=parser,
+            capabilities=fixture_projected,
             implementations=(
                 "adapters.nz_medsafe:project_medsafe_registry_csv",
             ),
         ),
         SourceCapabilityDeclaration(
             source_id="nz-pharmac-schedule-xml",
-            capabilities=parser,
+            capabilities=fixture_projected,
             implementations=(
                 "adapters.nz_pharmac:project_pharmac_schedule_xml",
             ),
         ),
         SourceCapabilityDeclaration(
             source_id="gb-mhra-products",
-            capabilities=projected,
+            capabilities=fixture_projected,
             implementations=(
                 "adapters.united_kingdom:project_mhra_products_csv",
             ),
         ),
         SourceCapabilityDeclaration(
             source_id="gb-nice-ta",
-            capabilities=parser,
+            capabilities=fixture_projected,
             implementations=(
                 "adapters.united_kingdom:project_nice_appraisals_xml",
             ),
         ),
         SourceCapabilityDeclaration(
             source_id="us-cms-partd-formulary",
-            capabilities=parser,
+            capabilities=fixture_projected,
             implementations=("adapters.us_cms_partd:project_cms_partd_csv",),
         ),
         SourceCapabilityDeclaration(
             source_id="us-drugsfda",
-            capabilities=parser | acquisition,
+            capabilities=source_projected | acquisition,
             implementations=(
                 "adapters.us_acquisition:acquire_drugsfda_api",
                 "adapters.us_acquisition:acquire_drugsfda_bulk",
@@ -398,7 +437,7 @@ def builtin_source_capabilities() -> SourceCapabilityRegistry:
         ),
         SourceCapabilityDeclaration(
             source_id="global-rxnorm",
-            capabilities=projected,
+            capabilities=source_projected,
             implementations=(
                 "terminology:LocalRxNormResolver",
                 "terminology:bootstrap_rxnorm_resolver",

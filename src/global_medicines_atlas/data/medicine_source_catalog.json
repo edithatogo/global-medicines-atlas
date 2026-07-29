@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "reviewed_at": "2026-07-29",
   "monitoring_contract": {
     "source_health": "weekly",
@@ -575,6 +575,10 @@
         "status_dates",
         "eligibility_criteria",
         "prices"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://dha.gov.ae/en/HealthRegulationSector/DrugControl"
       ]
     },
     {
@@ -625,6 +629,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://services.ede.gov.ae/drugdirectory?lang=en-US"
       ]
     },
     {
@@ -675,6 +683,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.argentina.gob.ar/anmat"
       ]
     },
     {
@@ -731,6 +743,10 @@
         "dosage_forms",
         "routes",
         "packages"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.healthterminologies.gov.au/"
       ]
     },
     {
@@ -780,7 +796,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "au-pbs-api",
@@ -834,7 +852,9 @@
         "names",
         "status_dates",
         "eligibility_criteria"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "au-pbs-embargo",
@@ -887,6 +907,10 @@
         "names",
         "status_dates",
         "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://data.pbs.gov.au/document/90473.html"
       ]
     },
     {
@@ -940,6 +964,10 @@
         "names",
         "status_dates",
         "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://info.data.pbs.gov.au/xml-schema/doc/html/guide.html"
       ]
     },
     {
@@ -994,6 +1022,10 @@
         "names",
         "status_dates",
         "documents"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.tga.gov.au/products/regulations-all-products/about-australian-register-therapeutic-goods-artg/product-information-pi"
       ]
     },
     {
@@ -1032,7 +1064,8 @@
       ],
       "record_entities": [
         "medicinal_product",
-        "approval"
+        "approval",
+        "document"
       ],
       "status_semantics": [
         "authorization"
@@ -1048,6 +1081,10 @@
         "names",
         "status_dates",
         "safety_notices"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.tga.gov.au/resources/datasets"
       ]
     },
     {
@@ -1103,6 +1140,10 @@
         "status_dates",
         "eligibility_criteria",
         "prices"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.moh.gov.bh/OtherPages/Faq?lang=en"
       ]
     },
     {
@@ -1152,7 +1193,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "br-cmed-prices",
@@ -1209,6 +1252,10 @@
         "status_dates",
         "eligibility_criteria",
         "prices"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/cmed/precos"
       ]
     },
     {
@@ -1262,7 +1309,9 @@
         "names",
         "status_dates",
         "eligibility_criteria"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "ca-cda-recommendations",
@@ -1316,6 +1365,10 @@
         "names",
         "status_dates",
         "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.cda-amc.ca/reimbursement-reviews"
       ]
     },
     {
@@ -1369,7 +1422,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "ca-noc",
@@ -1420,7 +1475,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "ca-nova-scotia-pharmacare",
@@ -1478,6 +1535,10 @@
         "names",
         "status_dates",
         "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://open.canada.ca/data/en/dataset/e49db542-48db-8656-c4d5-f1f32516ddad"
       ]
     },
     {
@@ -1531,6 +1592,10 @@
         "names",
         "status_dates",
         "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.ontario.ca/document/ontario-drug-benefit-odb-formulary-comparative-drug-index-cdi-and-monthly-formulary-0"
       ]
     },
     {
@@ -1584,6 +1649,10 @@
         "names",
         "status_dates",
         "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://sl.bag.admin.ch/resources/current-and-archived-data"
       ]
     },
     {
@@ -1634,7 +1703,9 @@
         "names",
         "status_dates",
         "eligibility_criteria"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "ch-swissmedic-aips",
@@ -1690,6 +1761,10 @@
         "names",
         "status_dates",
         "documents"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.swissmedic.ch/swissmedic/en/home/humanarzneimittel/authorisations/aips.html/1000"
       ]
     },
     {
@@ -1741,7 +1816,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "cl-isp-register",
@@ -1791,6 +1868,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://registrosanitario.ispch.gob.cl/"
       ]
     },
     {
@@ -1843,6 +1924,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://mesagil.invima.gov.co/productos-vigilados/medicamentos-y-productos-biologicos/autorizacion-de-comercializacion-registros"
       ]
     },
     {
@@ -1893,6 +1978,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.invima.gov.co/consulta-registros-sanitarios"
       ]
     },
     {
@@ -1943,6 +2032,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.bfarm.de/DE/Arzneimittel/Arzneimittelinformationen/Arzneimittel-recherchieren/AMIce/_artikel.html"
       ]
     },
     {
@@ -1994,6 +2087,10 @@
         "names",
         "status_dates",
         "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://laegemiddelstyrelsen.dk/en/reimbursement/prices/medicine-prices-for-companies"
       ]
     },
     {
@@ -2046,6 +2143,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/data-medicines-iso-idmp-standards-post-authorisation/public-data-article-57-database"
       ]
     },
     {
@@ -2102,6 +2203,10 @@
         "names",
         "status_dates",
         "documents"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.ema.europa.eu/en/about-us/about-website/download-website-data-json-data-format"
       ]
     },
     {
@@ -2153,7 +2258,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "eu-ema-pms-fhir",
@@ -2206,6 +2313,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://api.pms.ema.europa.eu/public/v1/swagger"
       ]
     },
     {
@@ -2264,6 +2375,10 @@
         "dosage_forms",
         "routes",
         "packages"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://spor.ema.europa.eu/"
       ]
     },
     {
@@ -2315,7 +2430,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "fr-bdpm",
@@ -2367,6 +2484,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement"
       ]
     },
     {
@@ -2420,6 +2541,10 @@
         "names",
         "status_dates",
         "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement"
       ]
     },
     {
@@ -2477,6 +2602,10 @@
         "status_dates",
         "eligibility_criteria",
         "prices"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.gov.uk/government/publications/drugs-and-pharmaceutical-electronic-market-information-emit"
       ]
     },
     {
@@ -2526,7 +2655,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "gb-nhs-dmd",
@@ -2581,7 +2712,9 @@
         "dosage_forms",
         "routes",
         "packages"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "gb-nhs-drug-tariff",
@@ -2634,6 +2767,10 @@
         "names",
         "status_dates",
         "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/drug-tariff"
       ]
     },
     {
@@ -2688,7 +2825,9 @@
         "names",
         "status_dates",
         "eligibility_criteria"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "gb-trud-api",
@@ -2741,6 +2880,10 @@
         "identifiers",
         "names",
         "terminology_relationships"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://digital.nhs.uk/developer/api-catalogue/technology-reference-update-distribution-api"
       ]
     },
     {
@@ -2791,6 +2934,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://ghc.sa/"
       ]
     },
     {
@@ -2852,7 +2999,9 @@
         "dosage_forms",
         "routes",
         "packages"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "global-who-databases",
@@ -2901,7 +3050,9 @@
         "identifiers",
         "names",
         "terminology_relationships"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "global-who-wla",
@@ -2952,7 +3103,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "id-bpom-product",
@@ -3002,6 +3155,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://cekbpom.pom.go.id/"
       ]
     },
     {
@@ -3051,7 +3208,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "in-nlem",
@@ -3103,7 +3262,9 @@
         "names",
         "status_dates",
         "eligibility_criteria"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "jp-mhlw-nhi-price",
@@ -3159,7 +3320,9 @@
         "status_dates",
         "eligibility_criteria",
         "prices"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "jp-pmda-approvals",
@@ -3208,7 +3371,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "jp-pmda-package-inserts",
@@ -3262,6 +3427,10 @@
         "names",
         "status_dates",
         "documents"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.info.pmda.go.jp/psearch/tenpulist.jsp"
       ]
     },
     {
@@ -3319,6 +3488,10 @@
         "dosage_forms",
         "routes",
         "packages"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.data.go.kr/data/15118958/fileData.do"
       ]
     },
     {
@@ -3373,7 +3546,9 @@
         "status_dates",
         "eligibility_criteria",
         "prices"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "kr-hira-standard-code",
@@ -3425,6 +3600,10 @@
         "identifiers",
         "names",
         "terminology_relationships"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.data.go.kr/data/15067462/fileData.do"
       ]
     },
     {
@@ -3474,7 +3653,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "kw-moh-medicines",
@@ -3524,6 +3705,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.moh.gov.kw/"
       ]
     },
     {
@@ -3573,7 +3758,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "mx-csg-compendium",
@@ -3623,7 +3810,9 @@
         "names",
         "status_dates",
         "eligibility_criteria"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "my-npra-quest",
@@ -3673,6 +3862,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://quest3plus.bpfk.gov.my/front-end/product-search.php"
       ]
     },
     {
@@ -3722,7 +3915,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "ng-nhia-medicines",
@@ -3772,7 +3967,9 @@
         "names",
         "status_dates",
         "eligibility_criteria"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "nl-medicijnkosten",
@@ -3823,6 +4020,10 @@
         "names",
         "status_dates",
         "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.medicijnkosten.nl/"
       ]
     },
     {
@@ -3874,6 +4075,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.dmp.no/om-oss/distribusjon-av-legemiddeldata/FHIR-tjenesten/innhold-i-tjenesten"
       ]
     },
     {
@@ -3935,6 +4140,10 @@
         "routes",
         "packages",
         "terminology_relationships"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.dmp.no/en/about-us/distribution-of-data-on-medicinal-products/electronic-prescription-support-system-fest/downloading-fest-and-safest"
       ]
     },
     {
@@ -3989,6 +4198,10 @@
         "names",
         "status_dates",
         "documents"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.medsafe.govt.nz/DbSearch/InfoSearch"
       ]
     },
     {
@@ -4038,7 +4251,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "nz-nzhts-fhir",
@@ -4096,6 +4311,10 @@
         "dosage_forms",
         "routes",
         "packages"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.healthnz.govt.nz/health-professionals/guidance-standards/topic/data-and-standards/health-information-standards/nz-health-terminology-service-nzhts"
       ]
     },
     {
@@ -4152,6 +4371,10 @@
         "dosage_forms",
         "routes",
         "packages"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://info.nzulm.org.nz/data-access"
       ]
     },
     {
@@ -4205,6 +4428,10 @@
         "names",
         "status_dates",
         "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://schedule.pharmac.govt.nz/pub/HML/archive/"
       ]
     },
     {
@@ -4257,7 +4484,9 @@
         "names",
         "status_dates",
         "eligibility_criteria"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "nz-pharmac-schedule-xml",
@@ -4310,6 +4539,10 @@
         "names",
         "status_dates",
         "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://schedule.pharmac.govt.nz/pub/Schedule/"
       ]
     },
     {
@@ -4360,6 +4593,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.moh.gov.om/"
       ]
     },
     {
@@ -4410,6 +4647,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://verification.fda.gov.ph/"
       ]
     },
     {
@@ -4460,6 +4701,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.moph.gov.qa/"
       ]
     },
     {
@@ -4510,7 +4755,9 @@
         "names",
         "status_dates",
         "eligibility_criteria"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "sa-sfda-drug-list",
@@ -4559,7 +4806,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "se-npl-nsl",
@@ -4619,6 +4868,10 @@
         "routes",
         "packages",
         "terminology_relationships"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.lakemedelsverket.se/sv/om-webbplatsen/oppna-data"
       ]
     },
     {
@@ -4674,6 +4927,10 @@
         "status_dates",
         "eligibility_criteria",
         "prices"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.tlv.se/lakemedelsforetag/pris-och-subvention-av-lakemedel/subventionerade-lakemedel.html"
       ]
     },
     {
@@ -4724,6 +4981,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.hsa.gov.sg/therapeutic-products/registration-of-therapeutic-products/tools-and-resources/listing-of-approvals-and-post-registration-actions/listing-of-approvals/"
       ]
     },
     {
@@ -4773,7 +5034,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "sg-moh-drug-list",
@@ -4823,7 +5086,9 @@
         "names",
         "status_dates",
         "eligibility_criteria"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "th-fda-search",
@@ -4873,6 +5138,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://pertento.fda.moph.go.th/FDA_SEARCH_DRUG/SEARCH_DRUG/FRM_SEARCH_PAGE.aspx"
       ]
     },
     {
@@ -4925,6 +5194,10 @@
         "names",
         "status_dates",
         "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://data.medicaid.gov/datasets"
       ]
     },
     {
@@ -4981,6 +5254,10 @@
         "status_dates",
         "eligibility_criteria",
         "prices"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://data.medicaid.gov/datasets"
       ]
     },
     {
@@ -5033,7 +5310,9 @@
         "names",
         "status_dates",
         "eligibility_criteria"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "us-dailymed-spl",
@@ -5092,6 +5371,10 @@
         "names",
         "status_dates",
         "documents"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://dailymed.nlm.nih.gov/dailymed/webservices-help/v2/spls_api.cfm"
       ]
     },
     {
@@ -5146,7 +5429,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "us-fda-orange-book",
@@ -5198,7 +5483,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "us-gsrs-unii",
@@ -5254,6 +5541,10 @@
         "dosage_forms",
         "routes",
         "packages"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://gsrs.ncats.nih.gov/"
       ]
     },
     {
@@ -5306,6 +5597,10 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://open.fda.gov/apis/drug/drugsfda/"
       ]
     },
     {
@@ -5358,7 +5653,9 @@
         "identifiers",
         "names",
         "terminology_relationships"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "us-rxnorm-api",
@@ -5416,6 +5713,10 @@
         "dosage_forms",
         "routes",
         "packages"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.nlm.nih.gov/research/umls/rxnorm/index.html"
       ]
     },
     {
@@ -5468,7 +5769,9 @@
         "names",
         "status_dates",
         "eligibility_criteria"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "za-sahpra-register",
@@ -5517,7 +5820,9 @@
         "identifiers",
         "names",
         "status_dates"
-      ]
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "za-single-exit-price",
@@ -5574,6 +5879,10 @@
         "status_dates",
         "eligibility_criteria",
         "prices"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.health.gov.za/nhi-pee/"
       ]
     }
   ]

@@ -11,6 +11,8 @@ from global_medicines_atlas.countries import (
     AdapterRegistry,
     Capability,
     JurisdictionSource,
+    SourceCapabilityDeclaration,
+    SourceCapabilityRegistry,
     SourceDimension,
     builtin_registry,
     builtin_source_capabilities,
@@ -125,7 +127,7 @@ def test_every_implementation_maps_to_exactly_one_catalog_source() -> None:
         declaration.source_id in catalog_ids for declaration in declarations
     )
     assert all(declaration.capabilities for declaration in declarations)
-    declarations.validate_catalog(catalog_ids)
+    declarations.validate_catalog(load_source_catalog())
     for implementation in implementation_ids:
         module_name, symbol_name = implementation.split(":", maxsplit=1)
         module = import_module(f"global_medicines_atlas.{module_name}")
@@ -139,10 +141,21 @@ def test_capability_registry_distinguishes_evidence_layers() -> None:
         for declaration in builtin_source_capabilities()
     }
 
-    assert Capability.PARSER in declarations["us-drugsfda"].capabilities
+    assert (
+        Capability.SOURCE_PARSER
+        in declarations["us-drugsfda"].capabilities
+    )
     assert (
         Capability.CANONICAL_PROJECTION
         in declarations["nz-medsafe-products"].capabilities
+    )
+    assert (
+        Capability.FIXTURE_PARSER
+        in declarations["nz-medsafe-products"].capabilities
+    )
+    assert (
+        Capability.SOURCE_PARSER
+        not in declarations["nz-medsafe-products"].capabilities
     )
     assert (
         Capability.SYNTHETIC_FIXTURE
@@ -155,3 +168,52 @@ def test_capability_registry_distinguishes_evidence_layers() -> None:
         Capability.PRODUCTION_QUALIFICATION not in declaration.capabilities
         for declaration in declarations.values()
     )
+
+
+def test_fixture_parser_does_not_upgrade_catalog_integration_maturity() -> None:
+    catalog = load_source_catalog()
+    registry = builtin_source_capabilities()
+
+    registry.validate_catalog(catalog)
+
+    medsafe = next(
+        source
+        for source in catalog
+        if source.source_id == "nz-medsafe-products"
+    )
+    assert medsafe.integration_layer.value == "catalogued"
+    assert (
+        Capability.FIXTURE_PARSER
+        in registry.capabilities_for(medsafe.source_id)
+    )
+
+
+def test_source_parser_must_agree_with_catalog_integration_maturity() -> None:
+    catalog = load_source_catalog()
+    registry = SourceCapabilityRegistry((
+        SourceCapabilityDeclaration(
+            source_id="nz-medsafe-products",
+            capabilities=frozenset({
+                Capability.SOURCE_PARSER,
+                Capability.CANONICAL_PROJECTION,
+            }),
+            implementations=("adapters.nz_medsafe:project_medsafe_registry_csv",),
+        ),
+    ))
+
+    with pytest.raises(ValueError, match="conflicts with catalog"):
+        registry.validate_catalog(catalog)
+
+
+def test_fixture_parser_requires_explicit_fixture_capability() -> None:
+    catalog = load_source_catalog()
+    registry = SourceCapabilityRegistry((
+        SourceCapabilityDeclaration(
+            source_id="nz-medsafe-products",
+            capabilities=frozenset({Capability.FIXTURE_PARSER}),
+            implementations=("fixture:parser",),
+        ),
+    ))
+
+    with pytest.raises(ValueError, match="requires synthetic fixture"):
+        registry.validate_catalog(catalog)
