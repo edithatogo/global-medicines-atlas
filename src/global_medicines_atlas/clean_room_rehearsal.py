@@ -68,6 +68,8 @@ class TrustedProvenancePolicy(BaseModel):
     certificate_identity: Annotated[str, StringConstraints(min_length=1)]
     oidc_issuer: Annotated[str, StringConstraints(min_length=1)]
     predicate_type: Literal["https://slsa.dev/provenance/v1"]
+    trusted_root_path: RelativePath
+    trusted_root_sha256: Digest
 
 
 class VerifiedArtifact(BaseModel):
@@ -90,7 +92,11 @@ class CleanRoomReceipt(BaseModel):
     declaration_sha256: Digest
     qualified_assets_sha256: Digest
     verified: Literal[True] = True
-    network_accessed: Literal[False] = False
+    python_network_denied: Literal[True] = True
+    provenance_verification_mode: Literal[
+        "local-bundle-and-digest-pinned-trusted-root"
+    ] = "local-bundle-and-digest-pinned-trusted-root"
+    child_process_network_isolation: Literal["unverified"] = "unverified"
     published: Literal[False] = False
     artifacts: tuple[VerifiedArtifact, ...]
 
@@ -442,12 +448,32 @@ def _certificate_fields(result: Mapping[str, object]) -> dict[str, object]:
     return cast("dict[str, object]", certificate)
 
 
+def _resolve_trusted_root(
+    policy_path: Path, policy: TrustedProvenancePolicy
+) -> Path:
+    policy_directory = policy_path.resolve(strict=True).parent
+    relative = _relative(policy.trusted_root_path)
+    candidate = policy_directory.joinpath(*relative.parts)
+    if candidate.is_symlink():
+        raise RehearsalError("trusted root must not be a symbolic link")
+    try:
+        resolved = candidate.resolve(strict=True)
+    except OSError as error:
+        raise RehearsalError("trusted root is missing") from error
+    if not resolved.is_relative_to(policy_directory) or not resolved.is_file():
+        raise RehearsalError("trusted root escapes the trust-policy directory")
+    if _digest(resolved.read_bytes()) != policy.trusted_root_sha256:
+        raise RehearsalError("trusted root digest does not match trust policy")
+    return resolved
+
+
 def _verify_provenance_bundle(  # ruff: ignore[too-many-branches, too-many-locals]
     bundle: Path,
     *,
     root: Path,
     declared: Mapping[str, DeclaredArtifact],
     policy: TrustedProvenancePolicy,
+    trusted_root: Path,
     verifier_command: tuple[str, ...],
 ) -> None:
     expected = {
@@ -477,13 +503,14 @@ def _verify_provenance_bundle(  # ruff: ignore[too-many-branches, too-many-local
             policy.certificate_identity,
             "--cert-oidc-issuer",
             policy.oidc_issuer,
+            "--custom-trusted-root",
+            str(trusted_root),
             "--predicate-type",
             policy.predicate_type,
             "--format=json",
         ]
         environment = {
             "GH_NO_UPDATE_NOTIFIER": "1",
-            "NO_PROXY": "*",
             "PATH": os.environ.get("PATH", ""),
         }
         try:
@@ -576,7 +603,7 @@ def _verify_qualification(path: Path, manifest_digest: str) -> None:
         )
 
 
-def rehearse_publication(
+def rehearse_publication(  # ruff: ignore[too-many-locals]
     *,
     source_root: Path,
     declaration_path: Path,
@@ -591,6 +618,7 @@ def rehearse_publication(
     policy = TrustedProvenancePolicy.model_validate_json(
         trust_policy_path.read_bytes()
     )
+    trusted_root = _resolve_trusted_root(trust_policy_path, policy)
     output = receipt_path.resolve()
     source = source_root.resolve(strict=True)
     if output.is_relative_to(source):
@@ -635,6 +663,7 @@ def rehearse_publication(
             root=clean_root,
             declared=declared,
             policy=policy,
+            trusted_root=trusted_root,
             verifier_command=verifier_command,
         )
         _verify_qualification(

@@ -121,6 +121,8 @@ def _fixture(root: Path) -> Path:
     }
     declaration_path = root.parent / "declaration.json"
     declaration_path.write_bytes(_canonical(declaration))
+    trusted_root = b'{"mediaType":"application/vnd.dev.sigstore.trustedroot+json;version=0.1"}\n'
+    (root.parent / "trusted-root.jsonl").write_bytes(trusted_root)
     (root.parent / "trust-policy.json").write_bytes(
         _canonical({
             "certificate_identity": "https://github.com/edithatogo/gma/.github/workflows/release.yml@refs/heads/main",
@@ -129,6 +131,8 @@ def _fixture(root: Path) -> Path:
             "repository": "edithatogo/global-medicines-atlas",
             "schema_version": "1",
             "signer_workflow": "github.com/edithatogo/gma/.github/workflows/release.yml",
+            "trusted_root_path": "trusted-root.jsonl",
+            "trusted_root_sha256": _sha(trusted_root),
         })
     )
     fake = root.parent / "fake_gh.py"
@@ -161,13 +165,20 @@ certificate = {
 }
 if mode == "wrong-identity":
     certificate["sourceRepository"] = "attacker/repo"
+if mode == "wrong-workflow":
+    certificate["signerWorkflow"] = "github.com/attacker/repo/.github/workflows/a.yml"
+if mode == "wrong-san":
+    certificate["subjectAlternativeName"] = "https://attacker.invalid"
+if mode == "wrong-issuer":
+    certificate["issuer"] = "https://attacker.invalid"
 subject_digest = "0" * 64 if mode == "wrong-subject" else digest
+predicate_type = "https://attacker.invalid/predicate" if mode == "wrong-predicate" else "https://slsa.dev/provenance/v1"
 result = [{
     "verificationResult": {
         "signature": {"certificate": certificate},
         "verifiedTimestamps": [] if mode == "no-timestamps" else [{"type": "tlog"}],
         "statement": {
-            "predicateType": "https://slsa.dev/provenance/v1",
+            "predicateType": predicate_type,
             "subject": [{"name": artifact.name, "digest": {"sha256": subject_digest}}],
         },
     }
@@ -278,7 +289,12 @@ def test_rehearsal_emits_deterministic_durable_receipt(tmp_path: Path) -> None:
     assert first == second
     assert first_path.read_bytes() == second_path.read_bytes()
     assert first.verified is True
-    assert first.network_accessed is False
+    assert first.python_network_denied is True
+    assert first.child_process_network_isolation == "unverified"
+    assert (
+        first.provenance_verification_mode
+        == "local-bundle-and-digest-pinned-trusted-root"
+    )
     assert first.published is False
     assert len(first.artifacts) == 7
     commands = [
@@ -298,6 +314,8 @@ def test_rehearsal_emits_deterministic_durable_receipt(tmp_path: Path) -> None:
         assert command[command.index("--signer-workflow") + 1] == (
             "github.com/edithatogo/gma/.github/workflows/release.yml"
         )
+        trusted_root_arg = command[command.index("--custom-trusted-root") + 1]
+        assert Path(trusted_root_arg) == tmp_path / "trusted-root.jsonl"
         assert command[-1] == "--format=json"
 
 
@@ -704,7 +722,7 @@ def test_rehearsal_rejects_manifest_identity_mismatch(tmp_path: Path) -> None:
 def test_rehearsal_rejects_complete_but_wrong_checksum(tmp_path: Path) -> None:
     source = tmp_path / "source"
     declaration = _fixture(source)
-    lines = []
+    lines: list[str] = []
     for path in sorted(source.iterdir()):
         if path.name == "SHA256SUMS":
             continue
@@ -839,6 +857,10 @@ def test_rehearsal_rejects_invalid_runtime_lock(
         ("fail", "verification failed"),
         ("unsigned", "no verified attestations"),
         ("wrong-identity", "violates trust policy"),
+        ("wrong-workflow", "violates trust policy"),
+        ("wrong-san", "violates trust policy"),
+        ("wrong-issuer", "violates trust policy"),
+        ("wrong-predicate", "predicate type"),
         ("no-timestamps", "transparency timestamps"),
         ("wrong-subject", "do not match exact governed bytes"),
         ("invalid-json", "not valid JSON"),
@@ -871,6 +893,38 @@ def test_rehearsal_fails_closed_when_gh_is_missing(tmp_path: Path) -> None:
             trust_policy_path=tmp_path / "trust-policy.json",
             receipt_path=tmp_path / "receipt.json",
             verifier_command=("definitely-missing-gh-executable",),
+        )
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("missing", "trusted root is missing"),
+        ("tampered", "digest does not match"),
+        ("escape", "unsafe relative path"),
+    ],
+)
+def test_rehearsal_rejects_invalid_trusted_root(
+    tmp_path: Path, mutation: str, message: str
+) -> None:
+    source = tmp_path / "source"
+    declaration = _fixture(source)
+    trusted_root = tmp_path / "trusted-root.jsonl"
+    if mutation == "missing":
+        trusted_root.unlink()
+    elif mutation == "tampered":
+        trusted_root.write_bytes(b"tampered")
+    else:
+        policy: dict[str, object] = json.loads(
+            (tmp_path / "trust-policy.json").read_text(encoding="utf-8")
+        )
+        policy["trusted_root_path"] = "../outside-trusted-root.jsonl"
+        (tmp_path / "trust-policy.json").write_bytes(_canonical(policy))
+    with pytest.raises(RehearsalError, match=message):
+        rehearse_publication(
+            source_root=source,
+            declaration_path=declaration,
+            receipt_path=tmp_path / "receipt.json",
         )
 
 
@@ -973,7 +1027,9 @@ def test_cli_runs_offline_and_does_not_mutate_source(tmp_path: Path) -> None:
     )
 
     assert result.returncode == 0, result.stderr
-    assert json.loads(result.stdout)["network_accessed"] is False
+    output = json.loads(result.stdout)
+    assert output["python_network_denied"] is True
+    assert output["child_process_network_isolation"] == "unverified"
     assert {path.name: path.read_bytes() for path in source.iterdir()} == before
     assert receipt.is_file()
 
