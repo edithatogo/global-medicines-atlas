@@ -48,6 +48,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         trust_policy_path=args.trust_policy,
         receipt_path=args.receipt,
         verifier_command=(args.verifier,),
+        python_network_denied=True,
     )
     print(json.dumps(receipt.model_dump(mode="json"), sort_keys=True))
     return 0

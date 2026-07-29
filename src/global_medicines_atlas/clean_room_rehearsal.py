@@ -92,7 +92,7 @@ class CleanRoomReceipt(BaseModel):
     declaration_sha256: Digest
     qualified_assets_sha256: Digest
     verified: Literal[True] = True
-    python_network_denied: Literal[True] = True
+    python_network_denied: bool = False
     provenance_verification_mode: Literal[
         "local-bundle-and-digest-pinned-trusted-root"
     ] = "local-bundle-and-digest-pinned-trusted-root"
@@ -610,6 +610,7 @@ def rehearse_publication(  # ruff: ignore[too-many-locals]
     trust_policy_path: Path,
     receipt_path: Path,
     verifier_command: tuple[str, ...] = ("gh",),
+    python_network_denied: bool = False,
 ) -> CleanRoomReceipt:
     """Verify declared publication bytes offline in an isolated directory."""
 
@@ -681,6 +682,7 @@ def rehearse_publication(  # ruff: ignore[too-many-locals]
         receipt = CleanRoomReceipt(
             declaration_sha256=_digest(declaration_bytes),
             qualified_assets_sha256=manifest_digest,
+            python_network_denied=python_network_denied,
             artifacts=verified,
         )
     output.parent.mkdir(parents=True, exist_ok=True)

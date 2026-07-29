@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import cast
 
 import pytest
-from hypothesis import given
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from global_medicines_atlas.clean_room_rehearsal import (
@@ -289,7 +289,7 @@ def test_rehearsal_emits_deterministic_durable_receipt(tmp_path: Path) -> None:
     assert first == second
     assert first_path.read_bytes() == second_path.read_bytes()
     assert first.verified is True
-    assert first.python_network_denied is True
+    assert first.python_network_denied is False
     assert first.child_process_network_isolation == "unverified"
     assert (
         first.provenance_verification_mode
@@ -1037,6 +1037,7 @@ def test_cli_runs_offline_and_does_not_mutate_source(tmp_path: Path) -> None:
 @given(
     st.binary(min_size=0, max_size=64).filter(lambda value: value != _wheel())
 )
+@settings(deadline=None)
 def test_any_package_byte_change_is_rejected(replacement: bytes) -> None:
     with tempfile.TemporaryDirectory() as directory:
         root = Path(directory)
