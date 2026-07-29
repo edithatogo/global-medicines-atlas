@@ -1,4 +1,4 @@
-# Comparison API and Atlas
+# Comparison API and Atlas (Archived)
 
 - [Specification](./spec.md)
 - [Implementation Plan](./plan.md)
