@@ -19,9 +19,11 @@ from pydantic import Field
 
 from .acquisition import (
     AcquisitionPolicy,
+    BoundIPAddressTransport,
     DestinationPolicyError,
     Resolver,
-    validate_remote_destination,
+    policy_for_catalog_uri,
+    transport_for_destination,
 )
 from .models import FrozenModel
 from .source_catalog import (
@@ -237,7 +239,8 @@ def _request_sample(
         httpx.Client(
             transport=transport,
             timeout=timeout_seconds,
-            follow_redirects=False,
+            follow_redirects=isinstance(transport, BoundIPAddressTransport),
+            max_redirects=3,
         ) as client,
         client.stream("GET", endpoint, headers=headers) as response,
     ):
@@ -413,16 +416,17 @@ def probe_source(
             timeout_seconds=timeout_seconds,
             max_bytes=max_bytes,
         )
-        validate_remote_destination(
+        policy = policy_for_catalog_uri(policy, endpoint)
+        effective_transport = transport_for_destination(
             endpoint,
             policy,
             resolver=resolver,
-            require_host_allowlist=transport is None,
+            transport=transport,
         )
         response = _request_sample(
             endpoint,
             headers=headers,
-            transport=transport,
+            transport=effective_transport,
             timeout_seconds=timeout_seconds,
             max_bytes=max_bytes,
         )

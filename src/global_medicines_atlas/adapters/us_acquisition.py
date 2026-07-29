@@ -8,7 +8,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from ..acquisition import (
-    DEFAULT_ACQUISITION_POLICY,
     AcquisitionPolicy,
     Clock,
     Receipt,
@@ -26,6 +25,9 @@ if TYPE_CHECKING:
 
 DRUGSFDA_BULK_URL = "https://www.fda.gov/media/89850/download?attachment"
 DRUGSFDA_API_URL = "https://api.fda.gov/drug/drugsfda.json?limit=100"
+DRUGSFDA_ACQUISITION_POLICY = AcquisitionPolicy(
+    allowed_hosts=("api.fda.gov", "www.fda.gov")
+)
 
 
 def _drugsfda_source(
@@ -56,7 +58,7 @@ def acquire_drugsfda_bulk(
     *,
     repository_root: Path,
     bulk_url: str = DRUGSFDA_BULK_URL,
-    policy: AcquisitionPolicy = DEFAULT_ACQUISITION_POLICY,
+    policy: AcquisitionPolicy = DRUGSFDA_ACQUISITION_POLICY,
     catalog: Iterable[MedicineDataSource] | None = None,
     transport: httpx.BaseTransport | None = None,
     evidence_class: EvidenceClass = EvidenceClass.FIXTURE,
@@ -85,7 +87,7 @@ def acquire_drugsfda_api(
     *,
     repository_root: Path,
     api_url: str = DRUGSFDA_API_URL,
-    policy: AcquisitionPolicy = DEFAULT_ACQUISITION_POLICY,
+    policy: AcquisitionPolicy = DRUGSFDA_ACQUISITION_POLICY,
     catalog: Iterable[MedicineDataSource] | None = None,
     transport: httpx.BaseTransport | None = None,
     evidence_class: EvidenceClass = EvidenceClass.FIXTURE,

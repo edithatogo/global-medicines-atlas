@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 import socket
 from collections.abc import Callable, Iterable
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from hashlib import sha256
 from ipaddress import ip_address
@@ -67,6 +67,7 @@ class AcquisitionPolicy:
     allowed_hosts: tuple[str, ...] = ()
     max_attempts: int = 1
     max_concurrency_per_host: int = 2
+    max_redirects: int = 3
     reject_private_networks: bool = True
     allowed_content_types: tuple[str, ...] = (
         "application/json",
@@ -90,6 +91,8 @@ class AcquisitionPolicy:
             raise ValueError("max_attempts must be positive")
         if self.max_concurrency_per_host <= 0:
             raise ValueError("max_concurrency_per_host must be positive")
+        if self.max_redirects < 0:
+            raise ValueError("max_redirects must not be negative")
         if not self.allowed_content_types:
             raise ValueError("allowed_content_types must not be empty")
 
@@ -153,12 +156,10 @@ def _network_is_private(value: str) -> bool:
     return not address.is_global
 
 
-def _validate_remote_uri(
+def _validated_scheme_and_hostname(
     uri: str,
     policy: AcquisitionPolicy,
-    *,
-    resolver: Resolver | None,
-) -> None:
+) -> str:
     parsed = urlsplit(uri)
     if parsed.scheme.lower() not in policy.allowed_schemes:
         raise DestinationPolicyError(
@@ -171,20 +172,7 @@ def _validate_remote_uri(
             "network_rejected",
             "Source URI must include a hostname.",
         )
-    try:
-        literal_addresses = (str(ip_address(hostname)),)
-    except ValueError:
-        literal_addresses = ()
-    addresses = literal_addresses or (
-        () if resolver is None else resolver(hostname)
-    )
-    if policy.reject_private_networks and any(
-        _network_is_private(address) for address in addresses
-    ):
-        raise DestinationPolicyError(
-            "network_rejected",
-            "Source URI resolved to a non-public network.",
-        )
+    return hostname
 
 
 def validate_remote_destination(
@@ -193,27 +181,124 @@ def validate_remote_destination(
     *,
     resolver: Resolver | None,
     require_host_allowlist: bool,
-) -> None:
-    """Fail closed on schemes, host admission, and non-public addresses."""
+) -> tuple[str, ...]:
+    """Return the public addresses admitted for this exact destination."""
 
-    hostname = urlsplit(uri).hostname
-    if hostname is None:
-        raise DestinationPolicyError(
-            "network_rejected",
-            "Source URI must include a hostname.",
-        )
+    hostname = _validated_scheme_and_hostname(uri, policy)
     allowed_hosts = frozenset(host.lower() for host in policy.allowed_hosts)
     if require_host_allowlist and hostname.lower() not in allowed_hosts:
         raise DestinationPolicyError(
             "host_rejected",
             "Source hostname is not admitted by acquisition policy.",
         )
-    effective_resolver = (
-        _system_resolver
-        if resolver is None and require_host_allowlist
-        else resolver
+    try:
+        addresses = (str(ip_address(hostname)),)
+    except ValueError:
+        if resolver is not None:
+            addresses = resolver(hostname)
+        elif require_host_allowlist:
+            addresses = _system_resolver(hostname)
+        else:
+            return ()
+    public_addresses = tuple(
+        address for address in addresses if not _network_is_private(address)
     )
-    _validate_remote_uri(uri, policy, resolver=effective_resolver)
+    if policy.reject_private_networks and len(public_addresses) != len(
+        addresses
+    ):
+        raise DestinationPolicyError(
+            "network_rejected",
+            "Source URI resolved to a non-public network.",
+        )
+    if not public_addresses:
+        raise DestinationPolicyError(
+            "network_rejected",
+            "Source URI did not resolve to a public address.",
+        )
+    return public_addresses
+
+
+def policy_for_catalog_uri(
+    policy: AcquisitionPolicy,
+    uri: str,
+) -> AcquisitionPolicy:
+    """Admit the governed catalog hostname when no stricter set was supplied."""
+
+    if policy.allowed_hosts:
+        return policy
+    hostname = urlsplit(uri).hostname
+    if hostname is None:
+        raise DestinationPolicyError(
+            "network_rejected",
+            "Source URI must include a hostname.",
+        )
+    return replace(policy, allowed_hosts=(hostname.lower(),))
+
+
+class BoundIPAddressTransport(httpx.BaseTransport):
+    """Connect to a validated IP while preserving HTTP authority and TLS SNI."""
+
+    def __init__(
+        self,
+        *,
+        policy: AcquisitionPolicy,
+        resolver: Resolver | None = None,
+        inner: httpx.BaseTransport | None = None,
+    ) -> None:
+        self._policy = policy
+        self._resolver = resolver
+        self._inner = inner or httpx.HTTPTransport(trust_env=False)
+
+    def handle_request(self, request: httpx.Request) -> httpx.Response:
+        hostname = request.url.host
+        addresses = validate_remote_destination(
+            str(request.url),
+            self._policy,
+            resolver=self._resolver,
+            require_host_allowlist=True,
+        )
+        selected_address = addresses[0]
+        port = request.url.port
+        default_port = 443 if request.url.scheme == "https" else 80
+        authority = (
+            hostname if port in {None, default_port} else f"{hostname}:{port}"
+        )
+        headers = request.headers.copy()
+        headers["host"] = authority
+        extensions = dict(request.extensions)
+        extensions["sni_hostname"] = hostname
+        bound_url = request.url.copy_with(host=selected_address)
+        bound_request = httpx.Request(
+            request.method,
+            bound_url,
+            headers=headers,
+            content=request.stream,
+            extensions=extensions,
+        )
+        return self._inner.handle_request(bound_request)
+
+    def close(self) -> None:
+        self._inner.close()
+
+
+def transport_for_destination(
+    uri: str,
+    policy: AcquisitionPolicy,
+    *,
+    resolver: Resolver | None,
+    transport: httpx.BaseTransport | None,
+) -> httpx.BaseTransport:
+    """Build the production binding transport or validate a test boundary."""
+
+    if transport is None:
+        return BoundIPAddressTransport(policy=policy, resolver=resolver)
+    validate_remote_destination(
+        uri,
+        policy,
+        resolver=resolver,
+        require_host_allowlist=False,
+    )
+    return transport
 
 
 def _local_destination(repository_root: Path, destination: Path) -> Path:
@@ -392,30 +477,32 @@ def acquire_source(
     sources = load_source_catalog() if catalog is None else tuple(catalog)
     source = _catalog_source(source_id, sources)
     uri, method = _download_surface(source)
+    effective_policy = policy_for_catalog_uri(policy, uri)
     observed_at = clock()
     target = _local_destination(repository_root, destination)
     target.parent.mkdir(parents=True, exist_ok=True)
     temporary_path: Path | None = None
 
     try:
-        validate_remote_destination(
+        effective_transport = transport_for_destination(
             uri,
-            policy,
+            effective_policy,
             resolver=resolver,
-            require_host_allowlist=transport is None,
+            transport=transport,
         )
         with (
             httpx.Client(
-                transport=transport,
-                timeout=policy.timeout_seconds,
-                follow_redirects=False,
+                transport=effective_transport,
+                timeout=effective_policy.timeout_seconds,
+                follow_redirects=transport is None,
+                max_redirects=effective_policy.max_redirects,
             ) as client,
             client.stream("GET", uri) as response,
         ):
             temporary_path, payload = _stage_response(
                 response,
                 target=target,
-                policy=policy,
+                policy=effective_policy,
             )
 
         temporary_path.replace(target)

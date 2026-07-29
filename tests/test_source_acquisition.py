@@ -1,14 +1,18 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 
 import httpx
 import pytest
 
+import global_medicines_atlas.acquisition as acquisition_module
 from global_medicines_atlas.acquisition import (
     AcquisitionPolicy,
+    BoundIPAddressTransport,
     DestinationPolicyError,
+    Receipt,
     acquire_source,
     validate_remote_destination,
 )
@@ -68,12 +72,12 @@ def catalog_source(
 
 def acquire(
     tmp_path: Path,
-    handler,
+    handler: Callable[[httpx.Request], httpx.Response],
     *,
     destination: Path = Path("artifacts/source.bin"),
     policy: AcquisitionPolicy = SMALL_POLICY,
     evidence_class: EvidenceClass = EvidenceClass.FIXTURE,
-):
+) -> Receipt:
     return acquire_source(
         "test-regulator",
         destination,
@@ -359,3 +363,122 @@ def test_mixed_public_private_dns_answer_is_rejected() -> None:
             resolver=lambda _: ("93.184.216.34", "10.0.0.2"),
             require_host_allowlist=True,
         )
+
+
+@pytest.mark.edge
+def test_bound_transport_defeats_dns_rebinding_without_network() -> None:
+    resolver_answers = iter([
+        ("93.184.216.34",),
+        ("10.0.0.8",),
+    ])
+    resolver_calls: list[str] = []
+    connected_requests: list[httpx.Request] = []
+
+    def rebinding_resolver(hostname: str) -> tuple[str, ...]:
+        resolver_calls.append(hostname)
+        return next(resolver_answers)
+
+    def connected(request: httpx.Request) -> httpx.Response:
+        connected_requests.append(request)
+        return httpx.Response(200, request=request)
+
+    transport = BoundIPAddressTransport(
+        policy=AcquisitionPolicy(allowed_hosts=("example.test",)),
+        resolver=rebinding_resolver,
+        inner=httpx.MockTransport(connected),
+    )
+    with httpx.Client(transport=transport) as client:
+        response = client.get("https://example.test/data")
+
+    assert response.status_code == 200
+    assert resolver_calls == ["example.test"]
+    assert connected_requests[0].url.host == "93.184.216.34"
+    assert connected_requests[0].headers["host"] == "example.test"
+    assert connected_requests[0].extensions["sni_hostname"] == "example.test"
+
+
+@pytest.mark.integration
+def test_production_path_uses_catalog_admission_and_bound_ip(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    requests: list[httpx.Request] = []
+
+    def connected(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        return httpx.Response(
+            200,
+            headers={"content-type": "application/zip"},
+            content=b"governed",
+            request=request,
+        )
+
+    def mock_http_transport(**_kwargs: object) -> httpx.BaseTransport:
+        return httpx.MockTransport(connected)
+
+    monkeypatch.setattr(
+        acquisition_module.httpx,
+        "HTTPTransport",
+        mock_http_transport,
+    )
+    receipt = acquire_source(
+        "test-regulator",
+        Path("artifacts/source.bin"),
+        repository_root=tmp_path,
+        catalog=(catalog_source(),),
+        resolver=lambda hostname: (
+            ("93.184.216.34",)
+            if hostname == "example.test"
+            else pytest.fail("ungoverned hostname resolved")
+        ),
+        clock=lambda: NOW,
+    )
+
+    assert isinstance(receipt, SourceReceipt)
+    assert requests[0].url.host == "93.184.216.34"
+    assert requests[0].headers["host"] == "example.test"
+    assert requests[0].extensions["sni_hostname"] == "example.test"
+
+
+@pytest.mark.edge
+def test_bound_transport_revalidates_and_rebinds_redirect_destination() -> None:
+    resolutions: list[str] = []
+    requests: list[httpx.Request] = []
+
+    def resolver(hostname: str) -> tuple[str, ...]:
+        resolutions.append(hostname)
+        return {
+            "example.test": ("93.184.216.34",),
+            "cdn.example.test": ("93.184.216.35",),
+        }[hostname]
+
+    def connected(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        if request.url.host == "93.184.216.34":
+            return httpx.Response(
+                302,
+                headers={"location": "https://cdn.example.test/data"},
+                request=request,
+            )
+        return httpx.Response(200, request=request)
+
+    transport = BoundIPAddressTransport(
+        policy=AcquisitionPolicy(
+            allowed_hosts=("example.test", "cdn.example.test")
+        ),
+        resolver=resolver,
+        inner=httpx.MockTransport(connected),
+    )
+    with httpx.Client(transport=transport, follow_redirects=True) as client:
+        response = client.get("https://example.test/data")
+
+    assert response.status_code == 200
+    assert resolutions == ["example.test", "cdn.example.test"]
+    assert [request.url.host for request in requests] == [
+        "93.184.216.34",
+        "93.184.216.35",
+    ]
+    assert [request.headers["host"] for request in requests] == [
+        "example.test",
+        "cdn.example.test",
+    ]
