@@ -44,3 +44,9 @@
 - [x] Task: Validate release tag, commit, dynamic version, changelog, citation, licence, wheel and SBOM agreement `b5ad86c`
 - [x] Task: Re-run focused review-fix verification — 42 passed; Zizmor, Ruff, ty and BasedPyright passed
 - [x] Task: Add rights-safe synthetic dry-run inputs and complete runtime-SBOM closure validation `84fedd4`
+
+## Phase 3 Review Fixes
+
+- [x] Task: Verify trusted provenance-attestation subjects and semantic package/SBOM/runtime-lock closure in the clean room `5441c37`
+- [x] Task: Make fixture, production and publication-state conflation structurally invalid in the qualification schema `5441c37`
+- [x] Task: Re-run complete protected harness after cache reclamation — 804 passed, 7 expected Windows symlink skips; 94.08% branch coverage
