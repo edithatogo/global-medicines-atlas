@@ -110,6 +110,21 @@
 - **M-078:** Maintain bidirectional traceability among releases, MoSCoW
   requirements, design components, Conductor tracks, GitHub parent/subissues,
   tests and evidence receipts.
+- **M-079:** Keep repository governance as code and verify the hosted state:
+  rulesets, least-privilege workflow permissions, merge policy, labels, project
+  views, security features and maintainer bypasses must have dated evidence.
+- **M-080:** Maintain a secure-development lifecycle covering threat modelling,
+  dependency review, secret and code scanning, vulnerability reporting,
+  incident handling, supply-chain attestations and time-bounded remediation.
+- **M-081:** Maintain task-oriented contributor, operator, source-onboarding,
+  architecture, data-rights, support and security documentation, with automated
+  link, example and context-drift checks.
+- **M-082:** Make the supported development and CI paths reproducible from
+  locked dependencies and cached governed fixtures; network loss, rate limits
+  and unavailable optional services must fail explicitly or degrade safely.
+- **M-083:** Govern versions and releases with dynamic versioning, SemVer,
+  changelog and citation metadata, an explicit software-licence decision,
+  immutable release assets and a pre-publication qualification gate.
 
 ## Should Have
 

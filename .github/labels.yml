@@ -1,0 +1,20 @@
+- {name: "type:data-source", color: "0e8a16", description: "Official data-source onboarding"}
+- {name: "type:data-incident", color: "b60205", description: "Data quality or provenance incident"}
+- {name: "type:security", color: "d93f0b", description: "Security hardening or remediation"}
+- {name: "area:adapter", color: "1d76db", description: "Country or authority adapter"}
+- {name: "area:api", color: "5319e7", description: "Public API and contracts"}
+- {name: "area:atlas", color: "7057ff", description: "Atlas user interface"}
+- {name: "area:data", color: "006b75", description: "Data model and evidence"}
+- {name: "priority:P0", color: "b60205", description: "Foundational and urgent"}
+- {name: "priority:P1", color: "d93f0b", description: "High priority"}
+- {name: "priority:P2", color: "fbca04", description: "Normal priority"}
+- {name: "priority:P3", color: "c5def5", description: "Deferred"}
+- {name: "status:triage", color: "ededed", description: "Needs maintainer triage"}
+- {name: "status:blocked", color: "000000", description: "Blocked by an explicit gate"}
+- {name: "status:external-gate", color: "5319e7", description: "Requires external qualification or authority"}
+- {name: "dependencies", color: "0366d6", description: "Dependency update"}
+- {name: "renovate", color: "1a1f6c", description: "Raised by Renovate"}
+- {name: "semver:major", color: "b60205", description: "Breaking release"}
+- {name: "semver:minor", color: "0e8a16", description: "Feature release"}
+- {name: "semver:patch", color: "1d76db", description: "Patch release"}
+- {name: "skip-changelog", color: "ededed", description: "Exclude from release notes"}

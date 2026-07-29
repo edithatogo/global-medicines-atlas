@@ -6,14 +6,17 @@ import json
 from datetime import date
 from enum import StrEnum
 from pathlib import Path
+from typing import Any, Self, cast
 
 from pydantic import Field, HttpUrl, model_validator
 
 from .countries import SourceDimension
 from .logging import get_logger
 from .models import FrozenModel
+from .source_profiles import PROFILES, AuthenticationMode
 
 LOGGER = get_logger("source_catalog", component="source-catalog")
+STRICT_SOURCE_SCHEMA_VERSION = 3
 
 
 class AccessMode(StrEnum):
@@ -22,6 +25,27 @@ class AccessMode(StrEnum):
     API_AND_DOWNLOAD = "api_and_download"
     WEB_SEARCH = "web_search"
     LICENSED_FEED = "licensed_feed"
+    DOCUMENT = "document"
+
+
+class InterfaceStatus(StrEnum):
+    """Whether automation uses a supported interface."""
+
+    SUPPORTED = "supported"
+    DOCUMENTED_DOWNLOAD = "documented_download"
+    INTERACTIVE_ONLY = "interactive_only"
+    RESTRICTED = "restricted"
+    UNDOCUMENTED = "undocumented"
+
+
+class IntegrationLayer(StrEnum):
+    """Highest locally evidenced integration layer."""
+
+    CATALOGUED = "catalogued"
+    ACQUISITION = "acquisition"
+    PARSER = "parser"
+    FIXTURE = "fixture"
+    LIVE_RECEIPT = "live_receipt"
 
 
 class SourceReadiness(StrEnum):
@@ -53,7 +77,17 @@ class MedicineDataSource(FrozenModel):
     title: str = Field(min_length=1)
     dimension: SourceDimension
     access_mode: AccessMode
+    interface_status: InterfaceStatus
+    formats: tuple[str, ...] = Field(min_length=1)
+    authentication: AuthenticationMode
+    product_grain: str = Field(min_length=1)
+    historical_scope: str = Field(min_length=1)
+    native_identifier: str = Field(min_length=1)
+    last_verified_at: date
+    integration_layer: IntegrationLayer = IntegrationLayer.CATALOGUED
+    acquisition_profile: str | None = Field(default=None, min_length=1)
     landing_page: HttpUrl
+    documentation_url: HttpUrl
     api_url: HttpUrl | None = None
     download_url: HttpUrl | None = None
     update_cadence: str = Field(min_length=1)
@@ -67,6 +101,50 @@ class MedicineDataSource(FrozenModel):
         schema_drift="monthly",
     )
     evidence_limit: str = Field(min_length=1)
+
+    @classmethod
+    def from_legacy(
+        cls,
+        **value: Any,
+    ) -> Self:
+        """Migrate an explicit pre-v3 in-memory declaration.
+
+        Catalog JSON never uses this compatibility path: schema-v3 rows must
+        declare every governed field themselves.
+        """
+        payload = dict(value)
+        raw_mode = payload.get("access_mode", AccessMode.WEB_SEARCH)
+        mode = (
+            raw_mode
+            if isinstance(raw_mode, AccessMode)
+            else AccessMode(str(raw_mode))
+        )
+        interface_by_mode = {
+            AccessMode.API: InterfaceStatus.SUPPORTED,
+            AccessMode.API_AND_DOWNLOAD: InterfaceStatus.SUPPORTED,
+            AccessMode.DOWNLOAD: InterfaceStatus.DOCUMENTED_DOWNLOAD,
+            AccessMode.WEB_SEARCH: InterfaceStatus.INTERACTIVE_ONLY,
+            AccessMode.LICENSED_FEED: InterfaceStatus.RESTRICTED,
+            AccessMode.DOCUMENT: InterfaceStatus.DOCUMENTED_DOWNLOAD,
+        }
+        payload.setdefault(
+            "interface_status",
+            interface_by_mode.get(mode, InterfaceStatus.UNDOCUMENTED),
+        )
+        payload.setdefault("formats", ("source-defined",))
+        payload.setdefault("authentication", AuthenticationMode.UNKNOWN)
+        payload.setdefault("product_grain", "source-defined")
+        payload.setdefault("historical_scope", "source-defined")
+        payload.setdefault("native_identifier", "source-defined")
+        payload.setdefault("last_verified_at", date(1970, 1, 1))
+        payload.setdefault("documentation_url", payload["landing_page"])
+        payload.setdefault(
+            "integration_layer",
+            IntegrationLayer.PARSER
+            if payload.get("implemented_ingestion")
+            else IntegrationLayer.CATALOGUED,
+        )
+        return cls.model_validate(payload)
 
     @model_validator(mode="after")
     def access_surface_matches_mode(self) -> MedicineDataSource:
@@ -92,6 +170,44 @@ class MedicineDataSource(FrozenModel):
         ):
             raise ValueError(
                 "implemented_ingestion must agree with implemented readiness"
+            )
+        if self.implemented_ingestion != (
+            self.integration_layer
+            in {
+                IntegrationLayer.PARSER,
+                IntegrationLayer.FIXTURE,
+                IntegrationLayer.LIVE_RECEIPT,
+            }
+        ):
+            raise ValueError(
+                "implemented_ingestion requires a parser-or-higher "
+                "integration layer"
+            )
+        if self.current_receipt_id is not None and (
+            self.integration_layer != IntegrationLayer.LIVE_RECEIPT
+        ):
+            raise ValueError(
+                "current receipt requires live-receipt integration layer"
+            )
+        if (
+            self.access_mode
+            in {
+                AccessMode.WEB_SEARCH,
+                AccessMode.DOCUMENT,
+            }
+            and self.interface_status == InterfaceStatus.SUPPORTED
+        ):
+            raise ValueError(
+                "interactive/document sources are not supported APIs"
+            )
+        if self.acquisition_profile is not None and self.access_mode not in {
+            AccessMode.API,
+            AccessMode.DOWNLOAD,
+            AccessMode.API_AND_DOWNLOAD,
+            AccessMode.LICENSED_FEED,
+        }:
+            raise ValueError(
+                "acquisition profiles require an automatable access mode"
             )
         return self
 
@@ -121,6 +237,44 @@ class SourceCatalog(FrozenModel):
     jurisdictions: tuple[JurisdictionCensusEntry, ...]
     sources: tuple[MedicineDataSource, ...]
 
+    @model_validator(mode="before")
+    @classmethod
+    def schema_v3_rows_are_explicit(cls, value: Any) -> Any:
+        """Reject incomplete governed rows before model defaults can apply."""
+        if not isinstance(value, dict):
+            return value
+        payload = cast("dict[str, Any]", value)
+        if payload.get("schema_version", 0) < STRICT_SOURCE_SCHEMA_VERSION:
+            return payload
+        required = {
+            "interface_status",
+            "formats",
+            "authentication",
+            "product_grain",
+            "historical_scope",
+            "native_identifier",
+            "last_verified_at",
+            "integration_layer",
+            "documentation_url",
+        }
+        raw_sources_value: object = payload.get("sources", ())
+        if not isinstance(raw_sources_value, (list, tuple)):
+            return payload
+        raw_sources = cast(
+            "list[object] | tuple[object, ...]",
+            raw_sources_value,
+        )
+        for index, raw_source in enumerate(raw_sources):
+            if not isinstance(raw_source, dict):
+                continue
+            source = cast("dict[str, Any]", raw_source)
+            missing = sorted(required.difference(source))
+            if missing:
+                raise ValueError(
+                    f"schema-v3 source row {index} is missing: {missing}"
+                )
+        return payload
+
     @model_validator(mode="after")
     def monitoring_contract_is_applied(self) -> SourceCatalog:
         if any(
@@ -129,6 +283,29 @@ class SourceCatalog(FrozenModel):
         ):
             raise ValueError(
                 "source monitoring must match the catalog monitoring contract"
+            )
+        declared = {entry.jurisdiction for entry in self.jurisdictions}
+        unknown = sorted({
+            jurisdiction
+            for source in self.sources
+            for jurisdiction in source.jurisdictions
+            if jurisdiction not in declared and jurisdiction != "GLOBAL"
+        })
+        if unknown:
+            raise ValueError(
+                f"source catalog uses undeclared jurisdictions: {unknown}"
+            )
+        profile_ids = {profile.profile_id for profile in PROFILES}
+        missing_profiles = sorted({
+            source.acquisition_profile
+            for source in self.sources
+            if source.acquisition_profile is not None
+            and source.acquisition_profile not in profile_ids
+        })
+        if missing_profiles:
+            raise ValueError(
+                "source catalog uses undeclared acquisition profiles: "
+                f"{missing_profiles}"
             )
         return self
 

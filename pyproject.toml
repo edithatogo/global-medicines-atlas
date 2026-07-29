@@ -7,6 +7,9 @@ name = "global-medicines-atlas"
 dynamic = ["version"]
 description = "Global comparison of medicine registration, approval, funding, and reimbursement systems"
 requires-python = ">=3.14,<3.15"
+authors = [
+  { name = "Edith Atogo" },
+]
 dependencies = [
   "duckdb>=1.4",
   "fastapi>=0.116",

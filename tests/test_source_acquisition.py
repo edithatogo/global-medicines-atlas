@@ -15,6 +15,8 @@ from global_medicines_atlas.receipts import (
 )
 from global_medicines_atlas.source_catalog import (
     AccessMode,
+    AuthenticationMode,
+    InterfaceStatus,
     MedicineDataSource,
     SourceReadiness,
 )
@@ -35,6 +37,18 @@ def catalog_source(
         title="Test medicines",
         dimension=SourceDimension.REGULATORY,
         access_mode=access_mode,
+        interface_status=(
+            InterfaceStatus.SUPPORTED
+            if access_mode is AccessMode.API
+            else InterfaceStatus.DOCUMENTED_DOWNLOAD
+        ),
+        formats=("json",) if access_mode is AccessMode.API else ("zip",),
+        authentication=AuthenticationMode.NONE,
+        product_grain="test product",
+        historical_scope="fixture snapshot",
+        native_identifier="test identifier",
+        last_verified_at=NOW.date(),
+        documentation_url="https://example.test/docs",
         landing_page="https://example.test/",
         download_url=download_url,
         api_url="https://example.test/api"

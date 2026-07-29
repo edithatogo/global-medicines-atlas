@@ -7,7 +7,7 @@ reproducible, supportable, measured and honest about residual limitations.
 
 ## Requirements
 
-- M-005, M-035, M-043, M-060 to M-063, M-070, M-077 and M-078.
+- M-005, M-035, M-043, M-060 to M-063, M-070, M-077 to M-083.
 - Require all blocking maturity dimensions to reach M5.
 - Reproduce from a clean environment using published instructions and artifacts.
 - Rehearse migrations, rollback, incident response and compatibility.
@@ -18,6 +18,8 @@ reproducible, supportable, measured and honest about residual limitations.
 - Independent clean-room reproduction and release verification pass.
 - Documentation, support, limitations and residual-risk registers are current.
 - Stable release requires explicit maintainer approval.
+- Hosted repository governance and the release/licence decision are verified,
+  not inferred from committed templates.
 
 ## Out of scope
 

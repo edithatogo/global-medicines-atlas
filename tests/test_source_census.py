@@ -78,7 +78,11 @@ def test_discovery_declarations_do_not_claim_receipts_or_ingestion() -> None:
 
     assert sources
     assert all(
-        source.discovery_status == DiscoveryStatus.DISCOVERY_ONLY
+        source.discovery_status
+        in {
+            DiscoveryStatus.DISCOVERY_ONLY,
+            DiscoveryStatus.DECLARATION_VERIFIED,
+        }
         for source in sources
     )
     assert all(not source.implemented_ingestion for source in sources)
@@ -96,8 +100,25 @@ def test_coverage_measures_each_required_capability() -> None:
     assert 0 < coverage.bulk <= coverage.denominator
     assert 0 < coverage.implemented_ingestion <= coverage.denominator
     assert coverage.current_receipt == 0
-    assert coverage.source_health_scheduled == 16
-    assert coverage.schema_drift_scheduled == 16
+    assert coverage.source_health_scheduled == coverage.denominator
+    assert coverage.schema_drift_scheduled == coverage.denominator
+
+
+def test_global_expansion_denominator_and_source_counts_are_measurable() -> (
+    None
+):
+    catalog = load_catalog()
+
+    assert len(catalog.jurisdictions) >= 34
+    assert len(catalog.sources) >= 95
+    assert (
+        len({
+            jurisdiction
+            for source in catalog.sources
+            for jurisdiction in source.jurisdictions
+        })
+        >= 34
+    )
 
 
 def test_monitoring_contract_is_explicit_and_applied_to_every_source() -> None:

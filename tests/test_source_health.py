@@ -34,7 +34,7 @@ def source(
     access_mode: AccessMode = AccessMode.API,
     readiness: SourceReadiness = SourceReadiness.CANDIDATE,
 ) -> MedicineDataSource:
-    return MedicineDataSource(
+    return MedicineDataSource.from_legacy(
         source_id=source_id,
         jurisdictions=("NZL",),
         authority="Example authority",
@@ -300,9 +300,11 @@ def test_drift_assessment_covers_unchanged_no_baseline_and_blocked() -> None:
         ),
         checked_at=NOW,
     )
+    stable_fingerprint = available.schema_fingerprint
+    assert stable_fingerprint is not None
     assessments = assess_schema_drift(
         (available, new, blocked),
-        {"stable": available.schema_fingerprint},
+        {"stable": stable_fingerprint},
     )
     states = {item.source_id: item.state for item in assessments}
     assert states == {

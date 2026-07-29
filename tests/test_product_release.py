@@ -1,6 +1,6 @@
 import json
-import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
+import sys
 from datetime import UTC, datetime, timedelta
 from hashlib import sha256
 from pathlib import Path
@@ -200,15 +200,9 @@ def test_runner_publishes_nothing_when_a_check_fails(
 
 def test_direct_runner_cli_from_repository_root(tmp_path: Path):
     destination = tmp_path / "product-qualification"
-    uv_executable = shutil.which("uv")
-    assert uv_executable is not None
     result = subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
         [
-            str(Path(uv_executable).resolve()),
-            "run",
-            "--group",
-            "dev",
-            "python",
+            sys.executable,
             "scripts/run_product_qualification.py",
             "--output",
             str(destination),
@@ -217,10 +211,14 @@ def test_direct_runner_cli_from_repository_root(tmp_path: Path):
         check=False,
         capture_output=True,
         text=True,
-        timeout=60,
+        timeout=25,
     )
 
-    assert result.returncode == 0, result.stderr
+    assert result.returncode == 0, (
+        f"qualification runner exited {result.returncode}\n"
+        f"stdout:\n{result.stdout}\n"
+        f"stderr:\n{result.stderr}"
+    )
     evidence = destination / "evidence.json"
     receipts = destination / "receipts"
     assert evidence.is_file()
