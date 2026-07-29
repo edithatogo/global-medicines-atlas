@@ -17,8 +17,8 @@ its phase subissues.
 | v0.5 Matching beta | Reviewable cross-country equivalence candidates | Ingredient/product mappings, confidence, deterministic and semantic retrieval, adjudication | `cross_jurisdiction_matching_20260729` |
 | v0.6 Product beta | Usable comparison service | Read-only API, CLI queries, atlas, accessibility, provenance drill-down | `comparison_api_atlas_20260729` |
 | v0.7 Reproducible release beta | Governed public research outputs | Parquet, Croissant, data cards, citations, SBOM and attestations, dry-run publication | `governed_publication_20260729` |
-| v0.8 Hardened RC | Secure and observable operations | Source health, schema drift, performance budgets, recovery and compatibility canaries | `operational_hardening_20260729` |
-| v0.9 Stable candidate | Independently reproducible release candidate | Clean-room reproduction, migration rehearsal, documentation and support readiness | `stable_v1_qualification_20260729` |
+| v0.8 Hardened RC | Secure and observable operations | Source information schema, unified adapter capabilities, source health, complete test inventory, mutation/performance budgets, recovery and compatibility canaries | `operational_hardening_20260729` |
+| v0.9 Stable candidate | Independently reproducible, usable release candidate | Canonical medicine schema v2, concept discovery/catalog APIs, clean consumer installs, OpenAPI compatibility, documentation and support readiness | `stable_v1_qualification_20260729` |
 | v1.0 Stable | Mature, supportable global medicines atlas | All blocking requirements evidenced, measured coverage, signed release, explicit residual limitations | `stable_v1_qualification_20260729` |
 
 ## Release gates
@@ -32,7 +32,9 @@ flowchart LR
     M --> P["v0.6 API and atlas"]
     P --> R["v0.7 reproducible publication"]
     R --> H["v0.8 hardened RC"]
-    H --> Q["v0.9 qualification"]
+    H --> S2["canonical schema v2 gate"]
+    S2 --> D["concept discovery gate"]
+    D --> Q["v0.9 qualification"]
     Q --> V1["v1.0 stable"]
 ```
 

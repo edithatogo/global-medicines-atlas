@@ -125,6 +125,29 @@
 - **M-083:** Govern versions and releases with dynamic versioning, SemVer,
   changelog and citation metadata, an explicit software-licence decision,
   immutable release assets and a pre-publication qualification gate.
+- **M-084:** Publish and validate a versioned international-source information
+  schema that labels each resource's entities, information domains, status
+  semantics, geographic and population scope, languages, available fields and
+  change semantics without conflating regulatory and funding evidence.
+- **M-085:** Evolve the canonical medicine model to represent substances,
+  ingredients, medicinal products, packaged products, organisations,
+  indications, routes, strengths, prices and structured eligibility or
+  restriction rules while retaining every source-native identifier and record.
+- **M-086:** Provide bounded concept discovery by name, ingredient and
+  jurisdiction-native identifier through the API, CLI and accessible atlas,
+  with explicit canonical/native match explanations and stable pagination.
+- **M-087:** Test every distributable wheel and source archive from a clean
+  consumer environment and require package metadata, supported-platform
+  policy, installation, import, CLI, API and dynamic-version checks.
+- **M-088:** Give each lawful public dataset a non-overlapping identity across
+  GitHub, Hugging Face, Zenodo and OSF, including schema, licence, checksums,
+  version, data card or protocol, persistent identifiers and provenance links;
+  restricted medicine payloads must never be implied to be redistributable.
+- **M-089:** Treat all acquired content as untrusted: enforce approved schemes
+  and destinations, redirect and DNS/IP policy, private-network rejection,
+  bounded retries and concurrency, compressed and expanded size limits,
+  archive/path safety, fail-closed parsing, quarantine, redacted security
+  events and rehearsed compromise recovery.
 
 ## Should Have
 
