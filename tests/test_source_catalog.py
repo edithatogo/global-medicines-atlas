@@ -177,6 +177,73 @@ def test_receipt_and_implementation_claims_are_fail_closed() -> None:
     assert receipt_backed.current_receipt_id == "receipt-current"
 
 
+@pytest.mark.parametrize(
+    ("updates", "message"),
+    [
+        (
+            {"access_mode": AccessMode.API, "api_url": None},
+            "API access mode requires api_url",
+        ),
+        (
+            {"access_mode": AccessMode.DOWNLOAD, "download_url": None},
+            "download access mode requires download_url",
+        ),
+        (
+            {
+                "implemented_ingestion": False,
+                "integration_layer": IntegrationLayer.PARSER,
+            },
+            "parser-or-higher",
+        ),
+        (
+            {
+                "current_receipt_id": "receipt-current",
+                "discovery_status": DiscoveryStatus.RECEIPT_BACKED,
+                "integration_layer": IntegrationLayer.CATALOGUED,
+            },
+            "live-receipt",
+        ),
+        (
+            {
+                "access_mode": AccessMode.DOCUMENT,
+                "interface_status": InterfaceStatus.SUPPORTED,
+            },
+            "not supported APIs",
+        ),
+        (
+            {
+                "access_mode": AccessMode.DOCUMENT,
+                "acquisition_profile": "public-bulk",
+            },
+            "automatable access mode",
+        ),
+    ],
+)
+def test_access_and_integration_claims_are_fail_closed(
+    updates: dict[str, object],
+    message: str,
+) -> None:
+    base = load_source_catalog()[0].model_dump()
+
+    with pytest.raises(ValidationError, match=message):
+        MedicineDataSource.model_validate({**base, **updates})
+
+
+def test_schema_prevalidator_preserves_non_v3_payload_shapes() -> None:
+    validator = source_catalog.SourceCatalog.schema_v3_rows_are_explicit
+
+    assert validator("invalid") == "invalid"
+    assert validator({"schema_version": 2}) == {"schema_version": 2}
+    assert validator({"schema_version": 3, "sources": "invalid"}) == {
+        "schema_version": 3,
+        "sources": "invalid",
+    }
+    assert validator({"schema_version": 3, "sources": ["invalid"]}) == {
+        "schema_version": 3,
+        "sources": ["invalid"],
+    }
+
+
 def test_catalog_rejects_duplicate_ids(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -287,4 +354,27 @@ def test_catalog_rejects_monitoring_contract_drift(
     monkeypatch.setattr(source_catalog.json, "loads", lambda _: payload)
 
     with pytest.raises(ValidationError, match="monitoring contract"):
+        load_catalog()
+
+
+def test_catalog_rejects_unknown_jurisdiction_and_profile(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    baseline = load_catalog().model_dump(mode="json")
+    unknown_jurisdiction = deepcopy(baseline)
+    unknown_jurisdiction["sources"][0]["jurisdictions"] = ["ZZZ"]
+    monkeypatch.setattr(
+        source_catalog.json,
+        "loads",
+        lambda _: unknown_jurisdiction,
+    )
+    with pytest.raises(ValidationError, match="undeclared jurisdictions"):
+        load_catalog()
+
+    unknown_profile = deepcopy(baseline)
+    unknown_profile["sources"][0]["acquisition_profile"] = "unknown-profile"
+    monkeypatch.setattr(source_catalog.json, "loads", lambda _: unknown_profile)
+    with pytest.raises(
+        ValidationError, match="undeclared acquisition profiles"
+    ):
         load_catalog()
