@@ -2,11 +2,11 @@
 
 ## Phase 1: Package contracts
 
-- [ ] Task: Define data dictionary, dataset card and Croissant contracts ([#33](https://github.com/edithatogo/global-medicines-atlas/issues/33))
-- [ ] Task: Write deterministic generation and forbidden-content tests ([#33](https://github.com/edithatogo/global-medicines-atlas/issues/33))
-- [ ] Task: Define publication state and verification receipts ([#33](https://github.com/edithatogo/global-medicines-atlas/issues/33))
-- [ ] Task: Define SemVer, dynamic-version, changelog, citation and licence-consistency gates ([#33](https://github.com/edithatogo/global-medicines-atlas/issues/33))
-- [ ] Task: Phase Verification & Checkpoint
+- [x] Task: Define data dictionary, dataset card and Croissant contracts ([#33](https://github.com/edithatogo/global-medicines-atlas/issues/33)) `93f0a09`
+- [x] Task: Write deterministic generation and forbidden-content tests ([#33](https://github.com/edithatogo/global-medicines-atlas/issues/33)) `93f0a09`
+- [x] Task: Define publication state and verification receipts ([#33](https://github.com/edithatogo/global-medicines-atlas/issues/33)) `93f0a09`
+- [x] Task: Define SemVer, dynamic-version, changelog, citation and licence-consistency gates ([#33](https://github.com/edithatogo/global-medicines-atlas/issues/33)) `93f0a09`
+- [x] Task: Phase Verification & Checkpoint — 641 passed, 3 expected Windows symlink skips; 93.95% branch coverage; Ruff, ty and BasedPyright passed
 
 ## Phase 2: Release pipeline
 
