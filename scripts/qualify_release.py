@@ -15,6 +15,8 @@ from collections.abc import Mapping, Sequence
 from pathlib import Path, PurePosixPath
 from typing import Any, cast
 
+from packaging.requirements import Requirement
+
 from global_medicines_atlas.publication_contracts import (
     PublicationPackage,
     PublicationVerificationReceipt,
@@ -44,6 +46,29 @@ _CONTROL_FILES = frozenset({
 
 class QualificationError(ValueError):
     """A release input or staged byte failed closed."""
+
+
+def _require_fixture_only(
+    contract: PublicationPackage,
+    receipt: PublicationVerificationReceipt,
+    publication_mode: str,
+) -> None:
+    fixture_only = contract.contract_version.startswith("fixture-dry-run-")
+    if fixture_only and publication_mode != "dry-run":
+        raise QualificationError(
+            "committed fixture inputs cannot qualify production publication"
+        )
+    if fixture_only and (
+        "no-maintainer-approval" not in receipt.verifier
+        or not all(
+            item.evidence_uri.host is not None
+            and item.evidence_uri.host.endswith(".invalid")
+            for item in receipt.evidence
+        )
+    ):
+        raise QualificationError(
+            "fixture receipt must deny approval and use reserved evidence URIs"
+        )
 
 
 def _canonical_json(value: object) -> bytes:
@@ -95,6 +120,7 @@ def build_governed_package(
     qualification_path: Path,
     rows_path: Path,
     output: Path,
+    publication_mode: str,
 ) -> tuple[str, ...]:
     """Generate reviewed package bytes into an empty controlled directory."""
 
@@ -112,6 +138,7 @@ def build_governed_package(
     receipt = PublicationVerificationReceipt.model_validate_json(
         inputs[1].read_text()
     )
+    _require_fixture_only(contract, receipt, publication_mode)
     rows: list[Mapping[str, Any]] = []
     for number, line in enumerate(inputs[2].read_text().splitlines(), start=1):
         if not line.strip():
@@ -213,8 +240,145 @@ def _components(sbom: Mapping[str, object]) -> set[tuple[str, str]]:
     return values
 
 
-def _verify_sbom(
-    *, sbom_path: Path, lock_path: Path, project_version: str
+def _dependency_name(value: object) -> tuple[str, frozenset[str]]:
+    if not isinstance(value, dict):
+        raise QualificationError("uv.lock dependency entry must be a table")
+    dependency = cast("dict[str, object]", value)
+    name = dependency.get("name")
+    extras = dependency.get("extra", [])
+    if not isinstance(name, str) or not isinstance(extras, list):
+        raise QualificationError("uv.lock dependency identity is invalid")
+    raw_extras = cast("list[object]", extras)
+    if not all(isinstance(item, str) for item in raw_extras):
+        raise QualificationError("uv.lock dependency extras are invalid")
+    return (
+        name.casefold().replace("_", "-"),
+        frozenset(cast("list[str]", extras)),
+    )
+
+
+def _runtime_requirements(root: Path) -> set[tuple[str, frozenset[str]]]:
+    manifest = cast(
+        "dict[str, object]",
+        tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8")),
+    )
+    project = manifest.get("project")
+    if not isinstance(project, dict):
+        raise QualificationError("pyproject.toml lacks [project]")
+    raw_requirements = cast("dict[str, object]", project).get("dependencies")
+    if not isinstance(raw_requirements, list):
+        raise QualificationError("project runtime dependencies are invalid")
+    requirement_values = cast("list[object]", raw_requirements)
+    if not all(isinstance(item, str) for item in requirement_values):
+        raise QualificationError("project runtime dependencies are invalid")
+    return {
+        (
+            Requirement(item).name.casefold().replace("_", "-"),
+            frozenset(Requirement(item).extras),
+        )
+        for item in cast("list[str]", raw_requirements)
+    }
+
+
+def _lock_packages(
+    lock: Mapping[str, object],
+) -> dict[str, dict[str, object]]:
+    raw_packages = lock.get("package")
+    if not isinstance(raw_packages, list):
+        raise QualificationError("uv.lock does not contain package records")
+    packages: dict[str, dict[str, object]] = {}
+    for raw in cast("list[object]", raw_packages):
+        if not isinstance(raw, dict):
+            raise QualificationError("uv.lock package entry must be a table")
+        package = cast("dict[str, object]", raw)
+        name = package.get("name")
+        if not isinstance(name, str):
+            raise QualificationError("uv.lock package name is invalid")
+        normalized = name.casefold().replace("_", "-")
+        if normalized in packages:
+            raise QualificationError("uv.lock package names must be unique")
+        packages[normalized] = package
+    return packages
+
+
+def _package_dependencies(
+    package: Mapping[str, object], extras: frozenset[str]
+) -> list[tuple[str, frozenset[str]]]:
+    dependencies = package.get("dependencies", [])
+    if not isinstance(dependencies, list):
+        raise QualificationError("uv.lock dependencies must be a list")
+    result = [
+        _dependency_name(item) for item in cast("list[object]", dependencies)
+    ]
+    optional = package.get("optional-dependencies", {})
+    if not isinstance(optional, dict):
+        raise QualificationError(
+            "uv.lock optional dependencies must be a table"
+        )
+    optional_groups = cast("dict[str, object]", optional)
+    for extra in extras:
+        extra_dependencies = optional_groups.get(extra, [])
+        if not isinstance(extra_dependencies, list):
+            raise QualificationError(
+                "uv.lock optional dependency group must be a list"
+            )
+        result.extend(
+            _dependency_name(item)
+            for item in cast("list[object]", extra_dependencies)
+        )
+    return result
+
+
+def _runtime_lock_closure(
+    *, root: Path, lock: Mapping[str, object]
+) -> set[tuple[str, str]]:
+    direct = _runtime_requirements(root)
+    packages = _lock_packages(lock)
+    root_package = packages.get(PROJECT)
+    if root_package is None:
+        raise QualificationError("uv.lock lacks the project root package")
+    root_dependencies = root_package.get("dependencies", [])
+    if not isinstance(root_dependencies, list):
+        raise QualificationError("uv.lock project dependencies are invalid")
+    locked_direct = {
+        _dependency_name(item)
+        for item in cast("list[object]", root_dependencies)
+    }
+    if direct != locked_direct:
+        raise QualificationError(
+            "pyproject runtime dependencies disagree with uv.lock"
+        )
+
+    expected: set[tuple[str, str]] = set()
+    pending = list(direct)
+    visited: set[tuple[str, frozenset[str]]] = set()
+    while pending:
+        name, extras = pending.pop()
+        identity = (name, extras)
+        if identity in visited:
+            continue
+        visited.add(identity)
+        package = packages.get(name)
+        if package is None:
+            raise QualificationError(
+                f"runtime dependency is not locked: {name}"
+            )
+        version = package.get("version")
+        if not isinstance(version, str):
+            raise QualificationError(
+                f"runtime dependency lacks a locked version: {name}"
+            )
+        expected.add((name, version))
+        pending.extend(_package_dependencies(package, extras))
+    return expected
+
+
+def verify_runtime_sbom(
+    *,
+    root: Path,
+    sbom_path: Path,
+    lock_path: Path,
+    project_version: str,
 ) -> None:
     raw_sbom: object = json.loads(sbom_path.read_text(encoding="utf-8"))
     if not isinstance(raw_sbom, dict):
@@ -231,27 +395,17 @@ def _verify_sbom(
         "dict[str, object]",
         tomllib.loads(lock_path.read_text(encoding="utf-8")),
     )
-    packages = lock.get("package")
-    if not isinstance(packages, list):
-        raise QualificationError("uv.lock does not contain package records")
-    locked = {
-        (
-            str(item["name"]).casefold().replace("_", "-"),
-            str(item["version"]),
-        )
-        for raw_item in cast("list[object]", packages)
-        if isinstance(raw_item, dict)
-        for item in (cast("dict[str, object]", raw_item),)
-        if "name" in item and "version" in item
-    }
-    missing = sorted(
-        component
-        for component in components
-        if component[0] != PROJECT and component not in locked
-    )
+    expected = _runtime_lock_closure(root=root, lock=lock)
+    observed = {item for item in components if item[0] != PROJECT}
+    missing = sorted(expected - observed)
+    unexpected = sorted(observed - expected)
     if missing:
         raise QualificationError(
-            f"SBOM components are absent from uv.lock: {missing}"
+            f"SBOM omits resolved runtime dependencies: {missing}"
+        )
+    if unexpected:
+        raise QualificationError(
+            f"SBOM contains non-runtime or unlocked components: {unexpected}"
         )
 
 
@@ -397,7 +551,8 @@ def qualify_release_assets(
     if wheel_version != version:
         raise QualificationError("wheel and release tag versions disagree")
     lock_path = _contained(stage, "uv.lock")
-    _verify_sbom(
+    verify_runtime_sbom(
+        root=root,
         sbom_path=_contained(stage, "sbom.cdx.json"),
         lock_path=lock_path,
         project_version=version,
@@ -454,18 +609,94 @@ def qualify_release_assets(
     return receipt
 
 
+def qualify_fixture_assets(
+    *,
+    root: Path,
+    stage: Path,
+    contract_path: Path,
+    qualification_path: Path,
+) -> dict[str, object]:
+    """Validate committed fixture bytes without qualifying a release."""
+
+    contract = PublicationPackage.model_validate_json(
+        contract_path.read_text(encoding="utf-8")
+    )
+    fixture_receipt = PublicationVerificationReceipt.model_validate_json(
+        qualification_path.read_text(encoding="utf-8")
+    )
+    _require_fixture_only(contract, fixture_receipt, "dry-run")
+    if not contract.contract_version.startswith("fixture-dry-run-"):
+        raise QualificationError(
+            "dry-run qualification requires fixture inputs"
+        )
+    if any((stage / name).exists() for name in _CONTROL_FILES):
+        raise QualificationError("stage contains stale qualification controls")
+    wheels = tuple(stage.glob("*.whl"))
+    if len(wheels) != 1:
+        raise QualificationError("stage must contain exactly one wheel")
+    _, wheel_version = _wheel_metadata(wheels[0])
+    verify_runtime_sbom(
+        root=root,
+        sbom_path=_contained(stage, "sbom.cdx.json"),
+        lock_path=_contained(stage, "uv.lock"),
+        project_version=wheel_version,
+    )
+    _verify_dataset_archive(stage, contract.dataset_card.version)
+    payloads = _stage_files(stage)
+    manifest_path, _ = _write_asset_manifest(
+        root=root,
+        stage=stage,
+        payloads=payloads,
+        release_tag="fixture-dry-run-only",
+        version=wheel_version,
+        commit=_git(root, "rev-parse", "HEAD"),
+    )
+    receipt: dict[str, object] = {
+        "dry_run_validated": True,
+        "fixture_only": True,
+        "maintainer_approved": False,
+        "production_release_qualified": False,
+        "qualified_assets_sha256": _sha256(manifest_path),
+    }
+    (stage / "qualification.json").write_bytes(_canonical_json(receipt))
+    checksum_files = tuple(
+        sorted(
+            (item for item in stage.rglob("*") if item.is_file()),
+            key=lambda item: item.relative_to(stage).as_posix(),
+        )
+    )
+    (stage / "SHA256SUMS").write_text(
+        "".join(
+            f"{_sha256(item)}  {item.relative_to(stage).as_posix()}\n"
+            for item in checksum_files
+        ),
+        encoding="utf-8",
+    )
+    return receipt
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="command", required=True)
     build = subparsers.add_parser("build-package")
     for name in ("root", "contract", "qualification", "rows", "output"):
         build.add_argument(f"--{name}", type=Path, required=True)
+    build.add_argument(
+        "--publication-mode",
+        choices=("dry-run", "production"),
+        required=True,
+    )
     qualify = subparsers.add_parser("qualify")
     qualify.add_argument("--root", type=Path, required=True)
     qualify.add_argument("--stage", type=Path, required=True)
     qualify.add_argument("--release-tag", required=True)
     qualify.add_argument("--commit", required=True)
     qualify.add_argument("--dynamic-version", required=True)
+    fixture = subparsers.add_parser("qualify-fixture")
+    fixture.add_argument("--root", type=Path, required=True)
+    fixture.add_argument("--stage", type=Path, required=True)
+    fixture.add_argument("--contract", type=Path, required=True)
+    fixture.add_argument("--qualification", type=Path, required=True)
     return parser
 
 
@@ -478,15 +709,24 @@ def main(argv: Sequence[str] | None = None) -> int:
             qualification_path=args.qualification,
             rows_path=args.rows,
             output=args.output,
+            publication_mode=args.publication_mode,
         )
         print(json.dumps({"generated": written}, sort_keys=True))
-    else:
+    elif args.command == "qualify":
         receipt = qualify_release_assets(
             root=args.root,
             stage=args.stage,
             release_tag=args.release_tag,
             commit=args.commit,
             dynamic_version=args.dynamic_version,
+        )
+        print(json.dumps(receipt, sort_keys=True))
+    else:
+        receipt = qualify_fixture_assets(
+            root=args.root,
+            stage=args.stage,
+            contract_path=args.contract,
+            qualification_path=args.qualification,
         )
         print(json.dumps(receipt, sort_keys=True))
     return 0

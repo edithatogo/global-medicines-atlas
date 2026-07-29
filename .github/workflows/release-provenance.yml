@@ -9,8 +9,8 @@ on:
         type: boolean
         default: false
       release_tag:
-        description: Existing canonical vSemVer tag at the selected commit
-        required: true
+        description: Existing canonical vSemVer tag (required for publish only)
+        required: false
         type: string
 
 permissions:
@@ -45,15 +45,20 @@ jobs:
         id: version
         shell: bash
         env:
+          PUBLISH: ${{ inputs.publish }}
           RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
           set -euo pipefail
           version="$(uv version --short)"
           test -n "$version"
           printf 'value=%s\n' "$version" >> "$GITHUB_OUTPUT"
-          test "$(git rev-parse "refs/tags/${RELEASE_TAG}^{commit}")" = "$GITHUB_SHA"
+          if [[ "${PUBLISH}" == "true" ]]; then
+            test -n "$RELEASE_TAG"
+            test "$(git rev-parse "refs/tags/${RELEASE_TAG}^{commit}")" = "$GITHUB_SHA"
+          fi
       - name: Generate governed dataset package
         env:
+          PUBLICATION_MODE: ${{ inputs.publish && 'production' || 'dry-run' }}
           RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
           set -euo pipefail
@@ -65,7 +70,12 @@ jobs:
             --contract release-inputs/publication-contract.json \
             --qualification release-inputs/publication-qualification.json \
             --rows release-inputs/reviewed-rows.jsonl \
-            --output build/governed-dataset
+            --output build/governed-dataset \
+            --publication-mode "$PUBLICATION_MODE"
+          dataset_version="$(
+            python -c \
+              'import json; print(json.load(open("release-inputs/publication-contract.json"))["dataset_card"]["version"])'
+          )"
           tar \
             --sort=name \
             --mtime='UTC 1970-01-01' \
@@ -75,7 +85,7 @@ jobs:
             -C build/governed-dataset \
             -cf - . |
             gzip -n > \
-              "build/release-stage/global-medicines-atlas-dataset-${RELEASE_TAG#v}.tar.gz"
+              "build/release-stage/global-medicines-atlas-dataset-${dataset_version}.tar.gz"
       - name: Build and stage software distributions
         run: |
           set -euo pipefail
@@ -85,25 +95,54 @@ jobs:
             xargs -0 -r cp --target-directory=build/release-stage
           cp -- uv.lock build/release-stage/uv.lock
       - name: Generate reproducible CycloneDX SBOM
+        env:
+          DYNAMIC_VERSION: ${{ steps.version.outputs.value }}
         run: |
           set -euo pipefail
-          uv run --group security cyclonedx-py environment \
-            --pyproject pyproject.toml \
-            --output-reproducible \
-            --output-format JSON \
+          uv export \
+            --locked \
+            --no-dev \
+            --no-default-groups \
+            --preview-features sbom-export \
+            --format cyclonedx1.5 \
             --output-file build/release-stage/sbom.cdx.json
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path("build/release-stage/sbom.cdx.json")
+          sbom = json.loads(path.read_text(encoding="utf-8"))
+          sbom.pop("serialNumber", None)
+          metadata = sbom["metadata"]
+          metadata.pop("timestamp", None)
+          metadata["component"]["version"] = os.environ["DYNAMIC_VERSION"]
+          path.write_text(
+              json.dumps(sbom, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
       - name: Qualify exact staged bytes
         env:
           DYNAMIC_VERSION: ${{ steps.version.outputs.value }}
+          PUBLISH: ${{ inputs.publish }}
           RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
           set -euo pipefail
-          uv run python scripts/qualify_release.py qualify \
-            --root . \
-            --stage build/release-stage \
-            --release-tag "$RELEASE_TAG" \
-            --commit "$GITHUB_SHA" \
-            --dynamic-version "$DYNAMIC_VERSION"
+          if [[ "$PUBLISH" == "true" ]]; then
+            uv run python scripts/qualify_release.py qualify \
+              --root . \
+              --stage build/release-stage \
+              --release-tag "$RELEASE_TAG" \
+              --commit "$GITHUB_SHA" \
+              --dynamic-version "$DYNAMIC_VERSION"
+          else
+            uv run python scripts/qualify_release.py qualify-fixture \
+              --root . \
+              --stage build/release-stage \
+              --contract release-inputs/publication-contract.json \
+              --qualification release-inputs/publication-qualification.json
+          fi
           (
             cd build/release-stage
             sha256sum --check --strict SHA256SUMS

@@ -125,10 +125,18 @@ def test_qualified_assets_are_exact_attested_and_never_overwritten() -> None:
     assert "release-inputs/publication-contract.json" in workflow
     assert "release-inputs/publication-qualification.json" in workflow
     assert "release-inputs/reviewed-rows.jsonl" in workflow
+    assert '--publication-mode "$PUBLICATION_MODE"' in workflow
+    assert "inputs.publish && 'production' || 'dry-run'" in workflow
     assert "--sort=name" in workflow
     assert "--mtime='UTC 1970-01-01'" in workflow
     assert "gzip -n" in workflow
-    assert "global-medicines-atlas-dataset-${RELEASE_TAG#v}.tar.gz" in workflow
+    assert (
+        "global-medicines-atlas-dataset-${dataset_version}.tar.gz" in workflow
+    )
+    assert "scripts/qualify_release.py qualify-fixture" in workflow
+    assert '"production_release_qualified": False' in (
+        Path(__file__).resolve().parents[1] / "scripts" / "qualify_release.py"
+    ).read_text(encoding="utf-8")
     assert "SHA256SUMS" in workflow
     assert "sha256sum --check --strict SHA256SUMS" in workflow
     assert "chmod -R a-w build/release-stage" in workflow
@@ -150,8 +158,13 @@ def test_release_identity_and_sbom_are_semantically_qualified() -> None:
     assert '--release-tag "$RELEASE_TAG"' in workflow
     assert '--commit "$GITHUB_SHA"' in workflow
     assert '--dynamic-version "$DYNAMIC_VERSION"' in workflow
-    assert "--pyproject pyproject.toml" in workflow
-    assert "--output-reproducible" in workflow
+    assert "--no-default-groups" in workflow
+    assert "--no-dev" in workflow
+    assert "--format cyclonedx1.5" in workflow
+    assert "--preview-features sbom-export" in workflow
+    assert 'sbom.pop("serialNumber", None)' in workflow
+    assert 'metadata.pop("timestamp", None)' in workflow
+    assert 'metadata["component"]["version"]' in workflow
     assert "cp -- uv.lock build/release-stage/uv.lock" in workflow
 
 

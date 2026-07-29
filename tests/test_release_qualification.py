@@ -11,11 +11,14 @@ from pathlib import Path
 import pytest
 from scripts.qualify_release import (
     QualificationError,
+    build_governed_package,
     qualify_release_assets,
+    verify_runtime_sbom,
 )
 
 VERSION = "0.7.0"
 TAG = f"v{VERSION}"
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def _run(root: Path, *arguments: str) -> str:
@@ -47,6 +50,7 @@ build-backend = "hatchling.build"
 name = "global-medicines-atlas"
 dynamic = ["version"]
 license = "Apache-2.0"
+dependencies = ["dep>=1"]
 [tool.hatch.version]
 source = "vcs"
 """.strip()
@@ -126,7 +130,21 @@ def _stage(root: Path) -> Path:
             f"Metadata-Version: 2.4\nName: global-medicines-atlas\nVersion: {VERSION}\n",
         )
     (stage / "uv.lock").write_text(
-        'version = 1\n\n[[package]]\nname = "dep"\nversion = "1.2.3"\n',
+        """
+version = 1
+
+[[package]]
+name = "dep"
+version = "1.2.3"
+
+[[package]]
+name = "global-medicines-atlas"
+source = { editable = "." }
+dependencies = [
+  { name = "dep" },
+]
+""".strip()
+        + "\n",
         encoding="utf-8",
     )
     (stage / "sbom.cdx.json").write_text(
@@ -171,6 +189,92 @@ def test_qualifies_and_binds_every_exact_staged_byte(tmp_path: Path) -> None:
     }
 
 
+def test_committed_fixture_generates_deterministically_from_actual_paths(
+    tmp_path: Path,
+) -> None:
+    inputs = ROOT / "release-inputs"
+    first = tmp_path / "first"
+    second = tmp_path / "second"
+    arguments = {
+        "root": ROOT,
+        "contract_path": inputs / "publication-contract.json",
+        "qualification_path": inputs / "publication-qualification.json",
+        "rows_path": inputs / "reviewed-rows.jsonl",
+        "publication_mode": "dry-run",
+    }
+
+    first_paths = build_governed_package(output=first, **arguments)
+    second_paths = build_governed_package(output=second, **arguments)
+
+    assert first_paths == second_paths
+    assert first_paths
+    assert {path: (first / path).read_bytes() for path in first_paths} == {
+        path: (second / path).read_bytes() for path in second_paths
+    }
+
+
+def test_committed_fixture_cannot_enter_production_mode(
+    tmp_path: Path,
+) -> None:
+    inputs = ROOT / "release-inputs"
+
+    with pytest.raises(
+        QualificationError,
+        match="cannot qualify production publication",
+    ):
+        build_governed_package(
+            root=ROOT,
+            contract_path=inputs / "publication-contract.json",
+            qualification_path=inputs / "publication-qualification.json",
+            rows_path=inputs / "reviewed-rows.jsonl",
+            output=tmp_path / "production",
+            publication_mode="production",
+        )
+
+
+def test_actual_repo_runtime_sbom_is_complete_and_excludes_dev_groups(
+    tmp_path: Path,
+) -> None:
+    executable = shutil.which("uv")
+    assert executable is not None
+    sbom_path = tmp_path / "runtime-sbom.json"
+    subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
+        [
+            executable,
+            "export",
+            "--locked",
+            "--no-dev",
+            "--no-default-groups",
+            "--preview-features",
+            "sbom-export",
+            "--format",
+            "cyclonedx1.5",
+            "--output-file",
+            str(sbom_path),
+        ],
+        cwd=ROOT,
+        check=True,
+        shell=False,
+    )
+    sbom = json.loads(sbom_path.read_text(encoding="utf-8"))
+    sbom["metadata"]["component"]["version"] = "fixture-version"
+    sbom_path.write_text(json.dumps(sbom), encoding="utf-8")
+
+    verify_runtime_sbom(
+        root=ROOT,
+        sbom_path=sbom_path,
+        lock_path=ROOT / "uv.lock",
+        project_version="fixture-version",
+    )
+    names = {item["name"] for item in sbom["components"]}
+    assert {"pytest", "basedpyright", "scalene", "cyclonedx-bom"} - names == {
+        "pytest",
+        "basedpyright",
+        "scalene",
+        "cyclonedx-bom",
+    }
+
+
 @pytest.mark.parametrize(
     ("mutation", "message"),
     [
@@ -180,7 +284,8 @@ def test_qualifies_and_binds_every_exact_staged_byte(tmp_path: Path) -> None:
         ("citation", "tracked release inputs differ"),
         ("wheel", "wheel filename and METADATA"),
         ("sbom-project", "built project and version"),
-        ("sbom-lock", "absent from uv.lock"),
+        ("sbom-lock", "non-runtime or unlocked"),
+        ("sbom-truncated", "omits resolved runtime dependencies"),
         ("dataset", "dataset manifest mismatch"),
     ],
 )
@@ -214,6 +319,10 @@ def test_semantic_failures_never_produce_qualification(
     elif mutation == "sbom-lock":
         sbom = json.loads((stage / "sbom.cdx.json").read_text())
         sbom["components"].append({"name": "unlocked", "version": "9.9.9"})
+        (stage / "sbom.cdx.json").write_text(json.dumps(sbom))
+    elif mutation == "sbom-truncated":
+        sbom = json.loads((stage / "sbom.cdx.json").read_text())
+        sbom["components"] = []
         (stage / "sbom.cdx.json").write_text(json.dumps(sbom))
     else:
         dataset = root / "build" / "dataset-input"
