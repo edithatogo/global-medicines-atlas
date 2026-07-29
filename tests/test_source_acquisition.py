@@ -444,6 +444,7 @@ def test_production_path_uses_catalog_admission_and_bound_ip(
 def test_bound_transport_revalidates_and_rebinds_redirect_destination() -> None:
     resolutions: list[str] = []
     requests: list[httpx.Request] = []
+    created_transports: list[httpx.BaseTransport] = []
 
     def resolver(hostname: str) -> tuple[str, ...]:
         resolutions.append(hostname)
@@ -462,12 +463,17 @@ def test_bound_transport_revalidates_and_rebinds_redirect_destination() -> None:
             )
         return httpx.Response(200, request=request)
 
+    def inner_factory() -> httpx.BaseTransport:
+        transport = httpx.MockTransport(connected)
+        created_transports.append(transport)
+        return transport
+
     transport = BoundIPAddressTransport(
         policy=AcquisitionPolicy(
             allowed_hosts=("example.test", "cdn.example.test")
         ),
         resolver=resolver,
-        inner=httpx.MockTransport(connected),
+        inner_factory=inner_factory,
     )
     with httpx.Client(transport=transport, follow_redirects=True) as client:
         response = client.get("https://example.test/data")
@@ -481,4 +487,56 @@ def test_bound_transport_revalidates_and_rebinds_redirect_destination() -> None:
     assert [request.headers["host"] for request in requests] == [
         "example.test",
         "cdn.example.test",
+    ]
+    assert len(created_transports) == 2
+
+
+@pytest.mark.edge
+def test_bound_transport_isolates_tls_pools_for_same_ip_redirect() -> None:
+    requests_by_pool: list[list[httpx.Request]] = []
+
+    def resolver(hostname: str) -> tuple[str, ...]:
+        assert hostname in {"one.example.test", "two.example.test"}
+        return ("93.184.216.34",)
+
+    def inner_factory() -> httpx.BaseTransport:
+        pool_requests: list[httpx.Request] = []
+        requests_by_pool.append(pool_requests)
+
+        def connected(request: httpx.Request) -> httpx.Response:
+            pool_requests.append(request)
+            if request.headers["host"] == "one.example.test":
+                return httpx.Response(
+                    302,
+                    headers={"location": "https://two.example.test/resource"},
+                    request=request,
+                )
+            return httpx.Response(200, request=request)
+
+        return httpx.MockTransport(connected)
+
+    transport = BoundIPAddressTransport(
+        policy=AcquisitionPolicy(
+            allowed_hosts=("one.example.test", "two.example.test")
+        ),
+        resolver=resolver,
+        inner_factory=inner_factory,
+    )
+    with httpx.Client(transport=transport, follow_redirects=True) as client:
+        response = client.get("https://one.example.test/resource")
+
+    assert response.status_code == 200
+    assert len(requests_by_pool) == 2
+    assert [
+        [request.url.host for request in pool] for pool in requests_by_pool
+    ] == [
+        ["93.184.216.34"],
+        ["93.184.216.34"],
+    ]
+    assert [
+        pool[0].extensions["sni_hostname"] for pool in requests_by_pool
+    ] == ["one.example.test", "two.example.test"]
+    assert [pool[0].headers["host"] for pool in requests_by_pool] == [
+        "one.example.test",
+        "two.example.test",
     ]

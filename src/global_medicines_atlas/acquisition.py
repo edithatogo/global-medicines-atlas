@@ -34,6 +34,8 @@ from .source_catalog import AccessMode, MedicineDataSource, load_source_catalog
 Receipt = SourceReceipt | FailureReceipt
 Clock = Callable[[], datetime]
 Resolver = Callable[[str], tuple[str, ...]]
+TransportFactory = Callable[[], httpx.BaseTransport]
+NetworkAuthority = tuple[str, str, int]
 
 
 class _WritableBinary(Protocol):
@@ -236,7 +238,7 @@ def policy_for_catalog_uri(
 
 
 class BoundIPAddressTransport(httpx.BaseTransport):
-    """Connect to a validated IP while preserving HTTP authority and TLS SNI."""
+    """Connect to validated IPs with an isolated pool per TLS authority."""
 
     def __init__(
         self,
@@ -244,10 +246,36 @@ class BoundIPAddressTransport(httpx.BaseTransport):
         policy: AcquisitionPolicy,
         resolver: Resolver | None = None,
         inner: httpx.BaseTransport | None = None,
+        inner_factory: TransportFactory | None = None,
     ) -> None:
+        if inner is not None and inner_factory is not None:
+            raise ValueError("inner and inner_factory are mutually exclusive")
         self._policy = policy
         self._resolver = resolver
-        self._inner = inner or httpx.HTTPTransport(trust_env=False)
+        self._single_inner = inner
+        self._inner_factory = inner_factory or (
+            lambda: httpx.HTTPTransport(trust_env=False)
+        )
+        self._transports: dict[NetworkAuthority, httpx.BaseTransport] = {}
+
+    def _transport_for(
+        self,
+        authority: NetworkAuthority,
+    ) -> httpx.BaseTransport:
+        transport = self._transports.get(authority)
+        if transport is not None:
+            return transport
+        if self._single_inner is not None:
+            if self._transports:
+                raise RuntimeError(
+                    "A shared inner transport cannot serve multiple "
+                    "network authorities; provide inner_factory instead."
+                )
+            transport = self._single_inner
+        else:
+            transport = self._inner_factory()
+        self._transports[authority] = transport
+        return transport
 
     def handle_request(self, request: httpx.Request) -> httpx.Response:
         hostname = request.url.host
@@ -260,6 +288,12 @@ class BoundIPAddressTransport(httpx.BaseTransport):
         selected_address = addresses[0]
         port = request.url.port
         default_port = 443 if request.url.scheme == "https" else 80
+        effective_port = port or default_port
+        network_authority = (
+            request.url.scheme,
+            hostname.lower(),
+            effective_port,
+        )
         authority = (
             hostname if port in {None, default_port} else f"{hostname}:{port}"
         )
@@ -275,10 +309,14 @@ class BoundIPAddressTransport(httpx.BaseTransport):
             content=request.stream,
             extensions=extensions,
         )
-        return self._inner.handle_request(bound_request)
+        return self._transport_for(network_authority).handle_request(
+            bound_request
+        )
 
     def close(self) -> None:
-        self._inner.close()
+        for transport in self._transports.values():
+            transport.close()
+        self._transports.clear()
 
 
 def transport_for_destination(
