@@ -1,0 +1,27 @@
+{
+  "$schema": "./budgets.schema.json",
+  "schema_version": "1.0.0",
+  "evidence_state": "contract_only",
+  "coverage": {
+    "line_percent": {"minimum": 91.0, "unit": "percent"},
+    "branch_percent": {"minimum": 90.0, "unit": "percent"}
+  },
+  "mutation": {
+    "score_percent": {"minimum": 80.0, "unit": "percent"}
+  },
+  "latency": {
+    "p95_ms": {"maximum": 250.0, "unit": "milliseconds"}
+  },
+  "throughput": {
+    "records_per_second": {"minimum": 10000.0, "unit": "records_per_second"}
+  },
+  "cpu": {
+    "seconds": {"maximum": 60.0, "unit": "cpu_seconds"}
+  },
+  "memory": {
+    "peak_mib": {"maximum": 1024.0, "unit": "mebibytes"}
+  },
+  "allocation": {
+    "peak_mib": {"maximum": 2048.0, "unit": "mebibytes"}
+  }
+}

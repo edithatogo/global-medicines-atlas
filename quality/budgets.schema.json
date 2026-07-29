@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.example/schemas/quality-budgets-v1.json",
+  "title": "Global Medicines Atlas quality and performance budgets",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "evidence_state",
+    "coverage",
+    "mutation",
+    "latency",
+    "throughput",
+    "cpu",
+    "memory",
+    "allocation"
+  ],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": "1.0.0"},
+    "evidence_state": {"const": "contract_only"},
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["line_percent", "branch_percent"],
+      "properties": {
+        "line_percent": {"$ref": "#/$defs/minimumPercent"},
+        "branch_percent": {"$ref": "#/$defs/minimumPercent"}
+      }
+    },
+    "mutation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["score_percent"],
+      "properties": {"score_percent": {"$ref": "#/$defs/minimumPercent"}}
+    },
+    "latency": {"$ref": "#/$defs/maximumBudget"},
+    "throughput": {"$ref": "#/$defs/minimumBudget"},
+    "cpu": {"$ref": "#/$defs/maximumBudget"},
+    "memory": {"$ref": "#/$defs/maximumBudget"},
+    "allocation": {"$ref": "#/$defs/maximumBudget"}
+  },
+  "$defs": {
+    "minimumPercent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum", "unit"],
+      "properties": {
+        "minimum": {"type": "number", "exclusiveMinimum": 0, "maximum": 100},
+        "unit": {"const": "percent"}
+      }
+    },
+    "minimumBudget": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["minimum", "unit"],
+        "properties": {
+          "minimum": {"type": "number", "exclusiveMinimum": 0},
+          "unit": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "maximumBudget": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["maximum", "unit"],
+        "properties": {
+          "maximum": {"type": "number", "exclusiveMinimum": 0},
+          "unit": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

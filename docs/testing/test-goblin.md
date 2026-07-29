@@ -21,11 +21,24 @@ lane runs `basedpyright` strict mode. Full-project branch `coverage`, Linux
 `mutation`, dynamic wheel/sdist `package`, and deterministic network-free
 Scalene `profile` remain separate.
 
+Every `tests/test_*.py` module has exactly one primary lane in
+`scripts/test_goblin.py`. Markers may describe secondary test traits, but they
+do not create a second primary execution assignment. The harness validates the
+inventory at import time and through the cheap `contracts` profile.
+
+Numeric promotion thresholds are machine-readable in `quality/budgets.json`
+and constrained by `quality/budgets.schema.json`. Phase 1 deliberately labels
+them `contract_only`: they define thresholds but do not claim that mutation or
+representative-scale performance evidence has been collected. Later phases
+must produce durable observations before using these contracts as promotion
+evidence.
+
 ## Local Commands
 
 ```powershell
 uv sync --python 3.14.6 --group test-goblin --locked
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py quick
+uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py contracts
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py coverage
 uv run --python 3.14.6 --group dev python scripts/test_goblin.py routine
 uv run --python 3.14.6 --group dev python scripts/test_goblin.py strict

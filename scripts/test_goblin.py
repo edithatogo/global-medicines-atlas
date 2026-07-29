@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import platform
 import subprocess
 import sys
@@ -10,8 +11,10 @@ from collections.abc import Sequence
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+QUALITY_BUDGETS_PATH = PROJECT_ROOT / "quality" / "budgets.json"
 TEST_LANES: dict[str, tuple[str, ...]] = {
     "unit": (
+        "tests/test_conductor_github_sync.py",
         "tests/test_country_adapter_registry.py",
         "tests/test_context_validation.py",
         "tests/test_ecosystem_reuse.py",
@@ -51,9 +54,13 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_release_qualification.py",
         "tests/test_v07_fixture_production_qualification.py",
         "tests/test_version.py",
+        "tests/test_test_goblin_harness.py",
     ),
     "integration": (
         "tests/test_nz_asset_inventory.py",
+        "tests/test_nz_consolidation.py",
+        "tests/test_nz_fixture_indexes.py",
+        "tests/test_nzmedicines_history_restoration.py",
         "tests/test_nzulm_fhir_adapter.py",
         "tests/test_us_drugsfda_adapter.py",
         "tests/test_us_acquisition.py",
@@ -88,11 +95,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_matching_e2e.py",
         "tests/test_atlas_e2e.py",
     ),
-    "smoke": (
-        "tests/test_smoke.py",
-        "tests/test_product_api.py",
-        "tests/test_product_cli.py",
-    ),
+    "smoke": ("tests/test_smoke.py",),
     "property": (
         "tests/test_nzulm_fhir_properties.py",
         "tests/test_matching_properties.py",
@@ -101,10 +104,47 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_edge_cases.py",
         "tests/test_matching_adversarial.py",
         "tests/test_atlas_accessibility.py",
-        "tests/test_product_security.py",
     ),
 }
-ALL_TESTS = tuple(path for paths in TEST_LANES.values() for path in paths)
+
+
+def validate_test_inventory() -> tuple[str, ...]:
+    """Return the complete inventory or fail on missing/duplicate primary lanes."""
+    assigned = [path for paths in TEST_LANES.values() for path in paths]
+    discovered = sorted(
+        path.relative_to(PROJECT_ROOT).as_posix()
+        for path in (PROJECT_ROOT / "tests").glob("test_*.py")
+    )
+    duplicates = sorted({path for path in assigned if assigned.count(path) > 1})
+    missing = sorted(set(discovered) - set(assigned))
+    unknown = sorted(set(assigned) - set(discovered))
+    problems: list[str] = []
+    if duplicates:
+        problems.append(f"duplicate primary lanes: {duplicates}")
+    if missing:
+        problems.append(f"unassigned tests: {missing}")
+    if unknown:
+        problems.append(f"unknown tests: {unknown}")
+    if problems:
+        raise ValueError("; ".join(problems))
+    return tuple(discovered)
+
+
+def load_quality_budgets() -> dict[str, object]:
+    """Load numeric promotion contracts without manufacturing observations."""
+    document = json.loads(QUALITY_BUDGETS_PATH.read_text(encoding="utf-8"))
+    if document.get("evidence_state") != "contract_only":
+        raise ValueError("Phase 1 budgets must remain contract_only")
+    return document
+
+
+ALL_TESTS = validate_test_inventory()
+
+
+def contracts() -> None:
+    """Validate cheap inventory and budget contracts without executing evidence."""
+    validate_test_inventory()
+    load_quality_budgets()
 
 
 def run(command: Sequence[str]) -> None:
@@ -307,6 +347,7 @@ def main() -> None:  # ruff: ignore[too-many-branches]
         choices=(
             *TEST_LANES,
             "quick",
+            "contracts",
             "coverage",
             "routine",
             "strict",
@@ -325,6 +366,8 @@ def main() -> None:  # ruff: ignore[too-many-branches]
     selected_profile = parser.parse_args().profile
     if selected_profile in TEST_LANES:
         lane(selected_profile)
+    elif selected_profile == "contracts":
+        contracts()
     elif selected_profile == "quick":
         quick()
     elif selected_profile == "coverage":
