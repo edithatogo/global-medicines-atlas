@@ -141,10 +141,7 @@ def test_capability_registry_distinguishes_evidence_layers() -> None:
         for declaration in builtin_source_capabilities()
     }
 
-    assert (
-        Capability.SOURCE_PARSER
-        in declarations["us-drugsfda"].capabilities
-    )
+    assert Capability.SOURCE_PARSER in declarations["us-drugsfda"].capabilities
     assert (
         Capability.CANONICAL_PROJECTION
         in declarations["nz-medsafe-products"].capabilities
@@ -182,9 +179,8 @@ def test_fixture_parser_does_not_upgrade_catalog_integration_maturity() -> None:
         if source.source_id == "nz-medsafe-products"
     )
     assert medsafe.integration_layer.value == "catalogued"
-    assert (
-        Capability.FIXTURE_PARSER
-        in registry.capabilities_for(medsafe.source_id)
+    assert Capability.FIXTURE_PARSER in registry.capabilities_for(
+        medsafe.source_id
     )
 
 
@@ -197,7 +193,9 @@ def test_source_parser_must_agree_with_catalog_integration_maturity() -> None:
                 Capability.SOURCE_PARSER,
                 Capability.CANONICAL_PROJECTION,
             }),
-            implementations=("adapters.nz_medsafe:project_medsafe_registry_csv",),
+            implementations=(
+                "adapters.nz_medsafe:project_medsafe_registry_csv",
+            ),
         ),
     ))
 

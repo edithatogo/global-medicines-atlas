@@ -102,7 +102,10 @@ class SourceCapabilityRegistry:
             capabilities = declaration.capabilities
             fixture_only = Capability.FIXTURE_PARSER in capabilities
             source_parser = Capability.SOURCE_PARSER in capabilities
-            if fixture_only and Capability.SYNTHETIC_FIXTURE not in capabilities:
+            if (
+                fixture_only
+                and Capability.SYNTHETIC_FIXTURE not in capabilities
+            ):
                 raise ValueError(
                     f"{source.source_id} fixture parser requires synthetic "
                     "fixture capability"

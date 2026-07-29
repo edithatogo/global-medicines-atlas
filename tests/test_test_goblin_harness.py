@@ -110,13 +110,11 @@ def test_contract_only_receipt_cannot_be_enforced(tmp_path) -> None:
     """Contract declarations cannot masquerade as measured evidence."""
     receipt = tmp_path / "receipt.json"
     receipt.write_text(
-        json.dumps(
-            {
-                "schema_version": "1.0.0",
-                "kind": "mutation",
-                "evidence_state": "contract_only",
-            }
-        )
+        json.dumps({
+            "schema_version": "1.0.0",
+            "kind": "mutation",
+            "evidence_state": "contract_only",
+        })
     )
 
     with pytest.raises(ValueError, match="requires a measured receipt"):
@@ -129,13 +127,11 @@ def test_measured_receipt_requires_observations(tmp_path) -> None:
     """Measured status without measurements fails schema validation."""
     receipt = tmp_path / "receipt.json"
     receipt.write_text(
-        json.dumps(
-            {
-                "schema_version": "1.0.0",
-                "kind": "performance",
-                "evidence_state": "measured",
-            }
-        )
+        json.dumps({
+            "schema_version": "1.0.0",
+            "kind": "performance",
+            "evidence_state": "measured",
+        })
     )
 
     with pytest.raises(jsonschema.ValidationError):

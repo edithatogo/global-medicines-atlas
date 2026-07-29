@@ -466,9 +466,10 @@ class MedicineDataSource(FrozenModel):
                 {StatusSemantics.TERMINOLOGY_ONLY, StatusSemantics.MIXED},
             ),
         }
-        for domain, (required_entities, allowed_semantics) in (
-            domain_contracts.items()
-        ):
+        for domain, (
+            required_entities,
+            allowed_semantics,
+        ) in domain_contracts.items():
             if domain not in domains:
                 continue
             if not required_entities <= entities:
@@ -498,10 +499,11 @@ class MedicineDataSource(FrozenModel):
             ),
         }
         for field, (domain, entity) in field_contracts.items():
-            if field in fields and (domain not in domains or entity not in entities):
+            if field in fields and (
+                domain not in domains or entity not in entities
+            ):
                 raise ValueError(
-                    f"{field.value} requires {domain.value} and "
-                    f"{entity.value}"
+                    f"{field.value} requires {domain.value} and {entity.value}"
                 )
         return self
 

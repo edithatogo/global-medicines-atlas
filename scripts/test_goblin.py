@@ -20,9 +20,14 @@ QUALITY_BUDGETS_SCHEMA_PATH = PROJECT_ROOT / "quality" / "budgets.schema.json"
 QUALITY_RECEIPT_SCHEMA_PATH = (
     PROJECT_ROOT / "quality" / "evidence-receipt.schema.json"
 )
-PRIMARY_LANES = frozenset(
-    {"unit", "integration", "e2e", "smoke", "property", "edge"}
-)
+PRIMARY_LANES = frozenset({
+    "unit",
+    "integration",
+    "e2e",
+    "smoke",
+    "property",
+    "edge",
+})
 
 
 class MarkerLike(Protocol):
@@ -180,9 +185,7 @@ ALL_TESTS = validate_test_inventory()
 def primary_lane_for_path(path: Path) -> str:
     """Resolve one manifest lane for a collected test path."""
     relative = path.resolve().relative_to(PROJECT_ROOT).as_posix()
-    matches = [
-        name for name, paths in TEST_LANES.items() if relative in paths
-    ]
+    matches = [name for name, paths in TEST_LANES.items() if relative in paths]
     if len(matches) != 1:
         raise ValueError(
             f"{relative} must have exactly one manifest lane; got {matches}"
@@ -236,9 +239,7 @@ def validate_quality_receipt(
 ) -> dict[str, Any]:
     """Validate a quality receipt and optionally require measured evidence."""
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
-    schema = json.loads(
-        QUALITY_RECEIPT_SCHEMA_PATH.read_text(encoding="utf-8")
-    )
+    schema = json.loads(QUALITY_RECEIPT_SCHEMA_PATH.read_text(encoding="utf-8"))
     jsonschema.validate(  # pyright: ignore[reportUnknownMemberType]
         receipt, schema
     )
@@ -260,9 +261,7 @@ def enforce_optional_receipt(kind: str) -> None:
     configured = os.environ.get(variable)
     if configured is None:
         return
-    validate_quality_receipt(
-        Path(configured), expected_kind=kind, enforce=True
-    )
+    validate_quality_receipt(Path(configured), expected_kind=kind, enforce=True)
 
 
 def contracts() -> None:
@@ -305,9 +304,7 @@ def coverage() -> None:
     """Run the governed suite with branch coverage and the blocking threshold."""
     budgets = load_quality_budgets()
     coverage_budget = cast("dict[str, object]", budgets["coverage"])
-    line_percent = cast(
-        "dict[str, float]", coverage_budget["line_percent"]
-    )
+    line_percent = cast("dict[str, float]", coverage_budget["line_percent"])
     minimum = line_percent["minimum"]
     run(
         build_pytest_command(
