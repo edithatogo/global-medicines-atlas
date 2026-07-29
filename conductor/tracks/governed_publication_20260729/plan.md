@@ -51,3 +51,4 @@
 - [x] Task: Make fixture, production and publication-state conflation structurally invalid in the qualification schema `5441c37`
 - [x] Task: Re-run complete protected harness after cache reclamation — 804 passed, 7 expected Windows symlink skips; 94.08% branch coverage
 - [x] Task: Require offline GitHub/Sigstore bundle verification against an independently supplied repository/workflow trust policy `5900245`
+- [x] Task: Digest-bind an independently supplied trusted root and classify child-process network isolation honestly `90c81c4`
