@@ -102,6 +102,9 @@ def test_coverage_measures_each_required_capability() -> None:
     assert coverage.current_receipt == 0
     assert coverage.source_health_scheduled == coverage.denominator
     assert coverage.schema_drift_scheduled == coverage.denominator
+    assert coverage.parser_capable_sources > 0
+    assert coverage.live_receipt_sources == 0
+    assert coverage.production_qualified_sources == 0
 
 
 def test_global_expansion_denominator_and_source_counts_are_measurable() -> (

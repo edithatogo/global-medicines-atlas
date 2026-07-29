@@ -16,7 +16,7 @@ from .models import FrozenModel
 from .source_profiles import PROFILES, AuthenticationMode
 
 LOGGER = get_logger("source_catalog", component="source-catalog")
-STRICT_SOURCE_SCHEMA_VERSION = 3
+STRICT_SOURCE_SCHEMA_VERSION = 4
 
 
 class AccessMode(StrEnum):
@@ -63,6 +63,114 @@ class DiscoveryStatus(StrEnum):
     RECEIPT_BACKED = "receipt_backed"
 
 
+class InformationDomain(StrEnum):
+    """Controlled description of the information a source can contain."""
+
+    PRODUCT_IDENTITY = "product_identity"
+    REGULATORY_STATUS = "regulatory_status"
+    FUNDING_STATUS = "funding_status"
+    FORMULARY_STATUS = "formulary_status"
+    TERMINOLOGY = "terminology"
+    CLINICAL_DOCUMENTATION = "clinical_documentation"
+    SAFETY = "safety"
+    PRICING = "pricing"
+    REIMBURSEMENT_CRITERIA = "reimbursement_criteria"
+    HTA_DECISION = "hta_decision"
+
+
+class RecordEntity(StrEnum):
+    SUBSTANCE = "substance"
+    INGREDIENT = "ingredient"
+    MEDICINAL_PRODUCT = "medicinal_product"
+    PACKAGED_PRODUCT = "packaged_product"
+    APPROVAL = "approval"
+    FUNDING_LISTING = "funding_listing"
+    FORMULARY_ENTRY = "formulary_entry"
+    TERMINOLOGY_CONCEPT = "terminology_concept"
+    DOCUMENT = "document"
+    PRICE = "price"
+    DECISION = "decision"
+
+
+class StatusSemantics(StrEnum):
+    AUTHORIZATION = "authorization"
+    REGISTRATION = "registration"
+    APPROVAL_HISTORY = "approval_history"
+    REIMBURSEMENT = "reimbursement"
+    SUBSIDY = "subsidy"
+    FORMULARY_INCLUSION = "formulary_inclusion"
+    PRICE_LISTING = "price_listing"
+    TERMINOLOGY_ONLY = "terminology_only"
+    RECOMMENDATION = "recommendation"
+    DOCUMENT_ONLY = "document_only"
+    MIXED = "mixed"
+    NONE = "none"
+
+
+class GeographicScope(StrEnum):
+    NATIONAL = "national"
+    SUBNATIONAL = "subnational"
+    REGIONAL = "regional"
+    GLOBAL = "global"
+
+
+class PopulationScope(StrEnum):
+    GENERAL = "general"
+    DEFINED_POPULATION = "defined_population"
+    PROGRAMME_SPECIFIC = "programme_specific"
+    NOT_APPLICABLE = "not_applicable"
+    UNKNOWN = "unknown"
+
+
+class LanguageCode(StrEnum):
+    """BCP 47 primary-language labels used by the current catalog."""
+
+    UNDETERMINED = "und"
+    ARABIC = "ar"
+    CHINESE = "zh"
+    DANISH = "da"
+    DUTCH = "nl"
+    ENGLISH = "en"
+    FRENCH = "fr"
+    GERMAN = "de"
+    INDONESIAN = "id"
+    JAPANESE = "ja"
+    KOREAN = "ko"
+    MALAY = "ms"
+    NORWEGIAN = "no"
+    PORTUGUESE = "pt"
+    SPANISH = "es"
+    SWEDISH = "sv"
+    THAI = "th"
+
+
+class ChangeSemantics(StrEnum):
+    CURRENT_STATE = "current_state"
+    SNAPSHOT = "snapshot"
+    APPEND_ONLY_HISTORY = "append_only_history"
+    DELTA = "delta"
+    MIXED = "mixed"
+    UNKNOWN = "unknown"
+
+
+class AvailableField(StrEnum):
+    IDENTIFIERS = "identifiers"
+    NAMES = "names"
+    INGREDIENTS = "ingredients"
+    STRENGTHS = "strengths"
+    DOSAGE_FORMS = "dosage_forms"
+    ROUTES = "routes"
+    PACKAGES = "packages"
+    ORGANISATIONS = "organisations"
+    INDICATIONS = "indications"
+    STATUS_DATES = "status_dates"
+    PRICES = "prices"
+    ELIGIBILITY_CRITERIA = "eligibility_criteria"
+    DOCUMENTS = "documents"
+    SAFETY_NOTICES = "safety_notices"
+    TERMINOLOGY_RELATIONSHIPS = "terminology_relationships"
+
+
 class MonitoringSchedule(FrozenModel):
     """Cadence contract for non-mutating source checks."""
 
@@ -101,6 +209,20 @@ class MedicineDataSource(FrozenModel):
         schema_drift="monthly",
     )
     evidence_limit: str = Field(min_length=1)
+    information_domains: tuple[InformationDomain, ...] = (
+        InformationDomain.PRODUCT_IDENTITY,
+    )
+    record_entities: tuple[RecordEntity, ...] = (
+        RecordEntity.MEDICINAL_PRODUCT,
+    )
+    status_semantics: tuple[StatusSemantics, ...] = (StatusSemantics.NONE,)
+    geographic_scope: GeographicScope = GeographicScope.NATIONAL
+    population_scope: PopulationScope = PopulationScope.UNKNOWN
+    languages: tuple[LanguageCode, ...] = (LanguageCode.UNDETERMINED,)
+    change_semantics: ChangeSemantics = ChangeSemantics.UNKNOWN
+    available_fields: tuple[AvailableField, ...] = (
+        AvailableField.IDENTIFIERS,
+    )
 
     @classmethod
     def from_legacy(
@@ -144,6 +266,17 @@ class MedicineDataSource(FrozenModel):
             if payload.get("implemented_ingestion")
             else IntegrationLayer.CATALOGUED,
         )
+        payload.setdefault(
+            "information_domains",
+            (InformationDomain.PRODUCT_IDENTITY,),
+        )
+        payload.setdefault("record_entities", (RecordEntity.MEDICINAL_PRODUCT,))
+        payload.setdefault("status_semantics", (StatusSemantics.NONE,))
+        payload.setdefault("geographic_scope", GeographicScope.NATIONAL)
+        payload.setdefault("population_scope", PopulationScope.UNKNOWN)
+        payload.setdefault("languages", (LanguageCode.UNDETERMINED,))
+        payload.setdefault("change_semantics", ChangeSemantics.UNKNOWN)
+        payload.setdefault("available_fields", (AvailableField.IDENTIFIERS,))
         return cls.model_validate(payload)
 
     @model_validator(mode="after")
@@ -256,6 +389,14 @@ class SourceCatalog(FrozenModel):
             "last_verified_at",
             "integration_layer",
             "documentation_url",
+            "information_domains",
+            "record_entities",
+            "status_semantics",
+            "geographic_scope",
+            "population_scope",
+            "languages",
+            "change_semantics",
+            "available_fields",
         }
         raw_sources_value: object = payload.get("sources", ())
         if not isinstance(raw_sources_value, (list, tuple)):

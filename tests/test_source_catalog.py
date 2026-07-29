@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import json
 from copy import deepcopy
+from pathlib import Path
 from urllib.parse import urlparse
 
 import pytest
@@ -12,12 +14,20 @@ from global_medicines_atlas import source_catalog
 from global_medicines_atlas.countries import SourceDimension
 from global_medicines_atlas.source_catalog import (
     AccessMode,
+    AvailableField,
+    ChangeSemantics,
     DiscoveryStatus,
+    GeographicScope,
+    InformationDomain,
     IntegrationLayer,
     InterfaceStatus,
+    LanguageCode,
     MedicineDataSource,
     MonitoringSchedule,
+    PopulationScope,
+    RecordEntity,
     SourceReadiness,
+    StatusSemantics,
     load_catalog,
     load_source_catalog,
     sources_for,
@@ -33,6 +43,49 @@ def test_source_catalog_has_unique_governed_access_surfaces() -> None:
     assert all(source.rights_status for source in sources)
     assert all(source.evidence_limit for source in sources)
     assert all(source.discovery_status for source in sources)
+    assert all(source.information_domains for source in sources)
+    assert all(source.record_entities for source in sources)
+    assert all(source.status_semantics for source in sources)
+    assert all(source.languages for source in sources)
+    assert all(source.available_fields for source in sources)
+
+
+def test_information_schema_uses_versioned_controlled_labels() -> None:
+    catalog = load_catalog()
+
+    assert catalog.schema_version == 4
+    for source in catalog.sources:
+        assert all(
+            isinstance(value, InformationDomain)
+            for value in source.information_domains
+        )
+        assert all(
+            isinstance(value, RecordEntity) for value in source.record_entities
+        )
+        assert all(
+            isinstance(value, StatusSemantics)
+            for value in source.status_semantics
+        )
+        assert isinstance(source.geographic_scope, GeographicScope)
+        assert isinstance(source.population_scope, PopulationScope)
+        assert all(isinstance(value, LanguageCode) for value in source.languages)
+        assert isinstance(source.change_semantics, ChangeSemantics)
+        assert all(
+            isinstance(value, AvailableField)
+            for value in source.available_fields
+        )
+
+
+def test_published_information_schema_matches_model() -> None:
+    schema_path = (
+        Path(__file__).parents[1]
+        / "schemas"
+        / "international-resource-v4.json"
+    )
+
+    assert json.loads(schema_path.read_text(encoding="utf-8")) == (
+        source_catalog.SourceCatalog.model_json_schema()
+    )
 
 
 def test_every_first_cohort_jurisdiction_has_regulatory_source() -> None:
@@ -103,9 +156,17 @@ def test_supported_apis_use_operational_endpoints_not_documentation() -> None:
         "last_verified_at",
         "integration_layer",
         "documentation_url",
+        "information_domains",
+        "record_entities",
+        "status_semantics",
+        "geographic_scope",
+        "population_scope",
+        "languages",
+        "change_semantics",
+        "available_fields",
     ],
 )
-def test_schema_v3_catalog_rejects_omitted_governance_fields(
+def test_schema_v4_catalog_rejects_omitted_governance_fields(
     monkeypatch: pytest.MonkeyPatch,
     required_field: str,
 ) -> None:
