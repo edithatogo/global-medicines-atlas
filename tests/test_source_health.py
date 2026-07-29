@@ -134,6 +134,32 @@ def test_http_failure_is_unavailable_without_raising() -> None:
     assert result.expected_cadence_seconds == 86_400
 
 
+@pytest.mark.edge
+@pytest.mark.parametrize(
+    "endpoint",
+    [
+        "https://127.0.0.1/api",
+        "https://169.254.169.254/latest/meta-data/",
+        "https://[::1]/api",
+    ],
+)
+def test_probe_rejects_private_networks_before_transport(
+    endpoint: str,
+) -> None:
+    private_source = source().model_copy(update={"api_url": endpoint})
+    result = probe_source(
+        private_source,
+        checked_at=NOW,
+        transport=httpx.MockTransport(
+            lambda _request: pytest.fail("transport must not be called")
+        ),
+    )
+
+    assert result.state is ProbeState.UNAVAILABLE
+    assert "DestinationPolicyError" in result.detail
+    assert result.status_code is None
+
+
 def test_redirect_is_not_followed() -> None:
     result = probe_source(
         source(),

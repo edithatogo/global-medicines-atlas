@@ -64,6 +64,7 @@ class AcquisitionPolicy:
     timeout_seconds: float = 30.0
     max_bytes: int = 64 * 1024 * 1024
     allowed_schemes: tuple[str, ...] = ("https",)
+    allowed_hosts: tuple[str, ...] = ()
     max_attempts: int = 1
     max_concurrency_per_host: int = 2
     reject_private_networks: bool = True
@@ -83,6 +84,8 @@ class AcquisitionPolicy:
             raise ValueError("max_bytes must be positive")
         if not self.allowed_schemes:
             raise ValueError("allowed_schemes must not be empty")
+        if any(not host.strip() for host in self.allowed_hosts):
+            raise ValueError("allowed_hosts must contain non-empty hostnames")
         if self.max_attempts <= 0:
             raise ValueError("max_attempts must be positive")
         if self.max_concurrency_per_host <= 0:
@@ -94,7 +97,9 @@ class AcquisitionPolicy:
 DEFAULT_ACQUISITION_POLICY = AcquisitionPolicy()
 
 
-class _ResponseRejectedError(Exception):
+class DestinationPolicyError(Exception):
+    """A source destination or response violated acquisition policy."""
+
     def __init__(self, code: str, message: str) -> None:
         super().__init__(message)
         self.code = code
@@ -156,13 +161,13 @@ def _validate_remote_uri(
 ) -> None:
     parsed = urlsplit(uri)
     if parsed.scheme.lower() not in policy.allowed_schemes:
-        raise _ResponseRejectedError(
+        raise DestinationPolicyError(
             "scheme_rejected",
             "Source URI scheme is not permitted by acquisition policy.",
         )
     hostname = parsed.hostname
     if hostname is None:
-        raise _ResponseRejectedError(
+        raise DestinationPolicyError(
             "network_rejected",
             "Source URI must include a hostname.",
         )
@@ -176,21 +181,37 @@ def _validate_remote_uri(
     if policy.reject_private_networks and any(
         _network_is_private(address) for address in addresses
     ):
-        raise _ResponseRejectedError(
+        raise DestinationPolicyError(
             "network_rejected",
             "Source URI resolved to a non-public network.",
         )
 
 
-def _enforce_uri_policy(
+def validate_remote_destination(
     uri: str,
     policy: AcquisitionPolicy,
     *,
     resolver: Resolver | None,
-    transport: httpx.BaseTransport | None,
+    require_host_allowlist: bool,
 ) -> None:
+    """Fail closed on schemes, host admission, and non-public addresses."""
+
+    hostname = urlsplit(uri).hostname
+    if hostname is None:
+        raise DestinationPolicyError(
+            "network_rejected",
+            "Source URI must include a hostname.",
+        )
+    allowed_hosts = frozenset(host.lower() for host in policy.allowed_hosts)
+    if require_host_allowlist and hostname.lower() not in allowed_hosts:
+        raise DestinationPolicyError(
+            "host_rejected",
+            "Source hostname is not admitted by acquisition policy.",
+        )
     effective_resolver = (
-        _system_resolver if resolver is None and transport is None else resolver
+        _system_resolver
+        if resolver is None and require_host_allowlist
+        else resolver
     )
     _validate_remote_uri(uri, policy, resolver=effective_resolver)
 
@@ -255,7 +276,7 @@ def _failure(
 
 
 def _reject_oversize() -> None:
-    raise _ResponseRejectedError(
+    raise DestinationPolicyError(
         "max_bytes_exceeded", "response exceeded max_bytes"
     )
 
@@ -286,7 +307,7 @@ def _stage_response(
     policy: AcquisitionPolicy,
 ) -> tuple[Path, PayloadEvidence]:
     if response.is_redirect:
-        raise _ResponseRejectedError(
+        raise DestinationPolicyError(
             "redirect_rejected",
             "Redirect responses are not accepted.",
         )
@@ -295,7 +316,7 @@ def _stage_response(
         response.headers.get("content-type", "").split(";", 1)[0].lower()
     )
     if content_type not in policy.allowed_content_types:
-        raise _ResponseRejectedError(
+        raise DestinationPolicyError(
             "content_type_rejected",
             f"Response content type is not allowed: {content_type or 'missing'}",
         )
@@ -377,11 +398,11 @@ def acquire_source(
     temporary_path: Path | None = None
 
     try:
-        _enforce_uri_policy(
+        validate_remote_destination(
             uri,
             policy,
             resolver=resolver,
-            transport=transport,
+            require_host_allowlist=transport is None,
         )
         with (
             httpx.Client(
@@ -407,7 +428,7 @@ def acquire_source(
             payload=payload,
             evidence_class=evidence_class,
         )
-    except _ResponseRejectedError as error:
+    except DestinationPolicyError as error:
         return _failure(
             source=source,
             uri=uri,

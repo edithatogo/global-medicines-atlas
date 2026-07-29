@@ -17,6 +17,12 @@ import httpx
 import orjson
 from pydantic import Field
 
+from .acquisition import (
+    AcquisitionPolicy,
+    DestinationPolicyError,
+    Resolver,
+    validate_remote_destination,
+)
 from .models import FrozenModel
 from .source_catalog import (
     AccessMode,
@@ -371,6 +377,8 @@ def probe_source(
     max_bytes: int = DEFAULT_MAX_BYTES,
     timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
     expected_cadence: timedelta | None = None,
+    acquisition_policy: AcquisitionPolicy | None = None,
+    resolver: Resolver | None = None,
 ) -> SourceHealthObservation:
     """Probe one declared access surface without persisting its response."""
 
@@ -401,6 +409,16 @@ def probe_source(
         "User-Agent": "global-medicines-atlas-source-health/1",
     }
     try:
+        policy = acquisition_policy or AcquisitionPolicy(
+            timeout_seconds=timeout_seconds,
+            max_bytes=max_bytes,
+        )
+        validate_remote_destination(
+            endpoint,
+            policy,
+            resolver=resolver,
+            require_host_allowlist=transport is None,
+        )
         response = _request_sample(
             endpoint,
             headers=headers,
@@ -418,6 +436,7 @@ def probe_source(
         )
     except (
         httpx.HTTPError,
+        DestinationPolicyError,
         UnicodeError,
         ValueError,
         orjson.JSONDecodeError,
@@ -446,6 +465,8 @@ def probe_sources(
     max_bytes: int = DEFAULT_MAX_BYTES,
     timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
     expected_cadence: timedelta | None = None,
+    acquisition_policy: AcquisitionPolicy | None = None,
+    resolver: Resolver | None = None,
 ) -> tuple[SourceHealthObservation, ...]:
     """Probe sources in stable order and return metadata-only observations."""
 
@@ -457,6 +478,8 @@ def probe_sources(
             max_bytes=max_bytes,
             timeout_seconds=timeout_seconds,
             expected_cadence=expected_cadence,
+            acquisition_policy=acquisition_policy,
+            resolver=resolver,
         )
         for source in sorted(sources, key=lambda item: item.source_id)
     )

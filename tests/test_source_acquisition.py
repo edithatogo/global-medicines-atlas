@@ -6,7 +6,12 @@ from pathlib import Path
 import httpx
 import pytest
 
-from global_medicines_atlas.acquisition import AcquisitionPolicy, acquire_source
+from global_medicines_atlas.acquisition import (
+    AcquisitionPolicy,
+    DestinationPolicyError,
+    acquire_source,
+    validate_remote_destination,
+)
 from global_medicines_atlas.countries import SourceDimension
 from global_medicines_atlas.receipts import (
     EvidenceClass,
@@ -30,7 +35,7 @@ def catalog_source(
     access_mode: AccessMode = AccessMode.DOWNLOAD,
     download_url: str | None = "https://example.test/medicines.zip",
 ) -> MedicineDataSource:
-    return MedicineDataSource(
+    return MedicineDataSource.from_legacy(
         source_id="test-regulator",
         jurisdictions=("NZL",),
         authority="Test Regulator",
@@ -325,3 +330,32 @@ def test_acquisition_policy_requires_https_and_bounded_host_budget() -> None:
     assert policy.max_concurrency_per_host == 2
     with pytest.raises(ValueError, match="allowed_schemes"):
         AcquisitionPolicy(allowed_schemes=())
+
+
+@pytest.mark.unit
+def test_live_destination_requires_explicit_hostname_admission() -> None:
+    with pytest.raises(DestinationPolicyError, match="not admitted"):
+        validate_remote_destination(
+            "https://example.test/data",
+            AcquisitionPolicy(),
+            resolver=lambda _: ("93.184.216.34",),
+            require_host_allowlist=True,
+        )
+
+    validate_remote_destination(
+        "https://example.test/data",
+        AcquisitionPolicy(allowed_hosts=("example.test",)),
+        resolver=lambda _: ("93.184.216.34",),
+        require_host_allowlist=True,
+    )
+
+
+@pytest.mark.edge
+def test_mixed_public_private_dns_answer_is_rejected() -> None:
+    with pytest.raises(DestinationPolicyError, match="non-public"):
+        validate_remote_destination(
+            "https://example.test/data",
+            AcquisitionPolicy(allowed_hosts=("example.test",)),
+            resolver=lambda _: ("93.184.216.34", "10.0.0.2"),
+            require_host_allowlist=True,
+        )
