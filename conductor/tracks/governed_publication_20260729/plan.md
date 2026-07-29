@@ -18,11 +18,11 @@
 
 ## Phase 3: Qualification
 
-- [ ] Task: Rehearse package verification without external publication ([#35](https://github.com/edithatogo/global-medicines-atlas/issues/35))
-- [ ] Task: Complete rights, privacy, licence and provenance review gates ([#35](https://github.com/edithatogo/global-medicines-atlas/issues/35))
-- [ ] Task: Verify SBOM and provenance from a consumer clean room ([#35](https://github.com/edithatogo/global-medicines-atlas/issues/35))
-- [ ] Task: Record v0.7 release evidence ([#35](https://github.com/edithatogo/global-medicines-atlas/issues/35))
-- [ ] Task: Phase Verification & Checkpoint
+- [x] Task: Rehearse package verification without external publication ([#35](https://github.com/edithatogo/global-medicines-atlas/issues/35)) `7ff68c1`
+- [x] Task: Complete rights, privacy, licence and provenance review gates ([#35](https://github.com/edithatogo/global-medicines-atlas/issues/35)) — fixture gates evidenced; production licence, rights and maintainer approvals explicitly blocked `7ff68c1`
+- [x] Task: Verify SBOM and provenance from a consumer clean room ([#35](https://github.com/edithatogo/global-medicines-atlas/issues/35)) `7ff68c1`
+- [x] Task: Record v0.7 release evidence ([#35](https://github.com/edithatogo/global-medicines-atlas/issues/35)) `7ff68c1`
+- [x] Task: Phase Verification & Checkpoint — 775 passed, 7 expected Windows symlink skips; 94.14% branch coverage; Ruff, ty and BasedPyright passed
 
 ## GitHub hierarchy
 
