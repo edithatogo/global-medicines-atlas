@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import json
+from copy import deepcopy
 from pathlib import Path
 from typing import Any, cast
 
 import jsonschema
+import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 MATRIX_PATH = (
@@ -54,6 +56,40 @@ def test_v07_matrix_validates_against_draft_2020_12_schema() -> None:
     matrix = _load_json(MATRIX_PATH)
     jsonschema.Draft202012Validator.check_schema(schema)
     jsonschema.Draft202012Validator(schema).validate(matrix)
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        pytest.param("swapped-scopes", id="swapped-fixture-production-scopes"),
+        pytest.param("production-passed", id="production-cannot-pass"),
+        pytest.param("duplicate-gate-id", id="gate-identities-are-unique"),
+        pytest.param("all-public", id="states-cannot-be-conflated-as-public"),
+    ],
+)
+def test_schema_rejects_conflated_qualification_states(mutation: str) -> None:
+    schema = _load_json(SCHEMA_PATH)
+    matrix = deepcopy(_load_json(MATRIX_PATH))
+
+    if mutation == "swapped-scopes":
+        matrix["fixture_qualification"]["scope"] = "production"
+        matrix["production_qualification"]["scope"] = "fixture"
+    elif mutation == "production-passed":
+        matrix["production_qualification"]["overall_status"] = "passed"
+        for gate in matrix["production_qualification"]["gates"]:
+            gate["status"] = "passed"
+    elif mutation == "duplicate-gate-id":
+        gates = matrix["fixture_qualification"]["gates"]
+        gates[1]["gate_id"] = gates[0]["gate_id"]
+    elif mutation == "all-public":
+        for state in matrix["publication_states"]:
+            state["state"] = "public"
+            state["status"] = "passed_fixture"
+    else:  # pragma: no cover - parametrization is closed above
+        raise AssertionError(f"unknown mutation: {mutation}")
+
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.Draft202012Validator(schema).validate(matrix)
 
 
 def test_traceability_is_exact_and_documented() -> None:

@@ -56,13 +56,36 @@
         }
       }
     },
-    "fixture_qualification": {"$ref": "#/$defs/gateSet"},
-    "production_qualification": {"$ref": "#/$defs/gateSet"},
+    "fixture_qualification": {"$ref": "#/$defs/fixtureGateSet"},
+    "production_qualification": {"$ref": "#/$defs/productionGateSet"},
     "publication_states": {
       "type": "array",
       "minItems": 3,
       "maxItems": 3,
-      "items": {"$ref": "#/$defs/publicationState"}
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/publicationState",
+          "properties": {
+            "state": {"const": "prepared"},
+            "status": {"const": "passed_fixture"}
+          }
+        },
+        {
+          "$ref": "#/$defs/publicationState",
+          "properties": {
+            "state": {"const": "uploaded"},
+            "status": {"const": "not_performed"}
+          }
+        },
+        {
+          "$ref": "#/$defs/publicationState",
+          "properties": {
+            "state": {"const": "public"},
+            "status": {"const": "not_performed"}
+          }
+        }
+      ],
+      "items": false
     },
     "source_rights": {
       "type": "array",
@@ -76,15 +99,7 @@
       "additionalProperties": false,
       "required": ["gate_id", "status", "reason", "evidence"],
       "properties": {
-        "gate_id": {
-          "enum": [
-            "rights",
-            "privacy",
-            "provenance",
-            "software-licence",
-            "maintainer-release-approval"
-          ]
-        },
+        "gate_id": {"type": "string"},
         "status": {"enum": ["passed", "blocked", "not_applicable"]},
         "reason": {"type": "string", "minLength": 1},
         "evidence": {
@@ -94,18 +109,107 @@
         }
       }
     },
-    "gateSet": {
+    "fixtureGateSet": {
       "type": "object",
       "additionalProperties": false,
       "required": ["scope", "overall_status", "gates"],
       "properties": {
-        "scope": {"enum": ["fixture", "production"]},
-        "overall_status": {"enum": ["passed", "blocked"]},
+        "scope": {"const": "fixture"},
+        "overall_status": {"const": "passed"},
         "gates": {
           "type": "array",
           "minItems": 5,
           "maxItems": 5,
-          "items": {"$ref": "#/$defs/gate"}
+          "prefixItems": [
+            {
+              "$ref": "#/$defs/gate",
+              "properties": {
+                "gate_id": {"const": "rights"},
+                "status": {"const": "passed"}
+              }
+            },
+            {
+              "$ref": "#/$defs/gate",
+              "properties": {
+                "gate_id": {"const": "privacy"},
+                "status": {"const": "passed"}
+              }
+            },
+            {
+              "$ref": "#/$defs/gate",
+              "properties": {
+                "gate_id": {"const": "provenance"},
+                "status": {"const": "passed"}
+              }
+            },
+            {
+              "$ref": "#/$defs/gate",
+              "properties": {
+                "gate_id": {"const": "software-licence"},
+                "status": {"const": "not_applicable"}
+              }
+            },
+            {
+              "$ref": "#/$defs/gate",
+              "properties": {
+                "gate_id": {"const": "maintainer-release-approval"},
+                "status": {"const": "not_applicable"}
+              }
+            }
+          ],
+          "items": false
+        }
+      }
+    },
+    "productionGateSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "overall_status", "gates"],
+      "properties": {
+        "scope": {"const": "production"},
+        "overall_status": {"const": "blocked"},
+        "gates": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "prefixItems": [
+            {
+              "$ref": "#/$defs/gate",
+              "properties": {
+                "gate_id": {"const": "rights"},
+                "status": {"const": "blocked"}
+              }
+            },
+            {
+              "$ref": "#/$defs/gate",
+              "properties": {
+                "gate_id": {"const": "privacy"},
+                "status": {"const": "blocked"}
+              }
+            },
+            {
+              "$ref": "#/$defs/gate",
+              "properties": {
+                "gate_id": {"const": "provenance"},
+                "status": {"const": "blocked"}
+              }
+            },
+            {
+              "$ref": "#/$defs/gate",
+              "properties": {
+                "gate_id": {"const": "software-licence"},
+                "status": {"const": "blocked"}
+              }
+            },
+            {
+              "$ref": "#/$defs/gate",
+              "properties": {
+                "gate_id": {"const": "maintainer-release-approval"},
+                "status": {"const": "blocked"}
+              }
+            }
+          ],
+          "items": false
         }
       }
     },

@@ -4,6 +4,8 @@ import hashlib
 import json
 import sys
 import tempfile
+import zipfile
+from io import BytesIO
 from pathlib import Path
 from typing import cast
 
@@ -32,18 +34,62 @@ def _sha(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
+def _wheel(
+    *, project: str = "global-medicines-atlas", version: str = "0.7.0"
+) -> bytes:
+    stream = BytesIO()
+    distribution = project.replace("-", "_")
+    with zipfile.ZipFile(stream, mode="w") as archive:
+        metadata = (
+            "Metadata-Version: 2.4\n"
+            f"Name: {project}\n"
+            f"Version: {version}\n"
+            "Requires-Dist: pydantic>=2\n\n"
+        )
+        info = zipfile.ZipInfo(f"{distribution}-{version}.dist-info/METADATA")
+        info.date_time = (1980, 1, 1, 0, 0, 0)
+        archive.writestr(info, metadata)
+    return stream.getvalue()
+
+
 def _fixture(root: Path) -> Path:
     root.mkdir()
     payloads = {
-        "dataset.tar.gz": b"governed-package",
+        "global_medicines_atlas-0.7.0-py3-none-any.whl": _wheel(),
+        "uv.lock": (
+            b'version = 1\n\n[[package]]\nname = "global-medicines-atlas"\n'
+            b'version = "0.7.0"\ndependencies = [{ name = "pydantic" }]\n\n'
+            b'[[package]]\nname = "pydantic"\nversion = "2.12.5"\n'
+            b"dependencies = []\n"
+        ),
         "sbom.cdx.json": _canonical({
             "bomFormat": "CycloneDX",
-            "components": [
-                {"name": "global-medicines-atlas", "version": "0.7.0"}
-            ],
+            "components": [{"name": "pydantic", "version": "2.12.5"}],
+            "metadata": {
+                "component": {
+                    "name": "global-medicines-atlas",
+                    "version": "0.7.0",
+                }
+            },
             "specVersion": "1.6",
         }),
     }
+    subject_names = (
+        "global_medicines_atlas-0.7.0-py3-none-any.whl",
+        "sbom.cdx.json",
+        "uv.lock",
+    )
+    payloads["provenance.intoto.json"] = _canonical({
+        "_type": "https://in-toto.io/Statement/v1",
+        "predicate": {
+            "builder": {"id": "https://github.com/edithatogo/gma/builder"}
+        },
+        "predicateType": "https://slsa.dev/provenance/v1",
+        "subject": [
+            {"digest": {"sha256": _sha(payloads[name])}, "name": name}
+            for name in subject_names
+        ],
+    })
     manifest = _canonical({
         "files": [
             {"path": path, "sha256": _sha(payload), "size": len(payload)}
@@ -61,11 +107,13 @@ def _fixture(root: Path) -> Path:
         for path, payload in sorted(payloads.items())
     ).encode()
     roles = {
-        "dataset.tar.gz": "package",
+        "global_medicines_atlas-0.7.0-py3-none-any.whl": "package",
+        "provenance.intoto.json": "provenance-attestation",
         "qualified-assets.json": "asset-manifest",
         "qualification.json": "qualification",
         "sbom.cdx.json": "sbom",
         "SHA256SUMS": "checksums",
+        "uv.lock": "runtime-lock",
     }
     for path, payload in payloads.items():
         (root / path).write_bytes(payload)
@@ -79,7 +127,10 @@ def _fixture(root: Path) -> Path:
             }
             for path, payload in sorted(payloads.items())
         ],
-        "schema_version": "1",
+        "expected_project": "global-medicines-atlas",
+        "expected_version": "0.7.0",
+        "schema_version": "2",
+        "trusted_builder_id": "https://github.com/edithatogo/gma/builder",
     }
     declaration_path = root.parent / "declaration.json"
     declaration_path.write_bytes(_canonical(declaration))
@@ -127,6 +178,21 @@ def _rebind_governed_controls(source: Path, declaration: Path) -> None:
     _refresh_checksums_and_declaration(source, declaration)
 
 
+def _rebind_attestation(source: Path) -> None:
+    attestation: dict[str, object] = json.loads(
+        (source / "provenance.intoto.json").read_text(encoding="utf-8")
+    )
+    attestation["subject"] = [
+        {"digest": {"sha256": _sha((source / name).read_bytes())}, "name": name}
+        for name in (
+            "global_medicines_atlas-0.7.0-py3-none-any.whl",
+            "sbom.cdx.json",
+            "uv.lock",
+        )
+    ]
+    (source / "provenance.intoto.json").write_bytes(_canonical(attestation))
+
+
 def test_rehearsal_emits_deterministic_durable_receipt(tmp_path: Path) -> None:
     source = tmp_path / "source"
     declaration = _fixture(source)
@@ -149,13 +215,19 @@ def test_rehearsal_emits_deterministic_durable_receipt(tmp_path: Path) -> None:
     assert first.verified is True
     assert first.network_accessed is False
     assert first.published is False
-    assert len(first.artifacts) == 5
+    assert len(first.artifacts) == 7
 
 
 @pytest.mark.parametrize(
     ("target", "replacement", "message"),
     [
-        ("dataset.tar.gz", b"tampered", "declared identity mismatch"),
+        (
+            "global_medicines_atlas-0.7.0-py3-none-any.whl",
+            b"tampered",
+            "declared identity mismatch",
+        ),
+        ("provenance.intoto.json", b"{}", "declared identity mismatch"),
+        ("uv.lock", b"", "declared identity mismatch"),
         ("sbom.cdx.json", b"{}", "declared identity mismatch"),
         ("qualification.json", b"{}", "declared identity mismatch"),
         ("SHA256SUMS", b"", "declared identity mismatch"),
@@ -267,32 +339,57 @@ def test_rehearsal_rejects_invalid_sbom_json(
 
 @pytest.mark.parametrize(
     ("sbom", "message"),
-    [
-        (
-            {"bomFormat": "SPDX", "components": [], "specVersion": "1.6"},
-            "CycloneDX",
-        ),
-        (
-            {"bomFormat": "CycloneDX", "components": [], "specVersion": "1.6"},
-            "components",
-        ),
-        (
-            {
-                "bomFormat": "CycloneDX",
-                "components": ["invalid"],
-                "specVersion": "1.6",
-            },
-            "component must",
-        ),
-        (
-            {
-                "bomFormat": "CycloneDX",
-                "components": [{"name": "package"}],
-                "specVersion": "1.6",
-            },
-            "name and version",
-        ),
-    ],
+    cast(
+        "list[tuple[dict[str, object], str]]",
+        [
+            (
+                {"bomFormat": "SPDX", "components": [], "specVersion": "1.6"},
+                "CycloneDX",
+            ),
+            (
+                {
+                    "bomFormat": "CycloneDX",
+                    "components": [],
+                    "metadata": {
+                        "component": {
+                            "name": "global-medicines-atlas",
+                            "version": "0.7.0",
+                        }
+                    },
+                    "specVersion": "1.6",
+                },
+                "components",
+            ),
+            (
+                {
+                    "bomFormat": "CycloneDX",
+                    "components": ["invalid"],
+                    "metadata": {
+                        "component": {
+                            "name": "global-medicines-atlas",
+                            "version": "0.7.0",
+                        }
+                    },
+                    "specVersion": "1.6",
+                },
+                "component must",
+            ),
+            (
+                {
+                    "bomFormat": "CycloneDX",
+                    "components": [{"name": "package"}],
+                    "metadata": {
+                        "component": {
+                            "name": "global-medicines-atlas",
+                            "version": "0.7.0",
+                        }
+                    },
+                    "specVersion": "1.6",
+                },
+                "name and version",
+            ),
+        ],
+    ),
 )
 def test_rehearsal_rejects_semantically_invalid_sbom(
     tmp_path: Path, sbom: object, message: str
@@ -347,9 +444,15 @@ def test_rehearsal_rejects_invalid_qualification_state(
     ("content", "message"),
     [
         ("not-a-checksum\n", "invalid entry"),
-        (f"{'0' * 64}  dataset.tar.gz\n", "bind every"),
         (
-            f"{'0' * 64}  dataset.tar.gz\n{'0' * 64}  dataset.tar.gz\n",
+            f"{'0' * 64}  global_medicines_atlas-0.7.0-py3-none-any.whl\n",
+            "bind every",
+        ),
+        (
+            (
+                f"{'0' * 64}  global_medicines_atlas-0.7.0-py3-none-any.whl\n"
+                f"{'0' * 64}  global_medicines_atlas-0.7.0-py3-none-any.whl\n"
+            ),
             "duplicate checksum",
         ),
     ],
@@ -420,8 +523,8 @@ def test_rehearsal_rejects_invalid_declared_boundaries(
 def test_rehearsal_rejects_symlink_input(tmp_path: Path) -> None:
     source = tmp_path / "source"
     declaration = _fixture(source)
-    target = source / "dataset-real.tar.gz"
-    original = source / "dataset.tar.gz"
+    target = source / "package-real.whl"
+    original = source / "global_medicines_atlas-0.7.0-py3-none-any.whl"
     original.replace(target)
     try:
         original.symlink_to(target)
@@ -470,6 +573,282 @@ def test_rehearsal_rejects_malformed_asset_manifest(tmp_path: Path) -> None:
         )
 
 
+def test_rehearsal_rejects_arbitrary_but_well_formed_sbom(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "source"
+    declaration = _fixture(source)
+    sbom = {
+        "bomFormat": "CycloneDX",
+        "components": [{"name": "arbitrary", "version": "999"}],
+        "metadata": {
+            "component": {
+                "name": "global-medicines-atlas",
+                "version": "0.7.0",
+            }
+        },
+        "specVersion": "1.6",
+    }
+    (source / "sbom.cdx.json").write_bytes(_canonical(sbom))
+    _rebind_attestation(source)
+    _rebind_governed_controls(source, declaration)
+    with pytest.raises(RehearsalError, match="exact runtime lock closure"):
+        rehearse_publication(
+            source_root=source,
+            declaration_path=declaration,
+            receipt_path=tmp_path / "receipt.json",
+        )
+
+
+def test_rehearsal_rejects_self_consistent_replacement_package(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "source"
+    declaration = _fixture(source)
+    (source / "global_medicines_atlas-0.7.0-py3-none-any.whl").write_bytes(
+        _wheel(project="replacement-project")
+    )
+    _rebind_attestation(source)
+    _rebind_governed_controls(source, declaration)
+    with pytest.raises(RehearsalError, match="disagrees with declaration"):
+        rehearse_publication(
+            source_root=source,
+            declaration_path=declaration,
+            receipt_path=tmp_path / "receipt.json",
+        )
+
+
+def test_rehearsal_rejects_self_consistent_non_wheel_package(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "source"
+    declaration = _fixture(source)
+    (source / "global_medicines_atlas-0.7.0-py3-none-any.whl").write_bytes(
+        b"not-a-wheel"
+    )
+    _rebind_attestation(source)
+    _rebind_governed_controls(source, declaration)
+    with pytest.raises(RehearsalError, match="readable wheel"):
+        rehearse_publication(
+            source_root=source,
+            declaration_path=declaration,
+            receipt_path=tmp_path / "receipt.json",
+        )
+
+
+@pytest.mark.parametrize(
+    ("lock", "message"),
+    [
+        (b"[", "valid TOML"),
+        (b"version = 1\n", "package records"),
+        (
+            b"".join((
+                b'[[package]]\nname="global-medicines-atlas"\nversion="0.7.0"\n',
+                b"dependencies=[]\n",
+            )),
+            "wheel requirements disagree",
+        ),
+        (
+            b"".join((
+                b'[[package]]\nname="global-medicines-atlas"\nversion="0.7.0"\n',
+                b'dependencies=[{name="pydantic"}]\n',
+            )),
+            "not locked",
+        ),
+        (
+            b"".join((
+                b'[[package]]\nname="global-medicines-atlas"\nversion="0.7.0"\n',
+                b'dependencies=[{name="pydantic"}]\n',
+                b'[[package]]\nname="pydantic"\nversion="2"\ndependencies=[]\n',
+                b'[[package]]\nname="pydantic"\nversion="3"\ndependencies=[]\n',
+            )),
+            "unique",
+        ),
+        (
+            b'[[package]]\nname="other"\nversion="1"\ndependencies=[]\n',
+            "lacks the expected project",
+        ),
+    ],
+)
+def test_rehearsal_rejects_invalid_runtime_lock(
+    tmp_path: Path, lock: bytes, message: str
+) -> None:
+    source = tmp_path / "source"
+    declaration = _fixture(source)
+    (source / "uv.lock").write_bytes(lock)
+    _rebind_attestation(source)
+    _rebind_governed_controls(source, declaration)
+    with pytest.raises(RehearsalError, match=message):
+        rehearse_publication(
+            source_root=source,
+            declaration_path=declaration,
+            receipt_path=tmp_path / "receipt.json",
+        )
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("type", "in-toto"),
+        ("predicate-type", "SLSA"),
+        ("predicate", "predicate must"),
+        ("subjects", "subjects must"),
+    ],
+)
+def test_rehearsal_rejects_malformed_attestation(
+    tmp_path: Path, mutation: str, message: str
+) -> None:
+    source = tmp_path / "source"
+    declaration = _fixture(source)
+    attestation: dict[str, object] = json.loads(
+        (source / "provenance.intoto.json").read_text(encoding="utf-8")
+    )
+    if mutation == "type":
+        attestation["_type"] = "arbitrary"
+    elif mutation == "predicate-type":
+        attestation["predicateType"] = "arbitrary"
+    elif mutation == "predicate":
+        attestation["predicate"] = "arbitrary"
+    else:
+        attestation["subject"] = "arbitrary"
+    (source / "provenance.intoto.json").write_bytes(_canonical(attestation))
+    _rebind_governed_controls(source, declaration)
+    with pytest.raises(RehearsalError, match=message):
+        rehearse_publication(
+            source_root=source,
+            declaration_path=declaration,
+            receipt_path=tmp_path / "receipt.json",
+        )
+
+
+@pytest.mark.parametrize(
+    ("sbom", "message"),
+    cast(
+        "list[tuple[dict[str, object], str]]",
+        [
+            ({"bomFormat": "CycloneDX", "components": [{}]}, "specVersion"),
+            (
+                {
+                    "bomFormat": "CycloneDX",
+                    "components": [{}],
+                    "specVersion": "1.6",
+                },
+                "project metadata",
+            ),
+            (
+                {
+                    "bomFormat": "CycloneDX",
+                    "components": [{}],
+                    "metadata": {},
+                    "specVersion": "1.6",
+                },
+                "project component",
+            ),
+            (
+                {
+                    "bomFormat": "CycloneDX",
+                    "components": [{"name": "pydantic", "version": "2.12.5"}],
+                    "metadata": {
+                        "component": {"name": "other", "version": "0.7.0"}
+                    },
+                    "specVersion": "1.6",
+                },
+                "identity disagrees",
+            ),
+            (
+                {
+                    "bomFormat": "CycloneDX",
+                    "components": [
+                        {"name": "pydantic", "version": "2.12.5"},
+                        {"name": "pydantic", "version": "2.12.5"},
+                    ],
+                    "metadata": {
+                        "component": {
+                            "name": "global-medicines-atlas",
+                            "version": "0.7.0",
+                        }
+                    },
+                    "specVersion": "1.6",
+                },
+                "unique",
+            ),
+        ],
+    ),
+)
+def test_rehearsal_rejects_additional_sbom_failures(
+    tmp_path: Path, sbom: dict[str, object], message: str
+) -> None:
+    source = tmp_path / "source"
+    declaration = _fixture(source)
+    (source / "sbom.cdx.json").write_bytes(_canonical(sbom))
+    _rebind_attestation(source)
+    _rebind_governed_controls(source, declaration)
+    with pytest.raises(RehearsalError, match=message):
+        rehearse_publication(
+            source_root=source,
+            declaration_path=declaration,
+            receipt_path=tmp_path / "receipt.json",
+        )
+
+
+@pytest.mark.parametrize(
+    ("subject", "message"),
+    [
+        ("invalid", "subject must"),
+        ({"name": 1, "digest": {}}, "subject is malformed"),
+        ({"name": "uv.lock", "digest": {}}, "subject digest"),
+    ],
+)
+def test_rehearsal_rejects_malformed_attestation_subject(
+    tmp_path: Path, subject: object, message: str
+) -> None:
+    source = tmp_path / "source"
+    declaration = _fixture(source)
+    attestation: dict[str, object] = json.loads(
+        (source / "provenance.intoto.json").read_text(encoding="utf-8")
+    )
+    attestation["subject"] = [subject]
+    (source / "provenance.intoto.json").write_bytes(_canonical(attestation))
+    _rebind_governed_controls(source, declaration)
+    with pytest.raises(RehearsalError, match=message):
+        rehearse_publication(
+            source_root=source,
+            declaration_path=declaration,
+            receipt_path=tmp_path / "receipt.json",
+        )
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("builder", "builder identity"),
+        ("subject", "subjects do not match"),
+    ],
+)
+def test_rehearsal_rejects_rebound_untrusted_attestation(
+    tmp_path: Path, mutation: str, message: str
+) -> None:
+    source = tmp_path / "source"
+    declaration = _fixture(source)
+    attestation: dict[str, object] = json.loads(
+        (source / "provenance.intoto.json").read_text(encoding="utf-8")
+    )
+    if mutation == "builder":
+        predicate = cast("dict[str, object]", attestation["predicate"])
+        predicate["builder"] = {"id": "https://attacker.invalid/builder"}
+    else:
+        subjects = cast("list[dict[str, object]]", attestation["subject"])
+        subjects[0]["digest"] = {"sha256": "0" * 64}
+    (source / "provenance.intoto.json").write_bytes(_canonical(attestation))
+    _rebind_governed_controls(source, declaration)
+    with pytest.raises(RehearsalError, match=message):
+        rehearse_publication(
+            source_root=source,
+            declaration_path=declaration,
+            receipt_path=tmp_path / "receipt.json",
+        )
+
+
 def test_cli_runs_offline_and_does_not_mutate_source(tmp_path: Path) -> None:
     source = tmp_path / "source"
     declaration = _fixture(source)
@@ -501,16 +880,16 @@ def test_cli_runs_offline_and_does_not_mutate_source(tmp_path: Path) -> None:
 
 
 @given(
-    st.binary(min_size=0, max_size=64).filter(
-        lambda value: value != b"governed-package"
-    )
+    st.binary(min_size=0, max_size=64).filter(lambda value: value != _wheel())
 )
 def test_any_package_byte_change_is_rejected(replacement: bytes) -> None:
     with tempfile.TemporaryDirectory() as directory:
         root = Path(directory)
         source = root / "source"
         declaration = _fixture(source)
-        (source / "dataset.tar.gz").write_bytes(replacement)
+        (source / "global_medicines_atlas-0.7.0-py3-none-any.whl").write_bytes(
+            replacement
+        )
         with pytest.raises(RehearsalError, match="declared identity mismatch"):
             rehearse_publication(
                 source_root=source,

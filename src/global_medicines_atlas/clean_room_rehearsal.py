@@ -5,10 +5,15 @@ from __future__ import annotations
 import hashlib
 import json
 import tempfile
+import tomllib
+import zipfile
 from collections.abc import Mapping
+from email.parser import Parser
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Annotated, Literal, cast
 
+from packaging.requirements import Requirement
+from packaging.utils import canonicalize_name
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
 Digest = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{64}$")]
@@ -27,7 +32,13 @@ class DeclaredArtifact(BaseModel):
 
     path: RelativePath
     role: Literal[
-        "asset-manifest", "checksums", "package", "qualification", "sbom"
+        "asset-manifest",
+        "checksums",
+        "package",
+        "provenance-attestation",
+        "qualification",
+        "runtime-lock",
+        "sbom",
     ]
     sha256: Digest
     size: int = Field(ge=0)
@@ -38,8 +49,11 @@ class RehearsalDeclaration(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    schema_version: Literal["1"]
-    artifacts: tuple[DeclaredArtifact, ...] = Field(min_length=4)
+    schema_version: Literal["2"]
+    expected_project: Annotated[str, StringConstraints(min_length=1)]
+    expected_version: Annotated[str, StringConstraints(min_length=1)]
+    trusted_builder_id: Annotated[str, StringConstraints(min_length=1)]
+    artifacts: tuple[DeclaredArtifact, ...] = Field(min_length=7)
 
 
 class VerifiedArtifact(BaseModel):
@@ -58,7 +72,7 @@ class CleanRoomReceipt(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    schema_version: Literal["1"] = "1"
+    schema_version: Literal["2"] = "2"
     declaration_sha256: Digest
     qualified_assets_sha256: Digest
     verified: Literal[True] = True
@@ -149,7 +163,9 @@ def _copy_declared(
         "asset-manifest",
         "checksums",
         "package",
+        "provenance-attestation",
         "qualification",
+        "runtime-lock",
         "sbom",
     }
     if roles != required:
@@ -242,23 +258,204 @@ def _verify_asset_manifest(
     return _digest(manifest_path.read_bytes())
 
 
-def _verify_sbom(path: Path) -> None:
+def _wheel_identity(path: Path) -> tuple[str, str, set[str]]:
+    try:
+        with zipfile.ZipFile(path) as archive:
+            metadata_names = [
+                name
+                for name in archive.namelist()
+                if name.endswith(".dist-info/METADATA")
+            ]
+            if len(metadata_names) != 1:
+                raise RehearsalError(
+                    "package wheel must contain exactly one METADATA file"
+                )
+            message = Parser().parsestr(
+                archive.read(metadata_names[0]).decode("utf-8")
+            )
+    except (OSError, UnicodeDecodeError, zipfile.BadZipFile) as error:
+        raise RehearsalError("package must be a readable wheel") from error
+    name, version = message.get("Name"), message.get("Version")
+    if not name or not version:
+        raise RehearsalError("package metadata requires Name and Version")
+    requirements: set[str] = set()
+    for value in message.get_all("Requires-Dist", []):
+        requirement = Requirement(value)
+        marker = requirement.marker
+        if marker is None or marker.evaluate():
+            requirements.add(str(canonicalize_name(requirement.name)))
+    return str(canonicalize_name(name)), version, requirements
+
+
+def _index_lock_packages(
+    packages: list[object],
+) -> dict[str, dict[str, object]]:
+    indexed: dict[str, dict[str, object]] = {}
+    for item in packages:
+        if not isinstance(item, dict):
+            raise RehearsalError("runtime lock package must be a table")
+        package = cast("dict[str, object]", item)
+        name, version = package.get("name"), package.get("version")
+        if not isinstance(name, str) or not isinstance(version, str):
+            raise RehearsalError(
+                "runtime lock packages require name and version"
+            )
+        normalized = str(canonicalize_name(name))
+        if normalized in indexed:
+            raise RehearsalError("runtime lock package names must be unique")
+        indexed[normalized] = package
+    return indexed
+
+
+def _lock_closure(
+    path: Path, *, project: str, direct_requirements: set[str]
+) -> set[tuple[str, str]]:
+    try:
+        raw = tomllib.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, tomllib.TOMLDecodeError) as error:
+        raise RehearsalError("runtime lock is not valid TOML") from error
+    packages = cast("dict[str, object]", raw).get("package")
+    if not isinstance(packages, list):
+        raise RehearsalError("runtime lock must contain package records")
+    indexed = _index_lock_packages(cast("list[object]", packages))
+    root = indexed.get(project)
+    if root is None:
+        raise RehearsalError("runtime lock lacks the expected project")
+    root_dependencies = root.get("dependencies", [])
+    if not isinstance(root_dependencies, list):
+        raise RehearsalError("project lock dependencies must be a list")
+
+    def dependency_names(values: list[object]) -> set[str]:
+        names: set[str] = set()
+        for value in values:
+            if not isinstance(value, dict) or not isinstance(
+                cast("dict[str, object]", value).get("name"), str
+            ):
+                raise RehearsalError("locked dependency requires a name")
+            names.add(
+                str(
+                    canonicalize_name(
+                        cast("str", cast("dict[str, object]", value)["name"])
+                    )
+                )
+            )
+        return names
+
+    if (
+        dependency_names(cast("list[object]", root_dependencies))
+        != direct_requirements
+    ):
+        raise RehearsalError("wheel requirements disagree with runtime lock")
+    closure: set[tuple[str, str]] = set()
+    pending = list(direct_requirements)
+    while pending:
+        name = pending.pop()
+        package = indexed.get(name)
+        if package is None:
+            raise RehearsalError(f"runtime dependency is not locked: {name}")
+        version = cast("str", package["version"])
+        if (name, version) in closure:
+            continue
+        closure.add((name, version))
+        dependencies = package.get("dependencies", [])
+        if not isinstance(dependencies, list):
+            raise RehearsalError("locked dependencies must be a list")
+        pending.extend(dependency_names(cast("list[object]", dependencies)))
+    return closure
+
+
+def _verify_sbom(
+    path: Path,
+    *,
+    project: str,
+    version: str,
+    runtime_closure: set[tuple[str, str]],
+) -> None:
     sbom = _load_object(path, "SBOM")
     if sbom.get("bomFormat") != "CycloneDX":
         raise RehearsalError("SBOM must use CycloneDX")
     if not isinstance(sbom.get("specVersion"), str):
         raise RehearsalError("SBOM must declare a CycloneDX specVersion")
+    metadata = sbom.get("metadata")
+    if not isinstance(metadata, dict):
+        raise RehearsalError("SBOM must contain project metadata")
+    root_component = cast("dict[str, object]", metadata).get("component")
+    if not isinstance(root_component, dict):
+        raise RehearsalError("SBOM must identify the project component")
+    root_fields = cast("dict[str, object]", root_component)
+    if (
+        canonicalize_name(str(root_fields.get("name", ""))) != project
+        or root_fields.get("version") != version
+    ):
+        raise RehearsalError("SBOM project identity disagrees with package")
     components = sbom.get("components")
     if not isinstance(components, list) or not components:
         raise RehearsalError("SBOM must contain components")
+    observed: set[tuple[str, str]] = set()
     for component in cast("list[object]", components):
         if not isinstance(component, dict):
             raise RehearsalError("SBOM component must be an object")
         fields = cast("dict[str, object]", component)
-        if not isinstance(fields.get("name"), str) or not isinstance(
-            fields.get("version"), str
-        ):
+        name, component_version = fields.get("name"), fields.get("version")
+        if not isinstance(name, str) or not isinstance(component_version, str):
             raise RehearsalError("SBOM components require name and version")
+        identity = (canonicalize_name(name), component_version)
+        if identity in observed:
+            raise RehearsalError("SBOM component identities must be unique")
+        observed.add(identity)
+    if observed != runtime_closure:
+        raise RehearsalError(
+            "SBOM does not match the exact runtime lock closure"
+        )
+
+
+def _verify_attestation(
+    path: Path,
+    *,
+    root: Path,
+    declared: Mapping[str, DeclaredArtifact],
+    trusted_builder_id: str,
+) -> None:
+    statement = _load_object(path, "provenance attestation")
+    if statement.get("_type") != "https://in-toto.io/Statement/v1":
+        raise RehearsalError("attestation must be an in-toto v1 statement")
+    if statement.get("predicateType") != "https://slsa.dev/provenance/v1":
+        raise RehearsalError("attestation must use SLSA provenance v1")
+    predicate = statement.get("predicate")
+    if not isinstance(predicate, dict):
+        raise RehearsalError("attestation predicate must be an object")
+    builder = cast("dict[str, object]", predicate).get("builder")
+    if (
+        not isinstance(builder, dict)
+        or cast("dict[str, object]", builder).get("id") != trusted_builder_id
+    ):
+        raise RehearsalError("attestation builder identity is not trusted")
+    subjects = statement.get("subject")
+    if not isinstance(subjects, list):
+        raise RehearsalError("attestation subjects must be a list")
+    observed: dict[str, str] = {}
+    for item in cast("list[object]", subjects):
+        if not isinstance(item, dict):
+            raise RehearsalError("attestation subject must be an object")
+        subject = cast("dict[str, object]", item)
+        name, digest = subject.get("name"), subject.get("digest")
+        if not isinstance(name, str) or not isinstance(digest, dict):
+            raise RehearsalError("attestation subject is malformed")
+        sha256 = cast("dict[str, object]", digest).get("sha256")
+        if not isinstance(sha256, str) or name in observed:
+            raise RehearsalError("attestation subject digest is invalid")
+        observed[name] = sha256
+    expected = {
+        item.path: _digest(
+            root.joinpath(*PurePosixPath(item.path).parts).read_bytes()
+        )
+        for item in declared.values()
+        if item.role in {"package", "runtime-lock", "sbom"}
+    }
+    if observed != expected:
+        raise RehearsalError(
+            "attestation subjects do not match exact governed bytes"
+        )
 
 
 def _verify_qualification(path: Path, manifest_digest: str) -> None:
@@ -304,7 +501,34 @@ def rehearse_publication(
             declared,
             _by_role(clean_root, declared, "asset-manifest"),
         )
-        _verify_sbom(_by_role(clean_root, declared, "sbom"))
+        package_project, package_version, requirements = _wheel_identity(
+            _by_role(clean_root, declared, "package")
+        )
+        expected_project = canonicalize_name(declaration.expected_project)
+        if (
+            package_project != expected_project
+            or package_version != declaration.expected_version
+        ):
+            raise RehearsalError(
+                "package project or version disagrees with declaration"
+            )
+        runtime_closure = _lock_closure(
+            _by_role(clean_root, declared, "runtime-lock"),
+            project=expected_project,
+            direct_requirements=requirements,
+        )
+        _verify_sbom(
+            _by_role(clean_root, declared, "sbom"),
+            project=expected_project,
+            version=package_version,
+            runtime_closure=runtime_closure,
+        )
+        _verify_attestation(
+            _by_role(clean_root, declared, "provenance-attestation"),
+            root=clean_root,
+            declared=declared,
+            trusted_builder_id=declaration.trusted_builder_id,
+        )
         _verify_qualification(
             _by_role(clean_root, declared, "qualification"), manifest_digest
         )
