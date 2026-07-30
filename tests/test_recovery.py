@@ -1,9 +1,13 @@
 from __future__ import annotations
 
 import json
+import shutil
+import tempfile
 from pathlib import Path
 
 import pytest
+from hypothesis import HealthCheck, given, settings
+from hypothesis import strategies as st
 
 from global_medicines_atlas.recovery import (
     RecoveryError,
@@ -125,3 +129,126 @@ def test_restore_failure_never_leaves_canonical_destination_partial(
         assert sorted(path.name for path in destination.iterdir()) == ["old"]
     else:
         assert not destination.exists()
+
+
+def _recovery_fixture(tmp_path: Path) -> tuple[Path, Path]:
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "state.txt").write_text("backup", encoding="utf-8")
+    bundle = tmp_path / "bundle"
+    create_backup(source, bundle)
+    destination = tmp_path / "canonical"
+    destination.mkdir()
+    (destination / "state.txt").write_text("current", encoding="utf-8")
+    return bundle, destination
+
+
+def test_first_rename_failure_keeps_verified_canonical(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    bundle, destination = _recovery_fixture(tmp_path)
+    original_replace = Path.replace
+
+    def fail_first(path: Path, target: Path) -> Path:
+        if path == destination:
+            raise OSError("injected predecessor staging failure")
+        return original_replace(path, target)
+
+    monkeypatch.setattr(Path, "replace", fail_first)
+    with pytest.raises(RecoveryError, match="canonical predecessor retained"):
+        restore_backup(bundle, destination)
+    assert (destination / "state.txt").read_text(encoding="utf-8") == "current"
+
+
+def test_compounded_publication_and_rollback_failures_use_safeguard(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    bundle, destination = _recovery_fixture(tmp_path)
+    original_replace = Path.replace
+
+    def fail_primary_paths(path: Path, target: Path) -> Path:
+        if target == destination and path.name in {
+            "restored",
+            ".canonical.rollback",
+        }:
+            raise OSError(f"injected failure for {path.name}")
+        return original_replace(path, target)
+
+    monkeypatch.setattr(Path, "replace", fail_primary_paths)
+    with pytest.raises(
+        RecoveryError, match="verified predecessor safeguard recovered"
+    ):
+        restore_backup(bundle, destination)
+    assert (destination / "state.txt").read_text(encoding="utf-8") == "current"
+    rollback = destination.with_name(".canonical.rollback")
+    assert (rollback / "state.txt").read_text(encoding="utf-8") == "current"
+
+
+def test_cleanup_failure_does_not_invalidate_verified_restore(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    bundle, destination = _recovery_fixture(tmp_path)
+
+    def fail_cleanup(path: Path) -> None:
+        raise OSError(f"injected cleanup failure: {path}")
+
+    monkeypatch.setattr(shutil, "rmtree", fail_cleanup)
+    receipt = restore_backup(bundle, destination)
+    assert receipt.rollback_path is not None
+    assert (destination / "state.txt").read_text(encoding="utf-8") == "backup"
+    assert (receipt.rollback_path / "state.txt").read_text(
+        encoding="utf-8"
+    ) == "current"
+
+
+@settings(
+    max_examples=12,
+    deadline=None,
+    suppress_health_check=[HealthCheck.function_scoped_fixture],
+)
+@given(
+    fail_first=st.booleans(),
+    fail_publication=st.booleans(),
+    fail_primary_rollback=st.booleans(),
+)
+def test_bounded_restore_failure_state_machine(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    fail_first: bool,
+    fail_publication: bool,
+    fail_primary_rollback: bool,
+) -> None:
+    case_root = Path(tempfile.mkdtemp(dir=tmp_path, prefix="recovery-state-"))
+    bundle, destination = _recovery_fixture(case_root)
+    original_replace = Path.replace
+
+    def inject(path: Path, target: Path) -> Path:
+        if fail_first and path == destination:
+            raise OSError("first")
+        if (
+            fail_publication
+            and path.name == "restored"
+            and target == destination
+        ):
+            raise OSError("publication")
+        if (
+            fail_primary_rollback
+            and path.name == ".canonical.rollback"
+            and target == destination
+        ):
+            raise OSError("rollback")
+        return original_replace(path, target)
+
+    monkeypatch.setattr(Path, "replace", inject)
+    if fail_first or fail_publication:
+        with pytest.raises(RecoveryError):
+            restore_backup(bundle, destination)
+        assert (destination / "state.txt").read_text(
+            encoding="utf-8"
+        ) == "current"
+    else:
+        restore_backup(bundle, destination)
+        assert (destination / "state.txt").read_text(
+            encoding="utf-8"
+        ) == "backup"

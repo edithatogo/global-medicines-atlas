@@ -42,9 +42,12 @@ governed artifact directories:
 1. `create_backup` rejects symlinks and non-regular files, copies content into
    a new bundle, and writes a content-addressed `receipt.json`.
 2. `restore_backup` verifies the receipt and every payload digest before
-   staging a replacement. An existing destination is atomically renamed to a
-   sibling rollback directory. If replacement publication fails, the retained
-   predecessor is immediately restored before the operation raises.
+   staging a replacement. Before moving an existing destination, it builds and
+   verifies a same-filesystem predecessor safeguard copied only from files
+   whose identity was already measured, then verifies every copied byte. The sibling
+   rollback directory is the primary recovery path; the safeguard is a second
+   publication path if replacement and primary rollback renames both fail.
+   Canonical and rollback identities are digest-verified before success.
 3. `rollback_restore` quarantines the restored tree and reinstates the retained
    predecessor.
 
@@ -63,3 +66,8 @@ and verify restoration there before making disaster-recovery claims.
 - The controls establish deterministic fixture and local-artifact behavior.
   Production-scale memory, time, and recovery-point objectives require
   separate measured qualification receipts.
+- The protocol bounds synchronous operation failures. It cannot promise an
+  atomic directory swap across a process crash, power loss,
+  storage-controller failure, or filesystem corruption. Production claims
+  require a crash-consistent filesystem, immutable remote backups, and an
+  independently rehearsed recovery procedure.

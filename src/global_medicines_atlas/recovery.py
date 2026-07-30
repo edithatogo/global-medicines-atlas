@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
 import tempfile
+from contextlib import suppress
 from dataclasses import asdict, dataclass
 from pathlib import Path, PurePosixPath
 
@@ -137,8 +139,64 @@ def _load_backup(bundle: Path) -> BackupReceipt:
     return receipt
 
 
+def _safeguard_tree(
+    source: Path, destination: Path
+) -> tuple[RecoveryFile, ...]:
+    """Create a same-filesystem safeguard and verify every copied byte."""
+    identity = _files(source)
+    destination.mkdir()
+    try:
+        for item in identity:
+            relative = PurePosixPath(item.path)
+            target = destination.joinpath(*relative.parts)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source.joinpath(*relative.parts), target)
+    except OSError as error:
+        raise RecoveryError(
+            "predecessor safeguard could not be created"
+        ) from error
+    if _files(destination) != identity:
+        raise RecoveryError("predecessor safeguard verification failed")
+    return identity
+
+
+def _verify_identity(
+    path: Path, expected: tuple[RecoveryFile, ...], label: str
+) -> None:
+    try:
+        actual = _files(path)
+    except (OSError, RecoveryError) as error:
+        raise RecoveryError(
+            f"{label} identity could not be verified"
+        ) from error
+    if actual != expected:
+        raise RecoveryError(f"{label} identity does not match")
+
+
+def _recover_predecessor(
+    rollback: Path,
+    safeguard: Path,
+    destination: Path,
+    identity: tuple[RecoveryFile, ...],
+) -> bool:
+    """Recover the predecessor, returning whether the safeguard was required."""
+    try:
+        rollback.replace(destination)
+    except OSError:
+        try:
+            safeguard.replace(destination)
+        except OSError as safeguard_error:
+            raise RecoveryError(
+                "restore publication and both predecessor recovery paths failed"
+            ) from safeguard_error
+        _verify_identity(destination, identity, "safeguarded predecessor")
+        return True
+    _verify_identity(destination, identity, "restored predecessor")
+    return False
+
+
 def restore_backup(bundle: Path, destination: Path) -> RestoreReceipt:
-    """Atomically restore a verified backup and retain a rollback directory."""
+    """Restore a verified backup with a verified predecessor safeguard."""
     receipt = _load_backup(bundle)
     if destination.is_symlink():
         raise RecoveryError("restore destination must not be a symlink")
@@ -146,11 +204,14 @@ def restore_backup(bundle: Path, destination: Path) -> RestoreReceipt:
     rollback = destination.with_name(f".{destination.name}.rollback")
     if rollback.exists() or rollback.is_symlink():
         raise RecoveryError("rollback destination already exists")
-    with tempfile.TemporaryDirectory(
-        dir=destination.parent,
-        prefix=f".{destination.name}.restore-",
-    ) as temporary:
-        staging = Path(temporary) / "restored"
+    temporary = Path(
+        tempfile.mkdtemp(
+            dir=destination.parent,
+            prefix=f".{destination.name}.restore-",
+        )
+    )
+    try:
+        staging = temporary / "restored"
         staging.mkdir()
         for item in receipt.files:
             relative = PurePosixPath(item.path)
@@ -161,22 +222,45 @@ def restore_backup(bundle: Path, destination: Path) -> RestoreReceipt:
             )
         if _files(staging) != receipt.files:
             raise RecoveryError("staged restore verification failed")
+        predecessor_identity: tuple[RecoveryFile, ...] | None = None
+        safeguard = temporary / "predecessor-safeguard"
         if destination.exists():
-            destination.replace(rollback)
+            predecessor_identity = _safeguard_tree(destination, safeguard)
+            try:
+                destination.replace(rollback)
+            except OSError as error:
+                _verify_identity(
+                    destination, predecessor_identity, "canonical predecessor"
+                )
+                raise RecoveryError(
+                    "predecessor staging failed; canonical predecessor retained"
+                ) from error
         try:
             staging.replace(destination)
         except OSError as error:
-            if rollback.exists() and not destination.exists():
-                try:
-                    rollback.replace(destination)
-                except OSError as recovery_error:
+            if predecessor_identity is not None and not destination.exists():
+                used_safeguard = _recover_predecessor(
+                    rollback,
+                    safeguard,
+                    destination,
+                    predecessor_identity,
+                )
+                if used_safeguard:
                     raise RecoveryError(
-                        "restore publication failed and the predecessor "
-                        "could not be recovered"
-                    ) from recovery_error
+                        "restore publication and primary rollback failed; "
+                        "verified predecessor safeguard recovered"
+                    ) from error
             raise RecoveryError(
                 "restore publication failed; predecessor recovered"
             ) from error
+        _verify_identity(destination, receipt.files, "published restore")
+        if predecessor_identity is not None:
+            _verify_identity(
+                rollback, predecessor_identity, "retained rollback"
+            )
+    finally:
+        with suppress(OSError):
+            shutil.rmtree(temporary)
     return RestoreReceipt(
         backup_receipt_id=receipt.receipt_id,
         destination=destination,
