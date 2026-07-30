@@ -36,32 +36,62 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p build/previous
-          artifact_url="$(
-            gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=source-health-baseline&per_page=100" \
-              --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[0].archive_download_url // ""'
+          previous_run_id="$(
+            gh api \
+              "repos/${GITHUB_REPOSITORY}/actions/workflows/source-health.yml/runs?branch=main&status=completed&per_page=100" \
+              --jq '[.workflow_runs[] | select(.conclusion == "success" and .head_branch == "main")] | sort_by(.id) | reverse | .[0].id // ""'
           )"
-          if [[ -z "${artifact_url}" ]]; then
+          if [[ -z "${previous_run_id}" ]]; then
             echo "path=" >> "${GITHUB_OUTPUT}"
+            echo "provenance=" >> "${GITHUB_OUTPUT}"
+            echo "run_id=" >> "${GITHUB_OUTPUT}"
+            echo "commit=" >> "${GITHUB_OUTPUT}"
             echo "No previous metadata baseline is available."
             exit 0
           fi
+          previous_commit="$(
+            gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${previous_run_id}" \
+              --jq '.head_sha'
+          )"
+          artifact_url="$(
+            gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${previous_run_id}/artifacts" \
+              --jq '[.artifacts[] | select(.name == "source-health-baseline" and .expired == false)] | .[0].archive_download_url // ""'
+          )"
+          test -n "${artifact_url}"
           gh api "${artifact_url}" > build/previous/baseline.zip
           unzip -q build/previous/baseline.zip -d build/previous
           test -f build/previous/source-health.json
+          test -f build/previous/source-health-provenance.json
           echo "path=build/previous/source-health.json" >> "${GITHUB_OUTPUT}"
+          echo "provenance=build/previous/source-health-provenance.json" >> "${GITHUB_OUTPUT}"
+          echo "run_id=${previous_run_id}" >> "${GITHUB_OUTPUT}"
+          echo "commit=${previous_commit}" >> "${GITHUB_OUTPUT}"
       - name: Run bounded metadata-only probes
         id: probe
         continue-on-error: true
         env:
           BASELINE_PATH: ${{ steps.baseline.outputs.path }}
+          BASELINE_PROVENANCE: ${{ steps.baseline.outputs.provenance }}
         shell: bash
         run: |
           baseline_args=()
           if [[ -n "${BASELINE_PATH}" ]]; then
-            baseline_args=(--baseline "${BASELINE_PATH}")
+            baseline_args=(
+              --baseline "${BASELINE_PATH}"
+              --baseline-provenance "${BASELINE_PROVENANCE}"
+              --baseline-run-id "${{ steps.baseline.outputs.run_id }}"
+              --baseline-commit "${{ steps.baseline.outputs.commit }}"
+            )
           fi
           uv run --python 3.14.6 python scripts/check_source_health.py \
-            "${baseline_args[@]}"
+            "${baseline_args[@]}" \
+            --repository "$GITHUB_REPOSITORY" \
+            --workflow ".github/workflows/source-health.yml" \
+            --branch "$GITHUB_REF_NAME" \
+            --conclusion success \
+            --run-id "$GITHUB_RUN_ID" \
+            --commit "$GITHUB_SHA" \
+            --observation-id "$GITHUB_RUN_ID"
       - name: Summarize schema drift
         if: always() && hashFiles('build/source-health.json') != ''
         shell: bash
@@ -78,7 +108,9 @@ jobs:
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: source-health-baseline
-          path: build/source-health.json
+          path: |
+            build/source-health.json
+            build/source-health-provenance.json
           if-no-files-found: error
           retention-days: 90
           overwrite: true

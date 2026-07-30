@@ -6,6 +6,10 @@ from pathlib import Path
 
 import httpx
 import pytest
+from scripts.check_source_health import (
+    BaselineProvenance,
+    load_trusted_baseline,
+)
 
 import global_medicines_atlas.source_health as source_health_module
 from global_medicines_atlas.acquisition import (
@@ -41,6 +45,62 @@ from global_medicines_atlas.source_health import (
 
 NOW = datetime(2026, 7, 29, tzinfo=UTC)
 FIXTURES = Path(__file__).parent / "fixtures" / "source_health"
+
+
+def test_baseline_requires_trusted_main_workflow_and_exact_digest(
+    tmp_path: Path,
+) -> None:
+    report = tmp_path / "source-health.json"
+    report.write_text(
+        json.dumps({"baseline": {"example": "a" * 64}}) + "\n",
+        encoding="utf-8",
+    )
+    provenance = BaselineProvenance.for_report(
+        report,
+        repository="edithatogo/global-medicines-atlas",
+        workflow=".github/workflows/source-health.yml",
+        branch="main",
+        conclusion="success",
+        run_id=41,
+        commit="b" * 40,
+        observation_id=41,
+    )
+    metadata = tmp_path / "source-health-provenance.json"
+    metadata.write_text(provenance.canonical_json(), encoding="utf-8")
+
+    assert load_trusted_baseline(
+        report,
+        metadata,
+        expected_repository="edithatogo/global-medicines-atlas",
+        expected_workflow=".github/workflows/source-health.yml",
+        current_observation_id=42,
+        expected_run_id=41,
+        expected_commit="b" * 40,
+    ) == {"example": "a" * 64}
+
+    for field, replacement in (
+        ("workflow", ".github/workflows/other.yml"),
+        ("branch", "feature"),
+        ("conclusion", "failure"),
+        ("report_sha256", "c" * 64),
+        ("observation_id", 42),
+        ("run_id", 40),
+        ("commit", "d" * 40),
+    ):
+        changed = provenance.model_copy(update={field: replacement})
+        metadata.write_text(changed.canonical_json(), encoding="utf-8")
+        with pytest.raises(
+            ValueError, match=r"baseline|successful|observation|digest"
+        ):
+            load_trusted_baseline(
+                report,
+                metadata,
+                expected_repository="edithatogo/global-medicines-atlas",
+                expected_workflow=".github/workflows/source-health.yml",
+                current_observation_id=42,
+                expected_run_id=41,
+                expected_commit="b" * 40,
+            )
 
 
 def source(
@@ -308,6 +368,30 @@ def test_download_endpoint_and_transport_failure_are_fail_honest() -> None:
     )
     assert result.state is ProbeState.UNAVAILABLE
     assert result.status_code is None
+
+
+def test_rate_limit_degrades_without_retrying_or_retaining_details() -> None:
+    requests = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal requests
+        requests += 1
+        return httpx.Response(
+            429,
+            headers={"retry-after": "3600"},
+            request=request,
+        )
+
+    result = probe_source(
+        source(),
+        checked_at=NOW,
+        transport=httpx.MockTransport(handler),
+    )
+
+    assert requests == 1
+    assert result.state is ProbeState.UNAVAILABLE
+    assert result.status_code == 429
+    assert "3600" not in result.detail
 
 
 def test_catalog_blocked_api_is_not_probed() -> None:

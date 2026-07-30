@@ -27,8 +27,8 @@ jobs:
     timeout-minutes: 20
     permissions:
       contents: read
-      id-token: write # Required for keyless provenance.
-      attestations: write # Required to attest the qualified bytes.
+    outputs:
+      qualified-set-digest: ${{ steps.qualified-set.outputs.digest }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
@@ -150,17 +150,30 @@ jobs:
               -eq "$(( $(wc -l < SHA256SUMS) + 1 ))"
           )
           chmod -R a-w build/release-stage
-      - name: Persist exact qualified assets
+      - name: Persist dry-run qualification evidence
+        if: ${{ !inputs.publish }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: dry-run-qualification-evidence-${{ github.run_id }}
+          path: build/release-stage/**
+          if-no-files-found: error
+          retention-days: 90
+      - name: Persist exact release-candidate assets
+        if: ${{ inputs.publish }}
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: qualified-release-assets-${{ github.run_id }}
           path: build/release-stage/**
           if-no-files-found: error
           retention-days: 90
-      - name: Attest exact qualified assets
-        uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3
-        with:
-          subject-path: build/release-stage/**
+      - name: Record exact qualified set digest
+        id: qualified-set
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd build/release-stage
+          digest="$(sha256sum SHA256SUMS | cut -d ' ' -f 1)"
+          echo "digest=${digest}" >> "$GITHUB_OUTPUT"
 
   draft-release:
     name: Create protected draft release
@@ -171,7 +184,9 @@ jobs:
     environment: release-publication
     permissions:
       actions: read # Required to download this run's qualified artifact.
+      attestations: write # Attest only after protected approval.
       contents: write # Required to create the new draft release.
+      id-token: write # Required for keyless approved-release provenance.
     steps:
       - name: Require an explicit new release tag
         shell: bash
@@ -186,6 +201,8 @@ jobs:
           name: qualified-release-assets-${{ github.run_id }}
           path: stage
       - name: Re-verify immutable asset set
+        env:
+          QUALIFIED_SET_DIGEST: ${{ needs.qualify.outputs.qualified-set-digest }}
         shell: bash
         run: |
           set -euo pipefail
@@ -194,8 +211,14 @@ jobs:
             sha256sum --check --strict SHA256SUMS
             test "$(find . -type f | wc -l)" \
               -eq "$(( $(wc -l < SHA256SUMS) + 1 ))"
+            test "$(sha256sum SHA256SUMS | cut -d ' ' -f 1)" \
+              = "$QUALIFIED_SET_DIGEST"
             chmod -R a-w .
           )
+      - name: Attest approved exact governed bytes
+        uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3
+        with:
+          subject-path: stage/**
       - name: Create a new draft release with qualified assets
         shell: bash
         env:
