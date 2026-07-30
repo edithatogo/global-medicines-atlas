@@ -276,6 +276,10 @@ pytest_add_cli_args_test_selection = [
   "tests/test_review_queue.py",
   "tests/test_product_contracts.py",
 ]
-also_copy = ["src/global_medicines_atlas/", "tests/fixtures/"]
+also_copy = [
+  "src/global_medicines_atlas/",
+  "tests/fixtures/",
+  "scripts/check_source_health.py",
+]
 mutate_only_covered_lines = true
 use_git_change_detection = false

@@ -610,6 +610,9 @@ def lane(name: str) -> None:
             "--cov-branch",
             "--cov-context=test",
             f"--cov-report=xml:coverage-{name}.xml",
+            # A lane report is intentionally partial. The blocking repository
+            # threshold is enforced once by the aggregate coverage profile.
+            "--cov-fail-under=0",
         )
     run(build_pytest_command(TEST_LANES[name], *extra))
 

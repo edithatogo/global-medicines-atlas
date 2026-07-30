@@ -296,6 +296,7 @@ def test_lane_coverage_uses_unique_context(monkeypatch) -> None:
 
     assert "--cov-report=xml:coverage-property.xml" in commands[0]
     assert "--cov-context=test" in commands[0]
+    assert "--cov-fail-under=0" in commands[0]
 
 
 def test_supply_chain_manages_tool_literals_and_scans_history() -> None:
