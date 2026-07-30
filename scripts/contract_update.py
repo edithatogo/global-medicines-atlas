@@ -77,6 +77,21 @@ def _verify_updates(updates: Mapping[Path, bytes]) -> None:
         _verify_content(path, content, label="published contract")
 
 
+def _canonical_contracts_are_coherent(
+    originals: Mapping[Path, bytes],
+) -> bool:
+    """Return true only when every canonical predecessor is readable and exact."""
+    for path, content in originals.items():
+        try:
+            if not path.is_file() or _digest(path.read_bytes()) != _digest(
+                content
+            ):
+                return False
+        except OSError:
+            return False
+    return True
+
+
 def replace_files_atomically(updates: Mapping[Path, bytes]) -> None:
     """Replace governed files, preserving verified recovery copies on failure."""
     originals = {path: path.read_bytes() for path in updates}
@@ -99,15 +114,10 @@ def replace_files_atomically(updates: Mapping[Path, bytes]) -> None:
             except Exception as restoration_error:
                 restoration_errors[path] = restoration_error
 
-        incoherent = {
-            path: safeguards[path]
-            for path, content in originals.items()
-            if not path.is_file()
-            or _digest(path.read_bytes()) != _digest(content)
-        }
-        if incoherent:
+        if not _canonical_contracts_are_coherent(originals):
             retain_safeguards = True
-            affected = ", ".join(str(path) for path in incoherent)
+            recovery_locations = dict(safeguards)
+            affected = ", ".join(str(path) for path in originals)
             detail = "; ".join(
                 f"{path}: {error}" for path, error in restoration_errors.items()
             )
@@ -115,7 +125,7 @@ def replace_files_atomically(updates: Mapping[Path, bytes]) -> None:
                 f"governed update failed and canonical restoration was "
                 f"incomplete for {affected}; verified predecessors are retained"
                 + (f" ({detail})" if detail else ""),
-                recovery_locations=incoherent,
+                recovery_locations=recovery_locations,
             ) from publication_error
         raise
     finally:

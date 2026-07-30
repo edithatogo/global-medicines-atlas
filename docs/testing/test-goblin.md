@@ -133,8 +133,11 @@ on native Windows. The harness reports that boundary explicitly.
   every target before publication. If publication and canonical rollback both
   fail, restoration is attempted for every replaced target and the raised
   `ContractUpdateError` exposes the retained, digest-verified recovery
-  locations. Operators must restore those predecessors before accepting any
-  partially published dependency contract.
+  locations. Missing, unreadable, or digest-mismatched canonical files make
+  the complete contract set incoherent; every verified predecessor safeguard
+  is then retained. Safeguards are removed only after every canonical target
+  is positively read and verified. Operators must restore those predecessors
+  before accepting any partially published dependency contract.
   Renovate never automerges.
 - A checksum-verified Gitleaks binary scans the complete Git history. Hosted
   checksum retrieval authenticates transport and the GitHub release location,

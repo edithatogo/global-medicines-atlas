@@ -418,8 +418,9 @@ def test_atomic_contract_update_retains_verified_safeguard_when_rollback_fails(
     assert first.read_bytes() == b"new first"
     assert second.read_bytes() == b"old second"
     recovery = raised.value.recovery_locations
-    assert set(recovery) == {first}
+    assert set(recovery) == {first, second}
     assert recovery[first].read_bytes() == b"old first"
+    assert recovery[second].read_bytes() == b"old second"
     assert "verified predecessors are retained" in str(raised.value)
 
 
@@ -462,8 +463,55 @@ def test_atomic_contract_update_attempts_every_target_restoration(
     assert second.read_bytes() == b"new second"
     assert third.read_bytes() == b"old third"
     recovery = raised.value.recovery_locations
-    assert set(recovery) == {second}
+    assert set(recovery) == {first, second, third}
+    assert recovery[first].read_bytes() == b"old first"
     assert recovery[second].read_bytes() == b"old second"
+    assert recovery[third].read_bytes() == b"old third"
+
+
+def test_atomic_contract_update_retains_safeguards_when_verification_read_fails(
+    tmp_path, monkeypatch
+) -> None:
+    """Unreadable canonical verification retains every verified predecessor."""
+    module = load_update_script("contract_update.py")
+    first = tmp_path / "first"
+    second = tmp_path / "second"
+    first.write_bytes(b"old first")
+    second.write_bytes(b"old second")
+    real_replace = module.os.replace
+    real_read_bytes = module.Path.read_bytes
+    replace_calls = 0
+    canonical_first_reads = 0
+
+    def fail_publication_and_rollback(source: Path, destination: Path) -> None:
+        nonlocal replace_calls
+        replace_calls += 1
+        if replace_calls in {2, 3}:
+            raise OSError(f"injected replace failure {replace_calls}")
+        real_replace(source, destination)
+
+    def fail_final_canonical_read(path: Path) -> bytes:
+        nonlocal canonical_first_reads
+        if path == first:
+            canonical_first_reads += 1
+            if canonical_first_reads >= 2:
+                raise OSError("injected canonical verification read failure")
+        return real_read_bytes(path)
+
+    monkeypatch.setattr(module.os, "replace", fail_publication_and_rollback)
+    monkeypatch.setattr(module.Path, "read_bytes", fail_final_canonical_read)
+
+    with pytest.raises(module.ContractUpdateError) as raised:
+        module.replace_files_atomically({
+            first: b"new first",
+            second: b"new second",
+        })
+
+    recovery = raised.value.recovery_locations
+    assert set(recovery) == {first, second}
+    assert real_read_bytes(recovery[first]) == b"old first"
+    assert real_read_bytes(recovery[second]) == b"old second"
+    assert all(path.is_file() for path in recovery.values())
 
 
 def test_renovate_coordinates_mojo_contract_update() -> None:
