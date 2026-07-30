@@ -27,6 +27,12 @@ real `pytest --collect-only` pass and fails if an explicit primary marker
 disagrees with the module's manifest lane. Other markers may describe secondary
 traits but cannot create a second primary execution assignment.
 
+The same `contracts` profile validates that the six CI lanes match the harness,
+that every lane uploads a distinct Codecov flag, that all external Actions use
+full commit SHAs, and that workflow setup literals agree with
+`quality/tool-versions.json`. These checks make CI topology part of the
+executable harness rather than relying on workflow review alone.
+
 Numeric promotion thresholds are machine-readable in `quality/budgets.json`
 and constrained by `quality/budgets.schema.json`. Phase 1 deliberately labels
 them `contract_only`: they define thresholds but do not claim that mutation or
@@ -40,6 +46,13 @@ and profiling lanes enforce supplied receipts through
 `TEST_GOBLIN_MUTATION_RECEIPT` and `TEST_GOBLIN_PERFORMANCE_RECEIPT`
 respectively, without manufacturing a receipt when none is supplied. Coverage
 is already blocking and reads its threshold directly from the validated budget.
+Measured receipts also bind the producing commit, command and SHA-256 identity
+of every retained artifact. The Scalene lane writes its receipt automatically.
+The Linux mutation lane writes one only when the mutation runner supplies
+numeric observations and an artifact through
+`TEST_GOBLIN_MUTATION_OBSERVATIONS` and
+`TEST_GOBLIN_MUTATION_ARTIFACT`; absence remains visible rather than being
+converted into invented evidence.
 
 ## Local Commands
 
@@ -99,10 +112,33 @@ on native Windows. The harness reports that boundary explicitly.
 - Mutation-score thresholds begin as measured evidence and become blocking once
   calibrated against the governed core.
 - Coverage is independently blocking above 90% (currently 91%) for both project and patch
-  coverage. Codecov uploads authenticate with GitHub OIDC.
+  coverage. Every primary lane uploads an independently named, non-carryforward
+  Codecov flag through GitHub OIDC, while the complete suite retains the `full`
+  context.
 - Scalene profiles are retained as CI artifacts for 14 days.
 - Renovate groups frontier dependency updates, rate-limits pull requests,
-  requires Dependency Dashboard approval for majors, and never automerges.
+  requires Dependency Dashboard approval for majors, manages governed Python,
+  uv, Pixi, actionlint, Gitleaks and Mojo-channel literals, and never
+  automerges.
+- A checksum-verified Gitleaks binary scans the complete Git history. Hosted
+  GitHub secret scanning and push protection remain external controls requiring
+  dated verification; workflow presence does not prove that they are enabled.
+
+## Static-analysis scope
+
+Ruff is the consolidated formatting and routine lint gate over the repository.
+Its test exemptions are deliberate: pytest assertions, literal expectations,
+and inferred fixture annotations remain executable specification rather than
+production API documentation. Script `print` calls are allowed only where a
+command-line script intentionally reports an artifact or status.
+
+`ty` is the fast routine type gate for `src/` and `sources/`. BasedPyright is
+the strict formal gate and additionally includes `scripts/`, where subprocess,
+CLI and optional-tool boundaries require the more mature checker. This
+asymmetry is intentional and executable in `pyproject.toml`; new production
+packages must enter both scopes, while script inclusion in `ty` will be
+promoted only after its Python 3.14 subprocess and dynamic-import behavior is
+compatible.
 
 The initial governed NZ FHIR adapter suite is the first operational slice.
 Additional source adapters enter the profile as their contracts are migrated.

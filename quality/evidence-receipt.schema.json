@@ -11,6 +11,25 @@
     "evidence_state": {"enum": ["contract_only", "measured"]},
     "commit": {"type": "string", "minLength": 7},
     "generated_at": {"type": "string", "format": "date-time"},
+    "command": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string"}
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sha256", "size_bytes"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "size_bytes": {"type": "integer", "minimum": 0}
+        }
+      }
+    },
     "observations": {
       "type": "object",
       "minProperties": 1,
@@ -39,7 +58,13 @@
         "required": ["evidence_state"]
       },
       "then": {
-        "required": ["commit", "generated_at", "observations"]
+        "required": [
+          "commit",
+          "generated_at",
+          "command",
+          "artifacts",
+          "observations"
+        ]
       }
     }
   ]

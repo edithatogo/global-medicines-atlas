@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import re
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -159,3 +160,99 @@ def test_contract_profile_validates_before_running_pytest(monkeypatch) -> None:
 
     assert len(commands) == 1
     assert "--collect-only" in commands[0]
+
+
+def test_ci_contracts_cover_every_lane_and_codecov_context() -> None:
+    """CI and Codecov expose one independently observable context per lane."""
+    result = HARNESS.validate_ci_contracts()
+
+    assert result["lanes"] == sorted(HARNESS.PRIMARY_LANES)
+    assert result["coverage_flags"] == sorted(HARNESS.PRIMARY_LANES)
+
+
+def test_every_external_action_is_pinned_to_a_commit() -> None:
+    """Mutable action tags cannot enter governed workflow execution."""
+    actions = HARNESS.validate_action_pins()
+
+    assert actions
+    assert all(
+        re.fullmatch(r"[^@\s]+@[0-9a-f]{40}", action) for action in actions
+    )
+
+
+def test_tool_versions_match_governed_workflow_literals() -> None:
+    """Workflow setup literals remain aligned with one governed manifest."""
+    versions = HARNESS.validate_tool_versions()
+
+    assert versions["python"] == "3.14.6"
+    assert versions["uv"] == "0.11.29"
+    assert versions["pixi"] == "0.73.0"
+    assert versions["gitleaks"] == "8.30.1"
+    assert versions["runner"] == "ubuntu-24.04"
+
+
+def test_measured_receipt_records_artifact_identity(
+    tmp_path, monkeypatch
+) -> None:
+    """Measured evidence is durable and bound to the exact output bytes."""
+    artifact = tmp_path / "profile.json"
+    artifact.write_bytes(b'{"elapsed_seconds":1.25}\n')
+    output = tmp_path / "receipt.json"
+    monkeypatch.setattr(HARNESS, "git_commit", lambda: "a" * 40)
+    monkeypatch.setenv("SOURCE_DATE_EPOCH", "0")
+
+    receipt = HARNESS.write_quality_receipt(
+        kind="performance",
+        observations={"elapsed_seconds": 1.25},
+        output_path=output,
+        artifacts=[artifact],
+        command=["scalene", "run"],
+    )
+
+    validated = HARNESS.validate_quality_receipt(
+        output, expected_kind="performance", enforce=True
+    )
+    assert validated == receipt
+    assert receipt["artifacts"][0]["path"] == artifact.as_posix()
+    assert receipt["artifacts"][0]["sha256"] == (
+        "eff0c2ee96cc14abfc22d9f8d0ce1a7cfe076363a5b21fd6ba406241a73b77e2"
+    )
+
+
+def test_lane_coverage_uses_unique_context(monkeypatch) -> None:
+    """Each primary lane can emit a uniquely named coverage document."""
+    commands: list[list[str]] = []
+    monkeypatch.setattr(HARNESS, "run", commands.append)
+    monkeypatch.setenv("TEST_GOBLIN_COVERAGE", "1")
+
+    HARNESS.lane("property")
+
+    assert "--cov-report=xml:coverage-property.xml" in commands[0]
+    assert "--cov-context=test" in commands[0]
+
+
+def test_supply_chain_manages_tool_literals_and_scans_history() -> None:
+    """Dependency automation and leak detection cover governed non-PEP tools."""
+    renovate = json.loads((ROOT / "renovate.json").read_text())
+    managers = renovate["customManagers"]
+    managed = "\n".join(
+        expression
+        for manager in managers
+        for expression in manager["matchStrings"]
+    )
+    security = (
+        ROOT / ".github" / "workflows" / "security-context.yml"
+    ).read_text()
+
+    for tool in (
+        "python",
+        "uv",
+        "pixi",
+        "actionlint",
+        "gitleaks",
+        "mojo_channel",
+    ):
+        assert f'"{tool}":' in managed
+    assert "fetch-depth: 0" in security
+    assert "./gitleaks git --redact" in security
+    assert "GITLEAKS_SHA256:" in security

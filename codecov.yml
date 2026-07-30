@@ -14,6 +14,22 @@ coverage:
         target: 90.01%
         threshold: 0%
 
+flags:
+  unit:
+    carryforward: false
+  integration:
+    carryforward: false
+  e2e:
+    carryforward: false
+  smoke:
+    carryforward: false
+  property:
+    carryforward: false
+  edge:
+    carryforward: false
+  full:
+    carryforward: false
+
 comment:
   layout: "reach,diff,flags,files"
   behavior: default

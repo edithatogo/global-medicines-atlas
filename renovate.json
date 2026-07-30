@@ -35,6 +35,61 @@
       "matchStrings": ["(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
       "depNameTemplate": "python",
       "datasourceTemplate": "python-version"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^quality\\/tool-versions\\.json$/"],
+      "matchStrings": [
+        "\"python\": \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+      ],
+      "depNameTemplate": "python",
+      "datasourceTemplate": "python-version"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^quality\\/tool-versions\\.json$/"],
+      "matchStrings": [
+        "\"uv\": \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+      ],
+      "depNameTemplate": "astral-sh/uv",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^quality\\/tool-versions\\.json$/"],
+      "matchStrings": [
+        "\"pixi\": \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+      ],
+      "depNameTemplate": "prefix-dev/pixi",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^quality\\/tool-versions\\.json$/"],
+      "matchStrings": [
+        "\"actionlint\": \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+      ],
+      "depNameTemplate": "rhysd/actionlint",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^quality\\/tool-versions\\.json$/"],
+      "matchStrings": [
+        "\"gitleaks\": \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+      ],
+      "depNameTemplate": "gitleaks/gitleaks",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^quality\\/tool-versions\\.json$/"],
+      "matchStrings": [
+        "\"mojo_channel\": \"(?<currentValue>[^\"]+)\""
+      ],
+      "depNameTemplate": "modular/modular",
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "loose"
     }
   ],
   "packageRules": [

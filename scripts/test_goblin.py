@@ -3,12 +3,17 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import platform
+import re
+import shutil
 import subprocess
 import sys
+import time
 from collections.abc import Sequence
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Protocol, cast
 
@@ -20,6 +25,9 @@ QUALITY_BUDGETS_SCHEMA_PATH = PROJECT_ROOT / "quality" / "budgets.schema.json"
 QUALITY_RECEIPT_SCHEMA_PATH = (
     PROJECT_ROOT / "quality" / "evidence-receipt.schema.json"
 )
+TOOL_VERSIONS_PATH = PROJECT_ROOT / "quality" / "tool-versions.json"
+WORKFLOWS_PATH = PROJECT_ROOT / ".github" / "workflows"
+CODECOV_PATH = PROJECT_ROOT / "codecov.yml"
 PRIMARY_LANES = frozenset({
     "unit",
     "integration",
@@ -127,6 +135,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_publication_package.py",
         "tests/test_publication_transport.py",
         "tests/test_clean_room_rehearsal.py",
+        "tests/test_recovery.py",
     ),
     "e2e": (
         "tests/test_canonical_nz_adapter.py",
@@ -143,6 +152,8 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_edge_cases.py",
         "tests/test_matching_adversarial.py",
         "tests/test_atlas_accessibility.py",
+        "tests/test_archive_safety.py",
+        "tests/test_parser_safety.py",
     ),
 }
 
@@ -177,6 +188,161 @@ def load_quality_budgets() -> dict[str, object]:
         document, schema
     )
     return document
+
+
+def validate_ci_contracts() -> dict[str, list[str]]:
+    """Validate lane execution and independently visible Codecov contexts."""
+    workflow = (WORKFLOWS_PATH / "test-goblin.yml").read_text(encoding="utf-8")
+    codecov = CODECOV_PATH.read_text(encoding="utf-8")
+    lane_match = re.search(r"lane:\s*\[([^\]]+)\]", workflow)
+    if lane_match is None:
+        raise ValueError("test workflow has no explicit lane matrix")
+    lanes = sorted(
+        value.strip()
+        for value in lane_match.group(1).split(",")
+        if value.strip()
+    )
+    expected = sorted(PRIMARY_LANES)
+    if lanes != expected:
+        raise ValueError(f"CI lanes differ from harness: {lanes} != {expected}")
+    if 'TEST_GOBLIN_COVERAGE: "1"' not in workflow:
+        raise ValueError("lane-specific coverage is not enabled")
+    if "flags: ${{ matrix.lane }}" not in workflow:
+        raise ValueError("Codecov upload is not bound to the lane")
+    coverage_flags = sorted(
+        flag
+        for flag in PRIMARY_LANES
+        if re.search(rf"(?m)^\s{{2}}{re.escape(flag)}:\s*$", codecov)
+    )
+    if coverage_flags != expected:
+        raise ValueError(
+            f"Codecov flags differ from harness: {coverage_flags} != {expected}"
+        )
+    return {"lanes": lanes, "coverage_flags": coverage_flags}
+
+
+def validate_action_pins() -> list[str]:
+    """Return external actions after rejecting every mutable reference."""
+    actions: list[str] = []
+    for workflow_path in sorted(WORKFLOWS_PATH.glob("*.yml")):
+        workflow = workflow_path.read_text(encoding="utf-8")
+        for match in re.finditer(r"(?m)^\s*-\s*uses:\s*([^\s#]+)", workflow):
+            action = match.group(1)
+            if action.startswith("./"):
+                continue
+            if re.fullmatch(r"[^@\s]+@[0-9a-f]{40}", action) is None:
+                raise ValueError(
+                    f"{workflow_path.relative_to(PROJECT_ROOT)} uses mutable "
+                    f"action reference {action}"
+                )
+            actions.append(action)
+    if not actions:
+        raise ValueError("no external GitHub Actions found")
+    return actions
+
+
+def validate_tool_versions() -> dict[str, str]:
+    """Validate governed tool versions against workflow setup literals."""
+    document = json.loads(TOOL_VERSIONS_PATH.read_text(encoding="utf-8"))
+    schema = json.loads(
+        (PROJECT_ROOT / "quality" / "tool-versions.schema.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    jsonschema.validate(document, schema)  # pyright: ignore[reportUnknownMemberType]
+    versions = cast(
+        "dict[str, str]",
+        document["versions"],
+    )
+    workflow_text = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in sorted(WORKFLOWS_PATH.glob("*.yml"))
+    )
+    required_literals = {
+        "python": f"--python {versions['python']}",
+        "uv": f'version: "{versions["uv"]}"',
+        "pixi": f'pixi-version: "v{versions["pixi"]}"',
+        "actionlint": f"ACTIONLINT_VERSION: {versions['actionlint']}",
+        "gitleaks": f"GITLEAKS_VERSION: {versions['gitleaks']}",
+        "runner": f"runs-on: {versions['runner']}",
+    }
+    missing = [
+        tool
+        for tool, literal in required_literals.items()
+        if literal not in workflow_text
+    ]
+    if missing:
+        raise ValueError(f"governed tool literals missing from CI: {missing}")
+    governed_workflows = (
+        "dependency-review.yml",
+        "security-context.yml",
+        "test-goblin.yml",
+    )
+    for workflow_name in governed_workflows:
+        workflow = (WORKFLOWS_PATH / workflow_name).read_text(encoding="utf-8")
+        if "runs-on: ubuntu-latest" in workflow:
+            raise ValueError(f"{workflow_name} uses mutable runner label")
+    return versions
+
+
+def git_commit() -> str:
+    """Return the exact commit bound to a durable quality receipt."""
+    executable = shutil.which("git")
+    if executable is None:
+        raise RuntimeError("git is required to bind quality receipts")
+    completed = subprocess.run(
+        [executable, "rev-parse", "HEAD"],
+        cwd=PROJECT_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return completed.stdout.strip()
+
+
+def _generated_at() -> str:
+    epoch = os.environ.get("SOURCE_DATE_EPOCH")
+    instant = (
+        datetime.fromtimestamp(int(epoch), tz=UTC)
+        if epoch is not None
+        else datetime.now(tz=UTC)
+    )
+    return instant.isoformat().replace("+00:00", "Z")
+
+
+def write_quality_receipt(
+    *,
+    kind: str,
+    observations: dict[str, float],
+    output_path: Path,
+    artifacts: Sequence[Path],
+    command: Sequence[str],
+) -> dict[str, Any]:
+    """Write measured evidence bound to the commit and exact artifact bytes."""
+    receipt: dict[str, Any] = {
+        "schema_version": "1.0.0",
+        "kind": kind,
+        "evidence_state": "measured",
+        "commit": git_commit(),
+        "generated_at": _generated_at(),
+        "command": list(command),
+        "observations": observations,
+        "artifacts": [
+            {
+                "path": artifact.as_posix(),
+                "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+                "size_bytes": artifact.stat().st_size,
+            }
+            for artifact in artifacts
+        ],
+    }
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(
+        json.dumps(receipt, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    validate_quality_receipt(output_path, expected_kind=kind, enforce=True)
+    return receipt
 
 
 ALL_TESTS = validate_test_inventory()
@@ -268,6 +434,9 @@ def contracts() -> None:
     """Validate cheap inventory and budget contracts without executing evidence."""
     validate_test_inventory()
     load_quality_budgets()
+    validate_ci_contracts()
+    validate_action_pins()
+    validate_tool_versions()
     validate_collection()
 
 
@@ -297,7 +466,16 @@ def quick() -> None:
 
 def lane(name: str) -> None:
     """Run one explicit test architecture lane."""
-    run(build_pytest_command(TEST_LANES[name]))
+    extra: tuple[str, ...] = ()
+    if os.environ.get("TEST_GOBLIN_COVERAGE") == "1":
+        extra = (
+            "--cov=global_medicines_atlas",
+            "--cov=sources.nz.nzulm_fhir",
+            "--cov-branch",
+            "--cov-context=test",
+            f"--cov-report=xml:coverage-{name}.xml",
+        )
+    run(build_pytest_command(TEST_LANES[name], *extra))
 
 
 def coverage() -> None:
@@ -341,7 +519,7 @@ def package() -> None:
 
 def profile() -> None:
     """Exercise the canonical workload under Scalene and emit an HTML report."""
-    run([
+    command = [
         "uv",
         "run",
         "--group",
@@ -353,7 +531,20 @@ def profile() -> None:
         "--outfile",
         "scalene-profile.json",
         "scripts/profile_smoke.py",
-    ])
+    ]
+    started = time.perf_counter()
+    run(command)
+    elapsed_seconds = time.perf_counter() - started
+    write_quality_receipt(
+        kind="performance",
+        observations={"elapsed_seconds": elapsed_seconds},
+        output_path=PROJECT_ROOT
+        / "build"
+        / "quality-receipts"
+        / "profile.json",
+        artifacts=[PROJECT_ROOT / "scalene-profile.json"],
+        command=command,
+    )
     enforce_optional_receipt("performance")
 
 
@@ -364,7 +555,22 @@ def mutation() -> None:
             "mutmut 3 requires fork support. Run the mutation profile in WSL "
             "or use the authoritative Linux CI lane."
         )
-    run([sys.executable, "-m", "mutmut", "run"])
+    command = [sys.executable, "-m", "mutmut", "run"]
+    run(command)
+    configured = os.environ.get("TEST_GOBLIN_MUTATION_OBSERVATIONS")
+    artifact = os.environ.get("TEST_GOBLIN_MUTATION_ARTIFACT")
+    if configured is not None and artifact is not None:
+        observations = cast("dict[str, float]", json.loads(configured))
+        write_quality_receipt(
+            kind="mutation",
+            observations=observations,
+            output_path=PROJECT_ROOT
+            / "build"
+            / "quality-receipts"
+            / "mutation.json",
+            artifacts=[Path(artifact)],
+            command=command,
+        )
     enforce_optional_receipt("mutation")
 
 
