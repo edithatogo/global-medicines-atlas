@@ -59,4 +59,4 @@
 - [x] Task: Align source capability claims with catalog integration maturity and add semantic qualification states without inventing live evidence `0cebcdf`
 - [x] Task: Validate marker-aware pytest collection and wire machine-readable coverage and evidence-budget boundaries into Test-Goblin `30763b1`
 - [x] Task: Preserve legacy dimension-aware source declarations and archived publication qualification tests `0cebcdf`
-- [~] Task: Re-run complete Phase 1 verification after review fixes — local gate passed, but independent review found unresolved production host admission and DNS connection-binding defects; correction and re-review are in progress
+- [x] Task: Re-run complete Phase 1 verification after review fixes — governed host admission, validated-IP binding, redirect revalidation, TLS authority isolation and policy-driven redirect limits passed independent review; 875 passed, 7 expected Windows symlink skips; 93.89% branch coverage; Test-Goblin collected 881 tests; Ruff, ty, BasedPyright strict and context validation passed `1ebdc4d` `57e8e36` `2f414e8`
