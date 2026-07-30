@@ -9,7 +9,8 @@ recovery controls.
 `global_medicines_atlas.parser_safety` is the shared XML boundary used by the
 PBS, Pharmac, Union Register, and NICE XML adapters. It:
 
-- rejects DTD and entity declarations;
+- rejects DTD and entity declarations from parser grammar events, independent
+  of UTF-8 or UTF-16 document encoding and declaration formatting;
 - feeds the parser in bounded chunks;
 - limits payload bytes, XML depth, element count, and aggregate text bytes;
 - fails closed on malformed or structurally excessive input.
@@ -22,10 +23,12 @@ input tests.
 
 `global_medicines_atlas.archive_safety.extract_zip` validates the complete ZIP
 directory before writing files. It rejects absolute or traversing paths,
-Windows drive paths, duplicate names, symlinks, encryption, excessive nesting,
-entry counts, declared sizes, aggregate sizes, and decompression ratios.
-Content is streamed into a sibling staging directory and moved into an empty
-destination only after each member's declared size is confirmed.
+Windows drive and alternate-data-stream paths, reserved or ambiguous Windows
+names, portable case-insensitive collisions, symlinks, encryption, excessive
+nesting, entry counts, declared sizes, aggregate sizes, and decompression
+ratios. Content is streamed into a sibling staging tree and that complete tree
+is published to a previously absent destination with one directory rename only
+after each member's declared size is confirmed.
 
 The returned extraction receipt binds the archive digest to sorted member
 paths, sizes, and SHA-256 digests. Archive extraction must use this boundary;
@@ -40,7 +43,8 @@ governed artifact directories:
    a new bundle, and writes a content-addressed `receipt.json`.
 2. `restore_backup` verifies the receipt and every payload digest before
    staging a replacement. An existing destination is atomically renamed to a
-   sibling rollback directory.
+   sibling rollback directory. If replacement publication fails, the retained
+   predecessor is immediately restored before the operation raises.
 3. `rollback_restore` quarantines the restored tree and reinstates the retained
    predecessor.
 

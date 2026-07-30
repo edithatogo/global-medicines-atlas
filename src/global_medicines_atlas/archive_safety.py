@@ -30,6 +30,11 @@ class ArchivePolicy:
 
 DEFAULT_ARCHIVE_POLICY = ArchivePolicy()
 ZIP_UNIX_SYSTEM = 3
+WINDOWS_RESERVED_NAMES = frozenset(
+    {"CON", "PRN", "AUX", "NUL"}
+    | {f"COM{number}" for number in range(1, 10)}
+    | {f"LPT{number}" for number in range(1, 10)}
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -53,12 +58,22 @@ def _member_path(name: str, policy: ArchivePolicy) -> PurePosixPath:
         path.is_absolute()
         or not path.parts
         or any(part in {"", ".", ".."} for part in path.parts)
-        or (path.parts and ":" in path.parts[0])
+        or any(
+            ":" in part
+            or part.endswith((".", " "))
+            or part.rstrip(" .").split(".", maxsplit=1)[0].upper()
+            in WINDOWS_RESERVED_NAMES
+            for part in path.parts
+        )
     ):
         raise ArchiveSafetyError(f"unsafe member path: {name}")
     if len(path.parts) > policy.max_path_depth:
         raise ArchiveSafetyError(f"archive nesting depth exceeded: {name}")
     return path
+
+
+def _portable_path_key(path: PurePosixPath) -> tuple[str, ...]:
+    return tuple(part.rstrip(" .").casefold() for part in path.parts)
 
 
 def _is_symlink(info: zipfile.ZipInfo) -> bool:
@@ -76,12 +91,13 @@ def _validate_members(
         raise ArchiveSafetyError("archive entry count limit exceeded")
     total = 0
     members: list[tuple[zipfile.ZipInfo, PurePosixPath]] = []
-    seen: set[PurePosixPath] = set()
+    seen: set[tuple[str, ...]] = set()
     for info in infos:
         path = _member_path(info.filename, policy)
-        if path in seen:
+        portable_key = _portable_path_key(path)
+        if portable_key in seen:
             raise ArchiveSafetyError(f"duplicate archive member: {path}")
-        seen.add(path)
+        seen.add(portable_key)
         if info.flag_bits & 0x1:
             raise ArchiveSafetyError("encrypted archive members are forbidden")
         if _is_symlink(info):
@@ -142,9 +158,9 @@ def extract_zip(
         raise ArchiveSafetyError("archive byte limit exceeded")
     if destination.is_symlink():
         raise ArchiveSafetyError("destination must not be a symlink")
-    destination.mkdir(parents=True, exist_ok=True)
-    if any(destination.iterdir()):
-        raise ArchiveSafetyError("destination must be empty")
+    if destination.exists():
+        raise ArchiveSafetyError("destination must not exist")
+    destination.parent.mkdir(parents=True, exist_ok=True)
 
     try:
         archive = zipfile.ZipFile(BytesIO(payload))
@@ -159,7 +175,8 @@ def extract_zip(
             dir=destination.parent,
             prefix=f".{destination.name}.extract-",
         ) as temporary:
-            staging = Path(temporary)
+            staging = Path(temporary) / "payload"
+            staging.mkdir()
             for info, relative in members:
                 target = staging.joinpath(*relative.parts)
                 result = _extract_member(archive, info, target, policy)
@@ -170,8 +187,7 @@ def extract_zip(
                         size_bytes=result.size_bytes,
                     )
                 )
-            for child in staging.iterdir():
-                child.replace(destination / child.name)
+            staging.replace(destination)
     extracted.sort(key=lambda item: item.path)
     return ExtractionReceipt(
         archive_sha256=hashlib.sha256(payload).hexdigest(),

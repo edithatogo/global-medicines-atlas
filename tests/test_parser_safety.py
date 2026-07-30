@@ -21,6 +21,30 @@ def test_parse_xml_rejects_dtd_entities_and_oversized_payloads() -> None:
         parse_xml(b"<x>12345</x>", policy=ParserPolicy(max_bytes=8))
 
 
+@pytest.mark.parametrize(
+    ("encoding", "declaration"),
+    [
+        ("utf-8", '<?xml version="1.0" encoding="UTF-8"?>'),
+        ("utf-16", '<?xml version="1.0" encoding="UTF-16"?>'),
+        ("utf-16-le", '<?xml version="1.0" encoding="UTF-16LE"?>'),
+        ("utf-16-be", '<?xml version="1.0" encoding="UTF-16BE"?>'),
+    ],
+)
+@pytest.mark.parametrize("spacing", [" ", "\n\t"])
+def test_parse_xml_rejects_encoded_and_obfuscated_dtds(
+    encoding: str,
+    declaration: str,
+    spacing: str,
+) -> None:
+    document = (
+        f"{declaration}<!DOCTYPE{spacing}x "
+        '[<!ENTITY payload "expanded">]><x>&payload;</x>'
+    )
+
+    with pytest.raises(ParserSafetyError, match="DTD or entity"):
+        parse_xml(document.encode(encoding))
+
+
 def test_parse_xml_enforces_depth_element_and_text_limits() -> None:
     with pytest.raises(ParserSafetyError, match="nesting depth"):
         parse_xml(
@@ -47,3 +71,19 @@ def test_parse_xml_depth_boundary_is_deterministic(depth: int) -> None:
     root = parse_xml(payload, policy=policy)
 
     assert root.tag == "x"
+
+
+@given(
+    st.sampled_from(["utf-8", "utf-16", "utf-16-le", "utf-16-be"]),
+    st.sampled_from([" ", "\n", "\r\n\t"]),
+)
+def test_parse_xml_declaration_rejection_is_encoding_independent(
+    encoding: str,
+    whitespace: str,
+) -> None:
+    declaration = (
+        f'<?xml version="1.0"?><!DOCTYPE{whitespace}root><root />'
+    ).encode(encoding)
+
+    with pytest.raises(ParserSafetyError, match="DTD or entity"):
+        parse_xml(declaration)

@@ -163,7 +163,20 @@ def restore_backup(bundle: Path, destination: Path) -> RestoreReceipt:
             raise RecoveryError("staged restore verification failed")
         if destination.exists():
             destination.replace(rollback)
-        staging.replace(destination)
+        try:
+            staging.replace(destination)
+        except OSError as error:
+            if rollback.exists() and not destination.exists():
+                try:
+                    rollback.replace(destination)
+                except OSError as recovery_error:
+                    raise RecoveryError(
+                        "restore publication failed and the predecessor "
+                        "could not be recovered"
+                    ) from recovery_error
+            raise RecoveryError(
+                "restore publication failed; predecessor recovered"
+            ) from error
     return RestoreReceipt(
         backup_receipt_id=receipt.receipt_id,
         destination=destination,

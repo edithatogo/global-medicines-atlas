@@ -8,6 +8,7 @@ from typing import cast
 from xml.etree import (  # ruff: ignore[suspicious-xml-etree-import]
     ElementTree as ET,
 )
+from xml.parsers import expat
 
 
 class ParserSafetyError(ValueError):
@@ -39,6 +40,36 @@ class ParserPolicy:
 
 
 DEFAULT_PARSER_POLICY = ParserPolicy()
+
+
+def _reject_declarations(payload: bytes) -> None:
+    """Use Expat's decoded grammar events to reject dangerous declarations."""
+    parser = expat.ParserCreate()
+
+    def reject(*_args: object) -> None:
+        raise ParserSafetyError("XML payload must not contain a DTD or entity")
+
+    def reject_external(
+        _context: str,
+        _base: str | None,
+        _system_id: str | None,
+        _public_id: str | None,
+    ) -> int:
+        raise ParserSafetyError("XML payload must not contain a DTD or entity")
+
+    parser.StartDoctypeDeclHandler = reject
+    parser.EntityDeclHandler = reject
+    parser.UnparsedEntityDeclHandler = reject
+    parser.ExternalEntityRefHandler = reject_external
+    try:
+        parser.Parse(
+            payload,
+            True,  # ruff: ignore[boolean-positional-value-in-call]
+        )
+    except ParserSafetyError:
+        raise
+    except expat.ExpatError as error:
+        raise ParserSafetyError("XML payload is not well formed") from error
 
 
 def _consume_events(
@@ -79,9 +110,7 @@ def parse_xml(
     """Parse XML incrementally while enforcing structural resource ceilings."""
     if len(payload) > policy.max_bytes:
         raise ParserSafetyError("XML payload exceeds the byte limit")
-    upper = payload.upper()
-    if b"<!DOCTYPE" in upper or b"<!ENTITY" in upper:
-        raise ParserSafetyError("XML payload must not contain a DTD or entity")
+    _reject_declarations(payload)
 
     parser: ET.XMLPullParser[ET.Element] = ET.XMLPullParser(
         events=("start", "end")

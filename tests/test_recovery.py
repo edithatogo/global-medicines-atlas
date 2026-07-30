@@ -58,3 +58,70 @@ def test_restore_rejects_tampering_and_symlinks(tmp_path: Path) -> None:
         pytest.skip("symlinks unavailable")
     with pytest.raises(RecoveryError, match="symlink"):
         create_backup(source, tmp_path / "linked")
+
+
+def test_restore_publication_failure_recovers_predecessor(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "state.txt").write_text("backup", encoding="utf-8")
+    bundle = tmp_path / "bundle"
+    create_backup(source, bundle)
+    destination = tmp_path / "canonical"
+    destination.mkdir()
+    (destination / "state.txt").write_text("current", encoding="utf-8")
+    original_replace = Path.replace
+    publication_attempts = 0
+
+    def fail_replacement(path: Path, target: Path) -> Path:
+        nonlocal publication_attempts
+        if path.name == "restored" and target == destination:
+            publication_attempts += 1
+            raise OSError("injected publication failure")
+        return original_replace(path, target)
+
+    monkeypatch.setattr(Path, "replace", fail_replacement)
+
+    with pytest.raises(RecoveryError, match="predecessor recovered"):
+        restore_backup(bundle, destination)
+
+    assert publication_attempts == 1
+    assert (destination / "state.txt").read_text(encoding="utf-8") == "current"
+    assert not destination.with_name(".canonical.rollback").exists()
+
+
+@pytest.mark.parametrize("destination_state", ["absent", "existing"])
+def test_restore_failure_never_leaves_canonical_destination_partial(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    destination_state: str,
+) -> None:
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "a").write_bytes(b"a")
+    (source / "nested").mkdir()
+    (source / "nested/b").write_bytes(b"b")
+    bundle = tmp_path / "bundle"
+    create_backup(source, bundle)
+    destination = tmp_path / "canonical"
+    if destination_state == "existing":
+        destination.mkdir()
+        (destination / "old").write_bytes(b"old")
+    original_replace = Path.replace
+
+    def fail_replacement(path: Path, target: Path) -> Path:
+        if path.name == "restored" and target == destination:
+            raise OSError("injected publication failure")
+        return original_replace(path, target)
+
+    monkeypatch.setattr(Path, "replace", fail_replacement)
+
+    with pytest.raises(RecoveryError, match="publication failed"):
+        restore_backup(bundle, destination)
+
+    if destination_state == "existing":
+        assert sorted(path.name for path in destination.iterdir()) == ["old"]
+    else:
+        assert not destination.exists()
