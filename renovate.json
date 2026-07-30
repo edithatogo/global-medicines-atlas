@@ -155,7 +155,18 @@
       "description": "Keep explicitly experimental dependencies review-gated",
       "matchPackageNames": ["pytest-gremlins", "mojo"],
       "dependencyDashboardApproval": true,
-      "minimumReleaseAge": "14 days"
+      "minimumReleaseAge": "14 days",
+      "postUpgradeTasks": {
+        "commands": [
+          "python scripts/update_mojo_contract.py {{{newVersion}}} --channel max-nightly"
+        ],
+        "fileFilters": [
+          "quality/tool-versions.json",
+          "pixi.toml",
+          "pixi.lock"
+        ],
+        "executionMode": "branch"
+      }
     },
     {
       "matchManagers": [

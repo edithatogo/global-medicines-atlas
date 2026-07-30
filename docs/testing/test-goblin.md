@@ -120,11 +120,21 @@ on native Windows. The harness reports that boundary explicitly.
 - Renovate groups frontier dependency updates, rate-limits pull requests,
   requires Dependency Dashboard approval for majors, coordinates governed
   Python, uv, Pixi, actionlint and Gitleaks literals, and manages the exact
-  Mojo dependency through Pixi. Gitleaks updates remain fail-closed until
-  `scripts/update_gitleaks_contract.py VERSION` downloads the selected Linux
-  x64 release asset and updates its digest-bound manifest/workflow contract.
+  Mojo dependency through Pixi. Mojo updates run
+  `scripts/update_mojo_contract.py VERSION`, which prepares a fresh Pixi lock
+  and transactionally publishes the manifest, exact requirement, channel and
+  lock. The Renovate bot must explicitly allow this post-upgrade command;
+  otherwise the update fails closed for maintainer review. Gitleaks updates
+  remain fail-closed until `scripts/update_gitleaks_contract.py VERSION`
+  verifies the selected Linux x64 asset against the checksum manifest attached
+  to the same official GitHub release and transactionally updates its
+  digest-bound manifest/workflow contract.
   Renovate never automerges.
 - A checksum-verified Gitleaks binary scans the complete Git history. Hosted
+  checksum retrieval authenticates transport and the GitHub release location,
+  but the upstream checksum manifest is not independently signed by this
+  workflow; it is not equivalent to signature or attestation verification.
+  Hosted
   GitHub secret scanning and push protection remain external controls requiring
   dated verification; workflow presence does not prove that they are enabled.
 

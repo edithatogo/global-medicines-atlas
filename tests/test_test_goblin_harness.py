@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import re
+import sys
 from pathlib import Path
-from types import SimpleNamespace
+from types import ModuleType, SimpleNamespace
 
 import jsonschema
 import pytest
@@ -19,6 +21,19 @@ assert SPEC is not None
 assert SPEC.loader is not None
 HARNESS = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(HARNESS)
+
+
+def load_update_script(name: str) -> ModuleType:
+    """Load a governed update utility with its sibling imports available."""
+    scripts = str(ROOT / "scripts")
+    if scripts not in sys.path:
+        sys.path.insert(0, scripts)
+    spec = importlib.util.spec_from_file_location(name, ROOT / "scripts" / name)
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def test_primary_lane_inventory_is_complete_and_unique() -> None:
@@ -311,6 +326,100 @@ def test_supply_chain_manages_tool_literals_and_scans_history() -> None:
     assert "./gitleaks git --redact" in security
     assert "GITLEAKS_SHA256:" in security
     assert "GITLEAKS_ASSET:" in security
+
+
+def test_gitleaks_rejects_publisher_checksum_mismatch(monkeypatch) -> None:
+    """Downloaded bytes must match the publisher release checksum manifest."""
+    module = load_update_script("update_gitleaks_contract.py")
+    asset = "gitleaks_9.0.0_linux_x64.tar.gz"
+    manifest = f"{'0' * 64}  {asset}\n".encode()
+    monkeypatch.setattr(
+        module,
+        "download",
+        lambda url: manifest if url.endswith("checksums.txt") else b"archive",
+    )
+
+    with pytest.raises(ValueError, match="publisher checksum mismatch"):
+        module.verified_asset_digest("9.0.0", asset)
+
+
+def test_gitleaks_accepts_publisher_checksum_match(monkeypatch) -> None:
+    """A matching publisher digest promotes the exact downloaded bytes."""
+    module = load_update_script("update_gitleaks_contract.py")
+    archive = b"publisher release bytes"
+    digest = hashlib.sha256(archive).hexdigest()
+    asset = "gitleaks_9.0.0_linux_x64.tar.gz"
+    manifest = f"{digest}  {asset}\n".encode()
+    monkeypatch.setattr(
+        module,
+        "download",
+        lambda url: manifest if url.endswith("checksums.txt") else archive,
+    )
+
+    assert module.verified_asset_digest("9.0.0", asset) == digest
+
+
+def test_atomic_contract_update_rolls_back_second_write(
+    tmp_path, monkeypatch
+) -> None:
+    """A failed multi-file publication restores every predecessor."""
+    module = load_update_script("contract_update.py")
+    first = tmp_path / "first"
+    second = tmp_path / "second"
+    first.write_bytes(b"old first")
+    second.write_bytes(b"old second")
+    real_replace = module.os.replace
+    calls = 0
+
+    def fail_second(source: Path, destination: Path) -> None:
+        nonlocal calls
+        calls += 1
+        if calls == 2:
+            raise OSError("injected second-write failure")
+        real_replace(source, destination)
+
+    monkeypatch.setattr(module.os, "replace", fail_second)
+    with pytest.raises(OSError, match="second-write"):
+        module.replace_files_atomically({
+            first: b"new first",
+            second: b"new second",
+        })
+
+    assert first.read_bytes() == b"old first"
+    assert second.read_bytes() == b"old second"
+
+
+def test_renovate_coordinates_mojo_contract_update() -> None:
+    """Renovate invokes the coherent Mojo updater on its review branch."""
+    renovate = json.loads((ROOT / "renovate.json").read_text())
+    rule = next(
+        rule
+        for rule in renovate["packageRules"]
+        if "mojo" in rule.get("matchPackageNames", [])
+    )
+
+    task = rule["postUpgradeTasks"]
+    assert "update_mojo_contract.py {{{newVersion}}}" in task["commands"][0]
+    assert set(task["fileFilters"]) == {
+        "quality/tool-versions.json",
+        "pixi.toml",
+        "pixi.lock",
+    }
+
+
+def test_mojo_updater_accepts_renovates_preupdated_requirement() -> None:
+    """The coordinated updater accepts Pixi's already-updated dependency."""
+    module = load_update_script("update_mojo_contract.py")
+    text = 'mojo = "==2.0.0"\n'
+
+    assert (
+        module.replace_exact(
+            text,
+            'mojo = "==1.0.0"',
+            'mojo = "==2.0.0"',
+        )
+        == text
+    )
 
 
 def test_mutmut_observations_come_from_authoritative_export(
