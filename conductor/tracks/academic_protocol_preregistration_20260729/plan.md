@@ -6,7 +6,7 @@
 - [ ] Task: Define objectives, estimands, users and non-clinical scope
 - [ ] Task: Define jurisdiction/source census, inclusion, exclusion and rights rules
 - [ ] Task: Define entity, indication, population, temporal and comparison-validity semantics
-- [ ] Task: Cross-reference requirements, design, source catalog and the GitHub methods subissue
+- [ ] Task: Cross-reference requirements, design, source catalog and [GitHub methods subissue #67](https://github.com/edithatogo/global-medicines-atlas/issues/67)
 - [ ] Task: Phase Verification & Checkpoint
 
 ## Phase 2: Analysis and validation plan
@@ -30,7 +30,7 @@
 ## Phase 4: Persistent identities and external verification
 
 - [ ] Task: Define non-overlapping GitHub software, Hugging Face dataset, Zenodo record and OSF study identities
-- [ ] Task: Create and cross-link the GitHub parent and native phase subissues
+- [x] Task: Create and cross-link [GitHub parent #66](https://github.com/edithatogo/global-medicines-atlas/issues/66) and native phase subissues [#67](https://github.com/edithatogo/global-medicines-atlas/issues/67), [#68](https://github.com/edithatogo/global-medicines-atlas/issues/68), [#69](https://github.com/edithatogo/global-medicines-atlas/issues/69) and [#70](https://github.com/edithatogo/global-medicines-atlas/issues/70)
 - [ ] Task: Create OSF, Hugging Face and Zenodo records only after rights and maintainer gates pass
 - [ ] Task: Verify external identifiers, DOI relationships, licences and public landing pages
 - [ ] Task: Record publication receipts or explicit external blockers
@@ -38,8 +38,8 @@
 
 ## GitHub hierarchy
 
-- Parent draft: `.github/generated-issues/academic-protocol-parent.md`
-- Protocol/methods draft: `.github/generated-issues/academic-protocol-methods.md`
-- Analysis/validation draft: `.github/generated-issues/academic-protocol-analysis.md`
-- Preregistration/rehearsal draft: `.github/generated-issues/academic-protocol-preregistration.md`
-- Persistent-identities draft: `.github/generated-issues/academic-protocol-identities.md`
+- Parent: [#66](https://github.com/edithatogo/global-medicines-atlas/issues/66)
+- Protocol/methods: [#67](https://github.com/edithatogo/global-medicines-atlas/issues/67)
+- Analysis/validation: [#68](https://github.com/edithatogo/global-medicines-atlas/issues/68)
+- Preregistration/rehearsal: [#69](https://github.com/edithatogo/global-medicines-atlas/issues/69)
+- Persistent identities: [#70](https://github.com/edithatogo/global-medicines-atlas/issues/70)

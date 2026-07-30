@@ -1,6 +1,6 @@
 # OSF-ready preregistration and clean rehearsal
 
-Parent draft: `academic-protocol-parent.md`
+Parent: [#66](https://github.com/edithatogo/global-medicines-atlas/issues/66)
 
 Conductor phase: `academic_protocol_preregistration_20260729` Phase 3
 
