@@ -7,6 +7,12 @@ from pathlib import Path
 import httpx
 import pytest
 
+import global_medicines_atlas.source_health as source_health_module
+from global_medicines_atlas.acquisition import (
+    AcquisitionPolicy,
+    BoundIPAddressTransport,
+    Resolver,
+)
 from global_medicines_atlas.countries import SourceDimension
 from global_medicines_atlas.source_catalog import (
     AccessMode,
@@ -172,6 +178,51 @@ def test_redirect_is_not_followed() -> None:
     )
     assert result.state is ProbeState.UNAVAILABLE
     assert result.status_code == 302
+
+
+def test_production_probe_honours_zero_redirect_policy(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    inner = httpx.MockTransport(
+        lambda request: httpx.Response(
+            302,
+            headers={"location": "https://example.test/redirected"},
+            request=request,
+        )
+    )
+    bound = BoundIPAddressTransport(
+        policy=AcquisitionPolicy(
+            allowed_hosts=("example.test",),
+            max_redirects=0,
+        ),
+        resolver=lambda _host: ("93.184.216.34",),
+        inner=inner,
+    )
+
+    def use_bound_transport(
+        _uri: str,
+        _policy: AcquisitionPolicy,
+        *,
+        resolver: Resolver | None,
+        transport: httpx.BaseTransport | None,
+    ) -> httpx.BaseTransport:
+        del resolver, transport
+        return bound
+
+    monkeypatch.setattr(
+        source_health_module,
+        "transport_for_destination",
+        use_bound_transport,
+    )
+
+    result = probe_source(
+        source(),
+        checked_at=NOW,
+        acquisition_policy=AcquisitionPolicy(max_redirects=0),
+    )
+
+    assert result.state is ProbeState.UNAVAILABLE
+    assert "TooManyRedirects" in result.detail
 
 
 def test_schema_fingerprint_ignores_json_values_and_mapping_order() -> None:

@@ -234,13 +234,14 @@ def _request_sample(
     transport: httpx.BaseTransport | None,
     timeout_seconds: float,
     max_bytes: int,
+    max_redirects: int,
 ) -> httpx.Response:
     with (
         httpx.Client(
             transport=transport,
             timeout=timeout_seconds,
             follow_redirects=isinstance(transport, BoundIPAddressTransport),
-            max_redirects=3,
+            max_redirects=max_redirects,
         ) as client,
         client.stream("GET", endpoint, headers=headers) as response,
     ):
@@ -429,6 +430,7 @@ def probe_source(
             transport=effective_transport,
             timeout_seconds=timeout_seconds,
             max_bytes=max_bytes,
+            max_redirects=policy.max_redirects,
         )
         return _evaluate_response(
             source,
