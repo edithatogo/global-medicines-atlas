@@ -16,3 +16,5 @@
   *Link: [tracks/operational_hardening_20260729/index.md](./tracks/operational_hardening_20260729/index.md)*
 - [ ] **Track: Qualify the v0.9 candidate and stable v1 release**
   *Link: [tracks/stable_v1_qualification_20260729/index.md](./tracks/stable_v1_qualification_20260729/index.md)*
+- [ ] **Track: Develop the academic protocol and OSF-ready preregistration**
+  *Link: [tracks/academic_protocol_preregistration_20260729/index.md](./tracks/academic_protocol_preregistration_20260729/index.md); GitHub parent/subissues pending hosted creation from committed drafts.*

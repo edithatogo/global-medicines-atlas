@@ -35,18 +35,23 @@
 - **M-030:** Use Parquet and Arrow-compatible schemas as portable canonical tabular representations.
 - **M-031:** Use DuckDB as the primary embedded analytical engine while retaining reproducibility from portable artifacts.
 - **M-032:** Use Polars as the default lazy, streaming dataframe layer.
-- **M-033:** Use LanceDB only as a regenerable derived semantic/vector index.
+- **M-033:** Keep LanceDB as an optional, regenerable derived semantic/vector
+  index with explicit index/model identity, a core installation that does not
+  require LanceDB, and deterministic fallback when the index is unavailable.
 - **M-034:** Provide versioned source-adapter contracts and jurisdiction onboarding templates.
 - **M-035:** Quantify country, source, medicine, assertion-type, and temporal coverage.
 
 ### Runtime and quality
 
-- **M-040:** Implement performance-critical kernels Mojo-first with a complete Python 3.14 reference fallback.
+- **M-040:** Evaluate performance-critical kernels Mojo-first with a complete
+  Python 3.14 reference fallback; promote a Mojo kernel only after shared-fixture
+  parity, representative performance and memory evidence, and fallback rehearsal.
 - **M-041:** Require parity fixtures before Mojo or Rust implementations become authoritative.
 - **M-042:** Run unit, integration, end-to-end, smoke, property-based, mutation, and parity testing.
 - **M-043:** Maintain test coverage strictly above 90% for governed core code and enforce it through Codecov.
 - **M-044:** Use `ty` for routine typing and BasedPyright for formal typing.
-- **M-045:** Use Scalene and benchmark evidence before promoting performance implementations.
+- **M-045:** Use workload-specific Scalene, cold/warm/concurrent benchmarks and
+  immutable comparison receipts before promoting performance implementations.
 - **M-046:** Use Renovate for grouped dependency and toolchain updates.
 - **M-047:** Maintain a machine-readable internal ecosystem registry covering reusable maintainer-owned packages, schemas, adapters, fixtures, workflows, publication tools, and compatibility contracts.
 - **M-048:** Search and assess the internal ecosystem before approving a new implementation or third-party abstraction.
@@ -67,9 +72,14 @@
 
 ### CI/CD and release
 
-- **M-060:** Use SHA-pinned GitHub Actions with actionlint, zizmor, CodeQL, secret scanning, dependency audit, SBOM, and provenance attestations.
-- **M-061:** Keep external publication workflows dry-run by default and explicitly gated.
-- **M-062:** Generate reproducible release artifacts and consumer-verifiable attestations.
+- **M-060:** Use SHA-pinned GitHub Actions with actionlint, zizmor, CodeQL,
+  repository/history secret scanning, dependency audit, SBOM, and provenance
+  attestations; separately verify hosted secret scanning and push protection.
+- **M-061:** Keep external publication workflows dry-run by default and
+  explicitly gated; label qualification-only evidence so it cannot be mistaken
+  for approved publication evidence.
+- **M-062:** Generate reproducible release artifacts and consumer-verifiable
+  attestations only for the exact governed bytes and approval state they claim.
 - **M-063:** Maintain one GitHub parent issue per Conductor track and linked subissues for actionable tasks.
 - **M-064:** Register jurisdiction adapters independently from their ingestors,
   require a regulatory source contract, and model funding and formulary sources
@@ -102,9 +112,11 @@
 - **M-074:** Generate governed Parquet, Croissant, data-card, citation, SBOM and
   provenance-attestation release artifacts without publishing by default.
 - **M-075:** Monitor source availability, schema drift, data freshness and adapter
-  health with bounded retries, durable receipts and actionable escalation.
-- **M-076:** Enforce security, performance, compatibility, backup and recovery
-  budgets before release-candidate promotion.
+  health with bounded retries, provenance-bound monotonic baselines, durable
+  receipts and actionable escalation.
+- **M-076:** Enforce security, bounded-memory SQL keyset pagination, performance,
+  compatibility, backup and recovery-point/recovery-time budgets before
+  release-candidate promotion.
 - **M-077:** Require clean-room reproduction, migration rehearsal, documentation,
   support and residual-risk evidence before stable v1.
 - **M-078:** Maintain bidirectional traceability among releases, MoSCoW
@@ -117,11 +129,13 @@
   dependency review, secret and code scanning, vulnerability reporting,
   incident handling, supply-chain attestations and time-bounded remediation.
 - **M-081:** Maintain task-oriented contributor, operator, source-onboarding,
-  architecture, data-rights, support and security documentation, with automated
-  link, example and context-drift checks.
+  architecture, data-rights, support, incident, recovery and research-
+  reproduction documentation, with automated link, command, example and
+  context-drift checks.
 - **M-082:** Make the supported development and CI paths reproducible from
-  locked dependencies and cached governed fixtures; network loss, rate limits
-  and unavailable optional services must fail explicitly or degrade safely.
+  locked dependencies, governed tool/runner versions and cached governed
+  fixtures; network loss, rate limits and unavailable optional services must
+  fail explicitly or degrade safely.
 - **M-083:** Govern versions and releases with dynamic versioning, SemVer,
   changelog and citation metadata, an explicit software-licence decision,
   immutable release assets and a pre-publication qualification gate.
@@ -131,23 +145,36 @@
   change semantics without conflating regulatory and funding evidence.
 - **M-085:** Evolve the canonical medicine model to represent substances,
   ingredients, medicinal products, packaged products, organisations,
-  indications, routes, strengths, prices and structured eligibility or
-  restriction rules while retaining every source-native identifier and record.
+  indications, populations, routes, strengths, quantities, prices, currencies
+  and structured eligibility or restriction rules through typed relationships
+  while retaining every source-native identifier and record.
 - **M-086:** Provide bounded concept discovery by name, ingredient and
   jurisdiction-native identifier through the API, CLI and accessible atlas,
   with explicit canonical/native match explanations and stable pagination.
-- **M-087:** Test every distributable wheel and source archive from a clean
-  consumer environment and require package metadata, supported-platform
-  policy, installation, import, CLI, API and dynamic-version checks.
+- **M-087:** Test core and optional-semantic variants of every distributable
+  wheel and source archive from clean consumer environments and require package
+  metadata, supported-platform policy, installation, reinstall, import, CLI,
+  API, fallback and dynamic-version checks.
 - **M-088:** Give each lawful public dataset a non-overlapping identity across
   GitHub, Hugging Face, Zenodo and OSF, including schema, licence, checksums,
   version, data card or protocol, persistent identifiers and provenance links;
   restricted medicine payloads must never be implied to be redistributable.
-- **M-089:** Treat all acquired content as untrusted: enforce approved schemes
-  and destinations, redirect and DNS/IP policy, private-network rejection,
+- **M-089:** Treat all acquired content as untrusted: enforce source-derived
+  approved schemes and destinations, redirect-hop validation, connection binding
+  or peer enforcement to a prevalidated public address, private-network rejection,
   bounded retries and concurrency, compressed and expanded size limits,
   archive/path safety, fail-closed parsing, quarantine, redacted security
   events and rehearsed compromise recovery.
+- **M-090:** Make every cross-jurisdiction comparison declare entity granularity,
+  indication and population scope, mapping relationship, source-native legal or
+  funding status, normalization method, material mismatches and a validity state
+  of valid, partial, unavailable or inappropriate; terminology similarity must
+  never imply therapeutic equivalence, substitutability or equal benefit.
+- **M-091:** Maintain a versioned research protocol and OSF-ready preregistration
+  covering research questions, jurisdiction and source selection, inclusion and
+  exclusion rules, outcomes, matching and adjudication, missingness and
+  conflicts, planned and sensitivity analyses, amendments, deviations,
+  software/data identities and reproducible execution.
 
 ## Should Have
 
@@ -160,6 +187,9 @@
 - **S-007:** Map jurisdiction-native concepts to canonical identifiers while retaining original terminology.
 - **S-008:** Promote reusable capabilities into maintainer-owned packages when at least two repositories need the same stable contract.
 - **S-009:** Maintain cross-repository compatibility canaries for shared frontier libraries and toolchains.
+- **S-010:** Separate domain contracts, policy evaluation, storage/query
+  adapters, transport, serialization and orchestration behind characterized,
+  strictly typed boundaries without speculative micro-packages.
 
 ## Could Have
 

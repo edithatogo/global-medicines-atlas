@@ -308,6 +308,34 @@ Discovery returns native and canonical identifiers, match method, provenance
 and jurisdiction scope. SQL keyset pagination and database schema metadata keep
 large queries bounded and migration-aware.
 
+## Comparison Validity Boundary
+
+```mermaid
+flowchart LR
+    LEFT["Source-native entity and status A"]
+    RIGHT["Source-native entity and status B"]
+    MAP["Typed mapping and normalization evidence"]
+    SCOPE["Indication, population, time and benefit scope"]
+    VALID{"Comparison validity"}
+    OK["Valid comparison"]
+    PART["Partial comparison with material mismatch"]
+    NO["Unavailable or inappropriate comparison"]
+
+    LEFT --> MAP
+    RIGHT --> MAP
+    MAP --> SCOPE
+    SCOPE --> VALID
+    VALID --> OK
+    VALID --> PART
+    VALID --> NO
+```
+
+Comparison validity is an explicit output, not an inference from name or
+terminology similarity. The system retains source-native legal and funding
+meanings and must not imply therapeutic equivalence, substitutability or equal
+benefit when entity, indication, population, temporal or benefit-design scopes
+do not support that conclusion.
+
 ## Governed Research and Dataset Identity
 
 ```mermaid
