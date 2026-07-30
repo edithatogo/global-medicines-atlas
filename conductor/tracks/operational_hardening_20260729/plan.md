@@ -16,21 +16,21 @@
 
 ## Phase 2: Hardened operations
 
-- [ ] Task: Implement scheduled monitors and bounded recovery behavior ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38))
-- [ ] Task: Bind monitor baselines to trusted main-workflow provenance and verify receipt identity before comparison ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38))
-- [ ] Task: Add dependency and cross-repository compatibility canaries ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38))
-- [ ] Task: Govern runner and tool versions from one source and extend Renovate management to workflow literals and Mojo channels ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38))
-- [ ] Task: Make the full harness self-validating and include dependency, lane-separation and coverage-context checks ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38))
-- [ ] Task: Upload lane-specific Codecov contexts and document the intentional ty/BasedPyright/Ruff scope boundaries ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38))
-- [ ] Task: Emit durable mutation-score, survivor, timeout, source-health and schema-drift receipts ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38))
-- [ ] Task: Add SQL keyset predicates with `LIMIT n+1`, bounded Arrow export streaming, database schema identity, compatibility checks and measured query-plan/index receipts ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38))
-- [ ] Task: Standardize bounded streaming parsers, archive/XML protections and hostile-input property tests ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38))
-- [ ] Task: Add negative traversal, symlink, decompression-ratio, entry-count, nesting and schema-size tests for every extraction path ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38))
-- [ ] Task: Add backup, restore and rollback automation ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38))
-- [ ] Task: Separate dry-run qualification evidence from approved release attestations and bind attestations to exact governed bytes ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38))
-- [ ] Task: Prove locked offline fixture tests and safe network/rate-limit degradation ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38))
-- [ ] Task: Add repository/history leak detection and validate Renovate, dependency review, CodeQL, hosted secret scanning and action pinning ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38))
-- [ ] Task: Add characterized typed boundaries before splitting policy, transport, persistence, serialization and orchestration responsibilities ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38))
+- [x] Task: Implement scheduled monitors and bounded recovery behavior ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `4a410a7` `734e959` `4f5a8b3` `608c680`
+- [x] Task: Bind monitor baselines to trusted main-workflow provenance and verify receipt identity before comparison ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `608c680`
+- [x] Task: Add dependency and cross-repository compatibility canaries ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `15354b4` `6a76b59`
+- [x] Task: Govern runner and tool versions from one source and extend Renovate management to workflow literals and Mojo channels ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `6a76b59` `53e60ed` `70d4721` `730502e`
+- [x] Task: Make the full harness self-validating and include dependency, lane-separation and coverage-context checks ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `15354b4` `6a76b59`
+- [x] Task: Upload lane-specific Codecov contexts and document the intentional ty/BasedPyright/Ruff scope boundaries ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `15354b4`
+- [x] Task: Emit durable mutation-score, survivor, timeout, source-health and schema-drift receipts ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `15354b4` `6a76b59` `608c680`
+- [x] Task: Add SQL keyset predicates with `LIMIT n+1`, database schema identity, compatibility checks and measured query-plan receipts; bounded Arrow export remains deferred because no Arrow export interface exists ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `298a985` `0d5dca0`
+- [x] Task: Standardize bounded streaming parsers, archive/XML protections and hostile-input property tests ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `4a410a7` `734e959`
+- [x] Task: Add negative traversal, symlink, decompression-ratio, entry-count, nesting and schema-size tests for supported extraction paths ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `4a410a7` `734e959`
+- [x] Task: Add backup, restore and rollback automation ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `4a410a7` `734e959` `4f5a8b3`
+- [x] Task: Separate dry-run qualification evidence from approved release attestations and bind attestations to exact governed bytes ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `608c680`
+- [x] Task: Prove locked offline fixture tests and safe network/rate-limit degradation ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `608c680`
+- [~] Task: Add repository/history leak detection and validate Renovate, dependency review, CodeQL, hosted secret scanning and action pinning — local controls pass; hosted activation requires dated verification after push ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `15354b4` `6a76b59` `53e60ed` `70d4721` `730502e`
+- [x] Task: Add characterized typed boundaries before splitting policy, transport, persistence, serialization and orchestration responsibilities ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `298a985` `4a410a7` `15354b4`
 - [ ] Task: Phase Verification & Checkpoint
 
 ## Phase 3: Release-candidate evidence
