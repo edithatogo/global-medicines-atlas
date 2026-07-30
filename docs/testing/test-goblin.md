@@ -129,6 +129,12 @@ on native Windows. The harness reports that boundary explicitly.
   verifies the selected Linux x64 asset against the checksum manifest attached
   to the same official GitHub release and transactionally updates its
   digest-bound manifest/workflow contract.
+  Governed multi-file updaters create and verify a predecessor safeguard for
+  every target before publication. If publication and canonical rollback both
+  fail, restoration is attempted for every replaced target and the raised
+  `ContractUpdateError` exposes the retained, digest-verified recovery
+  locations. Operators must restore those predecessors before accepting any
+  partially published dependency contract.
   Renovate never automerges.
 - A checksum-verified Gitleaks binary scans the complete Git history. Hosted
   checksum retrieval authenticates transport and the GitHub release location,

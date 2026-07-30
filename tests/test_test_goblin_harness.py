@@ -389,6 +389,83 @@ def test_atomic_contract_update_rolls_back_second_write(
     assert second.read_bytes() == b"old second"
 
 
+def test_atomic_contract_update_retains_verified_safeguard_when_rollback_fails(
+    tmp_path, monkeypatch
+) -> None:
+    """A compounded failure exposes a verified predecessor recovery location."""
+    module = load_update_script("contract_update.py")
+    first = tmp_path / "first"
+    second = tmp_path / "second"
+    first.write_bytes(b"old first")
+    second.write_bytes(b"old second")
+    real_replace = module.os.replace
+    calls = 0
+
+    def fail_publication_and_rollback(source: Path, destination: Path) -> None:
+        nonlocal calls
+        calls += 1
+        if calls in {2, 3}:
+            raise OSError(f"injected replace failure {calls}")
+        real_replace(source, destination)
+
+    monkeypatch.setattr(module.os, "replace", fail_publication_and_rollback)
+    with pytest.raises(module.ContractUpdateError) as raised:
+        module.replace_files_atomically({
+            first: b"new first",
+            second: b"new second",
+        })
+
+    assert first.read_bytes() == b"new first"
+    assert second.read_bytes() == b"old second"
+    recovery = raised.value.recovery_locations
+    assert set(recovery) == {first}
+    assert recovery[first].read_bytes() == b"old first"
+    assert "verified predecessors are retained" in str(raised.value)
+
+
+def test_atomic_contract_update_attempts_every_target_restoration(
+    tmp_path, monkeypatch
+) -> None:
+    """One failed rollback does not prevent restoration of another target."""
+    module = load_update_script("contract_update.py")
+    first = tmp_path / "first"
+    second = tmp_path / "second"
+    third = tmp_path / "third"
+    first.write_bytes(b"old first")
+    second.write_bytes(b"old second")
+    third.write_bytes(b"old third")
+    real_replace = module.os.replace
+    calls = 0
+
+    def fail_third_publication_and_second_rollback(
+        source: Path, destination: Path
+    ) -> None:
+        nonlocal calls
+        calls += 1
+        if calls in {3, 4}:
+            raise OSError(f"injected replace failure {calls}")
+        real_replace(source, destination)
+
+    monkeypatch.setattr(
+        module.os,
+        "replace",
+        fail_third_publication_and_second_rollback,
+    )
+    with pytest.raises(module.ContractUpdateError) as raised:
+        module.replace_files_atomically({
+            first: b"new first",
+            second: b"new second",
+            third: b"new third",
+        })
+
+    assert first.read_bytes() == b"old first"
+    assert second.read_bytes() == b"new second"
+    assert third.read_bytes() == b"old third"
+    recovery = raised.value.recovery_locations
+    assert set(recovery) == {second}
+    assert recovery[second].read_bytes() == b"old second"
+
+
 def test_renovate_coordinates_mojo_contract_update() -> None:
     """Renovate invokes the coherent Mojo updater on its review branch."""
     renovate = json.loads((ROOT / "renovate.json").read_text())
