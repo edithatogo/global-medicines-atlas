@@ -411,9 +411,11 @@ dev = [
     { name = "pytest-randomly" },
     { name = "pytest-timeout" },
     { name = "pytest-xdist" },
+    { name = "pyyaml" },
     { name = "ruff" },
     { name = "scalene" },
     { name = "ty" },
+    { name = "types-pyyaml" },
 ]
 edge = [
     { name = "edgetest" },
@@ -434,6 +436,7 @@ test = [
     { name = "pytest-cov" },
     { name = "pytest-playwright" },
     { name = "pytest-xdist" },
+    { name = "pyyaml" },
 ]
 test-goblin = [
     { name = "beautifulsoup4" },
@@ -448,12 +451,14 @@ test-goblin = [
     { name = "pytest-randomly" },
     { name = "pytest-timeout" },
     { name = "pytest-xdist" },
+    { name = "pyyaml" },
 ]
 typing = [
     { name = "basedpyright" },
     { name = "pyarrow-stubs" },
     { name = "ruff" },
     { name = "ty" },
+    { name = "types-pyyaml" },
 ]
 
 [package.metadata]
@@ -492,9 +497,11 @@ dev = [
     { name = "pytest-randomly", marker = "python_full_version == '3.14.*'", specifier = ">=4.0" },
     { name = "pytest-timeout", marker = "python_full_version == '3.14.*'", specifier = ">=2.4" },
     { name = "pytest-xdist", marker = "python_full_version == '3.14.*'", specifier = ">=3.8" },
+    { name = "pyyaml", marker = "python_full_version == '3.14.*'", specifier = ">=6.0.3" },
     { name = "ruff", marker = "python_full_version == '3.14.*'", specifier = ">=0.12" },
     { name = "scalene", marker = "python_full_version == '3.14.*'", specifier = ">=1.5.55" },
     { name = "ty", marker = "python_full_version == '3.14.*'", specifier = ">=0.0.18" },
+    { name = "types-pyyaml", marker = "python_full_version == '3.14.*'", specifier = ">=6.0.12.20250915" },
 ]
 edge = [{ name = "edgetest", marker = "python_full_version == '3.14.*'", specifier = ">=2026.5.1" }]
 profiling = [{ name = "scalene", marker = "python_full_version == '3.14.*'", specifier = ">=1.5.55" }]
@@ -511,6 +518,7 @@ test = [
     { name = "pytest-cov", marker = "python_full_version == '3.14.*'", specifier = ">=7.0" },
     { name = "pytest-playwright", marker = "python_full_version == '3.14.*'", specifier = ">=0.7" },
     { name = "pytest-xdist", marker = "python_full_version == '3.14.*'", specifier = ">=3.8" },
+    { name = "pyyaml", marker = "python_full_version == '3.14.*'", specifier = ">=6.0.3" },
 ]
 test-goblin = [
     { name = "beautifulsoup4", marker = "python_full_version == '3.14.*'", specifier = ">=4.13" },
@@ -525,12 +533,14 @@ test-goblin = [
     { name = "pytest-randomly", marker = "python_full_version == '3.14.*'", specifier = ">=4.0" },
     { name = "pytest-timeout", marker = "python_full_version == '3.14.*'", specifier = ">=2.4" },
     { name = "pytest-xdist", marker = "python_full_version == '3.14.*'", specifier = ">=3.8" },
+    { name = "pyyaml", marker = "python_full_version == '3.14.*'", specifier = ">=6.0.3" },
 ]
 typing = [
     { name = "basedpyright", marker = "python_full_version == '3.14.*'", specifier = ">=1.36" },
     { name = "pyarrow-stubs", marker = "python_full_version == '3.14.*'", specifier = ">=20.0.0.20260625" },
     { name = "ruff", marker = "python_full_version == '3.14.*'", specifier = ">=0.12" },
     { name = "ty", marker = "python_full_version == '3.14.*'", specifier = ">=0.0.18" },
+    { name = "types-pyyaml", marker = "python_full_version == '3.14.*'", specifier = ">=6.0.12.20250915" },
 ]
 
 [[package]]
@@ -1962,6 +1972,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/37/78/fda3361b56efc27944f24225f6ecd13d96d6fcfe37bd0eb34e2f4c63f9fc/typer-0.27.0.tar.gz", hash = "sha256:629bd12ea5d13a17148125d9a264f949eb171fb3f120f9b04d85873cab054fa5", size = 203430, upload-time = "2026-07-15T19:21:07.007Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/40/03/26a383c9e58c213199d1aad1c3d353cfc22d4444ec6d2c0bf8ad02523843/typer-0.27.0-py3-none-any.whl", hash = "sha256:6f4b27631e47f077871b7dc30e933ec0131c1390fbe0e387ea5574b5bac9ccf1", size = 122716, upload-time = "2026-07-15T19:21:05.553Z" },
+]
+
+[[package]]
+name = "types-pyyaml"
+version = "6.0.12.20260724"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/3f/6f/a28f44bcd56bebed42b028a2894c79853e2f5e6b5279e633cb3f287a05e7/types_pyyaml-6.0.12.20260724.tar.gz", hash = "sha256:3c1ce1bb73cd5ec02e90390c2b1f00e810d241d8825fd73ff359696839271b6b", size = 17893, upload-time = "2026-07-24T04:58:43.453Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8b/42/0337fefc615e20ee55d1c8f71b774a9b2b734a04669139c20753b27a2a3a/types_pyyaml-6.0.12.20260724-py3-none-any.whl", hash = "sha256:d57db930a4b2efbc57cf430ec8882765d246929432fa253092f383902329a453", size = 20312, upload-time = "2026-07-24T04:58:42.486Z" },
 ]
 
 [[package]]

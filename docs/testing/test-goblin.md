@@ -48,11 +48,12 @@ respectively, without manufacturing a receipt when none is supplied. Coverage
 is already blocking and reads its threshold directly from the validated budget.
 Measured receipts also bind the producing commit, command and SHA-256 identity
 of every retained artifact. The Scalene lane writes its receipt automatically.
-The Linux mutation lane writes one only when the mutation runner supplies
-numeric observations and an artifact through
-`TEST_GOBLIN_MUTATION_OBSERVATIONS` and
-`TEST_GOBLIN_MUTATION_ARTIFACT`; absence remains visible rather than being
-converted into invented evidence.
+The Linux mutation lane invokes Mutmut's own `export-cicd-stats` command after
+the run. It retains `mutants/mutmut-cicd-stats.json` as the authoritative raw
+artifact and derives the measured receipt only from those numeric counts.
+Missing, malformed, empty or non-numeric exports fail the lane; no environment
+variable can substitute invented observations. The mutation budget remains
+`contract_only` until calibration is formally promoted.
 
 ## Local Commands
 
@@ -117,9 +118,12 @@ on native Windows. The harness reports that boundary explicitly.
   context.
 - Scalene profiles are retained as CI artifacts for 14 days.
 - Renovate groups frontier dependency updates, rate-limits pull requests,
-  requires Dependency Dashboard approval for majors, manages governed Python,
-  uv, Pixi, actionlint, Gitleaks and Mojo-channel literals, and never
-  automerges.
+  requires Dependency Dashboard approval for majors, coordinates governed
+  Python, uv, Pixi, actionlint and Gitleaks literals, and manages the exact
+  Mojo dependency through Pixi. Gitleaks updates remain fail-closed until
+  `scripts/update_gitleaks_contract.py VERSION` downloads the selected Linux
+  x64 release asset and updates its digest-bound manifest/workflow contract.
+  Renovate never automerges.
 - A checksum-verified Gitleaks binary scans the complete Git history. Hosted
   GitHub secret scanning and push protection remain external controls requiring
   dated verification; workflow presence does not prove that they are enabled.

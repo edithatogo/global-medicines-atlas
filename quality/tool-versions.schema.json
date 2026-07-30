@@ -9,10 +9,11 @@
     "versions": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["actionlint", "gitleaks", "mojo_channel", "pixi", "python", "runner", "uv"],
+      "required": ["actionlint", "gitleaks", "mojo", "mojo_channel", "pixi", "python", "runner", "uv"],
       "properties": {
         "actionlint": {"type": "string"},
         "gitleaks": {"type": "string"},
+        "mojo": {"type": "string"},
         "mojo_channel": {"type": "string"},
         "pixi": {"type": "string"},
         "python": {"type": "string"},
@@ -23,8 +24,11 @@
     "checksums": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["gitleaks_linux_x64"],
+      "required": ["gitleaks_asset", "gitleaks_linux_x64"],
       "properties": {
+        "gitleaks_asset": {
+          "pattern": "^gitleaks_[0-9]+\\.[0-9]+\\.[0-9]+_linux_x64\\.tar\\.gz$"
+        },
         "gitleaks_linux_x64": {"pattern": "^[0-9a-f]{64}$"}
       }
     }

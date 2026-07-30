@@ -23,7 +23,7 @@ concurrency:
 jobs:
   qualify:
     name: Build, stage and qualify immutable bytes
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
       contents: read
@@ -166,7 +166,7 @@ jobs:
     name: Create protected draft release
     needs: qualify
     if: ${{ inputs.publish }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     environment: release-publication
     permissions:

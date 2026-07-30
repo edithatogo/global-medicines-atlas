@@ -180,6 +180,41 @@ def test_every_external_action_is_pinned_to_a_commit() -> None:
     )
 
 
+def test_action_pin_validation_covers_yaml_reusable_workflows(
+    tmp_path, monkeypatch
+) -> None:
+    """Job-level reusable workflows in .yaml files cannot evade pinning."""
+    workflows = tmp_path / "workflows"
+    workflows.mkdir()
+    (workflows / "reusable.yaml").write_text(
+        "jobs:\n  shared:\n    uses: owner/repo/.github/workflows/ci.yml@main\n"
+    )
+    monkeypatch.setattr(HARNESS, "WORKFLOWS_PATH", workflows)
+
+    with pytest.raises(ValueError, match="mutable action reference"):
+        HARNESS.validate_action_pins()
+
+
+def test_action_pin_validation_recurses_through_job_and_step_uses(
+    tmp_path, monkeypatch
+) -> None:
+    """Both reusable jobs and ordinary steps are discovered structurally."""
+    digest = "a" * 40
+    workflows = tmp_path / "workflows"
+    workflows.mkdir()
+    (workflows / "all.yml").write_text(
+        "jobs:\n"
+        "  shared:\n"
+        f"    uses: owner/repo/.github/workflows/ci.yml@{digest}\n"
+        "  steps:\n"
+        "    steps:\n"
+        f"      - uses: owner/action@{digest}\n"
+    )
+    monkeypatch.setattr(HARNESS, "WORKFLOWS_PATH", workflows)
+
+    assert len(HARNESS.validate_action_pins()) == 2
+
+
 def test_tool_versions_match_governed_workflow_literals() -> None:
     """Workflow setup literals remain aligned with one governed manifest."""
     versions = HARNESS.validate_tool_versions()
@@ -188,7 +223,24 @@ def test_tool_versions_match_governed_workflow_literals() -> None:
     assert versions["uv"] == "0.11.29"
     assert versions["pixi"] == "0.73.0"
     assert versions["gitleaks"] == "8.30.1"
+    assert versions["mojo"] == "1.0.0b3.dev2026072806"
     assert versions["runner"] == "ubuntu-24.04"
+
+
+def test_governed_occurrence_validation_rejects_one_stale_runner() -> None:
+    """One correct occurrence cannot hide drift elsewhere."""
+    documents = {
+        ROOT / "first.yml": {"jobs": {"a": {"runs-on": "ubuntu-24.04"}}},
+        ROOT / "second.yaml": {"jobs": {"b": {"runs-on": "ubuntu-latest"}}},
+    }
+
+    with pytest.raises(ValueError, match=r"second\.yaml"):
+        HARNESS._require_exact_occurrences(
+            documents,
+            key="runs-on",
+            expected="ubuntu-24.04",
+            label="runner",
+        )
 
 
 def test_measured_receipt_records_artifact_identity(
@@ -250,9 +302,53 @@ def test_supply_chain_manages_tool_literals_and_scans_history() -> None:
         "pixi",
         "actionlint",
         "gitleaks",
-        "mojo_channel",
     ):
         assert f'"{tool}":' in managed
+    assert (
+        'mojo = "==1.0.0b3.dev2026072806"' in (ROOT / "pixi.toml").read_text()
+    )
     assert "fetch-depth: 0" in security
     assert "./gitleaks git --redact" in security
     assert "GITLEAKS_SHA256:" in security
+    assert "GITLEAKS_ASSET:" in security
+
+
+def test_mutmut_observations_come_from_authoritative_export(
+    tmp_path,
+) -> None:
+    """The receipt consumes Mutmut's numeric export without invented counts."""
+    artifact = tmp_path / "mutmut-cicd-stats.json"
+    artifact.write_text(
+        json.dumps({
+            "killed": 7,
+            "survived": 2,
+            "total": 12,
+            "no_tests": 1,
+            "skipped": 1,
+            "suspicious": 0,
+            "timeout": 1,
+            "check_was_interrupted_by_user": 0,
+            "segfault": 0,
+        })
+    )
+
+    observations = HARNESS.load_mutmut_observations(artifact)
+
+    assert observations["killed"] == 7
+    assert observations["survived"] == 2
+    assert observations["untested"] == 1
+    assert observations["total"] == 12
+
+
+def test_mutmut_observations_reject_missing_or_non_numeric_results(
+    tmp_path,
+) -> None:
+    """A successful lane cannot fabricate evidence from absent/bad output."""
+    missing = tmp_path / "missing.json"
+    with pytest.raises(ValueError, match="did not emit"):
+        HARNESS.load_mutmut_observations(missing)
+
+    malformed = tmp_path / "bad.json"
+    malformed.write_text(json.dumps({"killed": True}))
+    with pytest.raises(ValueError, match="unexpected Mutmut"):
+        HARNESS.load_mutmut_observations(malformed)

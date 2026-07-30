@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, Protocol, cast
 
 import jsonschema
+import yaml
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 QUALITY_BUDGETS_PATH = PROJECT_ROOT / "quality" / "budgets.json"
@@ -224,15 +225,18 @@ def validate_ci_contracts() -> dict[str, list[str]]:
 def validate_action_pins() -> list[str]:
     """Return external actions after rejecting every mutable reference."""
     actions: list[str] = []
-    for workflow_path in sorted(WORKFLOWS_PATH.glob("*.yml")):
-        workflow = workflow_path.read_text(encoding="utf-8")
-        for match in re.finditer(r"(?m)^\s*-\s*uses:\s*([^\s#]+)", workflow):
-            action = match.group(1)
+    for workflow_path in workflow_paths():
+        document = yaml.safe_load(workflow_path.read_text(encoding="utf-8"))
+        for action in recursive_values(document, key="uses"):
+            if not isinstance(action, str):
+                raise TypeError(
+                    f"{display_path(workflow_path)} has a non-string uses value"
+                )
             if action.startswith("./"):
                 continue
             if re.fullmatch(r"[^@\s]+@[0-9a-f]{40}", action) is None:
                 raise ValueError(
-                    f"{workflow_path.relative_to(PROJECT_ROOT)} uses mutable "
+                    f"{display_path(workflow_path)} uses mutable "
                     f"action reference {action}"
                 )
             actions.append(action)
@@ -241,8 +245,154 @@ def validate_action_pins() -> list[str]:
     return actions
 
 
+def display_path(path: Path) -> str:
+    """Return a stable project-relative path where possible."""
+    try:
+        return path.relative_to(PROJECT_ROOT).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
+def workflow_paths() -> tuple[Path, ...]:
+    """Return active root workflows; vendored migration history is inert."""
+    return tuple(
+        sorted((
+            *WORKFLOWS_PATH.glob("*.yml"),
+            *WORKFLOWS_PATH.glob("*.yaml"),
+        ))
+    )
+
+
+def recursive_values(value: object, *, key: str) -> list[object]:
+    """Collect values for one mapping key at arbitrary YAML depth."""
+    found: list[object] = []
+    if isinstance(value, dict):
+        mapping = cast("dict[object, object]", value)
+        for current_key, current_value in mapping.items():
+            if current_key == key:
+                found.append(current_value)
+            found.extend(recursive_values(current_value, key=key))
+    elif isinstance(value, list):
+        for item in cast("list[object]", value):
+            found.extend(recursive_values(item, key=key))
+    return found
+
+
+def _workflow_documents() -> dict[Path, object]:
+    return {
+        path: yaml.safe_load(path.read_text(encoding="utf-8"))
+        for path in workflow_paths()
+    }
+
+
+def _require_exact_occurrences(
+    documents: dict[Path, object],
+    *,
+    key: str,
+    expected: str,
+    label: str,
+) -> None:
+    occurrences = [
+        (path, value)
+        for path, document in documents.items()
+        for value in recursive_values(document, key=key)
+    ]
+    if not occurrences:
+        raise ValueError(f"no governed {label} occurrences found")
+    drift = [
+        f"{display_path(path)}={value!r}"
+        for path, value in occurrences
+        if value != expected
+    ]
+    if drift:
+        raise ValueError(f"governed {label} differs from {expected!r}: {drift}")
+
+
+def _validate_setup_versions(
+    documents: dict[Path, object],
+    versions: dict[str, str],
+    workflow_text: str,
+) -> None:
+    setup_versions = [
+        str(value)
+        for document_value in documents.values()
+        for value in recursive_values(document_value, key="version")
+    ]
+    if not setup_versions or any(
+        value != versions["uv"] for value in setup_versions
+    ):
+        raise ValueError(
+            f"setup-uv versions differ from governed uv {versions['uv']}: "
+            f"{setup_versions}"
+        )
+    pixi_versions = [
+        str(value)
+        for document_value in documents.values()
+        for value in recursive_values(document_value, key="pixi-version")
+    ]
+    expected_pixi = f"v{versions['pixi']}"
+    if pixi_versions != [expected_pixi]:
+        raise ValueError(
+            f"setup-pixi versions differ from {expected_pixi}: {pixi_versions}"
+        )
+    python_occurrences = re.findall(
+        r"--python\s+(\d+\.\d+\.\d+)", workflow_text
+    )
+    if not python_occurrences or any(
+        value != versions["python"] for value in python_occurrences
+    ):
+        raise ValueError(
+            "workflow Python versions differ from governed Python "
+            f"{versions['python']}: {python_occurrences}"
+        )
+    python_file = (
+        (PROJECT_ROOT / ".python-version").read_text(encoding="utf-8").strip()
+    )
+    if python_file != versions["python"]:
+        raise ValueError(".python-version differs from governed Python")
+
+
+def _validate_gitleaks_contract(
+    documents: dict[Path, object],
+    versions: dict[str, str],
+    checksums: dict[str, str],
+) -> None:
+    expected_values = {
+        "ACTIONLINT_VERSION": versions["actionlint"],
+        "GITLEAKS_VERSION": versions["gitleaks"],
+        "GITLEAKS_ASSET": checksums["gitleaks_asset"],
+        "GITLEAKS_SHA256": checksums["gitleaks_linux_x64"],
+    }
+    for key, expected in expected_values.items():
+        _require_exact_occurrences(
+            documents,
+            key=key,
+            expected=expected,
+            label=key,
+        )
+    expected_asset = f"gitleaks_{versions['gitleaks']}_linux_x64.tar.gz"
+    if checksums["gitleaks_asset"] != expected_asset:
+        raise ValueError(
+            "Gitleaks version, platform and asset name are incoherent"
+        )
+
+
+def _validate_mojo_contract(versions: dict[str, str]) -> None:
+    pixi = (PROJECT_ROOT / "pixi.toml").read_text(encoding="utf-8")
+    mojo_requirement = f'mojo = "=={versions["mojo"]}"'
+    if mojo_requirement not in pixi:
+        raise ValueError("Pixi Mojo requirement differs from governed version")
+    lock = (PROJECT_ROOT / "pixi.lock").read_text(encoding="utf-8")
+    locked_mojo = f"/mojo-{versions['mojo']}-release.conda"
+    if locked_mojo not in lock:
+        raise ValueError("Pixi lock differs from governed Mojo resolution")
+    channel = f"https://conda.modular.com/{versions['mojo_channel']}"
+    if channel not in pixi:
+        raise ValueError("Pixi Mojo channel differs from governed channel")
+
+
 def validate_tool_versions() -> dict[str, str]:
-    """Validate governed tool versions against workflow setup literals."""
+    """Validate all governed tool occurrences and locked Mojo identity."""
     document = json.loads(TOOL_VERSIONS_PATH.read_text(encoding="utf-8"))
     schema = json.loads(
         (PROJECT_ROOT / "quality" / "tool-versions.schema.json").read_text(
@@ -254,34 +404,20 @@ def validate_tool_versions() -> dict[str, str]:
         "dict[str, str]",
         document["versions"],
     )
+    checksums = cast("dict[str, str]", document["checksums"])
+    documents = _workflow_documents()
     workflow_text = "\n".join(
-        path.read_text(encoding="utf-8")
-        for path in sorted(WORKFLOWS_PATH.glob("*.yml"))
+        path.read_text(encoding="utf-8") for path in workflow_paths()
     )
-    required_literals = {
-        "python": f"--python {versions['python']}",
-        "uv": f'version: "{versions["uv"]}"',
-        "pixi": f'pixi-version: "v{versions["pixi"]}"',
-        "actionlint": f"ACTIONLINT_VERSION: {versions['actionlint']}",
-        "gitleaks": f"GITLEAKS_VERSION: {versions['gitleaks']}",
-        "runner": f"runs-on: {versions['runner']}",
-    }
-    missing = [
-        tool
-        for tool, literal in required_literals.items()
-        if literal not in workflow_text
-    ]
-    if missing:
-        raise ValueError(f"governed tool literals missing from CI: {missing}")
-    governed_workflows = (
-        "dependency-review.yml",
-        "security-context.yml",
-        "test-goblin.yml",
+    _require_exact_occurrences(
+        documents,
+        key="runs-on",
+        expected=versions["runner"],
+        label="runner",
     )
-    for workflow_name in governed_workflows:
-        workflow = (WORKFLOWS_PATH / workflow_name).read_text(encoding="utf-8")
-        if "runs-on: ubuntu-latest" in workflow:
-            raise ValueError(f"{workflow_name} uses mutable runner label")
+    _validate_setup_versions(documents, versions, workflow_text)
+    _validate_gitleaks_contract(documents, versions, checksums)
+    _validate_mojo_contract(versions)
     return versions
 
 
@@ -557,21 +693,58 @@ def mutation() -> None:
         )
     command = [sys.executable, "-m", "mutmut", "run"]
     run(command)
-    configured = os.environ.get("TEST_GOBLIN_MUTATION_OBSERVATIONS")
-    artifact = os.environ.get("TEST_GOBLIN_MUTATION_ARTIFACT")
-    if configured is not None and artifact is not None:
-        observations = cast("dict[str, float]", json.loads(configured))
-        write_quality_receipt(
-            kind="mutation",
-            observations=observations,
-            output_path=PROJECT_ROOT
-            / "build"
-            / "quality-receipts"
-            / "mutation.json",
-            artifacts=[Path(artifact)],
-            command=command,
-        )
+    export_command = [
+        sys.executable,
+        "-m",
+        "mutmut",
+        "export-cicd-stats",
+    ]
+    run(export_command)
+    artifact = PROJECT_ROOT / "mutants" / "mutmut-cicd-stats.json"
+    observations = load_mutmut_observations(artifact)
+    write_quality_receipt(
+        kind="mutation",
+        observations=observations,
+        output_path=PROJECT_ROOT
+        / "build"
+        / "quality-receipts"
+        / "mutation.json",
+        artifacts=[artifact],
+        command=command,
+    )
     enforce_optional_receipt("mutation")
+
+
+def load_mutmut_observations(path: Path) -> dict[str, float]:
+    """Load authoritative numeric counts exported by Mutmut itself."""
+    if not path.is_file():
+        raise ValueError("Mutmut did not emit authoritative CI/CD statistics")
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    expected = {
+        "killed",
+        "survived",
+        "total",
+        "no_tests",
+        "skipped",
+        "suspicious",
+        "timeout",
+        "check_was_interrupted_by_user",
+        "segfault",
+    }
+    if set(raw) != expected:
+        raise ValueError(f"unexpected Mutmut statistics fields: {sorted(raw)}")
+    if any(
+        isinstance(value, bool) or not isinstance(value, int) or value < 0
+        for value in raw.values()
+    ):
+        raise ValueError("Mutmut statistics must be non-negative integers")
+    if raw["total"] <= 0:
+        raise ValueError("Mutmut statistics contain no generated mutants")
+    observations = {
+        key: float(value) for key, value in cast("dict[str, int]", raw).items()
+    }
+    observations["untested"] = observations.pop("no_tests")
+    return observations
 
 
 def gremlins() -> None:

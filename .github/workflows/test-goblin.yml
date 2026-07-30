@@ -89,7 +89,15 @@ jobs:
         with:
           name: quality-receipt-${{ matrix.profile }}
           path: build/quality-receipts/${{ matrix.profile }}.json
-          if-no-files-found: warn
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload authoritative Mutmut statistics
+        if: matrix.profile == 'mutation'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: mutmut-authoritative-statistics
+          path: mutants/mutmut-cicd-stats.json
+          if-no-files-found: error
           retention-days: 30
       - name: Upload Scalene profile
         if: matrix.profile == 'profile'

@@ -36,6 +36,7 @@ test = [
   "beautifulsoup4>=4.13",
   "jsonschema>=4.25",
   "packaging>=26",
+  "pyyaml>=6.0.3",
   "pytest-playwright>=0.7",
   "pytest>=9.1",
   "pytest-cov>=7.0",
@@ -54,6 +55,7 @@ typing = [
   "pyarrow-stubs>=20.0.0.20260625",
   "ruff>=0.12",
   "ty>=0.0.18",
+  "types-pyyaml>=6.0.12.20250915",
 ]
 profiling = [
   "scalene>=1.5.55",
