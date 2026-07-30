@@ -14,6 +14,7 @@ from ..models import (
     MedicineConcept,
     StatusAssertion,
 )
+from ..parser_safety import ParserPolicy, parse_xml
 from ..receipts import SourceReceipt
 from ._receipt import provenance_from_receipt
 
@@ -84,13 +85,9 @@ def project_pbs_xml(
 
 
 def _fixture_xml(payload: bytes) -> ET.Element:
-    if len(payload) > MAX_FIXTURE_BYTES:
-        raise ValueError("PBS fixture exceeds the 1 MB contract limit")
-    upper_payload = payload.upper()
-    if b"<!DOCTYPE" in upper_payload or b"<!ENTITY" in upper_payload:
-        raise ValueError("PBS fixture must not contain a DTD or entities")
-    return ET.fromstring(  # ruff: ignore[suspicious-xml-element-tree-usage]
-        payload
+    return parse_xml(
+        payload,
+        policy=ParserPolicy(max_bytes=MAX_FIXTURE_BYTES),
     )
 
 

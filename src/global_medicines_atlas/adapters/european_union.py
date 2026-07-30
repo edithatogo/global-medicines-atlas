@@ -18,6 +18,7 @@ from ..models import (
     Provenance,
     StatusAssertion,
 )
+from ..parser_safety import ParserPolicy, parse_xml
 from ..receipts import SourceReceipt
 from ._receipt import provenance_from_receipt
 from .fixture_contracts import FixtureProjection, project_fixture
@@ -165,13 +166,11 @@ def _decode_native(payload: bytes, label: str) -> str:
     return payload.decode("utf-8-sig")
 
 
-def _native_xml(payload: bytes, label: str) -> ET.Element:
-    _decode_native(payload, label)
-    upper_payload = payload.upper()
-    if b"<!DOCTYPE" in upper_payload or b"<!ENTITY" in upper_payload:
-        raise ValueError(f"{label} fixture must not contain a DTD or entities")
-    return ET.fromstring(  # ruff: ignore[suspicious-xml-element-tree-usage]
-        payload
+def _native_xml(payload: bytes, _label: str) -> ET.Element:
+    _decode_native(payload, _label)
+    return parse_xml(
+        payload,
+        policy=ParserPolicy(max_bytes=MAX_NATIVE_PAYLOAD_BYTES),
     )
 
 
