@@ -130,10 +130,14 @@ def test_qualified_assets_are_exact_attested_and_never_overwritten() -> None:
     assert "release-inputs/publication-qualification.json" in workflow
     assert "release-inputs/reviewed-rows.jsonl" in workflow
     assert '--publication-mode "$PUBLICATION_MODE"' in workflow
-    assert "inputs.publish && 'production' || 'dry-run'" in workflow
-    assert "--require-publishable" in workflow
+    assert "PUBLICATION_MODE: dry-run" in workflow
+    assert "--require-object software-source-release" in workflow
+    assert "scripts/validate_release_authority.py" in workflow
+    assert '--tag "$RELEASE_TAG"' in workflow
+    assert "--release-type prerelease" in workflow
+    assert "--artifact-scope software-only" in workflow
     identity_gate = workflow.index(
-        "Require publishable identities and licence decisions"
+        "Require publishable GitHub software identity and licence"
     )
     assert "if: inputs.publish" in workflow[identity_gate:]
     assert "--sort=name" in workflow
@@ -143,6 +147,7 @@ def test_qualified_assets_are_exact_attested_and_never_overwritten() -> None:
         "global-medicines-atlas-dataset-${dataset_version}.tar.gz" in workflow
     )
     assert "scripts/qualify_release.py qualify-fixture" in workflow
+    assert "--software-only" in workflow
     assert '"production_release_qualified": False' in (
         Path(__file__).resolve().parents[1] / "scripts" / "qualify_release.py"
     ).read_text(encoding="utf-8")
@@ -162,6 +167,7 @@ def test_qualified_assets_are_exact_attested_and_never_overwritten() -> None:
     assert "--clobber" not in workflow
     assert "gh release upload" not in workflow
     assert "--draft" in workflow
+    assert "--prerelease" in workflow
 
 
 def test_release_identity_and_sbom_are_semantically_qualified() -> None:

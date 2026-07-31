@@ -123,6 +123,9 @@ RTO, immutable backup, or production disaster-recovery capability.
 
 ## Publication and licence limitations
 
+Public repository access is not a software licence. The explicit licence for
+this repository's software is Apache-2.0.
+
 Repository software is licensed under Apache-2.0. Eligible maintainer-owned
 derived datasets may be licensed under CC-BY-4.0 only when an approved public
 artifact manifest expressly places them in scope. Third-party medicine sources
