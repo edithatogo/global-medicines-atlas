@@ -31,7 +31,7 @@
 - [x] Task: Prove locked offline fixture tests and safe network/rate-limit degradation ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `608c680`
 - [x] Task: Add repository/history leak detection and validate Renovate, dependency review, CodeQL, hosted secret scanning and action pinning — all pinned-action, configuration and hosted workflow gates pass at `8e0b898`; secret scanning, push protection and Dependabot security updates are enabled, while Renovate app execution and repository-wide action-policy enforcement remain explicit Phase 3 hosted-governance work ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `15354b4` `6a76b59` `53e60ed` `70d4721` `730502e` `af0c4f7` `30c594f` `8e0b898`
 - [x] Task: Add characterized typed boundaries before splitting policy, transport, persistence, serialization and orchestration responsibilities ([#38](https://github.com/edithatogo/global-medicines-atlas/issues/38)) `298a985` `4a410a7` `15354b4`
-- [ ] Task: Phase Verification & Checkpoint
+- [x] Task: Phase Verification & Checkpoint — [PR #71](https://github.com/edithatogo/global-medicines-atlas/pull/71) merged as `49991b8`; 23 required checks passed; Codecov reported 92.43% project coverage with project and patch gates passing
 
 ## Phase 3: Release-candidate evidence
 

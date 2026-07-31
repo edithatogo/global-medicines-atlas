@@ -105,6 +105,8 @@ on native Windows. The harness reports that boundary explicitly.
 
 ## CI Semantics
 
+### Coverage and Codecov
+
 - Python 3.14.6 is selected by `.python-version` and enforced by the project
   metadata and CI commands.
 - Property and randomized-order tests are blocking on pull requests.
