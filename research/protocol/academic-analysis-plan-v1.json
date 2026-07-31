@@ -1,0 +1,60 @@
+{
+  "schema_id": "global-medicines-atlas.academic-analysis-plan",
+  "schema_version": 1,
+  "status": "prospective_draft",
+  "protocol_identity": {"path": "research/protocol/academic-protocol-v1.json", "verification": "sha256_before_registration"},
+  "outcome_dimensions": ["regulatory_status", "funding_status"],
+  "joint_outcome_inference": false,
+  "matching_validation": {
+    "candidate_generation": "Deterministic identifiers and declared normalized features generate candidates separately from acceptance decisions.",
+    "automatic_acceptance": "exact_rules_only",
+    "unresolved_state": "insufficient_evidence",
+    "material_mismatch_state": "inappropriate_comparison",
+    "adjudication": {"independent_reviewers": 2, "blinded_to_jurisdiction_summary": true, "consensus_required": true, "unresolved_disagreement": "retain_disagreement_and_insufficient_evidence", "audit_fields": ["reviewer_role", "decision", "reason_code", "recorded_at", "evidence_refs"]},
+    "inter_rater": {"sampling_frame": "All manually adjudicated pairs, reported overall and by prespecified M-090 dimension where cell size permits.", "agreement_statistics": ["percent_agreement", "cohen_kappa_with_95_percent_ci"], "small_cell_rule": "Suppress unstable stratum estimates and report counts.", "agreement_is_not_validity": true},
+    "negative_controls": [
+      {"control_id": "NC-ENTITY", "dimension": "entity", "construction": "Pair ingredient-level and pack-level records without an exact declared bridge.", "expected_validity": "inappropriate_comparison"},
+      {"control_id": "NC-INDICATION", "dimension": "indication", "construction": "Pair materially non-overlapping indication scopes.", "expected_validity": "inappropriate_comparison"},
+      {"control_id": "NC-POPULATION", "dimension": "population", "construction": "Pair materially non-overlapping eligibility populations.", "expected_validity": "inappropriate_comparison"},
+      {"control_id": "NC-TEMPORAL", "dimension": "temporal", "construction": "Pair non-overlapping valid-time intervals.", "expected_validity": "inappropriate_comparison"},
+      {"control_id": "NC-MAPPING", "dimension": "mapping", "construction": "Pair records with unresolved mapping evidence.", "expected_validity": "insufficient_evidence"},
+      {"control_id": "NC-STATUS", "dimension": "status_dimension", "construction": "Attempt to compare a regulatory assertion directly with a funding assertion.", "expected_validity": "inappropriate_comparison"}
+    ]
+  },
+  "evidence_handling": {
+    "missingness": {"taxonomy": ["source_not_acquired", "field_not_exposed", "record_not_found", "not_applicable", "unknown"], "absence_interpretation": "insufficient_evidence_not_negative_status", "imputation": "none_for_status_or_validity"},
+    "conflicts": {"resolution": "retain_all_assertions", "silent_overwrite": false, "reporting": "Report source, valid time, retrieval time, conflict class, and unresolved state; adjudication may qualify but never erase source evidence."},
+    "coverage_denominators": [
+      {"denominator_id": "catalog_sources", "definition": "All governed catalog source surfaces eligible under the prospective source-selection rules.", "numerator": "Eligible sources with a valid bounded retrieval or fixture receipt."},
+      {"denominator_id": "eligible_entities", "definition": "All source-native entities in the declared lawful analysis extract.", "numerator": "Entities with the required outcome evidence for the stated analysis."},
+      {"denominator_id": "eligible_assertions", "definition": "All assertions eligible for the stated outcome and valid-time window.", "numerator": "Assertions with complete required provenance and semantic fields."},
+      {"denominator_id": "valid_comparisons", "definition": "All candidate comparisons evaluated under M-090.", "numerator": "Comparisons classified valid or valid_with_caveats; each state is also reported separately."}
+    ],
+    "uncertainty": {"unknowns_reported_separately": true, "interval_method": "Wilson 95 percent intervals for binomial proportions when meaningful; bootstrap intervals use the registered seed and resample at the source-native entity level.", "small_cells": "Report numerator and denominator and avoid unstable interval interpretation.", "no_evidence_claim": "Unavailable or incomplete evidence does not establish unapproved, unfunded, equivalent, or absent status."}
+  },
+  "analysis": {
+    "descriptive": [
+      {"analysis_id": "DA-REG", "outcome": "regulatory_status", "summary": "Counts and proportions by source-native regulatory status, jurisdiction, entity granularity, indication, population, and valid-time window."},
+      {"analysis_id": "DA-FUND", "outcome": "funding_status", "summary": "Counts and proportions by source-native funding status, jurisdiction, entity granularity, indication, population, and valid-time window."},
+      {"analysis_id": "DA-COVER", "outcome": "coverage", "summary": "Numerators and declared denominators for source, entity, assertion, field, temporal, and comparison coverage."},
+      {"analysis_id": "DA-VALID", "outcome": "comparison_validity", "summary": "Counts and proportions for each M-090 validity state and material mismatch dimension."}
+    ],
+    "sensitivity": [
+      {"analysis_id": "SA-EXACT", "variation": "Restrict to exact entity mappings and overlapping valid-time intervals.", "interpretation": "Assesses dependence on caveated mappings."},
+      {"analysis_id": "SA-SOURCE", "variation": "Restrict to sources with current live qualification receipts, then compare with governed-fixture results.", "interpretation": "Separates source availability from method behavior."},
+      {"analysis_id": "SA-CONFLICT", "variation": "Report unresolved conflicts as a separate stratum and exclude them in a secondary summary.", "interpretation": "Bounds sensitivity to conflict handling without overwriting evidence."},
+      {"analysis_id": "SA-MISSING", "variation": "Compare complete-case descriptive summaries with explicit missingness strata; do not impute status.", "interpretation": "Shows the effect of observable missingness without treating absence as a negative."},
+      {"analysis_id": "SA-UNIT", "variation": "Repeat eligible summaries at ingredient and source-native product granularities where valid mappings exist.", "interpretation": "Assesses dependence on unit of analysis."}
+    ],
+    "multiplicity": {"confirmatory_hypothesis_tests": [], "p_values": "not_planned", "confidence_intervals": "descriptive_not_significance_tests", "subgroup_results": "label_descriptive_and_report_denominators", "unplanned_analyses": "label_exploratory"}
+  },
+  "reproducibility": {
+    "software": {"identity": "full_git_commit_sha_and_clean_tree", "verification": "git rev-parse HEAD plus recorded tree digest", "mutable_reference_allowed": false},
+    "schemas": {"identity": "repository_path_schema_version_and_sha256", "verification": "Draft 2020-12 validation plus checksum manifest", "mutable_reference_allowed": false},
+    "fixtures": {"identity": "fixture_manifest_paths_source_ids_and_sha256", "verification": "offline fixture verification gate", "mutable_reference_allowed": false},
+    "random_seed": {"identity": "integer_seed_20260729_and_algorithm_identifier", "verification": "record seed and library algorithm/version in every stochastic receipt", "mutable_reference_allowed": false},
+    "environment": {"identity": "python_version_os_architecture_uv_lock_and_toolchain_digests", "verification": "generated environment receipt and lock checksum", "mutable_reference_allowed": false}
+  },
+  "deviations": {"register_path": "research/protocol/deviations.jsonl", "append_only": true, "required_fields": ["deviation_id", "recorded_at", "classification", "planned_method", "actual_method", "reason", "impact", "author"], "post_registration_changes_are_amendments": true, "undeclared_outcome_switching": "prohibited"},
+  "traceability": {"requirements": ["M-035", "M-078", "M-081", "M-088", "M-090", "M-091"], "design_sections": ["Cross-Jurisdiction Matching", "Comparison Validity Boundary", "Governed Research and Dataset Identity"], "repository_paths": ["conductor/requirements.md", "conductor/design.md", "research/protocol/academic-protocol-v1.json", "schemas/comparison-validity-v1.json", "conductor/tracks/academic_protocol_preregistration_20260729/plan.md", ".github/generated-issues/academic-protocol-analysis.md"], "github_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/68"}
+}
