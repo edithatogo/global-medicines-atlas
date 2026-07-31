@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/publication-identity-registry-v1.json",
+  "title": "Publication identity registry",
+  "type": "object",
+  "required": ["schema_id", "schema_version", "identities"],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.publication-identities"},
+    "schema_version": {"const": 1},
+    "identities": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"$ref": "#/$defs/identity"}}
+  },
+  "$defs": {"identity": {
+    "type": "object",
+    "required": ["object_id", "system", "object_role", "identifier", "identifier_state", "identifier_evidence", "licence_state", "licence_expression", "licence_decision_evidence", "related_object_ids"],
+    "properties": {
+      "object_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+      "system": {"enum": ["github", "hugging_face", "zenodo", "osf"]},
+      "object_role": {"enum": ["software_source_release", "derived_dataset_distribution", "archival_doi_record", "protocol_preregistration"]},
+      "identifier": {"type": ["string", "null"], "minLength": 1},
+      "identifier_state": {"enum": ["unresolved", "configured", "verified"]},
+      "identifier_evidence": {"type": ["string", "null"], "minLength": 1},
+      "licence_state": {"enum": ["unresolved", "approved"]},
+      "licence_expression": {"type": ["string", "null"], "minLength": 1},
+      "licence_decision_evidence": {"type": ["string", "null"], "minLength": 1},
+      "related_object_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+    }, "additionalProperties": false
+  }},
+  "additionalProperties": false
+}

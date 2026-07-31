@@ -63,6 +63,160 @@ class VerificationOutcome(StrEnum):
     UNKNOWN = "unknown"
 
 
+class PublicationSystem(StrEnum):
+    GITHUB = "github"
+    HUGGING_FACE = "hugging_face"
+    ZENODO = "zenodo"
+    OSF = "osf"
+
+
+class PublicationObjectRole(StrEnum):
+    SOFTWARE_SOURCE_RELEASE = "software_source_release"
+    DERIVED_DATASET_DISTRIBUTION = "derived_dataset_distribution"
+    ARCHIVAL_DOI_RECORD = "archival_doi_record"
+    PROTOCOL_PREREGISTRATION = "protocol_preregistration"
+
+
+class DecisionState(StrEnum):
+    UNRESOLVED = "unresolved"
+    APPROVED = "approved"
+
+
+class IdentifierState(StrEnum):
+    UNRESOLVED = "unresolved"
+    CONFIGURED = "configured"
+    VERIFIED = "verified"
+
+
+_ROLE_BY_SYSTEM = {
+    PublicationSystem.GITHUB: PublicationObjectRole.SOFTWARE_SOURCE_RELEASE,
+    PublicationSystem.HUGGING_FACE: PublicationObjectRole.DERIVED_DATASET_DISTRIBUTION,
+    PublicationSystem.ZENODO: PublicationObjectRole.ARCHIVAL_DOI_RECORD,
+    PublicationSystem.OSF: PublicationObjectRole.PROTOCOL_PREREGISTRATION,
+}
+
+
+class PublicationIdentity(PublicationContractModel):
+    """One non-overlapping publication surface and its decision evidence."""
+
+    object_id: Annotated[NonBlank, Field(pattern=r"^[a-z][a-z0-9-]+$")]
+    system: PublicationSystem
+    object_role: PublicationObjectRole
+    identifier: NonBlank | None = None
+    identifier_state: IdentifierState
+    identifier_evidence: NonBlank | None = None
+    licence_state: DecisionState
+    licence_expression: NonBlank | None = None
+    licence_decision_evidence: NonBlank | None = None
+    related_object_ids: tuple[NonBlank, ...] = ()
+
+    @model_validator(mode="after")
+    def identity_is_evidenced_and_role_bound(self) -> Self:
+        if _ROLE_BY_SYSTEM[self.system] is not self.object_role:
+            raise ValueError(
+                "publication system is assigned the wrong object role"
+            )
+        if self.object_id in self.related_object_ids:
+            raise ValueError("publication identity cannot relate to itself")
+        if len(self.related_object_ids) != len(set(self.related_object_ids)):
+            raise ValueError("related publication object_ids must be unique")
+        if self.identifier_state is IdentifierState.UNRESOLVED:
+            if (
+                self.identifier is not None
+                or self.identifier_evidence is not None
+            ):
+                raise ValueError(
+                    "unresolved identifier cannot claim a value or evidence"
+                )
+        elif self.identifier is None:
+            raise ValueError(
+                "configured identifier state requires an identifier"
+            )
+        if (
+            self.identifier_state is IdentifierState.VERIFIED
+            and self.identifier_evidence is None
+        ):
+            raise ValueError("verified identifier requires durable evidence")
+        if self.licence_state is DecisionState.UNRESOLVED:
+            if (
+                self.licence_expression is not None
+                or self.licence_decision_evidence is not None
+            ):
+                raise ValueError("unresolved licence cannot claim a decision")
+        elif (
+            self.licence_expression is None
+            or self.licence_decision_evidence is None
+        ):
+            raise ValueError(
+                "approved licence requires expression and decision evidence"
+            )
+        return self
+
+
+class PublicationIdentityRegistry(PublicationContractModel):
+    schema_id: Annotated[
+        str, Field(pattern=r"^global-medicines-atlas\.publication-identities$")
+    ]
+    schema_version: Annotated[int, Field(ge=1)]
+    identities: tuple[PublicationIdentity, ...] = Field(
+        min_length=4, max_length=4
+    )
+
+    @model_validator(mode="after")
+    def identities_are_complete_non_overlapping_and_closed(self) -> Self:
+        systems = tuple(item.system for item in self.identities)
+        roles = tuple(item.object_role for item in self.identities)
+        object_ids = tuple(item.object_id for item in self.identities)
+        identifiers = tuple(
+            item.identifier
+            for item in self.identities
+            if item.identifier is not None
+        )
+        if set(systems) != set(PublicationSystem) or len(systems) != len(
+            set(systems)
+        ):
+            raise ValueError(
+                "registry requires each publication system exactly once"
+            )
+        if len(roles) != len(set(roles)) or len(object_ids) != len(
+            set(object_ids)
+        ):
+            raise ValueError(
+                "publication roles and object_ids must not overlap"
+            )
+        if len(identifiers) != len(set(identifiers)):
+            raise ValueError("publication identifiers must not overlap")
+        known = set(object_ids)
+        if any(
+            related not in known
+            for item in self.identities
+            for related in item.related_object_ids
+        ):
+            raise ValueError(
+                "related publication object_ids must exist in registry"
+            )
+        return self
+
+    def blocking_reasons(self) -> tuple[str, ...]:
+        reasons: list[str] = []
+        for item in self.identities:
+            if item.identifier_state is not IdentifierState.VERIFIED:
+                reasons.append(
+                    f"{item.object_id}:identifier-{item.identifier_state}"
+                )
+            if item.licence_state is not DecisionState.APPROVED:
+                reasons.append(f"{item.object_id}:licence-{item.licence_state}")
+        return tuple(reasons)
+
+    def assert_publishable(self) -> None:
+        reasons = self.blocking_reasons()
+        if reasons:
+            raise ValueError(
+                "publication identity registry is blocked: "
+                + ", ".join(reasons)
+            )
+
+
 class VerificationCheck(StrEnum):
     """Named checks required at publication-state boundaries."""
 

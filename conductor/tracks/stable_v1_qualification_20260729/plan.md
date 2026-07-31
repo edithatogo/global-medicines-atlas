@@ -48,7 +48,12 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   - LanceDB is a `semantic` extra rather than a core dependency. Immutable,
     content-bound index/model identity must match exactly; absent dependencies,
     identities and indexes produce the deterministic unavailable fallback.
-- [ ] Task: Define non-overlapping GitHub, Hugging Face, Zenodo and OSF dataset/protocol identities and licence gates ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
+- [x] Task: Define non-overlapping GitHub, Hugging Face, Zenodo and OSF dataset/protocol identities and licence gates ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
+  - The authoritative publication-identity registry assigns one non-overlapping
+    intellectual-object role to each surface, validates cross-object links, and
+    fails closed unless identifiers and licence decisions have durable evidence.
+    Current external identifiers and all licence decisions remain unresolved or
+    merely configured; no publication or approval is inferred.
 - [ ] Task: Phase Verification & Checkpoint
 
 ## Phase 2: v0.9 candidate

@@ -62,3 +62,12 @@ the structural schema migration.
 Phase 1 register for candidate platforms, documentation readiness, limitations,
 and residual risks. It remains blocked while any blocking risk is unresolved
 or a support boundary is unverified.
+
+`quality/qualifications/publication-identities.json` is the authoritative
+publication-surface registry. GitHub identifies software source/releases,
+Hugging Face a derived dataset distribution, Zenodo a versioned archival DOI
+record, and OSF the protocol/preregistration. Related records may link without
+reusing object roles or identifiers. A configured URL is not verified evidence,
+and no licence is approved without both an expression and durable maintainer
+decision evidence. The executable release gate therefore remains blocked until
+those external decisions and receipts exist.

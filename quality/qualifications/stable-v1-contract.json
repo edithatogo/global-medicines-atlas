@@ -6,7 +6,8 @@
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
     "source_catalog": "src/global_medicines_atlas/data/medicine_source_catalog.json",
-    "publication_contract": "src/global_medicines_atlas/publication_contracts.py"
+    "publication_contract": "src/global_medicines_atlas/publication_contracts.py",
+    "publication_identity_registry": "quality/qualifications/publication-identities.json"
   },
   "requirements": [
     {"requirement_id":"M-001","state":"partial","evidence":["conductor/requirements.md"],"blocker_ids":["stable-v1-evidence-unverified"]},
@@ -114,10 +115,10 @@
     {"risk_id":"RISK-004","description":"Mojo remains experimental; Python 3.14 is authoritative.","disposition":"accepted","blocking":false,"evidence":["quality/qualifications/v08.json"]}
   ],
   "publication_identities": [
-    {"system":"github","object_role":"software_source_and_release","identifier":"https://github.com/edithatogo/global-medicines-atlas","licence_state":"unresolved","state":"unverified"},
+    {"system":"github","object_role":"software_source_release","identifier":"https://github.com/edithatogo/global-medicines-atlas","licence_state":"unresolved","state":"unverified"},
     {"system":"hugging_face","object_role":"derived_dataset_distribution","identifier":null,"licence_state":"unresolved","state":"blocked"},
-    {"system":"zenodo","object_role":"versioned_archival_doi","identifier":null,"licence_state":"unresolved","state":"blocked"},
-    {"system":"osf","object_role":"protocol_preregistration_and_project_record","identifier":null,"licence_state":"unresolved","state":"blocked"}
+    {"system":"zenodo","object_role":"archival_doi_record","identifier":null,"licence_state":"unresolved","state":"blocked"},
+    {"system":"osf","object_role":"protocol_preregistration","identifier":null,"licence_state":"unresolved","state":"blocked"}
   ],
   "release_gates": [
     {"gate_id":"stable-v1-canonical-schema-v2","description":"Implement and rehearse the structural canonical medicine v2 migration and rollback.","state":"unverified","evidence":["schemas/canonical-medicine-v2.json"]},
@@ -129,7 +130,7 @@
     {"gate_id":"stable-v1-clean-room-rehearsal","description":"Pass independent reproduction, migration, rollback and recovery rehearsals.","state":"unverified","evidence":["quality/qualifications/stable-v1-rehearsal-plan.json"]},
     {"gate_id":"stable-v1-support-readiness","description":"Resolve the verified support, documentation, limitations and residual-risk gate register.","state":"unverified","evidence":["docs/qualification/stable-v1-contract.md","quality/qualifications/stable-v1-support-readiness.json"]},
     {"gate_id":"stable-v1-hosted-governance","description":"Verify dated hosted repository governance and protected checks.","state":"unverified","evidence":[]},
-    {"gate_id":"stable-v1-publication-identities","description":"Verify non-overlapping GitHub, Hugging Face, Zenodo and OSF identities.","state":"blocked","evidence":[]},
+    {"gate_id":"stable-v1-publication-identities","description":"Verify non-overlapping GitHub, Hugging Face, Zenodo and OSF identities.","state":"blocked","evidence":["quality/qualifications/publication-identities.json","schemas/publication-identity-registry-v1.json","scripts/validate_publication_identities.py"]},
     {"gate_id":"stable-v1-publication-gates","description":"Pass governed rights, privacy, checksum and verification contracts.","state":"unverified","evidence":["src/global_medicines_atlas/publication_contracts.py"]},
     {"gate_id":"renovate-app-activation","description":"Verify maintainer-authorized Renovate App activation.","state":"blocked","evidence":["quality/qualifications/v08.json"]},
     {"gate_id":"stable-v1-licence-approval","description":"Obtain explicit maintainer software and dataset licence approval.","state":"blocked","evidence":[]},
