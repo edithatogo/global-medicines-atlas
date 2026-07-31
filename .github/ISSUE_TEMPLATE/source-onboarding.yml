@@ -25,6 +25,12 @@ body:
     id: access
     attributes: {label: Access, format, authentication, and cadence}
     validations: {required: true}
+  - type: dropdown
+    id: authentication
+    attributes:
+      label: Authentication class
+      options: [none, public-api-key, user-credential, organisation-credential, unknown]
+    validations: {required: true}
   - type: textarea
     id: rights
     attributes: {label: Licence and redistribution rights}
@@ -37,3 +43,10 @@ body:
     id: limitations
     attributes: {label: Known coverage and interpretation limitations}
     validations: {required: true}
+  - type: checkboxes
+    id: boundary
+    attributes:
+      label: Evidence boundary
+      options:
+        - label: Regulatory, funding, formulary, price, procurement, availability, and terminology claims remain distinct.
+          required: true
