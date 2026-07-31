@@ -116,6 +116,10 @@ def test_sdist_canonicalization_uses_stored_gzip_blocks(
         info = tarfile.TarInfo("candidate/payload.txt")
         info.size = len(payload)
         archive.addfile(info, io.BytesIO(payload))
+        version_payload = b"version = '1.0'\r\n"
+        version_info = tarfile.TarInfo("candidate/package/_version.py")
+        version_info.size = len(version_payload)
+        archive.addfile(version_info, io.BytesIO(version_payload))
 
     canonicalize_sdist(source, source_date_epoch="1700000000")
     first = source.read_bytes()
@@ -127,6 +131,9 @@ def test_sdist_canonicalization_uses_stored_gzip_blocks(
         extracted = archive.extractfile("candidate/payload.txt")
         assert extracted is not None
         assert extracted.read() == payload
+        version = archive.extractfile("candidate/package/_version.py")
+        assert version is not None
+        assert version.read() == b"version = '1.0'\n"
 
 
 def _repository(tmp_path: Path) -> tuple[Path, str, str]:
