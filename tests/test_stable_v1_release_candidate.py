@@ -19,6 +19,8 @@ from scripts.build_stable_v1_release_candidate import (
     build_provenance_references,
     built_wheel_version,
     canonicalize_sbom,
+    canonicalize_sdist,
+    canonicalize_wheel,
     consume_candidate,
     portable_venv_python,
     verification_commands,
@@ -79,6 +81,47 @@ def _run(root: Path, *arguments: str) -> str:
         capture_output=True,
         text=True,
     ).stdout.strip()
+
+
+def test_wheel_canonicalization_normalizes_generated_version_and_record(
+    tmp_path: Path,
+) -> None:
+    wheel = tmp_path / "candidate.whl"
+    with zipfile.ZipFile(wheel, "w") as archive:
+        archive.writestr("package/_version.py", b"a = 1\r\nb = 2\r\n")
+        archive.writestr("package/data.bin", b"\x00\x01")
+        archive.writestr(
+            "package-1.0.dist-info/RECORD",
+            b"stale,sha256=stale,1\r\n",
+        )
+
+    canonicalize_wheel(wheel)
+
+    with zipfile.ZipFile(wheel) as archive:
+        assert archive.read("package/_version.py") == b"a = 1\nb = 2\n"
+        record = archive.read("package-1.0.dist-info/RECORD").decode()
+    assert "\r" not in record
+    assert "stale" not in record
+    assert "package/_version.py,sha256=" in record
+    assert "package-1.0.dist-info/RECORD,,\n" in record
+
+
+def test_sdist_canonicalization_uses_stored_gzip_blocks(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "candidate.tar.gz"
+    payload = b"platform-independent payload\n" * 20
+    with tarfile.open(source, "w:gz") as archive:
+        info = tarfile.TarInfo("candidate/payload.txt")
+        info.size = len(payload)
+        archive.addfile(info, io.BytesIO(payload))
+
+    canonicalize_sdist(source, source_date_epoch="1700000000")
+    first = source.read_bytes()
+    canonicalize_sdist(source, source_date_epoch="1700000000")
+
+    assert source.read_bytes() == first
+    assert first.startswith(b"\x1f\x8b")
 
 
 def _repository(tmp_path: Path) -> tuple[Path, str, str]:

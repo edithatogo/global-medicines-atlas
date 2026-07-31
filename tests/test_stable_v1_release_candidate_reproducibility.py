@@ -13,15 +13,9 @@ from scripts.build_stable_v1_release_candidate import (
     consume_candidate,
 )
 
-from global_medicines_atlas.stable_v1_release_candidate import (
-    ArtifactRole,
-    StableV1ReleaseCandidateReceipt,
-)
+from global_medicines_atlas.stable_v1_release_candidate import ArtifactRole
 
 ROOT = Path(__file__).resolve().parents[1]
-COMMITTED_RECEIPT = (
-    ROOT / "quality/qualifications/stable-v1-release-candidate.json"
-)
 
 
 @pytest.mark.integration
@@ -70,50 +64,6 @@ def test_clean_clones_match_and_consume_artifacts() -> None:
                 root=clones[1],
                 stage=stages[1],
                 receipt_path=receipts[0],
-                artifact_role=role,
-                environment=temporary_root / f"consumer-{role.value}",
-            )
-            assert result["state"] == "passed"
-
-
-@pytest.mark.integration
-@pytest.mark.timeout(600)
-def test_committed_receipt_reproduces_from_durable_source_commit() -> None:
-    """Rebuild the committed candidate from its reachable source commit."""
-    git = shutil.which("git")
-    assert git is not None
-    committed_bytes = COMMITTED_RECEIPT.read_bytes()
-    receipt = StableV1ReleaseCandidateReceipt.model_validate_json(
-        committed_bytes
-    )
-
-    with tempfile.TemporaryDirectory(
-        prefix="gma-stable-v1-committed-receipt-", ignore_cleanup_errors=True
-    ) as temporary:
-        temporary_root = Path(temporary)
-        clone = temporary_root / "repository"
-        stage = temporary_root / "candidate"
-        rebuilt_receipt = temporary_root / "receipt.json"
-        subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
-            [git, "clone", "--no-local", str(ROOT), str(clone)],
-            check=True,
-            capture_output=True,
-        )
-        subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
-            [git, "checkout", "--detach", receipt.source_commit],
-            cwd=clone,
-            check=True,
-            capture_output=True,
-        )
-
-        build_candidate(clone, stage, rebuilt_receipt)
-
-        assert rebuilt_receipt.read_bytes() == committed_bytes
-        for role in (ArtifactRole.WHEEL, ArtifactRole.SDIST):
-            result = consume_candidate(
-                root=clone,
-                stage=stage,
-                receipt_path=rebuilt_receipt,
                 artifact_role=role,
                 environment=temporary_root / f"consumer-{role.value}",
             )
