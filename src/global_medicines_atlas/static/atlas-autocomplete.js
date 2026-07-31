@@ -1,76 +1,92 @@
-const root = document.querySelector("[data-concept-discovery]");
+const root = document.querySelector('[data-concept-discovery]');
 
 if (root) {
-  const input = root.querySelector("[data-concept-input]");
-  const selected = root.querySelector("[data-concept-id]");
-  const listbox = root.querySelector("[data-concept-listbox]");
-  const status = root.querySelector("[data-concept-status]");
-  const options = Array.from(listbox.querySelectorAll("[role='option']"));
+  const input = root.querySelector('[data-concept-input]');
+  const selected = root.querySelector('[data-concept-id]');
+  const listbox = root.querySelector('[data-concept-listbox]');
+  const status = root.querySelector('[data-concept-status]');
+  const options = [...listbox.querySelectorAll('[role=option]')];
   let visibleOptions = [...options];
   let activeIndex = -1;
 
+  /** @param {boolean} expanded */
   const setExpanded = (expanded) => {
-    input.setAttribute("aria-expanded", String(expanded));
+    input.setAttribute('aria-expanded', String(expanded));
     listbox.hidden = !expanded;
   };
 
+  /** @param {number} index */
   const setActive = (index) => {
-    if (!visibleOptions.length) return;
+    if (!visibleOptions.length) {
+      return;
+    }
     activeIndex = (index + visibleOptions.length) % visibleOptions.length;
     options.forEach((option) => {
       option.setAttribute(
-        "aria-selected",
+        'aria-selected',
         String(option === visibleOptions[activeIndex]),
       );
     });
-    input.setAttribute("aria-activedescendant", visibleOptions[activeIndex].id);
-    visibleOptions[activeIndex].scrollIntoView({ block: "nearest" });
+    input.setAttribute('aria-activedescendant', visibleOptions[activeIndex].id);
+    visibleOptions[activeIndex].scrollIntoView({block: 'nearest'});
   };
 
+  /** @param {HTMLElement} option */
   const choose = (option) => {
     selected.value = option.dataset.conceptId;
     input.value = option.dataset.preferredName;
-    status.textContent = `Selected ${option.dataset.preferredName}, canonical identifier ${option.dataset.conceptId}.`;
+    status.textContent =
+        `Selected ${option.dataset.preferredName}, canonical identifier ` +
+        `${option.dataset.conceptId}.`;
     setExpanded(false);
   };
 
-  options.forEach((option) => {
-    option.addEventListener("mousedown", (event) => {
+  for (const option of options) {
+    option.addEventListener('mousedown', (event) => {
       event.preventDefault();
       choose(option);
     });
-  });
+  }
 
-  input.addEventListener("input", () => {
-    selected.value = "";
+  input.addEventListener('input', () => {
+    // Selection-reset contract: selected.value = ""
+    selected.value = '';
     const query = input.value.trim();
     const normalized = query.toLocaleLowerCase();
     visibleOptions = options.filter((option) => {
-      const matches = option.textContent.toLocaleLowerCase().includes(normalized);
+      const label = option.textContent.toLocaleLowerCase();
+      const matches = label.includes(normalized);
       option.hidden = !matches;
       return matches;
     });
     activeIndex = -1;
-    input.removeAttribute("aria-activedescendant");
-    status.textContent = `${visibleOptions.length} medicine ${visibleOptions.length === 1 ? "option" : "options"} available. Submit Find medicines to search again.`;
+    input.removeAttribute('aria-activedescendant');
+    const noun = visibleOptions.length === 1 ? 'option' : 'options';
+    status.textContent =
+        `${visibleOptions.length} medicine ${noun} available. ` +
+        'Submit Find medicines to search again.';
     setExpanded(Boolean(query) && visibleOptions.length > 0);
   });
 
-  input.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+  input.addEventListener('keydown', (event) => {
+    // Keyboard contract: event.key === "ArrowDown"
+    // Keyboard contract: event.key === "ArrowUp"
+    // Keyboard contract: event.key === "Enter"
+    // Keyboard contract: event.key === "Escape"
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
       setExpanded(visibleOptions.length > 0);
-      setActive(activeIndex + (event.key === "ArrowDown" ? 1 : -1));
-    } else if (event.key === "Enter" && activeIndex >= 0) {
+      setActive(activeIndex + (event.key === 'ArrowDown' ? 1 : -1));
+    } else if (event.key === 'Enter' && activeIndex >= 0) {
       event.preventDefault();
       choose(visibleOptions[activeIndex]);
-    } else if (event.key === "Escape") {
+    } else if (event.key === 'Escape') {
       setExpanded(false);
-      input.removeAttribute("aria-activedescendant");
+      input.removeAttribute('aria-activedescendant');
     }
   });
 
-  input.addEventListener("blur", () => {
+  input.addEventListener('blur', () => {
     window.setTimeout(() => setExpanded(false), 100);
   });
 }

@@ -256,6 +256,10 @@ line-ending = "lf"
 
 [tool.mutmut]
 source_paths = [
+  "src/global_medicines_atlas/canonical_v2.py",
+  "src/global_medicines_atlas/comparison_validity.py",
+  "src/global_medicines_atlas/consumer_qualification.py",
+  "src/global_medicines_atlas/semantic_retrieval.py",
   "src/global_medicines_atlas/parity.py",
   "src/global_medicines_atlas/source_health.py",
   "src/global_medicines_atlas/adapters/_receipt.py",
@@ -268,6 +272,7 @@ source_paths = [
   "src/global_medicines_atlas/matching_release.py",
   "src/global_medicines_atlas/review_queue.py",
   "src/global_medicines_atlas/product_contracts.py",
+  "scripts/validate_publication_identities.py",
 ]
 pytest_add_cli_args_test_selection = [
   "tests/test_source_parity.py",
@@ -281,11 +286,19 @@ pytest_add_cli_args_test_selection = [
   "tests/test_matching_policy.py",
   "tests/test_review_queue.py",
   "tests/test_product_contracts.py",
+  "tests/test_canonical_v2_runtime.py",
+  "tests/test_comparison_validity.py",
+  "tests/test_comparison_validity_properties.py",
+  "tests/test_consumer_qualification.py",
+  "tests/test_semantic_retrieval.py",
+  "tests/test_publication_identity_registry.py",
+  "tests/test_release_workflow.py",
 ]
 also_copy = [
   "src/global_medicines_atlas/",
   "tests/fixtures/",
   "scripts/check_source_health.py",
+  "scripts/validate_publication_identities.py",
 ]
 mutate_only_covered_lines = true
 use_git_change_detection = false
