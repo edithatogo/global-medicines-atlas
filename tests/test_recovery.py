@@ -44,6 +44,102 @@ def test_backup_restore_and_rollback_are_content_addressed(
     assert (governed / "a.json").read_text(encoding="utf-8") == "changed\n"
 
 
+def test_rollback_publication_failure_recovers_active_destination(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    bundle, destination = _recovery_fixture(tmp_path)
+    receipt = restore_backup(bundle, destination)
+    assert receipt.rollback_path is not None
+    original_replace = Path.replace
+
+    def fail_rollback_publication(path: Path, target: Path) -> Path:
+        if path == receipt.rollback_path and target == destination:
+            raise OSError("injected rollback publication failure")
+        return original_replace(path, target)
+
+    monkeypatch.setattr(Path, "replace", fail_rollback_publication)
+
+    with pytest.raises(RecoveryError, match="active destination recovered"):
+        rollback_restore(receipt)
+
+    assert (destination / "state.txt").read_text(encoding="utf-8") == "backup"
+    assert (receipt.rollback_path / "state.txt").read_text(
+        encoding="utf-8"
+    ) == "current"
+    assert not destination.with_name(".canonical.failed-restore").exists()
+
+
+def test_compounded_rollback_failure_uses_active_safeguard(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    bundle, destination = _recovery_fixture(tmp_path)
+    receipt = restore_backup(bundle, destination)
+    assert receipt.rollback_path is not None
+    failed = destination.with_name(".canonical.failed-restore")
+    original_replace = Path.replace
+
+    def fail_primary_compensation(path: Path, target: Path) -> Path:
+        if target == destination and path in {receipt.rollback_path, failed}:
+            raise OSError(f"injected failure for {path.name}")
+        return original_replace(path, target)
+
+    monkeypatch.setattr(Path, "replace", fail_primary_compensation)
+
+    with pytest.raises(
+        RecoveryError, match="verified active safeguard recovered"
+    ):
+        rollback_restore(receipt)
+
+    assert (destination / "state.txt").read_text(encoding="utf-8") == "backup"
+    assert (failed / "state.txt").read_text(encoding="utf-8") == "backup"
+    assert (receipt.rollback_path / "state.txt").read_text(
+        encoding="utf-8"
+    ) == "current"
+
+
+def test_rollback_quarantine_failure_retains_canonical_destination(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    bundle, destination = _recovery_fixture(tmp_path)
+    receipt = restore_backup(bundle, destination)
+    failed = destination.with_name(".canonical.failed-restore")
+    original_replace = Path.replace
+
+    def fail_quarantine(path: Path, target: Path) -> Path:
+        if path == destination and target == failed:
+            raise OSError("injected quarantine failure")
+        return original_replace(path, target)
+
+    monkeypatch.setattr(Path, "replace", fail_quarantine)
+
+    with pytest.raises(RecoveryError, match="canonical retained"):
+        rollback_restore(receipt)
+
+    assert (destination / "state.txt").read_text(encoding="utf-8") == "backup"
+    assert not failed.exists()
+
+
+def test_rollback_rejects_existing_failed_restore_quarantine(
+    tmp_path: Path,
+) -> None:
+    bundle, destination = _recovery_fixture(tmp_path)
+    receipt = restore_backup(bundle, destination)
+    failed = destination.with_name(".canonical.failed-restore")
+    failed.mkdir()
+
+    with pytest.raises(RecoveryError, match="quarantine already exists"):
+        rollback_restore(receipt)
+
+    assert (destination / "state.txt").read_text(encoding="utf-8") == "backup"
+    assert receipt.rollback_path is not None
+    assert (receipt.rollback_path / "state.txt").read_text(
+        encoding="utf-8"
+    ) == "current"
+
+
 def test_restore_rejects_tampering_and_symlinks(tmp_path: Path) -> None:
     source = tmp_path / "source"
     source.mkdir()
