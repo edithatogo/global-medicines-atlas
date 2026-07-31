@@ -758,6 +758,11 @@ def mutation() -> None:
             "mutmut 3 requires fork support. Run the mutation profile in WSL "
             "or use the authoritative Linux CI lane."
         )
+    for relative in ("scripts", "schemas"):
+        (PROJECT_ROOT / "mutants" / relative).mkdir(
+            parents=True,
+            exist_ok=True,
+        )
     command = [sys.executable, "-m", "mutmut", "run"]
     run(command)
     export_command = [
