@@ -59,6 +59,8 @@ VERSION = "1.0.0rc1"
 REFERENCE_FILES = (
     ".github/workflows/release-provenance.yml",
     "pylock.toml",
+    "quality/release-build-constraints.txt",
+    "quality/release-build-toolchain.json",
     "quality/qualifications/stable-v1-consumer-compatibility.json",
     "schemas/release-evidence-v1.json",
     "schemas/stable-v1-consumer-compatibility-v1.json",

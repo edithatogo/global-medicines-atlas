@@ -45,6 +45,8 @@ DEFAULT_RECEIPT = Path(
 )
 
 _REFERENCE_FILES = {
+    "build-constraints": "quality/release-build-constraints.txt",
+    "build-toolchain": "quality/release-build-toolchain.json",
     "candidate-implementation": (
         "src/global_medicines_atlas/stable_v1_release_candidate.py"
     ),
@@ -59,6 +61,9 @@ _REFERENCE_FILES = {
     "release-evidence-schema": "schemas/release-evidence-v1.json",
     "release-workflow": ".github/workflows/release-provenance.yml",
 }
+
+_GENERATED_VERSION_PATH = Path("src/global_medicines_atlas/_version.py")
+_BUILD_TOOLCHAIN_PATH = Path("quality/release-build-toolchain.json")
 
 _PACKAGED_TEXT_SAMPLES = (
     "src/global_medicines_atlas/static/atlas-autocomplete.js",
@@ -140,6 +145,44 @@ def canonicalize_sbom(path: Path, version: str) -> None:
     path.write_bytes(canonical_json_bytes(sbom))
 
 
+def _verify_build_toolchain(root: Path) -> Path:
+    raw: object = json.loads((root / _BUILD_TOOLCHAIN_PATH).read_text())
+    if not isinstance(raw, dict):
+        raise ReleaseCandidateError("build toolchain must be a JSON object")
+    toolchain = cast("dict[str, object]", raw)
+    expected_python = toolchain.get("python")
+    actual_python = platform.python_version()
+    if expected_python != actual_python:
+        raise ReleaseCandidateError(
+            f"release build requires Python {expected_python}, got {actual_python}"
+        )
+    expected_uv = toolchain.get("uv")
+    actual_uv = _run(root, "uv", "--version").decode().strip()
+    actual_uv_parts = actual_uv.split()
+    if len(actual_uv_parts) < 2 or actual_uv_parts[:2] != [
+        "uv",
+        expected_uv,
+    ]:
+        raise ReleaseCandidateError(
+            f"release build requires uv {expected_uv}, got {actual_uv}"
+        )
+    constraints = toolchain.get("build_constraints")
+    if not isinstance(constraints, str):
+        raise ReleaseCandidateError("build constraints path is not recorded")
+    path = root / constraints
+    if not path.is_file():
+        raise ReleaseCandidateError("recorded build constraints do not exist")
+    return path
+
+
+def _remove_generated_version(root: Path) -> None:
+    """Remove Hatch VCS state that Git intentionally ignores."""
+    path = root / _GENERATED_VERSION_PATH
+    if path.exists() and not path.is_file():
+        raise ReleaseCandidateError("generated version path is not a file")
+    path.unlink(missing_ok=True)
+
+
 def built_wheel_version(path: Path) -> str:
     """Read the authoritative PEP 427 version from built wheel metadata."""
     with zipfile.ZipFile(path) as archive:
@@ -165,17 +208,24 @@ def _build_once(
     source_date_epoch: str,
 ) -> tuple[str, tuple[Path, Path], Path]:
     destination.mkdir(parents=True)
+    constraints = _verify_build_toolchain(root)
     environment = dict(os.environ)
     environment["SOURCE_DATE_EPOCH"] = source_date_epoch
     dist = destination / "dist"
-    _run(
-        root,
-        "uv",
-        "build",
-        "--out-dir",
-        str(dist),
-        environment=environment,
-    )
+    _remove_generated_version(root)
+    try:
+        _run(
+            root,
+            "uv",
+            "build",
+            "--build-constraints",
+            str(constraints),
+            "--out-dir",
+            str(dist),
+            environment=environment,
+        )
+    finally:
+        _remove_generated_version(root)
     distributions = tuple(sorted(dist.iterdir(), key=lambda path: path.name))
     wheels = tuple(path for path in distributions if path.suffix == ".whl")
     sdists = tuple(
