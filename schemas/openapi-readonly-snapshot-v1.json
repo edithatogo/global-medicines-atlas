@@ -4,22 +4,33 @@
   "title": "Read-only OpenAPI semantic snapshot",
   "type": "object",
   "additionalProperties": false,
-  "required": ["contract", "version", "components", "paths"],
+  "required": ["contract", "version", "components", "securitySchemes", "paths"],
   "properties": {
     "contract": {"const": "global-medicines-atlas.openapi-readonly"},
     "version": {"const": 1},
     "components": {"type": "object", "additionalProperties": {"type": "object"}},
+    "securitySchemes": {"type": "object", "additionalProperties": {"type": "object"}},
     "paths": {"type": "object", "minProperties": 1, "additionalProperties": {"$ref": "#/$defs/path"}}
   },
   "$defs": {
     "path": {"type": "object", "minProperties": 1, "propertyNames": {"enum": ["get", "head", "options"]}, "additionalProperties": {"$ref": "#/$defs/operation"}},
     "operation": {
       "type": "object", "additionalProperties": false,
-      "required": ["operationId", "parameters", "responses"],
+      "required": ["operationId", "parameters", "responses", "security"],
       "properties": {
         "operationId": {"type": "string", "minLength": 1},
         "parameters": {"type": "array", "items": {"type": "object"}},
-        "responses": {"type": "object", "minProperties": 1}
+        "responses": {"type": "object", "minProperties": 1},
+        "security": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {"type": "string"}
+            }
+          }
+        }
       }
     }
   }

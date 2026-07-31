@@ -7,7 +7,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Any, cast
+from typing import Any, Literal, cast
 
 READ_METHODS = frozenset({"get", "head", "options"})
 MUTATION_METHODS = frozenset({"post", "put", "patch", "delete", "trace"})
@@ -34,6 +34,17 @@ _SCHEMA_KEYS = frozenset({
     "pattern",
     "$ref",
 })
+_SECURITY_SCHEME_KEYS = frozenset({
+    "type",
+    "description",
+    "name",
+    "in",
+    "scheme",
+    "bearerFormat",
+    "openIdConnectUrl",
+    "flows",
+})
+type SchemaVariance = Literal["request", "response"]
 
 
 class OpenAPIContractError(ValueError):
@@ -77,9 +88,58 @@ def _normalize_schema_item(value: object) -> object:
     return deepcopy(value)
 
 
+def _security_requirements(
+    value: object,
+    location: str,
+) -> list[dict[str, list[str]]]:
+    if not isinstance(value, list):
+        raise OpenAPIContractError(f"{location} must be an array")
+    requirements: list[dict[str, list[str]]] = []
+    for index, raw_requirement in enumerate(cast("list[object]", value)):
+        requirement = _object(
+            raw_requirement,
+            f"{location}[{index}]",
+        )
+        normalized: dict[str, list[str]] = {}
+        for scheme, raw_scopes in sorted(requirement.items()):
+            if not scheme:
+                raise OpenAPIContractError(
+                    f"{location}[{index}] has an invalid scheme name"
+                )
+            if not isinstance(raw_scopes, list):
+                raise OpenAPIContractError(
+                    f"{location}[{index}].{scheme} scopes must be strings"
+                )
+            scopes = cast("list[object]", raw_scopes)
+            if not all(isinstance(scope, str) for scope in scopes):
+                raise OpenAPIContractError(
+                    f"{location}[{index}].{scheme} scopes must be strings"
+                )
+            normalized[scheme] = sorted(cast("list[str]", scopes))
+        requirements.append(normalized)
+    requirements.sort(
+        key=lambda requirement: tuple(
+            (scheme, tuple(scopes)) for scheme, scopes in requirement.items()
+        )
+    )
+    return requirements
+
+
+def _security_scheme(value: object, location: str) -> dict[str, object]:
+    source = _object(value, location)
+    return {
+        key: _normalize_schema_item(source[key])
+        for key in sorted(_SECURITY_SCHEME_KEYS & source.keys())
+    }
+
+
 def semantic_snapshot(document: Mapping[str, Any]) -> dict[str, Any]:
     """Project a full OpenAPI document into a stable public contract."""
     paths = _object(document.get("paths"), "paths")
+    root_security = _security_requirements(
+        document.get("security", []),
+        "security",
+    )
     projected: dict[str, dict[str, Any]] = {}
     for path, path_value in sorted(paths.items()):
         item = _object(path_value, f"paths.{path}")
@@ -128,6 +188,10 @@ def semantic_snapshot(document: Mapping[str, Any]) -> dict[str, Any]:
                 "operationId": operation_id,
                 "parameters": parameters,
                 "responses": response_contract,
+                "security": _security_requirements(
+                    operation.get("security", root_security),
+                    f"{method.upper()} {path} security",
+                ),
             }
         if operations:
             projected[path] = operations
@@ -135,12 +199,23 @@ def semantic_snapshot(document: Mapping[str, Any]) -> dict[str, Any]:
     component_schemas = _object(
         components.get("schemas", {}), "components.schemas"
     )
+    security_schemes = _object(
+        components.get("securitySchemes", {}),
+        "components.securitySchemes",
+    )
     return {
         "contract": "global-medicines-atlas.openapi-readonly",
         "version": 1,
         "components": {
             name: _schema(schema)
             for name, schema in sorted(component_schemas.items())
+        },
+        "securitySchemes": {
+            name: _security_scheme(
+                scheme,
+                f"components.securitySchemes.{name}",
+            )
+            for name, scheme in sorted(security_schemes.items())
         },
         "paths": projected,
     }
@@ -157,30 +232,105 @@ def _parameter_map(
     }
 
 
+def _enum_changes(
+    baseline: Mapping[str, Any],
+    current: Mapping[str, Any],
+    location: str,
+    variance: SchemaVariance,
+) -> list[SemanticChange]:
+    old_enum = baseline.get("enum")
+    new_enum = current.get("enum")
+    reason: str | None = None
+    old_values = {repr(value) for value in cast("list[object]", old_enum or [])}
+    new_values = {repr(value) for value in cast("list[object]", new_enum or [])}
+    if variance == "request":
+        if old_enum is None:
+            if new_enum is not None:
+                reason = "request enum narrowed"
+        elif new_enum is not None and not old_values <= new_values:
+            reason = "request enum values removed"
+    elif old_enum is not None and (
+        new_enum is None or not new_values <= old_values
+    ):
+        reason = "response enum values added"
+    return [] if reason is None else [SemanticChange(location, reason)]
+
+
+def _bounded_change(
+    baseline: Mapping[str, Any],
+    current: Mapping[str, Any],
+    location: str,
+    key: str,
+    variance: SchemaVariance,
+    *,
+    lower_bound: bool,
+) -> SemanticChange | None:
+    old = baseline.get(key)
+    new = current.get(key)
+    if old is None and new is None:
+        return None
+    if variance == "request":
+        narrowed = old is None or (
+            new is not None and ((new > old) if lower_bound else (new < old))
+        )
+    else:
+        narrowed = new is not None and (
+            old is None or ((new >= old) if lower_bound else (new <= old))
+        )
+        narrowed = not narrowed
+    if narrowed:
+        direction = "narrowed" if variance == "request" else "widened"
+        return SemanticChange(location, f"{key} {variance} range {direction}")
+    return None
+
+
 def _schema_changes(
-    baseline: Mapping[str, Any], current: Mapping[str, Any], location: str
+    baseline: Mapping[str, Any],
+    current: Mapping[str, Any],
+    location: str,
+    variance: SchemaVariance,
 ) -> list[SemanticChange]:
     changes: list[SemanticChange] = []
-    for key in ("type", "format", "const", "pattern", "$ref"):
+    for key in ("type", "format", "const", "$ref"):
         if key in baseline and baseline.get(key) != current.get(key):
             changes.append(SemanticChange(location, f"{key} changed"))
-    if "enum" in baseline and not set(baseline["enum"]) <= set(
-        current.get("enum", [])
-    ):
-        changes.append(SemanticChange(location, "enum values removed"))
+    changes.extend(_enum_changes(baseline, current, location, variance))
     for key in ("minimum", "exclusiveMinimum", "minLength", "minItems"):
-        if key in baseline and (
-            key not in current or current[key] > baseline[key]
-        ):
-            changes.append(SemanticChange(location, f"{key} narrowed"))
+        change = _bounded_change(
+            baseline,
+            current,
+            location,
+            key,
+            variance,
+            lower_bound=True,
+        )
+        if change is not None:
+            changes.append(change)
     for key in ("maximum", "exclusiveMaximum", "maxLength", "maxItems"):
-        if key in baseline and (
-            key not in current or current[key] < baseline[key]
-        ):
-            changes.append(SemanticChange(location, f"{key} narrowed"))
+        change = _bounded_change(
+            baseline,
+            current,
+            location,
+            key,
+            variance,
+            lower_bound=False,
+        )
+        if change is not None:
+            changes.append(change)
+    old_pattern = baseline.get("pattern")
+    new_pattern = current.get("pattern")
+    if variance == "request":
+        if new_pattern is not None and old_pattern != new_pattern:
+            changes.append(SemanticChange(location, "request pattern narrowed"))
+    elif old_pattern is not None and old_pattern != new_pattern:
+        changes.append(SemanticChange(location, "response pattern widened"))
     old_required = set(baseline.get("required", []))
     new_required = set(current.get("required", []))
-    if not old_required <= new_required:
+    if variance == "request" and not new_required <= old_required:
+        changes.append(
+            SemanticChange(location, "required request fields added")
+        )
+    elif variance == "response" and not old_required <= new_required:
         changes.append(
             SemanticChange(location, "required response fields removed")
         )
@@ -193,7 +343,10 @@ def _schema_changes(
     for name in sorted(old_properties.keys() & new_properties.keys()):
         changes.extend(
             _schema_changes(
-                old_properties[name], new_properties[name], f"{location}.{name}"
+                old_properties[name],
+                new_properties[name],
+                f"{location}.{name}",
+                variance,
             )
         )
     if "items" in baseline:
@@ -204,7 +357,10 @@ def _schema_changes(
         else:
             changes.extend(
                 _schema_changes(
-                    baseline["items"], current["items"], f"{location}[]"
+                    baseline["items"],
+                    current["items"],
+                    f"{location}[]",
+                    variance,
                 )
             )
     for key in ("anyOf", "oneOf", "allOf"):
@@ -217,12 +373,25 @@ def semantic_diff(
     baseline: Mapping[str, Any], current_document: Mapping[str, Any]
 ) -> tuple[SemanticChange, ...]:
     """Return incompatible changes between a snapshot and a current document."""
+    if (
+        baseline.get("contract") != ("global-medicines-atlas.openapi-readonly")
+        or baseline.get("version") != 1
+    ):
+        raise OpenAPIContractError("baseline contract identity is invalid")
     current = semantic_snapshot(current_document)
     old_components = _object(
         baseline.get("components", {}), "baseline components"
     )
     new_components = _object(
         current.get("components", {}), "current components"
+    )
+    old_security_schemes = _object(
+        baseline.get("securitySchemes", {}),
+        "baseline security schemes",
+    )
+    new_security_schemes = _object(
+        current.get("securitySchemes", {}),
+        "current security schemes",
     )
     old_paths = _object(baseline.get("paths"), "baseline paths")
     new_paths = _object(current.get("paths"), "current paths")
@@ -237,8 +406,22 @@ def semantic_diff(
                 _object(old_components[name], f"component {name}"),
                 _object(new_components[name], f"component {name}"),
                 f"component {name}",
+                "response",
             )
         )
+    for name in sorted(
+        old_security_schemes.keys() - new_security_schemes.keys()
+    ):
+        changes.append(
+            SemanticChange(f"security scheme {name}", "scheme removed")
+        )
+    for name in sorted(
+        old_security_schemes.keys() & new_security_schemes.keys()
+    ):
+        if old_security_schemes[name] != new_security_schemes[name]:
+            changes.append(
+                SemanticChange(f"security scheme {name}", "scheme changed")
+            )
     for path in sorted(old_paths.keys() - new_paths.keys()):
         changes.append(SemanticChange(path, "path removed"))
     for path in sorted(old_paths.keys() & new_paths.keys()):
@@ -255,6 +438,13 @@ def semantic_diff(
             if old.get("operationId") != new.get("operationId"):
                 changes.append(
                     SemanticChange(location, "operation identity changed")
+                )
+            if old.get("security", []) != new.get("security", []):
+                changes.append(
+                    SemanticChange(
+                        location,
+                        "security requirements changed",
+                    )
                 )
             old_parameters = _parameter_map(old)
             new_parameters = _parameter_map(new)
@@ -291,6 +481,7 @@ def semantic_diff(
                         before["schema"],
                         after["schema"],
                         f"{location} parameter {identity}",
+                        "request",
                     )
                 )
             old_responses = _object(old.get("responses"), "baseline responses")
@@ -317,6 +508,7 @@ def semantic_diff(
                             old_content[media],
                             new_content[media],
                             f"{location} response {status} {media}",
+                            "response",
                         )
                     )
     return tuple(changes)
