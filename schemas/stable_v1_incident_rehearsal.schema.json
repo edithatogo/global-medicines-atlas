@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.org/schemas/stable_v1_incident_rehearsal.schema.json",
+  "title": "Stable v1 offline incident rehearsal receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "incident_id", "evidence_class", "compromised_source_id",
+    "initial_state", "final_state", "replacement_evidence", "transitions",
+    "quarantine_enforced", "signing_credential_revocation_rehearsed",
+    "dataset_withdrawal_rehearsed", "corrected_replacement_prepared",
+    "downstream_notification_prepared", "downstream_notification_externally_sent",
+    "dataset_externally_withdrawn", "replacement_externally_published",
+    "receipt_sha256", "limitations"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "incident_id": {"const": "stable-v1-synthetic-compromised-source"},
+    "evidence_class": {"const": "synthetic_offline_rehearsal"},
+    "compromised_source_id": {"const": "synthetic-compromised-source"},
+    "initial_state": {"const": "detected"},
+    "final_state": {"const": "notification_prepared"},
+    "replacement_evidence": {
+      "type": "array", "minItems": 2, "maxItems": 2,
+      "items": {"$ref": "#/$defs/evidence"}
+    },
+    "transitions": {
+      "type": "array", "minItems": 5, "maxItems": 5,
+      "items": {"$ref": "#/$defs/transition"}
+    },
+    "quarantine_enforced": {"const": true},
+    "signing_credential_revocation_rehearsed": {"const": true},
+    "dataset_withdrawal_rehearsed": {"const": true},
+    "corrected_replacement_prepared": {"const": true},
+    "downstream_notification_prepared": {"const": true},
+    "downstream_notification_externally_sent": {"const": false},
+    "dataset_externally_withdrawn": {"const": false},
+    "replacement_externally_published": {"const": false},
+    "receipt_sha256": {"$ref": "#/$defs/digest"},
+    "limitations": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["dimension", "source_id", "sha256"],
+      "properties": {
+        "dimension": {"enum": ["regulatory", "funding"]},
+        "source_id": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "gate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["human_approved", "credential_authority_approved", "publication_approved", "external_effect_performed"],
+      "properties": {
+        "human_approved": {"type": "boolean"},
+        "credential_authority_approved": {"type": "boolean"},
+        "publication_approved": {"type": "boolean"},
+        "external_effect_performed": {"const": false}
+      }
+    },
+    "transition": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sequence", "action", "from_state", "to_state", "gate", "previous_sha256", "transition_sha256"],
+      "properties": {
+        "sequence": {"type": "integer", "minimum": 1},
+        "action": {"enum": ["quarantine_source", "revoke_signing_credential", "withdraw_dataset", "prepare_corrected_replacement", "prepare_downstream_notification"]},
+        "from_state": {"enum": ["detected", "quarantined", "credential_revoked", "dataset_withdrawn", "replacement_prepared"]},
+        "to_state": {"enum": ["quarantined", "credential_revoked", "dataset_withdrawn", "replacement_prepared", "notification_prepared"]},
+        "gate": {"$ref": "#/$defs/gate"},
+        "previous_sha256": {"$ref": "#/$defs/digest"},
+        "transition_sha256": {"$ref": "#/$defs/digest"}
+      }
+    }
+  }
+}
