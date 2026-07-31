@@ -124,7 +124,7 @@ def test_semantic_candidates_only_augment_authoritative_order() -> None:
 
 @pytest.mark.parametrize(
     "missing",
-    ["path", "identity", "expected_identity"],
+    ["index_path", "identity", "expected_identity"],
 )
 def test_optional_retriever_requires_every_governed_input(
     missing: str,
