@@ -280,3 +280,14 @@ def test_live_index_rows_reject_invalid_vectors(
 
     with pytest.raises(TypeError, match="vector"):
         matching_row(row)
+
+
+def test_live_index_vector_values_preserve_numeric_semantics() -> None:
+    vector_value = cast(
+        "Callable[[object], float]",
+        vars(semantic_retrieval)["_vector_value"],
+    )
+
+    assert vector_value(3) == 3.0
+    assert vector_value(1.25) == 1.25
+    assert vector_value(True) == 1.0
