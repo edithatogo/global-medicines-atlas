@@ -163,9 +163,9 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     clones before exercising both consumer paths. A follow-up candidate receipt
     must be generated from the merged remediation commit so its source identity
     is reachable without relying on a synthetic pull-request merge.
-  - PR #115 merged the cross-platform archive hardening after all 29 protected
+  - PR #118 merged the final generated-text archive hardening after all 29 protected
     checks passed. The follow-up receipt now identifies durable `main` commit
-    `3c21001` and pinned uv `0.11.29`. A dedicated canonical-remote test checks
+    `6be0628` and pinned uv `0.11.29`. A dedicated canonical-remote test checks
     out that exact commit, rebuilds the candidate, compares the complete receipt
     bytes, and consumes both distributions. Signing and maintainer approval
     remain open human gates.
