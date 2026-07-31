@@ -251,7 +251,10 @@ def _performance_receipts(
     for subject, budget, workload in checks:
         observed = _p95(workload)
         if observed > budget:
-            raise RuntimeError(f"{subject} exceeded its budget")
+            raise RuntimeError(
+                f"{subject} observed p95 {observed:.3f} ms exceeded "
+                f"its {budget:.1f} ms budget"
+            )
         receipts.append(
             _receipt(
                 "performance",

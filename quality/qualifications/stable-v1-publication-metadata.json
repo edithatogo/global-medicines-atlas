@@ -2,17 +2,15 @@
   "blockers": [
     "archival-record:identifier-unresolved",
     "archival-record:licence-unresolved",
+    "dataset-publication-approval:missing",
     "derived-dataset:identifier-unresolved",
     "derived-dataset:licence-unresolved",
-    "maintainer-release-approval:missing",
     "production-package:not-qualified",
     "protocol-preregistration:identifier-unresolved",
     "protocol-preregistration:licence-unresolved",
     "publication:not-performed",
     "release:not-created",
-    "signature:not-created",
-    "software-source-release:identifier-configured",
-    "software-source-release:licence-unresolved"
+    "signature:not-created"
   ],
   "external_actions": {
     "credentials_used": false,
@@ -68,8 +66,7 @@
       "blockers": [
         "archival-record:identifier-unresolved",
         "derived-dataset:identifier-unresolved",
-        "protocol-preregistration:identifier-unresolved",
-        "software-source-release:identifier-configured"
+        "protocol-preregistration:identifier-unresolved"
       ],
       "evidence": [
         "quality/qualifications/publication-identities.json"
@@ -81,8 +78,7 @@
       "blockers": [
         "archival-record:licence-unresolved",
         "derived-dataset:licence-unresolved",
-        "protocol-preregistration:licence-unresolved",
-        "software-source-release:licence-unresolved"
+        "protocol-preregistration:licence-unresolved"
       ],
       "evidence": [
         "quality/qualifications/publication-identities.json"
@@ -92,7 +88,7 @@
     },
     {
       "blockers": [
-        "maintainer-release-approval:missing",
+        "dataset-publication-approval:missing",
         "production-package:not-qualified",
         "publication:not-performed",
         "release:not-created",
@@ -108,11 +104,11 @@
   "identities": [
     {
       "identifier": "https://github.com/edithatogo/global-medicines-atlas",
-      "identifier_evidence": null,
-      "identifier_state": "configured",
-      "licence_decision_evidence": null,
-      "licence_expression": null,
-      "licence_state": "unresolved",
+      "identifier_evidence": "docs/governance/github-repository-identity.md",
+      "identifier_state": "verified",
+      "licence_decision_evidence": "docs/governance/licensing-decision.md",
+      "licence_expression": "Apache-2.0",
+      "licence_state": "approved",
       "object_id": "software-source-release",
       "object_role": "software_source_release",
       "related_object_ids": [
@@ -187,13 +183,13 @@
     },
     {
       "path": "src/global_medicines_atlas/publication_contracts.py",
-      "sha256": "a724cc4262e200d58e8a59dc480ec5eee512de96dfc84bc2928867dfa8848f62",
-      "size": 19755
+      "sha256": "bacc0ea1e2efb7c76af5d8a1981421f96812abbe8f2a07d1d3fa43ade0e342f1",
+      "size": 20602
     },
     {
       "path": "src/global_medicines_atlas/publication_metadata_qualification.py",
-      "sha256": "c934031e4aa87c8e8c3959c17fe0d0e77859ab7bcdad5fca8b8a3669242a9909",
-      "size": 25370
+      "sha256": "a8a6aec00c7a8aa0a3f69c6ed60dd22c8682f22e08cc83ef628bca888d3747bd",
+      "size": 25371
     },
     {
       "path": "src/global_medicines_atlas/publication_package.py",
@@ -209,8 +205,8 @@
   "inputs": [
     {
       "path": "quality/qualifications/publication-identities.json",
-      "sha256": "a282615b114c2d5b6494dde3f2531eacee6ed2413f13c72b9ff9f23fc8ff09e4",
-      "size": 1538
+      "sha256": "f26457de47d4e44c302e1b1b231c0374cd296fdbbefff95f49d4ec16acdcde76",
+      "size": 1620
     },
     {
       "path": "release-inputs/publication-contract.json",
@@ -290,7 +286,7 @@
   },
   "qualification_id": "stable-v1-release-candidate-publication-metadata",
   "ready_for_publication": false,
-  "receipt_sha256": "89679535eeedcf82af2ca6f4316661c0f15f246dd8a7df39627d92c3efbd4b68",
+  "receipt_sha256": "c4ffc74b403a3fa55b42cc41c4e91e3879745e5de4154e8e54d09e37f5e4a492",
   "result": "metadata_qualified_external_gates_blocked",
   "schema_id": "global-medicines-atlas.stable-v1-publication-metadata",
   "schema_version": 1

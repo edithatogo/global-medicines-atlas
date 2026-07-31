@@ -189,6 +189,41 @@ def test_qualifies_and_binds_every_exact_staged_byte(tmp_path: Path) -> None:
     }
 
 
+def test_software_only_release_excludes_dataset_archive(tmp_path: Path) -> None:
+    root, commit = _repository(tmp_path)
+    stage = _stage(root)
+    next(stage.glob("global-medicines-atlas-dataset-*.tar.gz")).unlink()
+
+    receipt = qualify_release_assets(
+        root=root,
+        stage=stage,
+        release_tag=TAG,
+        commit=commit,
+        dynamic_version=VERSION,
+        include_dataset=False,
+    )
+
+    assert receipt["qualified"] is True
+    assert "dataset" not in (stage / "qualified-assets.json").read_text(
+        encoding="utf-8"
+    )
+
+
+def test_software_only_release_rejects_dataset_archive(tmp_path: Path) -> None:
+    root, commit = _repository(tmp_path)
+    stage = _stage(root)
+
+    with pytest.raises(QualificationError, match="must not contain"):
+        qualify_release_assets(
+            root=root,
+            stage=stage,
+            release_tag=TAG,
+            commit=commit,
+            dynamic_version=VERSION,
+            include_dataset=False,
+        )
+
+
 def test_committed_fixture_generates_deterministically_from_actual_paths(
     tmp_path: Path,
 ) -> None:

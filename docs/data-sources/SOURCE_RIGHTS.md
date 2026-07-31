@@ -2,14 +2,14 @@
 
 ## Repository software
 
-No software licence has yet been selected by the copyright holder. Until an
-explicit licence is adopted, the repository software is all rights reserved.
-Public access to the repository does not grant permission to use, copy, modify,
-or distribute its software.
+Repository software is licensed under Apache-2.0 as recorded in
+[`LICENSE`](../../LICENSE) and the
+[licensing decision](../governance/licensing-decision.md). This software
+licence does not grant rights in third-party medicine content.
 
-Selecting and publishing a software licence is an explicit maintainer decision
-and release gate. Automated tooling must not infer, insert, or advertise a
-licence before that decision is recorded.
+Eligible maintainer-owned derived datasets may be licensed under CC-BY-4.0 only
+when an approved public artifact manifest expressly includes them. See
+[`DATA_LICENSE.md`](../../DATA_LICENSE.md).
 
 ## Medicine source data
 

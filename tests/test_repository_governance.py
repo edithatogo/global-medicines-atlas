@@ -13,6 +13,7 @@ FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
 def test_single_canonical_renovate_configuration() -> None:
     assert not (ROOT / "renovate.json5").exists()
     config = json.loads((ROOT / "renovate.json").read_text(encoding="utf-8"))
+    assert "github>edithatogo/renovate-config" in config["extends"]
     enabled_managers = set(config["enabledManagers"])
     assert {
         "pep621",
@@ -48,13 +49,16 @@ def test_required_community_health_files_exist() -> None:
         "CITATION.cff",
         "CHANGELOG.md",
         "NOTICE",
+        "LICENSE",
+        "DATA_LICENSE.md",
+        "docs/governance/licensing-decision.md",
         "docs/data-sources/SOURCE_RIGHTS.md",
     ):
         assert (ROOT / filename).is_file()
-    assert not (ROOT / "LICENSE").exists()
+    assert "Apache License" in (ROOT / "LICENSE").read_text(encoding="utf-8")
 
 
-def test_licence_selection_remains_an_explicit_maintainer_gate() -> None:
+def test_licence_decision_is_explicit_and_data_rights_remain_bounded() -> None:
     pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
     citation = (ROOT / "CITATION.cff").read_text(encoding="utf-8")
     follow_ups = (ROOT / ".github/EXTERNAL_FOLLOW_UPS.md").read_text(
@@ -64,12 +68,18 @@ def test_licence_selection_remains_an_explicit_maintainer_gate() -> None:
         encoding="utf-8"
     )
 
-    assert "\nlicense =" not in pyproject
-    assert "\nlicense:" not in citation
-    assert "\nversion:" not in citation
-    assert "\ndate-released:" not in citation
-    assert "maintainer" in follow_ups.lower()
-    assert "licence" in follow_ups.lower()
+    data_licence = (ROOT / "DATA_LICENSE.md").read_text(encoding="utf-8")
+    decision = (ROOT / "docs/governance/licensing-decision.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert '\nlicense = "Apache-2.0"' in pyproject
+    assert "\nlicense: Apache-2.0" in citation
+    assert '\nversion: "1.0.0rc1"' in citation
+    assert '\ndate-released: "2026-08-01"' in citation
+    assert "third-party" in data_licence.lower()
+    assert "cc-by-4.0" in decision.lower()
+    assert "licence detection" in follow_ups.lower()
     assert "does not grant" in source_rights.lower()
 
 

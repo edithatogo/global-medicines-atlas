@@ -24,10 +24,13 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
     parser.add_argument("--require-publishable", action="store_true")
+    parser.add_argument("--require-object")
     args = parser.parse_args()
     registry = load_registry(args.registry)
     if args.require_publishable:
         registry.assert_publishable()
+    if args.require_object:
+        registry.assert_object_publishable(args.require_object)
     print(
         json.dumps(
             {

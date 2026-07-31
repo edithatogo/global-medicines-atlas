@@ -596,7 +596,7 @@ def _build_gates(
         if item.licence_state != "approved"
     )
     publication_blockers = (
-        "maintainer-release-approval:missing",
+        "dataset-publication-approval:missing",
         "production-package:not-qualified",
         "publication:not-performed",
         "release:not-created",

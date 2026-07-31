@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: Create an environment-approved draft GitHub release
+        description: Create an attested draft GitHub software release
         required: true
         type: boolean
         default: false
@@ -43,11 +43,18 @@ jobs:
         run: uv sync --locked --all-groups
       - name: Validate fail-closed publication identities
         run: uv run python scripts/validate_publication_identities.py
-      - name: Require publishable identities and licence decisions
+      - name: Require publishable GitHub software identity and licence
         if: inputs.publish
-        run: >-
-          uv run python scripts/validate_publication_identities.py
-          --require-publishable
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          uv run python scripts/validate_publication_identities.py \
+            --require-object software-source-release
+          uv run python scripts/validate_release_authority.py \
+            --tag "$RELEASE_TAG" \
+            --release-type prerelease \
+            --artifact-scope software-only
       - name: Resolve VCS-derived version
         id: version
         shell: bash
@@ -63,10 +70,10 @@ jobs:
             test -n "$RELEASE_TAG"
             test "$(git rev-parse "refs/tags/${RELEASE_TAG}^{commit}")" = "$GITHUB_SHA"
           fi
-      - name: Generate governed dataset package
+      - name: Generate governed fixture package for dry-run qualification
+        if: ${{ !inputs.publish }}
         env:
-          PUBLICATION_MODE: ${{ inputs.publish && 'production' || 'dry-run' }}
-          RELEASE_TAG: ${{ inputs.release_tag }}
+          PUBLICATION_MODE: dry-run
         run: |
           set -euo pipefail
           rm -rf -- build/release-stage
@@ -96,6 +103,7 @@ jobs:
       - name: Build and stage software distributions
         run: |
           set -euo pipefail
+          mkdir -p build/release-stage build/dist
           uv build --out-dir build/dist
           find build/dist -maxdepth 1 -type f -print0 |
             sort -z |
@@ -142,7 +150,8 @@ jobs:
               --stage build/release-stage \
               --release-tag "$RELEASE_TAG" \
               --commit "$GITHUB_SHA" \
-              --dynamic-version "$DYNAMIC_VERSION"
+              --dynamic-version "$DYNAMIC_VERSION" \
+              --software-only
           else
             uv run python scripts/qualify_release.py qualify-fixture \
               --root . \
@@ -238,6 +247,7 @@ jobs:
           test "${#assets[@]}" -gt 0
           gh release create \
             --draft \
+            --prerelease \
             --target "$QUALIFIED_COMMIT" \
             --title "$RELEASE_TAG" \
             --notes "Qualified immutable assets from $QUALIFIED_COMMIT" \

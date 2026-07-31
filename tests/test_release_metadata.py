@@ -364,7 +364,9 @@ def test_licence_gate_never_infers_a_decision(
 
 
 @pytest.mark.unit
-def test_current_repository_metadata_fails_closed_without_licence() -> None:
+def test_current_repository_metadata_has_licence_but_no_release_record() -> (
+    None
+):
     root = Path(__file__).resolve().parents[1]
 
     report = validate_release_metadata(
@@ -374,8 +376,9 @@ def test_current_repository_metadata_fails_closed_without_licence() -> None:
     )
 
     codes = {finding.code for finding in report.findings}
-    assert "software-licence-undecided" in codes
-    assert "notice-records-undecided-licence" in codes
+    assert "software-licence-undecided" not in codes
+    assert "notice-records-undecided-licence" not in codes
+    assert report.gates[MetadataGate.LICENCE] is GateResult.PASSED
     assert "release-missing-from-changelog" in codes
     assert "citation-version-mismatch" in codes
     assert not report.qualified
