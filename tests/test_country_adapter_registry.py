@@ -135,6 +135,23 @@ def test_every_implementation_maps_to_exactly_one_catalog_source() -> None:
         assert declarations.source_id_for(implementation) in catalog_ids
 
 
+def test_capability_registry_rejects_implementation_aliasing() -> None:
+    implementation = "adapters.example:parse"
+    declarations = tuple(
+        SourceCapabilityDeclaration(
+            source_id=source_id,
+            capabilities=frozenset({Capability.SOURCE_PARSER}),
+            implementations=(implementation,),
+        )
+        for source_id in ("source-one", "source-two")
+    )
+
+    with pytest.raises(
+        ValueError, match="maps to both source-one and source-two"
+    ):
+        SourceCapabilityRegistry(declarations)
+
+
 def test_capability_registry_distinguishes_evidence_layers() -> None:
     declarations = {
         declaration.source_id: declaration
