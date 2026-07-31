@@ -15,7 +15,8 @@ The command regenerates
 `quality/qualifications/canonical-v2-cohorts.json`. The outer
 `receipt_sha256` binds the canonical JSON representation of the inner receipt.
 Fixture paths and SHA-256 identities bind every measured cohort to committed
-inputs.
+inputs. Text-fixture identities normalize Git checkout line endings to LF so
+the same committed bytes produce one receipt on Windows, Linux and macOS.
 
 ## Measured scope
 

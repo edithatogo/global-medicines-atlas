@@ -26,7 +26,7 @@
         "fixtures": [
           {
             "path": "tests/fixtures/adapters/au_pbs.xml",
-            "sha256": "35a66d89c168917dc2fe1301d65b8759eb7adae2b888d8c54a3e167425d31356"
+            "sha256": "290aefc6e96968c70f9937dbe6afe68a46a83c8748486dd7da102fa36c911143"
           }
         ],
         "jurisdiction": "AUS",
@@ -47,7 +47,7 @@
             "record_id": "au-pbs:1234A",
             "result": "blocked_missing_explicit_structure",
             "rollback_v1_sha256": null,
-            "v1_sha256": "e87434b2f5acf299e43c51b06661408ffdb2afb3b8bb95a5433a54912eb905a0",
+            "v1_sha256": "eb500a37dcbce08d3e50c2d27d74e6baa4d7259ae649a0a840fc5658573f6c6f",
             "v2_sha256": null
           }
         ],
@@ -72,7 +72,7 @@
         "fixtures": [
           {
             "path": "tests/fixtures/native/eu/ema_medicines.csv",
-            "sha256": "7c6b786f75d07852913d9f66399d78cc8ce7daf17ce9aeeb8f714b92eff43bea"
+            "sha256": "5e0c9f7077f55f5f8bf675c8c84dee9e7dc9ad97816ed6237ce40f72f5053430"
           }
         ],
         "jurisdiction": "EU",
@@ -93,7 +93,7 @@
             "record_id": "eu-ema:EMEA/H/C/000001",
             "result": "blocked_missing_explicit_structure",
             "rollback_v1_sha256": null,
-            "v1_sha256": "55510462e27aa8ccec86f9d19014b7cd8b97713c68d710b91894620e1e636d5c",
+            "v1_sha256": "fcb5ea1dca42e024924dcbb697b27597deb7ec9fb99a5d097d4c8eb6ae9aef6b",
             "v2_sha256": null
           }
         ],
@@ -166,7 +166,7 @@
         "fixtures": [
           {
             "path": "tests/fixtures/native/jp/pmda_approvals.csv",
-            "sha256": "0bd83b1c0be1263963495117722babbb8eaeaab9b0bdeaa5c69f6dc083309518"
+            "sha256": "4165f12fd59e9440e44a02c4124035ea8f1d9ec383c5d9566a2b1c32144a1b2c"
           }
         ],
         "jurisdiction": "JPN",
@@ -186,9 +186,9 @@
             "block_reason": null,
             "record_id": "jp-pmda:30600AMX00001",
             "result": "passed",
-            "rollback_v1_sha256": "15ffbbf5d0a4c86e3bfc367ae149a89eae2308aa78aff05d8dbe6f259fb63b4d",
-            "v1_sha256": "15ffbbf5d0a4c86e3bfc367ae149a89eae2308aa78aff05d8dbe6f259fb63b4d",
-            "v2_sha256": "93071832cc14ccb1c7da37aaa83c786e3a3c8906a099a0cd9fcc783d1f72dc7e"
+            "rollback_v1_sha256": "960d9bf747bf45150ca85360a5b99d8532178d33f9ba9af47e3d93c1130bfd76",
+            "v1_sha256": "960d9bf747bf45150ca85360a5b99d8532178d33f9ba9af47e3d93c1130bfd76",
+            "v2_sha256": "3bfc3da7622bbad88baac9fc38f0b91602ca6b5c18ca1ef62d9a00a54fbfde36"
           }
         ],
         "source_ids": [
@@ -215,59 +215,59 @@
         "fixtures": [
           {
             "path": "vendor/nzmedicines/medications/10013261000116103-ibuprofen_200_mg_tablet.json",
-            "sha256": "0bd581fbc8763bbea07e63acfd93b01fcadf91f71a604f70b3ebd36dcaaa2d45"
+            "sha256": "e83e36baab9c470124aa51e644930411a96d3c91bf80dd4595df6439c8daf971"
           },
           {
             "path": "vendor/nzmedicines/medications/10013271000116100-ibuprofen_400_mg_tablet.json",
-            "sha256": "e0b8082bc15d284ed59c34c3ed0deb86f201342b1ab9e8bc264d7d8f87db2ad6"
+            "sha256": "e043e6e93de4d9ce8bb56e5059412e45ff2fe8a8e84c45de573919c8579e5ec9"
           },
           {
             "path": "vendor/nzmedicines/medications/10013281000116102-ibuprofen_200_mg_tablet_24_tablets.json",
-            "sha256": "30b1ec61ded5b44405c1677ec11d4b544829140ecf9437de90f8523d8570f186"
+            "sha256": "be57e1c250208ae53b552b0de464349a2281a88e10e09e056c994c0b4470aedd"
           },
           {
             "path": "vendor/nzmedicines/medications/10013291000116104-ibuprofen_400_mg_tablet_100_tablets.json",
-            "sha256": "8767b5a9db527cfe06e7525caa97fe5eb41b4e3acb43c205a3f01af9e191a2c8"
+            "sha256": "c8c8ebb1b87f213065cf145cff6eefb26d112bde96c732feb4babe021c84592e"
           },
           {
             "path": "vendor/nzmedicines/medications/10037191000116105-paracetamol.json",
-            "sha256": "4be16bb9fd4a36c83247fa2792e858d0f0d7d94e8fb0ebe958da7864f901484f"
+            "sha256": "49399c4acd15aadcf09ad5995285bfea5323712abdaa748c668553e5f9e6de29"
           },
           {
             "path": "vendor/nzmedicines/medications/10037271000116101-paracetamol_120_mg_5_mL_oral_liquid.json",
-            "sha256": "2b4efd903f32a62d7ae1a5cee36f492a1991a54de5e691a81fa9cba73397947c"
+            "sha256": "389f7b1660956ec0377e8b71880cb73c0198deeced4ad7652d7a8e146721ccd9"
           },
           {
             "path": "vendor/nzmedicines/medications/10194111000116109-warfarin/10194171000116101-coumadin.json",
-            "sha256": "307ababf911a359df863ede6f91ce130d3c8180a5d60e7a6a3b441cbd375eb04"
+            "sha256": "2ddd2fda5e073f2878d2c6c6127bd326e5a2810f5f8ed9a4077d4e51e430b8af"
           },
           {
             "path": "vendor/nzmedicines/medications/10194111000116109-warfarin/10429461000116106-marevan.json",
-            "sha256": "3980a4b7d43b0d272e586848572cfe901075551f36b0e5ff93122cb397178a9e"
+            "sha256": "9f9176e57a80e6e928ff3b95364587847ea809f7b9b72d85622e672909b48bd8"
           },
           {
             "path": "vendor/nzmedicines/medications/10194111000116109-warfarin/generic.json",
-            "sha256": "814b3a97c2f933449c0f2ed980e0ba27dc5c1d1db0a4ca900669e2998f716456"
+            "sha256": "81b2ec406638db7a732ffb694e4bd59cc11b38eea122a32aabf89722e5fcb401"
           },
           {
             "path": "vendor/nzmedicines/medications/10527591000116101-paracetamol_500_mg_tablet_100_tablets.json",
-            "sha256": "79c4cab778c19a27004b6ddb441a01a980fc845fa1c8a3511fe21177343468b5"
+            "sha256": "1077ffdd3173aa5d8dcb3164d19dc2d3103082de4fcf2c7f4d672059e16bb9b1"
           },
           {
             "path": "vendor/nzmedicines/medications/44282231000116104-paracetamol_500_mg_tablet.json",
-            "sha256": "99a3c061661054ce348f5490377a48db03d2399f2496ccf9874c73510b0b233b"
+            "sha256": "9958483e8348e8b6789e7513c52d880d60a95bf4d749efe903515f95461b29a8"
           },
           {
             "path": "vendor/nzmedicines/medications/50013251000116105-Nurofen_200_mg_tablet_film-coated_24_tablets_blister_pack.json",
-            "sha256": "ad718712bc732ed6f6999bb66a6efec67bd6bb2cc6d7a910c9f5c8f953fd5df2"
+            "sha256": "2dadf1f48f951c2657ff45b3376164d58a09df021ca7bfd3ee5fd833618f882a"
           },
           {
             "path": "vendor/nzmedicines/medications/50013261000116102-Brufen_400_mg_tablet_100_tablets_bottle.json",
-            "sha256": "b528365d23cb69b1a54af465c8291e871fe95cd9ec4dca2e1203f26d91d8785c"
+            "sha256": "2a1de3370d159c675bbfee5c9e60114a2f73fa4fdb5c65acfd73260dd20fd4a6"
           },
           {
             "path": "vendor/nzmedicines/medications/50066491000116104-Panadol_500_mg_tablet_film-coated_100_tablets_bottle.json",
-            "sha256": "d1e5cf114f76c476f72d61b730aae7d5475e96b8a25767429a758f5091605226"
+            "sha256": "d788639c7962625be9bc173cdbd8deea59e58cb05874543336d0beb34a60778d"
           }
         ],
         "jurisdiction": "NZ",
@@ -289,9 +289,9 @@
             "block_reason": null,
             "record_id": "nzmt:10013261000116103",
             "result": "passed",
-            "rollback_v1_sha256": "dfd364a137f88952244a6a64f7f0483a18c628267ca06c1c89ccddca32db7ef7",
-            "v1_sha256": "dfd364a137f88952244a6a64f7f0483a18c628267ca06c1c89ccddca32db7ef7",
-            "v2_sha256": "df67042e6bfc73de78c59f9ab11c5f6912d64db0d9e6e27e2c21ea42f4f37d88"
+            "rollback_v1_sha256": "e444b58777fe3f07161193fd7f60b488012abf4926ba1981b2bde03cf4da89d7",
+            "v1_sha256": "e444b58777fe3f07161193fd7f60b488012abf4926ba1981b2bde03cf4da89d7",
+            "v2_sha256": "4ea5f9cea7cbc04c2eef1ff92051fecae01dfe5e960ad76d62f1c737fc1981e9"
           },
           {
             "assertions": {
@@ -302,9 +302,9 @@
             "block_reason": null,
             "record_id": "nzmt:10013271000116100",
             "result": "passed",
-            "rollback_v1_sha256": "8c8724180ccacaa89ef46e2822aacdc2e48339bb7a4be0541c5dcd6629f2c2d8",
-            "v1_sha256": "8c8724180ccacaa89ef46e2822aacdc2e48339bb7a4be0541c5dcd6629f2c2d8",
-            "v2_sha256": "5b5368de9b36d374af0d54b7abfad648330c559b3dcde43228cf1846b9c0ee6d"
+            "rollback_v1_sha256": "6dbe0e61891775c7d53df381d680013060278ac4294681561e90d25e6203dd18",
+            "v1_sha256": "6dbe0e61891775c7d53df381d680013060278ac4294681561e90d25e6203dd18",
+            "v2_sha256": "ef32c838a5271e2ec448eccfcb8d63623ab718862b7c1747480d56d9c8105b17"
           },
           {
             "assertions": {
@@ -315,9 +315,9 @@
             "block_reason": null,
             "record_id": "nzmt:10013281000116102",
             "result": "passed",
-            "rollback_v1_sha256": "ab2e5699bc1cfc21b3e1d9045cc0e77e9f0c65fcfa1fa9921c31e61d29d8cf7c",
-            "v1_sha256": "ab2e5699bc1cfc21b3e1d9045cc0e77e9f0c65fcfa1fa9921c31e61d29d8cf7c",
-            "v2_sha256": "0ed093f2de9c48b38aa1b80e29e9b1af3d5f04acf47341840feec8281e3a0317"
+            "rollback_v1_sha256": "ebe71593e5741050ecab858fc0582b42ca467f4f0eb1ab4a6a2ad8e0fa900ca3",
+            "v1_sha256": "ebe71593e5741050ecab858fc0582b42ca467f4f0eb1ab4a6a2ad8e0fa900ca3",
+            "v2_sha256": "8ac72ec937695648d4f1fb5277d28406631dc44fd0bdcc07621687138870f1aa"
           },
           {
             "assertions": {
@@ -328,9 +328,9 @@
             "block_reason": null,
             "record_id": "nzmt:10013291000116104",
             "result": "passed",
-            "rollback_v1_sha256": "10ba1d0427cfc9049ff9233000cae3396a2da25cc67bffc60ae0c2b8c13eaf85",
-            "v1_sha256": "10ba1d0427cfc9049ff9233000cae3396a2da25cc67bffc60ae0c2b8c13eaf85",
-            "v2_sha256": "a2edfc8a36cc789e31218f137c64f581ddf5f5d1cf0ef34837b71e495ad1e768"
+            "rollback_v1_sha256": "9dd0407885e18530cf4fd4f2c6330407ae135a228f9f0dba84dfab8d3d941a70",
+            "v1_sha256": "9dd0407885e18530cf4fd4f2c6330407ae135a228f9f0dba84dfab8d3d941a70",
+            "v2_sha256": "ad846ff26fb15e79731ff1881169de8300b1cceb7f0b287c9ac366872a0ca1fe"
           },
           {
             "assertions": {
@@ -341,9 +341,9 @@
             "block_reason": null,
             "record_id": "nzmt:10037191000116105",
             "result": "passed",
-            "rollback_v1_sha256": "ac3bfc79e7da278b1daf14055d292a20da6154c787ff5c509c0fa869f4e87cf4",
-            "v1_sha256": "ac3bfc79e7da278b1daf14055d292a20da6154c787ff5c509c0fa869f4e87cf4",
-            "v2_sha256": "a37bb60e01c4ee37fe329d86f62affba3b5958d5e0e7bdab736be8da73538417"
+            "rollback_v1_sha256": "8dc587a5549ce9be8e5d209cbf07b2c39262c34bda83d40a5282c63d423b357a",
+            "v1_sha256": "8dc587a5549ce9be8e5d209cbf07b2c39262c34bda83d40a5282c63d423b357a",
+            "v2_sha256": "2395737b80d74c9b0577a6680175565121f5049cfb06d5ea63040c93581d54c4"
           },
           {
             "assertions": {
@@ -354,9 +354,9 @@
             "block_reason": null,
             "record_id": "nzmt:10037271000116101",
             "result": "passed",
-            "rollback_v1_sha256": "0510b488c3e89f3927120e19ca4a507de93d72114dcb8a356784e9dd37b3637c",
-            "v1_sha256": "0510b488c3e89f3927120e19ca4a507de93d72114dcb8a356784e9dd37b3637c",
-            "v2_sha256": "4db0b80ed45536ee57d69cd7be1bc4a0836a8b9dc31b274599316222068681ea"
+            "rollback_v1_sha256": "1bdd684e5b63aaaa493666ca8768549ab184bca61e2b44c497452d4027c249fc",
+            "v1_sha256": "1bdd684e5b63aaaa493666ca8768549ab184bca61e2b44c497452d4027c249fc",
+            "v2_sha256": "e208f3f864781f40c7597caaf1531a035da671867016001e8785c2620f376749"
           },
           {
             "assertions": {
@@ -367,9 +367,9 @@
             "block_reason": null,
             "record_id": "nzmt:10194111000116109",
             "result": "passed",
-            "rollback_v1_sha256": "ded6d19236194b8ef1f714f0fde52cb1c3f804e7bc9a7c76cd2c58fd003e2759",
-            "v1_sha256": "ded6d19236194b8ef1f714f0fde52cb1c3f804e7bc9a7c76cd2c58fd003e2759",
-            "v2_sha256": "ab8fcd1e99194854e49c0dfd581c643a1dc6d2a6944e51ae98e57a09d7c6e070"
+            "rollback_v1_sha256": "eaf09bf4582042554c43b48a51baf7a07e2f66bf01731781e7c8b2258c2e7d28",
+            "v1_sha256": "eaf09bf4582042554c43b48a51baf7a07e2f66bf01731781e7c8b2258c2e7d28",
+            "v2_sha256": "1738951ac6910ae17abd721c3ab0dde14252a90cd73ff909b6262e97ae224ff2"
           },
           {
             "assertions": {
@@ -380,9 +380,9 @@
             "block_reason": null,
             "record_id": "nzmt:10194131000116103",
             "result": "passed",
-            "rollback_v1_sha256": "56a92613bb411eccd5404246dbe084beb88076bcb8afd50884ebaa994dad9210",
-            "v1_sha256": "56a92613bb411eccd5404246dbe084beb88076bcb8afd50884ebaa994dad9210",
-            "v2_sha256": "99b46ae2b1ff87fdb6c5094ecdf483c9da8980dd7c74e175ec9cebe4927d54f1"
+            "rollback_v1_sha256": "b27be72d8bbe239a2014f1ead3f0b8f46d8897c9df5089a6c1372fdc835e7dfa",
+            "v1_sha256": "b27be72d8bbe239a2014f1ead3f0b8f46d8897c9df5089a6c1372fdc835e7dfa",
+            "v2_sha256": "ca1f841db7db0011fc0acd257f45cea1497d6ba1b111cc9c00bd1798d96c5c9d"
           },
           {
             "assertions": {
@@ -393,9 +393,9 @@
             "block_reason": null,
             "record_id": "nzmt:10194151000116108",
             "result": "passed",
-            "rollback_v1_sha256": "60066bbab9f1fa41782e42ecc85e7741752963e2325e42ac319404a032fd1a1d",
-            "v1_sha256": "60066bbab9f1fa41782e42ecc85e7741752963e2325e42ac319404a032fd1a1d",
-            "v2_sha256": "bdb284595c64e80d4850e970cde56ef02722528f14917d5276bf9f7c2c9f89f5"
+            "rollback_v1_sha256": "3044fff12eddf4e28efcb5de3980a2117570906e922258c1e02a5e2abf4e8fc7",
+            "v1_sha256": "3044fff12eddf4e28efcb5de3980a2117570906e922258c1e02a5e2abf4e8fc7",
+            "v2_sha256": "e5c13e02f5c519c5707b643e9071f10429779152cd94a05c77a58f345c6466bf"
           },
           {
             "assertions": {
@@ -406,9 +406,9 @@
             "block_reason": null,
             "record_id": "nzmt:10194171000116101",
             "result": "passed",
-            "rollback_v1_sha256": "dd0013fb879ffce0529fdf62235662f6c0ff181f6e02ae7e8fa2c0aff7284777",
-            "v1_sha256": "dd0013fb879ffce0529fdf62235662f6c0ff181f6e02ae7e8fa2c0aff7284777",
-            "v2_sha256": "b68922f88f7d40db269aeb5369adb3e4f7d4c45ee8d6ecb335d0be5e5e6dadf6"
+            "rollback_v1_sha256": "3d7eccc3d3f123b2529ade4143e444d2b30bcc686aa5fae9d283b8a26aa259fc",
+            "v1_sha256": "3d7eccc3d3f123b2529ade4143e444d2b30bcc686aa5fae9d283b8a26aa259fc",
+            "v2_sha256": "35c56ff10e9c002cc230530ce6ac4a6d749f352a99c3ab1641b842c8c1baa728"
           },
           {
             "assertions": {
@@ -419,9 +419,9 @@
             "block_reason": null,
             "record_id": "nzmt:10194181000116104",
             "result": "passed",
-            "rollback_v1_sha256": "29bde16f85d5a788c815e36e885b51208756fa1b7969a358f53876fc8629ddbc",
-            "v1_sha256": "29bde16f85d5a788c815e36e885b51208756fa1b7969a358f53876fc8629ddbc",
-            "v2_sha256": "49a385dd257f803d058abd538d84c3b59d4b2b202977cc5e8288cb42dfd5636e"
+            "rollback_v1_sha256": "0b81491a8fe88a9b798a5cdfad42557eeee47082efafb255de0d643ac39b0703",
+            "v1_sha256": "0b81491a8fe88a9b798a5cdfad42557eeee47082efafb255de0d643ac39b0703",
+            "v2_sha256": "08c695f0a6a8eb694f9435aea2e5fcdd9212b5691a9df3f40ab7c37f88ee4e96"
           },
           {
             "assertions": {
@@ -432,9 +432,9 @@
             "block_reason": null,
             "record_id": "nzmt:10194201000116100",
             "result": "passed",
-            "rollback_v1_sha256": "d660619c9f0452a459f875205d0b007255837a81942d2368ad9acbc5a94e5014",
-            "v1_sha256": "d660619c9f0452a459f875205d0b007255837a81942d2368ad9acbc5a94e5014",
-            "v2_sha256": "bf0c20465d88b1f7b1b23c67b4b7c431976fb4d4a71b2ee2216976bf03a949c0"
+            "rollback_v1_sha256": "cd4541f5761f389a9d88a7c2c98483d116de93446afe548612a1fcb2acf425cb",
+            "v1_sha256": "cd4541f5761f389a9d88a7c2c98483d116de93446afe548612a1fcb2acf425cb",
+            "v2_sha256": "8e6a110c7a9cae3361b2bc5da1b2fedfc4c05d50a2cea4f1e8fecd2da153fde9"
           },
           {
             "assertions": {
@@ -445,9 +445,9 @@
             "block_reason": null,
             "record_id": "nzmt:10194301000116109",
             "result": "passed",
-            "rollback_v1_sha256": "094cb736abcb914773be79bb36ab81a03df131e4a51a3f078e1f1cae655ffbc5",
-            "v1_sha256": "094cb736abcb914773be79bb36ab81a03df131e4a51a3f078e1f1cae655ffbc5",
-            "v2_sha256": "cd6308f15bf70e1a7082daee071ef83218c05227cccdbbf685749f207e02c615"
+            "rollback_v1_sha256": "3188e7844f94e86af62376cb4f0b58f485c78c71eb52c4d32104a25b268cbb33",
+            "v1_sha256": "3188e7844f94e86af62376cb4f0b58f485c78c71eb52c4d32104a25b268cbb33",
+            "v2_sha256": "0809c5657350eff738ac337f7389b11cd1513ce2890da9110f25a763a2012852"
           },
           {
             "assertions": {
@@ -458,9 +458,9 @@
             "block_reason": null,
             "record_id": "nzmt:10194321000116102",
             "result": "passed",
-            "rollback_v1_sha256": "eec7cffacda1aefb161db8fbda758978c1a06edaa6922b80538b028afa44f81e",
-            "v1_sha256": "eec7cffacda1aefb161db8fbda758978c1a06edaa6922b80538b028afa44f81e",
-            "v2_sha256": "8bdf7c0182a58aaa37c64d4cb4fd83c69dbb65f6c302e7178a0319292bffe5ba"
+            "rollback_v1_sha256": "7322e610cbf39b1cf37ca55583f99de36561752439cf966bb3d9b6da3c0e5431",
+            "v1_sha256": "7322e610cbf39b1cf37ca55583f99de36561752439cf966bb3d9b6da3c0e5431",
+            "v2_sha256": "395205c4e1b2d6a4c9a27231e8f50bdac586e9804df594ba61d6de641b437676"
           },
           {
             "assertions": {
@@ -471,9 +471,9 @@
             "block_reason": null,
             "record_id": "nzmt:10194341000116107",
             "result": "passed",
-            "rollback_v1_sha256": "562ebe76690a75578147efb0647a0ee3c32a8f65079533896ecbcdf36efc323e",
-            "v1_sha256": "562ebe76690a75578147efb0647a0ee3c32a8f65079533896ecbcdf36efc323e",
-            "v2_sha256": "68d10e9bdcea0960148d83c0ce6073c6f9f1fe1a98af345228537d8cd7300842"
+            "rollback_v1_sha256": "a09a4ed87a98668d4b45400c03369ec436d67c40122503627149c844c8f1985a",
+            "v1_sha256": "a09a4ed87a98668d4b45400c03369ec436d67c40122503627149c844c8f1985a",
+            "v2_sha256": "8b134fae891ab31194179934055a0939e0e1c49757d5aedf7397e1c70c6bd240"
           },
           {
             "assertions": {
@@ -484,9 +484,9 @@
             "block_reason": null,
             "record_id": "nzmt:10194361000116108",
             "result": "passed",
-            "rollback_v1_sha256": "a8bf76378980fa72eaaabcf9eb553b5d4a6057dc0aa065a6c032150f8552481a",
-            "v1_sha256": "a8bf76378980fa72eaaabcf9eb553b5d4a6057dc0aa065a6c032150f8552481a",
-            "v2_sha256": "8c9a18357d999aebe1e586ba9eb1e87d43aee745dbda1cd93e52a45873d6a67e"
+            "rollback_v1_sha256": "749aca6366ebecca985506e745d4374e1a52b39cf7ccb4aa1e16051c0434b66e",
+            "v1_sha256": "749aca6366ebecca985506e745d4374e1a52b39cf7ccb4aa1e16051c0434b66e",
+            "v2_sha256": "307d9dba7e2c5c37dfa66277ecb488898022f96f3d96682c3da2edf8a3abc3db"
           },
           {
             "assertions": {
@@ -497,9 +497,9 @@
             "block_reason": null,
             "record_id": "nzmt:10194381000116101",
             "result": "passed",
-            "rollback_v1_sha256": "20f0252f7bacbee907dfe2729612d52862ab0ef6782eae598354a88dd29df017",
-            "v1_sha256": "20f0252f7bacbee907dfe2729612d52862ab0ef6782eae598354a88dd29df017",
-            "v2_sha256": "097963495e109f13550da3ff44667d47cf6d1b137190e489d1ce345c2906ae18"
+            "rollback_v1_sha256": "cd271b2a43acddeaa90ddd88ce15400c90f37f5be1df4116d521087e08d599ff",
+            "v1_sha256": "cd271b2a43acddeaa90ddd88ce15400c90f37f5be1df4116d521087e08d599ff",
+            "v2_sha256": "bbeb332a5e1831cf80f7fac102fa4502a3a4fd0e0a648125e355d23a2199d2de"
           },
           {
             "assertions": {
@@ -510,9 +510,9 @@
             "block_reason": null,
             "record_id": "nzmt:10194401000116101",
             "result": "passed",
-            "rollback_v1_sha256": "39f9b0dd263722657b7708552c620cc1c7bcbc105209328b6a0a24945af6a89a",
-            "v1_sha256": "39f9b0dd263722657b7708552c620cc1c7bcbc105209328b6a0a24945af6a89a",
-            "v2_sha256": "8f534b30c299a46b07f491ec0396ab34a7f393f454d4e33a2d8c7cf769d96dda"
+            "rollback_v1_sha256": "efd79fafd673d315200dfa06ccb43ebc7b593f90ab8e2f6852b6a3a94abb7b3e",
+            "v1_sha256": "efd79fafd673d315200dfa06ccb43ebc7b593f90ab8e2f6852b6a3a94abb7b3e",
+            "v2_sha256": "e8bc0a11c45181712a662a60bca78537cabf4fedc510b27bd03442e769640bf2"
           },
           {
             "assertions": {
@@ -523,9 +523,9 @@
             "block_reason": null,
             "record_id": "nzmt:10194421000116108",
             "result": "passed",
-            "rollback_v1_sha256": "51de1796bd94d8f3c96de1b78af62e94195504fdce2345b9b65bce149ad6e861",
-            "v1_sha256": "51de1796bd94d8f3c96de1b78af62e94195504fdce2345b9b65bce149ad6e861",
-            "v2_sha256": "fb1d9427ef333d41ec618314fbec52be5f686335c0bd98061c8a34ac8aae9138"
+            "rollback_v1_sha256": "ab79d04e3a9599bf32faf95f9113dc30ad60783d381de3bab9201671282514e6",
+            "v1_sha256": "ab79d04e3a9599bf32faf95f9113dc30ad60783d381de3bab9201671282514e6",
+            "v2_sha256": "9d6da803c29577a101560ffc1a0bbff6b15bf502b52e199d583bb8c11658f90f"
           },
           {
             "assertions": {
@@ -536,9 +536,9 @@
             "block_reason": null,
             "record_id": "nzmt:10194441000116103",
             "result": "passed",
-            "rollback_v1_sha256": "37c936d942083118e949322dbac817b29c6104af37a0a10e003b413d355fc14b",
-            "v1_sha256": "37c936d942083118e949322dbac817b29c6104af37a0a10e003b413d355fc14b",
-            "v2_sha256": "d56b1aad8cc7fe27e36f624bd098c8b3e98b40bd2022e51ffc77ec7fe458cf75"
+            "rollback_v1_sha256": "4599635c684eb01fac1f912e3881461fad55e9d93a954e24b4db2e7f0786e0bc",
+            "v1_sha256": "4599635c684eb01fac1f912e3881461fad55e9d93a954e24b4db2e7f0786e0bc",
+            "v2_sha256": "4da86f425b72ceccd3c9692d56759cf70e2d5d6ab556dec1be0a08cbe16b7429"
           },
           {
             "assertions": {
@@ -549,9 +549,9 @@
             "block_reason": null,
             "record_id": "nzmt:10429441000116105",
             "result": "passed",
-            "rollback_v1_sha256": "d46c7ba4bdc1e1210a974c42299c0eec9f91da71736cb026d28926eb929ff6ff",
-            "v1_sha256": "d46c7ba4bdc1e1210a974c42299c0eec9f91da71736cb026d28926eb929ff6ff",
-            "v2_sha256": "643c01c8d105791a1dfb836409a9cbcb38ba8b5bde006a1045122b746a97f0e5"
+            "rollback_v1_sha256": "745f5c6e840456d83a6bd838e91f3af104db4a9eaa01d682db8b5d39e922dbd1",
+            "v1_sha256": "745f5c6e840456d83a6bd838e91f3af104db4a9eaa01d682db8b5d39e922dbd1",
+            "v2_sha256": "aec69cc6582cac9f1fdcdb17b1e9434d704717ba9a82c66443fef385ac485db1"
           },
           {
             "assertions": {
@@ -562,9 +562,9 @@
             "block_reason": null,
             "record_id": "nzmt:10429461000116106",
             "result": "passed",
-            "rollback_v1_sha256": "3290d3cfce3bb9aa9fb980fbf4989edd8bd92e63c57f760509f6b2532d014645",
-            "v1_sha256": "3290d3cfce3bb9aa9fb980fbf4989edd8bd92e63c57f760509f6b2532d014645",
-            "v2_sha256": "309be58001349239abcb5d57a8c16aff7bc423fbdb9be9fd642b09d0bdb69dee"
+            "rollback_v1_sha256": "d3c5b48448dbdffedaa71c50f00bbc618e3ba2fcfd751fc7064f90257d05b53f",
+            "v1_sha256": "d3c5b48448dbdffedaa71c50f00bbc618e3ba2fcfd751fc7064f90257d05b53f",
+            "v2_sha256": "ea28e5a7f55c1ec33aab225d93cbca98d1710f0eefa818181934c7da61662491"
           },
           {
             "assertions": {
@@ -575,9 +575,9 @@
             "block_reason": null,
             "record_id": "nzmt:10429471000116101",
             "result": "passed",
-            "rollback_v1_sha256": "0cfccb8a38915170bb0b081ca67dc9baf3bb817560f37791d62f2b41d8819990",
-            "v1_sha256": "0cfccb8a38915170bb0b081ca67dc9baf3bb817560f37791d62f2b41d8819990",
-            "v2_sha256": "5a0a836b02286d60f04dd153710ab878f0662b40dd8a494b77741bee2f9c82b4"
+            "rollback_v1_sha256": "b5a2f2eedd86eedcebbdb6f1513e0e0ef92c1e31ac5b0a296cdcb17c52d80c8c",
+            "v1_sha256": "b5a2f2eedd86eedcebbdb6f1513e0e0ef92c1e31ac5b0a296cdcb17c52d80c8c",
+            "v2_sha256": "e792a7681061ddd0d5e4438fb4727aae1f611a49b648ec35273f1a3c0188a59b"
           },
           {
             "assertions": {
@@ -588,9 +588,9 @@
             "block_reason": null,
             "record_id": "nzmt:10429491000116102",
             "result": "passed",
-            "rollback_v1_sha256": "b9689e344cce6e238c0e4610a95b1c270bdbc7625abacc8149a58571f792e7de",
-            "v1_sha256": "b9689e344cce6e238c0e4610a95b1c270bdbc7625abacc8149a58571f792e7de",
-            "v2_sha256": "441b8c72193682c212ce1832650630e844909e226b4dfc25fcc1f6ac547120bd"
+            "rollback_v1_sha256": "49edb9317e76adac29da5d85ce5b14dd3001b64f0d76ce8c01bcf98de71b9a58",
+            "v1_sha256": "49edb9317e76adac29da5d85ce5b14dd3001b64f0d76ce8c01bcf98de71b9a58",
+            "v2_sha256": "cee6dff134cde43f2823b2a458c25050f9bda4b8bbc7704731b3efccd4fc1b58"
           },
           {
             "assertions": {
@@ -601,9 +601,9 @@
             "block_reason": null,
             "record_id": "nzmt:10429511000116108",
             "result": "passed",
-            "rollback_v1_sha256": "17fced994b0713345648f9f788b871bf0d346aa1a162a187a0ef130cfb6573f2",
-            "v1_sha256": "17fced994b0713345648f9f788b871bf0d346aa1a162a187a0ef130cfb6573f2",
-            "v2_sha256": "f9ff008fb3d82c9a6053850bcc1b28bee82c46764f61ba12534e4b8bf984fb12"
+            "rollback_v1_sha256": "c149aa62aad10ad2e3ef4d6319cf967423a08b3da47eb7eab11141988c09fd63",
+            "v1_sha256": "c149aa62aad10ad2e3ef4d6319cf967423a08b3da47eb7eab11141988c09fd63",
+            "v2_sha256": "076066df8cf009fa5b475d86961294976ea40729e89a28d4e16f7100fc79dd03"
           },
           {
             "assertions": {
@@ -614,9 +614,9 @@
             "block_reason": null,
             "record_id": "nzmt:10429531000116102",
             "result": "passed",
-            "rollback_v1_sha256": "fe4e471d3b189825fbb01a27bf68bbfd042a9a12e3569dabc53cd665b064bb3f",
-            "v1_sha256": "fe4e471d3b189825fbb01a27bf68bbfd042a9a12e3569dabc53cd665b064bb3f",
-            "v2_sha256": "60597ef9943cec622ee595148797f083970fd95324056bfa0b31df19e211f380"
+            "rollback_v1_sha256": "d7ee8cf69a14fbd11e3d102014999f63613e8325a51d90be15d01d576fbc630a",
+            "v1_sha256": "d7ee8cf69a14fbd11e3d102014999f63613e8325a51d90be15d01d576fbc630a",
+            "v2_sha256": "fff422b6e39979197980491df3756b7df0d634627dbf426d73b2e644e0aa7457"
           },
           {
             "assertions": {
@@ -627,9 +627,9 @@
             "block_reason": null,
             "record_id": "nzmt:10429551000116107",
             "result": "passed",
-            "rollback_v1_sha256": "ea2823479bb79516eccc5fcfd87bf973d3132ed3f1e7c364946525a2de7fbd99",
-            "v1_sha256": "ea2823479bb79516eccc5fcfd87bf973d3132ed3f1e7c364946525a2de7fbd99",
-            "v2_sha256": "8c1908df673a008c6487977da106a55080581515ad9db156f25ccbcc10564c18"
+            "rollback_v1_sha256": "92ec9aac1d891671c3b2a1b39a1f8665d4e2c0d3f0c8189ee93e66201d43a563",
+            "v1_sha256": "92ec9aac1d891671c3b2a1b39a1f8665d4e2c0d3f0c8189ee93e66201d43a563",
+            "v2_sha256": "f3dd54e18a828de096518b4324c865ab015559bcfe3957cd58d8218af490f56f"
           },
           {
             "assertions": {
@@ -640,9 +640,9 @@
             "block_reason": null,
             "record_id": "nzmt:10429571000116100",
             "result": "passed",
-            "rollback_v1_sha256": "b801eaad7ed01710834f3f7da366b083cb5ca13ad5b52f71aef93fcf90e8f5ec",
-            "v1_sha256": "b801eaad7ed01710834f3f7da366b083cb5ca13ad5b52f71aef93fcf90e8f5ec",
-            "v2_sha256": "0c85155aacc73754a5be5393d79a68cdd083fdb9b248d35ad53ad1c1d92e1650"
+            "rollback_v1_sha256": "6187e816b01a431ad5436e082389f219a56e6824ef7fea7e151eeb3cffde3d3a",
+            "v1_sha256": "6187e816b01a431ad5436e082389f219a56e6824ef7fea7e151eeb3cffde3d3a",
+            "v2_sha256": "ac1def07bc0725132974d08df0ae1e5f38dbb31dee79ae4f453d405590dd3924"
           },
           {
             "assertions": {
@@ -653,9 +653,9 @@
             "block_reason": null,
             "record_id": "nzmt:10429591000116101",
             "result": "passed",
-            "rollback_v1_sha256": "15d90ee748a079c9cea696775d1feb85da8f013b5927a51cb1ebab6d8d2742a9",
-            "v1_sha256": "15d90ee748a079c9cea696775d1feb85da8f013b5927a51cb1ebab6d8d2742a9",
-            "v2_sha256": "bfb481deb63a52940c053522e17be6d2ecd45183abd29da7897b0d45148b9e98"
+            "rollback_v1_sha256": "835eded159bc2c2246566ca92a99f5c46d7ef20941f346a70aeafc13d78554fb",
+            "v1_sha256": "835eded159bc2c2246566ca92a99f5c46d7ef20941f346a70aeafc13d78554fb",
+            "v2_sha256": "2c7ca4fb35632b11a8fa1af41a882926678b5b4b172d6f8b5b264731d496b529"
           },
           {
             "assertions": {
@@ -666,9 +666,9 @@
             "block_reason": null,
             "record_id": "nzmt:10429611000116107",
             "result": "passed",
-            "rollback_v1_sha256": "2b466c5f99ed93250c64fa45f8b33f1cb7aef6944e1dd40f5bd1fda5b80a59df",
-            "v1_sha256": "2b466c5f99ed93250c64fa45f8b33f1cb7aef6944e1dd40f5bd1fda5b80a59df",
-            "v2_sha256": "31efd25bba66518d40e0720311792ac2d54200913f8905bddc3d470745dc4a1e"
+            "rollback_v1_sha256": "e042dd189fb678a8b76863399caef9d36f91af405d84b498068a9d35bbaac0b7",
+            "v1_sha256": "e042dd189fb678a8b76863399caef9d36f91af405d84b498068a9d35bbaac0b7",
+            "v2_sha256": "57c5d5ca895466bddea07b293b5d32e59fb2d2cfc42075f2a7ab86a4c43cc28a"
           },
           {
             "assertions": {
@@ -679,9 +679,9 @@
             "block_reason": null,
             "record_id": "nzmt:10429631000116101",
             "result": "passed",
-            "rollback_v1_sha256": "1b9fcb8fb3014a67d408c86efc98a0a9d3bee96df34a1619adf7be6b48200701",
-            "v1_sha256": "1b9fcb8fb3014a67d408c86efc98a0a9d3bee96df34a1619adf7be6b48200701",
-            "v2_sha256": "ad542bc193c8fbf8dc01d3d9a84d281a485b380e7670661b549cdb443bbb5090"
+            "rollback_v1_sha256": "ac6acb31aa43dd813fe0e94cb3e3fee9274ae00e8cb99906dca6c9ad5bfe14f0",
+            "v1_sha256": "ac6acb31aa43dd813fe0e94cb3e3fee9274ae00e8cb99906dca6c9ad5bfe14f0",
+            "v2_sha256": "fe3575eef8417f56e4142aab457730b056502c8030058be1f2e6a9cbfa6f7eb0"
           },
           {
             "assertions": {
@@ -692,9 +692,9 @@
             "block_reason": null,
             "record_id": "nzmt:10527591000116101",
             "result": "passed",
-            "rollback_v1_sha256": "5fce0479252c84ab21bb70d9c1f17558c5f576495207b9b8bbb5b1eb746cf71e",
-            "v1_sha256": "5fce0479252c84ab21bb70d9c1f17558c5f576495207b9b8bbb5b1eb746cf71e",
-            "v2_sha256": "cec7d18e4cd1c7d7a4152eee176d4d4f23df1f78cbb44d9339a47a9d25688570"
+            "rollback_v1_sha256": "2ad273e4a2d30c8b040f244ef5f5beff9ad4fae6ea0ee481a3bd592129b89b09",
+            "v1_sha256": "2ad273e4a2d30c8b040f244ef5f5beff9ad4fae6ea0ee481a3bd592129b89b09",
+            "v2_sha256": "b8a99b6e307ad8608c0eb53afd94180318765e2a3d159ae98696e8f3db801d0f"
           },
           {
             "assertions": {
@@ -705,9 +705,9 @@
             "block_reason": null,
             "record_id": "nzmt:44282231000116104",
             "result": "passed",
-            "rollback_v1_sha256": "629e84e44bb3d0674e607c15557f4aee056e5ca8e861779390d5b9339fddf6ed",
-            "v1_sha256": "629e84e44bb3d0674e607c15557f4aee056e5ca8e861779390d5b9339fddf6ed",
-            "v2_sha256": "882cbda432f29bd69926ce6b2f2bb99a1c74406cd4196e6e660581da0adcb748"
+            "rollback_v1_sha256": "963e0dd7209dae0ae09fa32ff0ad6620b2cefafb4a66804664c50418244616b3",
+            "v1_sha256": "963e0dd7209dae0ae09fa32ff0ad6620b2cefafb4a66804664c50418244616b3",
+            "v2_sha256": "c65ddb48fcfd87e6c3a787655d1323407be6272b49ee0e87a53f342b0230b7e3"
           },
           {
             "assertions": {
@@ -718,9 +718,9 @@
             "block_reason": null,
             "record_id": "nzmt:50013251000116105",
             "result": "passed",
-            "rollback_v1_sha256": "8bc7753f97e1ba9515188efb88c8da5edca7fdd274adca320d341d31a5761bef",
-            "v1_sha256": "8bc7753f97e1ba9515188efb88c8da5edca7fdd274adca320d341d31a5761bef",
-            "v2_sha256": "037a46ed7614bdad515bbe5f3067944f49e6120152c07b795ea1fa4f12ce47ec"
+            "rollback_v1_sha256": "12572130b499979ef26c8b9bb40937b36629b9d5fa6b8588cc884cfa7b4a2b13",
+            "v1_sha256": "12572130b499979ef26c8b9bb40937b36629b9d5fa6b8588cc884cfa7b4a2b13",
+            "v2_sha256": "70b3525f06ad5cde4ec66bd6cce7f2e73a9733204326204ecd987b4ec3d156a4"
           },
           {
             "assertions": {
@@ -731,9 +731,9 @@
             "block_reason": null,
             "record_id": "nzmt:50013261000116102",
             "result": "passed",
-            "rollback_v1_sha256": "83a79688e9b4c133a02cb0f26276b2e4c67175615acba499cbfcdf5e2f9ccd93",
-            "v1_sha256": "83a79688e9b4c133a02cb0f26276b2e4c67175615acba499cbfcdf5e2f9ccd93",
-            "v2_sha256": "228e6de25df8496ba405c2e73386902e5850989d1090e67bb94ef0623465900e"
+            "rollback_v1_sha256": "fef64854d9635f585e8c1bd449884562b5da7bef69620f3b54be98bcce82c36b",
+            "v1_sha256": "fef64854d9635f585e8c1bd449884562b5da7bef69620f3b54be98bcce82c36b",
+            "v2_sha256": "b9bbdfe412f7943dd9386480d916e6ccc77dabd01982fa15ce6d38b7be3e415b"
           },
           {
             "assertions": {
@@ -744,9 +744,9 @@
             "block_reason": null,
             "record_id": "nzmt:50018991000117103",
             "result": "passed",
-            "rollback_v1_sha256": "76dd36780c3e68a067b5db2c5e5cd44e68d62dd40c6d6fb6963dd4bfc85b3341",
-            "v1_sha256": "76dd36780c3e68a067b5db2c5e5cd44e68d62dd40c6d6fb6963dd4bfc85b3341",
-            "v2_sha256": "7096809d8897bd7c1346833aa5bf216083943b7d42b86126c133961089bae2f4"
+            "rollback_v1_sha256": "a976e3a8e2eb88a8ba6850d3eb3ad3e98b6e75b879a7f41e8b7f8f87a9d4e54a",
+            "v1_sha256": "a976e3a8e2eb88a8ba6850d3eb3ad3e98b6e75b879a7f41e8b7f8f87a9d4e54a",
+            "v2_sha256": "511e5df9f60033898101b5c884828a9c5a32eea24841cae27c8d947c2290ada8"
           },
           {
             "assertions": {
@@ -757,9 +757,9 @@
             "block_reason": null,
             "record_id": "nzmt:50019041000117101",
             "result": "passed",
-            "rollback_v1_sha256": "584185e09758f3d0171ad687c654ed76f2a56291430c2e42d03d1a91f2f2b77c",
-            "v1_sha256": "584185e09758f3d0171ad687c654ed76f2a56291430c2e42d03d1a91f2f2b77c",
-            "v2_sha256": "0ee863fe91dd01829a85fb3fcc5c43bfb08b4fec8814b042d873c6d1bf7cab81"
+            "rollback_v1_sha256": "bfd01268ca6e8442c8f7ff875b7e8ef2b37ea99f3105539ea5b9cd32fa7982d9",
+            "v1_sha256": "bfd01268ca6e8442c8f7ff875b7e8ef2b37ea99f3105539ea5b9cd32fa7982d9",
+            "v2_sha256": "ae3e407c9a061741fb84135af4390e44458924be83305815d5fb52d62ab29e80"
           },
           {
             "assertions": {
@@ -770,9 +770,9 @@
             "block_reason": null,
             "record_id": "nzmt:50019061000117102",
             "result": "passed",
-            "rollback_v1_sha256": "d0981cb4f134fd31a66642fc4f5f1e0f0ae8c2468c0064b94af7becabdc6793b",
-            "v1_sha256": "d0981cb4f134fd31a66642fc4f5f1e0f0ae8c2468c0064b94af7becabdc6793b",
-            "v2_sha256": "7b5689599f3ccc19f5d922f15bdfa492968dbb41d4dafe00dada81c8e8e7e82c"
+            "rollback_v1_sha256": "d73a17736d5a33d68bd516e89be4a414e4ae92ad37d69d7a2b8798c91e62c7ea",
+            "v1_sha256": "d73a17736d5a33d68bd516e89be4a414e4ae92ad37d69d7a2b8798c91e62c7ea",
+            "v2_sha256": "7f2c01e754ccfd43851ad47cb1e5ba1ab2183ed648ce251a7bf954d9c25b302d"
           },
           {
             "assertions": {
@@ -783,9 +783,9 @@
             "block_reason": null,
             "record_id": "nzmt:50066491000116104",
             "result": "passed",
-            "rollback_v1_sha256": "4eb9fdc7aa317da2517c4d7d4cae39a63f27929845e6219df4c619673c73da5b",
-            "v1_sha256": "4eb9fdc7aa317da2517c4d7d4cae39a63f27929845e6219df4c619673c73da5b",
-            "v2_sha256": "9f2f74654f680dc9269ded7608869e8a82daac4b1a741ef4eca06333e4d57786"
+            "rollback_v1_sha256": "08016bd0be2fc900ec968b2642743985d01d9212c3bf91d5d12c7acd4f438b63",
+            "v1_sha256": "08016bd0be2fc900ec968b2642743985d01d9212c3bf91d5d12c7acd4f438b63",
+            "v2_sha256": "1ff5a0ce3aff8d8753bf40b5ad6c5a9949c06305a04ebf7398b4ae75f4a92b26"
           },
           {
             "assertions": {
@@ -796,9 +796,9 @@
             "block_reason": null,
             "record_id": "nzmt:50110891000117100",
             "result": "passed",
-            "rollback_v1_sha256": "a7af112de9ebfeccccd6a7789f96653bc42155e778e3a65e9653a6f2fb56f2dc",
-            "v1_sha256": "a7af112de9ebfeccccd6a7789f96653bc42155e778e3a65e9653a6f2fb56f2dc",
-            "v2_sha256": "cf374a94279fdff78d1e35948d66d5cfc2cdf42e9db3b9cfefe4028fa5ec41b8"
+            "rollback_v1_sha256": "b55345b7d608cddc21a6e628688386594f819967b600f33d5dfb914a69b665e0",
+            "v1_sha256": "b55345b7d608cddc21a6e628688386594f819967b600f33d5dfb914a69b665e0",
+            "v2_sha256": "222ed8fa1ba9947d714769e11cd52f5d4a5629fcd5190aa4041f6e745a922ce4"
           },
           {
             "assertions": {
@@ -809,9 +809,9 @@
             "block_reason": null,
             "record_id": "nzmt:50116621000117104",
             "result": "passed",
-            "rollback_v1_sha256": "dd7431f930202a45e4ff3b3f096a810bb62d00ee1af955fc0ed8480643a20d74",
-            "v1_sha256": "dd7431f930202a45e4ff3b3f096a810bb62d00ee1af955fc0ed8480643a20d74",
-            "v2_sha256": "38661387bbb4a9f1902e7158e02ff065f6fa07dd8ee2294d43604223b4d84cc4"
+            "rollback_v1_sha256": "1b2163bcce18159416409b25e20af84019b51d895d5ea1b51547589bf5bc5de4",
+            "v1_sha256": "1b2163bcce18159416409b25e20af84019b51d895d5ea1b51547589bf5bc5de4",
+            "v2_sha256": "1376d9e6defd24b144d4b2b686d54882a1aee50bf1ea9985d40cc63dbdfff346"
           },
           {
             "assertions": {
@@ -822,9 +822,9 @@
             "block_reason": null,
             "record_id": "nzmt:50116631000117101",
             "result": "passed",
-            "rollback_v1_sha256": "9574b2d360922c9e1f926f1f1893c76c08ed0a318be3bd565d11ea77e9091cc8",
-            "v1_sha256": "9574b2d360922c9e1f926f1f1893c76c08ed0a318be3bd565d11ea77e9091cc8",
-            "v2_sha256": "bf784a70a4cf281e89bbd51d65a8c4557eccdad3e1cc1344f923f208104decf5"
+            "rollback_v1_sha256": "7b1875e2674c898006fa687172dd8fe757d7f67e1459d0aa46ebc1f3f2921f62",
+            "v1_sha256": "7b1875e2674c898006fa687172dd8fe757d7f67e1459d0aa46ebc1f3f2921f62",
+            "v2_sha256": "5ababf11490febd6e2a7ceb3b365b7ffc758b4eff7c69617737f183edc9caa43"
           }
         ],
         "source_ids": [
@@ -845,5 +845,5 @@
     "schema_id": "global-medicines-atlas.canonical-v2-cohort-receipt",
     "schema_version": 1
   },
-  "receipt_sha256": "b728af3163db5d778a430d8c46dae3d3945094dbea2196cfb04cdf6e169d63e8"
+  "receipt_sha256": "1cf142c99bddd8a69d3159701586853f056bf9c51ae2b7aeb45327605e757aef"
 }

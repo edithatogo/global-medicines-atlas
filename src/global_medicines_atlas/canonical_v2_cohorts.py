@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import csv
 from collections.abc import Iterable, Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from hashlib import sha256
 from io import StringIO
@@ -409,10 +409,16 @@ def build_representative_adapter_cohorts(
 
 
 def _fixture_artifact(project_root: Path, path: Path) -> FixtureArtifact:
+    payload = _portable_fixture_bytes(path)
     return FixtureArtifact(
         path=path.relative_to(project_root).as_posix(),
-        sha256=sha256(path.read_bytes()).hexdigest(),
+        sha256=sha256(payload).hexdigest(),
     )
+
+
+def _portable_fixture_bytes(path: Path) -> bytes:
+    """Return text-fixture bytes independent of Git checkout EOL policy."""
+    return path.read_bytes().replace(b"\r\n", b"\n")
 
 
 def _fixture_path(artifact: FixtureArtifact) -> str:
@@ -468,7 +474,7 @@ def _blocked_cases(
 
 def _build_fda_cohort(project_root: Path) -> AdapterCohort:
     path = project_root / "tests/fixtures/us/drugsfda_api.json"
-    payload = path.read_bytes()
+    payload = _portable_fixture_bytes(path)
     receipt = _fixture_receipt(
         payload,
         source_id="us-drugsfda",
@@ -501,7 +507,7 @@ def _build_fda_cohort(project_root: Path) -> AdapterCohort:
 
 def _build_pbs_cohort(project_root: Path) -> AdapterCohort:
     path = project_root / "tests/fixtures/adapters/au_pbs.xml"
-    payload = path.read_bytes()
+    payload = _portable_fixture_bytes(path)
     receipt = _fixture_receipt(
         payload,
         source_id="au-pbs",
@@ -535,7 +541,7 @@ def _build_pbs_cohort(project_root: Path) -> AdapterCohort:
 
 def _build_ema_cohort(project_root: Path) -> AdapterCohort:
     path = project_root / "tests/fixtures/native/eu/ema_medicines.csv"
-    payload = path.read_bytes()
+    payload = _portable_fixture_bytes(path)
     receipt = _fixture_receipt(
         payload,
         source_id="eu-ema",
@@ -568,7 +574,7 @@ def _build_ema_cohort(project_root: Path) -> AdapterCohort:
 
 def _build_pmda_cohort(project_root: Path) -> AdapterCohort:
     path = project_root / "tests/fixtures/native/jp/pmda_approvals.csv"
-    payload = path.read_bytes()
+    payload = _portable_fixture_bytes(path)
     receipt = _fixture_receipt(
         payload,
         source_id="jp-pmda",
@@ -619,8 +625,14 @@ def _build_pmda_cohort(project_root: Path) -> AdapterCohort:
 
 
 def _build_nzmt_cohort(project_root: Path) -> AdapterCohort:
+    source_root = project_root / "vendor/nzmedicines"
     native = tuple(
-        item
+        replace(
+            item,
+            source_sha256=sha256(
+                _portable_fixture_bytes(source_root / item.source_path)
+            ).hexdigest(),
+        )
         for item in load_upstream_fixture_records(project_root)
         if item.resource_type == "Medication"
     )
@@ -635,10 +647,7 @@ def _build_nzmt_cohort(project_root: Path) -> AdapterCohort:
         )
         for record in records
     )
-    fixture_paths = {
-        project_root / "vendor/nzmedicines" / item.source_path
-        for item in native
-    }
+    fixture_paths = {source_root / item.source_path for item in native}
     return AdapterCohort(
         cohort_id="new-zealand-nzulm-nzmt-preserved",
         jurisdiction="NZ",

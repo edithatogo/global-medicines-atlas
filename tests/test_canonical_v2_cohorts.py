@@ -53,6 +53,19 @@ def _schema_validator() -> _SchemaValidator:
     return cast("_SchemaValidator", Draft202012Validator(schema))
 
 
+def test_text_fixture_identity_is_checkout_eol_independent(
+    tmp_path: Path,
+) -> None:
+    lf = tmp_path / "lf.json"
+    crlf = tmp_path / "crlf.json"
+    lf.write_bytes(b'{"fixture":true}\n')
+    crlf.write_bytes(b'{"fixture":true}\r\n')
+
+    assert cohorts_module._portable_fixture_bytes(lf) == (
+        cohorts_module._portable_fixture_bytes(crlf)
+    )
+
+
 @pytest.mark.integration
 def test_representative_cohorts_are_measured_without_global_overclaim() -> None:
     receipt = _receipt().receipt
