@@ -103,6 +103,14 @@ jobs:
           path: mutants/mutmut-cicd-stats.json
           if-no-files-found: error
           retention-days: 30
+      - name: Upload mutation survivor review report
+        if: matrix.profile == 'mutation'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: mutmut-survivor-review
+          path: mutants/survivors.txt
+          if-no-files-found: error
+          retention-days: 30
       - name: Upload Scalene profile
         if: matrix.profile == 'profile'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
