@@ -621,15 +621,19 @@ def test_mutmut_observations_come_from_authoritative_export(
 def test_mutation_baseline_blocks_regression() -> None:
     """The hosted lane cannot silently increase known survivor debt."""
     baseline = {
-        "killed": 1628.0,
-        "survived": 317.0,
-        "score_percent": 1628 / 1945 * 100,
+        "killed": 1884.0,
+        "survived": 364.0,
+        "untested": 2.0,
+        "total": 2250.0,
+        "score_percent": 1884 / 2250 * 100,
     }
     HARNESS.enforce_mutation_baseline(baseline)
     regressed = {
-        "killed": 1627.0,
-        "survived": 318.0,
-        "score_percent": 1627 / 1945 * 100,
+        "killed": 1883.0,
+        "survived": 365.0,
+        "untested": 2.0,
+        "total": 2250.0,
+        "score_percent": 1883 / 2250 * 100,
     }
     with pytest.raises(ValueError, match="survivor debt regressed"):
         HARNESS.enforce_mutation_baseline(regressed)
