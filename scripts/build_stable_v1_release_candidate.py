@@ -302,6 +302,9 @@ def canonicalize_sdist(path: Path, *, source_date_epoch: str) -> None:
         format=tarfile.PAX_FORMAT,
     ) as archive:
         for original, payload in members:
+            member_payload = payload
+            if original.name.endswith("/_version.py"):
+                member_payload = payload.replace(b"\r\n", b"\n")
             info = tarfile.TarInfo(original.name)
             info.mtime = int(source_date_epoch)
             info.uid = 0
@@ -311,9 +314,10 @@ def canonicalize_sdist(path: Path, *, source_date_epoch: str) -> None:
             info.type = original.type
             info.linkname = original.linkname
             info.mode = 0o755 if original.isdir() else 0o644
-            info.size = len(payload) if original.isfile() else 0
+            info.size = len(member_payload) if original.isfile() else 0
             archive.addfile(
-                info, io.BytesIO(payload) if original.isfile() else None
+                info,
+                io.BytesIO(member_payload) if original.isfile() else None,
             )
     path.write_bytes(
         _canonical_gzip_stored(
