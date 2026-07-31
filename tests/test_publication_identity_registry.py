@@ -13,6 +13,8 @@ from pydantic import ValidationError
 
 from global_medicines_atlas.publication_contracts import (
     PublicationIdentityRegistry,
+    PublicationObjectRole,
+    PublicationSystem,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -59,6 +61,74 @@ def test_wrong_system_role_and_dangling_relationship_fail_closed() -> None:
     dangling["identities"][0]["related_object_ids"] = ["missing-object"]
     with pytest.raises(ValidationError):
         PublicationIdentityRegistry.model_validate(dangling)
+
+
+@pytest.mark.parametrize(
+    ("updates", "message"),
+    [
+        (
+            {"related_object_ids": ["derived-dataset", "derived-dataset"]},
+            "must be unique",
+        ),
+        (
+            {
+                "identifier_state": "unresolved",
+                "identifier": "https://example.invalid/unresolved",
+            },
+            "cannot claim",
+        ),
+        (
+            {"identifier_state": "configured", "identifier": None},
+            "requires an identifier",
+        ),
+        (
+            {
+                "licence_state": "unresolved",
+                "licence_expression": "TEST-ONLY",
+            },
+            "cannot claim",
+        ),
+    ],
+)
+def test_identity_state_contradictions_fail_closed(
+    updates: dict[str, object],
+    message: str,
+) -> None:
+    payload = copy.deepcopy(_payload())
+    payload["identities"][0].update(updates)
+    with pytest.raises(ValidationError, match=message):
+        PublicationIdentityRegistry.model_validate(payload)
+
+
+def test_registry_runtime_rejects_duplicate_systems_and_roles() -> None:
+    registry = PublicationIdentityRegistry.model_validate(_payload())
+    duplicate_system = registry.identities[1].model_copy(
+        update={"system": PublicationSystem.GITHUB}
+    )
+    with pytest.raises(ValueError, match="system exactly once"):
+        registry.model_copy(
+            update={
+                "identities": (
+                    registry.identities[0],
+                    duplicate_system,
+                    *registry.identities[2:],
+                )
+            }
+        ).identities_are_complete_non_overlapping_and_closed()
+
+    duplicate_role = registry.identities[1].model_copy(
+        update={"object_role": PublicationObjectRole.SOFTWARE_SOURCE_RELEASE}
+    )
+    with pytest.raises(ValueError, match="must not overlap"):
+        registry.model_copy(
+            update={
+                "identities": (
+                    registry.identities[0],
+                    duplicate_role,
+                    *registry.identities[2:],
+                )
+            }
+        ).identities_are_complete_non_overlapping_and_closed()
 
 
 @given(st.sampled_from(["identifier", "licence"]))
