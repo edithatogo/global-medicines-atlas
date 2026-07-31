@@ -1,0 +1,92 @@
+{
+  "$id": "https://global-medicines-atlas.example/schemas/protected-evidence-receipt-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "blockers": {"items": {"type": "string"}, "type": "array"},
+    "evidence_verification": {"enum": ["verified", "rejected"]},
+    "hosted_identity": {
+      "additionalProperties": false,
+      "properties": {
+        "commit_sha": {"pattern": "^[0-9a-f]{40}$", "type": "string"},
+        "pull_request_number": {"minimum": 1, "type": "integer"},
+        "pull_request_url": {"format": "uri", "type": "string"},
+        "repository": {"type": "string"}
+      },
+      "required": ["repository", "commit_sha", "pull_request_number", "pull_request_url"],
+      "type": "object"
+    },
+    "hosted_truth_verified": {"type": "boolean"},
+    "input_sha256": {"pattern": "^[0-9a-f]{64}$", "type": "string"},
+    "local_truth": {
+      "additionalProperties": false,
+      "properties": {
+        "commit_sha": {"pattern": "^[0-9a-f]{40}$", "type": "string"},
+        "dirty": {"type": "boolean"}
+      },
+      "required": ["commit_sha", "dirty"],
+      "type": "object"
+    },
+    "publication": {
+      "additionalProperties": false,
+      "properties": {
+        "blockers": {"items": {"type": "string"}, "type": "array"},
+        "receipts": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "artifact_sha256": {"pattern": "^[0-9a-f]{64}$", "type": "string"},
+              "commit_sha": {"pattern": "^[0-9a-f]{40}$", "type": "string"},
+              "durable_url": {"format": "uri", "type": "string"},
+              "object_identity": {"minLength": 1, "type": "string"},
+              "surface": {"minLength": 1, "type": "string"}
+            },
+            "required": ["surface", "object_identity", "durable_url", "commit_sha", "artifact_sha256"],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "state": {"enum": ["not_attempted", "blocked", "verified"]}
+      },
+      "required": ["state", "blockers", "receipts"],
+      "type": "object"
+    },
+    "receipt_id": {"minLength": 1, "type": "string"},
+    "release_blockers": {"items": {"type": "string"}, "type": "array"},
+    "release_eligibility": {"enum": ["blocked", "eligible"]},
+    "required_checks": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "app_slug": {"minLength": 1, "type": "string"},
+          "blockers": {"items": {"type": "string"}, "type": "array"},
+          "category": {"enum": ["ci", "security"]},
+          "check_run_id": {"minimum": 1, "type": ["integer", "null"]},
+          "details_url": {"format": "uri", "type": ["string", "null"]},
+          "name": {"minLength": 1, "type": "string"},
+          "verified": {"type": "boolean"},
+          "workflow_run_id": {"minimum": 1, "type": ["integer", "null"]}
+        },
+        "required": ["name", "category", "app_slug", "check_run_id", "workflow_run_id", "details_url", "verified", "blockers"],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "schema_id": {"const": "global-medicines-atlas.protected-evidence-receipt"},
+    "schema_version": {"const": 1},
+    "target": {
+      "additionalProperties": false,
+      "properties": {
+        "commit_sha": {"pattern": "^[0-9a-f]{40}$", "type": "string"},
+        "pull_request_number": {"minimum": 1, "type": "integer"},
+        "repository": {"pattern": "^[^/\\s]+/[^/\\s]+$", "type": "string"}
+      },
+      "required": ["repository", "commit_sha", "pull_request_number"],
+      "type": "object"
+    }
+  },
+  "required": ["schema_id", "schema_version", "receipt_id", "input_sha256", "target", "local_truth", "hosted_identity", "required_checks", "hosted_truth_verified", "evidence_verification", "publication", "release_eligibility", "blockers", "release_blockers"],
+  "title": "Protected evidence receipt v1",
+  "type": "object"
+}

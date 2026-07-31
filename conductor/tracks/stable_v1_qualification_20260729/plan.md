@@ -84,17 +84,37 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     rejection, idempotent retries and separate regulatory/funding evidence.
     Credential-authority, human-notification and publication actions remain
     explicit external gates and are not claimed as executed.
-- [ ] Task: Verify every protected CI, security and publication receipt ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+- [~] Task: Verify every protected CI, security and publication receipt ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+  - The offline verifier now pins the repository, pull request, exact commit,
+    required CI/security check names and producer identities, then binds the
+    observed check-run and workflow-run identifiers into a deterministic
+    receipt. Pending, failing, missing, duplicate or mismatched evidence is
+    rejected. Publication remains independently `blocked` or `not_attempted`
+    without a durable commit-bound receipt; exact hosted verification for the
+    candidate pull request remains pending.
 - [x] Task: Audit task-oriented documentation, examples and support paths ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
   - Executable documentation contracts cover installation, API, CLI, Atlas,
     validity abstentions, recovery, support and publication/licence limits.
-- [~] Task: Migrate canonical records to schema v2 and verify source-native round trips ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
-  - Representative fixtures now prove deterministic v1-to-v2 migration, exact
-    rollback and regulatory/funding separation. Measured adapter cohorts remain
-    open before this task can be completed.
-- [ ] Task: Verify comparison-validity outcomes and negative controls never imply equivalence, substitutability or equal benefit ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
-- [ ] Task: Verify concept search, concept detail, jurisdictions and sources through API, CLI and atlas end to end ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
-- [ ] Task: Install built wheel and sdist in clean environments and run import, CLI, API, version and reinstall checks ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+- [x] Task: Migrate canonical records to schema v2 and verify source-native round trips ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+  - A content-bound cohort receipt measures 42 preserved NZULM/NZMT FHIR
+    fixtures plus PMDA, Drugs@FDA, PBS and EMA adapter fixtures. All structurally
+    supported records migrate deterministically and roll back exactly; fixtures
+    without source-native substance/product structure are explicitly blocked
+    rather than inferred. Regulatory, funding and formulary counts remain
+    separate throughout.
+- [x] Task: Verify comparison-validity outcomes and negative controls never imply equivalence, substitutability or equal benefit ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+  - Deterministic aligned, compatible, material-mismatch and unknown controls
+    cover valid, caveated, inappropriate and abstaining outcomes. Every control
+    keeps equivalence, substitutability, therapeutic interchangeability and
+    equal-benefit flags false across the public surfaces.
+- [x] Task: Verify concept search, concept detail, jurisdictions and sources through API, CLI and atlas end to end ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+  - One governed read-only DuckDB fixture now produces a content-bound receipt
+    for concept search/detail, jurisdiction/source catalogues and comparison
+    validity through the API, CLI and rendered Atlas without external action.
+- [~] Task: Install built wheel and sdist in clean environments and run import, CLI, API, version and reinstall checks ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+  - The clean-consumer harness already covers wheel and sdist installation,
+    metadata, dynamic version, reinstall, import, CLI and API. The exact current
+    candidate still requires all-platform hosted receipts before completion.
 - [x] Task: Snapshot and semantically diff the public OpenAPI contract and smoke-test a generated client ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
   - The deterministic read-only snapshot rejects incompatible removals,
     mutations, request bodies and response changes while permitting compatible

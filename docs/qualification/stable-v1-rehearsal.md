@@ -7,11 +7,19 @@ uv run --python 3.14 python scripts/rehearse_stable_v1.py
 ```
 
 The command writes a content-bound receipt to
-`build/stable-v1/rehearsals/aggregate.json`. It runs the canonical schema-v1 to
-schema-v2 migration and exact rollback in both a constrained child process and
-the controlling process, then executes the governed local recovery rehearsal.
-Any identity, assertion-kind, restore, rollback, or receipt-integrity mismatch
-fails closed and leaves no aggregate receipt.
+`build/stable-v1/rehearsals/aggregate.json`. A constrained child process
+independently computes the representative schema-v1 and schema-v2 identities.
+The controlling process repeats the migration, verifies determinism, performs
+the exact schema-v2 to schema-v1 rollback, and executes the governed local
+recovery rehearsal. Any identity, assertion-kind, restore, rollback, current
+input, schema, fixture-tree, or receipt-integrity mismatch fails closed and
+leaves no aggregate receipt.
+
+The receipt binds the aggregate implementation, runner, dependency lock,
+canonical and rehearsal schemas, recovery implementation, representative
+fixture identities, and a deterministic qualification-input tree identity.
+Verification re-hashes those inputs from the current checkout; a valid
+self-hash alone is insufficient.
 
 This is deterministic representative-fixture evidence. The child process
 strengthens independence from parent-process state, but it is not the

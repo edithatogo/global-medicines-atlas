@@ -6,6 +6,7 @@ import hashlib
 import json
 import shutil
 import tempfile
+import time
 from contextlib import suppress
 from dataclasses import asdict, dataclass
 from pathlib import Path, PurePosixPath
@@ -35,6 +36,16 @@ class RestoreReceipt:
     backup_receipt_id: str
     destination: Path
     rollback_path: Path | None
+
+
+def _quarantine_replace(source: Path, destination: Path) -> Path:
+    """Retry transient sharing violations before failing closed."""
+    for delay_seconds in (0.01, 0.05, 0.1):
+        try:
+            return source.replace(destination)
+        except PermissionError:
+            time.sleep(delay_seconds)
+    return source.replace(destination)
 
 
 def _digest_file(path: Path) -> tuple[str, int]:
@@ -290,7 +301,7 @@ def rollback_restore(receipt: RestoreReceipt) -> None:
         safeguard = temporary / "active-safeguard"
         _safeguard_tree(receipt.destination, safeguard)
         try:
-            receipt.destination.replace(failed)
+            _quarantine_replace(receipt.destination, failed)
         except OSError as error:
             _verify_identity(
                 receipt.destination,

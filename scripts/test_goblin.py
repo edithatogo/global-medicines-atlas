@@ -88,6 +88,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_product_contracts.py",
         "tests/test_product_release.py",
         "tests/test_product_security.py",
+        "tests/test_protected_evidence.py",
         "tests/test_quality_baselines.py",
         "tests/test_product_performance.py",
         "tests/test_source_catalog.py",
@@ -165,6 +166,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_operational_exercises.py",
         "tests/test_stable_v1_incident_rehearsal.py",
         "tests/test_stable_v1_rehearsal.py",
+        "tests/test_canonical_v2_cohorts.py",
     ),
     "e2e": (
         "tests/test_canonical_nz_adapter.py",
@@ -172,6 +174,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_matching_e2e.py",
         "tests/test_atlas_e2e.py",
         "tests/test_atlas_discovery_e2e.py",
+        "tests/test_stable_v1_e2e_qualification.py",
     ),
     "smoke": (
         "tests/test_smoke.py",

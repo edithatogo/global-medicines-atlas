@@ -122,6 +122,35 @@ def test_rollback_quarantine_failure_retains_canonical_destination(
     assert not failed.exists()
 
 
+def test_rollback_retries_transient_quarantine_permission_error(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    bundle, destination = _recovery_fixture(tmp_path)
+    receipt = restore_backup(bundle, destination)
+    failed = destination.with_name(".canonical.failed-restore")
+    original_replace = Path.replace
+    attempts = 0
+
+    def fail_once(path: Path, target: Path) -> Path:
+        nonlocal attempts
+        if path == destination and target == failed:
+            attempts += 1
+            if attempts == 1:
+                raise PermissionError("injected transient sharing violation")
+        return original_replace(path, target)
+
+    monkeypatch.setattr(Path, "replace", fail_once)
+    monkeypatch.setattr(
+        "global_medicines_atlas.recovery.time.sleep", lambda _: None
+    )
+
+    rollback_restore(receipt)
+
+    assert attempts == 2
+    assert (destination / "state.txt").read_text(encoding="utf-8") == "current"
+
+
 def test_rollback_rejects_existing_failed_restore_quarantine(
     tmp_path: Path,
 ) -> None:
