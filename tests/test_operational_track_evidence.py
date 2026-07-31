@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any, cast
 
 ROOT = Path(__file__).parents[1]
-TRACK = ROOT / "conductor" / "tracks" / "operational_hardening_20260729"
+TRACK = ROOT / "conductor" / "archive" / "operational_hardening_20260729"
 
 
 def _evidence() -> dict[str, dict[str, Any]]:

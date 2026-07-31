@@ -46,7 +46,7 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 - [x] Task: Verify hosted rulesets, security settings, labels and project views — strict main protection, security features and all 20 additive manifest labels were verified live; Project 35 has the same five-view pattern as the other active projects and issues #36–#43 now use all shared custom fields consistently. The absent repository ruleset is dispositioned in favour of the equivalent existing branch protection; Renovate App activation remains an explicit maintainer-authority gate ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39))
 - [x] Task: Validate contributor, operator, source-onboarding and incident documentation — required sections, local links and issue-form contracts pass locally and in all 25 hosted checks ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39)) `6160ad1`
 - [x] Task: Record v0.8 qualification evidence — the machine-readable receipt qualifies the bounded release while retaining explicit publication, production disaster recovery, Renovate activation and Mojo-promotion limits ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39))
-- [ ] Task: Phase Verification & Checkpoint
+- [x] Task: Phase Verification & Checkpoint — independent Conductor review identified a rollback-compensation defect, fixed in [PR #86](https://github.com/edithatogo/global-medicines-atlas/pull/86) and re-reviewed with no residual defect; all 26 hosted checks, Codecov patch, CodeQL and the full Test-Goblin matrix passed at `72969ff`
 
 ## GitHub hierarchy
 
