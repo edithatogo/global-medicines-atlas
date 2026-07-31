@@ -4,7 +4,7 @@
   "title": "Canonical medicine structural schema v2",
   "description": "Structural medicine contract, distinct from the temporal assertion migration named v1_to_v2.",
   "type": "object",
-  "required": ["schema_id", "schema_version", "record_id", "substances", "products", "packages", "indications", "prices", "restrictions"],
+  "required": ["schema_id", "schema_version", "record_id", "substances", "products", "packages", "indications", "prices", "restrictions", "source_native"],
   "properties": {
     "schema_id": {"const": "global-medicines-atlas.canonical-medicine"},
     "schema_version": {"const": 2},
@@ -14,62 +14,70 @@
     "packages": {"type": "array", "items": {"$ref": "#/$defs/package"}},
     "indications": {"type": "array", "items": {"$ref": "#/$defs/scopedAssertion"}},
     "prices": {"type": "array", "items": {"$ref": "#/$defs/price"}},
-    "restrictions": {"type": "array", "items": {"$ref": "#/$defs/scopedAssertion"}}
+    "restrictions": {"type": "array", "items": {"$ref": "#/$defs/scopedAssertion"}},
+    "source_native": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/sourceNativePayload"}}
   },
   "$defs": {
     "entity": {
       "type": "object",
-      "required": ["id", "label", "native_identifiers"],
+      "required": ["id", "label", "native_identifiers", "provenance", "source_native_ids"],
       "properties": {
         "id": {"type": "string", "minLength": 1},
         "label": {"type": "string", "minLength": 1},
-        "native_identifiers": {"type": "object", "additionalProperties": {"type": "string", "minLength": 1}}
+        "native_identifiers": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string"}},
+        "provenance": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/provenance"}},
+        "source_native_ids": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
       },
       "additionalProperties": false
     },
     "product": {
-      "allOf": [
-        {"$ref": "#/$defs/entity"},
-        {
-          "type": "object",
-          "required": ["substance_ids", "dose_form", "strength"],
-          "properties": {
-            "substance_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
-            "dose_form": {"type": ["string", "null"]},
-            "strength": {"type": ["string", "null"]}
-          }
-        }
-      ]
+      "type": "object",
+      "required": ["id", "label", "native_identifiers", "provenance", "source_native_ids", "substance_ids", "dose_form", "strength"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "label": {"type": "string", "minLength": 1},
+        "native_identifiers": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string"}},
+        "provenance": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/provenance"}},
+        "source_native_ids": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "substance_ids": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "dose_form": {"type": ["string", "null"]},
+        "strength": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
     },
     "package": {
-      "allOf": [
-        {"$ref": "#/$defs/entity"},
-        {
-          "type": "object",
-          "required": ["product_id", "quantity"],
-          "properties": {
-            "product_id": {"type": "string", "minLength": 1},
-            "quantity": {"type": ["string", "null"]}
-          }
-        }
-      ]
+      "type": "object",
+      "required": ["id", "label", "native_identifiers", "provenance", "source_native_ids", "product_id", "quantity"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "label": {"type": "string", "minLength": 1},
+        "native_identifiers": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string"}},
+        "provenance": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/provenance"}},
+        "source_native_ids": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "product_id": {"type": "string", "minLength": 1},
+        "quantity": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
     },
     "scopedAssertion": {
       "type": "object",
-      "required": ["id", "subject_id", "jurisdiction", "scope", "evidence_id"],
+      "required": ["id", "subject_id", "jurisdiction", "scope", "population", "evidence_id", "assertion_kind", "provenance", "source_native_ids"],
       "properties": {
         "id": {"type": "string", "minLength": 1},
         "subject_id": {"type": "string", "minLength": 1},
         "jurisdiction": {"type": "string", "pattern": "^[A-Z]{2,3}$"},
         "scope": {"type": "string", "minLength": 1},
         "population": {"type": ["string", "null"]},
-        "evidence_id": {"type": "string", "minLength": 1}
+        "evidence_id": {"type": "string", "minLength": 1},
+        "assertion_kind": {"enum": ["regulatory", "funding", "formulary"]},
+        "provenance": {"$ref": "#/$defs/provenance"},
+        "source_native_ids": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
       },
       "additionalProperties": false
     },
     "price": {
       "type": "object",
-      "required": ["id", "package_id", "jurisdiction", "amount", "currency", "price_type", "evidence_id"],
+      "required": ["id", "package_id", "jurisdiction", "amount", "currency", "price_type", "evidence_id", "assertion_kind", "provenance", "source_native_ids"],
       "properties": {
         "id": {"type": "string", "minLength": 1},
         "package_id": {"type": "string", "minLength": 1},
@@ -77,7 +85,37 @@
         "amount": {"type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$"},
         "currency": {"type": "string", "pattern": "^[A-Z]{3}$"},
         "price_type": {"type": "string", "minLength": 1},
-        "evidence_id": {"type": "string", "minLength": 1}
+        "evidence_id": {"type": "string", "minLength": 1},
+        "assertion_kind": {"const": "funding"},
+        "provenance": {"$ref": "#/$defs/provenance"},
+        "source_native_ids": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      },
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["source_id", "source_uri", "retrieved_at", "effective_at", "source_path", "source_sha256", "source_version", "transformation"],
+      "properties": {
+        "source_id": {"type": "string", "minLength": 1},
+        "source_uri": {"type": "string", "minLength": 1},
+        "retrieved_at": {"type": ["string", "null"], "format": "date-time"},
+        "effective_at": {"type": ["string", "null"], "format": "date-time"},
+        "source_path": {"type": ["string", "null"]},
+        "source_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "source_version": {"type": ["string", "null"]},
+        "transformation": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "sourceNativePayload": {
+      "type": "object",
+      "required": ["source_id", "native_record_id", "media_type", "payload", "sha256"],
+      "properties": {
+        "source_id": {"type": "string", "minLength": 1},
+        "native_record_id": {"type": "string", "minLength": 1},
+        "media_type": {"const": "application/json"},
+        "payload": {},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
       },
       "additionalProperties": false
     }
