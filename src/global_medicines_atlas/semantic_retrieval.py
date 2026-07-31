@@ -9,6 +9,11 @@ from typing import Protocol, cast
 
 from pydantic import AwareDatetime, Field
 
+from .matching_indexes import (
+    MatchingIndexManifest,
+    MatchingIndexRow,
+    build_manifest,
+)
 from .models import FrozenModel
 
 
@@ -31,6 +36,8 @@ class SemanticIndexIdentity(FrozenModel):
     embedding_model_revision: str = Field(min_length=1)
     source_snapshot_digest: str = Field(pattern=r"^[0-9a-f]{64}$")
     vector_dimension: int = Field(gt=0)
+    row_count: int = Field(gt=0)
+    rows_digest: str = Field(pattern=r"^[0-9a-f]{64}$")
     generated_at: AwareDatetime
 
 
@@ -86,8 +93,12 @@ class LanceDBSemanticRetriever:
             )
         lancedb = import_module("lancedb")
         database = lancedb.connect(str(index_path))
+        self._database = database
+        self._table_name = table_name
         self._table = database.open_table(table_name)
+        self._index_path = index_path
         self._identity = identity
+        self._verify_content()
 
     @property
     def available(self) -> bool:
@@ -100,6 +111,7 @@ class LanceDBSemanticRetriever:
         mapping_level: str,
         limit: int = 10,
     ) -> tuple[SemanticHit, ...]:
+        self._verify_content()
         if limit < 1:
             raise ValueError("limit must be positive")
         vector = tuple(float(value) for value in embedding)
@@ -126,6 +138,57 @@ class LanceDBSemanticRetriever:
             )
             for row, distance in zip(rows, distances, strict=True)
         )
+
+    def _verify_content(self) -> None:
+        """Recompute the governed receipt from live index rows."""
+
+        manifest_path = self._index_path / "manifest.json"
+        try:
+            self._table = self._database.open_table(self._table_name)
+            manifest = MatchingIndexManifest.model_validate_json(
+                manifest_path.read_bytes()
+            )
+            live_rows = tuple(
+                _matching_row(row)
+                for row in cast(
+                    "list[dict[str, object]]",
+                    self._table
+                    .search()
+                    .limit(manifest.row_count + 1)
+                    .to_list(),
+                )
+            )
+            actual = build_manifest(live_rows, manifest.lineage)
+        except (AttributeError, KeyError, TypeError, ValueError) as error:
+            raise ValueError(
+                "semantic index content receipt is invalid"
+            ) from error
+
+        expected = self._identity
+        receipt_identity = (
+            manifest.manifest_version,
+            manifest.lineage.index_version,
+            manifest.index_digest,
+            manifest.lineage.embedding_model,
+            manifest.lineage.embedding_version,
+            manifest.lineage.source_snapshot_sha256,
+            manifest.dimensions,
+            manifest.row_count,
+            manifest.rows_sha256,
+        )
+        declared_identity = (
+            expected.schema_version,
+            expected.index_version,
+            expected.index_digest,
+            expected.embedding_model_id,
+            expected.embedding_model_revision,
+            expected.source_snapshot_digest,
+            expected.vector_dimension,
+            expected.row_count,
+            expected.rows_digest,
+        )
+        if manifest != actual or receipt_identity != declared_identity:
+            raise ValueError("semantic index content does not match identity")
 
 
 def optional_semantic_retriever(
@@ -172,4 +235,26 @@ def _quoted(value: str) -> str:
 def _distance(value: object) -> float:
     if not isinstance(value, int | float):
         raise TypeError("LanceDB result has no numeric distance")
+    return float(value)
+
+
+def _matching_row(row: dict[str, object]) -> MatchingIndexRow:
+    vector = row["vector"]
+    if not isinstance(vector, Sequence) or isinstance(vector, str | bytes):
+        raise TypeError("semantic index vector is invalid")
+    values = cast("Sequence[object]", vector)
+    numeric_vector = tuple(_vector_value(value) for value in values)
+    return MatchingIndexRow(
+        concept_id=str(row["concept_id"]),
+        mapping_level=str(row["mapping_level"]),
+        source_snapshot_id=str(row["source_snapshot_id"]),
+        schema_version=str(row["schema_version"]),
+        text_selection_version=str(row["text_selection_version"]),
+        embedding=numeric_vector,
+    )
+
+
+def _vector_value(value: object) -> float:
+    if not isinstance(value, int | float):
+        raise TypeError("semantic index vector value is invalid")
     return float(value)

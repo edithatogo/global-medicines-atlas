@@ -25,6 +25,8 @@ def identity(**overrides: object) -> SemanticIndexIdentity:
         "embedding_model_revision": "revision-1",
         "source_snapshot_digest": "b" * 64,
         "vector_dimension": 2,
+        "row_count": 2,
+        "rows_digest": "c" * 64,
         "generated_at": datetime(2026, 7, 31, tzinfo=UTC),
     }
     values.update(overrides)
@@ -54,9 +56,11 @@ def test_semantic_identity_is_immutable_and_content_bound() -> None:
     governed = identity()
 
     with pytest.raises(ValidationError):
-        governed.vector_dimension = 3  # type: ignore[misc]
+        setattr(governed, "vector_dimension", 3)  # ruff: ignore[set-attr-with-constant]
     with pytest.raises(ValidationError):
         identity(index_digest="not-a-digest")
+    with pytest.raises(ValidationError):
+        identity(row_count=0)
     with pytest.raises(ValidationError):
         identity(
             # An explicit negative-control fixture must remain timezone-naive.
@@ -72,7 +76,7 @@ def test_identity_mismatch_fails_closed_before_lancedb_import(
 ) -> None:
     monkeypatch.setattr(
         "global_medicines_atlas.semantic_retrieval.import_module",
-        lambda _name: pytest.fail("LanceDB must not be imported"),
+        lambda _name: pytest.fail("LanceDB must not be imported"),  # type: ignore[reportUnknownLambdaType]
     )
 
     retriever = optional_semantic_retriever(
