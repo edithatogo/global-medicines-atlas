@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/stable-v1-consumer-compatibility-v1.json",
+  "title": "Stable v1 consumer compatibility qualification",
+  "type": "object",
+  "required": ["schema_id", "schema_version", "platforms", "runners", "artifacts", "probes", "openapi_baseline", "state"],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.consumer-compatibility"},
+    "schema_version": {"const": 1},
+    "platforms": {"type": "array", "uniqueItems": true, "items": {"enum": ["linux", "macos", "windows"]}, "minItems": 3, "maxItems": 3},
+    "runners": {
+      "type": "object",
+      "required": ["linux", "macos", "windows"],
+      "properties": {
+        "linux": {"const": "ubuntu-24.04"},
+        "macos": {"const": "macos-15"},
+        "windows": {"const": "windows-2025"}
+      },
+      "additionalProperties": false
+    },
+    "artifacts": {"type": "array", "uniqueItems": true, "items": {"enum": ["wheel", "sdist"]}, "minItems": 2, "maxItems": 2},
+    "probes": {"type": "array", "uniqueItems": true, "minItems": 6, "items": {"enum": ["metadata", "install", "reinstall", "import", "dynamic_version", "cli", "api", "openapi_compatibility", "core_fallback"]}},
+    "openapi_baseline": {"const": "contracts/openapi-v1.json"},
+    "receipt_pattern": {"type": "string", "minLength": 1},
+    "state": {"enum": ["contracted", "qualified", "blocked"]}
+  },
+  "additionalProperties": false
+}

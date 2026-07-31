@@ -38,6 +38,15 @@ Linux, and macOS are candidate support targets until clean-wheel and sdist
 consumer rehearsals verify them. LanceDB is derived acceleration; stable core
 installation must remain usable through deterministic fallback without it.
 
+`quality/qualifications/stable-v1-consumer-compatibility.json` defines the
+wheel, source-distribution, package-metadata, CLI, API, dynamic-version,
+reinstall, core-fallback, and OpenAPI probes. `contracts/openapi-v1.json` is a
+minimal public compatibility baseline: path, method, and operation identity
+removals fail, and mutation operations remain forbidden. Pull requests execute
+the rehearsal independently on Windows, Linux, and macOS and retain one
+receipt per platform; the support gate remains unverified until all hosted
+receipts pass for the same commit.
+
 The initial projection intentionally records unresolved gates. It is a contract
 for subsequent implementation and evidence collection, not a stable-release
 claim.

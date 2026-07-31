@@ -243,6 +243,7 @@ ignore = [
 ]
 "scripts/**/*.py" = ["print"]
 "scripts/test_goblin.py" = ["suspicious-subprocess-import", "subprocess-without-shell-equals-true"]
+"scripts/qualify_clean_consumer.py" = ["suspicious-subprocess-import", "subprocess-without-shell-equals-true"]
 "scripts/generate_nz_asset_inventory.py" = ["too-many-return-statements", "too-many-branches"]
 "scripts/profile_smoke.py" = ["module-import-not-at-top-of-file", "assert"]
 

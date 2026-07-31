@@ -1,0 +1,11 @@
+{
+  "schema_id": "global-medicines-atlas.consumer-compatibility",
+  "schema_version": 1,
+  "platforms": ["linux", "macos", "windows"],
+  "runners": {"linux": "ubuntu-24.04", "macos": "macos-15", "windows": "windows-2025"},
+  "artifacts": ["wheel", "sdist"],
+  "probes": ["metadata", "install", "reinstall", "import", "dynamic_version", "cli", "api", "openapi_compatibility", "core_fallback"],
+  "openapi_baseline": "contracts/openapi-v1.json",
+  "receipt_pattern": "build/quality-receipts/consumer-{platform}.json",
+  "state": "contracted"
+}

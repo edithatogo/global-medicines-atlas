@@ -120,6 +120,41 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  consumer-compatibility:
+    name: Consumer / ${{ matrix.platform }} / Python 3.14
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux
+            runner: ubuntu-24.04
+          - platform: macos
+            runner: macos-15
+          - platform: windows
+            runner: windows-2025
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.29"
+          enable-cache: true
+      - name: Qualify clean wheel and source-distribution consumers
+        run: >-
+          uv run --python 3.14.6 --no-project python
+          scripts/qualify_clean_consumer.py
+          --output build/quality-receipts/consumer-${{ matrix.platform }}.json
+      - name: Upload consumer qualification receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: consumer-compatibility-${{ matrix.platform }}
+          path: build/quality-receipts/consumer-${{ matrix.platform }}.json
+          if-no-files-found: error
+          retention-days: 30
+
   mojo:
     name: Mojo nightly / smoke
     runs-on: ubuntu-24.04
