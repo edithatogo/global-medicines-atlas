@@ -7,10 +7,18 @@ from typing import cast
 
 import jsonschema
 import pytest
+import yaml
 from pydantic import JsonValue, ValidationError
 from scripts.qualify_stable_v1_hosted_governance import check_artifacts
 
 from global_medicines_atlas.stable_v1_hosted_governance import (
+    CODECOV_APP_ID,
+    EXTERNAL_REQUIRED_STATUS_CHECKS,
+    GITHUB_ACTIONS_APP_ID,
+    MAIN_PUSH_MANDATORY_CHECKS,
+    PULL_REQUEST_ONLY_MANDATORY_CHECKS,
+    REQUIRED_CHECK_APPS,
+    REQUIRED_CHECKS,
     Availability,
     ControlStatus,
     GovernanceControl,
@@ -77,12 +85,64 @@ def _control(receipt: HostedGovernanceReceipt, name: str) -> GovernanceControl:
     return next(item for item in receipt.controls if item.control_id == name)
 
 
+def _workflow_jobs(path: Path) -> dict[str, dict[str, JsonValue]]:
+    workflow = cast(
+        "dict[str, JsonValue]", yaml.safe_load(path.read_text(encoding="utf-8"))
+    )
+    return cast("dict[str, dict[str, JsonValue]]", workflow["jobs"])
+
+
+def _matrix_values(job: dict[str, JsonValue], axis: str) -> list[str]:
+    strategy = cast("dict[str, JsonValue]", job["strategy"])
+    matrix = cast("dict[str, JsonValue]", strategy["matrix"])
+    return cast("list[str]", matrix[axis])
+
+
+def _test_goblin_check_names(
+    jobs: dict[str, dict[str, JsonValue]],
+) -> set[str]:
+    names = {
+        *(
+            f"Python 3.14 / {lane}"
+            for lane in _matrix_values(jobs["tests"], "lane")
+        ),
+        *(
+            f"Python 3.14 / {profile}"
+            for profile in _matrix_values(jobs["quality"], "profile")
+        ),
+    }
+    consumer_strategy = cast(
+        "dict[str, JsonValue]", jobs["consumer-compatibility"]["strategy"]
+    )
+    consumer_matrix = cast("dict[str, JsonValue]", consumer_strategy["matrix"])
+    consumer_rows = cast(
+        "list[dict[str, JsonValue]]", consumer_matrix["include"]
+    )
+    names.update(
+        f"Consumer / {row['platform']} / Python 3.14" for row in consumer_rows
+    )
+    names.update(
+        cast("str", jobs[job]["name"])
+        for job in (
+            "mojo",
+            "representative-performance",
+            "governed-recovery",
+            "operational-exercises",
+        )
+    )
+    return names
+
+
 def test_committed_snapshot_and_receipt_regenerate_exactly_offline() -> None:
     receipt = check_artifacts()
 
     assert receipt.canonical_json() == RECEIPT_PATH.read_bytes()
     assert receipt.snapshot_sha256 == _snapshot().digest()
     assert receipt.github_mutated is False
+    assert any(
+        "preceding authorized main-branch protection hardening" in limitation
+        for limitation in receipt.limitations
+    )
 
 
 def test_live_snapshot_is_exactly_available_and_point_in_time() -> None:
@@ -97,7 +157,63 @@ def test_live_snapshot_is_exactly_available_and_point_in_time() -> None:
     )
     assert repository["default_branch"] == "main"
     assert repository["default_branch_sha"] == (
-        "0c980c06305decb23432060d2708851890c64230"
+        "61b95a9e848c2867f1cb2b86f7e4691323ab0939"
+    )
+
+
+def test_required_checks_match_harness_and_exact_hosted_protection() -> None:
+    snapshot = _snapshot()
+    protection = cast(
+        "dict[str, JsonValue]",
+        _observation(snapshot, "branch_protection").data,
+    )
+    observed_checks = set(cast("list[str]", protection["required_checks"]))
+    observed_apps = cast("dict[str, int]", protection["required_check_apps"])
+
+    assert len(MAIN_PUSH_MANDATORY_CHECKS) == 26
+    assert {"Dependency review"} == PULL_REQUEST_ONLY_MANDATORY_CHECKS
+    assert {"codecov/patch"} == EXTERNAL_REQUIRED_STATUS_CHECKS
+    assert len(REQUIRED_CHECKS) == 28
+    assert observed_checks == REQUIRED_CHECKS
+    assert observed_apps == REQUIRED_CHECK_APPS
+    assert set(observed_apps.values()) == {
+        GITHUB_ACTIONS_APP_ID,
+        CODECOV_APP_ID,
+    }
+
+    test_jobs = _workflow_jobs(ROOT / ".github/workflows/test-goblin.yml")
+    security_jobs = _workflow_jobs(
+        ROOT / ".github/workflows/security-context.yml"
+    )
+    dependency_jobs = _workflow_jobs(
+        ROOT / ".github/workflows/dependency-review.yml"
+    )
+    assert set(test_jobs) == {
+        "tests",
+        "quality",
+        "consumer-compatibility",
+        "mojo",
+        "representative-performance",
+        "governed-recovery",
+        "operational-exercises",
+    }
+    assert set(security_jobs) == {
+        "leak-detection",
+        "context",
+        "supply-chain",
+        "codeql",
+    }
+    assert set(dependency_jobs) == {"dependency-review"}
+
+    expanded_test_goblin = _test_goblin_check_names(test_jobs)
+    expanded_security = {
+        cast("str", job["name"]) for job in security_jobs.values()
+    }
+    assert (
+        expanded_test_goblin | expanded_security == MAIN_PUSH_MANDATORY_CHECKS
+    )
+    assert cast("str", dependency_jobs["dependency-review"]["name"]) in (
+        PULL_REQUEST_ONLY_MANDATORY_CHECKS
     )
 
 
@@ -276,6 +392,60 @@ def test_repository_and_branch_policy_mismatches_are_nonconforming() -> None:
     assert "branch-protection:strict:disabled" in findings
     assert "branch-protection:allow_force_pushes:enabled" in findings
     assert "required-check:missing:CodeQL" in findings
+
+
+@pytest.mark.parametrize(
+    "required_check",
+    [
+        "Consumer / linux / Python 3.14",
+        "Consumer / macos / Python 3.14",
+        "Consumer / windows / Python 3.14",
+        "Python 3.14 / governed recovery rehearsal",
+        "Python 3.14 / operational exercises",
+    ],
+)
+def test_each_hardening_lane_is_mandatory(required_check: str) -> None:
+    def remove_required_check(data: object) -> None:
+        protection = cast("dict[str, JsonValue]", data)
+        checks = cast("list[str]", protection["required_checks"])
+        protection["required_checks"] = [
+            item for item in checks if item != required_check
+        ]
+        apps = cast("dict[str, int]", protection["required_check_apps"])
+        apps.pop(required_check)
+
+    snapshot = _replace_data(
+        _snapshot(), "branch_protection", remove_required_check
+    )
+    control = _control(
+        qualify_hosted_governance(snapshot),
+        "default_branch_and_required_checks",
+    )
+
+    assert control.status is ControlStatus.NONCONFORMING
+    assert f"required-check:missing:{required_check}" in control.findings
+
+
+def test_required_check_app_identity_mismatch_is_nonconforming() -> None:
+    required_check = "Python 3.14 / governed recovery rehearsal"
+
+    def spoof_app(data: object) -> None:
+        protection = cast("dict[str, JsonValue]", data)
+        apps = cast("dict[str, int]", protection["required_check_apps"])
+        apps[required_check] = CODECOV_APP_ID
+
+    snapshot = _replace_data(_snapshot(), "branch_protection", spoof_app)
+    control = _control(
+        qualify_hosted_governance(snapshot),
+        "default_branch_and_required_checks",
+    )
+
+    assert control.status is ControlStatus.NONCONFORMING
+    assert (
+        "required-check-app:mismatch:Python 3.14 / governed recovery rehearsal:"
+        f"expected:{GITHUB_ACTIONS_APP_ID}:observed:{CODECOV_APP_ID}"
+        in control.findings
+    )
 
 
 def test_empty_rulesets_are_valid_when_classic_protection_is_observable() -> (

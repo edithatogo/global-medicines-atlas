@@ -350,11 +350,25 @@ def _branch_protection(raw: JsonValue) -> JsonValue:
         _text(value, "required check")
         for value in _sequence(status_checks.get("contexts"), "contexts")
     )
+    check_apps: dict[str, int] = {}
+    for value in _sequence(status_checks.get("checks"), "checks"):
+        check = _mapping(value, "required status check")
+        context = _text(check.get("context"), "required status check context")
+        if context in check_apps:
+            raise ValueError(f"duplicate required status check: {context}")
+        check_apps[context] = _integer(
+            check.get("app_id"), f"required status check app for {context}"
+        )
+    if set(contexts) != set(check_apps):
+        raise ValueError(
+            "required status check contexts and app bindings differ"
+        )
     return cast(
         "JsonValue",
         {
             "strict": status_checks.get("strict"),
             "required_checks": contexts,
+            "required_check_apps": dict(sorted(check_apps.items())),
             "enforce_admins": _mapping(
                 data.get("enforce_admins"), "admins"
             ).get("enabled"),
