@@ -349,8 +349,7 @@ def test_comparison_validity_excludes_missing_and_cross_dimension_pairs(
 
     assert "rx:1:US:funding" not in subjects
     assert all(
-        left.rsplit(":", maxsplit=1)[-1]
-        == right.rsplit(":", maxsplit=1)[-1]
+        left.rsplit(":", maxsplit=1)[-1] == right.rsplit(":", maxsplit=1)[-1]
         for left, right in (
             (assessment.left_subject_id, assessment.right_subject_id)
             for assessment in response.validity
