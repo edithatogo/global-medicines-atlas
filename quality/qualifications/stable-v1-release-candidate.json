@@ -9,47 +9,47 @@
     },
     {
       "media_type": "application/vnd.pypa.wheel+zip",
-      "path": "dist/global_medicines_atlas-0.post1.dev60+unknown.gd0c0556db-py3-none-any.whl",
+      "path": "dist/global_medicines_atlas-0.post1.dev67+unknown.g3c2100168-py3-none-any.whl",
       "role": "wheel",
-      "sha256": "91edafd026743eaa3e3c54d8f9b13b9054da95f0600dc5ea541dcf45ecc91e67",
-      "size": 270634
+      "sha256": "baeb6e05e604fb3b421ea3c01c036b112872af582542324f4206c3e48444ff60",
+      "size": 1148036
     },
     {
       "media_type": "application/gzip",
-      "path": "dist/global_medicines_atlas-0.post1.dev60+unknown.gd0c0556db.tar.gz",
+      "path": "dist/global_medicines_atlas-0.post1.dev67+unknown.g3c2100168.tar.gz",
       "role": "sdist",
-      "sha256": "be30f016ae751ccfe248e0c83ea135f8b55b361f8b9b4a22e40ba1a5bb19f04d",
-      "size": 892650
+      "sha256": "c2077d38553f317bf2ce67cbcbded32fc3c258fd34a1a2058e275cb82a688c98",
+      "size": 5120443
     },
     {
       "media_type": "application/json",
       "path": "provenance-references.json",
       "role": "provenance-references",
-      "sha256": "fb0626c631ccd58cdb9f5ade0c0d3fc9d01de9bd3031b82df44aef792e0cf3f1",
-      "size": 2426
+      "sha256": "eccee597619588720329c9b3a75fbb93cc96b9552c22cb68c8139b843731ec5a",
+      "size": 2853
     },
     {
       "media_type": "application/vnd.cyclonedx+json",
       "path": "sbom.cdx.json",
       "role": "sbom",
-      "sha256": "95cdf8cea123e990cb3df891c1099431eaa74aecde8bac8024770362f9c08d88",
+      "sha256": "5046e01e0cb6326050a37dad597bad17e180fe0dc83b242d882461334940780c",
       "size": 10031
     },
     {
       "media_type": "application/toml",
       "path": "uv.lock",
       "role": "dependency-lock",
-      "sha256": "9f9db682398e346789a62f920a64a377a2a5963e8d64e2cfb80c6e969ede22a6",
-      "size": 257151
+      "sha256": "fef862267178c0d0fdab24f1e0a0320914852795aab60703585b6ab4e23f4da8",
+      "size": 255046
     }
   ],
-  "candidate_id": "stable-v1-rc-d0c0556db69e",
+  "candidate_id": "stable-v1-rc-3c2100168d00",
   "checksums": {
     "path": "SHA256SUMS",
-    "sha256": "e318f099555e9f31c24c11bd407c0210d4fc5394ff05c508786926e58e49c822",
+    "sha256": "cd8d97d8b2081e4a7f7fec428146cab06bef98f973f1b36de557cd74e6eef2de",
     "size": 691
   },
-  "content_sha256": "a13ac6c8ef1c125ac3b5901281af80ae5cbe305326ba9cbe7c8dc43fc932dece",
+  "content_sha256": "fd33fa2d56d493e251d06077087ba4bbf288022d41a23b550f590cd0778aa65f",
   "limitations": [
     "This local candidate is unsigned and has no provenance attestation.",
     "No maintainer licence or stable-release approval is inferred.",
@@ -58,28 +58,40 @@
   ],
   "manifest": {
     "path": "candidate-manifest.json",
-    "sha256": "049de138359b04112cf8e39f789b4df4fad8621e019e42c55bf41cb97634a354",
-    "size": 1761
+    "sha256": "e69014b5a57ebcc8ab0813a1c0a1d959710d1b906b91a8839f724e3001a68c32",
+    "size": 1763
   },
-  "package_version": "0.post1.dev60+unknown.gd0c0556db",
+  "package_version": "0.post1.dev67+unknown.g3c2100168",
   "provenance_references": [
+    {
+      "kind": "repository-file",
+      "locator": "repo:quality/release-build-constraints.txt",
+      "role": "build-constraints",
+      "sha256": "76a542751eaa49663033c24d366f4e20b76b7708c4b94d87478d9490d531864b"
+    },
+    {
+      "kind": "repository-file",
+      "locator": "repo:quality/release-build-toolchain.json",
+      "role": "build-toolchain",
+      "sha256": "dbe75bf52024f264133e53b9558fc17c83123056c5e703ec9ceea9cae3b1985e"
+    },
     {
       "kind": "repository-file",
       "locator": "repo:src/global_medicines_atlas/stable_v1_release_candidate.py",
       "role": "candidate-implementation",
-      "sha256": "8e733902e3eead1268470d24d02cb6a89610a9bfab4e8d2f543a1bc4953a8f0a"
+      "sha256": "de837ef45b88be01ec8f7f968ee17dc7fdd293a0debbf5dc481a12f115f8a6de"
     },
     {
       "kind": "repository-file",
       "locator": "repo:schemas/stable-v1-release-candidate-v1.json",
       "role": "candidate-schema",
-      "sha256": "caefd0e33cfa4b198939857382132d9f37c0be2554c17d3b693ac0e41d245222"
+      "sha256": "6320247125d2fa830e35baa4bfd21a0d909761ebd54a55c97010c1a93177ff30"
     },
     {
       "kind": "repository-file",
       "locator": "repo:scripts/build_stable_v1_release_candidate.py",
       "role": "candidate-script",
-      "sha256": "ad848f338ce57e8fbd4cae30ac62bd01ffeea6d2d14dc35f8149a7e9eb16b952"
+      "sha256": "b344bce09fe2aa6bd8a532311a0b28a363004ad874c85ebd7b29712805988ae1"
     },
     {
       "kind": "repository-file",
@@ -119,22 +131,22 @@
     },
     {
       "kind": "git-commit-object",
-      "locator": "git:commit:d0c0556db69e419c28036eefee86a81cc797890b",
+      "locator": "git:commit:3c2100168d003364f1ad71954e1a5adb7d3fa7c5",
       "role": "source-commit-object",
-      "sha256": "e8fc5d36ad2ab6a71fbc7d11974705315b6190ce37169e4e03a0c9abfa98d1eb"
+      "sha256": "e99510bb94e293f04f3e83ff8c4ba24abbfc841cbae6d40277567c3215bb428a"
     },
     {
       "kind": "git-tree-listing",
-      "locator": "git:tree-listing:d0c0556db69e419c28036eefee86a81cc797890b",
+      "locator": "git:tree-listing:3c2100168d003364f1ad71954e1a5adb7d3fa7c5",
       "role": "source-tree-listing",
-      "sha256": "1d7021ca2b8359e6763babac7d99f3edb169fcac83504908cec3852e003dbca1"
+      "sha256": "e3ca4acab2d1de2d6f883c5f0da0f9cf527e48508305effcbc5f7b7ae4cfafab"
     }
   ],
   "schema_id": "global-medicines-atlas.stable-v1-release-candidate",
   "schema_version": 1,
-  "source_commit": "d0c0556db69e419c28036eefee86a81cc797890b",
+  "source_commit": "3c2100168d003364f1ad71954e1a5adb7d3fa7c5",
   "source_repository": "https://github.com/edithatogo/global-medicines-atlas",
-  "source_tree": "6a8f606929010e99df1f80319f82b4343a5c595c",
+  "source_tree": "1ffaf86ed34981bd1cc7c8a331d5d77cd31c3e1f",
   "state": {
     "approved": false,
     "git_tag_created": false,
@@ -188,7 +200,7 @@
         "build/stable-v1/consumer-sdist"
       ],
       "command_id": "verify-sdist-consumer",
-      "expected_result": "the exact global_medicines_atlas-0.post1.dev60+unknown.gd0c0556db.tar.gz source distribution creates its own portable environment and passes import, version, API, CLI and reinstall probes",
+      "expected_result": "the exact global_medicines_atlas-0.post1.dev67+unknown.g3c2100168.tar.gz source distribution creates its own portable environment and passes import, version, API, CLI and reinstall probes",
       "mutates_external_state": false
     },
     {
@@ -213,7 +225,7 @@
         "build/stable-v1/consumer-wheel"
       ],
       "command_id": "verify-wheel-consumer",
-      "expected_result": "the exact global_medicines_atlas-0.post1.dev60+unknown.gd0c0556db-py3-none-any.whl wheel creates its own portable environment and passes import, version, API, CLI and reinstall probes",
+      "expected_result": "the exact global_medicines_atlas-0.post1.dev67+unknown.g3c2100168-py3-none-any.whl wheel creates its own portable environment and passes import, version, API, CLI and reinstall probes",
       "mutates_external_state": false
     }
   ]
