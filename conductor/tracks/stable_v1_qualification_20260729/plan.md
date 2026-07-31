@@ -137,12 +137,22 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 
 ## Phase 3: v1.0 promotion
 
-- [ ] Task: Verify measured jurisdiction and source coverage ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+- [x] Task: Verify measured jurisdiction and source coverage ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+  - A deterministic receipt measures 96 catalogue sources, 34 jurisdiction
+    denominator entries and 16 fixture-qualified sources. Zero sources are
+    claimed live-qualified; regulatory, funding, formulary and terminology
+    dimensions remain separately labelled.
 - [ ] Task: Verify hosted governance, security features and project views ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
 - [ ] Task: Produce signed release package and consumer verification guide ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
-- [ ] Task: Verify dataset cards, Croissant records, checksums and GitHub/Hugging Face/Zenodo/OSF identifier links without publishing restricted data ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+- [x] Task: Verify dataset cards, Croissant records, checksums and GitHub/Hugging Face/Zenodo/OSF identifier links without publishing restricted data ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+  - The content-bound publication-metadata receipt verifies cards, Croissant,
+    checksums, restricted-data boundaries and non-overlapping object roles.
+    External identifiers, licences and publication remain explicitly blocked.
 - [ ] Task: Obtain explicit maintainer licence and release approval ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
-- [ ] Task: Record stable-v1 evidence and post-release monitoring plan ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+- [x] Task: Record stable-v1 evidence and post-release monitoring plan ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+  - Six domain-specific SLO, alert and approval-gated rollback policies bind the
+    candidate evidence while post-release observations remain `not_observed`.
+    Signing, publication, release eligibility and external actions remain false.
 - [ ] Task: Phase Verification & Checkpoint
 
 ## GitHub hierarchy

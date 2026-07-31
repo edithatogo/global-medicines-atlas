@@ -1,0 +1,297 @@
+{
+  "blockers": [
+    "archival-record:identifier-unresolved",
+    "archival-record:licence-unresolved",
+    "derived-dataset:identifier-unresolved",
+    "derived-dataset:licence-unresolved",
+    "maintainer-release-approval:missing",
+    "production-package:not-qualified",
+    "protocol-preregistration:identifier-unresolved",
+    "protocol-preregistration:licence-unresolved",
+    "publication:not-performed",
+    "release:not-created",
+    "signature:not-created",
+    "software-source-release:identifier-configured",
+    "software-source-release:licence-unresolved"
+  ],
+  "external_actions": {
+    "credentials_used": false,
+    "publication_performed": false,
+    "release_created": false,
+    "remote_write_attempted": false,
+    "signature_created": false
+  },
+  "gates": [
+    {
+      "blockers": [],
+      "evidence": [
+        "metadata/dataset-card.json"
+      ],
+      "gate_id": "dataset-card",
+      "state": "passed"
+    },
+    {
+      "blockers": [],
+      "evidence": [
+        "metadata/croissant.json"
+      ],
+      "gate_id": "croissant",
+      "state": "passed"
+    },
+    {
+      "blockers": [],
+      "evidence": [
+        "SHA256SUMS",
+        "package-manifest.json"
+      ],
+      "gate_id": "checksums",
+      "state": "passed"
+    },
+    {
+      "blockers": [],
+      "evidence": [
+        "quality/qualifications/publication-identities.json"
+      ],
+      "gate_id": "identifier-links",
+      "state": "passed"
+    },
+    {
+      "blockers": [],
+      "evidence": [
+        "release-inputs/publication-contract.json",
+        "release-inputs/reviewed-rows.jsonl"
+      ],
+      "gate_id": "restricted-data-boundary",
+      "state": "passed"
+    },
+    {
+      "blockers": [
+        "archival-record:identifier-unresolved",
+        "derived-dataset:identifier-unresolved",
+        "protocol-preregistration:identifier-unresolved",
+        "software-source-release:identifier-configured"
+      ],
+      "evidence": [
+        "quality/qualifications/publication-identities.json"
+      ],
+      "gate_id": "external-identifiers",
+      "state": "blocked"
+    },
+    {
+      "blockers": [
+        "archival-record:licence-unresolved",
+        "derived-dataset:licence-unresolved",
+        "protocol-preregistration:licence-unresolved",
+        "software-source-release:licence-unresolved"
+      ],
+      "evidence": [
+        "quality/qualifications/publication-identities.json"
+      ],
+      "gate_id": "licences",
+      "state": "blocked"
+    },
+    {
+      "blockers": [
+        "maintainer-release-approval:missing",
+        "production-package:not-qualified",
+        "publication:not-performed",
+        "release:not-created",
+        "signature:not-created"
+      ],
+      "evidence": [
+        "release-inputs/v0.7-fixture-production-qualification.json"
+      ],
+      "gate_id": "publication",
+      "state": "blocked"
+    }
+  ],
+  "identities": [
+    {
+      "identifier": "https://github.com/edithatogo/global-medicines-atlas",
+      "identifier_evidence": null,
+      "identifier_state": "configured",
+      "licence_decision_evidence": null,
+      "licence_expression": null,
+      "licence_state": "unresolved",
+      "object_id": "software-source-release",
+      "object_role": "software_source_release",
+      "related_object_ids": [
+        "archival-record",
+        "derived-dataset",
+        "protocol-preregistration"
+      ],
+      "system": "github"
+    },
+    {
+      "identifier": null,
+      "identifier_evidence": null,
+      "identifier_state": "unresolved",
+      "licence_decision_evidence": null,
+      "licence_expression": null,
+      "licence_state": "unresolved",
+      "object_id": "derived-dataset",
+      "object_role": "derived_dataset_distribution",
+      "related_object_ids": [
+        "archival-record",
+        "software-source-release"
+      ],
+      "system": "hugging_face"
+    },
+    {
+      "identifier": null,
+      "identifier_evidence": null,
+      "identifier_state": "unresolved",
+      "licence_decision_evidence": null,
+      "licence_expression": null,
+      "licence_state": "unresolved",
+      "object_id": "archival-record",
+      "object_role": "archival_doi_record",
+      "related_object_ids": [
+        "derived-dataset",
+        "protocol-preregistration",
+        "software-source-release"
+      ],
+      "system": "zenodo"
+    },
+    {
+      "identifier": null,
+      "identifier_evidence": null,
+      "identifier_state": "unresolved",
+      "licence_decision_evidence": null,
+      "licence_expression": null,
+      "licence_state": "unresolved",
+      "object_id": "protocol-preregistration",
+      "object_role": "protocol_preregistration",
+      "related_object_ids": [
+        "archival-record",
+        "software-source-release"
+      ],
+      "system": "osf"
+    }
+  ],
+  "implementation_inputs": [
+    {
+      "path": "schemas/publication-identity-registry-v1.json",
+      "sha256": "c5d99d284c99e7461214e59068741d897073124c11ec8150ca3cadd2a4f4afb3",
+      "size": 1720
+    },
+    {
+      "path": "schemas/stable-v1-publication-metadata-qualification-v1.json",
+      "sha256": "7749333cfbff8fbc5451994ff20aa5ca48b3eb56ce6d5e73ca8b82496814cdc7",
+      "size": 7624
+    },
+    {
+      "path": "scripts/qualify_stable_v1_publication_metadata.py",
+      "sha256": "78113d2faf6a05c80c3b82fd39028baf06154cb31139cdde7e4271531a061022",
+      "size": 2231
+    },
+    {
+      "path": "src/global_medicines_atlas/publication_contracts.py",
+      "sha256": "a724cc4262e200d58e8a59dc480ec5eee512de96dfc84bc2928867dfa8848f62",
+      "size": 19755
+    },
+    {
+      "path": "src/global_medicines_atlas/publication_metadata_qualification.py",
+      "sha256": "c934031e4aa87c8e8c3959c17fe0d0e77859ab7bcdad5fca8b8a3669242a9909",
+      "size": 25370
+    },
+    {
+      "path": "src/global_medicines_atlas/publication_package.py",
+      "sha256": "05e91eedae952b103554a3f8c0a0a8813f631891e7c40858a3f29dba7d6410a6",
+      "size": 9814
+    },
+    {
+      "path": "uv.lock",
+      "sha256": "fef862267178c0d0fdab24f1e0a0320914852795aab60703585b6ab4e23f4da8",
+      "size": 255046
+    }
+  ],
+  "inputs": [
+    {
+      "path": "quality/qualifications/publication-identities.json",
+      "sha256": "a282615b114c2d5b6494dde3f2531eacee6ed2413f13c72b9ff9f23fc8ff09e4",
+      "size": 1538
+    },
+    {
+      "path": "release-inputs/publication-contract.json",
+      "sha256": "2189c7156cfb2ab82308a14c4815a67948c2c8cd65a8a1c1df5bc4cb693282ca",
+      "size": 3367
+    },
+    {
+      "path": "release-inputs/publication-qualification.json",
+      "sha256": "6d397bf87ae5d8b4f1b8bc94d67107d620bd64cc1b9933f644c3a8f593a4124a",
+      "size": 2825
+    },
+    {
+      "path": "release-inputs/reviewed-rows.jsonl",
+      "sha256": "0969818f7ceb6d3c1913ae44ed1674437bb730228d7fc6507fd64205d989368a",
+      "size": 191
+    }
+  ],
+  "package": {
+    "checksums_sha256": "0d4a2ec0f7580bac8457b6c50588750840bec37609deb75d330fdc1fc2d72072",
+    "contract_sha256": "617aa047ca16ed352e1512c6f0d099e6522caa80ae988dd0b2a8c8c753212385",
+    "contract_version": "fixture-dry-run-v1",
+    "croissant_sha256": "543ac410cae60d8d8afe3cad8d03648bf46e250426f33a3d92d57b536b57a6aa",
+    "dataset_card_sha256": "bc2f20043fa7ca10ae4e3996ba2ade19fa5b7a949bd36b75d5c8b89957926680",
+    "dataset_title": "Synthetic medicines dry-run fixture",
+    "dataset_version": "0.7.0",
+    "files": [
+      {
+        "path": "SHA256SUMS",
+        "sha256": "0d4a2ec0f7580bac8457b6c50588750840bec37609deb75d330fdc1fc2d72072",
+        "size": 641
+      },
+      {
+        "path": "data/medicines.parquet",
+        "sha256": "cc609e06bf668751cf51bad77c5b1e76f69aed0a7b2135bcbeb8b44eccaf8616",
+        "size": 1075
+      },
+      {
+        "path": "metadata/citations.json",
+        "sha256": "c9b702f4130bb10bb4c6190516289524ecbdee13d4ed78042d8fbee56af85ec3",
+        "size": 250
+      },
+      {
+        "path": "metadata/coverage.json",
+        "sha256": "f70cf36fe99a48795280828b536ff80aa27c4722010967a6728d24e14299469d",
+        "size": 192
+      },
+      {
+        "path": "metadata/croissant.json",
+        "sha256": "543ac410cae60d8d8afe3cad8d03648bf46e250426f33a3d92d57b536b57a6aa",
+        "size": 552
+      },
+      {
+        "path": "metadata/data-dictionary.json",
+        "sha256": "ec621f172aec71acbd07b21a7acd8853457258b585cb1056acaf185d370be213",
+        "size": 580
+      },
+      {
+        "path": "metadata/dataset-card.json",
+        "sha256": "bc2f20043fa7ca10ae4e3996ba2ade19fa5b7a949bd36b75d5c8b89957926680",
+        "size": 1354
+      },
+      {
+        "path": "metadata/qualification.json",
+        "sha256": "285c71cac28772e9df46e00933f214af26f397d9fcf6dd00330fe987a1188fd2",
+        "size": 2383
+      },
+      {
+        "path": "package-manifest.json",
+        "sha256": "496511da67cf679549099049cc08b4779b98ddf5e3df720325e3cc56281d0c07",
+        "size": 1178
+      }
+    ],
+    "fixture_only": true,
+    "generated_package_sha256": "75c0b4b75e7e330c1634fd64fb5fdbf728c7197f8b83b5de1e6b7c9dd672e22f",
+    "manifest_sha256": "496511da67cf679549099049cc08b4779b98ddf5e3df720325e3cc56281d0c07",
+    "restricted_data_included": false
+  },
+  "qualification_id": "stable-v1-release-candidate-publication-metadata",
+  "ready_for_publication": false,
+  "receipt_sha256": "89679535eeedcf82af2ca6f4316661c0f15f246dd8a7df39627d92c3efbd4b68",
+  "result": "metadata_qualified_external_gates_blocked",
+  "schema_id": "global-medicines-atlas.stable-v1-publication-metadata",
+  "schema_version": 1
+}
