@@ -143,10 +143,13 @@ jobs:
           version: "0.11.29"
           enable-cache: true
       - name: Qualify clean wheel and source-distribution consumers
+        env:
+          OUTPUT_PATH: build/quality-receipts/consumer-${{ matrix.platform }}.json
+        shell: bash
         run: >-
           uv run --python 3.14.6 --no-project python
           scripts/qualify_clean_consumer.py
-          --output build/quality-receipts/consumer-${{ matrix.platform }}.json
+          --output "$OUTPUT_PATH"
       - name: Upload consumer qualification receipt
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
