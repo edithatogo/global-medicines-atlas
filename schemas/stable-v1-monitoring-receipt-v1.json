@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/stable-v1-monitoring-receipt-v1.json",
+  "title": "Stable-v1 evidence and post-release monitoring receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "schema_version",
+    "receipt_id",
+    "input_tree_sha256",
+    "mode",
+    "candidate_evidence_state",
+    "inputs",
+    "service_objectives",
+    "source_change_monitoring",
+    "post_release_evidence",
+    "authority_gates",
+    "external_actions_performed",
+    "release_eligible",
+    "blockers",
+    "limitations"
+  ],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.stable-v1-monitoring-receipt"},
+    "schema_version": {"const": 1},
+    "receipt_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "input_tree_sha256": {"$ref": "#/$defs/sha256"},
+    "mode": {"const": "candidate_plan"},
+    "candidate_evidence_state": {"const": "contract_bindings_verified"},
+    "inputs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/fileBinding"}
+    },
+    "service_objectives": {
+      "type": "array",
+      "minItems": 6,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/serviceObjective"}
+    },
+    "source_change_monitoring": {"$ref": "#/$defs/sourceChangeMonitoring"},
+    "post_release_evidence": {"$ref": "#/$defs/postReleaseEvidence"},
+    "authority_gates": {"$ref": "#/$defs/authorityGates"},
+    "external_actions_performed": {"const": false},
+    "release_eligible": {"const": false},
+    "blockers": {
+      "type": "array",
+      "minItems": 4,
+      "uniqueItems": true,
+      "contains": {"const": "release-approval-missing"},
+      "items": {"type": "string", "minLength": 1}
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "domain": {
+      "enum": [
+        "source_health",
+        "provenance",
+        "source_maturity",
+        "security",
+        "performance",
+        "publication",
+        "monitoring"
+      ]
+    },
+    "fileBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["domain", "role", "path", "sha256"],
+      "properties": {
+        "domain": {"$ref": "#/$defs/domain"},
+        "role": {"enum": ["contract", "implementation"]},
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "alertPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["severity", "trigger", "route", "automatic_external_notification"],
+      "properties": {
+        "severity": {"enum": ["warning", "critical"]},
+        "trigger": {"type": "string", "minLength": 1},
+        "route": {"const": "maintainer-review-queue"},
+        "automatic_external_notification": {"const": false}
+      }
+    },
+    "rollbackPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["trigger", "action", "automatic_execution", "approval_required"],
+      "properties": {
+        "trigger": {"type": "string", "minLength": 1},
+        "action": {"type": "string", "minLength": 1},
+        "automatic_execution": {"const": false},
+        "approval_required": {"const": true}
+      }
+    },
+    "serviceObjective": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "objective_id",
+        "domain",
+        "indicator",
+        "comparator",
+        "threshold",
+        "unit",
+        "window",
+        "minimum_observations",
+        "candidate_evidence_only",
+        "post_release_observation_count",
+        "alert",
+        "rollback"
+      ],
+      "properties": {
+        "objective_id": {"type": "string", "pattern": "^SLO-[0-9]{3}$"},
+        "domain": {"$ref": "#/$defs/domain"},
+        "indicator": {"type": "string", "minLength": 1},
+        "comparator": {"enum": ["eq", "gte", "lte"]},
+        "threshold": {"type": "number", "minimum": 0},
+        "unit": {"type": "string", "minLength": 1},
+        "window": {"type": "string", "minLength": 1},
+        "minimum_observations": {"type": "integer", "minimum": 1},
+        "candidate_evidence_only": {"const": true},
+        "post_release_observation_count": {"const": 0},
+        "alert": {"$ref": "#/$defs/alertPolicy"},
+        "rollback": {"$ref": "#/$defs/rollbackPolicy"}
+      }
+    },
+    "sourceChangeMonitoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cadence",
+        "signals",
+        "baseline",
+        "alert_after_consecutive_failures",
+        "schema_drift_action",
+        "maturity_regression_action",
+        "automatic_external_action"
+      ],
+      "properties": {
+        "cadence": {"const": "daily-and-source-declared-cadence"},
+        "signals": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "baseline": {"const": "last-successful-main-receipt"},
+        "alert_after_consecutive_failures": {"type": "integer", "minimum": 1},
+        "schema_drift_action": {"const": "quarantine-and-requalify-adapter"},
+        "maturity_regression_action": {"const": "withdraw-affected-claims"},
+        "automatic_external_action": {"const": false}
+      }
+    },
+    "postReleaseObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["observation_id", "domain", "observed_at", "receipt_path", "receipt_sha256"],
+      "properties": {
+        "observation_id": {"type": "string", "minLength": 1},
+        "domain": {"$ref": "#/$defs/domain"},
+        "observed_at": {"type": "string", "format": "date-time"},
+        "receipt_path": {"type": "string", "minLength": 1},
+        "receipt_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "postReleaseEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "observations"],
+      "properties": {
+        "state": {"const": "not_observed"},
+        "observations": {
+          "type": "array",
+          "maxItems": 0,
+          "items": {"$ref": "#/$defs/postReleaseObservation"}
+        }
+      }
+    },
+    "authorityGates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "signing_approved",
+        "publication_approved",
+        "release_approved",
+        "durable_approval_evidence"
+      ],
+      "properties": {
+        "signing_approved": {"const": false},
+        "publication_approved": {"const": false},
+        "release_approved": {"const": false},
+        "durable_approval_evidence": {"type": "array", "maxItems": 0}
+      }
+    }
+  }
+}
