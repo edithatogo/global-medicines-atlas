@@ -9,6 +9,7 @@ from global_medicines_atlas.atlas import create_atlas_app
 from global_medicines_atlas.product_contracts import (
     AsOfClocks,
     ComparisonResponse,
+    ConceptDetail,
     CoverageResponse,
     EvidenceAvailability,
     EvidenceDimension,
@@ -34,6 +35,17 @@ def _metadata(returned: int) -> ResponseMetadata:
 
 
 class FakeService:
+    def concept_detail(self, concept_id):
+        return ConceptDetail(
+            concept_id=concept_id,
+            preferred_name="Example medicine",
+            concept_type="medicinal_product",
+        )
+
+    def search_concepts(self, query):
+        del query
+        raise AssertionError("search is not used by comparison-only tests")
+
     def comparisons(self, query):
         source_uri = (
             "javascript:alert(1)"
@@ -69,7 +81,8 @@ class FakeService:
             metadata=_metadata(1), conclusions=(conclusion,)
         )
 
-    def coverage(self, _query):
+    def coverage(self, query):
+        del query
         return CoverageResponse(metadata=_metadata(0), coverage=())
 
 
@@ -83,7 +96,9 @@ def test_landmark_labels_focus_and_form_structure():
     assert soup.select_one("a.skip-link[href='#atlas-results']")
     assert soup.select_one("main#atlas-results[tabindex='-1']")
     assert soup.select_one("form[method='get']")
-    assert len(soup.select("label input")) == 4
+    assert len(soup.select("label input")) == 3
+    assert soup.select_one("input[role='combobox'][aria-controls]")
+    assert soup.select_one("[role='status'][aria-live='polite']")
     assert soup.select_one("meta[name='viewport']")
     assert "does not claim WCAG conformance" in soup.get_text(" ", strip=True)
     stylesheet = client.get("/static/atlas.css")
@@ -113,7 +128,7 @@ def test_results_are_semantic_textual_and_source_linked():
     assert card.select_one("details summary")
     link = card.select_one("a[href^='https://example.test/evidence']")
     assert link is not None
-    assert not soup.select("script")
+    assert soup.select_one("script[src='/static/atlas-autocomplete.js']")
     assert "<script>" not in response.text
 
 

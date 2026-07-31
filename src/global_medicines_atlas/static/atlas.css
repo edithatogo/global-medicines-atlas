@@ -27,6 +27,36 @@ section, aside { margin-block: 1.25rem; padding: clamp(1rem, 3vw, 2rem); backgro
 .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 label { display: grid; gap: .35rem; font-weight: 650; }
 input, button { min-height: 2.75rem; padding: .6rem .75rem; font: inherit; }
+.concept-discovery { position: relative; display: grid; gap: .35rem; }
+.concept-options {
+  position: absolute;
+  inset: 100% 0 auto;
+  z-index: 5;
+  max-height: 18rem;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--border);
+  background: var(--paper);
+}
+.concept-options[hidden] { display: none; }
+.concept-options [role="option"] { padding: .65rem .75rem; cursor: pointer; }
+.concept-options [aria-selected="true"] { color: #fff; background: var(--accent); }
+.search-results { display: grid; gap: .75rem; padding: 0; list-style: none; }
+.search-results a { display: grid; padding: .75rem; border: 1px solid var(--border); }
+.search-results span { color: var(--muted); }
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
 button { margin-top: 1rem; border: 0; border-radius: .25rem; color: #fff; background: var(--accent); font-weight: 700; cursor: pointer; }
 .hint { margin: -.65rem 0 0; color: var(--muted); grid-column: 1 / -1; }
 .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(19rem, 100%), 1fr)); gap: 1rem; }
