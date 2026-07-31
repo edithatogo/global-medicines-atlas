@@ -364,6 +364,13 @@ separate licences and identifiers. Rights-restricted medicine payloads remain
 outside public publication packages. Creating external records or publishing a
 release remains an explicit maintainer gate.
 
+The Phase 1 research contract is the machine-readable
+`research/protocol/academic-protocol-v1.json`, validated by
+`schemas/academic-protocol-v1.json` and rendered offline to
+`docs/research/academic-protocol.md`. It binds the governed source catalog and
+M-090 comparison-validity vocabulary to the protocol/methods work in GitHub
+[#67](https://github.com/edithatogo/global-medicines-atlas/issues/67).
+
 ## Untrusted Acquisition and Failure Containment
 
 ```mermaid

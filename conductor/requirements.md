@@ -178,6 +178,8 @@
   exclusion rules, outcomes, matching and adjudication, missingness and
   conflicts, planned and sensitivity analyses, amendments, deviations,
   software/data identities and reproducible execution.
+  Phase 1 is governed by `schemas/academic-protocol-v1.json`, projected from
+  `research/protocol/academic-protocol-v1.json`, and traced to GitHub [#67](https://github.com/edithatogo/global-medicines-atlas/issues/67).
 
 ## Should Have
 
