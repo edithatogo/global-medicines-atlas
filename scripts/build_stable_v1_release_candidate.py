@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import argparse
+import gzip
 import hashlib
+import io
 import json
 import os
 import platform
 import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
+import tarfile
 import tempfile
 import zipfile
 from collections.abc import Sequence
@@ -45,6 +48,8 @@ DEFAULT_RECEIPT = Path(
 )
 
 _REFERENCE_FILES = {
+    "build-constraints": "quality/release-build-constraints.txt",
+    "build-toolchain": "quality/release-build-toolchain.json",
     "candidate-implementation": (
         "src/global_medicines_atlas/stable_v1_release_candidate.py"
     ),
@@ -59,6 +64,13 @@ _REFERENCE_FILES = {
     "release-evidence-schema": "schemas/release-evidence-v1.json",
     "release-workflow": ".github/workflows/release-provenance.yml",
 }
+
+_GENERATED_VERSION_PATH = Path("src/global_medicines_atlas/_version.py")
+_BUILD_TOOLCHAIN_PATH = Path("quality/release-build-toolchain.json")
+_UV_VERSION_PART_COUNT = 2
+_CANONICAL_FILE_MODE = 0o100644
+_CANONICAL_DIRECTORY_MODE = 0o40755
+_ZIP_EPOCH = (1980, 1, 1, 0, 0, 0)
 
 _PACKAGED_TEXT_SAMPLES = (
     "src/global_medicines_atlas/static/atlas-autocomplete.js",
@@ -140,6 +152,67 @@ def canonicalize_sbom(path: Path, version: str) -> None:
     path.write_bytes(canonical_json_bytes(sbom))
 
 
+def _uv_version_matches(output: str, expected: object) -> bool:
+    parts = output.split()
+    return len(parts) >= _UV_VERSION_PART_COUNT and parts[
+        :_UV_VERSION_PART_COUNT
+    ] == ["uv", expected]
+
+
+def _resolve_release_uv(root: Path, expected: object) -> str:
+    candidates: list[Path] = []
+    seen: set[Path] = set()
+    for directory in os.environ.get("PATH", "").split(os.pathsep):
+        for executable in ("uv.exe", "uv"):
+            candidate = Path(directory) / executable
+            if candidate.is_file():
+                resolved = candidate.resolve()
+                if resolved not in seen:
+                    seen.add(resolved)
+                    candidates.append(resolved)
+    for candidate in candidates:
+        try:
+            output = _run(root, str(candidate), "--version").decode().strip()
+        except OSError, ReleaseCandidateError:
+            continue
+        if _uv_version_matches(output, expected):
+            return str(candidate)
+    observed = ", ".join(str(candidate) for candidate in candidates) or "none"
+    raise ReleaseCandidateError(
+        f"release build requires uv {expected}; candidates: {observed}"
+    )
+
+
+def _verify_build_toolchain(root: Path) -> tuple[Path, str]:
+    raw: object = json.loads((root / _BUILD_TOOLCHAIN_PATH).read_text())
+    if not isinstance(raw, dict):
+        raise ReleaseCandidateError("build toolchain must be a JSON object")
+    toolchain = cast("dict[str, object]", raw)
+    expected_python = toolchain.get("python")
+    actual_python = platform.python_version()
+    if expected_python != actual_python:
+        raise ReleaseCandidateError(
+            f"release build requires Python {expected_python}, got {actual_python}"
+        )
+    expected_uv = toolchain.get("uv")
+    uv_executable = _resolve_release_uv(root, expected_uv)
+    constraints = toolchain.get("build_constraints")
+    if not isinstance(constraints, str):
+        raise ReleaseCandidateError("build constraints path is not recorded")
+    path = root / constraints
+    if not path.is_file():
+        raise ReleaseCandidateError("recorded build constraints do not exist")
+    return path, uv_executable
+
+
+def _remove_generated_version(root: Path) -> None:
+    """Remove Hatch VCS state that Git intentionally ignores."""
+    path = root / _GENERATED_VERSION_PATH
+    if path.exists() and not path.is_file():
+        raise ReleaseCandidateError("generated version path is not a file")
+    path.unlink(missing_ok=True)
+
+
 def built_wheel_version(path: Path) -> str:
     """Read the authoritative PEP 427 version from built wheel metadata."""
     with zipfile.ZipFile(path) as archive:
@@ -158,6 +231,72 @@ def built_wheel_version(path: Path) -> str:
     raise ReleaseCandidateError("built wheel metadata lacks Version")
 
 
+def canonicalize_wheel(path: Path) -> None:
+    """Rewrite a wheel with platform-independent ZIP metadata and storage."""
+    with zipfile.ZipFile(path) as source:
+        members = tuple(
+            (name, source.read(name), name.endswith("/"))
+            for name in sorted(source.namelist())
+        )
+    output = io.BytesIO()
+    with zipfile.ZipFile(
+        output, mode="w", compression=zipfile.ZIP_STORED
+    ) as archive:
+        for name, payload, is_directory in members:
+            info = zipfile.ZipInfo(name, date_time=_ZIP_EPOCH)
+            info.create_system = 3
+            info.compress_type = zipfile.ZIP_STORED
+            info.external_attr = (
+                _CANONICAL_DIRECTORY_MODE
+                if is_directory
+                else _CANONICAL_FILE_MODE
+            ) << 16
+            archive.writestr(info, payload)
+    path.write_bytes(output.getvalue())
+
+
+def canonicalize_sdist(path: Path, *, source_date_epoch: str) -> None:
+    """Rewrite an sdist with canonical tar and gzip metadata."""
+    with tarfile.open(path, mode="r:gz") as source:
+        members: list[tuple[tarfile.TarInfo, bytes]] = []
+        for member in sorted(source.getmembers(), key=lambda item: item.name):
+            extracted = source.extractfile(member) if member.isfile() else None
+            if member.isfile() and extracted is None:
+                raise ReleaseCandidateError(
+                    f"sdist member is unreadable: {member.name}"
+                )
+            members.append((member, extracted.read() if extracted else b""))
+    output = io.BytesIO()
+    with (
+        gzip.GzipFile(
+            filename="",
+            mode="wb",
+            fileobj=output,
+            mtime=int(source_date_epoch),
+        ) as compressed,
+        tarfile.open(
+            fileobj=compressed,
+            mode="w",
+            format=tarfile.PAX_FORMAT,
+        ) as archive,
+    ):
+        for original, payload in members:
+            info = tarfile.TarInfo(original.name)
+            info.mtime = int(source_date_epoch)
+            info.uid = 0
+            info.gid = 0
+            info.uname = ""
+            info.gname = ""
+            info.type = original.type
+            info.linkname = original.linkname
+            info.mode = 0o755 if original.isdir() else 0o644
+            info.size = len(payload) if original.isfile() else 0
+            archive.addfile(
+                info, io.BytesIO(payload) if original.isfile() else None
+            )
+    path.write_bytes(output.getvalue())
+
+
 def _build_once(
     root: Path,
     destination: Path,
@@ -165,17 +304,24 @@ def _build_once(
     source_date_epoch: str,
 ) -> tuple[str, tuple[Path, Path], Path]:
     destination.mkdir(parents=True)
+    constraints, uv_executable = _verify_build_toolchain(root)
     environment = dict(os.environ)
     environment["SOURCE_DATE_EPOCH"] = source_date_epoch
     dist = destination / "dist"
-    _run(
-        root,
-        "uv",
-        "build",
-        "--out-dir",
-        str(dist),
-        environment=environment,
-    )
+    _remove_generated_version(root)
+    try:
+        _run(
+            root,
+            uv_executable,
+            "build",
+            "--build-constraints",
+            str(constraints),
+            "--out-dir",
+            str(dist),
+            environment=environment,
+        )
+    finally:
+        _remove_generated_version(root)
     distributions = tuple(sorted(dist.iterdir(), key=lambda path: path.name))
     wheels = tuple(path for path in distributions if path.suffix == ".whl")
     sdists = tuple(
@@ -190,11 +336,13 @@ def _build_once(
         raise ReleaseCandidateError(
             "build must produce exactly one wheel and one sdist"
         )
+    canonicalize_wheel(wheels[0])
+    canonicalize_sdist(sdists[0], source_date_epoch=source_date_epoch)
     package_version = built_wheel_version(wheels[0])
     sbom = destination / SBOM_PATH
     _run(
         root,
-        "uv",
+        uv_executable,
         "export",
         "--locked",
         "--no-dev",
@@ -300,6 +448,7 @@ def consume_candidate(
         raise ReleaseCandidateError(
             "consumer virtual environment must not already exist"
         )
+    _, uv_executable = _verify_build_toolchain(resolved_root)
     receipt = receipt_from_json(receipt_path.resolve(strict=True))
     verify_candidate_package(
         root=resolved_root,
@@ -320,7 +469,7 @@ def consume_candidate(
     resolved_environment.parent.mkdir(parents=True, exist_ok=True)
     _run(
         resolved_root,
-        "uv",
+        uv_executable,
         "venv",
         "--python",
         "3.14.6",
@@ -328,7 +477,7 @@ def consume_candidate(
     )
     _run(
         resolved_root,
-        "uv",
+        uv_executable,
         "pip",
         "install",
         "--python",
@@ -349,7 +498,7 @@ def consume_candidate(
     )
     _run(
         resolved_root,
-        "uv",
+        uv_executable,
         "pip",
         "install",
         "--python",
