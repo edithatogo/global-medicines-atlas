@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0.0",
+  "mutation": {
+    "source": {
+      "repository": "edithatogo/global-medicines-atlas",
+      "run_id": 30603641701,
+      "head_sha": "c4a268d6ffb0d8738b3fb7295566d4c684e2e587",
+      "artifact_id": 8782825729,
+      "artifact_sha256": "fbd62accd21d68d191ea0b4e5ca1279498726c88f64f7c93a21030a26b385a5d"
+    },
+    "observations": {
+      "killed": 1383,
+      "survived": 523,
+      "untested": 0,
+      "skipped": 0,
+      "suspicious": 0,
+      "timeout": 0,
+      "interrupted": 0,
+      "segfault": 0,
+      "total": 1906,
+      "score_percent": 72.560335
+    },
+    "promotion_minimum_percent": 80.0,
+    "promotion_status": "blocked_survivor_debt"
+  },
+  "performance": {
+    "source": {
+      "repository": "edithatogo/global-medicines-atlas",
+      "run_id": 30602190188,
+      "head_sha": "995d0beb0662a5069a9577999f769ee373c29a48",
+      "artifact_id": 8782302533,
+      "artifact_sha256": "161070c87e125654efdceeea831db718ba54a44669ba368f5c483594bb47ab9a"
+    },
+    "workload": {
+      "row_count": 1000000,
+      "seed": 20260731,
+      "readers": 4,
+      "dataset_sha256": "d803a203c4701981bf32909522eeddcf8108fddbbd48ad4c94ad3a5a2d7fbbc9"
+    },
+    "observations": {
+      "cold_p95_ms": 82.766539,
+      "warm_p95_ms": 66.384025,
+      "concurrent_p95_ms": 141.659297,
+      "concurrent_records_per_second": 28083477.941597,
+      "process_peak_memory_mib": 395.6015625
+    },
+    "maximum_regression_ratio": 1.25
+  }
+}

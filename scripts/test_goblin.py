@@ -20,6 +20,12 @@ from typing import Any, Protocol, cast
 import jsonschema
 import yaml
 
+from global_medicines_atlas.quality_baselines import (
+    MutationObservations,
+    load_phase3_baselines,
+    mutation_regressed,
+)
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 QUALITY_BUDGETS_PATH = PROJECT_ROOT / "quality" / "budgets.json"
 QUALITY_BUDGETS_SCHEMA_PATH = PROJECT_ROOT / "quality" / "budgets.schema.json"
@@ -27,6 +33,7 @@ QUALITY_RECEIPT_SCHEMA_PATH = (
     PROJECT_ROOT / "quality" / "evidence-receipt.schema.json"
 )
 TOOL_VERSIONS_PATH = PROJECT_ROOT / "quality" / "tool-versions.json"
+PHASE3_BASELINES_PATH = PROJECT_ROOT / "quality" / "baselines" / "phase3.json"
 WORKFLOWS_PATH = PROJECT_ROOT / ".github" / "workflows"
 CODECOV_PATH = PROJECT_ROOT / "codecov.yml"
 PRIMARY_LANES = frozenset({
@@ -81,6 +88,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_product_contracts.py",
         "tests/test_product_release.py",
         "tests/test_product_security.py",
+        "tests/test_quality_baselines.py",
         "tests/test_product_performance.py",
         "tests/test_source_catalog.py",
         "tests/test_source_census.py",
@@ -707,6 +715,27 @@ def mutation() -> None:
     run(export_command)
     artifact = PROJECT_ROOT / "mutants" / "mutmut-cicd-stats.json"
     observations = load_mutmut_observations(artifact)
+    enforce_mutation_baseline(observations)
+    results_command = [sys.executable, "-m", "mutmut", "results"]
+    results = subprocess.run(
+        results_command,
+        cwd=PROJECT_ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if results.returncode:
+        raise SystemExit(results.returncode)
+    survivor_report = PROJECT_ROOT / "mutants" / "survivors.txt"
+    survivor_report.write_text(results.stdout, encoding="utf-8")
+    mutation_budget = cast(
+        "dict[str, dict[str, dict[str, float]]]",
+        load_quality_budgets(),
+    )["mutation"]["score_percent"]["minimum"]
+    observations["promotion_minimum_percent"] = mutation_budget
+    observations["promotion_target_met"] = float(
+        observations["score_percent"] >= mutation_budget
+    )
     write_quality_receipt(
         kind="mutation",
         observations=observations,
@@ -714,7 +743,7 @@ def mutation() -> None:
         / "build"
         / "quality-receipts"
         / "mutation.json",
-        artifacts=[artifact],
+        artifacts=[artifact, survivor_report],
         command=command,
     )
     enforce_optional_receipt("mutation")
@@ -749,7 +778,33 @@ def load_mutmut_observations(path: Path) -> dict[str, float]:
         key: float(value) for key, value in cast("dict[str, int]", raw).items()
     }
     observations["untested"] = observations.pop("no_tests")
+    denominator = observations["total"] - observations["skipped"]
+    observations["score_percent"] = observations["killed"] / denominator * 100
     return observations
+
+
+def enforce_mutation_baseline(observations: dict[str, float]) -> None:
+    """Reject mutation regressions while preserving the independent target."""
+
+    baseline = load_phase3_baselines(PHASE3_BASELINES_PATH).mutation
+    killed = int(observations["killed"])
+    survived = int(observations["survived"])
+    current = MutationObservations(
+        killed=killed,
+        survived=survived,
+        untested=int(observations.get("untested", 0)),
+        skipped=int(observations.get("skipped", 0)),
+        suspicious=int(observations.get("suspicious", 0)),
+        timeout=int(observations.get("timeout", 0)),
+        interrupted=int(observations.get("check_was_interrupted_by_user", 0)),
+        segfault=int(observations.get("segfault", 0)),
+        total=int(observations.get("total", killed + survived)),
+        score_percent=observations["score_percent"],
+    )
+    if mutation_regressed(baseline, current):
+        raise ValueError(
+            "mutation survivor debt regressed from the immutable baseline"
+        )
 
 
 def gremlins() -> None:

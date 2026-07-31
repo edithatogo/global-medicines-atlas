@@ -39,7 +39,7 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 
 - [ ] Task: Run threat model, load, soak, Scalene and fault-injection exercises ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39))
 - [x] Task: Qualify million-row cold/warm and concurrent-reader workloads against blocking latency, throughput and memory budgets ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39)) `aaf5bd0` `995d0be`; [PR #72 run](https://github.com/edithatogo/global-medicines-atlas/actions/runs/30602190188) passed the GitHub-hosted Linux gate
-- [ ] Task: Review surviving mutants and benchmark regressions against immutable baselines ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39))
+- [~] Task: Review surviving mutants and benchmark regressions against immutable baselines ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39))
 - [ ] Task: Qualify one real Mojo kernel through Arrow-fixture parity, fallback and measured promotion, or record Python as authoritative with Mojo experimental ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39))
 - [x] Task: Run the medicine-data integrity threat model for poisoned downloads, stale snapshots, identifier collisions and false status inference ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39)) `8df1793`
 - [ ] Task: Rehearse clean recovery from governed artifacts ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39))
