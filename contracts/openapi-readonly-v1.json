@@ -1,0 +1,1761 @@
+{
+  "components": {
+    "AsOfClocks": {
+      "additionalProperties": false,
+      "properties": {
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "valid_at": {
+          "format": "date-time",
+          "title": "Valid At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "valid_at",
+        "observed_at"
+      ],
+      "type": "object"
+    },
+    "ComparisonDimensionState": {
+      "enum": [
+        "aligned",
+        "compatible",
+        "mismatch",
+        "unknown",
+        "not_applicable"
+      ],
+      "type": "string"
+    },
+    "ComparisonResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "conclusions": {
+          "items": {
+            "$ref": "#/components/schemas/ProductConclusion"
+          },
+          "title": "Conclusions",
+          "type": "array"
+        },
+        "metadata": {
+          "$ref": "#/components/schemas/ResponseMetadata"
+        },
+        "validity": {
+          "default": [],
+          "items": {
+            "$ref": "#/components/schemas/ComparisonValidity"
+          },
+          "title": "Validity",
+          "type": "array"
+        }
+      },
+      "required": [
+        "metadata",
+        "conclusions"
+      ],
+      "type": "object"
+    },
+    "ComparisonValidity": {
+      "additionalProperties": false,
+      "properties": {
+        "dimensions": {
+          "$ref": "#/components/schemas/ComparisonValidityDimensions"
+        },
+        "establishes_equal_benefit": {
+          "const": false,
+          "default": false,
+          "title": "Establishes Equal Benefit",
+          "type": "boolean"
+        },
+        "establishes_medicine_equivalence": {
+          "const": false,
+          "default": false,
+          "title": "Establishes Medicine Equivalence",
+          "type": "boolean"
+        },
+        "establishes_substitutability": {
+          "const": false,
+          "default": false,
+          "title": "Establishes Substitutability",
+          "type": "boolean"
+        },
+        "establishes_therapeutic_interchangeability": {
+          "const": false,
+          "default": false,
+          "title": "Establishes Therapeutic Interchangeability",
+          "type": "boolean"
+        },
+        "explanation": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Explanation",
+          "type": "string"
+        },
+        "left_subject_id": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Left Subject Id",
+          "type": "string"
+        },
+        "material_mismatches": {
+          "default": [],
+          "items": {
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Material Mismatches",
+          "type": "array"
+        },
+        "outcome": {
+          "$ref": "#/components/schemas/ComparisonValidityOutcome"
+        },
+        "right_subject_id": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Right Subject Id",
+          "type": "string"
+        },
+        "schema_id": {
+          "const": "global-medicines-atlas.comparison-validity",
+          "default": "global-medicines-atlas.comparison-validity",
+          "title": "Schema Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "default": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "left_subject_id",
+        "right_subject_id",
+        "outcome",
+        "dimensions",
+        "explanation"
+      ],
+      "type": "object"
+    },
+    "ComparisonValidityDimension": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_ids": {
+          "default": [],
+          "items": {
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "left_value": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Left Value"
+        },
+        "right_value": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Right Value"
+        },
+        "state": {
+          "$ref": "#/components/schemas/ComparisonDimensionState"
+        }
+      },
+      "required": [
+        "state"
+      ],
+      "type": "object"
+    },
+    "ComparisonValidityDimensions": {
+      "additionalProperties": false,
+      "properties": {
+        "granularity": {
+          "$ref": "#/components/schemas/ComparisonValidityDimension"
+        },
+        "indication": {
+          "$ref": "#/components/schemas/ComparisonValidityDimension"
+        },
+        "mapping": {
+          "$ref": "#/components/schemas/ComparisonValidityDimension"
+        },
+        "normalization": {
+          "$ref": "#/components/schemas/ComparisonValidityDimension"
+        },
+        "population": {
+          "$ref": "#/components/schemas/ComparisonValidityDimension"
+        }
+      },
+      "required": [
+        "granularity",
+        "indication",
+        "population",
+        "mapping",
+        "normalization"
+      ],
+      "type": "object"
+    },
+    "ComparisonValidityOutcome": {
+      "enum": [
+        "valid",
+        "valid_with_caveats",
+        "inappropriate_comparison",
+        "insufficient_evidence"
+      ],
+      "type": "string"
+    },
+    "ConceptDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "concept_id": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Concept Id",
+          "type": "string"
+        },
+        "concept_type": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Concept Type",
+          "type": "string"
+        },
+        "identifiers": {
+          "default": [],
+          "items": {
+            "$ref": "#/components/schemas/ConceptIdentifier"
+          },
+          "title": "Identifiers",
+          "type": "array"
+        },
+        "jurisdictions": {
+          "default": [],
+          "items": {
+            "pattern": "^[A-Z]{2,3}$",
+            "type": "string"
+          },
+          "title": "Jurisdictions",
+          "type": "array"
+        },
+        "names": {
+          "default": [],
+          "items": {
+            "$ref": "#/components/schemas/ConceptName"
+          },
+          "title": "Names",
+          "type": "array"
+        },
+        "preferred_name": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Preferred Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "concept_id",
+        "preferred_name",
+        "concept_type"
+      ],
+      "type": "object"
+    },
+    "ConceptIdentifier": {
+      "additionalProperties": false,
+      "properties": {
+        "system": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "System",
+          "type": "string"
+        },
+        "value": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "system",
+        "value"
+      ],
+      "type": "object"
+    },
+    "ConceptName": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "name_type": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Name Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "name_type"
+      ],
+      "type": "object"
+    },
+    "ConceptSearchResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "concepts": {
+          "items": {
+            "$ref": "#/components/schemas/ConceptSummary"
+          },
+          "title": "Concepts",
+          "type": "array"
+        },
+        "metadata": {
+          "$ref": "#/components/schemas/DiscoveryMetadata"
+        }
+      },
+      "required": [
+        "metadata",
+        "concepts"
+      ],
+      "type": "object"
+    },
+    "ConceptSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "concept_id": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Concept Id",
+          "type": "string"
+        },
+        "concept_type": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Concept Type",
+          "type": "string"
+        },
+        "explanation": {
+          "$ref": "#/components/schemas/MatchExplanation"
+        },
+        "jurisdictions": {
+          "default": [],
+          "items": {
+            "pattern": "^[A-Z]{2,3}$",
+            "type": "string"
+          },
+          "title": "Jurisdictions",
+          "type": "array"
+        },
+        "preferred_name": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Preferred Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "concept_id",
+        "preferred_name",
+        "concept_type",
+        "explanation"
+      ],
+      "type": "object"
+    },
+    "CoverageItem": {
+      "additionalProperties": false,
+      "properties": {
+        "covered_count": {
+          "minimum": 0.0,
+          "title": "Covered Count",
+          "type": "integer"
+        },
+        "denominator": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Denominator"
+        },
+        "dimension": {
+          "$ref": "#/components/schemas/EvidenceDimension"
+        },
+        "jurisdiction": {
+          "pattern": "^[A-Z]{2,3}$",
+          "title": "Jurisdiction",
+          "type": "string"
+        },
+        "provenance": {
+          "default": [],
+          "items": {
+            "$ref": "#/components/schemas/ProvenanceLink"
+          },
+          "title": "Provenance",
+          "type": "array"
+        },
+        "state": {
+          "$ref": "#/components/schemas/ProductState"
+        },
+        "valid_time": {
+          "$ref": "#/components/schemas/AsOfClocks"
+        }
+      },
+      "required": [
+        "jurisdiction",
+        "dimension",
+        "state",
+        "covered_count",
+        "valid_time"
+      ],
+      "type": "object"
+    },
+    "CoverageResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "coverage": {
+          "items": {
+            "$ref": "#/components/schemas/CoverageItem"
+          },
+          "title": "Coverage",
+          "type": "array"
+        },
+        "metadata": {
+          "$ref": "#/components/schemas/ResponseMetadata"
+        }
+      },
+      "required": [
+        "metadata",
+        "coverage"
+      ],
+      "type": "object"
+    },
+    "DiscoveryMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "api_version": {
+          "const": "v1",
+          "default": "v1",
+          "title": "Api Version",
+          "type": "string"
+        },
+        "generated_at": {
+          "format": "date-time",
+          "title": "Generated At",
+          "type": "string"
+        },
+        "page": {
+          "$ref": "#/components/schemas/PageMetadata"
+        }
+      },
+      "required": [
+        "generated_at",
+        "page"
+      ],
+      "type": "object"
+    },
+    "ErrorCode": {
+      "enum": [
+        "invalid_request",
+        "invalid_cursor",
+        "not_found",
+        "limit_exceeded",
+        "evidence_unavailable",
+        "service_unavailable",
+        "internal_error"
+      ],
+      "type": "string"
+    },
+    "ErrorDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Field"
+        },
+        "message": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "message"
+      ],
+      "type": "object"
+    },
+    "ErrorEnvelope": {
+      "additionalProperties": false,
+      "properties": {
+        "api_version": {
+          "const": "v1",
+          "default": "v1",
+          "title": "Api Version",
+          "type": "string"
+        },
+        "details": {
+          "default": [],
+          "items": {
+            "$ref": "#/components/schemas/ErrorDetail"
+          },
+          "title": "Details",
+          "type": "array"
+        },
+        "error": {
+          "$ref": "#/components/schemas/ErrorCode"
+        },
+        "message": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        },
+        "request_id": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Request Id",
+          "type": "string"
+        },
+        "retryable": {
+          "default": false,
+          "title": "Retryable",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "error",
+        "message",
+        "request_id"
+      ],
+      "type": "object"
+    },
+    "EvidenceAvailability": {
+      "enum": [
+        "available",
+        "unavailable",
+        "not_required"
+      ],
+      "type": "string"
+    },
+    "EvidenceDimension": {
+      "enum": [
+        "regulatory",
+        "funding",
+        "formulary"
+      ],
+      "type": "string"
+    },
+    "EvidenceItem": {
+      "additionalProperties": false,
+      "properties": {
+        "assertion_id": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Assertion Id",
+          "type": "string"
+        },
+        "concept_id": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Concept Id",
+          "type": "string"
+        },
+        "dimension": {
+          "$ref": "#/components/schemas/EvidenceDimension"
+        },
+        "jurisdiction": {
+          "pattern": "^[A-Z]{2,3}$",
+          "title": "Jurisdiction",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/components/schemas/ProvenanceLink"
+        },
+        "state": {
+          "$ref": "#/components/schemas/ProductState"
+        },
+        "status_code": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Status Code",
+          "type": "string"
+        },
+        "terminology": {
+          "$ref": "#/components/schemas/Terminology"
+        },
+        "uncertainty": {
+          "$ref": "#/components/schemas/Uncertainty"
+        },
+        "valid_time": {
+          "$ref": "#/components/schemas/AsOfClocks"
+        }
+      },
+      "required": [
+        "assertion_id",
+        "concept_id",
+        "jurisdiction",
+        "dimension",
+        "state",
+        "status_code",
+        "terminology",
+        "provenance",
+        "uncertainty",
+        "valid_time"
+      ],
+      "type": "object"
+    },
+    "EvidenceResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "$ref": "#/components/schemas/EvidenceItem"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "metadata": {
+          "$ref": "#/components/schemas/ResponseMetadata"
+        }
+      },
+      "required": [
+        "metadata",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "HealthCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "detail": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Detail"
+        },
+        "name": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/components/schemas/HealthState"
+        }
+      },
+      "required": [
+        "name",
+        "state"
+      ],
+      "type": "object"
+    },
+    "HealthResponse": {
+      "additionalProperties": false,
+      "properties": {
+        "api_version": {
+          "const": "v1",
+          "default": "v1",
+          "title": "Api Version",
+          "type": "string"
+        },
+        "checked_at": {
+          "format": "date-time",
+          "title": "Checked At",
+          "type": "string"
+        },
+        "checks": {
+          "default": [],
+          "items": {
+            "$ref": "#/components/schemas/HealthCheck"
+          },
+          "title": "Checks",
+          "type": "array"
+        },
+        "evidence_version": {
+          "const": "0.6",
+          "default": "0.6",
+          "title": "Evidence Version",
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/components/schemas/HealthState"
+        }
+      },
+      "required": [
+        "state",
+        "checked_at"
+      ],
+      "type": "object"
+    },
+    "HealthState": {
+      "enum": [
+        "ok",
+        "degraded",
+        "unavailable"
+      ],
+      "type": "string"
+    },
+    "JurisdictionSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "concept_count": {
+          "minimum": 0.0,
+          "title": "Concept Count",
+          "type": "integer"
+        },
+        "jurisdiction": {
+          "pattern": "^[A-Z]{2,3}$",
+          "title": "Jurisdiction",
+          "type": "string"
+        },
+        "source_count": {
+          "minimum": 0.0,
+          "title": "Source Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "jurisdiction",
+        "source_count",
+        "concept_count"
+      ],
+      "type": "object"
+    },
+    "MatchExplanation": {
+      "additionalProperties": false,
+      "properties": {
+        "establishes_equivalence": {
+          "const": false,
+          "default": false,
+          "title": "Establishes Equivalence",
+          "type": "boolean"
+        },
+        "matched_value": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Matched Value",
+          "type": "string"
+        },
+        "method": {
+          "$ref": "#/components/schemas/MatchMethod"
+        },
+        "normalized_query": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Normalized Query",
+          "type": "string"
+        }
+      },
+      "required": [
+        "method",
+        "matched_value",
+        "normalized_query"
+      ],
+      "type": "object"
+    },
+    "MatchMethod": {
+      "enum": [
+        "exact_concept_id",
+        "exact_identifier",
+        "normalized_preferred_name",
+        "normalized_alias"
+      ],
+      "type": "string"
+    },
+    "PageMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "limit": {
+          "maximum": 250.0,
+          "minimum": 1.0,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "next_cursor": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "minLength": 16,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Next Cursor"
+        },
+        "returned": {
+          "maximum": 250.0,
+          "minimum": 0.0,
+          "title": "Returned",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "limit",
+        "returned"
+      ],
+      "type": "object"
+    },
+    "ProductConclusion": {
+      "additionalProperties": false,
+      "properties": {
+        "concept_id": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Concept Id",
+          "type": "string"
+        },
+        "dimension": {
+          "$ref": "#/components/schemas/EvidenceDimension"
+        },
+        "evidence_availability": {
+          "$ref": "#/components/schemas/EvidenceAvailability"
+        },
+        "evidence_unavailable_reason": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Evidence Unavailable Reason"
+        },
+        "jurisdiction": {
+          "pattern": "^[A-Z]{2,3}$",
+          "title": "Jurisdiction",
+          "type": "string"
+        },
+        "provenance": {
+          "default": [],
+          "items": {
+            "$ref": "#/components/schemas/ProvenanceLink"
+          },
+          "title": "Provenance",
+          "type": "array"
+        },
+        "state": {
+          "$ref": "#/components/schemas/ProductState"
+        },
+        "status_code": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Status Code"
+        },
+        "terminology": {
+          "$ref": "#/components/schemas/Terminology"
+        },
+        "uncertainty": {
+          "$ref": "#/components/schemas/Uncertainty"
+        },
+        "valid_time": {
+          "$ref": "#/components/schemas/AsOfClocks"
+        }
+      },
+      "required": [
+        "concept_id",
+        "jurisdiction",
+        "dimension",
+        "state",
+        "terminology",
+        "evidence_availability",
+        "uncertainty",
+        "valid_time"
+      ],
+      "type": "object"
+    },
+    "ProductState": {
+      "enum": [
+        "confirmed",
+        "inferred",
+        "unknown",
+        "not_covered",
+        "conflicting",
+        "not_applicable"
+      ],
+      "type": "string"
+    },
+    "ProvenanceLink": {
+      "additionalProperties": false,
+      "properties": {
+        "retrieved_at": {
+          "format": "date-time",
+          "title": "Retrieved At",
+          "type": "string"
+        },
+        "source_id": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
+        },
+        "source_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Source Sha256"
+        },
+        "source_uri": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Source Uri",
+          "type": "string"
+        },
+        "source_version": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Source Version"
+        },
+        "transformation_id": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Transformation Id"
+        }
+      },
+      "required": [
+        "source_id",
+        "source_uri",
+        "retrieved_at"
+      ],
+      "type": "object"
+    },
+    "ResponseMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "api_version": {
+          "const": "v1",
+          "default": "v1",
+          "title": "Api Version",
+          "type": "string"
+        },
+        "clocks": {
+          "$ref": "#/components/schemas/AsOfClocks"
+        },
+        "evidence_version": {
+          "const": "0.6",
+          "default": "0.6",
+          "title": "Evidence Version",
+          "type": "string"
+        },
+        "generated_at": {
+          "format": "date-time",
+          "title": "Generated At",
+          "type": "string"
+        },
+        "page": {
+          "$ref": "#/components/schemas/PageMetadata"
+        }
+      },
+      "required": [
+        "generated_at",
+        "clocks",
+        "page"
+      ],
+      "type": "object"
+    },
+    "SourceSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "authority": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Authority",
+          "type": "string"
+        },
+        "funding_system": {
+          "title": "Funding System",
+          "type": "boolean"
+        },
+        "jurisdiction": {
+          "pattern": "^[A-Z]{2,3}$",
+          "title": "Jurisdiction",
+          "type": "string"
+        },
+        "regulatory_system": {
+          "title": "Regulatory System",
+          "type": "boolean"
+        },
+        "source_id": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "jurisdiction",
+        "authority",
+        "regulatory_system",
+        "funding_system"
+      ],
+      "type": "object"
+    },
+    "Terminology": {
+      "additionalProperties": false,
+      "properties": {
+        "canonical_code": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Canonical Code"
+        },
+        "canonical_label": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Canonical Label"
+        },
+        "canonical_system": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Canonical System"
+        },
+        "native_code": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Native Code",
+          "type": "string"
+        },
+        "native_label": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Native Label",
+          "type": "string"
+        },
+        "native_system": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Native System",
+          "type": "string"
+        }
+      },
+      "required": [
+        "native_code",
+        "native_label",
+        "native_system"
+      ],
+      "type": "object"
+    },
+    "Uncertainty": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Confidence"
+        },
+        "level": {
+          "$ref": "#/components/schemas/UncertaintyLevel"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reason"
+        }
+      },
+      "required": [
+        "level"
+      ],
+      "type": "object"
+    },
+    "UncertaintyLevel": {
+      "enum": [
+        "none",
+        "low",
+        "medium",
+        "high",
+        "unknown"
+      ],
+      "type": "string"
+    }
+  },
+  "contract": "global-medicines-atlas.openapi-readonly",
+  "paths": {
+    "/api/v1/comparisons": {
+      "get": {
+        "operationId": "comparisons_api_v1_comparisons_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "concept_id",
+            "required": true,
+            "schema": {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 2048,
+                  "minLength": 16,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "dimensions",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/EvidenceDimension"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "jurisdictions",
+            "required": true,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 50,
+              "minItems": 1,
+              "type": "array"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 250,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "observed_at",
+            "required": true,
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "valid_at",
+            "required": true,
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "application/json": {
+              "$ref": "#/components/schemas/ComparisonResponse"
+            }
+          },
+          "400": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "422": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "503": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/concepts": {
+      "get": {
+        "operationId": "concepts_api_v1_concepts_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 2048,
+                  "minLength": 16,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "jurisdictions",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "maxItems": 50,
+                  "minItems": 1,
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 250,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "application/json": {
+              "$ref": "#/components/schemas/ConceptSearchResponse"
+            }
+          },
+          "400": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "422": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "503": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/concepts/{concept_id}": {
+      "get": {
+        "operationId": "concept_detail_api_v1_concepts__concept_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "concept_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "application/json": {
+              "$ref": "#/components/schemas/ConceptDetail"
+            }
+          },
+          "400": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "422": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "503": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/coverage": {
+      "get": {
+        "operationId": "coverage_api_v1_coverage_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 2048,
+                  "minLength": 16,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "dimensions",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/EvidenceDimension"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "jurisdictions",
+            "required": true,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 50,
+              "minItems": 1,
+              "type": "array"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 250,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "observed_at",
+            "required": true,
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "valid_at",
+            "required": true,
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "application/json": {
+              "$ref": "#/components/schemas/CoverageResponse"
+            }
+          },
+          "400": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "422": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "503": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/evidence": {
+      "get": {
+        "operationId": "evidence_api_v1_evidence_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "assertion_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "concept_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 2048,
+                  "minLength": 16,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 250,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "observed_at",
+            "required": true,
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "valid_at",
+            "required": true,
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "application/json": {
+              "$ref": "#/components/schemas/EvidenceResponse"
+            }
+          },
+          "400": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "422": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "503": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "operationId": "health_api_v1_health_get",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "application/json": {
+              "$ref": "#/components/schemas/HealthResponse"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/jurisdictions": {
+      "get": {
+        "operationId": "jurisdictions_api_v1_jurisdictions_get",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "application/json": {
+              "items": {
+                "$ref": "#/components/schemas/JurisdictionSummary"
+              },
+              "type": "array"
+            }
+          },
+          "400": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "422": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "503": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/readiness": {
+      "get": {
+        "operationId": "readiness_api_v1_readiness_get",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "application/json": {
+              "$ref": "#/components/schemas/HealthResponse"
+            }
+          },
+          "503": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sources": {
+      "get": {
+        "operationId": "sources_api_v1_sources_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "jurisdiction",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 3,
+                  "minLength": 2,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "application/json": {
+              "items": {
+                "$ref": "#/components/schemas/SourceSummary"
+              },
+              "type": "array"
+            }
+          },
+          "400": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "422": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "503": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          }
+        }
+      }
+    }
+  },
+  "version": 1
+}

@@ -74,15 +74,32 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 
 ## Phase 2: v0.9 candidate
 
-- [ ] Task: Execute independent reproduction and disaster-recovery rehearsal ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
-- [ ] Task: Rehearse compromised-source quarantine, signing/credential revocation, dataset withdrawal, corrected replacement and downstream notification ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+- [x] Task: Execute independent reproduction and disaster-recovery rehearsal ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+  - A deterministic aggregate receipt exercises independent child-process
+    reproduction, governed backup/restoration/rollback and fail-closed receipt
+    identity. It explicitly does not claim production disaster recovery,
+    network isolation, artifact-only release reproduction or publication.
+- [x] Task: Rehearse compromised-source quarantine, signing/credential revocation, dataset withdrawal, corrected replacement and downstream notification ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+  - The offline hash-chained incident rehearsal verifies ordering, tamper
+    rejection, idempotent retries and separate regulatory/funding evidence.
+    Credential-authority, human-notification and publication actions remain
+    explicit external gates and are not claimed as executed.
 - [ ] Task: Verify every protected CI, security and publication receipt ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
-- [ ] Task: Audit task-oriented documentation, examples and support paths ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
-- [ ] Task: Migrate canonical records to schema v2 and verify source-native round trips ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+- [x] Task: Audit task-oriented documentation, examples and support paths ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+  - Executable documentation contracts cover installation, API, CLI, Atlas,
+    validity abstentions, recovery, support and publication/licence limits.
+- [~] Task: Migrate canonical records to schema v2 and verify source-native round trips ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+  - Representative fixtures now prove deterministic v1-to-v2 migration, exact
+    rollback and regulatory/funding separation. Measured adapter cohorts remain
+    open before this task can be completed.
 - [ ] Task: Verify comparison-validity outcomes and negative controls never imply equivalence, substitutability or equal benefit ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
 - [ ] Task: Verify concept search, concept detail, jurisdictions and sources through API, CLI and atlas end to end ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
 - [ ] Task: Install built wheel and sdist in clean environments and run import, CLI, API, version and reinstall checks ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
-- [ ] Task: Snapshot and semantically diff the public OpenAPI contract and smoke-test a generated client ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+- [x] Task: Snapshot and semantically diff the public OpenAPI contract and smoke-test a generated client ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+  - The deterministic read-only snapshot rejects incompatible removals,
+    mutations, request bodies and response changes while permitting compatible
+    additions; a generated typed Python client passes an offline transport
+    smoke test and deterministic regeneration.
 - [ ] Task: Resolve or explicitly block every Must requirement ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
 - [ ] Task: Phase Verification & Checkpoint
 
