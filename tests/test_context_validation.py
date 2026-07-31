@@ -10,6 +10,7 @@ def test_context_manifest_resolves_repository_truth() -> None:
 
     assert receipt["status"] == "pass"
     assert receipt["tracks"] >= 2
+    assert receipt["autonomous_tracks"] == receipt["tracks"]
     assert receipt["requirements"] >= 30
     assert receipt["harness_profiles"] >= 14
     assert receipt["human_gates"] >= 6

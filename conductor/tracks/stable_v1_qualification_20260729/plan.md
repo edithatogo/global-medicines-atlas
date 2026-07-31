@@ -1,5 +1,7 @@
 # Implementation Plan
 
+Execution policy: [autonomous, decision-gated](../../autonomy.md).
+
 ## Phase 1: Qualification contract
 
 - [ ] Task: Build requirement, maturity and release-evidence matrices ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))

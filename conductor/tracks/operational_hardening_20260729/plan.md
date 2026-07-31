@@ -1,5 +1,7 @@
 # Implementation Plan
 
+Execution policy: [autonomous, decision-gated](../../autonomy.md).
+
 ## Phase 1: Observability contracts
 
 - [x] Task: Define source-health, freshness and schema-drift receipts ([#37](https://github.com/edithatogo/global-medicines-atlas/issues/37)) `903dee3`

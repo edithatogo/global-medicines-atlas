@@ -1,5 +1,7 @@
 # Implementation Plan
 
+Execution policy: [autonomous, decision-gated](../../autonomy.md).
+
 ## Phase 1: Protocol and source-selection contract
 
 - [ ] Task: Write failing schema and completeness tests for the protocol package

@@ -1,5 +1,11 @@
 # Tracks Registry
 
+All incomplete tracks execute under the
+[Autonomous Track Execution Policy](./autonomy.md). Routine task, phase,
+review, pull-request, merge, archive, and next-track transitions do not require
+maintainer confirmation. Genuine decisions use the options, recommendation,
+and rationale contract in that policy.
+
 ---
 
 - [x] **Track: Establish the global country-adapter framework and first source cohort**

@@ -15,6 +15,7 @@
 ## Workflow
 
 - [Workflow](./workflow.md)
+- [Autonomous Track Execution](./autonomy.md)
 - [Code Style Guides](./code_styleguides/)
 
 ## Tracks
