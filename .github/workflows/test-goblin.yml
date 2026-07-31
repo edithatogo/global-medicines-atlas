@@ -73,7 +73,11 @@ jobs:
       - name: Run Test-Goblin ${{ matrix.profile }} profile
         env:
           TEST_GOBLIN_PROFILE: ${{ matrix.profile }}
-        run: uv run --python 3.14.6 --group dev python scripts/test_goblin.py "$TEST_GOBLIN_PROFILE"
+        run: |
+          if [[ "${TEST_GOBLIN_PROFILE}" == "mutation" ]]; then
+            mkdir -p mutants/scripts
+          fi
+          uv run --python 3.14.6 --group dev python scripts/test_goblin.py "$TEST_GOBLIN_PROFILE"
       - name: Upload coverage
         if: matrix.profile == 'coverage'
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6

@@ -76,6 +76,8 @@ jobs:
         env:
           BASELINE_PATH: ${{ steps.baseline.outputs.path }}
           BASELINE_PROVENANCE: ${{ steps.baseline.outputs.provenance }}
+          BASELINE_RUN_ID: ${{ steps.baseline.outputs.run_id }}
+          BASELINE_COMMIT: ${{ steps.baseline.outputs.commit }}
         shell: bash
         run: |
           baseline_args=()
@@ -83,8 +85,8 @@ jobs:
             baseline_args=(
               --baseline "${BASELINE_PATH}"
               --baseline-provenance "${BASELINE_PROVENANCE}"
-              --baseline-run-id "${{ steps.baseline.outputs.run_id }}"
-              --baseline-commit "${{ steps.baseline.outputs.commit }}"
+              --baseline-run-id "${BASELINE_RUN_ID}"
+              --baseline-commit "${BASELINE_COMMIT}"
             )
           fi
           uv run --python 3.14.6 python scripts/check_source_health.py \
