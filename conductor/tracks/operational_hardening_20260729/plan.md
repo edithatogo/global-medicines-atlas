@@ -44,7 +44,7 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 - [x] Task: Run the medicine-data integrity threat model for poisoned downloads, stale snapshots, identifier collisions and false status inference ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39)) `8df1793`
 - [x] Task: Rehearse clean recovery from governed artifacts — deterministic backup, replacement, restore, rollback and quarantine identities passed locally and in the hosted dedicated recovery job; production independent-storage, RPO/RTO and crash-consistency claims remain authority-gated ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39)) `50aa28e`
 - [ ] Task: Verify hosted rulesets, security settings, labels and project views ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39))
-- [~] Task: Validate contributor, operator, source-onboarding and incident documentation ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39))
+- [x] Task: Validate contributor, operator, source-onboarding and incident documentation — required sections, local links and issue-form contracts pass locally and in all 25 hosted checks ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39)) `6160ad1`
 - [ ] Task: Record v0.8 qualification evidence ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39))
 - [ ] Task: Phase Verification & Checkpoint
 
