@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import argparse
+import gzip
 import hashlib
+import io
 import json
 import os
 import platform
 import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
+import tarfile
 import tempfile
 import zipfile
 from collections.abc import Sequence
@@ -65,6 +68,9 @@ _REFERENCE_FILES = {
 _GENERATED_VERSION_PATH = Path("src/global_medicines_atlas/_version.py")
 _BUILD_TOOLCHAIN_PATH = Path("quality/release-build-toolchain.json")
 _UV_VERSION_PART_COUNT = 2
+_CANONICAL_FILE_MODE = 0o100644
+_CANONICAL_DIRECTORY_MODE = 0o40755
+_ZIP_EPOCH = (1980, 1, 1, 0, 0, 0)
 
 _PACKAGED_TEXT_SAMPLES = (
     "src/global_medicines_atlas/static/atlas-autocomplete.js",
@@ -204,6 +210,72 @@ def built_wheel_version(path: Path) -> str:
     raise ReleaseCandidateError("built wheel metadata lacks Version")
 
 
+def canonicalize_wheel(path: Path) -> None:
+    """Rewrite a wheel with platform-independent ZIP metadata and storage."""
+    with zipfile.ZipFile(path) as source:
+        members = tuple(
+            (name, source.read(name), name.endswith("/"))
+            for name in sorted(source.namelist())
+        )
+    output = io.BytesIO()
+    with zipfile.ZipFile(
+        output, mode="w", compression=zipfile.ZIP_STORED
+    ) as archive:
+        for name, payload, is_directory in members:
+            info = zipfile.ZipInfo(name, date_time=_ZIP_EPOCH)
+            info.create_system = 3
+            info.compress_type = zipfile.ZIP_STORED
+            info.external_attr = (
+                _CANONICAL_DIRECTORY_MODE
+                if is_directory
+                else _CANONICAL_FILE_MODE
+            ) << 16
+            archive.writestr(info, payload)
+    path.write_bytes(output.getvalue())
+
+
+def canonicalize_sdist(path: Path, *, source_date_epoch: str) -> None:
+    """Rewrite an sdist with canonical tar and gzip metadata."""
+    with tarfile.open(path, mode="r:gz") as source:
+        members: list[tuple[tarfile.TarInfo, bytes]] = []
+        for member in sorted(source.getmembers(), key=lambda item: item.name):
+            extracted = source.extractfile(member) if member.isfile() else None
+            if member.isfile() and extracted is None:
+                raise ReleaseCandidateError(
+                    f"sdist member is unreadable: {member.name}"
+                )
+            members.append((member, extracted.read() if extracted else b""))
+    output = io.BytesIO()
+    with (
+        gzip.GzipFile(
+            filename="",
+            mode="wb",
+            fileobj=output,
+            mtime=int(source_date_epoch),
+        ) as compressed,
+        tarfile.open(
+            fileobj=compressed,
+            mode="w",
+            format=tarfile.PAX_FORMAT,
+        ) as archive,
+    ):
+        for original, payload in members:
+            info = tarfile.TarInfo(original.name)
+            info.mtime = int(source_date_epoch)
+            info.uid = 0
+            info.gid = 0
+            info.uname = ""
+            info.gname = ""
+            info.type = original.type
+            info.linkname = original.linkname
+            info.mode = 0o755 if original.isdir() else 0o644
+            info.size = len(payload) if original.isfile() else 0
+            archive.addfile(
+                info, io.BytesIO(payload) if original.isfile() else None
+            )
+    path.write_bytes(output.getvalue())
+
+
 def _build_once(
     root: Path,
     destination: Path,
@@ -243,6 +315,8 @@ def _build_once(
         raise ReleaseCandidateError(
             "build must produce exactly one wheel and one sdist"
         )
+    canonicalize_wheel(wheels[0])
+    canonicalize_sdist(sdists[0], source_date_epoch=source_date_epoch)
     package_version = built_wheel_version(wheels[0])
     sbom = destination / SBOM_PATH
     _run(

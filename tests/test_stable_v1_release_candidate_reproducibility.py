@@ -13,62 +13,57 @@ from scripts.build_stable_v1_release_candidate import (
     consume_candidate,
 )
 
-from global_medicines_atlas.stable_v1_release_candidate import (
-    ArtifactRole,
-    receipt_from_json,
-)
+from global_medicines_atlas.stable_v1_release_candidate import ArtifactRole
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 @pytest.mark.integration
 @pytest.mark.timeout(600)
-def test_clean_clone_reproduces_receipt_and_consumes_artifacts() -> None:
-    """Rebuild the recorded commit in a clone and match committed bytes."""
+def test_clean_clones_match_and_consume_artifacts() -> None:
+    """Build twice from clean clones and exercise the shared receipt."""
     git = shutil.which("git")
     assert git is not None
-    committed_path = (
-        ROOT / "quality/qualifications/stable-v1-release-candidate.json"
-    )
-    committed = receipt_from_json(committed_path)
 
     with tempfile.TemporaryDirectory(
         prefix="gma-stable-v1-clean-clone-", ignore_cleanup_errors=True
     ) as temporary:
         temporary_root = Path(temporary)
-        clone = temporary_root / "repository"
-        subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
-            [git, "clone", "--no-local", str(ROOT), str(clone)],
-            check=True,
-            capture_output=True,
+        clones = tuple(
+            temporary_root / f"repository-{index}" for index in range(2)
         )
-        subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
-            [git, "checkout", "--detach", committed.source_commit],
-            cwd=clone,
-            check=True,
-            capture_output=True,
+        stages = tuple(
+            temporary_root / f"candidate-{index}" for index in range(2)
         )
-        stage = temporary_root / "candidate"
-        rebuilt_path = temporary_root / "rebuilt-receipt.json"
-        build_candidate(clone, stage, rebuilt_path)
-        rebuilt = receipt_from_json(rebuilt_path)
+        receipts = tuple(
+            temporary_root / f"receipt-{index}.json" for index in range(2)
+        )
+        for clone, stage, receipt in zip(clones, stages, receipts, strict=True):
+            subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
+                [git, "clone", "--no-local", str(ROOT), str(clone)],
+                check=True,
+                capture_output=True,
+            )
+            build_candidate(clone, stage, receipt)
 
-        expected = {
-            item.role: (item.sha256, item.size) for item in committed.artifacts
+        assert receipts[0].read_bytes() == receipts[1].read_bytes()
+        first_files = {
+            path.relative_to(stages[0]): path.read_bytes()
+            for path in stages[0].rglob("*")
+            if path.is_file()
         }
-        actual = {
-            item.role: (item.sha256, item.size) for item in rebuilt.artifacts
+        second_files = {
+            path.relative_to(stages[1]): path.read_bytes()
+            for path in stages[1].rglob("*")
+            if path.is_file()
         }
-        assert actual == expected
-        assert rebuilt.manifest == committed.manifest
-        assert rebuilt.checksums == committed.checksums
-        assert rebuilt.content_sha256 == committed.content_sha256
+        assert first_files == second_files
 
         for role in (ArtifactRole.WHEEL, ArtifactRole.SDIST):
             result = consume_candidate(
-                root=clone,
-                stage=stage,
-                receipt_path=committed_path,
+                root=clones[1],
+                stage=stages[1],
+                receipt_path=receipts[0],
                 artifact_role=role,
                 environment=temporary_root / f"consumer-{role.value}",
             )

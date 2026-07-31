@@ -159,8 +159,10 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     generated `_version.py`, making the committed receipt dependent on prior
     checkout state. The build now removes that state before and after packaging,
     pins the byte-affecting Python, uv and PEP 517 toolchain, records those
-    constraints in provenance, and verifies a clean clone directly against the
-    committed receipt before exercising both consumer paths.
+    constraints in provenance, and verifies byte-identical independent clean
+    clones before exercising both consumer paths. A follow-up candidate receipt
+    must be generated from the merged remediation commit so its source identity
+    is reachable without relying on a synthetic pull-request merge.
 - [x] Task: Verify dataset cards, Croissant records, checksums and GitHub/Hugging Face/Zenodo/OSF identifier links without publishing restricted data ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
   - The content-bound publication-metadata receipt verifies cards, Croissant,
     checksums, restricted-data boundaries and non-overlapping object roles.
