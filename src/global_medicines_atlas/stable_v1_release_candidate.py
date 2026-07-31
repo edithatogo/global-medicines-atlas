@@ -57,9 +57,8 @@ _REQUIRED_REFERENCE_ROLES = frozenset({
 })
 _REQUIRED_COMMANDS = frozenset({
     "verify-candidate",
-    "install-wheel",
-    "install-sdist",
-    "probe-installed-version",
+    "verify-sdist-consumer",
+    "verify-wheel-consumer",
 })
 _FORBIDDEN_COMMAND_FRAGMENTS = (
     "actions/attest",
@@ -221,7 +220,7 @@ class StableV1ReleaseCandidateReceipt(FrozenModel):
         min_length=11, max_length=11
     )
     verification_commands: tuple[VerificationCommand, ...] = Field(
-        min_length=4, max_length=4
+        min_length=3, max_length=3
     )
     state: CandidateState = Field(default_factory=CandidateState)
     limitations: tuple[str, ...] = Field(min_length=4)

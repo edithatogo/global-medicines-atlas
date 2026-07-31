@@ -11,6 +11,7 @@ import zipfile
 from pathlib import Path
 
 import pytest
+import scripts.build_stable_v1_release_candidate as candidate_script
 from jsonschema import Draft202012Validator
 from pydantic import ValidationError
 from scripts.build_stable_v1_release_candidate import (
@@ -18,6 +19,8 @@ from scripts.build_stable_v1_release_candidate import (
     build_provenance_references,
     built_wheel_version,
     canonicalize_sbom,
+    consume_candidate,
+    portable_venv_python,
     verification_commands,
 )
 
@@ -343,6 +346,274 @@ def test_verification_commands_cannot_publish_tag_or_sign(
             argv=command,
             expected_result="never",
         )
+
+
+def test_verification_commands_create_independent_portable_consumers() -> None:
+    commands = verification_commands("candidate.whl", "candidate.tar.gz")
+    by_id = {command.command_id: command for command in commands}
+
+    assert set(by_id) == {
+        "verify-candidate",
+        "verify-sdist-consumer",
+        "verify-wheel-consumer",
+    }
+    for role in ("wheel", "sdist"):
+        command = by_id[f"verify-{role}-consumer"]
+        assert "consume" in command.argv
+        assert command.argv[command.argv.index("--artifact") + 1] == role
+        environment = command.argv[command.argv.index("--environment") + 1]
+        assert environment == f"build/stable-v1/consumer-{role}"
+        assert not any(
+            ".candidate-venv/python" in part for part in command.argv
+        )
+
+
+def test_portable_venv_python_supports_posix_and_windows_layouts(
+    tmp_path: Path,
+) -> None:
+    posix = tmp_path / "posix"
+    posix_python = posix / "bin/python"
+    posix_python.parent.mkdir(parents=True)
+    posix_python.write_bytes(b"")
+    assert portable_venv_python(posix) == posix_python
+
+    windows = tmp_path / "windows"
+    windows_python = windows / "Scripts/python.exe"
+    windows_python.parent.mkdir(parents=True)
+    windows_python.write_bytes(b"")
+    assert portable_venv_python(windows) == windows_python
+
+    with pytest.raises(ReleaseCandidateError, match="interpreter layout"):
+        portable_venv_python(tmp_path / "missing")
+
+
+def test_consumer_probe_creates_and_reinstalls_exact_artifact(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, stage, receipt = _package(tmp_path)
+    receipt_path = tmp_path / "receipt.json"
+    receipt_path.write_bytes(receipt.canonical_bytes())
+    environment = tmp_path / "consumer"
+    calls: list[tuple[str, ...]] = []
+
+    def fake_run(
+        cwd: Path,
+        *arguments: str,
+        environment: dict[str, str] | None = None,
+    ) -> bytes:
+        del cwd, environment
+        calls.append(arguments)
+        if arguments[:2] == ("uv", "venv"):
+            python = Path(arguments[-1]) / "bin/python"
+            python.parent.mkdir(parents=True)
+            python.write_bytes(b"")
+        if arguments and arguments[0].endswith("python") and "-c" in arguments:
+            return json.dumps({
+                "api": "passed",
+                "metadata_version": VERSION,
+                "openapi_paths": 1,
+                "package_version": VERSION,
+            }).encode()
+        return b""
+
+    monkeypatch.setattr(
+        "scripts.build_stable_v1_release_candidate._run", fake_run
+    )
+
+    evidence = consume_candidate(
+        root=root,
+        stage=stage,
+        receipt_path=receipt_path,
+        artifact_role=ArtifactRole.WHEEL,
+        environment=environment,
+    )
+
+    assert evidence["state"] == "passed"
+    assert evidence["artifact_role"] == "wheel"
+    assert sum(call[:3] == ("uv", "pip", "install") for call in calls) == 2
+    assert any("--reinstall" in call for call in calls)
+    assert any(
+        call[-2:] == ("global_medicines_atlas.cli", "--help") for call in calls
+    )
+
+
+def test_consumer_probe_rejects_existing_environment(tmp_path: Path) -> None:
+    root, stage, receipt = _package(tmp_path)
+    receipt_path = tmp_path / "receipt.json"
+    receipt_path.write_bytes(receipt.canonical_bytes())
+    environment = tmp_path / "consumer"
+    environment.mkdir()
+
+    with pytest.raises(ReleaseCandidateError, match="must not already exist"):
+        consume_candidate(
+            root=root,
+            stage=stage,
+            receipt_path=receipt_path,
+            artifact_role=ArtifactRole.SDIST,
+            environment=environment,
+        )
+
+
+@pytest.mark.parametrize(
+    ("payload", "message"),
+    [
+        (b"{", "valid JSON"),
+        (b"[]", "one JSON object"),
+        (
+            json.dumps({
+                "api": "failed",
+                "metadata_version": VERSION,
+                "openapi_paths": 1,
+                "package_version": VERSION,
+            }).encode(),
+            "did not match",
+        ),
+    ],
+)
+def test_consumer_probe_payload_fails_closed(
+    payload: bytes, message: str
+) -> None:
+    with pytest.raises(ReleaseCandidateError, match=message):
+        candidate_script._parse_consumer_probe(payload, VERSION)
+
+
+def test_consumer_probe_rejects_changed_reinstall_result(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, stage, receipt = _package(tmp_path)
+    receipt_path = tmp_path / "receipt.json"
+    receipt_path.write_bytes(receipt.canonical_bytes())
+    probe_count = 0
+
+    def fake_run(
+        cwd: Path,
+        *arguments: str,
+        environment: dict[str, str] | None = None,
+    ) -> bytes:
+        nonlocal probe_count
+        del cwd, environment
+        if arguments[:2] == ("uv", "venv"):
+            python = Path(arguments[-1]) / "bin/python"
+            python.parent.mkdir(parents=True)
+            python.write_bytes(b"")
+        if arguments and arguments[0].endswith("python") and "-c" in arguments:
+            probe_count += 1
+            return json.dumps({
+                "api": "passed",
+                "metadata_version": VERSION,
+                "openapi_paths": probe_count,
+                "package_version": VERSION,
+            }).encode()
+        return b""
+
+    monkeypatch.setattr(candidate_script, "_run", fake_run)
+
+    with pytest.raises(ReleaseCandidateError, match="changed after reinstall"):
+        consume_candidate(
+            root=root,
+            stage=stage,
+            receipt_path=receipt_path,
+            artifact_role=ArtifactRole.WHEEL,
+            environment=Path("build/consumer"),
+        )
+
+
+def test_packaged_text_evidence_rejects_crlf(tmp_path: Path) -> None:
+    for relative in candidate_script._PACKAGED_TEXT_SAMPLES:
+        path = tmp_path / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(b"canonical\n")
+    first = tmp_path / candidate_script._PACKAGED_TEXT_SAMPLES[0]
+    first.write_bytes(b"not\r\ncanonical\r\n")
+
+    with pytest.raises(ReleaseCandidateError, match="not canonical LF"):
+        candidate_script._packaged_text_evidence(tmp_path)
+
+
+def test_dirty_source_and_failed_subprocess_are_fail_closed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(candidate_script, "_git", lambda *_args: "dirty")
+    with pytest.raises(ReleaseCandidateError, match="clean Git worktree"):
+        candidate_script._assert_clean_source(tmp_path)
+
+    error = subprocess.CalledProcessError(
+        1, ["candidate-command"], stderr=b"expected failure"
+    )
+    monkeypatch.setattr(
+        candidate_script.subprocess,
+        "run",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(error),
+    )
+    with pytest.raises(ReleaseCandidateError, match="expected failure"):
+        candidate_script._run(tmp_path, "candidate-command")
+
+
+def test_main_routes_reproduce_consume_build_and_verify(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    evidence = {"content_sha256": "a" * 64, "state": "passed"}
+    monkeypatch.setattr(
+        candidate_script,
+        "clean_detached_reproducibility",
+        lambda _root: evidence,
+    )
+    assert (
+        candidate_script.main([
+            "reproduce",
+            "--root",
+            str(tmp_path),
+            "--output",
+            "evidence.json",
+        ])
+        == 0
+    )
+    assert json.loads((tmp_path / "evidence.json").read_text()) == evidence
+
+    monkeypatch.setattr(
+        candidate_script,
+        "consume_candidate",
+        lambda **_kwargs: {"artifact_role": "wheel", "state": "passed"},
+    )
+    assert (
+        candidate_script.main([
+            "consume",
+            "--root",
+            str(tmp_path),
+            "--stage",
+            "stage",
+            "--receipt",
+            "receipt.json",
+            "--artifact",
+            "wheel",
+            "--environment",
+            "consumer",
+        ])
+        == 0
+    )
+
+    monkeypatch.setattr(
+        candidate_script, "build_candidate", lambda *_args: "b" * 64
+    )
+    monkeypatch.setattr(
+        candidate_script, "verify_candidate", lambda *_args: "c" * 64
+    )
+    for command, digest in (("build", "b" * 64), ("verify", "c" * 64)):
+        assert (
+            candidate_script.main([
+                command,
+                "--root",
+                str(tmp_path),
+                "--stage",
+                "stage",
+                "--receipt",
+                "receipt.json",
+            ])
+            == 0
+        )
+        assert digest in capsys.readouterr().out
 
 
 def test_tampered_payload_fails_even_if_receipt_is_unchanged(
