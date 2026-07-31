@@ -216,6 +216,14 @@ The harness should provide independently executable lanes for:
 - End-to-end tests covering complete user-visible workflows.
 - Smoke tests for installation, CLI, data access, and deployed surfaces.
 - Property-based tests for parsers, normalization, matching, schemas, and round trips.
+- Metamorphic tests for transformations where a complete expected-output oracle
+  is impractical, including presentation invariance, permutation invariance,
+  round trips and cross-engine relations.
+- Consumer/provider contract tests for versioned APIs, schemas, adapters and
+  publication boundaries, with additive-change and breaking-change semantics.
+- Deterministic simulation testing (DST) for retry, failure, recovery,
+  escalation and other event-driven state transitions using explicit clocks
+  and replayable schedules.
 - Mutation testing with bounded timeouts and a recorded mutation score.
 - Fuzz and malformed-input tests.
 - Golden and negative-control fixtures.
@@ -256,7 +264,9 @@ GitHub Actions should include:
 - Mojo stable validation on Linux.
 - Mojo nightly compatibility canary with clearly classified blocking semantics.
 - Platform-appropriate smoke testing.
-- Separate unit, integration, end-to-end, smoke, property, parity, benchmark, profiling, and mutation lanes.
+- Separate unit, integration, end-to-end, smoke, property, metamorphic,
+  contract, deterministic-simulation, parity, benchmark, profiling and
+  mutation lanes.
 - A dedicated test-goblin lane combining Hypothesis, mutmut, and pytest-randomly.
 - A fast `ty` lane and a formal BasedPyright lane.
 - Coverage generation above 90% and Codecov upload/status enforcement.

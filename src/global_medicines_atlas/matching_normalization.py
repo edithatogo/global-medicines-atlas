@@ -33,8 +33,10 @@ class MatchingFeatures(FrozenModel):
     route: NormalizedText | None = None
 
 
-def _comparison_key(value: NormalizedText) -> str:
-    return value.comparison_text
+def _comparison_key(value: NormalizedText) -> tuple[str, str, str]:
+    """Order normalized collisions without retaining source input order."""
+
+    return (value.comparison_text, value.unicode_text, value.source)
 
 
 def normalize_text(value: str) -> NormalizedText:
