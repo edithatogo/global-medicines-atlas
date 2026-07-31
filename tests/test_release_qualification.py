@@ -12,6 +12,7 @@ import pytest
 from scripts.qualify_release import (
     QualificationError,
     build_governed_package,
+    is_canonical_release_tag,
     qualify_release_assets,
     verify_runtime_sbom,
 )
@@ -19,6 +20,19 @@ from scripts.qualify_release import (
 VERSION = "0.7.0"
 TAG = f"v{VERSION}"
 ROOT = Path(__file__).resolve().parents[1]
+
+
+@pytest.mark.parametrize(
+    "tag",
+    ["v1.0.0", "v1.0.0-rc.1", "v1.0.0a1", "v1.0.0b2", "v1.0.0rc1"],
+)
+def test_canonical_release_tags_include_pep440_prereleases(tag: str) -> None:
+    assert is_canonical_release_tag(tag)
+
+
+@pytest.mark.parametrize("tag", ["1.0.0rc1", "v1.0rc1", "v1.0.0RC1"])
+def test_noncanonical_release_tags_are_rejected(tag: str) -> None:
+    assert not is_canonical_release_tag(tag)
 
 
 def _run(root: Path, *arguments: str) -> str:
