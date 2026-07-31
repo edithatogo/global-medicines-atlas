@@ -20,6 +20,8 @@ from .product_contracts import (
     PRODUCT_EVIDENCE_VERSION,
     ComparisonQuery,
     ComparisonResponse,
+    ConceptSearchQuery,
+    ConceptSearchResponse,
     CoverageQuery,
     CoverageResponse,
     ErrorCode,
@@ -46,9 +48,22 @@ app = typer.Typer(
     no_args_is_help=True,
     pretty_exceptions_enable=False,
 )
+concept_app = typer.Typer(add_completion=False, no_args_is_help=True)
+jurisdiction_app = typer.Typer(add_completion=False, no_args_is_help=True)
+source_app = typer.Typer(add_completion=False, no_args_is_help=True)
+app.add_typer(concept_app, name="concept", help="Discover canonical concepts.")
+app.add_typer(
+    jurisdiction_app, name="jurisdiction", help="Inspect jurisdictions."
+)
+app.add_typer(source_app, name="source", help="Inspect governed sources.")
 _CURSOR_ENV = "GMA_CURSOR_" + "SECRET"
 _MINIMUM_CURSOR_KEY_BYTES = 16
-type ProductResponse = ComparisonResponse | CoverageResponse | EvidenceResponse
+type ProductResponse = (
+    ComparisonResponse
+    | ConceptSearchResponse
+    | CoverageResponse
+    | EvidenceResponse
+)
 type PageAction = Callable[[str | None, int], ProductResponse]
 
 DatabaseOption = Annotated[
@@ -191,6 +206,26 @@ def _collection(payload: dict[str, Any]) -> tuple[str, list[object]]:
     return collection_name, cast("list[object]", rows_object)
 
 
+def _emit_records(
+    collection: str,
+    records: list[dict[str, Any]],
+    output: ExportRequest,
+) -> None:
+    payload = {
+        "metadata": {
+            "api_version": API_VERSION,
+            "generated_at": datetime.now(UTC).isoformat(),
+            "page": {
+                "limit": len(records) or 1,
+                "returned": len(records),
+                "next_cursor": None,
+            },
+        },
+        collection: records,
+    }
+    _emit(payload, output)
+
+
 def _run(
     operation: str,
     action: PageAction,
@@ -305,6 +340,114 @@ def comparison(
         output,
         cursor=cursor,
         page_limit=limit,
+    )
+
+
+@concept_app.command("search")
+def concept_search(
+    database: DatabaseOption,
+    query_text: Annotated[str, typer.Argument(help="Medicine name or ID.")],
+    jurisdiction: Annotated[
+        list[str] | None,
+        typer.Option("--jurisdiction", help="Repeat per country."),
+    ] = None,
+    allowed_root: AllowedRootOption = None,
+    limit: LimitOption = 50,
+    cursor: CursorOption = None,
+    format_: FormatOption = ExportFormat.JSON,
+    max_rows: MaxRowsOption = 1_000,
+) -> None:
+    """Search canonical concepts deterministically."""
+    output = ExportRequest(format=format_, max_rows=max_rows)
+    query = ConceptSearchQuery(
+        query=query_text,
+        jurisdictions=tuple(jurisdiction or ()),
+        limit=limit,
+        cursor=cursor,
+    )
+    service = _service(database, allowed_root)
+    _run(
+        "concept search",
+        lambda page_cursor, page_limit: service.search_concepts(
+            query.model_copy(
+                update={"cursor": page_cursor, "limit": page_limit},
+            )
+        ),
+        output,
+        cursor=cursor,
+        page_limit=limit,
+    )
+
+
+@concept_app.command("show")
+def concept_show(
+    database: DatabaseOption,
+    concept_id: Annotated[str, typer.Argument(help="Canonical concept ID.")],
+    allowed_root: AllowedRootOption = None,
+    format_: FormatOption = ExportFormat.JSON,
+) -> None:
+    """Show one canonical concept."""
+    try:
+        detail = _service(database, allowed_root).concept_detail(concept_id)
+    except QueryServiceError:
+        _fail(ErrorCode.NOT_FOUND, "The canonical concept was not found")
+    record = detail.model_dump(mode="json")
+    if format_ is ExportFormat.JSON:
+        typer.echo(json.dumps(record, sort_keys=True, separators=(",", ":")))
+    else:
+        typer.echo(
+            json.dumps(
+                {"record": record},
+                sort_keys=True,
+                separators=(",", ":"),
+            )
+        )
+
+
+@jurisdiction_app.command("list")
+def jurisdiction_list(
+    database: DatabaseOption,
+    allowed_root: AllowedRootOption = None,
+    format_: FormatOption = ExportFormat.JSON,
+    max_rows: MaxRowsOption = 1_000,
+) -> None:
+    """List measured jurisdiction catalogue entries."""
+    output = ExportRequest(format=format_, max_rows=max_rows)
+    try:
+        rows = _service(database, allowed_root).jurisdictions()
+    except QueryServiceError:
+        _fail(
+            ErrorCode.SERVICE_UNAVAILABLE,
+            "The read-only query service is unavailable",
+        )
+    _emit_records(
+        "jurisdictions",
+        [row.model_dump(mode="json") for row in rows],
+        output,
+    )
+
+
+@source_app.command("list")
+def source_list(
+    database: DatabaseOption,
+    jurisdiction: Annotated[str | None, typer.Option("--jurisdiction")] = None,
+    allowed_root: AllowedRootOption = None,
+    format_: FormatOption = ExportFormat.JSON,
+    max_rows: MaxRowsOption = 1_000,
+) -> None:
+    """List governed source catalogue entries."""
+    output = ExportRequest(format=format_, max_rows=max_rows)
+    try:
+        rows = _service(database, allowed_root).sources(jurisdiction)
+    except QueryServiceError:
+        _fail(
+            ErrorCode.SERVICE_UNAVAILABLE,
+            "The read-only query service is unavailable",
+        )
+    _emit_records(
+        "sources",
+        [row.model_dump(mode="json") for row in rows],
+        output,
     )
 
 

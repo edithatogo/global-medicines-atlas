@@ -18,6 +18,9 @@ from .product_contracts import (
     PRODUCT_EVIDENCE_VERSION,
     ComparisonQuery,
     ComparisonResponse,
+    ConceptDetail,
+    ConceptSearchQuery,
+    ConceptSearchResponse,
     CoverageQuery,
     CoverageResponse,
     ErrorCode,
@@ -29,6 +32,8 @@ from .product_contracts import (
     HealthCheck,
     HealthResponse,
     HealthState,
+    JurisdictionSummary,
+    SourceSummary,
 )
 from .query_service import (
     InvalidCursorError,
@@ -140,7 +145,9 @@ def _cache_headers(response: Response) -> None:
     response.headers["vary"] = "accept"
 
 
-def create_app(service: ReadOnlyQueryService) -> FastAPI:
+def create_app(  # ruff: ignore[too-many-statements] - route registration is intentionally centralized.
+    service: ReadOnlyQueryService,
+) -> FastAPI:
     """Create an API application with an explicitly injected query service."""
 
     app = FastAPI(
@@ -236,6 +243,136 @@ def create_app(service: ReadOnlyQueryService) -> FastAPI:
     app.add_api_route(
         f"{API_BASE_PATH}/comparisons",
         comparisons,
+        methods=["HEAD"],
+        response_model=None,
+        include_in_schema=False,
+    )
+
+    @app.api_route(
+        f"{API_BASE_PATH}/concepts",
+        methods=["GET"],
+        response_model=ConceptSearchResponse,
+        responses=_ERROR_RESPONSES,
+        tags=["concepts"],
+        summary="Discover canonical medicine concepts",
+    )
+    def concepts(
+        request: Request,
+        response: Response,
+        q: Annotated[str, Query(min_length=1, max_length=200)],
+        jurisdictions: Annotated[
+            list[str] | None,
+            Query(min_length=1, max_length=50),
+        ] = None,
+        limit: Annotated[int, Query(ge=1, le=MAX_PAGE_SIZE)] = 50,
+        cursor: Annotated[
+            str | None,
+            Query(min_length=16, max_length=2048, pattern=r"^[A-Za-z0-9_-]+$"),
+        ] = None,
+    ) -> ConceptSearchResponse | JSONResponse:
+        query = _query_or_error(
+            request,
+            lambda: ConceptSearchQuery(
+                query=q,
+                jurisdictions=tuple(jurisdictions or ()),
+                limit=limit,
+                cursor=cursor,
+            ),
+        )
+        if isinstance(query, JSONResponse):
+            return query
+        result = _service_or_error(
+            request, lambda: service.search_concepts(query)
+        )
+        if not isinstance(result, JSONResponse):
+            _cache_headers(response)
+        return result
+
+    app.add_api_route(
+        f"{API_BASE_PATH}/concepts",
+        concepts,
+        methods=["HEAD"],
+        response_model=None,
+        include_in_schema=False,
+    )
+
+    @app.api_route(
+        f"{API_BASE_PATH}/concepts/{{concept_id}}",
+        methods=["GET"],
+        response_model=ConceptDetail,
+        responses=_ERROR_RESPONSES,
+        tags=["concepts"],
+        summary="Inspect one canonical medicine concept",
+    )
+    def concept_detail(
+        request: Request,
+        response: Response,
+        concept_id: str,
+    ) -> ConceptDetail | JSONResponse:
+        result = _service_or_error(
+            request, lambda: service.concept_detail(concept_id)
+        )
+        if not isinstance(result, JSONResponse):
+            _cache_headers(response)
+        return result
+
+    app.add_api_route(
+        f"{API_BASE_PATH}/concepts/{{concept_id}}",
+        concept_detail,
+        methods=["HEAD"],
+        response_model=None,
+        include_in_schema=False,
+    )
+
+    @app.api_route(
+        f"{API_BASE_PATH}/jurisdictions",
+        methods=["GET"],
+        response_model=tuple[JurisdictionSummary, ...],
+        responses=_ERROR_RESPONSES,
+        tags=["catalogue"],
+        summary="List measured jurisdiction catalogue coverage",
+    )
+    def jurisdictions(
+        request: Request, response: Response
+    ) -> tuple[JurisdictionSummary, ...] | JSONResponse:
+        result = _service_or_error(request, service.jurisdictions)
+        if not isinstance(result, JSONResponse):
+            _cache_headers(response)
+        return result
+
+    app.add_api_route(
+        f"{API_BASE_PATH}/jurisdictions",
+        jurisdictions,
+        methods=["HEAD"],
+        response_model=None,
+        include_in_schema=False,
+    )
+
+    @app.api_route(
+        f"{API_BASE_PATH}/sources",
+        methods=["GET"],
+        response_model=tuple[SourceSummary, ...],
+        responses=_ERROR_RESPONSES,
+        tags=["catalogue"],
+        summary="List governed medicine sources",
+    )
+    def sources(
+        request: Request,
+        response: Response,
+        jurisdiction: Annotated[
+            str | None, Query(min_length=2, max_length=3)
+        ] = None,
+    ) -> tuple[SourceSummary, ...] | JSONResponse:
+        result = _service_or_error(
+            request, lambda: service.sources(jurisdiction)
+        )
+        if not isinstance(result, JSONResponse):
+            _cache_headers(response)
+        return result
+
+    app.add_api_route(
+        f"{API_BASE_PATH}/sources",
+        sources,
         methods=["HEAD"],
         response_model=None,
         include_in_schema=False,
