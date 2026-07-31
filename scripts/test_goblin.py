@@ -141,6 +141,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_concept_query_service.py",
         "tests/test_concept_api.py",
         "tests/test_concept_cli.py",
+        "tests/test_consumer_qualification.py",
         "tests/test_product_api.py",
         "tests/test_product_cli.py",
         "tests/test_canada_native_adapters.py",
@@ -377,6 +378,43 @@ def _validate_setup_versions(
         raise ValueError(".python-version differs from governed Python")
 
 
+def _validate_runners(
+    documents: dict[Path, object], versions: dict[str, str]
+) -> None:
+    occurrences = [
+        value
+        for document in documents.values()
+        for value in recursive_values(document, key="runs-on")
+    ]
+    matrix_expression = "${{ matrix.runner }}"
+    allowed = {versions["runner"], matrix_expression}
+    drift = [value for value in occurrences if value not in allowed]
+    if not occurrences or drift:
+        raise ValueError(f"workflow runners are not governed: {drift}")
+
+    contract = json.loads(
+        (
+            PROJECT_ROOT
+            / "quality/qualifications/stable-v1-consumer-compatibility.json"
+        ).read_text(encoding="utf-8")
+    )
+    contracted = set(cast("dict[str, str]", contract["runners"]).values())
+    workflow = cast(
+        "dict[str, Any]",
+        documents[WORKFLOWS_PATH / "test-goblin.yml"],
+    )
+    jobs = cast("dict[str, Any]", workflow["jobs"])
+    consumer = cast("dict[str, Any]", jobs["consumer-compatibility"])
+    strategy = cast("dict[str, Any]", consumer["strategy"])
+    matrix = cast("dict[str, Any]", strategy["matrix"])
+    included = cast("list[dict[str, str]]", matrix["include"])
+    observed = {item["runner"] for item in included}
+    if observed != contracted:
+        raise ValueError(
+            f"consumer runner matrix differs from contract: {observed}"
+        )
+
+
 def _validate_gitleaks_contract(
     documents: dict[Path, object],
     versions: dict[str, str],
@@ -434,12 +472,7 @@ def validate_tool_versions() -> dict[str, str]:
     workflow_text = "\n".join(
         path.read_text(encoding="utf-8") for path in workflow_paths()
     )
-    _require_exact_occurrences(
-        documents,
-        key="runs-on",
-        expected=versions["runner"],
-        label="runner",
-    )
+    _validate_runners(documents, versions)
     _validate_setup_versions(documents, versions, workflow_text)
     _validate_gitleaks_contract(documents, versions, checksums)
     _validate_mojo_contract(versions)
@@ -676,9 +709,9 @@ def strict() -> None:
 
 
 def package() -> None:
-    """Build wheel and source distribution with VCS-derived metadata."""
+    """Qualify clean wheel and source-distribution consumers."""
 
-    run(["uv", "build", "--out-dir", "dist"])
+    run([sys.executable, "scripts/qualify_clean_consumer.py"])
 
 
 def profile() -> None:

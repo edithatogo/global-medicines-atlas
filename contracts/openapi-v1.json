@@ -1,0 +1,19 @@
+{
+  "info": {
+    "description": "Read-only evidence-backed regulatory, funding, and formulary comparisons. Absence is never interpreted as a negative status.",
+    "title": "Global Medicines Atlas API",
+    "version": "0.6"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/comparisons": {"get": {"operationId": "comparisons_api_v1_comparisons_get"}},
+    "/api/v1/concepts": {"get": {"operationId": "concepts_api_v1_concepts_get"}},
+    "/api/v1/concepts/{concept_id}": {"get": {"operationId": "concept_detail_api_v1_concepts__concept_id__get"}},
+    "/api/v1/coverage": {"get": {"operationId": "coverage_api_v1_coverage_get"}},
+    "/api/v1/evidence": {"get": {"operationId": "evidence_api_v1_evidence_get"}},
+    "/api/v1/health": {"get": {"operationId": "health_api_v1_health_get"}},
+    "/api/v1/jurisdictions": {"get": {"operationId": "jurisdictions_api_v1_jurisdictions_get"}},
+    "/api/v1/readiness": {"get": {"operationId": "readiness_api_v1_readiness_get"}},
+    "/api/v1/sources": {"get": {"operationId": "sources_api_v1_sources_get"}}
+  }
+}

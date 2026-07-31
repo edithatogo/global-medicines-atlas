@@ -14,8 +14,8 @@
       "gate_id": "supported-platforms",
       "scope": "Clean wheel and sdist consumers on Windows, Linux, and macOS",
       "state": "unverified",
-      "evidence": ["pyproject.toml", "docs/qualification/stable-v1-contract.md"],
-      "blocker": "Clean-installed consumer rehearsals have not passed on every candidate platform."
+      "evidence": ["pyproject.toml", "quality/qualifications/stable-v1-consumer-compatibility.json", ".github/workflows/test-goblin.yml"],
+      "blocker": "The contract and matrix are executable, but hosted receipts have not yet passed on every candidate platform."
     },
     {
       "gate_id": "semantic-optional-boundary",

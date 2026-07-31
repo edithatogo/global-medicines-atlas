@@ -68,6 +68,12 @@ uv run --python 3.14.6 --group dev python scripts/test_goblin.py package
 uv run --python 3.14.6 --group dev python scripts/test_goblin.py profile
 ```
 
+The `package` profile builds both wheel and source distribution, installs each
+into a disposable core-only Python 3.14 environment, verifies metadata and
+dynamic version identity, exercises import/CLI/API/OpenAPI behavior, reinstalls
+the artifact, and writes `build/quality-receipts/consumer.json`. CI repeats the
+same rehearsal on Windows, Linux, and macOS with platform-specific receipts.
+
 Run the mutation profile on Linux CI or in WSL:
 
 ```bash

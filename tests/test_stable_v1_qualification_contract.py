@@ -24,6 +24,8 @@ SUPPORT_SCHEMA = ROOT / "schemas/stable-v1-support-readiness-v1.json"
 SUPPORT = ROOT / "quality/qualifications/stable-v1-support-readiness.json"
 SOURCE_MATURITY_SCHEMA = ROOT / "schemas/stable-v1-source-maturity-v1.json"
 SOURCE_MATURITY = ROOT / "quality/qualifications/stable-v1-source-maturity.json"
+CONSUMER_SCHEMA = ROOT / "schemas/stable-v1-consumer-compatibility-v1.json"
+CONSUMER = ROOT / "quality/qualifications/stable-v1-consumer-compatibility.json"
 
 
 def _load(path: Path) -> dict[str, Any]:
@@ -50,8 +52,28 @@ def test_contract_schemas_are_valid_draft_2020_12() -> None:
         REHEARSAL_SCHEMA,
         SUPPORT_SCHEMA,
         SOURCE_MATURITY_SCHEMA,
+        CONSUMER_SCHEMA,
     ):
         _validator(path)
+
+
+def test_consumer_compatibility_contract_is_complete_and_fail_closed() -> None:
+    contract = _load(CONSUMER)
+    _validator(CONSUMER_SCHEMA).validate(contract)
+    assert set(contract["platforms"]) == {"linux", "macos", "windows"}
+    assert contract["runners"] == {
+        "linux": "ubuntu-24.04",
+        "macos": "macos-15",
+        "windows": "windows-2025",
+    }
+    assert set(contract["artifacts"]) == {"wheel", "sdist"}
+    assert {
+        "metadata",
+        "reinstall",
+        "openapi_compatibility",
+        "core_fallback",
+    } <= set(contract["probes"])
+    assert contract["state"] == "contracted"
 
 
 def test_projection_validates_and_traces_every_must_requirement() -> None:
