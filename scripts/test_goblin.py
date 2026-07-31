@@ -758,7 +758,12 @@ def mutation() -> None:
             "mutmut 3 requires fork support. Run the mutation profile in WSL "
             "or use the authoritative Linux CI lane."
         )
-    for relative in ("scripts", "schemas"):
+    for relative in (
+        "scripts",
+        "schemas",
+        "contracts",
+        "quality/qualifications",
+    ):
         (PROJECT_ROOT / "mutants" / relative).mkdir(
             parents=True,
             exist_ok=True,

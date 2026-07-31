@@ -300,6 +300,10 @@ pytest_add_cli_args_test_selection = [
 also_copy = [
   "src/global_medicines_atlas/",
   "schemas/canonical-medicine-v2.json",
+  "schemas/comparison-validity-v1.json",
+  "schemas/publication-identity-registry-v1.json",
+  "quality/qualifications/publication-identities.json",
+  "contracts/openapi-v1.json",
   "tests/fixtures/",
   "scripts/check_source_health.py",
   "scripts/validate_publication_identities.py",
