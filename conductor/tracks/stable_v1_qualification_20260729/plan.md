@@ -26,7 +26,12 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 - [~] Task: Contract comparison-validity semantics for granularity, indication, population, mapping, normalization, material mismatches and inappropriate comparisons ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
   - Vocabulary added as `schemas/comparison-validity-v1.json`; runtime adoption
     and end-to-end qualification remain open.
-- [ ] Task: Contract bounded concept discovery, catalog APIs, CLI commands, accessible autocomplete and match explanations ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
+- [~] Task: Contract bounded concept discovery, catalog APIs, CLI commands, accessible autocomplete and match explanations ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
+  - Deterministic core contracts and the read-only DuckDB query service now
+    provide bounded exact-identifier and normalized lexical discovery, concept
+    detail, jurisdiction/source catalogues, explicit non-equivalence match
+    explanations, and signed keyset cursors. API, CLI, atlas autocomplete, and
+    semantic augmentation remain later increments.
 - [ ] Task: Define clean-wheel consumer, supported-platform, package-metadata and public-API compatibility gates ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
 - [ ] Task: Define core and optional-semantic installation boundaries, LanceDB index/model identity and deterministic fallback gates ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
 - [ ] Task: Define non-overlapping GitHub, Hugging Face, Zenodo and OSF dataset/protocol identities and licence gates ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))

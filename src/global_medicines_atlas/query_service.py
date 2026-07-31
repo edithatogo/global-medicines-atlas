@@ -22,27 +22,40 @@ from .product_contracts import (
     AsOfClocks,
     ComparisonQuery,
     ComparisonResponse,
+    ConceptDetail,
+    ConceptIdentifier,
+    ConceptName,
+    ConceptSearchQuery,
+    ConceptSearchResponse,
+    ConceptSummary,
     CoverageItem,
     CoverageQuery,
     CoverageResponse,
+    DiscoveryMetadata,
     EvidenceAvailability,
     EvidenceDimension,
     EvidenceItem,
     EvidenceQuery,
     EvidenceResponse,
+    JurisdictionSummary,
+    MatchExplanation,
+    MatchMethod,
     PageMetadata,
     ProductConclusion,
     ProductState,
     ProvenanceLink,
     ResponseMetadata,
+    SourceSummary,
     Terminology,
     Uncertainty,
     UncertaintyLevel,
 )
+from .terminology import normalize_name
 
 _CURSOR_VERSION: Final = 2
 _MINIMUM_SECRET_BYTES: Final = 16
 _CURSOR_SIGNATURE_BYTES: Final = 32
+_DISCOVERY_CURSOR_FIELDS: Final = 3
 _COMPARISON_PROVENANCE_LIMIT: Final = 32
 _REQUIRED_ASSERTION_COLUMNS: Final = frozenset({
     "assertion_id",
@@ -85,6 +98,39 @@ _REQUIRED_KEY_TYPES: Final = {
     ("temporal_coverage", "jurisdiction"): "VARCHAR",
     ("temporal_coverage", "dimension"): "VARCHAR",
     ("temporal_coverage", "assertion_status"): "VARCHAR",
+}
+_CATALOG_TABLES: Final = (
+    "medicine_concepts",
+    "medicine_identifiers",
+    "medicine_names",
+    "medicine_concept_jurisdictions",
+    "medicine_sources",
+)
+_REQUIRED_CATALOG_COLUMNS: Final = {
+    "medicine_concepts": frozenset({
+        "concept_id",
+        "preferred_name",
+        "concept_type",
+    }),
+    "medicine_identifiers": frozenset({
+        "concept_id",
+        "identifier_system",
+        "identifier_value",
+    }),
+    "medicine_names": frozenset({
+        "concept_id",
+        "name",
+        "name_type",
+        "normalized_name",
+    }),
+    "medicine_concept_jurisdictions": frozenset({"concept_id", "jurisdiction"}),
+    "medicine_sources": frozenset({
+        "source_id",
+        "jurisdiction",
+        "authority",
+        "regulatory_system",
+        "funding_system",
+    }),
 }
 
 
@@ -188,6 +234,272 @@ class ReadOnlyQueryService:
                     "canonical DuckDB schema identity changed at runtime"
                 )
             connection.execute("SELECT 1").fetchone()
+
+    def search_concepts(
+        self, query: ConceptSearchQuery
+    ) -> ConceptSearchResponse:
+        """Return exact and normalized lexical candidates in fixed precedence."""
+        normalized = normalize_name(query.query)
+        if not normalized:
+            raise QueryServiceError("query has no searchable characters")
+        fingerprint = self._discovery_fingerprint(query, normalized)
+        after = self._decode_cursor(query.cursor, fingerprint)
+        if after is not None and len(after) != _DISCOVERY_CURSOR_FIELDS:
+            raise InvalidCursorError("cursor does not belong to this query")
+        jurisdictions = sorted(query.jurisdictions)
+        parameters: list[object] = [
+            query.query,
+            query.query,
+            normalized,
+            normalized,
+            jurisdictions,
+            len(jurisdictions) == 0,
+        ]
+        keyset = ""
+        if after is not None:
+            parameters.extend((int(after[0]), after[1], after[2]))
+            keyset = "WHERE (rank, preferred_name, concept_id) > (?, ?, ?)"
+        parameters.append(query.limit + 1)
+        sql = f"""
+            WITH matches AS (
+                SELECT c.concept_id, c.preferred_name, c.concept_type,
+                       0 AS rank, 'exact_concept_id' AS method,
+                       c.concept_id AS matched_value
+                FROM medicine_concepts c
+                WHERE c.concept_id = ?
+                UNION ALL
+                SELECT c.concept_id, c.preferred_name, c.concept_type,
+                       1, 'exact_identifier', i.identifier_value
+                FROM medicine_concepts c
+                JOIN medicine_identifiers i USING (concept_id)
+                WHERE i.identifier_value = ?
+                UNION ALL
+                SELECT c.concept_id, c.preferred_name, c.concept_type,
+                       CASE WHEN n.name_type = 'preferred' THEN 2 ELSE 3 END,
+                       CASE WHEN n.name_type = 'preferred'
+                            THEN 'normalized_preferred_name'
+                            ELSE 'normalized_alias' END,
+                       n.name
+                FROM medicine_concepts c
+                JOIN medicine_names n USING (concept_id)
+                WHERE n.normalized_name = ?
+                   OR starts_with(n.normalized_name, ? || ' ')
+            ),
+            allowed AS (
+                SELECT m.*
+                FROM matches m
+                WHERE ? OR EXISTS (
+                    SELECT 1 FROM medicine_concept_jurisdictions j
+                    WHERE j.concept_id = m.concept_id
+                      AND j.jurisdiction IN (SELECT unnest(?))
+                )
+            ),
+            ranked AS (
+                SELECT * EXCLUDE (candidate_order)
+                FROM (
+                    SELECT *, row_number() OVER (
+                        PARTITION BY concept_id
+                        ORDER BY rank, matched_value
+                    ) AS candidate_order
+                    FROM allowed
+                )
+                WHERE candidate_order = 1
+            )
+            SELECT * FROM ranked
+            {keyset}
+            ORDER BY rank, preferred_name, concept_id
+            LIMIT ?
+        """  # ruff: ignore[hardcoded-sql-expression] - keyset is one of two internal SQL literals.
+        # Boolean precedes list in SQL; keep parameter ordering explicit.
+        parameters[4], parameters[5] = parameters[5], parameters[4]
+        with self._connection() as connection:
+            self._require_catalog(connection)
+            rows = self._fetch_dicts(connection, sql, parameters)
+            page_rows = rows[: query.limit]
+            concepts = tuple(
+                self._concept_summary(connection, row, normalized)
+                for row in page_rows
+            )
+        next_cursor = None
+        if len(rows) > query.limit and page_rows:
+            last = page_rows[-1]
+            next_cursor = self._encode_cursor(
+                fingerprint,
+                (
+                    str(last["rank"]),
+                    str(last["preferred_name"]),
+                    str(last["concept_id"]),
+                ),
+            )
+        return ConceptSearchResponse(
+            metadata=DiscoveryMetadata(
+                generated_at=datetime.now(UTC),
+                page=PageMetadata(
+                    limit=query.limit,
+                    returned=len(concepts),
+                    next_cursor=next_cursor,
+                ),
+            ),
+            concepts=concepts,
+        )
+
+    def concept_detail(self, concept_id: str) -> ConceptDetail:
+        """Return one canonical concept or fail closed when it is unknown."""
+        with self._connection() as connection:
+            self._require_catalog(connection)
+            rows = self._fetch_dicts(
+                connection,
+                """SELECT concept_id, preferred_name, concept_type
+                   FROM medicine_concepts WHERE concept_id = ?""",
+                [concept_id],
+            )
+            if len(rows) != 1:
+                raise QueryServiceError("concept is unknown")
+            row = rows[0]
+            identifiers = self._fetch_dicts(
+                connection,
+                """SELECT identifier_system, identifier_value
+                   FROM medicine_identifiers WHERE concept_id = ?
+                   ORDER BY identifier_system, identifier_value""",
+                [concept_id],
+            )
+            names = self._fetch_dicts(
+                connection,
+                """SELECT name, name_type FROM medicine_names
+                   WHERE concept_id = ? ORDER BY name_type, name""",
+                [concept_id],
+            )
+            jurisdictions = self._concept_jurisdictions(connection, concept_id)
+        return ConceptDetail(
+            concept_id=str(row["concept_id"]),
+            preferred_name=str(row["preferred_name"]),
+            concept_type=str(row["concept_type"]),
+            identifiers=tuple(
+                ConceptIdentifier(
+                    system=str(item["identifier_system"]),
+                    value=str(item["identifier_value"]),
+                )
+                for item in identifiers
+            ),
+            names=tuple(
+                ConceptName(
+                    name=str(item["name"]), name_type=str(item["name_type"])
+                )
+                for item in names
+            ),
+            jurisdictions=jurisdictions,
+        )
+
+    def jurisdictions(self) -> tuple[JurisdictionSummary, ...]:
+        """Return measured catalogue counts, not claims of completeness."""
+        with self._connection() as connection:
+            self._require_catalog(connection)
+            rows = self._fetch_dicts(
+                connection,
+                """SELECT j.jurisdiction,
+                          count(DISTINCT s.source_id) AS source_count,
+                          count(DISTINCT j.concept_id) AS concept_count
+                   FROM medicine_concept_jurisdictions j
+                   LEFT JOIN medicine_sources s
+                     ON s.jurisdiction = j.jurisdiction
+                   GROUP BY j.jurisdiction ORDER BY j.jurisdiction""",
+                [],
+            )
+        return tuple(
+            JurisdictionSummary(
+                jurisdiction=str(row["jurisdiction"]),
+                source_count=int(row["source_count"]),
+                concept_count=int(row["concept_count"]),
+            )
+            for row in rows
+        )
+
+    def sources(
+        self, jurisdiction: str | None = None
+    ) -> tuple[SourceSummary, ...]:
+        """Return deterministic source catalogue entries."""
+        sql = """SELECT source_id, jurisdiction, authority,
+                        regulatory_system, funding_system
+                 FROM medicine_sources"""
+        parameters: list[object] = []
+        if jurisdiction is not None:
+            sql += " WHERE jurisdiction = ?"
+            parameters.append(jurisdiction.strip().upper())
+        sql += " ORDER BY jurisdiction, source_id"
+        with self._connection() as connection:
+            self._require_catalog(connection)
+            rows = self._fetch_dicts(connection, sql, parameters)
+        return tuple(
+            SourceSummary(
+                source_id=str(row["source_id"]),
+                jurisdiction=str(row["jurisdiction"]),
+                authority=str(row["authority"]),
+                regulatory_system=bool(row["regulatory_system"]),
+                funding_system=bool(row["funding_system"]),
+            )
+            for row in rows
+        )
+
+    def _require_catalog(self, connection: duckdb.DuckDBPyConnection) -> None:
+        missing: list[str] = []
+        for table in _CATALOG_TABLES:
+            columns = self._columns(connection, table)
+            required = _REQUIRED_CATALOG_COLUMNS[table]
+            absent = required - columns
+            if absent:
+                missing.append(f"{table}: {', '.join(sorted(absent))}")
+        if missing:
+            raise InvalidDatabaseError(
+                "canonical discovery catalogue is incomplete ("
+                + "; ".join(missing)
+                + ")"
+            )
+
+    @staticmethod
+    def _concept_jurisdictions(
+        connection: duckdb.DuckDBPyConnection, concept_id: str
+    ) -> tuple[str, ...]:
+        rows = connection.execute(
+            """SELECT jurisdiction FROM medicine_concept_jurisdictions
+               WHERE concept_id = ? ORDER BY jurisdiction""",
+            [concept_id],
+        ).fetchall()
+        return tuple(str(row[0]) for row in rows)
+
+    def _concept_summary(
+        self,
+        connection: duckdb.DuckDBPyConnection,
+        row: Mapping[str, Any],
+        normalized_query: str,
+    ) -> ConceptSummary:
+        return ConceptSummary(
+            concept_id=str(row["concept_id"]),
+            preferred_name=str(row["preferred_name"]),
+            concept_type=str(row["concept_type"]),
+            jurisdictions=self._concept_jurisdictions(
+                connection, str(row["concept_id"])
+            ),
+            explanation=MatchExplanation(
+                method=MatchMethod(str(row["method"])),
+                matched_value=str(row["matched_value"]),
+                normalized_query=normalized_query,
+            ),
+        )
+
+    def _discovery_fingerprint(
+        self, query: ConceptSearchQuery, normalized: str
+    ) -> str:
+        canonical = json.dumps(
+            {
+                "operation": "concept_search",
+                "query": normalized,
+                "jurisdictions": sorted(query.jurisdictions),
+                "limit": query.limit,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+        return hashlib.sha256(canonical).hexdigest()
 
     @staticmethod
     def _columns(

@@ -116,6 +116,15 @@ class HealthState(StrEnum):
     UNAVAILABLE = "unavailable"
 
 
+class MatchMethod(StrEnum):
+    """Deterministic candidate-discovery methods, in precedence order."""
+
+    EXACT_CONCEPT_ID = "exact_concept_id"
+    EXACT_IDENTIFIER = "exact_identifier"
+    NORMALIZED_PREFERRED_NAME = "normalized_preferred_name"
+    NORMALIZED_ALIAS = "normalized_alias"
+
+
 class PageRequest(ProductModel):
     """Bounded cursor pagination; offset pagination is intentionally absent."""
 
@@ -177,6 +186,74 @@ class EvidenceQuery(PageRequest, AsOfClocks):
                 "exactly one of assertion_id or concept_id is required",
             )
         return self
+
+
+class ConceptSearchQuery(PageRequest):
+    """Bounded deterministic discovery without semantic equivalence."""
+
+    query: Annotated[
+        str,
+        StringConstraints(strip_whitespace=True, min_length=1, max_length=200),
+    ]
+    jurisdictions: tuple[JurisdictionCode, ...] = Field(
+        default=(), max_length=50
+    )
+
+    @model_validator(mode="after")
+    def unique_jurisdictions(self) -> Self:
+        if len(set(self.jurisdictions)) != len(self.jurisdictions):
+            raise ValueError("jurisdictions must be unique")
+        return self
+
+
+class MatchExplanation(ProductModel):
+    """Why a candidate was returned; never a clinical-equivalence claim."""
+
+    method: MatchMethod
+    matched_value: NonBlank
+    normalized_query: NonBlank
+    establishes_equivalence: Literal[False] = False
+
+
+class ConceptSummary(ProductModel):
+    concept_id: NonBlank
+    preferred_name: NonBlank
+    concept_type: NonBlank
+    jurisdictions: tuple[JurisdictionCode, ...] = ()
+    explanation: MatchExplanation
+
+
+class ConceptIdentifier(ProductModel):
+    system: NonBlank
+    value: NonBlank
+
+
+class ConceptName(ProductModel):
+    name: NonBlank
+    name_type: NonBlank
+
+
+class ConceptDetail(ProductModel):
+    concept_id: NonBlank
+    preferred_name: NonBlank
+    concept_type: NonBlank
+    identifiers: tuple[ConceptIdentifier, ...] = ()
+    names: tuple[ConceptName, ...] = ()
+    jurisdictions: tuple[JurisdictionCode, ...] = ()
+
+
+class JurisdictionSummary(ProductModel):
+    jurisdiction: JurisdictionCode
+    source_count: int = Field(ge=0)
+    concept_count: int = Field(ge=0)
+
+
+class SourceSummary(ProductModel):
+    source_id: NonBlank
+    jurisdiction: JurisdictionCode
+    authority: NonBlank
+    regulatory_system: bool
+    funding_system: bool
 
 
 class Terminology(ProductModel):
@@ -352,6 +429,23 @@ class ResponseMetadata(ProductModel):
     generated_at: AwareDatetime
     clocks: AsOfClocks
     page: PageMetadata
+
+
+class DiscoveryMetadata(ProductModel):
+    api_version: Literal["v1"] = API_VERSION
+    generated_at: AwareDatetime
+    page: PageMetadata
+
+
+class ConceptSearchResponse(ProductModel):
+    metadata: DiscoveryMetadata
+    concepts: tuple[ConceptSummary, ...]
+
+    @model_validator(mode="after")
+    def page_matches_payload(self) -> Self:
+        if self.metadata.page.returned != len(self.concepts):
+            raise ValueError("page returned count must match concepts")
+        return self
 
 
 class ComparisonResponse(ProductModel):
