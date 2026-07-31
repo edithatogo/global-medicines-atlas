@@ -150,6 +150,47 @@ def test_generated_client_smoke_is_typed_read_only_and_offline() -> None:
     ).read_text(encoding="utf-8")
 
 
+def test_generated_client_smokes_every_committed_read_only_operation() -> None:
+    transport = RecordingTransport()
+    client = GlobalMedicinesAtlasClient(transport)
+
+    client.comparisons_api_v1_comparisons_get(
+        concept_id="nz:123",
+        cursor=None,
+        dimensions="funding",
+        jurisdictions="NZ,AU",
+        limit=20,
+        observed_at="2026-07-31",
+        valid_at="2026-07-31",
+    )
+    client.concepts_api_v1_concepts_get(q="aspirin", limit=10)
+    client.coverage_api_v1_coverage_get(
+        jurisdictions="NZ",
+        observed_at="2026-07-31",
+        valid_at="2026-07-31",
+    )
+    client.evidence_api_v1_evidence_get(
+        concept_id="nz:123",
+        observed_at="2026-07-31",
+        valid_at="2026-07-31",
+    )
+    client.health_api_v1_health_get()
+    client.jurisdictions_api_v1_jurisdictions_get()
+    client.readiness_api_v1_readiness_get()
+    client.sources_api_v1_sources_get(jurisdiction="NZ")
+
+    assert len(transport.calls) == 8
+    assert {method for method, _, _ in transport.calls} == {"GET"}
+    assert transport.calls[0][2] == {
+        "concept_id": "nz:123",
+        "dimensions": "funding",
+        "jurisdictions": "NZ,AU",
+        "limit": "20",
+        "observed_at": "2026-07-31",
+        "valid_at": "2026-07-31",
+    }
+
+
 def test_current_snapshot_is_deterministic_and_public_endpoint_matches() -> (
     None
 ):
