@@ -1,0 +1,249 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/stable-v1-qualification-v1.json",
+  "title": "Global Medicines Atlas stable v1 qualification projection",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "schema_version",
+    "release",
+    "authorities",
+    "requirements",
+    "maturity_dimensions",
+    "source_maturity",
+    "support",
+    "residual_risks",
+    "publication_identities",
+    "release_gates",
+    "qualification_state"
+  ],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.stable-v1-qualification"},
+    "schema_version": {"const": 1},
+    "release": {"const": "1.0.0"},
+    "authorities": {
+      "type": "object",
+      "required": [
+        "requirements",
+        "maturity_model",
+        "source_catalog",
+        "publication_contract"
+      ],
+      "properties": {
+        "requirements": {"const": "conductor/requirements.md"},
+        "maturity_model": {"const": "conductor/maturity-model.json"},
+        "source_catalog": {
+          "const": "src/global_medicines_atlas/data/medicine_source_catalog.json"
+        },
+        "publication_contract": {
+          "const": "src/global_medicines_atlas/publication_contracts.py"
+        }
+      },
+      "additionalProperties": false
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/requirement"}
+    },
+    "maturity_dimensions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/maturity"}
+    },
+    "source_maturity": {
+      "type": "object",
+      "required": [
+        "catalog",
+        "catalog_source_count",
+        "assignment_state",
+        "documentation_readiness_state"
+      ],
+      "properties": {
+        "catalog": {
+          "const": "src/global_medicines_atlas/data/medicine_source_catalog.json"
+        },
+        "catalog_source_count": {"type": "integer", "minimum": 1},
+        "assignment_state": {"enum": ["verified", "unverified", "blocked"]},
+        "documentation_readiness_state": {
+          "enum": ["verified", "unverified", "blocked"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "support": {
+      "type": "object",
+      "required": ["state", "platforms", "limitations", "evidence"],
+      "properties": {
+        "state": {"enum": ["verified", "unverified", "blocked"]},
+        "platforms": {"$ref": "#/$defs/nonemptyStrings"},
+        "limitations": {"$ref": "#/$defs/nonemptyStrings"},
+        "evidence": {"$ref": "#/$defs/pathArray"}
+      },
+      "additionalProperties": false
+    },
+    "residual_risks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/risk"}
+    },
+    "publication_identities": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {"$ref": "#/$defs/publicationIdentity"}
+    },
+    "release_gates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/gate"}
+    },
+    "qualification_state": {"enum": ["blocked", "qualified"]},
+    "unresolved_gate_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"qualification_state": {"const": "blocked"}}},
+      "then": {
+        "required": ["unresolved_gate_ids"],
+        "properties": {"unresolved_gate_ids": {"minItems": 1}}
+      }
+    },
+    {
+      "if": {"properties": {"qualification_state": {"const": "qualified"}}},
+      "then": {
+        "required": ["unresolved_gate_ids"],
+        "properties": {
+          "unresolved_gate_ids": {"maxItems": 0},
+          "requirements": {
+            "items": {
+              "properties": {
+                "state": {"const": "verified"},
+                "blocker_ids": {"maxItems": 0}
+              }
+            }
+          },
+          "maturity_dimensions": {
+            "items": {
+              "properties": {
+                "current_level": {"const": "M5"},
+                "state": {"const": "verified"},
+                "blocker_ids": {"maxItems": 0}
+              }
+            }
+          },
+          "source_maturity": {
+            "properties": {
+              "assignment_state": {"const": "verified"},
+              "documentation_readiness_state": {"const": "verified"}
+            }
+          },
+          "support": {"properties": {"state": {"const": "verified"}}},
+          "residual_risks": {
+            "not": {
+              "contains": {
+                "properties": {
+                  "blocking": {"const": true},
+                  "disposition": {"const": "unresolved"}
+                },
+                "required": ["blocking", "disposition"]
+              }
+            }
+          },
+          "publication_identities": {
+            "items": {
+              "properties": {
+                "state": {"const": "verified"},
+                "licence_state": {
+                  "enum": ["approved", "not_applicable"]
+                }
+              }
+            }
+          },
+          "release_gates": {
+            "items": {"properties": {"state": {"const": "passed"}}}
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "nonemptyStrings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "pathArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "state": {"enum": ["verified", "partial", "unverified", "blocked"]},
+    "requirement": {
+      "type": "object",
+      "required": ["requirement_id", "state", "evidence", "blocker_ids"],
+      "properties": {
+        "requirement_id": {"pattern": "^M-[0-9]{3}$"},
+        "state": {"$ref": "#/$defs/state"},
+        "evidence": {"$ref": "#/$defs/pathArray"},
+        "blocker_ids": {"$ref": "#/$defs/pathArray"}
+      },
+      "additionalProperties": false
+    },
+    "maturity": {
+      "type": "object",
+      "required": ["dimension", "current_level", "target_level", "state", "evidence", "blocker_ids"],
+      "properties": {
+        "dimension": {"type": "string", "minLength": 1},
+        "current_level": {"enum": ["M0", "M1", "M2", "M3", "M4", "M5"]},
+        "target_level": {"const": "M5"},
+        "state": {"$ref": "#/$defs/state"},
+        "evidence": {"$ref": "#/$defs/pathArray"},
+        "blocker_ids": {"$ref": "#/$defs/pathArray"}
+      },
+      "additionalProperties": false
+    },
+    "risk": {
+      "type": "object",
+      "required": ["risk_id", "description", "disposition", "blocking", "evidence"],
+      "properties": {
+        "risk_id": {"pattern": "^RISK-[0-9]{3}$"},
+        "description": {"type": "string", "minLength": 1},
+        "disposition": {"enum": ["accepted", "mitigated", "unresolved"]},
+        "blocking": {"type": "boolean"},
+        "evidence": {"$ref": "#/$defs/pathArray"}
+      },
+      "additionalProperties": false
+    },
+    "publicationIdentity": {
+      "type": "object",
+      "required": ["system", "object_role", "identifier", "licence_state", "state"],
+      "properties": {
+        "system": {"enum": ["github", "hugging_face", "zenodo", "osf"]},
+        "object_role": {"type": "string", "minLength": 1},
+        "identifier": {"type": ["string", "null"], "minLength": 1},
+        "licence_state": {"enum": ["approved", "unresolved", "not_applicable"]},
+        "state": {"enum": ["verified", "unverified", "blocked"]}
+      },
+      "additionalProperties": false
+    },
+    "gate": {
+      "type": "object",
+      "required": ["gate_id", "description", "state", "evidence"],
+      "properties": {
+        "gate_id": {"type": "string", "minLength": 1},
+        "description": {"type": "string", "minLength": 1},
+        "state": {"enum": ["passed", "failed", "unverified", "blocked"]},
+        "evidence": {"$ref": "#/$defs/pathArray"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
