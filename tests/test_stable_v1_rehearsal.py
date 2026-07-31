@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pytest
 
+from global_medicines_atlas import stable_v1_rehearsal
 from global_medicines_atlas.stable_v1_rehearsal import (
     StableV1RehearsalError,
     run_stable_v1_rehearsal,
@@ -66,3 +67,40 @@ def test_rehearsal_fails_closed_on_child_identity_mismatch(
         run_stable_v1_rehearsal(tmp_path / "receipt.json")
 
     assert not (tmp_path / "receipt.json").exists()
+
+
+@pytest.mark.parametrize(
+    ("returncode", "stdout", "message"),
+    [
+        (1, "", "clean-process reproduction failed"),
+        (0, "{", "returned invalid JSON"),
+        (0, "[]", "invalid identity set"),
+        (0, '{"wrong":"identity"}', "invalid identity set"),
+        (
+            0,
+            '{"canonical_v1_sha256":1,"canonical_v2_sha256":"x"}',
+            "invalid identities",
+        ),
+    ],
+)
+def test_clean_process_receipt_parser_fails_closed(
+    monkeypatch: pytest.MonkeyPatch,
+    returncode: int,
+    stdout: str,
+    message: str,
+) -> None:
+    completed = stable_v1_rehearsal.subprocess.CompletedProcess(
+        args=["python"], returncode=returncode, stdout=stdout, stderr=""
+    )
+
+    def fake_run(*_args: object, **_kwargs: object) -> object:
+        return completed
+
+    monkeypatch.setattr(
+        stable_v1_rehearsal.subprocess,
+        "run",
+        fake_run,
+    )
+
+    with pytest.raises(StableV1RehearsalError, match=message):
+        stable_v1_rehearsal._run_clean_process()
