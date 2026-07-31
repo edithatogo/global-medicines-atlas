@@ -288,6 +288,7 @@ def test_live_index_vector_values_preserve_numeric_semantics() -> None:
         vars(semantic_retrieval)["_vector_value"],
     )
 
-    assert vector_value(3) == 3.0
-    assert vector_value(1.25) == 1.25
-    assert vector_value(True) == 1.0
+    boolean_value = True
+    assert vector_value(3) == pytest.approx(3.0)
+    assert vector_value(1.25) == pytest.approx(1.25)
+    assert vector_value(boolean_value) == pytest.approx(1.0)
