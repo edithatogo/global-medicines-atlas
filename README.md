@@ -1,5 +1,8 @@
 # Global Medicines Atlas
 
+[![Test-Goblin](https://github.com/edithatogo/global-medicines-atlas/actions/workflows/test-goblin.yml/badge.svg?branch=main)](https://github.com/edithatogo/global-medicines-atlas/actions/workflows/test-goblin.yml)
+[![Codecov](https://codecov.io/gh/edithatogo/global-medicines-atlas/branch/main/graph/badge.svg)](https://app.codecov.io/gh/edithatogo/global-medicines-atlas)
+
 Global Medicines Atlas is an evidence-first system for comparing medicine
 regulatory approval, public funding, formulary status, and terminology across
 jurisdictions.
@@ -31,6 +34,12 @@ run the complete Python 3.14 harness, locked Mojo canary, context-drift checks,
 CodeQL, Zizmor, dependency audit, and SBOM generation. Licensing, credentials,
 public release, external publication, compatibility archival, and
 consequential interpretation remain explicit human gates.
+
+Codecov is active for this public repository. The project gate is 91%, the
+patch gate is strictly above 90%, and each Test-Goblin lane uploads an
+independently visible flag through GitHub OIDC. See the
+[testing and Codecov contract](docs/testing/test-goblin.md#coverage-and-codecov)
+for the fail-closed policy.
 
 Relevant maintainer-owned GitHub and Hugging Face resources are governed by the
 [ecosystem reuse registry](docs/ECOSYSTEM_REUSE.md), which runs in the routine

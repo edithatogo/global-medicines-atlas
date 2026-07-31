@@ -10,7 +10,8 @@
     "score_percent": {"minimum": 80.0, "unit": "percent"}
   },
   "latency": {
-    "p95_ms": {"maximum": 250.0, "unit": "milliseconds"}
+    "p95_ms": {"maximum": 250.0, "unit": "milliseconds"},
+    "concurrent_p95_ms": {"maximum": 500.0, "unit": "milliseconds"}
   },
   "throughput": {
     "records_per_second": {"minimum": 10000.0, "unit": "records_per_second"}
