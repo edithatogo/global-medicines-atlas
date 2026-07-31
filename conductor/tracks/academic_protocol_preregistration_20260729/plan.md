@@ -23,12 +23,12 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 - [x] Task: Specify missingness, conflicts, coverage denominators and uncertainty
 - [x] Task: Specify descriptive analyses, sensitivity analyses and multiplicity boundaries
 - [x] Task: Define software, schema, fixture, seed and environment identities
-- [~] Task: Phase Verification & Checkpoint
-  - Local implementation evidence passes: 23 focused Phase 1+2 tests, routine
-    formatting and lint, formal BasedPyright with zero findings, and the unit
-    lane with 862 passed plus two expected Windows symlink skips. Independent
-    Conductor review and hosted protected checks remain pending; no external
-    registration or publication gate was exercised.
+- [x] Task: Phase Verification & Checkpoint
+  - PR #113 merged as `8e7ba8e` after all 29 protected checks passed.
+    Independent Conductor review found no actionable findings and verified the
+    23 focused contract tests, the 862-test unit lane, deterministic generation,
+    routine quality gates, and BasedPyright strict with zero findings. No
+    external registration or publication gate was exercised.
 
 ## Phase 3: OSF-ready preregistration package
 
