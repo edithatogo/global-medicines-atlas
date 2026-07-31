@@ -72,5 +72,6 @@ Hugging Face a derived dataset distribution, Zenodo a versioned archival DOI
 record, and OSF the protocol/preregistration. Related records may link without
 reusing object roles or identifiers. A configured URL is not verified evidence,
 and no licence is approved without both an expression and durable maintainer
-decision evidence. The executable release gate therefore remains blocked until
-those external decisions and receipts exist.
+decision evidence. Apache-2.0 software and bounded CC-BY-4.0 eligible derived
+data now have that evidence; OSF, archival, external dataset, and final-release
+gates remain blocked until their distinct decisions and receipts exist.

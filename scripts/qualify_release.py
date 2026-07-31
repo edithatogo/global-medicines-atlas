@@ -536,6 +536,7 @@ def qualify_release_assets(
     release_tag: str,
     commit: str,
     dynamic_version: str,
+    include_dataset: bool = True,
 ) -> dict[str, object]:
     """Fail closed unless staged bytes form one coherent governed release."""
 
@@ -557,7 +558,12 @@ def qualify_release_assets(
         lock_path=lock_path,
         project_version=version,
     )
-    _verify_dataset_archive(stage, version)
+    if include_dataset:
+        _verify_dataset_archive(stage, version)
+    elif tuple(stage.glob(f"{PROJECT}-dataset-*.tar.gz")):
+        raise QualificationError(
+            "software-only stage must not contain a dataset archive"
+        )
 
     payloads = _stage_files(stage)
     manifest_path, artifacts = _write_asset_manifest(
@@ -692,6 +698,7 @@ def _parser() -> argparse.ArgumentParser:
     qualify.add_argument("--release-tag", required=True)
     qualify.add_argument("--commit", required=True)
     qualify.add_argument("--dynamic-version", required=True)
+    qualify.add_argument("--software-only", action="store_true")
     fixture = subparsers.add_parser("qualify-fixture")
     fixture.add_argument("--root", type=Path, required=True)
     fixture.add_argument("--stage", type=Path, required=True)
@@ -719,6 +726,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             release_tag=args.release_tag,
             commit=args.commit,
             dynamic_version=args.dynamic_version,
+            include_dataset=not args.software_only,
         )
         print(json.dumps(receipt, sort_keys=True))
     else:

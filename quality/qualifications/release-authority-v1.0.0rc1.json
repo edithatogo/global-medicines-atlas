@@ -1,0 +1,10 @@
+{
+  "schema_id": "global-medicines-atlas.release-authority",
+  "schema_version": 1,
+  "approved_tag": "v1.0.0rc1",
+  "release_type": "prerelease",
+  "artifact_scope": "software-only",
+  "commit_binding": "tag-must-resolve-to-workflow-commit",
+  "approval_evidence": "docs/governance/licensing-decision.md",
+  "approved_at": "2026-08-01"
+}

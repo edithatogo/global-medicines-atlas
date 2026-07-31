@@ -82,7 +82,7 @@ def test_user_guide_preserves_interpretation_and_authority_boundaries() -> None:
         "missing or unknown evidence produces an abstention",
         "not that the medicines are equal or unequal",
         "public repository access is not a software licence",
-        "publication, licence selection, external identifiers, credentials",
+        "external identifiers, credentials, rights review, release execution",
         "not establish an rpo",
     )
     for boundary in required_boundaries:

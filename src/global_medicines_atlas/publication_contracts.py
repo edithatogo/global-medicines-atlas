@@ -216,6 +216,26 @@ class PublicationIdentityRegistry(PublicationContractModel):
                 + ", ".join(reasons)
             )
 
+    def assert_object_publishable(self, object_id: str) -> None:
+        """Require one independently governed publication object to be ready."""
+
+        identity = next(
+            (item for item in self.identities if item.object_id == object_id),
+            None,
+        )
+        if identity is None:
+            raise ValueError(f"unknown publication object: {object_id}")
+        reasons: list[str] = []
+        if identity.identifier_state is not IdentifierState.VERIFIED:
+            reasons.append(f"identifier-{identity.identifier_state}")
+        if identity.licence_state is not DecisionState.APPROVED:
+            reasons.append(f"licence-{identity.licence_state}")
+        if reasons:
+            raise ValueError(
+                f"publication object {object_id} is blocked: "
+                + ", ".join(reasons)
+            )
+
 
 class VerificationCheck(StrEnum):
     """Named checks required at publication-state boundaries."""

@@ -63,8 +63,9 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   - The authoritative publication-identity registry assigns one non-overlapping
     intellectual-object role to each surface, validates cross-object links, and
     fails closed unless identifiers and licence decisions have durable evidence.
-    Current external identifiers and all licence decisions remain unresolved or
-    merely configured; no publication or approval is inferred.
+    The GitHub software identity and Apache-2.0 decision are now verified. Every
+    dataset, archive and preregistration licence remains artifact-specific and
+    unresolved until its exact rights evidence is approved.
 - [x] Task: Phase Verification & Checkpoint
   - Independent review at `9332d27` found release-gate, canonical-schema,
     semantic-index, cross-page-validity, traceability, mutation and JavaScript
@@ -173,8 +174,13 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 - [x] Task: Verify dataset cards, Croissant records, checksums and GitHub/Hugging Face/Zenodo/OSF identifier links without publishing restricted data ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
   - The content-bound publication-metadata receipt verifies cards, Croissant,
     checksums, restricted-data boundaries and non-overlapping object roles.
-    External identifiers, licences and publication remain explicitly blocked.
-- [ ] Task: Obtain explicit maintainer licence and release approval ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+    The software identity is verified; external dataset, archive and OSF
+    identifiers, artifact-specific licences and publication remain blocked.
+- [x] Task: Obtain explicit maintainer licence and release approval ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+  - On 2026-08-01 the maintainer approved Apache-2.0 for repository software,
+    bounded CC-BY-4.0 for expressly eligible maintainer-owned derived data, and
+    an attested `v1.0.0rc1` software release. Dataset, OSF registration and DOI
+    publication retain independent rights and final-preview gates.
 - [x] Task: Record stable-v1 evidence and post-release monitoring plan ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
   - Six domain-specific SLO, alert and approval-gated rollback policies bind the
     candidate evidence while post-release observations remain `not_observed`.
@@ -188,8 +194,10 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     pytest-gremlin, Codecov patch, coverage and Scalene profile checks all
     passed. Independent Conductor review has no residual finding.
   - Repository-owned qualification is complete and independently reviewed.
-    Promotion remains blocked on explicit licence/release approval, signing,
-    attestation, tagging and publication; none is inferred from the candidate.
+    Exact `v1.0.0rc1` approval is now recorded in a machine-validated,
+    software-only prerelease authority contract. Signing, attestation, tagging,
+    publication and every artifact-specific dataset rights gate remain open;
+    none is inferred from the candidate.
 
 ## GitHub hierarchy
 

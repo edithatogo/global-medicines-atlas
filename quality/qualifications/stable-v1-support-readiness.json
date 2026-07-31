@@ -59,8 +59,8 @@
     },
     {
       "limitation_id": "LIMIT-004",
-      "statement": "No stable publication is authorized while licence and release approvals are unresolved.",
-      "user_impact": "Qualification artifacts are internal evidence contracts, not public release authorization.",
+      "statement": "The approved software release candidate does not authorize a stable final release or any dataset publication.",
+      "user_impact": "Qualification artifacts remain evidence contracts; each external dataset and final release has an independent gate.",
       "evidence": ["quality/qualifications/stable-v1-contract.json"]
     }
   ],
@@ -85,12 +85,12 @@
     },
     {
       "risk_id": "RISK-003",
-      "description": "Software and dataset licence approvals are unresolved.",
+      "description": "Third-party and mixed-rights source data require artifact-specific review before any dataset publication.",
       "owner": "maintainer",
       "disposition": "unresolved",
       "blocking": true,
-      "gate_id": "stable-v1-licence-approval",
-      "evidence": ["src/global_medicines_atlas/publication_contracts.py"]
+      "gate_id": "stable-v1-publication-gates",
+      "evidence": ["docs/governance/licensing-decision.md", "DATA_LICENSE.md", "src/global_medicines_atlas/publication_contracts.py"]
     },
     {
       "risk_id": "RISK-004",

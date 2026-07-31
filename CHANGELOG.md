@@ -5,6 +5,13 @@ the project uses Semantic Versioning once stable release qualification begins.
 
 ## Unreleased
 
+## [1.0.0rc1] - 2026-08-01
+
+This release candidate packages the independently reviewed global comparison
+engine, evidence model, representative country adapters, read-only interfaces,
+and maximal Test-Goblin quality harness. Live-source coverage and public derived
+datasets remain separately qualified and are not claimed by this release.
+
 ### Added
 
 - Evidence-first global medicines data platform and country-adapter framework.

@@ -162,10 +162,13 @@ def test_identity_placeholders_and_links_are_complete_and_non_overlapping() -> (
     receipt = qualify_publication_metadata(ROOT)
     identities = {item.system: item for item in receipt.identities}
     assert set(identities) == {"github", "hugging_face", "zenodo", "osf"}
-    assert identities["github"].identifier_state == "configured"
-    assert all(
-        item.licence_state == "unresolved" for item in identities.values()
-    )
+    assert identities["github"].identifier_state == "verified"
+    assert identities["github"].licence_state == "approved"
+    assert identities["github"].licence_expression == "Apache-2.0"
+    assert identities["hugging_face"].licence_state == "unresolved"
+    assert identities["hugging_face"].licence_expression is None
+    assert identities["zenodo"].licence_state == "unresolved"
+    assert identities["osf"].licence_state == "unresolved"
     assert all(
         item.identifier is None
         for system, item in identities.items()

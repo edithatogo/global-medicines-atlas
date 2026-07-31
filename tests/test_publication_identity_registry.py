@@ -40,6 +40,11 @@ def test_current_registry_is_explicitly_blocked_not_publishable() -> None:
     assert registry.blocking_reasons()
     with pytest.raises(ValueError, match="registry is blocked"):
         registry.assert_publishable()
+    registry.assert_object_publishable("software-source-release")
+    with pytest.raises(ValueError, match="derived-dataset is blocked"):
+        registry.assert_object_publishable("derived-dataset")
+    with pytest.raises(ValueError, match="unknown publication object"):
+        registry.assert_object_publishable("missing")
 
 
 @pytest.mark.parametrize("field", ["object_id", "object_role", "identifier"])

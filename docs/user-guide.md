@@ -123,13 +123,17 @@ RTO, immutable backup, or production disaster-recovery capability.
 
 ## Publication and licence limitations
 
-Public repository access is not a software licence. No software licence has
-yet been selected, and third-party medicine sources retain their own terms,
-access controls, attribution duties, and redistribution restrictions. Review
+Public repository access is not a software licence. The explicit licence for
+this repository's software is Apache-2.0.
+
+Repository software is licensed under Apache-2.0. Eligible maintainer-owned
+derived datasets may be licensed under CC-BY-4.0 only when an approved public
+artifact manifest expressly places them in scope. Third-party medicine sources
+retain their own terms, access controls, attribution duties, and redistribution
+restrictions. Review
 [software and source-data rights](data-sources/SOURCE_RIGHTS.md) before reuse.
 
 GitHub, Hugging Face, Zenodo, and OSF have distinct intended publication roles,
 but a configured identity or URL is not evidence that an object was published,
-licensed, approved, or verified. Publication, licence selection, external
-identifiers, credentials, and release approval remain explicit maintainer
-gates.
+licensed, approved, or verified. External identifiers, credentials, rights
+review, release execution, and publication remain explicit evidence gates.

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/release-authority-v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_id", "schema_version", "approved_tag", "release_type", "artifact_scope", "commit_binding", "approval_evidence", "approved_at"],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.release-authority"},
+    "schema_version": {"const": 1},
+    "approved_tag": {"const": "v1.0.0rc1"},
+    "release_type": {"const": "prerelease"},
+    "artifact_scope": {"const": "software-only"},
+    "commit_binding": {"const": "tag-must-resolve-to-workflow-commit"},
+    "approval_evidence": {"type": "string", "minLength": 1},
+    "approved_at": {"type": "string", "format": "date"}
+  }
+}
