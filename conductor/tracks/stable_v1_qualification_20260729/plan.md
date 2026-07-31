@@ -74,24 +74,27 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 
 ## Phase 2: v0.9 candidate
 
-- [x] Task: Execute independent reproduction and disaster-recovery rehearsal ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+- [~] Task: Execute independent reproduction and disaster-recovery rehearsal ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
   - A deterministic aggregate receipt exercises independent child-process
     reproduction, governed backup/restoration/rollback and fail-closed receipt
     identity. It explicitly does not claim production disaster recovery,
     network isolation, artifact-only release reproduction or publication.
+    Independent published-artifact reproduction remains blocked until a
+    release artifact exists, so the full task is not complete.
 - [x] Task: Rehearse compromised-source quarantine, signing/credential revocation, dataset withdrawal, corrected replacement and downstream notification ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
   - The offline hash-chained incident rehearsal verifies ordering, tamper
     rejection, idempotent retries and separate regulatory/funding evidence.
     Credential-authority, human-notification and publication actions remain
     explicit external gates and are not claimed as executed.
-- [~] Task: Verify every protected CI, security and publication receipt ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+- [x] Task: Verify every protected CI, security and publication receipt ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
   - The offline verifier now pins the repository, pull request, exact commit,
     required CI/security check names and producer identities, then binds the
     observed check-run and workflow-run identifiers into a deterministic
     receipt. Pending, failing, missing, duplicate or mismatched evidence is
     rejected. Publication remains independently `blocked` or `not_attempted`
     without a durable commit-bound receipt; exact hosted verification for the
-    candidate pull request remains pending.
+    PR #102 then passed all 29 exact protected checks. Publication is explicitly
+    verified as `not_attempted`, rather than inferred from CI success.
 - [x] Task: Audit task-oriented documentation, examples and support paths ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
   - Executable documentation contracts cover installation, API, CLI, Atlas,
     validity abstentions, recovery, support and publication/licence limits.
@@ -111,16 +114,21 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   - One governed read-only DuckDB fixture now produces a content-bound receipt
     for concept search/detail, jurisdiction/source catalogues and comparison
     validity through the API, CLI and rendered Atlas without external action.
-- [~] Task: Install built wheel and sdist in clean environments and run import, CLI, API, version and reinstall checks ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+- [x] Task: Install built wheel and sdist in clean environments and run import, CLI, API, version and reinstall checks ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
   - The clean-consumer harness already covers wheel and sdist installation,
     metadata, dynamic version, reinstall, import, CLI and API. The exact current
-    candidate still requires all-platform hosted receipts before completion.
+    PR #102 supplied same-commit Linux, macOS and Windows hosted receipts.
 - [x] Task: Snapshot and semantically diff the public OpenAPI contract and smoke-test a generated client ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
-  - The deterministic read-only snapshot rejects incompatible removals,
-    mutations, request bodies and response changes while permitting compatible
-    additions; a generated typed Python client passes an offline transport
-    smoke test and deterministic regeneration.
-- [ ] Task: Resolve or explicitly block every Must requirement ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+  - The deterministic read-only snapshot is compared with an immutable ancestor
+    baseline and rejects incompatible removals, security changes, request and
+    response enum variance, mutations, request bodies and response changes.
+    The generated typed client preserves repeated array parameters, URL-encodes
+    path parameters, passes a real ASGI smoke test and regenerates exactly.
+- [x] Task: Resolve or explicitly block every Must requirement ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+  - Every Must has an explicit verified, partial or blocked state with evidence
+    and blocker identifiers in the qualification contract. External licence,
+    publication, identifier, credential-authority and stable-release approvals
+    remain blocked rather than being treated as implementation failures.
 - [ ] Task: Phase Verification & Checkpoint
 
 ## Phase 3: v1.0 promotion
