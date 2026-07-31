@@ -1,0 +1,657 @@
+{
+  "$defs": {
+    "AccessMode": {
+      "enum": [
+        "api",
+        "download",
+        "api_and_download",
+        "web_search",
+        "licensed_feed",
+        "document"
+      ],
+      "title": "AccessMode",
+      "type": "string"
+    },
+    "AuthenticationMode": {
+      "enum": [
+        "none",
+        "api_key",
+        "oauth",
+        "account",
+        "subscription",
+        "manual_approval",
+        "certificate",
+        "unknown"
+      ],
+      "title": "AuthenticationMode",
+      "type": "string"
+    },
+    "AvailableField": {
+      "enum": [
+        "identifiers",
+        "names",
+        "ingredients",
+        "strengths",
+        "dosage_forms",
+        "routes",
+        "packages",
+        "organisations",
+        "indications",
+        "status_dates",
+        "prices",
+        "eligibility_criteria",
+        "documents",
+        "safety_notices",
+        "terminology_relationships"
+      ],
+      "title": "AvailableField",
+      "type": "string"
+    },
+    "ChangeSemantics": {
+      "enum": [
+        "current_state",
+        "snapshot",
+        "append_only_history",
+        "delta",
+        "mixed",
+        "unknown"
+      ],
+      "title": "ChangeSemantics",
+      "type": "string"
+    },
+    "DiscoveryStatus": {
+      "description": "Evidence level for a catalog declaration, never a currency claim.",
+      "enum": [
+        "discovery_only",
+        "declaration_verified",
+        "receipt_backed"
+      ],
+      "title": "DiscoveryStatus",
+      "type": "string"
+    },
+    "GeographicScope": {
+      "enum": [
+        "national",
+        "subnational",
+        "regional",
+        "global"
+      ],
+      "title": "GeographicScope",
+      "type": "string"
+    },
+    "InformationDomain": {
+      "description": "Controlled description of the information a source can contain.",
+      "enum": [
+        "product_identity",
+        "regulatory_status",
+        "funding_status",
+        "formulary_status",
+        "terminology",
+        "clinical_documentation",
+        "safety",
+        "pricing",
+        "reimbursement_criteria",
+        "hta_decision"
+      ],
+      "title": "InformationDomain",
+      "type": "string"
+    },
+    "IntegrationLayer": {
+      "description": "Highest locally evidenced integration layer.",
+      "enum": [
+        "catalogued",
+        "acquisition",
+        "parser",
+        "fixture",
+        "live_receipt"
+      ],
+      "title": "IntegrationLayer",
+      "type": "string"
+    },
+    "InterfaceStatus": {
+      "description": "Whether automation uses a supported interface.",
+      "enum": [
+        "supported",
+        "documented_download",
+        "interactive_only",
+        "restricted",
+        "undocumented"
+      ],
+      "title": "InterfaceStatus",
+      "type": "string"
+    },
+    "JurisdictionCensusEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "jurisdiction": {
+          "maxLength": 3,
+          "minLength": 2,
+          "title": "Jurisdiction",
+          "type": "string"
+        },
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "priority_cohorts": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Priority Cohorts",
+          "type": "array"
+        },
+        "regulatory_denominator": {
+          "$ref": "#/$defs/RegulatoryDenominator"
+        }
+      },
+      "required": [
+        "jurisdiction",
+        "name",
+        "priority_cohorts",
+        "regulatory_denominator"
+      ],
+      "title": "JurisdictionCensusEntry",
+      "type": "object"
+    },
+    "LanguageCode": {
+      "description": "BCP 47 primary-language labels used by the current catalog.",
+      "enum": [
+        "und",
+        "ar",
+        "zh",
+        "da",
+        "nl",
+        "en",
+        "fr",
+        "de",
+        "id",
+        "ja",
+        "ko",
+        "ms",
+        "no",
+        "pt",
+        "es",
+        "sv",
+        "th"
+      ],
+      "title": "LanguageCode",
+      "type": "string"
+    },
+    "MedicineDataSource": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
+        },
+        "jurisdictions": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Jurisdictions",
+          "type": "array"
+        },
+        "authority": {
+          "minLength": 1,
+          "title": "Authority",
+          "type": "string"
+        },
+        "title": {
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "dimension": {
+          "$ref": "#/$defs/SourceDimension"
+        },
+        "access_mode": {
+          "$ref": "#/$defs/AccessMode"
+        },
+        "interface_status": {
+          "$ref": "#/$defs/InterfaceStatus"
+        },
+        "formats": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Formats",
+          "type": "array"
+        },
+        "authentication": {
+          "$ref": "#/$defs/AuthenticationMode"
+        },
+        "product_grain": {
+          "minLength": 1,
+          "title": "Product Grain",
+          "type": "string"
+        },
+        "historical_scope": {
+          "minLength": 1,
+          "title": "Historical Scope",
+          "type": "string"
+        },
+        "native_identifier": {
+          "minLength": 1,
+          "title": "Native Identifier",
+          "type": "string"
+        },
+        "last_verified_at": {
+          "format": "date",
+          "title": "Last Verified At",
+          "type": "string"
+        },
+        "integration_layer": {
+          "$ref": "#/$defs/IntegrationLayer",
+          "default": "catalogued"
+        },
+        "acquisition_profile": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Acquisition Profile"
+        },
+        "landing_page": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Landing Page",
+          "type": "string"
+        },
+        "documentation_url": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Documentation Url",
+          "type": "string"
+        },
+        "api_url": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Api Url"
+        },
+        "download_url": {
+          "anyOf": [
+            {
+              "format": "uri",
+              "maxLength": 2083,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Download Url"
+        },
+        "update_cadence": {
+          "minLength": 1,
+          "title": "Update Cadence",
+          "type": "string"
+        },
+        "rights_status": {
+          "minLength": 1,
+          "title": "Rights Status",
+          "type": "string"
+        },
+        "readiness": {
+          "$ref": "#/$defs/SourceReadiness"
+        },
+        "discovery_status": {
+          "$ref": "#/$defs/DiscoveryStatus",
+          "default": "discovery_only"
+        },
+        "qualification_state": {
+          "$ref": "#/$defs/QualificationState",
+          "default": "declared"
+        },
+        "qualification_references": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Qualification References",
+          "type": "array"
+        },
+        "implemented_ingestion": {
+          "default": false,
+          "title": "Implemented Ingestion",
+          "type": "boolean"
+        },
+        "current_receipt_id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Current Receipt Id"
+        },
+        "monitoring": {
+          "$ref": "#/$defs/MonitoringSchedule",
+          "default": {
+            "source_health": "weekly",
+            "schema_drift": "monthly"
+          }
+        },
+        "evidence_limit": {
+          "minLength": 1,
+          "title": "Evidence Limit",
+          "type": "string"
+        },
+        "information_domains": {
+          "default": [
+            "product_identity"
+          ],
+          "items": {
+            "$ref": "#/$defs/InformationDomain"
+          },
+          "title": "Information Domains",
+          "type": "array"
+        },
+        "record_entities": {
+          "default": [
+            "medicinal_product"
+          ],
+          "items": {
+            "$ref": "#/$defs/RecordEntity"
+          },
+          "title": "Record Entities",
+          "type": "array"
+        },
+        "status_semantics": {
+          "default": [
+            "none"
+          ],
+          "items": {
+            "$ref": "#/$defs/StatusSemantics"
+          },
+          "title": "Status Semantics",
+          "type": "array"
+        },
+        "geographic_scope": {
+          "$ref": "#/$defs/GeographicScope",
+          "default": "national"
+        },
+        "population_scope": {
+          "$ref": "#/$defs/PopulationScope",
+          "default": "unknown"
+        },
+        "languages": {
+          "default": [
+            "und"
+          ],
+          "items": {
+            "$ref": "#/$defs/LanguageCode"
+          },
+          "title": "Languages",
+          "type": "array"
+        },
+        "change_semantics": {
+          "$ref": "#/$defs/ChangeSemantics",
+          "default": "unknown"
+        },
+        "available_fields": {
+          "default": [
+            "identifiers"
+          ],
+          "items": {
+            "$ref": "#/$defs/AvailableField"
+          },
+          "title": "Available Fields",
+          "type": "array"
+        }
+      },
+      "required": [
+        "source_id",
+        "jurisdictions",
+        "authority",
+        "title",
+        "dimension",
+        "access_mode",
+        "interface_status",
+        "formats",
+        "authentication",
+        "product_grain",
+        "historical_scope",
+        "native_identifier",
+        "last_verified_at",
+        "landing_page",
+        "documentation_url",
+        "update_cadence",
+        "rights_status",
+        "readiness",
+        "evidence_limit"
+      ],
+      "title": "MedicineDataSource",
+      "type": "object"
+    },
+    "MonitoringSchedule": {
+      "additionalProperties": false,
+      "description": "Cadence contract for non-mutating source checks.",
+      "properties": {
+        "source_health": {
+          "minLength": 1,
+          "title": "Source Health",
+          "type": "string"
+        },
+        "schema_drift": {
+          "minLength": 1,
+          "title": "Schema Drift",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_health",
+        "schema_drift"
+      ],
+      "title": "MonitoringSchedule",
+      "type": "object"
+    },
+    "PopulationScope": {
+      "enum": [
+        "general",
+        "defined_population",
+        "programme_specific",
+        "not_applicable",
+        "unknown"
+      ],
+      "title": "PopulationScope",
+      "type": "string"
+    },
+    "QualificationState": {
+      "description": "Evidence-backed qualification of a catalog declaration.",
+      "enum": [
+        "declared",
+        "documentation_verified",
+        "fixture_verified",
+        "live_verified"
+      ],
+      "title": "QualificationState",
+      "type": "string"
+    },
+    "RecordEntity": {
+      "enum": [
+        "substance",
+        "ingredient",
+        "medicinal_product",
+        "packaged_product",
+        "approval",
+        "funding_listing",
+        "formulary_entry",
+        "terminology_concept",
+        "document",
+        "price",
+        "decision"
+      ],
+      "title": "RecordEntity",
+      "type": "string"
+    },
+    "RegulatoryDenominator": {
+      "additionalProperties": false,
+      "description": "WHO discovery-denominator fields awaiting receipt-backed verification.",
+      "properties": {
+        "included": {
+          "title": "Included",
+          "type": "boolean"
+        },
+        "wla": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Wla"
+        },
+        "ml3": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ml3"
+        },
+        "ml4": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ml4"
+        },
+        "status": {
+          "minLength": 1,
+          "title": "Status",
+          "type": "string"
+        },
+        "evidence_limit": {
+          "minLength": 1,
+          "title": "Evidence Limit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "included",
+        "status",
+        "evidence_limit"
+      ],
+      "title": "RegulatoryDenominator",
+      "type": "object"
+    },
+    "SourceDimension": {
+      "enum": [
+        "regulatory",
+        "funding",
+        "formulary",
+        "terminology"
+      ],
+      "title": "SourceDimension",
+      "type": "string"
+    },
+    "SourceReadiness": {
+      "enum": [
+        "implemented",
+        "verified",
+        "candidate",
+        "blocked"
+      ],
+      "title": "SourceReadiness",
+      "type": "string"
+    },
+    "StatusSemantics": {
+      "enum": [
+        "authorization",
+        "registration",
+        "approval_history",
+        "reimbursement",
+        "subsidy",
+        "formulary_inclusion",
+        "price_listing",
+        "terminology_only",
+        "recommendation",
+        "document_only",
+        "mixed",
+        "none"
+      ],
+      "title": "StatusSemantics",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "minimum": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "reviewed_at": {
+      "format": "date",
+      "title": "Reviewed At",
+      "type": "string"
+    },
+    "monitoring_contract": {
+      "$ref": "#/$defs/MonitoringSchedule"
+    },
+    "jurisdictions": {
+      "items": {
+        "$ref": "#/$defs/JurisdictionCensusEntry"
+      },
+      "title": "Jurisdictions",
+      "type": "array"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/MedicineDataSource"
+      },
+      "title": "Sources",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "reviewed_at",
+    "monitoring_contract",
+    "jurisdictions",
+    "sources"
+  ],
+  "title": "SourceCatalog",
+  "type": "object"
+}

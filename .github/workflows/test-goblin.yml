@@ -16,8 +16,11 @@ concurrency:
 jobs:
   tests:
     name: Python 3.14 / ${{ matrix.lane }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write # Required only for keyless Codecov OIDC upload.
     strategy:
       fail-fast: false
       matrix:
@@ -34,12 +37,21 @@ jobs:
         run: uv sync --python 3.14.6 --group test-goblin --locked
       - name: Run ${{ matrix.lane }} tests
         env:
+          TEST_GOBLIN_COVERAGE: "1"
           TEST_GOBLIN_LANE: ${{ matrix.lane }}
         run: uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py "$TEST_GOBLIN_LANE"
+      - name: Upload ${{ matrix.lane }} coverage
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
+        with:
+          files: coverage-${{ matrix.lane }}.xml
+          flags: ${{ matrix.lane }}
+          name: ${{ matrix.lane }}
+          fail_ci_if_error: true
+          use_oidc: true
 
   quality:
     name: Python 3.14 / ${{ matrix.profile }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     permissions:
       contents: read
@@ -61,14 +73,36 @@ jobs:
       - name: Run Test-Goblin ${{ matrix.profile }} profile
         env:
           TEST_GOBLIN_PROFILE: ${{ matrix.profile }}
-        run: uv run --python 3.14.6 --group dev python scripts/test_goblin.py "$TEST_GOBLIN_PROFILE"
+        run: |
+          if [[ "${TEST_GOBLIN_PROFILE}" == "mutation" ]]; then
+            mkdir -p mutants/scripts
+          fi
+          uv run --python 3.14.6 --group dev python scripts/test_goblin.py "$TEST_GOBLIN_PROFILE"
       - name: Upload coverage
         if: matrix.profile == 'coverage'
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
         with:
           files: coverage.xml
+          flags: full
+          name: full
           fail_ci_if_error: true
           use_oidc: true
+      - name: Upload durable quality receipts
+        if: matrix.profile == 'mutation' || matrix.profile == 'profile'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: quality-receipt-${{ matrix.profile }}
+          path: build/quality-receipts/${{ matrix.profile }}.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload authoritative Mutmut statistics
+        if: matrix.profile == 'mutation'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: mutmut-authoritative-statistics
+          path: mutants/mutmut-cicd-stats.json
+          if-no-files-found: error
+          retention-days: 30
       - name: Upload Scalene profile
         if: matrix.profile == 'profile'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
@@ -80,7 +114,7 @@ jobs:
 
   mojo:
     name: Mojo nightly / smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     continue-on-error: true
     steps:

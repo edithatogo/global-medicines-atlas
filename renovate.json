@@ -35,6 +35,72 @@
       "matchStrings": ["(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
       "depNameTemplate": "python",
       "datasourceTemplate": "python-version"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^quality\\/tool-versions\\.json$/",
+        "/^\\.github\\/workflows\\/.*\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "\"python\": \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\"",
+        "--python (?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "depNameTemplate": "python",
+      "datasourceTemplate": "python-version"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^quality\\/tool-versions\\.json$/",
+        "/^\\.github\\/workflows\\/.*\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "\"uv\": \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\"",
+        "version: \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+      ],
+      "depNameTemplate": "astral-sh/uv",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^quality\\/tool-versions\\.json$/",
+        "/^\\.github\\/workflows\\/test-goblin\\.yml$/"
+      ],
+      "matchStrings": [
+        "\"pixi\": \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\"",
+        "pixi-version: \"v(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+      ],
+      "depNameTemplate": "prefix-dev/pixi",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^quality\\/tool-versions\\.json$/",
+        "/^\\.github\\/workflows\\/security-context\\.yml$/"
+      ],
+      "matchStrings": [
+        "\"actionlint\": \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\"",
+        "ACTIONLINT_VERSION: (?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "depNameTemplate": "rhysd/actionlint",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^quality\\/tool-versions\\.json$/",
+        "/^\\.github\\/workflows\\/security-context\\.yml$/"
+      ],
+      "matchStrings": [
+        "\"gitleaks\": \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\"",
+        "GITLEAKS_VERSION: (?<currentValue>\\d+\\.\\d+\\.\\d+)",
+        "GITLEAKS_ASSET: gitleaks_(?<currentValue>\\d+\\.\\d+\\.\\d+)_linux_x64\\.tar\\.gz"
+      ],
+      "depNameTemplate": "gitleaks/gitleaks",
+      "datasourceTemplate": "github-releases"
     }
   ],
   "packageRules": [
@@ -89,7 +155,18 @@
       "description": "Keep explicitly experimental dependencies review-gated",
       "matchPackageNames": ["pytest-gremlins", "mojo"],
       "dependencyDashboardApproval": true,
-      "minimumReleaseAge": "14 days"
+      "minimumReleaseAge": "14 days",
+      "postUpgradeTasks": {
+        "commands": [
+          "python scripts/update_mojo_contract.py {{{newVersion}}} --channel max-nightly"
+        ],
+        "fileFilters": [
+          "quality/tool-versions.json",
+          "pixi.toml",
+          "pixi.lock"
+        ],
+        "executionMode": "branch"
+      }
     },
     {
       "matchManagers": [

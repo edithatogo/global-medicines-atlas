@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pydantic import Field
 
-from .countries import SourceDimension
+from .countries import Capability, SourceDimension, builtin_source_capabilities
 from .models import FrozenModel
 from .source_catalog import AccessMode, SourceCatalog, load_catalog
 
@@ -35,6 +35,9 @@ class CensusCoverage(FrozenModel):
     current_receipt: int = Field(ge=0)
     source_health_scheduled: int = Field(ge=0)
     schema_drift_scheduled: int = Field(ge=0)
+    parser_capable_sources: int = Field(default=0, ge=0)
+    live_receipt_sources: int = Field(default=0, ge=0)
+    production_qualified_sources: int = Field(default=0, ge=0)
 
 
 def jurisdiction_coverage(
@@ -113,4 +116,23 @@ def aggregate_census_coverage(
         field: sum(bool(getattr(row, field)) for row in rows)
         for field in fields
     }
-    return CensusCoverage(denominator=len(rows), **counts)
+    capability_registry = builtin_source_capabilities()
+    capability_registry.validate_catalog(
+        (load_catalog() if catalog is None else catalog).sources
+    )
+    return CensusCoverage(
+        denominator=len(rows),
+        **counts,
+        parser_capable_sources=sum(
+            Capability.SOURCE_PARSER in declaration.capabilities
+            for declaration in capability_registry
+        ),
+        live_receipt_sources=sum(
+            Capability.LIVE_RECEIPT in declaration.capabilities
+            for declaration in capability_registry
+        ),
+        production_qualified_sources=sum(
+            Capability.PRODUCTION_QUALIFICATION in declaration.capabilities
+            for declaration in capability_registry
+        ),
+    )

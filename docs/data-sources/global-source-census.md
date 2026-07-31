@@ -4,13 +4,17 @@ Reviewed: 2026-07-29
 
 The governed machine-readable census is
 `src/global_medicines_atlas/data/medicine_source_catalog.json`. Schema version
-3 records formats, authentication, product grain, historical scope, native
+5 records formats, authentication, product grain, historical scope, native
 identifiers, verification date, supported-interface status, and the highest
-locally evidenced integration layer. Generic acquisition profiles describe
+locally evidenced integration layer. It also uses controlled labels for
+information domains, record entities, status semantics, geographic and
+population scope, languages, change semantics, and available fields. The
+published JSON Schema is `schemas/international-resource-v5.json`.
+Generic acquisition profiles describe
 transport policy only; they do not claim a source-specific parser.
 `documentation_url` identifies human-facing specifications or portals;
 `api_url` is reserved for an operational service base or resource endpoint.
-Schema-v3 rows must explicitly declare every governance field and cannot
+Schema-v5 rows must explicitly declare every governance field and cannot
 inherit compatibility placeholders.
 
 ## Measured scope
@@ -19,9 +23,16 @@ inherit compatibility placeholders.
 - At least 95 distinct official source surfaces.
 - Regulatory and funding/formulary evidence remain separate dimensions.
 - Only `global-rxnorm` and `us-drugsfda` are marked parser-implemented in this
-  census. All other acquisition declarations remain below parser level until
-  executable code and fixtures exist.
+  census. Fixture-only projectors for other sources remain distinct from
+  source-qualified parsers and do not advance catalog integration maturity.
 - No source has a current live receipt in the committed catalog.
+
+Executable implementations are declared separately by
+`builtin_source_capabilities()`. The capability registry distinguishes
+acquisition, fixture-parser, source-parser, canonical-projection, live-receipt,
+and production-qualification evidence. Every implementation identifier maps
+to exactly one catalog source ID. Capability absence is meaningful: no source
+currently claims live-receipt or production-qualification evidence.
 
 `catalogued`, `acquisition`, `parser`, `fixture`, and `live_receipt` are
 successive evidence layers. A documented API or download can be acquisition

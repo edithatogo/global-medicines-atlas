@@ -1,11 +1,22 @@
 from __future__ import annotations
 
 import json
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
+from pathlib import Path
 
 import httpx
 import pytest
+from scripts.check_source_health import (
+    BaselineProvenance,
+    load_trusted_baseline,
+)
 
+import global_medicines_atlas.source_health as source_health_module
+from global_medicines_atlas.acquisition import (
+    AcquisitionPolicy,
+    BoundIPAddressTransport,
+    Resolver,
+)
 from global_medicines_atlas.countries import SourceDimension
 from global_medicines_atlas.source_catalog import (
     AccessMode,
@@ -13,9 +24,15 @@ from global_medicines_atlas.source_catalog import (
     SourceReadiness,
 )
 from global_medicines_atlas.source_health import (
+    AdapterParityState,
+    EscalationState,
     ProbeState,
+    RetryAttempt,
     SchemaDriftState,
+    SourceHealthObservation,
+    SourceHealthReceipt,
     assess_schema_drift,
+    build_source_health_receipt,
     compare_schema_fingerprints,
     drift_report_json,
     fingerprint_baseline,
@@ -23,9 +40,67 @@ from global_medicines_atlas.source_health import (
     probe_source,
     probe_sources,
     schema_fingerprint,
+    source_health_receipt_json,
 )
 
 NOW = datetime(2026, 7, 29, tzinfo=UTC)
+FIXTURES = Path(__file__).parent / "fixtures" / "source_health"
+
+
+def test_baseline_requires_trusted_main_workflow_and_exact_digest(
+    tmp_path: Path,
+) -> None:
+    report = tmp_path / "source-health.json"
+    report.write_text(
+        json.dumps({"baseline": {"example": "a" * 64}}) + "\n",
+        encoding="utf-8",
+    )
+    provenance = BaselineProvenance.for_report(
+        report,
+        repository="edithatogo/global-medicines-atlas",
+        workflow=".github/workflows/source-health.yml",
+        branch="main",
+        conclusion="success",
+        run_id=41,
+        commit="b" * 40,
+        observation_id=41,
+    )
+    metadata = tmp_path / "source-health-provenance.json"
+    metadata.write_text(provenance.canonical_json(), encoding="utf-8")
+
+    assert load_trusted_baseline(
+        report,
+        metadata,
+        expected_repository="edithatogo/global-medicines-atlas",
+        expected_workflow=".github/workflows/source-health.yml",
+        current_observation_id=42,
+        expected_run_id=41,
+        expected_commit="b" * 40,
+    ) == {"example": "a" * 64}
+
+    for field, replacement in (
+        ("workflow", ".github/workflows/other.yml"),
+        ("branch", "feature"),
+        ("conclusion", "failure"),
+        ("report_sha256", "c" * 64),
+        ("observation_id", 42),
+        ("run_id", 40),
+        ("commit", "d" * 40),
+    ):
+        changed = provenance.model_copy(update={field: replacement})
+        metadata.write_text(changed.canonical_json(), encoding="utf-8")
+        with pytest.raises(
+            ValueError, match=r"baseline|successful|observation|digest"
+        ):
+            load_trusted_baseline(
+                report,
+                metadata,
+                expected_repository="edithatogo/global-medicines-atlas",
+                expected_workflow=".github/workflows/source-health.yml",
+                current_observation_id=42,
+                expected_run_id=41,
+                expected_commit="b" * 40,
+            )
 
 
 def source(
@@ -116,11 +191,39 @@ def test_http_failure_is_unavailable_without_raising() -> None:
     result = probe_source(
         source(),
         checked_at=NOW,
+        expected_cadence=timedelta(days=1),
         transport=httpx.MockTransport(lambda _request: httpx.Response(503)),
     )
     assert result.state is ProbeState.UNAVAILABLE
     assert result.status_code == 503
     assert result.schema_fingerprint is None
+    assert result.expected_cadence_seconds == 86_400
+
+
+@pytest.mark.edge
+@pytest.mark.parametrize(
+    "endpoint",
+    [
+        "https://127.0.0.1/api",
+        "https://169.254.169.254/latest/meta-data/",
+        "https://[::1]/api",
+    ],
+)
+def test_probe_rejects_private_networks_before_transport(
+    endpoint: str,
+) -> None:
+    private_source = source().model_copy(update={"api_url": endpoint})
+    result = probe_source(
+        private_source,
+        checked_at=NOW,
+        transport=httpx.MockTransport(
+            lambda _request: pytest.fail("transport must not be called")
+        ),
+    )
+
+    assert result.state is ProbeState.UNAVAILABLE
+    assert "DestinationPolicyError" in result.detail
+    assert result.status_code is None
 
 
 def test_redirect_is_not_followed() -> None:
@@ -135,6 +238,51 @@ def test_redirect_is_not_followed() -> None:
     )
     assert result.state is ProbeState.UNAVAILABLE
     assert result.status_code == 302
+
+
+def test_production_probe_honours_zero_redirect_policy(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    inner = httpx.MockTransport(
+        lambda request: httpx.Response(
+            302,
+            headers={"location": "https://example.test/redirected"},
+            request=request,
+        )
+    )
+    bound = BoundIPAddressTransport(
+        policy=AcquisitionPolicy(
+            allowed_hosts=("example.test",),
+            max_redirects=0,
+        ),
+        resolver=lambda _host: ("93.184.216.34",),
+        inner=inner,
+    )
+
+    def use_bound_transport(
+        _uri: str,
+        _policy: AcquisitionPolicy,
+        *,
+        resolver: Resolver | None,
+        transport: httpx.BaseTransport | None,
+    ) -> httpx.BaseTransport:
+        del resolver, transport
+        return bound
+
+    monkeypatch.setattr(
+        source_health_module,
+        "transport_for_destination",
+        use_bound_transport,
+    )
+
+    result = probe_source(
+        source(),
+        checked_at=NOW,
+        acquisition_policy=AcquisitionPolicy(max_redirects=0),
+    )
+
+    assert result.state is ProbeState.UNAVAILABLE
+    assert "TooManyRedirects" in result.detail
 
 
 def test_schema_fingerprint_ignores_json_values_and_mapping_order() -> None:
@@ -220,6 +368,30 @@ def test_download_endpoint_and_transport_failure_are_fail_honest() -> None:
     )
     assert result.state is ProbeState.UNAVAILABLE
     assert result.status_code is None
+
+
+def test_rate_limit_degrades_without_retrying_or_retaining_details() -> None:
+    requests = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal requests
+        requests += 1
+        return httpx.Response(
+            429,
+            headers={"retry-after": "3600"},
+            request=request,
+        )
+
+    result = probe_source(
+        source(),
+        checked_at=NOW,
+        transport=httpx.MockTransport(handler),
+    )
+
+    assert requests == 1
+    assert result.state is ProbeState.UNAVAILABLE
+    assert result.status_code == 429
+    assert "3600" not in result.detail
 
 
 def test_catalog_blocked_api_is_not_probed() -> None:
@@ -359,3 +531,185 @@ def test_serialized_observations_are_valid_metadata_only_json() -> None:
 def test_invalid_bounds_are_rejected_without_network() -> None:
     with pytest.raises(ValueError, match="max_bytes"):
         probe_source(source(), checked_at=NOW, max_bytes=0)
+    with pytest.raises(ValueError, match="expected_cadence"):
+        probe_source(
+            source(),
+            checked_at=NOW,
+            expected_cadence=timedelta(0),
+        )
+
+
+def test_probe_records_source_update_and_freshness_against_cadence() -> None:
+    result = probe_source(
+        source(),
+        checked_at=NOW,
+        expected_cadence=timedelta(days=7),
+        transport=httpx.MockTransport(
+            lambda _request: httpx.Response(
+                200,
+                headers={
+                    "content-type": "application/json",
+                    "last-modified": "Mon, 20 Jul 2026 00:00:00 GMT",
+                },
+                json={"id": 1},
+            )
+        ),
+    )
+
+    assert result.expected_cadence_seconds == 604_800
+    assert result.source_updated_at == datetime(2026, 7, 20, tzinfo=UTC)
+    assert result.freshness_age_seconds == 777_600
+    assert result.is_fresh is False
+
+
+def test_retry_history_and_consecutive_failures_are_deterministic() -> None:
+    retry_history = (
+        RetryAttempt(
+            attempt=2,
+            attempted_at=NOW,
+            outcome=ProbeState.UNAVAILABLE,
+            status_code=503,
+            retry_after_seconds=30,
+        ),
+        RetryAttempt(
+            attempt=1,
+            attempted_at=NOW - timedelta(seconds=5),
+            outcome=ProbeState.UNAVAILABLE,
+            status_code=503,
+        ),
+    )
+    observation = SourceHealthObservation(
+        source_id="example",
+        checked_at=NOW,
+        state=ProbeState.UNAVAILABLE,
+        detail="upstream unavailable",
+    )
+
+    receipt = build_source_health_receipt(
+        observation,
+        previous_consecutive_failures=2,
+        retry_history=retry_history,
+    )
+
+    assert receipt.consecutive_failures == 3
+    assert [attempt.attempt for attempt in receipt.retry_history] == [1, 2]
+    assert receipt.escalation is EscalationState.OPEN
+
+
+def test_success_resets_failures_and_resolves_matching_escalation() -> None:
+    observation = SourceHealthObservation(
+        source_id="example",
+        checked_at=NOW,
+        state=ProbeState.AVAILABLE,
+        detail="available",
+    )
+    receipt = build_source_health_receipt(
+        observation,
+        previous_consecutive_failures=7,
+        previous_escalation_open=True,
+    )
+
+    assert receipt.consecutive_failures == 0
+    assert receipt.escalation is EscalationState.RESOLVED
+
+
+def test_escalation_dedup_key_is_stable_for_repeated_failure_class() -> None:
+    first = build_source_health_receipt(
+        SourceHealthObservation(
+            source_id="example",
+            checked_at=NOW,
+            state=ProbeState.UNAVAILABLE,
+            status_code=503,
+            detail="HTTPStatusError: source unavailable or unreadable",
+        ),
+        previous_consecutive_failures=2,
+    )
+    repeated = build_source_health_receipt(
+        first.observation.model_copy(
+            update={"checked_at": NOW + timedelta(hours=1)}
+        ),
+        previous_consecutive_failures=3,
+        previous_escalation_open=True,
+    )
+
+    assert first.deduplication_key == repeated.deduplication_key
+    assert first.escalation is EscalationState.OPEN
+    assert repeated.escalation is EscalationState.DEDUPLICATED
+
+
+def test_adapter_output_parity_is_explicit_without_payload_retention() -> None:
+    observation = SourceHealthObservation(
+        source_id="example",
+        checked_at=NOW,
+        state=ProbeState.AVAILABLE,
+        detail="available",
+    )
+
+    matching = build_source_health_receipt(
+        observation,
+        adapter_output_fingerprint="a" * 64,
+        expected_adapter_output_fingerprint="a" * 64,
+    )
+    changed = build_source_health_receipt(
+        observation,
+        adapter_output_fingerprint="b" * 64,
+        expected_adapter_output_fingerprint="a" * 64,
+    )
+    unknown = build_source_health_receipt(observation)
+
+    assert matching.adapter_output_parity is AdapterParityState.MATCHED
+    assert changed.adapter_output_parity is AdapterParityState.CHANGED
+    assert unknown.adapter_output_parity is AdapterParityState.NOT_ASSESSED
+
+
+def test_receipt_serialization_is_stable_metadata_only_and_self_identifying() -> (
+    None
+):
+    receipt = build_source_health_receipt(
+        SourceHealthObservation(
+            source_id="example",
+            checked_at=NOW,
+            state=ProbeState.UNAVAILABLE,
+            endpoint="https://example.test/api?token=must-not-be-copied",
+            detail="token=must-not-be-copied",
+        ),
+        previous_consecutive_failures=2,
+    )
+
+    first = source_health_receipt_json(receipt)
+    second = source_health_receipt_json(
+        SourceHealthReceipt.model_validate_json(first)
+    )
+    payload = json.loads(first)
+
+    assert first == second
+    assert payload["schema_version"] == 1
+    assert payload["receipt_id"].startswith("sha256:")
+    assert payload["deduplication_key"].startswith("source-health:")
+    assert "must-not-be-copied" not in first
+    assert payload["observation"]["endpoint"] is None
+
+
+def test_receipt_contract_matches_committed_golden_fixture() -> None:
+    observation = SourceHealthObservation(
+        source_id="example-source",
+        checked_at=NOW,
+        state=ProbeState.UNAVAILABLE,
+        status_code=503,
+        expected_cadence_seconds=86_400,
+        source_updated_at=datetime(2026, 7, 27, tzinfo=UTC),
+        freshness_age_seconds=172_800,
+        is_fresh=False,
+        detail="HTTPStatusError: upstream details withheld",
+    )
+
+    actual = source_health_receipt_json(
+        build_source_health_receipt(
+            observation,
+            previous_consecutive_failures=2,
+        )
+    )
+
+    assert actual == (FIXTURES / "unavailable-escalation-v1.json").read_text(
+        encoding="utf-8"
+    )

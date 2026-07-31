@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 5,
   "reviewed_at": "2026-07-29",
   "monitoring_contract": {
     "source_health": "weekly",
@@ -548,7 +548,38 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://dha.gov.ae/en/HealthRegulationSector/DrugControl"
+      "documentation_url": "https://dha.gov.ae/en/HealthRegulationSector/DrugControl",
+      "information_domains": [
+        "product_identity",
+        "funding_status",
+        "pricing"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing",
+        "price"
+      ],
+      "status_semantics": [
+        "reimbursement",
+        "price_listing"
+      ],
+      "geographic_scope": "subnational",
+      "population_scope": "defined_population",
+      "languages": [
+        "ar"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria",
+        "prices"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://dha.gov.ae/en/HealthRegulationSector/DrugControl"
+      ]
     },
     {
       "source_id": "ae-ede-register",
@@ -576,7 +607,33 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://services.ede.gov.ae/drugdirectory?lang=en-US"
+      "documentation_url": "https://services.ede.gov.ae/drugdirectory?lang=en-US",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "ar"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://services.ede.gov.ae/drugdirectory?lang=en-US"
+      ]
     },
     {
       "source_id": "ar-anmat-vademecum",
@@ -604,7 +661,33 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://www.argentina.gob.ar/anmat"
+      "documentation_url": "https://www.argentina.gob.ar/anmat",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "es"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.argentina.gob.ar/anmat"
+      ]
     },
     {
       "source_id": "au-amt-rf2",
@@ -633,7 +716,38 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "account-download",
-      "documentation_url": "https://www.healthterminologies.gov.au/"
+      "documentation_url": "https://www.healthterminologies.gov.au/",
+      "information_domains": [
+        "product_identity",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "terminology_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "terminology_relationships",
+        "ingredients",
+        "strengths",
+        "dosage_forms",
+        "routes",
+        "packages"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.healthterminologies.gov.au/"
+      ]
     },
     {
       "source_id": "au-artg",
@@ -660,7 +774,31 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.tga.gov.au/resources/artg"
+      "documentation_url": "https://www.tga.gov.au/resources/artg",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "au-pbs-api",
@@ -691,7 +829,32 @@
       "integration_layer": "acquisition",
       "acquisition_profile": "rate-limited-rest",
       "implemented_ingestion": false,
-      "documentation_url": "https://data.pbs.gov.au/data-distribution/data-distribution.html"
+      "documentation_url": "https://data.pbs.gov.au/data-distribution/data-distribution.html",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "au-pbs-embargo",
@@ -721,7 +884,34 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "acquisition_profile": "account-download",
-      "documentation_url": "https://data.pbs.gov.au/document/90473.html"
+      "documentation_url": "https://data.pbs.gov.au/document/90473.html",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://data.pbs.gov.au/document/90473.html"
+      ]
     },
     {
       "source_id": "au-pbs-historical-xml",
@@ -751,7 +941,34 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://info.data.pbs.gov.au/xml-schema/doc/html/guide.html"
+      "documentation_url": "https://info.data.pbs.gov.au/xml-schema/doc/html/guide.html",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "append_only_history",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://info.data.pbs.gov.au/xml-schema/doc/html/guide.html"
+      ]
     },
     {
       "source_id": "au-tga-pi-cmi",
@@ -779,7 +996,37 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://www.tga.gov.au/products/regulations-all-products/about-australian-register-therapeutic-goods-artg/product-information-pi"
+      "documentation_url": "https://www.tga.gov.au/products/regulations-all-products/about-australian-register-therapeutic-goods-artg/product-information-pi",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "clinical_documentation"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization",
+        "document_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "documents"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.tga.gov.au/products/regulations-all-products/about-australian-register-therapeutic-goods-artg/product-information-pi"
+      ]
     },
     {
       "source_id": "au-tga-regulatory-events",
@@ -809,7 +1056,36 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://www.tga.gov.au/resources/datasets"
+      "documentation_url": "https://www.tga.gov.au/resources/datasets",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "append_only_history",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "safety_notices"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.tga.gov.au/resources/datasets"
+      ]
     },
     {
       "source_id": "bh-moh-drug-prices",
@@ -837,7 +1113,38 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://www.moh.gov.bh/OtherPages/Faq?lang=en"
+      "documentation_url": "https://www.moh.gov.bh/OtherPages/Faq?lang=en",
+      "information_domains": [
+        "product_identity",
+        "funding_status",
+        "pricing"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing",
+        "price"
+      ],
+      "status_semantics": [
+        "reimbursement",
+        "price_listing"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "ar"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria",
+        "prices"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.moh.gov.bh/OtherPages/Faq?lang=en"
+      ]
     },
     {
       "source_id": "br-anvisa-medicines",
@@ -864,7 +1171,31 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://consultas.anvisa.gov.br/#/medicamentos/"
+      "documentation_url": "https://consultas.anvisa.gov.br/#/medicamentos/",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "pt"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "br-cmed-prices",
@@ -894,7 +1225,38 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/cmed/precos"
+      "documentation_url": "https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/cmed/precos",
+      "information_domains": [
+        "product_identity",
+        "funding_status",
+        "pricing"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing",
+        "price"
+      ],
+      "status_semantics": [
+        "reimbursement",
+        "price_listing"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "pt"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria",
+        "prices"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/cmed/precos"
+      ]
     },
     {
       "source_id": "br-conitec-decisions",
@@ -921,7 +1283,35 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.gov.br/conitec/pt-br"
+      "documentation_url": "https://www.gov.br/conitec/pt-br",
+      "information_domains": [
+        "product_identity",
+        "funding_status",
+        "hta_decision"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing",
+        "decision"
+      ],
+      "status_semantics": [
+        "reimbursement",
+        "recommendation"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "pt"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "ca-cda-recommendations",
@@ -949,7 +1339,37 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://www.cda-amc.ca/reimbursement-reviews"
+      "documentation_url": "https://www.cda-amc.ca/reimbursement-reviews",
+      "information_domains": [
+        "product_identity",
+        "formulary_status",
+        "hta_decision"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry",
+        "decision"
+      ],
+      "status_semantics": [
+        "formulary_inclusion",
+        "recommendation"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.cda-amc.ca/reimbursement-reviews"
+      ]
     },
     {
       "source_id": "ca-dpd",
@@ -980,7 +1400,31 @@
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/drug-product-database.html"
+      "documentation_url": "https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/drug-product-database.html",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "ca-noc",
@@ -1009,7 +1453,31 @@
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/notice-compliance/database/data-extract.html"
+      "documentation_url": "https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/notice-compliance/database/data-extract.html",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "append_only_history",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "ca-nova-scotia-pharmacare",
@@ -1044,7 +1512,34 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://open.canada.ca/data/en/dataset/e49db542-48db-8656-c4d5-f1f32516ddad"
+      "documentation_url": "https://open.canada.ca/data/en/dataset/e49db542-48db-8656-c4d5-f1f32516ddad",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement"
+      ],
+      "geographic_scope": "subnational",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://open.canada.ca/data/en/dataset/e49db542-48db-8656-c4d5-f1f32516ddad"
+      ]
     },
     {
       "source_id": "ca-ontario-odb",
@@ -1074,7 +1569,34 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://www.ontario.ca/document/ontario-drug-benefit-odb-formulary-comparative-drug-index-cdi-and-monthly-formulary-0"
+      "documentation_url": "https://www.ontario.ca/document/ontario-drug-benefit-odb-formulary-comparative-drug-index-cdi-and-monthly-formulary-0",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement"
+      ],
+      "geographic_scope": "subnational",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.ontario.ca/document/ontario-drug-benefit-odb-formulary-comparative-drug-index-cdi-and-monthly-formulary-0"
+      ]
     },
     {
       "source_id": "ch-foph-sl-fhir",
@@ -1104,7 +1626,34 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://sl.bag.admin.ch/resources/current-and-archived-data"
+      "documentation_url": "https://sl.bag.admin.ch/resources/current-and-archived-data",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "de"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://sl.bag.admin.ch/resources/current-and-archived-data"
+      ]
     },
     {
       "source_id": "ch-foph-specialities",
@@ -1131,7 +1680,32 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.spezialitaetenliste.ch/"
+      "documentation_url": "https://www.spezialitaetenliste.ch/",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "de"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "ch-swissmedic-aips",
@@ -1161,7 +1735,37 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://www.swissmedic.ch/swissmedic/en/home/humanarzneimittel/authorisations/aips.html/1000"
+      "documentation_url": "https://www.swissmedic.ch/swissmedic/en/home/humanarzneimittel/authorisations/aips.html/1000",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "clinical_documentation"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization",
+        "document_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "de"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "documents"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.swissmedic.ch/swissmedic/en/home/humanarzneimittel/authorisations/aips.html/1000"
+      ]
     },
     {
       "source_id": "ch-swissmedic-authorised",
@@ -1190,7 +1794,31 @@
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.swissmedic.ch/swissmedic/en/home/services/listen_neu.html"
+      "documentation_url": "https://www.swissmedic.ch/swissmedic/en/home/services/listen_neu.html",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "de"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "cl-isp-register",
@@ -1218,7 +1846,33 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://registrosanitario.ispch.gob.cl/"
+      "documentation_url": "https://registrosanitario.ispch.gob.cl/",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "es"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://registrosanitario.ispch.gob.cl/"
+      ]
     },
     {
       "source_id": "co-invima-cum",
@@ -1248,7 +1902,33 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://mesagil.invima.gov.co/productos-vigilados/medicamentos-y-productos-biologicos/autorizacion-de-comercializacion-registros"
+      "documentation_url": "https://mesagil.invima.gov.co/productos-vigilados/medicamentos-y-productos-biologicos/autorizacion-de-comercializacion-registros",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "es"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://mesagil.invima.gov.co/productos-vigilados/medicamentos-y-productos-biologicos/autorizacion-de-comercializacion-registros"
+      ]
     },
     {
       "source_id": "co-invima-register",
@@ -1276,7 +1956,33 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://www.invima.gov.co/consulta-registros-sanitarios"
+      "documentation_url": "https://www.invima.gov.co/consulta-registros-sanitarios",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "es"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.invima.gov.co/consulta-registros-sanitarios"
+      ]
     },
     {
       "source_id": "de-bfarm-amice",
@@ -1304,7 +2010,33 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://www.bfarm.de/DE/Arzneimittel/Arzneimittelinformationen/Arzneimittel-recherchieren/AMIce/_artikel.html"
+      "documentation_url": "https://www.bfarm.de/DE/Arzneimittel/Arzneimittelinformationen/Arzneimittel-recherchieren/AMIce/_artikel.html",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "de"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.bfarm.de/DE/Arzneimittel/Arzneimittelinformationen/Arzneimittel-recherchieren/AMIce/_artikel.html"
+      ]
     },
     {
       "source_id": "dk-medicinpriser",
@@ -1332,7 +2064,34 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://laegemiddelstyrelsen.dk/en/reimbursement/prices/medicine-prices-for-companies"
+      "documentation_url": "https://laegemiddelstyrelsen.dk/en/reimbursement/prices/medicine-prices-for-companies",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "da"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://laegemiddelstyrelsen.dk/en/reimbursement/prices/medicine-prices-for-companies"
+      ]
     },
     {
       "source_id": "eu-ema-article57",
@@ -1362,7 +2121,33 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/data-medicines-iso-idmp-standards-post-authorisation/public-data-article-57-database"
+      "documentation_url": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/data-medicines-iso-idmp-standards-post-authorisation/public-data-article-57-database",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "regional",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/data-medicines-iso-idmp-standards-post-authorisation/public-data-article-57-database"
+      ]
     },
     {
       "source_id": "eu-ema-json",
@@ -1392,7 +2177,37 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://www.ema.europa.eu/en/about-us/about-website/download-website-data-json-data-format"
+      "documentation_url": "https://www.ema.europa.eu/en/about-us/about-website/download-website-data-json-data-format",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "clinical_documentation"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization",
+        "document_only"
+      ],
+      "geographic_scope": "regional",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "documents"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.ema.europa.eu/en/about-us/about-website/download-website-data-json-data-format"
+      ]
     },
     {
       "source_id": "eu-ema-medicines",
@@ -1421,7 +2236,31 @@
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.ema.europa.eu/en/medicines"
+      "documentation_url": "https://www.ema.europa.eu/en/medicines",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "regional",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "eu-ema-pms-fhir",
@@ -1452,7 +2291,33 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "account-download",
-      "documentation_url": "https://api.pms.ema.europa.eu/public/v1/swagger"
+      "documentation_url": "https://api.pms.ema.europa.eu/public/v1/swagger",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "regional",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://api.pms.ema.europa.eu/public/v1/swagger"
+      ]
     },
     {
       "source_id": "eu-spor-rms-oms",
@@ -1483,7 +2348,38 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "acquisition_profile": "account-download",
-      "documentation_url": "https://spor.ema.europa.eu/"
+      "documentation_url": "https://spor.ema.europa.eu/",
+      "information_domains": [
+        "product_identity",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "terminology_only"
+      ],
+      "geographic_scope": "regional",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "terminology_relationships",
+        "ingredients",
+        "strengths",
+        "dosage_forms",
+        "routes",
+        "packages"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://spor.ema.europa.eu/"
+      ]
     },
     {
       "source_id": "eu-union-register",
@@ -1512,7 +2408,31 @@
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
       "implemented_ingestion": false,
-      "documentation_url": "https://health.ec.europa.eu/medicinal-products/union-register_en"
+      "documentation_url": "https://health.ec.europa.eu/medicinal-products/union-register_en",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "regional",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "fr-bdpm",
@@ -1542,7 +2462,33 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement"
+      "documentation_url": "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "fr"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement"
+      ]
     },
     {
       "source_id": "fr-bdpm-smr-asmr",
@@ -1572,7 +2518,34 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement"
+      "documentation_url": "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "fr"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement"
+      ]
     },
     {
       "source_id": "gb-emit",
@@ -1602,7 +2575,38 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://www.gov.uk/government/publications/drugs-and-pharmaceutical-electronic-market-information-emit"
+      "documentation_url": "https://www.gov.uk/government/publications/drugs-and-pharmaceutical-electronic-market-information-emit",
+      "information_domains": [
+        "product_identity",
+        "funding_status",
+        "pricing"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing",
+        "price"
+      ],
+      "status_semantics": [
+        "reimbursement",
+        "price_listing"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria",
+        "prices"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.gov.uk/government/publications/drugs-and-pharmaceutical-electronic-market-information-emit"
+      ]
     },
     {
       "source_id": "gb-mhra-products",
@@ -1629,7 +2633,31 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://products.mhra.gov.uk/"
+      "documentation_url": "https://products.mhra.gov.uk/",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "gb-nhs-dmd",
@@ -1657,7 +2685,36 @@
       "integration_layer": "acquisition",
       "acquisition_profile": "account-download",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd"
+      "documentation_url": "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd",
+      "information_domains": [
+        "product_identity",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "terminology_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "terminology_relationships",
+        "ingredients",
+        "strengths",
+        "dosage_forms",
+        "routes",
+        "packages"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "gb-nhs-drug-tariff",
@@ -1687,7 +2744,34 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/drug-tariff"
+      "documentation_url": "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/drug-tariff",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/drug-tariff"
+      ]
     },
     {
       "source_id": "gb-nice-ta",
@@ -1715,7 +2799,35 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.nice.org.uk/about/what-we-do/our-programmes/nice-guidance/nice-syndication-api"
+      "documentation_url": "https://www.nice.org.uk/about/what-we-do/our-programmes/nice-guidance/nice-syndication-api",
+      "information_domains": [
+        "product_identity",
+        "funding_status",
+        "hta_decision"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing",
+        "decision"
+      ],
+      "status_semantics": [
+        "reimbursement",
+        "recommendation"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "gb-trud-api",
@@ -1746,7 +2858,33 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "acquisition_profile": "account-download",
-      "documentation_url": "https://digital.nhs.uk/developer/api-catalogue/technology-reference-update-distribution-api"
+      "documentation_url": "https://digital.nhs.uk/developer/api-catalogue/technology-reference-update-distribution-api",
+      "information_domains": [
+        "product_identity",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "terminology_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "terminology_relationships"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://digital.nhs.uk/developer/api-catalogue/technology-reference-update-distribution-api"
+      ]
     },
     {
       "source_id": "gcc-central-registration",
@@ -1774,7 +2912,33 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://ghc.sa/"
+      "documentation_url": "https://ghc.sa/",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "global",
+      "population_scope": "general",
+      "languages": [
+        "und"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://ghc.sa/"
+      ]
     },
     {
       "source_id": "global-rxnorm",
@@ -1808,7 +2972,36 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "parser",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://www.nlm.nih.gov/research/umls/rxnorm/"
+      "documentation_url": "https://www.nlm.nih.gov/research/umls/rxnorm/",
+      "information_domains": [
+        "product_identity",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "terminology_only"
+      ],
+      "geographic_scope": "global",
+      "population_scope": "general",
+      "languages": [
+        "und"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "terminology_relationships",
+        "ingredients",
+        "strengths",
+        "dosage_forms",
+        "routes",
+        "packages"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "global-who-databases",
@@ -1835,7 +3028,31 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.who.int/tools/monitoring-and-evaluation/databases"
+      "documentation_url": "https://www.who.int/tools/monitoring-and-evaluation/databases",
+      "information_domains": [
+        "product_identity",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "terminology_only"
+      ],
+      "geographic_scope": "global",
+      "population_scope": "general",
+      "languages": [
+        "und"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "terminology_relationships"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "global-who-wla",
@@ -1864,7 +3081,31 @@
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.who.int/initiatives/who-listed-authority-reg-authorities"
+      "documentation_url": "https://www.who.int/initiatives/who-listed-authority-reg-authorities",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "global",
+      "population_scope": "general",
+      "languages": [
+        "und"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "id-bpom-product",
@@ -1892,7 +3133,33 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://cekbpom.pom.go.id/"
+      "documentation_url": "https://cekbpom.pom.go.id/",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "id"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://cekbpom.pom.go.id/"
+      ]
     },
     {
       "source_id": "in-cdsco-approved-drugs",
@@ -1919,7 +3186,31 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://cdsco.gov.in/opencms/opencms/en/Approval_new/Approved-New-Drugs/"
+      "documentation_url": "https://cdsco.gov.in/opencms/opencms/en/Approval_new/Approved-New-Drugs/",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "in-nlem",
@@ -1948,7 +3239,32 @@
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
       "implemented_ingestion": false,
-      "documentation_url": "https://main.mohfw.gov.in/newshighlights-104"
+      "documentation_url": "https://main.mohfw.gov.in/newshighlights-104",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "jp-mhlw-nhi-price",
@@ -1977,7 +3293,36 @@
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.mhlw.go.jp/topics/2025/04/tp20250401-01.html"
+      "documentation_url": "https://www.mhlw.go.jp/topics/2025/04/tp20250401-01.html",
+      "information_domains": [
+        "product_identity",
+        "funding_status",
+        "pricing"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing",
+        "price"
+      ],
+      "status_semantics": [
+        "reimbursement",
+        "price_listing"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "ja"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria",
+        "prices"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "jp-pmda-approvals",
@@ -2004,7 +3349,31 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.pmda.go.jp/english/review-services/reviews/approved-information/drugs/0001.html"
+      "documentation_url": "https://www.pmda.go.jp/english/review-services/reviews/approved-information/drugs/0001.html",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "ja"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "jp-pmda-package-inserts",
@@ -2032,7 +3401,37 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://www.info.pmda.go.jp/psearch/tenpulist.jsp"
+      "documentation_url": "https://www.info.pmda.go.jp/psearch/tenpulist.jsp",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "clinical_documentation"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization",
+        "document_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "ja"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "documents"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.info.pmda.go.jp/psearch/tenpulist.jsp"
+      ]
     },
     {
       "source_id": "kr-hira-atc",
@@ -2062,7 +3461,38 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://www.data.go.kr/data/15118958/fileData.do"
+      "documentation_url": "https://www.data.go.kr/data/15118958/fileData.do",
+      "information_domains": [
+        "product_identity",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "terminology_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "ko"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "terminology_relationships",
+        "ingredients",
+        "strengths",
+        "dosage_forms",
+        "routes",
+        "packages"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.data.go.kr/data/15118958/fileData.do"
+      ]
     },
     {
       "source_id": "kr-hira-reimbursement",
@@ -2089,7 +3519,36 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.hira.or.kr/"
+      "documentation_url": "https://www.hira.or.kr/",
+      "information_domains": [
+        "product_identity",
+        "funding_status",
+        "pricing"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing",
+        "price"
+      ],
+      "status_semantics": [
+        "reimbursement",
+        "price_listing"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "ko"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria",
+        "prices"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "kr-hira-standard-code",
@@ -2119,7 +3578,33 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://www.data.go.kr/data/15067462/fileData.do"
+      "documentation_url": "https://www.data.go.kr/data/15067462/fileData.do",
+      "information_domains": [
+        "product_identity",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "terminology_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "ko"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "terminology_relationships"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.data.go.kr/data/15067462/fileData.do"
+      ]
     },
     {
       "source_id": "kr-mfds-nedrug",
@@ -2146,7 +3631,31 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://nedrug.mfds.go.kr/"
+      "documentation_url": "https://nedrug.mfds.go.kr/",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "ko"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "kw-moh-medicines",
@@ -2174,7 +3683,33 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://www.moh.gov.kw/"
+      "documentation_url": "https://www.moh.gov.kw/",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "ar"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.moh.gov.kw/"
+      ]
     },
     {
       "source_id": "mx-cofepris-register",
@@ -2201,7 +3736,31 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.gob.mx/cofepris"
+      "documentation_url": "https://www.gob.mx/cofepris",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "es"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "mx-csg-compendium",
@@ -2228,7 +3787,32 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.csg.gob.mx/Compendio/CNIS/cnis.html"
+      "documentation_url": "https://www.csg.gob.mx/Compendio/CNIS/cnis.html",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "es"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "my-npra-quest",
@@ -2256,7 +3840,33 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://quest3plus.bpfk.gov.my/front-end/product-search.php"
+      "documentation_url": "https://quest3plus.bpfk.gov.my/front-end/product-search.php",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "ms"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://quest3plus.bpfk.gov.my/front-end/product-search.php"
+      ]
     },
     {
       "source_id": "ng-nafdac-products",
@@ -2283,7 +3893,31 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://greenbook.nafdac.gov.ng/"
+      "documentation_url": "https://greenbook.nafdac.gov.ng/",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "ng-nhia-medicines",
@@ -2310,7 +3944,32 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.nhia.gov.ng/"
+      "documentation_url": "https://www.nhia.gov.ng/",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "nl-medicijnkosten",
@@ -2338,7 +3997,34 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://www.medicijnkosten.nl/"
+      "documentation_url": "https://www.medicijnkosten.nl/",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "nl"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.medicijnkosten.nl/"
+      ]
     },
     {
       "source_id": "no-dmp-fhir",
@@ -2367,7 +4053,33 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://www.dmp.no/om-oss/distribusjon-av-legemiddeldata/FHIR-tjenesten/innhold-i-tjenesten"
+      "documentation_url": "https://www.dmp.no/om-oss/distribusjon-av-legemiddeldata/FHIR-tjenesten/innhold-i-tjenesten",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "no"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.dmp.no/om-oss/distribusjon-av-legemiddeldata/FHIR-tjenesten/innhold-i-tjenesten"
+      ]
     },
     {
       "source_id": "no-fest",
@@ -2398,7 +4110,41 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://www.dmp.no/en/about-us/distribution-of-data-on-medicinal-products/electronic-prescription-support-system-fest/downloading-fest-and-safest"
+      "documentation_url": "https://www.dmp.no/en/about-us/distribution-of-data-on-medicinal-products/electronic-prescription-support-system-fest/downloading-fest-and-safest",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "no"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "ingredients",
+        "strengths",
+        "dosage_forms",
+        "routes",
+        "packages",
+        "terminology_relationships"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.dmp.no/en/about-us/distribution-of-data-on-medicinal-products/electronic-prescription-support-system-fest/downloading-fest-and-safest"
+      ]
     },
     {
       "source_id": "nz-medsafe-documents",
@@ -2426,7 +4172,37 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://www.medsafe.govt.nz/DbSearch/InfoSearch"
+      "documentation_url": "https://www.medsafe.govt.nz/DbSearch/InfoSearch",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "clinical_documentation"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization",
+        "document_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "documents"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.medsafe.govt.nz/DbSearch/InfoSearch"
+      ]
     },
     {
       "source_id": "nz-medsafe-products",
@@ -2453,7 +4229,31 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.medsafe.govt.nz/DbSearch/InfoSearch"
+      "documentation_url": "https://www.medsafe.govt.nz/DbSearch/InfoSearch",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "nz-nzhts-fhir",
@@ -2484,7 +4284,38 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "keyed-rest",
-      "documentation_url": "https://www.healthnz.govt.nz/health-professionals/guidance-standards/topic/data-and-standards/health-information-standards/nz-health-terminology-service-nzhts"
+      "documentation_url": "https://www.healthnz.govt.nz/health-professionals/guidance-standards/topic/data-and-standards/health-information-standards/nz-health-terminology-service-nzhts",
+      "information_domains": [
+        "product_identity",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "terminology_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "terminology_relationships",
+        "ingredients",
+        "strengths",
+        "dosage_forms",
+        "routes",
+        "packages"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.healthnz.govt.nz/health-professionals/guidance-standards/topic/data-and-standards/health-information-standards/nz-health-terminology-service-nzhts"
+      ]
     },
     {
       "source_id": "nz-nzulm-bulk",
@@ -2513,7 +4344,38 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "account-download",
-      "documentation_url": "https://info.nzulm.org.nz/data-access"
+      "documentation_url": "https://info.nzulm.org.nz/data-access",
+      "information_domains": [
+        "product_identity",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "terminology_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "terminology_relationships",
+        "ingredients",
+        "strengths",
+        "dosage_forms",
+        "routes",
+        "packages"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://info.nzulm.org.nz/data-access"
+      ]
     },
     {
       "source_id": "nz-pharmac-hml",
@@ -2543,7 +4405,34 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://schedule.pharmac.govt.nz/pub/HML/archive/"
+      "documentation_url": "https://schedule.pharmac.govt.nz/pub/HML/archive/",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://schedule.pharmac.govt.nz/pub/HML/archive/"
+      ]
     },
     {
       "source_id": "nz-pharmac-schedule",
@@ -2572,7 +4461,32 @@
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
       "implemented_ingestion": false,
-      "documentation_url": "https://schedule.pharmac.govt.nz/"
+      "documentation_url": "https://schedule.pharmac.govt.nz/",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "nz-pharmac-schedule-xml",
@@ -2602,7 +4516,34 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://schedule.pharmac.govt.nz/pub/Schedule/"
+      "documentation_url": "https://schedule.pharmac.govt.nz/pub/Schedule/",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://schedule.pharmac.govt.nz/pub/Schedule/"
+      ]
     },
     {
       "source_id": "om-moh-medicines",
@@ -2630,7 +4571,33 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://www.moh.gov.om/"
+      "documentation_url": "https://www.moh.gov.om/",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "ar"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.moh.gov.om/"
+      ]
     },
     {
       "source_id": "ph-fda-verification",
@@ -2658,7 +4625,33 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://verification.fda.gov.ph/"
+      "documentation_url": "https://verification.fda.gov.ph/",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://verification.fda.gov.ph/"
+      ]
     },
     {
       "source_id": "qa-moh-medicines",
@@ -2686,7 +4679,33 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://www.moph.gov.qa/"
+      "documentation_url": "https://www.moph.gov.qa/",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "ar"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.moph.gov.qa/"
+      ]
     },
     {
       "source_id": "sa-chi-formulary",
@@ -2713,7 +4732,32 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.chi.gov.sa/"
+      "documentation_url": "https://www.chi.gov.sa/",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "ar"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "sa-sfda-drug-list",
@@ -2740,7 +4784,31 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.sfda.gov.sa/en/drugs-list"
+      "documentation_url": "https://www.sfda.gov.sa/en/drugs-list",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "ar"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "se-npl-nsl",
@@ -2770,7 +4838,41 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://www.lakemedelsverket.se/sv/om-webbplatsen/oppna-data"
+      "documentation_url": "https://www.lakemedelsverket.se/sv/om-webbplatsen/oppna-data",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "sv"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "ingredients",
+        "strengths",
+        "dosage_forms",
+        "routes",
+        "packages",
+        "terminology_relationships"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.lakemedelsverket.se/sv/om-webbplatsen/oppna-data"
+      ]
     },
     {
       "source_id": "se-tlv-subsidies",
@@ -2798,7 +4900,38 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://www.tlv.se/lakemedelsforetag/pris-och-subvention-av-lakemedel/subventionerade-lakemedel.html"
+      "documentation_url": "https://www.tlv.se/lakemedelsforetag/pris-och-subvention-av-lakemedel/subventionerade-lakemedel.html",
+      "information_domains": [
+        "product_identity",
+        "funding_status",
+        "pricing"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing",
+        "price"
+      ],
+      "status_semantics": [
+        "reimbursement",
+        "price_listing"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "sv"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria",
+        "prices"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.tlv.se/lakemedelsforetag/pris-och-subvention-av-lakemedel/subventionerade-lakemedel.html"
+      ]
     },
     {
       "source_id": "sg-hsa-approval-deltas",
@@ -2826,7 +4959,33 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://www.hsa.gov.sg/therapeutic-products/registration-of-therapeutic-products/tools-and-resources/listing-of-approvals-and-post-registration-actions/listing-of-approvals/"
+      "documentation_url": "https://www.hsa.gov.sg/therapeutic-products/registration-of-therapeutic-products/tools-and-resources/listing-of-approvals-and-post-registration-actions/listing-of-approvals/",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "append_only_history",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.hsa.gov.sg/therapeutic-products/registration-of-therapeutic-products/tools-and-resources/listing-of-approvals-and-post-registration-actions/listing-of-approvals/"
+      ]
     },
     {
       "source_id": "sg-hsa-register",
@@ -2853,7 +5012,31 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.hsa.gov.sg/therapeutic-products/register"
+      "documentation_url": "https://www.hsa.gov.sg/therapeutic-products/register",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "sg-moh-drug-list",
@@ -2880,7 +5063,32 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/drug-subsidies-schemes"
+      "documentation_url": "https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/drug-subsidies-schemes",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "th-fda-search",
@@ -2908,7 +5116,33 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://pertento.fda.moph.go.th/FDA_SEARCH_DRUG/SEARCH_DRUG/FRM_SEARCH_PAGE.aspx"
+      "documentation_url": "https://pertento.fda.moph.go.th/FDA_SEARCH_DRUG/SEARCH_DRUG/FRM_SEARCH_PAGE.aspx",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "th"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://pertento.fda.moph.go.th/FDA_SEARCH_DRUG/SEARCH_DRUG/FRM_SEARCH_PAGE.aspx"
+      ]
     },
     {
       "source_id": "us-cms-mdrp",
@@ -2937,7 +5171,34 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://data.medicaid.gov/datasets"
+      "documentation_url": "https://data.medicaid.gov/datasets",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://data.medicaid.gov/datasets"
+      ]
     },
     {
       "source_id": "us-cms-nadac",
@@ -2966,7 +5227,38 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://data.medicaid.gov/datasets"
+      "documentation_url": "https://data.medicaid.gov/datasets",
+      "information_domains": [
+        "product_identity",
+        "funding_status",
+        "pricing"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing",
+        "price"
+      ],
+      "status_semantics": [
+        "reimbursement",
+        "price_listing"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria",
+        "prices"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://data.medicaid.gov/datasets"
+      ]
     },
     {
       "source_id": "us-cms-partd-formulary",
@@ -2995,7 +5287,32 @@
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
       "implemented_ingestion": false,
-      "documentation_url": "https://data.cms.gov/provider-summary-by-type-of-service/medicare-part-d-prescribers/quarterly-prescription-drug-plan-formulary-pharmacy-network-and-pricing-information"
+      "documentation_url": "https://data.cms.gov/provider-summary-by-type-of-service/medicare-part-d-prescribers/quarterly-prescription-drug-plan-formulary-pharmacy-network-and-pricing-information",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "us-dailymed-spl",
@@ -3028,7 +5345,37 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://dailymed.nlm.nih.gov/dailymed/webservices-help/v2/spls_api.cfm"
+      "documentation_url": "https://dailymed.nlm.nih.gov/dailymed/webservices-help/v2/spls_api.cfm",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "clinical_documentation"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization",
+        "document_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "documents"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://dailymed.nlm.nih.gov/dailymed/webservices-help/v2/spls_api.cfm"
+      ]
     },
     {
       "source_id": "us-drugsfda",
@@ -3060,7 +5407,31 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "parser",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://www.accessdata.fda.gov/scripts/cder/daf/"
+      "documentation_url": "https://www.accessdata.fda.gov/scripts/cder/daf/",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "us-fda-orange-book",
@@ -3090,7 +5461,31 @@
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.fda.gov/drugs/drug-approvals-and-databases/orange-book-data-files"
+      "documentation_url": "https://www.fda.gov/drugs/drug-approvals-and-databases/orange-book-data-files",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "us-gsrs-unii",
@@ -3119,7 +5514,38 @@
       "native_identifier": "source-native identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
-      "documentation_url": "https://gsrs.ncats.nih.gov/"
+      "documentation_url": "https://gsrs.ncats.nih.gov/",
+      "information_domains": [
+        "product_identity",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "terminology_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "terminology_relationships",
+        "ingredients",
+        "strengths",
+        "dosage_forms",
+        "routes",
+        "packages"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://gsrs.ncats.nih.gov/"
+      ]
     },
     {
       "source_id": "us-openfda-drugsfda",
@@ -3149,7 +5575,33 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-rest",
-      "documentation_url": "https://open.fda.gov/apis/drug/drugsfda/"
+      "documentation_url": "https://open.fda.gov/apis/drug/drugsfda/",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://open.fda.gov/apis/drug/drugsfda/"
+      ]
     },
     {
       "source_id": "us-openfda-ndc",
@@ -3179,7 +5631,31 @@
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
       "implemented_ingestion": false,
-      "documentation_url": "https://open.fda.gov/apis/drug/ndc/"
+      "documentation_url": "https://open.fda.gov/apis/drug/ndc/",
+      "information_domains": [
+        "product_identity",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "terminology_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "terminology_relationships"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "us-rxnorm-api",
@@ -3210,7 +5686,38 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-rest",
-      "documentation_url": "https://www.nlm.nih.gov/research/umls/rxnorm/index.html"
+      "documentation_url": "https://www.nlm.nih.gov/research/umls/rxnorm/index.html",
+      "information_domains": [
+        "product_identity",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "terminology_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "terminology_relationships",
+        "ingredients",
+        "strengths",
+        "dosage_forms",
+        "routes",
+        "packages"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.nlm.nih.gov/research/umls/rxnorm/index.html"
+      ]
     },
     {
       "source_id": "za-national-eml",
@@ -3239,7 +5746,32 @@
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.health.gov.za/national-essential-medicine-list/"
+      "documentation_url": "https://www.health.gov.za/national-essential-medicine-list/",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "za-sahpra-register",
@@ -3266,7 +5798,31 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.sahpra.org.za/registered-health-products/"
+      "documentation_url": "https://www.sahpra.org.za/registered-health-products/",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "current_state",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "za-single-exit-price",
@@ -3296,7 +5852,38 @@
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
-      "documentation_url": "https://www.health.gov.za/nhi-pee/"
+      "documentation_url": "https://www.health.gov.za/nhi-pee/",
+      "information_domains": [
+        "product_identity",
+        "funding_status",
+        "pricing"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing",
+        "price"
+      ],
+      "status_semantics": [
+        "reimbursement",
+        "price_listing"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "status_dates",
+        "eligibility_criteria",
+        "prices"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "https://www.health.gov.za/nhi-pee/"
+      ]
     }
   ]
 }

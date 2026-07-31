@@ -252,3 +252,147 @@ flowchart LR
     PUBLICATION --> QUALIFY
     ATLAS --> QUALIFY
 ```
+
+## Source Information and Adapter Capability Contract
+
+```mermaid
+flowchart LR
+    AUTHORITY["Authoritative resource"]
+    CATALOG["Versioned source-information schema"]
+    DOMAINS["Information domains and status semantics"]
+    CAPABILITY["Unified adapter capability registry"]
+    ACQUIRE["Bounded acquisition"]
+    PARSE["Source-native parser"]
+    PROJECT["Canonical schema v2 projection"]
+    RECEIPT["Immutable health and transformation receipts"]
+
+    AUTHORITY --> CATALOG
+    CATALOG --> DOMAINS
+    CATALOG --> CAPABILITY
+    CAPABILITY --> ACQUIRE
+    ACQUIRE --> PARSE
+    PARSE --> PROJECT
+    ACQUIRE --> RECEIPT
+    PARSE --> RECEIPT
+    PROJECT --> RECEIPT
+```
+
+Each catalog entry labels the entities and information it actually contains.
+Regulatory status, funding eligibility, prices, terminology relationships and
+safety information remain distinct domains. Capability declarations distinguish
+synthetic fixtures from live acquisition and production qualification.
+
+## Canonical Discovery and Consumer Boundary
+
+```mermaid
+flowchart LR
+    NATIVE["Source-native records"]
+    SCHEMA["Canonical medicine schema v2"]
+    DB["Versioned DuckDB projection"]
+    SEARCH["Bounded lexical and identifier discovery"]
+    API["Versioned API and OpenAPI contract"]
+    CLI["CLI"]
+    ATLAS["Accessible atlas"]
+    PACKAGE["Clean-installed wheel or sdist"]
+
+    NATIVE --> SCHEMA
+    SCHEMA --> DB
+    DB --> SEARCH
+    SEARCH --> API
+    API --> CLI
+    API --> ATLAS
+    PACKAGE --> API
+```
+
+Discovery returns native and canonical identifiers, match method, provenance
+and jurisdiction scope. SQL keyset pagination and database schema metadata keep
+large queries bounded and migration-aware.
+
+## Comparison Validity Boundary
+
+```mermaid
+flowchart LR
+    LEFT["Source-native entity and status A"]
+    RIGHT["Source-native entity and status B"]
+    MAP["Typed mapping and normalization evidence"]
+    SCOPE["Indication, population, time and benefit scope"]
+    VALID{"Comparison validity"}
+    OK["Valid comparison"]
+    PART["Partial comparison with material mismatch"]
+    NO["Unavailable or inappropriate comparison"]
+
+    LEFT --> MAP
+    RIGHT --> MAP
+    MAP --> SCOPE
+    SCOPE --> VALID
+    VALID --> OK
+    VALID --> PART
+    VALID --> NO
+```
+
+Comparison validity is an explicit output, not an inference from name or
+terminology similarity. The system retains source-native legal and funding
+meanings and must not imply therapeutic equivalence, substitutability or equal
+benefit when entity, indication, population, temporal or benefit-design scopes
+do not support that conclusion.
+
+## Governed Research and Dataset Identity
+
+```mermaid
+flowchart LR
+    COMMIT["GitHub commit and release"]
+    CATALOG["Lawful source-catalog dataset"]
+    BENCH["Synthetic matching benchmark"]
+    HF["Hugging Face dataset card and Croissant"]
+    ZENODO["Zenodo concept DOI and version DOI"]
+    OSF["OSF protocol and preregistration"]
+    RECEIPT["Checksums, licence and provenance"]
+
+    COMMIT --> CATALOG
+    COMMIT --> BENCH
+    CATALOG --> HF
+    BENCH --> HF
+    HF --> ZENODO
+    OSF --> ZENODO
+    COMMIT --> OSF
+    CATALOG --> RECEIPT
+    BENCH --> RECEIPT
+```
+
+The source catalog and lawful synthetic benchmark are separate products with
+separate licences and identifiers. Rights-restricted medicine payloads remain
+outside public publication packages. Creating external records or publishing a
+release remains an explicit maintainer gate.
+
+## Untrusted Acquisition and Failure Containment
+
+```mermaid
+flowchart LR
+    NETWORK["Approved authoritative destination"]
+    EGRESS{"Scheme, redirect, DNS and IP policy"}
+    FETCH["Bounded fetch and per-host resilience"]
+    QUARANTINE["Immutable quarantine and digest"]
+    PARSE["Bounded fail-closed parser"]
+    NORMAL["Validated source-native records"]
+    CANON["Canonical projection"]
+    RELEASE{"Rights, licence, provenance and approval gate"}
+    PUBLIC["Lawful publication artifact"]
+    INCIDENT["Quarantine, revoke, withdraw and replace"]
+
+    NETWORK --> EGRESS
+    EGRESS -->|allow| FETCH
+    EGRESS -->|reject| INCIDENT
+    FETCH --> QUARANTINE
+    QUARANTINE --> PARSE
+    PARSE -->|valid| NORMAL
+    PARSE -->|invalid or excessive| INCIDENT
+    NORMAL --> CANON
+    CANON --> RELEASE
+    RELEASE -->|approved| PUBLIC
+    RELEASE -->|blocked| INCIDENT
+```
+
+Acquired bytes are untrusted even when an authority is official. Logs retain
+source IDs, digests and bounded outcomes but redact credentials, query strings
+and source payloads. Compromise recovery covers upstream data, signing
+provenance, credentials and already-published datasets.

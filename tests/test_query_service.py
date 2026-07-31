@@ -294,6 +294,257 @@ def test_cursor_is_stable_and_bound_to_filters_and_clocks(
         )
 
 
+def test_evidence_and_coverage_use_sql_keyset_pages(
+    service: ReadOnlyQueryService,
+) -> None:
+    first_evidence = service.evidence(
+        EvidenceQuery(
+            concept_id="rx:1",
+            valid_at=NOW,
+            observed_at=NOW,
+            limit=1,
+        )
+    )
+    assert first_evidence.metadata.page.next_cursor is not None
+    second_evidence = service.evidence(
+        EvidenceQuery(
+            concept_id="rx:1",
+            valid_at=NOW,
+            observed_at=NOW,
+            limit=1,
+            cursor=first_evidence.metadata.page.next_cursor,
+        )
+    )
+    assert first_evidence.evidence[0] != second_evidence.evidence[0]
+
+    first_coverage = service.coverage(
+        CoverageQuery(
+            jurisdictions=("AU", "US"),
+            valid_at=NOW,
+            observed_at=NOW,
+            limit=1,
+        )
+    )
+    assert first_coverage.metadata.page.next_cursor is not None
+    second_coverage = service.coverage(
+        CoverageQuery(
+            jurisdictions=("AU", "US"),
+            valid_at=NOW,
+            observed_at=NOW,
+            limit=1,
+            cursor=first_coverage.metadata.page.next_cursor,
+        )
+    )
+    assert first_coverage.coverage[0] != second_coverage.coverage[0]
+
+
+def test_coverage_cursor_preserves_raw_status_after_normalization(
+    tmp_path: Path,
+) -> None:
+    database = _database(tmp_path / "atlas.duckdb")
+    connection = duckdb.connect(str(database))
+    rows = [
+        (
+            "NZ",
+            "custom",
+            f"receipt-{status}",
+            f"observation-{status}",
+            "all",
+            "regulatory",
+            None,
+            "medicine",
+            status,
+            "observed medicines",
+            NOW,
+            None,
+            NOW,
+            None,
+            1,
+            1,
+            2,
+            0,
+            [],
+            0,
+        )
+        for status in ("active", "approved")
+    ]
+    connection.executemany(
+        """
+        INSERT INTO temporal_coverage VALUES (
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+        )
+        """,
+        rows,
+    )
+    connection.close()
+    query_service = ReadOnlyQueryService(
+        database, cursor_secret=SECRET, allowed_root=tmp_path
+    )
+    first = query_service.coverage(
+        CoverageQuery(
+            jurisdictions=("NZ",),
+            dimensions=(EvidenceDimension.REGULATORY,),
+            valid_at=NOW,
+            observed_at=NOW,
+            limit=1,
+        )
+    )
+    assert first.coverage[0].state is ProductState.UNKNOWN
+    assert first.metadata.page.next_cursor is not None
+    second = query_service.coverage(
+        CoverageQuery(
+            jurisdictions=("NZ",),
+            dimensions=(EvidenceDimension.REGULATORY,),
+            valid_at=NOW,
+            observed_at=NOW,
+            limit=1,
+            cursor=first.metadata.page.next_cursor,
+        )
+    )
+    assert len(second.coverage) == 1
+    assert second.coverage[0].state is ProductState.UNKNOWN
+    assert second.metadata.page.next_cursor is None
+
+
+def test_comparison_provenance_is_bounded_but_conflict_uses_all_rows(
+    tmp_path: Path,
+) -> None:
+    database = _database(tmp_path / "atlas.duckdb")
+    connection = duckdb.connect(str(database))
+    connection.execute(
+        """
+        INSERT INTO temporal_assertions
+        SELECT printf('bulk-%03d', number), 'rx:1', 'NZ', 'regulatory',
+               'Medsafe',
+               CASE WHEN number = 99 THEN 'withdrawn' ELSE 'approved' END,
+               'confirmed', [], ?, NULL, ?, NULL, NULL, NULL, 'medsafe',
+               'https://example.test/medsafe/bulk', ?, NULL, NULL, NULL,
+               '2026-07', 'nz-adapter-v1'
+        FROM range(100) AS generated(number)
+        """,
+        [NOW, NOW, NOW],
+    )
+    connection.close()
+    query_service = ReadOnlyQueryService(
+        database, cursor_secret=SECRET, allowed_root=tmp_path
+    )
+
+    response = query_service.comparisons(
+        ComparisonQuery(
+            concept_id="rx:1",
+            jurisdictions=("NZ",),
+            dimensions=(EvidenceDimension.REGULATORY,),
+            valid_at=NOW,
+            observed_at=NOW,
+            limit=1,
+        )
+    )
+    conclusion = response.conclusions[0]
+    assert conclusion.state is ProductState.CONFLICTING
+    assert len(conclusion.provenance) == 32
+    assert conclusion.uncertainty.reason is not None
+    assert "32 of 101" in conclusion.uncertainty.reason
+    assert "paginated evidence endpoint" in conclusion.uncertainty.reason
+
+
+def test_query_plan_receipt_proves_keyset_and_limit_pushdown(
+    service: ReadOnlyQueryService,
+) -> None:
+    first = service.evidence(
+        EvidenceQuery(
+            concept_id="rx:1",
+            valid_at=NOW,
+            observed_at=NOW,
+            limit=1,
+        )
+    )
+    cursor = first.metadata.page.next_cursor
+    assert cursor is not None
+
+    receipt = service.query_plan_evidence(
+        EvidenceQuery(
+            concept_id="rx:1",
+            valid_at=NOW,
+            observed_at=NOW,
+            limit=1,
+            cursor=cursor,
+        )
+    )
+
+    assert receipt.operation == "evidence"
+    assert receipt.requested_limit == 1
+    assert receipt.fetch_limit == 2
+    assert receipt.keyset_applied is True
+    assert receipt.schema_identity == service.schema_identity
+    assert len(receipt.sql_sha256) == 64
+    assert receipt.parameter_count > 0
+    assert receipt.planning_duration_ms >= 0
+    assert receipt.plan
+
+    for query, operation in (
+        (_comparison(limit=1), "comparisons"),
+        (
+            CoverageQuery(
+                jurisdictions=("AU", "US"),
+                valid_at=NOW,
+                observed_at=NOW,
+                limit=1,
+            ),
+            "coverage",
+        ),
+    ):
+        plan = service.query_plan_evidence(query)
+        assert plan.operation == operation
+        assert plan.fetch_limit == 2
+        assert plan.keyset_applied is False
+        assert plan.plan
+
+
+def test_schema_identity_is_deterministic_and_rejects_incompatible_types(
+    tmp_path: Path,
+) -> None:
+    database = _database(tmp_path / "atlas.duckdb")
+    first = ReadOnlyQueryService(
+        database, cursor_secret=SECRET, allowed_root=tmp_path
+    )
+    second = ReadOnlyQueryService(
+        database, cursor_secret=SECRET, allowed_root=tmp_path
+    )
+    assert first.schema_identity == second.schema_identity
+    assert len(first.schema_identity) == 64
+
+    incompatible = tmp_path / "incompatible.duckdb"
+    incompatible.write_bytes(database.read_bytes())
+    connection = duckdb.connect(str(incompatible))
+    connection.execute(
+        """
+        CREATE OR REPLACE TABLE temporal_assertions AS
+        SELECT * REPLACE (42::INTEGER AS assertion_id)
+        FROM temporal_assertions
+        """
+    )
+    connection.close()
+    with pytest.raises(InvalidDatabaseError, match="incompatible type"):
+        ReadOnlyQueryService(
+            incompatible, cursor_secret=SECRET, allowed_root=tmp_path
+        )
+
+
+def test_readiness_rejects_runtime_schema_identity_change(
+    tmp_path: Path,
+) -> None:
+    database = _database(tmp_path / "atlas.duckdb")
+    service = ReadOnlyQueryService(
+        database, cursor_secret=SECRET, allowed_root=tmp_path
+    )
+    connection = duckdb.connect(str(database))
+    connection.execute("ALTER TABLE temporal_coverage ADD COLUMN extra VARCHAR")
+    connection.close()
+
+    with pytest.raises(InvalidDatabaseError, match="identity changed"):
+        service.readiness_probe()
+
+
 def test_tampered_and_malformed_cursors_are_rejected(
     service: ReadOnlyQueryService,
 ) -> None:

@@ -118,6 +118,10 @@ def test_qualification_precedes_environment_protected_draft() -> None:
 
 def test_qualified_assets_are_exact_attested_and_never_overwritten() -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
+    qualify = workflow[
+        workflow.index("  qualify:") : workflow.index("  draft-release:")
+    ]
+    draft = workflow[workflow.index("  draft-release:") :]
 
     assert "build/release-stage/sbom.cdx.json" in workflow
     assert "scripts/qualify_release.py qualify" in workflow
@@ -141,7 +145,13 @@ def test_qualified_assets_are_exact_attested_and_never_overwritten() -> None:
     assert "sha256sum --check --strict SHA256SUMS" in workflow
     assert "chmod -R a-w build/release-stage" in workflow
     assert "\n          path: build/release-stage/**" in workflow
-    assert "subject-path: build/release-stage/**" in workflow
+    assert "attest-build-provenance" not in qualify
+    assert "subject-path: stage/**" in draft
+    assert "sha256sum SHA256SUMS" in workflow
+    assert "QUALIFIED_SET_DIGEST" in draft
+    assert "dry-run-qualification-evidence-${{ github.run_id }}" in qualify
+    assert "qualified-release-assets-${{ github.run_id }}" in qualify
+    assert "if: ${{ !inputs.publish }}" in qualify
     assert "gh release create \\\n            --draft" in workflow
     assert '-- "$RELEASE_TAG" "${assets[@]}"' in workflow
     assert "--clobber" not in workflow
@@ -176,14 +186,14 @@ def test_release_jobs_have_least_permissions() -> None:
     draft = workflow[workflow.index("  draft-release:") :]
 
     assert "contents: read" in workflow
-    assert "id-token: write" in qualify
-    assert "attestations: write" in qualify
+    assert "id-token: write" not in qualify
+    assert "attestations: write" not in qualify
     assert "contents: write" not in qualify
     assert "persist-credentials: false" in qualify
     assert "actions: read" in draft
     assert "contents: write" in draft
-    assert "id-token: write" not in draft
-    assert "attestations: write" not in draft
+    assert "id-token: write" in draft
+    assert "attestations: write" in draft
     assert (
         "actions/upload-artifact@"
         "b7c566a772e6b6bfb58ed0dc250532a479d7789f" in workflow

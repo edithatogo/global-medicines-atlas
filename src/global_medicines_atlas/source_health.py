@@ -7,7 +7,8 @@ import io
 import json
 import re
 from collections.abc import Iterable
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
+from email.utils import parsedate_to_datetime
 from enum import StrEnum
 from hashlib import sha256
 from typing import Final, cast
@@ -16,6 +17,14 @@ import httpx
 import orjson
 from pydantic import Field
 
+from .acquisition import (
+    AcquisitionPolicy,
+    BoundIPAddressTransport,
+    DestinationPolicyError,
+    Resolver,
+    policy_for_catalog_uri,
+    transport_for_destination,
+)
 from .models import FrozenModel
 from .source_catalog import (
     AccessMode,
@@ -48,6 +57,33 @@ class SchemaDriftState(StrEnum):
     NO_BASELINE = "no_baseline"
 
 
+class EscalationState(StrEnum):
+    """Deterministic escalation transition for one source-health receipt."""
+
+    NONE = "none"
+    OPEN = "open"
+    DEDUPLICATED = "deduplicated"
+    RESOLVED = "resolved"
+
+
+class AdapterParityState(StrEnum):
+    """Whether adapter output matches its prior qualified fingerprint."""
+
+    MATCHED = "matched"
+    CHANGED = "changed"
+    NOT_ASSESSED = "not_assessed"
+
+
+class RetryAttempt(FrozenModel):
+    """Metadata-only record of a bounded probe attempt."""
+
+    attempt: int = Field(ge=1)
+    attempted_at: datetime
+    outcome: ProbeState
+    status_code: int | None = Field(default=None, ge=100, le=599)
+    retry_after_seconds: int | None = Field(default=None, ge=0)
+
+
 class SourceHealthObservation(FrozenModel):
     """Metadata-only observation; source payload bytes are never retained."""
 
@@ -61,6 +97,10 @@ class SourceHealthObservation(FrozenModel):
     schema_fingerprint: str | None = Field(
         default=None, pattern=r"^[0-9a-f]{64}$"
     )
+    expected_cadence_seconds: int | None = Field(default=None, ge=1)
+    source_updated_at: datetime | None = None
+    freshness_age_seconds: int | None = Field(default=None, ge=0)
+    is_fresh: bool | None = None
     detail: str = Field(min_length=1)
 
 
@@ -77,6 +117,25 @@ class SchemaDriftObservation(FrozenModel):
         default=None, pattern=r"^[0-9a-f]{64}$"
     )
     detail: str = Field(min_length=1)
+
+
+class SourceHealthReceipt(FrozenModel):
+    """Durable deterministic receipt for health and escalation state."""
+
+    schema_version: int = Field(default=1, ge=1)
+    receipt_id: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
+    observation: SourceHealthObservation
+    consecutive_failures: int = Field(ge=0)
+    retry_history: tuple[RetryAttempt, ...] = ()
+    deduplication_key: str = Field(min_length=1)
+    escalation: EscalationState
+    adapter_output_parity: AdapterParityState
+    adapter_output_fingerprint: str | None = Field(
+        default=None, pattern=r"^[0-9a-f]{64}$"
+    )
+    expected_adapter_output_fingerprint: str | None = Field(
+        default=None, pattern=r"^[0-9a-f]{64}$"
+    )
 
 
 def _endpoint(source: MedicineDataSource) -> str | None:
@@ -175,12 +234,14 @@ def _request_sample(
     transport: httpx.BaseTransport | None,
     timeout_seconds: float,
     max_bytes: int,
+    max_redirects: int,
 ) -> httpx.Response:
     with (
         httpx.Client(
             transport=transport,
             timeout=timeout_seconds,
-            follow_redirects=False,
+            follow_redirects=isinstance(transport, BoundIPAddressTransport),
+            max_redirects=max_redirects,
         ) as client,
         client.stream("GET", endpoint, headers=headers) as response,
     ):
@@ -201,6 +262,7 @@ def _request_sample(
 def _non_probeable_observation(
     source: MedicineDataSource,
     observed_at: datetime,
+    expected_cadence_seconds: int | None,
 ) -> SourceHealthObservation | None:
     if source.access_mode is AccessMode.LICENSED_FEED:
         detail = "licensed feed requires authorised access; no probe attempted"
@@ -217,6 +279,7 @@ def _non_probeable_observation(
         source_id=source.source_id,
         checked_at=observed_at,
         state=state,
+        expected_cadence_seconds=expected_cadence_seconds,
         detail=detail,
     )
 
@@ -227,7 +290,24 @@ def _evaluate_response(
     endpoint: str,
     response: httpx.Response,
     max_bytes: int,
+    expected_cadence: timedelta | None,
 ) -> SourceHealthObservation:
+    cadence_seconds = (
+        int(expected_cadence.total_seconds())
+        if expected_cadence is not None
+        else None
+    )
+    source_updated_at = _source_updated_at(response)
+    freshness_age_seconds = (
+        max(0, int((observed_at - source_updated_at).total_seconds()))
+        if source_updated_at is not None
+        else None
+    )
+    is_fresh = (
+        freshness_age_seconds <= cadence_seconds
+        if freshness_age_seconds is not None and cadence_seconds is not None
+        else None
+    )
     if response.is_redirect:
         return SourceHealthObservation(
             source_id=source.source_id,
@@ -235,6 +315,10 @@ def _evaluate_response(
             state=ProbeState.UNAVAILABLE,
             endpoint=endpoint,
             status_code=response.status_code,
+            expected_cadence_seconds=cadence_seconds,
+            source_updated_at=source_updated_at,
+            freshness_age_seconds=freshness_age_seconds,
+            is_fresh=is_fresh,
             detail="redirect refused by bounded probe",
         )
     response.raise_for_status()
@@ -249,6 +333,10 @@ def _evaluate_response(
             status_code=response.status_code,
             content_type=content_type or None,
             bytes_sampled=len(sample),
+            expected_cadence_seconds=cadence_seconds,
+            source_updated_at=source_updated_at,
+            freshness_age_seconds=freshness_age_seconds,
+            is_fresh=is_fresh,
             detail=(
                 "bounded response sample was truncated; "
                 "schema fingerprint withheld"
@@ -264,8 +352,25 @@ def _evaluate_response(
         content_type=content_type or None,
         bytes_sampled=len(sample),
         schema_fingerprint=fingerprint,
+        expected_cadence_seconds=cadence_seconds,
+        source_updated_at=source_updated_at,
+        freshness_age_seconds=freshness_age_seconds,
+        is_fresh=is_fresh,
         detail="bounded response sampled; payload bytes discarded",
     )
+
+
+def _source_updated_at(response: httpx.Response) -> datetime | None:
+    value = response.headers.get("last-modified")
+    if value is None:
+        return None
+    try:
+        parsed = parsedate_to_datetime(value)
+    except TypeError, ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=UTC)
+    return parsed.astimezone(UTC)
 
 
 def probe_source(
@@ -275,13 +380,27 @@ def probe_source(
     transport: httpx.BaseTransport | None = None,
     max_bytes: int = DEFAULT_MAX_BYTES,
     timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
+    expected_cadence: timedelta | None = None,
+    acquisition_policy: AcquisitionPolicy | None = None,
+    resolver: Resolver | None = None,
 ) -> SourceHealthObservation:
     """Probe one declared access surface without persisting its response."""
 
     observed_at = checked_at or datetime.now(tz=UTC)
     if max_bytes < 1:
         raise ValueError("max_bytes must be positive")
-    non_probeable = _non_probeable_observation(source, observed_at)
+    if expected_cadence is not None and expected_cadence.total_seconds() <= 0:
+        raise ValueError("expected_cadence must be positive")
+    cadence_seconds = (
+        int(expected_cadence.total_seconds())
+        if expected_cadence is not None
+        else None
+    )
+    non_probeable = _non_probeable_observation(
+        source,
+        observed_at,
+        cadence_seconds,
+    )
     if non_probeable is not None:
         return non_probeable
     endpoint = _endpoint(source)
@@ -294,12 +413,24 @@ def probe_source(
         "User-Agent": "global-medicines-atlas-source-health/1",
     }
     try:
+        policy = acquisition_policy or AcquisitionPolicy(
+            timeout_seconds=timeout_seconds,
+            max_bytes=max_bytes,
+        )
+        policy = policy_for_catalog_uri(policy, endpoint)
+        effective_transport = transport_for_destination(
+            endpoint,
+            policy,
+            resolver=resolver,
+            transport=transport,
+        )
         response = _request_sample(
             endpoint,
             headers=headers,
-            transport=transport,
+            transport=effective_transport,
             timeout_seconds=timeout_seconds,
             max_bytes=max_bytes,
+            max_redirects=policy.max_redirects,
         )
         return _evaluate_response(
             source,
@@ -307,9 +438,11 @@ def probe_source(
             endpoint,
             response,
             max_bytes,
+            expected_cadence,
         )
     except (
         httpx.HTTPError,
+        DestinationPolicyError,
         UnicodeError,
         ValueError,
         orjson.JSONDecodeError,
@@ -325,6 +458,7 @@ def probe_source(
             state=ProbeState.UNAVAILABLE,
             endpoint=endpoint,
             status_code=status_code,
+            expected_cadence_seconds=cadence_seconds,
             detail=f"{type(error).__name__}: source unavailable or unreadable",
         )
 
@@ -336,6 +470,9 @@ def probe_sources(
     transport: httpx.BaseTransport | None = None,
     max_bytes: int = DEFAULT_MAX_BYTES,
     timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
+    expected_cadence: timedelta | None = None,
+    acquisition_policy: AcquisitionPolicy | None = None,
+    resolver: Resolver | None = None,
 ) -> tuple[SourceHealthObservation, ...]:
     """Probe sources in stable order and return metadata-only observations."""
 
@@ -346,6 +483,9 @@ def probe_sources(
             transport=transport,
             max_bytes=max_bytes,
             timeout_seconds=timeout_seconds,
+            expected_cadence=expected_cadence,
+            acquisition_policy=acquisition_policy,
+            resolver=resolver,
         )
         for source in sorted(sources, key=lambda item: item.source_id)
     )
@@ -456,3 +596,120 @@ def drift_report_json(
         "summary": summary,
     }
     return json.dumps(payload, indent=2, sort_keys=True) + "\n"
+
+
+def _failure_class(observation: SourceHealthObservation) -> str:
+    if observation.state is not ProbeState.UNAVAILABLE:
+        return observation.state.value
+    match = re.match(r"([A-Za-z][A-Za-z0-9_]*):", observation.detail)
+    return match.group(1) if match is not None else "unavailable"
+
+
+def _receipt_observation(
+    observation: SourceHealthObservation,
+) -> SourceHealthObservation:
+    """Remove variable exception text while retaining diagnostic class."""
+
+    if observation.state is ProbeState.AVAILABLE:
+        detail = "source available"
+    elif observation.state is ProbeState.BLOCKED:
+        detail = "source blocked"
+    else:
+        detail = f"{_failure_class(observation)}: source unavailable"
+    return observation.model_copy(update={"detail": detail, "endpoint": None})
+
+
+def build_source_health_receipt(
+    observation: SourceHealthObservation,
+    *,
+    previous_consecutive_failures: int = 0,
+    retry_history: Iterable[RetryAttempt] = (),
+    previous_escalation_open: bool = False,
+    escalation_threshold: int = 3,
+    adapter_output_fingerprint: str | None = None,
+    expected_adapter_output_fingerprint: str | None = None,
+) -> SourceHealthReceipt:
+    """Build a content-addressed health receipt and escalation transition."""
+
+    if previous_consecutive_failures < 0:
+        raise ValueError("previous_consecutive_failures must be non-negative")
+    if escalation_threshold < 1:
+        raise ValueError("escalation_threshold must be positive")
+    attempts = tuple(sorted(retry_history, key=lambda item: item.attempt))
+    if len({item.attempt for item in attempts}) != len(attempts):
+        raise ValueError("retry attempt numbers must be unique")
+
+    failed = observation.state is ProbeState.UNAVAILABLE
+    consecutive_failures = previous_consecutive_failures + 1 if failed else 0
+    if failed and consecutive_failures >= escalation_threshold:
+        escalation = (
+            EscalationState.DEDUPLICATED
+            if previous_escalation_open
+            else EscalationState.OPEN
+        )
+    elif not failed and previous_escalation_open:
+        escalation = EscalationState.RESOLVED
+    else:
+        escalation = EscalationState.NONE
+
+    parity = AdapterParityState.NOT_ASSESSED
+    if (
+        adapter_output_fingerprint is not None
+        and expected_adapter_output_fingerprint is not None
+    ):
+        parity = (
+            AdapterParityState.MATCHED
+            if adapter_output_fingerprint == expected_adapter_output_fingerprint
+            else AdapterParityState.CHANGED
+        )
+
+    safe_observation = _receipt_observation(observation)
+    deduplication_key = (
+        "source-health:"
+        f"{observation.source_id}:"
+        f"{observation.state.value}:"
+        f"{observation.status_code or 'none'}:"
+        f"{_failure_class(observation)}"
+    )
+    content = {
+        "schema_version": 1,
+        "observation": safe_observation.model_dump(mode="json"),
+        "consecutive_failures": consecutive_failures,
+        "retry_history": [item.model_dump(mode="json") for item in attempts],
+        "deduplication_key": deduplication_key,
+        "escalation": escalation.value,
+        "adapter_output_parity": parity.value,
+        "adapter_output_fingerprint": adapter_output_fingerprint,
+        "expected_adapter_output_fingerprint": (
+            expected_adapter_output_fingerprint
+        ),
+    }
+    digest = sha256(
+        orjson.dumps(content, option=orjson.OPT_SORT_KEYS)
+    ).hexdigest()
+    return SourceHealthReceipt(
+        receipt_id=f"sha256:{digest}",
+        observation=safe_observation,
+        consecutive_failures=consecutive_failures,
+        retry_history=attempts,
+        deduplication_key=deduplication_key,
+        escalation=escalation,
+        adapter_output_parity=parity,
+        adapter_output_fingerprint=adapter_output_fingerprint,
+        expected_adapter_output_fingerprint=(
+            expected_adapter_output_fingerprint
+        ),
+    )
+
+
+def source_health_receipt_json(receipt: SourceHealthReceipt) -> str:
+    """Serialize one deterministic, metadata-only receipt."""
+
+    return (
+        json.dumps(
+            receipt.model_dump(mode="json"),
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n"
+    )

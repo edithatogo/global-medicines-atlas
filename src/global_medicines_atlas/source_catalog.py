@@ -16,7 +16,7 @@ from .models import FrozenModel
 from .source_profiles import PROFILES, AuthenticationMode
 
 LOGGER = get_logger("source_catalog", component="source-catalog")
-STRICT_SOURCE_SCHEMA_VERSION = 3
+STRICT_SOURCE_SCHEMA_VERSION = 5
 
 
 class AccessMode(StrEnum):
@@ -63,6 +63,123 @@ class DiscoveryStatus(StrEnum):
     RECEIPT_BACKED = "receipt_backed"
 
 
+class QualificationState(StrEnum):
+    """Evidence-backed qualification of a catalog declaration."""
+
+    DECLARED = "declared"
+    DOCUMENTATION_VERIFIED = "documentation_verified"
+    FIXTURE_VERIFIED = "fixture_verified"
+    LIVE_VERIFIED = "live_verified"
+
+
+class InformationDomain(StrEnum):
+    """Controlled description of the information a source can contain."""
+
+    PRODUCT_IDENTITY = "product_identity"
+    REGULATORY_STATUS = "regulatory_status"
+    FUNDING_STATUS = "funding_status"
+    FORMULARY_STATUS = "formulary_status"
+    TERMINOLOGY = "terminology"
+    CLINICAL_DOCUMENTATION = "clinical_documentation"
+    SAFETY = "safety"
+    PRICING = "pricing"
+    REIMBURSEMENT_CRITERIA = "reimbursement_criteria"
+    HTA_DECISION = "hta_decision"
+
+
+class RecordEntity(StrEnum):
+    SUBSTANCE = "substance"
+    INGREDIENT = "ingredient"
+    MEDICINAL_PRODUCT = "medicinal_product"
+    PACKAGED_PRODUCT = "packaged_product"
+    APPROVAL = "approval"
+    FUNDING_LISTING = "funding_listing"
+    FORMULARY_ENTRY = "formulary_entry"
+    TERMINOLOGY_CONCEPT = "terminology_concept"
+    DOCUMENT = "document"
+    PRICE = "price"
+    DECISION = "decision"
+
+
+class StatusSemantics(StrEnum):
+    AUTHORIZATION = "authorization"
+    REGISTRATION = "registration"
+    APPROVAL_HISTORY = "approval_history"
+    REIMBURSEMENT = "reimbursement"
+    SUBSIDY = "subsidy"
+    FORMULARY_INCLUSION = "formulary_inclusion"
+    PRICE_LISTING = "price_listing"
+    TERMINOLOGY_ONLY = "terminology_only"
+    RECOMMENDATION = "recommendation"
+    DOCUMENT_ONLY = "document_only"
+    MIXED = "mixed"
+    NONE = "none"
+
+
+class GeographicScope(StrEnum):
+    NATIONAL = "national"
+    SUBNATIONAL = "subnational"
+    REGIONAL = "regional"
+    GLOBAL = "global"
+
+
+class PopulationScope(StrEnum):
+    GENERAL = "general"
+    DEFINED_POPULATION = "defined_population"
+    PROGRAMME_SPECIFIC = "programme_specific"
+    NOT_APPLICABLE = "not_applicable"
+    UNKNOWN = "unknown"
+
+
+class LanguageCode(StrEnum):
+    """BCP 47 primary-language labels used by the current catalog."""
+
+    UNDETERMINED = "und"
+    ARABIC = "ar"
+    CHINESE = "zh"
+    DANISH = "da"
+    DUTCH = "nl"
+    ENGLISH = "en"
+    FRENCH = "fr"
+    GERMAN = "de"
+    INDONESIAN = "id"
+    JAPANESE = "ja"
+    KOREAN = "ko"
+    MALAY = "ms"
+    NORWEGIAN = "no"
+    PORTUGUESE = "pt"
+    SPANISH = "es"
+    SWEDISH = "sv"
+    THAI = "th"
+
+
+class ChangeSemantics(StrEnum):
+    CURRENT_STATE = "current_state"
+    SNAPSHOT = "snapshot"
+    APPEND_ONLY_HISTORY = "append_only_history"
+    DELTA = "delta"
+    MIXED = "mixed"
+    UNKNOWN = "unknown"
+
+
+class AvailableField(StrEnum):
+    IDENTIFIERS = "identifiers"
+    NAMES = "names"
+    INGREDIENTS = "ingredients"
+    STRENGTHS = "strengths"
+    DOSAGE_FORMS = "dosage_forms"
+    ROUTES = "routes"
+    PACKAGES = "packages"
+    ORGANISATIONS = "organisations"
+    INDICATIONS = "indications"
+    STATUS_DATES = "status_dates"
+    PRICES = "prices"
+    ELIGIBILITY_CRITERIA = "eligibility_criteria"
+    DOCUMENTS = "documents"
+    SAFETY_NOTICES = "safety_notices"
+    TERMINOLOGY_RELATIONSHIPS = "terminology_relationships"
+
+
 class MonitoringSchedule(FrozenModel):
     """Cadence contract for non-mutating source checks."""
 
@@ -94,6 +211,8 @@ class MedicineDataSource(FrozenModel):
     rights_status: str = Field(min_length=1)
     readiness: SourceReadiness
     discovery_status: DiscoveryStatus = DiscoveryStatus.DISCOVERY_ONLY
+    qualification_state: QualificationState = QualificationState.DECLARED
+    qualification_references: tuple[str, ...] = ()
     implemented_ingestion: bool = False
     current_receipt_id: str | None = Field(default=None, min_length=1)
     monitoring: MonitoringSchedule = MonitoringSchedule(
@@ -101,6 +220,18 @@ class MedicineDataSource(FrozenModel):
         schema_drift="monthly",
     )
     evidence_limit: str = Field(min_length=1)
+    information_domains: tuple[InformationDomain, ...] = (
+        InformationDomain.PRODUCT_IDENTITY,
+    )
+    record_entities: tuple[RecordEntity, ...] = (
+        RecordEntity.MEDICINAL_PRODUCT,
+    )
+    status_semantics: tuple[StatusSemantics, ...] = (StatusSemantics.NONE,)
+    geographic_scope: GeographicScope = GeographicScope.NATIONAL
+    population_scope: PopulationScope = PopulationScope.UNKNOWN
+    languages: tuple[LanguageCode, ...] = (LanguageCode.UNDETERMINED,)
+    change_semantics: ChangeSemantics = ChangeSemantics.UNKNOWN
+    available_fields: tuple[AvailableField, ...] = (AvailableField.IDENTIFIERS,)
 
     @classmethod
     def from_legacy(
@@ -144,6 +275,66 @@ class MedicineDataSource(FrozenModel):
             if payload.get("implemented_ingestion")
             else IntegrationLayer.CATALOGUED,
         )
+        raw_dimension = payload.get("dimension")
+        dimension = (
+            raw_dimension
+            if isinstance(raw_dimension, SourceDimension)
+            else SourceDimension(str(raw_dimension))
+        )
+        semantic_defaults = {
+            SourceDimension.REGULATORY: (
+                (
+                    InformationDomain.PRODUCT_IDENTITY,
+                    InformationDomain.REGULATORY_STATUS,
+                ),
+                (RecordEntity.MEDICINAL_PRODUCT, RecordEntity.APPROVAL),
+                (StatusSemantics.AUTHORIZATION,),
+            ),
+            SourceDimension.FUNDING: (
+                (
+                    InformationDomain.PRODUCT_IDENTITY,
+                    InformationDomain.FUNDING_STATUS,
+                ),
+                (
+                    RecordEntity.MEDICINAL_PRODUCT,
+                    RecordEntity.FUNDING_LISTING,
+                ),
+                (StatusSemantics.REIMBURSEMENT,),
+            ),
+            SourceDimension.FORMULARY: (
+                (
+                    InformationDomain.PRODUCT_IDENTITY,
+                    InformationDomain.FORMULARY_STATUS,
+                ),
+                (
+                    RecordEntity.MEDICINAL_PRODUCT,
+                    RecordEntity.FORMULARY_ENTRY,
+                ),
+                (StatusSemantics.FORMULARY_INCLUSION,),
+            ),
+            SourceDimension.TERMINOLOGY: (
+                (
+                    InformationDomain.PRODUCT_IDENTITY,
+                    InformationDomain.TERMINOLOGY,
+                ),
+                (
+                    RecordEntity.MEDICINAL_PRODUCT,
+                    RecordEntity.TERMINOLOGY_CONCEPT,
+                ),
+                (StatusSemantics.TERMINOLOGY_ONLY,),
+            ),
+        }
+        domains, entities, semantics = semantic_defaults[dimension]
+        payload.setdefault("information_domains", domains)
+        payload.setdefault("record_entities", entities)
+        payload.setdefault("status_semantics", semantics)
+        payload.setdefault("geographic_scope", GeographicScope.NATIONAL)
+        payload.setdefault("population_scope", PopulationScope.UNKNOWN)
+        payload.setdefault("languages", (LanguageCode.UNDETERMINED,))
+        payload.setdefault("change_semantics", ChangeSemantics.UNKNOWN)
+        payload.setdefault("available_fields", (AvailableField.IDENTIFIERS,))
+        payload.setdefault("qualification_state", QualificationState.DECLARED)
+        payload.setdefault("qualification_references", ())
         return cls.model_validate(payload)
 
     @model_validator(mode="after")
@@ -190,6 +381,20 @@ class MedicineDataSource(FrozenModel):
                 "current receipt requires live-receipt integration layer"
             )
         if (
+            self.qualification_state == QualificationState.LIVE_VERIFIED
+            and self.current_receipt_id is None
+        ):
+            raise ValueError(
+                "live-verified qualification requires a current receipt"
+            )
+        if (
+            self.qualification_state != QualificationState.DECLARED
+            and not self.qualification_references
+        ):
+            raise ValueError(
+                "verified qualification requires evidence references"
+            )
+        if (
             self.access_mode
             in {
                 AccessMode.WEB_SEARCH,
@@ -209,6 +414,97 @@ class MedicineDataSource(FrozenModel):
             raise ValueError(
                 "acquisition profiles require an automatable access mode"
             )
+        return self
+
+    @model_validator(mode="after")
+    def information_schema_is_semantically_coherent(
+        self,
+    ) -> MedicineDataSource:
+        domains = set(self.information_domains)
+        entities = set(self.record_entities)
+        semantics = set(self.status_semantics)
+        fields = set(self.available_fields)
+        required_domain = {
+            SourceDimension.REGULATORY: InformationDomain.REGULATORY_STATUS,
+            SourceDimension.FUNDING: InformationDomain.FUNDING_STATUS,
+            SourceDimension.FORMULARY: InformationDomain.FORMULARY_STATUS,
+            SourceDimension.TERMINOLOGY: InformationDomain.TERMINOLOGY,
+        }[self.dimension]
+        if required_domain not in domains:
+            raise ValueError(
+                f"{self.dimension.value} sources require "
+                f"{required_domain.value} information"
+            )
+        domain_contracts = {
+            InformationDomain.REGULATORY_STATUS: (
+                {RecordEntity.APPROVAL},
+                {
+                    StatusSemantics.AUTHORIZATION,
+                    StatusSemantics.REGISTRATION,
+                    StatusSemantics.APPROVAL_HISTORY,
+                    StatusSemantics.MIXED,
+                },
+            ),
+            InformationDomain.FUNDING_STATUS: (
+                {RecordEntity.FUNDING_LISTING},
+                {
+                    StatusSemantics.REIMBURSEMENT,
+                    StatusSemantics.SUBSIDY,
+                    StatusSemantics.PRICE_LISTING,
+                    StatusSemantics.MIXED,
+                },
+            ),
+            InformationDomain.FORMULARY_STATUS: (
+                {RecordEntity.FORMULARY_ENTRY},
+                {
+                    StatusSemantics.FORMULARY_INCLUSION,
+                    StatusSemantics.MIXED,
+                },
+            ),
+            InformationDomain.TERMINOLOGY: (
+                {RecordEntity.TERMINOLOGY_CONCEPT},
+                {StatusSemantics.TERMINOLOGY_ONLY, StatusSemantics.MIXED},
+            ),
+        }
+        for domain, (
+            required_entities,
+            allowed_semantics,
+        ) in domain_contracts.items():
+            if domain not in domains:
+                continue
+            if not required_entities <= entities:
+                raise ValueError(
+                    f"{domain.value} requires record entities "
+                    f"{sorted(item.value for item in required_entities)}"
+                )
+            if (
+                domain != InformationDomain.TERMINOLOGY
+                or self.dimension == SourceDimension.TERMINOLOGY
+            ) and semantics.isdisjoint(allowed_semantics):
+                raise ValueError(
+                    f"{domain.value} requires compatible status semantics"
+                )
+        field_contracts = {
+            AvailableField.PRICES: (
+                InformationDomain.PRICING,
+                RecordEntity.PRICE,
+            ),
+            AvailableField.SAFETY_NOTICES: (
+                InformationDomain.SAFETY,
+                RecordEntity.DOCUMENT,
+            ),
+            AvailableField.TERMINOLOGY_RELATIONSHIPS: (
+                InformationDomain.TERMINOLOGY,
+                RecordEntity.TERMINOLOGY_CONCEPT,
+            ),
+        }
+        for field, (domain, entity) in field_contracts.items():
+            if field in fields and (
+                domain not in domains or entity not in entities
+            ):
+                raise ValueError(
+                    f"{field.value} requires {domain.value} and {entity.value}"
+                )
         return self
 
 
@@ -239,7 +535,7 @@ class SourceCatalog(FrozenModel):
 
     @model_validator(mode="before")
     @classmethod
-    def schema_v3_rows_are_explicit(cls, value: Any) -> Any:
+    def governed_rows_are_explicit(cls, value: Any) -> Any:
         """Reject incomplete governed rows before model defaults can apply."""
         if not isinstance(value, dict):
             return value
@@ -256,6 +552,16 @@ class SourceCatalog(FrozenModel):
             "last_verified_at",
             "integration_layer",
             "documentation_url",
+            "information_domains",
+            "record_entities",
+            "status_semantics",
+            "geographic_scope",
+            "population_scope",
+            "languages",
+            "change_semantics",
+            "available_fields",
+            "qualification_state",
+            "qualification_references",
         }
         raw_sources_value: object = payload.get("sources", ())
         if not isinstance(raw_sources_value, (list, tuple)):

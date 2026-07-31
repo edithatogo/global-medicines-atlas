@@ -1,12 +1,21 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 
 import httpx
 import pytest
 
-from global_medicines_atlas.acquisition import AcquisitionPolicy, acquire_source
+import global_medicines_atlas.acquisition as acquisition_module
+from global_medicines_atlas.acquisition import (
+    AcquisitionPolicy,
+    BoundIPAddressTransport,
+    DestinationPolicyError,
+    Receipt,
+    acquire_source,
+    validate_remote_destination,
+)
 from global_medicines_atlas.countries import SourceDimension
 from global_medicines_atlas.receipts import (
     EvidenceClass,
@@ -30,7 +39,7 @@ def catalog_source(
     access_mode: AccessMode = AccessMode.DOWNLOAD,
     download_url: str | None = "https://example.test/medicines.zip",
 ) -> MedicineDataSource:
-    return MedicineDataSource(
+    return MedicineDataSource.from_legacy(
         source_id="test-regulator",
         jurisdictions=("NZL",),
         authority="Test Regulator",
@@ -63,12 +72,12 @@ def catalog_source(
 
 def acquire(
     tmp_path: Path,
-    handler,
+    handler: Callable[[httpx.Request], httpx.Response],
     *,
     destination: Path = Path("artifacts/source.bin"),
     policy: AcquisitionPolicy = SMALL_POLICY,
     evidence_class: EvidenceClass = EvidenceClass.FIXTURE,
-):
+) -> Receipt:
     return acquire_source(
         "test-regulator",
         destination,
@@ -257,3 +266,277 @@ def test_requested_live_class_remains_distinct_from_live_gate(
     assert isinstance(receipt, SourceReceipt)
     assert receipt.evidence_class is EvidenceClass.LIVE
     assert not receipt.satisfies_live_gate
+
+
+@pytest.mark.edge
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://example.test/medicines.zip",
+        "https://127.0.0.1/medicines.zip",
+        "https://169.254.169.254/latest/meta-data/",
+        "https://[::1]/medicines.zip",
+    ],
+)
+def test_acquisition_rejects_disallowed_or_private_destinations(
+    tmp_path: Path,
+    url: str,
+) -> None:
+    source = catalog_source(download_url=url)
+    receipt = acquire_source(
+        "test-regulator",
+        Path("artifacts/source.bin"),
+        repository_root=tmp_path,
+        catalog=(source,),
+        transport=httpx.MockTransport(
+            lambda _: pytest.fail("transport should not run")
+        ),
+        clock=lambda: NOW,
+    )
+
+    assert isinstance(receipt, FailureReceipt)
+    assert receipt.failure_code in {"scheme_rejected", "network_rejected"}
+
+
+@pytest.mark.edge
+def test_acquisition_rejects_dns_resolution_to_private_network(
+    tmp_path: Path,
+) -> None:
+    resolver_calls: list[str] = []
+
+    def private_resolver(hostname: str) -> tuple[str, ...]:
+        resolver_calls.append(hostname)
+        return ("10.0.0.8",)
+
+    receipt = acquire_source(
+        "test-regulator",
+        Path("artifacts/source.bin"),
+        repository_root=tmp_path,
+        catalog=(catalog_source(),),
+        transport=httpx.MockTransport(
+            lambda _: pytest.fail("transport should not run")
+        ),
+        resolver=private_resolver,
+        clock=lambda: NOW,
+    )
+
+    assert isinstance(receipt, FailureReceipt)
+    assert receipt.failure_code == "network_rejected"
+    assert resolver_calls == ["example.test"]
+
+
+@pytest.mark.unit
+def test_acquisition_policy_requires_https_and_bounded_host_budget() -> None:
+    policy = AcquisitionPolicy()
+
+    assert policy.allowed_schemes == ("https",)
+    assert policy.max_attempts == 1
+    assert policy.max_concurrency_per_host == 2
+    with pytest.raises(ValueError, match="allowed_schemes"):
+        AcquisitionPolicy(allowed_schemes=())
+
+
+@pytest.mark.unit
+def test_live_destination_requires_explicit_hostname_admission() -> None:
+    with pytest.raises(DestinationPolicyError, match="not admitted"):
+        validate_remote_destination(
+            "https://example.test/data",
+            AcquisitionPolicy(),
+            resolver=lambda _: ("93.184.216.34",),
+            require_host_allowlist=True,
+        )
+
+    validate_remote_destination(
+        "https://example.test/data",
+        AcquisitionPolicy(allowed_hosts=("example.test",)),
+        resolver=lambda _: ("93.184.216.34",),
+        require_host_allowlist=True,
+    )
+
+
+@pytest.mark.edge
+def test_mixed_public_private_dns_answer_is_rejected() -> None:
+    with pytest.raises(DestinationPolicyError, match="non-public"):
+        validate_remote_destination(
+            "https://example.test/data",
+            AcquisitionPolicy(allowed_hosts=("example.test",)),
+            resolver=lambda _: ("93.184.216.34", "10.0.0.2"),
+            require_host_allowlist=True,
+        )
+
+
+@pytest.mark.edge
+def test_bound_transport_defeats_dns_rebinding_without_network() -> None:
+    resolver_answers = iter([
+        ("93.184.216.34",),
+        ("10.0.0.8",),
+    ])
+    resolver_calls: list[str] = []
+    connected_requests: list[httpx.Request] = []
+
+    def rebinding_resolver(hostname: str) -> tuple[str, ...]:
+        resolver_calls.append(hostname)
+        return next(resolver_answers)
+
+    def connected(request: httpx.Request) -> httpx.Response:
+        connected_requests.append(request)
+        return httpx.Response(200, request=request)
+
+    transport = BoundIPAddressTransport(
+        policy=AcquisitionPolicy(allowed_hosts=("example.test",)),
+        resolver=rebinding_resolver,
+        inner=httpx.MockTransport(connected),
+    )
+    with httpx.Client(transport=transport) as client:
+        response = client.get("https://example.test/data")
+
+    assert response.status_code == 200
+    assert resolver_calls == ["example.test"]
+    assert connected_requests[0].url.host == "93.184.216.34"
+    assert connected_requests[0].headers["host"] == "example.test"
+    assert connected_requests[0].extensions["sni_hostname"] == "example.test"
+
+
+@pytest.mark.integration
+def test_production_path_uses_catalog_admission_and_bound_ip(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    requests: list[httpx.Request] = []
+
+    def connected(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        return httpx.Response(
+            200,
+            headers={"content-type": "application/zip"},
+            content=b"governed",
+            request=request,
+        )
+
+    def mock_http_transport(**_kwargs: object) -> httpx.BaseTransport:
+        return httpx.MockTransport(connected)
+
+    monkeypatch.setattr(
+        acquisition_module.httpx,
+        "HTTPTransport",
+        mock_http_transport,
+    )
+    receipt = acquire_source(
+        "test-regulator",
+        Path("artifacts/source.bin"),
+        repository_root=tmp_path,
+        catalog=(catalog_source(),),
+        resolver=lambda hostname: (
+            ("93.184.216.34",)
+            if hostname == "example.test"
+            else pytest.fail("ungoverned hostname resolved")
+        ),
+        clock=lambda: NOW,
+    )
+
+    assert isinstance(receipt, SourceReceipt)
+    assert requests[0].url.host == "93.184.216.34"
+    assert requests[0].headers["host"] == "example.test"
+    assert requests[0].extensions["sni_hostname"] == "example.test"
+
+
+@pytest.mark.edge
+def test_bound_transport_revalidates_and_rebinds_redirect_destination() -> None:
+    resolutions: list[str] = []
+    requests: list[httpx.Request] = []
+    created_transports: list[httpx.BaseTransport] = []
+
+    def resolver(hostname: str) -> tuple[str, ...]:
+        resolutions.append(hostname)
+        return {
+            "example.test": ("93.184.216.34",),
+            "cdn.example.test": ("93.184.216.35",),
+        }[hostname]
+
+    def connected(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        if request.url.host == "93.184.216.34":
+            return httpx.Response(
+                302,
+                headers={"location": "https://cdn.example.test/data"},
+                request=request,
+            )
+        return httpx.Response(200, request=request)
+
+    def inner_factory() -> httpx.BaseTransport:
+        transport = httpx.MockTransport(connected)
+        created_transports.append(transport)
+        return transport
+
+    transport = BoundIPAddressTransport(
+        policy=AcquisitionPolicy(
+            allowed_hosts=("example.test", "cdn.example.test")
+        ),
+        resolver=resolver,
+        inner_factory=inner_factory,
+    )
+    with httpx.Client(transport=transport, follow_redirects=True) as client:
+        response = client.get("https://example.test/data")
+
+    assert response.status_code == 200
+    assert resolutions == ["example.test", "cdn.example.test"]
+    assert [request.url.host for request in requests] == [
+        "93.184.216.34",
+        "93.184.216.35",
+    ]
+    assert [request.headers["host"] for request in requests] == [
+        "example.test",
+        "cdn.example.test",
+    ]
+    assert len(created_transports) == 2
+
+
+@pytest.mark.edge
+def test_bound_transport_isolates_tls_pools_for_same_ip_redirect() -> None:
+    requests_by_pool: list[list[httpx.Request]] = []
+
+    def resolver(hostname: str) -> tuple[str, ...]:
+        assert hostname in {"one.example.test", "two.example.test"}
+        return ("93.184.216.34",)
+
+    def inner_factory() -> httpx.BaseTransport:
+        pool_requests: list[httpx.Request] = []
+        requests_by_pool.append(pool_requests)
+
+        def connected(request: httpx.Request) -> httpx.Response:
+            pool_requests.append(request)
+            if request.headers["host"] == "one.example.test":
+                return httpx.Response(
+                    302,
+                    headers={"location": "https://two.example.test/resource"},
+                    request=request,
+                )
+            return httpx.Response(200, request=request)
+
+        return httpx.MockTransport(connected)
+
+    transport = BoundIPAddressTransport(
+        policy=AcquisitionPolicy(
+            allowed_hosts=("one.example.test", "two.example.test")
+        ),
+        resolver=resolver,
+        inner_factory=inner_factory,
+    )
+    with httpx.Client(transport=transport, follow_redirects=True) as client:
+        response = client.get("https://one.example.test/resource")
+
+    assert response.status_code == 200
+    assert len(requests_by_pool) == 2
+    assert [
+        [request.url.host for request in pool] for pool in requests_by_pool
+    ] == [
+        ["93.184.216.34"],
+        ["93.184.216.34"],
+    ]
+    assert [
+        pool[0].extensions["sni_hostname"] for pool in requests_by_pool
+    ] == ["one.example.test", "two.example.test"]
+    assert [pool[0].headers["host"] for pool in requests_by_pool] == [
+        "one.example.test",
+        "two.example.test",
+    ]

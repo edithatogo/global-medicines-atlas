@@ -10,8 +10,10 @@ import hmac
 import json
 from collections.abc import Generator, Mapping, Sequence
 from contextlib import contextmanager, suppress
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
+from time import perf_counter
 from typing import Any, Final, Literal, TypeGuard, cast
 
 import duckdb
@@ -38,9 +40,10 @@ from .product_contracts import (
     UncertaintyLevel,
 )
 
-_CURSOR_VERSION: Final = 1
+_CURSOR_VERSION: Final = 2
 _MINIMUM_SECRET_BYTES: Final = 16
 _CURSOR_SIGNATURE_BYTES: Final = 32
+_COMPARISON_PROVENANCE_LIMIT: Final = 32
 _REQUIRED_ASSERTION_COLUMNS: Final = frozenset({
     "assertion_id",
     "concept_id",
@@ -74,6 +77,30 @@ _REQUIRED_COVERAGE_COLUMNS: Final = frozenset({
     "concept_numerator",
     "eligible_denominator",
 })
+_REQUIRED_KEY_TYPES: Final = {
+    ("temporal_assertions", "assertion_id"): "VARCHAR",
+    ("temporal_assertions", "concept_id"): "VARCHAR",
+    ("temporal_assertions", "jurisdiction"): "VARCHAR",
+    ("temporal_assertions", "kind"): "VARCHAR",
+    ("temporal_coverage", "jurisdiction"): "VARCHAR",
+    ("temporal_coverage", "dimension"): "VARCHAR",
+    ("temporal_coverage", "assertion_status"): "VARCHAR",
+}
+
+
+@dataclass(frozen=True, slots=True)
+class QueryPlanEvidence:
+    """Deterministic evidence that pagination is executed by DuckDB."""
+
+    operation: Literal["comparisons", "coverage", "evidence"]
+    requested_limit: int
+    fetch_limit: int
+    keyset_applied: bool
+    schema_identity: str
+    sql_sha256: str
+    parameter_count: int
+    planning_duration_ms: float
+    plan: str
 
 
 class QueryServiceError(ValueError):
@@ -123,12 +150,17 @@ class ReadOnlyQueryService:
         self._database_path = resolved
         self._cursor_secret = bytes(cursor_secret)
         with self._connection() as connection:
-            self._validate_schema(connection)
+            self._schema_identity = self._validate_schema(connection)
 
     @property
     def database_path(self) -> Path:
         """Return the validated canonical database path."""
         return self._database_path
+
+    @property
+    def schema_identity(self) -> str:
+        """Return the deterministic identity of the compatible query schema."""
+        return self._schema_identity
 
     @contextmanager
     def _connection(self) -> Generator[duckdb.DuckDBPyConnection]:
@@ -150,7 +182,11 @@ class ReadOnlyQueryService:
     def readiness_probe(self) -> None:
         """Verify that the canonical database remains readable."""
         with self._connection() as connection:
-            self._validate_schema(connection)
+            current_identity = self._validate_schema(connection)
+            if current_identity != self._schema_identity:
+                raise InvalidDatabaseError(
+                    "canonical DuckDB schema identity changed at runtime"
+                )
             connection.execute("SELECT 1").fetchone()
 
     @staticmethod
@@ -167,7 +203,25 @@ class ReadOnlyQueryService:
         ).fetchall()
         return frozenset(str(row[0]) for row in rows)
 
-    def _validate_schema(self, connection: duckdb.DuckDBPyConnection) -> None:
+    @staticmethod
+    def _schema_columns(
+        connection: duckdb.DuckDBPyConnection,
+    ) -> list[tuple[str, str, str, int]]:
+        rows = connection.execute(
+            """
+            SELECT table_name, column_name, data_type, ordinal_position
+            FROM information_schema.columns
+            WHERE table_schema = 'main'
+              AND table_name IN ('temporal_assertions', 'temporal_coverage')
+            ORDER BY table_name, ordinal_position
+            """
+        ).fetchall()
+        return [
+            (str(table), str(column), str(data_type), int(position))
+            for table, column, data_type, position in rows
+        ]
+
+    def _validate_schema(self, connection: duckdb.DuckDBPyConnection) -> str:
         assertions = self._columns(connection, "temporal_assertions")
         coverage = self._columns(connection, "temporal_coverage")
         missing_assertions = _REQUIRED_ASSERTION_COLUMNS - assertions
@@ -188,6 +242,24 @@ class ReadOnlyQueryService:
                 + "; ".join(parts)
                 + ")"
             )
+        columns = self._schema_columns(connection)
+        actual_types = {
+            (table, column): data_type
+            for table, column, data_type, _position in columns
+        }
+        incompatible = [
+            f"{table}.{column}: expected {expected}, got {actual_types.get((table, column))}"
+            for (table, column), expected in _REQUIRED_KEY_TYPES.items()
+            if actual_types.get((table, column)) != expected
+        ]
+        if incompatible:
+            raise InvalidDatabaseError(
+                "canonical DuckDB schema has incompatible type ("
+                + "; ".join(incompatible)
+                + ")"
+            )
+        canonical = json.dumps(columns, separators=(",", ":")).encode()
+        return hashlib.sha256(canonical).hexdigest()
 
     def comparisons(self, query: ComparisonQuery) -> ComparisonResponse:
         """Return explicit assertions plus coverage-supported absent states."""
@@ -198,23 +270,37 @@ class ReadOnlyQueryService:
         jurisdictions = sorted(query.jurisdictions)
         dimensions = sorted(dimension.value for dimension in query.dimensions)
         with self._connection() as connection:
+            candidate_keys = self._comparison_page_keys(
+                connection,
+                query,
+                jurisdictions,
+                dimensions,
+                after,
+            )
+            page_keys = candidate_keys[: query.limit]
+            pairs = [(key[0], key[1]) for key in page_keys]
             assertion_rows = self._comparison_assertions(
-                connection, query, jurisdictions, dimensions
+                connection, query, jurisdictions, dimensions, pairs
             )
             coverage_rows = self._comparison_coverage(
-                connection, query, jurisdictions, dimensions
+                connection, query, jurisdictions, dimensions, pairs
             )
 
         conclusions = self._build_conclusions(
             query, assertion_rows, coverage_rows
         )
         conclusions.sort(key=self._conclusion_key)
-        page, next_cursor = self._paginate(
-            conclusions, query.limit, after, fingerprint, self._conclusion_key
+        has_more = len(candidate_keys) > query.limit
+        next_cursor = (
+            self._encode_cursor(fingerprint, candidate_keys[query.limit - 1])
+            if has_more and candidate_keys
+            else None
         )
         return ComparisonResponse(
-            metadata=self._metadata(query, len(page), query.limit, next_cursor),
-            conclusions=tuple(page),
+            metadata=self._metadata(
+                query, len(conclusions), query.limit, next_cursor
+            ),
+            conclusions=tuple(conclusions),
         )
 
     def coverage(self, query: CoverageQuery) -> CoverageResponse:
@@ -223,6 +309,32 @@ class ReadOnlyQueryService:
         after = self._decode_cursor(query.cursor, fingerprint)
         jurisdictions = sorted(query.jurisdictions)
         dimensions = sorted(dimension.value for dimension in query.dimensions)
+        sql, parameters = self._coverage_page_statement(
+            query, jurisdictions, dimensions, after
+        )
+        with self._connection() as connection:
+            rows = self._fetch_dicts(connection, sql, parameters)
+        page_rows = rows[: query.limit]
+        page = [self._coverage_item(query, row) for row in page_rows]
+        next_cursor = (
+            self._encode_cursor(
+                fingerprint, self._coverage_sql_key(page_rows[-1])
+            )
+            if len(rows) > query.limit and page_rows
+            else None
+        )
+        return CoverageResponse(
+            metadata=self._metadata(query, len(page), query.limit, next_cursor),
+            coverage=tuple(page),
+        )
+
+    @staticmethod
+    def _coverage_page_statement(
+        query: CoverageQuery,
+        jurisdictions: list[str],
+        dimensions: list[str],
+        after: tuple[str, ...] | None,
+    ) -> tuple[str, list[object]]:
         parameters: list[object] = [
             jurisdictions,
             query.valid_at,
@@ -232,26 +344,28 @@ class ReadOnlyQueryService:
         ]
         if dimensions:
             parameters.append(dimensions)
-            sql = """
-                SELECT jurisdiction, dimension, assertion_status,
-                       sum(concept_numerator)::BIGINT AS covered_count,
-                       CASE
-                           WHEN bool_or(eligible_denominator IS NULL) THEN NULL
-                           ELSE sum(eligible_denominator)::BIGINT
-                       END AS denominator
-                FROM temporal_coverage
-                WHERE jurisdiction IN (SELECT unnest(?))
-                  AND valid_from <= ?
-                  AND (valid_to IS NULL OR ? < valid_to)
-                  AND observed_from <= ?
-                  AND (observed_to IS NULL OR ? < observed_to)
-                  AND dimension IN (SELECT unnest(?))
-                GROUP BY jurisdiction, dimension, assertion_status
-                ORDER BY jurisdiction, dimension, assertion_status
-                """
+            dimension_filter = "AND dimension IN (SELECT unnest(?))"
         else:
-            sql = """
+            dimension_filter = ""
+        keyset_filter = ""
+        if after is not None:
+            parameters.extend(after)
+            keyset_filter = """
+                WHERE (
+                    jurisdiction, dimension, normalized_status, assertion_status
+                ) > (?, ?, ?, ?)
+            """
+        parameters.append(query.limit + 1)
+        sql = f"""
+            WITH grouped AS (
                 SELECT jurisdiction, dimension, assertion_status,
+                       CASE
+                           WHEN lower(assertion_status) IN (
+                               'confirmed', 'inferred', 'conflicting',
+                               'unknown', 'not_covered', 'not_applicable'
+                           ) THEN lower(assertion_status)
+                           ELSE 'unknown'
+                       END AS normalized_status,
                        sum(concept_numerator)::BIGINT AS covered_count,
                        CASE
                            WHEN bool_or(eligible_denominator IS NULL) THEN NULL
@@ -263,19 +377,16 @@ class ReadOnlyQueryService:
                   AND (valid_to IS NULL OR ? < valid_to)
                   AND observed_from <= ?
                   AND (observed_to IS NULL OR ? < observed_to)
+                  {dimension_filter}
                 GROUP BY jurisdiction, dimension, assertion_status
-                ORDER BY jurisdiction, dimension, assertion_status
-                """
-        with self._connection() as connection:
-            rows = self._fetch_dicts(connection, sql, parameters)
-        items = [self._coverage_item(query, row) for row in rows]
-        page, next_cursor = self._paginate(
-            items, query.limit, after, fingerprint, self._coverage_key
-        )
-        return CoverageResponse(
-            metadata=self._metadata(query, len(page), query.limit, next_cursor),
-            coverage=tuple(page),
-        )
+            )
+            SELECT *
+            FROM grouped
+            {keyset_filter}
+            ORDER BY jurisdiction, dimension, normalized_status, assertion_status
+            LIMIT ?
+            """  # ruff: ignore[hardcoded-sql-expression]
+        return sql, parameters
 
     def evidence(self, query: EvidenceQuery) -> EvidenceResponse:
         """Return assertion-level evidence with deterministic pagination."""
@@ -287,25 +398,16 @@ class ReadOnlyQueryService:
             if query.assertion_id is not None
             else "concept_id = ?"
         )
-        if predicate == "assertion_id = ?":
-            sql = self._evidence_sql_by_assertion()
-        else:
-            sql = self._evidence_sql_by_concept()
+        column: Literal["assertion_id", "concept_id"] = (
+            "assertion_id" if predicate == "assertion_id = ?" else "concept_id"
+        )
+        sql, parameters = self._evidence_page_statement(column, query, after)
         with self._connection() as connection:
-            rows = self._fetch_dicts(
-                connection,
-                sql,
-                [
-                    lookup_value,
-                    query.valid_at,
-                    query.valid_at,
-                    query.observed_at,
-                    query.observed_at,
-                ],
-            )
+            parameters[0] = lookup_value
+            rows = self._fetch_dicts(connection, sql, parameters)
         items = [self._evidence_item(query, row) for row in rows]
-        page, next_cursor = self._paginate(
-            items, query.limit, after, fingerprint, self._evidence_key
+        page, next_cursor = self._page_from_sql(
+            items, query.limit, fingerprint, self._evidence_key
         )
         return EvidenceResponse(
             metadata=self._metadata(query, len(page), query.limit, next_cursor),
@@ -318,15 +420,36 @@ class ReadOnlyQueryService:
         query: ComparisonQuery,
         jurisdictions: list[str],
         dimensions: list[str],
+        pairs: list[tuple[str, str]],
     ) -> list[dict[str, Any]]:
+        if not pairs:
+            return []
+        pair_sql, pair_parameters = self._pair_predicate(
+            pairs, dimension_column="kind"
+        )
         return self._fetch_dicts(
             connection,
-            """
+            f"""
+            WITH ranked AS (
             SELECT assertion_id, concept_id, jurisdiction, kind, authority,
                    status_code, evidence_status, source_id, source_uri,
                    CAST(retrieved_at AS VARCHAR) AS retrieved_at,
                    CAST(observed_from AS VARCHAR) AS observed_from,
-                   source_sha256, source_version, transformation
+                   source_sha256, source_version, transformation,
+                   count(*) OVER (
+                       PARTITION BY jurisdiction, kind
+                   )::BIGINT AS evidence_total,
+                   count(DISTINCT status_code) OVER (
+                       PARTITION BY jurisdiction, kind
+                   )::BIGINT AS distinct_status_total,
+                   max(
+                       CASE WHEN evidence_status = 'conflicting' THEN 1 ELSE 0 END
+                   ) OVER (
+                       PARTITION BY jurisdiction, kind
+                   )::INTEGER AS has_conflicting_state,
+                   row_number() OVER (
+                       PARTITION BY jurisdiction, kind ORDER BY assertion_id
+                   ) AS evidence_rank
             FROM temporal_assertions
             WHERE concept_id = ?
               AND jurisdiction IN (SELECT unnest(?))
@@ -335,8 +458,13 @@ class ReadOnlyQueryService:
               AND (valid_to IS NULL OR ? < valid_to)
               AND observed_from <= ?
               AND (observed_to IS NULL OR ? < observed_to)
+              AND ({pair_sql})
+            )
+            SELECT * EXCLUDE (evidence_rank)
+            FROM ranked
+            WHERE evidence_rank <= {_COMPARISON_PROVENANCE_LIMIT}
             ORDER BY jurisdiction, kind, assertion_id
-            """,
+            """,  # ruff: ignore[hardcoded-sql-expression]
             [
                 query.concept_id,
                 jurisdictions,
@@ -345,6 +473,7 @@ class ReadOnlyQueryService:
                 query.valid_at,
                 query.observed_at,
                 query.observed_at,
+                *pair_parameters,
             ],
         )
 
@@ -354,12 +483,26 @@ class ReadOnlyQueryService:
         query: ComparisonQuery,
         jurisdictions: list[str],
         dimensions: list[str],
+        pairs: list[tuple[str, str]],
     ) -> list[dict[str, Any]]:
+        if not pairs:
+            return []
+        pair_sql, pair_parameters = self._pair_predicate(
+            pairs, dimension_column="dimension"
+        )
         return self._fetch_dicts(
             connection,
-            """
+            f"""
+            WITH ranked AS (
             SELECT jurisdiction, source_id, receipt_id, observation_id,
-                   dimension, medicine_concept_id, assertion_status
+                   dimension, medicine_concept_id, assertion_status,
+                   row_number() OVER (
+                       PARTITION BY jurisdiction, dimension
+                       ORDER BY
+                           medicine_concept_id IS NULL,
+                           medicine_concept_id,
+                           observation_id
+                   ) AS coverage_rank
             FROM temporal_coverage
             WHERE jurisdiction IN (SELECT unnest(?))
               AND dimension IN (SELECT unnest(?))
@@ -371,9 +514,14 @@ class ReadOnlyQueryService:
               AND (valid_to IS NULL OR ? < valid_to)
               AND observed_from <= ?
               AND (observed_to IS NULL OR ? < observed_to)
+              AND ({pair_sql})
+            )
+            SELECT * EXCLUDE (coverage_rank)
+            FROM ranked
+            WHERE coverage_rank = 1
             ORDER BY jurisdiction, dimension, medicine_concept_id NULLS LAST,
                      observation_id
-            """,
+            """,  # ruff: ignore[hardcoded-sql-expression]
             [
                 jurisdictions,
                 dimensions,
@@ -382,8 +530,99 @@ class ReadOnlyQueryService:
                 query.valid_at,
                 query.observed_at,
                 query.observed_at,
+                *pair_parameters,
             ],
         )
+
+    @staticmethod
+    def _pair_predicate(
+        pairs: Sequence[tuple[str, str]],
+        *,
+        dimension_column: Literal["kind", "dimension"],
+    ) -> tuple[str, list[object]]:
+        clauses = [
+            f"(jurisdiction = ? AND {dimension_column} = ?)" for _pair in pairs
+        ]
+        parameters: list[object] = [
+            value for pair in pairs for value in (pair[0], pair[1])
+        ]
+        return " OR ".join(clauses), parameters
+
+    def _comparison_page_keys(
+        self,
+        connection: duckdb.DuckDBPyConnection,
+        query: ComparisonQuery,
+        jurisdictions: list[str],
+        dimensions: list[str],
+        after: tuple[str, ...] | None,
+    ) -> list[tuple[str, str, str]]:
+        sql, parameters = self._comparison_page_statement(
+            query, jurisdictions, dimensions, after
+        )
+        rows = connection.execute(sql, parameters).fetchall()
+        return [
+            (str(jurisdiction), str(dimension), str(concept_id))
+            for jurisdiction, dimension, concept_id in rows
+        ]
+
+    @staticmethod
+    def _comparison_page_statement(
+        query: ComparisonQuery,
+        jurisdictions: list[str],
+        dimensions: list[str],
+        after: tuple[str, ...] | None,
+    ) -> tuple[str, list[object]]:
+        parameters: list[object] = [
+            query.concept_id,
+            jurisdictions,
+            dimensions,
+            query.valid_at,
+            query.valid_at,
+            query.observed_at,
+            query.observed_at,
+            query.concept_id,
+            jurisdictions,
+            dimensions,
+            query.concept_id,
+            query.valid_at,
+            query.valid_at,
+            query.observed_at,
+            query.observed_at,
+        ]
+        keyset = ""
+        if after is not None:
+            parameters.extend(after)
+            keyset = "WHERE (jurisdiction, dimension, concept_id) > (?, ?, ?)"
+        parameters.append(query.limit + 1)
+        sql = f"""
+            WITH candidate_keys AS (
+                SELECT DISTINCT jurisdiction, kind AS dimension, concept_id
+                FROM temporal_assertions
+                WHERE concept_id = ?
+                  AND jurisdiction IN (SELECT unnest(?))
+                  AND kind IN (SELECT unnest(?))
+                  AND valid_from <= ?
+                  AND (valid_to IS NULL OR ? < valid_to)
+                  AND observed_from <= ?
+                  AND (observed_to IS NULL OR ? < observed_to)
+                UNION
+                SELECT DISTINCT jurisdiction, dimension, ? AS concept_id
+                FROM temporal_coverage
+                WHERE jurisdiction IN (SELECT unnest(?))
+                  AND dimension IN (SELECT unnest(?))
+                  AND (medicine_concept_id = ? OR medicine_concept_id IS NULL)
+                  AND valid_from <= ?
+                  AND (valid_to IS NULL OR ? < valid_to)
+                  AND observed_from <= ?
+                  AND (observed_to IS NULL OR ? < observed_to)
+            )
+            SELECT jurisdiction, dimension, concept_id
+            FROM candidate_keys
+            {keyset}
+            ORDER BY jurisdiction, dimension, concept_id
+            LIMIT ?
+            """  # ruff: ignore[hardcoded-sql-expression]
+        return sql, parameters
 
     @staticmethod
     def _evidence_sql_by_assertion() -> str:
@@ -410,6 +649,94 @@ class ReadOnlyQueryService:
               AND (observed_to IS NULL OR ? < observed_to)
             ORDER BY jurisdiction, kind, assertion_id
             """  # ruff: ignore[hardcoded-sql-expression]
+
+    @classmethod
+    def _evidence_page_statement(
+        cls,
+        column: Literal["assertion_id", "concept_id"],
+        query: EvidenceQuery,
+        after: tuple[str, ...] | None,
+    ) -> tuple[str, list[object]]:
+        parameters: list[object] = [
+            query.assertion_id or query.concept_id,
+            query.valid_at,
+            query.valid_at,
+            query.observed_at,
+            query.observed_at,
+        ]
+        keyset = ""
+        if after is not None:
+            parameters.extend(after)
+            keyset = "AND (jurisdiction, kind, assertion_id) > (?, ?, ?)"
+        parameters.append(query.limit + 1)
+        sql = cls._evidence_sql(column).replace(
+            "ORDER BY jurisdiction, kind, assertion_id",
+            f"{keyset}\nORDER BY jurisdiction, kind, assertion_id\nLIMIT ?",
+        )
+        return sql, parameters
+
+    def query_plan_evidence(
+        self, query: ComparisonQuery | CoverageQuery | EvidenceQuery
+    ) -> QueryPlanEvidence:
+        """Return an explain-plan receipt for one paginated SQL operation."""
+        if isinstance(query, ComparisonQuery):
+            operation: Literal["comparisons", "coverage", "evidence"] = (
+                "comparisons"
+            )
+            fingerprint = self._fingerprint(
+                operation, query, exclude_cursor=True
+            )
+            after = self._decode_cursor(query.cursor, fingerprint)
+            sql, parameters = self._comparison_page_statement(
+                query,
+                sorted(query.jurisdictions),
+                sorted(dimension.value for dimension in query.dimensions),
+                after,
+            )
+        elif isinstance(query, CoverageQuery):
+            operation = "coverage"
+            fingerprint = self._fingerprint(
+                operation, query, exclude_cursor=True
+            )
+            after = self._decode_cursor(query.cursor, fingerprint)
+            sql, parameters = self._coverage_page_statement(
+                query,
+                sorted(query.jurisdictions),
+                sorted(dimension.value for dimension in query.dimensions),
+                after,
+            )
+        else:
+            operation = "evidence"
+            fingerprint = self._fingerprint(
+                operation, query, exclude_cursor=True
+            )
+            after = self._decode_cursor(query.cursor, fingerprint)
+            column: Literal["assertion_id", "concept_id"] = (
+                "assertion_id"
+                if query.assertion_id is not None
+                else "concept_id"
+            )
+            sql, parameters = self._evidence_page_statement(
+                column, query, after
+            )
+        started = perf_counter()
+        with self._connection() as connection:
+            rows = connection.execute(
+                f"EXPLAIN {sql}",
+                parameters,
+            ).fetchall()
+        planning_duration_ms = (perf_counter() - started) * 1_000
+        return QueryPlanEvidence(
+            operation=operation,
+            requested_limit=query.limit,
+            fetch_limit=query.limit + 1,
+            keyset_applied=after is not None,
+            schema_identity=self.schema_identity,
+            sql_sha256=hashlib.sha256(sql.encode()).hexdigest(),
+            parameter_count=len(parameters),
+            planning_duration_ms=planning_duration_ms,
+            plan="\n".join(str(row[-1]) for row in rows),
+        )
 
     def _build_conclusions(
         self,
@@ -454,15 +781,27 @@ class ReadOnlyQueryService:
         query: ComparisonQuery,
         rows: Sequence[Mapping[str, Any]],
     ) -> ProductConclusion:
-        states = {str(row["evidence_status"]) for row in rows}
+        first = rows[0]
+        evidence_total = int(first["evidence_total"])
         state = (
             ProductState.CONFLICTING
-            if "conflicting" in states
-            or len({row["status_code"] for row in rows}) > 1
-            else self._state(next(iter(states)))
+            if int(first["has_conflicting_state"]) == 1
+            or int(first["distinct_status_total"]) > 1
+            else self._state(str(first["evidence_status"]))
         )
-        first = rows[0]
-        uncertainty = self._uncertainty(state)
+        uncertainty = (
+            Uncertainty(
+                level=UncertaintyLevel.MEDIUM,
+                reason=(
+                    f"Comparison provenance is capped at "
+                    f"{_COMPARISON_PROVENANCE_LIMIT} of {evidence_total} "
+                    "matching assertions; use the paginated evidence endpoint "
+                    "for the complete evidence set."
+                ),
+            )
+            if evidence_total > len(rows)
+            else self._uncertainty(state)
+        )
         return ProductConclusion(
             concept_id=query.concept_id,
             jurisdiction=str(first["jurisdiction"]),
@@ -617,8 +956,13 @@ class ReadOnlyQueryService:
         return (item.jurisdiction, item.dimension.value, item.concept_id)
 
     @staticmethod
-    def _coverage_key(item: CoverageItem) -> tuple[str, ...]:
-        return (item.jurisdiction, item.dimension.value, item.state.value)
+    def _coverage_sql_key(row: Mapping[str, Any]) -> tuple[str, ...]:
+        return (
+            str(row["jurisdiction"]),
+            str(row["dimension"]),
+            str(row["normalized_status"]),
+            str(row["assertion_status"]),
+        )
 
     @staticmethod
     def _evidence_key(item: EvidenceItem) -> tuple[str, ...]:
@@ -636,6 +980,22 @@ class ReadOnlyQueryService:
             items = [item for item in items if key(item) > after]
         page = items[:limit]
         has_more = len(items) > limit
+        cursor = (
+            self._encode_cursor(fingerprint, key(page[-1]))
+            if has_more and page
+            else None
+        )
+        return page, cursor
+
+    def _page_from_sql(
+        self,
+        items: list[Any],
+        limit: int,
+        fingerprint: str,
+        key: Any,
+    ) -> tuple[list[Any], str | None]:
+        has_more = len(items) > limit
+        page = items[:limit]
         cursor = (
             self._encode_cursor(fingerprint, key(page[-1]))
             if has_more and page
@@ -696,6 +1056,9 @@ class ReadOnlyQueryService:
     def _parse_cursor(token: str) -> tuple[dict[str, object], bytes, bytes]:
         padded = token + "=" * (-len(token) % 4)
         raw = base64.b64decode(padded.encode(), altchars=b"-_", validate=True)
+        canonical = base64.urlsafe_b64encode(raw).rstrip(b"=").decode()
+        if not hmac.compare_digest(token, canonical):
+            raise ValueError("cursor encoding is not canonical")
         if len(raw) <= _CURSOR_SIGNATURE_BYTES:
             raise ValueError("cursor payload is empty")
         payload = raw[:-_CURSOR_SIGNATURE_BYTES]
