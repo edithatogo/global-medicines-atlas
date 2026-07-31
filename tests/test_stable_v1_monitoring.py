@@ -37,9 +37,10 @@ def test_monitoring_input_digest_is_checkout_newline_portable(
     path = tmp_path / "policy.json"
     path.write_bytes(b'{"state": "candidate"}\r\n')
 
-    assert monitoring._file_digest(path) == monitoring.sha256(
-        b'{"state": "candidate"}\n'
-    ).hexdigest()
+    assert (
+        monitoring._file_digest(path)
+        == monitoring.sha256(b'{"state": "candidate"}\n').hexdigest()
+    )
 
 
 ROOT = Path(__file__).resolve().parents[1]
