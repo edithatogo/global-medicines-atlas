@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from copy import deepcopy
 from pathlib import Path
 
@@ -11,6 +12,7 @@ from pydantic import ValidationError
 from global_medicines_atlas.quality_baselines import (
     MutationObservations,
     Phase3Baselines,
+    load_performance_receipt,
     load_phase3_baselines,
     load_survivor_review,
     mutation_regressed,
@@ -92,6 +94,10 @@ def test_baseline_rejects_inconsistent_mutation_evidence() -> None:
     inconsistent["mutation"]["observations"]["survived"] = 1
     with pytest.raises(ValidationError, match="status counts"):
         Phase3Baselines.model_validate(inconsistent)
+    wrong_score = deepcopy(document)
+    wrong_score["mutation"]["observations"]["score_percent"] = 99
+    with pytest.raises(ValidationError, match="score does not match"):
+        Phase3Baselines.model_validate(wrong_score)
 
 
 def test_baseline_rejects_false_promotion_status() -> None:
@@ -99,3 +105,39 @@ def test_baseline_rejects_false_promotion_status() -> None:
     document["mutation"]["promotion_status"] = "qualified"
     with pytest.raises(ValidationError, match="contradicts score"):
         Phase3Baselines.model_validate(document)
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ({"survived": 522}, "reconcile"),
+        ({"groups.0.priority": 2}, "contiguous"),
+        ({"promotion_survivor_maximum": 523}, "requires survivor debt"),
+    ],
+)
+def test_survivor_review_rejects_inconsistent_classification(
+    mutation: dict[str, int],
+    message: str,
+) -> None:
+    document = load_survivor_review(SURVIVOR_REVIEW_PATH).model_dump(
+        mode="json"
+    )
+    key, value = next(iter(mutation.items()))
+    if key == "groups.0.priority":
+        document["groups"][0]["priority"] = value
+    else:
+        document[key] = value
+    with pytest.raises(ValidationError, match=message):
+        type(load_survivor_review(SURVIVOR_REVIEW_PATH)).model_validate(
+            document
+        )
+
+
+def test_performance_receipt_loader_requires_object(tmp_path: Path) -> None:
+    valid = tmp_path / "valid.json"
+    valid.write_text(json.dumps({"passed": True}), encoding="utf-8")
+    assert load_performance_receipt(valid) == {"passed": True}
+    invalid = tmp_path / "invalid.json"
+    invalid.write_text("[]", encoding="utf-8")
+    with pytest.raises(TypeError, match="must be an object"):
+        load_performance_receipt(invalid)
