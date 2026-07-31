@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/stable-v1-source-maturity-v1.json",
+  "title": "Stable v1 source and jurisdiction maturity projection",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "schema_version",
+    "catalog",
+    "catalog_schema_version",
+    "assignment_policy",
+    "sources",
+    "jurisdictions",
+    "matrix_state"
+  ],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.stable-v1-source-maturity"},
+    "schema_version": {"const": 1},
+    "catalog": {
+      "const": "src/global_medicines_atlas/data/medicine_source_catalog.json"
+    },
+    "catalog_schema_version": {"type": "integer", "minimum": 1},
+    "assignment_policy": {
+      "type": "object",
+      "required": ["M0", "M1", "M2", "M3", "M4", "M5"],
+      "properties": {
+        "M0": {"type": "string", "minLength": 1},
+        "M1": {"type": "string", "minLength": 1},
+        "M2": {"type": "string", "minLength": 1},
+        "M3": {"type": "string", "minLength": 1},
+        "M4": {"type": "string", "minLength": 1},
+        "M5": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/source"}
+    },
+    "jurisdictions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/jurisdiction"}
+    },
+    "matrix_state": {"enum": ["verified_projection", "blocked"]}
+  },
+  "$defs": {
+    "level": {"enum": ["M0", "M1", "M2", "M3", "M4", "M5"]},
+    "source": {
+      "type": "object",
+      "required": [
+        "source_id",
+        "jurisdictions",
+        "dimension",
+        "maturity_level",
+        "documentation_readiness",
+        "assignment_basis",
+        "blocking_gaps"
+      ],
+      "properties": {
+        "source_id": {"type": "string", "minLength": 1},
+        "jurisdictions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "dimension": {"type": "string", "minLength": 1},
+        "maturity_level": {"$ref": "#/$defs/level"},
+        "documentation_readiness": {
+          "enum": ["candidate", "declared", "documentation_verified"]
+        },
+        "assignment_basis": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "blocking_gaps": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      },
+      "additionalProperties": false
+    },
+    "jurisdiction": {
+      "type": "object",
+      "required": [
+        "jurisdiction",
+        "source_count",
+        "regulatory_source_count",
+        "funding_or_formulary_source_count",
+        "highest_maturity_level",
+        "documentation_ready_source_count",
+        "stable_ready"
+      ],
+      "properties": {
+        "jurisdiction": {"type": "string", "minLength": 1},
+        "source_count": {"type": "integer", "minimum": 1},
+        "regulatory_source_count": {"type": "integer", "minimum": 0},
+        "funding_or_formulary_source_count": {"type": "integer", "minimum": 0},
+        "highest_maturity_level": {"$ref": "#/$defs/level"},
+        "documentation_ready_source_count": {"type": "integer", "minimum": 0},
+        "stable_ready": {"const": false}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

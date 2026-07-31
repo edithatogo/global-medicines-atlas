@@ -57,6 +57,7 @@
       "required": [
         "catalog",
         "catalog_source_count",
+        "matrix",
         "assignment_state",
         "documentation_readiness_state"
       ],
@@ -65,6 +66,9 @@
           "const": "src/global_medicines_atlas/data/medicine_source_catalog.json"
         },
         "catalog_source_count": {"type": "integer", "minimum": 1},
+        "matrix": {
+          "const": "quality/qualifications/stable-v1-source-maturity.json"
+        },
         "assignment_state": {"enum": ["verified", "unverified", "blocked"]},
         "documentation_readiness_state": {
           "enum": ["verified", "unverified", "blocked"]

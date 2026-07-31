@@ -11,12 +11,19 @@ from typing import Any
 import pytest
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import ValidationError
+from scripts.build_stable_v1_source_maturity import build_projection
 
 ROOT = Path(__file__).resolve().parents[1]
 QUALIFICATION_SCHEMA = ROOT / "schemas/stable-v1-qualification-v1.json"
 QUALIFICATION = ROOT / "quality/qualifications/stable-v1-contract.json"
 CANONICAL_SCHEMA = ROOT / "schemas/canonical-medicine-v2.json"
 COMPARISON_SCHEMA = ROOT / "schemas/comparison-validity-v1.json"
+REHEARSAL_SCHEMA = ROOT / "schemas/stable-v1-rehearsal-v1.json"
+REHEARSAL_PLAN = ROOT / "quality/qualifications/stable-v1-rehearsal-plan.json"
+SUPPORT_SCHEMA = ROOT / "schemas/stable-v1-support-readiness-v1.json"
+SUPPORT = ROOT / "quality/qualifications/stable-v1-support-readiness.json"
+SOURCE_MATURITY_SCHEMA = ROOT / "schemas/stable-v1-source-maturity-v1.json"
+SOURCE_MATURITY = ROOT / "quality/qualifications/stable-v1-source-maturity.json"
 
 
 def _load(path: Path) -> dict[str, Any]:
@@ -36,7 +43,14 @@ def _must_requirement_ids() -> set[str]:
 
 
 def test_contract_schemas_are_valid_draft_2020_12() -> None:
-    for path in (QUALIFICATION_SCHEMA, CANONICAL_SCHEMA, COMPARISON_SCHEMA):
+    for path in (
+        QUALIFICATION_SCHEMA,
+        CANONICAL_SCHEMA,
+        COMPARISON_SCHEMA,
+        REHEARSAL_SCHEMA,
+        SUPPORT_SCHEMA,
+        SOURCE_MATURITY_SCHEMA,
+    ):
         _validator(path)
 
 
@@ -73,6 +87,9 @@ def test_projection_reuses_authoritative_models_and_catalog() -> None:
     assert projection["source_maturity"]["catalog_source_count"] == len(
         catalog["sources"]
     )
+    assert projection["source_maturity"]["matrix"] == (
+        "quality/qualifications/stable-v1-source-maturity.json"
+    )
 
 
 def test_all_local_evidence_paths_exist() -> None:
@@ -83,6 +100,7 @@ def test_all_local_evidence_paths_exist() -> None:
     for dimension in projection["maturity_dimensions"]:
         evidence_paths.update(dimension["evidence"])
     evidence_paths.update(projection["support"]["evidence"])
+    evidence_paths.add(projection["source_maturity"]["matrix"])
     for risk in projection["residual_risks"]:
         evidence_paths.update(risk["evidence"])
     for gate in projection["release_gates"]:
@@ -175,3 +193,62 @@ def test_inappropriate_comparison_requires_material_mismatch() -> None:
 
     comparison["material_mismatches"] = ["granularity"]
     _validator(COMPARISON_SCHEMA).validate(comparison)
+
+
+def test_rehearsal_plan_defines_every_blocking_stable_rehearsal() -> None:
+    plan = _load(REHEARSAL_PLAN)
+    _validator(REHEARSAL_SCHEMA).validate(plan)
+    rehearsals = plan["rehearsals"]
+    assert {item["kind"] for item in rehearsals} == {
+        "clean_room_reproduction",
+        "canonical_schema_migration",
+        "canonical_schema_rollback",
+        "governed_recovery",
+    }
+    assert len({item["rehearsal_id"] for item in rehearsals}) == len(rehearsals)
+    assert all(item["blocking"] for item in rehearsals)
+    assert all(item["state"] != "passed" for item in rehearsals)
+    assert all(item["blocker"] for item in rehearsals)
+
+
+def test_support_readiness_fails_closed_and_matches_residual_risks() -> None:
+    support = _load(SUPPORT)
+    _validator(SUPPORT_SCHEMA).validate(support)
+    projection_risks = {
+        item["risk_id"]: (item["disposition"], item["blocking"])
+        for item in _load(QUALIFICATION)["residual_risks"]
+    }
+    support_risks = {
+        item["risk_id"]: (item["disposition"], item["blocking"])
+        for item in support["residual_risks"]
+    }
+    assert support_risks == projection_risks
+    assert support["readiness_state"] == "blocked"
+    assert any(
+        item["blocking"] and item["disposition"] == "unresolved"
+        for item in support["residual_risks"]
+    )
+
+
+def test_source_maturity_matrix_is_complete_conservative_projection() -> None:
+    matrix = _load(SOURCE_MATURITY)
+    _validator(SOURCE_MATURITY_SCHEMA).validate(matrix)
+    catalog = _load(ROOT / matrix["catalog"])
+    source_rows = {item["source_id"]: item for item in matrix["sources"]}
+    catalog_rows = {item["source_id"]: item for item in catalog["sources"]}
+    assert set(source_rows) == set(catalog_rows)
+    assert len(source_rows) == len(matrix["sources"])
+    assert matrix["catalog_schema_version"] == catalog["schema_version"]
+    assert matrix["matrix_state"] == "verified_projection"
+    assert all(
+        int(item["maturity_level"][1:]) <= 2 for item in matrix["sources"]
+    )
+    assert all(item["blocking_gaps"] for item in matrix["sources"])
+    assert all(not item["stable_ready"] for item in matrix["jurisdictions"])
+
+
+def test_source_maturity_projection_is_deterministically_regenerated() -> None:
+    catalog = _load(
+        ROOT / "src/global_medicines_atlas/data/medicine_source_catalog.json"
+    )
+    assert build_projection(catalog) == _load(SOURCE_MATURITY)

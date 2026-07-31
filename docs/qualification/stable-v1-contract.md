@@ -21,7 +21,10 @@ clean-room rehearsal, or maintainer approval keeps `qualification_state`
   population, mapping, normalization, and material mismatches explicit.
   `inappropriate_comparison` is an outcome, not an inferred absence.
 - Source maturity is projected from the existing source catalog. This contract
-  does not create a second jurisdiction registry.
+  does not create a second jurisdiction registry. The derived matrix in
+  `quality/qualifications/stable-v1-source-maturity.json` keys every row to the
+  catalog's `source_id`, records documentation readiness, and conservatively
+  caps catalog-only evidence at M2.
 - GitHub, Hugging Face, Zenodo, and OSF identities have distinct object roles.
   Stable qualification consumes the academic track's identity decisions and
   does not pre-empt them.
@@ -38,3 +41,15 @@ installation must remain usable through deterministic fallback without it.
 The initial projection intentionally records unresolved gates. It is a contract
 for subsequent implementation and evidence collection, not a stable-release
 claim.
+
+## Rehearsal and support gates
+
+`quality/qualifications/stable-v1-rehearsal-plan.json` defines clean-room
+reproduction, structural canonical migration, rollback, and governed recovery
+as separate receipt-producing rehearsals. It deliberately does not implement
+the structural schema migration.
+
+`quality/qualifications/stable-v1-support-readiness.json` is the authoritative
+Phase 1 register for candidate platforms, documentation readiness, limitations,
+and residual risks. It remains blocked while any blocking risk is unresolved
+or a support boundary is unverified.

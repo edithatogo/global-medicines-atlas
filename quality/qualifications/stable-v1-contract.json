@@ -93,8 +93,9 @@
   "source_maturity": {
     "catalog": "src/global_medicines_atlas/data/medicine_source_catalog.json",
     "catalog_source_count": 96,
-    "assignment_state": "unverified",
-    "documentation_readiness_state": "unverified"
+    "matrix": "quality/qualifications/stable-v1-source-maturity.json",
+    "assignment_state": "verified",
+    "documentation_readiness_state": "verified"
   },
   "support": {
     "state": "unverified",
@@ -104,7 +105,7 @@
       "Clean wheel and sdist consumer rehearsals have not yet qualified supported platforms.",
       "LanceDB-free core installation and deterministic fallback remain to be verified."
     ],
-    "evidence": ["conductor/tech-stack.md","quality/qualifications/v08.json"]
+    "evidence": ["conductor/tech-stack.md","quality/qualifications/v08.json","quality/qualifications/stable-v1-support-readiness.json"]
   },
   "residual_risks": [
     {"risk_id":"RISK-001","description":"Independent production backup storage, RPO, RTO and crash consistency are not qualified.","disposition":"unresolved","blocking":true,"evidence":["quality/qualifications/v08.json"]},
@@ -121,12 +122,12 @@
   "release_gates": [
     {"gate_id":"stable-v1-canonical-schema-v2","description":"Implement and rehearse the structural canonical medicine v2 migration and rollback.","state":"unverified","evidence":["schemas/canonical-medicine-v2.json"]},
     {"gate_id":"stable-v1-comparison-validity","description":"Implement and qualify explicit comparison-validity outcomes.","state":"unverified","evidence":["schemas/comparison-validity-v1.json"]},
-    {"gate_id":"stable-v1-source-maturity","description":"Assign and verify M0-M5 and documentation readiness for catalogued sources.","state":"unverified","evidence":["src/global_medicines_atlas/data/medicine_source_catalog.json"]},
+    {"gate_id":"stable-v1-source-maturity","description":"Advance catalogued sources from the verified conservative matrix to release-required maturity.","state":"unverified","evidence":["src/global_medicines_atlas/data/medicine_source_catalog.json","quality/qualifications/stable-v1-source-maturity.json"]},
     {"gate_id":"stable-v1-concept-discovery","description":"Qualify bounded discovery, detail, CLI, autocomplete and explanations.","state":"unverified","evidence":[]},
     {"gate_id":"stable-v1-clean-wheel","description":"Qualify clean wheel and sdist consumers on declared platforms.","state":"unverified","evidence":[]},
     {"gate_id":"stable-v1-optional-semantic-boundary","description":"Verify core installation without LanceDB and deterministic fallback.","state":"unverified","evidence":[]},
-    {"gate_id":"stable-v1-clean-room-rehearsal","description":"Pass independent reproduction, migration, rollback and recovery rehearsals.","state":"unverified","evidence":[]},
-    {"gate_id":"stable-v1-support-readiness","description":"Verify support, documentation, limitations and residual-risk registers.","state":"unverified","evidence":["docs/qualification/stable-v1-contract.md"]},
+    {"gate_id":"stable-v1-clean-room-rehearsal","description":"Pass independent reproduction, migration, rollback and recovery rehearsals.","state":"unverified","evidence":["quality/qualifications/stable-v1-rehearsal-plan.json"]},
+    {"gate_id":"stable-v1-support-readiness","description":"Resolve the verified support, documentation, limitations and residual-risk gate register.","state":"unverified","evidence":["docs/qualification/stable-v1-contract.md","quality/qualifications/stable-v1-support-readiness.json"]},
     {"gate_id":"stable-v1-hosted-governance","description":"Verify dated hosted repository governance and protected checks.","state":"unverified","evidence":[]},
     {"gate_id":"stable-v1-publication-identities","description":"Verify non-overlapping GitHub, Hugging Face, Zenodo and OSF identities.","state":"blocked","evidence":[]},
     {"gate_id":"stable-v1-publication-gates","description":"Pass governed rights, privacy, checksum and verification contracts.","state":"unverified","evidence":["src/global_medicines_atlas/publication_contracts.py"]},

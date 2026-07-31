@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/stable-v1-support-readiness-v1.json",
+  "title": "Stable v1 support, limitation, and residual-risk gates",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "schema_version",
+    "release",
+    "support_boundaries",
+    "limitations",
+    "residual_risks",
+    "readiness_state"
+  ],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.stable-v1-support-readiness"},
+    "schema_version": {"const": 1},
+    "release": {"const": "1.0.0"},
+    "support_boundaries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/gate"}
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["limitation_id", "statement", "user_impact", "evidence"],
+        "properties": {
+          "limitation_id": {"pattern": "^LIMIT-[0-9]{3}$"},
+          "statement": {"type": "string", "minLength": 1},
+          "user_impact": {"type": "string", "minLength": 1},
+          "evidence": {"$ref": "#/$defs/paths"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "residual_risks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "risk_id",
+          "description",
+          "owner",
+          "disposition",
+          "blocking",
+          "gate_id",
+          "evidence"
+        ],
+        "properties": {
+          "risk_id": {"pattern": "^RISK-[0-9]{3}$"},
+          "description": {"type": "string", "minLength": 1},
+          "owner": {"enum": ["maintainer", "project"]},
+          "disposition": {"enum": ["accepted", "mitigated", "unresolved"]},
+          "blocking": {"type": "boolean"},
+          "gate_id": {"type": "string", "minLength": 1},
+          "evidence": {"$ref": "#/$defs/paths"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "readiness_state": {"enum": ["blocked", "verified"]}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"readiness_state": {"const": "verified"}}},
+      "then": {
+        "properties": {
+          "support_boundaries": {
+            "items": {"properties": {"state": {"const": "passed"}}}
+          },
+          "residual_risks": {
+            "not": {
+              "contains": {
+                "properties": {
+                  "blocking": {"const": true},
+                  "disposition": {"const": "unresolved"}
+                },
+                "required": ["blocking", "disposition"]
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "paths": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "gate": {
+      "type": "object",
+      "required": ["gate_id", "scope", "state", "evidence", "blocker"],
+      "properties": {
+        "gate_id": {"type": "string", "minLength": 1},
+        "scope": {"type": "string", "minLength": 1},
+        "state": {"enum": ["passed", "unverified", "blocked"]},
+        "evidence": {"$ref": "#/$defs/paths"},
+        "blocker": {"type": ["string", "null"], "minLength": 1}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

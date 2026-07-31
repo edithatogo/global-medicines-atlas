@@ -1,0 +1,51 @@
+{
+  "schema_id": "global-medicines-atlas.stable-v1-rehearsals",
+  "schema_version": 1,
+  "release": "1.0.0",
+  "rehearsals": [
+    {
+      "rehearsal_id": "REHEARSAL-001",
+      "kind": "clean_room_reproduction",
+      "contract": "src/global_medicines_atlas/clean_room_rehearsal.py",
+      "inputs": ["release declaration", "trusted provenance policy", "seven governed artifact roles"],
+      "required_assertions": ["offline reconstruction", "content identity", "package-lock closure", "SBOM closure", "provenance verification", "durable external receipt"],
+      "receipt_path": "build/stable-v1/rehearsals/clean-room.json",
+      "state": "defined",
+      "blocking": true,
+      "blocker": "A stable-v1 release artifact set and independent execution receipt do not yet exist."
+    },
+    {
+      "rehearsal_id": "REHEARSAL-002",
+      "kind": "canonical_schema_migration",
+      "contract": "schemas/canonical-medicine-v2.json",
+      "inputs": ["versioned canonical v1 fixture", "canonical medicine v2 schema", "migration implementation identity"],
+      "required_assertions": ["deterministic transformation", "referential integrity", "semantic preservation", "idempotence", "content-bound receipt"],
+      "receipt_path": "build/stable-v1/rehearsals/canonical-v1-to-v2.json",
+      "state": "blocked",
+      "blocking": true,
+      "blocker": "The structural canonical medicine v2 migration is intentionally not implemented in this increment."
+    },
+    {
+      "rehearsal_id": "REHEARSAL-003",
+      "kind": "canonical_schema_rollback",
+      "contract": "schemas/canonical-medicine-v2.json",
+      "inputs": ["migrated canonical v2 fixture", "rollback implementation identity", "pre-migration content identity"],
+      "required_assertions": ["explicit loss accounting", "recoverable predecessor", "failed-publication compensation", "identity verification", "content-bound receipt"],
+      "receipt_path": "build/stable-v1/rehearsals/canonical-v2-to-v1.json",
+      "state": "blocked",
+      "blocking": true,
+      "blocker": "Rollback implementation follows the structural migration and is not implemented in this increment."
+    },
+    {
+      "rehearsal_id": "REHEARSAL-004",
+      "kind": "governed_recovery",
+      "contract": "src/global_medicines_atlas/recovery_rehearsal.py",
+      "inputs": ["verified backup", "active destination", "predecessor identity"],
+      "required_assertions": ["restore verification", "rollback verification", "compensation", "canonical-state preservation", "durable receipt"],
+      "receipt_path": "build/stable-v1/rehearsals/governed-recovery.json",
+      "state": "defined",
+      "blocking": true,
+      "blocker": "Existing fixture evidence does not establish independent production backup storage, RPO, RTO, or crash consistency."
+    }
+  ]
+}
