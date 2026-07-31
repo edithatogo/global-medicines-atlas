@@ -53,7 +53,7 @@ def build_projection(catalog: dict[str, Any]) -> dict[str, Any]:
         for jurisdiction in row["jurisdictions"]:
             jurisdiction_rows[jurisdiction].append(row)
 
-    jurisdictions = []
+    jurisdictions: list[dict[str, Any]] = []
     for jurisdiction, sources in sorted(jurisdiction_rows.items()):
         levels = [LEVEL_ORDER[source["maturity_level"]] for source in sources]
         jurisdictions.append({
