@@ -65,12 +65,12 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     fails closed unless identifiers and licence decisions have durable evidence.
     Current external identifiers and all licence decisions remain unresolved or
     merely configured; no publication or approval is inferred.
-- [ ] Task: Phase Verification & Checkpoint
+- [x] Task: Phase Verification & Checkpoint
   - Independent review at `9332d27` found release-gate, canonical-schema,
     semantic-index, cross-page-validity, traceability, mutation and JavaScript
     style defects. The defects are remediated on the Phase 1 review-fix branch;
-    checkpoint completion remains open until the exact remediation commit
-    passes protected checks and a second independent review.
+    checkpoint passed after PRs #98 and #99 completed 29 protected checks each
+    and an independent post-merge re-review found no residual defects.
 
 ## Phase 2: v0.9 candidate
 
