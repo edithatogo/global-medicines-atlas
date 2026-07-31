@@ -371,6 +371,33 @@ The Phase 1 research contract is the machine-readable
 M-090 comparison-validity vocabulary to the protocol/methods work in GitHub
 [#67](https://github.com/edithatogo/global-medicines-atlas/issues/67).
 
+The Phase 3 OSF rehearsal is generated from
+`research/preregistration/osf-preregistration-v1.json` into a committed,
+checksum-addressed submission directory. The builder performs no network or
+platform action; the validator fails closed unless submission remains offline
+and maintainer review remains incomplete. Protocol, analysis plan, amendment
+history, deviation register, citations, and data-management and ethics
+statements are separate attachments so their identities remain auditable.
+
+```mermaid
+flowchart LR
+    CONTRACT["Strict preregistration contract"]
+    SOURCE["Protocol and analysis attachments"]
+    BUILD["Deterministic offline builder"]
+    BUNDLE["OSF-ready draft bundle"]
+    VERIFY["Schema and checksum validator"]
+    GATE{"Maintainer and rights approval"}
+    OSF["External OSF registration"]
+
+    CONTRACT --> BUILD
+    SOURCE --> BUILD
+    BUILD --> BUNDLE
+    BUNDLE --> VERIFY
+    VERIFY --> GATE
+    GATE -->|pending| BUNDLE
+    GATE -->|explicit approval only| OSF
+```
+
 ## Untrusted Acquisition and Failure Containment
 
 ```mermaid

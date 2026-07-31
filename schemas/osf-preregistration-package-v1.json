@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.example/schemas/osf-preregistration-package-v1.json",
+  "title": "Offline OSF preregistration package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_id", "schema_version", "status", "external_actions_permitted", "title", "summary", "research_questions", "outcome_dimensions", "registration_responses", "data_management", "ethics", "registers", "source_attachments", "citation_ids", "maintainer_review"],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.osf-preregistration-package"},
+    "schema_version": {"const": 1},
+    "status": {"const": "draft_not_submitted"},
+    "external_actions_permitted": {"const": false},
+    "title": {"type": "string", "minLength": 10},
+    "summary": {"type": "string", "minLength": 40},
+    "research_questions": {"type": "array", "minItems": 2, "items": {"type": "string", "minLength": 10}},
+    "outcome_dimensions": {"prefixItems": [{"const": "regulatory_status"}, {"const": "funding_status"}], "items": false},
+    "registration_responses": {"type": "object", "minProperties": 5, "additionalProperties": {"type": "string", "minLength": 10}},
+    "data_management": {
+      "type": "object", "additionalProperties": false,
+      "required": ["storage", "retention", "access", "restricted_payload_redistribution", "public_outputs"],
+      "properties": {
+        "storage": {"type": "string"}, "retention": {"type": "string"}, "access": {"type": "string"},
+        "restricted_payload_redistribution": {"const": false}, "public_outputs": {"type": "string"}
+      }
+    },
+    "ethics": {
+      "type": "object", "additionalProperties": false,
+      "required": ["individual_participant_data", "clinical_decision_support", "risk_statement", "review_statement"],
+      "properties": {
+        "individual_participant_data": {"const": false}, "clinical_decision_support": {"const": false},
+        "risk_statement": {"type": "string"}, "review_statement": {"type": "string"}
+      }
+    },
+    "registers": {
+      "type": "object", "additionalProperties": false, "required": ["amendments", "deviations"],
+      "properties": {"amendments": {"type": "string"}, "deviations": {"type": "string"}}
+    },
+    "source_attachments": {"type": "array", "minItems": 4, "uniqueItems": true, "items": {"type": "string"}},
+    "citation_ids": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-Z0-9-]+$"}},
+    "maintainer_review": {
+      "type": "object", "additionalProperties": false, "required": ["complete", "required_before_submission"],
+      "properties": {"complete": {"const": false}, "required_before_submission": {"const": true}}
+    }
+  }
+}
