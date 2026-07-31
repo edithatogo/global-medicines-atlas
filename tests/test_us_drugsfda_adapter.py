@@ -5,6 +5,8 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from hashlib import sha256
 
+from pydantic import AnyUrl
+
 from global_medicines_atlas.adapters.us_drugsfda import (
     compare_drugsfda_surfaces,
     project_drugsfda_api,
@@ -44,7 +46,7 @@ def payloads(*, live: bool = False) -> PayloadSet:
         "marketing_status.tsv": MARKETING.encode(),
         "status_lookup.tsv": STATUS_LOOKUP.encode(),
     }
-    members = []
+    members: list[PayloadMember] = []
     for name, payload in values.items():
         digest = sha256(payload).hexdigest()
         receipt = SourceReceipt(
@@ -58,7 +60,7 @@ def payloads(*, live: bool = False) -> PayloadSet:
                 catalog_version="1",
             ),
             retrieval=RetrievalEvidence(
-                uri=f"https://example.test/{name}",
+                uri=AnyUrl(f"https://example.test/{name}"),
                 retrieved_at=datetime(2026, 7, 29, tzinfo=UTC),
                 acquisition_method=AcquisitionMethod.DOWNLOAD,
                 status=AcquisitionStatus.SUCCEEDED,
@@ -68,7 +70,7 @@ def payloads(*, live: bool = False) -> PayloadSet:
                 RightsState.PERMITTED if live else RightsState.UNKNOWN
             ),
             rights_reference=(
-                "https://rights.example/drugsfda" if live else None
+                AnyUrl("https://rights.example/drugsfda") if live else None
             ),
             evidence_class=EvidenceClass.LIVE
             if live
@@ -183,7 +185,7 @@ def api_receipt(payload: str) -> SourceReceipt:
             catalog_version="1",
         ),
         retrieval=RetrievalEvidence(
-            uri="https://api.fda.gov/drug/drugsfda.json",
+            uri=AnyUrl("https://api.fda.gov/drug/drugsfda.json"),
             retrieved_at=datetime(2026, 7, 30, tzinfo=UTC),
             acquisition_method=AcquisitionMethod.API,
             status=AcquisitionStatus.SUCCEEDED,

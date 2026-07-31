@@ -7,6 +7,7 @@ from hashlib import sha256
 from pathlib import Path
 
 import pytest
+from pydantic import AnyUrl
 
 from global_medicines_atlas.adapters.us_cms_partd import project_cms_partd_csv
 from global_medicines_atlas.models import AssertionKind, EvidenceStatus
@@ -46,14 +47,16 @@ def receipt(
             catalog_version="1",
         ),
         retrieval=RetrievalEvidence(
-            uri="https://example.test/cms-partd.csv",
+            uri=AnyUrl("https://example.test/cms-partd.csv"),
             retrieved_at=datetime(2026, 7, 29, tzinfo=UTC),
             acquisition_method=method,
             status=AcquisitionStatus.SUCCEEDED,
         ),
         payload=PayloadEvidence.from_bytes(payload_bytes),
         rights_state=RightsState.PERMITTED if live else RightsState.UNKNOWN,
-        rights_reference=("https://rights.example/cms-partd" if live else None),
+        rights_reference=(
+            AnyUrl("https://rights.example/cms-partd") if live else None
+        ),
         evidence_class=EvidenceClass.LIVE if live else EvidenceClass.FIXTURE,
         transformation=TransformationEvidence(
             transformation_id="cms-partd-raw-v1",

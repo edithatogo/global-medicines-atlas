@@ -767,12 +767,22 @@ def test_probe_freshness_boundaries_and_invalid_source_date(
 def test_probe_records_naive_last_modified_as_utc_without_freshness_claim() -> (
     None
 ):
-    response = httpx.Response(
-        200,
-        headers={"last-modified": "Wed, 29 Jul 2026 00:00:00"},
+    result = probe_source(
+        source(),
+        checked_at=NOW,
+        transport=httpx.MockTransport(
+            lambda _request: httpx.Response(
+                200,
+                headers={
+                    "content-type": "application/json",
+                    "last-modified": "Wed, 29 Jul 2026 00:00:00",
+                },
+                content=b"{}",
+            )
+        ),
     )
 
-    assert source_health_module._source_updated_at(response) == NOW
+    assert result.source_updated_at == NOW
 
 
 def test_retry_history_and_consecutive_failures_are_deterministic() -> None:
