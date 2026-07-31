@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "citations": [
+    {"citation_id": "OSF-REGISTRATIONS", "title": "OSF Registrations", "url": "https://help.osf.io/article/330-welcome-to-registrations"},
+    {"citation_id": "WILKINSON-2016", "title": "The FAIR Guiding Principles for scientific data management and stewardship", "doi": "10.1038/sdata.2016.18"},
+    {"citation_id": "NOSEK-2018", "title": "The preregistration revolution", "doi": "10.1073/pnas.1708274114"}
+  ]
+}

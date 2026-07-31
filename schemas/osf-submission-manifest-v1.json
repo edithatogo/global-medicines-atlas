@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.example/schemas/osf-submission-manifest-v1.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_id", "schema_version", "submission_state", "network_access", "source_contract", "artifacts"],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.osf-submission-manifest"},
+    "schema_version": {"const": 1},
+    "submission_state": {"const": "offline_rehearsal_only"},
+    "network_access": {"const": "prohibited"},
+    "source_contract": {"const": "research/preregistration/osf-preregistration-v1.json"},
+    "artifacts": {
+      "type": "array", "minItems": 8,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["path", "media_type", "bytes", "sha256"],
+        "properties": {
+          "path": {"type": "string", "pattern": "^[^\\\\]+$"},
+          "media_type": {"enum": ["application/json", "text/markdown", "text/plain"]},
+          "bytes": {"type": "integer", "minimum": 1},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    }
+  }
+}
