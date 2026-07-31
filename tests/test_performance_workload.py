@@ -102,6 +102,9 @@ def test_runner_writes_complete_machine_readable_receipt(
         "warm",
         "concurrent",
     }
+    measurements = {item["scenario"]: item for item in receipt["measurements"]}
+    assert measurements["warm"]["samples"] == 2
+    assert measurements["concurrent"]["samples"] == 20
     assert len(receipt["workload"]["dataset_sha256"]) == 64
     assert "process_peak_memory_mib" in receipt["resources"]
     process_peak_memory = receipt["resources"]["process_peak_memory_mib"]

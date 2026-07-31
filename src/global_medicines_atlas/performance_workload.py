@@ -39,7 +39,8 @@ else:
 DEFAULT_ROW_COUNT = 1_000_000
 DEFAULT_BATCH_SIZE = 100_000
 DEFAULT_READERS = 4
-DEFAULT_WARM_RUNS = 5
+DEFAULT_WARM_RUNS = 20
+DEFAULT_CONCURRENT_SAMPLES = 20
 MEBIBYTE = 1024 * 1024
 
 QUERY = """
@@ -229,19 +230,20 @@ def measure_workload(
 
     wall_started = time.perf_counter()
     with ThreadPoolExecutor(max_workers=readers) as executor:
+        sample_count = max(readers, DEFAULT_CONCURRENT_SAMPLES)
         futures = [
-            executor.submit(_query_once, dataset) for _ in range(readers)
+            executor.submit(_query_once, dataset) for _ in range(sample_count)
         ]
         reader_elapsed = tuple(future.result() for future in futures)
     wall_elapsed = time.perf_counter() - wall_started
     concurrent = Measurement(
         scenario="concurrent",
-        samples=readers,
+        samples=sample_count,
         readers=readers,
         rows_per_sample=row_count,
         elapsed_seconds=reader_elapsed,
         p95_ms=_p95(reader_elapsed) * 1_000,
-        records_per_second=(row_count * readers) / wall_elapsed,
+        records_per_second=(row_count * sample_count) / wall_elapsed,
     )
     return cold, warm, concurrent
 
