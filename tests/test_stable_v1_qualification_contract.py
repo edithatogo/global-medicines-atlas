@@ -26,6 +26,7 @@ SOURCE_MATURITY_SCHEMA = ROOT / "schemas/stable-v1-source-maturity-v1.json"
 SOURCE_MATURITY = ROOT / "quality/qualifications/stable-v1-source-maturity.json"
 CONSUMER_SCHEMA = ROOT / "schemas/stable-v1-consumer-compatibility-v1.json"
 CONSUMER = ROOT / "quality/qualifications/stable-v1-consumer-compatibility.json"
+IDENTITY_SCHEMA = ROOT / "schemas/publication-identity-registry-v1.json"
 
 
 def _load(path: Path) -> dict[str, Any]:
@@ -53,6 +54,7 @@ def test_contract_schemas_are_valid_draft_2020_12() -> None:
         SUPPORT_SCHEMA,
         SOURCE_MATURITY_SCHEMA,
         CONSUMER_SCHEMA,
+        IDENTITY_SCHEMA,
     ):
         _validator(path)
 
@@ -97,6 +99,9 @@ def test_projection_reuses_authoritative_models_and_catalog() -> None:
         "publication_contract": (
             "src/global_medicines_atlas/publication_contracts.py"
         ),
+        "publication_identity_registry": (
+            "quality/qualifications/publication-identities.json"
+        ),
     }
 
     maturity = _load(ROOT / authorities["maturity_model"])
@@ -136,6 +141,9 @@ def test_all_local_evidence_paths_exist() -> None:
 
 def test_publication_identities_are_unique_and_non_overlapping() -> None:
     identities = _load(QUALIFICATION)["publication_identities"]
+    registry = _load(
+        ROOT / "quality/qualifications/publication-identities.json"
+    )["identities"]
     assert {item["system"] for item in identities} == {
         "github",
         "hugging_face",
@@ -147,6 +155,13 @@ def test_publication_identities_are_unique_and_non_overlapping() -> None:
     unresolved = [item for item in identities if item["identifier"] is None]
     assert unresolved
     assert all(item["state"] == "blocked" for item in unresolved)
+    assert {
+        (item["system"], item["object_role"], item["identifier"])
+        for item in identities
+    } == {
+        (item["system"], item["object_role"], item["identifier"])
+        for item in registry
+    }
 
 
 def test_qualification_fails_closed_with_unresolved_gates() -> None:

@@ -27,7 +27,8 @@
         "requirements",
         "maturity_model",
         "source_catalog",
-        "publication_contract"
+        "publication_contract",
+        "publication_identity_registry"
       ],
       "properties": {
         "requirements": {"const": "conductor/requirements.md"},
@@ -37,6 +38,9 @@
         },
         "publication_contract": {
           "const": "src/global_medicines_atlas/publication_contracts.py"
+        },
+        "publication_identity_registry": {
+          "const": "quality/qualifications/publication-identities.json"
         }
       },
       "additionalProperties": false
@@ -230,7 +234,7 @@
       "required": ["system", "object_role", "identifier", "licence_state", "state"],
       "properties": {
         "system": {"enum": ["github", "hugging_face", "zenodo", "osf"]},
-        "object_role": {"type": "string", "minLength": 1},
+        "object_role": {"enum": ["software_source_release", "derived_dataset_distribution", "archival_doi_record", "protocol_preregistration"]},
         "identifier": {"type": ["string", "null"], "minLength": 1},
         "licence_state": {"enum": ["approved", "unresolved", "not_applicable"]},
         "state": {"enum": ["verified", "unverified", "blocked"]}
