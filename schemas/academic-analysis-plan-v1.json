@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/academic-analysis-plan-v1.json",
+  "title": "Global Medicines Atlas prospective analysis and validation plan",
+  "type": "object",
+  "required": ["schema_id", "schema_version", "status", "protocol_identity", "outcome_dimensions", "joint_outcome_inference", "matching_validation", "evidence_handling", "analysis", "reproducibility", "deviations", "traceability"],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.academic-analysis-plan"},
+    "schema_version": {"const": 1},
+    "status": {"const": "prospective_draft"},
+    "protocol_identity": {"$ref": "#/$defs/pathIdentity"},
+    "outcome_dimensions": {"const": ["regulatory_status", "funding_status"]},
+    "joint_outcome_inference": {"const": false},
+    "matching_validation": {"$ref": "#/$defs/matching"},
+    "evidence_handling": {"$ref": "#/$defs/evidence"},
+    "analysis": {"$ref": "#/$defs/analysis"},
+    "reproducibility": {"$ref": "#/$defs/reproducibility"},
+    "deviations": {"$ref": "#/$defs/deviations"},
+    "traceability": {"$ref": "#/$defs/traceability"}
+  },
+  "$defs": {
+    "nonBlank": {"type": "string", "minLength": 1},
+    "pathIdentity": {"type": "object", "required": ["path", "verification"], "properties": {"path": {"const": "research/protocol/academic-protocol-v1.json"}, "verification": {"$ref": "#/$defs/nonBlank"}}, "additionalProperties": false},
+    "negativeControl": {"type": "object", "required": ["control_id", "dimension", "construction", "expected_validity"], "properties": {"control_id": {"type": "string", "pattern": "^NC-[A-Z]+$"}, "dimension": {"enum": ["entity", "indication", "population", "temporal", "mapping", "status_dimension"]}, "construction": {"$ref": "#/$defs/nonBlank"}, "expected_validity": {"enum": ["valid_with_caveats", "inappropriate_comparison", "insufficient_evidence"]}}, "additionalProperties": false},
+    "matching": {
+      "type": "object",
+      "required": ["candidate_generation", "automatic_acceptance", "unresolved_state", "material_mismatch_state", "adjudication", "inter_rater", "negative_controls"],
+      "properties": {
+        "candidate_generation": {"$ref": "#/$defs/nonBlank"}, "automatic_acceptance": {"const": "exact_rules_only"}, "unresolved_state": {"const": "insufficient_evidence"}, "material_mismatch_state": {"const": "inappropriate_comparison"},
+        "adjudication": {"type": "object", "required": ["independent_reviewers", "blinded_to_jurisdiction_summary", "consensus_required", "unresolved_disagreement", "audit_fields"], "properties": {"independent_reviewers": {"type": "integer", "minimum": 2}, "blinded_to_jurisdiction_summary": {"const": true}, "consensus_required": {"const": true}, "unresolved_disagreement": {"const": "retain_disagreement_and_insufficient_evidence"}, "audit_fields": {"type": "array", "minItems": 5, "uniqueItems": true, "items": {"$ref": "#/$defs/nonBlank"}}}, "additionalProperties": false},
+        "inter_rater": {"type": "object", "required": ["sampling_frame", "agreement_statistics", "small_cell_rule", "agreement_is_not_validity"], "properties": {"sampling_frame": {"$ref": "#/$defs/nonBlank"}, "agreement_statistics": {"const": ["percent_agreement", "cohen_kappa_with_95_percent_ci"]}, "small_cell_rule": {"$ref": "#/$defs/nonBlank"}, "agreement_is_not_validity": {"const": true}}, "additionalProperties": false},
+        "negative_controls": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"$ref": "#/$defs/negativeControl"}}
+      }, "additionalProperties": false
+    },
+    "denominator": {"type": "object", "required": ["denominator_id", "definition", "numerator"], "properties": {"denominator_id": {"enum": ["catalog_sources", "eligible_entities", "eligible_assertions", "valid_comparisons"]}, "definition": {"$ref": "#/$defs/nonBlank"}, "numerator": {"$ref": "#/$defs/nonBlank"}}, "additionalProperties": false},
+    "evidence": {
+      "type": "object", "required": ["missingness", "conflicts", "coverage_denominators", "uncertainty"],
+      "properties": {
+        "missingness": {"type": "object", "required": ["taxonomy", "absence_interpretation", "imputation"], "properties": {"taxonomy": {"type": "array", "minItems": 5, "uniqueItems": true, "items": {"$ref": "#/$defs/nonBlank"}}, "absence_interpretation": {"const": "insufficient_evidence_not_negative_status"}, "imputation": {"const": "none_for_status_or_validity"}}, "additionalProperties": false},
+        "conflicts": {"type": "object", "required": ["resolution", "silent_overwrite", "reporting"], "properties": {"resolution": {"const": "retain_all_assertions"}, "silent_overwrite": {"const": false}, "reporting": {"$ref": "#/$defs/nonBlank"}}, "additionalProperties": false},
+        "coverage_denominators": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"$ref": "#/$defs/denominator"}},
+        "uncertainty": {"type": "object", "required": ["unknowns_reported_separately", "interval_method", "small_cells", "no_evidence_claim"], "properties": {"unknowns_reported_separately": {"const": true}, "interval_method": {"$ref": "#/$defs/nonBlank"}, "small_cells": {"$ref": "#/$defs/nonBlank"}, "no_evidence_claim": {"$ref": "#/$defs/nonBlank"}}, "additionalProperties": false}
+      }, "additionalProperties": false
+    },
+    "descriptive": {"type": "object", "required": ["analysis_id", "outcome", "summary"], "properties": {"analysis_id": {"type": "string", "pattern": "^DA-[A-Z]+$"}, "outcome": {"enum": ["regulatory_status", "funding_status", "coverage", "comparison_validity"]}, "summary": {"$ref": "#/$defs/nonBlank"}}, "additionalProperties": false},
+    "sensitivity": {"type": "object", "required": ["analysis_id", "variation", "interpretation"], "properties": {"analysis_id": {"type": "string", "pattern": "^SA-[A-Z]+$"}, "variation": {"$ref": "#/$defs/nonBlank"}, "interpretation": {"$ref": "#/$defs/nonBlank"}}, "additionalProperties": false},
+    "analysis": {"type": "object", "required": ["descriptive", "sensitivity", "multiplicity"], "properties": {"descriptive": {"type": "array", "minItems": 4, "items": {"$ref": "#/$defs/descriptive"}}, "sensitivity": {"type": "array", "minItems": 4, "items": {"$ref": "#/$defs/sensitivity"}}, "multiplicity": {"type": "object", "required": ["confirmatory_hypothesis_tests", "p_values", "confidence_intervals", "subgroup_results", "unplanned_analyses"], "properties": {"confirmatory_hypothesis_tests": {"const": []}, "p_values": {"const": "not_planned"}, "confidence_intervals": {"const": "descriptive_not_significance_tests"}, "subgroup_results": {"const": "label_descriptive_and_report_denominators"}, "unplanned_analyses": {"const": "label_exploratory"}}, "additionalProperties": false}}, "additionalProperties": false},
+    "immutableIdentity": {"type": "object", "required": ["identity", "verification", "mutable_reference_allowed"], "properties": {"identity": {"$ref": "#/$defs/nonBlank"}, "verification": {"$ref": "#/$defs/nonBlank"}, "mutable_reference_allowed": {"const": false}}, "additionalProperties": false},
+    "reproducibility": {"type": "object", "required": ["software", "schemas", "fixtures", "random_seed", "environment"], "properties": {"software": {"$ref": "#/$defs/immutableIdentity"}, "schemas": {"$ref": "#/$defs/immutableIdentity"}, "fixtures": {"$ref": "#/$defs/immutableIdentity"}, "random_seed": {"$ref": "#/$defs/immutableIdentity"}, "environment": {"$ref": "#/$defs/immutableIdentity"}}, "additionalProperties": false},
+    "deviations": {"type": "object", "required": ["register_path", "append_only", "required_fields", "post_registration_changes_are_amendments", "undeclared_outcome_switching"], "properties": {"register_path": {"const": "research/protocol/deviations.jsonl"}, "append_only": {"const": true}, "required_fields": {"type": "array", "minItems": 8, "uniqueItems": true, "items": {"$ref": "#/$defs/nonBlank"}}, "post_registration_changes_are_amendments": {"const": true}, "undeclared_outcome_switching": {"const": "prohibited"}}, "additionalProperties": false},
+    "traceability": {"type": "object", "required": ["requirements", "design_sections", "repository_paths", "github_issue"], "properties": {"requirements": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^M-[0-9]{3}$"}}, "design_sections": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/nonBlank"}}, "repository_paths": {"type": "array", "minItems": 4, "uniqueItems": true, "items": {"$ref": "#/$defs/nonBlank"}}, "github_issue": {"const": "https://github.com/edithatogo/global-medicines-atlas/issues/68"}}, "additionalProperties": false}
+  },
+  "additionalProperties": false
+}

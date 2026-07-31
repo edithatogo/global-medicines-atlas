@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/academic-deviation-v1.json",
+  "title": "Global Medicines Atlas academic protocol deviation",
+  "type": "object",
+  "required": ["schema_id", "schema_version", "deviation_id", "recorded_at", "classification", "planned_method", "actual_method", "reason", "impact", "author"],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.academic-deviation"},
+    "schema_version": {"const": 1},
+    "deviation_id": {"type": "string", "pattern": "^DEV-[0-9]{4}$"},
+    "recorded_at": {"type": "string", "format": "date-time"},
+    "classification": {"enum": ["prospective_amendment", "implementation_deviation", "exploratory_analysis", "protocol_violation"]},
+    "planned_method": {"type": "string", "minLength": 1},
+    "actual_method": {"type": "string", "minLength": 1},
+    "reason": {"type": "string", "minLength": 1},
+    "impact": {"type": "string", "minLength": 1},
+    "author": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}
