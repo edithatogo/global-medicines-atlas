@@ -1,22 +1,22 @@
 {
   "schema_version": "1.0.0",
-  "reviewed_run_id": 30604959795,
-  "head_sha": "7853f78",
-  "artifact_id": 8783279963,
-  "artifact_sha256": "51973acced2d7e7f8207a4f5430a672783fa3980b737e5e3b83f3949bfb942cb",
-  "survived": 523,
+  "reviewed_run_id": 30609139393,
+  "head_sha": "1c7a991f4892a8740188b13e64e743386bb17a28",
+  "artifact_id": 8784782914,
+  "artifact_sha256": "572d0038955f742e56278511bc9c492912f3ec11eb1803947d33797b0ae0f36b",
+  "survived": 317,
   "promotion_survivor_maximum": 381,
-  "promotion_status": "blocked_survivor_debt",
+  "promotion_status": "qualified",
   "groups": [
-    {"module": "source_health", "count": 240, "disposition": "open_test_gap", "priority": 1},
-    {"module": "adapters.us_drugsfda", "count": 73, "disposition": "open_test_gap", "priority": 2},
-    {"module": "matching_evaluation", "count": 54, "disposition": "open_test_gap", "priority": 3},
-    {"module": "adapters.us_cms_partd", "count": 50, "disposition": "open_test_gap", "priority": 4},
-    {"module": "matching_normalization", "count": 39, "disposition": "open_test_gap", "priority": 5},
-    {"module": "matching", "count": 27, "disposition": "open_test_gap", "priority": 6},
-    {"module": "review_queue", "count": 23, "disposition": "open_test_gap", "priority": 7},
-    {"module": "matching_policy", "count": 12, "disposition": "open_test_gap", "priority": 8},
-    {"module": "parity", "count": 5, "disposition": "open_test_gap", "priority": 9}
+    {"module": "source_health", "count": 194, "disposition": "open_test_gap", "priority": 1},
+    {"module": "adapters.us_drugsfda", "count": 29, "disposition": "open_test_gap", "priority": 2},
+    {"module": "matching_evaluation", "count": 29, "disposition": "open_test_gap", "priority": 3},
+    {"module": "matching", "count": 25, "disposition": "open_test_gap", "priority": 4},
+    {"module": "review_queue", "count": 18, "disposition": "open_test_gap", "priority": 5},
+    {"module": "adapters.us_cms_partd", "count": 9, "disposition": "open_test_gap", "priority": 6},
+    {"module": "matching_normalization", "count": 5, "disposition": "open_test_gap", "priority": 7},
+    {"module": "parity", "count": 5, "disposition": "open_test_gap", "priority": 8},
+    {"module": "matching_policy", "count": 3, "disposition": "open_test_gap", "priority": 9}
   ],
-  "review_decision": "No survivor is waived or classified as equivalent without mutant-level proof. Remediate at least 142 survivors before v0.8 promotion, beginning with source_health."
+  "review_decision": "No survivor is waived or classified as equivalent without mutant-level proof. The 83.701799% hosted score exceeds the independent 80% v0.8 threshold; the remaining 317 survivors stay explicit test debt."
 }

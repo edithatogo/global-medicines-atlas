@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0.0",
+  "release": "0.8.0",
+  "status": "qualified",
+  "implementation_commit": "b1fa968000fd20f79642edfafa204df71f2a4dd2",
+  "authoritative_engine": "python-3.14",
+  "mojo_disposition": "experimental_not_promoted",
+  "mutation": {
+    "run_id": 30609139393,
+    "score_percent": 83.701799,
+    "minimum_percent": 80.0,
+    "killed": 1628,
+    "survived": 317,
+    "total": 1945,
+    "statistics_artifact_id": 8784782680,
+    "statistics_artifact_sha256": "f38619d3747b29a14343783baa144db9a7ceecc18e67466d7729d7118b223256",
+    "survivor_artifact_id": 8784782914,
+    "survivor_artifact_sha256": "572d0038955f742e56278511bc9c492912f3ec11eb1803947d33797b0ae0f36b"
+  },
+  "qualified_gates": [
+    "coverage",
+    "mutation",
+    "representative_performance",
+    "operational_exercises",
+    "governed_local_recovery",
+    "repository_governance",
+    "documentation_contracts"
+  ],
+  "publication_authorized": false,
+  "production_disaster_recovery_qualified": false,
+  "renovate_app_activation_verified": false,
+  "limitations": [
+    "External publication remains a separate human authority gate.",
+    "Independent production backup storage, RPO, RTO and crash consistency are not qualified.",
+    "Renovate App installation requires maintainer authorization and remains tracked in issue #14.",
+    "Mojo remains an experimental compatibility canary; Python 3.14 is authoritative.",
+    "The remaining 317 mutation survivors are explicit continuing test debt."
+  ]
+}

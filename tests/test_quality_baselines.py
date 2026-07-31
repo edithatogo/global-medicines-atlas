@@ -23,18 +23,18 @@ BASELINE_PATH = Path("quality/baselines/phase3.json")
 SURVIVOR_REVIEW_PATH = Path("quality/baselines/mutation-survivor-review.json")
 
 
-def test_committed_phase3_baseline_is_valid_and_records_debt() -> None:
+def test_committed_phase3_baseline_is_valid_and_qualified() -> None:
     baseline = load_phase3_baselines(BASELINE_PATH)
-    assert baseline.mutation.observations.survived == 523
-    assert baseline.mutation.promotion_status == "blocked_survivor_debt"
+    assert baseline.mutation.observations.survived == 317
+    assert baseline.mutation.promotion_status == "qualified"
     assert baseline.performance.workload.row_count == 1_000_000
 
 
 def test_survivor_review_reconciles_hosted_report_without_waivers() -> None:
     review = load_survivor_review(SURVIVOR_REVIEW_PATH)
-    assert sum(group.count for group in review.groups) == 523
+    assert sum(group.count for group in review.groups) == 317
     assert review.groups[0].module == "source_health"
-    assert review.groups[0].count == 240
+    assert review.groups[0].count == 194
     assert {group.disposition for group in review.groups} == {"open_test_gap"}
 
 
@@ -42,28 +42,28 @@ def test_mutation_regression_is_independent_of_promotion_target() -> None:
     baseline = load_phase3_baselines(BASELINE_PATH).mutation
     unchanged = baseline.observations
     improved = MutationObservations(
-        killed=1_524,
-        survived=382,
+        killed=1_650,
+        survived=295,
         untested=0,
         skipped=0,
         suspicious=0,
         timeout=0,
         interrupted=0,
         segfault=0,
-        total=1_906,
-        score_percent=1_524 / 1_906 * 100,
+        total=1_945,
+        score_percent=1_650 / 1_945 * 100,
     )
     worse = MutationObservations(
-        killed=1_382,
-        survived=524,
+        killed=1_627,
+        survived=318,
         untested=0,
         skipped=0,
         suspicious=0,
         timeout=0,
         interrupted=0,
         segfault=0,
-        total=1_906,
-        score_percent=1_382 / 1_906 * 100,
+        total=1_945,
+        score_percent=1_627 / 1_945 * 100,
     )
     assert not mutation_regressed(baseline, unchanged)
     assert not mutation_regressed(baseline, improved)
@@ -102,7 +102,7 @@ def test_baseline_rejects_inconsistent_mutation_evidence() -> None:
 
 def test_baseline_rejects_false_promotion_status() -> None:
     document = load_phase3_baselines(BASELINE_PATH).model_dump(mode="json")
-    document["mutation"]["promotion_status"] = "qualified"
+    document["mutation"]["promotion_status"] = "blocked_survivor_debt"
     with pytest.raises(ValidationError, match="contradicts score"):
         Phase3Baselines.model_validate(document)
 
@@ -110,9 +110,9 @@ def test_baseline_rejects_false_promotion_status() -> None:
 @pytest.mark.parametrize(
     ("mutation", "message"),
     [
-        ({"survived": 522}, "reconcile"),
+        ({"survived": 316}, "reconcile"),
         ({"groups.0.priority": 2}, "contiguous"),
-        ({"promotion_survivor_maximum": 523}, "requires survivor debt"),
+        ({"promotion_survivor_maximum": 316}, "contradicts debt"),
     ],
 )
 def test_survivor_review_rejects_inconsistent_classification(
