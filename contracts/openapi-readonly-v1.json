@@ -1303,7 +1303,8 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/concepts": {
@@ -1390,7 +1391,8 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/concepts/{concept_id}": {
@@ -1427,7 +1429,8 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/coverage": {
@@ -1533,7 +1536,8 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/evidence": {
@@ -1642,7 +1646,8 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/health": {
@@ -1655,7 +1660,8 @@
               "$ref": "#/components/schemas/HealthResponse"
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/jurisdictions": {
@@ -1686,7 +1692,8 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/readiness": {
@@ -1704,7 +1711,8 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/api/v1/sources": {
@@ -1753,9 +1761,11 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           }
-        }
+        },
+        "security": []
       }
     }
   },
+  "securitySchemes": {},
   "version": 1
 }

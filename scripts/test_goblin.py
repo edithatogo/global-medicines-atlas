@@ -961,6 +961,7 @@ def regeneration() -> None:
     )
     run(build_pytest_command(tests))
     run(build_pytest_command(tuple(reversed(tests))))
+    run([sys.executable, "scripts/qualify_openapi_client.py"])
 
 
 def security() -> None:
