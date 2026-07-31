@@ -11,6 +11,14 @@ release, or external publication. Stable promotion remains blocked until the
 maintainer supplies explicit licence and release approval and the protected
 publication workflow produces independently observable receipts.
 
+The committed candidate receipt is bound to durable `main` commit
+`94e309bea40ef3cc354d123dc49a209f95e05e57` (the merge of PR #110). The
+integration harness clones the repository, checks out that exact commit,
+rebuilds with the pinned release toolchain, and requires the rebuilt receipt to
+match the committed bytes before it exercises the wheel and sdist consumers.
+This closes the prior synthetic pull-request-merge provenance gap without
+crossing any signing, approval, tagging, or publication gate.
+
 ## Build the local candidate
 
 Use CPython 3.14.6 from a clean checkout of the intended source commit:
