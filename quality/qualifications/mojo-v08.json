@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0.0",
+  "release": "v0.8",
+  "authoritative_engine": "python-3.14",
+  "mojo_disposition": "experimental_not_promoted",
+  "toolchain_version": "1.0.0b3.dev2026072806",
+  "hosted_smoke_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/30605249629",
+  "hosted_commit": "204b1bdae50692842e0a2491e87a0cf8e0b93892",
+  "real_kernel_present": false,
+  "arrow_fixture_parity": "not_run_no_real_kernel",
+  "fallback_rehearsal": "not_applicable_no_runtime_path",
+  "representative_benchmark": "not_run_no_real_kernel",
+  "scalene_justifies_promotion": false,
+  "promotion": "denied",
+  "limitations": [
+    "The hosted Mojo job proves pinned toolchain availability only.",
+    "No callable Mojo medicine kernel or runtime dispatch path exists.",
+    "Python 3.14 is the sole authoritative implementation, not a fallback selected after a Mojo failure."
+  ]
+}
