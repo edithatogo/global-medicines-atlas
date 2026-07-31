@@ -67,6 +67,12 @@ class DiscoveryService:
         return CoverageResponse(metadata=_response_metadata(), coverage=())
 
 
+class InvalidDiscoveryService(DiscoveryService):
+    def search_concepts(self, query):
+        del query
+        raise ValueError("invalid governed search")
+
+
 def _response_metadata():
     return ResponseMetadata(
         generated_at=NOW,
@@ -142,3 +148,14 @@ def test_combobox_script_contract_covers_keyboard_status_and_safe_rendering() ->
     assert "innerHTML" not in script
     assert "fetch(" not in script
     assert 'selected.value = ""' in script
+
+
+def test_invalid_server_rendered_search_is_explained() -> None:
+    response = TestClient(create_atlas_app(InvalidDiscoveryService())).get(
+        "/",
+        params={"concept_search": "aspirin"},
+    )
+
+    assert response.status_code == 200
+    assert "The medicine search is invalid" in response.text
+    assert "invalid governed search" in response.text
