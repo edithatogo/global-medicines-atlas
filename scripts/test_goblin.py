@@ -69,6 +69,7 @@ class ItemLike(Protocol):
 
 TEST_LANES: dict[str, tuple[str, ...]] = {
     "unit": (
+        "tests/test_academic_protocol.py",
         "tests/test_conductor_github_sync.py",
         "tests/test_country_adapter_registry.py",
         "tests/test_context_validation.py",
