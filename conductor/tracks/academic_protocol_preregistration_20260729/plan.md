@@ -45,15 +45,29 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     unit lane, and the 1,570-test 95.19% coverage gate passed locally. The draft
     remains `draft_not_submitted`; maintainer review and every external record
     remain explicitly open.
+  - PR #117 merged as `dc466ed` after all 29 protected checks passed.
+    Independent Conductor review found no findings and confirmed package
+    completeness, exact checksums, deterministic regeneration, documented
+    command rehearsal, and fail-closed external-action flags.
 
 ## Phase 4: Persistent identities and external verification
 
-- [ ] Task: Define non-overlapping GitHub software, Hugging Face dataset, Zenodo record and OSF study identities
+- [x] Task: Define non-overlapping GitHub software, Hugging Face dataset, Zenodo record and OSF study identities
+  - Reuses the strict four-object registry in
+    `quality/qualifications/publication-identities.json`: GitHub is the software
+    source/release, Hugging Face is a derived dataset distribution, Zenodo is
+    the archival DOI record, and OSF is the protocol/preregistration. Null
+    external identifiers remain unresolved rather than guessed.
 - [x] Task: Create and cross-link [GitHub parent #66](https://github.com/edithatogo/global-medicines-atlas/issues/66) and native phase subissues [#67](https://github.com/edithatogo/global-medicines-atlas/issues/67), [#68](https://github.com/edithatogo/global-medicines-atlas/issues/68), [#69](https://github.com/edithatogo/global-medicines-atlas/issues/69) and [#70](https://github.com/edithatogo/global-medicines-atlas/issues/70)
 - [ ] Task: Create OSF, Hugging Face and Zenodo records only after rights and maintainer gates pass
 - [ ] Task: Verify external identifiers, DOI relationships, licences and public landing pages
-- [ ] Task: Record publication receipts or explicit external blockers
-- [ ] Task: Phase Verification & Checkpoint
+- [x] Task: Record publication receipts or explicit external blockers
+  - Explicit blockers are maintainer review, licence decisions, rights review,
+    and creation/verification of OSF, Hugging Face and Zenodo identifiers.
+- [~] Task: Phase Verification & Checkpoint
+  - Repository-owned identity and blocker work is complete. External creation,
+    DOI verification, landing-page verification, publication, and final
+    maintainer approval remain genuine human/external gates.
 
 ## GitHub hierarchy
 
