@@ -4,12 +4,14 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 
 ## Phase 1: Protocol and source-selection contract
 
-- [ ] Task: Write failing schema and completeness tests for the protocol package
-- [ ] Task: Define objectives, estimands, users and non-clinical scope
-- [ ] Task: Define jurisdiction/source census, inclusion, exclusion and rights rules
-- [ ] Task: Define entity, indication, population, temporal and comparison-validity semantics
-- [ ] Task: Cross-reference requirements, design, source catalog and [GitHub methods subissue #67](https://github.com/edithatogo/global-medicines-atlas/issues/67)
-- [ ] Task: Phase Verification & Checkpoint
+- [x] Task: Write failing schema and completeness tests for the protocol package
+- [x] Task: Define objectives, estimands, users and non-clinical scope
+- [x] Task: Define jurisdiction/source census, inclusion, exclusion and rights rules
+- [x] Task: Define entity, indication, population, temporal and comparison-validity semantics
+- [x] Task: Cross-reference requirements, design, source catalog and [GitHub methods subissue #67](https://github.com/edithatogo/global-medicines-atlas/issues/67)
+- [~] Task: Phase Verification & Checkpoint
+  - Implementation verification passed locally; independent Conductor review
+    and hosted protected checks remain pending.
 
 ## Phase 2: Analysis and validation plan
 

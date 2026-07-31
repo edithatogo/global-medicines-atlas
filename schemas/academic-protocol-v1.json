@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/academic-protocol-v1.json",
+  "title": "Global Medicines Atlas academic protocol Phase 1",
+  "type": "object",
+  "required": ["schema_id", "schema_version", "title", "status", "objectives", "estimands", "users", "scope", "source_selection", "comparison_semantics", "traceability"],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.academic-protocol"},
+    "schema_version": {"const": 1},
+    "title": {"type": "string", "minLength": 1},
+    "status": {"const": "prospective_draft"},
+    "objectives": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "estimands": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/estimand"}},
+    "users": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "scope": {"$ref": "#/$defs/scope"},
+    "source_selection": {"$ref": "#/$defs/sourceSelection"},
+    "comparison_semantics": {"$ref": "#/$defs/comparisonSemantics"},
+    "traceability": {"$ref": "#/$defs/traceability"}
+  },
+  "$defs": {
+    "estimand": {
+      "type": "object",
+      "required": ["estimand_id", "outcome", "target", "unit", "summary_measure", "interpretation"],
+      "properties": {
+        "estimand_id": {"type": "string", "pattern": "^EST-[0-9]{2}$"},
+        "outcome": {"enum": ["regulatory_status", "funding_status"]},
+        "target": {"type": "string", "minLength": 1},
+        "unit": {"type": "string", "minLength": 1},
+        "summary_measure": {"type": "string", "minLength": 1},
+        "interpretation": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "scope": {
+      "type": "object",
+      "required": ["clinical_decision_support", "individual_patient_inference", "claims_exhaustive_global_coverage", "permitted_uses", "prohibited_claims"],
+      "properties": {
+        "clinical_decision_support": {"const": false},
+        "individual_patient_inference": {"const": false},
+        "claims_exhaustive_global_coverage": {"const": false},
+        "permitted_uses": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "prohibited_claims": {"type": "array", "minItems": 3, "items": {"type": "string", "minLength": 1}}
+      },
+      "additionalProperties": false
+    },
+    "rule": {
+      "type": "object",
+      "required": ["rule_id", "rule"],
+      "properties": {"rule_id": {"type": "string", "minLength": 1}, "rule": {"type": "string", "minLength": 1}},
+      "additionalProperties": false
+    },
+    "sourceSelection": {
+      "type": "object",
+      "required": ["census", "jurisdiction_inclusion", "source_inclusion", "source_exclusion", "rights_rules"],
+      "properties": {
+        "census": {
+          "type": "object",
+          "required": ["authority", "catalog_schema_version", "jurisdictions", "source_ids", "denominator_rule"],
+          "properties": {
+            "authority": {"const": "src/global_medicines_atlas/data/medicine_source_catalog.json"},
+            "catalog_schema_version": {"type": "integer", "minimum": 1},
+            "jurisdictions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-Z]{2,3}$"}},
+            "source_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+            "denominator_rule": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": false
+        },
+        "jurisdiction_inclusion": {"type": "array", "minItems": 2, "items": {"$ref": "#/$defs/rule"}},
+        "source_inclusion": {"type": "array", "minItems": 3, "items": {"$ref": "#/$defs/rule"}},
+        "source_exclusion": {"type": "array", "minItems": 3, "items": {"$ref": "#/$defs/rule"}},
+        "rights_rules": {
+          "type": "object",
+          "required": ["restricted_payload_default", "unknown_rights", "redistribution", "metadata_permitted"],
+          "properties": {
+            "restricted_payload_default": {"const": "metadata_and_retrieval_code_only"},
+            "unknown_rights": {"const": "exclude_payload_from_public_package"},
+            "redistribution": {"const": "requires_source_specific_permission"},
+            "metadata_permitted": {"const": true}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "semanticDimension": {
+      "type": "object",
+      "required": ["required", "definition", "unknown_state"],
+      "properties": {
+        "required": {"const": true},
+        "definition": {"type": "string", "minLength": 1},
+        "unknown_state": {"const": "insufficient_evidence"}
+      },
+      "additionalProperties": false
+    },
+    "comparisonSemantics": {
+      "type": "object",
+      "required": ["entity", "indication", "population", "temporal", "mapping", "status_separation", "validity_states", "material_mismatch_rule", "clinical_equivalence", "substitutability", "equal_benefit"],
+      "properties": {
+        "entity": {"$ref": "#/$defs/semanticDimension"},
+        "indication": {"$ref": "#/$defs/semanticDimension"},
+        "population": {"$ref": "#/$defs/semanticDimension"},
+        "temporal": {"$ref": "#/$defs/semanticDimension"},
+        "mapping": {"$ref": "#/$defs/semanticDimension"},
+        "status_separation": {"const": "regulatory_and_funding_are_distinct_estimands"},
+        "validity_states": {"const": ["valid", "valid_with_caveats", "inappropriate_comparison", "insufficient_evidence"]},
+        "material_mismatch_rule": {"type": "string", "minLength": 1},
+        "clinical_equivalence": {"const": false},
+        "substitutability": {"const": false},
+        "equal_benefit": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "traceability": {
+      "type": "object",
+      "required": ["requirements", "design_sections", "repository_paths", "github_issue"],
+      "properties": {
+        "requirements": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^M-[0-9]{3}$"}},
+        "design_sections": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "repository_paths": {"type": "array", "minItems": 4, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "github_issue": {"const": "https://github.com/edithatogo/global-medicines-atlas/issues/67"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
