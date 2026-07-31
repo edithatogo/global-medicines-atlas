@@ -1,4 +1,4 @@
-# Operational Hardening
+# Operational Hardening (Archived)
 
 - [Specification](./spec.md)
 - [Implementation Plan](./plan.md)
