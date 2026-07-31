@@ -180,6 +180,10 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     candidate evidence while post-release observations remain `not_observed`.
     Signing, publication, release eligibility and external actions remain false.
 - [~] Task: Phase Verification & Checkpoint
+  - Independent Conductor review identified a normalization-collision ordering
+    gap in the new metamorphic invariant. The implementation now uses explicit
+    Unicode/source tie-breakers and includes the `("A", "a")` regression;
+    final hosted verification remains in progress.
   - Repository-owned qualification is complete and independently reviewed.
     Promotion remains blocked on explicit licence/release approval, signing,
     attestation, tagging and publication; none is inferred from the candidate.

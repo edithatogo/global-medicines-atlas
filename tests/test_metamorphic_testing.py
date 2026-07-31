@@ -43,3 +43,12 @@ def test_ingredient_permutation_preserves_feature_identity(
     )
 
     assert forward == reverse
+
+
+def test_normalization_collisions_do_not_retain_source_order() -> None:
+    """Equivalent comparison forms use deterministic source tie-breakers."""
+
+    forward = build_features(name="Combination", ingredients=("A", "a"))
+    reverse = build_features(name="Combination", ingredients=("a", "A"))
+
+    assert forward == reverse
