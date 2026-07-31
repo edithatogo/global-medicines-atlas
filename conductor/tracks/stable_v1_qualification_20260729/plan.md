@@ -142,8 +142,17 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     denominator entries and 16 fixture-qualified sources. Zero sources are
     claimed live-qualified; regulatory, funding, formulary and terminology
     dimensions remain separately labelled.
-- [ ] Task: Verify hosted governance, security features and project views ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
-- [ ] Task: Produce signed release package and consumer verification guide ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+- [x] Task: Verify hosted governance, security features and project views ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+  - Read-only acquisition verifies repository identity, default branch, branch
+    protection, 24 required checks, security features, issue/subissue hierarchy,
+    Project #35 fields, five views and six workflows. Phase 1/2 project states
+    and the two risk/evidence views were reconciled and re-acquisition qualified
+    every in-scope control.
+- [~] Task: Produce signed release package and consumer verification guide ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+  - A deterministic wheel, sdist, normalized SBOM, manifest, checksum and
+    consumer-verification candidate reproduces byte-for-byte. It remains
+    explicitly unsigned, unapproved, unattested, untagged and unpublished;
+    signing requires the maintainer gate below.
 - [x] Task: Verify dataset cards, Croissant records, checksums and GitHub/Hugging Face/Zenodo/OSF identifier links without publishing restricted data ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
   - The content-bound publication-metadata receipt verifies cards, Croissant,
     checksums, restricted-data boundaries and non-overlapping object roles.
