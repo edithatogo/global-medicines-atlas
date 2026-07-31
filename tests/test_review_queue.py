@@ -1,3 +1,4 @@
+import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
@@ -116,6 +117,15 @@ def test_append_only_events_require_explicit_supersession(
     )
     append_adjudication(path, second)
     assert load_adjudications(path) == (first, second)
+    lines = path.read_text(encoding="utf-8").splitlines()
+    assert len(lines) == 2
+    assert lines[0] == json.dumps(
+        first.model_dump(mode="json"),
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    assert path.read_bytes().endswith(b"\n")
     with pytest.raises(ValueError, match="Duplicate"):
         append_adjudication(path, second)
 
@@ -127,6 +137,26 @@ def test_regeneration_preserves_decisions_and_is_deterministic() -> None:
         [accepted],
     )
     assert [item.candidate.candidate_id for item in regenerated] == ["b", "c"]
+    assert regenerated[0] == _entry("b")
+
+
+def test_regeneration_uses_last_duplicate_entry_and_sorts_identifiers() -> None:
+    first_b = _entry("b")
+    replacement_b = first_b.model_copy(
+        update={"queued_at": NOW + timedelta(seconds=1)}
+    )
+
+    regenerated = regenerate_review_queue(
+        [_entry("c"), first_b, _entry("a"), replacement_b],
+        [],
+    )
+
+    assert [item.candidate.candidate_id for item in regenerated] == [
+        "a",
+        "b",
+        "c",
+    ]
+    assert regenerated[1] == replacement_b
 
 
 def test_queue_and_event_chain_reject_inconsistent_state(
@@ -204,3 +234,54 @@ def test_event_identity_covers_supersession_and_rationale() -> None:
         "First rationale",
         "prior-event",
     )
+
+
+def test_event_identity_is_stable_and_covers_every_immutable_field() -> None:
+    baseline = event_id(
+        "a",
+        NOW,
+        ReviewState.ACCEPTED,
+        "maintainer",
+        "Rātionale",
+    )
+    same = event_id(
+        "a",
+        NOW,
+        ReviewState.ACCEPTED,
+        "maintainer",
+        "Rātionale",
+    )
+
+    assert baseline == same
+    assert len(baseline) == 64
+    assert baseline.isascii()
+    assert baseline != event_id(
+        "b", NOW, ReviewState.ACCEPTED, "maintainer", "Rātionale"
+    )
+    assert baseline != event_id(
+        "a",
+        NOW + timedelta(microseconds=1),
+        ReviewState.ACCEPTED,
+        "maintainer",
+        "Rātionale",
+    )
+    assert baseline != event_id(
+        "a", NOW, ReviewState.REJECTED, "maintainer", "Rātionale"
+    )
+    assert baseline != event_id(
+        "a", NOW, ReviewState.ACCEPTED, "reviewer-2", "Rātionale"
+    )
+
+
+def test_loading_missing_and_blank_lines_is_exact(tmp_path: Path) -> None:
+    path = tmp_path / "events.jsonl"
+    assert load_adjudications(path) == ()
+
+    event = _event("a")
+    path.write_text(
+        f"\n{event.model_dump_json()}\n\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+
+    assert load_adjudications(path) == (event,)

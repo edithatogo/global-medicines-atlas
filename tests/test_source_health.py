@@ -297,6 +297,81 @@ def test_schema_fingerprint_ignores_json_values_and_mapping_order() -> None:
     assert first == second
 
 
+def test_schema_fingerprint_canonicalizes_array_shapes_and_caps_sampling() -> (
+    None
+):
+    first = schema_fingerprint(
+        json.dumps({
+            "records": [{"value": index} for index in range(20)]
+            + [{"late": True}]
+        }).encode(),
+        content_type="APPLICATION/JSON ; charset=utf-8",
+    )
+    reordered = schema_fingerprint(
+        json.dumps({
+            "records": [{"value": index} for index in reversed(range(20))]
+            + [{"ignored_after_sample_cap": "yes"}]
+        }).encode(),
+        content_type="application/json",
+    )
+    changed_within_cap = schema_fingerprint(
+        json.dumps({
+            "records": [{"value": index} for index in range(19)]
+            + [{"late": True}]
+        }).encode(),
+        content_type="application/json",
+    )
+
+    assert first == reordered
+    assert first != changed_within_cap
+
+
+def test_schema_fingerprint_distinguishes_all_json_scalar_types() -> None:
+    fingerprints = {
+        scalar_type: schema_fingerprint(
+            json.dumps({"value": value}).encode(),
+            content_type="application/problem+json",
+        )
+        for scalar_type, value in (
+            ("null", None),
+            ("boolean", True),
+            ("integer", 1),
+            ("number", 1.5),
+            ("string", "1"),
+        )
+    }
+
+    assert len(set(fingerprints.values())) == len(fingerprints)
+
+
+def test_schema_fingerprint_normalizes_csv_bom_and_header_whitespace() -> None:
+    with_bom = schema_fingerprint(
+        "\ufeff id , name \n1,example\n".encode(),
+        content_type="text/plain; charset=utf-8",
+    )
+    normalized = schema_fingerprint(
+        b"id,name\n2,changed\n",
+        content_type="text/csv",
+    )
+
+    assert with_bom == normalized
+
+
+def test_schema_fingerprint_canonicalizes_xml_tag_order_and_namespaces() -> (
+    None
+):
+    first = schema_fingerprint(
+        b"<root><ns:item xmlns:ns='urn:test'/><other /></root>",
+        content_type="application/xml",
+    )
+    reordered = schema_fingerprint(
+        b"<root><other/><x:item xmlns:x='urn:test'/></root>",
+        content_type="text/xml; charset=utf-8",
+    )
+
+    assert first == reordered
+
+
 def test_schema_fingerprint_tracks_csv_header_changes() -> None:
     first = schema_fingerprint(b"id,name\n1,one\n", content_type="text/csv")
     second = schema_fingerprint(
@@ -354,6 +429,55 @@ def test_truncated_response_is_available_without_schema_claim() -> None:
     assert result.bytes_sampled == 8
     assert result.schema_fingerprint is None
     assert "truncated" in result.detail
+
+
+def test_probe_sends_contract_headers_and_prefers_api_surface() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        assert request.url.path == "/api"
+        assert request.headers["accept"] == (
+            "application/json, text/csv, application/xml;q=0.9, */*;q=0.1"
+        )
+        assert request.headers["range"] == "bytes=0-31"
+        assert request.headers["user-agent"] == (
+            "global-medicines-atlas-source-health/1"
+        )
+        return httpx.Response(
+            200,
+            headers={"content-type": "application/json"},
+            content=b"{}",
+        )
+
+    result = probe_source(
+        source(access_mode=AccessMode.API_AND_DOWNLOAD),
+        checked_at=NOW,
+        max_bytes=32,
+        transport=httpx.MockTransport(handler),
+    )
+
+    assert result.state is ProbeState.AVAILABLE
+    assert result.endpoint == "https://example.test/api"
+    assert result.status_code == 200
+    assert result.content_type == "application/json"
+    assert result.bytes_sampled == 2
+
+
+def test_response_without_content_type_has_explicit_unknown_fingerprint() -> (
+    None
+):
+    result = probe_source(
+        source(),
+        checked_at=NOW,
+        transport=httpx.MockTransport(
+            lambda _request: httpx.Response(200, content=b"opaque")
+        ),
+    )
+
+    assert result.state is ProbeState.AVAILABLE
+    assert result.content_type is None
+    assert result.schema_fingerprint == schema_fingerprint(b"opaque")
+    assert result.detail == (
+        "bounded response sampled; payload bytes discarded"
+    )
 
 
 def test_download_endpoint_and_transport_failure_are_fail_honest() -> None:
@@ -515,6 +639,48 @@ def test_durable_report_contains_only_metadata_and_reusable_baseline() -> None:
     }
 
 
+def test_drift_report_counts_every_state_and_preserves_stable_baseline() -> (
+    None
+):
+    fingerprint = "a" * 64
+    observations = (
+        SourceHealthObservation(
+            source_id="available",
+            checked_at=NOW,
+            state=ProbeState.AVAILABLE,
+            schema_fingerprint=fingerprint,
+            detail="available",
+        ),
+        SourceHealthObservation(
+            source_id="blocked",
+            checked_at=NOW,
+            state=ProbeState.BLOCKED,
+            detail="blocked",
+        ),
+    )
+    assessments = (
+        source_health_module.SchemaDriftObservation(
+            source_id=state.value,
+            checked_at=NOW,
+            state=state,
+            detail=f"{state.value} detail",
+        )
+        for state in SchemaDriftState
+    )
+
+    report_text = drift_report_json(iter(observations), assessments)
+    report = json.loads(report_text)
+
+    assert report_text.endswith("\n")
+    assert report["schema_version"] == 1
+    assert report["baseline"] == {"available": fingerprint}
+    assert report["summary"] == {state.value: 1 for state in SchemaDriftState}
+    assert [item["source_id"] for item in report["observations"]] == [
+        "available",
+        "blocked",
+    ]
+
+
 def test_serialized_observations_are_valid_metadata_only_json() -> None:
     blocked = probe_source(
         source(
@@ -562,6 +728,63 @@ def test_probe_records_source_update_and_freshness_against_cadence() -> None:
     assert result.is_fresh is False
 
 
+@pytest.mark.parametrize(
+    ("last_modified", "expected_age", "expected_fresh"),
+    [
+        ("Wed, 22 Jul 2026 00:00:00 GMT", 604_800, True),
+        ("Wed, 05 Aug 2026 00:00:00 GMT", 0, True),
+        ("invalid timestamp", None, None),
+    ],
+)
+def test_probe_freshness_boundaries_and_invalid_source_date(
+    last_modified: str,
+    expected_age: int | None,
+    *,
+    expected_fresh: bool | None,
+) -> None:
+    result = probe_source(
+        source(),
+        checked_at=NOW,
+        expected_cadence=timedelta(days=7),
+        transport=httpx.MockTransport(
+            lambda _request: httpx.Response(
+                200,
+                headers={
+                    "content-type": "application/json",
+                    "last-modified": last_modified,
+                },
+                content=b"{}",
+            )
+        ),
+    )
+
+    assert result.freshness_age_seconds == expected_age
+    assert result.is_fresh is expected_fresh
+    if expected_age is None:
+        assert result.source_updated_at is None
+
+
+def test_probe_records_naive_last_modified_as_utc_without_freshness_claim() -> (
+    None
+):
+    result = probe_source(
+        source(),
+        checked_at=NOW,
+        transport=httpx.MockTransport(
+            lambda _request: httpx.Response(
+                200,
+                headers={
+                    "content-type": "application/json",
+                    "last-modified": "Wed, 29 Jul 2026 00:00:00",
+                },
+                content=b"{}",
+            )
+        ),
+    )
+
+    assert result.source_updated_at == NOW
+
+
 def test_retry_history_and_consecutive_failures_are_deterministic() -> None:
     retry_history = (
         RetryAttempt(
@@ -594,6 +817,58 @@ def test_retry_history_and_consecutive_failures_are_deterministic() -> None:
     assert receipt.consecutive_failures == 3
     assert [attempt.attempt for attempt in receipt.retry_history] == [1, 2]
     assert receipt.escalation is EscalationState.OPEN
+
+
+def test_receipt_escalation_threshold_boundaries_are_exact() -> None:
+    observation = SourceHealthObservation(
+        source_id="example",
+        checked_at=NOW,
+        state=ProbeState.UNAVAILABLE,
+        detail="TimeoutError: details",
+    )
+
+    below = build_source_health_receipt(
+        observation,
+        previous_consecutive_failures=1,
+        escalation_threshold=3,
+    )
+    at_threshold = build_source_health_receipt(
+        observation,
+        previous_consecutive_failures=2,
+        escalation_threshold=3,
+    )
+
+    assert below.consecutive_failures == 2
+    assert below.escalation is EscalationState.NONE
+    assert at_threshold.consecutive_failures == 3
+    assert at_threshold.escalation is EscalationState.OPEN
+
+
+def test_receipt_rejects_invalid_counters_and_duplicate_attempts() -> None:
+    observation = SourceHealthObservation(
+        source_id="example",
+        checked_at=NOW,
+        state=ProbeState.UNAVAILABLE,
+        detail="offline",
+    )
+    duplicate = RetryAttempt(
+        attempt=1,
+        attempted_at=NOW,
+        outcome=ProbeState.UNAVAILABLE,
+    )
+
+    with pytest.raises(ValueError, match="non-negative"):
+        build_source_health_receipt(
+            observation,
+            previous_consecutive_failures=-1,
+        )
+    with pytest.raises(ValueError, match="positive"):
+        build_source_health_receipt(observation, escalation_threshold=0)
+    with pytest.raises(ValueError, match="unique"):
+        build_source_health_receipt(
+            observation,
+            retry_history=(duplicate, duplicate),
+        )
 
 
 def test_success_resets_failures_and_resolves_matching_escalation() -> None:
@@ -660,6 +935,70 @@ def test_adapter_output_parity_is_explicit_without_payload_retention() -> None:
     assert matching.adapter_output_parity is AdapterParityState.MATCHED
     assert changed.adapter_output_parity is AdapterParityState.CHANGED
     assert unknown.adapter_output_parity is AdapterParityState.NOT_ASSESSED
+
+
+def test_receipt_sanitizes_each_observation_state_and_failure_class() -> None:
+    cases = (
+        (
+            ProbeState.AVAILABLE,
+            "raw available detail",
+            "source available",
+            "available",
+        ),
+        (
+            ProbeState.BLOCKED,
+            "raw blocked detail",
+            "source blocked",
+            "blocked",
+        ),
+        (
+            ProbeState.UNAVAILABLE,
+            "ConnectTimeout: secret upstream detail",
+            "ConnectTimeout: source unavailable",
+            "ConnectTimeout",
+        ),
+        (
+            ProbeState.UNAVAILABLE,
+            "secret without an exception class",
+            "unavailable: source unavailable",
+            "unavailable",
+        ),
+    )
+
+    for state, detail, safe_detail, failure_class in cases:
+        receipt = build_source_health_receipt(
+            SourceHealthObservation(
+                source_id="example",
+                checked_at=NOW,
+                state=state,
+                endpoint="https://example.test/private",
+                detail=detail,
+            )
+        )
+        assert receipt.observation.endpoint is None
+        assert receipt.observation.detail == safe_detail
+        assert receipt.deduplication_key.endswith(f":{failure_class}")
+        assert detail not in source_health_receipt_json(receipt)
+
+
+def test_receipt_identifier_changes_with_governed_content() -> None:
+    observation = SourceHealthObservation(
+        source_id="example",
+        checked_at=NOW,
+        state=ProbeState.AVAILABLE,
+        detail="available",
+    )
+    baseline = build_source_health_receipt(observation)
+    changed = build_source_health_receipt(
+        observation,
+        adapter_output_fingerprint="a" * 64,
+        expected_adapter_output_fingerprint="a" * 64,
+    )
+
+    assert baseline.receipt_id != changed.receipt_id
+    assert baseline.deduplication_key == (
+        "source-health:example:available:none:available"
+    )
 
 
 def test_receipt_serialization_is_stable_metadata_only_and_self_identifying() -> (
