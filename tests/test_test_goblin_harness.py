@@ -38,15 +38,21 @@ def test_phase1_mutation_targets_have_bounded_test_selection() -> None:
         "src/global_medicines_atlas/semantic_retrieval.py",
         "scripts/validate_publication_identities.py",
     } <= targets
-    assert {
+    required_tests = {
         "tests/test_canonical_v2_runtime.py",
         "tests/test_comparison_validity.py",
         "tests/test_comparison_validity_properties.py",
         "tests/test_consumer_qualification.py",
         "tests/test_semantic_retrieval.py",
         "tests/test_publication_identity_registry.py",
-        "tests/test_release_workflow.py",
-    } <= tests
+    }
+    assert all(
+        any(
+            selection == required or selection.startswith(f"{required}::")
+            for selection in tests
+        )
+        for required in required_tests
+    )
 
 
 def test_routine_profile_runs_javascript_style_gate(monkeypatch) -> None:

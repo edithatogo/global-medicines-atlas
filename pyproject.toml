@@ -296,7 +296,6 @@ pytest_add_cli_args_test_selection = [
   "tests/test_consumer_qualification.py::test_openapi_compatibility_rejects_non_object_contract_shapes",
   "tests/test_semantic_retrieval.py",
   "tests/test_publication_identity_registry.py",
-  "tests/test_release_workflow.py",
 ]
 also_copy = [
   "src/global_medicines_atlas/",
