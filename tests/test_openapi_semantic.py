@@ -16,6 +16,7 @@ from jsonschema import Draft202012Validator
 from scripts import qualify_openapi_client as qualifier
 from scripts.qualify_openapi_client import load_historical_snapshot
 
+from global_medicines_atlas import openapi_semantic
 from global_medicines_atlas.api import create_app
 from global_medicines_atlas.generated import openapi_client as generated_client
 from global_medicines_atlas.generated.openapi_client import (
@@ -227,6 +228,80 @@ def test_request_enum_addition_is_compatible_but_removal_is_breaking() -> None:
             baseline,
             _enum_parameter_document(["a"]),
         )
+
+
+@pytest.mark.parametrize(
+    ("baseline", "current", "variance", "reason"),
+    [
+        (
+            {"type": "string"},
+            {"type": "string", "enum": ["NZ"]},
+            "request",
+            "enum narrowed",
+        ),
+        (
+            {"type": "integer", "minimum": 1},
+            {"type": "integer", "minimum": 2},
+            "request",
+            "range narrowed",
+        ),
+        (
+            {"type": "integer", "maximum": 10},
+            {"type": "integer", "maximum": 9},
+            "request",
+            "range narrowed",
+        ),
+        (
+            {"type": "string"},
+            {"type": "string", "pattern": "^NZ$"},
+            "request",
+            "pattern narrowed",
+        ),
+        (
+            {"type": "string", "pattern": "^NZ$"},
+            {"type": "string"},
+            "response",
+            "pattern widened",
+        ),
+        (
+            {"type": "object", "required": []},
+            {"type": "object", "required": ["q"]},
+            "request",
+            "required request fields added",
+        ),
+        (
+            {"type": "object", "required": ["state"]},
+            {"type": "object", "required": []},
+            "response",
+            "required response fields removed",
+        ),
+        (
+            {"type": "array", "items": {"type": "string"}},
+            {"type": "array"},
+            "response",
+            "array item schema removed",
+        ),
+        (
+            {"anyOf": [{"type": "string"}]},
+            {"anyOf": [{"type": "integer"}]},
+            "response",
+            "anyOf changed",
+        ),
+    ],
+)
+def test_schema_variance_rejects_additional_breaking_boundaries(
+    baseline: dict[str, Any],
+    current: dict[str, Any],
+    variance: str,
+    reason: str,
+) -> None:
+    changes = openapi_semantic._schema_changes(
+        baseline,
+        current,
+        "test.schema",
+        cast("Any", variance),
+    )
+    assert any(reason in change.reason for change in changes)
 
 
 class RecordingTransport:
