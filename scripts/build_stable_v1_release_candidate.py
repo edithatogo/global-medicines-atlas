@@ -3,13 +3,16 @@
 from __future__ import annotations
 
 import argparse
-import gzip
+import base64
+import binascii
+import csv
 import hashlib
 import io
 import json
 import os
 import platform
 import shutil
+import struct
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import tarfile
 import tempfile
@@ -234,15 +237,41 @@ def built_wheel_version(path: Path) -> str:
 def canonicalize_wheel(path: Path) -> None:
     """Rewrite a wheel with platform-independent ZIP metadata and storage."""
     with zipfile.ZipFile(path) as source:
-        members = tuple(
-            (name, source.read(name), name.endswith("/"))
+        members = {
+            name: (source.read(name), name.endswith("/"))
             for name in sorted(source.namelist())
+        }
+    for name, (payload, is_directory) in tuple(members.items()):
+        if name.endswith("/_version.py"):
+            members[name] = (payload.replace(b"\r\n", b"\n"), is_directory)
+    record_names = [
+        name for name in members if name.endswith(".dist-info/RECORD")
+    ]
+    if len(record_names) != 1:
+        raise ReleaseCandidateError(
+            "built wheel must contain exactly one RECORD file"
         )
+    record_name = record_names[0]
+    record_output = io.StringIO(newline="")
+    writer = csv.writer(record_output, lineterminator="\n")
+    for name, (payload, is_directory) in sorted(members.items()):
+        if is_directory:
+            continue
+        if name == record_name:
+            writer.writerow((name, "", ""))
+            continue
+        digest = base64.urlsafe_b64encode(hashlib.sha256(payload).digest())
+        writer.writerow((
+            name,
+            f"sha256={digest.rstrip(b'=').decode()}",
+            str(len(payload)),
+        ))
+    members[record_name] = (record_output.getvalue().encode(), False)
     output = io.BytesIO()
     with zipfile.ZipFile(
         output, mode="w", compression=zipfile.ZIP_STORED
     ) as archive:
-        for name, payload, is_directory in members:
+        for name, (payload, is_directory) in sorted(members.items()):
             info = zipfile.ZipInfo(name, date_time=_ZIP_EPOCH)
             info.create_system = 3
             info.compress_type = zipfile.ZIP_STORED
@@ -266,20 +295,12 @@ def canonicalize_sdist(path: Path, *, source_date_epoch: str) -> None:
                     f"sdist member is unreadable: {member.name}"
                 )
             members.append((member, extracted.read() if extracted else b""))
-    output = io.BytesIO()
-    with (
-        gzip.GzipFile(
-            filename="",
-            mode="wb",
-            fileobj=output,
-            mtime=int(source_date_epoch),
-        ) as compressed,
-        tarfile.open(
-            fileobj=compressed,
-            mode="w",
-            format=tarfile.PAX_FORMAT,
-        ) as archive,
-    ):
+    tar_output = io.BytesIO()
+    with tarfile.open(
+        fileobj=tar_output,
+        mode="w",
+        format=tarfile.PAX_FORMAT,
+    ) as archive:
         for original, payload in members:
             info = tarfile.TarInfo(original.name)
             info.mtime = int(source_date_epoch)
@@ -294,7 +315,30 @@ def canonicalize_sdist(path: Path, *, source_date_epoch: str) -> None:
             archive.addfile(
                 info, io.BytesIO(payload) if original.isfile() else None
             )
-    path.write_bytes(output.getvalue())
+    path.write_bytes(
+        _canonical_gzip_stored(
+            tar_output.getvalue(),
+            mtime=int(source_date_epoch),
+        )
+    )
+
+
+def _canonical_gzip_stored(payload: bytes, *, mtime: int) -> bytes:
+    """Encode a gzip member with fully specified stored DEFLATE blocks."""
+    output = bytearray(b"\x1f\x8b\x08\x00")
+    output.extend(struct.pack("<I", mtime))
+    output.extend(b"\x00\xff")
+    chunks = tuple(
+        payload[offset : offset + 65_535]
+        for offset in range(0, len(payload), 65_535)
+    ) or (b"",)
+    for index, chunk in enumerate(chunks):
+        output.append(1 if index == len(chunks) - 1 else 0)
+        length = len(chunk)
+        output.extend(struct.pack("<HH", length, length ^ 0xFFFF))
+        output.extend(chunk)
+    output.extend(struct.pack("<II", binascii.crc32(payload), len(payload)))
+    return bytes(output)
 
 
 def _build_once(
