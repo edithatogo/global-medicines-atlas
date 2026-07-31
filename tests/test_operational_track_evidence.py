@@ -16,9 +16,9 @@ def _evidence() -> dict[str, dict[str, Any]]:
             "dict[str, Any]",
             json.loads(line),
         )
-        for line in (TRACK / "evidence.jsonl").read_text(
-            encoding="utf-8"
-        ).splitlines()
+        for line in (TRACK / "evidence.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
         if line
     ]
     return {
