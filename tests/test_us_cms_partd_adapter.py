@@ -77,14 +77,45 @@ def test_cms_partd_projects_plan_level_formulary_and_pricing() -> None:
         "payer-plan-product"
     }
     first = projection.records[0]
-    assert first.assertions[0].kind is AssertionKind.FORMULARY
-    assert first.assertions[0].evidence_status is EvidenceStatus.UNKNOWN
-    assert "plan=S1234:001" in first.assertions[0].restrictions
-    assert "tier=2" in first.assertions[0].restrictions
-    assert "retail_price_usd=12.34" in first.assertions[0].restrictions
-    assert "scope=medicare-part-d-plan-not-national" in (
-        first.assertions[0].restrictions
+    assert first.concept.concept_id == ("us-cms-partd:S1234:001:00011-1111-11")
+    assert first.concept.jurisdiction == "USA"
+    assert first.concept.level == "payer-plan-product"
+    assert first.concept.preferred_name == "Example Drug"
+    assert tuple(
+        (item.system, item.value, item.identifier_type)
+        for item in first.concept.identifiers
+    ) == (
+        (
+            "https://www.cms.gov/medicare/part-d/plan",
+            "S1234:001",
+            "contract-plan",
+        ),
+        ("http://hl7.org/fhir/sid/ndc", "00011-1111-11", "ndc"),
     )
+    assertion = first.assertions[0]
+    assert assertion.assertion_id == ("cms-partd:S1234:001:00011-1111-11")
+    assert assertion.concept_id == first.concept.concept_id
+    assert assertion.jurisdiction == "USA"
+    assert assertion.kind is AssertionKind.FORMULARY
+    assert assertion.authority == "Centers for Medicare & Medicaid Services"
+    assert assertion.status_code == "covered"
+    assert assertion.evidence_status is EvidenceStatus.UNKNOWN
+    assert assertion.restrictions == (
+        "plan=S1234:001",
+        "tier=2",
+        "retail_price_usd=12.34",
+        "prior_authorization=True",
+        "step_therapy=False",
+        "scope=medicare-part-d-plan-not-national",
+    )
+    provenance = first.provenance[0]
+    assert assertion.provenance == provenance
+    assert provenance.source_id == "us-cms-partd-formulary"
+    assert provenance.source_uri == "https://example.test/cms-partd.csv"
+    assert provenance.retrieved_at == datetime(2026, 7, 29, tzinfo=UTC)
+    assert provenance.source_sha256 == receipt(payload).payload.sha256
+    assert provenance.source_version == "1"
+    assert provenance.transformation == "cms-partd-plan-formulary-v1"
 
 
 @pytest.mark.unit
@@ -132,6 +163,72 @@ def test_missing_plan_identity_is_not_projected_as_negative_evidence() -> None:
         payload,
         receipt=receipt(payload),
     )
+
+    assert projection.records == ()
+
+
+@pytest.mark.edge
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("1", "True"),
+        (" true ", "True"),
+        ("YES", "True"),
+        ("y", "True"),
+        ("0", "False"),
+        ("false", "False"),
+        ("no", "False"),
+        ("", "False"),
+    ],
+)
+def test_cms_partd_truthy_restrictions_are_exact(
+    value: str,
+    expected: str,
+) -> None:
+    payload = (
+        "contract_id,plan_id,ndc,drug_name,formulary_status,tier,"
+        "retail_price_usd,prior_authorization,step_therapy\n"
+        f"S0001,999,12345,Test Drug, Not Covered ,4,99.00,{value},{value}\n"
+    )
+
+    projection = project_cms_partd_csv(payload, receipt=receipt(payload))
+
+    assertion = projection.records[0].assertions[0]
+    assert assertion.status_code == "not-covered"
+    assert assertion.restrictions == (
+        "plan=S0001:999",
+        "tier=4",
+        "retail_price_usd=99.00",
+        f"prior_authorization={expected}",
+        f"step_therapy={expected}",
+        "scope=medicare-part-d-plan-not-national",
+    )
+
+
+@pytest.mark.edge
+@pytest.mark.parametrize(
+    ("contract_id", "plan_id", "ndc", "drug_name"),
+    [
+        ("", "001", "00011", "Drug"),
+        ("S1234", "", "00011", "Drug"),
+        ("S1234", "001", "", "Drug"),
+        ("S1234", "001", "00011", ""),
+        (" ", "001", "00011", "Drug"),
+    ],
+)
+def test_cms_partd_requires_every_identity_component(
+    contract_id: str,
+    plan_id: str,
+    ndc: str,
+    drug_name: str,
+) -> None:
+    payload = (
+        "contract_id,plan_id,ndc,drug_name,formulary_status,tier,"
+        "retail_price_usd,prior_authorization,step_therapy\n"
+        f"{contract_id},{plan_id},{ndc},{drug_name},covered,2,1.00,no,no\n"
+    )
+
+    projection = project_cms_partd_csv(payload, receipt=receipt(payload))
 
     assert projection.records == ()
 
