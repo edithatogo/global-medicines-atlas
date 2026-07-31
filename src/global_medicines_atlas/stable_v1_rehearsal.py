@@ -10,9 +10,12 @@ import sys
 import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Literal, Self, cast
+from typing import Literal, Protocol, Self, cast
 
 import orjson
+from jsonschema import Draft202012Validator
+from jsonschema.exceptions import SchemaError
+from jsonschema.exceptions import ValidationError as SchemaValidationError
 from pydantic import Field, model_validator
 
 from .canonical_v2 import (
@@ -42,7 +45,31 @@ from .recovery_rehearsal import (
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts" / "rehearse_stable_v1.py"
+AGGREGATE_SCHEMA = (
+    ROOT / "schemas" / "stable_v1_aggregate_rehearsal.schema.json"
+)
+_BOUND_INPUT_PATHS = (
+    "schemas/canonical-medicine-v2.json",
+    "schemas/stable-v1-rehearsal-v1.json",
+    "schemas/stable_v1_aggregate_rehearsal.schema.json",
+    "scripts/rehearse_stable_v1.py",
+    "src/global_medicines_atlas/canonical_v2.py",
+    "src/global_medicines_atlas/models.py",
+    "src/global_medicines_atlas/recovery.py",
+    "src/global_medicines_atlas/recovery_rehearsal.py",
+    "src/global_medicines_atlas/stable_v1_rehearsal.py",
+    "uv.lock",
+)
+_FIXTURE_IDENTITY_KEYS = {
+    "canonical_v1_fixture",
+    "structural_projection_fixture",
+}
+_SHA256_HEX_LENGTH = 64
 Digest = str
+
+
+class _SchemaValidator(Protocol):
+    def validate(self, instance: object) -> None: ...
 
 
 class StableV1RehearsalError(RuntimeError):
@@ -78,11 +105,13 @@ class StableV1RehearsalReceipt(FrozenModel):
     schema_id: Literal["global-medicines-atlas.stable-v1-rehearsal"] = (
         "global-medicines-atlas.stable-v1-rehearsal"
     )
-    schema_version: Literal[1] = 1
+    schema_version: Literal[2] = 2
     evidence_class: Literal["deterministic_representative_fixtures"] = (
         "deterministic_representative_fixtures"
     )
     input_sha256: dict[str, Digest]
+    fixture_sha256: dict[str, Digest]
+    qualification_input_tree_sha256: Digest = Field(pattern=r"^[0-9a-f]{64}$")
     clean_room: CleanProcessReceipt
     canonical: CanonicalRehearsalReceipt
     recovery: RecoveryRehearsalReceipt
@@ -96,6 +125,20 @@ class StableV1RehearsalReceipt(FrozenModel):
     def aggregate_claims_are_consistent(self) -> Self:
         if self.recovery.production_disaster_recovery_qualified:
             raise ValueError("fixture rehearsal cannot qualify production DR")
+        if set(self.input_sha256) != set(_BOUND_INPUT_PATHS):
+            raise ValueError("aggregate receipt input set is incomplete")
+        if set(self.fixture_sha256) != _FIXTURE_IDENTITY_KEYS:
+            raise ValueError("aggregate receipt fixture set is incomplete")
+        if not all(
+            _is_digest(item)
+            for item in (
+                *self.input_sha256.values(),
+                *self.fixture_sha256.values(),
+            )
+        ):
+            raise ValueError(
+                "aggregate receipt contains an invalid input identity"
+            )
         return self
 
 
@@ -105,6 +148,12 @@ def _canonical_bytes(value: object) -> bytes:
 
 def _digest(value: object) -> str:
     return hashlib.sha256(_canonical_bytes(value)).hexdigest()
+
+
+def _is_digest(value: str) -> bool:
+    return len(value) == _SHA256_HEX_LENGTH and all(
+        item in "0123456789abcdef" for item in value
+    )
 
 
 def _fixture() -> tuple[CanonicalMedicineRecord, StructuralProjection]:
@@ -238,6 +287,16 @@ def representative_identities() -> dict[str, str]:
     }
 
 
+def _fixture_identities() -> dict[str, str]:
+    record, projection = _fixture()
+    return {
+        "canonical_v1_fixture": _digest(record.model_dump(mode="json")),
+        "structural_projection_fixture": _digest(
+            projection.model_dump(mode="json")
+        ),
+    }
+
+
 def _run_clean_process() -> dict[str, str]:
     environment = {
         key: value
@@ -290,18 +349,16 @@ def _run_clean_process() -> dict[str, str]:
 
 
 def _input_identities() -> dict[str, str]:
-    paths = (
-        ROOT / "schemas" / "canonical-medicine-v2.json",
-        ROOT / "src" / "global_medicines_atlas" / "canonical_v2.py",
-        ROOT / "src" / "global_medicines_atlas" / "recovery_rehearsal.py",
-        SCRIPT,
-    )
     return {
-        path.relative_to(ROOT).as_posix(): hashlib.sha256(
-            path.read_bytes()
-        ).hexdigest()
-        for path in paths
+        relative: hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
+        for relative in _BOUND_INPUT_PATHS
     }
+
+
+def _qualification_input_tree_digest(
+    input_sha256: dict[str, str], fixture_sha256: dict[str, str]
+) -> str:
+    return _digest({"files": input_sha256, "fixtures": fixture_sha256})
 
 
 def _receipt_digest(payload: dict[str, object]) -> str:
@@ -310,15 +367,53 @@ def _receipt_digest(payload: dict[str, object]) -> str:
     return _digest(unsigned)
 
 
+def _validate_aggregate_schema(payload: dict[str, object]) -> None:
+    schema = json.loads(AGGREGATE_SCHEMA.read_text(encoding="utf-8"))
+    Draft202012Validator.check_schema(schema)
+    validator = cast("_SchemaValidator", Draft202012Validator(schema))
+    validator.validate(payload)
+
+
 def verify_receipt_content(receipt: StableV1RehearsalReceipt) -> bool:
-    """Verify the receipt's self-binding content identity."""
+    """Verify self-identity and every input against the current checkout."""
+
     payload = receipt.model_dump(mode="json")
-    return receipt.content_sha256 == _receipt_digest(payload)
+    if receipt.content_sha256 != _receipt_digest(payload):
+        return False
+    try:
+        _validate_aggregate_schema(payload)
+        current_inputs = _input_identities()
+        current_fixtures = _fixture_identities()
+    except (
+        OSError,
+        json.JSONDecodeError,
+        SchemaError,
+        SchemaValidationError,
+    ):
+        return False
+    current_tree = _qualification_input_tree_digest(
+        current_inputs, current_fixtures
+    )
+    identities = representative_identities()
+    return all((
+        receipt.input_sha256 == current_inputs,
+        receipt.fixture_sha256 == current_fixtures,
+        receipt.qualification_input_tree_sha256 == current_tree,
+        receipt.canonical.canonical_v1_sha256
+        == identities["canonical_v1_sha256"],
+        receipt.canonical.canonical_v2_sha256
+        == identities["canonical_v2_sha256"],
+    ))
 
 
 def run_stable_v1_rehearsal(output: Path) -> StableV1RehearsalReceipt:
     """Execute all bounded rehearsals and atomically persist their receipt."""
     identities = representative_identities()
+    input_sha256 = _input_identities()
+    fixture_sha256 = _fixture_identities()
+    qualification_input_tree_sha256 = _qualification_input_tree_digest(
+        input_sha256, fixture_sha256
+    )
     child = _run_clean_process()
     if child != identities:
         raise StableV1RehearsalError(
@@ -327,7 +422,6 @@ def run_stable_v1_rehearsal(output: Path) -> StableV1RehearsalReceipt:
 
     record, projection = _fixture()
     migrated = migrate_record_v1_to_v2(record, projection)
-    migrated_again = migrate_record_v1_to_v2(record, projection)
     restored = rollback_record_v2_to_v1(migrated)
     kinds = {
         item.assertion_kind
@@ -338,7 +432,7 @@ def run_stable_v1_rehearsal(output: Path) -> StableV1RehearsalReceipt:
         )
     }
     if (
-        migrated != migrated_again
+        migrated != migrate_record_v1_to_v2(record, projection)
         or restored != record
         or kinds
         != {
@@ -374,7 +468,9 @@ def run_stable_v1_rehearsal(output: Path) -> StableV1RehearsalReceipt:
         "regulatory_funding_separation_verified": True,
     })
     receipt = StableV1RehearsalReceipt(
-        input_sha256=_input_identities(),
+        input_sha256=input_sha256,
+        fixture_sha256=fixture_sha256,
+        qualification_input_tree_sha256=qualification_input_tree_sha256,
         clean_room=clean_room,
         canonical=canonical,
         recovery=recovery,

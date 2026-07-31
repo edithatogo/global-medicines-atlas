@@ -6,13 +6,22 @@ import hashlib
 import json
 from enum import StrEnum
 from pathlib import Path
-from typing import Literal, Self
+from typing import Literal, Protocol, Self, cast
 
+from jsonschema import Draft202012Validator
+from jsonschema.exceptions import SchemaError
+from jsonschema.exceptions import ValidationError as SchemaValidationError
 from pydantic import Field, model_validator
 
 from .models import FrozenModel
 
 Digest = str
+ROOT = Path(__file__).resolve().parents[2]
+SCHEMA = ROOT / "schemas" / "stable_v1_incident_rehearsal.schema.json"
+
+
+class _SchemaValidator(Protocol):
+    def validate(self, instance: object) -> None: ...
 
 
 class IncidentRehearsalError(ValueError):
@@ -49,11 +58,11 @@ class EvidenceIdentity(FrozenModel):
 
 
 class IncidentGate(FrozenModel):
-    """Explicit authority gates; external effects remain false in rehearsal."""
+    """Simulated gate outcomes that are never durable authority evidence."""
 
-    human_approved: bool = False
-    credential_authority_approved: bool = False
-    publication_approved: bool = False
+    simulated_human_gate: bool = False
+    simulated_credential_authority_gate: bool = False
+    simulated_publication_gate: bool = False
     external_effect_performed: Literal[False] = False
 
 
@@ -79,7 +88,7 @@ class IncidentTransition(FrozenModel):
 class StableV1IncidentReceipt(FrozenModel):
     """Tamper-evident result of the deterministic offline rehearsal."""
 
-    schema_version: Literal["1.0.0"] = "1.0.0"
+    schema_version: Literal["1.1.0"] = "1.1.0"
     incident_id: Literal["stable-v1-synthetic-compromised-source"] = (
         "stable-v1-synthetic-compromised-source"
     )
@@ -90,14 +99,16 @@ class StableV1IncidentReceipt(FrozenModel):
         "synthetic-compromised-source"
     )
     initial_state: Literal[IncidentState.DETECTED] = IncidentState.DETECTED
-    final_state: IncidentState
+    final_state: Literal[IncidentState.NOTIFICATION_PREPARED]
     replacement_evidence: tuple[EvidenceIdentity, EvidenceIdentity]
-    transitions: tuple[IncidentTransition, ...] = Field(min_length=1)
-    quarantine_enforced: bool
-    signing_credential_revocation_rehearsed: bool
-    dataset_withdrawal_rehearsed: bool
-    corrected_replacement_prepared: bool
-    downstream_notification_prepared: bool
+    transitions: tuple[IncidentTransition, ...] = Field(
+        min_length=5, max_length=5
+    )
+    quarantine_enforced: Literal[True]
+    signing_credential_revocation_rehearsed: Literal[True]
+    dataset_withdrawal_rehearsed: Literal[True]
+    corrected_replacement_prepared: Literal[True]
+    downstream_notification_prepared: Literal[True]
     downstream_notification_externally_sent: Literal[False] = False
     dataset_externally_withdrawn: Literal[False] = False
     replacement_externally_published: Literal[False] = False
@@ -161,24 +172,24 @@ def _digest(value: object) -> Digest:
 
 def _required_gate(action: IncidentAction, gate: IncidentGate) -> None:
     if action is IncidentAction.REVOKE_SIGNING_CREDENTIAL and not (
-        gate.human_approved and gate.credential_authority_approved
+        gate.simulated_human_gate and gate.simulated_credential_authority_gate
     ):
         raise IncidentRehearsalError(
-            "credential revocation requires human and credential authority gates"
+            "credential revocation requires simulated human and simulated credential authority gates"
         )
     if action in {
         IncidentAction.WITHDRAW_DATASET,
         IncidentAction.PREPARE_CORRECTED_REPLACEMENT,
-    } and not (gate.human_approved and gate.publication_approved):
+    } and not (gate.simulated_human_gate and gate.simulated_publication_gate):
         raise IncidentRehearsalError(
-            "dataset publication transition requires human and publication gates"
+            "dataset publication transition requires simulated human and simulated publication gates"
         )
     if (
         action is IncidentAction.PREPARE_DOWNSTREAM_NOTIFICATION
-        and not gate.human_approved
+        and not gate.simulated_human_gate
     ):
         raise IncidentRehearsalError(
-            "downstream notification preparation requires a human gate"
+            "downstream notification preparation requires a simulated human gate"
         )
 
 
@@ -272,6 +283,11 @@ def execute_incident_rehearsal(
 def verify_incident_receipt(receipt: StableV1IncidentReceipt) -> None:
     """Verify lifecycle ordering, chain integrity, and receipt identity."""
 
+    _validate_receipt_schema(receipt)
+    if len(receipt.transitions) != len(_TRANSITIONS):
+        raise IncidentRehearsalError(
+            "receipt must contain the complete five-transition lifecycle"
+        )
     state = IncidentState.DETECTED
     previous_sha256 = _ZERO_DIGEST
     for sequence, transition in enumerate(receipt.transitions, start=1):
@@ -297,13 +313,46 @@ def verify_incident_receipt(receipt: StableV1IncidentReceipt) -> None:
             )
         state = transition.to_state
         previous_sha256 = transition.transition_sha256
-    if state is not receipt.final_state:
+    if (
+        state is not IncidentState.NOTIFICATION_PREPARED
+        or receipt.final_state is not IncidentState.NOTIFICATION_PREPARED
+    ):
         raise IncidentRehearsalError(
-            "receipt final state disagrees with transition chain"
+            "receipt must end in notification_prepared"
+        )
+    summary = (
+        receipt.quarantine_enforced,
+        receipt.signing_credential_revocation_rehearsed,
+        receipt.dataset_withdrawal_rehearsed,
+        receipt.corrected_replacement_prepared,
+        receipt.downstream_notification_prepared,
+    )
+    if summary != (True, True, True, True, True):
+        raise IncidentRehearsalError(
+            "receipt summary disagrees with the complete lifecycle"
         )
     payload = receipt.model_dump(mode="json", exclude={"receipt_sha256"})
     if _digest(payload) != receipt.receipt_sha256:
         raise IncidentRehearsalError("receipt identity was tampered with")
+
+
+def _validate_receipt_schema(receipt: StableV1IncidentReceipt) -> None:
+    """Validate the runtime payload against the versioned JSON Schema."""
+
+    try:
+        schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
+        Draft202012Validator.check_schema(schema)
+        validator = cast("_SchemaValidator", Draft202012Validator(schema))
+        validator.validate(receipt.model_dump(mode="json"))
+    except (
+        OSError,
+        json.JSONDecodeError,
+        SchemaError,
+        SchemaValidationError,
+    ) as error:
+        raise IncidentRehearsalError(
+            "incident receipt schema validation failed"
+        ) from error
 
 
 def write_incident_receipt(
@@ -321,14 +370,14 @@ def write_incident_receipt(
 def default_incident_rehearsal() -> StableV1IncidentReceipt:
     """Run the complete synthetic lifecycle with explicit simulated gates."""
 
-    human = IncidentGate(human_approved=True)
+    human = IncidentGate(simulated_human_gate=True)
     credential = IncidentGate(
-        human_approved=True,
-        credential_authority_approved=True,
+        simulated_human_gate=True,
+        simulated_credential_authority_gate=True,
     )
     publication = IncidentGate(
-        human_approved=True,
-        publication_approved=True,
+        simulated_human_gate=True,
+        simulated_publication_gate=True,
     )
     commands = (
         IncidentCommand(action=IncidentAction.QUARANTINE_SOURCE),

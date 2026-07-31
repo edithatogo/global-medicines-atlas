@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
 import pytest
+from jsonschema import Draft202012Validator
+from jsonschema.exceptions import ValidationError as SchemaValidationError
 from pydantic import ValidationError
 
 from global_medicines_atlas.stable_v1_incident_rehearsal import (
@@ -14,6 +17,7 @@ from global_medicines_atlas.stable_v1_incident_rehearsal import (
     IncidentCommand,
     IncidentRehearsalError,
     IncidentState,
+    IncidentTransition,
     StableV1IncidentReceipt,
     default_incident_rehearsal,
     execute_incident_rehearsal,
@@ -22,6 +26,9 @@ from global_medicines_atlas.stable_v1_incident_rehearsal import (
 )
 
 pytestmark = pytest.mark.integration
+
+ROOT = Path(__file__).resolve().parents[1]
+SCHEMA = ROOT / "schemas" / "stable_v1_incident_rehearsal.schema.json"
 
 
 def test_complete_rehearsal_is_fail_closed_and_does_not_claim_external_effects(
@@ -40,6 +47,17 @@ def test_complete_rehearsal_is_fail_closed_and_does_not_claim_external_effects(
     assert not receipt.downstream_notification_externally_sent
     assert not receipt.dataset_externally_withdrawn
     assert not receipt.replacement_externally_published
+    payload = receipt.model_dump(mode="json")
+    Draft202012Validator(
+        json.loads(SCHEMA.read_text(encoding="utf-8"))
+    ).validate(payload)
+    gate = payload["transitions"][1]["gate"]
+    assert set(gate) == {
+        "simulated_human_gate",
+        "simulated_credential_authority_gate",
+        "simulated_publication_gate",
+        "external_effect_performed",
+    }
     assert (
         StableV1IncidentReceipt.model_validate_json(output.read_text())
         == receipt
@@ -87,8 +105,69 @@ def test_tampering_is_detected() -> None:
             )
         }
     )
-    with pytest.raises(IncidentRehearsalError, match="ordering"):
+    with pytest.raises(IncidentRehearsalError, match=r"schema|ordering"):
         verify_incident_receipt(tampered)
+
+
+def test_partial_resigned_receipt_fails_runtime_model_and_schema() -> None:
+    receipt = default_incident_rehearsal()
+    partial = _resign(
+        receipt.model_copy(
+            update={
+                "final_state": IncidentState.QUARANTINED,
+                "transitions": receipt.transitions[:1],
+                "signing_credential_revocation_rehearsed": False,
+                "dataset_withdrawal_rehearsed": False,
+                "corrected_replacement_prepared": False,
+                "downstream_notification_prepared": False,
+            }
+        )
+    )
+
+    with pytest.raises(IncidentRehearsalError, match="schema"):
+        verify_incident_receipt(partial)
+    with pytest.raises(ValidationError):
+        StableV1IncidentReceipt.model_validate(partial.model_dump(mode="json"))
+    validator = Draft202012Validator(
+        json.loads(SCHEMA.read_text(encoding="utf-8"))
+    )
+    with pytest.raises(SchemaValidationError):
+        validator.validate(partial.model_dump(mode="json"))
+
+
+def test_resigned_summary_mismatch_fails_closed() -> None:
+    receipt = default_incident_rehearsal()
+    inconsistent = _resign(
+        receipt.model_copy(update={"dataset_withdrawal_rehearsed": False})
+    )
+
+    with pytest.raises(IncidentRehearsalError, match=r"schema|summary"):
+        verify_incident_receipt(inconsistent)
+
+
+def test_resigned_transition_with_missing_simulated_gate_fails_closed() -> None:
+    receipt = default_incident_rehearsal()
+    transition = receipt.transitions[1]
+    invalid_gate = transition.gate.model_copy(
+        update={"simulated_credential_authority_gate": False}
+    )
+    invalid_transition = transition.model_copy(update={"gate": invalid_gate})
+    invalid_transition = invalid_transition.model_copy(
+        update={"transition_sha256": _transition_digest(invalid_transition)}
+    )
+    transitions = (receipt.transitions[0], invalid_transition)
+    for original in receipt.transitions[2:]:
+        updated = original.model_copy(
+            update={"previous_sha256": transitions[-1].transition_sha256}
+        )
+        updated = updated.model_copy(
+            update={"transition_sha256": _transition_digest(updated)}
+        )
+        transitions = (*transitions, updated)
+    invalid = _resign(receipt.model_copy(update={"transitions": transitions}))
+
+    with pytest.raises(IncidentRehearsalError, match="simulated credential"):
+        verify_incident_receipt(invalid)
 
 
 def test_exact_retry_and_repeated_runs_are_idempotent(tmp_path: Path) -> None:
@@ -138,4 +217,29 @@ def _evidence() -> tuple[EvidenceIdentity, EvidenceIdentity]:
         EvidenceIdentity(
             dimension="funding", source_id="fund", sha256="2" * 64
         ),
+    )
+
+
+def _canonical_digest(payload: object) -> str:
+    encoded = (
+        json.dumps(
+            payload,
+            ensure_ascii=False,
+            separators=(",", ":"),
+            sort_keys=True,
+        )
+        + "\n"
+    ).encode()
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _transition_digest(transition: IncidentTransition) -> str:
+    payload = transition.model_dump(mode="json", exclude={"transition_sha256"})
+    return _canonical_digest(payload)
+
+
+def _resign(receipt: StableV1IncidentReceipt) -> StableV1IncidentReceipt:
+    payload = receipt.model_dump(mode="json", exclude={"receipt_sha256"})
+    return receipt.model_copy(
+        update={"receipt_sha256": _canonical_digest(payload)}
     )
