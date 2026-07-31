@@ -131,6 +131,11 @@ def test_qualified_assets_are_exact_attested_and_never_overwritten() -> None:
     assert "release-inputs/reviewed-rows.jsonl" in workflow
     assert '--publication-mode "$PUBLICATION_MODE"' in workflow
     assert "inputs.publish && 'production' || 'dry-run'" in workflow
+    assert "--require-publishable" in workflow
+    identity_gate = workflow.index(
+        "Require publishable identities and licence decisions"
+    )
+    assert "if: inputs.publish" in workflow[identity_gate:]
     assert "--sort=name" in workflow
     assert "--mtime='UTC 1970-01-01'" in workflow
     assert "gzip -n" in workflow

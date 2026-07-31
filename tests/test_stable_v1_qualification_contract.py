@@ -75,7 +75,32 @@ def test_consumer_compatibility_contract_is_complete_and_fail_closed() -> None:
         "openapi_compatibility",
         "core_fallback",
     } <= set(contract["probes"])
-    assert contract["state"] == "contracted"
+    assert contract["state"] == "qualified"
+
+
+def test_frontier_requirements_trace_to_the_correct_runtime_gates() -> None:
+    projection = _load(QUALIFICATION)
+    requirements = {
+        item["requirement_id"]: item for item in projection["requirements"]
+    }
+    expected = {
+        "M-085": ("stable-v1-canonical-schema-v2", "canonical_v2.py"),
+        "M-086": ("stable-v1-concept-discovery", "query_service.py"),
+        "M-088": (
+            "stable-v1-publication-identities",
+            "publication-identities.json",
+        ),
+        "M-089": ("stable-v1-clean-room-rehearsal", "acquisition.py"),
+        "M-090": ("stable-v1-comparison-validity", "comparison_validity.py"),
+    }
+    for requirement_id, (gate_id, evidence_suffix) in expected.items():
+        item = requirements[requirement_id]
+        assert gate_id in item["blocker_ids"]
+        assert any(path.endswith(evidence_suffix) for path in item["evidence"])
+
+    clean_consumer = requirements["M-087"]
+    assert clean_consumer["state"] == "verified"
+    assert clean_consumer["blocker_ids"] == []
 
 
 def test_projection_validates_and_traces_every_must_requirement() -> None:

@@ -168,8 +168,11 @@
 - **M-090:** Make every cross-jurisdiction comparison declare entity granularity,
   indication and population scope, mapping relationship, source-native legal or
   funding status, normalization method, material mismatches and a validity state
-  of valid, partial, unavailable or inappropriate; terminology similarity must
-  never imply therapeutic equivalence, substitutability or equal benefit.
+  of `valid`, `valid_with_caveats`, `insufficient_evidence` or
+  `inappropriate_comparison`; terminology similarity must never imply
+  therapeutic equivalence, substitutability or equal benefit. These versioned
+  runtime terms supersede the earlier draft labels partial, unavailable and
+  inappropriate.
 - **M-091:** Maintain a versioned research protocol and OSF-ready preregistration
   covering research questions, jurisdiction and source selection, inclusion and
   exclusion rules, outcomes, matching and adjudication, missingness and
