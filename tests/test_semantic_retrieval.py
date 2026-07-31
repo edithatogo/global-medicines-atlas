@@ -129,6 +129,7 @@ def test_semantic_candidates_only_augment_authoritative_order() -> None:
 def test_optional_retriever_requires_every_governed_input(
     missing: str,
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     values: dict[str, object] = {
         "index_path": tmp_path,
@@ -136,6 +137,13 @@ def test_optional_retriever_requires_every_governed_input(
         "expected_identity": identity(),
     }
     values[missing] = None
+    monkeypatch.setattr(
+        semantic_retrieval,
+        "LanceDBSemanticRetriever",
+        lambda *_args, **_kwargs: pytest.fail(
+            "incomplete identity must not open LanceDB"
+        ),
+    )
 
     retriever = optional_semantic_retriever(
         values["index_path"],  # type: ignore[arg-type]
