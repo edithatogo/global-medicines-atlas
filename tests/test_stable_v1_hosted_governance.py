@@ -97,16 +97,14 @@ def test_live_snapshot_is_exactly_available_and_point_in_time() -> None:
     )
     assert repository["default_branch"] == "main"
     assert repository["default_branch_sha"] == (
-        "f2748e3fea21d35c163091cc9e320130c0bca992"
+        "0c980c06305decb23432060d2708851890c64230"
     )
 
 
-def test_current_receipt_reports_verified_controls_and_exact_project_drift() -> (
-    None
-):
+def test_current_receipt_reports_all_hosted_controls_verified() -> None:
     receipt = qualify_hosted_governance(_snapshot())
 
-    assert receipt.qualification_state is QualificationState.PARTIAL
+    assert receipt.qualification_state is QualificationState.QUALIFIED
     assert (
         _control(receipt, "repository_identity").status
         is ControlStatus.VERIFIED
@@ -119,17 +117,8 @@ def test_current_receipt_reports_verified_controls_and_exact_project_drift() -> 
         is ControlStatus.VERIFIED
     )
     assert _control(receipt, "project_fields").status is ControlStatus.VERIFIED
-    assert _control(receipt, "project_views").findings == (
-        "project-view:Evidence & Review Due:field-missing:Evidence State",
-        "project-view:Evidence & Review Due:field-missing:Gate",
-        "project-view:Gates & High Risk:field-missing:Gate",
-        "project-view:Gates & High Risk:field-missing:Priority",
-    )
-    assert _control(receipt, "project_workflows_and_items").findings == (
-        "project-item:41:Evidence State:expected:Verified",
-        "project-item:41:Status:expected:Done",
-        "project-item:42:Evidence State:expected:Verified",
-    )
+    assert _control(receipt, "project_views").findings == ()
+    assert _control(receipt, "project_workflows_and_items").findings == ()
 
 
 @pytest.mark.parametrize(
@@ -552,7 +541,7 @@ def test_receipt_and_control_models_reject_forged_conclusions() -> None:
             evidence=("repository",),
         )
     payload = qualify_hosted_governance(_snapshot()).model_dump(mode="json")
-    payload["qualification_state"] = "qualified"
+    payload["qualification_state"] = "partial"
     with pytest.raises(ValidationError, match="does not match controls"):
         HostedGovernanceReceipt.model_validate(payload)
 
