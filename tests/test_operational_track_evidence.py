@@ -59,3 +59,24 @@ def test_completed_tasks_remain_explicitly_bounded() -> None:
     assert "- [x] Task: Verify hosted rulesets, security settings" in plan
     assert "explicitly denying production qualification" in plan
     assert "Renovate App activation remains an explicit" in plan
+
+
+def test_v08_qualification_clears_numeric_gate_without_external_claims() -> (
+    None
+):
+    qualification = cast(
+        "dict[str, Any]",
+        json.loads(
+            (ROOT / "quality" / "qualifications" / "v08.json").read_text(
+                encoding="utf-8"
+            )
+        ),
+    )
+
+    mutation = cast("dict[str, Any]", qualification["mutation"])
+    assert qualification["status"] == "qualified"
+    assert mutation["score_percent"] >= mutation["minimum_percent"]
+    assert mutation["survived"] <= 381
+    assert qualification["publication_authorized"] is False
+    assert qualification["production_disaster_recovery_qualified"] is False
+    assert qualification["renovate_app_activation_verified"] is False

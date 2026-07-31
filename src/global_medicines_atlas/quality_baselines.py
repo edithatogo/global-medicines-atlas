@@ -136,7 +136,7 @@ class MutationSurvivorReview(FrozenModel):
     artifact_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     survived: int = Field(gt=0)
     promotion_survivor_maximum: int = Field(ge=0)
-    promotion_status: Literal["blocked_survivor_debt"]
+    promotion_status: Literal["blocked_survivor_debt", "qualified"]
     groups: tuple[SurvivorGroup, ...] = Field(min_length=1)
     review_decision: str = Field(min_length=1)
 
@@ -147,8 +147,13 @@ class MutationSurvivorReview(FrozenModel):
         priorities = [group.priority for group in self.groups]
         if priorities != list(range(1, len(self.groups) + 1)):
             raise ValueError("survivor priorities must be contiguous")
-        if self.survived <= self.promotion_survivor_maximum:
-            raise ValueError("blocked status requires survivor debt")
+        expected = (
+            "qualified"
+            if self.survived <= self.promotion_survivor_maximum
+            else "blocked_survivor_debt"
+        )
+        if self.promotion_status != expected:
+            raise ValueError("survivor promotion status contradicts debt")
         return self
 
 
