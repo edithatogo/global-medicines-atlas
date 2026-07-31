@@ -63,7 +63,10 @@ jobs:
           RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
           set -euo pipefail
-          version="$(uv version --short)"
+          version="$(
+            uv run python -c \
+              'from importlib.metadata import version; print(version("global-medicines-atlas"))'
+          )"
           test -n "$version"
           printf 'value=%s\n' "$version" >> "$GITHUB_OUTPUT"
           if [[ "${PUBLISH}" == "true" ]]; then
