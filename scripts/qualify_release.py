@@ -33,6 +33,7 @@ from global_medicines_atlas.release_metadata import (
 PROJECT = "global-medicines-atlas"
 _TAG = re.compile(
     r"^v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)"
+    r"(?:(?:a|b|rc)(?:0|[1-9]\d*))?"
     r"(?:-(?:0|[1-9]\d*|[A-Za-z-][0-9A-Za-z-]*)"
     r"(?:\.(?:0|[1-9]\d*|[A-Za-z-][0-9A-Za-z-]*))*)?$"
 )
@@ -46,6 +47,12 @@ _CONTROL_FILES = frozenset({
 
 class QualificationError(ValueError):
     """A release input or staged byte failed closed."""
+
+
+def is_canonical_release_tag(tag: str) -> bool:
+    """Return whether a tag uses an approved SemVer or PEP 440 spelling."""
+
+    return _TAG.fullmatch(tag) is not None
 
 
 def _require_fixture_only(
@@ -172,8 +179,10 @@ def _git(root: Path, *arguments: str) -> str:
 
 
 def _verify_tag(root: Path, tag: str, commit: str) -> str:
-    if not _TAG.fullmatch(tag):
-        raise QualificationError("release tag must be canonical vSemVer")
+    if not is_canonical_release_tag(tag):
+        raise QualificationError(
+            "release tag must be canonical vSemVer or PEP 440 prerelease"
+        )
     if not re.fullmatch(r"[0-9a-f]{40}", commit):
         raise QualificationError("commit must be a full lowercase Git SHA")
     try:
