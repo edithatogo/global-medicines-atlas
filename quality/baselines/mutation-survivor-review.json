@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0.0",
+  "reviewed_run_id": 30604959795,
+  "head_sha": "7853f78",
+  "artifact_id": 8783279963,
+  "artifact_sha256": "51973acced2d7e7f8207a4f5430a672783fa3980b737e5e3b83f3949bfb942cb",
+  "survived": 523,
+  "promotion_survivor_maximum": 381,
+  "promotion_status": "blocked_survivor_debt",
+  "groups": [
+    {"module": "source_health", "count": 240, "disposition": "open_test_gap", "priority": 1},
+    {"module": "adapters.us_drugsfda", "count": 73, "disposition": "open_test_gap", "priority": 2},
+    {"module": "matching_evaluation", "count": 54, "disposition": "open_test_gap", "priority": 3},
+    {"module": "adapters.us_cms_partd", "count": 50, "disposition": "open_test_gap", "priority": 4},
+    {"module": "matching_normalization", "count": 39, "disposition": "open_test_gap", "priority": 5},
+    {"module": "matching", "count": 27, "disposition": "open_test_gap", "priority": 6},
+    {"module": "review_queue", "count": 23, "disposition": "open_test_gap", "priority": 7},
+    {"module": "matching_policy", "count": 12, "disposition": "open_test_gap", "priority": 8},
+    {"module": "parity", "count": 5, "disposition": "open_test_gap", "priority": 9}
+  ],
+  "review_decision": "No survivor is waived or classified as equivalent without mutant-level proof. Remediate at least 142 survivors before v0.8 promotion, beginning with source_health."
+}

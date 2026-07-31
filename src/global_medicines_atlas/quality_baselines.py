@@ -117,10 +117,53 @@ class Phase3Baselines(FrozenModel):
     performance: PerformanceBaseline
 
 
+class SurvivorGroup(FrozenModel):
+    """Deterministic module-level mutation survivor classification."""
+
+    module: str = Field(min_length=1)
+    count: int = Field(gt=0)
+    disposition: Literal["open_test_gap"]
+    priority: int = Field(gt=0)
+
+
+class MutationSurvivorReview(FrozenModel):
+    """Reviewed mutation survivor inventory without unsupported waivers."""
+
+    schema_version: Literal["1.0.0"]
+    reviewed_run_id: int = Field(gt=0)
+    head_sha: str = Field(min_length=7)
+    artifact_id: int = Field(gt=0)
+    artifact_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    survived: int = Field(gt=0)
+    promotion_survivor_maximum: int = Field(ge=0)
+    promotion_status: Literal["blocked_survivor_debt"]
+    groups: tuple[SurvivorGroup, ...] = Field(min_length=1)
+    review_decision: str = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def groups_reconcile_to_hosted_total(self) -> MutationSurvivorReview:
+        if sum(group.count for group in self.groups) != self.survived:
+            raise ValueError("survivor groups must reconcile to hosted total")
+        priorities = [group.priority for group in self.groups]
+        if priorities != list(range(1, len(self.groups) + 1)):
+            raise ValueError("survivor priorities must be contiguous")
+        if self.survived <= self.promotion_survivor_maximum:
+            raise ValueError("blocked status requires survivor debt")
+        return self
+
+
 def load_phase3_baselines(path: Path) -> Phase3Baselines:
     """Load and strictly validate a committed baseline."""
 
     return Phase3Baselines.model_validate_json(path.read_text(encoding="utf-8"))
+
+
+def load_survivor_review(path: Path) -> MutationSurvivorReview:
+    """Load the hosted survivor review ledger."""
+
+    return MutationSurvivorReview.model_validate_json(
+        path.read_text(encoding="utf-8")
+    )
 
 
 def mutation_regressed(

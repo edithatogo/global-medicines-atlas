@@ -12,11 +12,13 @@ from global_medicines_atlas.quality_baselines import (
     MutationObservations,
     Phase3Baselines,
     load_phase3_baselines,
+    load_survivor_review,
     mutation_regressed,
     performance_regressions,
 )
 
 BASELINE_PATH = Path("quality/baselines/phase3.json")
+SURVIVOR_REVIEW_PATH = Path("quality/baselines/mutation-survivor-review.json")
 
 
 def test_committed_phase3_baseline_is_valid_and_records_debt() -> None:
@@ -24,6 +26,14 @@ def test_committed_phase3_baseline_is_valid_and_records_debt() -> None:
     assert baseline.mutation.observations.survived == 523
     assert baseline.mutation.promotion_status == "blocked_survivor_debt"
     assert baseline.performance.workload.row_count == 1_000_000
+
+
+def test_survivor_review_reconciles_hosted_report_without_waivers() -> None:
+    review = load_survivor_review(SURVIVOR_REVIEW_PATH)
+    assert sum(group.count for group in review.groups) == 523
+    assert review.groups[0].module == "source_health"
+    assert review.groups[0].count == 240
+    assert {group.disposition for group in review.groups} == {"open_test_gap"}
 
 
 def test_mutation_regression_is_independent_of_promotion_target() -> None:
