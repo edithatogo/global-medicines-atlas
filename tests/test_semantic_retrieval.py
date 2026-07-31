@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
+from global_medicines_atlas import semantic_retrieval
 from global_medicines_atlas.semantic_retrieval import (
     LanceDBSemanticRetriever,
     SemanticHit,
@@ -119,3 +120,97 @@ def test_semantic_candidates_only_augment_authoritative_order() -> None:
         "lexical",
         "semantic-only",
     )
+
+
+@pytest.mark.parametrize(
+    "missing",
+    ["path", "identity", "expected_identity"],
+)
+def test_optional_retriever_requires_every_governed_input(
+    missing: str,
+    tmp_path: Path,
+) -> None:
+    values: dict[str, object] = {
+        "index_path": tmp_path,
+        "identity": identity(),
+        "expected_identity": identity(),
+    }
+    values[missing] = None
+
+    retriever = optional_semantic_retriever(
+        values["index_path"],  # type: ignore[arg-type]
+        identity=values["identity"],  # type: ignore[arg-type]
+        expected_identity=values["expected_identity"],  # type: ignore[arg-type]
+    )
+
+    assert isinstance(retriever, UnavailableSemanticRetriever)
+
+
+@pytest.mark.parametrize(
+    "error_type",
+    [FileNotFoundError, ImportError, OSError, RuntimeError, ValueError],
+)
+def test_optional_retriever_falls_back_for_each_operational_failure(
+    error_type: type[Exception],
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fail(*_args: object, **_kwargs: object) -> None:
+        raise error_type("expected")
+
+    monkeypatch.setattr(semantic_retrieval, "LanceDBSemanticRetriever", fail)
+    retriever = optional_semantic_retriever(
+        tmp_path,
+        identity=identity(),
+        expected_identity=identity(),
+        table_name="custom",
+    )
+
+    assert isinstance(retriever, UnavailableSemanticRetriever)
+
+
+def test_optional_retriever_preserves_constructor_arguments(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    governed = identity()
+    expected = identity()
+    sentinel = UnavailableSemanticRetriever()
+    observed: dict[str, object] = {}
+
+    def construct(
+        index_path: Path,
+        *,
+        table_name: str,
+        identity: SemanticIndexIdentity,
+        expected_identity: SemanticIndexIdentity,
+    ) -> UnavailableSemanticRetriever:
+        observed.update({
+            "index_path": index_path,
+            "table_name": table_name,
+            "identity": identity,
+            "expected_identity": expected_identity,
+        })
+        return sentinel
+
+    monkeypatch.setattr(
+        semantic_retrieval,
+        "LanceDBSemanticRetriever",
+        construct,
+    )
+
+    assert (
+        optional_semantic_retriever(
+            tmp_path,
+            identity=governed,
+            expected_identity=expected,
+            table_name="custom",
+        )
+        is sentinel
+    )
+    assert observed == {
+        "index_path": tmp_path,
+        "table_name": "custom",
+        "identity": governed,
+        "expected_identity": expected,
+    }

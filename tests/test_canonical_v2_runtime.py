@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Protocol, cast
@@ -14,6 +15,7 @@ from jsonschema import Draft202012Validator
 from jsonschema.exceptions import ValidationError as SchemaValidationError
 from pydantic import ValidationError
 
+from global_medicines_atlas import canonical_v2
 from global_medicines_atlas.canonical_v2 import (
     Package,
     Price,
@@ -352,3 +354,24 @@ def test_source_native_payload_digest_is_fail_closed() -> None:
         type(
             migrate_record_v1_to_v2(original, _projection(original))
         ).model_validate(payload)
+
+
+def test_canonical_bytes_are_stable_and_compact() -> None:
+    canonical_bytes = cast(
+        "Callable[[dict[str, object]], bytes]",
+        vars(canonical_v2)["_canonical_bytes"],
+    )
+    assert canonical_bytes({"z": 1, "a": ["x", 2]}) == (
+        b'{"a":["x",2],"z":1}'
+    )
+
+
+def test_migration_binds_exact_v1_identity_and_payload() -> None:
+    original = _v1()
+    migrated = migrate_record_v1_to_v2(original, _projection(original))
+    native = migrated.source_native[0]
+
+    assert migrated.record_id == original.concept.concept_id
+    assert native.source_id == "canonical-schema-v1"
+    assert native.native_record_id == original.concept.concept_id
+    assert native.payload == original.model_dump(mode="json")
