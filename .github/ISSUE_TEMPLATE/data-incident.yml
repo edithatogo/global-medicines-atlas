@@ -3,6 +3,16 @@ description: Report incorrect, stale, misleading, or insufficiently evidenced me
 title: "data incident: "
 labels: ["type:data-incident", "priority:P1"]
 body:
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Provisional severity
+      options: [P0, P1, P2, P3]
+    validations: {required: true}
+  - type: input
+    id: affected
+    attributes: {label: Affected release, snapshot, API response, or artifact digest}
+    validations: {required: true}
   - type: input
     id: jurisdiction
     attributes: {label: Jurisdiction and programme}
@@ -22,6 +32,10 @@ body:
   - type: textarea
     id: expected
     attributes: {label: Expected evidence-preserving behaviour}
+    validations: {required: true}
+  - type: textarea
+    id: containment
+    attributes: {label: Containment or quarantine already applied}
     validations: {required: true}
   - type: checkboxes
     id: safety
