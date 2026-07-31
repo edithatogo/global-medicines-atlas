@@ -1,0 +1,54 @@
+{
+  "check_runs": [
+    {
+      "app_slug": "github-actions",
+      "check_run_id": 5001,
+      "conclusion": "success",
+      "details_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/3001/job/5001",
+      "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "name": "Test-Goblin / routine",
+      "status": "completed",
+      "workflow_run_id": 3001
+    },
+    {
+      "app_slug": "github-actions",
+      "check_run_id": 5002,
+      "conclusion": "success",
+      "details_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/3002/job/5002",
+      "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "name": "CodeQL / Analyze (python)",
+      "status": "completed",
+      "workflow_run_id": 3002
+    }
+  ],
+  "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "publication": {
+    "receipts": [],
+    "state": "not_attempted"
+  },
+  "pull_request": {
+    "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "number": 101,
+    "state": "open",
+    "url": "https://github.com/edithatogo/global-medicines-atlas/pull/101"
+  },
+  "repository": "edithatogo/global-medicines-atlas",
+  "workflow_runs": [
+    {
+      "conclusion": "success",
+      "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "name": "Test-Goblin",
+      "run_id": 3001,
+      "status": "completed",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/3001"
+    },
+    {
+      "conclusion": "success",
+      "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "name": "CodeQL",
+      "run_id": 3002,
+      "status": "completed",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/3002"
+    }
+  ]
+}

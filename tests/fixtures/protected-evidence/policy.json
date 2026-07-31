@@ -1,0 +1,21 @@
+{
+  "required_checks": [
+    {
+      "app_slug": "github-actions",
+      "category": "ci",
+      "name": "Test-Goblin / routine",
+      "workflow_name": "Test-Goblin"
+    },
+    {
+      "app_slug": "github-actions",
+      "category": "security",
+      "name": "CodeQL / Analyze (python)",
+      "workflow_name": "CodeQL"
+    }
+  ],
+  "target": {
+    "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "pull_request_number": 101,
+    "repository": "edithatogo/global-medicines-atlas"
+  }
+}
