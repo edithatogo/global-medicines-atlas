@@ -43,6 +43,8 @@ _REQUIRED_ARTIFACT_ROLES = frozenset({
     "verification-guide",
 })
 _REQUIRED_REFERENCE_ROLES = frozenset({
+    "build-constraints",
+    "build-toolchain",
     "candidate-implementation",
     "candidate-schema",
     "candidate-script",
@@ -217,7 +219,7 @@ class StableV1ReleaseCandidateReceipt(FrozenModel):
     manifest: ImmutableArtifact
     checksums: ImmutableArtifact
     provenance_references: tuple[ProvenanceReference, ...] = Field(
-        min_length=11, max_length=11
+        min_length=13, max_length=13
     )
     verification_commands: tuple[VerificationCommand, ...] = Field(
         min_length=3, max_length=3

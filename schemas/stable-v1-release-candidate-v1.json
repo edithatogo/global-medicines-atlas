@@ -38,8 +38,8 @@
     "checksums": {"$ref": "#/$defs/immutableArtifact"},
     "provenance_references": {
       "type": "array",
-      "minItems": 11,
-      "maxItems": 11,
+      "minItems": 13,
+      "maxItems": 13,
       "items": {"$ref": "#/$defs/provenanceReference"}
     },
     "verification_commands": {
