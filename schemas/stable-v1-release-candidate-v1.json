@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/stable-v1-release-candidate-v1.json",
+  "title": "Global Medicines Atlas stable-v1 release candidate receipt",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "schema_version",
+    "candidate_id",
+    "source_repository",
+    "source_commit",
+    "source_tree",
+    "package_version",
+    "artifacts",
+    "manifest",
+    "checksums",
+    "provenance_references",
+    "verification_commands",
+    "state",
+    "limitations",
+    "content_sha256"
+  ],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.stable-v1-release-candidate"},
+    "schema_version": {"const": 1},
+    "candidate_id": {"type": "string", "pattern": "^stable-v1-rc-[0-9a-f]{12}$"},
+    "source_repository": {"const": "https://github.com/edithatogo/global-medicines-atlas"},
+    "source_commit": {"$ref": "#/$defs/gitSha"},
+    "source_tree": {"$ref": "#/$defs/gitSha"},
+    "package_version": {"type": "string", "minLength": 1},
+    "artifacts": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {"$ref": "#/$defs/artifact"}
+    },
+    "manifest": {"$ref": "#/$defs/immutableArtifact"},
+    "checksums": {"$ref": "#/$defs/immutableArtifact"},
+    "provenance_references": {
+      "type": "array",
+      "minItems": 11,
+      "maxItems": 11,
+      "items": {"$ref": "#/$defs/provenanceReference"}
+    },
+    "verification_commands": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {"$ref": "#/$defs/verificationCommand"}
+    },
+    "state": {"$ref": "#/$defs/state"},
+    "limitations": {
+      "type": "array",
+      "minItems": 4,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "content_sha256": {"$ref": "#/$defs/digest"}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "gitSha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "immutableArtifact": {
+      "type": "object",
+      "required": ["path", "sha256", "size"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "size": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "artifact": {
+      "type": "object",
+      "required": ["path", "sha256", "size", "role", "media_type"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/digest"},
+        "size": {"type": "integer", "minimum": 0},
+        "role": {
+          "enum": [
+            "wheel",
+            "sdist",
+            "sbom",
+            "dependency-lock",
+            "provenance-references",
+            "verification-guide"
+          ]
+        },
+        "media_type": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "provenanceReference": {
+      "type": "object",
+      "required": ["role", "kind", "locator", "sha256"],
+      "properties": {
+        "role": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+        "kind": {"enum": ["repository-file", "git-commit-object", "git-tree-listing"]},
+        "locator": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/digest"}
+      },
+      "additionalProperties": false
+    },
+    "verificationCommand": {
+      "type": "object",
+      "required": ["command_id", "argv", "expected_result", "mutates_external_state"],
+      "properties": {
+        "command_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]+$"},
+        "argv": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string"}
+        },
+        "expected_result": {"type": "string", "minLength": 1},
+        "mutates_external_state": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "state": {
+      "type": "object",
+      "required": [
+        "status",
+        "signed",
+        "approved",
+        "published",
+        "provenance_attested",
+        "git_tag_created",
+        "github_release_created"
+      ],
+      "properties": {
+        "status": {"const": "unsigned-unapproved-not-published"},
+        "signed": {"const": false},
+        "approved": {"const": false},
+        "published": {"const": false},
+        "provenance_attested": {"const": false},
+        "git_tag_created": {"const": false},
+        "github_release_created": {"const": false}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
