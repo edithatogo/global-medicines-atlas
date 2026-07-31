@@ -13,6 +13,8 @@ from global_medicines_atlas.performance_workload import (
     Measurement,
     evaluate_budgets,
     generate_dataset,
+    load_budgets,
+    measure_workload,
     run_workload,
 )
 
@@ -102,7 +104,9 @@ def test_runner_writes_complete_machine_readable_receipt(
     }
     assert len(receipt["budget_results"]) == 8
     assert len(receipt["workload"]["dataset_sha256"]) == 64
-    assert receipt["resources"]["process_peak_memory_mib"] is None
+    assert "process_peak_memory_mib" in receipt["resources"]
+    process_peak_memory = receipt["resources"]["process_peak_memory_mib"]
+    assert process_peak_memory is None or process_peak_memory > 0
 
 
 @pytest.mark.unit
@@ -121,3 +125,31 @@ def test_generation_rejects_non_positive_sizes(
             row_count=row_count,
             batch_size=batch_size,
         )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("readers", "warm_runs"),
+    [(0, 1), (1, 0)],
+)
+def test_measurement_rejects_non_positive_run_counts(
+    tmp_path: Path,
+    readers: int,
+    warm_runs: int,
+) -> None:
+    with pytest.raises(ValueError, match="must be positive"):
+        measure_workload(
+            tmp_path / "unused.parquet",
+            row_count=1,
+            readers=readers,
+            warm_runs=warm_runs,
+        )
+
+
+@pytest.mark.unit
+def test_budget_loader_rejects_non_object(tmp_path: Path) -> None:
+    budget_path = tmp_path / "budgets.json"
+    budget_path.write_text("[]", encoding="utf-8")
+
+    with pytest.raises(TypeError, match="must be a JSON object"):
+        load_budgets(budget_path)

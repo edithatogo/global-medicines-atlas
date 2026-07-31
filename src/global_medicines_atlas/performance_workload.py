@@ -35,6 +35,7 @@ else:
         divisor = MEBIBYTE if sys.platform == "darwin" else 1024
         return peak / divisor
 
+
 DEFAULT_ROW_COUNT = 1_000_000
 DEFAULT_BATCH_SIZE = 100_000
 DEFAULT_READERS = 4
