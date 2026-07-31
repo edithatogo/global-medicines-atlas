@@ -20,9 +20,13 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   - A deterministic projection covers every canonical catalog `source_id` and
     jurisdiction while conservatively capping catalog-derived maturity at M2.
 - [~] Task: Contract canonical medicine schema v2 and migration compatibility for substances, products, packages, indications, prices and restrictions ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
-  - Structural contract added as `schemas/canonical-medicine-v2.json`; runtime
-    migration and rollback rehearsal remain open and are explicitly distinct
-    from the temporal assertion `v1_to_v2` migration.
+  - Structural contract added as `schemas/canonical-medicine-v2.json`; the
+    runtime now requires an explicit adapter-owned structural projection,
+    validates closed references and assertion dimensions, preserves the full
+    digest-bound schema-v1 source-native record, and rolls it back without
+    semantic loss. This is explicitly distinct from the temporal assertion
+    `v1_to_v2` migration. Representative contracts do not establish complete
+    source or jurisdiction coverage; Phase 2 rehearsal remains open.
 - [~] Task: Contract comparison-validity semantics for granularity, indication, population, mapping, normalization, material mismatches and inappropriate comparisons ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
   - Vocabulary added as `schemas/comparison-validity-v1.json`; runtime adoption
     and end-to-end qualification remain open.
