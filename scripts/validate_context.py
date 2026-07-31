@@ -13,6 +13,15 @@ CONTEXT_FILE = PROJECT_ROOT / ".context" / "project.toml"
 TRACK_PATTERN = re.compile(r"\((?P<path>\./tracks/[^)]+/index\.md)\)")
 REQUIREMENT_PATTERN = re.compile(r"\*\*(?P<id>[MSCW]-\d{3}):\*\*")
 MINIMUM_RELEASES = 10
+EXECUTION_POLICY = {
+    "mode": "autonomous",
+    "interaction": "decision_gates_only",
+    "decision_protocol": "options_recommendation_rationale",
+    "phase_checkpoints": "automatic_evidence_gated",
+    "failure_recovery": "bounded_self_correction",
+    "max_identical_failures": 3,
+    "merge_policy": "required_checks_then_merge",
+}
 
 
 class ContextReceipt(TypedDict):
@@ -21,6 +30,7 @@ class ContextReceipt(TypedDict):
     context_files: int
     manifests: int
     tracks: int
+    autonomous_tracks: int
     requirements: int
     harness_profiles: int
     human_gates: int
@@ -124,6 +134,32 @@ def _validate_track_requirements(
             )
 
 
+def _validate_execution_policies(track_indexes: tuple[Path, ...]) -> int:
+    for index in track_indexes:
+        metadata = cast(
+            "dict[str, object]",
+            json.loads(
+                (index.parent / "metadata.json").read_text(encoding="utf-8")
+            ),
+        )
+        raw_policy = metadata.get("execution_policy")
+        if not isinstance(raw_policy, dict):
+            raise TypeError(
+                f"{index.parent.name} execution_policy must be an object"
+            )
+        policy = cast("dict[str, object]", raw_policy)
+        drift = {
+            key: {"expected": expected, "actual": policy.get(key)}
+            for key, expected in EXECUTION_POLICY.items()
+            if policy.get(key) != expected
+        }
+        if drift:
+            raise ValueError(
+                f"{index.parent.name} execution policy drift: {drift}"
+            )
+    return len(track_indexes)
+
+
 def validate_context() -> ContextReceipt:
     """Return a bounded receipt or raise for context drift."""
     context = _read_context()
@@ -171,6 +207,7 @@ def validate_context() -> ContextReceipt:
     if not requirement_ids or len(requirement_ids) != len(set(requirement_ids)):
         raise ValueError("Requirement identifiers must exist and be unique")
     _validate_track_requirements(track_indexes, set(requirement_ids))
+    autonomous_track_count = _validate_execution_policies(track_indexes)
 
     harness_text = (PROJECT_ROOT / "scripts" / "test_goblin.py").read_text(
         encoding="utf-8"
@@ -192,6 +229,7 @@ def validate_context() -> ContextReceipt:
         "context_files": len(required_context),
         "manifests": len(required_manifests),
         "tracks": len(track_indexes),
+        "autonomous_tracks": autonomous_track_count,
         "requirements": len(requirement_ids),
         "harness_profiles": len(profiles),
         "human_gates": len(human_gates),

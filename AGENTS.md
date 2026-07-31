@@ -3,14 +3,18 @@
 This is a single-maintainer, evidence-first repository. Automation may prepare,
 test, document, commit, push, and open pull requests within an approved task.
 It must not invent a second reviewer or silently cross the gates below.
+Within those boundaries it continues autonomously; routine task, phase, review,
+pull-request, merge, archive, and next-track transitions do not require a
+separate “proceed”.
 
 ## Read first
 
 1. `.context/project.toml`
 2. `conductor/index.md`
 3. `conductor/workflow.md`
-4. the active track `index.md`, `spec.md`, `plan.md`, and `evidence.jsonl`
-5. the nearest code style guide and affected tests
+4. `conductor/autonomy.md`
+5. the active track `index.md`, `spec.md`, `plan.md`, and `evidence.jsonl`
+6. the nearest code style guide and affected tests
 
 Repository state, source receipts, tests, hosted checks, and external artifacts
 take precedence over checklist summaries.
@@ -30,6 +34,11 @@ take precedence over checklist summaries.
 The sole maintainer must explicitly approve credential creation/publication,
 licensing conclusions, public releases, external dataset publication, archival
 of compatibility repositories, and consequential clinical or policy claims.
+
+When a decision is required, ask exactly one decision at a time, provide two
+or three options, label the recommended option first, and explain the rationale
+and material trade-offs. Apply the bounded self-correction and recovery rules
+in `conductor/autonomy.md` before escalating a technical blocker.
 
 ## Completion
 

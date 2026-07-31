@@ -10,6 +10,21 @@
 6. A green local or hosted check is not proof of an external outcome without an independently observable artifact and receipt.
 7. Search the maintainer-owned ecosystem before creating a new capability.
 8. Frontier dependency adoption requires compatibility evidence; legacy compatibility must remain isolated and temporary.
+9. Tracks execute autonomously under `conductor/autonomy.md`; routine work and evidence-backed checkpoints do not require maintainer confirmation.
+
+## Autonomous Execution
+
+- Continue through tasks, phases, review fixes, pull requests, green-check
+  merges, reconciliation, and archival while work is safe and in scope.
+- Select the next unblocked track automatically when the current track is
+  complete.
+- Inform the maintainer of progress without converting updates into approval
+  requests.
+- Pause only at the decision boundary defined in `conductor/autonomy.md`.
+- When a decision is required, present one decision with two or three options,
+  put the recommendation first, and explain rationale and trade-offs.
+- Apply up to three evidence-driven self-corrections before escalating a
+  persistent blocker; continue independent unblocked work while doing so.
 
 ## Task Lifecycle
 
@@ -48,6 +63,11 @@ Every phase ends with:
 - a concise manual verification procedure;
 - a durable evidence record;
 - explicit classification of unresolved external gates.
+
+Phase verification proceeds automatically. Manual verification is performed by
+the agent where tools and fixtures make it reproducible. Maintainer
+confirmation is requested only when verification itself crosses a human gate
+or requires judgment that cannot be represented by automated evidence.
 
 ## Single-Developer Controls
 
