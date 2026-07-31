@@ -94,3 +94,19 @@ def test_discovery_errors_are_typed_and_do_not_leak_service_detail(
     assert missing.status_code == 503
     assert missing.json()["error"] == "service_unavailable"
     assert "unknown" not in missing.text
+
+
+def test_duplicate_jurisdictions_are_rejected_by_discovery_contract(
+    tmp_path: Path,
+) -> None:
+    response = _client(tmp_path).get(
+        "/api/v1/concepts",
+        params=[
+            ("q", "aspirin"),
+            ("jurisdictions", "NZ"),
+            ("jurisdictions", "NZ"),
+        ],
+    )
+
+    assert response.status_code == 422
+    assert response.json()["error"] == "invalid_request"

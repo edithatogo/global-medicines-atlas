@@ -11,7 +11,9 @@ import pytest
 from tests.test_concept_query_service import _catalog_database
 from typer.testing import CliRunner
 
+from global_medicines_atlas import cli
 from global_medicines_atlas.cli import app
+from global_medicines_atlas.query_service import QueryServiceError
 
 runner = CliRunner()
 ENV = {"GMA_CURSOR_SECRET": "concept-cli-secret-long-enough"}
@@ -93,3 +95,50 @@ def test_unknown_concept_is_a_structured_stderr_failure(
     assert result.exit_code == 2
     assert not result.stdout
     assert json.loads(result.stderr)["error"] == "not_found"
+
+
+def test_concept_show_supports_jsonl(database: Path) -> None:
+    result = _invoke(
+        database,
+        "concept",
+        "show",
+        "gma:aspirin",
+        "--format",
+        "jsonl",
+    )
+
+    assert result.exit_code == 0, result.stderr
+    assert json.loads(result.stdout)["record"]["preferred_name"] == "Aspirin"
+
+
+@pytest.mark.parametrize(
+    ("arguments", "method"),
+    [
+        (("jurisdiction", "list"), "jurisdictions"),
+        (("source", "list"), "sources"),
+    ],
+)
+def test_catalogue_failures_are_structured(
+    database: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    arguments: tuple[str, ...],
+    method: str,
+) -> None:
+    class UnavailableCatalogue:
+        def jurisdictions(self) -> None:
+            raise QueryServiceError("unavailable")
+
+        def sources(self, _jurisdiction: str | None) -> None:
+            raise QueryServiceError("unavailable")
+
+    monkeypatch.setattr(
+        cli,
+        "_service",
+        lambda _database, _allowed_root: UnavailableCatalogue(),
+    )
+    result = _invoke(database, *arguments)
+
+    assert result.exit_code == 2
+    assert not result.stdout
+    assert json.loads(result.stderr)["error"] == "service_unavailable"
+    assert method in {"jurisdictions", "sources"}
