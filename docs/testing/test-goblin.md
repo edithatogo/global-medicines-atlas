@@ -14,7 +14,12 @@ The executable profile is declared as a PEP 735 dependency group in
 tool-independent environment is exported to PEP 751 `pylock.toml`.
 
 The harness exposes explicit `unit`, `integration`, `e2e`, `smoke`,
-`property`, and `edge` test lanes. Its `routine` quality lane consolidates
+`property`, `metamorphic`, `contract`, `simulation`, and `edge` test lanes.
+Metamorphic tests check relations between transformed inputs when a complete
+oracle is impractical. Contract tests qualify versioned consumer/provider
+boundaries. Deterministic simulation testing (DST) replays explicit event
+schedules and clocks through operational state transitions. The `routine`
+quality lane consolidates
 formatting, linting, import ordering, modernization, security-style checks,
 pytest conventions, and fast typing into Ruff plus `ty`. The final `strict`
 lane runs `basedpyright` strict mode. Full-project branch `coverage`, Linux
@@ -27,7 +32,8 @@ real `pytest --collect-only` pass and fails if an explicit primary marker
 disagrees with the module's manifest lane. Other markers may describe secondary
 traits but cannot create a second primary execution assignment.
 
-The same `contracts` profile validates that the six CI lanes match the harness,
+The same `contracts` profile validates that the six primary CI lanes match the
+harness,
 that every lane uploads a distinct Codecov flag, that all external Actions use
 full commit SHAs, and that workflow setup literals agree with
 `quality/tool-versions.json`. These checks make CI topology part of the
@@ -61,6 +67,9 @@ variable can substitute invented observations. The mutation budget remains
 uv sync --python 3.14.6 --group test-goblin --locked
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py quick
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py contracts
+uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py metamorphic
+uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py contract
+uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py simulation
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py coverage
 uv run --python 3.14.6 --group dev python scripts/test_goblin.py routine
 uv run --python 3.14.6 --group dev python scripts/test_goblin.py strict
@@ -89,6 +98,9 @@ on native Windows. The harness reports that boundary explicitly.
 |---|---|
 | Test runner and fixtures | pytest |
 | Generative/property tests | Hypothesis |
+| Metamorphic testing | Hypothesis and explicit transformation relations |
+| Consumer/provider contract testing | Versioned OpenAPI semantic snapshots |
+| Deterministic simulation testing | Explicit clocks and replayable event schedules |
 | Mutation testing | mutmut |
 | Order-sensitivity detection | pytest-randomly |
 | Parallel execution | pytest-xdist |
@@ -115,7 +127,11 @@ on native Windows. The harness reports that boundary explicitly.
 
 - Python 3.14.6 is selected by `.python-version` and enforced by the project
   metadata and CI commands.
-- Property and randomized-order tests are blocking on pull requests.
+- Property, metamorphic, contract, deterministic-simulation and randomized-order
+  tests are blocking on pull requests. The three specialized profiles are also
+  independently executable; their modules run inside the primary property,
+  unit and integration lanes respectively so existing protected-check names
+  remain stable.
 - Bounded mutation tests run as a dedicated lane with explicit timeout and
   cancellation behavior.
 - Mutation-score thresholds begin as measured evidence and become blocking once

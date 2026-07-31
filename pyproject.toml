@@ -123,6 +123,9 @@ markers = [
   "e2e: complete governed medicine projection workflows",
   "smoke: fast installation and critical-path checks",
   "property: generative invariant tests",
+  "metamorphic: transformation-relation tests without test oracles",
+  "contract: versioned consumer and provider boundary tests",
+  "simulation: deterministic event-sequence and state-transition tests",
   "edge: malformed, boundary, and failure-mode tests",
 ]
 timeout = 30

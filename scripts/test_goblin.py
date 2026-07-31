@@ -125,6 +125,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_release_metadata.py",
         "tests/test_release_qualification.py",
         "tests/test_stable_v1_release_candidate.py",
+        "tests/test_contract_testing.py",
         "tests/test_v07_fixture_production_qualification.py",
         "tests/test_version.py",
         "tests/test_test_goblin_harness.py",
@@ -176,6 +177,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_stable_v1_rehearsal.py",
         "tests/test_canonical_v2_cohorts.py",
         "tests/test_stable_v1_measured_coverage.py",
+        "tests/test_deterministic_simulation.py",
     ),
     "e2e": (
         "tests/test_canonical_nz_adapter.py",
@@ -194,6 +196,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_matching_properties.py",
         "tests/test_concept_discovery_properties.py",
         "tests/test_comparison_validity_properties.py",
+        "tests/test_metamorphic_testing.py",
     ),
     "edge": (
         "tests/test_edge_cases.py",
@@ -203,6 +206,12 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_data_integrity.py",
         "tests/test_parser_safety.py",
     ),
+}
+
+SPECIALIZED_TEST_PROFILES: dict[str, tuple[str, ...]] = {
+    "metamorphic": ("tests/test_metamorphic_testing.py",),
+    "contract": ("tests/test_contract_testing.py",),
+    "simulation": ("tests/test_deterministic_simulation.py",),
 }
 
 
@@ -998,6 +1007,7 @@ def main() -> None:  # ruff: ignore[too-many-branches]
         "profile",
         choices=(
             *TEST_LANES,
+            *SPECIALIZED_TEST_PROFILES,
             "quick",
             "contracts",
             "coverage",
@@ -1018,6 +1028,8 @@ def main() -> None:  # ruff: ignore[too-many-branches]
     selected_profile = parser.parse_args().profile
     if selected_profile in TEST_LANES:
         lane(selected_profile)
+    elif selected_profile in SPECIALIZED_TEST_PROFILES:
+        run(build_pytest_command(SPECIALIZED_TEST_PROFILES[selected_profile]))
     elif selected_profile == "contracts":
         contracts()
     elif selected_profile == "quick":

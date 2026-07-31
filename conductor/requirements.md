@@ -47,7 +47,9 @@
   Python 3.14 reference fallback; promote a Mojo kernel only after shared-fixture
   parity, representative performance and memory evidence, and fallback rehearsal.
 - **M-041:** Require parity fixtures before Mojo or Rust implementations become authoritative.
-- **M-042:** Run unit, integration, end-to-end, smoke, property-based, mutation, and parity testing.
+- **M-042:** Run unit, integration, end-to-end, smoke, property-based,
+  metamorphic, consumer/provider contract, deterministic-simulation, mutation,
+  and parity testing.
 - **M-043:** Maintain test coverage strictly above 90% for governed core code and enforce it through Codecov.
 - **M-044:** Use `ty` for routine typing and BasedPyright for formal typing.
 - **M-045:** Use workload-specific Scalene, cold/warm/concurrent benchmarks and

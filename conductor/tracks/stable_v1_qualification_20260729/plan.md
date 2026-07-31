@@ -190,3 +190,21 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 - Qualification contract: [#41](https://github.com/edithatogo/global-medicines-atlas/issues/41)
 - v0.9 clean-room candidate: [#42](https://github.com/edithatogo/global-medicines-atlas/issues/42)
 - v1.0 promotion and external gates: [#43](https://github.com/edithatogo/global-medicines-atlas/issues/43)
+
+## Phase 3A: Extended verification architecture
+
+- [x] Task: Add independently executable metamorphic, consumer/provider
+  contract and deterministic-simulation lanes to Test-Goblin ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+  - The specialized profiles pass independently and are assigned to the
+    protected property, unit and integration lanes so hosted required-check
+    names remain stable. Metamorphic normalization relations, read-only OpenAPI
+    provider/consumer compatibility and replayable source-health transitions
+    are executable without network or wall-clock state.
+- [x] Task: Verify property, mutation, Codecov and Scalene enforcement remains
+  executable and blocking or evidence-producing as designed ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+  - The harness contract collected 1,587 tests; routine Ruff/ty and strict
+    BasedPyright pass. Aggregate branch coverage remains 95.19% against the 91%
+    gate. Codecov project/patch and per-primary-lane flags remain fail-closed.
+    Mutation/gremlin profiles remain required hosted checks, and an actual
+    deterministic Scalene run produced its durable receipt and profile.
+- [~] Task: Phase Verification & Checkpoint

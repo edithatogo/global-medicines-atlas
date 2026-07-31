@@ -29,7 +29,9 @@
 ## Task Lifecycle
 
 1. Select the next unblocked task and mark it `[~]`.
-2. Write or identify failing unit, integration, end-to-end, smoke, property, mutation, or parity tests appropriate to the change.
+2. Write or identify failing unit, integration, end-to-end, smoke, property,
+   metamorphic, contract, deterministic-simulation, mutation, or parity tests
+   appropriate to the change.
 3. Confirm the intended failure.
 4. Implement the smallest coherent change.
 5. Run the focused tests, then the broader affected harness.
