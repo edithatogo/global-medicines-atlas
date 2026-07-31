@@ -35,11 +35,17 @@ REQUIRED_OBSERVATIONS = frozenset({
     "project",
 })
 
-REQUIRED_CHECKS = frozenset({
+GITHUB_ACTIONS_APP_ID = 15368
+CODECOV_APP_ID = 254
+
+MAIN_PUSH_MANDATORY_CHECKS = frozenset({
     "Context and repository policy",
     "Dependency audit and SBOM",
     "CodeQL",
     "Mojo nightly / smoke",
+    "Consumer / linux / Python 3.14",
+    "Consumer / macos / Python 3.14",
+    "Consumer / windows / Python 3.14",
     "Python 3.14 / unit",
     "Python 3.14 / integration",
     "Python 3.14 / e2e",
@@ -54,12 +60,25 @@ REQUIRED_CHECKS = frozenset({
     "Python 3.14 / gremlins",
     "Python 3.14 / dependencies",
     "Python 3.14 / profile",
-    "Dependency review",
     "Repository and history leak detection",
     "Python 3.14 / regeneration",
     "Python 3.14 / representative performance",
-    "codecov/patch",
+    "Python 3.14 / governed recovery rehearsal",
+    "Python 3.14 / operational exercises",
 })
+
+PULL_REQUEST_ONLY_MANDATORY_CHECKS = frozenset({"Dependency review"})
+EXTERNAL_REQUIRED_STATUS_CHECKS = frozenset({"codecov/patch"})
+REQUIRED_CHECKS = (
+    MAIN_PUSH_MANDATORY_CHECKS
+    | PULL_REQUEST_ONLY_MANDATORY_CHECKS
+    | EXTERNAL_REQUIRED_STATUS_CHECKS
+)
+REQUIRED_CHECK_APPS: dict[str, int] = {
+    **dict.fromkeys(MAIN_PUSH_MANDATORY_CHECKS, GITHUB_ACTIONS_APP_ID),
+    **dict.fromkeys(PULL_REQUEST_ONLY_MANDATORY_CHECKS, GITHUB_ACTIONS_APP_ID),
+    **dict.fromkeys(EXTERNAL_REQUIRED_STATUS_CHECKS, CODECOV_APP_ID),
+}
 
 REQUIRED_PROJECT_FIELDS: dict[str, frozenset[str]] = {
     "Status": frozenset({"Todo", "In Progress", "Done"}),
@@ -431,9 +450,25 @@ def _repository_controls(
         data = _mapping(protection.data, "protection")
         required = _sequence(data.get("required_checks"), "required checks")
         observed_checks = {_text(item, "required check") for item in required}
+        observed_apps = {
+            context: _integer(app_id, f"required check app for {context}")
+            for context, app_id in _mapping(
+                data.get("required_check_apps"), "required check apps"
+            ).items()
+        }
         protection_findings.extend(
             f"required-check:missing:{item}"
             for item in sorted(REQUIRED_CHECKS - observed_checks)
+        )
+        protection_findings.extend(
+            f"required-check-app:inventory-mismatch:{item}"
+            for item in sorted(observed_checks ^ set(observed_apps))
+        )
+        protection_findings.extend(
+            f"required-check-app:mismatch:{item}:expected:"
+            f"{REQUIRED_CHECK_APPS[item]}:observed:{observed_apps.get(item)}"
+            for item in sorted(REQUIRED_CHECKS & observed_checks)
+            if observed_apps.get(item) != REQUIRED_CHECK_APPS[item]
         )
         protection_findings.extend(
             f"branch-protection:{key}:disabled"
@@ -779,7 +814,15 @@ def qualify_hosted_governance(
         qualification_state=state,
         limitations=(
             "Point-in-time authenticated GitHub evidence; it is not a perpetual-state claim.",
-            "No repository, issue, project, workflow, security, or release setting was mutated.",
+            (
+                "Snapshot acquisition and qualification are read-only; the "
+                "preceding authorized main-branch protection hardening is "
+                "documented separately."
+            ),
+            (
+                "No issue, project, workflow definition, security feature, "
+                "ruleset, or release setting was mutated by the acquisition."
+            ),
             "Permission-unavailable and unsupported endpoints are reported as unavailable, not failed.",
             "User-project GraphQL exposes configured view metadata but not rendered UI behavior.",
             "Organisation-level controls and external publication or release approval are out of scope.",
