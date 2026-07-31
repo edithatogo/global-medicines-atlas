@@ -30,8 +30,11 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   - Deterministic core contracts and the read-only DuckDB query service now
     provide bounded exact-identifier and normalized lexical discovery, concept
     detail, jurisdiction/source catalogues, explicit non-equivalence match
-    explanations, and signed keyset cursors. API, CLI, atlas autocomplete, and
-    semantic augmentation remain later increments.
+    explanations, and signed keyset cursors. Versioned API routes and nested,
+    scriptable JSON/JSONL CLI commands now expose those capabilities using the
+    existing cache, request-ID, typed-error, HEAD and bounded-export
+    conventions. Atlas autocomplete and semantic augmentation remain later
+    increments.
 - [ ] Task: Define clean-wheel consumer, supported-platform, package-metadata and public-API compatibility gates ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
 - [ ] Task: Define core and optional-semantic installation boundaries, LanceDB index/model identity and deterministic fallback gates ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
 - [ ] Task: Define non-overlapping GitHub, Hugging Face, Zenodo and OSF dataset/protocol identities and licence gates ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
