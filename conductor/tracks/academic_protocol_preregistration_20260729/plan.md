@@ -18,12 +18,17 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 
 ## Phase 2: Analysis and validation plan
 
-- [ ] Task: Write failing tests for analysis-plan, sensitivity and deviation contracts
-- [ ] Task: Specify matching, adjudication, negative controls and inter-rater handling
-- [ ] Task: Specify missingness, conflicts, coverage denominators and uncertainty
-- [ ] Task: Specify descriptive analyses, sensitivity analyses and multiplicity boundaries
-- [ ] Task: Define software, schema, fixture, seed and environment identities
-- [ ] Task: Phase Verification & Checkpoint
+- [x] Task: Write failing tests for analysis-plan, sensitivity and deviation contracts
+- [x] Task: Specify matching, adjudication, negative controls and inter-rater handling
+- [x] Task: Specify missingness, conflicts, coverage denominators and uncertainty
+- [x] Task: Specify descriptive analyses, sensitivity analyses and multiplicity boundaries
+- [x] Task: Define software, schema, fixture, seed and environment identities
+- [x] Task: Phase Verification & Checkpoint
+  - PR #113 merged as `8e7ba8e` after all 29 protected checks passed.
+    Independent Conductor review found no actionable findings and verified the
+    23 focused contract tests, the 862-test unit lane, deterministic generation,
+    routine quality gates, and BasedPyright strict with zero findings. No
+    external registration or publication gate was exercised.
 
 ## Phase 3: OSF-ready preregistration package
 
