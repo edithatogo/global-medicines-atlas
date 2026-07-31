@@ -129,7 +129,11 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     and blocker identifiers in the qualification contract. External licence,
     publication, identifier, credential-authority and stable-release approvals
     remain blocked rather than being treated as implementation failures.
-- [ ] Task: Phase Verification & Checkpoint
+- [x] Task: Phase Verification & Checkpoint
+  - Independent re-review after PRs #102 and #103 passed with no residual
+    findings. Both pull requests completed 29 protected checks; merged main at
+    `a8ee67c` completed all 26 applicable push checks. Published-artifact
+    reproduction and external approvals remain explicitly deferred to Phase 3.
 
 ## Phase 3: v1.0 promotion
 
