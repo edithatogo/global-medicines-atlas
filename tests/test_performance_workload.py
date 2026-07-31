@@ -102,11 +102,12 @@ def test_runner_writes_complete_machine_readable_receipt(
         "warm",
         "concurrent",
     }
-    assert len(receipt["budget_results"]) == 8
     assert len(receipt["workload"]["dataset_sha256"]) == 64
     assert "process_peak_memory_mib" in receipt["resources"]
     process_peak_memory = receipt["resources"]["process_peak_memory_mib"]
     assert process_peak_memory is None or process_peak_memory > 0
+    expected_budget_results = 8 + int(process_peak_memory is not None)
+    assert len(receipt["budget_results"]) == expected_budget_results
 
 
 @pytest.mark.unit
