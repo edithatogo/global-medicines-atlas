@@ -96,6 +96,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_repository_governance.py",
         "tests/test_operational_track_evidence.py",
         "tests/test_stable_v1_qualification_contract.py",
+        "tests/test_concept_discovery_contracts.py",
         "tests/test_documentation_contracts.py",
         "tests/test_ingestor_contracts.py",
         "tests/test_source_parity.py",
@@ -137,6 +138,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_matching_engine_parity.py",
         "tests/test_mojo_qualification.py",
         "tests/test_query_service.py",
+        "tests/test_concept_query_service.py",
         "tests/test_product_api.py",
         "tests/test_product_cli.py",
         "tests/test_canada_native_adapters.py",
@@ -163,6 +165,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
     "property": (
         "tests/test_nzulm_fhir_properties.py",
         "tests/test_matching_properties.py",
+        "tests/test_concept_discovery_properties.py",
     ),
     "edge": (
         "tests/test_edge_cases.py",
