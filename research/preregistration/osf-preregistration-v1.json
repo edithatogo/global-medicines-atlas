@@ -1,0 +1,49 @@
+{
+  "schema_id": "global-medicines-atlas.osf-preregistration-package",
+  "schema_version": 1,
+  "status": "draft_not_submitted",
+  "external_actions_permitted": false,
+  "title": "Global Medicines Atlas: prospective protocol for regulatory approval and public funding comparisons",
+  "summary": "A prospective, descriptive study of source-supported medicine regulatory and public-funding status across jurisdictions, with explicit comparison validity, provenance, coverage, uncertainty, and rights boundaries.",
+  "research_questions": [
+    "How does source-supported regulatory status vary for comparable medicine entities across included jurisdictions and times?",
+    "How does source-supported public funding status vary independently for those comparable entities across included jurisdictions and times?",
+    "How do source coverage, mapping validity, missingness, and conflicts affect those descriptive comparisons?"
+  ],
+  "outcome_dimensions": ["regulatory_status", "funding_status"],
+  "registration_responses": {
+    "study_type": "Observational, descriptive, secondary analysis of governed public administrative medicine sources.",
+    "hypotheses": "No confirmatory hypothesis tests or causal hypotheses are preregistered; analyses are descriptive.",
+    "design": "Repeated cross-jurisdiction status comparisons using bitemporal assertions and M-090 validity states.",
+    "sampling_plan": "The denominator is the versioned source census and eligibility rules in the academic protocol, not an inferred global universe.",
+    "variables": "Regulatory and funding status are separate outcomes; entity, indication, population, time, mapping, provenance, and uncertainty qualify each comparison.",
+    "analysis_plan": "Use the committed Phase 2 analysis plan, report denominators and unknowns, and label any unplanned analysis exploratory.",
+    "stopping_rule": "Freeze the preregistered source census and software identities at approved registration; later additions are prospective amendments."
+  },
+  "data_management": {
+    "storage": "Version-controlled contracts, schemas, lawful fixtures, and derived metadata; source payloads remain under source-specific controls.",
+    "retention": "Retain immutable protocol releases, manifests, checksums, amendment history, and deviation records with repository history.",
+    "access": "Public outputs contain only redistributable or sufficiently derived material; restricted inputs are access-controlled and excluded.",
+    "restricted_payload_redistribution": false,
+    "public_outputs": "Protocol, code, schemas, provenance, aggregate findings, and rights-cleared derived datasets only."
+  },
+  "ethics": {
+    "individual_participant_data": false,
+    "clinical_decision_support": false,
+    "risk_statement": "The study uses medicine administrative records and no individual participant data; principal risks are misinterpretation, source-rights breach, and overstated coverage.",
+    "review_statement": "Institutional ethics applicability and final public wording require maintainer confirmation before external submission."
+  },
+  "registers": {
+    "amendments": "research/preregistration/amendments.md",
+    "deviations": "research/protocol/deviations.jsonl"
+  },
+  "source_attachments": [
+    "docs/research/academic-protocol.md",
+    "docs/research/academic-analysis-plan.md",
+    "research/preregistration/amendments.md",
+    "research/preregistration/data-management-and-ethics.md",
+    "research/preregistration/citations.json"
+  ],
+  "citation_ids": ["OSF-REGISTRATIONS", "WILKINSON-2016", "NOSEK-2018"],
+  "maintainer_review": {"complete": false, "required_before_submission": true}
+}

@@ -180,6 +180,9 @@
   software/data identities and reproducible execution.
   Phase 1 is governed by `schemas/academic-protocol-v1.json`, projected from
   `research/protocol/academic-protocol-v1.json`, and traced to GitHub [#67](https://github.com/edithatogo/global-medicines-atlas/issues/67).
+  Phase 3 is governed by `schemas/osf-preregistration-package-v1.json` and
+  `schemas/osf-submission-manifest-v1.json`; its deterministic offline package
+  remains `draft_not_submitted` until explicit maintainer approval.
 
 ## Should Have
 

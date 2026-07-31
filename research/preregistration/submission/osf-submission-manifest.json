@@ -1,0 +1,63 @@
+{
+  "artifacts": [
+    {
+      "bytes": 2230,
+      "media_type": "text/markdown",
+      "path": "00-cover-preregistration.md",
+      "sha256": "17ba2a9a8859f867496b3fb0d134d8454a4e5967ebf4b7e6c0277f3363015fac"
+    },
+    {
+      "bytes": 3705,
+      "media_type": "application/json",
+      "path": "01-structured-responses.json",
+      "sha256": "a584fa382216abb927e0d26e377b977219cf6e63b3e47e0eb5ed7e5f38b0364a"
+    },
+    {
+      "bytes": 6153,
+      "media_type": "text/markdown",
+      "path": "02-academic-protocol.md",
+      "sha256": "4004d63b33e84f4d5b30097a93ab353c290fc51f430ede59d043cadaf2bfce03"
+    },
+    {
+      "bytes": 5304,
+      "media_type": "text/markdown",
+      "path": "03-analysis-plan.md",
+      "sha256": "99b86d0cce009133698ee654a9e44553fd40640e16bf396e0b104f4c33a3d6f6"
+    },
+    {
+      "bytes": 346,
+      "media_type": "text/markdown",
+      "path": "04-amendment-history.md",
+      "sha256": "038655edc23cecd01c916f7807a0aad0ba644222300e809bda58d6bdf84897ab"
+    },
+    {
+      "bytes": 78,
+      "media_type": "text/plain",
+      "path": "05-deviation-register.txt",
+      "sha256": "b539a644c3ffbb66192b8ff6d0af3caab3eeb7c046aa119f2e6599fb92e41f68"
+    },
+    {
+      "bytes": 556,
+      "media_type": "text/markdown",
+      "path": "06-data-management-and-ethics.md",
+      "sha256": "6fe331ca8359ab8c604f10445995c080ea668dbcd14852a8f0eb3943bff649cd"
+    },
+    {
+      "bytes": 456,
+      "media_type": "application/json",
+      "path": "07-citations.json",
+      "sha256": "33af0c48848e2b6c644010ab05457cba1c589cc272c8665c98679748d9c69f4b"
+    },
+    {
+      "bytes": 600,
+      "media_type": "text/markdown",
+      "path": "README.md",
+      "sha256": "605fd1e45bf730fb38f2553c09b50ca22a45773d445ffdccc37f0b048cbbb629"
+    }
+  ],
+  "network_access": "prohibited",
+  "schema_id": "global-medicines-atlas.osf-submission-manifest",
+  "schema_version": 1,
+  "source_contract": "research/preregistration/osf-preregistration-v1.json",
+  "submission_state": "offline_rehearsal_only"
+}

@@ -32,12 +32,19 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 
 ## Phase 3: OSF-ready preregistration package
 
-- [ ] Task: Generate the covering OSF preregistration narrative and structured attachments
-- [ ] Task: Add amendment history, deviation register, data-management and ethics statements
-- [ ] Task: Generate citations, checksums and a machine-readable submission manifest
-- [ ] Task: Rehearse a clean offline build and validate every documented command
+- [x] Task: Generate the covering OSF preregistration narrative and structured attachments
+- [x] Task: Add amendment history, deviation register, data-management and ethics statements
+- [x] Task: Generate citations, checksums and a machine-readable submission manifest
+- [x] Task: Rehearse a clean offline build and validate every documented command
 - [ ] Task: Obtain explicit maintainer review before any external submission
-- [ ] Task: Phase Verification & Checkpoint
+- [x] Task: Phase Verification & Checkpoint
+  - The deterministic offline rehearsal contains ten committed files, validates
+    strict package and manifest schemas, verifies every declared byte count and
+    SHA-256 digest, and executes both documented commands in an isolated output
+    directory. Focused tests, routine checks, BasedPyright strict, the 868-test
+    unit lane, and the 1,570-test 95.19% coverage gate passed locally. The draft
+    remains `draft_not_submitted`; maintainer review and every external record
+    remain explicitly open.
 
 ## Phase 4: Persistent identities and external verification
 
