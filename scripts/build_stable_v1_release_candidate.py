@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import csv
 import gzip
 import hashlib
 import io
@@ -234,15 +236,41 @@ def built_wheel_version(path: Path) -> str:
 def canonicalize_wheel(path: Path) -> None:
     """Rewrite a wheel with platform-independent ZIP metadata and storage."""
     with zipfile.ZipFile(path) as source:
-        members = tuple(
-            (name, source.read(name), name.endswith("/"))
+        members = {
+            name: (source.read(name), name.endswith("/"))
             for name in sorted(source.namelist())
+        }
+    for name, (payload, is_directory) in tuple(members.items()):
+        if name.endswith("/_version.py"):
+            members[name] = (payload.replace(b"\r\n", b"\n"), is_directory)
+    record_names = [
+        name for name in members if name.endswith(".dist-info/RECORD")
+    ]
+    if len(record_names) != 1:
+        raise ReleaseCandidateError(
+            "built wheel must contain exactly one RECORD file"
         )
+    record_name = record_names[0]
+    record_output = io.StringIO(newline="")
+    writer = csv.writer(record_output, lineterminator="\n")
+    for name, (payload, is_directory) in sorted(members.items()):
+        if is_directory:
+            continue
+        if name == record_name:
+            writer.writerow((name, "", ""))
+            continue
+        digest = base64.urlsafe_b64encode(hashlib.sha256(payload).digest())
+        writer.writerow((
+            name,
+            f"sha256={digest.rstrip(b'=').decode()}",
+            str(len(payload)),
+        ))
+    members[record_name] = (record_output.getvalue().encode(), False)
     output = io.BytesIO()
     with zipfile.ZipFile(
         output, mode="w", compression=zipfile.ZIP_STORED
     ) as archive:
-        for name, payload, is_directory in members:
+        for name, (payload, is_directory) in sorted(members.items()):
             info = zipfile.ZipInfo(name, date_time=_ZIP_EPOCH)
             info.create_system = 3
             info.compress_type = zipfile.ZIP_STORED
@@ -273,6 +301,7 @@ def canonicalize_sdist(path: Path, *, source_date_epoch: str) -> None:
             mode="wb",
             fileobj=output,
             mtime=int(source_date_epoch),
+            compresslevel=0,
         ) as compressed,
         tarfile.open(
             fileobj=compressed,
