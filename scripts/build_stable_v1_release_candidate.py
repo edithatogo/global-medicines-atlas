@@ -6,13 +6,14 @@ import argparse
 import hashlib
 import json
 import os
+import platform
 import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import tempfile
 import zipfile
 from collections.abc import Sequence
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 
 from scripts.qualify_release import verify_runtime_sbom
 
@@ -58,6 +59,28 @@ _REFERENCE_FILES = {
     "release-evidence-schema": "schemas/release-evidence-v1.json",
     "release-workflow": ".github/workflows/release-provenance.yml",
 }
+
+_PACKAGED_TEXT_SAMPLES = (
+    "src/global_medicines_atlas/static/atlas-autocomplete.js",
+    "conductor/tracks/stable_v1_qualification_20260729/evidence.jsonl",
+    "quality/qualifications/stable-v1-hosted-governance.json.sha256",
+)
+
+_CONSUMER_PROBE = """
+import json
+from importlib.metadata import version
+from typing import cast
+from global_medicines_atlas import __version__
+from global_medicines_atlas.api import create_app
+from global_medicines_atlas.query_service import ReadOnlyQueryService
+schema = create_app(cast(ReadOnlyQueryService, object())).openapi()
+print(json.dumps({
+    'api': 'passed',
+    'metadata_version': version('global-medicines-atlas'),
+    'openapi_paths': len(schema['paths']),
+    'package_version': __version__,
+}, sort_keys=True))
+"""
 
 
 def _run(
@@ -218,6 +241,255 @@ def assert_reproducible_builds(
         )
 
 
+def portable_venv_python(environment: Path) -> Path:
+    """Resolve either standard virtual-environment interpreter layout."""
+    candidates = (
+        environment / "Scripts/python.exe",
+        environment / "bin/python",
+    )
+    existing = tuple(path for path in candidates if path.is_file())
+    if len(existing) != 1:
+        raise ReleaseCandidateError(
+            "consumer virtual environment has no unambiguous interpreter layout"
+        )
+    return existing[0]
+
+
+def _parse_consumer_probe(
+    payload: bytes, expected_version: str
+) -> dict[str, Any]:
+    try:
+        raw: object = json.loads(payload)
+    except (UnicodeError, json.JSONDecodeError) as error:
+        raise ReleaseCandidateError(
+            "consumer probe did not emit valid JSON"
+        ) from error
+    if not isinstance(raw, dict):
+        raise ReleaseCandidateError("consumer probe must emit one JSON object")
+    probe = cast("dict[str, Any]", raw)
+    if (
+        probe.get("api") != "passed"
+        or probe.get("package_version") != expected_version
+        or probe.get("metadata_version") != expected_version
+        or not isinstance(probe.get("openapi_paths"), int)
+        or cast("int", probe["openapi_paths"]) < 1
+    ):
+        raise ReleaseCandidateError(
+            "consumer import, version, or API probe did not match the receipt"
+        )
+    return probe
+
+
+def consume_candidate(
+    *,
+    root: Path,
+    stage: Path,
+    receipt_path: Path,
+    artifact_role: ArtifactRole,
+    environment: Path,
+) -> dict[str, object]:
+    """Install and independently probe one exact candidate distribution."""
+    resolved_root = root.resolve(strict=True)
+    resolved_stage = stage.resolve(strict=True)
+    resolved_environment = (
+        environment
+        if environment.is_absolute()
+        else resolved_root / environment
+    )
+    if resolved_environment.exists():
+        raise ReleaseCandidateError(
+            "consumer virtual environment must not already exist"
+        )
+    receipt = receipt_from_json(receipt_path.resolve(strict=True))
+    verify_candidate_package(
+        root=resolved_root,
+        stage=resolved_stage,
+        receipt=receipt,
+    )
+    matching = tuple(
+        artifact
+        for artifact in receipt.artifacts
+        if artifact.role is artifact_role
+    )
+    if len(matching) != 1:
+        raise ReleaseCandidateError(
+            "candidate has no unique requested distribution"
+        )
+    artifact = matching[0]
+    artifact_path = resolved_stage / artifact.path
+    resolved_environment.parent.mkdir(parents=True, exist_ok=True)
+    _run(
+        resolved_root,
+        "uv",
+        "venv",
+        "--python",
+        "3.14.6",
+        str(resolved_environment),
+    )
+    _run(
+        resolved_root,
+        "uv",
+        "pip",
+        "install",
+        "--python",
+        str(resolved_environment),
+        str(artifact_path),
+    )
+    python = portable_venv_python(resolved_environment)
+    first_probe = _parse_consumer_probe(
+        _run(resolved_root, str(python), "-c", _CONSUMER_PROBE),
+        receipt.package_version,
+    )
+    _run(
+        resolved_root,
+        str(python),
+        "-m",
+        "global_medicines_atlas.cli",
+        "--help",
+    )
+    _run(
+        resolved_root,
+        "uv",
+        "pip",
+        "install",
+        "--python",
+        str(resolved_environment),
+        "--reinstall",
+        str(artifact_path),
+    )
+    second_probe = _parse_consumer_probe(
+        _run(resolved_root, str(python), "-c", _CONSUMER_PROBE),
+        receipt.package_version,
+    )
+    if first_probe != second_probe:
+        raise ReleaseCandidateError("consumer probe changed after reinstall")
+    return {
+        "artifact_role": artifact_role.value,
+        "artifact_sha256": artifact.sha256,
+        "package_version": receipt.package_version,
+        "probe": first_probe,
+        "reinstall": "passed",
+        "state": "passed",
+        "venv_layout": python.relative_to(resolved_environment).as_posix(),
+    }
+
+
+def _packaged_text_evidence(root: Path) -> list[dict[str, object]]:
+    evidence: list[dict[str, object]] = []
+    for relative in _PACKAGED_TEXT_SAMPLES:
+        payload = (root / relative).read_bytes()
+        if b"\r\n" in payload or b"\n" not in payload:
+            raise ReleaseCandidateError(
+                f"packaged text input is not canonical LF: {relative}"
+            )
+        evidence.append({
+            "line_ending": "lf",
+            "path": relative,
+            "sha256": hashlib.sha256(payload).hexdigest(),
+        })
+    return evidence
+
+
+def _build_identity_payload(
+    build: tuple[str, tuple[Path, Path], Path],
+) -> list[dict[str, object]]:
+    _, distributions, sbom = build
+    paths = (*distributions, sbom)
+    roles = ("wheel", "sdist", "sbom")
+    return [
+        {
+            "name": path.name,
+            "role": role,
+            "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            "size": path.stat().st_size,
+        }
+        for role, path in zip(roles, paths, strict=True)
+    ]
+
+
+def clean_detached_reproducibility(root: Path) -> dict[str, object]:
+    """Rebuild one commit from detached LF and CRLF-policy worktrees."""
+    resolved_root = root.resolve(strict=True)
+    source_commit, source_tree, source_date_epoch = _assert_clean_source(
+        resolved_root
+    )
+    policies = (("autocrlf-false", "false"), ("autocrlf-true", "true"))
+    builds: list[tuple[str, tuple[Path, Path], Path]] = []
+    text_evidence: list[list[dict[str, object]]] = []
+    with tempfile.TemporaryDirectory(
+        prefix="gma-stable-v1-detached-", ignore_cleanup_errors=True
+    ) as temporary:
+        temporary_root = Path(temporary)
+        for policy, autocrlf in policies:
+            checkout = temporary_root / policy
+            _run(
+                resolved_root,
+                "git",
+                "-c",
+                f"core.autocrlf={autocrlf}",
+                "worktree",
+                "add",
+                "--detach",
+                str(checkout),
+                source_commit,
+            )
+            try:
+                if _git(
+                    checkout,
+                    "status",
+                    "--porcelain=v1",
+                    "--untracked-files=all",
+                ):
+                    raise ReleaseCandidateError(
+                        f"{policy} detached checkout is not clean"
+                    )
+                if _git(checkout, "rev-parse", "HEAD^{tree}") != source_tree:
+                    raise ReleaseCandidateError(
+                        f"{policy} detached checkout changed the source tree"
+                    )
+                text_evidence.append(_packaged_text_evidence(checkout))
+                builds.append(
+                    _build_once(
+                        checkout,
+                        temporary_root / f"build-{policy}",
+                        source_date_epoch=source_date_epoch,
+                    )
+                )
+            finally:
+                _run(
+                    resolved_root,
+                    "git",
+                    "worktree",
+                    "remove",
+                    "--force",
+                    str(checkout),
+                )
+        if len(builds) != len(policies) or len(text_evidence) != len(policies):
+            raise ReleaseCandidateError(
+                "both detached checkout policies must complete"
+            )
+        assert_reproducible_builds(builds[0], builds[1])
+        if text_evidence[0] != text_evidence[1]:
+            raise ReleaseCandidateError(
+                "packaged text identities differ across checkout policies"
+            )
+        evidence: dict[str, object] = {
+            "artifacts": _build_identity_payload(builds[0]),
+            "checkout_policies": [policy for policy, _ in policies],
+            "cross_platform_ci_required": True,
+            "host_platform": platform.system().casefold(),
+            "package_version": builds[0][0],
+            "packaged_text_inputs": text_evidence[0],
+            "source_commit": source_commit,
+            "source_tree": source_tree,
+            "state": "passed",
+        }
+        evidence["content_sha256"] = hashlib.sha256(
+            canonical_json_bytes(evidence)
+        ).hexdigest()
+        return evidence
+
+
 def _reference(
     root: Path,
     *,
@@ -278,37 +550,58 @@ def verification_commands(
     receipt = DEFAULT_RECEIPT.as_posix()
     values = (
         VerificationCommand(
-            command_id="install-sdist",
+            command_id="verify-sdist-consumer",
             argv=(
                 "uv",
-                "pip",
-                "install",
+                "run",
                 "--python",
-                ".candidate-venv",
-                f"{stage}/dist/{sdist}",
+                "3.14.6",
+                "python",
+                "-m",
+                "scripts.build_stable_v1_release_candidate",
+                "consume",
+                "--root",
+                ".",
+                "--stage",
+                stage,
+                "--receipt",
+                receipt,
+                "--artifact",
+                "sdist",
+                "--environment",
+                "build/stable-v1/consumer-sdist",
             ),
-            expected_result="the exact source distribution installs locally",
+            expected_result=(
+                f"the exact {sdist} source distribution creates its own portable "
+                "environment and passes import, version, API, CLI and reinstall probes"
+            ),
         ),
         VerificationCommand(
-            command_id="install-wheel",
+            command_id="verify-wheel-consumer",
             argv=(
                 "uv",
-                "pip",
-                "install",
+                "run",
                 "--python",
-                ".candidate-venv",
-                f"{stage}/dist/{wheel}",
+                "3.14.6",
+                "python",
+                "-m",
+                "scripts.build_stable_v1_release_candidate",
+                "consume",
+                "--root",
+                ".",
+                "--stage",
+                stage,
+                "--receipt",
+                receipt,
+                "--artifact",
+                "wheel",
+                "--environment",
+                "build/stable-v1/consumer-wheel",
             ),
-            expected_result="the exact wheel installs locally",
-        ),
-        VerificationCommand(
-            command_id="probe-installed-version",
-            argv=(
-                ".candidate-venv/python",
-                "-c",
-                "from global_medicines_atlas import __version__; print(__version__)",
+            expected_result=(
+                f"the exact {wheel} wheel creates its own portable environment and "
+                "passes import, version, API, CLI and reinstall probes"
             ),
-            expected_result="the installed version equals package_version in the receipt",
         ),
         VerificationCommand(
             command_id="verify-candidate",
@@ -491,16 +784,50 @@ def _parser() -> argparse.ArgumentParser:
         command.add_argument("--root", type=Path, default=ROOT)
         command.add_argument("--stage", type=Path, default=DEFAULT_STAGE)
         command.add_argument("--receipt", type=Path, default=DEFAULT_RECEIPT)
+    consume = subparsers.add_parser("consume")
+    consume.add_argument("--root", type=Path, default=ROOT)
+    consume.add_argument("--stage", type=Path, default=DEFAULT_STAGE)
+    consume.add_argument("--receipt", type=Path, default=DEFAULT_RECEIPT)
+    consume.add_argument(
+        "--artifact",
+        type=ArtifactRole,
+        choices=(ArtifactRole.WHEEL, ArtifactRole.SDIST),
+        required=True,
+    )
+    consume.add_argument("--environment", type=Path, required=True)
+    reproduce = subparsers.add_parser("reproduce")
+    reproduce.add_argument("--root", type=Path, default=ROOT)
+    reproduce.add_argument("--output", type=Path)
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     root = args.root.resolve(strict=True)
+    if args.command == "reproduce":
+        evidence = clean_detached_reproducibility(root)
+        if args.output is not None:
+            output = (
+                args.output if args.output.is_absolute() else root / args.output
+            )
+            output.parent.mkdir(parents=True, exist_ok=True)
+            output.write_bytes(canonical_json_bytes(evidence))
+        print(json.dumps(evidence, sort_keys=True))
+        return 0
     stage = args.stage if args.stage.is_absolute() else root / args.stage
     receipt = (
         args.receipt if args.receipt.is_absolute() else root / args.receipt
     )
+    if args.command == "consume":
+        evidence = consume_candidate(
+            root=root,
+            stage=stage,
+            receipt_path=receipt,
+            artifact_role=args.artifact,
+            environment=args.environment,
+        )
+        print(json.dumps(evidence, sort_keys=True))
+        return 0
     digest = (
         build_candidate(root, stage, receipt)
         if args.command == "build"

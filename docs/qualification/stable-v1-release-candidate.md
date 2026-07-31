@@ -21,10 +21,25 @@ uv run --python 3.14.6 python -m scripts.build_stable_v1_release_candidate build
 ```
 
 The command builds twice with the source commit timestamp as
-`SOURCE_DATE_EPOCH`. It fails if the worktree is dirty; the wheel, sdist, or
-normalized SBOM differs between builds; the runtime SBOM disagrees with
-`uv.lock`; any required provenance reference is missing; or any package byte
-fails its manifest or checksum identity.
+`SOURCE_DATE_EPOCH`. Repository text is canonical LF through `.gitattributes`,
+including JavaScript, JSONL, and SHA-256 sidecars; the preserved imported
+`vendor/nzmedicines` exception remains explicitly CRLF. The build fails if the
+worktree is dirty; the wheel, sdist, or normalized SBOM differs between builds;
+the runtime SBOM disagrees with `uv.lock`; any required provenance reference is
+missing; or any package byte fails its manifest or checksum identity.
+
+Independently exercise both LF-oriented and Windows `core.autocrlf=true`
+checkout policies in clean detached worktrees:
+
+```powershell
+uv run --python 3.14.6 python -m scripts.build_stable_v1_release_candidate reproduce --root . --output build/stable-v1/clean-detached-reproducibility.json
+```
+
+The test is also executed by the Linux, macOS, and Windows consumer CI matrix.
+It records the exact source commit/tree and wheel, sdist, SBOM, and representative
+packaged-text identities. A local result establishes only the named host and
+checkout policies; cross-platform qualification requires all hosted matrix
+jobs.
 
 ## Verify exact bytes and provenance
 
@@ -42,11 +57,14 @@ and every repository or Git-object provenance reference.
 
 ## Clean consumer probes
 
-Create a disposable environment and run the `verification_commands` recorded
-in the receipt. The wheel and sdist are tested separately. Confirm that the
-installed `global_medicines_atlas.__version__` equals `package_version` and that
-the existing clean-consumer qualification continues to pass on Linux, macOS,
-and Windows.
+Run the sorted `verification_commands` recorded in the receipt. The wheel and
+sdist consumer commands each create a separate environment under
+`build/stable-v1`, using `uv venv --python 3.14.6`. The verifier discovers the
+standard `bin/python` or `Scripts/python.exe` layout instead of embedding an
+operating-system-specific path. Each exact artifact must independently pass
+installation, import, package/runtime version agreement, OpenAPI construction,
+CLI help, reinstall, and a repeated probe. The existing clean-consumer
+qualification continues to run on Linux, macOS, and Windows.
 
 Deleting the disposable environment and ignored `build/stable-v1` directory
 does not alter repository evidence. Do not upload these bytes, create release

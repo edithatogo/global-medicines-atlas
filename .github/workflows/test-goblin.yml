@@ -146,6 +146,10 @@ jobs:
         with:
           version: "0.11.29"
           enable-cache: true
+      - name: Reproduce candidate from detached LF and CRLF-policy worktrees
+        run: >-
+          uv run --python 3.14.6 pytest -q
+          tests/test_stable_v1_release_candidate_reproducibility.py
       - name: Qualify clean wheel and source-distribution consumers
         env:
           OUTPUT_PATH: build/quality-receipts/consumer-${{ matrix.platform }}.json
