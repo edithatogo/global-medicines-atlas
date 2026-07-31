@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import gzip
 import hashlib
 import io
 import json
@@ -121,7 +122,11 @@ def test_sdist_canonicalization_uses_stored_gzip_blocks(
     canonicalize_sdist(source, source_date_epoch="1700000000")
 
     assert source.read_bytes() == first
-    assert first.startswith(b"\x1f\x8b")
+    assert first[:10] == b"\x1f\x8b\x08\x00\x00\xf1Se\x00\xff"
+    with tarfile.open(fileobj=io.BytesIO(gzip.decompress(first))) as archive:
+        extracted = archive.extractfile("candidate/payload.txt")
+        assert extracted is not None
+        assert extracted.read() == payload
 
 
 def _repository(tmp_path: Path) -> tuple[Path, str, str]:
