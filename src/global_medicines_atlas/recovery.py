@@ -273,10 +273,56 @@ def rollback_restore(receipt: RestoreReceipt) -> None:
     rollback = receipt.rollback_path
     if rollback is None or not rollback.is_dir() or rollback.is_symlink():
         raise RecoveryError("no valid rollback is available")
+    active_identity = _files(receipt.destination)
+    predecessor_identity = _files(rollback)
     failed = receipt.destination.with_name(
         f".{receipt.destination.name}.failed-restore"
     )
     if failed.exists() or failed.is_symlink():
         raise RecoveryError("failed-restore quarantine already exists")
-    receipt.destination.replace(failed)
-    rollback.replace(receipt.destination)
+    temporary = Path(
+        tempfile.mkdtemp(
+            dir=receipt.destination.parent,
+            prefix=f".{receipt.destination.name}.rollback-",
+        )
+    )
+    try:
+        safeguard = temporary / "active-safeguard"
+        _safeguard_tree(receipt.destination, safeguard)
+        try:
+            receipt.destination.replace(failed)
+        except OSError as error:
+            _verify_identity(
+                receipt.destination,
+                active_identity,
+                "canonical active destination",
+            )
+            raise RecoveryError(
+                "active destination quarantine failed; canonical retained"
+            ) from error
+        try:
+            rollback.replace(receipt.destination)
+        except OSError as error:
+            used_safeguard = _recover_predecessor(
+                failed,
+                safeguard,
+                receipt.destination,
+                active_identity,
+            )
+            if used_safeguard:
+                raise RecoveryError(
+                    "rollback publication and primary compensation failed; "
+                    "verified active safeguard recovered"
+                ) from error
+            raise RecoveryError(
+                "rollback publication failed; active destination recovered"
+            ) from error
+        _verify_identity(
+            receipt.destination,
+            predecessor_identity,
+            "published rollback",
+        )
+        _verify_identity(failed, active_identity, "quarantined restore")
+    finally:
+        with suppress(OSError):
+            shutil.rmtree(temporary)
