@@ -361,9 +361,7 @@ def test_canonical_bytes_are_stable_and_compact() -> None:
         "Callable[[dict[str, object]], bytes]",
         vars(canonical_v2)["_canonical_bytes"],
     )
-    assert canonical_bytes({"z": 1, "a": ["x", 2]}) == (
-        b'{"a":["x",2],"z":1}'
-    )
+    assert canonical_bytes({"z": 1, "a": ["x", 2]}) == (b'{"a":["x",2],"z":1}')
 
 
 def test_migration_binds_exact_v1_identity_and_payload() -> None:

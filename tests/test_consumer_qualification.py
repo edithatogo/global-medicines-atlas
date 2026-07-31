@@ -59,13 +59,15 @@ def test_installed_metadata_reports_all_missing_fields_in_required_order(
     monkeypatch.setattr(
         consumer_qualification,
         "metadata",
-        lambda name: observed_names.append(name)
-        or {
-            "Name": missing_value,
-            "Version": "1.0.0",
-            "Summary": missing_value,
-            "Requires-Python": missing_value,
-        },
+        lambda name: (
+            observed_names.append(name)
+            or {
+                "Name": missing_value,
+                "Version": "1.0.0",
+                "Summary": missing_value,
+                "Requires-Python": missing_value,
+            }
+        ),
     )
 
     with pytest.raises(CompatibilityError) as exc_info:
@@ -107,13 +109,15 @@ def test_installed_metadata_returns_exact_validated_identity(
     monkeypatch.setattr(
         consumer_qualification,
         "metadata",
-        lambda name: observed_metadata_names.append(name)
-        or {
-            "Name": "distribution-name",
-            "Version": "3.4.5rc1",
-            "Summary": "A precise summary",
-            "Requires-Python": ">=3.14,<3.15",
-        },
+        lambda name: (
+            observed_metadata_names.append(name)
+            or {
+                "Name": "distribution-name",
+                "Version": "3.4.5rc1",
+                "Summary": "A precise summary",
+                "Requires-Python": ">=3.14,<3.15",
+            }
+        ),
     )
     monkeypatch.setattr(
         consumer_qualification,
@@ -254,8 +258,7 @@ def test_openapi_compatibility_reports_sorted_removed_read_methods() -> None:
         assert_openapi_compatible(baseline, current)
 
     assert str(exc_info.value) == (
-        "public OpenAPI methods removed from /items: "
-        "['get', 'head', 'options']"
+        "public OpenAPI methods removed from /items: ['get', 'head', 'options']"
     )
 
 
@@ -288,12 +291,8 @@ def test_openapi_compatibility_reports_sorted_forbidden_mutations() -> None:
 def test_openapi_compatibility_reports_exact_operation_identity_change(
     method: str, expected_method: str
 ) -> None:
-    baseline = {
-        "paths": {"/items": {method: {"operationId": "stable"}}}
-    }
-    current = {
-        "paths": {"/items": {method: {"operationId": "changed"}}}
-    }
+    baseline = {"paths": {"/items": {method: {"operationId": "stable"}}}}
+    current = {"paths": {"/items": {method: {"operationId": "changed"}}}}
 
     with pytest.raises(CompatibilityError) as exc_info:
         assert_openapi_compatible(baseline, current)
