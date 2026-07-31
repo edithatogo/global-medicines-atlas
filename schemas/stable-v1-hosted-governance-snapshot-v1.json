@@ -1,0 +1,131 @@
+{
+  "$defs": {
+    "Availability": {
+      "description": "Whether the authenticated read-only request returned evidence.",
+      "enum": [
+        "available",
+        "permission_unavailable",
+        "not_supported",
+        "failed"
+      ],
+      "title": "Availability",
+      "type": "string"
+    },
+    "HostedObservation": {
+      "additionalProperties": false,
+      "description": "One normalized REST or GraphQL response and its exact digest.",
+      "properties": {
+        "availability": {
+          "$ref": "#/$defs/Availability"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/JsonValue"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "http_status": {
+          "maximum": 599,
+          "minimum": 0,
+          "title": "Http Status",
+          "type": "integer"
+        },
+        "limitation": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Limitation"
+        },
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "request": {
+          "minLength": 1,
+          "title": "Request",
+          "type": "string"
+        },
+        "response_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Response Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "request",
+        "availability",
+        "http_status",
+        "response_sha256"
+      ],
+      "title": "HostedObservation",
+      "type": "object"
+    },
+    "JsonValue": {}
+  },
+  "additionalProperties": false,
+  "description": "Point-in-time evidence acquired without mutating GitHub.",
+  "properties": {
+    "acquisition_mode": {
+      "const": "github-read-only",
+      "default": "github-read-only",
+      "title": "Acquisition Mode",
+      "type": "string"
+    },
+    "observations": {
+      "items": {
+        "$ref": "#/$defs/HostedObservation"
+      },
+      "title": "Observations",
+      "type": "array"
+    },
+    "project_number": {
+      "const": 35,
+      "title": "Project Number",
+      "type": "integer"
+    },
+    "project_owner": {
+      "const": "edithatogo",
+      "title": "Project Owner",
+      "type": "string"
+    },
+    "repository": {
+      "const": "edithatogo/global-medicines-atlas",
+      "title": "Repository",
+      "type": "string"
+    },
+    "schema_id": {
+      "const": "global-medicines-atlas.stable-v1-hosted-governance.snapshot",
+      "default": "global-medicines-atlas.stable-v1-hosted-governance.snapshot",
+      "title": "Schema Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "repository",
+    "project_owner",
+    "project_number",
+    "observations"
+  ],
+  "title": "HostedGovernanceSnapshot",
+  "type": "object"
+}
