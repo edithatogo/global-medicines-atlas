@@ -165,3 +165,29 @@ jobs:
           path: build/performance/representative/performance-receipt.json
           if-no-files-found: error
           retention-days: 30
+
+  governed-recovery:
+    name: Python 3.14 / governed recovery rehearsal
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.29"
+          enable-cache: true
+      - name: Synchronize locked Python 3.14 environment
+        run: uv sync --python 3.14.6 --locked
+      - name: Rehearse governed local recovery
+        run: >
+          uv run --python 3.14.6 python
+          scripts/rehearse_governed_recovery.py
+      - name: Upload governed recovery receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: governed-recovery-receipt
+          path: build/recovery/rehearsal-receipt.json
+          if-no-files-found: error
+          retention-days: 30

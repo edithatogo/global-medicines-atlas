@@ -42,7 +42,7 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 - [x] Task: Review surviving mutants and benchmark regressions against immutable baselines — immutable performance and mutation regression gates pass; 523 survivors are reconciled by module with no unsupported waivers, and the 72.56% score explicitly blocks v0.8 promotion pending remediation to at most 381 survivors ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39)) `7853f78`
 - [x] Task: Record Python 3.14 as authoritative and Mojo as experimental: the pinned hosted smoke canary proves toolchain availability, while the machine-validated receipt denies promotion because no real kernel, Arrow parity, runtime fallback path or representative benchmark exists ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39)) `9d0d04b`
 - [x] Task: Run the medicine-data integrity threat model for poisoned downloads, stale snapshots, identifier collisions and false status inference ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39)) `8df1793`
-- [ ] Task: Rehearse clean recovery from governed artifacts ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39))
+- [~] Task: Rehearse clean recovery from governed artifacts ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39))
 - [ ] Task: Verify hosted rulesets, security settings, labels and project views ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39))
 - [ ] Task: Validate contributor, operator, source-onboarding and incident documentation ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39))
 - [ ] Task: Record v0.8 qualification evidence ([#39](https://github.com/edithatogo/global-medicines-atlas/issues/39))
