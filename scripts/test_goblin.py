@@ -164,7 +164,10 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_atlas_e2e.py",
         "tests/test_atlas_discovery_e2e.py",
     ),
-    "smoke": ("tests/test_smoke.py",),
+    "smoke": (
+        "tests/test_smoke.py",
+        "tests/test_core_without_semantic_extra.py",
+    ),
     "property": (
         "tests/test_nzulm_fhir_properties.py",
         "tests/test_matching_properties.py",

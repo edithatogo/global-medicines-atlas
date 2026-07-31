@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from hashlib import sha256
 from pathlib import Path
 
@@ -8,6 +9,7 @@ from global_medicines_atlas.matching_indexes import (
 )
 from global_medicines_atlas.receipts import RightsState
 from global_medicines_atlas.semantic_retrieval import (
+    SemanticIndexIdentity,
     optional_semantic_retriever,
 )
 
@@ -43,9 +45,20 @@ def test_lancedb_regeneration_and_offline_search(tmp_path: Path) -> None:
 
     first = generate_lancedb_index(rows, lineage, tmp_path)
     second = generate_lancedb_index(reversed(rows), lineage, tmp_path)
+    identity = SemanticIndexIdentity(
+        schema_version=first.manifest_version,
+        index_version=lineage.index_version,
+        index_digest=first.index_digest,
+        embedding_model_id=lineage.embedding_model,
+        embedding_model_revision=lineage.embedding_version,
+        source_snapshot_digest=lineage.source_snapshot_sha256,
+        vector_dimension=first.dimensions,
+        generated_at=datetime(2026, 7, 31, tzinfo=UTC),
+    )
     retriever = optional_semantic_retriever(
         tmp_path,
-        index_version=lineage.index_version,
+        identity=identity,
+        expected_identity=identity,
     )
 
     assert first == second

@@ -36,9 +36,13 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     conventions. The accessible Atlas now adds explicit-selection combobox and
     listbox discovery, keyboard and live-status behavior, visible canonical
     identity, hostile-label escaping, and a server-rendered no-JavaScript
-    fallback. Semantic augmentation remains a later increment.
+    fallback. Governed semantic candidates may now augment exact and lexical
+    results without replacing their authority or implying equivalence.
 - [ ] Task: Define clean-wheel consumer, supported-platform, package-metadata and public-API compatibility gates ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
-- [ ] Task: Define core and optional-semantic installation boundaries, LanceDB index/model identity and deterministic fallback gates ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
+- [x] Task: Define core and optional-semantic installation boundaries, LanceDB index/model identity and deterministic fallback gates ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
+  - LanceDB is a `semantic` extra rather than a core dependency. Immutable,
+    content-bound index/model identity must match exactly; absent dependencies,
+    identities and indexes produce the deterministic unavailable fallback.
 - [ ] Task: Define non-overlapping GitHub, Hugging Face, Zenodo and OSF dataset/protocol identities and licence gates ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
 - [ ] Task: Phase Verification & Checkpoint
 
