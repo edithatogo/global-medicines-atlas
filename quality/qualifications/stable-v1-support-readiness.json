@@ -1,0 +1,100 @@
+{
+  "schema_id": "global-medicines-atlas.stable-v1-support-readiness",
+  "schema_version": 1,
+  "release": "1.0.0",
+  "support_boundaries": [
+    {
+      "gate_id": "python-314-reference",
+      "scope": "CPython 3.14 reference implementation",
+      "state": "passed",
+      "evidence": ["conductor/tech-stack.md", "quality/qualifications/v08.json"],
+      "blocker": null
+    },
+    {
+      "gate_id": "supported-platforms",
+      "scope": "Clean wheel and sdist consumers on Windows, Linux, and macOS",
+      "state": "unverified",
+      "evidence": ["pyproject.toml", "docs/qualification/stable-v1-contract.md"],
+      "blocker": "Clean-installed consumer rehearsals have not passed on every candidate platform."
+    },
+    {
+      "gate_id": "semantic-optional-boundary",
+      "scope": "Core installation and deterministic retrieval without LanceDB",
+      "state": "unverified",
+      "evidence": ["src/global_medicines_atlas/semantic_retrieval.py", "docs/matching/indexes.md"],
+      "blocker": "The package boundary and clean core-only installation test are not implemented."
+    },
+    {
+      "gate_id": "documentation-readiness",
+      "scope": "Operator, contributor, source, limitation, and support documentation",
+      "state": "unverified",
+      "evidence": ["docs/operations/README.md", "docs/data-sources/global-source-census.md"],
+      "blocker": "Stable support ownership, response expectations, and platform policy are not yet qualified."
+    }
+  ],
+  "limitations": [
+    {
+      "limitation_id": "LIMIT-001",
+      "statement": "Python 3.14 is authoritative; Mojo is experimental and has no promoted runtime kernel.",
+      "user_impact": "Users must not rely on Mojo for a capability or performance guarantee.",
+      "evidence": ["quality/qualifications/mojo-v08.json"]
+    },
+    {
+      "limitation_id": "LIMIT-002",
+      "statement": "Catalogued sources without live receipts do not establish current, complete, or lawful production data.",
+      "user_impact": "Global coverage metrics describe source discovery and local capability, not global medicine completeness.",
+      "evidence": ["docs/data-sources/global-source-census.md"]
+    },
+    {
+      "limitation_id": "LIMIT-003",
+      "statement": "Regulatory approval and funding remain separate evidence dimensions.",
+      "user_impact": "Absence from one dimension cannot be interpreted as absence from the other.",
+      "evidence": ["conductor/product.md"]
+    },
+    {
+      "limitation_id": "LIMIT-004",
+      "statement": "No stable publication is authorized while licence and release approvals are unresolved.",
+      "user_impact": "Qualification artifacts are internal evidence contracts, not public release authorization.",
+      "evidence": ["quality/qualifications/stable-v1-contract.json"]
+    }
+  ],
+  "residual_risks": [
+    {
+      "risk_id": "RISK-001",
+      "description": "Independent production backup storage, RPO, RTO and crash consistency are not qualified.",
+      "owner": "maintainer",
+      "disposition": "unresolved",
+      "blocking": true,
+      "gate_id": "stable-v1-clean-room-rehearsal",
+      "evidence": ["quality/qualifications/v08.json"]
+    },
+    {
+      "risk_id": "RISK-002",
+      "description": "Renovate App activation requires maintainer authority.",
+      "owner": "maintainer",
+      "disposition": "unresolved",
+      "blocking": true,
+      "gate_id": "renovate-app-activation",
+      "evidence": ["quality/qualifications/v08.json"]
+    },
+    {
+      "risk_id": "RISK-003",
+      "description": "Software and dataset licence approvals are unresolved.",
+      "owner": "maintainer",
+      "disposition": "unresolved",
+      "blocking": true,
+      "gate_id": "stable-v1-licence-approval",
+      "evidence": ["src/global_medicines_atlas/publication_contracts.py"]
+    },
+    {
+      "risk_id": "RISK-004",
+      "description": "Mojo remains experimental; Python 3.14 is authoritative.",
+      "owner": "project",
+      "disposition": "accepted",
+      "blocking": false,
+      "gate_id": "python-314-reference",
+      "evidence": ["quality/qualifications/mojo-v08.json"]
+    }
+  ],
+  "readiness_state": "blocked"
+}

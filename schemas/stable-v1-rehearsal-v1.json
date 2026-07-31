@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/stable-v1-rehearsal-v1.json",
+  "title": "Stable v1 clean-room and migration rehearsal definitions",
+  "type": "object",
+  "required": ["schema_id", "schema_version", "release", "rehearsals"],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.stable-v1-rehearsals"},
+    "schema_version": {"const": 1},
+    "release": {"const": "1.0.0"},
+    "rehearsals": {
+      "type": "array",
+      "minItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": [
+          "rehearsal_id",
+          "kind",
+          "contract",
+          "inputs",
+          "required_assertions",
+          "receipt_path",
+          "state",
+          "blocking"
+        ],
+        "properties": {
+          "rehearsal_id": {"pattern": "^REHEARSAL-[0-9]{3}$"},
+          "kind": {
+            "enum": [
+              "clean_room_reproduction",
+              "canonical_schema_migration",
+              "canonical_schema_rollback",
+              "governed_recovery"
+            ]
+          },
+          "contract": {"type": "string", "minLength": 1},
+          "inputs": {"$ref": "#/$defs/nonemptyStrings"},
+          "required_assertions": {"$ref": "#/$defs/nonemptyStrings"},
+          "receipt_path": {"type": "string", "minLength": 1},
+          "state": {"enum": ["defined", "passed", "failed", "blocked"]},
+          "blocking": {"type": "boolean"},
+          "blocker": {"type": ["string", "null"], "minLength": 1}
+        },
+        "allOf": [
+          {
+            "if": {"properties": {"state": {"const": "passed"}}},
+            "then": {"properties": {"blocker": {"type": "null"}}}
+          },
+          {
+            "if": {"properties": {"state": {"enum": ["defined", "failed", "blocked"]}}},
+            "then": {"required": ["blocker"], "properties": {"blocker": {"type": "string"}}}
+          }
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "nonemptyStrings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "additionalProperties": false
+}

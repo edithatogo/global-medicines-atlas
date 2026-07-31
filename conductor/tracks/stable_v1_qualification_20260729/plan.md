@@ -8,9 +8,17 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   - Initial fail-closed projection: `quality/qualifications/stable-v1-contract.json`
     validated by `schemas/stable-v1-qualification-v1.json`; implementation and
     durable-evidence qualification remain open.
-- [ ] Task: Define clean-room reproduction and migration rehearsals ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
-- [ ] Task: Define support, limitation and residual-risk gates ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
-- [ ] Task: Define jurisdiction/source maturity and documentation-readiness matrices ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
+- [x] Task: Define clean-room reproduction and migration rehearsals ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
+  - Four receipt-producing rehearsal definitions distinguish release clean-room
+    reproduction, structural canonical migration, rollback, and governed
+    recovery without implementing the runtime schema migration.
+- [x] Task: Define support, limitation and residual-risk gates ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
+  - The support-readiness register records candidate platforms, the optional
+    semantic boundary, user-facing limitations, ownership, and fail-closed
+    blocking risks.
+- [x] Task: Define jurisdiction/source maturity and documentation-readiness matrices ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
+  - A deterministic projection covers every canonical catalog `source_id` and
+    jurisdiction while conservatively capping catalog-derived maturity at M2.
 - [~] Task: Contract canonical medicine schema v2 and migration compatibility for substances, products, packages, indications, prices and restrictions ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
   - Structural contract added as `schemas/canonical-medicine-v2.json`; runtime
     migration and rollback rehearsal remain open and are explicitly distinct
