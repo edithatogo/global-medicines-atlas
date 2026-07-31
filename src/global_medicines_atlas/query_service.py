@@ -23,6 +23,7 @@ from .product_contracts import (
     AsOfClocks,
     ComparisonQuery,
     ComparisonResponse,
+    ComparisonValidity,
     ConceptDetail,
     ConceptIdentifier,
     ConceptName,
@@ -583,6 +584,9 @@ class ReadOnlyQueryService:
         jurisdictions = sorted(query.jurisdictions)
         dimensions = sorted(dimension.value for dimension in query.dimensions)
         with self._connection() as connection:
+            validity = self._comparison_validity(
+                connection, query, jurisdictions, dimensions
+            )
             candidate_keys = self._comparison_page_keys(
                 connection,
                 query,
@@ -614,8 +618,40 @@ class ReadOnlyQueryService:
                 query, len(conclusions), query.limit, next_cursor
             ),
             conclusions=tuple(conclusions),
-            validity=abstaining_status_comparison_validity(tuple(conclusions)),
+            validity=validity,
         )
+
+    def _comparison_validity(
+        self,
+        connection: duckdb.DuckDBPyConnection,
+        query: ComparisonQuery,
+        jurisdictions: list[str],
+        dimensions: list[str],
+    ) -> tuple[ComparisonValidity, ...]:
+        """Return page-invariant validity for the bounded query cohort."""
+        cohort_limit = len(jurisdictions) * len(dimensions)
+        cohort_query = query.model_copy(
+            update={"cursor": None, "limit": cohort_limit}
+        )
+        cohort_keys = self._comparison_page_keys(
+            connection,
+            cohort_query,
+            jurisdictions,
+            dimensions,
+            None,
+        )
+        pairs = [(key[0], key[1]) for key in cohort_keys]
+        assertion_rows = self._comparison_assertions(
+            connection, cohort_query, jurisdictions, dimensions, pairs
+        )
+        coverage_rows = self._comparison_coverage(
+            connection, cohort_query, jurisdictions, dimensions, pairs
+        )
+        conclusions = self._build_conclusions(
+            cohort_query, assertion_rows, coverage_rows
+        )
+        conclusions.sort(key=self._conclusion_key)
+        return abstaining_status_comparison_validity(tuple(conclusions))
 
     def coverage(self, query: CoverageQuery) -> CoverageResponse:
         """Return explicit coverage observations without invented denominators."""

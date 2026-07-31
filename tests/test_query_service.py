@@ -305,6 +305,59 @@ def test_cursor_is_stable_and_bound_to_filters_and_clocks(
         )
 
 
+def test_comparison_validity_is_stable_across_limit_one_pages(
+    service: ReadOnlyQueryService,
+) -> None:
+    first = service.comparisons(_comparison(limit=1))
+    assert first.metadata.page.next_cursor is not None
+    second = service.comparisons(
+        _comparison(limit=1, cursor=first.metadata.page.next_cursor)
+    )
+
+    assert first.validity == second.validity
+    assert len(first.validity) == 4
+    assert all(
+        assessment.outcome.value == "insufficient_evidence"
+        for assessment in first.validity
+    )
+    assert all(
+        assessment.left_subject_id.endswith(":regulatory")
+        == assessment.right_subject_id.endswith(":regulatory")
+        for assessment in first.validity
+    )
+    assert all(
+        not assessment.establishes_medicine_equivalence
+        and not assessment.establishes_substitutability
+        and not assessment.establishes_therapeutic_interchangeability
+        and not assessment.establishes_equal_benefit
+        for assessment in first.validity
+    )
+
+
+def test_comparison_validity_excludes_missing_and_cross_dimension_pairs(
+    service: ReadOnlyQueryService,
+) -> None:
+    response = service.comparisons(_comparison(limit=1))
+    subjects = {
+        subject
+        for assessment in response.validity
+        for subject in (
+            assessment.left_subject_id,
+            assessment.right_subject_id,
+        )
+    }
+
+    assert "rx:1:US:funding" not in subjects
+    assert all(
+        left.rsplit(":", maxsplit=1)[-1]
+        == right.rsplit(":", maxsplit=1)[-1]
+        for left, right in (
+            (assessment.left_subject_id, assessment.right_subject_id)
+            for assessment in response.validity
+        )
+    )
+
+
 def test_evidence_and_coverage_use_sql_keyset_pages(
     service: ReadOnlyQueryService,
 ) -> None:
