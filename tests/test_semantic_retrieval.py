@@ -1,5 +1,7 @@
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import cast
 
 import pytest
 from pydantic import ValidationError
@@ -97,6 +99,43 @@ def test_direct_retriever_rejects_identity_mismatch(tmp_path: Path) -> None:
             identity=identity(),
             expected_identity=identity(source_snapshot_digest="c" * 64),
         )
+
+
+def test_direct_retriever_connects_before_rejecting_invalid_content(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    observed: dict[str, object] = {}
+
+    class FakeDatabase:
+        def open_table(self, name: str) -> object:
+            observed["table_name"] = name
+            return object()
+
+    class FakeLanceDb:
+        @staticmethod
+        def connect(path: str) -> FakeDatabase:
+            observed["path"] = path
+            return FakeDatabase()
+
+    monkeypatch.setattr(
+        semantic_retrieval,
+        "import_module",
+        lambda _name: FakeLanceDb(),
+    )
+    (tmp_path / "manifest.json").write_text("{}", encoding="utf-8")
+    with pytest.raises(ValueError, match="content receipt is invalid"):
+        LanceDBSemanticRetriever(
+            tmp_path,
+            table_name="custom",
+            identity=identity(),
+            expected_identity=identity(),
+        )
+
+    assert observed == {
+        "path": str(tmp_path),
+        "table_name": "custom",
+    }
 
 
 def test_semantic_candidates_only_augment_authoritative_order() -> None:
@@ -222,3 +261,22 @@ def test_optional_retriever_preserves_constructor_arguments(
         "identity": governed,
         "expected_identity": expected,
     }
+
+
+@pytest.mark.parametrize(
+    "row",
+    [
+        {"vector": "not-a-vector"},
+        {"vector": [0.1, "not-numeric"]},
+    ],
+)
+def test_live_index_rows_reject_invalid_vectors(
+    row: dict[str, object],
+) -> None:
+    matching_row = cast(
+        "Callable[[dict[str, object]], object]",
+        vars(semantic_retrieval)["_matching_row"],
+    )
+
+    with pytest.raises(TypeError, match="vector"):
+        matching_row(row)
