@@ -134,3 +134,60 @@ def test_runtime_verdict_conforms_to_versioned_json_schema() -> None:
     )
 
     jsonschema.validate(verdict.model_dump(mode="json"), schema)
+
+
+@pytest.mark.parametrize(
+    ("state", "outcome", "explanation"),
+    [
+        (
+            ComparisonDimensionState.ALIGNED,
+            ComparisonValidityOutcome.VALID,
+            (
+                "Evidence supports a bounded status comparison at the stated "
+                "dimensions only."
+            ),
+        ),
+        (
+            ComparisonDimensionState.COMPATIBLE,
+            ComparisonValidityOutcome.VALID_WITH_CAVEATS,
+            (
+                "Evidence supports a bounded status comparison with stated "
+                "dimensional caveats only."
+            ),
+        ),
+        (
+            ComparisonDimensionState.UNKNOWN,
+            ComparisonValidityOutcome.INSUFFICIENT_EVIDENCE,
+            (
+                "Status comparison is not qualified because one or more "
+                "material dimensions lack explicit evidence."
+            ),
+        ),
+        (
+            ComparisonDimensionState.MISMATCH,
+            ComparisonValidityOutcome.INAPPROPRIATE_COMPARISON,
+            (
+                "Status comparison is inappropriate because material "
+                "dimensions differ: mapping."
+            ),
+        ),
+    ],
+)
+def test_each_comparison_state_has_an_exact_fail_closed_verdict(
+    state: ComparisonDimensionState,
+    outcome: ComparisonValidityOutcome,
+    explanation: str,
+) -> None:
+    verdict = evaluate_comparison_validity(
+        left_subject_id="left:subject",
+        right_subject_id="right:subject",
+        dimensions=dimensions(mapping=state),
+    )
+
+    assert verdict.left_subject_id == "left:subject"
+    assert verdict.right_subject_id == "right:subject"
+    assert verdict.outcome is outcome
+    assert verdict.material_mismatches == (
+        ("mapping",) if state is ComparisonDimensionState.MISMATCH else ()
+    )
+    assert verdict.explanation == explanation

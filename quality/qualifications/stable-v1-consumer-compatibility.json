@@ -7,5 +7,5 @@
   "probes": ["metadata", "install", "reinstall", "import", "dynamic_version", "cli", "api", "openapi_compatibility", "core_fallback"],
   "openapi_baseline": "contracts/openapi-v1.json",
   "receipt_pattern": "build/quality-receipts/consumer-{platform}.json",
-  "state": "contracted"
+  "state": "qualified"
 }

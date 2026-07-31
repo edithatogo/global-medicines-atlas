@@ -246,6 +246,7 @@ ignore = [
 "scripts/qualify_clean_consumer.py" = ["suspicious-subprocess-import", "subprocess-without-shell-equals-true"]
 "scripts/generate_nz_asset_inventory.py" = ["too-many-return-statements", "too-many-branches"]
 "scripts/profile_smoke.py" = ["module-import-not-at-top-of-file", "assert"]
+"tests/test_consumer_qualification.py" = ["import-outside-top-level"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["global_medicines_atlas", "sources"]
@@ -256,6 +257,10 @@ line-ending = "lf"
 
 [tool.mutmut]
 source_paths = [
+  "src/global_medicines_atlas/canonical_v2.py",
+  "src/global_medicines_atlas/comparison_validity.py",
+  "src/global_medicines_atlas/consumer_qualification.py",
+  "src/global_medicines_atlas/semantic_retrieval.py",
   "src/global_medicines_atlas/parity.py",
   "src/global_medicines_atlas/source_health.py",
   "src/global_medicines_atlas/adapters/_receipt.py",
@@ -268,6 +273,7 @@ source_paths = [
   "src/global_medicines_atlas/matching_release.py",
   "src/global_medicines_atlas/review_queue.py",
   "src/global_medicines_atlas/product_contracts.py",
+  "scripts/validate_publication_identities.py",
 ]
 pytest_add_cli_args_test_selection = [
   "tests/test_source_parity.py",
@@ -281,11 +287,35 @@ pytest_add_cli_args_test_selection = [
   "tests/test_matching_policy.py",
   "tests/test_review_queue.py",
   "tests/test_product_contracts.py",
+  "tests/test_canonical_v2_runtime.py",
+  "tests/test_comparison_validity.py",
+  "tests/test_comparison_validity_properties.py",
+  "tests/test_consumer_qualification.py::test_installed_metadata_rejects_missing_required_field",
+  "tests/test_consumer_qualification.py::test_installed_metadata_reports_all_missing_fields_in_required_order",
+  "tests/test_consumer_qualification.py::test_installed_metadata_rejects_runtime_version_disagreement",
+  "tests/test_consumer_qualification.py::test_installed_metadata_returns_exact_validated_identity",
+  "tests/test_consumer_qualification.py::test_openapi_compatibility_fails_closed",
+  "tests/test_consumer_qualification.py::test_openapi_compatibility_rejects_non_object_contract_shapes",
+  "tests/test_consumer_qualification.py::test_openapi_compatibility_accepts_additive_read_only_contract",
+  "tests/test_consumer_qualification.py::test_openapi_compatibility_reports_sorted_removed_paths",
+  "tests/test_consumer_qualification.py::test_openapi_compatibility_reports_exact_invalid_path_item",
+  "tests/test_consumer_qualification.py::test_openapi_compatibility_reports_sorted_removed_read_methods",
+  "tests/test_consumer_qualification.py::test_openapi_compatibility_reports_sorted_forbidden_mutations",
+  "tests/test_consumer_qualification.py::test_openapi_compatibility_reports_exact_operation_identity_change",
+  "tests/test_consumer_qualification.py::test_openapi_compatibility_accepts_matching_absent_operation_ids",
+  "tests/test_semantic_retrieval.py",
+  "tests/test_publication_identity_registry.py",
 ]
 also_copy = [
   "src/global_medicines_atlas/",
+  "schemas/canonical-medicine-v2.json",
+  "schemas/comparison-validity-v1.json",
+  "schemas/publication-identity-registry-v1.json",
+  "quality/qualifications/publication-identities.json",
+  "contracts/openapi-v1.json",
   "tests/fixtures/",
   "scripts/check_source_health.py",
+  "scripts/validate_publication_identities.py",
 ]
 mutate_only_covered_lines = true
 use_git_change_detection = false

@@ -7,6 +7,7 @@ import importlib.util
 import json
 import re
 import sys
+import tomllib
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
 
@@ -21,6 +22,47 @@ assert SPEC is not None
 assert SPEC.loader is not None
 HARNESS = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(HARNESS)
+
+
+def test_phase1_mutation_targets_have_bounded_test_selection() -> None:
+    """Phase 1 fail-closed logic is included in authoritative mutation work."""
+    document = tomllib.loads((ROOT / "pyproject.toml").read_text("utf-8"))
+    mutation = document["tool"]["mutmut"]
+    targets = set(mutation["source_paths"])
+    tests = set(mutation["pytest_add_cli_args_test_selection"])
+
+    assert {
+        "src/global_medicines_atlas/canonical_v2.py",
+        "src/global_medicines_atlas/comparison_validity.py",
+        "src/global_medicines_atlas/consumer_qualification.py",
+        "src/global_medicines_atlas/semantic_retrieval.py",
+        "scripts/validate_publication_identities.py",
+    } <= targets
+    required_tests = {
+        "tests/test_canonical_v2_runtime.py",
+        "tests/test_comparison_validity.py",
+        "tests/test_comparison_validity_properties.py",
+        "tests/test_consumer_qualification.py",
+        "tests/test_semantic_retrieval.py",
+        "tests/test_publication_identity_registry.py",
+    }
+    assert all(
+        any(
+            selection == required or selection.startswith(f"{required}::")
+            for selection in tests
+        )
+        for required in required_tests
+    )
+
+
+def test_routine_profile_runs_javascript_style_gate(monkeypatch) -> None:
+    """Routine validation cannot omit the binding JavaScript contract."""
+    commands: list[list[str]] = []
+    monkeypatch.setattr(HARNESS, "run", commands.append)
+
+    HARNESS.routine()
+
+    assert [sys.executable, "scripts/validate_javascript_style.py"] in commands
 
 
 def load_update_script(name: str) -> ModuleType:

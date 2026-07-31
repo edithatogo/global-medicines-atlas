@@ -177,10 +177,14 @@ def mutation_regressed(
 ) -> bool:
     """Return whether survivor debt or score worsened."""
 
-    return (
-        current.survived > baseline.observations.survived
-        or current.score_percent < baseline.observations.score_percent
+    score_regressed = (
+        current.score_percent < baseline.observations.score_percent
     )
+    same_scope_survivors_regressed = (
+        current.total == baseline.observations.total
+        and current.survived > baseline.observations.survived
+    )
+    return score_regressed or same_scope_survivors_regressed
 
 
 def performance_regressions(

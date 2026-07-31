@@ -43,6 +43,11 @@ jobs:
         run: uv sync --locked --all-groups
       - name: Validate fail-closed publication identities
         run: uv run python scripts/validate_publication_identities.py
+      - name: Require publishable identities and licence decisions
+        if: inputs.publish
+        run: >-
+          uv run python scripts/validate_publication_identities.py
+          --require-publishable
       - name: Resolve VCS-derived version
         id: version
         shell: bash

@@ -2,13 +2,20 @@
 
 from __future__ import annotations
 
+import json
+from collections.abc import Callable
 from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any, Protocol, cast
 
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
+from jsonschema import Draft202012Validator
+from jsonschema.exceptions import ValidationError as SchemaValidationError
 from pydantic import ValidationError
 
+from global_medicines_atlas import canonical_v2
 from global_medicines_atlas.canonical_v2 import (
     Package,
     Price,
@@ -28,6 +35,21 @@ from global_medicines_atlas.models import (
     Provenance,
     StatusAssertion,
 )
+
+ROOT = Path(__file__).resolve().parents[1]
+CANONICAL_SCHEMA = ROOT / "schemas/canonical-medicine-v2.json"
+
+
+class _SchemaValidator(Protocol):
+    def validate(self, instance: object) -> None: ...
+
+
+def _schema_validator() -> _SchemaValidator:
+    schema: dict[str, Any] = json.loads(
+        CANONICAL_SCHEMA.read_text(encoding="utf-8")
+    )
+    Draft202012Validator.check_schema(schema)
+    return cast("_SchemaValidator", Draft202012Validator(schema))
 
 
 def _v1() -> CanonicalMedicineRecord:
@@ -158,6 +180,52 @@ def test_migration_round_trip_preserves_complete_v1_record() -> None:
     assert migrated.prices[0].assertion_kind is AssertionKind.FUNDING
 
 
+def test_migrated_runtime_dump_validates_against_draft_2020_12_schema() -> None:
+    original = _v1()
+    migrated = migrate_record_v1_to_v2(original, _projection(original))
+
+    _schema_validator().validate(migrated.model_dump(mode="json"))
+
+
+@pytest.mark.parametrize(
+    ("container_path", "missing_field"),
+    [
+        ((), "source_native"),
+        (("products", 0), "provenance"),
+        (("indications", 0), "assertion_kind"),
+        (("packages", 0), "source_native_ids"),
+    ],
+)
+def test_schema_rejects_missing_runtime_contract_fields(
+    container_path: tuple[str | int, ...],
+    missing_field: str,
+) -> None:
+    original = _v1()
+    payload = migrate_record_v1_to_v2(
+        original, _projection(original)
+    ).model_dump(mode="json")
+    container: Any = payload
+    for component in container_path:
+        container = container[component]
+    del container[missing_field]
+
+    with pytest.raises(SchemaValidationError) as error:
+        _schema_validator().validate(payload)
+
+    assert list(error.value.path) == list(container_path)
+
+
+def test_schema_rejects_runtime_object_with_unknown_property() -> None:
+    original = _v1()
+    payload = migrate_record_v1_to_v2(
+        original, _projection(original)
+    ).model_dump(mode="json")
+    payload["products"][0]["undeclared"] = True
+
+    with pytest.raises(SchemaValidationError, match="Additional properties"):
+        _schema_validator().validate(payload)
+
+
 @given(st.text(min_size=1).filter(lambda value: bool(value.strip())))
 def test_round_trip_preserves_arbitrary_source_native_labels(
     label: str,
@@ -286,3 +354,22 @@ def test_source_native_payload_digest_is_fail_closed() -> None:
         type(
             migrate_record_v1_to_v2(original, _projection(original))
         ).model_validate(payload)
+
+
+def test_canonical_bytes_are_stable_and_compact() -> None:
+    canonical_bytes = cast(
+        "Callable[[dict[str, object]], bytes]",
+        vars(canonical_v2)["_canonical_bytes"],
+    )
+    assert canonical_bytes({"z": 1, "a": ["x", 2]}) == (b'{"a":["x",2],"z":1}')
+
+
+def test_migration_binds_exact_v1_identity_and_payload() -> None:
+    original = _v1()
+    migrated = migrate_record_v1_to_v2(original, _projection(original))
+    native = migrated.source_native[0]
+
+    assert migrated.record_id == original.concept.concept_id
+    assert native.source_id == "canonical-schema-v1"
+    assert native.native_record_id == original.concept.concept_id
+    assert native.payload == original.model_dump(mode="json")

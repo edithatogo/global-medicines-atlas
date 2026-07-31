@@ -70,6 +70,32 @@ def test_mutation_regression_is_independent_of_promotion_target() -> None:
     assert mutation_regressed(baseline, worse)
 
 
+def test_mutation_regression_compares_rate_when_scope_expands() -> None:
+    baseline = load_phase3_baselines(BASELINE_PATH).mutation
+    expanded_but_not_regressed = MutationObservations(
+        killed=1_838,
+        survived=357,
+        untested=0,
+        skipped=0,
+        suspicious=0,
+        timeout=0,
+        interrupted=0,
+        segfault=0,
+        total=2_195,
+        score_percent=1_838 / 2_195 * 100,
+    )
+    expanded_and_regressed = expanded_but_not_regressed.model_copy(
+        update={
+            "killed": 1_837,
+            "survived": 358,
+            "score_percent": 1_837 / 2_195 * 100,
+        }
+    )
+
+    assert not mutation_regressed(baseline, expanded_but_not_regressed)
+    assert mutation_regressed(baseline, expanded_and_regressed)
+
+
 def test_performance_regression_envelope_is_direction_aware() -> None:
     baseline = load_phase3_baselines(BASELINE_PATH).performance
     current = baseline.observations.model_dump()

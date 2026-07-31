@@ -101,6 +101,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_concept_discovery_contracts.py",
         "tests/test_documentation_contracts.py",
         "tests/test_ingestor_contracts.py",
+        "tests/test_javascript_style.py",
         "tests/test_source_parity.py",
         "tests/test_country_publication_gate.py",
         "tests/test_source_health.py",
@@ -705,6 +706,7 @@ def routine() -> None:
     run(["uv", "run", "--group", "typing", "ty", "check"])
     run([sys.executable, "scripts/validate_context.py"])
     run([sys.executable, "scripts/validate_ecosystem.py"])
+    run([sys.executable, "scripts/validate_javascript_style.py"])
 
 
 def strict() -> None:
@@ -756,6 +758,16 @@ def mutation() -> None:
             "mutmut 3 requires fork support. Run the mutation profile in WSL "
             "or use the authoritative Linux CI lane."
         )
+    for relative in (
+        "scripts",
+        "schemas",
+        "contracts",
+        "quality/qualifications",
+    ):
+        (PROJECT_ROOT / "mutants" / relative).mkdir(
+            parents=True,
+            exist_ok=True,
+        )
     command = [sys.executable, "-m", "mutmut", "run"]
     run(command)
     export_command = [
@@ -767,7 +779,6 @@ def mutation() -> None:
     run(export_command)
     artifact = PROJECT_ROOT / "mutants" / "mutmut-cicd-stats.json"
     observations = load_mutmut_observations(artifact)
-    enforce_mutation_baseline(observations)
     results_command = [sys.executable, "-m", "mutmut", "results"]
     results = subprocess.run(
         results_command,
@@ -798,6 +809,7 @@ def mutation() -> None:
         artifacts=[artifact, survivor_report],
         command=command,
     )
+    enforce_mutation_baseline(observations)
     enforce_optional_receipt("mutation")
 
 
