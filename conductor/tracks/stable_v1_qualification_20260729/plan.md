@@ -179,11 +179,14 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   - Six domain-specific SLO, alert and approval-gated rollback policies bind the
     candidate evidence while post-release observations remain `not_observed`.
     Signing, publication, release eligibility and external actions remain false.
-- [~] Task: Phase Verification & Checkpoint
+- [x] Task: Phase Verification & Checkpoint
   - Independent Conductor review identified a normalization-collision ordering
     gap in the new metamorphic invariant. The implementation now uses explicit
     Unicode/source tie-breakers and includes the `("A", "a")` regression;
-    final hosted verification remains in progress.
+    PR #122 then passed all 29 hosted checks and merged to `main` as
+    `ab608543e39aacd2bcab3dd19ac3103283256958`. The property, mutation,
+    pytest-gremlin, Codecov patch, coverage and Scalene profile checks all
+    passed. Independent Conductor review has no residual finding.
   - Repository-owned qualification is complete and independently reviewed.
     Promotion remains blocked on explicit licence/release approval, signing,
     attestation, tagging and publication; none is inferred from the candidate.
