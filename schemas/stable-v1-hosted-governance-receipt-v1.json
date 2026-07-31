@@ -1,0 +1,164 @@
+{
+  "$defs": {
+    "ControlStatus": {
+      "description": "Result for one independently evaluated hosted control.",
+      "enum": [
+        "verified",
+        "nonconforming",
+        "unavailable",
+        "failed"
+      ],
+      "title": "ControlStatus",
+      "type": "string"
+    },
+    "GovernanceControl": {
+      "additionalProperties": false,
+      "description": "One control conclusion with stable evidence references.",
+      "properties": {
+        "control_id": {
+          "pattern": "^[a-z0-9][a-z0-9_-]+$",
+          "title": "Control Id",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "findings": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Findings",
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/ControlStatus"
+        }
+      },
+      "required": [
+        "control_id",
+        "status",
+        "evidence"
+      ],
+      "title": "GovernanceControl",
+      "type": "object"
+    },
+    "QualificationState": {
+      "description": "Maximum conclusion supported by the snapshot.",
+      "enum": [
+        "qualified",
+        "partial",
+        "rejected"
+      ],
+      "title": "QualificationState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Deterministic qualification derived solely from the snapshot.",
+  "properties": {
+    "controls": {
+      "items": {
+        "$ref": "#/$defs/GovernanceControl"
+      },
+      "title": "Controls",
+      "type": "array"
+    },
+    "default_branch": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Default Branch"
+    },
+    "default_branch_sha": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Default Branch Sha"
+    },
+    "github_mutated": {
+      "const": false,
+      "default": false,
+      "title": "Github Mutated",
+      "type": "boolean"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Limitations",
+      "type": "array"
+    },
+    "project_url": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Project Url"
+    },
+    "qualification_state": {
+      "$ref": "#/$defs/QualificationState"
+    },
+    "receipt_id": {
+      "minLength": 1,
+      "title": "Receipt Id",
+      "type": "string"
+    },
+    "repository": {
+      "const": "edithatogo/global-medicines-atlas",
+      "title": "Repository",
+      "type": "string"
+    },
+    "schema_id": {
+      "const": "global-medicines-atlas.stable-v1-hosted-governance.receipt",
+      "default": "global-medicines-atlas.stable-v1-hosted-governance.receipt",
+      "title": "Schema Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "snapshot_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Snapshot Sha256",
+      "type": "string"
+    }
+  },
+  "required": [
+    "receipt_id",
+    "snapshot_sha256",
+    "repository",
+    "default_branch",
+    "project_url",
+    "controls",
+    "qualification_state",
+    "limitations"
+  ],
+  "title": "HostedGovernanceReceipt",
+  "type": "object"
+}
