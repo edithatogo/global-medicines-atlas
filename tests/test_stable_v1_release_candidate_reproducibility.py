@@ -4,41 +4,72 @@ from __future__ import annotations
 
 import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
+import tempfile
 from pathlib import Path
 
 import pytest
 from scripts.build_stable_v1_release_candidate import (
-    clean_detached_reproducibility,
+    build_candidate,
+    consume_candidate,
+)
+
+from global_medicines_atlas.stable_v1_release_candidate import (
+    ArtifactRole,
+    receipt_from_json,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 @pytest.mark.integration
-@pytest.mark.timeout(300)
-def test_lf_and_crlf_policy_detached_worktrees_reproduce_exactly() -> None:
-    """Build the exact commit in two clean, detached checkout policies."""
+@pytest.mark.timeout(600)
+def test_clean_clone_reproduces_receipt_and_consumes_artifacts() -> None:
+    """Rebuild the recorded commit in a clone and match committed bytes."""
     git = shutil.which("git")
     assert git is not None
-    status = subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
-        [git, "status", "--porcelain=v1", "--untracked-files=all"],
-        cwd=ROOT,
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout
-    if status:
-        pytest.skip(
-            "detached-worktree evidence requires a committed clean tree"
-        )
-
-    evidence = clean_detached_reproducibility(ROOT)
-
-    assert evidence["state"] == "passed"
-    assert evidence["checkout_policies"] == ["autocrlf-false", "autocrlf-true"]
-    assert evidence["cross_platform_ci_required"] is True
-    assert len(evidence["artifacts"]) == 3
-    assert all(item["sha256"] for item in evidence["artifacts"])
-    assert all(
-        item["line_ending"] == "lf" for item in evidence["packaged_text_inputs"]
+    committed_path = (
+        ROOT / "quality/qualifications/stable-v1-release-candidate.json"
     )
+    committed = receipt_from_json(committed_path)
+
+    with tempfile.TemporaryDirectory(
+        prefix="gma-stable-v1-clean-clone-", ignore_cleanup_errors=True
+    ) as temporary:
+        temporary_root = Path(temporary)
+        clone = temporary_root / "repository"
+        subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
+            [git, "clone", "--no-local", str(ROOT), str(clone)],
+            check=True,
+            capture_output=True,
+        )
+        subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
+            [git, "checkout", "--detach", committed.source_commit],
+            cwd=clone,
+            check=True,
+            capture_output=True,
+        )
+        stage = temporary_root / "candidate"
+        rebuilt_path = temporary_root / "rebuilt-receipt.json"
+        build_candidate(clone, stage, rebuilt_path)
+        rebuilt = receipt_from_json(rebuilt_path)
+
+        expected = {
+            item.role: (item.sha256, item.size) for item in committed.artifacts
+        }
+        actual = {
+            item.role: (item.sha256, item.size) for item in rebuilt.artifacts
+        }
+        assert actual == expected
+        assert rebuilt.manifest == committed.manifest
+        assert rebuilt.checksums == committed.checksums
+        assert rebuilt.content_sha256 == committed.content_sha256
+
+        for role in (ArtifactRole.WHEEL, ArtifactRole.SDIST):
+            result = consume_candidate(
+                root=clone,
+                stage=stage,
+                receipt_path=committed_path,
+                artifact_role=role,
+                environment=temporary_root / f"consumer-{role.value}",
+            )
+            assert result["state"] == "passed"

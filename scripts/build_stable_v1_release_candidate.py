@@ -64,6 +64,7 @@ _REFERENCE_FILES = {
 
 _GENERATED_VERSION_PATH = Path("src/global_medicines_atlas/_version.py")
 _BUILD_TOOLCHAIN_PATH = Path("quality/release-build-toolchain.json")
+_UV_VERSION_PART_COUNT = 2
 
 _PACKAGED_TEXT_SAMPLES = (
     "src/global_medicines_atlas/static/atlas-autocomplete.js",
@@ -159,7 +160,9 @@ def _verify_build_toolchain(root: Path) -> Path:
     expected_uv = toolchain.get("uv")
     actual_uv = _run(root, "uv", "--version").decode().strip()
     actual_uv_parts = actual_uv.split()
-    if len(actual_uv_parts) < 2 or actual_uv_parts[:2] != [
+    if len(actual_uv_parts) < _UV_VERSION_PART_COUNT or actual_uv_parts[
+        :_UV_VERSION_PART_COUNT
+    ] != [
         "uv",
         expected_uv,
     ]:
