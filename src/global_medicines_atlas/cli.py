@@ -13,6 +13,7 @@ from typing import Annotated, Any, NoReturn, cast
 import typer
 from pydantic import ValidationError
 
+from .comparison_validity import abstaining_status_comparison_validity
 from .product_contracts import (
     API_VERSION,
     MAX_EXPORT_ROWS,
@@ -34,6 +35,7 @@ from .product_contracts import (
     HealthCheck,
     HealthResponse,
     HealthState,
+    ProductConclusion,
 )
 from .query_service import (
     InvalidCursorError,
@@ -58,6 +60,14 @@ app.add_typer(
 app.add_typer(source_app, name="source", help="Inspect governed sources.")
 _CURSOR_ENV = "GMA_CURSOR_" + "SECRET"
 _MINIMUM_CURSOR_KEY_BYTES = 16
+_ROW_COLLECTIONS = frozenset({
+    "conclusions",
+    "concepts",
+    "coverage",
+    "evidence",
+    "jurisdictions",
+    "sources",
+})
 type ProductResponse = (
     ComparisonResponse
     | ConceptSearchResponse
@@ -173,7 +183,7 @@ def _emit(payload: dict[str, Any], output: ExportRequest) -> None:
         return
 
     metadata = payload["metadata"]
-    collection_names = tuple(key for key in payload if key != "metadata")
+    collection_names = tuple(key for key in payload if key in _ROW_COLLECTIONS)
     if len(collection_names) != 1:
         _fail(ErrorCode.INTERNAL_ERROR, "response shape is not exportable")
     rows_object: object = payload[collection_names[0]]
@@ -196,7 +206,7 @@ def _emit(payload: dict[str, Any], output: ExportRequest) -> None:
 
 
 def _collection(payload: dict[str, Any]) -> tuple[str, list[object]]:
-    collection_names = tuple(key for key in payload if key != "metadata")
+    collection_names = tuple(key for key in payload if key in _ROW_COLLECTIONS)
     if len(collection_names) != 1:
         _fail(ErrorCode.INTERNAL_ERROR, "response shape is not exportable")
     collection_name = collection_names[0]
@@ -285,6 +295,14 @@ def _run(
     if payload is None or collection_name is None:
         _fail(ErrorCode.INTERNAL_ERROR, f"{operation} returned no response")
     payload[collection_name] = rows
+    if collection_name == "conclusions":
+        conclusions = tuple(
+            ProductConclusion.model_validate(row) for row in rows
+        )
+        payload["validity"] = [
+            item.model_dump(mode="json")
+            for item in abstaining_status_comparison_validity(conclusions)
+        ]
     if pages_fetched > 1 or truncated:
         payload["metadata"]["export"] = {
             "max_rows": output.max_rows,

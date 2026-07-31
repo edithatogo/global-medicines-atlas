@@ -3,7 +3,7 @@
   "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/comparison-validity-v1.json",
   "title": "Cross-jurisdiction comparison validity v1",
   "type": "object",
-  "required": ["schema_id", "schema_version", "left_subject_id", "right_subject_id", "outcome", "dimensions", "material_mismatches", "explanation"],
+  "required": ["schema_id", "schema_version", "left_subject_id", "right_subject_id", "outcome", "dimensions", "material_mismatches", "explanation", "establishes_medicine_equivalence", "establishes_substitutability", "establishes_therapeutic_interchangeability", "establishes_equal_benefit"],
   "properties": {
     "schema_id": {"const": "global-medicines-atlas.comparison-validity"},
     "schema_version": {"const": 1},
@@ -27,12 +27,20 @@
       "uniqueItems": true,
       "items": {"type": "string", "minLength": 1}
     },
-    "explanation": {"type": "string", "minLength": 1}
+    "explanation": {"type": "string", "minLength": 1},
+    "establishes_medicine_equivalence": {"const": false},
+    "establishes_substitutability": {"const": false},
+    "establishes_therapeutic_interchangeability": {"const": false},
+    "establishes_equal_benefit": {"const": false}
   },
   "allOf": [
     {
       "if": {"properties": {"outcome": {"const": "inappropriate_comparison"}}},
       "then": {"properties": {"material_mismatches": {"minItems": 1}}}
+    },
+    {
+      "if": {"properties": {"outcome": {"enum": ["valid", "valid_with_caveats", "insufficient_evidence"]}}},
+      "then": {"properties": {"material_mismatches": {"maxItems": 0}}}
     }
   ],
   "$defs": {
@@ -45,6 +53,18 @@
         "right_value": {"type": ["string", "null"]},
         "evidence_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
       },
+      "allOf": [
+        {
+          "if": {"properties": {"state": {"enum": ["aligned", "compatible", "mismatch"]}}},
+          "then": {
+            "properties": {
+              "left_value": {"type": "string", "minLength": 1},
+              "right_value": {"type": "string", "minLength": 1},
+              "evidence_ids": {"minItems": 1}
+            }
+          }
+        }
+      ],
       "additionalProperties": false
     }
   },

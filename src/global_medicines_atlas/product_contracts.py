@@ -95,6 +95,23 @@ class UncertaintyLevel(StrEnum):
     UNKNOWN = "unknown"
 
 
+class ComparisonValidityOutcome(StrEnum):
+    """Whether evidence supports only the stated status comparison."""
+
+    VALID = "valid"
+    VALID_WITH_CAVEATS = "valid_with_caveats"
+    INAPPROPRIATE_COMPARISON = "inappropriate_comparison"
+    INSUFFICIENT_EVIDENCE = "insufficient_evidence"
+
+
+class ComparisonDimensionState(StrEnum):
+    ALIGNED = "aligned"
+    COMPATIBLE = "compatible"
+    MISMATCH = "mismatch"
+    UNKNOWN = "unknown"
+    NOT_APPLICABLE = "not_applicable"
+
+
 class ExportFormat(StrEnum):
     JSON = "json"
     JSONL = "jsonl"
@@ -315,6 +332,94 @@ class Uncertainty(ProductModel):
         return self
 
 
+class ComparisonValidityDimension(ProductModel):
+    """One evidence-bearing validity dimension, without a clinical claim."""
+
+    state: ComparisonDimensionState
+    left_value: NonBlank | None = None
+    right_value: NonBlank | None = None
+    evidence_ids: tuple[NonBlank, ...] = ()
+
+    @model_validator(mode="after")
+    def evidence_supports_observed_state(self) -> Self:
+        if len(set(self.evidence_ids)) != len(self.evidence_ids):
+            raise ValueError("comparison evidence identifiers must be unique")
+        if self.state in {
+            ComparisonDimensionState.ALIGNED,
+            ComparisonDimensionState.COMPATIBLE,
+            ComparisonDimensionState.MISMATCH,
+        }:
+            if self.left_value is None or self.right_value is None:
+                raise ValueError(
+                    "observed comparison states require both values"
+                )
+            if not self.evidence_ids:
+                raise ValueError("observed comparison states require evidence")
+        return self
+
+
+class ComparisonValidityDimensions(ProductModel):
+    granularity: ComparisonValidityDimension
+    indication: ComparisonValidityDimension
+    population: ComparisonValidityDimension
+    mapping: ComparisonValidityDimension
+    normalization: ComparisonValidityDimension
+
+
+class ComparisonValidity(ProductModel):
+    """Fail-closed fitness verdict for a status comparison only."""
+
+    schema_id: Literal["global-medicines-atlas.comparison-validity"] = (
+        "global-medicines-atlas.comparison-validity"
+    )
+    schema_version: Literal[1] = 1
+    left_subject_id: NonBlank
+    right_subject_id: NonBlank
+    outcome: ComparisonValidityOutcome
+    dimensions: ComparisonValidityDimensions
+    material_mismatches: tuple[NonBlank, ...] = ()
+    explanation: NonBlank
+    establishes_medicine_equivalence: Literal[False] = False
+    establishes_substitutability: Literal[False] = False
+    establishes_therapeutic_interchangeability: Literal[False] = False
+    establishes_equal_benefit: Literal[False] = False
+
+    @model_validator(mode="after")
+    def verdict_matches_dimensions(self) -> Self:
+        if self.left_subject_id == self.right_subject_id:
+            raise ValueError("comparison subjects must be distinct")
+        states = {
+            name: dimension.state
+            for name, dimension in (
+                ("granularity", self.dimensions.granularity),
+                ("indication", self.dimensions.indication),
+                ("population", self.dimensions.population),
+                ("mapping", self.dimensions.mapping),
+                ("normalization", self.dimensions.normalization),
+            )
+        }
+        mismatches = tuple(
+            name
+            for name, state in states.items()
+            if state is ComparisonDimensionState.MISMATCH
+        )
+        if self.material_mismatches != mismatches:
+            raise ValueError(
+                "material mismatches must exactly match dimensions"
+            )
+        if mismatches:
+            expected = ComparisonValidityOutcome.INAPPROPRIATE_COMPARISON
+        elif ComparisonDimensionState.UNKNOWN in states.values():
+            expected = ComparisonValidityOutcome.INSUFFICIENT_EVIDENCE
+        elif ComparisonDimensionState.COMPATIBLE in states.values():
+            expected = ComparisonValidityOutcome.VALID_WITH_CAVEATS
+        else:
+            expected = ComparisonValidityOutcome.VALID
+        if self.outcome is not expected:
+            raise ValueError("comparison outcome does not match dimensions")
+        return self
+
+
 class ProductConclusion(ProductModel):
     """One jurisdiction and one evidence dimension; never a merged status."""
 
@@ -451,6 +556,7 @@ class ConceptSearchResponse(ProductModel):
 class ComparisonResponse(ProductModel):
     metadata: ResponseMetadata
     conclusions: tuple[ProductConclusion, ...]
+    validity: tuple[ComparisonValidity, ...] = ()
 
     @model_validator(mode="after")
     def page_matches_payload(self) -> Self:

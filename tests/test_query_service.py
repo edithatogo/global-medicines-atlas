@@ -264,6 +264,17 @@ def test_comparisons_preserve_dimensions_and_explicit_absent_states(
     assert ("US", "funding") not in values
     assert values["NZ", "regulatory"].terminology.native_system == "Medsafe"
     assert values["NZ", "regulatory"].provenance[0].source_sha256 == "a" * 64
+    assert response.validity
+    assert all(
+        item.outcome.value == "insufficient_evidence"
+        for item in response.validity
+    )
+    assert all(
+        item.left_subject_id.endswith(":regulatory")
+        == item.right_subject_id.endswith(":regulatory")
+        for item in response.validity
+    )
+    assert all(not item.establishes_equal_benefit for item in response.validity)
 
 
 def test_absence_without_coverage_is_not_a_negative_conclusion(

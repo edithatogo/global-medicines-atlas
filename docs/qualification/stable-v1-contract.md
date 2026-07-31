@@ -17,9 +17,12 @@ clean-room rehearsal, or maintainer approval keeps `qualification_state`
   substances, products, packages, indications, prices, and restrictions.
 - It is not the temporal assertion migration called `v1_to_v2`; migration
   implementations and rollback rehearsals must name both contract families.
-- `schemas/comparison-validity-v1.json` makes granularity, indication,
-  population, mapping, normalization, and material mismatches explicit.
-  `inappropriate_comparison` is an outcome, not an inferred absence.
+- `schemas/comparison-validity-v1.json` and its executable runtime make
+  granularity, indication, population, mapping, normalization, and material
+  mismatches explicit. Material mismatches are inappropriate comparisons and
+  unknown dimensions abstain. Literal false claim fields prevent any verdict
+  from establishing medicine equivalence, substitutability, therapeutic
+  interchangeability, or equal benefit.
 - Source maturity is projected from the existing source catalog. This contract
   does not create a second jurisdiction registry. The derived matrix in
   `quality/qualifications/stable-v1-source-maturity.json` keys every row to the
