@@ -17,6 +17,9 @@ from pydantic import ValidationError
 from .product_contracts import (
     ComparisonQuery,
     ComparisonResponse,
+    ConceptDetail,
+    ConceptSearchQuery,
+    ConceptSearchResponse,
     CoverageItem,
     CoverageQuery,
     CoverageResponse,
@@ -36,6 +39,12 @@ class AtlasQueryService(Protocol):
     def comparisons(self, query: ComparisonQuery) -> ComparisonResponse: ...
 
     def coverage(self, query: CoverageQuery) -> CoverageResponse: ...
+
+    def search_concepts(
+        self, query: ConceptSearchQuery
+    ) -> ConceptSearchResponse: ...
+
+    def concept_detail(self, concept_id: str) -> ConceptDetail: ...
 
 
 def _safe_source_uri(uri: str) -> str | None:
@@ -113,6 +122,20 @@ def _jurisdictions(values: Sequence[str]) -> tuple[str, ...]:
     return parsed or _DEFAULT_JURISDICTIONS
 
 
+def _concept_views(
+    response: ConceptSearchResponse,
+) -> tuple[dict[str, str], ...]:
+    return tuple(
+        {
+            "concept_id": item.concept_id,
+            "preferred_name": item.preferred_name,
+            "concept_type": item.concept_type,
+            "match_method": item.explanation.method.value.replace("_", " "),
+        }
+        for item in response.concepts
+    )
+
+
 def create_atlas_app(service: AtlasQueryService) -> FastAPI:
     """Create an atlas app with an explicitly injected read-only service."""
     app = FastAPI(
@@ -131,6 +154,7 @@ def create_atlas_app(service: AtlasQueryService) -> FastAPI:
     def atlas(  # pyright: ignore[reportUnusedFunction]
         request: Request,
         concept_id: Annotated[str | None, Query(max_length=512)] = None,
+        concept_search: Annotated[str | None, Query(max_length=200)] = None,
         jurisdiction: Annotated[list[str] | None, Query()] = None,
         valid_at: Annotated[datetime | None, Query()] = None,
         observed_at: Annotated[datetime | None, Query()] = None,
@@ -140,9 +164,26 @@ def create_atlas_app(service: AtlasQueryService) -> FastAPI:
         selected = _jurisdictions(jurisdiction or ())
         conclusions: tuple[dict[str, object], ...] = ()
         coverage: tuple[dict[str, object], ...] = ()
+        concept_options: tuple[dict[str, str], ...] = ()
+        selected_concept: ConceptDetail | None = None
         error: str | None = None
+        search_error: str | None = None
+        if concept_search:
+            try:
+                search_response = service.search_concepts(
+                    ConceptSearchQuery(
+                        query=concept_search,
+                        jurisdictions=selected,
+                        limit=20,
+                    )
+                )
+            except (ValidationError, ValueError) as exc:
+                search_error = f"The medicine search is invalid: {exc}"
+            else:
+                concept_options = _concept_views(search_response)
         if concept_id:
             try:
+                selected_concept = service.concept_detail(concept_id)
                 comparison = service.comparisons(
                     ComparisonQuery(
                         concept_id=concept_id,
@@ -181,6 +222,10 @@ def create_atlas_app(service: AtlasQueryService) -> FastAPI:
             name="atlas.html",
             context={
                 "concept_id": concept_id or "",
+                "concept_search": concept_search or "",
+                "concept_options": concept_options,
+                "selected_concept": selected_concept,
+                "search_error": search_error,
                 "jurisdictions": ",".join(selected),
                 "valid_at": selected_valid_at.isoformat(),
                 "observed_at": selected_observed_at.isoformat(),

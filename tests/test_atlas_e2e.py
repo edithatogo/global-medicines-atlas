@@ -8,6 +8,7 @@ from global_medicines_atlas.atlas import create_atlas_app
 from global_medicines_atlas.product_contracts import (
     AsOfClocks,
     ComparisonResponse,
+    ConceptDetail,
     CoverageItem,
     CoverageResponse,
     EvidenceAvailability,
@@ -34,6 +35,17 @@ def _metadata(returned: int) -> ResponseMetadata:
 
 
 class StateService:
+    def concept_detail(self, concept_id):
+        return ConceptDetail(
+            concept_id=concept_id,
+            preferred_name="Fixture medicine",
+            concept_type="medicinal_product",
+        )
+
+    def search_concepts(self, query):
+        del query
+        raise AssertionError("search is not used by comparison-only tests")
+
     def comparisons(self, query):
         items = tuple(
             ProductConclusion(

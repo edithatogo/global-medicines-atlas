@@ -18,9 +18,29 @@
         <h2 id="comparison-heading">Choose a medicine and observation clocks</h2>
         <form method="get">
           <div class="form-grid">
-            <label>Canonical medicine identifier
-              <input name="concept_id" value="{{ concept_id }}" maxlength="512" required>
-            </label>
+            <div class="concept-discovery" data-concept-discovery>
+              <label for="concept-search">Medicine name or identifier</label>
+              <input id="concept-search" name="concept_search" value="{{ concept_search }}"
+                     maxlength="200" autocomplete="off" role="combobox"
+                     aria-autocomplete="list" aria-controls="concept-options"
+                     aria-expanded="false" aria-describedby="concept-help concept-status"
+                     data-concept-input>
+              <input type="hidden" name="concept_id" value="{{ concept_id }}" data-concept-id>
+              <p id="concept-help" class="hint">Choose a result explicitly. Free text is never treated as a canonical medicine selection.</p>
+              <p id="concept-status" class="visually-hidden" role="status" aria-live="polite" data-concept-status>
+                {% if selected_concept %}Selected {{ selected_concept.preferred_name }}, canonical identifier {{ selected_concept.concept_id }}.{% else %}Enter a medicine name or identifier.{% endif %}
+              </p>
+              <ul id="concept-options" class="concept-options" role="listbox"
+                  aria-label="Medicine suggestions" data-concept-listbox hidden>
+                {% for option in concept_options %}
+                  <li id="concept-option-{{ loop.index }}" role="option"
+                      aria-selected="false" data-concept-id="{{ option.concept_id }}"
+                      data-preferred-name="{{ option.preferred_name }}">
+                    {{ option.preferred_name }} — {{ option.concept_id }}
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
             <label>Jurisdictions (comma separated)
               <input name="jurisdiction" value="{{ jurisdictions }}" aria-describedby="jurisdiction-help">
             </label>
@@ -32,9 +52,37 @@
               <input name="observed_at" value="{{ observed_at }}">
             </label>
           </div>
-          <button type="submit">Compare evidence</button>
+          <button type="submit">Find medicines or compare selected evidence</button>
         </form>
       </section>
+
+      {% if search_error %}
+        <section class="notice error" role="alert" aria-labelledby="search-error-heading">
+          <h2 id="search-error-heading">Medicine search unavailable</h2>
+          <p>{{ search_error }}</p>
+        </section>
+      {% endif %}
+
+      {% if concept_search and not concept_id and not search_error %}
+        <section aria-labelledby="search-results-heading">
+          <h2 id="search-results-heading">Medicine search results</h2>
+          {% if concept_options %}
+            <p>Select one canonical medicine. A candidate match does not establish clinical equivalence.</p>
+            <ul class="search-results">
+              {% for option in concept_options %}
+                <li>
+                  <a href="?concept_id={{ option.concept_id | urlencode }}&amp;concept_search={{ option.preferred_name | urlencode }}&amp;jurisdiction={{ jurisdictions | urlencode }}&amp;valid_at={{ valid_at | urlencode }}&amp;observed_at={{ observed_at | urlencode }}">
+                    <strong>{{ option.preferred_name }}</strong>
+                    <span>Canonical ID {{ option.concept_id }}; {{ option.concept_type }}; matched by {{ option.match_method }}</span>
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="notice" role="status">No medicine candidates matched. No canonical selection was inferred.</p>
+          {% endif %}
+        </section>
+      {% endif %}
 
       {% if error %}
         <section class="notice error" role="alert" aria-labelledby="error-heading">
@@ -45,7 +93,8 @@
 
       {% if concept_id and not error %}
         <section aria-labelledby="results-heading">
-          <h2 id="results-heading">Comparison results for {{ concept_id }}</h2>
+          <h2 id="results-heading">Comparison results for {{ selected_concept.preferred_name }}</h2>
+          <p>Canonical medicine identifier: <code>{{ selected_concept.concept_id }}</code></p>
           <p class="clock-summary">
             Valid at <time datetime="{{ valid_at }}">{{ valid_at }}</time>;
             observed at <time datetime="{{ observed_at }}">{{ observed_at }}</time>.
@@ -127,5 +176,6 @@
       </aside>
     </main>
     <footer><p>Global Medicines Atlas, product evidence version 0.6.</p></footer>
+    <script src="/static/atlas-autocomplete.js" defer></script>
   </body>
 </html>

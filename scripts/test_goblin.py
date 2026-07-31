@@ -162,6 +162,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_country_comparison_e2e.py",
         "tests/test_matching_e2e.py",
         "tests/test_atlas_e2e.py",
+        "tests/test_atlas_discovery_e2e.py",
     ),
     "smoke": ("tests/test_smoke.py",),
     "property": (
