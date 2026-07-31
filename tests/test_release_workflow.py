@@ -175,7 +175,9 @@ def test_release_identity_and_sbom_are_semantically_qualified() -> None:
 
     assert "fetch-depth: 0" in workflow
     assert 'git rev-parse "refs/tags/${RELEASE_TAG}^{commit}"' in workflow
-    assert "uv version --short" in workflow
+    assert "from importlib.metadata import version" in workflow
+    assert 'version("global-medicines-atlas")' in workflow
+    assert "uv version --short" not in workflow
     assert '--release-tag "$RELEASE_TAG"' in workflow
     assert '--commit "$GITHUB_SHA"' in workflow
     assert '--dynamic-version "$DYNAMIC_VERSION"' in workflow
