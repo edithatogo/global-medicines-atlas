@@ -73,9 +73,13 @@ def _candidate(
 def test_strong_candidate_is_still_pending_human_review() -> None:
     result = ReviewOnlyPolicy().evaluate(_candidate())
     assert result.review_state is ReviewState.PENDING_REVIEW
-    assert not result.abstained
-    assert PolicyReason.REVIEW_REQUIRED in result.reason_codes
-    assert PolicyReason.AMBIGUOUS_SCORE in result.reason_codes
+    assert result.confidence == pytest.approx(1.0)
+    assert result.abstained is False
+    assert result.reason_codes == (
+        PolicyReason.REVIEW_REQUIRED,
+        PolicyReason.AMBIGUOUS_SCORE,
+    )
+    assert result.policy_version == "review-only-v1"
 
 
 def test_core_conflict_forces_abstention_and_explains_reason() -> None:
@@ -87,8 +91,12 @@ def test_core_conflict_forces_abstention_and_explains_reason() -> None:
     )
     assert result.review_state is ReviewState.PENDING_REVIEW
     assert result.abstained
-    assert PolicyReason.INGREDIENT_CONFLICT in result.reason_codes
-    assert PolicyReason.INSUFFICIENT_EVIDENCE in result.reason_codes
+    assert result.confidence == pytest.approx(0.3)
+    assert result.reason_codes == (
+        PolicyReason.REVIEW_REQUIRED,
+        PolicyReason.INGREDIENT_CONFLICT,
+        PolicyReason.INSUFFICIENT_EVIDENCE,
+    )
 
 
 def test_invalid_threshold_and_semantic_only_candidates_fail_closed() -> None:
@@ -115,3 +123,121 @@ def test_invalid_threshold_and_semantic_only_candidates_fail_closed() -> None:
     assert PolicyReason.MISSING_CORE_EVIDENCE in result.reason_codes
     assert PolicyReason.SEMANTIC_ONLY in result.reason_codes
     assert PolicyReason.RXNORM_ONLY in result.reason_codes
+
+
+@pytest.mark.parametrize("threshold", [0, -0.01, 1.01])
+def test_review_threshold_rejects_values_outside_half_open_interval(
+    threshold: float,
+) -> None:
+    with pytest.raises(ValueError, match=r"\(0, 1\]"):
+        ReviewOnlyPolicy(review_threshold=threshold)
+
+
+def test_review_threshold_accepts_one_and_preserves_custom_version() -> None:
+    result = ReviewOnlyPolicy(
+        review_threshold=1,
+        policy_version="strict-v2",
+    ).evaluate(_candidate())
+
+    assert result.abstained is False
+    assert result.policy_version == "strict-v2"
+
+
+def test_confidence_equal_to_threshold_is_reviewable_not_insufficient() -> None:
+    candidate = _candidate(ingredient_score=-0.05)
+
+    result = ReviewOnlyPolicy(review_threshold=0.65).evaluate(candidate)
+
+    assert result.confidence == pytest.approx(0.65)
+    assert result.abstained is False
+    assert result.reason_codes == (
+        PolicyReason.REVIEW_REQUIRED,
+        PolicyReason.AMBIGUOUS_SCORE,
+    )
+
+
+def test_confidence_below_threshold_abstains_with_exact_reason_order() -> None:
+    candidate = _candidate(ingredient_score=-0.06)
+
+    result = ReviewOnlyPolicy(review_threshold=0.65).evaluate(candidate)
+
+    assert result.confidence == pytest.approx(0.64)
+    assert result.abstained is True
+    assert result.reason_codes == (
+        PolicyReason.REVIEW_REQUIRED,
+        PolicyReason.INSUFFICIENT_EVIDENCE,
+    )
+
+
+@pytest.mark.parametrize(
+    ("kind", "reason"),
+    [
+        (K.IDENTIFIER, PolicyReason.IDENTIFIER_CONFLICT),
+        (K.INGREDIENT, PolicyReason.INGREDIENT_CONFLICT),
+        (K.STRENGTH, PolicyReason.STRENGTH_CONFLICT),
+        (K.UNIT, PolicyReason.UNIT_CONFLICT),
+        (K.FORM, PolicyReason.FORM_CONFLICT),
+        (K.ROUTE, PolicyReason.ROUTE_CONFLICT),
+        (K.TEMPORAL, PolicyReason.TEMPORAL_CONFLICT),
+    ],
+)
+def test_every_blocking_conflict_maps_to_its_policy_reason(
+    kind: K,
+    reason: PolicyReason,
+) -> None:
+    candidate = _candidate()
+    slot = {
+        K.IDENTIFIER: "identifiers",
+        K.INGREDIENT: "ingredients",
+        K.STRENGTH: "strength",
+        K.UNIT: "unit",
+        K.FORM: "form",
+        K.ROUTE: "route",
+        K.TEMPORAL: "temporal",
+    }[kind]
+    conflicting = candidate.features.model_copy(
+        update={
+            slot: feature(kind, D.CONFLICT, 0, f"{kind.value} conflict"),
+        }
+    )
+
+    result = ReviewOnlyPolicy().evaluate(
+        candidate.model_copy(update={"features": conflicting})
+    )
+
+    assert result.abstained is True
+    assert reason in result.reason_codes
+    assert result.reason_codes.count(reason) == 1
+
+
+def test_one_present_core_feature_prevents_missing_core_classification() -> (
+    None
+):
+    candidate = _candidate()
+    missing = {
+        slot: feature(kind, D.MISSING, 0, "Missing")
+        for slot, kind in (
+            ("identifiers", K.IDENTIFIER),
+            ("ingredients", K.INGREDIENT),
+            ("strength", K.STRENGTH),
+            ("unit", K.UNIT),
+            ("form", K.FORM),
+            ("route", K.ROUTE),
+        )
+    }
+    missing["ingredients"] = feature(
+        K.INGREDIENT,
+        D.AGREEMENT,
+        0.65,
+        "Present",
+    )
+    features = candidate.features.model_copy(update=missing)
+
+    result = ReviewOnlyPolicy().evaluate(
+        candidate.model_copy(update={"features": features})
+    )
+
+    assert result.abstained is False
+    assert PolicyReason.MISSING_CORE_EVIDENCE not in result.reason_codes
+    assert PolicyReason.SEMANTIC_ONLY not in result.reason_codes
+    assert PolicyReason.RXNORM_ONLY not in result.reason_codes
