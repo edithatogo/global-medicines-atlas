@@ -150,9 +150,11 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     every in-scope control.
 - [~] Task: Produce signed release package and consumer verification guide ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
   - A deterministic wheel, sdist, normalized SBOM, manifest, checksum and
-    consumer-verification candidate reproduces byte-for-byte. It remains
-    explicitly unsigned, unapproved, unattested, untagged and unpublished;
-    signing requires the maintainer gate below.
+    consumer-verification candidate reproduces byte-for-byte across independent
+    clean LF and CRLF checkouts. Portable commands create separate environments
+    and qualify wheel and sdist independently. The candidate remains explicitly
+    unsigned, unapproved, unattested, untagged and unpublished; signing requires
+    the maintainer gate below.
 - [x] Task: Verify dataset cards, Croissant records, checksums and GitHub/Hugging Face/Zenodo/OSF identifier links without publishing restricted data ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
   - The content-bound publication-metadata receipt verifies cards, Croissant,
     checksums, restricted-data boundaries and non-overlapping object roles.
