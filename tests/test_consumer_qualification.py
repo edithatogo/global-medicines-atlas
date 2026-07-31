@@ -64,7 +64,9 @@ def test_installed_metadata_rejects_runtime_version_disagreement(
             "Requires-Python": ">=3.14,<3.15",
         },
     )
-    monkeypatch.setattr(consumer_qualification, "version", lambda _name: "2.0.0")
+    monkeypatch.setattr(
+        consumer_qualification, "version", lambda _name: "2.0.0"
+    )
     with pytest.raises(CompatibilityError, match="versions disagree"):
         installed_package_identity()
 
