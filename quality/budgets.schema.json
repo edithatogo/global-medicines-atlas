@@ -37,7 +37,15 @@
       "required": ["score_percent"],
       "properties": {"score_percent": {"$ref": "#/$defs/minimumPercent"}}
     },
-    "latency": {"$ref": "#/$defs/maximumBudget"},
+    "latency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["p95_ms", "concurrent_p95_ms"],
+      "properties": {
+        "p95_ms": {"$ref": "#/$defs/maximumValue"},
+        "concurrent_p95_ms": {"$ref": "#/$defs/maximumValue"}
+      }
+    },
     "throughput": {"$ref": "#/$defs/minimumBudget"},
     "cpu": {"$ref": "#/$defs/maximumBudget"},
     "memory": {"$ref": "#/$defs/maximumBudget"},
@@ -79,6 +87,15 @@
           "maximum": {"type": "number", "exclusiveMinimum": 0},
           "unit": {"type": "string", "minLength": 1}
         }
+      }
+    },
+    "maximumValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maximum", "unit"],
+      "properties": {
+        "maximum": {"type": "number", "exclusiveMinimum": 0},
+        "unit": {"type": "string", "minLength": 1}
       }
     }
   }
