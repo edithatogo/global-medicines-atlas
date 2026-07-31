@@ -15,6 +15,7 @@ from jsonschema import Draft202012Validator
 from jsonschema.exceptions import ValidationError as SchemaValidationError
 from pydantic import ValidationError
 
+from global_medicines_atlas import stable_v1_monitoring as monitoring
 from global_medicines_atlas.stable_v1_monitoring import (
     INPUT_PATHS,
     AuthorityGates,
@@ -28,6 +29,18 @@ from global_medicines_atlas.stable_v1_monitoring import (
     verify_monitoring_receipt,
     write_monitoring_receipt,
 )
+
+
+def test_monitoring_input_digest_is_checkout_newline_portable(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "policy.json"
+    path.write_bytes(b'{"state": "candidate"}\r\n')
+
+    assert monitoring._file_digest(path) == monitoring.sha256(
+        b'{"state": "candidate"}\n'
+    ).hexdigest()
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "schemas/stable-v1-monitoring-receipt-v1.json"

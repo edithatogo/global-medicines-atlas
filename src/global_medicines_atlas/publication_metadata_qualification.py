@@ -264,7 +264,7 @@ def _contained_file(root: Path, relative: str) -> Path:
 
 def _binding(root: Path, relative: str) -> ContentBinding:
     path = _contained_file(root, relative)
-    content = path.read_bytes()
+    content = path.read_bytes().replace(b"\r\n", b"\n")
     return ContentBinding(
         path=relative,
         sha256=hashlib.sha256(content).hexdigest(),

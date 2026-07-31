@@ -192,8 +192,8 @@
     },
     {
       "path": "src/global_medicines_atlas/publication_metadata_qualification.py",
-      "sha256": "869c55f5b4e12a8af3bf0e7d9b160ce1c59b62b89d1c190078f780b3d645c08e",
-      "size": 25346
+      "sha256": "c934031e4aa87c8e8c3959c17fe0d0e77859ab7bcdad5fca8b8a3669242a9909",
+      "size": 25370
     },
     {
       "path": "src/global_medicines_atlas/publication_package.py",
@@ -202,8 +202,8 @@
     },
     {
       "path": "uv.lock",
-      "sha256": "9f9db682398e346789a62f920a64a377a2a5963e8d64e2cfb80c6e969ede22a6",
-      "size": 257151
+      "sha256": "fef862267178c0d0fdab24f1e0a0320914852795aab60703585b6ab4e23f4da8",
+      "size": 255046
     }
   ],
   "inputs": [
@@ -224,8 +224,8 @@
     },
     {
       "path": "release-inputs/reviewed-rows.jsonl",
-      "sha256": "e7e038f4519fd07cefa92a1e1b44d94227efe27435df0f1f10940a45cf12b1e4",
-      "size": 193
+      "sha256": "0969818f7ceb6d3c1913ae44ed1674437bb730228d7fc6507fd64205d989368a",
+      "size": 191
     }
   ],
   "package": {
@@ -290,7 +290,7 @@
   },
   "qualification_id": "stable-v1-release-candidate-publication-metadata",
   "ready_for_publication": false,
-  "receipt_sha256": "616565f38f3c1b903ebfaecf723e83edd4893a13f8d62692a51d0977a4212693",
+  "receipt_sha256": "89679535eeedcf82af2ca6f4316661c0f15f246dd8a7df39627d92c3efbd4b68",
   "result": "metadata_qualified_external_gates_blocked",
   "schema_id": "global-medicines-atlas.stable-v1-publication-metadata",
   "schema_version": 1

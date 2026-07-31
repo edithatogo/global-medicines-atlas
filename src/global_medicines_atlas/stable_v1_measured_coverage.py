@@ -80,6 +80,25 @@ def _digest_bytes(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
 
 
+def _portable_file_bytes(path: Path) -> bytes:
+    payload = path.read_bytes()
+    if path.suffix.lower() in {
+        ".csv",
+        ".json",
+        ".jsonl",
+        ".lock",
+        ".md",
+        ".py",
+        ".toml",
+        ".txt",
+        ".xml",
+        ".yaml",
+        ".yml",
+    }:
+        return payload.replace(b"\r\n", b"\n")
+    return payload
+
+
 def _load_nzulm_records(root: Path) -> tuple[object, ...]:
     module = import_module("sources.nz.nzulm_fhir")
     loader = cast(
@@ -491,7 +510,7 @@ def _artifact(root: Path, relative_path: str) -> ArtifactEvidence:
     path = root / relative_path
     if not path.is_file():
         raise ValueError(f"qualification input is not a file: {relative_path}")
-    payload = path.read_bytes()
+    payload = _portable_file_bytes(path)
     return ArtifactEvidence(
         path=relative_path,
         sha256=_digest_bytes(payload),
@@ -577,7 +596,7 @@ def _measure_probe(
     spec: _ProbeSpec,
 ) -> tuple[int, tuple[SourceDimension, ...]]:
     payloads = [
-        (root / path).read_bytes()
+        _portable_file_bytes(root / path)
         for path in spec.fixture_paths
         if (root / path).is_file()
     ]

@@ -33,6 +33,18 @@ from global_medicines_atlas.publication_package import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_content_binding_is_checkout_newline_portable(tmp_path: Path) -> None:
+    path = tmp_path / "input.jsonl"
+    path.write_bytes(b'{"id": 1}\r\n')
+
+    binding = pmq._binding(tmp_path, "input.jsonl")
+
+    assert binding.size == len(b'{"id": 1}\n')
+    assert binding.sha256 == pmq.hashlib.sha256(b'{"id": 1}\n').hexdigest()
+
+
 SCHEMA = (
     ROOT / "schemas" / "stable-v1-publication-metadata-qualification-v1.json"
 )

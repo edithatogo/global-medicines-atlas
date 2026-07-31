@@ -31,6 +31,18 @@ COMMITTED_RECEIPT = (
 )
 
 
+def test_portable_file_binding_normalizes_only_text(
+    tmp_path: Path,
+) -> None:
+    text = tmp_path / "fixture.json"
+    binary = tmp_path / "fixture.bin"
+    text.write_bytes(b'{"a": 1}\r\n')
+    binary.write_bytes(b"\x00\r\n\xff")
+
+    assert coverage._portable_file_bytes(text) == b'{"a": 1}\n'
+    assert coverage._portable_file_bytes(binary) == b"\x00\r\n\xff"
+
+
 @pytest.fixture(scope="module")
 def receipt() -> ContentBoundMeasuredCoverageReceipt:
     return build_measured_coverage_receipt(ROOT)

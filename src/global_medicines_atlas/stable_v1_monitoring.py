@@ -311,7 +311,7 @@ INPUT_PATHS: tuple[tuple[MonitoringDomain, InputRole, str], ...] = (
 
 
 def _file_digest(path: Path) -> str:
-    return sha256(path.read_bytes()).hexdigest()
+    return sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
 
 def _input_tree_digest(inputs: tuple[FileBinding, ...]) -> str:
