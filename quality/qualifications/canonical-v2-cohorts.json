@@ -1,0 +1,849 @@
+{
+  "receipt": {
+    "all_migrated_round_trips_exact": true,
+    "assertions": {
+      "formulary": 0,
+      "funding": 1,
+      "regulatory": 3
+    },
+    "blocked_records": 3,
+    "cohorts": [
+      {
+        "assertions": {
+          "formulary": 0,
+          "funding": 1,
+          "regulatory": 0
+        },
+        "blocked_records": 1,
+        "cohort_id": "australia-pbs-representative",
+        "evidence_class": "synthetic_local_fixture",
+        "explicit_fields_used": [
+          "item-code",
+          "product-name",
+          "listing-status",
+          "restriction"
+        ],
+        "fixtures": [
+          {
+            "path": "tests/fixtures/adapters/au_pbs.xml",
+            "sha256": "35a66d89c168917dc2fe1301d65b8759eb7adae2b888d8c54a3e167425d31356"
+          }
+        ],
+        "jurisdiction": "AUS",
+        "limitations": [
+          "The funding assertion remains separate from regulatory status.",
+          "The fixture is synthetic and does not qualify PBS coverage or currency."
+        ],
+        "measured_records": 1,
+        "migrated_records": 0,
+        "records": [
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 1,
+              "regulatory": 0
+            },
+            "block_reason": "The committed PBS fixture has no explicit ingredient or product hierarchy required by schema v2.",
+            "record_id": "au-pbs:1234A",
+            "result": "blocked_missing_explicit_structure",
+            "rollback_v1_sha256": null,
+            "v1_sha256": "e87434b2f5acf299e43c51b06661408ffdb2afb3b8bb95a5433a54912eb905a0",
+            "v2_sha256": null
+          }
+        ],
+        "source_ids": [
+          "au-pbs"
+        ]
+      },
+      {
+        "assertions": {
+          "formulary": 0,
+          "funding": 0,
+          "regulatory": 1
+        },
+        "blocked_records": 1,
+        "cohort_id": "eu-ema-representative",
+        "evidence_class": "synthetic_local_fixture",
+        "explicit_fields_used": [
+          "ema_product_number",
+          "medicine_name",
+          "authorisation_status"
+        ],
+        "fixtures": [
+          {
+            "path": "tests/fixtures/native/eu/ema_medicines.csv",
+            "sha256": "7c6b786f75d07852913d9f66399d78cc8ce7daf17ce9aeeb8f714b92eff43bea"
+          }
+        ],
+        "jurisdiction": "EU",
+        "limitations": [
+          "EMA authorisation is regulatory evidence and never implies national funding.",
+          "The fixture is synthetic and does not qualify complete EMA coverage."
+        ],
+        "measured_records": 1,
+        "migrated_records": 0,
+        "records": [
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 1
+            },
+            "block_reason": "The committed EMA fixture has no explicit substance structure required by schema-v2 products.",
+            "record_id": "eu-ema:EMEA/H/C/000001",
+            "result": "blocked_missing_explicit_structure",
+            "rollback_v1_sha256": null,
+            "v1_sha256": "55510462e27aa8ccec86f9d19014b7cd8b97713c68d710b91894620e1e636d5c",
+            "v2_sha256": null
+          }
+        ],
+        "source_ids": [
+          "eu-ema"
+        ]
+      },
+      {
+        "assertions": {
+          "formulary": 0,
+          "funding": 0,
+          "regulatory": 1
+        },
+        "blocked_records": 1,
+        "cohort_id": "fda-drugsfda-api-representative",
+        "evidence_class": "synthetic_local_fixture",
+        "explicit_fields_used": [
+          "application_number",
+          "product_number",
+          "brand_name"
+        ],
+        "fixtures": [
+          {
+            "path": "tests/fixtures/us/drugsfda_api.json",
+            "sha256": "545753bc2c201cac21c24201695237bbee098cb5e11e6a1aaee2d90cabe4c425"
+          }
+        ],
+        "jurisdiction": "USA",
+        "limitations": [
+          "The fixture is synthetic and does not qualify live FDA coverage.",
+          "The adapter supports active ingredients, but this committed sample does not contain them."
+        ],
+        "measured_records": 1,
+        "migrated_records": 0,
+        "records": [
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 1
+            },
+            "block_reason": "The committed API fixture omits explicit active_ingredients; schema-v2 substance_ids cannot be populated without inference.",
+            "record_id": "us-drugsfda:012345:001",
+            "result": "blocked_missing_explicit_structure",
+            "rollback_v1_sha256": null,
+            "v1_sha256": "c3328773f6fb17f40d1e459ed7b25c04242ee1f61fc937b6338c6d2416175530",
+            "v2_sha256": null
+          }
+        ],
+        "source_ids": [
+          "us-drugsfda"
+        ]
+      },
+      {
+        "assertions": {
+          "formulary": 0,
+          "funding": 0,
+          "regulatory": 1
+        },
+        "blocked_records": 0,
+        "cohort_id": "japan-pmda-representative",
+        "evidence_class": "synthetic_local_fixture",
+        "explicit_fields_used": [
+          "承認番号",
+          "販売名",
+          "一般名",
+          "承認年月日",
+          "承認区分"
+        ],
+        "fixtures": [
+          {
+            "path": "tests/fixtures/native/jp/pmda_approvals.csv",
+            "sha256": "0bd83b1c0be1263963495117722babbb8eaeaab9b0bdeaa5c69f6dc083309518"
+          }
+        ],
+        "jurisdiction": "JPN",
+        "limitations": [
+          "Japanese field semantics remain subject to the adapter's independent translation-review gate.",
+          "The fixture is synthetic and does not qualify live PMDA coverage."
+        ],
+        "measured_records": 1,
+        "migrated_records": 1,
+        "records": [
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 1
+            },
+            "block_reason": null,
+            "record_id": "jp-pmda:30600AMX00001",
+            "result": "passed",
+            "rollback_v1_sha256": "15ffbbf5d0a4c86e3bfc367ae149a89eae2308aa78aff05d8dbe6f259fb63b4d",
+            "v1_sha256": "15ffbbf5d0a4c86e3bfc367ae149a89eae2308aa78aff05d8dbe6f259fb63b4d",
+            "v2_sha256": "93071832cc14ccb1c7da37aaa83c786e3a3c8906a099a0cd9fcc783d1f72dc7e"
+          }
+        ],
+        "source_ids": [
+          "jp-pmda"
+        ]
+      },
+      {
+        "assertions": {
+          "formulary": 0,
+          "funding": 0,
+          "regulatory": 0
+        },
+        "blocked_records": 0,
+        "cohort_id": "new-zealand-nzulm-nzmt-preserved",
+        "evidence_class": "preserved_upstream_fixture",
+        "explicit_fields_used": [
+          "Medication.code",
+          "Medication.extension[nzmt-type]",
+          "Medication.ingredient.itemCodeableConcept",
+          "Medication.ingredient.strength",
+          "Medication.form",
+          "Medication.amount"
+        ],
+        "fixtures": [
+          {
+            "path": "vendor/nzmedicines/medications/10013261000116103-ibuprofen_200_mg_tablet.json",
+            "sha256": "0bd581fbc8763bbea07e63acfd93b01fcadf91f71a604f70b3ebd36dcaaa2d45"
+          },
+          {
+            "path": "vendor/nzmedicines/medications/10013271000116100-ibuprofen_400_mg_tablet.json",
+            "sha256": "e0b8082bc15d284ed59c34c3ed0deb86f201342b1ab9e8bc264d7d8f87db2ad6"
+          },
+          {
+            "path": "vendor/nzmedicines/medications/10013281000116102-ibuprofen_200_mg_tablet_24_tablets.json",
+            "sha256": "30b1ec61ded5b44405c1677ec11d4b544829140ecf9437de90f8523d8570f186"
+          },
+          {
+            "path": "vendor/nzmedicines/medications/10013291000116104-ibuprofen_400_mg_tablet_100_tablets.json",
+            "sha256": "8767b5a9db527cfe06e7525caa97fe5eb41b4e3acb43c205a3f01af9e191a2c8"
+          },
+          {
+            "path": "vendor/nzmedicines/medications/10037191000116105-paracetamol.json",
+            "sha256": "4be16bb9fd4a36c83247fa2792e858d0f0d7d94e8fb0ebe958da7864f901484f"
+          },
+          {
+            "path": "vendor/nzmedicines/medications/10037271000116101-paracetamol_120_mg_5_mL_oral_liquid.json",
+            "sha256": "2b4efd903f32a62d7ae1a5cee36f492a1991a54de5e691a81fa9cba73397947c"
+          },
+          {
+            "path": "vendor/nzmedicines/medications/10194111000116109-warfarin/10194171000116101-coumadin.json",
+            "sha256": "307ababf911a359df863ede6f91ce130d3c8180a5d60e7a6a3b441cbd375eb04"
+          },
+          {
+            "path": "vendor/nzmedicines/medications/10194111000116109-warfarin/10429461000116106-marevan.json",
+            "sha256": "3980a4b7d43b0d272e586848572cfe901075551f36b0e5ff93122cb397178a9e"
+          },
+          {
+            "path": "vendor/nzmedicines/medications/10194111000116109-warfarin/generic.json",
+            "sha256": "814b3a97c2f933449c0f2ed980e0ba27dc5c1d1db0a4ca900669e2998f716456"
+          },
+          {
+            "path": "vendor/nzmedicines/medications/10527591000116101-paracetamol_500_mg_tablet_100_tablets.json",
+            "sha256": "79c4cab778c19a27004b6ddb441a01a980fc845fa1c8a3511fe21177343468b5"
+          },
+          {
+            "path": "vendor/nzmedicines/medications/44282231000116104-paracetamol_500_mg_tablet.json",
+            "sha256": "99a3c061661054ce348f5490377a48db03d2399f2496ccf9874c73510b0b233b"
+          },
+          {
+            "path": "vendor/nzmedicines/medications/50013251000116105-Nurofen_200_mg_tablet_film-coated_24_tablets_blister_pack.json",
+            "sha256": "ad718712bc732ed6f6999bb66a6efec67bd6bb2cc6d7a910c9f5c8f953fd5df2"
+          },
+          {
+            "path": "vendor/nzmedicines/medications/50013261000116102-Brufen_400_mg_tablet_100_tablets_bottle.json",
+            "sha256": "b528365d23cb69b1a54af465c8291e871fe95cd9ec4dca2e1203f26d91d8785c"
+          },
+          {
+            "path": "vendor/nzmedicines/medications/50066491000116104-Panadol_500_mg_tablet_film-coated_100_tablets_bottle.json",
+            "sha256": "d1e5cf114f76c476f72d61b730aae7d5475e96b8a25767429a758f5091605226"
+          }
+        ],
+        "jurisdiction": "NZ",
+        "limitations": [
+          "The preserved nzmedicines commit is a bounded fixture snapshot, not a current or complete NZULM distribution.",
+          "The canonical-v1 NZ adapter intentionally emits no regulatory or funding assertions; source FHIR extensions are not promoted by this migration.",
+          "Structural identifiers are record-local migration identities, not cross-record ingredient or product deduplication claims.",
+          "FHIR projection qualification does not decide NZULM, NZMT, SNOMED CT, NZF, Medsafe, or Pharmac redistribution rights."
+        ],
+        "measured_records": 42,
+        "migrated_records": 42,
+        "records": [
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10013261000116103",
+            "result": "passed",
+            "rollback_v1_sha256": "dfd364a137f88952244a6a64f7f0483a18c628267ca06c1c89ccddca32db7ef7",
+            "v1_sha256": "dfd364a137f88952244a6a64f7f0483a18c628267ca06c1c89ccddca32db7ef7",
+            "v2_sha256": "df67042e6bfc73de78c59f9ab11c5f6912d64db0d9e6e27e2c21ea42f4f37d88"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10013271000116100",
+            "result": "passed",
+            "rollback_v1_sha256": "8c8724180ccacaa89ef46e2822aacdc2e48339bb7a4be0541c5dcd6629f2c2d8",
+            "v1_sha256": "8c8724180ccacaa89ef46e2822aacdc2e48339bb7a4be0541c5dcd6629f2c2d8",
+            "v2_sha256": "5b5368de9b36d374af0d54b7abfad648330c559b3dcde43228cf1846b9c0ee6d"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10013281000116102",
+            "result": "passed",
+            "rollback_v1_sha256": "ab2e5699bc1cfc21b3e1d9045cc0e77e9f0c65fcfa1fa9921c31e61d29d8cf7c",
+            "v1_sha256": "ab2e5699bc1cfc21b3e1d9045cc0e77e9f0c65fcfa1fa9921c31e61d29d8cf7c",
+            "v2_sha256": "0ed093f2de9c48b38aa1b80e29e9b1af3d5f04acf47341840feec8281e3a0317"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10013291000116104",
+            "result": "passed",
+            "rollback_v1_sha256": "10ba1d0427cfc9049ff9233000cae3396a2da25cc67bffc60ae0c2b8c13eaf85",
+            "v1_sha256": "10ba1d0427cfc9049ff9233000cae3396a2da25cc67bffc60ae0c2b8c13eaf85",
+            "v2_sha256": "a2edfc8a36cc789e31218f137c64f581ddf5f5d1cf0ef34837b71e495ad1e768"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10037191000116105",
+            "result": "passed",
+            "rollback_v1_sha256": "ac3bfc79e7da278b1daf14055d292a20da6154c787ff5c509c0fa869f4e87cf4",
+            "v1_sha256": "ac3bfc79e7da278b1daf14055d292a20da6154c787ff5c509c0fa869f4e87cf4",
+            "v2_sha256": "a37bb60e01c4ee37fe329d86f62affba3b5958d5e0e7bdab736be8da73538417"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10037271000116101",
+            "result": "passed",
+            "rollback_v1_sha256": "0510b488c3e89f3927120e19ca4a507de93d72114dcb8a356784e9dd37b3637c",
+            "v1_sha256": "0510b488c3e89f3927120e19ca4a507de93d72114dcb8a356784e9dd37b3637c",
+            "v2_sha256": "4db0b80ed45536ee57d69cd7be1bc4a0836a8b9dc31b274599316222068681ea"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10194111000116109",
+            "result": "passed",
+            "rollback_v1_sha256": "ded6d19236194b8ef1f714f0fde52cb1c3f804e7bc9a7c76cd2c58fd003e2759",
+            "v1_sha256": "ded6d19236194b8ef1f714f0fde52cb1c3f804e7bc9a7c76cd2c58fd003e2759",
+            "v2_sha256": "ab8fcd1e99194854e49c0dfd581c643a1dc6d2a6944e51ae98e57a09d7c6e070"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10194131000116103",
+            "result": "passed",
+            "rollback_v1_sha256": "56a92613bb411eccd5404246dbe084beb88076bcb8afd50884ebaa994dad9210",
+            "v1_sha256": "56a92613bb411eccd5404246dbe084beb88076bcb8afd50884ebaa994dad9210",
+            "v2_sha256": "99b46ae2b1ff87fdb6c5094ecdf483c9da8980dd7c74e175ec9cebe4927d54f1"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10194151000116108",
+            "result": "passed",
+            "rollback_v1_sha256": "60066bbab9f1fa41782e42ecc85e7741752963e2325e42ac319404a032fd1a1d",
+            "v1_sha256": "60066bbab9f1fa41782e42ecc85e7741752963e2325e42ac319404a032fd1a1d",
+            "v2_sha256": "bdb284595c64e80d4850e970cde56ef02722528f14917d5276bf9f7c2c9f89f5"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10194171000116101",
+            "result": "passed",
+            "rollback_v1_sha256": "dd0013fb879ffce0529fdf62235662f6c0ff181f6e02ae7e8fa2c0aff7284777",
+            "v1_sha256": "dd0013fb879ffce0529fdf62235662f6c0ff181f6e02ae7e8fa2c0aff7284777",
+            "v2_sha256": "b68922f88f7d40db269aeb5369adb3e4f7d4c45ee8d6ecb335d0be5e5e6dadf6"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10194181000116104",
+            "result": "passed",
+            "rollback_v1_sha256": "29bde16f85d5a788c815e36e885b51208756fa1b7969a358f53876fc8629ddbc",
+            "v1_sha256": "29bde16f85d5a788c815e36e885b51208756fa1b7969a358f53876fc8629ddbc",
+            "v2_sha256": "49a385dd257f803d058abd538d84c3b59d4b2b202977cc5e8288cb42dfd5636e"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10194201000116100",
+            "result": "passed",
+            "rollback_v1_sha256": "d660619c9f0452a459f875205d0b007255837a81942d2368ad9acbc5a94e5014",
+            "v1_sha256": "d660619c9f0452a459f875205d0b007255837a81942d2368ad9acbc5a94e5014",
+            "v2_sha256": "bf0c20465d88b1f7b1b23c67b4b7c431976fb4d4a71b2ee2216976bf03a949c0"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10194301000116109",
+            "result": "passed",
+            "rollback_v1_sha256": "094cb736abcb914773be79bb36ab81a03df131e4a51a3f078e1f1cae655ffbc5",
+            "v1_sha256": "094cb736abcb914773be79bb36ab81a03df131e4a51a3f078e1f1cae655ffbc5",
+            "v2_sha256": "cd6308f15bf70e1a7082daee071ef83218c05227cccdbbf685749f207e02c615"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10194321000116102",
+            "result": "passed",
+            "rollback_v1_sha256": "eec7cffacda1aefb161db8fbda758978c1a06edaa6922b80538b028afa44f81e",
+            "v1_sha256": "eec7cffacda1aefb161db8fbda758978c1a06edaa6922b80538b028afa44f81e",
+            "v2_sha256": "8bdf7c0182a58aaa37c64d4cb4fd83c69dbb65f6c302e7178a0319292bffe5ba"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10194341000116107",
+            "result": "passed",
+            "rollback_v1_sha256": "562ebe76690a75578147efb0647a0ee3c32a8f65079533896ecbcdf36efc323e",
+            "v1_sha256": "562ebe76690a75578147efb0647a0ee3c32a8f65079533896ecbcdf36efc323e",
+            "v2_sha256": "68d10e9bdcea0960148d83c0ce6073c6f9f1fe1a98af345228537d8cd7300842"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10194361000116108",
+            "result": "passed",
+            "rollback_v1_sha256": "a8bf76378980fa72eaaabcf9eb553b5d4a6057dc0aa065a6c032150f8552481a",
+            "v1_sha256": "a8bf76378980fa72eaaabcf9eb553b5d4a6057dc0aa065a6c032150f8552481a",
+            "v2_sha256": "8c9a18357d999aebe1e586ba9eb1e87d43aee745dbda1cd93e52a45873d6a67e"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10194381000116101",
+            "result": "passed",
+            "rollback_v1_sha256": "20f0252f7bacbee907dfe2729612d52862ab0ef6782eae598354a88dd29df017",
+            "v1_sha256": "20f0252f7bacbee907dfe2729612d52862ab0ef6782eae598354a88dd29df017",
+            "v2_sha256": "097963495e109f13550da3ff44667d47cf6d1b137190e489d1ce345c2906ae18"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10194401000116101",
+            "result": "passed",
+            "rollback_v1_sha256": "39f9b0dd263722657b7708552c620cc1c7bcbc105209328b6a0a24945af6a89a",
+            "v1_sha256": "39f9b0dd263722657b7708552c620cc1c7bcbc105209328b6a0a24945af6a89a",
+            "v2_sha256": "8f534b30c299a46b07f491ec0396ab34a7f393f454d4e33a2d8c7cf769d96dda"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10194421000116108",
+            "result": "passed",
+            "rollback_v1_sha256": "51de1796bd94d8f3c96de1b78af62e94195504fdce2345b9b65bce149ad6e861",
+            "v1_sha256": "51de1796bd94d8f3c96de1b78af62e94195504fdce2345b9b65bce149ad6e861",
+            "v2_sha256": "fb1d9427ef333d41ec618314fbec52be5f686335c0bd98061c8a34ac8aae9138"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10194441000116103",
+            "result": "passed",
+            "rollback_v1_sha256": "37c936d942083118e949322dbac817b29c6104af37a0a10e003b413d355fc14b",
+            "v1_sha256": "37c936d942083118e949322dbac817b29c6104af37a0a10e003b413d355fc14b",
+            "v2_sha256": "d56b1aad8cc7fe27e36f624bd098c8b3e98b40bd2022e51ffc77ec7fe458cf75"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10429441000116105",
+            "result": "passed",
+            "rollback_v1_sha256": "d46c7ba4bdc1e1210a974c42299c0eec9f91da71736cb026d28926eb929ff6ff",
+            "v1_sha256": "d46c7ba4bdc1e1210a974c42299c0eec9f91da71736cb026d28926eb929ff6ff",
+            "v2_sha256": "643c01c8d105791a1dfb836409a9cbcb38ba8b5bde006a1045122b746a97f0e5"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10429461000116106",
+            "result": "passed",
+            "rollback_v1_sha256": "3290d3cfce3bb9aa9fb980fbf4989edd8bd92e63c57f760509f6b2532d014645",
+            "v1_sha256": "3290d3cfce3bb9aa9fb980fbf4989edd8bd92e63c57f760509f6b2532d014645",
+            "v2_sha256": "309be58001349239abcb5d57a8c16aff7bc423fbdb9be9fd642b09d0bdb69dee"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10429471000116101",
+            "result": "passed",
+            "rollback_v1_sha256": "0cfccb8a38915170bb0b081ca67dc9baf3bb817560f37791d62f2b41d8819990",
+            "v1_sha256": "0cfccb8a38915170bb0b081ca67dc9baf3bb817560f37791d62f2b41d8819990",
+            "v2_sha256": "5a0a836b02286d60f04dd153710ab878f0662b40dd8a494b77741bee2f9c82b4"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10429491000116102",
+            "result": "passed",
+            "rollback_v1_sha256": "b9689e344cce6e238c0e4610a95b1c270bdbc7625abacc8149a58571f792e7de",
+            "v1_sha256": "b9689e344cce6e238c0e4610a95b1c270bdbc7625abacc8149a58571f792e7de",
+            "v2_sha256": "441b8c72193682c212ce1832650630e844909e226b4dfc25fcc1f6ac547120bd"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10429511000116108",
+            "result": "passed",
+            "rollback_v1_sha256": "17fced994b0713345648f9f788b871bf0d346aa1a162a187a0ef130cfb6573f2",
+            "v1_sha256": "17fced994b0713345648f9f788b871bf0d346aa1a162a187a0ef130cfb6573f2",
+            "v2_sha256": "f9ff008fb3d82c9a6053850bcc1b28bee82c46764f61ba12534e4b8bf984fb12"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10429531000116102",
+            "result": "passed",
+            "rollback_v1_sha256": "fe4e471d3b189825fbb01a27bf68bbfd042a9a12e3569dabc53cd665b064bb3f",
+            "v1_sha256": "fe4e471d3b189825fbb01a27bf68bbfd042a9a12e3569dabc53cd665b064bb3f",
+            "v2_sha256": "60597ef9943cec622ee595148797f083970fd95324056bfa0b31df19e211f380"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10429551000116107",
+            "result": "passed",
+            "rollback_v1_sha256": "ea2823479bb79516eccc5fcfd87bf973d3132ed3f1e7c364946525a2de7fbd99",
+            "v1_sha256": "ea2823479bb79516eccc5fcfd87bf973d3132ed3f1e7c364946525a2de7fbd99",
+            "v2_sha256": "8c1908df673a008c6487977da106a55080581515ad9db156f25ccbcc10564c18"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10429571000116100",
+            "result": "passed",
+            "rollback_v1_sha256": "b801eaad7ed01710834f3f7da366b083cb5ca13ad5b52f71aef93fcf90e8f5ec",
+            "v1_sha256": "b801eaad7ed01710834f3f7da366b083cb5ca13ad5b52f71aef93fcf90e8f5ec",
+            "v2_sha256": "0c85155aacc73754a5be5393d79a68cdd083fdb9b248d35ad53ad1c1d92e1650"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10429591000116101",
+            "result": "passed",
+            "rollback_v1_sha256": "15d90ee748a079c9cea696775d1feb85da8f013b5927a51cb1ebab6d8d2742a9",
+            "v1_sha256": "15d90ee748a079c9cea696775d1feb85da8f013b5927a51cb1ebab6d8d2742a9",
+            "v2_sha256": "bfb481deb63a52940c053522e17be6d2ecd45183abd29da7897b0d45148b9e98"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10429611000116107",
+            "result": "passed",
+            "rollback_v1_sha256": "2b466c5f99ed93250c64fa45f8b33f1cb7aef6944e1dd40f5bd1fda5b80a59df",
+            "v1_sha256": "2b466c5f99ed93250c64fa45f8b33f1cb7aef6944e1dd40f5bd1fda5b80a59df",
+            "v2_sha256": "31efd25bba66518d40e0720311792ac2d54200913f8905bddc3d470745dc4a1e"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10429631000116101",
+            "result": "passed",
+            "rollback_v1_sha256": "1b9fcb8fb3014a67d408c86efc98a0a9d3bee96df34a1619adf7be6b48200701",
+            "v1_sha256": "1b9fcb8fb3014a67d408c86efc98a0a9d3bee96df34a1619adf7be6b48200701",
+            "v2_sha256": "ad542bc193c8fbf8dc01d3d9a84d281a485b380e7670661b549cdb443bbb5090"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:10527591000116101",
+            "result": "passed",
+            "rollback_v1_sha256": "5fce0479252c84ab21bb70d9c1f17558c5f576495207b9b8bbb5b1eb746cf71e",
+            "v1_sha256": "5fce0479252c84ab21bb70d9c1f17558c5f576495207b9b8bbb5b1eb746cf71e",
+            "v2_sha256": "cec7d18e4cd1c7d7a4152eee176d4d4f23df1f78cbb44d9339a47a9d25688570"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:44282231000116104",
+            "result": "passed",
+            "rollback_v1_sha256": "629e84e44bb3d0674e607c15557f4aee056e5ca8e861779390d5b9339fddf6ed",
+            "v1_sha256": "629e84e44bb3d0674e607c15557f4aee056e5ca8e861779390d5b9339fddf6ed",
+            "v2_sha256": "882cbda432f29bd69926ce6b2f2bb99a1c74406cd4196e6e660581da0adcb748"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:50013251000116105",
+            "result": "passed",
+            "rollback_v1_sha256": "8bc7753f97e1ba9515188efb88c8da5edca7fdd274adca320d341d31a5761bef",
+            "v1_sha256": "8bc7753f97e1ba9515188efb88c8da5edca7fdd274adca320d341d31a5761bef",
+            "v2_sha256": "037a46ed7614bdad515bbe5f3067944f49e6120152c07b795ea1fa4f12ce47ec"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:50013261000116102",
+            "result": "passed",
+            "rollback_v1_sha256": "83a79688e9b4c133a02cb0f26276b2e4c67175615acba499cbfcdf5e2f9ccd93",
+            "v1_sha256": "83a79688e9b4c133a02cb0f26276b2e4c67175615acba499cbfcdf5e2f9ccd93",
+            "v2_sha256": "228e6de25df8496ba405c2e73386902e5850989d1090e67bb94ef0623465900e"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:50018991000117103",
+            "result": "passed",
+            "rollback_v1_sha256": "76dd36780c3e68a067b5db2c5e5cd44e68d62dd40c6d6fb6963dd4bfc85b3341",
+            "v1_sha256": "76dd36780c3e68a067b5db2c5e5cd44e68d62dd40c6d6fb6963dd4bfc85b3341",
+            "v2_sha256": "7096809d8897bd7c1346833aa5bf216083943b7d42b86126c133961089bae2f4"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:50019041000117101",
+            "result": "passed",
+            "rollback_v1_sha256": "584185e09758f3d0171ad687c654ed76f2a56291430c2e42d03d1a91f2f2b77c",
+            "v1_sha256": "584185e09758f3d0171ad687c654ed76f2a56291430c2e42d03d1a91f2f2b77c",
+            "v2_sha256": "0ee863fe91dd01829a85fb3fcc5c43bfb08b4fec8814b042d873c6d1bf7cab81"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:50019061000117102",
+            "result": "passed",
+            "rollback_v1_sha256": "d0981cb4f134fd31a66642fc4f5f1e0f0ae8c2468c0064b94af7becabdc6793b",
+            "v1_sha256": "d0981cb4f134fd31a66642fc4f5f1e0f0ae8c2468c0064b94af7becabdc6793b",
+            "v2_sha256": "7b5689599f3ccc19f5d922f15bdfa492968dbb41d4dafe00dada81c8e8e7e82c"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:50066491000116104",
+            "result": "passed",
+            "rollback_v1_sha256": "4eb9fdc7aa317da2517c4d7d4cae39a63f27929845e6219df4c619673c73da5b",
+            "v1_sha256": "4eb9fdc7aa317da2517c4d7d4cae39a63f27929845e6219df4c619673c73da5b",
+            "v2_sha256": "9f2f74654f680dc9269ded7608869e8a82daac4b1a741ef4eca06333e4d57786"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:50110891000117100",
+            "result": "passed",
+            "rollback_v1_sha256": "a7af112de9ebfeccccd6a7789f96653bc42155e778e3a65e9653a6f2fb56f2dc",
+            "v1_sha256": "a7af112de9ebfeccccd6a7789f96653bc42155e778e3a65e9653a6f2fb56f2dc",
+            "v2_sha256": "cf374a94279fdff78d1e35948d66d5cfc2cdf42e9db3b9cfefe4028fa5ec41b8"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:50116621000117104",
+            "result": "passed",
+            "rollback_v1_sha256": "dd7431f930202a45e4ff3b3f096a810bb62d00ee1af955fc0ed8480643a20d74",
+            "v1_sha256": "dd7431f930202a45e4ff3b3f096a810bb62d00ee1af955fc0ed8480643a20d74",
+            "v2_sha256": "38661387bbb4a9f1902e7158e02ff065f6fa07dd8ee2294d43604223b4d84cc4"
+          },
+          {
+            "assertions": {
+              "formulary": 0,
+              "funding": 0,
+              "regulatory": 0
+            },
+            "block_reason": null,
+            "record_id": "nzmt:50116631000117101",
+            "result": "passed",
+            "rollback_v1_sha256": "9574b2d360922c9e1f926f1f1893c76c08ed0a318be3bd565d11ea77e9091cc8",
+            "v1_sha256": "9574b2d360922c9e1f926f1f1893c76c08ed0a318be3bd565d11ea77e9091cc8",
+            "v2_sha256": "bf784a70a4cf281e89bbd51d65a8c4557eccdad3e1cc1344f923f208104decf5"
+          }
+        ],
+        "source_ids": [
+          "nzmedicines-fixtures"
+        ]
+      }
+    ],
+    "complete_global_coverage": false,
+    "limitations": [
+      "Committed fixtures are representative and do not establish complete source or jurisdiction coverage.",
+      "Synthetic local fixtures do not qualify live regulatory, funding, formulary, price, or publication evidence.",
+      "Records lacking explicit source structure remain blocked; medicine names are never parsed to manufacture schema-v2 fields."
+    ],
+    "measured_records": 46,
+    "migrated_records": 43,
+    "migration_contract": "canonical-medicine-v1-to-structural-v2",
+    "production_data_qualified": false,
+    "schema_id": "global-medicines-atlas.canonical-v2-cohort-receipt",
+    "schema_version": 1
+  },
+  "receipt_sha256": "b728af3163db5d778a430d8c46dae3d3945094dbea2196cfb04cdf6e169d63e8"
+}
