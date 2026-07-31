@@ -4,10 +4,11 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 
 ## Phase 1: Qualification contract
 
-- [~] Task: Build requirement, maturity and release-evidence matrices ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
+- [x] Task: Build requirement, maturity and release-evidence matrices ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
   - Initial fail-closed projection: `quality/qualifications/stable-v1-contract.json`
-    validated by `schemas/stable-v1-qualification-v1.json`; implementation and
-    durable-evidence qualification remain open.
+    validated by `schemas/stable-v1-qualification-v1.json`; the complete matrix
+    records verified, partial and blocked states without treating later
+    implementation or external approvals as Phase 1 completion.
 - [x] Task: Define clean-room reproduction and migration rehearsals ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
   - Four receipt-producing rehearsal definitions distinguish release clean-room
     reproduction, structural canonical migration, rollback, and governed

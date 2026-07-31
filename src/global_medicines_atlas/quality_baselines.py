@@ -135,6 +135,7 @@ class MutationSurvivorReview(FrozenModel):
     artifact_id: int = Field(gt=0)
     artifact_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     survived: int = Field(gt=0)
+    untested: int = Field(ge=0)
     promotion_survivor_maximum: int = Field(ge=0)
     promotion_status: Literal["blocked_survivor_debt", "qualified"]
     groups: tuple[SurvivorGroup, ...] = Field(min_length=1)

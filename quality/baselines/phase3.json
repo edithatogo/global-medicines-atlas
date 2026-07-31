@@ -3,22 +3,22 @@
   "mutation": {
     "source": {
       "repository": "edithatogo/global-medicines-atlas",
-      "run_id": 30609139393,
-      "head_sha": "1c7a991f4892a8740188b13e64e743386bb17a28",
-      "artifact_id": 8784782680,
-      "artifact_sha256": "f38619d3747b29a14343783baa144db9a7ceecc18e67466d7729d7118b223256"
+      "run_id": 30629227351,
+      "head_sha": "cc73a55e6b2198a2d82a3de6d4366f76398ded23",
+      "artifact_id": 8792686973,
+      "artifact_sha256": "c1ccefd0e36361e84d606477219c13f980876b0b0ed5ebbdb3aab953fa2fb228"
     },
     "observations": {
-      "killed": 1628,
-      "survived": 317,
-      "untested": 0,
+      "killed": 1884,
+      "survived": 364,
+      "untested": 2,
       "skipped": 0,
       "suspicious": 0,
       "timeout": 0,
       "interrupted": 0,
       "segfault": 0,
-      "total": 1945,
-      "score_percent": 83.701799
+      "total": 2250,
+      "score_percent": 83.73333333333333
     },
     "promotion_minimum_percent": 80.0,
     "promotion_status": "qualified"

@@ -1,22 +1,27 @@
 {
   "schema_version": "1.0.0",
-  "reviewed_run_id": 30609139393,
-  "head_sha": "1c7a991f4892a8740188b13e64e743386bb17a28",
-  "artifact_id": 8784782914,
-  "artifact_sha256": "572d0038955f742e56278511bc9c492912f3ec11eb1803947d33797b0ae0f36b",
-  "survived": 317,
+  "reviewed_run_id": 30629227351,
+  "head_sha": "cc73a55e6b2198a2d82a3de6d4366f76398ded23",
+  "artifact_id": 8792687604,
+  "artifact_sha256": "92a2695ebbe4397b7b1ee56ce03d3c8561df77854a84fcb68ab38a5cf8c8ca41",
+  "survived": 364,
+  "untested": 2,
   "promotion_survivor_maximum": 381,
   "promotion_status": "qualified",
   "groups": [
     {"module": "source_health", "count": 194, "disposition": "open_test_gap", "priority": 1},
     {"module": "adapters.us_drugsfda", "count": 29, "disposition": "open_test_gap", "priority": 2},
     {"module": "matching_evaluation", "count": 29, "disposition": "open_test_gap", "priority": 3},
-    {"module": "matching", "count": 25, "disposition": "open_test_gap", "priority": 4},
-    {"module": "review_queue", "count": 18, "disposition": "open_test_gap", "priority": 5},
-    {"module": "adapters.us_cms_partd", "count": 9, "disposition": "open_test_gap", "priority": 6},
-    {"module": "matching_normalization", "count": 5, "disposition": "open_test_gap", "priority": 7},
-    {"module": "parity", "count": 5, "disposition": "open_test_gap", "priority": 8},
-    {"module": "matching_policy", "count": 3, "disposition": "open_test_gap", "priority": 9}
+    {"module": "semantic_retrieval", "count": 28, "disposition": "open_test_gap", "priority": 4},
+    {"module": "matching", "count": 25, "disposition": "open_test_gap", "priority": 5},
+    {"module": "review_queue", "count": 18, "disposition": "open_test_gap", "priority": 6},
+    {"module": "consumer_qualification", "count": 16, "disposition": "open_test_gap", "priority": 7},
+    {"module": "adapters.us_cms_partd", "count": 9, "disposition": "open_test_gap", "priority": 8},
+    {"module": "matching_normalization", "count": 5, "disposition": "open_test_gap", "priority": 9},
+    {"module": "parity", "count": 5, "disposition": "open_test_gap", "priority": 10},
+    {"module": "matching_policy", "count": 3, "disposition": "open_test_gap", "priority": 11},
+    {"module": "canonical_v2", "count": 2, "disposition": "open_test_gap", "priority": 12},
+    {"module": "comparison_validity", "count": 1, "disposition": "open_test_gap", "priority": 13}
   ],
-  "review_decision": "No survivor is waived or classified as equivalent without mutant-level proof. The 83.701799% hosted score exceeds the independent 80% v0.8 threshold; the remaining 317 survivors stay explicit test debt."
+  "review_decision": "No survivor is waived or classified as equivalent without mutant-level proof. The expanded-scope 83.733333% hosted score exceeds both the independent 80% v0.8 threshold and the prior 83.701799% baseline; 364 survivors and 2 untested protocol methods stay explicit test debt."
 }
