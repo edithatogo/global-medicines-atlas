@@ -12,12 +12,12 @@ maintainer supplies explicit licence and release approval and the protected
 publication workflow produces independently observable receipts.
 
 The committed candidate receipt is bound to durable `main` commit
-`3c2100168d003364f1ad71954e1a5adb7d3fa7c5` (the merge of PR #115). The
+`8f5a9357dd5049900787492e9b07d62155e8ffec` (the merge of PR #116). The
 integration harness clones the canonical remote, checks out that exact commit,
 rebuilds with the pinned release toolchain, and requires the rebuilt receipt to
 match the committed bytes before it exercises the wheel and sdist consumers.
-The archives use canonical wheel payload/RECORD data and deterministic stored
-gzip blocks. This closes the prior shallow-checkout and cross-platform
+The archives use canonical wheel payload/RECORD data and a fully specified
+stored-DEFLATE gzip stream. This closes the prior shallow-checkout and cross-platform
 provenance gaps without crossing any signing, approval, tagging, or publication
 gate.
 

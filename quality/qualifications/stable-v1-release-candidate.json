@@ -9,30 +9,30 @@
     },
     {
       "media_type": "application/vnd.pypa.wheel+zip",
-      "path": "dist/global_medicines_atlas-0.post1.dev67+unknown.g3c2100168-py3-none-any.whl",
+      "path": "dist/global_medicines_atlas-0.post1.dev68+unknown.g8f5a9357d-py3-none-any.whl",
       "role": "wheel",
-      "sha256": "baeb6e05e604fb3b421ea3c01c036b112872af582542324f4206c3e48444ff60",
+      "sha256": "f0e8b528a72d9d91dbef6034abc83514e121b7086099e38cc7027309a1ce1103",
       "size": 1148036
     },
     {
       "media_type": "application/gzip",
-      "path": "dist/global_medicines_atlas-0.post1.dev67+unknown.g3c2100168.tar.gz",
+      "path": "dist/global_medicines_atlas-0.post1.dev68+unknown.g8f5a9357d.tar.gz",
       "role": "sdist",
-      "sha256": "c2077d38553f317bf2ce67cbcbded32fc3c258fd34a1a2058e275cb82a688c98",
-      "size": 5120443
+      "sha256": "5dd976cb5ae21a3d78bfd00a078a025a6800224a8d35d752ec28544bea730130",
+      "size": 5120413
     },
     {
       "media_type": "application/json",
       "path": "provenance-references.json",
       "role": "provenance-references",
-      "sha256": "eccee597619588720329c9b3a75fbb93cc96b9552c22cb68c8139b843731ec5a",
+      "sha256": "4fc8d1db1960c736f8f542079943172311e5a7b536615ef49d462ce2f67baa94",
       "size": 2853
     },
     {
       "media_type": "application/vnd.cyclonedx+json",
       "path": "sbom.cdx.json",
       "role": "sbom",
-      "sha256": "5046e01e0cb6326050a37dad597bad17e180fe0dc83b242d882461334940780c",
+      "sha256": "ba7e89ced150cecb958801f13d4bf0bc335ece4e78165cc4f54188fcc47cca2f",
       "size": 10031
     },
     {
@@ -43,13 +43,13 @@
       "size": 255046
     }
   ],
-  "candidate_id": "stable-v1-rc-3c2100168d00",
+  "candidate_id": "stable-v1-rc-8f5a9357dd50",
   "checksums": {
     "path": "SHA256SUMS",
-    "sha256": "cd8d97d8b2081e4a7f7fec428146cab06bef98f973f1b36de557cd74e6eef2de",
+    "sha256": "0f612ae880e793141839a8c574857a6ee9ee3e25edbd19ccb2c1640c9e3e99c8",
     "size": 691
   },
-  "content_sha256": "fd33fa2d56d493e251d06077087ba4bbf288022d41a23b550f590cd0778aa65f",
+  "content_sha256": "6904a6164ce3ec178558cccd70e1f9db9c50c0bccb1336c94bdbe2ec2574a37c",
   "limitations": [
     "This local candidate is unsigned and has no provenance attestation.",
     "No maintainer licence or stable-release approval is inferred.",
@@ -58,10 +58,10 @@
   ],
   "manifest": {
     "path": "candidate-manifest.json",
-    "sha256": "e69014b5a57ebcc8ab0813a1c0a1d959710d1b906b91a8839f724e3001a68c32",
+    "sha256": "0b77296c2ea2a661d4b51bcc28d56365252e94fce00c6f72ba44da4604802a0b",
     "size": 1763
   },
-  "package_version": "0.post1.dev67+unknown.g3c2100168",
+  "package_version": "0.post1.dev68+unknown.g8f5a9357d",
   "provenance_references": [
     {
       "kind": "repository-file",
@@ -91,7 +91,7 @@
       "kind": "repository-file",
       "locator": "repo:scripts/build_stable_v1_release_candidate.py",
       "role": "candidate-script",
-      "sha256": "b344bce09fe2aa6bd8a532311a0b28a363004ad874c85ebd7b29712805988ae1"
+      "sha256": "5a80402ac691bd0552665b7a2d6d2798a32d2badce9481209f3e5a177bec4ae8"
     },
     {
       "kind": "repository-file",
@@ -131,22 +131,22 @@
     },
     {
       "kind": "git-commit-object",
-      "locator": "git:commit:3c2100168d003364f1ad71954e1a5adb7d3fa7c5",
+      "locator": "git:commit:8f5a9357dd5049900787492e9b07d62155e8ffec",
       "role": "source-commit-object",
-      "sha256": "e99510bb94e293f04f3e83ff8c4ba24abbfc841cbae6d40277567c3215bb428a"
+      "sha256": "00f1c67590204c1606c55a3f21164b4842fdd05c65b90c2d325a4667e6520182"
     },
     {
       "kind": "git-tree-listing",
-      "locator": "git:tree-listing:3c2100168d003364f1ad71954e1a5adb7d3fa7c5",
+      "locator": "git:tree-listing:8f5a9357dd5049900787492e9b07d62155e8ffec",
       "role": "source-tree-listing",
-      "sha256": "e3ca4acab2d1de2d6f883c5f0da0f9cf527e48508305effcbc5f7b7ae4cfafab"
+      "sha256": "1028cdaa0f377e8eeab60074940ed354585f5e9d21bad8b9bd75bcb0d033d540"
     }
   ],
   "schema_id": "global-medicines-atlas.stable-v1-release-candidate",
   "schema_version": 1,
-  "source_commit": "3c2100168d003364f1ad71954e1a5adb7d3fa7c5",
+  "source_commit": "8f5a9357dd5049900787492e9b07d62155e8ffec",
   "source_repository": "https://github.com/edithatogo/global-medicines-atlas",
-  "source_tree": "1ffaf86ed34981bd1cc7c8a331d5d77cd31c3e1f",
+  "source_tree": "30a5b1980995e73f88001e36984242b03a560bfe",
   "state": {
     "approved": false,
     "git_tag_created": false,
@@ -200,7 +200,7 @@
         "build/stable-v1/consumer-sdist"
       ],
       "command_id": "verify-sdist-consumer",
-      "expected_result": "the exact global_medicines_atlas-0.post1.dev67+unknown.g3c2100168.tar.gz source distribution creates its own portable environment and passes import, version, API, CLI and reinstall probes",
+      "expected_result": "the exact global_medicines_atlas-0.post1.dev68+unknown.g8f5a9357d.tar.gz source distribution creates its own portable environment and passes import, version, API, CLI and reinstall probes",
       "mutates_external_state": false
     },
     {
@@ -225,7 +225,7 @@
         "build/stable-v1/consumer-wheel"
       ],
       "command_id": "verify-wheel-consumer",
-      "expected_result": "the exact global_medicines_atlas-0.post1.dev67+unknown.g3c2100168-py3-none-any.whl wheel creates its own portable environment and passes import, version, API, CLI and reinstall probes",
+      "expected_result": "the exact global_medicines_atlas-0.post1.dev68+unknown.g8f5a9357d-py3-none-any.whl wheel creates its own portable environment and passes import, version, API, CLI and reinstall probes",
       "mutates_external_state": false
     }
   ]
