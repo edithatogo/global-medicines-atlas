@@ -49,9 +49,26 @@ The evidence-gated [v0.1-to-v1.0 roadmap](conductor/roadmap.md) maps product
 features and maturity levels to Conductor tracks and the native GitHub
 [roadmap issue hierarchy](https://github.com/edithatogo/global-medicines-atlas/issues/44).
 
+## Use the atlas
+
+Start with the [task-oriented user guide](docs/user-guide.md) to:
+
+- install the core package or opt into semantic retrieval;
+- exercise the CLI, API contract, and server-rendered Atlas;
+- interpret regulatory, funding, uncertainty, and comparison-validity results;
+- reproduce the repository locally or rehearse recovery; and
+- report support, security, or medicine-data integrity issues.
+
+The repository currently provides source-checkout and built-artifact workflows,
+not a published package, hosted API, or hosted Atlas service. Commands requiring
+a canonical DuckDB database do not silently substitute the repository's
+representative test fixtures for production medicine data.
+
 ## Data boundaries
 
 The repository does not publish the local NZULM release, restricted
 terminologies, credentials, or derived private research outputs. Source
 catalog entries describe access surfaces; they do not claim complete ingestion
-or global coverage.
+or global coverage. Read the [software and source-data rights](docs/data-sources/SOURCE_RIGHTS.md)
+and [stable-v1 qualification limitations](docs/qualification/stable-v1-contract.md)
+before reusing code, source material, or derived outputs.

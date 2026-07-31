@@ -3,6 +3,11 @@
 This index routes routine operations without implying authority to cross
 credential, rights, publication, or production-recovery gates.
 
+For installation, CLI/API/Atlas use, interpretation, and local reproduction,
+start with the [task-oriented user guide](../user-guide.md). For non-sensitive
+usage support and private security reporting boundaries, see
+[SUPPORT.md](../../SUPPORT.md) and [SECURITY.md](../../SECURITY.md).
+
 ## Procedures
 
 - [Source monitoring and release evidence](source-monitoring-and-release-evidence.md)
