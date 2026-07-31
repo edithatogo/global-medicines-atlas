@@ -9,9 +9,12 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 - [x] Task: Define jurisdiction/source census, inclusion, exclusion and rights rules
 - [x] Task: Define entity, indication, population, temporal and comparison-validity semantics
 - [x] Task: Cross-reference requirements, design, source catalog and [GitHub methods subissue #67](https://github.com/edithatogo/global-medicines-atlas/issues/67)
-- [~] Task: Phase Verification & Checkpoint
-  - Implementation verification passed locally; independent Conductor review
-    and hosted protected checks remain pending.
+- [x] Task: Phase Verification & Checkpoint
+  - PR #111 merged as `06f2eb9` after all 29 protected checks passed; one
+    representative-performance runner variance passed its bounded rerun.
+    Independent post-merge Conductor review found no findings and verified
+    deterministic generation, exact 34-jurisdiction/96-source census,
+    M-090 semantics, strict typing and 95.23% hosted coverage.
 
 ## Phase 2: Analysis and validation plan
 
