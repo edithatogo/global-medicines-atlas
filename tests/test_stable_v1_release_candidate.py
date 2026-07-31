@@ -421,6 +421,10 @@ def test_consumer_probe_creates_and_reinstalls_exact_artifact(
     monkeypatch.setattr(
         "scripts.build_stable_v1_release_candidate._run", fake_run
     )
+    monkeypatch.setattr(
+        "scripts.build_stable_v1_release_candidate._verify_build_toolchain",
+        lambda root: (root / "constraints.txt", "uv"),
+    )
 
     evidence = consume_candidate(
         root=root,
@@ -509,6 +513,11 @@ def test_consumer_probe_rejects_changed_reinstall_result(
         return b""
 
     monkeypatch.setattr(candidate_script, "_run", fake_run)
+    monkeypatch.setattr(
+        candidate_script,
+        "_verify_build_toolchain",
+        lambda root: (root / "constraints.txt", "uv"),
+    )
 
     with pytest.raises(ReleaseCandidateError, match="changed after reinstall"):
         consume_candidate(

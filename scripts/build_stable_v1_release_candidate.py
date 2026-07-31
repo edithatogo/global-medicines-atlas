@@ -152,7 +152,38 @@ def canonicalize_sbom(path: Path, version: str) -> None:
     path.write_bytes(canonical_json_bytes(sbom))
 
 
-def _verify_build_toolchain(root: Path) -> Path:
+def _uv_version_matches(output: str, expected: object) -> bool:
+    parts = output.split()
+    return len(parts) >= _UV_VERSION_PART_COUNT and parts[
+        :_UV_VERSION_PART_COUNT
+    ] == ["uv", expected]
+
+
+def _resolve_release_uv(root: Path, expected: object) -> str:
+    candidates: list[Path] = []
+    seen: set[Path] = set()
+    for directory in os.environ.get("PATH", "").split(os.pathsep):
+        for executable in ("uv.exe", "uv"):
+            candidate = Path(directory) / executable
+            if candidate.is_file():
+                resolved = candidate.resolve()
+                if resolved not in seen:
+                    seen.add(resolved)
+                    candidates.append(resolved)
+    for candidate in candidates:
+        try:
+            output = _run(root, str(candidate), "--version").decode().strip()
+        except OSError, ReleaseCandidateError:
+            continue
+        if _uv_version_matches(output, expected):
+            return str(candidate)
+    observed = ", ".join(str(candidate) for candidate in candidates) or "none"
+    raise ReleaseCandidateError(
+        f"release build requires uv {expected}; candidates: {observed}"
+    )
+
+
+def _verify_build_toolchain(root: Path) -> tuple[Path, str]:
     raw: object = json.loads((root / _BUILD_TOOLCHAIN_PATH).read_text())
     if not isinstance(raw, dict):
         raise ReleaseCandidateError("build toolchain must be a JSON object")
@@ -164,24 +195,14 @@ def _verify_build_toolchain(root: Path) -> Path:
             f"release build requires Python {expected_python}, got {actual_python}"
         )
     expected_uv = toolchain.get("uv")
-    actual_uv = _run(root, "uv", "--version").decode().strip()
-    actual_uv_parts = actual_uv.split()
-    if len(actual_uv_parts) < _UV_VERSION_PART_COUNT or actual_uv_parts[
-        :_UV_VERSION_PART_COUNT
-    ] != [
-        "uv",
-        expected_uv,
-    ]:
-        raise ReleaseCandidateError(
-            f"release build requires uv {expected_uv}, got {actual_uv}"
-        )
+    uv_executable = _resolve_release_uv(root, expected_uv)
     constraints = toolchain.get("build_constraints")
     if not isinstance(constraints, str):
         raise ReleaseCandidateError("build constraints path is not recorded")
     path = root / constraints
     if not path.is_file():
         raise ReleaseCandidateError("recorded build constraints do not exist")
-    return path
+    return path, uv_executable
 
 
 def _remove_generated_version(root: Path) -> None:
@@ -283,7 +304,7 @@ def _build_once(
     source_date_epoch: str,
 ) -> tuple[str, tuple[Path, Path], Path]:
     destination.mkdir(parents=True)
-    constraints = _verify_build_toolchain(root)
+    constraints, uv_executable = _verify_build_toolchain(root)
     environment = dict(os.environ)
     environment["SOURCE_DATE_EPOCH"] = source_date_epoch
     dist = destination / "dist"
@@ -291,7 +312,7 @@ def _build_once(
     try:
         _run(
             root,
-            "uv",
+            uv_executable,
             "build",
             "--build-constraints",
             str(constraints),
@@ -321,7 +342,7 @@ def _build_once(
     sbom = destination / SBOM_PATH
     _run(
         root,
-        "uv",
+        uv_executable,
         "export",
         "--locked",
         "--no-dev",
@@ -427,6 +448,7 @@ def consume_candidate(
         raise ReleaseCandidateError(
             "consumer virtual environment must not already exist"
         )
+    _, uv_executable = _verify_build_toolchain(resolved_root)
     receipt = receipt_from_json(receipt_path.resolve(strict=True))
     verify_candidate_package(
         root=resolved_root,
@@ -447,7 +469,7 @@ def consume_candidate(
     resolved_environment.parent.mkdir(parents=True, exist_ok=True)
     _run(
         resolved_root,
-        "uv",
+        uv_executable,
         "venv",
         "--python",
         "3.14.6",
@@ -455,7 +477,7 @@ def consume_candidate(
     )
     _run(
         resolved_root,
-        "uv",
+        uv_executable,
         "pip",
         "install",
         "--python",
@@ -476,7 +498,7 @@ def consume_candidate(
     )
     _run(
         resolved_root,
-        "uv",
+        uv_executable,
         "pip",
         "install",
         "--python",
