@@ -7,11 +7,8 @@ import json
 from pathlib import Path
 
 import pytest
-from fastapi.testclient import TestClient
-from tests.test_product_api import StubService
 
 from global_medicines_atlas import consumer_qualification
-from global_medicines_atlas.api import create_app
 from global_medicines_atlas.consumer_qualification import (
     CompatibilityError,
     assert_openapi_compatible,
@@ -72,6 +69,11 @@ def test_installed_metadata_rejects_runtime_version_disagreement(
 
 
 def test_current_openapi_is_compatible_with_committed_baseline() -> None:
+    from fastapi.testclient import TestClient
+    from tests.test_product_api import StubService
+
+    from global_medicines_atlas.api import create_app
+
     current = (
         TestClient(create_app(StubService())).get("/api/v1/openapi.json").json()
     )

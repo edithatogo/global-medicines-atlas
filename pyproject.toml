@@ -246,6 +246,7 @@ ignore = [
 "scripts/qualify_clean_consumer.py" = ["suspicious-subprocess-import", "subprocess-without-shell-equals-true"]
 "scripts/generate_nz_asset_inventory.py" = ["too-many-return-statements", "too-many-branches"]
 "scripts/profile_smoke.py" = ["module-import-not-at-top-of-file", "assert"]
+"tests/test_consumer_qualification.py" = ["import-outside-top-level"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["global_medicines_atlas", "sources"]
@@ -289,7 +290,10 @@ pytest_add_cli_args_test_selection = [
   "tests/test_canonical_v2_runtime.py",
   "tests/test_comparison_validity.py",
   "tests/test_comparison_validity_properties.py",
-  "tests/test_consumer_qualification.py",
+  "tests/test_consumer_qualification.py::test_installed_metadata_rejects_missing_required_field",
+  "tests/test_consumer_qualification.py::test_installed_metadata_rejects_runtime_version_disagreement",
+  "tests/test_consumer_qualification.py::test_openapi_compatibility_fails_closed",
+  "tests/test_consumer_qualification.py::test_openapi_compatibility_rejects_non_object_contract_shapes",
   "tests/test_semantic_retrieval.py",
   "tests/test_publication_identity_registry.py",
   "tests/test_release_workflow.py",
