@@ -4,14 +4,15 @@ from __future__ import annotations
 
 import argparse
 import base64
+import binascii
 import csv
-import gzip
 import hashlib
 import io
 import json
 import os
 import platform
 import shutil
+import struct
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import tarfile
 import tempfile
@@ -294,21 +295,12 @@ def canonicalize_sdist(path: Path, *, source_date_epoch: str) -> None:
                     f"sdist member is unreadable: {member.name}"
                 )
             members.append((member, extracted.read() if extracted else b""))
-    output = io.BytesIO()
-    with (
-        gzip.GzipFile(
-            filename="",
-            mode="wb",
-            fileobj=output,
-            mtime=int(source_date_epoch),
-            compresslevel=0,
-        ) as compressed,
-        tarfile.open(
-            fileobj=compressed,
-            mode="w",
-            format=tarfile.PAX_FORMAT,
-        ) as archive,
-    ):
+    tar_output = io.BytesIO()
+    with tarfile.open(
+        fileobj=tar_output,
+        mode="w",
+        format=tarfile.PAX_FORMAT,
+    ) as archive:
         for original, payload in members:
             info = tarfile.TarInfo(original.name)
             info.mtime = int(source_date_epoch)
@@ -323,7 +315,30 @@ def canonicalize_sdist(path: Path, *, source_date_epoch: str) -> None:
             archive.addfile(
                 info, io.BytesIO(payload) if original.isfile() else None
             )
-    path.write_bytes(output.getvalue())
+    path.write_bytes(
+        _canonical_gzip_stored(
+            tar_output.getvalue(),
+            mtime=int(source_date_epoch),
+        )
+    )
+
+
+def _canonical_gzip_stored(payload: bytes, *, mtime: int) -> bytes:
+    """Encode a gzip member with fully specified stored DEFLATE blocks."""
+    output = bytearray(b"\x1f\x8b\x08\x00")
+    output.extend(struct.pack("<I", mtime))
+    output.extend(b"\x00\xff")
+    chunks = tuple(
+        payload[offset : offset + 65_535]
+        for offset in range(0, len(payload), 65_535)
+    ) or (b"",)
+    for index, chunk in enumerate(chunks):
+        output.append(1 if index == len(chunks) - 1 else 0)
+        length = len(chunk)
+        output.extend(struct.pack("<HH", length, length ^ 0xFFFF))
+        output.extend(chunk)
+    output.extend(struct.pack("<II", binascii.crc32(payload), len(payload)))
+    return bytes(output)
 
 
 def _build_once(

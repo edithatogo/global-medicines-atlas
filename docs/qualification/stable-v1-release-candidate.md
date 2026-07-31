@@ -11,16 +11,6 @@ release, or external publication. Stable promotion remains blocked until the
 maintainer supplies explicit licence and release approval and the protected
 publication workflow produces independently observable receipts.
 
-The committed candidate receipt is bound to durable `main` commit
-`3c2100168d003364f1ad71954e1a5adb7d3fa7c5` (the merge of PR #115). The
-integration harness clones the canonical remote, checks out that exact commit,
-rebuilds with the pinned release toolchain, and requires the rebuilt receipt to
-match the committed bytes before it exercises the wheel and sdist consumers.
-The archives use canonical wheel payload/RECORD data and deterministic stored
-gzip blocks. This closes the prior shallow-checkout and cross-platform
-provenance gaps without crossing any signing, approval, tagging, or publication
-gate.
-
 ## Build the local candidate
 
 Use CPython 3.14.6 from a clean checkout of the intended source commit:
