@@ -130,11 +130,12 @@ def test_publication_identities_are_unique_and_non_overlapping() -> None:
 def test_qualification_fails_closed_with_unresolved_gates() -> None:
     projection = _load(QUALIFICATION)
     assert projection["qualification_state"] == "blocked"
-    gate_states = {
-        gate["gate_id"]: gate["state"] for gate in projection["release_gates"]
+    unresolved = {
+        gate["gate_id"]
+        for gate in projection["release_gates"]
+        if gate["state"] != "passed"
     }
-    assert set(projection["unresolved_gate_ids"]) == set(gate_states)
-    assert all(state != "passed" for state in gate_states.values())
+    assert set(projection["unresolved_gate_ids"]) == unresolved
 
     invalid = copy.deepcopy(projection)
     invalid["qualification_state"] = "qualified"

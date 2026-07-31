@@ -20,9 +20,15 @@
     {
       "gate_id": "semantic-optional-boundary",
       "scope": "Core installation and deterministic retrieval without LanceDB",
-      "state": "unverified",
-      "evidence": ["src/global_medicines_atlas/semantic_retrieval.py", "docs/matching/indexes.md"],
-      "blocker": "The package boundary and clean core-only installation test are not implemented."
+      "state": "passed",
+      "evidence": [
+        "pyproject.toml",
+        "src/global_medicines_atlas/semantic_retrieval.py",
+        "docs/matching/indexes.md",
+        "tests/test_core_without_semantic_extra.py",
+        "tests/test_semantic_retrieval.py"
+      ],
+      "blocker": null
     },
     {
       "gate_id": "documentation-readiness",
