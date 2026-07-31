@@ -78,7 +78,7 @@
     {"requirement_id":"M-087","state":"partial","evidence":["conductor/requirements.md","quality/qualifications/stable-v1-consumer-compatibility.json","contracts/openapi-v1.json","scripts/qualify_clean_consumer.py",".github/workflows/test-goblin.yml"],"blocker_ids":["stable-v1-clean-wheel"]},
     {"requirement_id":"M-088","state":"partial","evidence":["conductor/requirements.md"],"blocker_ids":["stable-v1-comparison-validity"]},
     {"requirement_id":"M-089","state":"partial","evidence":["conductor/requirements.md"],"blocker_ids":["stable-v1-concept-discovery"]},
-    {"requirement_id":"M-090","state":"partial","evidence":["conductor/requirements.md"],"blocker_ids":["stable-v1-clean-wheel"]},
+    {"requirement_id":"M-090","state":"partial","evidence":["conductor/requirements.md","schemas/comparison-validity-v1.json","src/global_medicines_atlas/comparison_validity.py","src/global_medicines_atlas/product_contracts.py","tests/test_comparison_validity.py","tests/test_comparison_validity_properties.py"],"blocker_ids":["stable-v1-comparison-validity"]},
     {"requirement_id":"M-091","state":"blocked","evidence":["conductor/requirements.md"],"blocker_ids":["stable-v1-publication-identities","stable-v1-licence-approval"]}
   ],
   "maturity_dimensions": [
@@ -122,7 +122,7 @@
   ],
   "release_gates": [
     {"gate_id":"stable-v1-canonical-schema-v2","description":"Implement and rehearse the structural canonical medicine v2 migration and rollback.","state":"unverified","evidence":["schemas/canonical-medicine-v2.json"]},
-    {"gate_id":"stable-v1-comparison-validity","description":"Implement and qualify explicit comparison-validity outcomes.","state":"unverified","evidence":["schemas/comparison-validity-v1.json"]},
+    {"gate_id":"stable-v1-comparison-validity","description":"Implement and qualify explicit comparison-validity outcomes.","state":"unverified","evidence":["schemas/comparison-validity-v1.json","src/global_medicines_atlas/comparison_validity.py","src/global_medicines_atlas/product_contracts.py","tests/test_comparison_validity.py","tests/test_comparison_validity_properties.py","tests/test_query_service.py","tests/test_product_cli.py"]},
     {"gate_id":"stable-v1-source-maturity","description":"Advance catalogued sources from the verified conservative matrix to release-required maturity.","state":"unverified","evidence":["src/global_medicines_atlas/data/medicine_source_catalog.json","quality/qualifications/stable-v1-source-maturity.json"]},
     {"gate_id":"stable-v1-concept-discovery","description":"Qualify bounded discovery, detail, CLI, autocomplete and explanations.","state":"unverified","evidence":[]},
     {"gate_id":"stable-v1-clean-wheel","description":"Qualify clean wheel and sdist consumers on declared platforms.","state":"unverified","evidence":["quality/qualifications/stable-v1-consumer-compatibility.json","contracts/openapi-v1.json","scripts/qualify_clean_consumer.py",".github/workflows/test-goblin.yml"]},

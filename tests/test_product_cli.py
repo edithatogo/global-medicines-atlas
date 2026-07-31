@@ -114,6 +114,15 @@ def test_comparison_emits_contract_json_with_evidence(database: Path) -> None:
         item.provenance or item.evidence_unavailable_reason
         for item in response.conclusions
     )
+    assert response.validity
+    assert all(
+        item.outcome.value == "insufficient_evidence"
+        for item in response.validity
+    )
+    assert all(
+        not item.establishes_therapeutic_interchangeability
+        for item in response.validity
+    )
     assert not result.stderr
 
 

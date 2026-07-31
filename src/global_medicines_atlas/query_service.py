@@ -18,6 +18,7 @@ from typing import Any, Final, Literal, TypeGuard, cast
 
 import duckdb
 
+from .comparison_validity import abstaining_status_comparison_validity
 from .product_contracts import (
     AsOfClocks,
     ComparisonQuery,
@@ -613,6 +614,7 @@ class ReadOnlyQueryService:
                 query, len(conclusions), query.limit, next_cursor
             ),
             conclusions=tuple(conclusions),
+            validity=abstaining_status_comparison_validity(tuple(conclusions)),
         )
 
     def coverage(self, query: CoverageQuery) -> CoverageResponse:

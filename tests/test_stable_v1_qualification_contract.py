@@ -225,6 +225,10 @@ def test_inappropriate_comparison_requires_material_mismatch() -> None:
         },
         "material_mismatches": [],
         "explanation": "Evidence is not comparable.",
+        "establishes_medicine_equivalence": False,
+        "establishes_substitutability": False,
+        "establishes_therapeutic_interchangeability": False,
+        "establishes_equal_benefit": False,
     }
     with pytest.raises(ValidationError):
         _validator(COMPARISON_SCHEMA).validate(comparison)

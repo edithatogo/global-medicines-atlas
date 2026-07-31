@@ -28,8 +28,14 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     `v1_to_v2` migration. Representative contracts do not establish complete
     source or jurisdiction coverage; Phase 2 rehearsal remains open.
 - [~] Task: Contract comparison-validity semantics for granularity, indication, population, mapping, normalization, material mismatches and inappropriate comparisons ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
-  - Vocabulary added as `schemas/comparison-validity-v1.json`; runtime adoption
-    and end-to-end qualification remain open.
+  - The versioned vocabulary now has strict immutable runtime models and a
+    deterministic evaluator. Any material mismatch is inappropriate; any
+    unknown dimension abstains; compatible evidence is caveated; and every
+    outcome explicitly denies medicine equivalence, substitutability,
+    therapeutic interchangeability and equal benefit. API and CLI comparison
+    responses expose fail-closed validity abstentions when source rows lack the
+    required dimensional evidence. Phase 2 representative-cohort and full
+    end-to-end qualification remain open.
 - [~] Task: Contract bounded concept discovery, catalog APIs, CLI commands, accessible autocomplete and match explanations ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
   - Deterministic core contracts and the read-only DuckDB query service now
     provide bounded exact-identifier and normalized lexical discovery, concept
