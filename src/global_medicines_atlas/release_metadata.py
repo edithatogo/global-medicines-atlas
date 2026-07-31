@@ -14,10 +14,11 @@ from pydantic import Field, model_validator
 
 from .models import FrozenModel
 
-_SEMVER: Final = re.compile(
+_RELEASE_VERSION: Final = re.compile(
     r"^(?P<major>0|[1-9]\d*)\."
     r"(?P<minor>0|[1-9]\d*)\."
     r"(?P<patch>0|[1-9]\d*)"
+    r"(?:(?:a|b|rc)(?:0|[1-9]\d*))?"
     r"(?:-(?P<prerelease>(?:0|[1-9]\d*|[A-Za-z-][0-9A-Za-z-]*)"
     r"(?:\.(?:0|[1-9]\d*|[A-Za-z-][0-9A-Za-z-]*))*))?"
     r"(?:\+(?P<build>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$"
@@ -223,12 +224,15 @@ def _validate_versioning(
                 )
 
     normalized_release = release_version.removeprefix("v")
-    if not _SEMVER.fullmatch(normalized_release):
+    if not _RELEASE_VERSION.fullmatch(normalized_release):
         _add_finding(
             findings,
             gate=MetadataGate.SEMVER,
             code="invalid-semver",
-            message="release version must be a complete Semantic Version",
+            message=(
+                "release version must be complete SemVer or a canonical "
+                "PEP 440 alpha, beta, or release-candidate version"
+            ),
         )
     if dynamic_version != normalized_release:
         _add_finding(

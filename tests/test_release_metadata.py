@@ -132,6 +132,30 @@ def test_v_prefixed_requested_version_is_normalized(tmp_path: Path) -> None:
     assert report.release_version == VERSION
 
 
+@pytest.mark.parametrize("version", ["1.0.0a1", "1.0.0b2", "1.0.0rc1"])
+@pytest.mark.unit
+def test_canonical_pep440_prerelease_is_qualified(
+    tmp_path: Path, version: str
+) -> None:
+    _write_release_metadata(
+        tmp_path,
+        citation_version=version,
+        changelog_heading=f"## [{version}] - 2026-07-29",
+    )
+    artifact = _artifact(tmp_path)
+
+    report = validate_release_metadata(
+        root=tmp_path,
+        release_version=f"v{version}",
+        dynamic_version=version,
+        artifacts=(artifact,),
+        qualification=_qualification(artifact, version=version),
+    )
+
+    assert report.qualified
+    assert report.release_version == version
+
+
 @pytest.mark.parametrize(
     ("version", "code"),
     [
