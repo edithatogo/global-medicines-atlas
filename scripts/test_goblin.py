@@ -779,7 +779,6 @@ def mutation() -> None:
     run(export_command)
     artifact = PROJECT_ROOT / "mutants" / "mutmut-cicd-stats.json"
     observations = load_mutmut_observations(artifact)
-    enforce_mutation_baseline(observations)
     results_command = [sys.executable, "-m", "mutmut", "results"]
     results = subprocess.run(
         results_command,
@@ -810,6 +809,7 @@ def mutation() -> None:
         artifacts=[artifact, survivor_report],
         command=command,
     )
+    enforce_mutation_baseline(observations)
     enforce_optional_receipt("mutation")
 
 

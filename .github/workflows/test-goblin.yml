@@ -88,7 +88,9 @@ jobs:
           fail_ci_if_error: true
           use_oidc: true
       - name: Upload durable quality receipts
-        if: matrix.profile == 'mutation' || matrix.profile == 'profile'
+        if: >-
+          always() &&
+          (matrix.profile == 'mutation' || matrix.profile == 'profile')
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: quality-receipt-${{ matrix.profile }}
@@ -96,7 +98,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
       - name: Upload authoritative Mutmut statistics
-        if: matrix.profile == 'mutation'
+        if: always() && matrix.profile == 'mutation'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: mutmut-authoritative-statistics
@@ -104,7 +106,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
       - name: Upload mutation survivor review report
-        if: matrix.profile == 'mutation'
+        if: always() && matrix.profile == 'mutation'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: mutmut-survivor-review
