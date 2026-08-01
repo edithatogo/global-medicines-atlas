@@ -5,11 +5,14 @@ content-identified Git commit. It produces one wheel, one source distribution,
 a normalized CycloneDX SBOM, the exact dependency lock, content-bound
 provenance references, a manifest, and `SHA256SUMS`.
 
-The package is deliberately **unsigned, unapproved, and not published**. It is
-not a stable release, provenance attestation, licence decision, Git tag, GitHub
-release, or external publication. Stable promotion remains blocked until the
-maintainer supplies explicit licence and release approval and the protected
-publication workflow produces independently observable receipts.
+The build procedure remains deliberately **unsigned and unattested**. The
+approved software-only prerelease `v1.0.0rc1` is now tagged and published on
+GitHub and archived at Zenodo DOI
+[10.5281/zenodo.21734811](https://doi.org/10.5281/zenodo.21734811). This does
+not constitute a stable release, production deployment, source-data
+publication, OSF registration, or artifact-specific dataset rights approval.
+Stable promotion remains blocked until signing/attestation and the remaining
+external qualification gates produce independently observable receipts.
 
 The committed candidate receipt is bound to durable `main` commit
 `6be062860b70ce3ef28dec55adfc3a1995802947` (the merge of PR #118). The
@@ -19,7 +22,9 @@ match the committed bytes before it exercises the wheel and sdist consumers.
 The archives use canonical wheel payload/RECORD data, normalized generated
 text, and a fully specified stored-DEFLATE gzip stream. This closes the prior shallow-checkout and cross-platform
 provenance gaps without crossing any signing, approval, tagging, or publication
-gate.
+gate. The current public software release is a separate, software-only
+prerelease identity and must not be confused with the local unsigned candidate
+receipt.
 
 ## Build the local candidate
 
