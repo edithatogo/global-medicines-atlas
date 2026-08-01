@@ -1,0 +1,37 @@
+{
+  "schema_id": "global-medicines-atlas.quality-hardening-closure",
+  "schema_version": 1,
+  "issues": [
+    "https://github.com/edithatogo/global-medicines-atlas/issues/80",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/81",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/82"
+  ],
+  "repository_controls": {
+    "property_based": "qualified",
+    "metamorphic": "qualified",
+    "contract": "qualified",
+    "deterministic_simulation": "qualified",
+    "mutation": "qualified",
+    "coverage_codecov": "qualified",
+    "scalene": "qualified",
+    "security_supply_chain": "qualified",
+    "immutable_action_pins": "qualified",
+    "solo_maintainer": "qualified",
+    "context_validation": "qualified",
+    "main_ruleset": {
+      "state": "observed_active",
+      "id": 20156276,
+      "name": "Protect main from destructive updates"
+    }
+  },
+  "renovate": {
+    "configuration": "present",
+    "inherits": "github>edithatogo/renovate-config",
+    "dependency_dashboard_requested": true,
+    "dependabot_configuration": "absent",
+    "hosted_onboarding": "unverified",
+    "dashboard_or_first_pr": "not_observed"
+  },
+  "closure_state": "repository_controls_complete_external_renovate_gate_open",
+  "production_or_external_claim": false
+}
