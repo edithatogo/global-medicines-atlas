@@ -8,9 +8,16 @@
   "package_manifest": "research/preregistration/submission/osf-submission-manifest.json",
   "manifest_sha256": "eb7c62369678e6c1420bb206e5e293186dc21868f3fe833b19822a1c4439f8a1",
   "review_state": "repository_package_review_complete",
-  "registration_state": "not_verified_or_submitted",
+  "registration_state": "draft_created_not_submitted",
   "external_actions_permitted": false,
   "osf_project": "https://osf.io/pcdnm/",
+  "osf_draft_registration": {
+    "id": "6a6dca79265e7ef20ac266e1",
+    "review_url": "https://osf.io/registries/drafts/6a6dca79265e7ef20ac266e1/review",
+    "created_at": "2026-08-01T10:29:13Z",
+    "submitted": false,
+    "public": false
+  },
   "osf_api_observation": {
     "endpoint": "https://api.osf.io/v2/nodes/pcdnm/",
     "observed_at": "2026-08-01",

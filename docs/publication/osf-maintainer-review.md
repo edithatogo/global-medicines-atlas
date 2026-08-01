@@ -3,7 +3,7 @@
 **Review scope:** issues [#66](https://github.com/edithatogo/global-medicines-atlas/issues/66) and [#70](https://github.com/edithatogo/global-medicines-atlas/issues/70)  
 **Package:** [`research/preregistration/`](../../research/preregistration/)  
 **Manifest:** [`osf-submission-manifest.json`](../../research/preregistration/submission/osf-submission-manifest.json)  
-**Status:** package review complete; OSF registration not verified or submitted
+**Status:** package review complete; OSF draft created, not submitted
 
 ## Review decision
 
@@ -32,10 +32,10 @@ medicine data.
 | Zenodo | software-only archival DOI | [`10.5281/zenodo.21734811`](https://doi.org/10.5281/zenodo.21734811) |
 | OSF | protocol and preregistration | project link [`https://osf.io/pcdnm/`](https://osf.io/pcdnm/); registration state unresolved |
 
-The OSF link is not treated as a registration receipt. The anonymous OSF API
-request to `https://api.osf.io/v2/nodes/pcdnm/` returned `401 Unauthorized` on
-2026-08-01. The public landing page returned HTTP 200 but did not expose a
-machine-verifiable registration state.
+The OSF project is now authenticated and a private draft registration was
+created from it. Draft ID: `6a6dca79265e7ef20ac266e1`; review URL:
+`https://osf.io/registries/drafts/6a6dca79265e7ef20ac266e1/review`. This is not
+a submitted or public registration.
 
 ## Registration gate
 
@@ -52,6 +52,6 @@ identifier, timestamp, package digest, public/embargo state, and API or landing
 page receipt to [`external-publication-receipt.md`](./external-publication-receipt.md)
 and `quality/qualifications/publication-identities.json`.
 
-Until those receipts exist, the package remains `draft_not_submitted` and the
-OSF identity remains `unresolved`. No source-derived dataset is to be added to
-the OSF package as part of this gate.
+Until the submission receipt exists, the package remains `draft_not_submitted`
+and the OSF identity remains `draft_created_not_submitted`. No source-derived
+dataset is to be added to the OSF package as part of this gate.

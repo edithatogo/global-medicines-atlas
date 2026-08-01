@@ -22,10 +22,12 @@ source payload, terminology, product information, or derived medicine data.
 
 ## Remaining gates
 
-- The Zenodo metadata includes `https://osf.io/pcdnm/`, but that link is not
-  treated as an OSF project or preregistration receipt. The anonymous OSF API
-  requires authentication and the public landing page did not expose a
-  registration state, so OSF remains unresolved.
+- The OSF project `https://osf.io/pcdnm/` now has a private draft registration
+  `6a6dca79265e7ef20ac266e1`, reviewable at
+  `https://osf.io/registries/drafts/6a6dca79265e7ef20ac266e1/review`. The draft
+  has not been submitted or made public; it is not a registration receipt.
+- Final OSF preview, maintainer confirmation, ethics-applicability wording,
+  submission, and post-submission public identifier remain open.
 - Every source-derived dataset remains subject to the source-by-source rights
   policy in [`SOURCE_RIGHTS.md`](../data-sources/SOURCE_RIGHTS.md). No
   source-derived payload is covered by this receipt.
