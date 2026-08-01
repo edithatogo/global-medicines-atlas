@@ -157,7 +157,7 @@ def test_live_snapshot_is_exactly_available_and_point_in_time() -> None:
     )
     assert repository["default_branch"] == "main"
     assert repository["default_branch_sha"] == (
-        "61b95a9e848c2867f1cb2b86f7e4691323ab0939"
+        "0917a7d7f1de1b865ca2fc0a6d1a73d5b5aa3204"
     )
 
 
@@ -448,7 +448,7 @@ def test_required_check_app_identity_mismatch_is_nonconforming() -> None:
     )
 
 
-def test_empty_rulesets_are_valid_when_classic_protection_is_observable() -> (
+def test_active_destructive_update_ruleset_is_bound_to_the_default_branch() -> (
     None
 ):
     control = _control(
@@ -460,7 +460,17 @@ def test_empty_rulesets_are_valid_when_classic_protection_is_observable() -> (
     rulesets = cast(
         "dict[str, JsonValue]", _observation(_snapshot(), "rulesets").data
     )
-    assert rulesets["count"] == 0
+    assert rulesets == {
+        "count": 1,
+        "rulesets": [
+            {
+                "enforcement": "active",
+                "id": 20156276,
+                "name": "Protect main from destructive updates",
+                "target": "branch",
+            }
+        ],
+    }
 
 
 def test_security_control_detects_disabled_features_and_codeql_gap() -> None:

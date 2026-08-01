@@ -3,10 +3,11 @@
 This qualification records point-in-time, authenticated, read-only GitHub
 evidence for `edithatogo/global-medicines-atlas` and the linked
 [Global Medicines Atlas Conductor project](https://github.com/users/edithatogo/projects/35).
-Snapshot acquisition and qualification are read-only. On 2026-08-01, an
-authorized, preceding hardening action added five already-mandatory workflow
-contexts to classic `main` branch protection. It did not alter Project #35,
-issues, workflow definitions, security features, rulesets, or releases.
+Snapshot acquisition and qualification are read-only. On 2026-08-01, separately
+authorized hardening added five already-mandatory workflow contexts to classic
+`main` branch protection and an active destructive-update ruleset. Neither
+action altered Project #35, issues, workflow definitions, security features, or
+releases, and neither action was performed by the acquisition.
 
 ## Evidence boundary
 
@@ -32,12 +33,14 @@ receipt.
 ## Current result
 
 The snapshot is bound to `main` commit
-`61b95a9e848c2867f1cb2b86f7e4691323ab0939`. Repository identity, classic
-branch protection, all 28 required checks and their producer application IDs,
-security controls, issue hierarchy, project identity, project fields, five
-project views, and all six enabled project workflows verify.
-GitHub currently reports zero repository rulesets; the receipt records this
-exactly and verifies the observed classic branch protection instead.
+`0917a7d7f1de1b865ca2fc0a6d1a73d5b5aa3204`. Repository identity, the active
+`Protect main from destructive updates` ruleset, classic branch protection,
+all 28 required checks and their producer application IDs, security controls,
+issue hierarchy, project identity, project fields, five project views, and all
+six enabled project workflows verify. The ruleset applies to the default branch
+with active enforcement; classic protection independently blocks force pushes
+and deletions, requires linear history and resolved conversations, and retains
+zero required approving reviews.
 
 The overall state is `qualified`. Project #35 remains linked to
 `edithatogo/global-medicines-atlas`; Phase 1 and Phase 2 are `Done`/`Verified`,
@@ -104,13 +107,13 @@ silently omitting a lane.
 The post-change branch-protection observation digest is
 `68e624d5cdd74a1066ad9ba6ce74112050efe895befddcc568d4f0de69581ac8`.
 The full snapshot digest is
-`ec1ca1910a84ae825641fceb07cf7224a4c5d7a1449e26e12aad0b810c4adb12`.
+`8acdd6d66666076cf2dfcfc0901d0ffea4f6f55372388d899c3c7e4a762fbc9a`.
 The derived qualification receipt digest is
-`5d1f0d2285cb4e62afe33d84dd3f808ecdc0a0a78ca85137d908258d5555222e`.
+`cf7ad5e998b69b1fc5f35f7fe0b154eca279eb373a991078a2d589544502a072`.
 Project #35 retained response digest
 `b53e1e504c3635f0c7e708ca4ada3c7c8b4a306997ba1b4909062ae4c34e103c`,
-and the zero-ruleset observation retained digest
-`25ab282da127e481476cfbc918ffb252201e3c203c51e37ab530643cea94a2c9`.
+and the active-ruleset observation has digest
+`a91f26f9b6f2293c2f5fb986c4b6cf8e166612dcec3d549ac27652f453f17e0f`.
 
 ## Reproduction
 

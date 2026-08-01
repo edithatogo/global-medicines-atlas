@@ -28,6 +28,23 @@ shim. Pixi and Mojo are Linux/WSL or hosted-CI paths; Python-only development
 must remain independently executable. If OneDrive has left a dirty checkout,
 preserve it and use an isolated branch or worktree rather than resetting it.
 
+## Hosted-governance drift
+
+The committed hosted-governance receipt is the auditable point-in-time record
+of rulesets, classic branch protection, security features, CodeQL, dependency
+review, and alert endpoint access. Verify the committed receipt offline with:
+
+```shell
+uv run --python 3.14.6 --group dev python scripts/qualify_stable_v1_hosted_governance.py
+```
+
+An operator with authenticated read-only GitHub CLI access can refresh that
+receipt with the same command plus `--acquire`. Acquisition makes no hosted
+write, but it intentionally updates the committed snapshot and receipt; review
+the resulting diff before accepting a changed control state. This project uses
+zero required human approvals: protected automated checks and resolved
+conversations are the merge gate.
+
 ## Medicine source and adapter changes
 
 Follow [source onboarding](docs/data-sources/source-onboarding.md). A change is
