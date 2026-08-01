@@ -36,7 +36,12 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 - [x] Task: Add amendment history, deviation register, data-management and ethics statements
 - [x] Task: Generate citations, checksums and a machine-readable submission manifest
 - [x] Task: Rehearse a clean offline build and validate every documented command
-- [ ] Task: Obtain explicit maintainer review before any external submission
+- [~] Task: Obtain explicit maintainer review before any external submission
+  - Repository package review is recorded in
+    `docs/publication/osf-maintainer-review.md` and
+    `quality/qualifications/osf-maintainer-review.json`.
+  - Final wording, ethics applicability, authenticated OSF authority, and
+    post-registration receipt remain open.
 - [x] Task: Phase Verification & Checkpoint
   - The deterministic offline rehearsal contains ten committed files, validates
     strict package and manifest schemas, verifies every declared byte count and

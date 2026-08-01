@@ -1,0 +1,36 @@
+{
+  "schema_id": "global-medicines-atlas.osf-maintainer-review",
+  "schema_version": 1,
+  "issues": [
+    "https://github.com/edithatogo/global-medicines-atlas/issues/66",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/70"
+  ],
+  "package_manifest": "research/preregistration/submission/osf-submission-manifest.json",
+  "manifest_sha256": "eb7c62369678e6c1420bb206e5e293186dc21868f3fe833b19822a1c4439f8a1",
+  "review_state": "repository_package_review_complete",
+  "registration_state": "not_verified_or_submitted",
+  "external_actions_permitted": false,
+  "osf_project": "https://osf.io/pcdnm/",
+  "osf_api_observation": {
+    "endpoint": "https://api.osf.io/v2/nodes/pcdnm/",
+    "observed_at": "2026-08-01",
+    "http_status": 401,
+    "registration_state": "unresolved"
+  },
+  "reviewed_controls": [
+    "prospective descriptive non-clinical scope",
+    "separate regulatory and funding outcomes",
+    "governed source-census denominator",
+    "rights-aware restricted-payload exclusion",
+    "deterministic checksums and manifest",
+    "amendment and deviation registers",
+    "data-management and ethics statement"
+  ],
+  "remaining_gates": [
+    "maintainer confirmation of final wording",
+    "ethics-applicability confirmation",
+    "authenticated OSF registration authority",
+    "registration template, contributor, embargo and licence settings",
+    "post-registration public identifier and durable receipt"
+  ]
+}
