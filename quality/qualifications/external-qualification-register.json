@@ -1,0 +1,87 @@
+{
+  "schema_id": "global-medicines-atlas.external-qualification-register",
+  "schema_version": 1,
+  "status": "blocked_external_evidence",
+  "issues": [
+    "https://github.com/edithatogo/global-medicines-atlas/issues/54",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/61"
+  ],
+  "canonical_repository": "https://github.com/edithatogo/global-medicines-atlas",
+  "as_of": "2026-08-01",
+  "source_evidence": {
+    "catalogue_source_count": 96,
+    "live_receipt_source_count": 0,
+    "highest_committed_maturity": "M2",
+    "fixture_evidence_is_live_evidence": false,
+    "current_source_payloads_acquired": false,
+    "rights_review_complete": false,
+    "publication_gate_passed": false,
+    "required_evidence": [
+      "source-specific rights and redistribution decision",
+      "lawful current payload",
+      "durable SourceReceipt",
+      "source identity, jurisdiction, checksum and retrieval timestamp",
+      "coverage denominator and exclusions",
+      "schema fingerprint and adapter parity",
+      "regulatory and funding dimensions kept separate"
+    ],
+    "source_specific_gates": [
+      {
+        "source_id": "nz-nzulm-bulk",
+        "state": "fixture_or_catalogue_only",
+        "blockers": ["current lawful payload", "NZULM/NZMT rights decision", "live receipt"]
+      },
+      {
+        "source_id": "us-drugsfda",
+        "state": "fixture_or_catalogue_only",
+        "blockers": ["live API/bulk population equivalence", "live receipt", "coverage denominator"]
+      },
+      {
+        "source_id": "ca-dpd",
+        "state": "catalogue_only",
+        "blockers": ["lawful access and current payload", "live receipt"]
+      },
+      {
+        "source_id": "au-pbs-api",
+        "state": "catalogue_only",
+        "blockers": ["canonical PBS acquisition decision", "lawful current payload", "live receipt"]
+      },
+      {
+        "source_id": "eu-ema-json",
+        "state": "fixture_or_catalogue_only",
+        "blockers": ["current lawful payload", "live receipt", "coverage denominator"]
+      },
+      {
+        "source_id": "gb-nhs-dmd",
+        "state": "catalogue_only",
+        "blockers": ["licensed dm+d access", "rights decision", "live receipt"]
+      },
+      {
+        "source_id": "jp-pmda-approvals",
+        "state": "catalogue_only",
+        "blockers": ["reviewed Japanese field mapping", "translation approval", "live receipt"]
+      }
+    ]
+  },
+  "deployment_evidence": {
+    "clean_artifact_installation": "not_observed",
+    "service_start_from_built_artifact": "not_observed",
+    "live_health_readiness": "not_observed",
+    "production_data_coverage": "not_observed",
+    "browser_accessibility_audit": "not_observed",
+    "keyboard_and_responsive_checks": "not_observed",
+    "production_claim_allowed": false,
+    "required_receipts": [
+      "artifact identity and isolated installation receipt",
+      "deployment URL and health/readiness receipt",
+      "live-data provenance and coverage receipt",
+      "browser accessibility and responsive interaction report"
+    ]
+  },
+  "safe_local_qualification": {
+    "catalogue_and_fixture_contracts": "qualified_with_explicit_boundaries",
+    "source_health_probe_implementation": "available_without_payload_retention",
+    "deployment_or_live_source_authority": "not_claimed",
+    "next_action": "obtain required external authority and append immutable receipts"
+  }
+}
