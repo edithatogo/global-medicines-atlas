@@ -1182,7 +1182,7 @@ def test_documentation_and_script_preserve_external_gates() -> None:
 
     assert "unsigned and unattested" in guide
     assert "stable release, production deployment" in guide.replace("\n", " ")
-    assert "explicit licence and release approval" in guide
+    assert "signing/attestation and the remaining external qualification gates" in guide
     assert "subprocess.run" in script
     assert "gh release create" not in script
     assert "git tag" not in script
