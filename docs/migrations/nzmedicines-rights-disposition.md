@@ -1,0 +1,77 @@
+# NZ medicines rights and compatibility disposition
+
+**Status:** implementation record; unresolved rights and maintainer decisions remain gates  
+**Issues:** [#50](https://github.com/edithatogo/global-medicines-atlas/issues/50), [#51](https://github.com/edithatogo/global-medicines-atlas/issues/51), [closed migration #6](https://github.com/edithatogo/global-medicines-atlas/issues/6)  
+**Source snapshot:** [`nzmedicines` at `6a8ecfae67f15d635750d11d5f446b93d76c1865`](./nzmedicines.md)
+
+This record implements the local, evidence-based portion of the NZ medicines
+rights and compatibility work. It is a disposition matrix, not a licence
+grant, legal opinion, or approval to publish. Where the upstream authority,
+licence, permission, or redistribution terms are not evidenced, the decision
+is **retain locally / do not redistribute**.
+
+## Decision matrix
+
+| Asset or source family | Local role and evidence | Rights/authority status | Current disposition | Publication boundary | Required gate |
+|---|---|---|---|---|---|
+| `nzmedicines` Git history and `nzmedicines-all.bundle` | Preserved snapshot, commit `6a8ecfae67f15d635750d11d5f446b93d76c1865`; bundle SHA-256 `f4414798f1b35558c69472d86d29b0b83facb2e799c9a20692b62fc889847223`; see [`nzmedicines.md`](./nzmedicines.md) | Provenance is verified; redistribution permission is not established by preservation | Preserve locally as immutable evidence | Do not redistribute the bundle or history in public artefacts | Written rights decision and approved manifest in #51 |
+| NZULM/NZMT hierarchy, relationship, pack, container, and substance inputs | Local inventory records the source family and local-only boundary; used by the NZ adapter | Source terms and redistribution rights require source-specific evidence | Retain locally; use only behind governed adapter contracts | No source payload release, public mirror, or derived release containing restricted fields | Written NZULM/NZMT decision in #51 |
+| Medsafe regulatory product, application, ingredient, package, route, and status data | Inventoried as regulatory inputs, separate from funding assertions | Authority and reuse terms are not inferred from public accessibility | Retain locally; preserve provenance and currentness metadata | No raw or derived public release until source terms and fields are approved | Source-specific review in #51 |
+| NZF monograph/PIL `DocumentReference` fixtures | `vendor/nzmedicines/document-references/`; structure-only FHIR fixtures; referenced content is not captured | Fixture provenance is known; linked NZF content rights/currentness are unresolved | Retain as deterministic adapter fixtures | Do not redistribute linked documents or treat URLs as captured evidence | NZF rights/currentness decision in #51 |
+| SNOMED CT / AMT mappings and identifiers | Inventoried local mapping inputs; identifiers remain source-native | Terminology licence and access conditions apply independently | Retain locally; transform only under source terms | No terminology payload, unrestricted mapping dump, or public derived claim | Terminology-specific decision in #51 |
+| RxNorm-derived identifiers or mappings | Any local or future RxNorm-derived content is a separate terminology source | U.S. terminology terms and conditions must be verified separately | Retain only the minimum metadata needed for adapter interoperability | No RxNorm payload redistribution without verified terms | RxNorm-specific decision in #51 |
+| PHARMAC/funding, subsidy, prescribing, HML, and PS inputs | Inventoried as funding/formulary inputs and modelled separately from regulatory approval | Funding-source reuse terms and field-level restrictions are not yet evidenced | Retain locally; never infer regulatory approval from funding status | No raw funding payload or unsupported public funding assertion | Funder-specific decision in #51 |
+| First-party adapter code, schemas, tests, documentation, and deterministic tooling | Maintainer-created implementation in this repository | Apache-2.0 repository software boundary applies | Publish as software under the repository licence, excluding restricted payloads | Software-only releases may include code and synthetic/minimal fixtures that pass the manifest gate | Existing repository release controls |
+| Catalogue-only metadata already published to Hugging Face | [`global-medicines-atlas-catalogue`](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue); source payloads intentionally omitted | Publication boundary was designed as catalogue metadata, not source redistribution | Keep as catalogue metadata; re-check before adding fields | Do not expand with source-derived fields until #51 approves the manifest | #51 manifest review |
+| Software-only Zenodo release | DOI [`10.5281/zenodo.21734811`](https://doi.org/10.5281/zenodo.21734811); seven software assets | Software release boundary; not evidence of source-data permission | Keep software-only | Do not upload source payloads, preserved bundle, or restricted fixtures | #51 approved public artifact manifest |
+| Proposed upstream compatibility notice and README/description change | Draft only in [`nzmedicines-compatibility-notice.md`](./nzmedicines-compatibility-notice.md) | Requires maintainer approval and action-time hosted receipt | Do not publish or mutate upstream | No upstream change has been made by this implementation | #50 explicit approval |
+| Narrow compatibility mirror or upstream archival | Policy option only; canonical repository remains this repository | Requires an explicit maintainer choice and resulting hosted-state evidence | No mirror/archive action | Do not alter upstream repository settings or content | #50 explicit decision |
+
+## Implemented local decisions
+
+1. `global-medicines-atlas` is the canonical implementation and governance
+   repository.
+2. The `nzmedicines` snapshot is retained under `vendor/nzmedicines/` for
+   adapter and fixture compatibility, with its source commit and preservation
+   evidence recorded.
+3. The preserved Git bundle is local evidence only and is not part of a public
+   release manifest.
+4. Regulatory approval, funding/formulary status, and terminology identity are
+   separate assertion dimensions; none is inferred from another.
+5. Structure-only FHIR `DocumentReference` fixtures do not grant permission to
+   redistribute the referenced NZF material.
+6. Unknown, mixed, or source-restricted rights fail closed. The public release
+   boundary is limited to first-party software and explicitly approved
+   metadata/fixtures.
+
+## Compatibility decision status
+
+The local compatibility work is complete enough to support the NZ adapter and
+fixtures. The upstream repository remains unchanged. The following actions are
+still intentionally pending:
+
+- publish the compatibility notice;
+- change the upstream README or description;
+- retain a narrow compatibility mirror;
+- archive or otherwise alter the upstream repository;
+- redistribute the preserved history, NZULM/NZMT/NZF, terminology, regulatory,
+  or funding payloads; and
+- add any such payloads to Hugging Face, Zenodo, or another public artefact.
+
+These actions require explicit approval and action-time receipts. See the
+[external gate register](./nzmedicines-external-gates.md) for the authoritative
+hosted-action boundary and the archived [asset inventory](../../conductor/archive/nzmedicines_migration_20260727/migration-inventory.md)
+for file-level evidence.
+
+## Review evidence
+
+- The archived inventory contains 162 unique assets and records per-file
+  digests, provenance, disposition, and local rights boundaries.
+- The preservation record binds the upstream commit, tree digest, and bundle
+  digest.
+- The repository rights policy requires source-specific evidence and prohibits
+  treating local preservation or transformation as redistribution permission:
+  [`SOURCE_RIGHTS.md`](../data-sources/SOURCE_RIGHTS.md).
+
+This document should be revised only when a source-specific rights decision,
+approved public manifest, or hosted compatibility action is evidenced.

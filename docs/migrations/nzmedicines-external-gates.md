@@ -4,6 +4,11 @@ Local consolidation and restoration evidence does not authorize external
 publication, redistribution, mirroring, or archival. Each gate below remains
 pending until its required evidence is independently observable.
 
+The source-family rights and compatibility disposition matrix is maintained in
+[`nzmedicines-rights-disposition.md`](./nzmedicines-rights-disposition.md).
+It records implemented local decisions and the fail-closed publication
+boundary without converting unresolved rights questions into approvals.
+
 | Gate | Status | Owner | Required evidence | Follow-up |
 | --- | --- | --- | --- | --- |
 | Publish the upstream compatibility notice | Pending | Maintainer | Action-time approval and published upstream URL | [#50](https://github.com/edithatogo/global-medicines-atlas/issues/50) |
