@@ -162,7 +162,10 @@ def test_qualified_assets_are_exact_attested_and_never_overwritten() -> None:
     assert "dry-run-qualification-evidence-${{ github.run_id }}" in qualify
     assert "qualified-release-assets-${{ github.run_id }}" in qualify
     assert "if: ${{ !inputs.publish }}" in qualify
-    assert "gh release create \\\n            --draft" in workflow
+    assert (
+        'gh release create \\\n            --repo "$GITHUB_REPOSITORY" \\\n            --draft'
+        in workflow
+    )
     assert '-- "$RELEASE_TAG" "${assets[@]}"' in workflow
     assert "--clobber" not in workflow
     assert "gh release upload" not in workflow
@@ -201,6 +204,16 @@ def test_release_workflow_allowlists_built_distributions() -> None:
     assert '"${distributions[@]}"' in workflow
     assert (
         "xargs -0 -r cp --target-directory=build/release-stage" not in workflow
+    )
+
+
+@pytest.mark.unit
+def test_release_creation_names_repository_without_checkout() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+
+    assert (
+        'gh release create \\\n            --repo "$GITHUB_REPOSITORY"'
+        in workflow
     )
 
 

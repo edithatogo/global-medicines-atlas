@@ -254,6 +254,7 @@ jobs:
           mapfile -d '' assets < <(find stage -type f -print0 | sort -z)
           test "${#assets[@]}" -gt 0
           gh release create \
+            --repo "$GITHUB_REPOSITORY" \
             --draft \
             --prerelease \
             --target "$QUALIFIED_COMMIT" \
