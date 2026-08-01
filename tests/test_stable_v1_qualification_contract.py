@@ -27,6 +27,7 @@ SOURCE_MATURITY = ROOT / "quality/qualifications/stable-v1-source-maturity.json"
 CONSUMER_SCHEMA = ROOT / "schemas/stable-v1-consumer-compatibility-v1.json"
 CONSUMER = ROOT / "quality/qualifications/stable-v1-consumer-compatibility.json"
 IDENTITY_SCHEMA = ROOT / "schemas/publication-identity-registry-v1.json"
+TRACK = ROOT / "conductor/tracks/stable_v1_qualification_20260729"
 
 
 def _load(path: Path) -> dict[str, Any]:
@@ -319,3 +320,51 @@ def test_source_maturity_projection_is_deterministically_regenerated() -> None:
         ROOT / "src/global_medicines_atlas/data/medicine_source_catalog.json"
     )
     assert build_projection(catalog) == _load(SOURCE_MATURITY)
+
+
+def test_completed_contract_work_and_phase3a_checkpoint_are_reconciled() -> (
+    None
+):
+    plan = (TRACK / "plan.md").read_text(encoding="utf-8")
+    completed_contracts = (
+        "Contract canonical medicine schema v2 and migration compatibility",
+        "Contract comparison-validity semantics",
+        "Contract bounded concept discovery",
+    )
+    for task in completed_contracts:
+        assert f"- [x] Task: {task}" in plan
+
+    phase3a = plan.split(
+        "## Phase 3A: Extended verification architecture", maxsplit=1
+    )[1]
+    assert "- [x] Task: Phase Verification & Checkpoint" in phase3a
+
+    records = [
+        json.loads(line)
+        for line in (TRACK / "evidence.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+        if line
+    ]
+    checkpoint = next(
+        record
+        for record in records
+        if record.get("kind")
+        == "stable_v1_phase3a_extended_verification_checkpoint"
+    )
+    assert checkpoint["status"] == "local_reverification_passed"
+    assert checkpoint["implementation_commit"] == (
+        "ab608543e39aacd2bcab3dd19ac3103283256958"
+    )
+    assert checkpoint["verification"]["specialized_profiles"] == {
+        "contract": "2 passed",
+        "metamorphic": "3 passed",
+        "simulation": "2 passed",
+    }
+    assert checkpoint["external_authority_claims"] is False
+    assert set(checkpoint["out_of_scope"]) == {
+        "live deployment",
+        "OSF action",
+        "publication action",
+        "rights determination",
+    }

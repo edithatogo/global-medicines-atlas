@@ -20,24 +20,25 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 - [x] Task: Define jurisdiction/source maturity and documentation-readiness matrices ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
   - A deterministic projection covers every canonical catalog `source_id` and
     jurisdiction while conservatively capping catalog-derived maturity at M2.
-- [~] Task: Contract canonical medicine schema v2 and migration compatibility for substances, products, packages, indications, prices and restrictions ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
+- [x] Task: Contract canonical medicine schema v2 and migration compatibility for substances, products, packages, indications, prices and restrictions ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
   - Structural contract added as `schemas/canonical-medicine-v2.json`; the
     runtime now requires an explicit adapter-owned structural projection,
     validates closed references and assertion dimensions, preserves the full
     digest-bound schema-v1 source-native record, and rolls it back without
     semantic loss. This is explicitly distinct from the temporal assertion
-    `v1_to_v2` migration. Representative contracts do not establish complete
-    source or jurisdiction coverage; Phase 2 rehearsal remains open.
-- [~] Task: Contract comparison-validity semantics for granularity, indication, population, mapping, normalization, material mismatches and inappropriate comparisons ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
+    `v1_to_v2` migration. The Phase 2 cohort qualified deterministic migration
+    and rollback for structurally supported fixtures while blocking unsupported
+    records rather than inferring complete source or jurisdiction coverage.
+- [x] Task: Contract comparison-validity semantics for granularity, indication, population, mapping, normalization, material mismatches and inappropriate comparisons ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
   - The versioned vocabulary now has strict immutable runtime models and a
     deterministic evaluator. Any material mismatch is inappropriate; any
     unknown dimension abstains; compatible evidence is caveated; and every
     outcome explicitly denies medicine equivalence, substitutability,
     therapeutic interchangeability and equal benefit. API and CLI comparison
     responses expose fail-closed validity abstentions when source rows lack the
-    required dimensional evidence. Phase 2 representative-cohort and full
-    end-to-end qualification remain open.
-- [~] Task: Contract bounded concept discovery, catalog APIs, CLI commands, accessible autocomplete and match explanations ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
+    required dimensional evidence. Phase 2 qualified aligned, caveated,
+    inappropriate and abstaining controls through the public surfaces.
+- [x] Task: Contract bounded concept discovery, catalog APIs, CLI commands, accessible autocomplete and match explanations ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
   - Deterministic core contracts and the read-only DuckDB query service now
     provide bounded exact-identifier and normalized lexical discovery, concept
     detail, jurisdiction/source catalogues, explicit non-equivalence match
@@ -48,7 +49,8 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     listbox discovery, keyboard and live-status behavior, visible canonical
     identity, hostile-label escaping, and a server-rendered no-JavaScript
     fallback. Governed semantic candidates may now augment exact and lexical
-    results without replacing their authority or implying equivalence.
+    results without replacing their authority or implying equivalence. Phase 2
+    qualified the bounded fixture through API, CLI and rendered Atlas paths.
 - [x] Task: Define clean-wheel consumer, supported-platform, package-metadata and public-API compatibility gates ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
   - The Test-Goblin package profile now installs wheel and source distribution
     into disposable core-only Python 3.14 environments and verifies metadata,
@@ -222,4 +224,10 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     gate. Codecov project/patch and per-primary-lane flags remain fail-closed.
     Mutation/gremlin profiles remain required hosted checks, and an actual
     deterministic Scalene run produced its durable receipt and profile.
-- [~] Task: Phase Verification & Checkpoint
+- [x] Task: Phase Verification & Checkpoint
+  - Reconciled against implementation commit
+    `ab608543e39aacd2bcab3dd19ac3103283256958` and current local reruns of the
+    metamorphic, consumer/provider contract and deterministic-simulation
+    profiles. Repository history records the protected-check and independent
+    review outcome for PR #122; this checkpoint does not reverify hosted state
+    and makes no publication, rights, OSF or live-deployment claim.
