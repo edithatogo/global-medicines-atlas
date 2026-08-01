@@ -155,9 +155,10 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   - A deterministic wheel, sdist, normalized SBOM, manifest, checksum and
     consumer-verification candidate reproduces byte-for-byte across independent
     clean LF and CRLF checkouts. Portable commands create separate environments
-    and qualify wheel and sdist independently. The candidate remains explicitly
-    unsigned, unapproved, unattested, untagged and unpublished; signing requires
-    the maintainer gate below.
+    and qualify wheel and sdist independently. The approved `v1.0.0rc1`
+    software-only prerelease is tagged and published on GitHub and archived at
+    Zenodo DOI `10.5281/zenodo.21734811`; the build remains unsigned and
+    unattested, and stable promotion requires the remaining external gates.
   - Independent post-merge review found that Hatch VCS could reuse an ignored
     generated `_version.py`, making the committed receipt dependent on prior
     checkout state. The build now removes that state before and after packaging,
