@@ -116,8 +116,8 @@
   ],
   "publication_identities": [
     {"system":"github","object_role":"software_source_release","identifier":"https://github.com/edithatogo/global-medicines-atlas","licence_state":"approved","state":"verified"},
-    {"system":"hugging_face","object_role":"derived_dataset_distribution","identifier":null,"licence_state":"unresolved","state":"blocked"},
-    {"system":"zenodo","object_role":"archival_doi_record","identifier":null,"licence_state":"unresolved","state":"blocked"},
+    {"system":"hugging_face","object_role":"derived_dataset_distribution","identifier":"https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue","licence_state":"approved","state":"verified"},
+    {"system":"zenodo","object_role":"archival_doi_record","identifier":"https://doi.org/10.5281/zenodo.21734811","licence_state":"approved","state":"verified"},
     {"system":"osf","object_role":"protocol_preregistration","identifier":null,"licence_state":"unresolved","state":"blocked"}
   ],
   "release_gates": [

@@ -21,12 +21,16 @@ Zenodo, and OSF. Links between those intellectual objects must be closed and
 reciprocal. Configured identifiers must use the expected HTTPS host and remain
 unique after normalization.
 
-The current GitHub repository URL is configured but not independently verified
-for release purposes. Hugging Face, Zenodo, and OSF identifiers remain null
-placeholders. Every licence decision remains unresolved. The qualification
-therefore keeps the external-identifier, licence, and publication gates
-blocked; it does not infer evidence from a URL, repository configuration, or
-passing CI.
+The current registry verifies the GitHub software source, the catalogue-only
+Hugging Face distribution, and the Zenodo software DOI using the durable
+reconciliation receipt. The Hugging Face identifier applies only to catalogue
+metadata and schemas, and the Zenodo identifier applies only to software. They
+do not license or publish source-derived medicine data. OSF remains unresolved:
+the related URL in Zenodo metadata is not treated as evidence of an OSF project
+or preregistration. The qualification therefore keeps the OSF, source-derived
+data, production-package, signature, and final-publication gates blocked; it
+does not infer those outcomes from a URL, repository configuration, or passing
+CI.
 
 ## Safety boundary
 
@@ -55,9 +59,11 @@ does not publish, sign, create a release, or require credentials.
 ## Remaining gates
 
 - Production source-by-source redistribution and metadata rights review.
-- Durable, non-overlapping Hugging Face, Zenodo, and OSF identifiers.
-- Independent identifier evidence for every configured publication surface.
-- Explicit maintainer licence selection and stable-release approval.
+- Durable OSF preregistration identity and a verified public landing page.
+- Source-by-source redistribution review before any source-derived dataset
+  identifier or publication is created.
+- Explicit maintainer approval for OSF registration and any future
+  source-derived-data release.
 - A separately qualified production package, signature, release, publication,
   and externally observable verification receipt.
 

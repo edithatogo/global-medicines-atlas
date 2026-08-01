@@ -37,12 +37,17 @@ def test_registry_schema_and_runtime_contract_validate() -> None:
 
 def test_current_registry_is_explicitly_blocked_not_publishable() -> None:
     registry = PublicationIdentityRegistry.model_validate(_payload())
-    assert registry.blocking_reasons()
+    assert set(registry.blocking_reasons()) == {
+        "protocol-preregistration:identifier-unresolved",
+        "protocol-preregistration:licence-unresolved",
+    }
     with pytest.raises(ValueError, match="registry is blocked"):
         registry.assert_publishable()
     registry.assert_object_publishable("software-source-release")
-    with pytest.raises(ValueError, match="derived-dataset is blocked"):
-        registry.assert_object_publishable("derived-dataset")
+    registry.assert_object_publishable("derived-dataset")
+    registry.assert_object_publishable("archival-record")
+    with pytest.raises(ValueError, match="protocol-preregistration is blocked"):
+        registry.assert_object_publishable("protocol-preregistration")
     with pytest.raises(ValueError, match="unknown publication object"):
         registry.assert_object_publishable("missing")
 
