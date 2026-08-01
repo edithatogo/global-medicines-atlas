@@ -8,7 +8,7 @@ separate publication identities.
 | Output | Canonical system | Publication state |
 | --- | --- | --- |
 | Source and software release | GitHub | `v1.0.0rc1` published as a prerelease |
-| Software archival record | Zenodo | Enable GitHub integration; create a software record from the release |
+| Software archival record | Zenodo | Published at [10.5281/zenodo.21734811](https://doi.org/10.5281/zenodo.21734811) from `v1.0.0rc1`; software-only |
 | Protocol and preregistration | OSF | Submission package prepared; registration remains gated by final preview |
 | Catalogue and cleared derived data | Hugging Face | Catalogue-only publication is eligible; source-derived bulk data remains rights-gated |
 | Dataset archival record | Zenodo | Separate record, only for assets with explicit redistribution rights |
@@ -30,12 +30,12 @@ does not license third-party medicine data.
 ## Service actions
 
 1. Authorize the Renovate GitHub App and verify the Dependency Dashboard issue.
-2. Enable this GitHub repository in Zenodo and create the software record from
-   the published GitHub release.
+2. The software record is published from the GitHub release; verify its DOI,
+   seven-asset manifest, and software-only boundary during subsequent audits.
 3. Create the OSF project, upload the prepared submission package, connect
    GitHub and the archival records, and preview the registration.
-4. Publish the Hugging Face catalogue-only repository with a dataset card that
-   links each source and records the unresolved-data boundary.
+4. The catalogue-only Hugging Face repository is published with a dataset card
+   linking each source and recording the unresolved-data boundary.
 5. Publish a separate Hugging Face/Zenodo dataset version only after the rights
    manifest is approved.
 
