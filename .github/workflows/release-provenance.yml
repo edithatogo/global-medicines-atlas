@@ -106,11 +106,16 @@ jobs:
       - name: Build and stage software distributions
         run: |
           set -euo pipefail
+          rm -rf -- build/dist
           mkdir -p build/release-stage build/dist
           uv build --out-dir build/dist
-          find build/dist -maxdepth 1 -type f -print0 |
-            sort -z |
-            xargs -0 -r cp --target-directory=build/release-stage
+          mapfile -d '' distributions < <(
+            find build/dist -maxdepth 1 -type f \
+              \( -name '*.whl' -o -name '*.tar.gz' \) -print0 |
+              sort -z
+          )
+          test "${#distributions[@]}" -eq 2
+          cp --target-directory=build/release-stage -- "${distributions[@]}"
           cp -- uv.lock build/release-stage/uv.lock
       - name: Generate reproducible CycloneDX SBOM
         env:

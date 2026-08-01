@@ -191,6 +191,19 @@ def test_release_identity_and_sbom_are_semantically_qualified() -> None:
     assert "cp -- uv.lock build/release-stage/uv.lock" in workflow
 
 
+@pytest.mark.unit
+def test_release_workflow_allowlists_built_distributions() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+
+    assert "rm -rf -- build/dist" in workflow
+    assert "-name '*.whl' -o -name '*.tar.gz'" in workflow
+    assert 'test "${#distributions[@]}" -eq 2' in workflow
+    assert '"${distributions[@]}"' in workflow
+    assert (
+        "xargs -0 -r cp --target-directory=build/release-stage" not in workflow
+    )
+
+
 def test_release_jobs_have_least_permissions() -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
     qualify = workflow[
