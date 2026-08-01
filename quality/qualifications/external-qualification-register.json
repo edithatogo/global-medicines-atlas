@@ -3,8 +3,13 @@
   "schema_version": 1,
   "status": "blocked_external_evidence",
   "issues": [
+    "https://github.com/edithatogo/global-medicines-atlas/issues/14",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/40",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/43",
     "https://github.com/edithatogo/global-medicines-atlas/issues/54",
-    "https://github.com/edithatogo/global-medicines-atlas/issues/61"
+    "https://github.com/edithatogo/global-medicines-atlas/issues/61",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/66",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/70"
   ],
   "canonical_repository": "https://github.com/edithatogo/global-medicines-atlas",
   "as_of": "2026-08-01",
@@ -76,6 +81,20 @@
       "deployment URL and health/readiness receipt",
       "live-data provenance and coverage receipt",
       "browser accessibility and responsive interaction report"
+    ]
+  },
+  "release_and_registration_gates": {
+    "renovate_app_dashboard": "not_observed",
+    "osf_draft_registration": "private_draft_not_submitted",
+    "osf_structured_responses": "empty_pending_maintainer_completion",
+    "release_signing_and_attestation": "not_observed",
+    "production_disaster_recovery": "not_observed",
+    "submission_allowed": false,
+    "required_receipts": [
+      "Renovate App installation and Dependency Dashboard issue",
+      "completed OSF schema response preview and maintainer approval",
+      "signed and attested release artifact",
+      "production disaster-recovery rehearsal with approved authority"
     ]
   },
   "safe_local_qualification": {
