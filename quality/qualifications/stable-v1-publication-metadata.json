@@ -1,10 +1,6 @@
 {
   "blockers": [
-    "archival-record:identifier-unresolved",
-    "archival-record:licence-unresolved",
     "dataset-publication-approval:missing",
-    "derived-dataset:identifier-unresolved",
-    "derived-dataset:licence-unresolved",
     "production-package:not-qualified",
     "protocol-preregistration:identifier-unresolved",
     "protocol-preregistration:licence-unresolved",
@@ -64,8 +60,6 @@
     },
     {
       "blockers": [
-        "archival-record:identifier-unresolved",
-        "derived-dataset:identifier-unresolved",
         "protocol-preregistration:identifier-unresolved"
       ],
       "evidence": [
@@ -76,8 +70,6 @@
     },
     {
       "blockers": [
-        "archival-record:licence-unresolved",
-        "derived-dataset:licence-unresolved",
         "protocol-preregistration:licence-unresolved"
       ],
       "evidence": [
@@ -119,12 +111,12 @@
       "system": "github"
     },
     {
-      "identifier": null,
-      "identifier_evidence": null,
-      "identifier_state": "unresolved",
-      "licence_decision_evidence": null,
-      "licence_expression": null,
-      "licence_state": "unresolved",
+      "identifier": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue",
+      "identifier_evidence": "docs/publication/external-publication-receipt.md",
+      "identifier_state": "verified",
+      "licence_decision_evidence": "docs/publication/external-publication-receipt.md",
+      "licence_expression": "Apache-2.0",
+      "licence_state": "approved",
       "object_id": "derived-dataset",
       "object_role": "derived_dataset_distribution",
       "related_object_ids": [
@@ -134,12 +126,12 @@
       "system": "hugging_face"
     },
     {
-      "identifier": null,
-      "identifier_evidence": null,
-      "identifier_state": "unresolved",
-      "licence_decision_evidence": null,
-      "licence_expression": null,
-      "licence_state": "unresolved",
+      "identifier": "https://doi.org/10.5281/zenodo.21734811",
+      "identifier_evidence": "docs/publication/external-publication-receipt.md",
+      "identifier_state": "verified",
+      "licence_decision_evidence": "docs/governance/licensing-decision.md",
+      "licence_expression": "Apache-2.0",
+      "licence_state": "approved",
       "object_id": "archival-record",
       "object_role": "archival_doi_record",
       "related_object_ids": [
@@ -205,8 +197,8 @@
   "inputs": [
     {
       "path": "quality/qualifications/publication-identities.json",
-      "sha256": "f26457de47d4e44c302e1b1b231c0374cd296fdbbefff95f49d4ec16acdcde76",
-      "size": 1620
+      "sha256": "f9dd473761d7edb710ca3f339c47816f88177f954f9be3995d7b7f3d9a2599f9",
+      "size": 1911
     },
     {
       "path": "release-inputs/publication-contract.json",
@@ -286,7 +278,7 @@
   },
   "qualification_id": "stable-v1-release-candidate-publication-metadata",
   "ready_for_publication": false,
-  "receipt_sha256": "c4ffc74b403a3fa55b42cc41c4e91e3879745e5de4154e8e54d09e37f5e4a492",
+  "receipt_sha256": "bda78015e4811540f8093f731428398c3a713609e62aac60f780ddd4f278764d",
   "result": "metadata_qualified_external_gates_blocked",
   "schema_id": "global-medicines-atlas.stable-v1-publication-metadata",
   "schema_version": 1

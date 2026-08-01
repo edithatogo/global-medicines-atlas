@@ -10,7 +10,7 @@ separate publication identities.
 | Source and software release | GitHub | `v1.0.0rc1` published as a prerelease |
 | Software archival record | Zenodo | Published at [10.5281/zenodo.21734811](https://doi.org/10.5281/zenodo.21734811) from `v1.0.0rc1`; software-only |
 | Protocol and preregistration | OSF | Submission package prepared; registration remains gated by final preview |
-| Catalogue and cleared derived data | Hugging Face | Catalogue-only publication is eligible; source-derived bulk data remains rights-gated |
+| Catalogue metadata (no source-derived payload) | Hugging Face | Published at [`edithatogo/global-medicines-atlas-catalogue`](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue); source-derived bulk data remains rights-gated |
 | Dataset archival record | Zenodo | Separate record, only for assets with explicit redistribution rights |
 
 ## Required evidence before publication
@@ -35,7 +35,9 @@ does not license third-party medicine data.
 3. Create the OSF project, upload the prepared submission package, connect
    GitHub and the archival records, and preview the registration.
 4. The catalogue-only Hugging Face repository is published with a dataset card
-   linking each source and recording the unresolved-data boundary.
+   linking each source and recording the unresolved-data boundary. Its public
+   identifier applies only to catalogue metadata and schemas, not to a future
+   source-derived medicine-data distribution.
 5. Publish a separate Hugging Face/Zenodo dataset version only after the rights
    manifest is approved.
 

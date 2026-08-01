@@ -59,14 +59,22 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     the archival DOI record, and OSF is the protocol/preregistration. Null
     external identifiers remain unresolved rather than guessed.
 - [x] Task: Create and cross-link [GitHub parent #66](https://github.com/edithatogo/global-medicines-atlas/issues/66) and native phase subissues [#67](https://github.com/edithatogo/global-medicines-atlas/issues/67), [#68](https://github.com/edithatogo/global-medicines-atlas/issues/68), [#69](https://github.com/edithatogo/global-medicines-atlas/issues/69) and [#70](https://github.com/edithatogo/global-medicines-atlas/issues/70)
-- [ ] Task: Create OSF, Hugging Face and Zenodo records only after rights and maintainer gates pass
-- [ ] Task: Verify external identifiers, DOI relationships, licences and public landing pages
+- [ ] Task: Create the OSF preregistration and any source-derived Hugging Face or Zenodo dataset records only after rights and maintainer gates pass
+  - The catalogue-only Hugging Face distribution and software-only Zenodo record
+    already exist and are reconciled below. They do not satisfy this task's OSF
+    or source-derived-data gate.
+- [ ] Task: Verify the OSF identifier, DOI relationships, licences and public landing pages
+  - GitHub `v1.0.0rc1`, the catalogue-only Hugging Face distribution, and Zenodo
+    DOI `10.5281/zenodo.21734811` were publicly verified on 2026-08-01. OSF
+    registration and any source-derived-data record remain unverified.
 - [x] Task: Record publication receipts or explicit external blockers
-  - Explicit blockers are maintainer review, licence decisions, rights review,
-    and creation/verification of OSF, Hugging Face and Zenodo identifiers.
+  - `docs/publication/external-publication-receipt.md` records the verified
+    GitHub, catalogue-only Hugging Face, and software-only Zenodo identities.
+    Remaining blockers are OSF registration, source-by-source data rights,
+    explicit maintainer approval, and the distinct source-derived-data record.
 - [~] Task: Phase Verification & Checkpoint
-  - Repository-owned identity and blocker work is complete. External creation,
-    DOI verification, landing-page verification, publication, and final
+  - Repository-owned identity and receipt work is complete. OSF registration,
+    source-derived-data rights, their public landing pages, and final
     maintainer approval remain genuine human/external gates.
 
 ## GitHub hierarchy
