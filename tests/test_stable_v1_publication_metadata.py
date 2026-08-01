@@ -156,9 +156,7 @@ def test_receipt_passes_metadata_but_blocks_every_external_gate() -> None:
     assert receipt.ready_for_publication is False
 
 
-def test_identity_states_and_links_are_complete_and_non_overlapping() -> (
-    None
-):
+def test_identity_states_and_links_are_complete_and_non_overlapping() -> None:
     receipt = qualify_publication_metadata(ROOT)
     identities = {item.system: item for item in receipt.identities}
     assert set(identities) == {"github", "hugging_face", "zenodo", "osf"}

@@ -46,9 +46,7 @@ def test_current_registry_is_explicitly_blocked_not_publishable() -> None:
     registry.assert_object_publishable("software-source-release")
     registry.assert_object_publishable("derived-dataset")
     registry.assert_object_publishable("archival-record")
-    with pytest.raises(
-        ValueError, match="protocol-preregistration is blocked"
-    ):
+    with pytest.raises(ValueError, match="protocol-preregistration is blocked"):
         registry.assert_object_publishable("protocol-preregistration")
     with pytest.raises(ValueError, match="unknown publication object"):
         registry.assert_object_publishable("missing")
