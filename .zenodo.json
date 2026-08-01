@@ -1,0 +1,15 @@
+{
+  "title": "Global Medicines Atlas",
+  "version": "1.0.0rc1",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "Apache-2.0",
+  "language": "eng",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/edithatogo/global-medicines-atlas",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ]
+}
