@@ -156,7 +156,7 @@ def test_receipt_passes_metadata_but_blocks_every_external_gate() -> None:
     assert receipt.ready_for_publication is False
 
 
-def test_identity_placeholders_and_links_are_complete_and_non_overlapping() -> (
+def test_identity_states_and_links_are_complete_and_non_overlapping() -> (
     None
 ):
     receipt = qualify_publication_metadata(ROOT)
@@ -165,15 +165,12 @@ def test_identity_placeholders_and_links_are_complete_and_non_overlapping() -> (
     assert identities["github"].identifier_state == "verified"
     assert identities["github"].licence_state == "approved"
     assert identities["github"].licence_expression == "Apache-2.0"
-    assert identities["hugging_face"].licence_state == "unresolved"
-    assert identities["hugging_face"].licence_expression is None
-    assert identities["zenodo"].licence_state == "unresolved"
+    for system in ("hugging_face", "zenodo"):
+        assert identities[system].identifier_state == "verified"
+        assert identities[system].licence_state == "approved"
+        assert identities[system].licence_expression == "Apache-2.0"
     assert identities["osf"].licence_state == "unresolved"
-    assert all(
-        item.identifier is None
-        for system, item in identities.items()
-        if system != "github"
-    )
+    assert identities["osf"].identifier is None
     assert len({item.object_role for item in identities.values()}) == 4
     links = {
         (item.object_id, related)
