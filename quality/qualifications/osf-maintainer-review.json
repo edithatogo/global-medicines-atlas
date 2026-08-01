@@ -18,6 +18,13 @@
     "submitted": false,
     "public": false
   },
+  "osf_project_storage": {
+    "expected_file_count": 10,
+    "observed_file_count": 10,
+    "manifest_uploaded": true,
+    "structured_registration_responses": "empty",
+    "package_payloads_source_derived": false
+  },
   "osf_api_observation": {
     "endpoint": "https://api.osf.io/v2/nodes/pcdnm/",
     "observed_at": "2026-08-01",

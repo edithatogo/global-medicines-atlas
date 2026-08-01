@@ -37,6 +37,13 @@ created from it. Draft ID: `6a6dca79265e7ef20ac266e1`; review URL:
 `https://osf.io/registries/drafts/6a6dca79265e7ef20ac266e1/review`. This is not
 a submitted or public registration.
 
+The project storage contains all ten expected package files, including the
+manifest, covering narrative, structured responses, protocol, analysis plan,
+amendment history, deviation register, data-management and ethics statement,
+citations, and README. The draft's structured registration responses remain
+empty; the uploaded package is therefore retained as review material and the
+draft is not submitted.
+
 ## Registration gate
 
 Before an OSF registration write, the maintainer must confirm:
