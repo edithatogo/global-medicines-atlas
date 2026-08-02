@@ -445,6 +445,7 @@ def probe_source(
         DestinationPolicyError,
         UnicodeError,
         ValueError,
+        OSError,
         orjson.JSONDecodeError,
     ) as error:
         status_code = (
