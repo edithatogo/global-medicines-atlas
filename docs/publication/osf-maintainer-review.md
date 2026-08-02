@@ -30,7 +30,7 @@ medicine data.
 | GitHub | software source and release | `https://github.com/edithatogo/global-medicines-atlas` |
 | Hugging Face | catalogue-only derived distribution | `https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue` |
 | Zenodo | software-only archival DOI | [`10.5281/zenodo.21734811`](https://doi.org/10.5281/zenodo.21734811) |
-| OSF | protocol and preregistration | project link [`https://osf.io/pcdnm/`](https://osf.io/pcdnm/); registration state unresolved |
+| OSF | protocol and preregistration | project link [`https://osf.io/pcdnm/`](https://osf.io/pcdnm/); private draft ready for final preview |
 
 The OSF project is now authenticated and a private draft registration was
 created from it. Draft ID: `6a6dca79265e7ef20ac266e1`; review URL:
@@ -40,9 +40,10 @@ a submitted or public registration.
 The project storage contains all ten expected package files, including the
 manifest, covering narrative, structured responses, protocol, analysis plan,
 amendment history, deviation register, data-management and ethics statement,
-citations, and README. The draft's structured registration responses remain
-empty; the uploaded package is therefore retained as review material and the
-draft is not submitted.
+citations, and README. Authenticated schema validation confirms all 16 required
+response keys and 17 total responses are present in the private draft. The
+draft is ready for final maintainer preview but remains unsubmitted and
+unpublished.
 
 ## Registration gate
 
@@ -52,7 +53,8 @@ Before an OSF registration write, the maintainer must confirm:
 2. the exact manifest digest and package contents to register;
 3. the OSF project, contributor, embargo, and registration-template settings;
 4. the licence and source-rights boundary for every attached artefact; and
-5. that the authenticated OSF account has authority to create the registration.
+5. that the authenticated OSF account has authority to create the registration;
+6. explicit approval to submit the private draft.
 
 After an authorised registration, append the registration URL, registration
 identifier, timestamp, package digest, public/embargo state, and API or landing
