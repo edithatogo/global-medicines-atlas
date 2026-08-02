@@ -22,14 +22,25 @@
     "expected_file_count": 10,
     "observed_file_count": 10,
     "manifest_uploaded": true,
-    "structured_registration_responses": "empty",
+    "structured_registration_responses": "partial_text_responses_select_fields_pending",
     "package_payloads_source_derived": false
   },
+  "private_draft_response_progress": {
+    "draft_registration_id": "6a6dca79265e7ef20ac266e1",
+    "persisted_text_response_count": 14,
+    "required_select_response_fields_remaining": [
+      "foreknowledge",
+      "study_type",
+      "blinding"
+    ],
+    "submitted": false,
+    "public": false
+  },
   "osf_api_observation": {
-    "endpoint": "https://api.osf.io/v2/nodes/pcdnm/",
-    "observed_at": "2026-08-01",
-    "http_status": 401,
-    "registration_state": "unresolved"
+    "endpoint": "https://api.osf.io/v2/draft_registrations/6a6dca79265e7ef20ac266e1/",
+    "observed_at": "2026-08-02",
+    "http_status": 200,
+    "registration_state": "private_draft_partial_responses_not_submitted"
   },
   "reviewed_controls": [
     "prospective descriptive non-clinical scope",
