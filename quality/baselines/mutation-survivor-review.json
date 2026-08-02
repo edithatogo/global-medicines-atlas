@@ -3,7 +3,7 @@
   "reviewed_run_id": 30755664637,
   "head_sha": "3ec649be8e61339757330e0c2c0313389848db6c",
   "artifact_id": 8840650686,
-  "artifact_sha256": "7B1200E0D6E5C94E52D06DD48C7A34C2E295D46F65E05E15A2CA5575AE5F56A0",
+  "artifact_sha256": "7b1200e0d6e5c94e52d06dd48c7a34c2e295d46f65e05e15a2ca5575ae5f56a0",
   "survived": 365,
   "untested": 2,
   "promotion_survivor_maximum": 381,
