@@ -200,6 +200,21 @@ def test_http_failure_is_unavailable_without_raising() -> None:
     assert result.expected_cadence_seconds == 86_400
 
 
+def test_dns_failure_is_unavailable_without_aborting_probe() -> None:
+    def resolver(_host: str) -> tuple[str, ...]:
+        raise OSError("temporary DNS failure")
+
+    result = probe_source(
+        source(),
+        checked_at=NOW,
+        resolver=resolver,
+    )
+
+    assert result.state is ProbeState.UNAVAILABLE
+    assert result.status_code is None
+    assert "source unavailable" in result.detail
+
+
 @pytest.mark.edge
 @pytest.mark.parametrize(
     "endpoint",

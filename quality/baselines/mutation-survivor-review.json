@@ -1,15 +1,15 @@
 {
   "schema_version": "1.0.0",
-  "reviewed_run_id": 30629227351,
-  "head_sha": "cc73a55e6b2198a2d82a3de6d4366f76398ded23",
-  "artifact_id": 8792687604,
-  "artifact_sha256": "92a2695ebbe4397b7b1ee56ce03d3c8561df77854a84fcb68ab38a5cf8c8ca41",
-  "survived": 364,
+  "reviewed_run_id": 30755664637,
+  "head_sha": "3ec649be8e61339757330e0c2c0313389848db6c",
+  "artifact_id": 8840650686,
+  "artifact_sha256": "7b1200e0d6e5c94e52d06dd48c7a34c2e295d46f65e05e15a2ca5575ae5f56a0",
+  "survived": 365,
   "untested": 2,
   "promotion_survivor_maximum": 381,
   "promotion_status": "qualified",
   "groups": [
-    {"module": "source_health", "count": 194, "disposition": "open_test_gap", "priority": 1},
+    {"module": "source_health", "count": 195, "disposition": "open_test_gap", "priority": 1},
     {"module": "adapters.us_drugsfda", "count": 29, "disposition": "open_test_gap", "priority": 2},
     {"module": "matching_evaluation", "count": 29, "disposition": "open_test_gap", "priority": 3},
     {"module": "semantic_retrieval", "count": 28, "disposition": "open_test_gap", "priority": 4},
@@ -23,5 +23,5 @@
     {"module": "canonical_v2", "count": 2, "disposition": "open_test_gap", "priority": 12},
     {"module": "comparison_validity", "count": 1, "disposition": "open_test_gap", "priority": 13}
   ],
-  "review_decision": "No survivor is waived or classified as equivalent without mutant-level proof. The expanded-scope 83.733333% hosted score exceeds both the independent 80% v0.8 threshold and the prior 83.701799% baseline; 364 survivors and 2 untested protocol methods stay explicit test debt."
+  "review_decision": "No survivor is waived or classified as equivalent without mutant-level proof. The hosted authoritative run records 365 survivors and 2 untested protocol methods; the one-survivor increase is isolated to the already governed source_health group after adding OSError/DNS failure isolation. The survivor debt remains below the promotion maximum of 381, and the exact hosted run, head SHA, artifact ID, and artifact digest are bound above."
 }
