@@ -1,0 +1,2221 @@
+{
+  "schema_id": "global-medicines-atlas.source-rights-disposition",
+  "schema_version": 1,
+  "generated_at": "2026-07-29",
+  "decision_id": "conductor/decisions/0008-source-derived-dataset-licensing-batch.md",
+  "source_count": 96,
+  "batch_recommendation": "catalogue_only_for_all_unresolved_sources",
+  "public_derived_release": "source_specific_receipt_required",
+  "internal_acquisition": "conditional_and_non_public",
+  "entries": [
+    {
+      "source_id": "ae-dha-prices",
+      "jurisdictions": [
+        "ARE"
+      ],
+      "authority": "Dubai Health Authority",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "ae-ede-register",
+      "jurisdictions": [
+        "ARE"
+      ],
+      "authority": "Emirates Drug Establishment",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "ar-anmat-vademecum",
+      "jurisdictions": [
+        "ARG"
+      ],
+      "authority": "ANMAT",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "au-amt-rf2",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "authority": "Australian Digital Health Agency",
+      "dimension": "terminology",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "au-artg",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "authority": "Therapeutic Goods Administration",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "au-pbs-api",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "authority": "Australian Government Department of Health, Disability and Ageing",
+      "dimension": "funding",
+      "catalogue_rights_status": "terms_review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "au-pbs-embargo",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "authority": "Australian Department of Health",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "au-pbs-historical-xml",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "authority": "Australian Department of Health",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "au-tga-pi-cmi",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "authority": "Therapeutic Goods Administration",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "au-tga-regulatory-events",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "authority": "Therapeutic Goods Administration",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "bh-moh-drug-prices",
+      "jurisdictions": [
+        "BHR"
+      ],
+      "authority": "Bahrain Ministry of Health",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "br-anvisa-medicines",
+      "jurisdictions": [
+        "BRA"
+      ],
+      "authority": "Agencia Nacional de Vigilancia Sanitaria",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "br-cmed-prices",
+      "jurisdictions": [
+        "BRA"
+      ],
+      "authority": "ANVISA CMED",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "br-conitec-decisions",
+      "jurisdictions": [
+        "BRA"
+      ],
+      "authority": "Comissao Nacional de Incorporacao de Tecnologias no Sistema Unico de Saude",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "ca-cda-recommendations",
+      "jurisdictions": [
+        "CAN"
+      ],
+      "authority": "Canada's Drug Agency",
+      "dimension": "formulary",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "ca-dpd",
+      "jurisdictions": [
+        "CAN"
+      ],
+      "authority": "Health Canada",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "terms_review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "ca-noc",
+      "jurisdictions": [
+        "CAN"
+      ],
+      "authority": "Health Canada",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "terms_review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "ca-nova-scotia-pharmacare",
+      "jurisdictions": [
+        "CAN"
+      ],
+      "authority": "Nova Scotia Department of Health",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "ca-ontario-odb",
+      "jurisdictions": [
+        "CAN"
+      ],
+      "authority": "Ontario Ministry of Health",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "ch-foph-sl-fhir",
+      "jurisdictions": [
+        "CHE"
+      ],
+      "authority": "Federal Office of Public Health",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "ch-foph-specialities",
+      "jurisdictions": [
+        "CHE"
+      ],
+      "authority": "Federal Office of Public Health",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "ch-swissmedic-aips",
+      "jurisdictions": [
+        "CHE"
+      ],
+      "authority": "Swissmedic",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "ch-swissmedic-authorised",
+      "jurisdictions": [
+        "CHE"
+      ],
+      "authority": "Swissmedic",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "cl-isp-register",
+      "jurisdictions": [
+        "CHL"
+      ],
+      "authority": "Instituto de Salud Publica de Chile",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "co-invima-cum",
+      "jurisdictions": [
+        "COL"
+      ],
+      "authority": "INVIMA",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "co-invima-register",
+      "jurisdictions": [
+        "COL"
+      ],
+      "authority": "INVIMA",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "de-bfarm-amice",
+      "jurisdictions": [
+        "DEU"
+      ],
+      "authority": "BfArM",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "dk-medicinpriser",
+      "jurisdictions": [
+        "DNK"
+      ],
+      "authority": "Danish Medicines Agency",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "eu-ema-article57",
+      "jurisdictions": [
+        "EU"
+      ],
+      "authority": "European Medicines Agency",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "eu-ema-json",
+      "jurisdictions": [
+        "EU"
+      ],
+      "authority": "European Medicines Agency",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "eu-ema-medicines",
+      "jurisdictions": [
+        "EU"
+      ],
+      "authority": "European Medicines Agency",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "eu-ema-pms-fhir",
+      "jurisdictions": [
+        "EU"
+      ],
+      "authority": "European Medicines Agency",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "eu-spor-rms-oms",
+      "jurisdictions": [
+        "EU"
+      ],
+      "authority": "European Medicines Agency",
+      "dimension": "terminology",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "eu-union-register",
+      "jurisdictions": [
+        "EU"
+      ],
+      "authority": "European Commission",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "CC-BY-4.0 dataset; verify per release",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "fr-bdpm",
+      "jurisdictions": [
+        "FRA"
+      ],
+      "authority": "French Ministry of Health",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "fr-bdpm-smr-asmr",
+      "jurisdictions": [
+        "FRA"
+      ],
+      "authority": "French Ministry of Health and HAS",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "gb-emit",
+      "jurisdictions": [
+        "GBR"
+      ],
+      "authority": "UK Department of Health and Social Care",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "gb-mhra-products",
+      "jurisdictions": [
+        "GBR"
+      ],
+      "authority": "Medicines and Healthcare products Regulatory Agency",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "gb-nhs-dmd",
+      "jurisdictions": [
+        "GBR"
+      ],
+      "authority": "NHS Business Services Authority",
+      "dimension": "terminology",
+      "catalogue_rights_status": "registration_and_licence_review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "gb-nhs-drug-tariff",
+      "jurisdictions": [
+        "GBR"
+      ],
+      "authority": "NHS Business Services Authority",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "gb-nice-ta",
+      "jurisdictions": [
+        "GBR"
+      ],
+      "authority": "National Institute for Health and Care Excellence",
+      "dimension": "funding",
+      "catalogue_rights_status": "syndication_terms_review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "gb-trud-api",
+      "jurisdictions": [
+        "GBR"
+      ],
+      "authority": "NHS England",
+      "dimension": "terminology",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "gcc-central-registration",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "authority": "GCC Health Council",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "global-rxnorm",
+      "jurisdictions": [
+        "GLOBAL",
+        "USA"
+      ],
+      "authority": "US National Library of Medicine",
+      "dimension": "terminology",
+      "catalogue_rights_status": "UMLS/RxNorm terms apply",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "global-who-databases",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "authority": "World Health Organization",
+      "dimension": "terminology",
+      "catalogue_rights_status": "dataset_specific_review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "global-who-wla",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "authority": "World Health Organization",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "WHO terms apply",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "id-bpom-product",
+      "jurisdictions": [
+        "IDN"
+      ],
+      "authority": "Badan POM",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "in-cdsco-approved-drugs",
+      "jurisdictions": [
+        "IND"
+      ],
+      "authority": "Central Drugs Standard Control Organisation",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "in-nlem",
+      "jurisdictions": [
+        "IND"
+      ],
+      "authority": "Government of India Ministry of Health and Family Welfare",
+      "dimension": "formulary",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "jp-mhlw-nhi-price",
+      "jurisdictions": [
+        "JPN"
+      ],
+      "authority": "Ministry of Health, Labour and Welfare",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "jp-pmda-approvals",
+      "jurisdictions": [
+        "JPN"
+      ],
+      "authority": "Pharmaceuticals and Medical Devices Agency",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "jp-pmda-package-inserts",
+      "jurisdictions": [
+        "JPN"
+      ],
+      "authority": "Pharmaceuticals and Medical Devices Agency",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "kr-hira-atc",
+      "jurisdictions": [
+        "KOR"
+      ],
+      "authority": "Health Insurance Review and Assessment Service",
+      "dimension": "terminology",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "kr-hira-reimbursement",
+      "jurisdictions": [
+        "KOR"
+      ],
+      "authority": "Health Insurance Review and Assessment Service",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "kr-hira-standard-code",
+      "jurisdictions": [
+        "KOR"
+      ],
+      "authority": "Health Insurance Review and Assessment Service",
+      "dimension": "terminology",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "kr-mfds-nedrug",
+      "jurisdictions": [
+        "KOR"
+      ],
+      "authority": "Ministry of Food and Drug Safety",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "kw-moh-medicines",
+      "jurisdictions": [
+        "KWT"
+      ],
+      "authority": "Kuwait Ministry of Health",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "mx-cofepris-register",
+      "jurisdictions": [
+        "MEX"
+      ],
+      "authority": "Comision Federal para la Proteccion contra Riesgos Sanitarios",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "mx-csg-compendium",
+      "jurisdictions": [
+        "MEX"
+      ],
+      "authority": "Consejo de Salubridad General",
+      "dimension": "formulary",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "my-npra-quest",
+      "jurisdictions": [
+        "MYS"
+      ],
+      "authority": "National Pharmaceutical Regulatory Agency",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "ng-nafdac-products",
+      "jurisdictions": [
+        "NGA"
+      ],
+      "authority": "National Agency for Food and Drug Administration and Control",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "ng-nhia-medicines",
+      "jurisdictions": [
+        "NGA"
+      ],
+      "authority": "National Health Insurance Authority",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "nl-medicijnkosten",
+      "jurisdictions": [
+        "NLD"
+      ],
+      "authority": "Zorginstituut Nederland",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "no-dmp-fhir",
+      "jurisdictions": [
+        "NOR"
+      ],
+      "authority": "Norwegian Medical Products Agency",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "no-fest",
+      "jurisdictions": [
+        "NOR"
+      ],
+      "authority": "Norwegian Medical Products Agency",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "nz-medsafe-documents",
+      "jurisdictions": [
+        "NZL"
+      ],
+      "authority": "Medsafe",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "nz-medsafe-products",
+      "jurisdictions": [
+        "NZL"
+      ],
+      "authority": "Medsafe",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "nz-nzhts-fhir",
+      "jurisdictions": [
+        "NZL"
+      ],
+      "authority": "Health New Zealand",
+      "dimension": "terminology",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "nz-nzulm-bulk",
+      "jurisdictions": [
+        "NZL"
+      ],
+      "authority": "New Zealand Medicines Formulary LP",
+      "dimension": "terminology",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "nz-pharmac-hml",
+      "jurisdictions": [
+        "NZL"
+      ],
+      "authority": "Pharmaceutical Management Agency",
+      "dimension": "formulary",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "nz-pharmac-schedule",
+      "jurisdictions": [
+        "NZL"
+      ],
+      "authority": "Pharmac",
+      "dimension": "funding",
+      "catalogue_rights_status": "production_terms_and_schema_review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "nz-pharmac-schedule-xml",
+      "jurisdictions": [
+        "NZL"
+      ],
+      "authority": "Pharmaceutical Management Agency",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "om-moh-medicines",
+      "jurisdictions": [
+        "OMN"
+      ],
+      "authority": "Oman Ministry of Health",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "ph-fda-verification",
+      "jurisdictions": [
+        "PHL"
+      ],
+      "authority": "Philippines Food and Drug Administration",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "qa-moh-medicines",
+      "jurisdictions": [
+        "QAT"
+      ],
+      "authority": "Qatar Ministry of Public Health",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "sa-chi-formulary",
+      "jurisdictions": [
+        "SAU"
+      ],
+      "authority": "Council of Health Insurance",
+      "dimension": "formulary",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "sa-sfda-drug-list",
+      "jurisdictions": [
+        "SAU"
+      ],
+      "authority": "Saudi Food and Drug Authority",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "se-npl-nsl",
+      "jurisdictions": [
+        "SWE"
+      ],
+      "authority": "Swedish Medical Products Agency",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "se-tlv-subsidies",
+      "jurisdictions": [
+        "SWE"
+      ],
+      "authority": "Dental and Pharmaceutical Benefits Agency",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "sg-hsa-approval-deltas",
+      "jurisdictions": [
+        "SGP"
+      ],
+      "authority": "Health Sciences Authority",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "sg-hsa-register",
+      "jurisdictions": [
+        "SGP"
+      ],
+      "authority": "Health Sciences Authority",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "sg-moh-drug-list",
+      "jurisdictions": [
+        "SGP"
+      ],
+      "authority": "Ministry of Health Singapore",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "th-fda-search",
+      "jurisdictions": [
+        "THA"
+      ],
+      "authority": "Thai Food and Drug Administration",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "us-cms-mdrp",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "Centers for Medicare and Medicaid Services",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "us-cms-nadac",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "Centers for Medicare and Medicaid Services",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "us-cms-partd-formulary",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "Centers for Medicare & Medicaid Services",
+      "dimension": "funding",
+      "catalogue_rights_status": "CMS agreement_for_use review required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "us-dailymed-spl",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "US National Library of Medicine",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "us-drugsfda",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "US Food and Drug Administration",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "US government data; verify endpoint terms",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "us-fda-orange-book",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "US Food and Drug Administration",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "US government data; verify endpoint terms",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "us-gsrs-unii",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "US FDA and NIH NCATS",
+      "dimension": "terminology",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "us-openfda-drugsfda",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "US Food and Drug Administration",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "us-openfda-ndc",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "US Food and Drug Administration",
+      "dimension": "terminology",
+      "catalogue_rights_status": "openFDA terms apply",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "us-rxnorm-api",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "US National Library of Medicine",
+      "dimension": "terminology",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "za-national-eml",
+      "jurisdictions": [
+        "ZAF"
+      ],
+      "authority": "South African National Department of Health",
+      "dimension": "formulary",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "za-sahpra-register",
+      "jurisdictions": [
+        "ZAF"
+      ],
+      "authority": "South African Health Products Regulatory Authority",
+      "dimension": "regulatory",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    },
+    {
+      "source_id": "za-single-exit-price",
+      "jurisdictions": [
+        "ZAF"
+      ],
+      "authority": "National Department of Health",
+      "dimension": "funding",
+      "catalogue_rights_status": "review_required",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required"
+    }
+  ]
+}
