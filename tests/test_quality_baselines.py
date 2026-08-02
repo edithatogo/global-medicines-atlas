@@ -25,7 +25,7 @@ SURVIVOR_REVIEW_PATH = Path("quality/baselines/mutation-survivor-review.json")
 
 def test_committed_phase3_baseline_is_valid_and_qualified() -> None:
     baseline = load_phase3_baselines(BASELINE_PATH)
-    assert baseline.mutation.observations.survived == 364
+    assert baseline.mutation.observations.survived == 365
     assert baseline.mutation.observations.untested == 2
     assert baseline.mutation.promotion_status == "qualified"
     assert baseline.performance.workload.row_count == 1_000_000
@@ -33,10 +33,10 @@ def test_committed_phase3_baseline_is_valid_and_qualified() -> None:
 
 def test_survivor_review_reconciles_hosted_report_without_waivers() -> None:
     review = load_survivor_review(SURVIVOR_REVIEW_PATH)
-    assert sum(group.count for group in review.groups) == 364
+    assert sum(group.count for group in review.groups) == 365
     assert review.untested == 2
     assert review.groups[0].module == "source_health"
-    assert review.groups[0].count == 194
+    assert review.groups[0].count == 195
     assert review.groups[-1].module == "comparison_validity"
     assert {group.disposition for group in review.groups} == {"open_test_gap"}
 
@@ -89,9 +89,9 @@ def test_mutation_regression_compares_rate_when_scope_expands() -> None:
     )
     expanded_and_regressed = expanded_but_not_regressed.model_copy(
         update={
-            "killed": 1_837,
-            "survived": 358,
-            "score_percent": 1_837 / 2_195 * 100,
+            "killed": 1_836,
+            "survived": 359,
+            "score_percent": 1_836 / 2_195 * 100,
         }
     )
 
