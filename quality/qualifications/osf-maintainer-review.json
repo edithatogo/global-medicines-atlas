@@ -27,12 +27,9 @@
   },
   "private_draft_response_progress": {
     "draft_registration_id": "6a6dca79265e7ef20ac266e1",
-    "persisted_text_response_count": 14,
-    "required_select_response_fields_remaining": [
-      "foreknowledge",
-      "study_type",
-      "blinding"
-    ],
+    "persisted_response_count": 17,
+    "required_response_keys": 16,
+    "required_select_response_fields_remaining": [],
     "submitted": false,
     "public": false
   },
