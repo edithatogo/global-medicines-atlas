@@ -67,6 +67,9 @@ A blocking decision request contains exactly one decision and:
 The agent must not ask an open-ended question when useful options can be
 derived. It must not bundle unrelated decisions into one request.
 
+The current external-gate decisions are maintained in
+[decisions/0006-external-gate-decision-register.md](decisions/0006-external-gate-decision-register.md).
+
 ## Bounded self-correction
 
 When an operation fails, the agent:
@@ -105,4 +108,3 @@ valid self-corrections.
 | Setup self-correction | Generalize to the bounded three-attempt protocol |
 | Mandatory phase manual confirmation | Override; use automated evidence and interrupt only at the decision boundary |
 | Automatic extension updates | Do not adopt silently; refresh the bundled Codex skill through a reviewed dependency change |
-

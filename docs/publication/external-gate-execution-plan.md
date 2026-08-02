@@ -76,6 +76,10 @@ institutional ethics decisions are never inferred from CI or credentials.
 
 ## Decision register
 
+The detailed option, contingency, rationale, and recommendation register is
+maintained in
+[`conductor/decisions/0006-external-gate-decision-register.md`](../../conductor/decisions/0006-external-gate-decision-register.md).
+
 The only immediate maintainer decisions are:
 
 - authorize Renovate App installation, if the App is absent;
