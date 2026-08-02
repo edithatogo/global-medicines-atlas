@@ -25,6 +25,17 @@
     "structured_registration_responses": "empty",
     "package_payloads_source_derived": false
   },
+  "private_draft_response_progress": {
+    "draft_registration_id": "6a6dca79265e7ef20ac266e1",
+    "persisted_text_response_count": 14,
+    "required_select_response_fields_remaining": [
+      "foreknowledge",
+      "study_type",
+      "blinding"
+    ],
+    "submitted": false,
+    "public": false
+  },
   "osf_api_observation": {
     "endpoint": "https://api.osf.io/v2/nodes/pcdnm/",
     "observed_at": "2026-08-01",
