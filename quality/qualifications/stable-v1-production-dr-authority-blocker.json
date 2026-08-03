@@ -1,0 +1,24 @@
+{
+  "schema_id": "global-medicines-atlas.stable-v1-production-dr-authority",
+  "schema_version": 1,
+  "observed_at": "2026-08-03",
+  "state": "blocked_authority_required",
+  "evidence": [
+    "docs/operations/governed-recovery-runbook.md",
+    "quality/qualifications/stable-v1-rehearsal-plan.json"
+  ],
+  "qualified_local_controls": [
+    "deterministic synthetic backup and restore",
+    "failed-restore quarantine",
+    "exact rollback verification"
+  ],
+  "unqualified_production_controls": [
+    "independent immutable backup storage",
+    "approved retention and deletion authority",
+    "declared RPO and RTO",
+    "crash-consistency qualification",
+    "named production recovery operator and notification authority"
+  ],
+  "required_authority_receipt": "A maintainer-approved production recovery authority must name the backup system, retention policy, RPO, RTO, restore operator, notification route and successful independent restore evidence before this gate can be marked passed.",
+  "qualification_state": "not_claimed"
+}

@@ -78,6 +78,10 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 ## Phase 2: v0.9 candidate
 
 - [~] Task: Execute independent reproduction and disaster-recovery rehearsal ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+  - A fresh-clone reproduction of `v1.0.0rc1` passed deterministic migration,
+    rollback, restore and fixture identity checks; receipt:
+    `quality/qualifications/stable-v1-independent-reproduction-20260803.json`.
+    Artifact-only reproduction and production DR authority remain open.
   - A deterministic aggregate receipt exercises independent child-process
     reproduction, governed backup/restoration/rollback and fail-closed receipt
     identity. It explicitly does not claim production disaster recovery,
@@ -152,6 +156,10 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     and the two risk/evidence views were reconciled and re-acquisition qualified
     every in-scope control.
 - [~] Task: Produce signed release package and consumer verification guide ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+  - GitHub attestation verification passed for the published wheel from
+    `v1.0.0rc1`; receipt:
+    `quality/qualifications/stable-v1-release-provenance-receipt.json`.
+    Stable-v1 promotion approval remains distinct from prerelease provenance.
   - A deterministic wheel, sdist, normalized SBOM, manifest, checksum and
     consumer-verification candidate reproduces byte-for-byte across independent
     clean LF and CRLF checkouts. Portable commands create separate environments

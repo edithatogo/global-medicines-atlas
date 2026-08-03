@@ -88,13 +88,15 @@
     "osf_draft_registration": "superseded_by_registration_ej5nf",
     "osf_registration": "ej5nf_pending_osf_approval",
     "osf_structured_responses": "verified_in_registration_ej5nf",
-    "release_signing_and_attestation": "not_observed",
-    "production_disaster_recovery": "not_observed",
+    "release_signing_and_attestation": "verified_for_v1.0.0rc1_asset",
+    "independent_reproduction": "passed_fresh_clone_representative_rehearsal",
+    "production_disaster_recovery": "authority_required_not_qualified",
     "submission_allowed": false,
     "required_receipts": [
       "Renovate App installation and Dependency Dashboard issue",
       "completed OSF schema response preview and maintainer approval",
-      "signed and attested release artifact",
+      "stable-v1 signed/attested release promotion approval",
+      "artifact-only clean-room reproduction",
       "production disaster-recovery rehearsal with approved authority"
     ]
   },
