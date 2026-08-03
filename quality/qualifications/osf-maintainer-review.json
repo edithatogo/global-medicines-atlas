@@ -8,7 +8,7 @@
   "package_manifest": "research/preregistration/submission/osf-submission-manifest.json",
   "manifest_sha256": "eb7c62369678e6c1420bb206e5e293186dc21868f3fe833b19822a1c4439f8a1",
   "review_state": "repository_package_review_complete",
-  "registration_state": "registration_created_pending_approval",
+  "registration_state": "public_registration_verified",
   "external_actions_permitted": true,
   "osf_project": "https://osf.io/pcdnm/",
   "osf_draft_registration": {
@@ -21,10 +21,11 @@
   "osf_registration": {
     "id": "ej5nf",
     "url": "https://osf.io/ej5nf/",
+    "doi": "10.17605/OSF.IO/EJ5NF",
     "api_url": "https://api.osf.io/v2/registrations/ej5nf/",
     "date_registered": "2026-08-03T00:42:45.820749Z",
-    "public": false,
-    "pending_registration_approval": true,
+    "public": true,
+    "pending_registration_approval": false,
     "reviews_state": "initial",
     "registered_from": "pcdnm",
     "provider": "osf",
@@ -49,7 +50,7 @@
     "endpoint": "https://api.osf.io/v2/draft_registrations/6a6dca79265e7ef20ac266e1/",
     "observed_at": "2026-08-02",
     "http_status": 200,
-    "registration_state": "registration_created_pending_approval"
+    "registration_state": "public_registration_verified"
   },
   "reviewed_controls": [
     "prospective descriptive non-clinical scope",
@@ -61,6 +62,6 @@
     "data-management and ethics statement"
   ],
   "remaining_gates": [
-    "OSF review/approval and public or embargoed landing-state confirmation"
+    "OSF registration licence state is not asserted by the API and remains unresolved"
   ]
 }

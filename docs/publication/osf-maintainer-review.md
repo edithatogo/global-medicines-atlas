@@ -3,7 +3,7 @@
 **Review scope:** issues [#66](https://github.com/edithatogo/global-medicines-atlas/issues/66) and [#70](https://github.com/edithatogo/global-medicines-atlas/issues/70)  
 **Package:** [`research/preregistration/`](../../research/preregistration/)  
 **Manifest:** [`osf-submission-manifest.json`](../../research/preregistration/submission/osf-submission-manifest.json)  
-**Status:** package review complete; OSF registration created and pending OSF approval
+**Status:** package review complete; public OSF registration and DOI verified
 
 ## Review decision
 
@@ -30,7 +30,7 @@ medicine data.
 | GitHub | software source and release | `https://github.com/edithatogo/global-medicines-atlas` |
 | Hugging Face | catalogue-only derived distribution | `https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue` |
 | Zenodo | software-only archival DOI | [`10.5281/zenodo.21734811`](https://doi.org/10.5281/zenodo.21734811) |
-| OSF | protocol and preregistration | registration [`https://osf.io/ej5nf/`](https://osf.io/ej5nf/); pending OSF approval |
+| OSF | protocol and preregistration | registration [`https://osf.io/ej5nf/`](https://osf.io/ej5nf/); DOI `10.17605/OSF.IO/EJ5NF` |
 
 The OSF project is now authenticated and a private draft registration was
 created from it. Draft ID: `6a6dca79265e7ef20ac266e1`; review URL:
@@ -42,17 +42,19 @@ manifest, covering narrative, structured responses, protocol, analysis plan,
 amendment history, deviation register, data-management and ethics statement,
 citations, and README. Authenticated schema validation confirms all 16 required
 response keys and 17 total responses are present in the private draft. The
-registration `ej5nf` was created on 2026-08-03 from the draft and is currently
-private with `pending_registration_approval=true`. The registration landing
-page is [`https://osf.io/ej5nf/`](https://osf.io/ej5nf/); the durable API receipt
-is [`https://api.osf.io/v2/registrations/ej5nf/`](https://api.osf.io/v2/registrations/ej5nf/).
+registration `ej5nf` was created on 2026-08-03 from the draft and is now public
+with `pending_registration_approval=false`. OSF assigned DOI
+`10.17605/OSF.IO/EJ5NF`. The registration landing page is
+[`https://osf.io/ej5nf/`](https://osf.io/ej5nf/); the durable API receipt is
+[`https://api.osf.io/v2/registrations/ej5nf/`](https://api.osf.io/v2/registrations/ej5nf/).
 
 ## Registration gate
 
-The remaining OSF gate is:
+The remaining OSF qualification caveat is:
 
-1. OSF review/approval and confirmation of the resulting public or embargoed
-   landing state.
+1. The OSF registration API does not assert a licence for the registration
+   record; this remains unresolved rather than being inferred from the
+   software or dataset licences.
 
 The registration receipt records the registration URL, registration
 identifier, timestamp, package digest, public/embargo state, and API or landing

@@ -23,16 +23,18 @@ source payload, terminology, product information, or derived medicine data.
 ## OSF registration receipt
 
 The OSF project [`https://osf.io/pcdnm/`](https://osf.io/pcdnm/) produced
-registration [`ej5nf`](https://osf.io/ej5nf/) on 2026-08-03. The authenticated
-API receipt is [`https://api.osf.io/v2/registrations/ej5nf/`](https://api.osf.io/v2/registrations/ej5nf/).
-The registration is currently private, with `pending_registration_approval=true`
-and `reviews_state=initial`; OSF approval/publication-state verification
-remains open.
+registration [`ej5nf`](https://osf.io/ej5nf/) on 2026-08-03. OSF assigned DOI
+[`10.17605/OSF.IO/EJ5NF`](https://doi.org/10.17605/OSF.IO/EJ5NF). The
+authenticated API receipt is
+[`https://api.osf.io/v2/registrations/ej5nf/`](https://api.osf.io/v2/registrations/ej5nf/).
+The registration is public, with `pending_registration_approval=false` and
+`reviews_state=initial`.
 
 ## Remaining gates
 
-- OSF review/approval and confirmation of the resulting public or embargoed
-  landing state.
+- The OSF registration record does not expose a licence; its licence state is
+  therefore unresolved and is not inherited from GitHub, Hugging Face or
+  Zenodo.
 - Every source-derived dataset remains subject to the source-by-source rights
   policy in [`SOURCE_RIGHTS.md`](../data-sources/SOURCE_RIGHTS.md). No
   source-derived payload is covered by this receipt.

@@ -1,0 +1,49 @@
+{
+  "schema_id": "global-medicines-atlas.post-registration-reconciliation",
+  "schema_version": 1,
+  "observed_at": "2026-08-03",
+  "objects": [
+    {
+      "system": "osf",
+      "identifier": "https://osf.io/ej5nf/",
+      "doi": "10.17605/OSF.IO/EJ5NF",
+      "landing_page_http_status": 200,
+      "api_http_status": 200,
+      "public": true,
+      "pending_registration_approval": false,
+      "registered_from": "pcdnm",
+      "provider": "osf",
+      "registration_schema": "697b72f611a8e98484c6139b",
+      "licence": "unresolved_api_does_not_expose_registration_licence"
+    },
+    {
+      "system": "github",
+      "identifier": "https://github.com/edithatogo/global-medicines-atlas",
+      "landing_page_http_status": 200,
+      "licence": "Apache-2.0 repository declaration"
+    },
+    {
+      "system": "hugging_face",
+      "identifier": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue",
+      "landing_page_http_status": 200,
+      "public": true,
+      "licence": "apache-2.0"
+    },
+    {
+      "system": "zenodo",
+      "identifier": "https://doi.org/10.5281/zenodo.21734811",
+      "api_identifier": "https://zenodo.org/api/records/21734811",
+      "landing_page_http_status": 200,
+      "state": "done",
+      "doi": "10.5281/zenodo.21734811",
+      "licence": "apache2.0",
+      "related_identifiers": [
+        "https://github.com/edithatogo/global-medicines-atlas",
+        "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue",
+        "https://osf.io/pcdnm/"
+      ]
+    }
+  ],
+  "relationship_result": "Zenodo supplements GitHub software, the Hugging Face catalogue and the OSF project; OSF registration DOI resolves to registration ej5nf.",
+  "publication_boundary": "No source-derived medicine payload is approved by this reconciliation."
+}

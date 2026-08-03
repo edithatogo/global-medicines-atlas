@@ -86,7 +86,7 @@
   "release_and_registration_gates": {
     "renovate_app_dashboard": "not_observed",
     "osf_draft_registration": "superseded_by_registration_ej5nf",
-    "osf_registration": "ej5nf_pending_osf_approval",
+    "osf_registration": "ej5nf_public_verified",
     "osf_structured_responses": "verified_in_registration_ej5nf",
     "release_signing_and_attestation": "verified_for_v1.0.0rc1_asset",
     "independent_reproduction": "passed_fresh_clone_representative_rehearsal",
