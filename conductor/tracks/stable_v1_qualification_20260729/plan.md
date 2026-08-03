@@ -86,8 +86,9 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     reproduction, governed backup/restoration/rollback and fail-closed receipt
     identity. It explicitly does not claim production disaster recovery,
     network isolation, artifact-only release reproduction or publication.
-    Independent published-artifact reproduction remains blocked until a
-    release artifact exists, so the full task is not complete.
+    Fresh-clone published-tag reproduction is now recorded in
+    `quality/qualifications/stable-v1-independent-reproduction-20260803.json`;
+    artifact-only reproduction and production DR authority remain blocked.
 - [x] Task: Rehearse compromised-source quarantine, signing/credential revocation, dataset withdrawal, corrected replacement and downstream notification ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
   - The offline hash-chained incident rehearsal verifies ordering, tamper
     rejection, idempotent retries and separate regulatory/funding evidence.
@@ -206,9 +207,10 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     passed. Independent Conductor review has no residual finding.
   - Repository-owned qualification is complete and independently reviewed.
     Exact `v1.0.0rc1` approval is now recorded in a machine-validated,
-    software-only prerelease authority contract. Signing, attestation, tagging,
-    publication and every artifact-specific dataset rights gate remain open;
-    none is inferred from the candidate.
+    software-only prerelease authority contract. GitHub attestation verification
+    for the published wheel and fresh-clone reproduction are now recorded;
+    stable-v1 promotion, production DR authority and every artifact-specific
+    dataset rights gate remain open.
 
 ## GitHub hierarchy
 
