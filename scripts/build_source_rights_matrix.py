@@ -56,8 +56,13 @@ def main() -> None:
     args = parser.parse_args()
     expected = json.dumps(build(), indent=2) + "\n"
     if args.check:
-        if not args.output.exists() or args.output.read_text(encoding="utf-8") != expected:
-            raise SystemExit("source-rights disposition is stale; regenerate it")
+        if (
+            not args.output.exists()
+            or args.output.read_text(encoding="utf-8") != expected
+        ):
+            raise SystemExit(
+                "source-rights disposition is stale; regenerate it"
+            )
         return
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(expected, encoding="utf-8")
