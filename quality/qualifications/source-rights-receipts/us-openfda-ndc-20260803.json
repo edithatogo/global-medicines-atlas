@@ -1,0 +1,33 @@
+{
+  "receipt_id": "rights-us-openfda-ndc-20260803",
+  "receipt_version": 1,
+  "source_id": "us-openfda-ndc",
+  "authority": "US Food and Drug Administration",
+  "jurisdiction": "USA",
+  "observed_at": "2026-08-03",
+  "rights_reference": "https://open.fda.gov/terms/",
+  "source_reference": "https://open.fda.gov/apis/drug/ndc/",
+  "evidence": {
+    "terms_summary": "openFDA states that, unless otherwise noted, its content, data, documentation, code and related materials are public domain and dedicated under CC0 1.0 Universal.",
+    "limitations": [
+      "The terms warn that individual materials may carry third-party rights and will be marked where CC0 does not apply.",
+      "The NDC directory does not establish FDA approval or reimbursement status.",
+      "FDA names, logos and marks are not licensed by this receipt."
+    ]
+  },
+  "decision": {
+    "rights_state": "permitted_with_scope",
+    "approved_surface": "public_derived_metadata",
+    "approved_fields": ["source-native identifiers", "product names", "labeler and package metadata where marked CC0"],
+    "excluded_fields": ["any field or linked material marked third-party or non-CC0", "FDA marks and branding", "claims of approval, safety, efficacy or reimbursement inferred from NDC presence"],
+    "attribution": "Data provided by the U.S. Food and Drug Administration (https://open.fda.gov)",
+    "raw_payload_redistribution": "not_approved_without_field_level_review",
+    "expiry": "recheck on terms or source change"
+  },
+  "qualification": {
+    "receipt_is_source_rights_evidence": true,
+    "payload_acquisition_performed": false,
+    "public_derived_dataset_approval": "limited_to_scoped_cc0_metadata",
+    "reviewer": "project maintainer"
+  }
+}

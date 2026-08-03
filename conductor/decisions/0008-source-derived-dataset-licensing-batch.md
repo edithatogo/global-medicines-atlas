@@ -30,6 +30,13 @@ The batch is an approval queue, not an assumption of permission. The
 recommended disposition is the current safe disposition pending a completed
 source receipt.
 
+The first source-specific rights receipt is now recorded for `us-openfda-ndc`:
+[`quality/qualifications/source-rights-receipts/us-openfda-ndc-20260803.json`](../../quality/qualifications/source-rights-receipts/us-openfda-ndc-20260803.json).
+It supports only a scoped CC0 metadata candidate and does not itself approve
+public distribution; the source remains `catalogue_only` until field-level
+payload and transformation qualification is complete. All other sources
+remain blocked pending their own receipt.
+
 | Batch | Sources / jurisdictions | Primary content | Current catalogue state | Recommended disposition | Approval needed for Option C | Main contingency |
 |---|---|---|---|---|---|---|
 | NZ | `nz-*` (NZL) | Medsafe registration, NZULM/NZMT, PHARMAC funding, NZ health terminology | Fixture/catalogue or review required | **A**, with **B** only for lawfully acquired NZULM/NZMT/Medsafe/PHARMAC payloads | Written terms/licence for NZULM/NZMT, Medsafe, PHARMAC and any SNOMED/AMT dependency; field-level redistribution and attribution decision | Keep source-native identifiers and schema metadata only; do not publish copied product rows |
@@ -86,4 +93,3 @@ On approval, create one machine-readable source-rights receipt per `source_id`,
 link it to issues #50/#51/#54, and regenerate the publication eligibility
 matrix. A source receipt must never be inferred from another source in the
 same jurisdiction or from a general government/open-data assumption.
-
