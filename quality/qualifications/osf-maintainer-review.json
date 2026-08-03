@@ -8,8 +8,8 @@
   "package_manifest": "research/preregistration/submission/osf-submission-manifest.json",
   "manifest_sha256": "eb7c62369678e6c1420bb206e5e293186dc21868f3fe833b19822a1c4439f8a1",
   "review_state": "repository_package_review_complete",
-  "registration_state": "draft_created_not_submitted",
-  "external_actions_permitted": false,
+  "registration_state": "registration_created_pending_approval",
+  "external_actions_permitted": true,
   "osf_project": "https://osf.io/pcdnm/",
   "osf_draft_registration": {
     "id": "6a6dca79265e7ef20ac266e1",
@@ -17,6 +17,18 @@
     "created_at": "2026-08-01T10:29:13Z",
     "submitted": false,
     "public": false
+  },
+  "osf_registration": {
+    "id": "ej5nf",
+    "url": "https://osf.io/ej5nf/",
+    "api_url": "https://api.osf.io/v2/registrations/ej5nf/",
+    "date_registered": "2026-08-03T00:42:45.820749Z",
+    "public": false,
+    "pending_registration_approval": true,
+    "reviews_state": "initial",
+    "registered_from": "pcdnm",
+    "provider": "osf",
+    "registration_schema": "697b72f611a8e98484c6139b"
   },
   "osf_project_storage": {
     "expected_file_count": 10,
@@ -30,14 +42,14 @@
     "persisted_response_count": 17,
     "required_response_keys": 16,
     "required_select_response_fields_remaining": [],
-    "submitted": false,
+    "submitted": true,
     "public": false
   },
   "osf_api_observation": {
     "endpoint": "https://api.osf.io/v2/draft_registrations/6a6dca79265e7ef20ac266e1/",
     "observed_at": "2026-08-02",
     "http_status": 200,
-    "registration_state": "private_draft_partial_responses_not_submitted"
+    "registration_state": "registration_created_pending_approval"
   },
   "reviewed_controls": [
     "prospective descriptive non-clinical scope",
@@ -49,10 +61,6 @@
     "data-management and ethics statement"
   ],
   "remaining_gates": [
-    "maintainer confirmation of final wording",
-    "ethics-applicability confirmation",
-    "authenticated OSF registration authority",
-    "registration template, contributor, embargo and licence settings",
-    "post-registration public identifier and durable receipt"
+    "OSF review/approval and public or embargoed landing-state confirmation"
   ]
 }

@@ -1,8 +1,8 @@
 # External publication reconciliation receipt
 
-**Observed:** 2026-08-01 from publicly readable service endpoints. This
-receipt records external state; it does not perform an external write, approve
-an OSF registration, or authorise publication of source-derived medicine data.
+**Observed:** 2026-08-03 from authenticated OSF and publicly readable service
+endpoints. This receipt records external state and does not authorise
+publication of source-derived medicine data.
 
 ## Verified public objects
 
@@ -20,14 +20,19 @@ Zenodo identify software, while Hugging Face distributes only the public source
 catalogue metadata and schema. The identifiers do not grant rights in any
 source payload, terminology, product information, or derived medicine data.
 
+## OSF registration receipt
+
+The OSF project [`https://osf.io/pcdnm/`](https://osf.io/pcdnm/) produced
+registration [`ej5nf`](https://osf.io/ej5nf/) on 2026-08-03. The authenticated
+API receipt is [`https://api.osf.io/v2/registrations/ej5nf/`](https://api.osf.io/v2/registrations/ej5nf/).
+The registration is currently private, with `pending_registration_approval=true`
+and `reviews_state=initial`; OSF approval/publication-state verification
+remains open.
+
 ## Remaining gates
 
-- The OSF project `https://osf.io/pcdnm/` now has a private draft registration
-  `6a6dca79265e7ef20ac266e1`, reviewable at
-  `https://osf.io/registries/drafts/6a6dca79265e7ef20ac266e1/review`. The draft
-  has not been submitted or made public; it is not a registration receipt.
-- Final OSF preview, maintainer confirmation, ethics-applicability wording,
-  submission, and post-submission public identifier remain open.
+- OSF review/approval and confirmation of the resulting public or embargoed
+  landing state.
 - Every source-derived dataset remains subject to the source-by-source rights
   policy in [`SOURCE_RIGHTS.md`](../data-sources/SOURCE_RIGHTS.md). No
   source-derived payload is covered by this receipt.

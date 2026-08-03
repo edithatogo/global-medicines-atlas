@@ -3,7 +3,7 @@
 **Review scope:** issues [#66](https://github.com/edithatogo/global-medicines-atlas/issues/66) and [#70](https://github.com/edithatogo/global-medicines-atlas/issues/70)  
 **Package:** [`research/preregistration/`](../../research/preregistration/)  
 **Manifest:** [`osf-submission-manifest.json`](../../research/preregistration/submission/osf-submission-manifest.json)  
-**Status:** package review complete; OSF draft created, not submitted
+**Status:** package review complete; OSF registration created and pending OSF approval
 
 ## Review decision
 
@@ -30,7 +30,7 @@ medicine data.
 | GitHub | software source and release | `https://github.com/edithatogo/global-medicines-atlas` |
 | Hugging Face | catalogue-only derived distribution | `https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue` |
 | Zenodo | software-only archival DOI | [`10.5281/zenodo.21734811`](https://doi.org/10.5281/zenodo.21734811) |
-| OSF | protocol and preregistration | project link [`https://osf.io/pcdnm/`](https://osf.io/pcdnm/); private draft ready for final preview |
+| OSF | protocol and preregistration | registration [`https://osf.io/ej5nf/`](https://osf.io/ej5nf/); pending OSF approval |
 
 The OSF project is now authenticated and a private draft registration was
 created from it. Draft ID: `6a6dca79265e7ef20ac266e1`; review URL:
@@ -42,25 +42,22 @@ manifest, covering narrative, structured responses, protocol, analysis plan,
 amendment history, deviation register, data-management and ethics statement,
 citations, and README. Authenticated schema validation confirms all 16 required
 response keys and 17 total responses are present in the private draft. The
-draft is ready for final maintainer preview but remains unsubmitted and
-unpublished.
+registration `ej5nf` was created on 2026-08-03 from the draft and is currently
+private with `pending_registration_approval=true`. The registration landing
+page is [`https://osf.io/ej5nf/`](https://osf.io/ej5nf/); the durable API receipt
+is [`https://api.osf.io/v2/registrations/ej5nf/`](https://api.osf.io/v2/registrations/ej5nf/).
 
 ## Registration gate
 
-Before an OSF registration write, the maintainer must confirm:
+The remaining OSF gate is:
 
-1. the final public wording and ethics-applicability statement;
-2. the exact manifest digest and package contents to register;
-3. the OSF project, contributor, embargo, and registration-template settings;
-4. the licence and source-rights boundary for every attached artefact; and
-5. that the authenticated OSF account has authority to create the registration;
-6. explicit approval to submit the private draft.
+1. OSF review/approval and confirmation of the resulting public or embargoed
+   landing state.
 
-After an authorised registration, append the registration URL, registration
+The registration receipt records the registration URL, registration
 identifier, timestamp, package digest, public/embargo state, and API or landing
 page receipt to [`external-publication-receipt.md`](./external-publication-receipt.md)
 and `quality/qualifications/publication-identities.json`.
 
-Until the submission receipt exists, the package remains `draft_not_submitted`
-and the OSF identity remains `draft_created_not_submitted`. No source-derived
-dataset is to be added to the OSF package as part of this gate.
+No source-derived dataset is covered by this registration or added to the OSF
+package as part of this gate.
