@@ -358,6 +358,19 @@ def test_contracts_reject_unknown_fields() -> None:
             "field names must be unique",
         ),
         (
+            lambda payload: payload["data_dictionary"]["fields"][0].update(
+                source_fields=("product_id", "product_id")
+            ),
+            "source_fields must be unique",
+        ),
+        (
+            lambda payload: payload["data_dictionary"].update(
+                fields=payload["data_dictionary"]["fields"]
+                + (payload["data_dictionary"]["fields"][0].copy(),)
+            ),
+            "data dictionary field names must be unique",
+        ),
+        (
             lambda payload: payload["dataset_card"]["coverage"][0].update(
                 exclusions=("Veterinary medicines",) * 2
             ),
