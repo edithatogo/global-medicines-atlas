@@ -338,7 +338,7 @@ class MedicineDataSource(FrozenModel):
         return cls.model_validate(payload)
 
     @model_validator(mode="after")
-    def access_surface_matches_mode(self) -> MedicineDataSource:
+    def validate_access_urls(self) -> MedicineDataSource:
         if (
             self.access_mode in {AccessMode.API, AccessMode.API_AND_DOWNLOAD}
             and self.api_url is None
@@ -350,12 +350,26 @@ class MedicineDataSource(FrozenModel):
             and self.download_url is None
         ):
             raise ValueError("download access mode requires download_url")
+        return self
+
+    @model_validator(mode="after")
+    def validate_receipt_dependencies(self) -> MedicineDataSource:
         if self.current_receipt_id is not None and (
             self.discovery_status != DiscoveryStatus.RECEIPT_BACKED
         ):
             raise ValueError(
                 "current receipt requires receipt-backed discovery status"
             )
+        if self.current_receipt_id is not None and (
+            self.integration_layer != IntegrationLayer.LIVE_RECEIPT
+        ):
+            raise ValueError(
+                "current receipt requires live-receipt integration layer"
+            )
+        return self
+
+    @model_validator(mode="after")
+    def validate_ingestion_readiness(self) -> MedicineDataSource:
         if self.implemented_ingestion != (
             self.readiness == SourceReadiness.IMPLEMENTED
         ):
@@ -374,12 +388,10 @@ class MedicineDataSource(FrozenModel):
                 "implemented_ingestion requires a parser-or-higher "
                 "integration layer"
             )
-        if self.current_receipt_id is not None and (
-            self.integration_layer != IntegrationLayer.LIVE_RECEIPT
-        ):
-            raise ValueError(
-                "current receipt requires live-receipt integration layer"
-            )
+        return self
+
+    @model_validator(mode="after")
+    def validate_qualification_evidence(self) -> MedicineDataSource:
         if (
             self.qualification_state == QualificationState.LIVE_VERIFIED
             and self.current_receipt_id is None
@@ -394,6 +406,10 @@ class MedicineDataSource(FrozenModel):
             raise ValueError(
                 "verified qualification requires evidence references"
             )
+        return self
+
+    @model_validator(mode="after")
+    def validate_access_compatibility(self) -> MedicineDataSource:
         if (
             self.access_mode
             in {
