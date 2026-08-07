@@ -226,6 +226,50 @@ def test_exclusions_without_reasons_are_rejected() -> None:
         observation(exclusions=1, reasons=())
 
 
+def test_counts_are_coherent() -> None:
+    # Test valid counts (happy path). The validator runs automatically on init.
+    observation(numerator=2, denominator=5, exclusions=1, reasons=("reason",))
+
+    # Test concept_numerator cannot exceed eligible_denominator
+    with pytest.raises(
+        ValidationError,
+        match="concept_numerator cannot exceed eligible_denominator",
+    ):
+        observation(numerator=6, denominator=5)
+
+    # Test medicine_concept_id may be omitted only for an aggregate population
+    with pytest.raises(
+        ValidationError,
+        match="medicine_concept_id may be omitted only for an aggregate population",
+    ):
+        observation(medicine_concept_id=None, concept_population="nzmt-mpu")
+
+    # The case where it is allowed is tested in test_medicine_identity_is_required_except_for_aggregate_population,
+    # but we can test it here as part of the happy paths for count coherence.
+    observation(
+        medicine_concept_id=None, concept_population="aggregate:nzmt-mpu"
+    )
+
+
+def test_blank_exclusion_reasons_are_rejected() -> None:
+    with pytest.raises(
+        ValidationError, match="exclusion reasons must not be blank"
+    ):
+        observation(exclusions=1, reasons=(" ",))
+
+
+def test_blank_assertion_identity_values_are_rejected() -> None:
+    with pytest.raises(
+        ValidationError, match="assertion identity values must not be blank"
+    ):
+        observation(assertion_type="  ")
+
+    with pytest.raises(
+        ValidationError, match="assertion identity values must not be blank"
+    ):
+        observation(assertion_status=" ")
+
+
 @given(
     first=st.integers(min_value=0, max_value=1_000),
     second=st.integers(min_value=0, max_value=1_000),
