@@ -1,0 +1,6 @@
+🧹 Remove unused Iterator import from parser_safety.py
+
+🎯 **What:** Removed unused `Iterator` import from `collections.abc`.
+💡 **Why:** The `Iterator` is only used inside a string literal type hint `cast("Iterator[tuple[str, ET.Element]]", ...)`. Removing the unused import improves readability and keeps the code clean without altering functionality.
+✅ **Verification:** Verified that the python file continues to compile without syntax errors via `python3.12 -m py_compile` and verified no regression in testing via `pytest tests/test_parser_safety.py`.
+✨ **Result:** A slightly cleaner code health with no impact on functionality.
