@@ -285,3 +285,40 @@ def test_loading_missing_and_blank_lines_is_exact(tmp_path: Path) -> None:
     )
 
     assert load_adjudications(path) == (event,)
+
+
+def test_identities_match() -> None:
+    """Test the identities_match model validator on ReviewQueueEntry."""
+    entry = _entry("a")
+
+    # Happy path: matching IDs and pending review state
+    valid_entry = ReviewQueueEntry(
+        candidate=entry.candidate,
+        decision=entry.decision,
+        queued_at=NOW,
+    )
+    assert (
+        valid_entry.candidate.candidate_id == valid_entry.decision.candidate_id
+    )
+
+    # Error: mismatched candidate and decision IDs
+    with pytest.raises(
+        ValidationError, match="Candidate and decision identifiers must match"
+    ):
+        ReviewQueueEntry(
+            candidate=entry.candidate,
+            decision=entry.decision.model_copy(update={"candidate_id": "b"}),
+            queued_at=NOW,
+        )
+
+    # Error: decision is not pending review
+    with pytest.raises(
+        ValidationError, match="Generated candidates must remain pending review"
+    ):
+        ReviewQueueEntry(
+            candidate=entry.candidate,
+            decision=entry.decision.model_copy(
+                update={"review_state": ReviewState.ACCEPTED}
+            ),
+            queued_at=NOW,
+        )
