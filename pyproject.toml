@@ -230,7 +230,7 @@ select = [
   "SIM", "SLOT", "T10", "T20", "TC", "TID", "TRY", "UP", "W", "YTT",
 ]
 ignore = [
-  "missing-trailing-comma", # Ruff formatter owns trailing commas.
+  #"missing-trailing-comma", # Ruff formatter owns trailing commas.
   "raise-vanilla-args", # Short domain validation messages remain local.
   "raw-string-in-exception",
   "f-string-in-exception",
