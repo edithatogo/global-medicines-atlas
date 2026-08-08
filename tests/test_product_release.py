@@ -272,3 +272,33 @@ def test_runtime_manifest_change_invalidates_receipt(
         )
         or ""
     )
+
+
+def test_validate_integrity_fields_rejected():
+    def _sign(payload: dict[str, object]) -> dict[str, object]:
+        p = dict(payload)
+        p.pop("payload_digest", None)
+        encoded = json.dumps(p, sort_keys=True, separators=(",", ":")).encode()
+        p["payload_digest"] = sha256(encoded).hexdigest()
+        return p
+
+    # tzinfo
+    p = _sign(receipt_payload())
+    p["executed_at"] = "2026-07-29T00:00:00"
+    p = _sign(p)
+    with pytest.raises(ValidationError, match="timezone-aware"):
+        QualificationReceipt.model_validate(p)
+
+    # product_version
+    p = _sign(receipt_payload())
+    p["product_version"] = "9.9"
+    p = _sign(p)
+    with pytest.raises(ValidationError, match="product version does not match"):
+        QualificationReceipt.model_validate(p)
+
+    # api_version
+    p = _sign(receipt_payload())
+    p["api_version"] = "v9"
+    p = _sign(p)
+    with pytest.raises(ValidationError, match="API version does not match"):
+        QualificationReceipt.model_validate(p)
