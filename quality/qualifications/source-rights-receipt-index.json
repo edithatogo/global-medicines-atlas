@@ -1,0 +1,14 @@
+{
+  "schema_id": "global-medicines-atlas.source-rights-receipt-index",
+  "schema_version": 1,
+  "observed_at": "2026-08-03",
+  "receipts": [
+    {
+      "source_id": "us-openfda-ndc",
+      "receipt": "quality/qualifications/source-rights-receipts/us-openfda-ndc-20260803.json",
+      "state": "rights_permitted_with_scope",
+      "public_derived_release": "not_approved_pending_field_level_implementation_review"
+    }
+  ],
+  "policy": "A rights receipt is necessary but not sufficient for public derived release; payload, field-level transformation, attribution, source version, checksum and withdrawal controls must also be qualified."
+}

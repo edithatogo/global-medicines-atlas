@@ -80,6 +80,10 @@ The detailed option, contingency, rationale, and recommendation register is
 maintained in
 [`conductor/decisions/0006-external-gate-decision-register.md`](../../conductor/decisions/0006-external-gate-decision-register.md).
 
+The source-derived dataset batch decision and source-level approval matrix is
+maintained in
+[`conductor/decisions/0008-source-derived-dataset-licensing-batch.md`](../../conductor/decisions/0008-source-derived-dataset-licensing-batch.md).
+
 The only immediate maintainer decisions are:
 
 - authorize Renovate App installation, if the App is absent;

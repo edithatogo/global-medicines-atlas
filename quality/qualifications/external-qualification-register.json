@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.external-qualification-register",
   "schema_version": 1,
-  "status": "blocked_external_evidence",
+  "status": "blocked_external_evidence_with_osf_registration_receipt",
   "issues": [
     "https://github.com/edithatogo/global-medicines-atlas/issues/14",
     "https://github.com/edithatogo/global-medicines-atlas/issues/40",
@@ -85,15 +85,18 @@
   },
   "release_and_registration_gates": {
     "renovate_app_dashboard": "not_observed",
-    "osf_draft_registration": "private_draft_not_submitted",
-    "osf_structured_responses": "empty_pending_maintainer_completion",
-    "release_signing_and_attestation": "not_observed",
-    "production_disaster_recovery": "not_observed",
+    "osf_draft_registration": "superseded_by_registration_ej5nf",
+    "osf_registration": "ej5nf_public_verified",
+    "osf_structured_responses": "verified_in_registration_ej5nf",
+    "release_signing_and_attestation": "verified_for_v1.0.0rc1_asset",
+    "independent_reproduction": "passed_fresh_clone_representative_rehearsal",
+    "production_disaster_recovery": "authority_required_not_qualified",
     "submission_allowed": false,
     "required_receipts": [
       "Renovate App installation and Dependency Dashboard issue",
       "completed OSF schema response preview and maintainer approval",
-      "signed and attested release artifact",
+      "stable-v1 signed/attested release promotion approval",
+      "artifact-only clean-room reproduction",
       "production disaster-recovery rehearsal with approved authority"
     ]
   },

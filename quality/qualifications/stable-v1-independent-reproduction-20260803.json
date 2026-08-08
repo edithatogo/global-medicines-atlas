@@ -1,0 +1,30 @@
+{
+  "schema_id": "global-medicines-atlas.stable-v1-independent-reproduction",
+  "schema_version": 1,
+  "observed_at": "2026-08-03",
+  "source": "https://github.com/edithatogo/global-medicines-atlas.git",
+  "ref": "v1.0.0rc1",
+  "commit": "5a6b9ef78e6de44e10ee314691a226d75017f780",
+  "environment": {
+    "checkout": "fresh shallow clone",
+    "python": "3.14.6",
+    "lockfile": "uv.lock",
+    "network_during_rehearsal": "not independently isolated"
+  },
+  "command": "uv sync --locked --python 3.14 && uv run --python 3.14 python scripts/rehearse_stable_v1.py",
+  "result": {
+    "passed": true,
+    "canonical_v1_sha256": "6297e5c3a841add6aeccdc3783bab507edd348f0ef38d5ab1369fe72fa1be5ff",
+    "canonical_v2_sha256": "d5ead6511469882833ab674e85d4b98e30bf540878be5b19d492c8523c4817a2",
+    "migration_deterministic": true,
+    "rollback_exact": true,
+    "identity_reproduced": true,
+    "recovery_restore_verified": true,
+    "recovery_rollback_verified": true
+  },
+  "qualification_state": "independent_fixture_process_passed",
+  "limitations": [
+    "This is not artifact-only release reproduction.",
+    "The recovery exercise uses synthetic local artifacts and does not qualify production disaster recovery, RPO, RTO, immutable backup or crash consistency."
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "schema_id": "global-medicines-atlas.stable-v1-release-provenance",
+  "schema_version": 1,
+  "observed_at": "2026-08-03",
+  "repository": "https://github.com/edithatogo/global-medicines-atlas",
+  "release": "https://github.com/edithatogo/global-medicines-atlas/releases/tag/v1.0.0rc1",
+  "tag": "v1.0.0rc1",
+  "commit": "5a6b9ef78e6de44e10ee314691a226d75017f780",
+  "release_state": "published_prerelease",
+  "attestation_verification": {
+    "tool": "gh attestation verify",
+    "command": "gh attestation verify global_medicines_atlas-1.0.0rc1-py3-none-any.whl -R edithatogo/global-medicines-atlas",
+    "result": "passed",
+    "asset": "global_medicines_atlas-1.0.0rc1-py3-none-any.whl",
+    "asset_sha256": "fc166b9e7cf64a39584e7ec8770517ad74913f066591625f775c1a193ae4ba16"
+  },
+  "qualification_state": "signed_attestation_verified_for_release_asset",
+  "limitations": [
+    "This receipt verifies GitHub artifact provenance for the named release asset; it does not establish production disaster-recovery capability.",
+    "The release is a prerelease and is not a stable-v1 production approval."
+  ]
+}
