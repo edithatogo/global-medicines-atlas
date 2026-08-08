@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from collections.abc import Iterator
 from typing import cast
 from xml.etree import (  # ruff: ignore[suspicious-xml-etree-import]
     ElementTree as ET,
