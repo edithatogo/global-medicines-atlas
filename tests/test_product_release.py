@@ -273,6 +273,7 @@ def test_runtime_manifest_change_invalidates_receipt(
         or ""
     )
 
+
 def test_validate_integrity_fields_rejected():
     def _sign(payload: dict[str, object]) -> dict[str, object]:
         p = dict(payload)
