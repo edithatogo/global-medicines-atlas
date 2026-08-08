@@ -111,4 +111,9 @@ def get_logger(
         fields = ", ".join(sorted(unknown))
         raise ValueError(f"Unsupported logging context fields: {fields}")
     logger = logging.getLogger(f"{LOGGER_NAME}.{name}")
-    return logging.LoggerAdapter(logger, context, merge_extra=True)
+    try:
+        return logging.LoggerAdapter(logger, context, merge_extra=True)
+    except TypeError:
+        # ``merge_extra`` was added after Python 3.12; retain compatibility
+        # with the interpreter used by the profiling harness.
+        return logging.LoggerAdapter(logger, context)
