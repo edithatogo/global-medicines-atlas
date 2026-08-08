@@ -7,7 +7,7 @@ name = "global-medicines-atlas"
 dynamic = ["version"]
 description = "Global comparison of medicine registration, approval, funding, and reimbursement systems"
 license = "Apache-2.0"
-requires-python = "<4.0,>=3.12"
+requires-python = ">=3.14,<3.15"
 authors = [
   { name = "Edith Atogo" },
 ]
@@ -91,13 +91,13 @@ package = true
 default-groups = ["test-goblin"]
 
 [tool.uv.dependency-groups]
-test = { requires-python = "<4.0,>=3.12" }
-test-goblin = { requires-python = "<4.0,>=3.12" }
-typing = { requires-python = "<4.0,>=3.12" }
-profiling = { requires-python = "<4.0,>=3.12" }
-dev = { requires-python = "<4.0,>=3.12" }
-edge = { requires-python = "<4.0,>=3.12" }
-security = { requires-python = "<4.0,>=3.12" }
+test = { requires-python = ">=3.14,<3.15" }
+test-goblin = { requires-python = ">=3.14,<3.15" }
+typing = { requires-python = ">=3.14,<3.15" }
+profiling = { requires-python = ">=3.14,<3.15" }
+dev = { requires-python = ">=3.14,<3.15" }
+edge = { requires-python = ">=3.14,<3.15" }
+security = { requires-python = ">=3.14,<3.15" }
 
 [tool.hatch.version]
 source = "vcs"
