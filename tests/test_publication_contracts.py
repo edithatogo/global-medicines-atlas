@@ -15,10 +15,15 @@ from global_medicines_atlas.publication_contracts import (
     CroissantMetadata,
     DataDictionary,
     DatasetCard,
+    DecisionState,
     FieldContract,
+    IdentifierState,
     ProvenanceDeclaration,
+    PublicationIdentity,
+    PublicationObjectRole,
     PublicationPackage,
     PublicationState,
+    PublicationSystem,
     PublicationVerificationReceipt,
     RightsDeclaration,
     RightsDisposition,
@@ -157,6 +162,40 @@ def _state_evidence(
     if state is PublicationState.PUBLIC:
         checks.append(VerificationCheck.PUBLIC_VERIFICATION)
     return tuple(_evidence(check) for check in checks)
+
+
+def _identity(**kwargs) -> PublicationIdentity:
+    values = {
+        "object_id": "software-release",
+        "system": PublicationSystem.GITHUB,
+        "object_role": PublicationObjectRole.SOFTWARE_SOURCE_RELEASE,
+        "identifier": "https://github.com/org/repo/releases/tag/v1.0.0",
+        "identifier_state": IdentifierState.VERIFIED,
+        "identifier_evidence": "verified_by_github",
+        "licence_state": DecisionState.APPROVED,
+        "licence_expression": "MIT",
+        "licence_decision_evidence": "https://github.com/org/repo/blob/main/LICENSE",
+    }
+    values.update(kwargs)
+    return PublicationIdentity(**values)
+
+
+def test_identity_validates_system_and_object_role_consistency() -> None:
+    with pytest.raises(ValidationError, match="wrong object role"):
+        _identity(
+            system=PublicationSystem.GITHUB,
+            object_role=PublicationObjectRole.DERIVED_DATASET_DISTRIBUTION,
+        )
+
+
+def test_identity_cannot_relate_to_itself() -> None:
+    with pytest.raises(ValidationError, match="cannot relate to itself"):
+        _identity(object_id="software", related_object_ids=("software",))
+
+
+def test_identity_related_object_ids_must_be_unique() -> None:
+    with pytest.raises(ValidationError, match="must be unique"):
+        _identity(related_object_ids=("other", "other"))
 
 
 def test_complete_package_is_deterministic_and_content_addressed() -> None:
