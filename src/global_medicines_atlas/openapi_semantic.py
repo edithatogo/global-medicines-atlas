@@ -369,6 +369,157 @@ def _schema_changes(
     return changes
 
 
+def _component_changes(
+    old_components: Mapping[str, Any], new_components: Mapping[str, Any]
+) -> list[SemanticChange]:
+    changes: list[SemanticChange] = []
+    for name in sorted(old_components.keys() - new_components.keys()):
+        changes.append(
+            SemanticChange(f"component {name}", "response schema removed")
+        )
+    for name in sorted(old_components.keys() & new_components.keys()):
+        changes.extend(
+            _schema_changes(
+                _object(old_components[name], f"component {name}"),
+                _object(new_components[name], f"component {name}"),
+                f"component {name}",
+                "response",
+            )
+        )
+    return changes
+
+
+def _security_scheme_changes(
+    old_security_schemes: Mapping[str, Any],
+    new_security_schemes: Mapping[str, Any],
+) -> list[SemanticChange]:
+    changes: list[SemanticChange] = []
+    for name in sorted(
+        old_security_schemes.keys() - new_security_schemes.keys()
+    ):
+        changes.append(
+            SemanticChange(f"security scheme {name}", "scheme removed")
+        )
+    for name in sorted(
+        old_security_schemes.keys() & new_security_schemes.keys()
+    ):
+        if old_security_schemes[name] != new_security_schemes[name]:
+            changes.append(
+                SemanticChange(f"security scheme {name}", "scheme changed")
+            )
+    return changes
+
+
+def _parameter_changes(
+    old: Mapping[str, Any], new: Mapping[str, Any], location: str
+) -> list[SemanticChange]:
+    changes: list[SemanticChange] = []
+    old_parameters = _parameter_map(old)
+    new_parameters = _parameter_map(new)
+    for identity in sorted(old_parameters.keys() - new_parameters.keys()):
+        changes.append(
+            SemanticChange(location, f"parameter removed: {identity}")
+        )
+    for identity in sorted(new_parameters.keys() - old_parameters.keys()):
+        if new_parameters[identity].get("required"):
+            changes.append(
+                SemanticChange(
+                    location, f"required parameter added: {identity}"
+                )
+            )
+    for identity in sorted(old_parameters.keys() & new_parameters.keys()):
+        before, after = (
+            old_parameters[identity],
+            new_parameters[identity],
+        )
+        if not before.get("required") and after.get("required"):
+            changes.append(
+                SemanticChange(
+                    location, f"parameter became required: {identity}"
+                )
+            )
+        changes.extend(
+            _schema_changes(
+                before["schema"],
+                after["schema"],
+                f"{location} parameter {identity}",
+                "request",
+            )
+        )
+    return changes
+
+
+def _response_changes(
+    old_responses: Mapping[str, Any],
+    new_responses: Mapping[str, Any],
+    location: str,
+) -> list[SemanticChange]:
+    changes: list[SemanticChange] = []
+    for status in sorted(old_responses.keys() - new_responses.keys()):
+        changes.append(SemanticChange(location, f"response removed: {status}"))
+    for status in sorted(old_responses.keys() & new_responses.keys()):
+        old_content = _object(old_responses[status], "baseline response")
+        new_content = _object(new_responses[status], "current response")
+        for media in sorted(old_content.keys() - new_content.keys()):
+            changes.append(
+                SemanticChange(
+                    location,
+                    f"response media removed: {status} {media}",
+                )
+            )
+        for media in sorted(old_content.keys() & new_content.keys()):
+            changes.extend(
+                _schema_changes(
+                    old_content[media],
+                    new_content[media],
+                    f"{location} response {status} {media}",
+                    "response",
+                )
+            )
+    return changes
+
+
+def _operation_changes(
+    old: Mapping[str, Any], new: Mapping[str, Any], location: str
+) -> list[SemanticChange]:
+    changes: list[SemanticChange] = []
+    if old.get("operationId") != new.get("operationId"):
+        changes.append(SemanticChange(location, "operation identity changed"))
+    if old.get("security", []) != new.get("security", []):
+        changes.append(
+            SemanticChange(
+                location,
+                "security requirements changed",
+            )
+        )
+    changes.extend(_parameter_changes(old, new, location))
+    old_responses = _object(old.get("responses"), "baseline responses")
+    new_responses = _object(new.get("responses"), "current responses")
+    changes.extend(_response_changes(old_responses, new_responses, location))
+    return changes
+
+
+def _path_changes(
+    old_paths: Mapping[str, Any], new_paths: Mapping[str, Any]
+) -> list[SemanticChange]:
+    changes: list[SemanticChange] = []
+    for path in sorted(old_paths.keys() - new_paths.keys()):
+        changes.append(SemanticChange(path, "path removed"))
+    for path in sorted(old_paths.keys() & new_paths.keys()):
+        old_ops = _object(old_paths[path], path)
+        new_ops = _object(new_paths[path], path)
+        for method in sorted(old_ops.keys() - new_ops.keys()):
+            changes.append(
+                SemanticChange(f"{method.upper()} {path}", "operation removed")
+            )
+        for method in sorted(old_ops.keys() & new_ops.keys()):
+            old = _object(old_ops[method], "baseline operation")
+            new = _object(new_ops[method], "current operation")
+            location = f"{method.upper()} {path}"
+            changes.extend(_operation_changes(old, new, location))
+    return changes
+
+
 def semantic_diff(
     baseline: Mapping[str, Any], current_document: Mapping[str, Any]
 ) -> tuple[SemanticChange, ...]:
@@ -395,122 +546,14 @@ def semantic_diff(
     )
     old_paths = _object(baseline.get("paths"), "baseline paths")
     new_paths = _object(current.get("paths"), "current paths")
+
     changes: list[SemanticChange] = []
-    for name in sorted(old_components.keys() - new_components.keys()):
-        changes.append(
-            SemanticChange(f"component {name}", "response schema removed")
-        )
-    for name in sorted(old_components.keys() & new_components.keys()):
-        changes.extend(
-            _schema_changes(
-                _object(old_components[name], f"component {name}"),
-                _object(new_components[name], f"component {name}"),
-                f"component {name}",
-                "response",
-            )
-        )
-    for name in sorted(
-        old_security_schemes.keys() - new_security_schemes.keys()
-    ):
-        changes.append(
-            SemanticChange(f"security scheme {name}", "scheme removed")
-        )
-    for name in sorted(
-        old_security_schemes.keys() & new_security_schemes.keys()
-    ):
-        if old_security_schemes[name] != new_security_schemes[name]:
-            changes.append(
-                SemanticChange(f"security scheme {name}", "scheme changed")
-            )
-    for path in sorted(old_paths.keys() - new_paths.keys()):
-        changes.append(SemanticChange(path, "path removed"))
-    for path in sorted(old_paths.keys() & new_paths.keys()):
-        old_ops = _object(old_paths[path], path)
-        new_ops = _object(new_paths[path], path)
-        for method in sorted(old_ops.keys() - new_ops.keys()):
-            changes.append(
-                SemanticChange(f"{method.upper()} {path}", "operation removed")
-            )
-        for method in sorted(old_ops.keys() & new_ops.keys()):
-            old = _object(old_ops[method], "baseline operation")
-            new = _object(new_ops[method], "current operation")
-            location = f"{method.upper()} {path}"
-            if old.get("operationId") != new.get("operationId"):
-                changes.append(
-                    SemanticChange(location, "operation identity changed")
-                )
-            if old.get("security", []) != new.get("security", []):
-                changes.append(
-                    SemanticChange(
-                        location,
-                        "security requirements changed",
-                    )
-                )
-            old_parameters = _parameter_map(old)
-            new_parameters = _parameter_map(new)
-            for identity in sorted(
-                old_parameters.keys() - new_parameters.keys()
-            ):
-                changes.append(
-                    SemanticChange(location, f"parameter removed: {identity}")
-                )
-            for identity in sorted(
-                new_parameters.keys() - old_parameters.keys()
-            ):
-                if new_parameters[identity].get("required"):
-                    changes.append(
-                        SemanticChange(
-                            location, f"required parameter added: {identity}"
-                        )
-                    )
-            for identity in sorted(
-                old_parameters.keys() & new_parameters.keys()
-            ):
-                before, after = (
-                    old_parameters[identity],
-                    new_parameters[identity],
-                )
-                if not before.get("required") and after.get("required"):
-                    changes.append(
-                        SemanticChange(
-                            location, f"parameter became required: {identity}"
-                        )
-                    )
-                changes.extend(
-                    _schema_changes(
-                        before["schema"],
-                        after["schema"],
-                        f"{location} parameter {identity}",
-                        "request",
-                    )
-                )
-            old_responses = _object(old.get("responses"), "baseline responses")
-            new_responses = _object(new.get("responses"), "current responses")
-            for status in sorted(old_responses.keys() - new_responses.keys()):
-                changes.append(
-                    SemanticChange(location, f"response removed: {status}")
-                )
-            for status in sorted(old_responses.keys() & new_responses.keys()):
-                old_content = _object(
-                    old_responses[status], "baseline response"
-                )
-                new_content = _object(new_responses[status], "current response")
-                for media in sorted(old_content.keys() - new_content.keys()):
-                    changes.append(
-                        SemanticChange(
-                            location,
-                            f"response media removed: {status} {media}",
-                        )
-                    )
-                for media in sorted(old_content.keys() & new_content.keys()):
-                    changes.extend(
-                        _schema_changes(
-                            old_content[media],
-                            new_content[media],
-                            f"{location} response {status} {media}",
-                            "response",
-                        )
-                    )
+    changes.extend(_component_changes(old_components, new_components))
+    changes.extend(
+        _security_scheme_changes(old_security_schemes, new_security_schemes)
+    )
+    changes.extend(_path_changes(old_paths, new_paths))
+
     return tuple(changes)
 
 
