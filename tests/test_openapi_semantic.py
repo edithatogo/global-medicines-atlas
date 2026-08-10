@@ -87,6 +87,9 @@ def test_snapshot_rejects_request_body_and_missing_operation_identity() -> None:
         ("media", "response media removed"),
         ("property", "response field removed"),
         ("type", "type changed"),
+        ("parameter_removed", "parameter removed"),
+        ("required_parameter_added", "required parameter added"),
+        ("parameter_became_required", "parameter became required"),
     ],
 )
 def test_semantic_diff_rejects_incompatible_changes(
@@ -110,6 +113,21 @@ def test_semantic_diff_rejects_incompatible_changes(
         del document["components"]["schemas"]["HealthResponse"]["properties"][
             "state"
         ]
+    elif mutation == "parameter_removed":
+        document["paths"]["/api/v1/sources"]["get"]["parameters"] = []
+    elif mutation == "required_parameter_added":
+        document["paths"]["/api/v1/sources"]["get"]["parameters"].append(
+            {
+                "in": "query",
+                "name": "new_required",
+                "required": True,
+                "schema": {"type": "string"},
+            }
+        )
+    elif mutation == "parameter_became_required":
+        document["paths"]["/api/v1/sources"]["get"]["parameters"][0][
+            "required"
+        ] = True
     else:
         document["components"]["schemas"]["HealthResponse"]["properties"][
             "checked_at"
