@@ -116,14 +116,12 @@ def test_semantic_diff_rejects_incompatible_changes(
     elif mutation == "parameter_removed":
         document["paths"]["/api/v1/sources"]["get"]["parameters"] = []
     elif mutation == "required_parameter_added":
-        document["paths"]["/api/v1/sources"]["get"]["parameters"].append(
-            {
-                "in": "query",
-                "name": "new_required",
-                "required": True,
-                "schema": {"type": "string"},
-            }
-        )
+        document["paths"]["/api/v1/sources"]["get"]["parameters"].append({
+            "in": "query",
+            "name": "new_required",
+            "required": True,
+            "schema": {"type": "string"},
+        })
     elif mutation == "parameter_became_required":
         document["paths"]["/api/v1/sources"]["get"]["parameters"][0][
             "required"
