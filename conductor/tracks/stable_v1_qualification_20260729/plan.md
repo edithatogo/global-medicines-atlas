@@ -166,8 +166,9 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     clean LF and CRLF checkouts. Portable commands create separate environments
     and qualify wheel and sdist independently. The approved `v1.0.0rc1`
     software-only prerelease is tagged and published on GitHub and archived at
-    Zenodo DOI `10.5281/zenodo.21734811`; the build remains unsigned and
-    unattested, and stable promotion requires the remaining external gates.
+    Zenodo DOI `10.5281/zenodo.21734811`; GitHub Sigstore attestation is
+    verified for the prerelease asset, while stable promotion and production
+    authority remain separate external gates.
   - Independent post-merge review found that Hatch VCS could reuse an ignored
     generated `_version.py`, making the committed receipt dependent on prior
     checkout state. The build now removes that state before and after packaging,
