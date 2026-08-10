@@ -8,6 +8,123 @@ import re
 from collections.abc import Mapping
 from typing import Any, cast
 
+_CLIENT_TEMPLATE = '''"""Generated read-only client. Regenerate; do not edit."""
+
+from __future__ import annotations
+
+from collections.abc import Sequence
+from typing import Literal, Protocol, cast
+from urllib.parse import quote
+
+type JsonScalar = str | int | float | bool | None
+type JsonValue = JsonScalar | list[JsonValue] | dict[str, JsonValue]
+type QueryScalar = str | int | float | bool
+type QueryValue = QueryScalar | Sequence[QueryScalar] | None
+type QueryPairs = tuple[tuple[str, str], ...]
+_HTTP_SUCCESS_MIN = 200
+_HTTP_SUCCESS_LIMIT = 300
+
+
+class ReadOnlyTransport(Protocol):
+    """Transport boundary used by generated client methods."""
+
+    def request(
+        self, method: str, path: str, query: Sequence[tuple[str, str]]
+    ) -> JsonValue: ...
+
+
+class ClientResponse(Protocol):
+    """Minimal response shape shared by HTTPX and FastAPI TestClient."""
+
+    status_code: int
+
+    def json(self) -> object: ...
+
+
+class RequestClient(Protocol):
+    """Minimal synchronous HTTP client accepted by ClientTransport."""
+
+    def request(
+        self,
+        method: str,
+        url: str,
+        *,
+        params: Sequence[tuple[str, str]],
+    ) -> ClientResponse: ...
+
+
+class ClientTransportError(RuntimeError):
+    """A generated client request returned a non-success response."""
+
+
+def _json_value(value: object) -> JsonValue:
+    if value is None or isinstance(value, str | int | float | bool):
+        return value
+    if isinstance(value, list):
+        values = cast("list[object]", value)
+        return [_json_value(item) for item in values]
+    if isinstance(value, dict):
+        mapping = cast("dict[object, object]", value)
+        result: dict[str, JsonValue] = {}
+        for key, item in mapping.items():
+            if not isinstance(key, str):
+                raise TypeError("JSON object keys must be strings")
+            result[key] = _json_value(item)
+        return result
+    raise TypeError(f"unsupported JSON response value: {type(value).__name__}")
+
+
+def _query_scalar(value: QueryScalar) -> str:
+    if isinstance(value, bool):
+        return str(value).lower()
+    return str(value)
+
+
+def _query(values: Sequence[tuple[str, QueryValue]]) -> QueryPairs:
+    pairs: list[tuple[str, str]] = []
+    for key, value in values:
+        if value is None:
+            continue
+        if isinstance(value, str | int | float | bool):
+            pairs.append((key, _query_scalar(value)))
+            continue
+        pairs.extend((key, _query_scalar(item)) for item in value)
+    return tuple(pairs)
+
+
+class ClientTransport:
+    """HTTPX/FastAPI-TestClient-compatible synchronous transport."""
+
+    def __init__(self, client: RequestClient) -> None:
+        self._client = client
+
+    def request(
+        self, method: str, path: str, query: Sequence[tuple[str, str]]
+    ) -> JsonValue:
+        response = self._client.request(method, path, params=query)
+        if not _HTTP_SUCCESS_MIN <= response.status_code < _HTTP_SUCCESS_LIMIT:
+            raise ClientTransportError(
+                f"{method} {path} returned HTTP {response.status_code}"
+            )
+        return _json_value(response.json())
+
+
+class GlobalMedicinesAtlasClient:
+    """Typed methods generated from committed read-only operations."""
+
+    def __init__(self, transport: ReadOnlyTransport) -> None:
+        self._transport = transport
+
+{body}
+
+__all__ = [
+    "ClientTransport",
+    "ClientTransportError",
+    "GlobalMedicinesAtlasClient",
+    "JsonValue",
+    "ReadOnlyTransport",
+]'''
+
 _LINE_LENGTH = 80
 _METHOD_INDENT = 8
 
@@ -140,17 +257,11 @@ def _argument_source(
     return f"{base}\n        | None = None"
 
 
-def _method_source(  # ruff: ignore[too-many-locals]
-    *,
-    path: str,
-    method: str,
-    operation: Mapping[str, Any],
+def _method_signature(
+    path_parameters: list[dict[str, Any]],
+    query_parameters: list[dict[str, Any]],
     components: Mapping[str, Any],
 ) -> str:
-    operation_id = _identifier(str(operation["operationId"]))
-    parameters = cast("list[dict[str, Any]]", operation["parameters"])
-    path_parameters = [item for item in parameters if item["in"] == "path"]
-    query_parameters = [item for item in parameters if item["in"] == "query"]
     arguments: list[str] = []
     for item in path_parameters:
         if not item["required"]:
@@ -161,11 +272,15 @@ def _method_source(  # ruff: ignore[too-many-locals]
     arguments.extend(
         _argument_source(item, components) for item in query_parameters
     )
-    signature = (
-        "self,\n        *,\n        " + ",\n        ".join(arguments)
-        if arguments
-        else "self"
-    )
+    if not arguments:
+        return "self"
+    return "self,\n        *,\n        " + ",\n        ".join(arguments)
+
+
+def _method_path_lines(
+    path: str,
+    path_parameters: list[dict[str, Any]],
+) -> list[str]:
     rendered_path = path
     path_lines: list[str] = []
     encoded_placeholders: list[tuple[str, str]] = []
@@ -190,24 +305,47 @@ def _method_source(  # ruff: ignore[too-many-locals]
         )
     for sentinel, encoded_placeholder in encoded_placeholders:
         rendered_path = rendered_path.replace(sentinel, encoded_placeholder)
+    path_literal = json.dumps(rendered_path)
+    path_expression = f"f{path_literal}" if path_parameters else path_literal
+    path_lines.append(f"        path = {path_expression}")
+    return path_lines
+
+
+def _method_query_expression(
+    query_parameters: list[dict[str, Any]],
+) -> str:
+    if len(query_parameters) == 1:
+        item = query_parameters[0]
+        return (
+            f"(({json.dumps(str(item['name']))}, "
+            f"{_identifier(str(item['name']))}),)"
+        )
     query_entries = "\n".join(
         f"            ({json.dumps(str(item['name']))}, "
         f"{_identifier(str(item['name']))}),"
         for item in query_parameters
     )
-    path_literal = json.dumps(rendered_path)
-    path_expression = f"f{path_literal}" if path_parameters else path_literal
-    path_lines.append(f"        path = {path_expression}")
-    if len(query_parameters) == 1:
-        item = query_parameters[0]
-        query_expression = (
-            f"(({json.dumps(str(item['name']))}, "
-            f"{_identifier(str(item['name']))}),)"
-        )
-    elif query_entries:
-        query_expression = f"(\n{query_entries}\n        )"
-    else:
-        query_expression = "()"
+    if query_entries:
+        return f"(\n{query_entries}\n        )"
+    return "()"
+
+
+def _method_source(
+    *,
+    path: str,
+    method: str,
+    operation: Mapping[str, Any],
+    components: Mapping[str, Any],
+) -> str:
+    operation_id = _identifier(str(operation["operationId"]))
+    parameters = cast("list[dict[str, Any]]", operation["parameters"])
+    path_parameters = [item for item in parameters if item["in"] == "path"]
+    query_parameters = [item for item in parameters if item["in"] == "query"]
+
+    signature = _method_signature(path_parameters, query_parameters, components)
+    path_lines = _method_path_lines(path, path_parameters)
+    query_expression = _method_query_expression(query_parameters)
+
     path_lines.extend((
         f"        query = _query({query_expression})",
         (
@@ -239,123 +377,7 @@ def generate_client(snapshot: Mapping[str, Any]) -> str:
         for method, operation in sorted(operations.items())
     ]
     body = "\n".join(methods)
-    return f'''"""Generated read-only client. Regenerate; do not edit."""
-
-from __future__ import annotations
-
-from collections.abc import Sequence
-from typing import Literal, Protocol, cast
-from urllib.parse import quote
-
-type JsonScalar = str | int | float | bool | None
-type JsonValue = JsonScalar | list[JsonValue] | dict[str, JsonValue]
-type QueryScalar = str | int | float | bool
-type QueryValue = QueryScalar | Sequence[QueryScalar] | None
-type QueryPairs = tuple[tuple[str, str], ...]
-_HTTP_SUCCESS_MIN = 200
-_HTTP_SUCCESS_LIMIT = 300
-
-
-class ReadOnlyTransport(Protocol):
-    """Transport boundary used by generated client methods."""
-
-    def request(
-        self, method: str, path: str, query: Sequence[tuple[str, str]]
-    ) -> JsonValue: ...
-
-
-class ClientResponse(Protocol):
-    """Minimal response shape shared by HTTPX and FastAPI TestClient."""
-
-    status_code: int
-
-    def json(self) -> object: ...
-
-
-class RequestClient(Protocol):
-    """Minimal synchronous HTTP client accepted by ClientTransport."""
-
-    def request(
-        self,
-        method: str,
-        url: str,
-        *,
-        params: Sequence[tuple[str, str]],
-    ) -> ClientResponse: ...
-
-
-class ClientTransportError(RuntimeError):
-    """A generated client request returned a non-success response."""
-
-
-def _json_value(value: object) -> JsonValue:
-    if value is None or isinstance(value, str | int | float | bool):
-        return value
-    if isinstance(value, list):
-        values = cast("list[object]", value)
-        return [_json_value(item) for item in values]
-    if isinstance(value, dict):
-        mapping = cast("dict[object, object]", value)
-        result: dict[str, JsonValue] = {{}}
-        for key, item in mapping.items():
-            if not isinstance(key, str):
-                raise TypeError("JSON object keys must be strings")
-            result[key] = _json_value(item)
-        return result
-    raise TypeError(f"unsupported JSON response value: {{type(value).__name__}}")
-
-
-def _query_scalar(value: QueryScalar) -> str:
-    if isinstance(value, bool):
-        return str(value).lower()
-    return str(value)
-
-
-def _query(values: Sequence[tuple[str, QueryValue]]) -> QueryPairs:
-    pairs: list[tuple[str, str]] = []
-    for key, value in values:
-        if value is None:
-            continue
-        if isinstance(value, str | int | float | bool):
-            pairs.append((key, _query_scalar(value)))
-            continue
-        pairs.extend((key, _query_scalar(item)) for item in value)
-    return tuple(pairs)
-
-
-class ClientTransport:
-    """HTTPX/FastAPI-TestClient-compatible synchronous transport."""
-
-    def __init__(self, client: RequestClient) -> None:
-        self._client = client
-
-    def request(
-        self, method: str, path: str, query: Sequence[tuple[str, str]]
-    ) -> JsonValue:
-        response = self._client.request(method, path, params=query)
-        if not _HTTP_SUCCESS_MIN <= response.status_code < _HTTP_SUCCESS_LIMIT:
-            raise ClientTransportError(
-                f"{{method}} {{path}} returned HTTP {{response.status_code}}"
-            )
-        return _json_value(response.json())
-
-
-class GlobalMedicinesAtlasClient:
-    """Typed methods generated from committed read-only operations."""
-
-    def __init__(self, transport: ReadOnlyTransport) -> None:
-        self._transport = transport
-
-{body}
-
-__all__ = [
-    "ClientTransport",
-    "ClientTransportError",
-    "GlobalMedicinesAtlasClient",
-    "JsonValue",
-    "ReadOnlyTransport",
-]
-'''
+    return _CLIENT_TEMPLATE.replace("{body}", body) + "\n"
 
 
 __all__ = [
