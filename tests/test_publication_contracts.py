@@ -345,6 +345,13 @@ def test_contracts_reject_unknown_fields() -> None:
     ("mutation", "message"),
     [
         (
+            lambda payload: payload["data_dictionary"].update(
+                fields=payload["data_dictionary"]["fields"]
+                + (payload["data_dictionary"]["fields"][0].copy(),)
+            ),
+            "field names must be unique",
+        ),
+        (
             lambda payload: payload["data_dictionary"]["fields"][0].update(
                 source_fields=("product_id", "product_id")
             ),
@@ -355,7 +362,7 @@ def test_contracts_reject_unknown_fields() -> None:
                 fields=payload["data_dictionary"]["fields"]
                 + (payload["data_dictionary"]["fields"][0].copy(),)
             ),
-            "field names must be unique",
+            "data dictionary field names must be unique",
         ),
         (
             lambda payload: payload["dataset_card"]["coverage"][0].update(
