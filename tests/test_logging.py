@@ -2,11 +2,13 @@
 
 import json
 import logging
+from collections.abc import Mapping
 from io import StringIO
 from typing import cast
 
 import pytest
 
+from global_medicines_atlas import logging as atlas_logging
 from global_medicines_atlas.logging import configure_logging, get_logger
 
 
@@ -37,6 +39,32 @@ def test_logging_configuration_is_idempotent() -> None:
 def test_unknown_context_is_rejected() -> None:
     with pytest.raises(ValueError, match="Unsupported logging context"):
         get_logger("adapter", medicine="example")
+
+
+def test_logger_adapter_falls_back_when_merge_extra_is_unavailable(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    real_adapter = logging.LoggerAdapter
+    calls: list[dict[str, object]] = []
+
+    def compatible_adapter(
+        logger: logging.Logger,
+        extra: Mapping[str, object] | None = None,
+        **kwargs: object,
+    ) -> logging.LoggerAdapter[logging.Logger]:
+        calls.append(kwargs)
+        if kwargs:
+            raise TypeError("merge_extra is unavailable")
+        return real_adapter(logger, extra)
+
+    monkeypatch.setattr(
+        atlas_logging.logging, "LoggerAdapter", compatible_adapter
+    )
+
+    adapter = get_logger("adapter", jurisdiction="NZL")
+
+    assert isinstance(adapter, real_adapter)
+    assert calls == [{"merge_extra": True}, {}]
 
 
 def test_structured_logging_uses_operational_fields_and_redacts_secrets() -> (
