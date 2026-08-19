@@ -2,32 +2,44 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
 from datetime import UTC, datetime
 from pathlib import Path
 from types import SimpleNamespace
 
+import httpx
 import pyarrow.parquet as pq
 import pytest
 from pydantic import ValidationError
 
 from global_medicines_atlas import data_layer_archive as archive_mod
 from global_medicines_atlas.data_layer_archive import (
+    ARCHIVE_WORKFLOW_RELATIVE,
     CATALOGUE_REPOSITORY,
     FIXTURE_PROVENANCE_NOTE,
     HF_TOKEN_SECRET_NAME,
+    HUGGINGFACE_HUB_PIN,
     MAX_ARCHIVAL_FILE_BYTES,
     RESTRICTED_PATH_PREFIXES,
+    SCOPED_AUTHORITY_GROUPS,
     AccessClass,
     ArchivalDisposition,
+    AuthorityGroup,
+    HttpPayloadRetriever,
     HuggingFaceAuthError,
     HuggingFaceCliUploader,
+    PayloadKind,
+    RetrievedPayload,
     assert_no_restricted_artifacts,
     build_data_layer_archive,
+    classify_authority_group,
     classify_source_access,
     inventory_data_layer,
+    parse_authority_groups,
     resolve_huggingface_identity,
+    retrieval_uris_for_source,
 )
 from global_medicines_atlas.publication_transport import (
     APPROVAL_VALUE,
@@ -40,7 +52,10 @@ from global_medicines_atlas.publication_transport import (
     execute_publication,
     prepare_publication,
 )
-from global_medicines_atlas.source_catalog import load_source_catalog
+from global_medicines_atlas.source_catalog import (
+    MedicineDataSource,
+    load_source_catalog,
+)
 from global_medicines_atlas.source_profiles import AuthenticationMode
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -446,3 +461,393 @@ def test_execute_publication_fails_when_artifacts_change(
     )
     assert receipt.state is PublicationTransportState.VERIFICATION_FAILED
     assert receipt.failure_reason is not None
+
+
+EXPECTED_FDA = frozenset({
+    "us-drugsfda",
+    "us-fda-orange-book",
+    "us-gsrs-unii",
+    "us-openfda-drugsfda",
+    "us-openfda-ndc",
+})
+EXPECTED_EMA = frozenset({
+    "eu-ema-article57",
+    "eu-ema-json",
+    "eu-ema-medicines",
+    "eu-ema-pms-fhir",
+    "eu-spor-rms-oms",
+    "eu-union-register",
+})
+EXPECTED_TGA = frozenset({
+    "au-artg",
+    "au-tga-pi-cmi",
+    "au-tga-regulatory-events",
+})
+EXPECTED_MEDSAFE = frozenset({
+    "nz-medsafe-documents",
+    "nz-medsafe-products",
+})
+GATED_SCOPED = frozenset({"eu-ema-pms-fhir", "eu-spor-rms-oms"})
+WORKFLOW = ROOT / ARCHIVE_WORKFLOW_RELATIVE
+
+
+class _FakeRetriever:
+    def __init__(self, *, fail_ids: frozenset[str] = frozenset()) -> None:
+        self.fail_ids = fail_ids
+        self.calls: list[str] = []
+
+    def retrieve(self, source: MedicineDataSource) -> RetrievedPayload:
+        source_id = source.source_id
+        self.calls.append(source_id)
+        uri = str(source.download_url or source.api_url or source.landing_page)
+        if source_id in self.fail_ids:
+            return RetrievedPayload(
+                source_id=source_id,
+                uri=uri,
+                content=b"",
+                content_type="application/octet-stream",
+                retrieved_at="2026-08-19T00:00:00+00:00",
+                attempts=3,
+                sha256="",
+                kind=PayloadKind.REPRESENTATIVE_FIXTURE,
+                skip_reason="live_retrieval_failed_after_3_attempts",
+            )
+        payload = f"{source_id}:live\n".encode()
+        return RetrievedPayload(
+            source_id=source_id,
+            uri=uri,
+            content=payload,
+            content_type="text/plain",
+            retrieved_at="2026-08-19T00:00:00+00:00",
+            attempts=1,
+            sha256=hashlib.sha256(payload).hexdigest(),
+            kind=PayloadKind.LIVE_PUBLIC,
+            skip_reason="",
+        )
+
+
+def test_authority_groups_cover_fda_ema_tga_and_medsafe() -> None:
+    catalog = load_source_catalog()
+    grouped: dict[AuthorityGroup, set[str]] = {
+        group: set() for group in SCOPED_AUTHORITY_GROUPS
+    }
+    for source in catalog:
+        group = classify_authority_group(source)
+        if group in grouped:
+            grouped[group].add(source.source_id)
+    assert grouped[AuthorityGroup.FDA] == EXPECTED_FDA
+    assert grouped[AuthorityGroup.EMA] == EXPECTED_EMA
+    assert grouped[AuthorityGroup.TGA] == EXPECTED_TGA
+    assert grouped[AuthorityGroup.MEDSAFE] == EXPECTED_MEDSAFE
+    ids = {source.source_id for source in catalog}
+    assert "ph-fda-verification" in ids
+    assert (
+        classify_authority_group(
+            next(s for s in catalog if s.source_id == "ph-fda-verification")
+        )
+        is AuthorityGroup.OTHER
+    )
+    assert (
+        classify_authority_group(
+            next(s for s in catalog if s.source_id == "au-pbs-api")
+        )
+        is AuthorityGroup.OTHER
+    )
+    assert (
+        classify_authority_group(
+            next(s for s in catalog if s.source_id == "nz-nzulm-bulk")
+        )
+        is AuthorityGroup.OTHER
+    )
+
+
+def test_scoped_public_sources_archive_payloads_and_metadata(
+    tmp_path: Path,
+) -> None:
+    retriever = _FakeRetriever()
+    package = build_data_layer_archive(
+        ROOT,
+        tmp_path / "archive",
+        retriever=retriever,
+    )
+    relative = {item.relative_path for item in package.files}
+    by_id = {row.source_id: row for row in package.inventory.sources}
+    scoped = EXPECTED_FDA | EXPECTED_EMA | EXPECTED_TGA | EXPECTED_MEDSAFE
+    assert scoped >= GATED_SCOPED
+    assert set(retriever.calls) == scoped - GATED_SCOPED
+    assert "nz-nzulm-bulk" not in retriever.calls
+    assert "eu-ema-pms-fhir" not in retriever.calls
+    for source_id in scoped:
+        row = by_id[source_id]
+        meta_path = f"metadata/sources/{source_id}.json"
+        assert meta_path in relative
+        metadata = json.loads(
+            package.file(meta_path).read_text(encoding="utf-8")
+        )
+        assert metadata["source_id"] == source_id
+        assert metadata["authority"] == row.authority
+        assert metadata["dimension"] == row.dimension
+        assert metadata["rights_status"]
+        assert metadata["landing_page"]
+        assert "native_identifier" in metadata
+        if source_id in GATED_SCOPED:
+            assert row.access_class is AccessClass.CREDENTIAL_RESTRICTED
+            assert row.archival_disposition is (
+                ArchivalDisposition.CATALOG_METADATA_ONLY
+            )
+            assert row.payload_kind is PayloadKind.METADATA_ONLY
+            assert not any(
+                path.startswith(f"payloads/{source_id}/") for path in relative
+            )
+            continue
+        assert row.access_class is AccessClass.PUBLIC_NO_CREDENTIAL
+        assert row.payload_kind is PayloadKind.LIVE_PUBLIC
+        assert row.archival_disposition is (
+            ArchivalDisposition.CATALOG_AND_LIVE_PAYLOAD
+        )
+        assert row.payload_sha256
+        assert any(
+            path.startswith(f"payloads/{source_id}/") for path in relative
+        )
+        assert metadata["payload_sha256"] == row.payload_sha256
+        assert metadata["retrieval_uri"]
+    manifest = json.loads(
+        package.file("inventory/archival-manifest.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert manifest["live_source_dump_downloaded"] is True
+    assert set(manifest["authority_groups"]) == {
+        "fda",
+        "ema",
+        "tga",
+        "medsafe",
+    }
+    assert manifest["publisher"] == "github-actions"
+    assert manifest["workflow"] == ARCHIVE_WORKFLOW_RELATIVE
+    assert "nz-nzulm-bulk" in manifest["skipped_source_ids"]
+    assert "eu-ema-pms-fhir" in manifest["skipped_source_ids"]
+    assert all(
+        "vendor/nzmedicines" not in path and "nzulm" not in path
+        for path in relative
+    )
+
+
+def test_failed_live_retrieval_is_labelled_fixture_not_completion(
+    tmp_path: Path,
+) -> None:
+    retriever = _FakeRetriever(fail_ids=frozenset({"us-fda-orange-book"}))
+    package = build_data_layer_archive(
+        ROOT,
+        tmp_path / "archive",
+        retriever=retriever,
+    )
+    row = next(
+        item
+        for item in package.inventory.sources
+        if item.source_id == "us-fda-orange-book"
+    )
+    assert row.payload_kind is PayloadKind.REPRESENTATIVE_FIXTURE
+    assert row.skip_reason == "live_retrieval_failed_after_3_attempts"
+    metadata = json.loads(
+        package.file("metadata/sources/us-fda-orange-book.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert metadata["skip_reason"] == row.skip_reason
+    assert metadata["live_attempts"] == 3
+
+
+def test_http_retriever_caps_size_and_retries() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        if "too-large" in str(request.url):
+            return httpx.Response(200, content=b"x" * 64)
+        return httpx.Response(503, content=b"retry")
+
+    retriever = HttpPayloadRetriever(
+        transport=httpx.MockTransport(handler),
+        max_bytes=32,
+        max_attempts=3,
+    )
+    catalog = load_source_catalog()
+    orange = next(
+        source for source in catalog if source.source_id == "us-fda-orange-book"
+    )
+    failed = retriever.retrieve(orange)
+    assert failed.kind is PayloadKind.REPRESENTATIVE_FIXTURE
+    assert failed.attempts == 3
+    huge = orange.model_copy(
+        update={
+            "download_url": "https://www.fda.gov/too-large",
+            "landing_page": "https://www.fda.gov/too-large",
+        }
+    )
+    oversize = HttpPayloadRetriever(
+        transport=httpx.MockTransport(handler),
+        max_bytes=32,
+    ).retrieve(huge)
+    assert oversize.kind is PayloadKind.REPRESENTATIVE_FIXTURE
+    assert oversize.skip_reason == "live_file_too_large"
+
+
+def test_drugsfda_retrieval_uses_governed_bulk_url() -> None:
+    source = next(
+        item
+        for item in load_source_catalog()
+        if item.source_id == "us-drugsfda"
+    )
+    uris = retrieval_uris_for_source(source)
+    assert any("media/89850" in uri for uri in uris)
+
+
+def test_parse_authority_groups_defaults_and_rejects_unknown() -> None:
+    assert parse_authority_groups("") == SCOPED_AUTHORITY_GROUPS
+    assert parse_authority_groups(" fda , tga ") == frozenset({
+        AuthorityGroup.FDA,
+        AuthorityGroup.TGA,
+    })
+    with pytest.raises(ValueError, match="unsupported archival authority"):
+        parse_authority_groups("fda,other")
+    with pytest.raises(ValueError, match="is not a valid AuthorityGroup"):
+        parse_authority_groups("nope")
+
+
+def test_authority_group_uses_source_id_prefix_when_authority_text_differs() -> (
+    None
+):
+    source = next(
+        item
+        for item in load_source_catalog()
+        if item.source_id == "us-gsrs-unii"
+    )
+    renamed = source.model_copy(update={"authority": "NIH NCATS"})
+    assert classify_authority_group(renamed) is AuthorityGroup.FDA
+
+
+def test_http_retriever_archives_live_public_bytes() -> None:
+    def handler(_request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            content=b'{"ok": true}',
+            headers={"content-type": "application/json"},
+        )
+
+    source = next(
+        item
+        for item in load_source_catalog()
+        if item.source_id == "us-openfda-drugsfda"
+    )
+    retriever = HttpPayloadRetriever(
+        transport=httpx.MockTransport(handler),
+        clock=lambda: NOW,
+    )
+    retrieved = retriever.retrieve(source)
+    assert retrieved.kind is PayloadKind.LIVE_PUBLIC
+    assert retrieved.content == b'{"ok": true}'
+    assert retrieved.filename == "drugsfda.json"
+    assert retrieved.attempts == 1
+    orange = next(
+        item
+        for item in load_source_catalog()
+        if item.source_id == "us-fda-orange-book"
+    )
+    extensionless = retriever.retrieve(orange)
+    assert extensionless.filename == "public-artefact.bin"
+
+
+def test_http_retriever_labels_disallowed_hosts_and_http_errors() -> None:
+    source = next(
+        item
+        for item in load_source_catalog()
+        if item.source_id == "us-fda-orange-book"
+    )
+    blocked = source.model_copy(
+        update={
+            "landing_page": "http://www.fda.gov/orange-book",
+            "download_url": "http://www.fda.gov/orange-book.zip",
+            "api_url": None,
+        }
+    )
+    labelled = HttpPayloadRetriever(
+        transport=httpx.MockTransport(lambda _request: httpx.Response(200)),
+        max_attempts=3,
+    ).retrieve(blocked)
+    assert labelled.kind is PayloadKind.REPRESENTATIVE_FIXTURE
+    assert labelled.skip_reason == "host_not_in_catalog"
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        raise httpx.ConnectError("unreachable")
+
+    failed = HttpPayloadRetriever(
+        transport=httpx.MockTransport(handler),
+        max_attempts=3,
+    ).retrieve(source)
+    assert failed.kind is PayloadKind.REPRESENTATIVE_FIXTURE
+    assert failed.attempts == 3
+    assert failed.skip_reason == "live_retrieval_failed_after_3_attempts"
+
+
+def test_http_retriever_caps_chunked_payloads_without_content_length() -> None:
+    def body() -> object:
+        yield b"x" * 20
+        yield b"x" * 20
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, content=body())
+
+    source = next(
+        item
+        for item in load_source_catalog()
+        if item.source_id == "au-tga-pi-cmi"
+    )
+    oversize = HttpPayloadRetriever(
+        transport=httpx.MockTransport(handler),
+        max_bytes=24,
+    ).retrieve(source)
+    assert oversize.kind is PayloadKind.REPRESENTATIVE_FIXTURE
+    assert oversize.skip_reason == "live_file_too_large"
+
+
+def test_uri_allowlist_includes_api_host_when_download_url_is_absent() -> None:
+    source = next(
+        item
+        for item in load_source_catalog()
+        if item.source_id == "us-openfda-drugsfda"
+    )
+    api_only = source.model_copy(update={"download_url": None})
+    assert archive_mod._uri_is_allowed(str(api_only.api_url), api_only)
+    assert not archive_mod._uri_is_allowed("https://example.test/x", api_only)
+
+
+def test_archive_workflow_is_sha_pinned_and_covers_four_authorities() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    assert WORKFLOW.is_file()
+    assert "workflow_dispatch:" in workflow
+    assert "pull_request:" in workflow
+    assert "scripts/archive_data_layer.py" in workflow
+    assert "--retrieve" in workflow
+    assert "fda,ema,tga,medsafe" in workflow
+    assert HF_TOKEN_SECRET_NAME in workflow
+    assert "secrets.HF_TOKEN" in workflow
+    assert "--upload" in workflow
+    assert (
+        "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803" in workflow
+    )
+    assert (
+        "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b"
+        in workflow
+    )
+    assert (
+        "actions/upload-artifact@"
+        "b7c566a772e6b6bfb58ed0dc250532a479d7789f" in workflow
+    )
+    assert "persist-credentials: false" in workflow
+    assert "permissions:" in workflow
+    assert "contents: read" in workflow
+    assert HUGGINGFACE_HUB_PIN in workflow
+    publish_at = workflow.index("Publish to Hugging Face")
+    assert "--upload" in workflow[publish_at:]
+    package_block = workflow[:publish_at]
+    assert "--upload" not in package_block
+    assert "vendor/nzmedicines" not in workflow
+    assert "nz-nzulm-bulk" not in workflow or "skip" in workflow.casefold()

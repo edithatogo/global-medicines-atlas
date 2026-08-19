@@ -1,0 +1,64 @@
+name: Data-layer Hugging Face archive
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Upload the packaged archive to Hugging Face
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: data-layer-archive-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  archive:
+    name: Package FDA EMA TGA Medsafe archive
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.29"
+          enable-cache: true
+      - name: Synchronize Python 3.14 environment
+        run: uv sync --python 3.14.6 --locked
+      - name: Package four-authority public archive
+        run: >
+          uv run --python 3.14.6 python scripts/archive_data_layer.py
+          --root .
+          --output-dir build/data-layer-archive
+          --retrieve
+          --authorities fda,ema,tga,medsafe
+      - name: Upload packaged archive
+        if: always() && hashFiles('build/data-layer-archive/inventory/archival-manifest.json') != ''
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: data-layer-archive
+          path: build/data-layer-archive
+          if-no-files-found: error
+          retention-days: 30
+      - name: Publish to Hugging Face
+        if: >-
+          github.event_name == 'push' && github.ref == 'refs/heads/main' ||
+          (github.event_name == 'workflow_dispatch' && inputs.publish)
+        env:
+          GMA_MAINTAINER_PUBLICATION_APPROVED: yes-i-approve-publication
+          GMA_PUBLICATION_ENVIRONMENT: production
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: >
+          uv run --python 3.14.6 --with huggingface-hub==0.34.4
+          python scripts/archive_data_layer.py
+          --output-dir build/data-layer-archive
+          --skip-build
+          --upload

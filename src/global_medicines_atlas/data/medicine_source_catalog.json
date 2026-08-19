@@ -5388,7 +5388,7 @@
       "access_mode": "api_and_download",
       "landing_page": "https://www.accessdata.fda.gov/scripts/cder/daf/",
       "api_url": "https://api.fda.gov/drug/drugsfda.json",
-      "download_url": "https://www.fda.gov/drugs/drug-approvals-and-databases/drugsfda-data-files",
+      "download_url": "https://www.fda.gov/media/89850/download?attachment",
       "update_cadence": "weekday bulk updates; API cadence varies",
       "rights_status": "US government data; verify endpoint terms",
       "readiness": "implemented",

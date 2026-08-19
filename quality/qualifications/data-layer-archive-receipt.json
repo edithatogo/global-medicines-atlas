@@ -1,23 +1,27 @@
 {
   "schema_id": "global-medicines-atlas.data-layer-archive-receipt",
-  "schema_version": 1,
-  "recorded_at": "2026-08-19T03:05:00Z",
-  "state": "public",
-  "plan_sha256": "254de2442dc6724ee2e63f27071712c92585cb306de146c913b9b7251899a8f5",
-  "release_version": "data-layer-archive-v1",
+  "schema_version": 2,
+  "recorded_at": "2026-08-19T07:30:00Z",
+  "state": "workflow_pending",
+  "plan_sha256": null,
+  "release_version": "data-layer-archive-v2",
   "target": {
     "destination": "hugging_face",
     "repository": "edithatogo/global-medicines-atlas-catalogue",
     "public_base_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue"
   },
-  "remote_revision": "b25af36da32ffa3ddc5d525f1c568459d23f6e11",
-  "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue/tree/b25af36da32ffa3ddc5d525f1c568459d23f6e11",
+  "remote_revision": null,
+  "verification_uri": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue",
+  "workflow": ".github/workflows/data-layer-archive.yml",
+  "publisher": "github-actions",
+  "authority_groups": ["fda", "ema", "tga", "medsafe"],
+  "missing_secret_name": "HF_TOKEN",
   "inventory": {
     "source_count": 96,
     "public_no_credential_count": 85,
     "credential_restricted_count": 11,
     "fixture_provenance": "representative_fixture_not_live_coverage",
-    "live_source_dump_downloaded": false
+    "live_source_dump_downloaded": "pending_github_actions_retrieve"
   },
   "skipped_credential_or_restricted_source_ids": [
     "au-amt-rf2",
@@ -35,5 +39,5 @@
   "excluded_paths": [
     "vendor/nzmedicines"
   ],
-  "rights_boundary": "Catalogue metadata and governed representative fixtures only. No live source dumps, credential-gated payloads, or licensed NZULM/NZMT vendor bytes were published. Source-derived bulk rows remain rights-gated."
+  "rights_boundary": "Public/no-credential FDA, EMA, TGA, and Medsafe artefacts plus complete catalogue metadata. Credential-gated EMA PMS/SPOR and licensed NZULM/NZMT vendor bytes are metadata-only or omitted. GitHub Actions is the durable publisher; HF_TOKEN is the named external-gate secret if unpublished."
 }

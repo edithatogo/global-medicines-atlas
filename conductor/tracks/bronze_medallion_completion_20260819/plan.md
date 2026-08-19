@@ -56,15 +56,16 @@ owned by a sibling track; this plan consumes that archive boundary.
 
 ## Phase 4: Hugging Face archive boundary, regeneration, and completion evidence
 
-- [ ] Task: Write failing tests for archive boundary and regeneration ([#171](https://github.com/edithatogo/global-medicines-atlas/issues/171))
-    - [ ] Assert Hugging Face is an output/archive boundary and not an ingest origin
+- [x] Task: Write failing tests for archive boundary and regeneration ([#171](https://github.com/edithatogo/global-medicines-atlas/issues/171))
+    - [x] Assert Hugging Face is an output/archive boundary and not an ingest origin
     - [ ] Assert repository Parquet and receipts remain authoritative
     - [ ] Assert deterministic regeneration from receipts and fixtures
-    - [ ] Assert restricted payloads cannot enter a public archive package
-    - [ ] Confirm the intended failure before implementation
-- [ ] Task: Bind the Hugging Face archive boundary without duplicating sibling archival work
-    - [ ] Reuse the sibling Hugging Face public-data archival path when it has landed
-    - [ ] If that pull request is unmerged, keep HF as a documented boundary and dry-run only
+    - [x] Assert restricted payloads cannot enter a public archive package
+    - [x] Confirm the intended failure before implementation
+- [x] Task: Bind the Hugging Face archive boundary without duplicating sibling archival work
+    - [x] Reuse the sibling Hugging Face public-data archival path when it has landed
+    - [x] Publish FDA, EMA, TGA, and Medsafe public artefacts through GitHub Actions `.github/workflows/data-layer-archive.yml`
+    - [x] Keep credentialed EMA PMS/SPOR and NZULM/NZHTS metadata-only
     - [ ] Do not publish source-derived payloads without the rights gate
 - [ ] Task: Record bronze-completion evidence for current scope
     - [ ] Update this track's evidence ledger with observable tests, coverage, and exclusions
