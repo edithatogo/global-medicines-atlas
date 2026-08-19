@@ -566,7 +566,9 @@ def _zip_payload(members: int, member_bytes: int, seed: int) -> bytes:
     ) as archive:
         for index in range(members):
             name = f"member-{index:03d}.bin"
-            info = zipfile.ZipInfo(filename=name, date_time=(1980, 1, 1, 0, 0, 0))
+            info = zipfile.ZipInfo(
+                filename=name, date_time=(1980, 1, 1, 0, 0, 0)
+            )
             info.compress_type = zipfile.ZIP_DEFLATED
             archive.writestr(info, _expand(seed, name, member_bytes))
     return buffer.getvalue()
