@@ -28,9 +28,8 @@ clean-room rehearsal, or maintainer approval keeps `qualification_state`
   `quality/qualifications/stable-v1-source-maturity.json` keys every row to the
   catalog's `source_id`, records documentation readiness, and conservatively
   caps catalog-only evidence at M2.
-- GitHub, Hugging Face, Zenodo, and OSF identities have distinct object roles.
-  Stable qualification consumes the academic track's identity decisions and
-  does not pre-empt them.
+- GitHub, Hugging Face, and Zenodo identities have distinct object roles. OSF
+  is deprecated as a live identity.
 - Existing publication rights, checksum, privacy, and verification contracts
   remain authoritative.
 
@@ -68,10 +67,8 @@ or a support boundary is unverified.
 
 `quality/qualifications/publication-identities.json` is the authoritative
 publication-surface registry. GitHub identifies software source/releases,
-Hugging Face a derived dataset distribution, Zenodo a versioned archival DOI
-record, and OSF the protocol/preregistration. Related records may link without
-reusing object roles or identifiers. A configured URL is not verified evidence,
-and no licence is approved without both an expression and durable maintainer
-decision evidence. Apache-2.0 software and bounded CC-BY-4.0 eligible derived
-data now have that evidence; OSF, archival, external dataset, and final-release
-gates remain blocked until their distinct decisions and receipts exist.
+Hugging Face a derived dataset distribution, and Zenodo a versioned archival DOI
+record. OSF is deprecated. Related records may link without reusing object
+roles or identifiers. Apache-2.0 software and the public/no-credential Hugging
+Face catalogue archive now have that evidence. Stable-v1 promotion and
+production disaster-recovery authority remain isolated remaining gates.

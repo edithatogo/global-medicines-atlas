@@ -158,9 +158,10 @@
   metadata, supported-platform policy, installation, reinstall, import, CLI,
   API, fallback and dynamic-version checks.
 - **M-088:** Give each lawful public dataset a non-overlapping identity across
-  GitHub, Hugging Face, Zenodo and OSF, including schema, licence, checksums,
+  GitHub, Hugging Face and Zenodo, including schema, licence, checksums,
   version, data card or protocol, persistent identifiers and provenance links;
   restricted medicine payloads must never be implied to be redistributable.
+  OSF is deprecated and is not a live publication identity.
 - **M-089:** Treat all acquired content as untrusted: enforce source-derived
   approved schemes and destinations, redirect-hop validation, connection binding
   or peer enforcement to a prevalidated public address, private-network rejection,
@@ -175,16 +176,17 @@
   therapeutic equivalence, substitutability or equal benefit. These versioned
   runtime terms supersede the earlier draft labels partial, unavailable and
   inappropriate.
-- **M-091:** Maintain a versioned research protocol and OSF-ready preregistration
+- **M-091:** Maintain a versioned research protocol and preregistration
   covering research questions, jurisdiction and source selection, inclusion and
   exclusion rules, outcomes, matching and adjudication, missingness and
   conflicts, planned and sensitivity analyses, amendments, deviations,
   software/data identities and reproducible execution.
   Phase 1 is governed by `schemas/academic-protocol-v1.json`, projected from
   `research/protocol/academic-protocol-v1.json`, and traced to GitHub [#67](https://github.com/edithatogo/global-medicines-atlas/issues/67).
-  Phase 3 is governed by `schemas/osf-preregistration-package-v1.json` and
-  `schemas/osf-submission-manifest-v1.json`; its deterministic offline package
-  remains `draft_not_submitted` until explicit maintainer approval.
+  The persistent public identity is the in-repo protocol artefacts plus Zenodo
+  DOI `10.5281/zenodo.21734811`. OSF is deprecated; historical OSF rehearsal
+  packages remain in-repo as superseded artefacts and are not a live
+  submission path.
 
 ### Medallion bronze (current horizon)
 

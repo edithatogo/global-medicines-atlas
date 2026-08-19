@@ -137,12 +137,14 @@ def test_receipt_passes_metadata_but_blocks_every_external_gate() -> None:
         "checksums",
         "croissant",
         "dataset-card",
+        "external-identifiers",
         "identifier-links",
+        "licences",
         "restricted-data-boundary",
     }
     assert {
         name for name, gate in gates.items() if gate.state == "blocked"
-    } == {"external-identifiers", "licences", "publication"}
+    } == {"publication"}
     assert receipt.external_actions.model_dump() == {
         "credentials_used": False,
         "publication_performed": False,
@@ -159,7 +161,8 @@ def test_receipt_passes_metadata_but_blocks_every_external_gate() -> None:
 def test_identity_states_and_links_are_complete_and_non_overlapping() -> None:
     receipt = qualify_publication_metadata(ROOT)
     identities = {item.system: item for item in receipt.identities}
-    assert set(identities) == {"github", "hugging_face", "zenodo", "osf"}
+    assert set(identities) == {"github", "hugging_face", "zenodo"}
+    assert "osf" not in identities
     assert identities["github"].identifier_state == "verified"
     assert identities["github"].licence_state == "approved"
     assert identities["github"].licence_expression == "Apache-2.0"
@@ -167,9 +170,7 @@ def test_identity_states_and_links_are_complete_and_non_overlapping() -> None:
         assert identities[system].identifier_state == "verified"
         assert identities[system].licence_state == "approved"
         assert identities[system].licence_expression == "Apache-2.0"
-    assert identities["osf"].licence_state == "unresolved"
-    assert identities["osf"].identifier is None
-    assert len({item.object_role for item in identities.values()}) == 4
+    assert len({item.object_role for item in identities.values()}) == 3
     links = {
         (item.object_id, related)
         for item in identities.values()
@@ -223,7 +224,6 @@ def test_candidate_metadata_tampering_fails_closed(
         ("github", "https://huggingface.co/edithatogo/example"),
         ("hugging_face", "https://github.com/edithatogo/example"),
         ("zenodo", "https://osf.io/abc12"),
-        ("osf", "https://zenodo.org/records/123"),
     ],
 )
 def test_cross_surface_identifier_hosts_fail_closed(
@@ -508,7 +508,7 @@ def test_documentation_states_exact_scope_and_blockers() -> None:
         "github",
         "hugging face",
         "zenodo",
-        "osf",
+        "deprecated",
         "licence",
     ):
         assert claim in text

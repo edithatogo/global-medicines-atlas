@@ -7,7 +7,7 @@
   "properties": {
     "schema_id": {"const": "global-medicines-atlas.publication-identities"},
     "schema_version": {"const": 1},
-    "identities": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"$ref": "#/$defs/identity"}}
+    "identities": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/identity"}}
   },
   "$defs": {"identity": {
     "type": "object",

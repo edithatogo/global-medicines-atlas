@@ -32,8 +32,10 @@ remain in Global Medicines Atlas.
 ## Research and publication gates
 
 The OSF protocol, preregistration, Hugging Face dataset records, Zenodo
-metadata, and linkage manifests may be prepared offline. They must not be
-published without explicit maintainer approval. Preregistration must precede
+metadata, and linkage manifests may be prepared offline. OSF is now deprecated
+as a live identity. Hugging Face public/no-credential catalogue archival and
+the software-only Zenodo record exist. They must not be used to imply
+redistribution of restricted medicine payloads. Preregistration must precede
 substantive live comparative analysis.
 
 International source evidence will be assembled as a provenance and rights

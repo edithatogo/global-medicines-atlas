@@ -30,18 +30,19 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     routine quality gates, and BasedPyright strict with zero findings. No
     external registration or publication gate was exercised.
 
-## Phase 3: OSF-ready preregistration package
+## Phase 3: Historical OSF-format preregistration package (deprecated)
 
 - [x] Task: Generate the covering OSF preregistration narrative and structured attachments
 - [x] Task: Add amendment history, deviation register, data-management and ethics statements
 - [x] Task: Generate citations, checksums and a machine-readable submission manifest
 - [x] Task: Rehearse a clean offline build and validate every documented command
-- [~] Task: Obtain explicit maintainer review before any external submission
+- [x] Task: Obtain explicit maintainer review before any external submission
   - Repository package review is recorded in
     `docs/publication/osf-maintainer-review.md` and
     `quality/qualifications/osf-maintainer-review.json`.
-  - Final wording, ethics applicability, authenticated OSF authority, and
-    post-registration receipt remain open.
+  - Maintainer instruction on 2026-08-19 deprecated OSF. Remaining OSF
+    licence and submission work is cancelled, not completed. The persistent
+    path is the in-repo protocol plus Zenodo DOI `10.5281/zenodo.21734811`.
 - [x] Task: Phase Verification & Checkpoint
   - The deterministic offline rehearsal contains ten committed files, validates
     strict package and manifest schemas, verifies every declared byte count and
@@ -57,38 +58,35 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 
 ## Phase 4: Persistent identities and external verification
 
-- [x] Task: Define non-overlapping GitHub software, Hugging Face dataset, Zenodo record and OSF study identities
-  - Reuses the strict four-object registry in
+- [x] Task: Define non-overlapping GitHub software, Hugging Face dataset and Zenodo record identities
+  - Reuses the live three-object registry in
     `quality/qualifications/publication-identities.json`: GitHub is the software
-    source/release, Hugging Face is a derived dataset distribution, Zenodo is
-    the archival DOI record, and OSF is the protocol/preregistration. Null
-    external identifiers remain unresolved rather than guessed.
+    source/release, Hugging Face is the public/no-credential catalogue
+    distribution, and Zenodo is the archival DOI record. OSF is deprecated and
+    is not a live identity.
 - [x] Task: Create and cross-link [GitHub parent #66](https://github.com/edithatogo/global-medicines-atlas/issues/66) and native phase subissues [#67](https://github.com/edithatogo/global-medicines-atlas/issues/67), [#68](https://github.com/edithatogo/global-medicines-atlas/issues/68), [#69](https://github.com/edithatogo/global-medicines-atlas/issues/69) and [#70](https://github.com/edithatogo/global-medicines-atlas/issues/70)
 - [x] Task: Create the OSF preregistration and any source-derived Hugging Face or Zenodo dataset records only after rights and maintainer gates pass
-  - The catalogue-only Hugging Face distribution and software-only Zenodo record
-    already exist and are reconciled below. They do not satisfy this task's OSF
-    or source-derived-data gate. OSF registration `ej5nf` was created from the
-    completed private draft; no source-derived payload was added.
-- [~] Task: Verify the OSF identifier, DOI relationships, licences and public landing pages
-  - GitHub `v1.0.0rc1`, the catalogue-only Hugging Face distribution, Zenodo
-    DOI `10.5281/zenodo.21734811`, and OSF registration
-    `https://osf.io/ej5nf/` were verified on 2026-08-03. OSF DOI
-    `10.17605/OSF.IO/EJ5NF`, public landing state, Zenodo relationship links,
-    and Apache-2.0 declarations for GitHub/Hugging Face/Zenodo are recorded in
-    `quality/qualifications/post-registration-reconciliation-20260803.json`.
-    The OSF registration record does not expose a licence, so the licence
-    sub-gate remains unresolved; no source-derived-data record is approved.
+  - OSF remaining work is cancelled as deprecated. Historical registration
+    `ej5nf` is superseded. The public/no-credential Hugging Face catalogue
+    archive (PR #173, revision `b25af36da32ffa3ddc5d525f1c568459d23f6e11`) is
+    the completed publication path for that class. Credentialed/restricted
+    sources remain out of scope.
+- [x] Task: Verify the OSF identifier, DOI relationships, licences and public landing pages
+  - Cancelled/deprecated. GitHub `v1.0.0rc1`, the public Hugging Face
+    catalogue, and Zenodo DOI `10.5281/zenodo.21734811` remain the live
+    identities. Historical OSF landing-page verification of `ej5nf` on
+    2026-08-03 is retained in evidence as superseded. OSF licence resolution
+    and further OSF submission are not to be completed.
 - [x] Task: Record publication receipts or explicit external blockers
-  - `docs/publication/external-publication-receipt.md` and the post-registration
-    reconciliation record the verified GitHub, catalogue-only Hugging Face,
-    software-only Zenodo and public OSF identities. Remaining blockers are the
-    OSF registration-record licence state, source-by-source data rights, and
-    the distinct source-derived-data record.
-- [~] Task: Phase Verification & Checkpoint
-  - Repository-owned identity and OSF registration receipt work is complete;
-    OSF public landing state is verified. The OSF registration-record licence,
-    source-derived-data rights, and any future dataset release remain genuine
-    external gates.
+  - `docs/publication/external-publication-receipt.md`, the data-layer archive
+    receipt, and the post-registration reconciliation record the verified
+    GitHub, public Hugging Face, and software-only Zenodo identities. OSF is
+    deprecated. Remaining isolated gates belong to stable-v1 promotion and
+    production disaster-recovery authority, not this academic track.
+- [x] Task: Phase Verification & Checkpoint
+  - OSF is deprecated. Public/no-credential catalogue archival is complete.
+  - Credentialed/restricted sources remain explicitly out of scope.
+  - Academic protocol persistence is in-repo plus Zenodo `10.5281/zenodo.21734811`.
 
 ## GitHub hierarchy
 

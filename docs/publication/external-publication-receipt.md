@@ -16,27 +16,31 @@ publication of source-derived medicine data.
 
 The Zenodo record links the GitHub repository and the catalogue-only Hugging
 Face distribution as supplements. These are distinct objects: GitHub and
-Zenodo identify software, while Hugging Face distributes only the public source
-catalogue metadata and schema. The identifiers do not grant rights in any
-source payload, terminology, product information, or derived medicine data.
+Zenodo identify software, while Hugging Face distributes public catalogue
+metadata. The identifiers do not grant rights in restricted source payloads.
+A later public/no-credential archive revision
+`b25af36da32ffa3ddc5d525f1c568459d23f6e11` is recorded in
+[`data-layer-archive-receipt.md`](./data-layer-archive-receipt.md).
 
-## OSF registration receipt
+## OSF registration receipt (historical, deprecated)
 
 The OSF project [`https://osf.io/pcdnm/`](https://osf.io/pcdnm/) produced
 registration [`ej5nf`](https://osf.io/ej5nf/) on 2026-08-03. OSF assigned DOI
 [`10.17605/OSF.IO/EJ5NF`](https://doi.org/10.17605/OSF.IO/EJ5NF). The
 authenticated API receipt is
 [`https://api.osf.io/v2/registrations/ej5nf/`](https://api.osf.io/v2/registrations/ej5nf/).
-The registration is public, with `pending_registration_approval=false` and
-`reviews_state=initial`.
+The registration was public, with `pending_registration_approval=false` and
+`reviews_state=initial`. On 2026-08-19 the maintainer deprecated OSF as a live
+identity. Do not complete OSF licence resolution or further OSF submission.
+The persistent protocol identity is the in-repo artefacts plus Zenodo DOI
+`10.5281/zenodo.21734811`.
 
 ## Remaining gates
 
-- The OSF registration record does not expose a licence; its licence state is
-  therefore unresolved and is not inherited from GitHub, Hugging Face or
-  Zenodo.
-- Every source-derived dataset remains subject to the source-by-source rights
-  policy in [`SOURCE_RIGHTS.md`](../data-sources/SOURCE_RIGHTS.md). No
-  source-derived payload is covered by this receipt.
-- OSF registration and any new source-derived-data publication remain explicit
-  maintainer decisions after the relevant preview and rights review.
+- Historical OSF registration `ej5nf` is deprecated/superseded. Do not complete
+  OSF licence resolution or further OSF submission.
+- Public/no-credential Hugging Face catalogue archival is complete (revision
+  `b25af36da32ffa3ddc5d525f1c568459d23f6e11`; 85/96 sources). Credentialed and
+  restricted sources remain out of scope.
+- Isolated remaining gates are stable-v1 promotion approval and production
+  disaster-recovery authority.

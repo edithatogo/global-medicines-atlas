@@ -14,25 +14,39 @@ Decision: authorize the Renovate GitHub App for this repository.
 
 ## D-006-02 — OSF submission
 
-Decision: submit the completed private OSF draft.
+**Status:** cancelled / deprecated (2026-08-19). OSF is not a live publication
+identity. Historical registration `ej5nf` remains a superseded receipt. Do not
+complete OSF licence resolution or OSF submission. Persistent protocol identity:
+in-repo artefacts plus Zenodo DOI `10.5281/zenodo.21734811`.
 
-**Recommended:** approve submission after visual review; all required fields are populated, but submission creates a durable external record.
+Decision: do not submit or continue OSF registration work.
 
-- **Option A — Recommended:** approve submission. Contingency: keep public or embargo state unchanged until the receipt is verified.
-- **Option B:** request wording or ethics revisions. Contingency: revise the private draft and rerun schema validation.
-- **Option C:** defer pending institutional confirmation. Contingency: retain the private draft and continue non-OSF work.
+**Recommended:** cancel OSF as a current gate.
+
+- **Option A — Recommended:** deprecate OSF and keep Zenodo plus in-repo protocol artefacts as the persistent path.
+- **Option B:** retain OSF as a historical receipt only, with no further licence or submission work.
+- **Option C:** was previously to submit the private draft; that option is withdrawn.
 
 ## D-006-03 — Source rights and redistribution
 
+**Status:** public/no-credential path complete (Hugging Face catalogue revision
+`b25af36da32ffa3ddc5d525f1c568459d23f6e11`, 85/96 sources archived). Credentialed
+and restricted sources remain out of scope and are not an academic or OSF
+blocker.
+
 Decision: approve rights disposition per source for current payloads and derived outputs.
 
-**Recommended:** approve only source-specific, evidence-backed dispositions; unclear sources remain catalogue-only.
+**Recommended:** treat the public/no-credential Hugging Face archive as the completed publication path for that class; keep credentialed/restricted sources out of scope.
 
-- **Option A — Recommended:** approve rights-cleared sources individually. Contingency: acquire, checksum, and publish only the approved scope.
-- **Option B:** permit internal restricted processing without redistribution. Contingency: exclude payloads from HF, Zenodo, and OSF.
-- **Option C:** defer or reject. Contingency: preserve catalogue metadata and fixtures; live qualification remains blocked.
+- **Option A — Recommended:** public catalogue-only publication for no-credential sources. Contingency: do not attach restricted payloads.
+- **Option B:** permit internal restricted processing without redistribution. Contingency: exclude payloads from HF and Zenodo.
+- **Option C:** defer or reject bulk derived-data publication. Contingency: preserve catalogue metadata and fixtures; credentialed sources remain unpublished.
 
 ## D-006-04 — Stable release signing and attestation
+
+**Status:** isolated remaining human gate. `v1.0.0rc1` is tagged and attested.
+This is not a public stable v1 release. Do not invent credentials or cut a
+stable release without maintainer approval.
 
 Decision: authorize signing/attestation of a stable release.
 
@@ -54,6 +68,11 @@ Decision: authorize a production deployment qualification window.
 
 ## D-006-06 — Production disaster recovery
 
+**Status:** isolated remaining external gate. Fresh-clone software reproduction
+and synthetic recovery rehearsal passed. Production DR that needs live
+production systems or credentials is not executed and does not block academic
+or OSF-deprecation work.
+
 Decision: authorize a production DR rehearsal and accept its scope.
 
 **Recommended:** approve a bounded rehearsal with explicit RPO/RTO, storage, retention, rollback, and notification authority.
@@ -64,4 +83,4 @@ Decision: authorize a production DR rehearsal and accept its scope.
 
 ## Autonomous continuation
 
-While decisions remain open, the agent may validate schemas, run tests, prepare receipts, reconcile documentation, and review hosted state. It must not install Apps, submit OSF registrations, redistribute restricted data, sign or promote releases, or claim production qualification without the relevant decision and durable evidence.
+While decisions remain open, the agent may validate schemas, run tests, prepare receipts, reconcile documentation, and review hosted state. It must not install Apps, redistribute restricted data, sign or promote a public stable release, or claim production qualification without the relevant decision and durable evidence. OSF is deprecated and must not be treated as an open submission gate.

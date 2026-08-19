@@ -40,5 +40,6 @@ credentials into issues or chat.
 
 ## Remaining gates
 
-Source-derived bulk beyond these four public authorities, OSF licence
-resolution, and stable-v1 promotion remain independent gates.
+Source-derived bulk publication of credentialed/restricted payloads and
+stable-v1 promotion remain independent gates. OSF is deprecated. Missing
+fixture coverage is not negative evidence of source absence.

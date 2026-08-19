@@ -98,8 +98,8 @@
     },
     "publication_identities": {
       "type": "array",
-      "minItems": 4,
-      "maxItems": 4,
+      "minItems": 3,
+      "maxItems": 3,
       "items": {"$ref": "#/$defs/publicationIdentity"}
     },
     "release_gates": {

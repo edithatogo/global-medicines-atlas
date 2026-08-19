@@ -1,9 +1,9 @@
 {
   "track_id": "academic_protocol_preregistration_20260729",
   "type": "feature",
-  "status": "in_progress",
+  "status": "complete",
   "created_at": "2026-07-29T16:30:00+10:00",
-  "updated_at": "2026-08-01T17:01:55+10:00",
+  "updated_at": "2026-08-19T17:30:00+10:00",
   "target_versions": ["0.9.0", "1.0.0"],
   "requirements": ["M-002", "M-003", "M-004", "M-035", "M-078", "M-081", "M-088", "M-090", "M-091"],
   "github_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/66",
@@ -21,10 +21,17 @@
     ".github/generated-issues/academic-protocol-identities.md"
   ],
   "external_gates": [
-    "OSF project creation and preregistration submission",
-    "source-derived Hugging Face or Zenodo dataset publication after rights review",
-    "maintainer approval of OSF registration and source-derived-data publication"
+    "OSF deprecated; no further OSF licence or submission work",
+    "public/no-credential Hugging Face catalogue archive completed",
+    "credentialed and restricted sources remain out of scope"
   ],
+  "persistent_identity": {
+    "in_repo_protocol": "research/protocol/academic-protocol-v1.json",
+    "zenodo": "10.5281/zenodo.21734811",
+    "hugging_face": "edithatogo/global-medicines-atlas-catalogue",
+    "hugging_face_revision": "b25af36da32ffa3ddc5d525f1c568459d23f6e11",
+    "osf": "deprecated_superseded_ej5nf"
+  },
   "execution_policy": {
     "mode": "autonomous",
     "interaction": "decision_gates_only",

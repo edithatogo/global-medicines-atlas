@@ -1,4 +1,8 @@
-"""Phase 3 contracts for the offline OSF-ready preregistration package."""
+"""Phase 3 contracts for the historical OSF-format preregistration package.
+
+OSF is deprecated as a live identity. This package remains an in-repo
+rehearsal artefact, not a submission path.
+"""
 
 from __future__ import annotations
 

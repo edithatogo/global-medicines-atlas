@@ -2,10 +2,11 @@
 
 ## Outcome
 
-Produce an academically defensible, OSF-ready protocol and covering
-preregistration for global comparison of medicine regulatory approval and
-public funding, linked reproducibly to the software, lawful datasets and
-versioned research outputs.
+Produce an academically defensible protocol and covering preregistration for
+global comparison of medicine regulatory approval and public funding, linked
+reproducibly to the software, lawful public datasets and versioned research
+outputs. OSF is deprecated. The persistent public identity is the in-repo
+protocol artefacts plus Zenodo DOI `10.5281/zenodo.21734811`.
 
 ## Functional requirements
 
@@ -20,8 +21,9 @@ versioned research outputs.
 - Maintain a prospective amendment history and deviation register.
 - Bind protocol, software, fixture, schema and lawful data identities to
   immutable versions and checksums.
-- Prepare OSF registration text, structured attachments and a publication
-  linkage matrix for GitHub, Hugging Face, Zenodo and OSF.
+- Prepare protocol text, structured attachments and a publication linkage
+  matrix for GitHub, Hugging Face and Zenodo. Do not treat OSF as a live
+  identity or next action.
 
 ## Non-functional requirements
 
@@ -39,11 +41,13 @@ versioned research outputs.
   reproducibility instructions are version controlled and internally linked.
 - Every planned outcome and comparison maps to M-090 validity semantics and
   source provenance.
-- A clean rehearsal regenerates the submission bundle and verifies hashes,
+- A clean rehearsal regenerates the in-repo bundle and verifies hashes,
   schemas, citations and executable examples.
-- External OSF, Zenodo, Hugging Face and DOI states are verified by durable
-  identifiers or explicitly recorded as pending.
-- Submission or publication occurs only after explicit maintainer approval.
+- External Zenodo, Hugging Face and DOI states are verified by durable
+  identifiers. OSF is deprecated and is not an open acceptance criterion.
+- Public/no-credential catalogue archival on Hugging Face is the completed
+  publication path for that class. Credentialed and restricted sources remain
+  out of scope.
 
 ## Out of scope
 
@@ -51,4 +55,5 @@ versioned research outputs.
   supported by the approved design.
 - Claims of exhaustive global coverage.
 - Publishing restricted source data.
+- Completing OSF licence resolution or OSF submission.
 - Treating preregistration as evidence that the planned analyses were executed.

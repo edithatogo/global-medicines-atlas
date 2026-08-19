@@ -7,7 +7,7 @@ approved by this record alone.
 `src/global_medicines_atlas/data/medicine_source_catalog.json`, including
 regulatory, funding, formulary, pricing, terminology, product-information and
 document sources. This decision covers retention, transformation, inclusion in
-derived datasets, Hugging Face/Zenodo/OSF distribution, and public API exposure.
+derived datasets, Hugging Face/Zenodo distribution, and public API exposure.
 
 **Related controls:** GitHub issues [#50](https://github.com/edithatogo/global-medicines-atlas/issues/50),
 [#51](https://github.com/edithatogo/global-medicines-atlas/issues/51),
@@ -20,7 +20,7 @@ derived datasets, Hugging Face/Zenodo/OSF distribution, and public API exposure.
 | Option | Meaning | Recommendation | Contingency and trade-off |
 |---|---|---|---|
 | **A — Metadata/catalogue only** | Publish source identity, authority, URL, field schema, access mode, rights state, and a pointer; no source bytes, records, copied text, or source-derived row values. | **Recommended default for every unresolved source.** Safest useful global catalogue and supports adapter planning. | If metadata itself has terms or access restrictions, retain only a minimal internal source identifier and public landing-page URL. Coverage claims remain discovery-only. |
-| **B — Restricted internal acquisition** | Acquire and retain source payloads in a controlled, non-published workspace; publish only digests, receipts, and derived quality metrics that do not reconstruct source content. | Recommended where operational validation needs current payloads but redistribution rights are unclear. | Requires access controls, retention/deletion schedule, provenance, lawful access record, and a source-specific review. No HF/Zenodo/OSF attachment or public API exposure. |
+| **B — Restricted internal acquisition** | Acquire and retain source payloads in a controlled, non-published workspace; publish only digests, receipts, and derived quality metrics that do not reconstruct source content. | Recommended where operational validation needs current payloads but redistribution rights are unclear. | Requires access controls, retention/deletion schedule, provenance, lawful access record, and a source-specific review. No HF/Zenodo attachment or public API exposure. |
 | **C — Derived-public release** | Publish a transformed dataset under an approved source-compatible licence, with attribution, notices, field-level provenance, and regeneration instructions. | Recommended only after every row in the source decision is `approved_public_derived`. | If any field or source changes terms, immediately downgrade the affected release to A or B, withdraw the affected artifact if required, and issue a correction receipt. |
 | **D — Exclude/quarantine** | Do not acquire or retain payload; keep only a blocker record. | Required for prohibited, inaccessible, personal, confidential, contractually restricted, or legally ambiguous material. | Reconsider only on written source-owner permission or a new authoritative licence interpretation. |
 
@@ -65,7 +65,7 @@ label as a substitute for source-level evidence.
 | Attribution and notices | Exact notice text, citation, source version, required logos/disclaimers and link | Missing notice blocks publication |
 | Temporal scope | Retrieval timestamp, effective date, update cadence, historical retention permission | Current snapshot cannot be represented as historical completeness |
 | Reproducibility | Source digest/receipt, adapter version, schema fingerprint and regeneration instructions | No durable receipt means catalogue-only |
-| Publication surface | Approved surfaces: internal, GitHub, HF, Zenodo, OSF, API; licence per surface | Approval for one surface does not transfer to another |
+| Publication surface | Approved surfaces: internal, GitHub, HF, Zenodo, API; licence per surface. OSF is deprecated. | Approval for one surface does not transfer to another |
 | Withdrawal and correction | Contact, takedown route, retention/deletion policy, correction and downstream notification procedure | No withdrawal path means B or D |
 
 ## Batch decision requested from maintainer
