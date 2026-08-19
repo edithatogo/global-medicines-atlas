@@ -378,7 +378,7 @@ class HttpPayloadRetriever:
         clock: Callable[[], datetime] | None = None,
         max_bytes: int = MAX_LIVE_PAYLOAD_BYTES,
         max_attempts: int = LIVE_RETRIEVAL_ATTEMPTS,
-        timeout_seconds: float = 60.0,
+        timeout_seconds: float = 20.0,
     ) -> None:
         self._transport = transport
         self._clock = clock or (lambda: datetime.now(UTC))
@@ -391,28 +391,42 @@ class HttpPayloadRetriever:
 
         retrieved_at = self._clock().isoformat()
         last_reason = "live_retrieval_failed_after_3_attempts"
+        allowed_uris = tuple(
+            uri
+            for uri in retrieval_uris_for_source(source)
+            if _uri_is_allowed(uri, source)
+        )
+        if not allowed_uris:
+            return RetrievedPayload(
+                source_id=source.source_id,
+                uri=retrieval_uris_for_source(source)[0],
+                content=b"",
+                content_type="application/octet-stream",
+                retrieved_at=retrieved_at,
+                attempts=self._max_attempts,
+                sha256="",
+                kind=PayloadKind.REPRESENTATIVE_FIXTURE,
+                skip_reason="host_not_in_catalog",
+            )
         attempts = 0
-        for uri in retrieval_uris_for_source(source):
-            if not _uri_is_allowed(uri, source):
-                last_reason = "host_not_in_catalog"
+        while attempts < self._max_attempts:
+            uri = allowed_uris[attempts % len(allowed_uris)]
+            attempts += 1
+            result = self._download(source.source_id, uri, retrieved_at)
+            if result is None:
+                last_reason = "live_retrieval_failed_after_3_attempts"
                 continue
-            for _attempt in range(1, self._max_attempts + 1):
-                attempts += 1
-                result = self._download(source.source_id, uri, retrieved_at)
-                if result is None:
-                    last_reason = "live_retrieval_failed_after_3_attempts"
-                    continue
-                if result.kind is PayloadKind.LIVE_PUBLIC:
-                    return result
-                last_reason = result.skip_reason
+            if result.kind is PayloadKind.LIVE_PUBLIC:
                 return result
+            last_reason = result.skip_reason
+            return result
         return RetrievedPayload(
             source_id=source.source_id,
-            uri=retrieval_uris_for_source(source)[0],
+            uri=allowed_uris[0],
             content=b"",
             content_type="application/octet-stream",
             retrieved_at=retrieved_at,
-            attempts=max(attempts, self._max_attempts),
+            attempts=attempts,
             sha256="",
             kind=PayloadKind.REPRESENTATIVE_FIXTURE,
             skip_reason=last_reason,
