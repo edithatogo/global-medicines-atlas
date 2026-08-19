@@ -1,0 +1,26 @@
+{
+  "$id": "https://global-medicines-atlas.example/schemas/http-retrieval-evidence-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "type": "object",
+  "required": ["original_uri"],
+  "properties": {
+    "original_uri": {"type": "string", "format": "uri"},
+    "final_uri": {"type": ["string", "null"], "format": "uri"},
+    "redirect_history": {
+      "type": "array",
+      "items": {"type": "string", "format": "uri"}
+    },
+    "http_method": {"type": ["string", "null"]},
+    "http_status": {"type": ["integer", "null"], "minimum": 100, "maximum": 599},
+    "etag": {"type": ["string", "null"]},
+    "last_modified": {"type": ["string", "null"]},
+    "content_type": {"type": ["string", "null"]},
+    "content_encoding": {"type": ["string", "null"]},
+    "content_length": {"type": ["integer", "null"], "minimum": 0},
+    "observed_byte_length": {"type": ["integer", "null"], "minimum": 0},
+    "source_native_version": {"type": ["string", "null"]},
+    "source_native_date": {"type": ["string", "null"], "format": "date-time"},
+    "acquisition_agent_version": {"type": ["string", "null"]}
+  }
+}

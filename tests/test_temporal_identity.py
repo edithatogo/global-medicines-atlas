@@ -10,6 +10,7 @@ from tests.test_source_receipts import source_receipt
 
 from global_medicines_atlas.receipts import (
     SourceReceipt,
+    acquisition_event_id_for,
     acquisition_id_for,
     require_temporal,
     temporal_identity_from_source,
@@ -39,10 +40,13 @@ def test_temporal_fields_are_distinct() -> None:
     assert identity.source_published_at != identity.retrieved_at
     assert identity.valid_from == VALID_FROM
     assert identity.valid_to == VALID_TO
-    assert identity.acquisition_id == acquisition_id_for(
+    assert identity.acquisition_id == acquisition_event_id_for(
         source_id="us-drugsfda",
         payload_sha256=SHA,
+        retrieved_at=NOW,
     )
+    assert identity.content_id == SHA
+    assert identity.content_id != identity.acquisition_id
 
 
 @pytest.mark.unit
@@ -76,10 +80,13 @@ def test_receipt_does_not_fill_published_from_retrieved() -> None:
 
     assert receipt.temporal.retrieved_at == receipt.retrieval.retrieved_at
     assert receipt.temporal.source_published_at is None
-    assert receipt.temporal.acquisition_id == acquisition_id_for(
+    assert receipt.temporal.acquisition_id == acquisition_event_id_for(
         source_id=receipt.source.source_id,
         payload_sha256=receipt.payload.sha256,
+        retrieved_at=receipt.retrieval.retrieved_at,
+        original_uri=str(receipt.retrieval.uri),
     )
+    assert receipt.temporal.content_id == receipt.payload.sha256
 
 
 @pytest.mark.unit

@@ -261,9 +261,13 @@
 - **S-012:** Measure bronze completeness by source identifier, jurisdiction,
   dimension, rights state, receipt class, and Parquet partition identity.
 - **S-013:** Keep bronze Parquet Iceberg-ready with stable table identities,
-  partitioning, and schemas so files can be registered in an Iceberg REST
-  catalogue. Iceberg is an optional table-control plane, not a Python 3.14
-  core requirement.
+  namespaces, schemas, partition specifications, append-only evolution rules,
+  and snapshot-to-acquisition bindings so files can be registered in an Iceberg
+  REST catalogue behind an optional extra. Iceberg is not mandatory. Parquet
+  remains valid without Iceberg. Iceberg row lineage, branches, and tags are
+  optional aliases; Atlas acquisition provenance remains authoritative. Do not
+  migrate bronze evidentiary truth into Iceberg metadata. Python 3.14 core
+  must not require Iceberg.
 
 ## Could Have
 

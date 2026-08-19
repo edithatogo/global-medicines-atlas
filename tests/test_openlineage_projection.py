@@ -29,7 +29,10 @@ def _table(tmp_path: Path) -> IcebergReadyTableSpec:
         identifier="bronze.nz_medsafe_products",
         location=str(tmp_path / "parquet"),
         partition_fields=("jurisdiction", "source_id"),
-        schema_fields=(("source_id", "string"),),
+        schema_fields=(
+            ("jurisdiction", "string"),
+            ("source_id", "string"),
+        ),
     )
 
 

@@ -108,9 +108,15 @@ receipts.
 
 ### Iceberg-ready (Should)
 
-Parquet files remain Parquet. Define stable table identities, partitioning, and
-schemas so they can be registered as Iceberg tables. An Iceberg REST catalogue
-over bronze is optional. Python 3.14 core must not require Iceberg.
+Parquet files remain Parquet and remain valid without Iceberg. Define stable
+table identities, namespaces, schemas, partition specifications, append-only
+evolution rules, and snapshot-to-acquisition relationships so those files can
+be registered as Iceberg tables. An Iceberg REST catalogue over bronze is
+optional and lives behind an optional dependency extra. Iceberg row lineage,
+branching, and tagging may be evaluated as catalogue aliases; Atlas
+acquisition provenance remains authoritative. Do not migrate bronze
+evidentiary truth into Iceberg metadata. Python 3.14 core must not require
+Iceberg.
 
 ### OpenLineage projection (Must)
 

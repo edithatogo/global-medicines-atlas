@@ -583,7 +583,11 @@ rights state. Each landed file carries source-native identifiers, retrieval and
 effective dates, receipt digest, uncertainty, and an explicit rights expression.
 Python 3.14 is the complete fallback path. DuckDB and LanceDB may read bronze
 Parquet; they do not store bronze evidentiary truth. Iceberg REST registration
-is optional and must not be imported by Python 3.14 core.
+is optional and must not be imported by Python 3.14 core. Iceberg-ready
+metadata records namespace `bronze`, identity-transform partitions on
+`jurisdiction`, `source_id`, and `rights_state`, append-only schema evolution,
+and snapshot aliases bound to `acquisition_id`. Iceberg metadata is rebuildable
+catalogue state; payload bytes and receipts remain evidentiary truth.
 
 ### Lineage and identity graph
 

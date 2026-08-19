@@ -37,6 +37,9 @@ dependencies = [
 semantic = [
   "lancedb>=0.27",
 ]
+iceberg = [
+  "pyiceberg>=0.10",
+]
 
 [project.scripts]
 global-medicines-atlas = "global_medicines_atlas.cli:app"

@@ -62,21 +62,38 @@ public data. It runs before any acquire/download, including Drugs@FDA.
     - [ ] Fail closed on missing rights, provenance, or receipt fields
 - [ ] Task: Phase Verification & Checkpoint
     - [ ] Run focused tests, coverage, typing, and licensing checks
-    - [ ] Record payload digests, acquisition IDs, and Parquet identities in evidence
+    - [x] Record payload digests, acquisition IDs, and Parquet identities in evidence
+
+### Phase 3b: Append-only acquisition, admission, and HTTP receipts
+
+- [x] Task: Harden append-only acquisition identity ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169), parent [#167](https://github.com/edithatogo/global-medicines-atlas/issues/167))
+    - [x] Separate content_id / payload digest from acquisition_id
+    - [x] Keep source/version, published/effective, retrieved_at, and source-supplied validity independent
+    - [x] Physically deduplicate identical bytes without collapsing acquisition history
+    - [x] Schema contract and migration-safe TemporalIdentity without content_id
+- [x] Task: Bronze quarantine and admission lifecycle ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
+    - [x] States landed → accepted | quarantined | rejected-from-processing
+    - [x] Preserve malformed payloads; fail closed downstream unless authorised
+- [x] Task: Evidence-grade HTTP retrieval receipts
+    - [x] Capture original/final URI, redirects, method, status, ETag, Last-Modified, type, encoding, lengths, agent version
+    - [x] Never persist credentials or authorization headers
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Focused unit, property, edge, and acquisition tests passed locally
+    - [x] Record evidence; do not claim silver or live ingest complete
 
 ## Phase 4: Iceberg-ready identities and OpenLineage projection
 
-- [ ] Task: Write failing tests for Iceberg-ready metadata and OpenLineage ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
-    - [ ] Assert stable table identities, partitioning, and schemas exist over Parquet
-    - [ ] Assert an Iceberg REST catalogue can register bronze metadata without pyiceberg in core
-    - [ ] Assert OpenLineage RunEvents use real field names and split payload vs parquet datasets
-    - [ ] Assert payload, Parquet, and catalogue datasets stay distinct identities
-    - [ ] Assert ColumnLineage and Symlinks do not collapse payload into Iceberg
-    - [ ] Assert temporal identity and reuse disposition appear as facets
-    - [ ] Confirm the intended failure before implementation
-- [ ] Task: Implement Iceberg-ready specs and OpenLineage projection
-    - [ ] Keep Iceberg optional; Python 3.14 core must not import it
-    - [ ] Do not add Marquez to the default install
+- [x] Task: Write failing tests for Iceberg-ready metadata and OpenLineage ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
+    - [x] Assert stable table identities, partitioning, and schemas exist over Parquet
+    - [x] Assert an Iceberg REST catalogue can register bronze metadata without pyiceberg in core
+    - [x] Assert OpenLineage RunEvents use real field names and split payload vs parquet datasets
+    - [x] Assert payload, Parquet, and catalogue datasets stay distinct identities
+    - [x] Assert ColumnLineage and Symlinks do not collapse payload into Iceberg
+    - [x] Assert temporal identity and reuse disposition appear as facets
+    - [x] Confirm the intended failure before implementation
+- [x] Task: Implement Iceberg-ready specs and OpenLineage projection
+    - [x] Keep Iceberg optional; Python 3.14 core must not import it
+    - [x] Do not add Marquez to the default install
 - [ ] Task: Phase Verification & Checkpoint
     - [ ] Run focused tests and typing
     - [ ] Record lineage event field names in evidence

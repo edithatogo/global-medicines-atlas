@@ -184,6 +184,8 @@ def _identity_facets(receipt: SourceReceipt) -> dict[str, object]:
             else None
         ),
         acquisitionId=acquisition_id,
+        contentId=temporal.content_id or receipt.payload.sha256,
+        sourceVersion=temporal.source_version,
     )
     reuse_facet = _facet(
         f"{PRODUCER}#reuse-gate",
@@ -203,9 +205,10 @@ def _identity_facets(receipt: SourceReceipt) -> dict[str, object]:
     identity_facet = _facet(
         f"{PRODUCER}#acquisition-identity",
         acquisitionId=acquisition_id,
-        contentId=receipt.payload.sha256,
+        contentId=temporal.content_id or receipt.payload.sha256,
         sourceId=receipt.source.source_id,
         catalogVersion=receipt.source.catalog_version,
+        sourceVersion=temporal.source_version,
     )
     rights_facet = _facet(
         f"{PRODUCER}#rights",
