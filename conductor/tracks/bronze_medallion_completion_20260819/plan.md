@@ -131,3 +131,15 @@ public data. It runs before any acquire/download, including Drugs@FDA.
     - [ ] Run focused tests then `uv run python scripts/test_goblin.py full` where the platform permits
     - [ ] Open a scoped `codex/` pull request, wait for required checks, repair, and merge
     - [ ] Classify unresolved Hugging Face publication as an external gate, never as bronze source-of-truth
+
+## Source expansion program (WHO, Africa, FDA, EMA, utilisation)
+
+Inventory for bronze prompts 1-36 shares one registry, one reuse-gate
+contract, and one coverage-reconciliation finish. Live ingest is not claimed
+for credentialed or rights-unresolved sources.
+
+- [x] Task: Register tracks 1-36, extend `medicine_source_catalog.json`, and emit derived coverage matrices plus a versioned source index
+    - [x] Reuse gate remains mandatory before acquire
+    - [x] African source-coverage matrix is a derived catalogue artefact
+    - [x] Hugging Face stays an archive boundary; new FDA/EMA rows are not auto-archived
+    - [x] Record blockers honestly; missing coverage is not negative evidence

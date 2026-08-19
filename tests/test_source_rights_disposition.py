@@ -15,8 +15,8 @@ def test_every_catalogue_source_has_a_fail_closed_disposition() -> None:
     matrix = json.loads(MATRIX.read_text(encoding="utf-8"))
     built = build()
     assert matrix == built
-    assert matrix["source_count"] == 96
-    assert len(matrix["entries"]) == 96
+    assert matrix["source_count"] == 172
+    assert len(matrix["entries"]) == 172
     assert {
         entry["recommended_disposition"] for entry in matrix["entries"]
     } == {"catalogue_only"}
