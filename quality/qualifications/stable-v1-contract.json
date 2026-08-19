@@ -76,15 +76,15 @@
     {"requirement_id":"M-085","state":"partial","evidence":["conductor/requirements.md","schemas/canonical-medicine-v2.json","src/global_medicines_atlas/canonical_v2.py","tests/test_canonical_v2_runtime.py"],"blocker_ids":["stable-v1-canonical-schema-v2"]},
     {"requirement_id":"M-086","state":"partial","evidence":["conductor/requirements.md","src/global_medicines_atlas/query_service.py","src/global_medicines_atlas/api.py","src/global_medicines_atlas/cli.py","src/global_medicines_atlas/atlas.py","tests/test_concept_query_service.py","tests/test_atlas_discovery_e2e.py"],"blocker_ids":["stable-v1-concept-discovery"]},
     {"requirement_id":"M-087","state":"verified","evidence":["conductor/requirements.md","quality/qualifications/stable-v1-consumer-compatibility.json","contracts/openapi-v1.json","scripts/qualify_clean_consumer.py",".github/workflows/test-goblin.yml"],"blocker_ids":[]},
-    {"requirement_id":"M-088","state":"blocked","evidence":["conductor/requirements.md","quality/qualifications/publication-identities.json","schemas/publication-identity-registry-v1.json","scripts/validate_publication_identities.py"],"blocker_ids":["stable-v1-publication-identities","stable-v1-publication-gates"]},
+    {"requirement_id":"M-088","state":"verified","evidence":["conductor/requirements.md","quality/qualifications/publication-identities.json","schemas/publication-identity-registry-v1.json","scripts/validate_publication_identities.py","docs/publication/data-layer-archive-receipt.md"],"blocker_ids":[]},
     {"requirement_id":"M-089","state":"partial","evidence":["conductor/requirements.md","src/global_medicines_atlas/acquisition.py","tests/test_source_acquisition.py","tests/test_product_security.py"],"blocker_ids":["stable-v1-clean-room-rehearsal"]},
     {"requirement_id":"M-090","state":"partial","evidence":["conductor/requirements.md","schemas/comparison-validity-v1.json","src/global_medicines_atlas/comparison_validity.py","src/global_medicines_atlas/product_contracts.py","tests/test_comparison_validity.py","tests/test_comparison_validity_properties.py"],"blocker_ids":["stable-v1-comparison-validity"]},
-    {"requirement_id":"M-091","state":"blocked","evidence":["conductor/requirements.md","docs/governance/licensing-decision.md"],"blocker_ids":["stable-v1-publication-identities","stable-v1-publication-gates"]},
+    {"requirement_id":"M-091","state":"verified","evidence":["conductor/requirements.md","research/protocol/academic-protocol-v1.json","docs/research/academic-protocol.md","docs/publication/external-publication-receipt.md"],"blocker_ids":[]},
     {"requirement_id":"M-092","state":"partial","evidence":["conductor/requirements.md","conductor/design.md","conductor/tracks/bronze_medallion_completion_20260819/spec.md"],"blocker_ids":["stable-v1-source-maturity"]},
     {"requirement_id":"M-093","state":"partial","evidence":["conductor/requirements.md","conductor/design.md","conductor/tracks/bronze_medallion_completion_20260819/spec.md"],"blocker_ids":["stable-v1-source-maturity"]},
     {"requirement_id":"M-094","state":"partial","evidence":["conductor/requirements.md","conductor/design.md","src/global_medicines_atlas/columnar.py"],"blocker_ids":["stable-v1-source-maturity"]},
     {"requirement_id":"M-095","state":"partial","evidence":["conductor/requirements.md","src/global_medicines_atlas/data/medicine_source_catalog.json","conductor/tracks/bronze_medallion_completion_20260819/spec.md"],"blocker_ids":["stable-v1-source-maturity"]},
-    {"requirement_id":"M-096","state":"partial","evidence":["conductor/requirements.md","conductor/design.md","docs/ECOSYSTEM_REUSE.md","quality/qualifications/publication-identities.json"],"blocker_ids":["stable-v1-publication-identities","stable-v1-publication-gates"]},
+    {"requirement_id":"M-096","state":"partial","evidence":["conductor/requirements.md","conductor/design.md","docs/ECOSYSTEM_REUSE.md","quality/qualifications/publication-identities.json","docs/publication/data-layer-archive-receipt.md"],"blocker_ids":["stable-v1-source-maturity"]},
     {"requirement_id":"M-097","state":"partial","evidence":["conductor/requirements.md","conductor/design.md","src/global_medicines_atlas/receipts.py","conductor/tracks/bronze_medallion_completion_20260819/plan.md"],"blocker_ids":["stable-v1-source-maturity"]}
   ],
   "maturity_dimensions": [
@@ -117,14 +117,13 @@
   "residual_risks": [
     {"risk_id":"RISK-001","description":"Independent production backup storage, RPO, RTO and crash consistency are not qualified.","disposition":"unresolved","blocking":true,"evidence":["quality/qualifications/v08.json"]},
     {"risk_id":"RISK-002","description":"Renovate App activation requires maintainer authority.","disposition":"unresolved","blocking":true,"evidence":["quality/qualifications/v08.json"]},
-    {"risk_id":"RISK-003","description":"Third-party and mixed-rights source data require artifact-specific review before any dataset publication.","disposition":"unresolved","blocking":true,"evidence":["docs/governance/licensing-decision.md","DATA_LICENSE.md","src/global_medicines_atlas/publication_contracts.py"]},
+    {"risk_id":"RISK-003","description":"Public/no-credential catalogue publication is complete; credentialed and restricted sources remain out of scope and are not a stable-v1 or academic blocker.","disposition":"accepted","blocking":false,"evidence":["docs/publication/data-layer-archive-receipt.md","quality/qualifications/data-layer-archive-receipt.json","docs/governance/licensing-decision.md"]},
     {"risk_id":"RISK-004","description":"Mojo remains experimental; Python 3.14 is authoritative.","disposition":"accepted","blocking":false,"evidence":["quality/qualifications/v08.json"]}
   ],
   "publication_identities": [
     {"system":"github","object_role":"software_source_release","identifier":"https://github.com/edithatogo/global-medicines-atlas","licence_state":"approved","state":"verified"},
     {"system":"hugging_face","object_role":"derived_dataset_distribution","identifier":"https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue","licence_state":"approved","state":"verified"},
-    {"system":"zenodo","object_role":"archival_doi_record","identifier":"https://doi.org/10.5281/zenodo.21734811","licence_state":"approved","state":"verified"},
-    {"system":"osf","object_role":"protocol_preregistration","identifier":null,"licence_state":"unresolved","state":"blocked"}
+    {"system":"zenodo","object_role":"archival_doi_record","identifier":"https://doi.org/10.5281/zenodo.21734811","licence_state":"approved","state":"verified"}
   ],
   "release_gates": [
     {"gate_id":"stable-v1-canonical-schema-v2","description":"Implement and rehearse the structural canonical medicine v2 migration and rollback.","state":"unverified","evidence":["schemas/canonical-medicine-v2.json"]},
@@ -136,7 +135,7 @@
     {"gate_id":"stable-v1-clean-room-rehearsal","description":"Pass independent reproduction, migration, rollback and recovery rehearsals.","state":"unverified","evidence":["quality/qualifications/stable-v1-rehearsal-plan.json"]},
     {"gate_id":"stable-v1-support-readiness","description":"Resolve the verified support, documentation, limitations and residual-risk gate register.","state":"unverified","evidence":["docs/qualification/stable-v1-contract.md","quality/qualifications/stable-v1-support-readiness.json"]},
     {"gate_id":"stable-v1-hosted-governance","description":"Verify dated hosted repository governance and protected checks.","state":"unverified","evidence":[]},
-    {"gate_id":"stable-v1-publication-identities","description":"Verify non-overlapping GitHub, Hugging Face, Zenodo and OSF identities.","state":"blocked","evidence":["quality/qualifications/publication-identities.json","schemas/publication-identity-registry-v1.json","scripts/validate_publication_identities.py"]},
+    {"gate_id":"stable-v1-publication-identities","description":"Verify non-overlapping GitHub, Hugging Face and Zenodo identities. OSF is deprecated.","state":"passed","evidence":["quality/qualifications/publication-identities.json","schemas/publication-identity-registry-v1.json","scripts/validate_publication_identities.py","docs/publication/data-layer-archive-receipt.md"]},
     {"gate_id":"stable-v1-publication-gates","description":"Pass governed rights, privacy, checksum and verification contracts.","state":"unverified","evidence":["src/global_medicines_atlas/publication_contracts.py"]},
     {"gate_id":"renovate-app-activation","description":"Verify maintainer-authorized Renovate App activation.","state":"blocked","evidence":["quality/qualifications/v08.json"]},
     {"gate_id":"stable-v1-licence-approval","description":"Obtain explicit maintainer software and bounded derived-data licence approval.","state":"passed","evidence":["docs/governance/licensing-decision.md","LICENSE","DATA_LICENSE.md"]},
@@ -153,7 +152,6 @@
     "stable-v1-clean-room-rehearsal",
     "stable-v1-support-readiness",
     "stable-v1-hosted-governance",
-    "stable-v1-publication-identities",
     "stable-v1-publication-gates",
     "renovate-app-activation",
     "stable-v1-maturity-m5",

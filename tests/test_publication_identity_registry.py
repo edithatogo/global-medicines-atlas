@@ -31,22 +31,26 @@ def test_registry_schema_and_runtime_contract_validate() -> None:
     Draft202012Validator.check_schema(schema)
     Draft202012Validator(schema).validate(_payload())
     registry = PublicationIdentityRegistry.model_validate(_payload())
-    assert len({item.object_id for item in registry.identities}) == 4
-    assert len({item.object_role for item in registry.identities}) == 4
-
-
-def test_current_registry_is_explicitly_blocked_not_publishable() -> None:
-    registry = PublicationIdentityRegistry.model_validate(_payload())
-    assert set(registry.blocking_reasons()) == {
-        "protocol-preregistration:identifier-unresolved",
-        "protocol-preregistration:licence-unresolved",
+    assert {item.system for item in registry.identities} == {
+        PublicationSystem.GITHUB,
+        PublicationSystem.HUGGING_FACE,
+        PublicationSystem.ZENODO,
     }
-    with pytest.raises(ValueError, match="registry is blocked"):
-        registry.assert_publishable()
+    assert PublicationSystem.OSF not in {
+        item.system for item in registry.identities
+    }
+    assert len({item.object_id for item in registry.identities}) == 3
+    assert len({item.object_role for item in registry.identities}) == 3
+
+
+def test_current_registry_is_publishable_without_deprecated_osf() -> None:
+    registry = PublicationIdentityRegistry.model_validate(_payload())
+    assert registry.blocking_reasons() == ()
+    registry.assert_publishable()
     registry.assert_object_publishable("software-source-release")
     registry.assert_object_publishable("derived-dataset")
     registry.assert_object_publishable("archival-record")
-    with pytest.raises(ValueError, match="protocol-preregistration is blocked"):
+    with pytest.raises(ValueError, match="unknown publication object"):
         registry.assert_object_publishable("protocol-preregistration")
     with pytest.raises(ValueError, match="unknown publication object"):
         registry.assert_object_publishable("missing")
@@ -107,6 +111,28 @@ def test_identity_state_contradictions_fail_closed(
     payload = copy.deepcopy(_payload())
     payload["identities"][0].update(updates)
     with pytest.raises(ValidationError, match=message):
+        PublicationIdentityRegistry.model_validate(payload)
+
+
+def test_live_registry_rejects_deprecated_osf_identity() -> None:
+    payload = copy.deepcopy(_payload())
+    payload["identities"][2].update(
+        {
+            "object_id": "protocol-preregistration",
+            "system": "osf",
+            "object_role": "protocol_preregistration",
+            "identifier": None,
+            "identifier_state": "unresolved",
+            "identifier_evidence": None,
+            "licence_state": "unresolved",
+            "licence_expression": None,
+            "licence_decision_evidence": None,
+            "related_object_ids": ["software-source-release"],
+        }
+    )
+    payload["identities"][0]["related_object_ids"] = ["derived-dataset"]
+    payload["identities"][1]["related_object_ids"] = ["software-source-release"]
+    with pytest.raises(ValidationError, match="deprecated"):
         PublicationIdentityRegistry.model_validate(payload)
 
 

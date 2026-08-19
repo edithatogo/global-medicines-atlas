@@ -77,6 +77,15 @@ class PublicationObjectRole(StrEnum):
     PROTOCOL_PREREGISTRATION = "protocol_preregistration"
 
 
+LIVE_PUBLICATION_SYSTEMS = frozenset(
+    {
+        PublicationSystem.GITHUB,
+        PublicationSystem.HUGGING_FACE,
+        PublicationSystem.ZENODO,
+    }
+)
+
+
 class DecisionState(StrEnum):
     UNRESOLVED = "unresolved"
     APPROVED = "approved"
@@ -159,7 +168,7 @@ class PublicationIdentityRegistry(PublicationContractModel):
     ]
     schema_version: Annotated[int, Field(ge=1)]
     identities: tuple[PublicationIdentity, ...] = Field(
-        min_length=4, max_length=4
+        min_length=3, max_length=3
     )
 
     @model_validator(mode="after")
@@ -172,11 +181,15 @@ class PublicationIdentityRegistry(PublicationContractModel):
             for item in self.identities
             if item.identifier is not None
         )
-        if set(systems) != set(PublicationSystem) or len(systems) != len(
+        if PublicationSystem.OSF in systems:
+            raise ValueError(
+                "OSF is deprecated as a live publication identity"
+            )
+        if set(systems) != LIVE_PUBLICATION_SYSTEMS or len(systems) != len(
             set(systems)
         ):
             raise ValueError(
-                "registry requires each publication system exactly once"
+                "registry requires each live publication system exactly once"
             )
         if len(roles) != len(set(roles)) or len(object_ids) != len(
             set(object_ids)

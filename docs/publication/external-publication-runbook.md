@@ -9,7 +9,7 @@ separate publication identities.
 | --- | --- | --- |
 | Source and software release | GitHub | `v1.0.0rc1` published as a prerelease |
 | Software archival record | Zenodo | Published at [10.5281/zenodo.21734811](https://doi.org/10.5281/zenodo.21734811) from `v1.0.0rc1`; software-only |
-| Protocol and preregistration | OSF | Submission package prepared; registration remains gated by final preview |
+| Protocol and preregistration | In-repo + Zenodo | Persistent identity is `research/protocol/` plus [10.5281/zenodo.21734811](https://doi.org/10.5281/zenodo.21734811). OSF is deprecated. |
 | Catalogue metadata and governed fixtures | Hugging Face | Published at [`edithatogo/global-medicines-atlas-catalogue`](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue) revision [`b25af36da32ffa3ddc5d525f1c568459d23f6e11`](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue/tree/b25af36da32ffa3ddc5d525f1c568459d23f6e11); live source-derived bulk data remains rights-gated |
 | Dataset archival record | Zenodo | Separate record, only for assets with explicit redistribution rights |
 
@@ -32,8 +32,8 @@ does not license third-party medicine data.
 1. Authorize the Renovate GitHub App and verify the Dependency Dashboard issue.
 2. The software record is published from the GitHub release; verify its DOI,
    seven-asset manifest, and software-only boundary during subsequent audits.
-3. Create the OSF project, upload the prepared submission package, connect
-   GitHub and the archival records, and preview the registration.
+3. OSF is deprecated. Do not create or submit OSF registrations. Keep the
+   in-repo protocol and Zenodo software record as the persistent identity.
 4. The Hugging Face catalogue identity is published with a dataset card,
    Parquet source inventory, and representative governed fixtures. Its public
    identifier still does not grant rights in live source-derived medicine data.
@@ -43,7 +43,7 @@ does not license third-party medicine data.
 
 ## Human gates
 
-OSF registration, public Hugging Face dataset visibility, and public Zenodo
-dataset publication are irreversible or difficult-to-reverse dissemination
-actions. They require final maintainer confirmation after the service preview
-and rights manifest have been inspected.
+Public Hugging Face dataset visibility for the no-credential catalogue and the
+software-only Zenodo record already exist. OSF is deprecated. A public stable
+software release and any restricted-payload publication remain explicit
+maintainer gates.

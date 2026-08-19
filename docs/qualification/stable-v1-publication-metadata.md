@@ -16,21 +16,21 @@ generated package member.
 
 ## Publication identity boundary
 
-The identity registry assigns non-overlapping roles to GitHub, Hugging Face,
-Zenodo, and OSF. Links between those intellectual objects must be closed and
-reciprocal. Configured identifiers must use the expected HTTPS host and remain
-unique after normalization.
+The live identity registry assigns non-overlapping roles to GitHub, Hugging
+Face, and Zenodo. OSF is deprecated as a live publication identity; historical
+OSF landing-page verification remains labelled superseded. Links between the
+live intellectual objects must be closed and reciprocal. Configured identifiers
+must use the expected HTTPS host and remain unique after normalization.
 
-The current registry verifies the GitHub software source, the catalogue-only
-Hugging Face distribution, and the Zenodo software DOI using the durable
-reconciliation receipt. The Hugging Face identifier applies only to catalogue
-metadata and schemas, and the Zenodo identifier applies only to software. They
-do not license or publish source-derived medicine data. OSF remains unresolved:
-the related URL in Zenodo metadata is not treated as evidence of an OSF project
-or preregistration. The qualification therefore keeps the OSF, source-derived
-data, production-package, signature, and final-publication gates blocked; it
-does not infer those outcomes from a URL, repository configuration, or passing
-CI.
+The current registry verifies the GitHub software source, the public
+no-credential Hugging Face catalogue archive, and the Zenodo software DOI.
+The Hugging Face identifier applies to catalogue metadata, publication
+contracts, and representative governed fixtures. It does not license or publish
+credentialed or restricted source payloads. The Zenodo identifier applies to
+software and is the durable public archival path for the in-repo protocol
+artefacts. The qualification therefore keeps the production-package, signature,
+and final-publication gates blocked; it does not infer those outcomes from a
+URL, repository configuration, or passing CI.
 
 ## Safety boundary
 
@@ -58,14 +58,14 @@ does not publish, sign, create a release, or require credentials.
 
 ## Remaining gates
 
-- Production source-by-source redistribution and metadata rights review.
-- Durable OSF preregistration identity and a verified public landing page.
-- Source-by-source redistribution review before any source-derived dataset
-  identifier or publication is created.
-- Explicit maintainer approval for OSF registration and any future
-  source-derived-data release.
-- A separately qualified production package, signature, release, publication,
+- A separately qualified production package, signature, stable-v1 promotion,
   and externally observable verification receipt.
+- Production disaster-recovery authority for live production systems.
+- Credentialed and restricted source payloads (NZULM, AMT, PBS embargo,
+  dm+d/TRUD, EMA PMS, SPOR, and the other skipped sources) remain out of
+  scope.
 
-These blockers are expected Phase 3 authority boundaries, not successful
-publication claims.
+Public/no-credential catalogue archival is complete. OSF registration-record
+licence work is cancelled because OSF is deprecated. These remaining items are
+isolated authority boundaries, not unfinished OSF or derived-data identity
+work.

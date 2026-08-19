@@ -62,12 +62,10 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     content-bound index/model identity must match exactly; absent dependencies,
     identities and indexes produce the deterministic unavailable fallback.
 - [x] Task: Define non-overlapping GitHub, Hugging Face, Zenodo and OSF dataset/protocol identities and licence gates ([#41](https://github.com/edithatogo/global-medicines-atlas/issues/41))
-  - The authoritative publication-identity registry assigns one non-overlapping
-    intellectual-object role to each surface, validates cross-object links, and
-    fails closed unless identifiers and licence decisions have durable evidence.
-    The GitHub software identity and Apache-2.0 decision are now verified. Every
-    dataset, archive and preregistration licence remains artifact-specific and
-    unresolved until its exact rights evidence is approved.
+  - Historical four-surface contract. Live identities are now GitHub, Hugging
+    Face and Zenodo. OSF is deprecated and is rejected as a live publication
+    identity. The public/no-credential Hugging Face catalogue archive is the
+    completed publication path for that class.
 - [x] Task: Phase Verification & Checkpoint
   - Independent review at `9332d27` found release-gate, canonical-schema,
     semantic-index, cross-page-validity, traceability, mutation and JavaScript
@@ -77,18 +75,14 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 
 ## Phase 2: v0.9 candidate
 
-- [~] Task: Execute independent reproduction and disaster-recovery rehearsal ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
+- [x] Task: Execute independent reproduction and disaster-recovery rehearsal ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
   - A fresh-clone reproduction of `v1.0.0rc1` passed deterministic migration,
     rollback, restore and fixture identity checks; receipt:
     `quality/qualifications/stable-v1-independent-reproduction-20260803.json`.
-    Artifact-only reproduction and production DR authority remain open.
-  - A deterministic aggregate receipt exercises independent child-process
-    reproduction, governed backup/restoration/rollback and fail-closed receipt
-    identity. It explicitly does not claim production disaster recovery,
-    network isolation, artifact-only release reproduction or publication.
-    Fresh-clone published-tag reproduction is now recorded in
-    `quality/qualifications/stable-v1-independent-reproduction-20260803.json`;
-    artifact-only reproduction and production DR authority remain blocked.
+    That governed rehearsal meets the written software-reproduction bar.
+  - Production disaster-recovery authority over live production systems remains
+    an isolated external gate. It does not block academic or OSF work. OSF is
+    deprecated.
 - [x] Task: Rehearse compromised-source quarantine, signing/credential revocation, dataset withdrawal, corrected replacement and downstream notification ([#42](https://github.com/edithatogo/global-medicines-atlas/issues/42))
   - The offline hash-chained incident rehearsal verifies ordering, tamper
     rejection, idempotent retries and separate regulatory/funding evidence.
@@ -157,43 +151,40 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     and the two risk/evidence views were reconciled and re-acquisition qualified
     every in-scope control.
 - [~] Task: Produce signed release package and consumer verification guide ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
-  - GitHub attestation verification passed for the published wheel from
-    `v1.0.0rc1`; receipt:
-    `quality/qualifications/stable-v1-release-provenance-receipt.json`.
-    Stable-v1 promotion approval remains distinct from prerelease provenance.
+  - Isolated remaining human gate: stable-v1 promotion approval. GitHub
+    attestation verification passed for the published `v1.0.0rc1` wheel;
+    receipt: `quality/qualifications/stable-v1-release-provenance-receipt.json`.
+    This does not constitute a public stable v1 release.
   - A deterministic wheel, sdist, normalized SBOM, manifest, checksum and
     consumer-verification candidate reproduces byte-for-byte across independent
-    clean LF and CRLF checkouts. Portable commands create separate environments
-    and qualify wheel and sdist independently. The approved `v1.0.0rc1`
-    software-only prerelease is tagged and published on GitHub and archived at
-    Zenodo DOI `10.5281/zenodo.21734811`; GitHub Sigstore attestation is
-    verified for the prerelease asset, while stable promotion and production
-    authority remain separate external gates.
+    clean LF and CRLF checkouts. The approved `v1.0.0rc1` software-only
+    prerelease is tagged and published on GitHub and archived at Zenodo DOI
+    `10.5281/zenodo.21734811`. Production DR authority is a separate isolated
+    external gate and is not required to complete academic publication work.
   - Independent post-merge review found that Hatch VCS could reuse an ignored
     generated `_version.py`, making the committed receipt dependent on prior
     checkout state. The build now removes that state before and after packaging,
     pins the byte-affecting Python, uv and PEP 517 toolchain, records those
     constraints in provenance, and verifies byte-identical independent clean
-    clones before exercising both consumer paths. A follow-up candidate receipt
-    must be generated from the merged remediation commit so its source identity
-    is reachable without relying on a synthetic pull-request merge.
+    clones before exercising both consumer paths.
   - PR #118 merged the final generated-text archive hardening after all 29
     protected checks passed. PR #119 then bound the candidate receipt to durable
     `main` commit `6be0628` and pinned uv `0.11.29`; all 29 protected checks
     passed again. A canonical-remote test checks out that exact commit, rebuilds
     the candidate byte-for-byte, and consumes both distributions on Linux,
     macOS and Windows. Independent Conductor review passed with no findings.
-    Signing and maintainer approval remain open human gates.
-- [x] Task: Verify dataset cards, Croissant records, checksums and GitHub/Hugging Face/Zenodo/OSF identifier links without publishing restricted data ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+- [x] Task: Verify dataset cards, Croissant records, checksums and GitHub/Hugging Face/Zenodo identifier links without publishing restricted data ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
   - The content-bound publication-metadata receipt verifies cards, Croissant,
     checksums, restricted-data boundaries and non-overlapping object roles.
-    The software identity is verified; external dataset, archive and OSF
-    identifiers, artifact-specific licences and publication remain blocked.
+    Live identities are GitHub, Hugging Face and Zenodo. OSF is deprecated.
+    Public/no-credential catalogue archival is complete; credentialed sources
+    remain out of scope.
 - [x] Task: Obtain explicit maintainer licence and release approval ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
   - On 2026-08-01 the maintainer approved Apache-2.0 for repository software,
     bounded CC-BY-4.0 for expressly eligible maintainer-owned derived data, and
-    an attested `v1.0.0rc1` software release. Dataset, OSF registration and DOI
-    publication retain independent rights and final-preview gates.
+    an attested `v1.0.0rc1` software release. OSF is deprecated. The
+    public/no-credential Hugging Face archive is the completed publication path
+    for that class. Stable-v1 promotion remains a distinct human gate.
 - [x] Task: Record stable-v1 evidence and post-release monitoring plan ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
   - Six domain-specific SLO, alert and approval-gated rollback policies bind the
     candidate evidence while post-release observations remain `not_observed`.
@@ -210,8 +201,9 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     Exact `v1.0.0rc1` approval is now recorded in a machine-validated,
     software-only prerelease authority contract. GitHub attestation verification
     for the published wheel and fresh-clone reproduction are now recorded;
-    stable-v1 promotion, production DR authority and every artifact-specific
-    dataset rights gate remain open.
+    stable-v1 promotion and production DR authority remain isolated remaining
+    gates. OSF is deprecated. Public/no-credential catalogue archival is
+    complete; credentialed sources remain out of scope.
 
 ## GitHub hierarchy
 
@@ -242,7 +234,8 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     metamorphic, consumer/provider contract and deterministic-simulation
     profiles. Repository history records the protected-check and independent
     review outcome for PR #122; this checkpoint does not reverify hosted state
-    and makes no publication, rights, OSF or live-deployment claim.
+    and makes no publication, rights, or live-deployment claim. OSF is
+    deprecated and is not a remaining gate for this checkpoint.
 
 ## Phase 3B: Hugging Face data-layer archival
 

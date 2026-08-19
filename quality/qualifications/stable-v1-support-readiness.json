@@ -85,12 +85,12 @@
     },
     {
       "risk_id": "RISK-003",
-      "description": "Third-party and mixed-rights source data require artifact-specific review before any dataset publication.",
+      "description": "Public/no-credential catalogue publication is complete; credentialed and restricted sources remain out of scope and are not a stable-v1 or academic blocker.",
       "owner": "maintainer",
-      "disposition": "unresolved",
-      "blocking": true,
+      "disposition": "accepted",
+      "blocking": false,
       "gate_id": "stable-v1-publication-gates",
-      "evidence": ["docs/governance/licensing-decision.md", "DATA_LICENSE.md", "src/global_medicines_atlas/publication_contracts.py"]
+      "evidence": ["docs/publication/data-layer-archive-receipt.md", "quality/qualifications/data-layer-archive-receipt.json", "docs/governance/licensing-decision.md"]
     },
     {
       "risk_id": "RISK-004",

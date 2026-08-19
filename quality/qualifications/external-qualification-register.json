@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.external-qualification-register",
   "schema_version": 1,
-  "status": "blocked_external_evidence_with_osf_registration_receipt",
+  "status": "osf_deprecated_public_catalogue_archive_complete",
   "issues": [
     "https://github.com/edithatogo/global-medicines-atlas/issues/14",
     "https://github.com/edithatogo/global-medicines-atlas/issues/40",
@@ -85,18 +85,16 @@
   },
   "release_and_registration_gates": {
     "renovate_app_dashboard": "not_observed",
-    "osf_draft_registration": "superseded_by_registration_ej5nf",
-    "osf_registration": "ej5nf_public_verified",
-    "osf_structured_responses": "verified_in_registration_ej5nf",
+    "osf_draft_registration": "deprecated_superseded_by_ej5nf",
+    "osf_registration": "ej5nf_historical_deprecated",
+    "osf_structured_responses": "historical_verified_then_deprecated",
     "release_signing_and_attestation": "verified_for_v1.0.0rc1_asset",
     "independent_reproduction": "passed_fresh_clone_representative_rehearsal",
-    "production_disaster_recovery": "authority_required_not_qualified",
+    "production_disaster_recovery": "isolated_authority_gate_not_qualified",
     "submission_allowed": false,
     "required_receipts": [
       "Renovate App installation and Dependency Dashboard issue",
-      "completed OSF schema response preview and maintainer approval",
-      "stable-v1 signed/attested release promotion approval",
-      "artifact-only clean-room reproduction",
+      "stable-v1 promotion approval distinct from v1.0.0rc1 attestation",
       "production disaster-recovery rehearsal with approved authority"
     ]
   },
@@ -104,6 +102,6 @@
     "catalogue_and_fixture_contracts": "qualified_with_explicit_boundaries",
     "source_health_probe_implementation": "available_without_payload_retention",
     "deployment_or_live_source_authority": "not_claimed",
-    "next_action": "obtain required external authority and append immutable receipts"
+    "next_action": "isolated remaining gates are stable-v1 promotion and production DR authority; OSF is deprecated"
   }
 }

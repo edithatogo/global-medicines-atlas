@@ -18,7 +18,7 @@ its phase subissues.
 | v0.6 Product beta | Usable comparison service | Read-only API, CLI queries, atlas, accessibility, provenance drill-down | `comparison_api_atlas_20260729` |
 | v0.7 Reproducible release beta | Governed public research outputs | Parquet, Croissant, data cards, citations, SBOM and attestations, dry-run publication | `governed_publication_20260729` |
 | v0.8 Hardened RC | Secure and observable operations | Source information schema, unified adapter capabilities, source health, complete test inventory, mutation/performance budgets, recovery and compatibility canaries | `operational_hardening_20260729` |
-| v0.9 Stable candidate | Independently reproducible, usable release candidate | Canonical medicine schema v2, comparison-validity semantics, concept discovery/catalog APIs, clean consumer installs, OpenAPI compatibility, documentation and an OSF-ready protocol | `stable_v1_qualification_20260729`, `academic_protocol_preregistration_20260729` |
+| v0.9 Stable candidate | Independently reproducible, usable release candidate | Canonical medicine schema v2, comparison-validity semantics, concept discovery/catalog APIs, clean consumer installs, OpenAPI compatibility, documentation and an in-repo/Zenodo protocol | `stable_v1_qualification_20260729`, `academic_protocol_preregistration_20260729` |
 | v1.0 Stable | Mature, supportable global medicines atlas | All blocking requirements evidenced, measured coverage, signed release, explicit residual limitations and reproducible research governance | `stable_v1_qualification_20260729`, `academic_protocol_preregistration_20260729` |
 
 ## Release gates

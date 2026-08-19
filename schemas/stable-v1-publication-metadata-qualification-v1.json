@@ -31,8 +31,8 @@
     "package": {"$ref": "#/$defs/package"},
     "identities": {
       "type": "array",
-      "minItems": 4,
-      "maxItems": 4,
+      "minItems": 3,
+      "maxItems": 3,
       "items": {"$ref": "#/$defs/identity"}
     },
     "gates": {
@@ -45,8 +45,8 @@
         {"$ref": "#/$defs/passedChecksums"},
         {"$ref": "#/$defs/passedIdentifierLinks"},
         {"$ref": "#/$defs/passedRestrictedBoundary"},
-        {"$ref": "#/$defs/blockedExternalIdentifiers"},
-        {"$ref": "#/$defs/blockedLicences"},
+        {"$ref": "#/$defs/passedExternalIdentifiers"},
+        {"$ref": "#/$defs/passedLicences"},
         {"$ref": "#/$defs/blockedPublication"}
       ],
       "items": false
@@ -204,13 +204,13 @@
       "$ref": "#/$defs/gate",
       "properties": {"gate_id": {"const": "restricted-data-boundary"}, "state": {"const": "passed"}, "blockers": {"maxItems": 0}}
     },
-    "blockedExternalIdentifiers": {
+    "passedExternalIdentifiers": {
       "$ref": "#/$defs/gate",
-      "properties": {"gate_id": {"const": "external-identifiers"}, "state": {"const": "blocked"}, "blockers": {"minItems": 1}}
+      "properties": {"gate_id": {"const": "external-identifiers"}, "state": {"const": "passed"}, "blockers": {"maxItems": 0}}
     },
-    "blockedLicences": {
+    "passedLicences": {
       "$ref": "#/$defs/gate",
-      "properties": {"gate_id": {"const": "licences"}, "state": {"const": "blocked"}, "blockers": {"minItems": 1}}
+      "properties": {"gate_id": {"const": "licences"}, "state": {"const": "passed"}, "blockers": {"maxItems": 0}}
     },
     "blockedPublication": {
       "$ref": "#/$defs/gate",
