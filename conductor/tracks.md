@@ -24,3 +24,5 @@ and rationale contract in that policy.
   *Link: [tracks/stable_v1_qualification_20260729/index.md](./tracks/stable_v1_qualification_20260729/index.md)*
 - [~] **Track: Develop the academic protocol and OSF-ready preregistration**
   *Link: [tracks/academic_protocol_preregistration_20260729/index.md](./tracks/academic_protocol_preregistration_20260729/index.md); GitHub parent [#66](https://github.com/edithatogo/global-medicines-atlas/issues/66).*
+- [ ] **Track: Complete bronze medallion landing for current public scope**
+  *Link: [tracks/bronze_medallion_completion_20260819/index.md](./tracks/bronze_medallion_completion_20260819/index.md); GitHub parent [#167](https://github.com/edithatogo/global-medicines-atlas/issues/167).*

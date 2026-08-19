@@ -1,0 +1,58 @@
+{
+  "track_id": "bronze_medallion_completion_20260819",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-08-19T15:50:00+10:00",
+  "updated_at": "2026-08-19T15:50:00+10:00",
+  "target_versions": ["1.0.0"],
+  "requirements": [
+    "M-001",
+    "M-002",
+    "M-003",
+    "M-004",
+    "M-030",
+    "M-040",
+    "M-052",
+    "M-066",
+    "M-089",
+    "M-092",
+    "M-093",
+    "M-094",
+    "M-095",
+    "M-096",
+    "M-097",
+    "S-004",
+    "S-011",
+    "S-012",
+    "W-007",
+    "W-008"
+  ],
+  "github_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/167",
+  "github_subissues": [
+    "https://github.com/edithatogo/global-medicines-atlas/issues/168",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/169",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/170",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/171"
+  ],
+  "github_issue_drafts": [
+    ".github/generated-issues/bronze-medallion-parent.md",
+    ".github/generated-issues/bronze-medallion-inventory.md",
+    ".github/generated-issues/bronze-medallion-landing.md",
+    ".github/generated-issues/bronze-medallion-ingest.md",
+    ".github/generated-issues/bronze-medallion-archive.md"
+  ],
+  "external_gates": [
+    "Hugging Face archival of public bronze outputs after the sibling publication path lands",
+    "source-by-source rights review before any source-derived archive payload",
+    "maintainer approval of external dataset publication"
+  ],
+  "execution_policy": {
+    "mode": "autonomous",
+    "interaction": "decision_gates_only",
+    "decision_protocol": "options_recommendation_rationale",
+    "phase_checkpoints": "automatic_evidence_gated",
+    "failure_recovery": "bounded_self_correction",
+    "max_identical_failures": 3,
+    "merge_policy": "required_checks_then_merge"
+  }
+}

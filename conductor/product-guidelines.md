@@ -2,7 +2,7 @@
 
 ## Purpose
 
-These guidelines define how the Global Medicines Registration and Funding Comparison System communicates evidence, uncertainty, coverage, and cross-jurisdictional differences.
+These guidelines define how the Global Medicines Registration and Funding Comparison System communicates evidence, uncertainty, coverage, and cross-jurisdictional differences. Bronze outputs describe source-native landed records; they must not be presented as silver, gold, or platinum conclusions.
 
 ## Voice and Tone
 
@@ -108,6 +108,7 @@ Every report should state:
 
 - Prefer official primary sources.
 - Preserve source URLs, identifiers, retrieval dates, and effective dates.
+- Keep bronze (raw-as-landed) evidence distinguishable from later medallion layers.
 - Record transformation and matching methods.
 - Version datasets and derived outputs.
 - Retain historical observations where legally and technically feasible.
