@@ -22,15 +22,18 @@ from .receipts import (
     AcquisitionStatus,
     EvidenceClass,
     FailureReceipt,
+    HttpRetrievalEvidence,
     PayloadEvidence,
     RetrievalEvidence,
     RightsState,
     SourceIdentity,
     SourceReceipt,
     TransformationEvidence,
+    http_retrieval_from_response,
 )
 from .reuse_gate import ReuseGateDecision, require_reuse_decision
 from .source_catalog import AccessMode, MedicineDataSource, load_source_catalog
+from .version import __version__
 
 Receipt = SourceReceipt | FailureReceipt
 Clock = Callable[[], datetime]
@@ -490,6 +493,7 @@ def _success(
     payload: PayloadEvidence,
     evidence_class: EvidenceClass,
     reuse: ReuseGateDecision,
+    http: HttpRetrievalEvidence | None = None,
 ) -> SourceReceipt:
     transformation_id = "raw-acquisition-v1"
     return SourceReceipt(
@@ -500,6 +504,7 @@ def _success(
             retrieved_at=observed_at,
             acquisition_method=method,
             status=AcquisitionStatus.SUCCEEDED,
+            http=http,
         ),
         payload=payload,
         reuse=reuse,
@@ -514,6 +519,43 @@ def _success(
             output_byte_count=payload.byte_count,
         ),
     )
+
+
+def _stream_payload(
+    *,
+    uri: str,
+    target: Path,
+    policy: AcquisitionPolicy,
+    transport: httpx.BaseTransport | None,
+    resolver: Resolver | None,
+) -> tuple[Path, PayloadEvidence, HttpRetrievalEvidence]:
+    effective_transport = transport_for_destination(
+        uri,
+        policy,
+        resolver=resolver,
+        transport=transport,
+    )
+    with (
+        httpx.Client(
+            transport=effective_transport,
+            timeout=policy.timeout_seconds,
+            follow_redirects=transport is None,
+            max_redirects=policy.max_redirects,
+        ) as client,
+        client.stream("GET", uri) as response,
+    ):
+        temporary_path, payload = _stage_response(
+            response,
+            target=target,
+            policy=policy,
+        )
+        http = http_retrieval_from_response(
+            response,
+            original_uri=uri,
+            observed_byte_length=payload.byte_count,
+            agent_version=__version__,
+        )
+    return temporary_path, payload, http
 
 
 def acquire_source(
@@ -542,27 +584,13 @@ def acquire_source(
     temporary_path: Path | None = None
 
     try:
-        effective_transport = transport_for_destination(
-            uri,
-            effective_policy,
-            resolver=resolver,
+        temporary_path, payload, http = _stream_payload(
+            uri=uri,
+            target=target,
+            policy=effective_policy,
             transport=transport,
+            resolver=resolver,
         )
-        with (
-            httpx.Client(
-                transport=effective_transport,
-                timeout=effective_policy.timeout_seconds,
-                follow_redirects=transport is None,
-                max_redirects=effective_policy.max_redirects,
-            ) as client,
-            client.stream("GET", uri) as response,
-        ):
-            temporary_path, payload = _stage_response(
-                response,
-                target=target,
-                policy=effective_policy,
-            )
-
         temporary_path.replace(target)
         temporary_path = None
         return _success(
@@ -573,6 +601,7 @@ def acquire_source(
             payload=payload,
             evidence_class=evidence_class,
             reuse=decision,
+            http=http,
         )
     except DestinationPolicyError as error:
         return _failure(

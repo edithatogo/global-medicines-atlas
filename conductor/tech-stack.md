@@ -103,6 +103,17 @@ LanceDB is a derived semantic and vector index.
 - Treat similarity results as candidates requiring confidence, validation, and review—not authoritative equivalence.
 - Ensure the index can be regenerated from canonical governed inputs.
 
+### Iceberg
+
+Apache Iceberg is an optional table-control plane over source-faithful Parquet.
+
+- Keep Iceberg behind the `iceberg` extra (`pyiceberg`); Python 3.14 core must
+  not import it.
+- Register bronze through an Iceberg REST catalogue only as rebuildable
+  metadata. Do not migrate payload bytes or receipts into Iceberg metadata.
+- Treat Iceberg row lineage, branches, and tags as catalogue aliases. Atlas
+  acquisition provenance remains authoritative.
+
 ### Legacy SQLite
 
 - Treat existing SQLite databases as migration inputs or compatibility artifacts.
@@ -124,6 +135,7 @@ LanceDB is a derived semantic and vector index.
 - PyArrow for Arrow and Parquet interoperability.
 - DuckDB for embedded analytics.
 - LanceDB for derived semantic/vector indexing.
+- PyIceberg only as the optional `iceberg` extra for REST catalogue registration.
 - Pydantic and pydantic-settings for contracts and configuration.
 - HTTPX and Tenacity for robust source acquisition.
 - orjson for high-throughput JSON serialization where compatible with contracts.
