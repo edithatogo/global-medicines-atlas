@@ -29,6 +29,7 @@ from global_medicines_atlas.bronze_recovery import (
     CATALOGUE_DIR,
     BronzeRecoveryError,
     RecoveryScenario,
+    load_receipt_for_reconstruction,
     reconstruct_bronze,
     resume_interrupted_acquisition,
     write_recovery_evidence,
@@ -314,6 +315,109 @@ def test_recovery_evidence_is_compact_and_machine_verifiable(
     assert len(payload["evidence_digest"]) == 64
     assert payload["landings"]
     assert len(path.read_bytes()) < 16_384
+
+
+@pytest.mark.unit
+def test_receipt_document_must_be_a_json_object() -> None:
+    with pytest.raises(BronzeRecoveryError, match="JSON object"):
+        load_receipt_for_reconstruction(b"[1]")
+
+
+@pytest.mark.unit
+def test_future_parser_rejects_unknown_receipt_fields() -> None:
+    document = json.loads(_landable().model_dump_json())
+    document["future_parser_generation"] = 2
+    raw = json.dumps(document, sort_keys=True).encode()
+    with pytest.raises(BronzeRecoveryError, match="exceed this parser"):
+        load_receipt_for_reconstruction(raw, parser_generation=2)
+
+
+@pytest.mark.unit
+def test_empty_store_has_no_payload_tree(tmp_path: Path) -> None:
+    bronze = tmp_path / "bronze"
+    bronze.mkdir()
+    evidence = reconstruct_bronze(bronze)
+    assert evidence.landings == ()
+    assert evidence.incomplete_count == 0
+
+
+@pytest.mark.unit
+def test_blank_journal_lines_are_ignored(tmp_path: Path) -> None:
+    bronze = tmp_path / "bronze"
+    _seed_store(bronze)
+    journal = bronze / "recovery" / "journal.jsonl"
+    journal.parent.mkdir(parents=True, exist_ok=True)
+    journal.write_text("\n\n", encoding="utf-8")
+    evidence = reconstruct_bronze(bronze)
+    assert evidence.landings
+
+
+@pytest.mark.unit
+def test_resume_rejects_mismatched_staged_payload(tmp_path: Path) -> None:
+    bronze = tmp_path / "bronze"
+    receipt = _landable()
+    staged = (
+        bronze
+        / PAYLOAD_DIR
+        / "by_content"
+        / receipt.payload.sha256
+        / "payload.json"
+    )
+    staged.parent.mkdir(parents=True, exist_ok=True)
+    staged.write_bytes(b"not-the-payload")
+    with pytest.raises(BronzeRecoveryError, match="staged payload"):
+        resume_interrupted_acquisition(
+            bronze,
+            payload=PAYLOAD,
+            receipt=receipt,
+            media_hint="json",
+        )
+
+
+@pytest.mark.unit
+def test_receipt_without_payload_is_incomplete_not_invented(
+    tmp_path: Path,
+) -> None:
+    bronze = tmp_path / "bronze"
+    landing = _seed_store(bronze)
+    landing.payload_path.unlink()
+    evidence = reconstruct_bronze(bronze)
+    assert evidence.incomplete_count >= 1
+    assert evidence.landings == ()
+    with pytest.raises(BronzeRecoveryError, match="incomplete"):
+        reconstruct_bronze(bronze, fail_closed_on_incomplete=True)
+
+
+@pytest.mark.unit
+def test_payload_digest_mismatch_fails_closed(tmp_path: Path) -> None:
+    bronze = tmp_path / "bronze"
+    landing = _seed_store(bronze)
+    landing.payload_path.write_bytes(b"tampered-bytes")
+    with pytest.raises(BronzeRecoveryError, match="payload digest"):
+        reconstruct_bronze(bronze)
+
+
+@pytest.mark.unit
+def test_rebuild_fails_closed_if_receipt_bytes_change(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    bronze = tmp_path / "bronze"
+    landing = _seed_store(bronze)
+    original = Path.read_bytes
+    reads = {"count": 0}
+
+    def sometimes_mutated(self: Path) -> bytes:
+        data = original(self)
+        if self.resolve() == landing.receipt_path.resolve():
+            reads["count"] += 1
+            if reads["count"] >= 2:
+                return data + b" "
+        return data
+
+    monkeypatch.setattr(Path, "read_bytes", sometimes_mutated)
+    with pytest.raises(BronzeRecoveryError, match="immutable"):
+        reconstruct_bronze(bronze)
 
 
 @pytest.mark.property
