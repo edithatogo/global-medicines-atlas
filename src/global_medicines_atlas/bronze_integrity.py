@@ -146,8 +146,6 @@ def _hostile_filename(name: str) -> str | None:
     stem = name.rstrip(" .").split(".", maxsplit=1)[0].upper()
     if stem in WINDOWS_RESERVED_NAMES:
         return "Windows reserved device name"
-    if ".." in name.replace("\\", "/").split("/"):
-        return "path traversal in filename"
     return None
 
 

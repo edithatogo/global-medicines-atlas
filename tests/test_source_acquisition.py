@@ -216,6 +216,28 @@ def test_truncated_body_is_removed_without_promotion(tmp_path: Path) -> None:
 
 
 @pytest.mark.edge
+def test_content_length_mismatch_is_removed_without_promotion(
+    tmp_path: Path,
+) -> None:
+    receipt = acquire(
+        tmp_path,
+        lambda _: httpx.Response(
+            200,
+            headers={
+                "content-type": "application/octet-stream",
+                "content-length": "2",
+            },
+            content=b"longer-than-declared",
+        ),
+    )
+
+    assert isinstance(receipt, FailureReceipt)
+    assert receipt.failure_code == "content_length_mismatch"
+    assert not (tmp_path / "artifacts/source.bin").exists()
+    assert not tuple((tmp_path / "artifacts").glob("*.tmp"))
+
+
+@pytest.mark.edge
 def test_timeout_is_recorded_once_without_implicit_retry(
     tmp_path: Path,
 ) -> None:

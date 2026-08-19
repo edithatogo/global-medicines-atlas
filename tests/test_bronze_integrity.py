@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import gzip
+import json
 import tarfile
 import zipfile
 from hashlib import sha256
@@ -14,10 +15,13 @@ from hypothesis import given
 from hypothesis import strategies as st
 from tests.test_source_receipts import source_receipt
 
+from global_medicines_atlas import bronze_integrity
 from global_medicines_atlas.archive_safety import (
     ArchivePolicy,
     ArchiveSafetyError,
     inspect_gzip,
+    inspect_tar,
+    inspect_zip,
 )
 from global_medicines_atlas.bronze_admission import (
     BronzeAdmissionState,
@@ -197,3 +201,82 @@ def test_gzip_bomb_is_rejected_before_expansion() -> None:
     payload = buffer.getvalue()
     with pytest.raises(ArchiveSafetyError, match="decompression ratio"):
         inspect_gzip(payload, ArchivePolicy(max_decompression_ratio=2))
+
+
+def _gzip(payload: bytes) -> bytes:
+    buffer = BytesIO()
+    with gzip.GzipFile(fileobj=buffer, mode="wb") as handle:
+        handle.write(payload)
+    return buffer.getvalue()
+
+
+@pytest.mark.unit
+def test_gzip_and_document_branches_are_classified() -> None:
+    gzip_payload = _gzip(b"hello")
+    assert sniff_payload_kind(gzip_payload) == "gzip"
+    gzip_ok = inspect_untrusted_payload(gzip_payload)
+    assert gzip_ok.sniffed_kind == "gzip"
+    assert not gzip_ok.blocking
+    bomb = _gzip(b"0" * 20_000)
+    assert inspect_untrusted_payload(bomb).blocking
+    xml = inspect_untrusted_payload(b"<root>ok</root>")
+    assert xml.sniffed_kind == "xml"
+    assert not xml.blocking
+    csv_ok = inspect_untrusted_payload(b"a,b\n1,2")
+    assert csv_ok.sniffed_kind == "csv"
+    assert not csv_ok.blocking
+    safe_tar = inspect_untrusted_payload(_tar([("data/a.txt", b"a")]))
+    assert safe_tar.sniffed_kind == "tar"
+    assert not safe_tar.blocking
+    empty_csv = bronze_integrity._Collector()
+    bronze_integrity._check_csv(empty_csv, b"")
+    assert empty_csv.reasons == ["malformed_payload"]
+
+
+@pytest.mark.unit
+def test_filename_poison_length_and_replay_edges() -> None:
+    empty = inspect_untrusted_payload(PAYLOAD, declared_filename="")
+    relative = inspect_untrusted_payload(PAYLOAD, declared_filename="..")
+    reserved = inspect_untrusted_payload(PAYLOAD, declared_filename="CON.txt")
+    assert "hostile_filename" in empty.reason_codes
+    assert "hostile_filename" in relative.reason_codes
+    assert "hostile_filename" in reserved.reason_codes
+    nested: object = {"ok": True}
+    for _ in range(10):
+        nested = {"child": nested}
+    deep = inspect_untrusted_payload(json.dumps(nested).encode())
+    assert "schema_poisoning" in deep.reason_codes
+    assert bronze_integrity._walk_poison_keys({1: "x"}) is None
+    nested_poison = inspect_untrusted_payload(
+        b'{"ok":{"content_id":"spoofed"}}'
+    )
+    listed = inspect_untrusted_payload(b'[{"acquisition_id":"x"}]')
+    nested_list = inspect_untrusted_payload(b'{"items":[{"constructor":true}]}')
+    assert "schema_poisoning" in nested_poison.reason_codes
+    assert "schema_poisoning" in listed.reason_codes
+    assert "schema_poisoning" in nested_list.reason_codes
+    longer = inspect_untrusted_payload(PAYLOAD, declared_length=1)
+    matched = inspect_untrusted_payload(PAYLOAD, declared_length=len(PAYLOAD))
+    assert "content_length_mismatch" in longer.reason_codes
+    assert not matched.blocking
+    colliding = inspect_untrusted_payload(
+        b'{"ok":false}',
+        previous_content_id=sha256(PAYLOAD).hexdigest(),
+        previous_acquisition_id="a" * 64,
+        acquisition_id="a" * 64,
+    )
+    assert "replayed_acquisition" in colliding.reason_codes
+
+
+@pytest.mark.unit
+def test_inspect_helpers_are_reachable_from_unit_lane() -> None:
+    archive = _zip([("data/a.txt", b"a")])
+    assert inspect_zip(archive) == 1
+    assert inspect_tar(_tar([("data/a.txt", b"a")])) == 1
+    tiny = ArchivePolicy(max_archive_bytes=1)
+    with pytest.raises(ArchiveSafetyError, match="archive byte limit"):
+        inspect_zip(archive, tiny)
+    with pytest.raises(ArchiveSafetyError, match="archive byte limit"):
+        inspect_tar(_tar([("a.txt", b"a")]), tiny)
+    with pytest.raises(ArchiveSafetyError, match="archive byte limit"):
+        inspect_gzip(_gzip(b"hello"), tiny)
