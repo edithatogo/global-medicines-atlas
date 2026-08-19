@@ -1,0 +1,370 @@
+{
+  "schema_id": "global-medicines-atlas.bronze-maturity-qualification",
+  "schema_version": 1,
+  "horizon": "bronze-current-public-scope",
+  "evaluated_at": "2026-08-19T21:36:06.964305+00:00",
+  "git_commit": "unspecified",
+  "authorities": {
+    "requirements": "conductor/requirements.md",
+    "maturity_model": "conductor/maturity-model.json",
+    "source_catalog": "src/global_medicines_atlas/data/medicine_source_catalog.json",
+    "bronze_completion_spec": "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
+    "reuse_policy": "docs/ECOSYSTEM_REUSE.md"
+  },
+  "properties": [
+    {
+      "property_id": "completeness",
+      "mandatory": true,
+      "state": "blocked",
+      "requirement_ids": [
+        "M-095",
+        "S-012"
+      ],
+      "evidence": [
+        "src/global_medicines_atlas/data/medicine_source_catalog.json",
+        "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
+        "src/global_medicines_atlas/adapters/fixture_contracts.py"
+      ],
+      "blocker_ids": [
+        "bronze-ingest-incomplete"
+      ],
+      "notes": "77 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
+    },
+    {
+      "property_id": "immutability",
+      "mandatory": true,
+      "state": "evidenced",
+      "requirement_ids": [
+        "M-092",
+        "M-094"
+      ],
+      "evidence": [
+        "src/global_medicines_atlas/bronze_landing.py",
+        "tests/test_bronze_landing.py"
+      ],
+      "blocker_ids": [],
+      "notes": "Payload bytes and content-addressed receipts are evidentiary truth; Parquet is analytical only."
+    },
+    {
+      "property_id": "temporal_identity",
+      "mandatory": true,
+      "state": "evidenced",
+      "requirement_ids": [
+        "M-099"
+      ],
+      "evidence": [
+        "src/global_medicines_atlas/receipts.py",
+        "tests/test_temporal_identity.py"
+      ],
+      "blocker_ids": [],
+      "notes": "Published, retrieved, validity, and acquisition identity remain independent fields."
+    },
+    {
+      "property_id": "provenance",
+      "mandatory": true,
+      "state": "evidenced",
+      "requirement_ids": [
+        "M-001",
+        "M-092"
+      ],
+      "evidence": [
+        "src/global_medicines_atlas/receipts.py",
+        "tests/test_source_receipts.py"
+      ],
+      "blocker_ids": [],
+      "notes": "Content-addressed receipts bind payload identity."
+    },
+    {
+      "property_id": "rights",
+      "mandatory": true,
+      "state": "evidenced",
+      "requirement_ids": [
+        "M-040",
+        "M-095"
+      ],
+      "evidence": [
+        "src/global_medicines_atlas/receipts.py",
+        "docs/data-sources/SOURCE_RIGHTS.md",
+        "DATA_LICENSE.md"
+      ],
+      "blocker_ids": [],
+      "notes": "Rights states are explicit. Licensing conclusions remain a human gate and are not inferred as approved by this qualification."
+    },
+    {
+      "property_id": "reuse_discovery",
+      "mandatory": true,
+      "state": "evidenced",
+      "requirement_ids": [
+        "M-098"
+      ],
+      "evidence": [
+        "src/global_medicines_atlas/reuse_gate.py",
+        "tests/test_reuse_gate.py",
+        "docs/ECOSYSTEM_REUSE.md"
+      ],
+      "blocker_ids": [],
+      "notes": "Acquisition without the reuse gate fails. Hugging Face is a search surface here, not bronze maturity evidence."
+    },
+    {
+      "property_id": "lineage",
+      "mandatory": true,
+      "state": "evidenced",
+      "requirement_ids": [
+        "M-100"
+      ],
+      "evidence": [
+        "src/global_medicines_atlas/openlineage_projection.py",
+        "tests/test_openlineage_projection.py"
+      ],
+      "blocker_ids": [],
+      "notes": "OpenLineage projection keeps payload and Parquet as distinct datasets. Native receipts remain authoritative."
+    },
+    {
+      "property_id": "quarantine",
+      "mandatory": true,
+      "state": "blocked",
+      "requirement_ids": [
+        "M-089",
+        "M-097"
+      ],
+      "evidence": [
+        "src/global_medicines_atlas/bronze_admission.py",
+        "tests/test_bronze_admission.py"
+      ],
+      "blocker_ids": [
+        "bronze-quarantine-admission"
+      ],
+      "notes": "Bronze admission/quarantine lifecycle is not evidenced on this revision. Canonical data-integrity quarantine is a later or adjacent layer and is not counted."
+    },
+    {
+      "property_id": "reproducibility",
+      "mandatory": true,
+      "state": "evidenced",
+      "requirement_ids": [
+        "M-094",
+        "M-097"
+      ],
+      "evidence": [
+        "src/global_medicines_atlas/bronze_landing.py",
+        "tests/test_bronze_landing.py"
+      ],
+      "blocker_ids": [],
+      "notes": "Parquet regeneration keeps the acquisition identity immutable."
+    },
+    {
+      "property_id": "disaster_recovery",
+      "mandatory": true,
+      "state": "blocked",
+      "requirement_ids": [
+        "M-082"
+      ],
+      "evidence": [
+        "quality/qualifications/stable-v1-production-dr-authority-blocker.json",
+        "docs/operations/governed-recovery-runbook.md"
+      ],
+      "blocker_ids": [
+        "bronze-production-dr"
+      ],
+      "notes": "Local recovery rehearsals exist for other layers. Production disaster recovery for bronze payloads remains authority-gated and is not claimed."
+    },
+    {
+      "property_id": "security",
+      "mandatory": true,
+      "state": "evidenced",
+      "requirement_ids": [
+        "M-089"
+      ],
+      "evidence": [
+        "src/global_medicines_atlas/acquisition.py",
+        "conductor/design.md",
+        "src/global_medicines_atlas/snapshots.py",
+        "tests/test_source_acquisition.py"
+      ],
+      "blocker_ids": [],
+      "notes": "Public ingest uses untrusted-acquisition controls. Credentials must not be persisted."
+    },
+    {
+      "property_id": "performance",
+      "mandatory": true,
+      "state": "evidenced",
+      "requirement_ids": [
+        "S-012"
+      ],
+      "evidence": [
+        "tests/test_bronze_scale.py",
+        "quality/bronze-scale-budgets.json",
+        "src/global_medicines_atlas/bronze_scale.py"
+      ],
+      "blocker_ids": [],
+      "notes": "Bronze scale/landing budgets are measured in-repo and are independent of product or dashboard workloads."
+    },
+    {
+      "property_id": "interoperability",
+      "mandatory": true,
+      "state": "evidenced",
+      "requirement_ids": [
+        "M-094",
+        "S-013"
+      ],
+      "evidence": [
+        "src/global_medicines_atlas/iceberg_ready.py",
+        "tests/test_iceberg_ready.py",
+        "src/global_medicines_atlas/bronze_landing.py"
+      ],
+      "blocker_ids": [],
+      "notes": "Source-faithful Parquet is portable. Iceberg-ready identities exist without requiring Iceberg in core."
+    },
+    {
+      "property_id": "documentation",
+      "mandatory": true,
+      "state": "evidenced",
+      "requirement_ids": [
+        "M-092",
+        "M-093",
+        "W-007"
+      ],
+      "evidence": [
+        "conductor/design.md",
+        "conductor/requirements.md",
+        "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
+        "docs/ECOSYSTEM_REUSE.md"
+      ],
+      "blocker_ids": [],
+      "notes": "Bronze horizon, later-layer boundaries, and reuse policy are documented. Silver/gold remain out of scope."
+    }
+  ],
+  "residual_risks": [
+    {
+      "risk_id": "RISK-001",
+      "description": "77 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "disposition": "unresolved",
+      "blocking": true,
+      "evidence": [
+        "src/global_medicines_atlas/data/medicine_source_catalog.json",
+        "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
+        "src/global_medicines_atlas/adapters/fixture_contracts.py"
+      ]
+    },
+    {
+      "risk_id": "RISK-002",
+      "description": "Bronze admission/quarantine lifecycle is not evidenced on this revision. Canonical data-integrity quarantine is a later or adjacent layer and is not counted.",
+      "disposition": "unresolved",
+      "blocking": true,
+      "evidence": [
+        "src/global_medicines_atlas/bronze_admission.py",
+        "tests/test_bronze_admission.py"
+      ]
+    },
+    {
+      "risk_id": "RISK-003",
+      "description": "Local recovery rehearsals exist for other layers. Production disaster recovery for bronze payloads remains authority-gated and is not claimed.",
+      "disposition": "unresolved",
+      "blocking": true,
+      "evidence": [
+        "quality/qualifications/stable-v1-production-dr-authority-blocker.json",
+        "docs/operations/governed-recovery-runbook.md"
+      ]
+    },
+    {
+      "risk_id": "RISK-004",
+      "description": "Licensing conclusions remain a maintainer human gate.",
+      "disposition": "accepted",
+      "blocking": false,
+      "evidence": [
+        "docs/governance/licensing-decision.md",
+        "DATA_LICENSE.md"
+      ]
+    },
+    {
+      "risk_id": "RISK-005",
+      "description": "Public software or dataset release remains a human gate.",
+      "disposition": "accepted",
+      "blocking": false,
+      "evidence": [
+        "conductor/autonomy.md"
+      ]
+    },
+    {
+      "risk_id": "RISK-006",
+      "description": "External dataset publication, including Hugging Face archives, remains a human gate and is not bronze evidentiary truth.",
+      "disposition": "accepted",
+      "blocking": false,
+      "evidence": [
+        "docs/ECOSYSTEM_REUSE.md"
+      ]
+    },
+    {
+      "risk_id": "RISK-007",
+      "description": "Consequential clinical or policy claims remain a human gate.",
+      "disposition": "accepted",
+      "blocking": false,
+      "evidence": [
+        "conductor/product.md"
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "blocker_id": "bronze-ingest-incomplete",
+      "property_id": "completeness",
+      "description": "77 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "evidence": [
+        "src/global_medicines_atlas/data/medicine_source_catalog.json",
+        "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
+        "src/global_medicines_atlas/adapters/fixture_contracts.py"
+      ]
+    },
+    {
+      "blocker_id": "bronze-quarantine-admission",
+      "property_id": "quarantine",
+      "description": "Bronze admission/quarantine lifecycle is not evidenced on this revision. Canonical data-integrity quarantine is a later or adjacent layer and is not counted.",
+      "evidence": [
+        "src/global_medicines_atlas/bronze_admission.py",
+        "tests/test_bronze_admission.py"
+      ]
+    },
+    {
+      "blocker_id": "bronze-production-dr",
+      "property_id": "disaster_recovery",
+      "description": "Local recovery rehearsals exist for other layers. Production disaster recovery for bronze payloads remains authority-gated and is not claimed.",
+      "evidence": [
+        "quality/qualifications/stable-v1-production-dr-authority-blocker.json",
+        "docs/operations/governed-recovery-runbook.md"
+      ]
+    }
+  ],
+  "adversarial_review": {
+    "kind": "independent-repository-evidence-review",
+    "actor": "criteria-versus-code-tests-docs",
+    "method": "Each mandatory property was checked against repository files and tests. Hugging Face publication, stable-v1 qualification success, dashboards, and Silver/Gold behaviour were rejected as bronze evidence. Missing excluded-source coverage is not treated as negative evidence. The actor is not a person.",
+    "passed": true,
+    "findings": [
+      {
+        "finding_id": "ADV-FORBIDDEN-EVIDENCE",
+        "severity": "info",
+        "detail": "No stable-v1, dashboard, Silver/Gold, or Hugging Face publication artefact was accepted as bronze evidence."
+      },
+      {
+        "finding_id": "ADV-FALSE-MATURITY",
+        "severity": "info",
+        "detail": "Bronze maturity is not declared. Blocked mandatory properties: completeness, quarantine, disaster_recovery."
+      },
+      {
+        "finding_id": "ADV-PROPERTY-SET",
+        "severity": "info",
+        "detail": "All 14 required bronze properties were evaluated."
+      }
+    ]
+  },
+  "bronze_mature": false,
+  "qualification_state": "blocked",
+  "report_complete": true,
+  "completeness_inventory": {
+    "catalog_source_count": 96,
+    "bronze_in_scope_count": 83,
+    "fixture_only_count": 2,
+    "excluded_count": 11,
+    "in_scope_without_landing_or_blocker": 77,
+    "missing_coverage_is_not_negative_evidence": true
+  }
+}
