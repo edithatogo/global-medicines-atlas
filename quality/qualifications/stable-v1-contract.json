@@ -88,7 +88,8 @@
     {"requirement_id":"M-097","state":"partial","evidence":["conductor/requirements.md","conductor/design.md","src/global_medicines_atlas/receipts.py","conductor/tracks/bronze_medallion_completion_20260819/plan.md"],"blocker_ids":["stable-v1-source-maturity"]},
     {"requirement_id":"M-098","state":"partial","evidence":["conductor/requirements.md","docs/ECOSYSTEM_REUSE.md","src/global_medicines_atlas/reuse_gate.py","tests/test_reuse_gate.py"],"blocker_ids":["stable-v1-source-maturity"]},
     {"requirement_id":"M-099","state":"partial","evidence":["conductor/requirements.md","src/global_medicines_atlas/receipts.py","tests/test_temporal_identity.py"],"blocker_ids":["stable-v1-source-maturity"]},
-    {"requirement_id":"M-100","state":"partial","evidence":["conductor/requirements.md","src/global_medicines_atlas/openlineage_projection.py","tests/test_openlineage_projection.py"],"blocker_ids":["stable-v1-source-maturity"]}
+    {"requirement_id":"M-100","state":"partial","evidence":["conductor/requirements.md","src/global_medicines_atlas/openlineage_projection.py","tests/test_openlineage_projection.py"],"blocker_ids":["stable-v1-source-maturity"]},
+    {"requirement_id":"M-101","state":"partial","evidence":["conductor/requirements.md","src/global_medicines_atlas/openlineage_projection.py","tests/test_openlineage_projection.py"],"blocker_ids":["stable-v1-source-maturity"]}
   ],
   "maturity_dimensions": [
     {"dimension":"canonical_evidence","current_level":"M4","target_level":"M5","state":"partial","evidence":["conductor/maturity-model.json"],"blocker_ids":["stable-v1-canonical-schema-v2"]},

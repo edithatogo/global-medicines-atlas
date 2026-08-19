@@ -108,17 +108,29 @@ receipts.
 
 ### Iceberg-ready (Should)
 
-Parquet files remain Parquet. Define stable table identities, partitioning, and
-schemas so they can be registered as Iceberg tables. An Iceberg REST catalogue
-over bronze is optional. Python 3.14 core must not require Iceberg.
+Parquet files remain Parquet and remain valid without Iceberg. Define stable
+table identities, namespaces, schemas, partition specifications, append-only
+evolution rules, and snapshot-to-acquisition relationships so those files can
+be registered as Iceberg tables. An Iceberg REST catalogue over bronze is
+optional and lives behind an optional dependency extra. Iceberg row lineage,
+branching, and tagging may be evaluated as catalogue aliases; Atlas
+acquisition provenance remains authoritative. Do not migrate bronze
+evidentiary truth into Iceberg metadata. Python 3.14 core must not require
+Iceberg.
 
 ### OpenLineage projection (Must)
 
 Receipts remain richer native provenance. Emit OpenLineage-compatible Datasets,
-Jobs, and Runs from receipts (source, storage, table-catalogue facets). Payload
-dataset ≠ parquet dataset. No Marquez in the default install. Use real
-OpenLineage field names (`eventType`, `eventTime`, `producer`, `schemaURL`,
-`run`, `job`, `inputs`, `outputs`, `storageLayer`, `fileFormat`).
+Jobs, and Runs from receipts (source, storage, table-catalogue facets). The
+source payload, source-faithful Parquet, and optional table/catalogue
+representation are distinct datasets. Parquet derives from the payload via
+ColumnLineage. Catalogue identity is a Symlinks alternative of Parquet, never
+of the payload. Acquisition identity, temporal identity, reuse disposition,
+rights state, and content digests are projected into facets. Do not collapse
+payload identity into Parquet, Iceberg, or storage-table identity. No Marquez
+in the default install. Use real OpenLineage field names (`eventType`,
+`eventTime`, `producer`, `schemaURL`, `run`, `job`, `inputs`, `outputs`,
+`storageLayer`, `fileFormat`, `symlinks`, `columnLineage`).
 
 ## Non-functional requirements
 

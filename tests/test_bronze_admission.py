@@ -51,6 +51,7 @@ def _landable(payload: bytes = PAYLOAD) -> SourceReceipt:
                 retrieved_at=NOW,
                 source_id=receipt.source.source_id,
                 payload_sha256=evidence.sha256,
+                original_uri=str(retrieval.uri),
             ),
         }
     )

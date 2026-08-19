@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from datetime import datetime
 from enum import StrEnum
 from hashlib import sha256
-from typing import Literal, Self, cast
+from typing import TYPE_CHECKING, Any, Literal, Self, cast
 
 import orjson
 from pydantic import AnyUrl, AwareDatetime, Field, model_validator
@@ -14,7 +15,28 @@ from .models import FrozenModel
 from .reuse_gate import ReuseGateDecision
 from .rights_policy import AcquisitionRightsPolicy, coarse_rights_state
 
+if TYPE_CHECKING:
+    import httpx
+
 SHA256_PATTERN = r"^[0-9a-f]{64}$"
+_SENSITIVE_HTTP_HEADERS = frozenset({
+    "authorization",
+    "proxy-authorization",
+    "cookie",
+    "set-cookie",
+    "x-api-key",
+    "api-key",
+    "x-auth-token",
+    "x-access-token",
+    "www-authenticate",
+})
+_ALLOWED_HTTP_HEADERS = {
+    "etag": "etag",
+    "last-modified": "last_modified",
+    "content-type": "content_type",
+    "content-encoding": "content_encoding",
+    "content-length": "content_length",
+}
 
 
 class AcquisitionMethod(StrEnum):
@@ -66,6 +88,85 @@ class SourceIdentity(FrozenModel):
     catalog_version: str = Field(min_length=1)
 
 
+class HttpRetrievalEvidence(FrozenModel):
+    """Evidence-grade HTTP/API retrieval metadata without secrets."""
+
+    original_uri: AnyUrl
+    final_uri: AnyUrl | None = None
+    redirect_history: tuple[AnyUrl, ...] = ()
+    http_method: str | None = None
+    http_status: int | None = Field(default=None, ge=100, le=599)
+    etag: str | None = None
+    last_modified: str | None = None
+    content_type: str | None = None
+    content_encoding: str | None = None
+    content_length: int | None = Field(default=None, ge=0)
+    observed_byte_length: int | None = Field(default=None, ge=0)
+    source_native_version: str | None = None
+    source_native_date: AwareDatetime | None = None
+    acquisition_agent_version: str | None = None
+
+    def canonical_json(self) -> bytes:
+        payload = self.model_dump(mode="json", exclude_none=False)
+        return orjson.dumps(payload, option=orjson.OPT_SORT_KEYS)
+
+    def digest(self) -> str:
+        return sha256(self.canonical_json()).hexdigest()
+
+
+def redact_http_headers(headers: Mapping[str, str]) -> dict[str, str]:
+    """Keep allowlisted response metadata; omit credentials and tokens."""
+
+    cleaned: dict[str, str] = {}
+    for key, value in headers.items():
+        lowered = key.lower()
+        if lowered in _SENSITIVE_HTTP_HEADERS:
+            continue
+        mapped = _ALLOWED_HTTP_HEADERS.get(lowered)
+        if mapped is not None:
+            cleaned[mapped] = value
+    return cleaned
+
+
+def http_retrieval_from_response(
+    response: httpx.Response,
+    *,
+    original_uri: str,
+    observed_byte_length: int,
+    agent_version: str,
+    source_native_version: str | None = None,
+    source_native_date: AwareDatetime | None = None,
+) -> HttpRetrievalEvidence:
+    """Project an HTTP response into a secret-free retrieval receipt."""
+
+    cleaned = redact_http_headers({
+        str(key): str(value) for key, value in response.headers.items()
+    })
+    media_type = cleaned.get("content_type", "").split(";", 1)[0].strip()
+    length_raw = cleaned.get("content_length")
+    content_length = None
+    if length_raw is not None and length_raw.isdigit():
+        content_length = int(length_raw)
+    history = tuple(AnyUrl(str(item.request.url)) for item in response.history)
+    final = str(response.url) if response.url else None
+    return HttpRetrievalEvidence(
+        original_uri=AnyUrl(original_uri),
+        final_uri=AnyUrl(final) if final else None,
+        redirect_history=history,
+        http_method=response.request.method,
+        http_status=response.status_code,
+        etag=cleaned.get("etag"),
+        last_modified=cleaned.get("last_modified"),
+        content_type=media_type or None,
+        content_encoding=cleaned.get("content_encoding"),
+        content_length=content_length,
+        observed_byte_length=observed_byte_length,
+        source_native_version=source_native_version,
+        source_native_date=source_native_date,
+        acquisition_agent_version=agent_version,
+    )
+
+
 class RetrievalEvidence(FrozenModel):
     """The access surface, clock, method, and outcome of one attempt."""
 
@@ -73,6 +174,7 @@ class RetrievalEvidence(FrozenModel):
     retrieved_at: AwareDatetime
     acquisition_method: AcquisitionMethod
     status: AcquisitionStatus
+    http: HttpRetrievalEvidence | None = None
 
 
 class PayloadEvidence(FrozenModel):
@@ -98,15 +200,39 @@ class TransformationEvidence(FrozenModel):
     output_byte_count: int = Field(ge=0)
 
 
+def content_id_for(*, payload_sha256: str) -> str:
+    """Identity of exact payload bytes; equal to the digest."""
+
+    return payload_sha256
+
+
 def acquisition_id_for(
     *,
     source_id: str,
     payload_sha256: str,
     source_version: str | None = None,
 ) -> str:
-    """Stable identity for one payload acquisition; independent of parse."""
+    """Legacy content-stable identity; not a retrieval event."""
 
     material = f"{source_id}\n{payload_sha256}\n{source_version or ''}"
+    return sha256(material.encode()).hexdigest()
+
+
+def acquisition_event_id_for(
+    *,
+    source_id: str,
+    payload_sha256: str,
+    retrieved_at: datetime,
+    source_version: str | None = None,
+    original_uri: str | None = None,
+) -> str:
+    """Identity of one retrieval event; never collapsed into content_id."""
+
+    material = (
+        f"{source_id}\n{payload_sha256}\n{retrieved_at.isoformat()}\n"
+        f"{source_version or ''}\n{original_uri or ''}\n"
+        "acquisition-event-v1"
+    )
     return sha256(material.encode()).hexdigest()
 
 
@@ -115,7 +241,8 @@ class TemporalIdentity(FrozenModel):
 
     source_published_at / source_effective_at are source-native. Missing
     stays missing and must not be filled from retrieved_at. valid_from /
-    valid_to are recorded only when the source supplied them.
+    valid_to are recorded only when the source supplied them. content_id
+    is the payload digest; acquisition_id is this retrieval event.
     """
 
     retrieved_at: AwareDatetime
@@ -124,6 +251,8 @@ class TemporalIdentity(FrozenModel):
     valid_from: AwareDatetime | None = None
     valid_to: AwareDatetime | None = None
     acquisition_id: str = Field(pattern=SHA256_PATTERN)
+    content_id: str | None = Field(default=None, pattern=SHA256_PATTERN)
+    source_version: str | None = None
 
     @model_validator(mode="after")
     def validate_independent_clocks(self) -> TemporalIdentity:
@@ -146,6 +275,7 @@ def temporal_identity_from_source(
     valid_from: AwareDatetime | None = None,
     valid_to: AwareDatetime | None = None,
     source_version: str | None = None,
+    original_uri: str | None = None,
     substitute_retrieved_as_published: bool = False,
 ) -> TemporalIdentity:
     """Build temporal identity without inventing source-native times."""
@@ -160,10 +290,14 @@ def temporal_identity_from_source(
         source_effective_at=source_effective_at,
         valid_from=valid_from,
         valid_to=valid_to,
-        acquisition_id=acquisition_id_for(
+        source_version=source_version,
+        content_id=content_id_for(payload_sha256=payload_sha256),
+        acquisition_id=acquisition_event_id_for(
             source_id=source_id,
             payload_sha256=payload_sha256,
+            retrieved_at=retrieved_at,
             source_version=source_version,
+            original_uri=original_uri,
         ),
     )
 
@@ -191,16 +325,19 @@ def _bind_temporal_payload(data: dict[str, object]) -> dict[str, object]:
     retrieved_at = _model_field(retrieval, "retrieved_at")
     source_id = _model_field(source, "source_id")
     digest = _model_field(payload, "sha256")
+    uri = _model_field(retrieval, "uri")
     if not isinstance(retrieved_at, datetime) or not isinstance(source_id, str):
         return data
     payload_sha256 = digest if isinstance(digest, str) else "0" * 64
     effective = data.get("effective_from")
     source_effective_at = effective if isinstance(effective, datetime) else None
+    original_uri = str(uri) if uri is not None else None
     data["temporal"] = temporal_identity_from_source(
         retrieved_at=retrieved_at,
         source_id=source_id,
         payload_sha256=payload_sha256,
         source_effective_at=source_effective_at,
+        original_uri=original_uri,
     )
     return data
 
@@ -214,6 +351,33 @@ class DeterministicReceipt(FrozenModel):
 
     def digest(self) -> str:
         return sha256(self.canonical_json()).hexdigest()
+
+
+class AcquisitionEvent(DeterministicReceipt):
+    """Append-only record of one retrieval; distinct from payload identity."""
+
+    schema_id: Literal["global-medicines-atlas.bronze-acquisition-event"] = (
+        "global-medicines-atlas.bronze-acquisition-event"
+    )
+    schema_version: Literal[1] = 1
+    acquisition_id: str = Field(pattern=SHA256_PATTERN)
+    content_id: str = Field(pattern=SHA256_PATTERN)
+    source_id: str = Field(min_length=1)
+    source_version: str | None = None
+    retrieved_at: AwareDatetime
+    source_published_at: AwareDatetime | None = None
+    source_effective_at: AwareDatetime | None = None
+    valid_from: AwareDatetime | None = None
+    valid_to: AwareDatetime | None = None
+    payload_sha256: str = Field(pattern=SHA256_PATTERN)
+
+    @model_validator(mode="after")
+    def validate_distinct_identities(self) -> AcquisitionEvent:
+        if self.acquisition_id == self.content_id:
+            raise ValueError("acquisition_id must not equal content_id")
+        if self.content_id != self.payload_sha256:
+            raise ValueError("content_id must equal payload digest")
+        return self
 
 
 class SourceReceipt(DeterministicReceipt):
@@ -241,6 +405,31 @@ class SourceReceipt(DeterministicReceipt):
             return _bind_temporal_payload(cast("dict[str, object]", data))
         return data
 
+    def model_copy(
+        self,
+        *,
+        update: Mapping[str, Any] | None = None,
+        deep: bool = False,
+    ) -> Self:
+        """Keep temporal.content_id coupled to payload digest on copy."""
+
+        updates: dict[str, Any] = dict(update) if update is not None else {}
+        payload = updates.get("payload", self.payload)
+        digest = (
+            payload.sha256 if isinstance(payload, PayloadEvidence) else None
+        )
+        temporal = updates.get("temporal", self.temporal)
+        if (
+            digest is not None
+            and "temporal" not in updates
+            and isinstance(temporal, TemporalIdentity)
+            and temporal.content_id != digest
+        ):
+            updates["temporal"] = temporal.model_copy(
+                update={"content_id": digest}
+            )
+        return super().model_copy(update=updates or None, deep=deep)
+
     @model_validator(mode="after")
     def validate_success_contract(self) -> SourceReceipt:
         if self.retrieval.status is not AcquisitionStatus.SUCCEEDED:
@@ -260,6 +449,14 @@ class SourceReceipt(DeterministicReceipt):
             raise ValueError("temporal identity is required")
         if self.temporal.retrieved_at != self.retrieval.retrieved_at:
             raise ValueError("temporal.retrieved_at must match retrieval")
+        temporal = self.temporal
+        if temporal.content_id is None:
+            temporal = temporal.model_copy(
+                update={"content_id": self.payload.sha256}
+            )
+            return self.model_copy(update={"temporal": temporal})
+        if temporal.content_id != self.payload.sha256:
+            raise ValueError("content_id must equal payload digest")
         self._validate_bound_rights_policy()
         return self
 

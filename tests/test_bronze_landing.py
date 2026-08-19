@@ -131,3 +131,22 @@ def test_unknown_media_uses_bin_and_digest_must_match(tmp_path) -> None:
     )
     with pytest.raises(ValueError, match="reuse gate"):
         regenerate_parquet(missing_reuse)
+
+
+@pytest.mark.unit
+def test_identical_payload_rewrite_is_append_only_idempotent(tmp_path) -> None:
+    receipt = _landable_receipt()
+    first = land_bronze_payload(
+        PAYLOAD,
+        receipt,
+        bronze_root=tmp_path / "bronze",
+        media_hint="json",
+    )
+    second = land_bronze_payload(
+        PAYLOAD,
+        receipt,
+        bronze_root=tmp_path / "bronze",
+        media_hint="json",
+    )
+    assert first.payload_path == second.payload_path
+    assert second.payload_path.read_bytes() == PAYLOAD

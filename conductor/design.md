@@ -540,6 +540,9 @@ flowchart LR
     RECEIPT --> PARQUET
     TIME --> PARQUET
     RECEIPT --> OL
+    PAYLOAD --> OL
+    PARQUET --> OL
+    ICE --> OL
     PARQUET --> ICE
     PARQUET --> HF
 ```
@@ -583,7 +586,33 @@ rights state. Each landed file carries source-native identifiers, retrieval and
 effective dates, receipt digest, uncertainty, and an explicit rights expression.
 Python 3.14 is the complete fallback path. DuckDB and LanceDB may read bronze
 Parquet; they do not store bronze evidentiary truth. Iceberg REST registration
-is optional and must not be imported by Python 3.14 core.
+is optional and must not be imported by Python 3.14 core. Iceberg-ready
+metadata records namespace `bronze`, identity-transform partitions on
+`jurisdiction`, `source_id`, and `rights_state`, append-only schema evolution,
+and snapshot aliases bound to `acquisition_id`. Iceberg metadata is rebuildable
+catalogue state; payload bytes and receipts remain evidentiary truth.
+
+### Lineage and identity graph
+
+Native receipts remain authoritative. OpenLineage is a projection. The source
+payload, source-faithful Parquet, and optional Iceberg-ready catalogue are
+three datasets. ColumnLineage records Parquet as derived from payload bytes.
+Symlinks record the catalogue as an alternative identity of Parquet, never of
+the payload. Acquisition identity, clocks, reuse disposition, rights, and
+content digests appear as facets.
+
+```mermaid
+flowchart LR
+    SRC["gma.source"]
+    PAY["gma.payload content_id"]
+    PQ["gma.parquet analytical digest"]
+    CAT["gma.catalogue Iceberg-ready table"]
+
+    SRC --> PAY
+    PAY -->|"ColumnLineage DIRECT IDENTITY"| PQ
+    PQ -->|"Symlinks TABLE"| CAT
+    CAT -->|"Symlinks LOCATION"| PQ
+```
 
 ### Later layers (sketch only)
 
