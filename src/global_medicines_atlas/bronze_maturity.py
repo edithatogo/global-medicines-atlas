@@ -509,13 +509,21 @@ def evaluate_properties(root: Path) -> list[dict[str, Any]]:
             mandatory=True,
             requirement_ids=("S-012",),
             checks={
-                "tests/test_bronze_landing_performance.py": (
-                    "bronze landing performance budget",
+                "tests/test_bronze_scale.py": (
+                    "evaluate_bronze_scale_budgets",
+                    "test_budget_evaluation_fails_closed_on_slow_pipeline",
+                ),
+                "quality/bronze-scale-budgets.json": (
+                    "pipeline_seconds",
+                    "parquet_seconds",
+                ),
+                "src/global_medicines_atlas/bronze_scale.py": (
+                    "published bronze scale performance budgets",
                 ),
             },
             passing_notes=(
-                "Bronze landing has a measured performance budget that is "
-                "independent of product/dashboard workloads."
+                "Bronze scale/landing budgets are measured in-repo and are "
+                "independent of product or dashboard workloads."
             ),
             failing_notes=(
                 "No bronze-specific landing performance budget exists. "

@@ -2,7 +2,7 @@
   "schema_id": "global-medicines-atlas.bronze-maturity-qualification",
   "schema_version": 1,
   "horizon": "bronze-current-public-scope",
-  "evaluated_at": "2026-08-19T21:27:53.639342+00:00",
+  "evaluated_at": "2026-08-19T21:36:06.964305+00:00",
   "git_commit": "unspecified",
   "authorities": {
     "requirements": "conductor/requirements.md",
@@ -186,17 +186,17 @@
     {
       "property_id": "performance",
       "mandatory": true,
-      "state": "blocked",
+      "state": "evidenced",
       "requirement_ids": [
         "S-012"
       ],
       "evidence": [
-        "tests/test_bronze_landing_performance.py"
+        "tests/test_bronze_scale.py",
+        "quality/bronze-scale-budgets.json",
+        "src/global_medicines_atlas/bronze_scale.py"
       ],
-      "blocker_ids": [
-        "bronze-landing-performance-budget"
-      ],
-      "notes": "No bronze-specific landing performance budget exists. Product, Scalene, or stable-v1 performance receipts are not bronze evidence."
+      "blocker_ids": [],
+      "notes": "Bronze scale/landing budgets are measured in-repo and are independent of product or dashboard workloads."
     },
     {
       "property_id": "interoperability",
@@ -267,15 +267,6 @@
     },
     {
       "risk_id": "RISK-004",
-      "description": "No bronze-specific landing performance budget exists. Product, Scalene, or stable-v1 performance receipts are not bronze evidence.",
-      "disposition": "unresolved",
-      "blocking": true,
-      "evidence": [
-        "tests/test_bronze_landing_performance.py"
-      ]
-    },
-    {
-      "risk_id": "RISK-005",
       "description": "Licensing conclusions remain a maintainer human gate.",
       "disposition": "accepted",
       "blocking": false,
@@ -285,7 +276,7 @@
       ]
     },
     {
-      "risk_id": "RISK-006",
+      "risk_id": "RISK-005",
       "description": "Public software or dataset release remains a human gate.",
       "disposition": "accepted",
       "blocking": false,
@@ -294,7 +285,7 @@
       ]
     },
     {
-      "risk_id": "RISK-007",
+      "risk_id": "RISK-006",
       "description": "External dataset publication, including Hugging Face archives, remains a human gate and is not bronze evidentiary truth.",
       "disposition": "accepted",
       "blocking": false,
@@ -303,7 +294,7 @@
       ]
     },
     {
-      "risk_id": "RISK-008",
+      "risk_id": "RISK-007",
       "description": "Consequential clinical or policy claims remain a human gate.",
       "disposition": "accepted",
       "blocking": false,
@@ -340,14 +331,6 @@
         "quality/qualifications/stable-v1-production-dr-authority-blocker.json",
         "docs/operations/governed-recovery-runbook.md"
       ]
-    },
-    {
-      "blocker_id": "bronze-landing-performance-budget",
-      "property_id": "performance",
-      "description": "No bronze-specific landing performance budget exists. Product, Scalene, or stable-v1 performance receipts are not bronze evidence.",
-      "evidence": [
-        "tests/test_bronze_landing_performance.py"
-      ]
     }
   ],
   "adversarial_review": {
@@ -364,7 +347,7 @@
       {
         "finding_id": "ADV-FALSE-MATURITY",
         "severity": "info",
-        "detail": "Bronze maturity is not declared. Blocked mandatory properties: completeness, quarantine, disaster_recovery, performance."
+        "detail": "Bronze maturity is not declared. Blocked mandatory properties: completeness, quarantine, disaster_recovery."
       },
       {
         "finding_id": "ADV-PROPERTY-SET",
