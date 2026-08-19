@@ -77,13 +77,11 @@ class PublicationObjectRole(StrEnum):
     PROTOCOL_PREREGISTRATION = "protocol_preregistration"
 
 
-LIVE_PUBLICATION_SYSTEMS = frozenset(
-    {
-        PublicationSystem.GITHUB,
-        PublicationSystem.HUGGING_FACE,
-        PublicationSystem.ZENODO,
-    }
-)
+LIVE_PUBLICATION_SYSTEMS = frozenset({
+    PublicationSystem.GITHUB,
+    PublicationSystem.HUGGING_FACE,
+    PublicationSystem.ZENODO,
+})
 
 
 class DecisionState(StrEnum):
@@ -182,10 +180,8 @@ class PublicationIdentityRegistry(PublicationContractModel):
             if item.identifier is not None
         )
         if PublicationSystem.OSF in systems:
-            raise ValueError(
-                "OSF is deprecated as a live publication identity"
-            )
-        if set(systems) != LIVE_PUBLICATION_SYSTEMS or len(systems) != len(
+            raise ValueError("OSF is deprecated as a live publication identity")
+        if set(systems) != set(LIVE_PUBLICATION_SYSTEMS) or len(systems) != len(
             set(systems)
         ):
             raise ValueError(

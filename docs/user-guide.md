@@ -136,5 +136,6 @@ restrictions. Review
 GitHub, Hugging Face, and Zenodo have distinct intended publication roles.
 OSF is deprecated and is not a live identity. A configured identity or URL is
 not evidence that an object was published, licensed, approved, or verified.
-Stable-v1 promotion and production disaster-recovery authority remain explicit
-evidence gates.
+External identifiers, credentials, rights review, release execution, and
+stable-v1 promotion remain explicit evidence gates. Production
+disaster-recovery authority remains a separate isolated gate.

@@ -116,20 +116,18 @@ def test_identity_state_contradictions_fail_closed(
 
 def test_live_registry_rejects_deprecated_osf_identity() -> None:
     payload = copy.deepcopy(_payload())
-    payload["identities"][2].update(
-        {
-            "object_id": "protocol-preregistration",
-            "system": "osf",
-            "object_role": "protocol_preregistration",
-            "identifier": None,
-            "identifier_state": "unresolved",
-            "identifier_evidence": None,
-            "licence_state": "unresolved",
-            "licence_expression": None,
-            "licence_decision_evidence": None,
-            "related_object_ids": ["software-source-release"],
-        }
-    )
+    payload["identities"][2].update({
+        "object_id": "protocol-preregistration",
+        "system": "osf",
+        "object_role": "protocol_preregistration",
+        "identifier": None,
+        "identifier_state": "unresolved",
+        "identifier_evidence": None,
+        "licence_state": "unresolved",
+        "licence_expression": None,
+        "licence_decision_evidence": None,
+        "related_object_ids": ["software-source-release"],
+    })
     payload["identities"][0]["related_object_ids"] = ["derived-dataset"]
     payload["identities"][1]["related_object_ids"] = ["software-source-release"]
     with pytest.raises(ValidationError, match="deprecated"):

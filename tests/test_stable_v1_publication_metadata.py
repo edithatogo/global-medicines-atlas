@@ -142,9 +142,9 @@ def test_receipt_passes_metadata_but_blocks_every_external_gate() -> None:
         "licences",
         "restricted-data-boundary",
     }
-    assert {name for name, gate in gates.items() if gate.state == "blocked"} == {
-        "publication"
-    }
+    assert {
+        name for name, gate in gates.items() if gate.state == "blocked"
+    } == {"publication"}
     assert receipt.external_actions.model_dump() == {
         "credentials_used": False,
         "publication_performed": False,

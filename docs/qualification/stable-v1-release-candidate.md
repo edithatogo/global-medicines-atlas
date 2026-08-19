@@ -11,8 +11,9 @@ GitHub and archived at Zenodo DOI
 [10.5281/zenodo.21734811](https://doi.org/10.5281/zenodo.21734811). This does
 not constitute a stable release, production deployment, or source-data
 publication. OSF is deprecated. Stable promotion remains blocked until
-maintainer approval of a public stable release. Production disaster-recovery
-authority remains a separate isolated gate.
+signing/attestation and the remaining external qualification gates produce
+independently observable receipts. Production disaster-recovery authority
+remains a separate isolated gate.
 
 The committed candidate receipt is bound to durable `main` commit
 `6be062860b70ce3ef28dec55adfc3a1995802947` (the merge of PR #118). The
