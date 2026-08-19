@@ -10,7 +10,10 @@ from global_medicines_atlas.adapters.source_expansion import (
     parse_native_records,
 )
 from global_medicines_atlas.bronze_landing import EVIDENTIARY_TRUTH_SENTENCE
-from global_medicines_atlas.reuse_gate import ReuseGateRequiredError
+from global_medicines_atlas.reuse_gate import (
+    ReuseGateRequiredError,
+    acquire_new_decision,
+)
 from global_medicines_atlas.source_catalog import load_source_catalog
 from global_medicines_atlas.source_expansion import (
     AFRICAN_COVERAGE_JURISDICTIONS,
@@ -22,6 +25,7 @@ from global_medicines_atlas.source_expansion import (
     acquire_without_reuse_gate,
     african_source_coverage_matrix,
     assert_program_invariants,
+    binding_for,
     build_source_index,
     classify_bronze_disposition,
     dimensions_remain_independent,
@@ -29,8 +33,12 @@ from global_medicines_atlas.source_expansion import (
     required_source_ids,
     run_expansion_reuse_gate,
     track_outcomes,
+    write_source_index,
 )
 from global_medicines_atlas.source_expansion_catalog import (
+    apply_expansion_to_catalog,
+    existing_source_patches,
+    expansion_jurisdictions,
     expansion_source_rows,
 )
 
@@ -217,3 +225,63 @@ def test_part_d_and_nice_population_limits() -> None:
     assert "not actual funding" in nice.evidence_limit.lower()
     gip = catalog["nl-gipdatabank"]
     assert "No ATC" in gip.evidence_limit
+
+
+@pytest.mark.unit
+def test_catalog_merge_patches_existing_rows_without_live_ingest(
+    tmp_path: Path,
+) -> None:
+    patches = existing_source_patches()
+    assert (
+        "substitutability"
+        in patches["us-fda-orange-book"]["evidence_limit"].lower()
+    )
+    assert (
+        "not bronze coverage"
+        in patches["eu-ema-pms-fhir"]["evidence_limit"].lower()
+    )
+    with pytest.raises(KeyError):
+        binding_for("not-a-catalogued-source")
+    with pytest.raises(ValueError, match="repository_root"):
+        acquire_expansion_source(
+            "us-fda-nsde",
+            repository_root=tmp_path / "missing-repo",
+            reuse=run_expansion_reuse_gate("us-fda-nsde", repository_root=ROOT),
+        )
+    with pytest.raises(KeyError, match="not in the governed registry"):
+        acquire_expansion_source(
+            "not-a-catalogued-source",
+            repository_root=ROOT,
+            reuse=acquire_new_decision("not-a-catalogued-source"),
+        )
+    document = {
+        "reviewed_at": "2020-01-01",
+        "jurisdictions": [{"jurisdiction": "USA", "name": "United States"}],
+        "sources": [
+            {
+                "source_id": "us-fda-orange-book",
+                "native_identifier": "old",
+                "evidence_limit": "old limit",
+            }
+        ],
+    }
+    merged = apply_expansion_to_catalog(document)
+    assert merged["reviewed_at"] == "2026-08-20"
+    codes = {row["jurisdiction"] for row in merged["jurisdictions"]}
+    assert {"EGY", "IRL", "UGA", "USA"} <= codes
+    ireland = next(
+        row for row in expansion_jurisdictions() if row["jurisdiction"] == "IRL"
+    )
+    assert ireland["priority_cohorts"] == ["source_expansion_20260820"]
+    orange = next(
+        row
+        for row in merged["sources"]
+        if row["source_id"] == "us-fda-orange-book"
+    )
+    assert "substitutability" in orange["evidence_limit"].lower()
+    generated = {row["source_id"] for row in expansion_source_rows()}
+    merged_ids = {row["source_id"] for row in merged["sources"]}
+    assert generated <= merged_ids
+    written = write_source_index(tmp_path / "source_index.json")
+    assert written.is_file()
+    assert INDEX_ID in written.read_text(encoding="utf-8")
