@@ -13,6 +13,8 @@ from global_medicines_atlas.data_layer_archive import (
     HuggingFaceAuthError,
     HuggingFaceCliUploader,
     build_data_layer_archive,
+    huggingface_external_gate_stdout,
+    write_huggingface_external_gate,
 )
 from global_medicines_atlas.publication_transport import (
     authorization_from_environment,
@@ -76,12 +78,11 @@ def main(argv: list[str] | None = None) -> int:
                 uploader=HuggingFaceCliUploader(),
                 recorded_at=recorded_at,
             )
-        except HuggingFaceAuthError as error:
-            payload["external_gate"] = {
-                "state": "blocked",
-                "missing_secret": error.missing_secret,
-                "reason": str(error),
-            }
+        except HuggingFaceAuthError:
+            record_path = write_huggingface_external_gate(args.output_dir)
+            payload["external_gate"] = huggingface_external_gate_stdout(
+                record_path.name
+            )
         else:
             payload["receipt"] = uploaded.model_dump(mode="json")
     print(json.dumps(payload, indent=2, sort_keys=True))

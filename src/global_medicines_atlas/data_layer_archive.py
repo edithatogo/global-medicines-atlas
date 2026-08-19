@@ -32,6 +32,7 @@ ARCHIVE_REVISION = "data-layer-archive-v1"
 FIXTURE_PROVENANCE_NOTE = "representative_fixture_not_live_coverage"
 MAX_ARCHIVAL_FILE_BYTES = 1_000_000
 HF_TOKEN_SECRET_NAME = "HF_TOKEN"  # ruff: ignore[hardcoded-password-string]
+HUGGINGFACE_EXTERNAL_GATE_FILENAME = "huggingface-external-gate.json"
 RESTRICTED_PATH_PREFIXES = (
     "vendor/",
     "vendor/nzmedicines",
@@ -111,6 +112,37 @@ class HuggingFaceAuthError(RuntimeError):
     def __init__(self, message: str, *, missing_secret: str) -> None:
         super().__init__(message)
         self.missing_secret = missing_secret
+
+
+def huggingface_external_gate_stdout(record_name: str) -> dict[str, str]:
+    """CLI payload that names a record file without logging secret fields."""
+
+    return {
+        "state": "blocked",
+        "record": record_name,
+        "reason": "huggingface-identity-unresolved",
+    }
+
+
+def write_huggingface_external_gate(directory: Path) -> Path:
+    """Persist the named missing secret without printing exception secrets."""
+
+    directory.mkdir(parents=True, exist_ok=True)
+    output = directory / HUGGINGFACE_EXTERNAL_GATE_FILENAME
+    output.write_text(
+        json.dumps(
+            {
+                "state": "blocked",
+                "missing_secret_name": HF_TOKEN_SECRET_NAME,
+                "reason": "huggingface-identity-unresolved",
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    return output
 
 
 class DatasetUploader(Protocol):

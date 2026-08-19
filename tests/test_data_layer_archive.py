@@ -285,6 +285,22 @@ def test_identity_probe_names_missing_hf_token(
     assert error.value.missing_secret == HF_TOKEN_SECRET_NAME
 
 
+def test_external_gate_records_secret_name_without_logging_exception_secret(
+    tmp_path: Path,
+) -> None:
+    record_path = archive_mod.write_huggingface_external_gate(tmp_path)
+    recorded = json.loads(record_path.read_text(encoding="utf-8"))
+    assert recorded["state"] == "blocked"
+    assert recorded["missing_secret_name"] == HF_TOKEN_SECRET_NAME
+    stdout_payload = archive_mod.huggingface_external_gate_stdout(
+        record_path.name
+    )
+    dumped = json.dumps(stdout_payload)
+    assert stdout_payload["state"] == "blocked"
+    assert "missing_secret" not in dumped
+    assert HF_TOKEN_SECRET_NAME not in dumped
+
+
 def test_authorization_helper_stays_fail_closed() -> None:
     with pytest.raises(PermissionError):
         assert_external_write_authorized(
