@@ -232,6 +232,14 @@
   native receipts using real OpenLineage field names. Payload datasets are not
   Parquet datasets. Receipts remain richer native provenance. Marquez is not
   part of the default install.
+- **M-101:** Represent the source payload, source-faithful Parquet, and
+  optional table/catalogue representation as distinct OpenLineage datasets
+  linked by derivation (ColumnLineage) and alternative identity (Symlinks).
+  Project acquisition identity, temporal identity, reuse disposition, rights
+  state, and content digests into facets. Do not collapse payload identity
+  into Parquet, Iceberg, or storage-table identity. Native receipts remain
+  authoritative. Events must conform to the current OpenLineage RunEvent
+  shape.
 
 ## Should Have
 

@@ -115,10 +115,16 @@ over bronze is optional. Python 3.14 core must not require Iceberg.
 ### OpenLineage projection (Must)
 
 Receipts remain richer native provenance. Emit OpenLineage-compatible Datasets,
-Jobs, and Runs from receipts (source, storage, table-catalogue facets). Payload
-dataset ≠ parquet dataset. No Marquez in the default install. Use real
-OpenLineage field names (`eventType`, `eventTime`, `producer`, `schemaURL`,
-`run`, `job`, `inputs`, `outputs`, `storageLayer`, `fileFormat`).
+Jobs, and Runs from receipts (source, storage, table-catalogue facets). The
+source payload, source-faithful Parquet, and optional table/catalogue
+representation are distinct datasets. Parquet derives from the payload via
+ColumnLineage. Catalogue identity is a Symlinks alternative of Parquet, never
+of the payload. Acquisition identity, temporal identity, reuse disposition,
+rights state, and content digests are projected into facets. Do not collapse
+payload identity into Parquet, Iceberg, or storage-table identity. No Marquez
+in the default install. Use real OpenLineage field names (`eventType`,
+`eventTime`, `producer`, `schemaURL`, `run`, `job`, `inputs`, `outputs`,
+`storageLayer`, `fileFormat`, `symlinks`, `columnLineage`).
 
 ## Non-functional requirements
 

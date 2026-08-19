@@ -18,6 +18,7 @@ BRONZE_MUST = {
     "M-098",
     "M-099",
     "M-100",
+    "M-101",
 }
 BRONZE_SHOULD = {"S-011", "S-012", "S-013"}
 BRONZE_WONT = {"W-007", "W-008"}
@@ -73,6 +74,7 @@ def test_requirements_place_bronze_in_must_and_later_layers_in_wont() -> None:
     assert wont_ids >= BRONZE_WONT
     assert TRUTH in _folded(must_section)
     assert "archive and output boundary" in must_section
+    assert "ColumnLineage" in must_section
     assert "reuse | link | mirror | extend | fork | acquire-new" in must_section
     assert "retrieved_at" in must_section
     assert "Iceberg" in should_section
@@ -91,6 +93,9 @@ def test_design_documents_full_medallion_and_detailed_bronze() -> None:
     assert "Silver: typed source-faithful tables" in design
     assert "### Pre-acquisition reuse gate" in design
     assert "### Temporal identity" in design
+    assert "### Lineage and identity graph" in design
+    assert "ColumnLineage" in design
+    assert "Symlinks" in design
     assert "reuse / link / mirror / extend / fork / acquire-new" in design
 
 
@@ -127,5 +132,7 @@ def test_bronze_track_artifacts_are_complete_and_tdd_shaped() -> None:
     assert TRUTH in _folded(spec)
     assert "reuse | link | mirror | extend | fork" in spec
     assert "source published / effective time" in spec
+    assert "ColumnLineage" in spec
+    assert "Symlinks" in spec
     assert evidence_record["kind"] == "track_initialized"
     assert "bronze_medallion_completion_20260819/index.md" in registry

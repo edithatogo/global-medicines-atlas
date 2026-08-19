@@ -70,6 +70,8 @@ public data. It runs before any acquire/download, including Drugs@FDA.
     - [ ] Assert stable table identities, partitioning, and schemas exist over Parquet
     - [ ] Assert an Iceberg REST catalogue can register bronze metadata without pyiceberg in core
     - [ ] Assert OpenLineage RunEvents use real field names and split payload vs parquet datasets
+    - [ ] Assert payload, Parquet, and catalogue datasets stay distinct identities
+    - [ ] Assert ColumnLineage and Symlinks do not collapse payload into Iceberg
     - [ ] Assert temporal identity and reuse disposition appear as facets
     - [ ] Confirm the intended failure before implementation
 - [ ] Task: Implement Iceberg-ready specs and OpenLineage projection

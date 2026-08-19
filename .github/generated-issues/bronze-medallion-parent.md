@@ -3,7 +3,7 @@
 Conductor: `conductor/tracks/bronze_medallion_completion_20260819/`
 
 Requirements: M-092, M-093, M-094, M-095, M-096, M-097, M-098, M-099, M-100,
-S-011, S-012, S-013
+M-101, S-011, S-012, S-013
 
 The immutable source payload and its content-addressed receipt are evidentiary
 truth; source-faithful Parquet is the portable analytical representation;
