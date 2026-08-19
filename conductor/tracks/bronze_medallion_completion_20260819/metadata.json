@@ -1,9 +1,9 @@
 {
   "track_id": "bronze_medallion_completion_20260819",
   "type": "feature",
-  "status": "new",
+  "status": "active",
   "created_at": "2026-08-19T15:50:00+10:00",
-  "updated_at": "2026-08-19T15:50:00+10:00",
+  "updated_at": "2026-08-19T18:40:00+10:00",
   "target_versions": ["1.0.0"],
   "requirements": [
     "M-001",
@@ -21,9 +21,13 @@
     "M-095",
     "M-096",
     "M-097",
+    "M-098",
+    "M-099",
+    "M-100",
     "S-004",
     "S-011",
     "S-012",
+    "S-013",
     "W-007",
     "W-008"
   ],
@@ -32,14 +36,17 @@
     "https://github.com/edithatogo/global-medicines-atlas/issues/168",
     "https://github.com/edithatogo/global-medicines-atlas/issues/169",
     "https://github.com/edithatogo/global-medicines-atlas/issues/170",
-    "https://github.com/edithatogo/global-medicines-atlas/issues/171"
+    "https://github.com/edithatogo/global-medicines-atlas/issues/171",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/176",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/177"
   ],
   "github_issue_drafts": [
     ".github/generated-issues/bronze-medallion-parent.md",
     ".github/generated-issues/bronze-medallion-inventory.md",
     ".github/generated-issues/bronze-medallion-landing.md",
     ".github/generated-issues/bronze-medallion-ingest.md",
-    ".github/generated-issues/bronze-medallion-archive.md"
+    ".github/generated-issues/bronze-medallion-archive.md",
+    ".github/generated-issues/bronze-medallion-reuse-gate.md"
   ],
   "external_gates": [
     "Hugging Face archival of public bronze outputs after the sibling publication path lands",

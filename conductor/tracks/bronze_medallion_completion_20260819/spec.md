@@ -2,26 +2,28 @@
 
 ## Outcome
 
-Complete the bronze (raw-as-landed) layer of the Global Medicines Atlas
-medallion datahouse for current-scope public and no-credential catalog sources
-and already-governed fixtures. Later medallion layers remain specified only as
-boundaries. Hugging Face is an archive and output boundary, not the source of
-truth.
+Complete the bronze layer of the Global Medicines Atlas medallion datahouse for
+current-scope public and no-credential catalog sources and already-governed
+fixtures. Later medallion layers remain specified only as boundaries. Hugging
+Face is an archive and output boundary, not the source of truth.
+
+The immutable source payload and its content-addressed receipt are evidentiary
+truth; source-faithful Parquet is the portable analytical representation;
+table/catalogue layers are rebuildable metadata over those artefacts.
 
 ## Authoritative inputs
 
 - `conductor/product.md`, `conductor/requirements.md`, `conductor/design.md`
 - `src/global_medicines_atlas/data/medicine_source_catalog.json` (schema v5)
 - `docs/data-sources/SOURCE_RIGHTS.md`, `docs/data-sources/source-onboarding.md`
-- `DATA_LICENSE.md`, `docs/ECOSYSTEM_REUSE.md`
+- `DATA_LICENSE.md`, `docs/ECOSYSTEM_REUSE.md`, `.context/ecosystem.toml`
 - `src/global_medicines_atlas/receipts.py`, `src/global_medicines_atlas/columnar.py`
 - Adapter and fixture contracts under `src/global_medicines_atlas/adapters/` and
   `tests/fixtures/`
 - `quality/qualifications/publication-identities.json` (Hugging Face is a derived
-  dataset distribution; catalogue-only today)
-- Sibling Hugging Face archival work, when merged, for the public archive
-  boundary; until then the plan treats Hugging Face as the bronze archive
-  boundary without duplicating that track
+  dataset distribution)
+- Hugging Face catalogue `edithatogo/global-medicines-atlas-catalogue` at
+  revision `760723adc9c2f8e8946eebe9bcada7aff212095e`
 
 ## In-scope bronze sources
 
@@ -45,24 +47,78 @@ synthetic fixtures.
   NZHTS FHIR, AMT RF2, PBS embargo, dm+d/TRUD, EMA PMS FHIR, and SPOR.
 - Live RxNorm/UMLS source payloads; those remain fixture-only under M-052.
 - Clinical advice, global-coverage claims, or publishing restricted bytes.
-- Treating Hugging Face as an ingest origin or as portable truth.
+- Treating Hugging Face as an ingest origin or as evidentiary truth.
 - Expanding bronze completion beyond first-cohort/global public sources and
   already-governed fixtures.
+- Requiring Iceberg or Marquez in the Python 3.14 core install.
 
 ## Functional requirements
 
 - Classify every catalog source as bronze-in-scope, fixture-only, or excluded,
   with the exclusion reason recorded.
-- Land in-scope bytes as raw-as-landed Parquet partitions with source-native
-  identifiers, provenance, dates, rights, uncertainty, and content-addressed
-  receipts.
+- Preserve source payload bytes (JSON/XML/CSV/ZIP/PDF or whatever arrived)
+  byte-for-byte where rights permit. Produce source-faithful Parquet alongside
+  payloads. Parsers will improve and be wrong; Parquet is not the payload.
 - Keep regulatory, funding, formulary, and terminology independent in bronze.
 - Record missing coverage as not covered, never as negative evidence.
-- Use Arrow/Parquet as portable bronze truth; DuckDB and LanceDB are derivatives.
+- The immutable source payload and its content-addressed receipt are
+  evidentiary truth; source-faithful Parquet is the portable analytical
+  representation; table/catalogue layers are rebuildable metadata over those
+  artefacts. DuckDB and LanceDB are derivatives.
 - Bind Hugging Face as an archive/output boundary for lawful public bronze
   outputs only.
-- Regenerate bronze landing deterministically from receipts and fixtures.
+- Regenerate analytical Parquet deterministically from payloads and receipts
+  without changing the acquisition ID.
 - Apply schema-on-read where native source schemas vary.
+
+### Pre-acquisition reuse gate (Must)
+
+Before any acquire/download, including Drugs@FDA, Conductor and acquisition
+code must:
+
+1. Search local clones.
+2. Search maintainer GitHub repositories declared in `.context/ecosystem.toml`.
+3. Search Hugging Face, including
+   `edithatogo/global-medicines-atlas-catalogue`.
+4. Search the source registry (`medicine_source_catalog.json`).
+5. Explicitly choose one of **reuse | link | mirror | extend | fork |
+   acquire-new**.
+6. Record that choice in receipts, OpenLineage, and track evidence.
+
+acquire-new is last resort. Acquisition without the gate fails. This exists to
+stop independent copies of the same public data. Reuse
+`docs/ECOSYSTEM_REUSE.md` and `.context/ecosystem.toml`; do not invent a
+parallel registry.
+
+### Temporal identity (Must)
+
+Every acquisition receipt distinguishes as independent fields, never collapsed:
+
+1. source published / effective time — when the authority says the artefact is
+   from or takes effect (source-native; missing is missing, not retrieved_at)
+2. retrieved_at — when we fetched it
+3. valid_from / valid_to — only where the source supplies validity; do not
+   invent
+4. immutable acquisition/version ID — stable identity for this acquisition
+   (content-addressed and/or explicit version id); does not change if we
+   re-parse
+
+OpenLineage projection carries these as facets without replacing native
+receipts.
+
+### Iceberg-ready (Should)
+
+Parquet files remain Parquet. Define stable table identities, partitioning, and
+schemas so they can be registered as Iceberg tables. An Iceberg REST catalogue
+over bronze is optional. Python 3.14 core must not require Iceberg.
+
+### OpenLineage projection (Must)
+
+Receipts remain richer native provenance. Emit OpenLineage-compatible Datasets,
+Jobs, and Runs from receipts (source, storage, table-catalogue facets). Payload
+dataset ≠ parquet dataset. No Marquez in the default install. Use real
+OpenLineage field names (`eventType`, `eventTime`, `producer`, `schemaURL`,
+`run`, `job`, `inputs`, `outputs`, `storageLayer`, `fileFormat`).
 
 ## Non-functional requirements
 
@@ -76,14 +132,16 @@ synthetic fixtures.
 ## Acceptance
 
 - Failing tests exist for the bronze contract before landing code is added.
+- Acquisition without the reuse gate fails; each disposition is representable;
+  acquire-new is last resort.
+- Temporal fields are distinct; substituting retrieved_at for published time
+  fails; valid_* are absent when the source did not supply them; acquisition ID
+  is immutable across Parquet regeneration.
 - Every in-scope public/no-credential source and governed fixture has a bronze
-  landing path, receipt, rights expression, and partitioned Parquet identity, or
-  an explicit documented blocker that is not treated as completion.
+  landing path, payload, receipt, rights expression, and source-faithful Parquet
+  identity, or an explicit documented blocker that is not treated as completion.
 - Credentialed and restricted sources are excluded with durable catalog evidence.
-- Hugging Face is referenced only as an archive boundary; repository Parquet and
-  receipts remain authoritative.
-- Focused tests, then the affected harness, prove regeneration and
-  schema-on-read for landed partitions.
+- Hugging Face is referenced only as an archive boundary.
 - Silver/gold/platinum code is absent from this track's implementation.
 
 ## External gates

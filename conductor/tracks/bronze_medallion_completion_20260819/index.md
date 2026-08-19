@@ -9,5 +9,9 @@ GitHub: [parent #167](https://github.com/edithatogo/global-medicines-atlas/issue
 with native phase subissues
 [#168](https://github.com/edithatogo/global-medicines-atlas/issues/168),
 [#169](https://github.com/edithatogo/global-medicines-atlas/issues/169),
-[#170](https://github.com/edithatogo/global-medicines-atlas/issues/170), and
-[#171](https://github.com/edithatogo/global-medicines-atlas/issues/171).
+[#170](https://github.com/edithatogo/global-medicines-atlas/issues/170),
+[#171](https://github.com/edithatogo/global-medicines-atlas/issues/171),
+[#176](https://github.com/edithatogo/global-medicines-atlas/issues/176)
+(pre-acquisition reuse gate), and
+[#177](https://github.com/edithatogo/global-medicines-atlas/issues/177)
+(temporal identity).

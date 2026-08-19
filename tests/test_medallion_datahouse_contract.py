@@ -8,14 +8,34 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TRACK = ROOT / "conductor/tracks/bronze_medallion_completion_20260819"
-BRONZE_MUST = {"M-092", "M-093", "M-094", "M-095", "M-096", "M-097"}
-BRONZE_SHOULD = {"S-011", "S-012"}
+BRONZE_MUST = {
+    "M-092",
+    "M-093",
+    "M-094",
+    "M-095",
+    "M-096",
+    "M-097",
+    "M-098",
+    "M-099",
+    "M-100",
+}
+BRONZE_SHOULD = {"S-011", "S-012", "S-013"}
 BRONZE_WONT = {"W-007", "W-008"}
 WONT_HEADING = "## Won't Have in the Initial Increment"
+TRUTH = (
+    "the immutable source payload and its content-addressed receipt are "
+    "evidentiary truth; source-faithful parquet is the portable analytical "
+    "representation; table/catalogue layers are rebuildable metadata over "
+    "those artefacts."
+)
 
 
 def _text(relative: str) -> str:
     return (ROOT / relative).read_text(encoding="utf-8")
+
+
+def _folded(text: str) -> str:
+    return re.sub(r"\s+", " ", text).casefold()
 
 
 def _requirement_ids(section: str) -> set[str]:
@@ -29,14 +49,15 @@ def test_product_adds_medallion_vision_mission_and_purpose() -> None:
     assert "## Product Mission" in product
     assert "## Product Purpose" in product
     assert "Hugging Face archives reviewed public bronze outputs" in product
+    assert TRUTH in _folded(product)
     title = "Global Medicines Registration and Funding Comparison System"
     assert title in product
 
 
 def test_guidelines_keep_bronze_distinct_from_later_layers() -> None:
     guidelines = _text("conductor/product-guidelines.md")
-    assert "source-native landed records" in guidelines
-    assert "raw-as-landed" in guidelines
+    assert "payload-and-receipt evidentiary truth" in guidelines
+    assert "raw-as-landed" not in guidelines
 
 
 def test_requirements_place_bronze_in_must_and_later_layers_in_wont() -> None:
@@ -50,8 +71,11 @@ def test_requirements_place_bronze_in_must_and_later_layers_in_wont() -> None:
     assert must_ids >= BRONZE_MUST
     assert should_ids >= BRONZE_SHOULD
     assert wont_ids >= BRONZE_WONT
-    assert "regenerable derivatives" in must_section
+    assert TRUTH in _folded(must_section)
     assert "archive and output boundary" in must_section
+    assert "reuse | link | mirror | extend | fork | acquire-new" in must_section
+    assert "retrieved_at" in must_section
+    assert "Iceberg" in should_section
 
 
 def test_design_documents_full_medallion_and_detailed_bronze() -> None:
@@ -60,10 +84,22 @@ def test_design_documents_full_medallion_and_detailed_bronze() -> None:
     assert "### Bronze landing" in design
     assert "### Later layers (sketch only)" in design
     assert "```mermaid" in design
-    assert "Partitioned Arrow/Parquet portable truth" in design
+    assert TRUTH in _folded(design)
+    assert "Partitioned Arrow/Parquet portable truth" not in design
     assert "Hugging Face public bronze archive" in design
     assert "not an ingest origin" in design
     assert "Silver: typed source-faithful tables" in design
+    assert "### Pre-acquisition reuse gate" in design
+    assert "### Temporal identity" in design
+    assert "reuse / link / mirror / extend / fork / acquire-new" in design
+
+
+def test_agents_and_tech_stack_lock_the_three_way_truth_split() -> None:
+    agents = _text("AGENTS.md")
+    tech = _text("conductor/tech-stack.md")
+    assert TRUTH in _folded(agents)
+    assert TRUTH in _folded(tech)
+    assert "Arrow/Parquet is portable truth" not in agents
 
 
 def test_bronze_track_artifacts_are_complete_and_tdd_shaped() -> None:
@@ -77,14 +113,19 @@ def test_bronze_track_artifacts_are_complete_and_tdd_shaped() -> None:
     failure_note = "Confirm the intended failure before implementation"
 
     assert metadata["track_id"] == "bronze_medallion_completion_20260819"
-    assert metadata["status"] == "new"
+    assert metadata["status"] in {"new", "active", "in_progress"}
     assert metadata["github_issue"].endswith("/issues/167")
     assert set(metadata["requirements"]) >= BRONZE_MUST
     assert "Write failing tests" in plan
-    assert plan.count("Write failing tests") >= 4
-    assert plan.count(failure_note) == 4
+    assert plan.count("Write failing tests") >= 6
+    assert plan.count(failure_note) == 6
     assert "Phase Verification & Checkpoint" in plan
+    assert "## Phase 2: Pre-acquisition reuse gate" in plan
+    assert "temporal identity" in plan.lower()
     assert "W-007" in spec
     assert "archive and output boundary" in spec
+    assert TRUTH in _folded(spec)
+    assert "reuse | link | mirror | extend | fork" in spec
+    assert "source published / effective time" in spec
     assert evidence_record["kind"] == "track_initialized"
     assert "bronze_medallion_completion_20260819/index.md" in registry
