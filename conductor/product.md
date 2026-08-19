@@ -4,7 +4,7 @@
 
 Create a global, evidence-based medallion datahouse for comparing medicines across national regulatory approval systems and public funding, reimbursement, and formulary systems.
 
-The datahouse lands source-native bronze evidence first, then derives silver, gold, and platinum layers without collapsing regulatory, funding, formulary, or terminology meanings. Current delivery completes bronze for in-scope public and no-credential sources; later layers remain planned, not implied complete.
+The datahouse lands immutable source payloads and content-addressed receipts first, then derives source-faithful Parquet and later silver, gold, and platinum layers without collapsing regulatory, funding, formulary, or terminology meanings. Current delivery completes bronze for in-scope public and no-credential sources; later layers remain planned, not implied complete.
 
 The platform will begin with available data from New Zealand, Australia, and the United States, then expand systematically across jurisdictions. New Zealand Universal List of Medicines and New Zealand Medicines Terminology (NZULM/NZMT) product structures are a named first-class source family. The platform will preserve source provenance, effective dates, terminology mappings, and the distinction between regulatory approval and funding status.
 
@@ -14,7 +14,7 @@ Operate a provenance-first medicines datahouse that makes regulatory approval an
 
 ## Product Purpose
 
-Give researchers, policymakers, clinicians, and analysts a reproducible, layer-explicit evidence platform: bronze preserves what sources actually published; silver, gold, and platinum may later normalize, match, and publish only what rights and evidence allow. Hugging Face archives reviewed public bronze outputs; it is not the source of truth.
+Give researchers, policymakers, clinicians, and analysts a reproducible, layer-explicit evidence platform: the immutable source payload and its content-addressed receipt are evidentiary truth; source-faithful Parquet is the portable analytical representation; table/catalogue layers are rebuildable metadata over those artefacts. Hugging Face archives reviewed public bronze outputs; it is not the source of truth.
 
 ## Problem
 

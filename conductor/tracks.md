@@ -24,5 +24,5 @@ and rationale contract in that policy.
   *Link: [tracks/stable_v1_qualification_20260729/index.md](./tracks/stable_v1_qualification_20260729/index.md); remaining isolated gates are stable-v1 promotion approval and production disaster-recovery authority.*
 - [x] **Track: Develop the academic protocol and preregistration**
   *Link: [tracks/academic_protocol_preregistration_20260729/index.md](./tracks/academic_protocol_preregistration_20260729/index.md); GitHub parent [#66](https://github.com/edithatogo/global-medicines-atlas/issues/66). OSF is deprecated; persistent protocol identity is the in-repo artefacts plus Zenodo `10.5281/zenodo.21734811`.*
-- [ ] **Track: Complete bronze medallion landing for current public scope**
-  *Link: [tracks/bronze_medallion_completion_20260819/index.md](./tracks/bronze_medallion_completion_20260819/index.md); GitHub parent [#167](https://github.com/edithatogo/global-medicines-atlas/issues/167). Unblocked and not started by the OSF-deprecation reconciliation.*
+- [~] **Track: Complete bronze medallion landing for current public scope**
+  *Link: [tracks/bronze_medallion_completion_20260819/index.md](./tracks/bronze_medallion_completion_20260819/index.md); GitHub parent [#167](https://github.com/edithatogo/global-medicines-atlas/issues/167). Evidentiary payload/receipt truth, reuse gate, temporal identity, Iceberg-ready identities, and OpenLineage projection are in progress.*

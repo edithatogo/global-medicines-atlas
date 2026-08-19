@@ -57,15 +57,17 @@ repository evolves toward a bleeding-edge medallion datahouse:
 
 | Horizon | Product outcome | Conductor track |
 |---|---|---|
-| Bronze (current scope) | Raw-as-landed public/no-credential and governed-fixture landing with receipts, rights, partitioned Parquet, and Hugging Face as archive boundary | `bronze_medallion_completion_20260819` |
+| Bronze (current scope) | Payload-and-receipt evidentiary truth, reuse gate, temporal identity, source-faithful Parquet, Iceberg-ready identities, OpenLineage projection, Hugging Face as archive boundary | `bronze_medallion_completion_20260819` |
 | Silver (later) | Source-faithful normalized tables; dimensions remain independent | not opened |
 | Gold (later) | Reviewable cross-jurisdiction evidence | not opened |
 | Platinum (later) | Comparison products over gold | not opened |
 
 Bronze completion does not claim global coverage, does not ingest credentialed
 or restricted payloads, and does not implement later layers. Hugging Face
-archival of public data is an output boundary consumed by this horizon, not a
-substitute for repository Parquet and receipts.
+archival of public data is an output boundary consumed by this horizon. The
+immutable source payload and its content-addressed receipt are evidentiary
+truth; source-faithful Parquet is the portable analytical representation;
+table/catalogue layers are rebuildable metadata over those artefacts.
 
 ## Feature maturity
 

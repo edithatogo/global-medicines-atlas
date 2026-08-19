@@ -29,6 +29,7 @@ from .receipts import (
     SourceReceipt,
     TransformationEvidence,
 )
+from .reuse_gate import ReuseGateDecision, require_reuse_decision
 from .source_catalog import AccessMode, MedicineDataSource, load_source_catalog
 
 Receipt = SourceReceipt | FailureReceipt
@@ -380,6 +381,7 @@ def _failure(
     message: str,
     status: AcquisitionStatus = AcquisitionStatus.FAILED,
     retryable: bool = False,
+    reuse: ReuseGateDecision | None = None,
 ) -> FailureReceipt:
     return FailureReceipt(
         receipt_id=f"{source.source_id}-{observed_at.isoformat()}-{code}",
@@ -390,6 +392,7 @@ def _failure(
             acquisition_method=method,
             status=status,
         ),
+        reuse=reuse,
         evidence_class=EvidenceClass.UNAVAILABLE,
         rights_state=RightsState.UNKNOWN,
         failure_code=code,
@@ -473,6 +476,7 @@ def _success(
     observed_at: datetime,
     payload: PayloadEvidence,
     evidence_class: EvidenceClass,
+    reuse: ReuseGateDecision,
 ) -> SourceReceipt:
     transformation_id = "raw-acquisition-v1"
     return SourceReceipt(
@@ -485,6 +489,7 @@ def _success(
             status=AcquisitionStatus.SUCCEEDED,
         ),
         payload=payload,
+        reuse=reuse,
         rights_state=RightsState.UNKNOWN,
         evidence_class=evidence_class,
         transformation=TransformationEvidence(
@@ -509,9 +514,11 @@ def acquire_source(
     resolver: Resolver | None = None,
     evidence_class: EvidenceClass = EvidenceClass.FIXTURE,
     clock: Clock = lambda: datetime.now(UTC),
+    reuse_decision: ReuseGateDecision | None = None,
 ) -> Receipt:
     """Acquire one catalogued payload without retries or publication side effects."""
 
+    decision = require_reuse_decision(reuse_decision, source_id)
     sources = load_source_catalog() if catalog is None else tuple(catalog)
     source = _catalog_source(source_id, sources)
     uri, method = _download_surface(source)
@@ -552,6 +559,7 @@ def acquire_source(
             observed_at=observed_at,
             payload=payload,
             evidence_class=evidence_class,
+            reuse=decision,
         )
     except DestinationPolicyError as error:
         return _failure(
@@ -561,6 +569,7 @@ def acquire_source(
             observed_at=observed_at,
             code=error.code,
             message=str(error),
+            reuse=decision,
         )
     except httpx.TimeoutException as error:
         return _failure(
@@ -571,6 +580,7 @@ def acquire_source(
             code="timeout",
             message=str(error),
             retryable=True,
+            reuse=decision,
         )
     except httpx.HTTPStatusError as error:
         return _failure(
@@ -580,6 +590,7 @@ def acquire_source(
             observed_at=observed_at,
             code="http_status",
             message=f"HTTP status {error.response.status_code}",
+            reuse=decision,
         )
     except httpx.HTTPError as error:
         return _failure(
@@ -590,6 +601,7 @@ def acquire_source(
             code="transport_error",
             message=str(error),
             retryable=True,
+            reuse=decision,
         )
     finally:
         if isinstance(temporary_path, Path):

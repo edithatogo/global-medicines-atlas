@@ -14,6 +14,11 @@ from ..acquisition import (
     acquire_source,
 )
 from ..receipts import EvidenceClass
+from ..reuse_gate import (
+    ReuseGateDecision,
+    evaluate_reuse_gate,
+    require_reuse_decision,
+)
 from ..source_catalog import (
     AccessMode,
     MedicineDataSource,
@@ -53,6 +58,23 @@ def _drugsfda_source(
     return source.model_copy(update=updates)
 
 
+def _drugsfda_reuse_decision(
+    decision: ReuseGateDecision | None,
+    *,
+    search_root: Path,
+    catalog: Iterable[MedicineDataSource] | None,
+) -> ReuseGateDecision:
+    """Search the ecosystem before any Drugs@FDA download."""
+
+    if decision is not None:
+        return require_reuse_decision(decision, "us-drugsfda")
+    return evaluate_reuse_gate(
+        "us-drugsfda",
+        repository_root=search_root,
+        catalog=catalog,
+    )
+
+
 def acquire_drugsfda_bulk(
     destination: Path,
     *,
@@ -63,11 +85,18 @@ def acquire_drugsfda_bulk(
     transport: httpx.BaseTransport | None = None,
     evidence_class: EvidenceClass = EvidenceClass.FIXTURE,
     clock: Clock = lambda: datetime.now(UTC),
+    reuse_decision: ReuseGateDecision | None = None,
+    reuse_search_root: Path | None = None,
 ) -> Receipt:
     """Acquire the official Drugs@FDA bulk archive with a durable receipt."""
     source = _drugsfda_source(
         access_mode=AccessMode.DOWNLOAD,
         uri=bulk_url,
+        catalog=catalog,
+    )
+    decision = _drugsfda_reuse_decision(
+        reuse_decision,
+        search_root=reuse_search_root or repository_root,
         catalog=catalog,
     )
     return acquire_source(
@@ -79,6 +108,7 @@ def acquire_drugsfda_bulk(
         transport=transport,
         evidence_class=evidence_class,
         clock=clock,
+        reuse_decision=decision,
     )
 
 
@@ -92,11 +122,18 @@ def acquire_drugsfda_api(
     transport: httpx.BaseTransport | None = None,
     evidence_class: EvidenceClass = EvidenceClass.FIXTURE,
     clock: Clock = lambda: datetime.now(UTC),
+    reuse_decision: ReuseGateDecision | None = None,
+    reuse_search_root: Path | None = None,
 ) -> Receipt:
     """Acquire one bounded openFDA Drugs@FDA response with a durable receipt."""
     source = _drugsfda_source(
         access_mode=AccessMode.API,
         uri=api_url,
+        catalog=catalog,
+    )
+    decision = _drugsfda_reuse_decision(
+        reuse_decision,
+        search_root=reuse_search_root or repository_root,
         catalog=catalog,
     )
     return acquire_source(
@@ -108,4 +145,5 @@ def acquire_drugsfda_api(
         transport=transport,
         evidence_class=evidence_class,
         clock=clock,
+        reuse_decision=decision,
     )

@@ -28,6 +28,7 @@ from global_medicines_atlas.receipts import (
     SourceReceipt,
     TransformationEvidence,
 )
+from global_medicines_atlas.reuse_gate import acquire_new_decision
 from global_medicines_atlas.source_catalog import (
     AccessMode,
     MedicineDataSource,
@@ -127,6 +128,7 @@ def test_drugsfda_surfaces_are_receipt_backed(
         destination,
         repository_root=tmp_path,
         catalog=(source(),),
+        reuse_decision=acquire_new_decision("us-drugsfda"),
         transport=httpx.MockTransport(
             lambda _request: httpx.Response(
                 200,
@@ -153,6 +155,7 @@ def test_api_and_bulk_fixture_projections_have_parity(tmp_path: Path) -> None:
         repository_root=tmp_path,
         api_url="https://example.test/drugsfda.json",
         catalog=(source(),),
+        reuse_decision=acquire_new_decision("us-drugsfda"),
         transport=httpx.MockTransport(
             lambda _request: httpx.Response(
                 200,
@@ -167,6 +170,7 @@ def test_api_and_bulk_fixture_projections_have_parity(tmp_path: Path) -> None:
         repository_root=tmp_path,
         bulk_url="https://example.test/drugsfda.zip",
         catalog=(source(),),
+        reuse_decision=acquire_new_decision("us-drugsfda"),
         transport=httpx.MockTransport(
             lambda _request: httpx.Response(
                 200,
@@ -199,6 +203,7 @@ def test_api_projection_confirms_only_qualifying_live_receipt(
         repository_root=tmp_path,
         api_url="https://example.test/drugsfda.json",
         catalog=(source(),),
+        reuse_decision=acquire_new_decision("us-drugsfda"),
         transport=httpx.MockTransport(
             lambda _request: httpx.Response(
                 200,
@@ -239,6 +244,7 @@ def test_parity_reports_status_and_membership_differences(
         repository_root=tmp_path,
         api_url="https://example.test/drugsfda.json",
         catalog=(source(),),
+        reuse_decision=acquire_new_decision("us-drugsfda"),
         transport=httpx.MockTransport(
             lambda _request: httpx.Response(
                 200,
@@ -254,6 +260,7 @@ def test_parity_reports_status_and_membership_differences(
         repository_root=tmp_path,
         bulk_url="https://example.test/drugsfda.zip",
         catalog=(source(),),
+        reuse_decision=acquire_new_decision("us-drugsfda"),
         transport=httpx.MockTransport(
             lambda _request: httpx.Response(
                 200,
@@ -284,6 +291,7 @@ def test_api_projection_rejects_tampered_payload(tmp_path: Path) -> None:
         repository_root=tmp_path,
         api_url="https://example.test/drugsfda.json",
         catalog=(source(),),
+        reuse_decision=acquire_new_decision("us-drugsfda"),
         transport=httpx.MockTransport(
             lambda _request: httpx.Response(
                 200,
@@ -308,6 +316,7 @@ def test_bulk_projection_rejects_tampered_member(
         repository_root=tmp_path,
         bulk_url="https://example.test/drugsfda.zip",
         catalog=(source(),),
+        reuse_decision=acquire_new_decision("us-drugsfda"),
         transport=httpx.MockTransport(
             lambda _request: httpx.Response(
                 200,

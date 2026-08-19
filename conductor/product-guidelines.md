@@ -108,7 +108,8 @@ Every report should state:
 
 - Prefer official primary sources.
 - Preserve source URLs, identifiers, retrieval dates, and effective dates.
-- Keep bronze (raw-as-landed) evidence distinguishable from later medallion layers.
+- Keep bronze payload-and-receipt evidentiary truth distinguishable from
+  source-faithful Parquet and from later medallion layers.
 - Record transformation and matching methods.
 - Version datasets and derived outputs.
 - Retain historical observations where legally and technically feasible.

@@ -191,13 +191,17 @@
 ### Medallion bronze (current horizon)
 
 - **M-092:** Maintain an explicit medallion architecture (bronze, silver, gold,
-  platinum) in which bronze is raw-as-landed source evidence: source-native
-  identifiers, provenance, dates, rights, uncertainty, and content-addressed
-  receipts. Missing coverage is not negative evidence.
+  platinum) in which bronze evidentiary truth is the immutable source payload
+  plus its content-addressed receipt: source-native identifiers, provenance,
+  dates, rights, uncertainty, and independent temporal identity. Missing
+  coverage is not negative evidence.
 - **M-093:** Keep regulatory, funding, formulary, and terminology assertions
   independent in bronze; do not collapse those dimensions during landing.
-- **M-094:** Land bronze as Arrow/Parquet portable truth with partitioned raw
-  tables. DuckDB and LanceDB remain regenerable derivatives and are not bronze.
+- **M-094:** The immutable source payload and its content-addressed receipt are
+  evidentiary truth; source-faithful Parquet is the portable analytical
+  representation; table/catalogue layers are rebuildable metadata over those
+  artefacts. DuckDB and LanceDB remain regenerable derivatives and are not
+  bronze. Parquet is not raw-as-landed and is not bronze evidentiary truth.
 - **M-095:** Complete bronze for current-scope public/no-credential catalog
   sources and already-governed fixtures. Credentialed, licensed-feed, and
   restricted-payload sources remain catalogued with explicit exclusion from this
@@ -208,9 +212,26 @@
   as the source of truth or as an ingest origin for medicine payloads.
 - **M-097:** Provide bleeding-edge bronze mechanics for in-scope public sources
   and governed fixtures: modern public ingest, content-addressed receipts,
-  partitioned Parquet landing, explicit licence and rights, deterministic
-  regeneration, and schema-on-read where source schemas vary. This is a
-  completed landing layer for current scope, not a prototype.
+  payload preservation, source-faithful Parquet, explicit licence and rights,
+  deterministic regeneration, and schema-on-read where source schemas vary. This
+  is a completed landing layer for current scope, not a prototype.
+- **M-098:** Before any acquire or download, including Drugs@FDA, run a
+  pre-acquisition reuse gate that searches local clones, maintainer GitHub
+  repositories, Hugging Face (including
+  `edithatogo/global-medicines-atlas-catalogue`), and the source registry
+  (`medicine_source_catalog.json` / `.context/ecosystem.toml`), then explicitly
+  choose one of reuse | link | mirror | extend | fork | acquire-new. Record the
+  choice in receipts, OpenLineage, and track evidence. acquire-new is last
+  resort. Acquisition without the gate fails.
+- **M-099:** Distinguish source published/effective time, retrieved_at,
+  valid_from/valid_to only where the source supplied them, and an immutable
+  acquisition/version ID on every acquisition receipt. Missing published time
+  stays missing and must not be filled from retrieved_at. The acquisition ID
+  does not change when Parquet is regenerated.
+- **M-100:** Project OpenLineage-compatible Datasets, Jobs, and Runs from
+  native receipts using real OpenLineage field names. Payload datasets are not
+  Parquet datasets. Receipts remain richer native provenance. Marquez is not
+  part of the default install.
 
 ## Should Have
 
@@ -231,6 +252,10 @@
   the remote dataset as authoritative.
 - **S-012:** Measure bronze completeness by source identifier, jurisdiction,
   dimension, rights state, receipt class, and Parquet partition identity.
+- **S-013:** Keep bronze Parquet Iceberg-ready with stable table identities,
+  partitioning, and schemas so files can be registered in an Iceberg REST
+  catalogue. Iceberg is an optional table-control plane, not a Python 3.14
+  core requirement.
 
 ## Could Have
 

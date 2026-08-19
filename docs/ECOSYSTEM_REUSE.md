@@ -24,3 +24,18 @@ Hugging Face publication is an output boundary, not an unreviewed source of
 truth. Existing datasets are reused for publication mechanics unless their
 records have independently passed the medicines source, licence, provenance,
 and coverage gates.
+
+## Pre-acquisition reuse gate
+
+Before any acquire or download (including Drugs@FDA), search:
+
+1. local clones and declared `local_boundary` paths;
+2. maintainer GitHub repositories in this registry;
+3. Hugging Face datasets, including
+   `edithatogo/global-medicines-atlas-catalogue`;
+4. the medicine source catalog (`medicine_source_catalog.json`).
+
+Then choose exactly one of **reuse | link | mirror | extend | fork |
+acquire-new**. acquire-new is last resort. Acquisition without this gate
+fails. The choice is recorded on the acquisition receipt and in the
+OpenLineage projection.

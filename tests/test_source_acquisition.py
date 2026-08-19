@@ -22,6 +22,10 @@ from global_medicines_atlas.receipts import (
     FailureReceipt,
     SourceReceipt,
 )
+from global_medicines_atlas.reuse_gate import (
+    ReuseGateRequiredError,
+    acquire_new_decision,
+)
 from global_medicines_atlas.source_catalog import (
     AccessMode,
     AuthenticationMode,
@@ -87,6 +91,7 @@ def acquire(
         policy=policy,
         evidence_class=evidence_class,
         clock=lambda: NOW,
+        reuse_decision=acquire_new_decision("test-regulator"),
     )
 
 
@@ -137,6 +142,7 @@ def test_api_catalog_surface_is_selected_without_arbitrary_url(
         ),
         transport=httpx.MockTransport(handler),
         clock=lambda: NOW,
+        reuse_decision=acquire_new_decision("test-regulator"),
     )
 
     assert isinstance(receipt, SourceReceipt)
@@ -233,6 +239,7 @@ def test_unknown_or_non_automatable_source_is_rejected(tmp_path: Path) -> None:
             Path("artifacts/source.bin"),
             repository_root=tmp_path,
             catalog=(catalog_source(),),
+            reuse_decision=acquire_new_decision("missing"),
         )
 
     with pytest.raises(ValueError, match="no automatable"):
@@ -246,6 +253,7 @@ def test_unknown_or_non_automatable_source_is_rejected(tmp_path: Path) -> None:
                     download_url=None,
                 ),
             ),
+            reuse_decision=acquire_new_decision("test-regulator"),
         )
 
 
@@ -292,6 +300,7 @@ def test_acquisition_rejects_disallowed_or_private_destinations(
             lambda _: pytest.fail("transport should not run")
         ),
         clock=lambda: NOW,
+        reuse_decision=acquire_new_decision("test-regulator"),
     )
 
     assert isinstance(receipt, FailureReceipt)
@@ -318,6 +327,7 @@ def test_acquisition_rejects_dns_resolution_to_private_network(
         ),
         resolver=private_resolver,
         clock=lambda: NOW,
+        reuse_decision=acquire_new_decision("test-regulator"),
     )
 
     assert isinstance(receipt, FailureReceipt)
@@ -432,6 +442,7 @@ def test_production_path_uses_catalog_admission_and_bound_ip(
             else pytest.fail("ungoverned hostname resolved")
         ),
         clock=lambda: NOW,
+        reuse_decision=acquire_new_decision("test-regulator"),
     )
 
     assert isinstance(receipt, SourceReceipt)
@@ -540,3 +551,18 @@ def test_bound_transport_isolates_tls_pools_for_same_ip_redirect() -> None:
         "one.example.test",
         "two.example.test",
     ]
+
+
+@pytest.mark.unit
+def test_acquisition_without_reuse_gate_fails(tmp_path: Path) -> None:
+    with pytest.raises(ReuseGateRequiredError, match="reuse gate required"):
+        acquire_source(
+            "test-regulator",
+            Path("artifacts/source.bin"),
+            repository_root=tmp_path,
+            catalog=(catalog_source(),),
+            transport=httpx.MockTransport(
+                lambda _: pytest.fail("download must not start")
+            ),
+            clock=lambda: NOW,
+        )

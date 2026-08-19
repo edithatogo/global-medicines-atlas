@@ -29,7 +29,10 @@ The pinned Conductor agent plugin is the Git submodule at
 - Missing coverage is not negative evidence.
 - Preserve source-native identifiers, provenance, dates, rights, and uncertainty.
 - Python 3.14 is the complete fallback; Mojo promotion requires parity evidence.
-- Arrow/Parquet is portable truth; DuckDB and LanceDB are reproducible derivatives.
+- The immutable source payload and its content-addressed receipt are
+  evidentiary truth; source-faithful Parquet is the portable analytical
+  representation; table/catalogue layers are rebuildable metadata over those
+  artefacts. DuckDB and LanceDB are reproducible derivatives.
 - Never inspect, commit, log, or publish credentials or restricted source bytes.
 - Preserve dirty work and imported history; do not use destructive Git recovery.
 

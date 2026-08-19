@@ -74,7 +74,12 @@ NZULM/NZMT is a first-class initial source family, not merely a project name.
 ### Portable Source and Canonical Data
 
 - Preserve source artifacts where lawful, with checksums, retrieval metadata, licensing state, and immutable manifests.
-- Use Parquet as the primary portable tabular representation.
+- The immutable source payload and its content-addressed receipt are
+  evidentiary truth; source-faithful Parquet is the portable analytical
+  representation; table/catalogue layers are rebuildable metadata over those
+  artefacts.
+- Use Parquet as the portable analytical tabular representation, never as
+  raw-as-landed evidentiary truth.
 - Use Arrow-compatible schemas and explicit schema versions.
 - Use JSON/JSONL for manifests, events, review queues, and compact interoperable records.
 - Use CSV only for reviewed interchange, human inspection, or source-native compatibility.

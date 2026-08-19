@@ -442,12 +442,13 @@ flowchart TB
     end
 
     subgraph Bronze["Bronze — current completion horizon"]
+        GATE["Pre-acquisition reuse gate"]
         INGEST["Governed public ingest"]
-        RAW["Raw-as-landed bytes"]
-        IDS["Source-native identifiers"]
-        PROV["Provenance, dates, rights, uncertainty"]
+        PAYLOAD["Immutable source payload"]
         RECEIPT["Content-addressed receipts"]
-        PARQUET["Partitioned Arrow/Parquet portable truth"]
+        TIME["Temporal identity"]
+        PARQUET["Source-faithful Parquet analytical representation"]
+        CATALOGUE["Rebuildable table/catalogue metadata"]
     end
 
     subgraph Later["Later layers — sketched only"]
@@ -465,65 +466,105 @@ flowchart TB
         HF["Hugging Face public bronze archive"]
     end
 
-    PUB --> INGEST
-    FIX --> RAW
-    REST -.->|"catalogued, out of this horizon"| RAW
-    INGEST --> RAW
-    RAW --> IDS
-    RAW --> PROV
-    RAW --> RECEIPT
-    IDS --> PARQUET
-    PROV --> PARQUET
+    PUB --> GATE
+    GATE -->|"reuse / link / mirror / extend / fork / acquire-new"| INGEST
+    FIX --> PAYLOAD
+    REST -.->|"catalogued, out of this horizon"| PAYLOAD
+    INGEST --> PAYLOAD
+    PAYLOAD --> RECEIPT
+    PAYLOAD --> TIME
     RECEIPT --> PARQUET
+    TIME --> PARQUET
+    PARQUET --> CATALOGUE
+    CATALOGUE --> SILVER
     PARQUET --> SILVER
     SILVER --> GOLD
     GOLD --> PLATINUM
     PARQUET --> DUCK
     PARQUET --> LANCE
+    PAYLOAD --> HF
     PARQUET --> HF
 ```
 
 Hugging Face is an archive and publication boundary for reviewed public bronze
-outputs. It is not an ingest origin and not the source of truth. Repository
-Parquet, receipts, and the source catalog remain authoritative. The sibling
-Hugging Face archival track owns remote publication mechanics; this design
-consumes that boundary.
+outputs. It is not an ingest origin and not the source of truth. The immutable
+source payload and its content-addressed receipt are evidentiary truth;
+source-faithful Parquet is the portable analytical representation;
+table/catalogue layers are rebuildable metadata over those artefacts. The
+sibling Hugging Face archival track owns remote publication mechanics; this
+design consumes that boundary.
 
 ### Bronze landing
 
-Bronze means raw-as-landed. A bronze record preserves what a source published,
-not a canonical medicine conclusion. Regulatory, funding, formulary, and
-terminology land in independent partitions or tables. Missing coverage is
+Bronze landing preserves the bytes a source published together with a
+content-addressed receipt. That payload-and-receipt pair is evidentiary truth.
+Source-faithful Parquet is produced alongside it as an analytical
+representation that parsers may later improve. Regulatory, funding, formulary,
+and terminology land in independent partitions or tables. Missing coverage is
 recorded as not covered, never as unapproved or unfunded.
 
 ```mermaid
 flowchart LR
     CATALOG["medicine_source_catalog.json"]
-    POLICY{"In-scope public or governed fixture?"}
+    ECO[".context/ecosystem.toml"]
+    LOCAL["Local clones"]
+    GH["Maintainer GitHub repos"]
+    HFSEARCH["Hugging Face including catalogue"]
+    GATE{"reuse / link / mirror / extend / fork / acquire-new"}
     FETCH["Bounded public ingest"]
     FIXTURE["Governed fixture bytes"]
-    QUAR["Quarantine and digest"]
+    PAYLOAD["Immutable payload bytes"]
     RECEIPT["Content-addressed receipt"]
-    LAND["Partitioned Parquet landing"]
-    RIGHTS["Licence and rights columns"]
-    SCHEMA["Schema-on-read where native schemas vary"]
-    REGEN["Deterministic regeneration"]
+    TIME["source published, retrieved_at, valid_from/to, acquisition_id"]
+    PARQUET["Source-faithful Parquet"]
+    OL["OpenLineage projection"]
+    ICE["Iceberg-ready table identity"]
     HF["Hugging Face archive boundary"]
     BLOCK["Remain catalogued; no bronze completion claim"]
 
-    CATALOG --> POLICY
-    POLICY -->|yes, public no-credential| FETCH
-    POLICY -->|yes, governed fixture| FIXTURE
-    POLICY -->|credentialed or restricted| BLOCK
-    FETCH --> QUAR
-    FIXTURE --> QUAR
-    QUAR --> RECEIPT
-    RECEIPT --> LAND
-    LAND --> RIGHTS
-    LAND --> SCHEMA
-    LAND --> REGEN
-    REGEN --> HF
+    CATALOG --> GATE
+    ECO --> GATE
+    LOCAL --> GATE
+    GH --> GATE
+    HFSEARCH --> GATE
+    GATE -->|acquire-new last resort| FETCH
+    GATE -->|reuse or link existing copy| PAYLOAD
+    GATE -->|credentialed or restricted| BLOCK
+    FETCH --> PAYLOAD
+    FIXTURE --> PAYLOAD
+    PAYLOAD --> RECEIPT
+    PAYLOAD --> TIME
+    RECEIPT --> PARQUET
+    TIME --> PARQUET
+    RECEIPT --> OL
+    PARQUET --> ICE
+    PARQUET --> HF
 ```
+
+### Pre-acquisition reuse gate
+
+Before any download, including Drugs@FDA, Conductor and acquisition code search
+local clones, maintainer GitHub repositories, Hugging Face (including
+`edithatogo/global-medicines-atlas-catalogue` at the pinned catalogue
+revision), and the source registry. They then choose exactly one of
+**reuse | link | mirror | extend | fork | acquire-new**. The choice is recorded
+on the receipt, in OpenLineage facets, and in track evidence. acquire-new is
+last resort when no payload copy exists. Acquisition without this gate fails.
+This gate exists to stop independent repositories accumulating copies of the
+same public data. It reuses `docs/ECOSYSTEM_REUSE.md` and
+`.context/ecosystem.toml` rather than a parallel registry.
+
+### Temporal identity
+
+Every acquisition receipt distinguishes, as independent fields:
+
+1. source published / effective time (source-native; missing stays missing)
+2. retrieved_at (when we fetched)
+3. valid_from / valid_to only where the source supplied validity
+4. immutable acquisition/version ID (content-addressed; unchanged by re-parse)
+
+Substituting retrieved_at for published time is forbidden. OpenLineage carries
+these as facets without replacing native receipts.
 
 Current bronze-completion scope is first-cohort and global catalog sources whose
 authentication is none and whose access is not a licensed feed, plus already
@@ -538,7 +579,8 @@ Bronze partitions are keyed by jurisdiction, source identifier, dimension, and
 rights state. Each landed file carries source-native identifiers, retrieval and
 effective dates, receipt digest, uncertainty, and an explicit rights expression.
 Python 3.14 is the complete fallback path. DuckDB and LanceDB may read bronze
-Parquet; they do not store bronze truth.
+Parquet; they do not store bronze evidentiary truth. Iceberg REST registration
+is optional and must not be imported by Python 3.14 core.
 
 ### Later layers (sketch only)
 
