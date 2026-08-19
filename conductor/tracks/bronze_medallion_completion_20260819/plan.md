@@ -126,6 +126,7 @@ before any hot-path rewrite. Python remains orchestration.
     - [ ] Confirm the intended failure before implementation
 - [ ] Task: Implement public ingest and fixture landing for current scope
     - [ ] Use existing untrusted acquisition and first-cohort adapters
+    - [x] Inspect truncated downloads, hostile ZIP/tar, decompression bombs, path traversal, MIME mismatch, malformed XML/JSON/CSV, schema poisoning, collisions, source mutation, replays, checksum mismatch, and hostile filenames; land bytes; quarantine processing; keep forensic receipts
     - [ ] Land Medsafe, PHARMAC, ARTG, PBS, DPD/NOC, MHRA/NICE, EMA/Union Register, PMDA/NHI, Drugs@FDA, and CMS Part D fixtures
     - [ ] Leave NZULM bulk, NZHTS, AMT, embargoed PBS, dm+d/TRUD, EMA PMS, SPOR, and live RxNorm payloads excluded
 - [ ] Task: Phase Verification & Checkpoint

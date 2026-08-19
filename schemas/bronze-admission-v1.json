@@ -1,0 +1,50 @@
+{
+  "$id": "https://global-medicines-atlas.example/schemas/bronze-admission-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "type": "object",
+  "required": [
+    "schema_id",
+    "schema_version",
+    "acquisition_id",
+    "content_id",
+    "state",
+    "reason_codes",
+    "validation_results",
+    "reviewer_status"
+  ],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.bronze-admission"},
+    "schema_version": {"const": 1},
+    "acquisition_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "content_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "state": {
+      "enum": [
+        "landed",
+        "accepted",
+        "quarantined",
+        "rejected-from-processing"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "validation_results": {
+      "type": "array",
+      "items": {
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["check_id", "passed", "message"],
+        "properties": {
+          "check_id": {"type": "string", "minLength": 1},
+          "passed": {"type": "boolean"},
+          "message": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "reviewer_status": {
+      "enum": ["unreviewed", "approved", "rejected"]
+    }
+  }
+}

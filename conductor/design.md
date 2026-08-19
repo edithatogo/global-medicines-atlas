@@ -424,7 +424,10 @@ flowchart LR
 Acquired bytes are untrusted even when an authority is official. Logs retain
 source IDs, digests and bounded outcomes but redact credentials, query strings
 and source payloads. Compromise recovery covers upstream data, signing
-provenance, credentials and already-published datasets.
+provenance, credentials and already-published datasets. Bronze inspects
+truncated bodies, hostile archives, media mismatches, poison identity fields,
+replays, and checksum failures without rewriting landed bytes; admission
+quarantines processing and keeps the payload as forensic evidence.
 
 ## Medallion Datahouse
 
