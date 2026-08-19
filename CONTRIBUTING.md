@@ -6,6 +6,13 @@ conversations are the merge gate. A second-person approval is not required.
 
 ## Development
 
+The Conductor agent plugin is pinned as a Git submodule at
+`.agents/plugins/conductor`. After clone, initialize it with:
+
+```shell
+git submodule update --init --recursive
+```
+
 Use Python 3.14 and the locked environment:
 
 ```shell
