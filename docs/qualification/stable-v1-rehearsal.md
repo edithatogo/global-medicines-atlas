@@ -27,4 +27,4 @@ artifact-only stable-release clean room: it uses the current checkout and
 interpreter. The recovery exercise uses synthetic local artifacts and does not
 qualify production disaster recovery, independent backup storage, RPO, RTO,
 or crash consistency. It performs and claims no GitHub, Hugging Face, Zenodo,
-OSF, or other external publication.
+or other external publication. OSF is deprecated and is not a rehearsal target.

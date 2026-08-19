@@ -41,6 +41,6 @@ Credential or restricted-byte sources omitted from fixture archival:
 
 ## Remaining gates
 
-Source-derived bulk publication, OSF licence resolution, and stable-v1
-promotion remain independent gates. Missing fixture coverage is not negative
-evidence of source absence.
+Source-derived bulk publication of credentialed/restricted payloads and
+stable-v1 promotion remain independent gates. OSF is deprecated. Missing
+fixture coverage is not negative evidence of source absence.

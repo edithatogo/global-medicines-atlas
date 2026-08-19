@@ -1,9 +1,14 @@
 # OSF maintainer review and registration gate
 
+**Status:** OSF deprecated (2026-08-19). Do not complete OSF licence resolution
+or further OSF submission. Historical landing-page verification of `ej5nf`
+remains below as a superseded receipt. Persistent identity: in-repo protocol
+plus Zenodo DOI `10.5281/zenodo.21734811`.
+
 **Review scope:** issues [#66](https://github.com/edithatogo/global-medicines-atlas/issues/66) and [#70](https://github.com/edithatogo/global-medicines-atlas/issues/70)  
 **Package:** [`research/preregistration/`](../../research/preregistration/)  
 **Manifest:** [`osf-submission-manifest.json`](../../research/preregistration/submission/osf-submission-manifest.json)  
-**Status:** package review complete; public OSF registration and DOI verified
+**Historical status:** package review complete; public OSF registration and DOI were verified, then superseded by deprecation
 
 ## Review decision
 
@@ -50,11 +55,9 @@ with `pending_registration_approval=false`. OSF assigned DOI
 
 ## Registration gate
 
-The remaining OSF qualification caveat is:
-
-1. The OSF registration API does not assert a licence for the registration
-   record; this remains unresolved rather than being inferred from the
-   software or dataset licences.
+OSF is deprecated. The historical licence-missing caveat for registration
+`ej5nf` is superseded and must not be treated as an open task. Do not complete
+OSF licence resolution or further OSF submission.
 
 The registration receipt records the registration URL, registration
 identifier, timestamp, package digest, public/embargo state, and API or landing

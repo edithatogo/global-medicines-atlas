@@ -345,16 +345,16 @@ flowchart LR
     BENCH["Synthetic matching benchmark"]
     HF["Hugging Face dataset card and Croissant"]
     ZENODO["Zenodo concept DOI and version DOI"]
-    OSF["OSF protocol and preregistration"]
+    PROTOCOL["In-repo protocol artefacts"]
     RECEIPT["Checksums, licence and provenance"]
 
     COMMIT --> CATALOG
     COMMIT --> BENCH
+    COMMIT --> PROTOCOL
     CATALOG --> HF
     BENCH --> HF
     HF --> ZENODO
-    OSF --> ZENODO
-    COMMIT --> OSF
+    PROTOCOL --> ZENODO
     CATALOG --> RECEIPT
     BENCH --> RECEIPT
 ```
@@ -362,7 +362,8 @@ flowchart LR
 The source catalog and lawful synthetic benchmark are separate products with
 separate licences and identifiers. Rights-restricted medicine payloads remain
 outside public publication packages. Creating external records or publishing a
-release remains an explicit maintainer gate.
+release remains an explicit maintainer gate. OSF is deprecated and is not a
+live publication identity.
 
 The Phase 1 research contract is the machine-readable
 `research/protocol/academic-protocol-v1.json`, validated by
@@ -371,31 +372,25 @@ The Phase 1 research contract is the machine-readable
 M-090 comparison-validity vocabulary to the protocol/methods work in GitHub
 [#67](https://github.com/edithatogo/global-medicines-atlas/issues/67).
 
-The Phase 3 OSF rehearsal is generated from
-`research/preregistration/osf-preregistration-v1.json` into a committed,
-checksum-addressed submission directory. The builder performs no network or
-platform action; the validator fails closed unless submission remains offline
-and maintainer review remains incomplete. Protocol, analysis plan, amendment
-history, deviation register, citations, and data-management and ethics
-statements are separate attachments so their identities remain auditable.
+The historical Phase 3 OSF-format rehearsal remains in
+`research/preregistration/` as a superseded offline artefact. It is not a live
+submission path. The persistent public identity is the in-repo protocol plus
+Zenodo DOI `10.5281/zenodo.21734811`.
 
 ```mermaid
 flowchart LR
     CONTRACT["Strict preregistration contract"]
     SOURCE["Protocol and analysis attachments"]
     BUILD["Deterministic offline builder"]
-    BUNDLE["OSF-ready draft bundle"]
+    BUNDLE["In-repo rehearsal bundle"]
     VERIFY["Schema and checksum validator"]
-    GATE{"Maintainer and rights approval"}
-    OSF["External OSF registration"]
+    ZENODO["Zenodo archival identity"]
 
     CONTRACT --> BUILD
     SOURCE --> BUILD
     BUILD --> BUNDLE
     BUNDLE --> VERIFY
-    VERIFY --> GATE
-    GATE -->|pending| BUNDLE
-    GATE -->|explicit approval only| OSF
+    VERIFY --> ZENODO
 ```
 
 ## Untrusted Acquisition and Failure Containment

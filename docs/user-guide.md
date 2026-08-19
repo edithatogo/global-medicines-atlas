@@ -133,7 +133,9 @@ retain their own terms, access controls, attribution duties, and redistribution
 restrictions. Review
 [software and source-data rights](data-sources/SOURCE_RIGHTS.md) before reuse.
 
-GitHub, Hugging Face, Zenodo, and OSF have distinct intended publication roles,
-but a configured identity or URL is not evidence that an object was published,
-licensed, approved, or verified. External identifiers, credentials, rights
-review, release execution, and publication remain explicit evidence gates.
+GitHub, Hugging Face, and Zenodo have distinct intended publication roles.
+OSF is deprecated and is not a live identity. A configured identity or URL is
+not evidence that an object was published, licensed, approved, or verified.
+External identifiers, credentials, rights review, release execution, and
+stable-v1 promotion remain explicit evidence gates. Production
+disaster-recovery authority remains a separate isolated gate.

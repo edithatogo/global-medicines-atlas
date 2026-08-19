@@ -170,7 +170,7 @@ class PublicationMetadataQualificationReceipt(QualificationModel):
     inputs: tuple[ContentBinding, ...] = Field(min_length=1)
     implementation_inputs: tuple[ContentBinding, ...] = Field(min_length=1)
     package: PackageMetadataEvidence
-    identities: tuple[IdentityEvidence, ...] = Field(min_length=4, max_length=4)
+    identities: tuple[IdentityEvidence, ...] = Field(min_length=3, max_length=3)
     gates: tuple[GateEvidence, ...] = Field(min_length=8, max_length=8)
     blockers: tuple[NonBlank, ...] = Field(min_length=1)
     receipt_sha256: Sha256
@@ -182,8 +182,8 @@ class PublicationMetadataQualificationReceipt(QualificationModel):
                 "publication metadata gates are incomplete or unordered"
             )
         expected_states = (
-            *(GateState.PASSED for _ in range(5)),
-            *(GateState.BLOCKED for _ in range(3)),
+            *(GateState.PASSED for _ in range(7)),
+            GateState.BLOCKED,
         )
         if tuple(item.state for item in self.gates) != expected_states:
             raise ValueError(
@@ -602,6 +602,12 @@ def _build_gates(
         "release:not-created",
         "signature:not-created",
     )
+    identifier_state = (
+        GateState.PASSED if not identifier_blockers else GateState.BLOCKED
+    )
+    licence_state = (
+        GateState.PASSED if not licence_blockers else GateState.BLOCKED
+    )
     return (
         _gate(
             "dataset-card", GateState.PASSED, ("metadata/dataset-card.json",)
@@ -627,13 +633,13 @@ def _build_gates(
         ),
         _gate(
             "external-identifiers",
-            GateState.BLOCKED,
+            identifier_state,
             ("quality/qualifications/publication-identities.json",),
             identifier_blockers,
         ),
         _gate(
             "licences",
-            GateState.BLOCKED,
+            licence_state,
             ("quality/qualifications/publication-identities.json",),
             licence_blockers,
         ),

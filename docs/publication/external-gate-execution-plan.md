@@ -1,8 +1,9 @@
 # External-gate execution plan
 
-Status: ready for autonomous execution up to explicit authority gates.
+Status: OSF cancelled; public/no-credential Hugging Face archive complete;
+remaining isolated gates are stable-v1 promotion and production DR authority.
 
-This plan addresses the remaining open issues without treating local tests,
+This plan addresses remaining open issues without treating local tests,
 configuration, or credentials as evidence of hosted authorization.
 
 ## Phase 1 — Renovate onboarding (#14)
@@ -20,59 +21,40 @@ Renovate PR or Dependency Dashboard is visible.
 Stop condition: do not add Dependabot, weaken branch protection, or claim
 Renovate activation from the local configuration alone.
 
-## Phase 2 — OSF final preview and submission (#70)
+## Phase 2 — OSF (deprecated)
 
-Entry criteria: private draft `6a6dca79265e7ef20ac266e1` has all 16 required
-response keys and 17 total responses.
-
-1. Use the authenticated `osf-cli` bearer-token session already available from
-   the surrounding project environment. Inspect identity only; never print,
-   persist, or commit token values.
-2. Perform a final visual/semantic preview of title, scope, ethics wording,
-   foreknowledge, study type, blinding, data management, citations, and
-   attached package digest.
-3. Present the maintainer with one decision: approve submission, request
-   revisions, or defer pending institutional confirmation.
-4. Only after explicit approval, submit the draft through the OSF CLI/API.
-5. Verify the resulting registration identifier, public/embargo state, landing
-   page, package digest, and API receipt.
-6. Update issue #70, `external-publication-receipt.md`, the publication identity
-   registry, and the academic Conductor evidence.
-
-Stop condition: no submission, public release, embargo change, or source-derived
-dataset attachment without explicit approval and a durable receipt.
+OSF is deprecated. Do not complete OSF licence resolution or OSF submission.
+Historical registration `ej5nf` is a superseded receipt. Persistent protocol
+identity: in-repo artefacts plus Zenodo DOI `10.5281/zenodo.21734811`. Close
+issue #70 as cancelled/deprecated.
 
 ## Phase 3 — Source rights and live qualification (#50, #51, #54)
 
-For each source, execute independently:
+The public/no-credential Hugging Face catalogue archive is the completed
+publication path for that class (PR #173, revision
+`b25af36da32ffa3ddc5d525f1c568459d23f6e11`; 85/96 sources archived).
+Credentialed and restricted sources remain out of scope: NZULM, AMT, PBS
+embargo, dm+d/TRUD, EMA PMS, SPOR, and the other skipped sources listed in
+`docs/publication/data-layer-archive-receipt.md`.
 
-1. Identify authoritative API/bulk endpoint and terms/licence.
-2. Record access mode, retrieval timestamp, jurisdiction, schema fingerprint,
-   checksum, and coverage denominator.
-3. Obtain a rights/redistribution decision before retaining or publishing data.
-4. Run adapter parity and fixture-to-live comparison without conflating
-   regulatory approval with funding/formulary status.
-5. Append a source receipt or an explicit blocked receipt.
-
-Initial order: NZULM/NZMT, PBS, Drugs@FDA, EMA, PMDA, NHS dm+d, and Canadian
-DPD. Restricted or unclear sources remain catalogue-only.
+Live payload qualification for credentialed sources remains a separate
+operational track and is not an academic-protocol blocker.
 
 ## Phase 4 — Product and release gates (#40, #43, #61)
 
-1. Reproduce the release from the canonical remote commit.
-2. Obtain signing and attestation evidence; unsigned artifacts remain
-   prerelease-only.
-3. Obtain production deployment, health/readiness, live provenance, browser
-   accessibility, and responsive-interaction receipts.
-4. Execute an authority-approved production DR rehearsal with RPO/RTO evidence.
-5. Record post-release monitoring observations before stable promotion.
+Isolated remaining gates:
+
+1. Stable-v1 promotion approval. `v1.0.0rc1` is tagged and attested. Do not
+   invent a public stable release.
+2. Production disaster-recovery authority for live production systems.
+   Fresh-clone software reproduction already passed.
 
 ## Governance and sequencing
 
-The order is Renovate verification, OSF preview, source-rights qualification,
-then deployment/release promotion. Local implementation and validation may
-continue in parallel. External publication, rights, signing, deployment, and
-institutional ethics decisions are never inferred from CI or credentials.
+The order is Renovate verification, then isolated release/DR gates. OSF is not
+in the sequence. Local implementation and validation may continue in parallel.
+External publication of restricted bytes, signing a stable release, and
+production DR authority are never inferred from CI.
 
 ## Decision register
 
@@ -80,16 +62,11 @@ The detailed option, contingency, rationale, and recommendation register is
 maintained in
 [`conductor/decisions/0006-external-gate-decision-register.md`](../../conductor/decisions/0006-external-gate-decision-register.md).
 
-The source-derived dataset batch decision and source-level approval matrix is
-maintained in
-[`conductor/decisions/0008-source-derived-dataset-licensing-batch.md`](../../conductor/decisions/0008-source-derived-dataset-licensing-batch.md).
-
-The only immediate maintainer decisions are:
+The only immediate remaining maintainer decisions are:
 
 - authorize Renovate App installation, if the App is absent;
-- approve, revise, or defer OSF submission after preview;
-- approve source-specific redistribution licences where required; and
-- approve signed release and production qualification evidence.
+- approve a public stable release distinct from `v1.0.0rc1`; and
+- authorize production disaster-recovery rehearsal against live systems.
 
 Each decision must identify its scope, authority, date, affected artefacts, and
 receipt location.

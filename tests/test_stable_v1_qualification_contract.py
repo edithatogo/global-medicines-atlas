@@ -87,10 +87,6 @@ def test_frontier_requirements_trace_to_the_correct_runtime_gates() -> None:
     expected = {
         "M-085": ("stable-v1-canonical-schema-v2", "canonical_v2.py"),
         "M-086": ("stable-v1-concept-discovery", "query_service.py"),
-        "M-088": (
-            "stable-v1-publication-identities",
-            "publication-identities.json",
-        ),
         "M-089": ("stable-v1-clean-room-rehearsal", "acquisition.py"),
         "M-090": ("stable-v1-comparison-validity", "comparison_validity.py"),
     }
@@ -98,6 +94,18 @@ def test_frontier_requirements_trace_to_the_correct_runtime_gates() -> None:
         item = requirements[requirement_id]
         assert gate_id in item["blocker_ids"]
         assert any(path.endswith(evidence_suffix) for path in item["evidence"])
+
+    identities = requirements["M-088"]
+    assert identities["state"] == "verified"
+    assert identities["blocker_ids"] == []
+    assert any(
+        path.endswith("publication-identities.json")
+        for path in identities["evidence"]
+    )
+
+    protocol = requirements["M-091"]
+    assert protocol["state"] == "verified"
+    assert protocol["blocker_ids"] == []
 
     clean_consumer = requirements["M-087"]
     assert clean_consumer["state"] == "verified"
@@ -174,13 +182,13 @@ def test_publication_identities_are_unique_and_non_overlapping() -> None:
         "github",
         "hugging_face",
         "zenodo",
-        "osf",
     }
+    assert "osf" not in {item["system"] for item in identities}
     roles = [item["object_role"] for item in identities]
     assert len(roles) == len(set(roles))
     unresolved = [item for item in identities if item["identifier"] is None]
-    assert unresolved
-    assert all(item["state"] == "blocked" for item in unresolved)
+    assert not unresolved
+    assert all(item["state"] == "verified" for item in identities)
     assert {
         (item["system"], item["object_role"], item["identifier"])
         for item in identities

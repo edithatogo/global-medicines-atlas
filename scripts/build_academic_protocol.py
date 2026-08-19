@@ -47,7 +47,9 @@ def build_protocol_markdown(protocol: dict[str, Any]) -> str:
 
 > Generated offline from `research/protocol/academic-protocol-v1.json`.
 > Status: `{protocol["status"]}`. This Phase 1 protocol is not an OSF
-> registration and does not report study results.
+> registration. OSF is deprecated. The persistent public identity is the
+> in-repo protocol plus Zenodo DOI `10.5281/zenodo.21734811`. This document
+> does not report study results.
 
 ## Title
 
