@@ -98,6 +98,22 @@ public data. It runs before any acquire/download, including Drugs@FDA.
     - [ ] Run focused tests and typing
     - [ ] Record lineage event field names in evidence
 
+### Phase 4c: Reproducibility and disaster recovery
+
+- [x] Task: Write failing tests for bronze reconstruction ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169), parent [#167](https://github.com/edithatogo/global-medicines-atlas/issues/167))
+    - [x] Assert clean-room rebuild from payloads and receipts only
+    - [x] Assert DuckDB/LanceDB loss does not block reconstruction
+    - [x] Assert catalogue and Parquet deletion regenerate without new acquisition IDs
+    - [x] Assert interrupted acquisition fails closed then resumes
+    - [x] Assert partial storage loss, duplicate retrieval, and code rollback keep payloads
+    - [x] Confirm the intended failure before implementation
+- [x] Task: Reconstruct metadata, Parquet, and catalogue from immutable truth
+    - [x] Treat Hugging Face as non-authoritative; local payload plus receipt is truth
+    - [x] Emit compact machine-verifiable recovery evidence
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused recovery tests and typing
+    - [x] Record recovery evidence; do not claim production disaster recovery
+
 ## Phase 5: Public ingest and governed-fixture landing
 
 - [ ] Task: Write failing tests for in-scope bronze ingest ([#170](https://github.com/edithatogo/global-medicines-atlas/issues/170))
