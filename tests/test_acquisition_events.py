@@ -287,6 +287,20 @@ def test_event_model_rejects_collapsed_content_and_acquisition_ids() -> None:
         )
 
 
+@pytest.mark.edge
+def test_event_model_rejects_content_id_decoupled_from_payload() -> None:
+    other = "b" * 64
+    with pytest.raises(ValidationError, match="must equal payload digest"):
+        AcquisitionEvent(
+            acquisition_id=SHA,
+            content_id=other,
+            source_id="us-drugsfda",
+            source_version=None,
+            retrieved_at=NOW,
+            payload_sha256=SHA,
+        )
+
+
 @pytest.mark.property
 @given(st.binary(min_size=1, max_size=256), st.binary(min_size=1, max_size=256))
 def test_event_id_changes_when_retrieval_clock_or_bytes_change(

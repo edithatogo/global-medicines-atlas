@@ -7,7 +7,7 @@ import json
 import sys
 import tomllib
 from pathlib import Path
-from types import ModuleType
+from types import ModuleType, SimpleNamespace
 
 import httpx
 import pyarrow.parquet as pq
@@ -298,3 +298,134 @@ def test_create_body_rejects_malformed_documents() -> None:
             partition_fields=("missing",),
             schema_fields=(("source_id", "string"),),
         )
+    with pytest.raises(ValueError, match="schema_fields must not be empty"):
+        IcebergReadyTableSpec(
+            identifier="bronze.example",
+            location="file://bronze",
+            partition_fields=(),
+            schema_fields=(),
+        )
+    with pytest.raises(ValueError, match="last_column_id is below"):
+        IcebergReadyTableSpec(
+            identifier="bronze.example",
+            location="file://bronze",
+            partition_fields=(),
+            schema_fields=(("source_id", "string"), ("jurisdiction", "string")),
+            last_column_id=1,
+        )
+
+
+@pytest.mark.unit
+def test_catalogue_properties_cover_optional_identity_branches(
+    tmp_path: Path,
+) -> None:
+    spec = _spec(tmp_path)
+    untagged = SnapshotAcquisitionBinding(
+        snapshot_id=7,
+        acquisition_id=spec.acquisition_id or ("a" * 64),
+        content_id=spec.content_id or ("b" * 64),
+        parquet_digest=spec.parquet_digest or ("c" * 64),
+        iceberg_branch="main",
+    )
+    tagged_out = _object_map(
+        iceberg_rest_create_body(spec, untagged)["properties"]
+    )
+    assert "gma.iceberg-tag" not in tagged_out
+    assert tagged_out["gma.iceberg-branch"] == "main"
+
+    digest_only = spec.model_copy(update={"acquisition_id": None})
+    digest_props = _object_map(
+        iceberg_rest_create_body(digest_only)["properties"]
+    )
+    assert digest_props["gma.content-id"] == spec.content_id
+    assert "gma.acquisition-id" not in digest_props
+
+    identity_free = spec.model_copy(
+        update={
+            "acquisition_id": None,
+            "content_id": None,
+            "parquet_digest": None,
+        }
+    )
+    free_props = _object_map(
+        iceberg_rest_create_body(identity_free)["properties"]
+    )
+    assert "gma.acquisition-id" not in free_props
+    assert "gma.content-id" not in free_props
+
+
+@pytest.mark.unit
+def test_evolution_rejects_evidentiary_drop_and_reused_field_ids(
+    tmp_path: Path,
+) -> None:
+    spec = _spec(tmp_path)
+    dropped_evidentiary = spec.model_copy(
+        update={
+            "schema_fields": tuple(
+                (name, typ)
+                for name, typ in spec.schema_fields
+                if name != "content_id"
+            )
+        }
+    )
+    with pytest.raises(ValueError, match="cannot drop evidentiary field"):
+        assert_compatible_evolution(spec, dropped_evidentiary)
+    reordered = spec.model_copy(
+        update={"schema_fields": tuple(reversed(spec.schema_fields))}
+    )
+    with pytest.raises(ValueError, match="is immutable"):
+        assert_compatible_evolution(spec, reordered)
+
+
+@pytest.mark.unit
+def test_spec_from_create_body_rejects_non_string_members(
+    tmp_path: Path,
+) -> None:
+    body = iceberg_rest_create_body(_spec(tmp_path))
+    schema = _object_map(body["schema"])
+    with pytest.raises(TypeError, match="fields must be an array"):
+        spec_from_create_body({**body, "schema": {**schema, "fields": "nope"}})
+    with pytest.raises(TypeError, match="name and type must be strings"):
+        spec_from_create_body({
+            **body,
+            "schema": {**schema, "fields": [{"name": 1, "type": "string"}]},
+        })
+    properties = _object_map(body["properties"])
+    with pytest.raises(TypeError, match="location must be a string"):
+        spec_from_create_body({
+            **body,
+            "properties": {**properties, "location": 1},
+        })
+    with pytest.raises(TypeError, match="namespace must be a string"):
+        spec_from_create_body({**body, "namespace": 1})
+    with pytest.raises(TypeError, match="table name must be a string"):
+        spec_from_create_body({**body, "name": 1})
+    with pytest.raises(TypeError, match="schema ids must be integers"):
+        spec_from_create_body({
+            **body,
+            "schema": {**schema, "last-column-id": "x"},
+        })
+
+
+@pytest.mark.unit
+def test_optional_rest_catalog_loads_when_extra_is_present(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    module = ModuleType("pyiceberg.catalog.rest")
+
+    def rest_catalog(name: str, uri: str) -> SimpleNamespace:
+        return SimpleNamespace(name=name, uri=uri)
+
+    module.RestCatalog = rest_catalog
+    real_import = importlib.import_module
+
+    def fake_import(name: str, package: str | None = None) -> ModuleType:
+        if name == "pyiceberg.catalog.rest":
+            return module
+        return real_import(name, package)
+
+    monkeypatch.setattr(importlib, "import_module", fake_import)
+    catalog = load_optional_rest_catalog("https://iceberg.example.test")
+    assert isinstance(catalog, SimpleNamespace)
+    assert catalog.name == "gma-bronze"
+    assert catalog.uri == "https://iceberg.example.test"

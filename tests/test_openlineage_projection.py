@@ -206,6 +206,62 @@ def test_run_event_conforms_to_openlineage_required_shape(
     del clone["schemaURL"]
     with pytest.raises(ValueError, match="schemaURL"):
         conform_run_event(clone)
+    empty_run_facets = copy.deepcopy(event)
+    empty_run_facets["run"]["facets"] = {}
+    conform_run_event(empty_run_facets)
+
+
+@pytest.mark.unit
+def test_run_event_rejects_non_conforming_shapes(tmp_path: Path) -> None:
+    _, event = _event(tmp_path, table=_table(tmp_path))
+    not_object = copy.deepcopy(event)
+    not_object["run"] = []
+    with pytest.raises(TypeError, match="run must be an object"):
+        conform_run_event(not_object)
+    not_array = copy.deepcopy(event)
+    not_array["inputs"] = {}
+    with pytest.raises(TypeError, match="inputs must be an array"):
+        conform_run_event(not_array)
+    missing_keys = copy.deepcopy(event)
+    missing_keys["outputs"][0]["facets"]["storage"] = {"not": "a facet"}
+    with pytest.raises(ValueError, match="facet is missing spec keys"):
+        conform_run_event(missing_keys)
+    bad_schema_type = copy.deepcopy(event)
+    bad_schema_type["outputs"][0]["facets"]["storage"]["_schemaURL"] = 1
+    with pytest.raises(TypeError, match="schemaURL is not a string"):
+        conform_run_event(bad_schema_type)
+    bad_schema_url = copy.deepcopy(event)
+    bad_schema_url["outputs"][0]["facets"]["storage"]["_schemaURL"] = (
+        "https://example.test/not-openlineage"
+    )
+    with pytest.raises(ValueError, match="not a spec URL"):
+        conform_run_event(bad_schema_url)
+    missing_dataset_key = copy.deepcopy(event)
+    del missing_dataset_key["outputs"][0]["namespace"]
+    with pytest.raises(ValueError, match="missing namespace"):
+        conform_run_event(missing_dataset_key)
+    bad_event_type = copy.deepcopy(event)
+    bad_event_type["eventType"] = "DONE"
+    with pytest.raises(ValueError, match="eventType is not a spec value"):
+        conform_run_event(bad_event_type)
+    wrong_schema = copy.deepcopy(event)
+    wrong_schema["schemaURL"] = f"{SCHEMA_URL}/other"
+    with pytest.raises(
+        ValueError, match="schemaURL must be the RunEvent schema"
+    ):
+        conform_run_event(wrong_schema)
+    missing_run_id = copy.deepcopy(event)
+    del missing_run_id["run"]["runId"]
+    with pytest.raises(ValueError, match="run missing runId"):
+        conform_run_event(missing_run_id)
+    missing_job = copy.deepcopy(event)
+    del missing_job["job"]["name"]
+    with pytest.raises(ValueError, match="job missing namespace or name"):
+        conform_run_event(missing_job)
+    incomplete_run_facet = copy.deepcopy(event)
+    incomplete_run_facet["run"]["facets"]["gmaRights"] = {"_producer": "x"}
+    with pytest.raises(ValueError, match="facet is missing spec keys"):
+        conform_run_event(incomplete_run_facet)
 
 
 @pytest.mark.property
