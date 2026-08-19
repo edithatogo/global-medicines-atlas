@@ -12,6 +12,7 @@ from pydantic import AnyUrl, AwareDatetime, Field, model_validator
 
 from .models import FrozenModel
 from .reuse_gate import ReuseGateDecision
+from .rights_policy import AcquisitionRightsPolicy, coarse_rights_state
 
 SHA256_PATTERN = r"^[0-9a-f]{64}$"
 
@@ -229,6 +230,7 @@ class SourceReceipt(DeterministicReceipt):
     reuse: ReuseGateDecision | None = None
     rights_state: RightsState
     rights_reference: AnyUrl | None = None
+    rights_policy: AcquisitionRightsPolicy | None = None
     evidence_class: EvidenceClass
     transformation: TransformationEvidence
 
@@ -258,7 +260,31 @@ class SourceReceipt(DeterministicReceipt):
             raise ValueError("temporal identity is required")
         if self.temporal.retrieved_at != self.retrieval.retrieved_at:
             raise ValueError("temporal.retrieved_at must match retrieval")
+        self._validate_bound_rights_policy()
         return self
+
+    def _validate_bound_rights_policy(self) -> None:
+        policy = self.rights_policy
+        if policy is None:
+            return
+        if policy.source_id != self.source.source_id:
+            raise ValueError("rights policy source_id must match receipt")
+        temporal = self.temporal
+        if (
+            temporal is not None
+            and policy.acquisition_id != temporal.acquisition_id
+        ):
+            raise ValueError("rights policy acquisition_id must match receipt")
+        if coarse_rights_state(policy) != self.rights_state:
+            raise ValueError(
+                "rights policy does not match receipt rights_state"
+            )
+
+    def canonical_json(self) -> bytes:
+        payload = self.model_dump(mode="json", exclude_none=False)
+        if payload.get("rights_policy") is None:
+            del payload["rights_policy"]
+        return orjson.dumps(payload, option=orjson.OPT_SORT_KEYS)
 
     @property
     def satisfies_live_gate(self) -> bool:

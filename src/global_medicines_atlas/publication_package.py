@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any, cast
 
 import polars as pl
@@ -17,6 +18,10 @@ from .publication_contracts import (
     PublicationState,
     PublicationVerificationReceipt,
     RightsDisposition,
+)
+from .rights_policy import (
+    AcquisitionRightsPolicy,
+    evaluate_acquisition_rights,
 )
 
 _PARQUET_NAME = "data/medicines.parquet"
@@ -71,6 +76,35 @@ class GeneratedPublicationPackage:
             digest.update(item.sha256.encode())
             digest.update(b"\n")
         return digest.hexdigest()
+
+
+def require_publishable_source_bytes(
+    policies: Sequence[AcquisitionRightsPolicy | None] | None,
+    *,
+    evaluated_at: datetime,
+) -> None:
+    """Fail closed unless every acquisition may publish source bytes."""
+
+    if not policies:
+        raise PackageGenerationError(
+            "source-byte publication is unresolved: rights policy is missing"
+        )
+    reasons: list[str] = []
+    for index, policy in enumerate(policies):
+        if policy is None:
+            reasons.append(f"acquisition {index} rights policy is unresolved")
+            continue
+        decision = evaluate_acquisition_rights(
+            policy,
+            evaluated_at=evaluated_at,
+        )
+        if not decision.may_publish_bytes:
+            joined = "; ".join(decision.blocking_reasons)
+            reasons.append(f"{policy.source_id}: {joined}")
+    if reasons:
+        raise PackageGenerationError(
+            "source-byte publication is unresolved: " + "; ".join(reasons)
+        )
 
 
 def generate_publication_package(
