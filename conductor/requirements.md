@@ -186,6 +186,30 @@
   `schemas/osf-submission-manifest-v1.json`; its deterministic offline package
   remains `draft_not_submitted` until explicit maintainer approval.
 
+### Medallion bronze (current horizon)
+
+- **M-092:** Maintain an explicit medallion architecture (bronze, silver, gold,
+  platinum) in which bronze is raw-as-landed source evidence: source-native
+  identifiers, provenance, dates, rights, uncertainty, and content-addressed
+  receipts. Missing coverage is not negative evidence.
+- **M-093:** Keep regulatory, funding, formulary, and terminology assertions
+  independent in bronze; do not collapse those dimensions during landing.
+- **M-094:** Land bronze as Arrow/Parquet portable truth with partitioned raw
+  tables. DuckDB and LanceDB remain regenerable derivatives and are not bronze.
+- **M-095:** Complete bronze for current-scope public/no-credential catalog
+  sources and already-governed fixtures. Credentialed, licensed-feed, and
+  restricted-payload sources remain catalogued with explicit exclusion from this
+  completion horizon. Python 3.14 remains the complete fallback. Credentials and
+  restricted source bytes must never be inspected, committed, logged, or
+  published.
+- **M-096:** Treat Hugging Face as a bronze archive and output boundary, never
+  as the source of truth or as an ingest origin for medicine payloads.
+- **M-097:** Provide bleeding-edge bronze mechanics for in-scope public sources
+  and governed fixtures: modern public ingest, content-addressed receipts,
+  partitioned Parquet landing, explicit licence and rights, deterministic
+  regeneration, and schema-on-read where source schemas vary. This is a
+  completed landing layer for current scope, not a prototype.
+
 ## Should Have
 
 - **S-001:** Evaluate Apache DataFusion for measured Rust-native query or streaming requirements without displacing DuckDB prematurely.
@@ -200,6 +224,11 @@
 - **S-010:** Separate domain contracts, policy evaluation, storage/query
   adapters, transport, serialization and orchestration behind characterized,
   strictly typed boundaries without speculative micro-packages.
+- **S-011:** Publish or refresh the lawful public bronze archive through the
+  Hugging Face boundary once that archival path is available, without treating
+  the remote dataset as authoritative.
+- **S-012:** Measure bronze completeness by source identifier, jurisdiction,
+  dimension, rights state, receipt class, and Parquet partition identity.
 
 ## Could Have
 
@@ -208,6 +237,8 @@
 - **C-003:** Provide multilingual labels and jurisdiction-specific policy briefs.
 - **C-004:** Add scheduled source-health and schema-drift monitors with issue escalation.
 - **C-005:** Add a Qdrant service deployment after benchmarked need is demonstrated.
+- **C-006:** Record machine-readable contracts for silver, gold, and platinum
+  layers without implementing those layers.
 
 ## Won't Have in the Initial Increment
 
@@ -217,3 +248,7 @@
 - **W-004:** Claims of global coverage without measured jurisdiction and source coverage.
 - **W-005:** A mandatory distributed database or service when embedded portable tools satisfy the requirement.
 - **W-006:** Removal or archival of `nzmedicines` before migration verification and compatibility notice review.
+- **W-007:** Implement silver, gold, or platinum transformation, matching, or
+  serving layers in this bronze-completion horizon.
+- **W-008:** Expand bronze-completion work to credentialed, licensed-feed, or
+  restricted-payload sources in this horizon.

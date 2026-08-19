@@ -430,3 +430,136 @@ Acquired bytes are untrusted even when an authority is official. Logs retain
 source IDs, digests and bounded outcomes but redact credentials, query strings
 and source payloads. Compromise recovery covers upstream data, signing
 provenance, credentials and already-published datasets.
+
+## Medallion Datahouse
+
+The medicines comparison product is implemented as a four-layer medallion
+datahouse. Bronze is the current completion horizon. Silver, gold, and platinum
+are sketched so later tracks have a stable boundary; they are not implemented
+by the bronze-completion track.
+
+```mermaid
+flowchart TB
+    subgraph Sources["Authoritative sources"]
+        PUB["Public / no-credential catalog sources"]
+        FIX["Already-governed fixtures"]
+        REST["Credentialed or restricted sources"]
+    end
+
+    subgraph Bronze["Bronze — current completion horizon"]
+        INGEST["Governed public ingest"]
+        RAW["Raw-as-landed bytes"]
+        IDS["Source-native identifiers"]
+        PROV["Provenance, dates, rights, uncertainty"]
+        RECEIPT["Content-addressed receipts"]
+        PARQUET["Partitioned Arrow/Parquet portable truth"]
+    end
+
+    subgraph Later["Later layers — sketched only"]
+        SILVER["Silver: source-faithful normalized tables"]
+        GOLD["Gold: matched cross-jurisdiction evidence"]
+        PLATINUM["Platinum: comparison products"]
+    end
+
+    subgraph Derivatives["Not bronze"]
+        DUCK["DuckDB analytical views"]
+        LANCE["LanceDB / optional indexes"]
+    end
+
+    subgraph Archive["Output boundary"]
+        HF["Hugging Face public bronze archive"]
+    end
+
+    PUB --> INGEST
+    FIX --> RAW
+    REST -.->|"catalogued, out of this horizon"| RAW
+    INGEST --> RAW
+    RAW --> IDS
+    RAW --> PROV
+    RAW --> RECEIPT
+    IDS --> PARQUET
+    PROV --> PARQUET
+    RECEIPT --> PARQUET
+    PARQUET --> SILVER
+    SILVER --> GOLD
+    GOLD --> PLATINUM
+    PARQUET --> DUCK
+    PARQUET --> LANCE
+    PARQUET --> HF
+```
+
+Hugging Face is an archive and publication boundary for reviewed public bronze
+outputs. It is not an ingest origin and not the source of truth. Repository
+Parquet, receipts, and the source catalog remain authoritative. The sibling
+Hugging Face archival track owns remote publication mechanics; this design
+consumes that boundary.
+
+### Bronze landing
+
+Bronze means raw-as-landed. A bronze record preserves what a source published,
+not a canonical medicine conclusion. Regulatory, funding, formulary, and
+terminology land in independent partitions or tables. Missing coverage is
+recorded as not covered, never as unapproved or unfunded.
+
+```mermaid
+flowchart LR
+    CATALOG["medicine_source_catalog.json"]
+    POLICY{"In-scope public or governed fixture?"}
+    FETCH["Bounded public ingest"]
+    FIXTURE["Governed fixture bytes"]
+    QUAR["Quarantine and digest"]
+    RECEIPT["Content-addressed receipt"]
+    LAND["Partitioned Parquet landing"]
+    RIGHTS["Licence and rights columns"]
+    SCHEMA["Schema-on-read where native schemas vary"]
+    REGEN["Deterministic regeneration"]
+    HF["Hugging Face archive boundary"]
+    BLOCK["Remain catalogued; no bronze completion claim"]
+
+    CATALOG --> POLICY
+    POLICY -->|yes, public no-credential| FETCH
+    POLICY -->|yes, governed fixture| FIXTURE
+    POLICY -->|credentialed or restricted| BLOCK
+    FETCH --> QUAR
+    FIXTURE --> QUAR
+    QUAR --> RECEIPT
+    RECEIPT --> LAND
+    LAND --> RIGHTS
+    LAND --> SCHEMA
+    LAND --> REGEN
+    REGEN --> HF
+```
+
+Current bronze-completion scope is first-cohort and global catalog sources whose
+authentication is none and whose access is not a licensed feed, plus already
+governed fixtures (Medsafe, PHARMAC, ARTG, PBS, DPD/NOC, MHRA/NICE, EMA/Union
+Register, PMDA/NHI, Drugs@FDA, CMS Part D, and related synthetic fixtures).
+Credentialed catalog entries remain out of this horizon, including NZULM bulk,
+NZHTS FHIR, AMT RF2, PBS embargo, dm+d/TRUD, EMA PMS, and SPOR. RxNorm/UMLS
+source payloads remain fixture-only because restricted terminology bytes are
+not public bronze.
+
+Bronze partitions are keyed by jurisdiction, source identifier, dimension, and
+rights state. Each landed file carries source-native identifiers, retrieval and
+effective dates, receipt digest, uncertainty, and an explicit rights expression.
+Python 3.14 is the complete fallback path. DuckDB and LanceDB may read bronze
+Parquet; they do not store bronze truth.
+
+### Later layers (sketch only)
+
+```mermaid
+flowchart TB
+    BRONZE["Bronze Parquet and receipts"]
+    SILVER["Silver: typed source-faithful tables, still independent dimensions"]
+    GOLD["Gold: reviewable mappings, confidence, comparison validity"]
+    PLATINUM["Platinum: API, CLI, atlas, governed publication products"]
+
+    BRONZE --> SILVER
+    SILVER --> GOLD
+    GOLD --> PLATINUM
+```
+
+Silver may normalize names, units, and identifiers while retaining every
+source-native key. Gold may emit cross-jurisdiction mapping candidates with
+M-090 validity states. Platinum may serve comparison products. None of those
+behaviours are in the bronze-completion track.
