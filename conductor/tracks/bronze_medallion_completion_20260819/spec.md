@@ -138,6 +138,12 @@ in the default install. Use real OpenLineage field names (`eventType`,
   bronze completion.
 - Never inspect, commit, log, or publish credentials or restricted source bytes.
 - Public ingest uses existing untrusted-acquisition controls (M-089).
+  Truncated downloads, corrupt or malicious ZIP/tar payloads, decompression
+  bombs, path traversal, MIME/extension mismatches, malformed XML/JSON/CSV,
+  schema poisoning, collisions, unexpected source mutation, replayed
+  acquisitions, checksum mismatches, and hostile filenames are inspected in
+  place. Untrusted bytes are landed; processing is quarantined; forensic
+  receipts are preserved. Iceberg metadata is not the integrity authority.
 - Tests precede implementation in every phase.
 - External publication remains a human gate.
 

@@ -11,6 +11,7 @@ from typing import Literal
 import orjson
 from pydantic import Field
 
+from .bronze_integrity import inspect_untrusted_payload
 from .bronze_landing import ADMISSION_DIR, BronzeLanding
 from .models import FrozenModel
 from .receipts import SHA256_PATTERN, require_temporal
@@ -117,9 +118,40 @@ def evaluate_bronze_admission(landing: BronzeLanding) -> BronzeAdmissionRecord:
 
     temporal = require_temporal(landing.receipt.temporal)
     payload = landing.payload_path.read_bytes()
-    return classify_bronze_payload(
+    http = landing.receipt.retrieval.http
+    declared_length = None if http is None else http.content_length
+    inspection = inspect_untrusted_payload(
         payload,
+        declared_media=landing.payload_path.suffix,
+        declared_filename=landing.payload_path.name,
+        expected_sha256=landing.receipt.payload.sha256,
+        declared_length=declared_length,
         acquisition_id=temporal.acquisition_id,
+    )
+    if inspection.blocking:
+        state = BronzeAdmissionState.QUARANTINED
+        reasons = inspection.reason_codes
+    elif inspection.sniffed_kind == "json":
+        return classify_bronze_payload(
+            payload,
+            acquisition_id=temporal.acquisition_id,
+        )
+    else:
+        state = BronzeAdmissionState.ACCEPTED
+        reasons = ()
+    return BronzeAdmissionRecord(
+        acquisition_id=temporal.acquisition_id,
+        content_id=inspection.content_id,
+        state=state,
+        reason_codes=reasons,
+        validation_results=tuple(
+            ValidationResult(
+                check_id=item.check_id,
+                passed=item.passed,
+                message=item.message,
+            )
+            for item in inspection.findings
+        ),
     )
 
 
