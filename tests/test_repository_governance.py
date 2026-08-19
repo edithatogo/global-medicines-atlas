@@ -1,13 +1,28 @@
+# ruff: file-ignore[subprocess-without-shell-equals-true]
+
 from __future__ import annotations
 
+import configparser
 import json
 import re
+import shutil
+import subprocess  # ruff: ignore[suspicious-subprocess-import]
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
+CONDUCTOR_PLUGIN = ".agents/plugins/conductor"
+CONDUCTOR_PLUGIN_URL = "https://github.com/gemini-cli-extensions/conductor.git"
+CONDUCTOR_SKILLS = (
+    "conductor-setup",
+    "conductor-new-track",
+    "conductor-implement",
+    "conductor-status",
+    "conductor-review",
+    "conductor-revert",
+)
 
 
 def test_single_canonical_renovate_configuration() -> None:
@@ -118,3 +133,40 @@ def test_issue_forms_and_labels_are_machine_readable() -> None:
         "type:data-incident",
         "status:external-gate",
     } <= names
+
+
+def test_conductor_plugin_is_pinned_git_submodule() -> None:
+    modules = configparser.ConfigParser()
+    parsed = modules.read(ROOT / ".gitmodules")
+    assert parsed, "missing .gitmodules"
+    section = f'submodule "{CONDUCTOR_PLUGIN}"'
+    assert modules.has_section(section)
+    assert modules.get(section, "path") == CONDUCTOR_PLUGIN
+    assert modules.get(section, "url") == CONDUCTOR_PLUGIN_URL
+    assert modules.get(section, "branch") == "main"
+
+    git = shutil.which("git")
+    if git is None:
+        pytest.skip("git is unavailable")
+    recorded = subprocess.run(
+        [git, "ls-tree", "HEAD", CONDUCTOR_PLUGIN],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    mode, object_type, rest = recorded.stdout.split(maxsplit=2)
+    sha = rest.split("\t", 1)[0]
+    assert mode == "160000"
+    assert object_type == "commit"
+    assert FULL_SHA.fullmatch(sha)
+
+
+def test_cursor_skills_delegate_to_pinned_conductor_plugin() -> None:
+    for name in CONDUCTOR_SKILLS:
+        skill = ROOT / ".cursor" / "skills" / name / "SKILL.md"
+        text = skill.read_text(encoding="utf-8")
+        relative = f"{CONDUCTOR_PLUGIN}/skills/{name}/SKILL.md"
+        assert f"name: {name}" in text
+        assert relative in text
+        assert "git submodule update --init --recursive" in text
