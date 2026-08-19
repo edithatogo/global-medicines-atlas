@@ -37,6 +37,7 @@ from global_medicines_atlas.data_layer_archive import (
     classify_authority_group,
     classify_source_access,
     inventory_data_layer,
+    parse_authority_groups,
     resolve_huggingface_identity,
     retrieval_uris_for_source,
 )
@@ -697,6 +698,125 @@ def test_drugsfda_retrieval_uses_governed_bulk_url() -> None:
     )
     uris = retrieval_uris_for_source(source)
     assert any("media/89850" in uri for uri in uris)
+
+
+def test_parse_authority_groups_defaults_and_rejects_unknown() -> None:
+    assert parse_authority_groups("") == SCOPED_AUTHORITY_GROUPS
+    assert parse_authority_groups(" fda , tga ") == frozenset({
+        AuthorityGroup.FDA,
+        AuthorityGroup.TGA,
+    })
+    with pytest.raises(ValueError, match="unsupported archival authority"):
+        parse_authority_groups("fda,other")
+    with pytest.raises(ValueError, match="is not a valid AuthorityGroup"):
+        parse_authority_groups("nope")
+
+
+def test_authority_group_uses_source_id_prefix_when_authority_text_differs() -> (
+    None
+):
+    source = next(
+        item
+        for item in load_source_catalog()
+        if item.source_id == "us-gsrs-unii"
+    )
+    renamed = source.model_copy(update={"authority": "NIH NCATS"})
+    assert classify_authority_group(renamed) is AuthorityGroup.FDA
+
+
+def test_http_retriever_archives_live_public_bytes() -> None:
+    def handler(_request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            content=b'{"ok": true}',
+            headers={"content-type": "application/json"},
+        )
+
+    source = next(
+        item
+        for item in load_source_catalog()
+        if item.source_id == "us-openfda-drugsfda"
+    )
+    retriever = HttpPayloadRetriever(
+        transport=httpx.MockTransport(handler),
+        clock=lambda: NOW,
+    )
+    retrieved = retriever.retrieve(source)
+    assert retrieved.kind is PayloadKind.LIVE_PUBLIC
+    assert retrieved.content == b'{"ok": true}'
+    assert retrieved.filename == "drugsfda.json"
+    assert retrieved.attempts == 1
+    orange = next(
+        item
+        for item in load_source_catalog()
+        if item.source_id == "us-fda-orange-book"
+    )
+    extensionless = retriever.retrieve(orange)
+    assert extensionless.filename == "public-artefact.bin"
+
+
+def test_http_retriever_labels_disallowed_hosts_and_http_errors() -> None:
+    source = next(
+        item
+        for item in load_source_catalog()
+        if item.source_id == "us-fda-orange-book"
+    )
+    blocked = source.model_copy(
+        update={
+            "landing_page": "http://www.fda.gov/orange-book",
+            "download_url": "http://www.fda.gov/orange-book.zip",
+            "api_url": None,
+        }
+    )
+    labelled = HttpPayloadRetriever(
+        transport=httpx.MockTransport(lambda _request: httpx.Response(200)),
+        max_attempts=3,
+    ).retrieve(blocked)
+    assert labelled.kind is PayloadKind.REPRESENTATIVE_FIXTURE
+    assert labelled.skip_reason == "host_not_in_catalog"
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        raise httpx.ConnectError("unreachable")
+
+    failed = HttpPayloadRetriever(
+        transport=httpx.MockTransport(handler),
+        max_attempts=3,
+    ).retrieve(source)
+    assert failed.kind is PayloadKind.REPRESENTATIVE_FIXTURE
+    assert failed.attempts == 3
+    assert failed.skip_reason == "live_retrieval_failed_after_3_attempts"
+
+
+def test_http_retriever_caps_chunked_payloads_without_content_length() -> None:
+    def body() -> object:
+        yield b"x" * 20
+        yield b"x" * 20
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, content=body())
+
+    source = next(
+        item
+        for item in load_source_catalog()
+        if item.source_id == "au-tga-pi-cmi"
+    )
+    oversize = HttpPayloadRetriever(
+        transport=httpx.MockTransport(handler),
+        max_bytes=24,
+    ).retrieve(source)
+    assert oversize.kind is PayloadKind.REPRESENTATIVE_FIXTURE
+    assert oversize.skip_reason == "live_file_too_large"
+
+
+def test_uri_allowlist_includes_api_host_when_download_url_is_absent() -> None:
+    source = next(
+        item
+        for item in load_source_catalog()
+        if item.source_id == "us-openfda-drugsfda"
+    )
+    api_only = source.model_copy(update={"download_url": None})
+    assert archive_mod._uri_is_allowed(str(api_only.api_url), api_only)
+    assert not archive_mod._uri_is_allowed("https://example.test/x", api_only)
 
 
 def test_archive_workflow_is_sha_pinned_and_covers_four_authorities() -> None:
