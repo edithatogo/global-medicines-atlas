@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.example/schemas/bronze-scale-budgets-v1.json",
+  "title": "Bronze scale performance budgets",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "profile",
+    "pipeline_seconds",
+    "hashing_mib_per_second",
+    "archive_inspect_seconds",
+    "parquet_seconds",
+    "receipt_validation_seconds",
+    "lineage_seconds",
+    "catalogue_ops_per_second",
+    "rust_rewrite"
+  ],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": "1.0.0"},
+    "profile": {"type": "string", "minLength": 1},
+    "pipeline_seconds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maximum", "unit"],
+      "properties": {
+        "maximum": {"type": "number", "exclusiveMinimum": 0},
+        "unit": {"const": "seconds"}
+      }
+    },
+    "hashing_mib_per_second": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum", "unit"],
+      "properties": {
+        "minimum": {"type": "number", "exclusiveMinimum": 0},
+        "unit": {"const": "mib_per_second"}
+      }
+    },
+    "archive_inspect_seconds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maximum", "unit"],
+      "properties": {
+        "maximum": {"type": "number", "exclusiveMinimum": 0},
+        "unit": {"const": "seconds"}
+      }
+    },
+    "parquet_seconds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maximum", "unit"],
+      "properties": {
+        "maximum": {"type": "number", "exclusiveMinimum": 0},
+        "unit": {"const": "seconds"}
+      }
+    },
+    "receipt_validation_seconds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maximum", "unit"],
+      "properties": {
+        "maximum": {"type": "number", "exclusiveMinimum": 0},
+        "unit": {"const": "seconds"}
+      }
+    },
+    "lineage_seconds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maximum", "unit"],
+      "properties": {
+        "maximum": {"type": "number", "exclusiveMinimum": 0},
+        "unit": {"const": "seconds"}
+      }
+    },
+    "catalogue_ops_per_second": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum", "unit"],
+      "properties": {
+        "minimum": {"type": "number", "exclusiveMinimum": 0},
+        "unit": {"const": "operations_per_second"}
+      }
+    },
+    "rust_rewrite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min_wall_share", "min_speedup"],
+      "properties": {
+        "min_wall_share": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "min_speedup": {"type": "number", "exclusiveMinimum": 1}
+      }
+    }
+  }
+}
