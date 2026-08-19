@@ -63,7 +63,9 @@ def main(argv: list[str] | None = None) -> int:
     )
     schema = json.loads((ROOT / SCHEMA_RELATIVE).read_text(encoding="utf-8"))
     Draft202012Validator.check_schema(schema)
-    Draft202012Validator(schema).validate(report)
+    Draft202012Validator(schema).validate(  # pyright: ignore[reportUnknownMemberType]
+        report
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(dump_report(report), encoding="utf-8")
     state = report["qualification_state"]
