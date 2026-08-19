@@ -101,3 +101,13 @@ licence = "other"
 authority = "synthetic-fixture-publication-pattern"
 disposition = "adopt-pattern"
 publication_gate = "no-domain-data-copy"
+
+[[hugging_face]]
+id = "global-medicines-atlas-catalogue"
+repository = "edithatogo/global-medicines-atlas-catalogue"
+url = "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue"
+snapshot = "b25af36da32ffa3ddc5d525f1c568459d23f6e11"
+licence = "Apache-2.0"
+authority = "medicines-catalogue-and-fixture-archival"
+disposition = "extend-in-place"
+publication_gate = "catalogue-and-governed-fixture-archival"

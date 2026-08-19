@@ -243,3 +243,16 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     profiles. Repository history records the protected-check and independent
     review outcome for PR #122; this checkpoint does not reverify hosted state
     and makes no publication, rights, OSF or live-deployment claim.
+
+## Phase 3B: Hugging Face data-layer archival
+
+- [x] Task: Archive public, no-credential data-layer artefacts to the existing
+  Hugging Face catalogue identity ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+  - Inventory classified 96 catalog sources (85 public/no-credential, 11
+    credential-restricted). Catalogue metadata, publication contracts, and
+    governed representative fixtures were archived to
+    `edithatogo/global-medicines-atlas-catalogue` revision
+    `b25af36da32ffa3ddc5d525f1c568459d23f6e11`. Licensed `vendor/nzmedicines`
+    bytes and credential-gated payloads were omitted. No live dump was
+    downloaded. Receipt:
+    `quality/qualifications/data-layer-archive-receipt.json`.
