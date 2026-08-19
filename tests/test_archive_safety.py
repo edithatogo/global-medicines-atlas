@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import stat
+import tarfile
 import tempfile
 import zipfile
 from io import BytesIO
@@ -13,6 +14,7 @@ from hypothesis import strategies as st
 from global_medicines_atlas.archive_safety import (
     ArchivePolicy,
     ArchiveSafetyError,
+    extract_tar,
     extract_zip,
 )
 
@@ -26,6 +28,16 @@ def _zip(entries: list[tuple[zipfile.ZipInfo | str, bytes]]) -> bytes:
     ) as archive:
         for name, payload in entries:
             archive.writestr(name, payload)
+    return stream.getvalue()
+
+
+def _tar(entries: list[tuple[str, bytes]]) -> bytes:
+    stream = BytesIO()
+    with tarfile.open(fileobj=stream, mode="w") as archive:
+        for name, payload in entries:
+            info = tarfile.TarInfo(name=name)
+            info.size = len(payload)
+            archive.addfile(info, BytesIO(payload))
     return stream.getvalue()
 
 
@@ -139,6 +151,17 @@ def test_extract_zip_writes_only_verified_regular_files(
         "data/b.txt",
     ]
     assert receipt.total_uncompressed_bytes == 3
+    assert (destination / "data/a.txt").read_bytes() == b"a"
+
+
+def test_extract_tar_rejects_traversal_and_extracts_regular_files(
+    tmp_path: Path,
+) -> None:
+    with pytest.raises(ArchiveSafetyError, match="unsafe member path"):
+        extract_tar(_tar([("../escape.txt", b"unsafe")]), tmp_path / "bad")
+    destination = tmp_path / "tar-out"
+    receipt = extract_tar(_tar([("data/a.txt", b"a")]), destination)
+    assert receipt.members[0].path == "data/a.txt"
     assert (destination / "data/a.txt").read_bytes() == b"a"
 
 

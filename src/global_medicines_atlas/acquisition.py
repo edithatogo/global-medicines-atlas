@@ -423,6 +423,19 @@ def _write_bounded(
         digest.update(chunk)
     staged.flush()
     os.fsync(staged.fileno())
+    declared = response.headers.get("content-length")
+    if declared is not None and declared.isdigit():
+        expected = int(declared)
+        if byte_count < expected:
+            raise DestinationPolicyError(
+                "truncated_body",
+                "response body shorter than Content-Length",
+            )
+        if byte_count > expected:
+            raise DestinationPolicyError(
+                "content_length_mismatch",
+                "response body longer than Content-Length",
+            )
     return PayloadEvidence(sha256=digest.hexdigest(), byte_count=byte_count)
 
 

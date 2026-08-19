@@ -32,6 +32,7 @@ PAYLOAD_DIR = "payloads"
 PARQUET_DIR = "parquet"
 RECEIPT_DIR = "receipts"
 LINEAGE_DIR = "lineage"
+ADMISSION_DIR = "admissions"
 
 
 @dataclass(frozen=True, slots=True)
