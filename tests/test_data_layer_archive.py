@@ -3,13 +3,16 @@
 from __future__ import annotations
 
 import json
+import subprocess  # ruff: ignore[suspicious-subprocess-import]
 from datetime import UTC, datetime
 from pathlib import Path
+from types import SimpleNamespace
 
 import pyarrow.parquet as pq
 import pytest
 from pydantic import ValidationError
 
+from global_medicines_atlas import data_layer_archive as archive_mod
 from global_medicines_atlas.data_layer_archive import (
     CATALOGUE_REPOSITORY,
     FIXTURE_PROVENANCE_NOTE,
@@ -19,6 +22,7 @@ from global_medicines_atlas.data_layer_archive import (
     AccessClass,
     ArchivalDisposition,
     HuggingFaceAuthError,
+    HuggingFaceCliUploader,
     assert_no_restricted_artifacts,
     build_data_layer_archive,
     classify_source_access,
@@ -57,6 +61,40 @@ class _FakeUploader:
     ) -> str:
         self.calls.append((repository, folder, commit_message))
         return self.revision
+
+
+def _completed(
+    _args: object, **_kwargs: object
+) -> subprocess.CompletedProcess[str]:
+    command = _args if isinstance(_args, tuple) else ("hf",)
+    return subprocess.CompletedProcess(
+        command, 0, stdout="edithatogo\n", stderr=""
+    )
+
+
+def _completed_empty(
+    _args: object, **_kwargs: object
+) -> subprocess.CompletedProcess[str]:
+    command = _args if isinstance(_args, tuple) else ("hf",)
+    return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
+
+
+def _http_revision(_url: str, **_kwargs: object) -> SimpleNamespace:
+    return SimpleNamespace(
+        raise_for_status=lambda: None,
+        json=lambda: {"sha": "cafebabe1234"},
+    )
+
+
+def _http_blank_revision(_url: str, **_kwargs: object) -> SimpleNamespace:
+    return SimpleNamespace(
+        raise_for_status=lambda: None,
+        json=lambda: {"sha": " "},
+    )
+
+
+def _raise_cli_error(_args: object, **_kwargs: object) -> None:
+    raise subprocess.CalledProcessError(1, "hf")
 
 
 def test_inventory_covers_every_catalog_source_exactly_once() -> None:
@@ -265,3 +303,130 @@ def test_target_rejects_non_catalogue_host() -> None:
             revision="main",
             public_base_url="https://example.org/datasets/secret",
         )
+
+
+def test_package_file_lookup_and_unsafe_paths_fail_closed(
+    tmp_path: Path,
+) -> None:
+    package = build_data_layer_archive(ROOT, tmp_path / "archive")
+    with pytest.raises(KeyError):
+        package.file("missing.bin")
+    with pytest.raises(ValueError, match="unsafe"):
+        assert_no_restricted_artifacts(("../secret.json",))
+
+
+def test_oversize_fixture_copy_is_rejected(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(archive_mod, "MAX_ARCHIVAL_FILE_BYTES", 10)
+    with pytest.raises(ValueError, match="exceeds"):
+        build_data_layer_archive(ROOT, tmp_path / "archive")
+
+
+def test_identity_probe_accepts_cli_or_env_token(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        archive_mod.shutil,
+        "which",
+        lambda name: "/bin/hf" if name == "hf" else None,
+    )
+    monkeypatch.setattr(archive_mod.subprocess, "run", _completed)
+    assert resolve_huggingface_identity(environment={}) == "edithatogo"
+
+    monkeypatch.setattr(archive_mod.shutil, "which", lambda _name: None)
+    assert (
+        resolve_huggingface_identity(
+            environment={HF_TOKEN_SECRET_NAME: "present"}
+        )
+        == "env-token-present"
+    )
+    monkeypatch.setattr(archive_mod.shutil, "which", lambda _name: "/bin/hf")
+    monkeypatch.setattr(archive_mod.subprocess, "run", _completed_empty)
+    assert (
+        resolve_huggingface_identity(
+            environment={HF_TOKEN_SECRET_NAME: "present"}
+        )
+        == "env-token-present"
+    )
+    monkeypatch.setattr(archive_mod.subprocess, "run", _raise_cli_error)
+    assert (
+        resolve_huggingface_identity(
+            environment={HF_TOKEN_SECRET_NAME: "present"}
+        )
+        == "env-token-present"
+    )
+
+
+def test_cli_uploader_records_public_revision(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(
+        archive_mod, "resolve_huggingface_identity", lambda: "edithatogo"
+    )
+    monkeypatch.setattr(
+        archive_mod.shutil,
+        "which",
+        lambda name: "/bin/huggingface-cli" if "cli" in name else None,
+    )
+    monkeypatch.setattr(archive_mod.subprocess, "run", _completed_empty)
+    monkeypatch.setattr(archive_mod.httpx, "get", _http_revision)
+    revision = HuggingFaceCliUploader().upload_folder(
+        repository=CATALOGUE_REPOSITORY,
+        folder=tmp_path,
+        commit_message="archive",
+    )
+    assert revision == "cafebabe1234"
+
+
+def test_cli_uploader_and_revision_probe_fail_closed(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(
+        archive_mod, "resolve_huggingface_identity", lambda: "edithatogo"
+    )
+    monkeypatch.setattr(archive_mod.shutil, "which", lambda _name: None)
+    with pytest.raises(HuggingFaceAuthError, match="HF_TOKEN"):
+        HuggingFaceCliUploader().upload_folder(
+            repository=CATALOGUE_REPOSITORY,
+            folder=tmp_path,
+            commit_message="archive",
+        )
+    monkeypatch.setattr(archive_mod.httpx, "get", _http_blank_revision)
+    with pytest.raises(HuggingFaceAuthError, match="not publicly observable"):
+        archive_mod._public_dataset_revision(CATALOGUE_REPOSITORY)
+    monkeypatch.setattr(archive_mod.shutil, "which", lambda _name: "/bin/hf")
+    monkeypatch.setattr(archive_mod.subprocess, "run", _raise_cli_error)
+    with pytest.raises(HuggingFaceAuthError, match="HF_TOKEN"):
+        HuggingFaceCliUploader().upload_folder(
+            repository=CATALOGUE_REPOSITORY,
+            folder=tmp_path,
+            commit_message="archive",
+        )
+
+
+def test_execute_publication_fails_when_artifacts_change(
+    tmp_path: Path,
+) -> None:
+    package = build_data_layer_archive(ROOT, tmp_path / "archive")
+    paths = tuple(item.relative_path for item in package.files)
+    plan, _prepared = prepare_publication(
+        root=tmp_path / "archive",
+        release_version="data-layer-archive-v1",
+        target=package.target,
+        relative_paths=paths,
+        recorded_at=NOW,
+    )
+    (tmp_path / "archive" / "README.md").write_text("changed", encoding="utf-8")
+    receipt = execute_publication(
+        plan=plan,
+        authorization=PublicationAuthorization(
+            environment=PRODUCTION_ENVIRONMENT,
+            maintainer_approval=APPROVAL_VALUE,
+        ),
+        root=tmp_path / "archive",
+        uploader=_FakeUploader(),
+        recorded_at=NOW,
+    )
+    assert receipt.state is PublicationTransportState.VERIFICATION_FAILED
+    assert receipt.failure_reason is not None

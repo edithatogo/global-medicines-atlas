@@ -36,15 +36,6 @@ RESTRICTED_PATH_PREFIXES = (
     "vendor/",
     "vendor/nzmedicines",
 )
-_CREDENTIAL_MODES = frozenset({
-    AuthenticationMode.API_KEY,
-    AuthenticationMode.OAUTH,
-    AuthenticationMode.ACCOUNT,
-    AuthenticationMode.SUBSCRIPTION,
-    AuthenticationMode.MANUAL_APPROVAL,
-    AuthenticationMode.CERTIFICATE,
-    AuthenticationMode.UNKNOWN,
-})
 _SYNTHETIC_FIXTURES = (
     "tests/fixtures/global_adapters/canada.json",
     "tests/fixtures/global_adapters/european_union.json",
@@ -200,8 +191,6 @@ def classify_source_access(mode: AuthenticationMode) -> AccessClass:
 
     if mode is AuthenticationMode.NONE:
         return AccessClass.PUBLIC_NO_CREDENTIAL
-    if mode in _CREDENTIAL_MODES:
-        return AccessClass.CREDENTIAL_RESTRICTED
     return AccessClass.CREDENTIAL_RESTRICTED
 
 
