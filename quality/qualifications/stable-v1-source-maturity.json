@@ -163,6 +163,24 @@
       ]
     },
     {
+      "source_id": "au-tga-daen",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
       "source_id": "au-tga-pi-cmi",
       "jurisdictions": [
         "AUS"
@@ -275,6 +293,24 @@
       ]
     },
     {
+      "source_id": "ca-canada-vigilance",
+      "jurisdictions": [
+        "CAN"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
       "source_id": "ca-cda-recommendations",
       "jurisdictions": [
         "CAN"
@@ -285,6 +321,24 @@
       "assignment_basis": [
         "catalog row exists",
         "documentation qualification reference exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "ca-cihi-nhex-medicines",
+      "jurisdictions": [
+        "CAN"
+      ],
+      "dimension": "funding",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -537,6 +591,78 @@
       ]
     },
     {
+      "source_id": "dk-medstat-utilisation",
+      "jurisdictions": [
+        "DNK"
+      ],
+      "dimension": "funding",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "eg-eda-register",
+      "jurisdictions": [
+        "EGY"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "eg-eda-safety",
+      "jurisdictions": [
+        "EGY"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "eg-national-eml",
+      "jurisdictions": [
+        "EGY"
+      ],
+      "dimension": "formulary",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
       "source_id": "eu-ema-article57",
       "jurisdictions": [
         "EU"
@@ -547,6 +673,24 @@
       "assignment_basis": [
         "catalog row exists",
         "documentation qualification reference exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "eu-ema-epar-documents",
+      "jurisdictions": [
+        "EU"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -593,6 +737,24 @@
       ]
     },
     {
+      "source_id": "eu-ema-orphan",
+      "jurisdictions": [
+        "EU"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
       "source_id": "eu-ema-pms-fhir",
       "jurisdictions": [
         "EU"
@@ -603,6 +765,96 @@
       "assignment_basis": [
         "catalog row exists",
         "documentation qualification reference exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "eu-ema-referrals",
+      "jurisdictions": [
+        "EU"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "eu-ema-safety-communications",
+      "jurisdictions": [
+        "EU"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "eu-ema-xevmpd-credentialed",
+      "jurisdictions": [
+        "EU"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "eu-eudravigilance-public",
+      "jurisdictions": [
+        "EU"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "eu-spor-public-metadata",
+      "jurisdictions": [
+        "EU"
+      ],
+      "dimension": "terminology",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -687,6 +939,24 @@
       ]
     },
     {
+      "source_id": "fr-open-medic",
+      "jurisdictions": [
+        "FRA"
+      ],
+      "dimension": "funding",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
       "source_id": "gb-emit",
       "jurisdictions": [
         "GBR"
@@ -707,6 +977,24 @@
     },
     {
       "source_id": "gb-mhra-products",
+      "jurisdictions": [
+        "GBR"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "gb-mhra-yellow-card",
       "jurisdictions": [
         "GBR"
       ],
@@ -761,7 +1049,43 @@
       ]
     },
     {
+      "source_id": "gb-nice-medicines-utilisation",
+      "jurisdictions": [
+        "GBR"
+      ],
+      "dimension": "funding",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
       "source_id": "gb-nice-ta",
+      "jurisdictions": [
+        "GBR"
+      ],
+      "dimension": "funding",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "gb-openprescribing",
       "jurisdictions": [
         "GBR"
       ],
@@ -817,6 +1141,60 @@
       ]
     },
     {
+      "source_id": "gh-fda-register",
+      "jurisdictions": [
+        "GHA"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "gh-fda-safety",
+      "jurisdictions": [
+        "GHA"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "gh-national-eml",
+      "jurisdictions": [
+        "GHA"
+      ],
+      "dimension": "formulary",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
       "source_id": "global-rxnorm",
       "jurisdictions": [
         "GLOBAL",
@@ -837,11 +1215,155 @@
       ]
     },
     {
+      "source_id": "global-umc-vigibase",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "global-who-amds-gprm",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "dimension": "funding",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "global-who-availability-surveys",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "dimension": "formulary",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
       "source_id": "global-who-databases",
       "jurisdictions": [
         "GLOBAL"
       ],
       "dimension": "terminology",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "global-who-eml",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "dimension": "formulary",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "global-who-medicine-prices",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "dimension": "funding",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "global-who-mi4a",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "dimension": "funding",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "global-who-national-eml-index",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "dimension": "formulary",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "global-who-shortage-sources",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "dimension": "regulatory",
       "maturity_level": "M0",
       "documentation_readiness": "declared",
       "assignment_basis": [
@@ -892,7 +1414,43 @@
       ]
     },
     {
+      "source_id": "ie-pcrs-reimbursement",
+      "jurisdictions": [
+        "IRL"
+      ],
+      "dimension": "funding",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
       "source_id": "in-cdsco-approved-drugs",
+      "jurisdictions": [
+        "IND"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "in-cdsco-products",
       "jurisdictions": [
         "IND"
       ],
@@ -915,6 +1473,78 @@
         "IND"
       ],
       "dimension": "formulary",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "in-nppa-ceiling-prices",
+      "jurisdictions": [
+        "IND"
+      ],
+      "dimension": "funding",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "in-procurement-availability",
+      "jurisdictions": [
+        "IND"
+      ],
+      "dimension": "funding",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "in-pvpi-safety",
+      "jurisdictions": [
+        "IND"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "jp-mhlw-ndb-utilisation",
+      "jurisdictions": [
+        "JPN"
+      ],
+      "dimension": "funding",
       "maturity_level": "M0",
       "documentation_readiness": "declared",
       "assignment_basis": [
@@ -974,6 +1604,78 @@
       "assignment_basis": [
         "catalog row exists",
         "documentation qualification reference exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "jp-pmda-safety",
+      "jurisdictions": [
+        "JPN"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "ke-national-eml",
+      "jurisdictions": [
+        "KEN"
+      ],
+      "dimension": "formulary",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "ke-ppb-register",
+      "jurisdictions": [
+        "KEN"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "ke-ppb-safety",
+      "jurisdictions": [
+        "KEN"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -1076,6 +1778,78 @@
       ]
     },
     {
+      "source_id": "mus-approved-drug-list",
+      "jurisdictions": [
+        "MUS"
+      ],
+      "dimension": "formulary",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "mus-historical-eml-archive",
+      "jurisdictions": [
+        "MUS"
+      ],
+      "dimension": "formulary",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "mus-pharmacy-board-register",
+      "jurisdictions": [
+        "MUS"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "mus-pharmacy-board-safety",
+      "jurisdictions": [
+        "MUS"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
       "source_id": "mx-cofepris-register",
       "jurisdictions": [
         "MEX"
@@ -1149,9 +1923,45 @@
       ]
     },
     {
+      "source_id": "ng-nafdac-safety",
+      "jurisdictions": [
+        "NGA"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
       "source_id": "ng-nhia-medicines",
       "jurisdictions": [
         "NGA"
+      ],
+      "dimension": "funding",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "nl-gipdatabank",
+      "jurisdictions": [
+        "NLD"
       ],
       "dimension": "funding",
       "maturity_level": "M0",
@@ -1215,6 +2025,24 @@
       "assignment_basis": [
         "catalog row exists",
         "documentation qualification reference exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "no-norpd-utilisation",
+      "jurisdictions": [
+        "NOR"
+      ],
+      "dimension": "funding",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -1393,6 +2221,60 @@
       ]
     },
     {
+      "source_id": "pk-drap-register",
+      "jurisdictions": [
+        "PAK"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "pk-drap-safety",
+      "jurisdictions": [
+        "PAK"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "pk-neml",
+      "jurisdictions": [
+        "PAK"
+      ],
+      "dimension": "formulary",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
       "source_id": "qa-moh-medicines",
       "jurisdictions": [
         "QAT"
@@ -1403,6 +2285,60 @@
       "assignment_basis": [
         "catalog row exists",
         "documentation qualification reference exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "rw-national-eml",
+      "jurisdictions": [
+        "RWA"
+      ],
+      "dimension": "formulary",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "rw-rwandafda-register",
+      "jurisdictions": [
+        "RWA"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "rw-rwandafda-safety",
+      "jurisdictions": [
+        "RWA"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -1458,6 +2394,24 @@
       "assignment_basis": [
         "catalog row exists",
         "documentation qualification reference exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "se-socialstyrelsen-utilisation",
+      "jurisdictions": [
+        "SWE"
+      ],
+      "dimension": "funding",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -1541,6 +2495,60 @@
       ]
     },
     {
+      "source_id": "sn-dpm-register",
+      "jurisdictions": [
+        "SEN"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "sn-dpm-safety",
+      "jurisdictions": [
+        "SEN"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "sn-national-eml",
+      "jurisdictions": [
+        "SEN"
+      ],
+      "dimension": "formulary",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
       "source_id": "th-fda-search",
       "jurisdictions": [
         "THA"
@@ -1551,6 +2559,114 @@
       "assignment_basis": [
         "catalog row exists",
         "documentation qualification reference exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "tz-national-eml",
+      "jurisdictions": [
+        "TZA"
+      ],
+      "dimension": "formulary",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "tz-tmda-products",
+      "jurisdictions": [
+        "TZA"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "tz-tmda-safety",
+      "jurisdictions": [
+        "TZA"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "ug-national-eml",
+      "jurisdictions": [
+        "UGA"
+      ],
+      "dimension": "formulary",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "ug-nda-register",
+      "jurisdictions": [
+        "UGA"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "ug-nda-safety",
+      "jurisdictions": [
+        "UGA"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -1616,6 +2732,24 @@
       ]
     },
     {
+      "source_id": "us-cms-partd-spending",
+      "jurisdictions": [
+        "USA"
+      ],
+      "dimension": "funding",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
       "source_id": "us-dailymed-spl",
       "jurisdictions": [
         "USA"
@@ -1654,7 +2788,115 @@
       ]
     },
     {
+      "source_id": "us-fda-drug-shortages",
+      "jurisdictions": [
+        "USA"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "us-fda-faers",
+      "jurisdictions": [
+        "USA"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "us-fda-ndc-directory",
+      "jurisdictions": [
+        "USA"
+      ],
+      "dimension": "terminology",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "us-fda-nsde",
+      "jurisdictions": [
+        "USA"
+      ],
+      "dimension": "terminology",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
       "source_id": "us-fda-orange-book",
+      "jurisdictions": [
+        "USA"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "us-fda-recalls-notices",
+      "jurisdictions": [
+        "USA"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "us-fda-rems",
       "jurisdictions": [
         "USA"
       ],
@@ -1710,7 +2952,61 @@
       ]
     },
     {
+      "source_id": "us-openfda-enforcement",
+      "jurisdictions": [
+        "USA"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "us-openfda-faers",
+      "jurisdictions": [
+        "USA"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
       "source_id": "us-openfda-ndc",
+      "jurisdictions": [
+        "USA"
+      ],
+      "dimension": "terminology",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "us-openfda-nsde",
       "jurisdictions": [
         "USA"
       ],
@@ -1783,6 +3079,24 @@
       ]
     },
     {
+      "source_id": "za-sahpra-safety",
+      "jurisdictions": [
+        "ZAF"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
       "source_id": "za-single-exit-price",
       "jurisdictions": [
         "ZAF"
@@ -1793,6 +3107,60 @@
       "assignment_basis": [
         "catalog row exists",
         "documentation qualification reference exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "zw-mcaz-register",
+      "jurisdictions": [
+        "ZWE"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "zw-mcaz-safety",
+      "jurisdictions": [
+        "ZWE"
+      ],
+      "dimension": "regulatory",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
+      ],
+      "blocking_gaps": [
+        "live source receipt",
+        "independent reproduction",
+        "support readiness",
+        "release approval"
+      ]
+    },
+    {
+      "source_id": "zw-national-eml",
+      "jurisdictions": [
+        "ZWE"
+      ],
+      "dimension": "formulary",
+      "maturity_level": "M0",
+      "documentation_readiness": "declared",
+      "assignment_basis": [
+        "catalog row exists"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -1823,8 +3191,8 @@
     },
     {
       "jurisdiction": "AUS",
-      "source_count": 7,
-      "regulatory_source_count": 3,
+      "source_count": 8,
+      "regulatory_source_count": 4,
       "funding_or_formulary_source_count": 3,
       "highest_maturity_level": "M1",
       "documentation_ready_source_count": 5,
@@ -1850,9 +3218,9 @@
     },
     {
       "jurisdiction": "CAN",
-      "source_count": 5,
-      "regulatory_source_count": 2,
-      "funding_or_formulary_source_count": 3,
+      "source_count": 7,
+      "regulatory_source_count": 3,
+      "funding_or_formulary_source_count": 4,
       "highest_maturity_level": "M1",
       "documentation_ready_source_count": 3,
       "stable_ready": false
@@ -1895,17 +3263,26 @@
     },
     {
       "jurisdiction": "DNK",
-      "source_count": 1,
+      "source_count": 2,
       "regulatory_source_count": 0,
-      "funding_or_formulary_source_count": 1,
+      "funding_or_formulary_source_count": 2,
       "highest_maturity_level": "M1",
       "documentation_ready_source_count": 1,
       "stable_ready": false
     },
     {
+      "jurisdiction": "EGY",
+      "source_count": 3,
+      "regulatory_source_count": 2,
+      "funding_or_formulary_source_count": 1,
+      "highest_maturity_level": "M0",
+      "documentation_ready_source_count": 0,
+      "stable_ready": false
+    },
+    {
       "jurisdiction": "EU",
-      "source_count": 6,
-      "regulatory_source_count": 5,
+      "source_count": 13,
+      "regulatory_source_count": 11,
       "funding_or_formulary_source_count": 0,
       "highest_maturity_level": "M1",
       "documentation_ready_source_count": 4,
@@ -1913,27 +3290,36 @@
     },
     {
       "jurisdiction": "FRA",
-      "source_count": 2,
+      "source_count": 3,
       "regulatory_source_count": 1,
-      "funding_or_formulary_source_count": 1,
+      "funding_or_formulary_source_count": 2,
       "highest_maturity_level": "M1",
       "documentation_ready_source_count": 2,
       "stable_ready": false
     },
     {
       "jurisdiction": "GBR",
-      "source_count": 6,
-      "regulatory_source_count": 1,
-      "funding_or_formulary_source_count": 3,
+      "source_count": 9,
+      "regulatory_source_count": 2,
+      "funding_or_formulary_source_count": 5,
       "highest_maturity_level": "M1",
       "documentation_ready_source_count": 3,
       "stable_ready": false
     },
     {
-      "jurisdiction": "GLOBAL",
-      "source_count": 4,
+      "jurisdiction": "GHA",
+      "source_count": 3,
       "regulatory_source_count": 2,
-      "funding_or_formulary_source_count": 0,
+      "funding_or_formulary_source_count": 1,
+      "highest_maturity_level": "M0",
+      "documentation_ready_source_count": 0,
+      "stable_ready": false
+    },
+    {
+      "jurisdiction": "GLOBAL",
+      "source_count": 12,
+      "regulatory_source_count": 4,
+      "funding_or_formulary_source_count": 6,
       "highest_maturity_level": "M2",
       "documentation_ready_source_count": 1,
       "stable_ready": false
@@ -1949,8 +3335,17 @@
     },
     {
       "jurisdiction": "IND",
-      "source_count": 2,
-      "regulatory_source_count": 1,
+      "source_count": 6,
+      "regulatory_source_count": 3,
+      "funding_or_formulary_source_count": 3,
+      "highest_maturity_level": "M0",
+      "documentation_ready_source_count": 0,
+      "stable_ready": false
+    },
+    {
+      "jurisdiction": "IRL",
+      "source_count": 1,
+      "regulatory_source_count": 0,
       "funding_or_formulary_source_count": 1,
       "highest_maturity_level": "M0",
       "documentation_ready_source_count": 0,
@@ -1958,11 +3353,20 @@
     },
     {
       "jurisdiction": "JPN",
+      "source_count": 5,
+      "regulatory_source_count": 3,
+      "funding_or_formulary_source_count": 2,
+      "highest_maturity_level": "M1",
+      "documentation_ready_source_count": 1,
+      "stable_ready": false
+    },
+    {
+      "jurisdiction": "KEN",
       "source_count": 3,
       "regulatory_source_count": 2,
       "funding_or_formulary_source_count": 1,
-      "highest_maturity_level": "M1",
-      "documentation_ready_source_count": 1,
+      "highest_maturity_level": "M0",
+      "documentation_ready_source_count": 0,
       "stable_ready": false
     },
     {
@@ -1993,6 +3397,15 @@
       "stable_ready": false
     },
     {
+      "jurisdiction": "MUS",
+      "source_count": 4,
+      "regulatory_source_count": 2,
+      "funding_or_formulary_source_count": 2,
+      "highest_maturity_level": "M0",
+      "documentation_ready_source_count": 0,
+      "stable_ready": false
+    },
+    {
       "jurisdiction": "MYS",
       "source_count": 1,
       "regulatory_source_count": 1,
@@ -2003,8 +3416,8 @@
     },
     {
       "jurisdiction": "NGA",
-      "source_count": 2,
-      "regulatory_source_count": 1,
+      "source_count": 3,
+      "regulatory_source_count": 2,
       "funding_or_formulary_source_count": 1,
       "highest_maturity_level": "M0",
       "documentation_ready_source_count": 0,
@@ -2012,18 +3425,18 @@
     },
     {
       "jurisdiction": "NLD",
-      "source_count": 1,
+      "source_count": 2,
       "regulatory_source_count": 0,
-      "funding_or_formulary_source_count": 1,
+      "funding_or_formulary_source_count": 2,
       "highest_maturity_level": "M1",
       "documentation_ready_source_count": 1,
       "stable_ready": false
     },
     {
       "jurisdiction": "NOR",
-      "source_count": 2,
+      "source_count": 3,
       "regulatory_source_count": 2,
-      "funding_or_formulary_source_count": 0,
+      "funding_or_formulary_source_count": 1,
       "highest_maturity_level": "M1",
       "documentation_ready_source_count": 2,
       "stable_ready": false
@@ -2047,6 +3460,15 @@
       "stable_ready": false
     },
     {
+      "jurisdiction": "PAK",
+      "source_count": 3,
+      "regulatory_source_count": 2,
+      "funding_or_formulary_source_count": 1,
+      "highest_maturity_level": "M0",
+      "documentation_ready_source_count": 0,
+      "stable_ready": false
+    },
+    {
       "jurisdiction": "PHL",
       "source_count": 1,
       "regulatory_source_count": 1,
@@ -2065,9 +3487,27 @@
       "stable_ready": false
     },
     {
+      "jurisdiction": "RWA",
+      "source_count": 3,
+      "regulatory_source_count": 2,
+      "funding_or_formulary_source_count": 1,
+      "highest_maturity_level": "M0",
+      "documentation_ready_source_count": 0,
+      "stable_ready": false
+    },
+    {
       "jurisdiction": "SAU",
       "source_count": 2,
       "regulatory_source_count": 1,
+      "funding_or_formulary_source_count": 1,
+      "highest_maturity_level": "M0",
+      "documentation_ready_source_count": 0,
+      "stable_ready": false
+    },
+    {
+      "jurisdiction": "SEN",
+      "source_count": 3,
+      "regulatory_source_count": 2,
       "funding_or_formulary_source_count": 1,
       "highest_maturity_level": "M0",
       "documentation_ready_source_count": 0,
@@ -2084,9 +3524,9 @@
     },
     {
       "jurisdiction": "SWE",
-      "source_count": 2,
+      "source_count": 3,
       "regulatory_source_count": 1,
-      "funding_or_formulary_source_count": 1,
+      "funding_or_formulary_source_count": 2,
       "highest_maturity_level": "M1",
       "documentation_ready_source_count": 2,
       "stable_ready": false
@@ -2101,21 +3541,48 @@
       "stable_ready": false
     },
     {
+      "jurisdiction": "TZA",
+      "source_count": 3,
+      "regulatory_source_count": 2,
+      "funding_or_formulary_source_count": 1,
+      "highest_maturity_level": "M0",
+      "documentation_ready_source_count": 0,
+      "stable_ready": false
+    },
+    {
+      "jurisdiction": "UGA",
+      "source_count": 3,
+      "regulatory_source_count": 2,
+      "funding_or_formulary_source_count": 1,
+      "highest_maturity_level": "M0",
+      "documentation_ready_source_count": 0,
+      "stable_ready": false
+    },
+    {
       "jurisdiction": "USA",
-      "source_count": 11,
-      "regulatory_source_count": 4,
-      "funding_or_formulary_source_count": 3,
+      "source_count": 21,
+      "regulatory_source_count": 10,
+      "funding_or_formulary_source_count": 4,
       "highest_maturity_level": "M2",
       "documentation_ready_source_count": 6,
       "stable_ready": false
     },
     {
       "jurisdiction": "ZAF",
-      "source_count": 3,
-      "regulatory_source_count": 1,
+      "source_count": 4,
+      "regulatory_source_count": 2,
       "funding_or_formulary_source_count": 2,
       "highest_maturity_level": "M1",
       "documentation_ready_source_count": 1,
+      "stable_ready": false
+    },
+    {
+      "jurisdiction": "ZWE",
+      "source_count": 3,
+      "regulatory_source_count": 2,
+      "funding_or_formulary_source_count": 1,
+      "highest_maturity_level": "M0",
+      "documentation_ready_source_count": 0,
       "stable_ready": false
     }
   ],

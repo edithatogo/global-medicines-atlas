@@ -53,16 +53,16 @@ def test_receipt_measures_complete_catalog_and_local_evidence(
 ) -> None:
     totals = receipt.body.totals
 
-    assert totals.catalog_jurisdictions == 34
-    assert totals.represented_jurisdictions == 35
-    assert totals.catalog_sources == 96
+    assert totals.catalog_jurisdictions == 45
+    assert totals.represented_jurisdictions == 46
+    assert totals.catalog_sources == 172
     assert totals.fixture_qualified_sources == 16
     assert totals.live_qualified_sources == 0
     assert totals.catalog_dimensions.model_dump() == {
-        "regulatory": 49,
-        "funding": 28,
-        "formulary": 6,
-        "terminology": 13,
+        "regulatory": 91,
+        "funding": 44,
+        "formulary": 20,
+        "terminology": 17,
     }
     assert totals.fixture_dimensions.model_dump() == {
         "regulatory": 9,
@@ -167,7 +167,7 @@ def test_jurisdiction_rows_keep_dimensions_separate(
     assert rows["USA"].fixture_dimensions.regulatory == 1
     assert rows["USA"].fixture_dimensions.formulary == 1
     assert rows["USA"].fixture_dimensions.funding == 0
-    assert rows["GLOBAL"].catalog_source_count == 4
+    assert rows["GLOBAL"].catalog_source_count == 12
     assert rows["GLOBAL"].fixture_dimensions.terminology == 1
     assert all(row.live_source_count == 0 for row in rows.values())
 

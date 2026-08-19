@@ -1,6 +1,6 @@
 {
   "schema_version": 5,
-  "reviewed_at": "2026-07-29",
+  "reviewed_at": "2026-08-20",
   "monitoring_contract": {
     "source_health": "weekly",
     "schema_drift": "monthly"
@@ -173,6 +173,22 @@
       }
     },
     {
+      "jurisdiction": "EGY",
+      "name": "Egypt",
+      "priority_cohorts": [
+        "africa",
+        "source_expansion_20260820"
+      ],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
       "jurisdiction": "EU",
       "name": "European Union",
       "priority_cohorts": [
@@ -218,6 +234,22 @@
       }
     },
     {
+      "jurisdiction": "GHA",
+      "name": "Ghana",
+      "priority_cohorts": [
+        "africa",
+        "source_expansion_20260820"
+      ],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
       "jurisdiction": "IDN",
       "name": "Indonesia",
       "priority_cohorts": [
@@ -248,10 +280,41 @@
       }
     },
     {
+      "jurisdiction": "IRL",
+      "name": "Ireland",
+      "priority_cohorts": [
+        "source_expansion_20260820"
+      ],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
       "jurisdiction": "JPN",
       "name": "Japan",
       "priority_cohorts": [
         "first_cohort"
+      ],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "KEN",
+      "name": "Kenya",
+      "priority_cohorts": [
+        "africa",
+        "source_expansion_20260820"
       ],
       "regulatory_denominator": {
         "included": true,
@@ -297,6 +360,22 @@
       "name": "Mexico",
       "priority_cohorts": [
         "latin_america"
+      ],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "MUS",
+      "name": "Mauritius",
+      "priority_cohorts": [
+        "africa",
+        "source_expansion_20260820"
       ],
       "regulatory_denominator": {
         "included": true,
@@ -398,6 +477,21 @@
       }
     },
     {
+      "jurisdiction": "PAK",
+      "name": "Pakistan",
+      "priority_cohorts": [
+        "source_expansion_20260820"
+      ],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
       "jurisdiction": "PHL",
       "name": "Philippines",
       "priority_cohorts": [
@@ -428,10 +522,42 @@
       }
     },
     {
+      "jurisdiction": "RWA",
+      "name": "Rwanda",
+      "priority_cohorts": [
+        "africa",
+        "source_expansion_20260820"
+      ],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
       "jurisdiction": "SAU",
       "name": "Saudi Arabia",
       "priority_cohorts": [
         "gulf"
+      ],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "SEN",
+      "name": "Senegal",
+      "priority_cohorts": [
+        "africa",
+        "source_expansion_20260820"
       ],
       "regulatory_denominator": {
         "included": true,
@@ -488,6 +614,38 @@
       }
     },
     {
+      "jurisdiction": "TZA",
+      "name": "United Republic of Tanzania",
+      "priority_cohorts": [
+        "africa",
+        "source_expansion_20260820"
+      ],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "UGA",
+      "name": "Uganda",
+      "priority_cohorts": [
+        "africa",
+        "source_expansion_20260820"
+      ],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
       "jurisdiction": "USA",
       "name": "United States",
       "priority_cohorts": [
@@ -508,6 +666,22 @@
       "priority_cohorts": [
         "south_africa",
         "africa"
+      ],
+      "regulatory_denominator": {
+        "included": true,
+        "wla": null,
+        "ml3": null,
+        "ml4": null,
+        "status": "pending_receipt_verification",
+        "evidence_limit": "Discovery denominator only; no WHO status or product-level claim without a receipt."
+      }
+    },
+    {
+      "jurisdiction": "ZWE",
+      "name": "Zimbabwe",
+      "priority_cohorts": [
+        "africa",
+        "source_expansion_20260820"
       ],
       "regulatory_denominator": {
         "included": true,
@@ -971,6 +1145,60 @@
       ]
     },
     {
+      "source_id": "au-tga-daen",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "authority": "Therapeutic Goods Administration",
+      "title": "Database of Adverse Event Notifications",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.tga.gov.au/safety/safety/safety-monitoring-daen-database-adverse-event-notifications",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "DAEN search is not complete case-level bronze and is not ARTG registration status.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "TGA DAEN case number",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.tga.gov.au/safety/safety/safety-monitoring-daen-database-adverse-event-notifications",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
       "source_id": "au-tga-pi-cmi",
       "jurisdictions": [
         "AUS"
@@ -1314,6 +1542,63 @@
       "qualification_references": []
     },
     {
+      "source_id": "ca-canada-vigilance",
+      "jurisdictions": [
+        "CAN"
+      ],
+      "authority": "Health Canada",
+      "title": "Canada Vigilance adverse reaction online database",
+      "dimension": "regulatory",
+      "access_mode": "download",
+      "landing_page": "https://www.canada.ca/en/health-canada/services/drugs-health-products/medeffect-canada/adverse-reaction-database.html",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Canada Vigilance extracts are safety reports, not DPD registration or causality.",
+      "interface_status": "documented_download",
+      "formats": [
+        "xlsx",
+        "csv"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Canada Vigilance adverse reaction number",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.canada.ca/en/health-canada/services/drugs-health-products/medeffect-canada/adverse-reaction-database.html",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://www.canada.ca/en/health-canada/services/drugs-health-products/medeffect-canada/adverse-reaction-database.html",
+      "acquisition_profile": "public-bulk"
+    },
+    {
       "source_id": "ca-cda-recommendations",
       "jurisdictions": [
         "CAN"
@@ -1370,6 +1655,59 @@
       "qualification_references": [
         "https://www.cda-amc.ca/reimbursement-reviews"
       ]
+    },
+    {
+      "source_id": "ca-cihi-nhex-medicines",
+      "jurisdictions": [
+        "CAN"
+      ],
+      "authority": "Canadian Institute for Health Information",
+      "title": "CIHI National Health Expenditure medicines components",
+      "dimension": "funding",
+      "access_mode": "licensed_feed",
+      "landing_page": "https://www.cihi.ca/en/national-health-expenditure-trends",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "blocked",
+      "evidence_limit": "CIHI extracts are often licensed. Metadata-only until rights are resolved; not a provincial formulary.",
+      "interface_status": "restricted",
+      "formats": [
+        "xlsx"
+      ],
+      "authentication": "subscription",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "CIHI NHEX/plan expenditure identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.cihi.ca/en/national-health-expenditure-trends",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "mixed"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://www.cihi.ca/en/national-health-expenditure-trends",
+      "acquisition_profile": "account-download"
     },
     {
       "source_id": "ca-dpd",
@@ -2094,6 +2432,217 @@
       ]
     },
     {
+      "source_id": "dk-medstat-utilisation",
+      "jurisdictions": [
+        "DNK"
+      ],
+      "authority": "Danish Health Data Authority",
+      "title": "Medstat.dk medicines statistics",
+      "dimension": "funding",
+      "access_mode": "web_search",
+      "landing_page": "https://medstat.dk/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Danish utilisation is not comparable by default to Norwegian or Swedish series; no cross-country claim.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Medstat.dk ATC/product + year",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://medstat.dk/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "mixed"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "da",
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "eg-eda-register",
+      "jurisdictions": [
+        "EGY"
+      ],
+      "authority": "Egyptian Drug Authority",
+      "title": "Egypt EDA product register",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.edaegypt.gov.eg/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Registration evidence is not formulary, reimbursement, or current status from historical presence or absence.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-native registered product + manufacturer/sponsor",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Egypt EDA product registration number",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.edaegypt.gov.eg/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "ar"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "eg-eda-safety",
+      "jurisdictions": [
+        "EGY"
+      ],
+      "authority": "Egyptian Drug Authority",
+      "title": "Egyptian Drug Authority public safety/recall notices",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.edaegypt.gov.eg/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Safety/recall notices are not registration status, shortage evidence, or causality beyond the regulator statement.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Egypt EDA safety notice identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.edaegypt.gov.eg/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "ar"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "eg-national-eml",
+      "jurisdictions": [
+        "EGY"
+      ],
+      "authority": "Egyptian Drug Authority",
+      "title": "EGY essential medicines / health-supplies list",
+      "dimension": "formulary",
+      "access_mode": "document",
+      "landing_page": "https://www.edaegypt.gov.eg/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "EML/formulary evidence is not automatically reimbursement or registration.",
+      "interface_status": "documented_download",
+      "formats": [
+        "pdf",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Egypt EML entry identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.edaegypt.gov.eg/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "ar",
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
       "source_id": "eu-ema-article57",
       "jurisdictions": [
         "EU"
@@ -2108,7 +2657,7 @@
       "readiness": "verified",
       "discovery_status": "declaration_verified",
       "implemented_ingestion": false,
-      "evidence_limit": "Source semantics, rights, currency and completeness require receipt-backed qualification.",
+      "evidence_limit": "Public Article 57 extract is metadata; credentialed xEVMPD is a separate blocked source. Do not weaken the credential boundary.",
       "download_url": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/data-medicines-iso-idmp-standards-post-authorisation/public-data-article-57-database",
       "interface_status": "documented_download",
       "formats": [
@@ -2117,7 +2666,7 @@
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "source-native identifier",
+      "native_identifier": "Article 57 EV Code / organisation identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
@@ -2150,6 +2699,62 @@
       ]
     },
     {
+      "source_id": "eu-ema-epar-documents",
+      "jurisdictions": [
+        "EU"
+      ],
+      "authority": "European Medicines Agency",
+      "title": "EMA EPAR and medicine documents",
+      "dimension": "regulatory",
+      "access_mode": "document",
+      "landing_page": "https://www.ema.europa.eu/en/medicines",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "EPAR documents are separate from structured EMA medicine rows and are linked by source-native IDs; extraction must not overwrite structured fields.",
+      "interface_status": "documented_download",
+      "formats": [
+        "pdf",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "EPAR document identifier linked to EMA product number",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "clinical_documentation"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization",
+        "document_only"
+      ],
+      "geographic_scope": "regional",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
       "source_id": "eu-ema-json",
       "jurisdictions": [
         "EU"
@@ -2173,7 +2778,7 @@
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "source-native identifier",
+      "native_identifier": "EMA JSON medicine/document identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
@@ -2223,7 +2828,7 @@
       "update_cadence": "periodic",
       "rights_status": "review_required",
       "readiness": "verified",
-      "evidence_limit": "Covers EMA assessment surfaces; nationally authorized products require national registers.",
+      "evidence_limit": "Structured EMA medicine rows and EPAR documents are separate artefacts linked by source-native IDs; extraction must not overwrite structured fields.",
       "interface_status": "documented_download",
       "formats": [
         "source_native"
@@ -2231,7 +2836,7 @@
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "source-native identifier",
+      "native_identifier": "EMA medicine / product number / EU number",
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
@@ -2263,6 +2868,60 @@
       "qualification_references": []
     },
     {
+      "source_id": "eu-ema-orphan",
+      "jurisdictions": [
+        "EU"
+      ],
+      "authority": "European Medicines Agency",
+      "title": "EMA orphan medicinal product designations",
+      "dimension": "regulatory",
+      "access_mode": "download",
+      "landing_page": "https://www.ema.europa.eu/en/human-regulatory-overview/orphan-designation-overview",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Orphan designation is distinct from marketing authorisation; retain sponsor as a source-native field.",
+      "interface_status": "documented_download",
+      "formats": [
+        "xlsx",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "orphan designation + sponsor organisation",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "EMA orphan designation number + sponsor",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.ema.europa.eu/en/human-regulatory-overview/orphan-designation-overview",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "regional",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+      "acquisition_profile": "public-bulk"
+    },
+    {
       "source_id": "eu-ema-pms-fhir",
       "jurisdictions": [
         "EU"
@@ -2277,7 +2936,7 @@
       "readiness": "verified",
       "discovery_status": "declaration_verified",
       "implemented_ingestion": false,
-      "evidence_limit": "Source semantics, rights, currency and completeness require receipt-backed qualification.",
+      "evidence_limit": "Credentialed PMS FHIR; metadata-only is not bronze coverage.",
       "api_url": "https://api.pms.ema.europa.eu/public/v1/",
       "interface_status": "supported",
       "formats": [
@@ -2287,7 +2946,7 @@
       "authentication": "account",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "source-native identifier",
+      "native_identifier": "PMS FHIR resource identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "account-download",
@@ -2320,6 +2979,276 @@
       ]
     },
     {
+      "source_id": "eu-ema-referrals",
+      "jurisdictions": [
+        "EU"
+      ],
+      "authority": "European Medicines Agency",
+      "title": "EMA referral procedures",
+      "dimension": "regulatory",
+      "access_mode": "download",
+      "landing_page": "https://www.ema.europa.eu/en/medicines",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Referral events are regulatory procedures and must not collapse into ordinary approval status.",
+      "interface_status": "documented_download",
+      "formats": [
+        "xlsx",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "EMA referral procedure number",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "regional",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+      "acquisition_profile": "public-bulk"
+    },
+    {
+      "source_id": "eu-ema-safety-communications",
+      "jurisdictions": [
+        "EU"
+      ],
+      "authority": "European Medicines Agency",
+      "title": "EMA safety communications",
+      "dimension": "regulatory",
+      "access_mode": "document",
+      "landing_page": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/pharmacovigilance-post-authorisation/safety-communication",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Do not infer causality beyond the regulator statement. Safety communications are not EudraVigilance case data.",
+      "interface_status": "documented_download",
+      "formats": [
+        "html",
+        "pdf"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "EMA safety communication identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/pharmacovigilance-post-authorisation/safety-communication",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "regional",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "eu-ema-xevmpd-credentialed",
+      "jurisdictions": [
+        "EU"
+      ],
+      "authority": "European Medicines Agency",
+      "title": "xEVMPD credentialed product dictionary",
+      "dimension": "regulatory",
+      "access_mode": "licensed_feed",
+      "landing_page": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/data-medicines-iso-idmp-standards-post-authorisation",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "blocked",
+      "evidence_limit": "Credentialed xEVMPD payloads are out of bronze ingest. Public Article 57 metadata remains a separate catalog source.",
+      "interface_status": "restricted",
+      "formats": [
+        "xml"
+      ],
+      "authentication": "account",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "xEVMPD EV Code (credentialed payload)",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/data-medicines-iso-idmp-standards-post-authorisation",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "regional",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/data-medicines-iso-idmp-standards-post-authorisation",
+      "acquisition_profile": "account-download"
+    },
+    {
+      "source_id": "eu-eudravigilance-public",
+      "jurisdictions": [
+        "EU"
+      ],
+      "authority": "European Medicines Agency",
+      "title": "EudraVigilance public ADR dashboard",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.adrreports.eu/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "blocked",
+      "evidence_limit": "Public EudraVigilance outputs are not unrestricted case-level data; access and redistribution constraints remain. Not equivalent to FAERS quarterly files.",
+      "interface_status": "restricted",
+      "formats": [
+        "html"
+      ],
+      "authentication": "account",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "adrreports.eu aggregated reaction identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.adrreports.eu/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "regional",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "eu-spor-public-metadata",
+      "jurisdictions": [
+        "EU"
+      ],
+      "authority": "European Medicines Agency",
+      "title": "SPOR public RMS/OMS metadata",
+      "dimension": "terminology",
+      "access_mode": "web_search",
+      "landing_page": "https://spor.ema.europa.eu/sporwi/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Public SPOR metadata is not PMS coverage. Credentialed PMS/RMS/OMS payloads stay metadata-only and are not bronze coverage.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Public SPOR/RMS/OMS metadata identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://spor.ema.europa.eu/sporwi/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "terminology_only"
+      ],
+      "geographic_scope": "regional",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "terminology_relationships"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
       "source_id": "eu-spor-rms-oms",
       "jurisdictions": [
         "EU"
@@ -2334,7 +3263,7 @@
       "readiness": "verified",
       "discovery_status": "declaration_verified",
       "implemented_ingestion": false,
-      "evidence_limit": "Source semantics, rights, currency and completeness require receipt-backed qualification.",
+      "evidence_limit": "Credentialed SPOR RMS/OMS; metadata-only is not bronze coverage.",
       "interface_status": "restricted",
       "formats": [
         "json",
@@ -2344,7 +3273,7 @@
       "authentication": "account",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "source-native identifier",
+      "native_identifier": "SPOR RMS/OMS identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "acquisition_profile": "account-download",
@@ -2395,7 +3324,7 @@
       "update_cadence": "regular",
       "rights_status": "CC-BY-4.0 dataset; verify per release",
       "readiness": "verified",
-      "evidence_limit": "Centrally authorized products only; national authorizations remain separate.",
+      "evidence_limit": "Union Register must be versioned in Bronze; fixtures are not complete acquisition. Nationally authorised products remain out of this source.",
       "interface_status": "documented_download",
       "formats": [
         "source_native"
@@ -2403,7 +3332,7 @@
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "source-native identifier",
+      "native_identifier": "EU Union Register EU number",
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
@@ -2548,6 +3477,59 @@
       ]
     },
     {
+      "source_id": "fr-open-medic",
+      "jurisdictions": [
+        "FRA"
+      ],
+      "authority": "Assurance Maladie",
+      "title": "Open Medic interregime medicines expenditure",
+      "dimension": "funding",
+      "access_mode": "download",
+      "landing_page": "https://www.data.gouv.fr/fr/datasets/open-medic-base-complete-sur-les-depenses-de-medicaments-interregimes/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "French Open Medic expenditure is not a European utilisation standard and is not registration evidence.",
+      "interface_status": "documented_download",
+      "formats": [
+        "csv"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Open Medic CIP/ATC + year + regime",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.data.gouv.fr/fr/datasets/open-medic-base-complete-sur-les-depenses-de-medicaments-interregimes/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "mixed"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "fr"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://www.data.gouv.fr/fr/datasets/open-medic-base-complete-sur-les-depenses-de-medicaments-interregimes/",
+      "acquisition_profile": "public-bulk"
+    },
+    {
       "source_id": "gb-emit",
       "jurisdictions": [
         "GBR"
@@ -2655,6 +3637,60 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "gb-mhra-yellow-card",
+      "jurisdictions": [
+        "GBR"
+      ],
+      "authority": "Medicines and Healthcare products Regulatory Agency",
+      "title": "Yellow Card Scheme public outputs",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://yellowcard.mhra.gov.uk/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Yellow Card public outputs are not unrestricted case-level bronze and are not NICE or OpenPrescribing utilisation.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "MHRA Yellow Card report identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://yellowcard.mhra.gov.uk/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices"
       ],
       "qualification_state": "declared",
       "qualification_references": []
@@ -2774,6 +3810,59 @@
       ]
     },
     {
+      "source_id": "gb-nice-medicines-utilisation",
+      "jurisdictions": [
+        "GBR"
+      ],
+      "authority": "NHS England / NHS Digital utilisation publications",
+      "title": "Use of NICE-appraised medicines",
+      "dimension": "funding",
+      "access_mode": "document",
+      "landing_page": "https://www.england.nhs.uk/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Utilisation of NICE-appraised medicines is not NICE funding status. Methodology and denominator changes are retained; no universal utilisation unit is forced.",
+      "interface_status": "documented_download",
+      "formats": [
+        "xlsx",
+        "csv",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "NHS utilisation series identifier + methodology version",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://digital.nhs.uk/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "mixed"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "programme_specific",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
       "source_id": "gb-nice-ta",
       "jurisdictions": [
         "GBR"
@@ -2786,7 +3875,7 @@
       "update_cadence": "continuous",
       "rights_status": "syndication_terms_review_required",
       "readiness": "verified",
-      "evidence_limit": "Recommendation scope is indication-specific and is not a product licence.",
+      "evidence_limit": "NICE recommendation is not actual funding or utilisation; retain superseded guidance identities.",
       "interface_status": "documented_download",
       "formats": [
         "html",
@@ -2795,7 +3884,7 @@
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "source-native identifier",
+      "native_identifier": "NICE TA identifier including superseded guidance",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
@@ -2828,6 +3917,61 @@
       ],
       "qualification_state": "declared",
       "qualification_references": []
+    },
+    {
+      "source_id": "gb-openprescribing",
+      "jurisdictions": [
+        "GBR"
+      ],
+      "authority": "Bennett Institute for Applied Data Science / NHSBSA EPD",
+      "title": "OpenPrescribing English primary-care prescribing",
+      "dimension": "funding",
+      "access_mode": "api_and_download",
+      "landing_page": "https://openprescribing.net/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "England primary-care prescribing only. Rights and volume constraints apply; no cross-country measure normalisation.",
+      "interface_status": "supported",
+      "formats": [
+        "json",
+        "csv"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "BNF presentation code + practice/CCG + month",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
+      "documentation_url": "https://openprescribing.net/api/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "mixed"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "api_url": "https://openprescribing.net/api/1.0/",
+      "download_url": "https://openprescribing.net/api/",
+      "acquisition_profile": "public-rest"
     },
     {
       "source_id": "gb-trud-api",
@@ -2941,6 +4085,164 @@
       ]
     },
     {
+      "source_id": "gh-fda-register",
+      "jurisdictions": [
+        "GHA"
+      ],
+      "authority": "Ghana Food and Drugs Authority",
+      "title": "Ghana FDA product register",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://fdaghana.gov.gh/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Registration evidence is not formulary, reimbursement, or current status from historical presence or absence.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-native registered product + manufacturer/sponsor",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Ghana FDA product registration number",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://fdaghana.gov.gh/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "gh-fda-safety",
+      "jurisdictions": [
+        "GHA"
+      ],
+      "authority": "Ghana Food and Drugs Authority",
+      "title": "Ghana Food and Drugs Authority public safety/recall notices",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://fdaghana.gov.gh/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Safety/recall notices are not registration status, shortage evidence, or causality beyond the regulator statement.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Ghana FDA safety/recall identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://fdaghana.gov.gh/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "gh-national-eml",
+      "jurisdictions": [
+        "GHA"
+      ],
+      "authority": "Ghana Food and Drugs Authority",
+      "title": "GHA essential medicines / health-supplies list",
+      "dimension": "formulary",
+      "access_mode": "document",
+      "landing_page": "https://fdaghana.gov.gh/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "EML/formulary evidence is not automatically reimbursement or registration.",
+      "interface_status": "documented_download",
+      "formats": [
+        "pdf",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Ghana EML/STG entry identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://fdaghana.gov.gh/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
       "source_id": "global-rxnorm",
       "jurisdictions": [
         "GLOBAL",
@@ -3004,6 +4306,169 @@
       "qualification_references": []
     },
     {
+      "source_id": "global-umc-vigibase",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "authority": "Uppsala Monitoring Centre",
+      "title": "VigiBase",
+      "dimension": "regulatory",
+      "access_mode": "licensed_feed",
+      "landing_page": "https://who-umc.org/vigibase/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "blocked",
+      "evidence_limit": "VigiBase is credentialed. Registration is not bronze coverage. Signals are independently typed from FDA FAERS and EMA EV.",
+      "interface_status": "restricted",
+      "formats": [
+        "csv"
+      ],
+      "authentication": "subscription",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "VigiBase/VigiLyze case identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://who-umc.org/vigibase/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "global",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://who-umc.org/vigibase/",
+      "acquisition_profile": "account-download"
+    },
+    {
+      "source_id": "global-who-amds-gprm",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "authority": "World Health Organization",
+      "title": "WHO AMDS / Global Price Reporting Mechanism",
+      "dimension": "funding",
+      "access_mode": "web_search",
+      "landing_page": "https://www.who.int/teams/global-hiv-hepatitis-and-stis-programmes/hiv/treatment/aids-medicines-and-diagnostics-service",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "AMDS/GPRM procurement prices are not reimbursement, retail, or list prices; no currency, product, or PPP normalisation.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html",
+        "xlsx"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "WHO GPRM transaction/product/incoterm identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.who.int/teams/global-hiv-hepatitis-and-stis-programmes/hiv/treatment/aids-medicines-and-diagnostics-service",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "funding_status",
+        "pricing"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing",
+        "price"
+      ],
+      "status_semantics": [
+        "price_listing"
+      ],
+      "geographic_scope": "global",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "prices"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "global-who-availability-surveys",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "authority": "World Health Organization",
+      "title": "WHO medicines availability survey sources",
+      "dimension": "formulary",
+      "access_mode": "document",
+      "landing_page": "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Missing survey coverage is not evidence of unavailability or shortage.",
+      "interface_status": "documented_download",
+      "formats": [
+        "html",
+        "pdf"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "WHO/HAI facility-survey wave identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "global",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
       "source_id": "global-who-databases",
       "jurisdictions": [
         "GLOBAL"
@@ -3050,6 +4515,281 @@
         "identifiers",
         "names",
         "terminology_relationships"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "global-who-eml",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "authority": "World Health Organization",
+      "title": "WHO Model List of Essential Medicines",
+      "dimension": "formulary",
+      "access_mode": "download",
+      "landing_page": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Global EML is formulary/EML evidence, not reimbursement, registration, or procurement.",
+      "interface_status": "documented_download",
+      "formats": [
+        "xlsx",
+        "pdf",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "WHO EML medicine/section identifier + list year",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "global",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists",
+      "acquisition_profile": "public-bulk"
+    },
+    {
+      "source_id": "global-who-medicine-prices",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "authority": "World Health Organization",
+      "title": "WHO medicines pricing information sources",
+      "dimension": "funding",
+      "access_mode": "document",
+      "landing_page": "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Price surveys are not reimbursement schedules; datasets are registered separately from shortage and availability sources.",
+      "interface_status": "documented_download",
+      "formats": [
+        "html",
+        "pdf",
+        "xlsx"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "WHO/HAI survey medicine/country/year identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "funding_status",
+        "pricing"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing",
+        "price"
+      ],
+      "status_semantics": [
+        "price_listing"
+      ],
+      "geographic_scope": "global",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "prices"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "global-who-mi4a",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "authority": "World Health Organization",
+      "title": "WHO MI4A vaccine market information",
+      "dimension": "funding",
+      "access_mode": "download",
+      "landing_page": "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "MI4A vaccine-market prices and volumes are distinct from conventional medicines reimbursement and procurement.",
+      "interface_status": "documented_download",
+      "formats": [
+        "xlsx",
+        "pdf",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "WHO MI4A vaccine product/market identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "funding_status",
+        "pricing"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing",
+        "price"
+      ],
+      "status_semantics": [
+        "price_listing"
+      ],
+      "geographic_scope": "global",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "prices"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a",
+      "acquisition_profile": "public-bulk"
+    },
+    {
+      "source_id": "global-who-national-eml-index",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "authority": "World Health Organization",
+      "title": "WHO index of national essential medicines lists",
+      "dimension": "formulary",
+      "access_mode": "document",
+      "landing_page": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists/national-essential-medicines-lists",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Country/temporal coverage is measured from this index; unavailable lists are recorded and are not negative evidence.",
+      "interface_status": "documented_download",
+      "formats": [
+        "html",
+        "pdf"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "WHO national EML country/list edition",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists/national-essential-medicines-lists",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "global",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "global-who-shortage-sources",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "authority": "World Health Organization",
+      "title": "WHO medicines shortage source inventory",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.who.int/teams/regulation-prequalification",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "blocked",
+      "evidence_limit": "No single authoritative WHO global shortage register was verified; this row inventories the gap. Do not infer shortage from missing data.",
+      "interface_status": "undocumented",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "WHO shortage source dataset identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.who.int/teams/regulation-prequalification",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "global",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices"
       ],
       "qualification_state": "declared",
       "qualification_references": []
@@ -3162,6 +4902,59 @@
       ]
     },
     {
+      "source_id": "ie-pcrs-reimbursement",
+      "jurisdictions": [
+        "IRL"
+      ],
+      "authority": "Health Service Executive Primary Care Reimbursement Service",
+      "title": "HSE PCRS reimbursement reports",
+      "dimension": "funding",
+      "access_mode": "document",
+      "landing_page": "https://www.hse.ie/eng/staff/pcrs/pcrs-publications/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "PCRS reimbursement volumes are not national utilisation of all medicines and are not HPRA registration.",
+      "interface_status": "documented_download",
+      "formats": [
+        "pdf",
+        "xlsx"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "HSE PCRS ATC/product reimbursement identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.hse.ie/eng/staff/pcrs/pcrs-publications/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "reimbursement",
+        "mixed"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "programme_specific",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
       "source_id": "in-cdsco-approved-drugs",
       "jurisdictions": [
         "IND"
@@ -3182,7 +4975,7 @@
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "source-native identifier",
+      "native_identifier": "CDSCO approved-drug identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
@@ -3213,6 +5006,57 @@
       "qualification_references": []
     },
     {
+      "source_id": "in-cdsco-products",
+      "jurisdictions": [
+        "IND"
+      ],
+      "authority": "Central Drugs Standard Control Organisation",
+      "title": "CDSCO public product/license surfaces beyond the approved-drugs seed",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://cdsco.gov.in/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Product/license listings are not NLEM inclusion or NPPA ceiling prices.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "CDSCO product/license identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://cdsco.gov.in/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
       "source_id": "in-nlem",
       "jurisdictions": [
         "IND"
@@ -3226,7 +5070,7 @@
       "update_cadence": "at_list_revisions",
       "rights_status": "review_required",
       "readiness": "candidate",
-      "evidence_limit": "Discovery only; essential-list inclusion is not a universal reimbursement or procurement entitlement.",
+      "evidence_limit": "NLEM is formulary/EML evidence, not automatically reimbursement.",
       "interface_status": "documented_download",
       "formats": [
         "source_native"
@@ -3234,7 +5078,7 @@
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "source-native identifier",
+      "native_identifier": "India NLEM medicine identifier + list year",
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
@@ -3265,6 +5109,225 @@
       ],
       "qualification_state": "declared",
       "qualification_references": []
+    },
+    {
+      "source_id": "in-nppa-ceiling-prices",
+      "jurisdictions": [
+        "IND"
+      ],
+      "authority": "National Pharmaceutical Pricing Authority",
+      "title": "NPPA ceiling prices",
+      "dimension": "funding",
+      "access_mode": "download",
+      "landing_page": "https://www.nppaindia.nic.in/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Ceiling price is not a transaction, procurement, or reimbursement price.",
+      "interface_status": "documented_download",
+      "formats": [
+        "xlsx",
+        "pdf",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "NPPA scheduled-formulation ceiling-price identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.nppaindia.nic.in/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "funding_status",
+        "pricing"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing",
+        "price"
+      ],
+      "status_semantics": [
+        "price_listing"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "prices"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://www.nppaindia.nic.in/",
+      "acquisition_profile": "public-bulk"
+    },
+    {
+      "source_id": "in-procurement-availability",
+      "jurisdictions": [
+        "IND"
+      ],
+      "authority": "Government of India public procurement portals",
+      "title": "India public medicines procurement/availability surfaces",
+      "dimension": "funding",
+      "access_mode": "web_search",
+      "landing_page": "https://gem.gov.in/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Procurement/availability is not NPPA ceiling price or reimbursement; state portals remain separately blocked.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "India public procurement/availability source identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://gem.gov.in/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "funding_status",
+        "pricing"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing",
+        "price"
+      ],
+      "status_semantics": [
+        "price_listing"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "prices"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "in-pvpi-safety",
+      "jurisdictions": [
+        "IND"
+      ],
+      "authority": "Pharmacovigilance Programme of India",
+      "title": "PvPI public safety communications",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.ipc.gov.in/PvPI/pv_home.html",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "blocked",
+      "evidence_limit": "PvPI case-level ICSRs are not public bronze payloads; this row is metadata/safety-communication inventory only.",
+      "interface_status": "restricted",
+      "formats": [
+        "html"
+      ],
+      "authentication": "account",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "PvPI safety communication identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.ipc.gov.in/PvPI/pv_home.html",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "jp-mhlw-ndb-utilisation",
+      "jurisdictions": [
+        "JPN"
+      ],
+      "authority": "Ministry of Health, Labour and Welfare",
+      "title": "NDB tabulated medicines utilisation",
+      "dimension": "funding",
+      "access_mode": "licensed_feed",
+      "landing_page": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000139390.html",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "blocked",
+      "evidence_limit": "NDB microdata are credentialed. This row inventories public tables if published; it is not NHI price or PMDA approval.",
+      "interface_status": "restricted",
+      "formats": [
+        "xlsx"
+      ],
+      "authentication": "manual_approval",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "MHLW NDB tabulated identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000139390.html",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "mixed"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "ja"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000139390.html",
+      "acquisition_profile": "account-download"
     },
     {
       "source_id": "jp-mhlw-nhi-price",
@@ -3432,6 +5495,220 @@
       "qualification_references": [
         "https://www.info.pmda.go.jp/psearch/tenpulist.jsp"
       ]
+    },
+    {
+      "source_id": "jp-pmda-safety",
+      "jurisdictions": [
+        "JPN"
+      ],
+      "authority": "Pharmaceuticals and Medical Devices Agency",
+      "title": "PMDA safety information and alerts",
+      "dimension": "regulatory",
+      "access_mode": "document",
+      "landing_page": "https://www.pmda.go.jp/english/safety/info-services/0001.html",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "PMDA safety communications are not approval status and are not causality beyond the regulator statement.",
+      "interface_status": "documented_download",
+      "formats": [
+        "html",
+        "pdf"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "PMDA safety report/alert identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.pmda.go.jp/english/safety/info-services/0001.html",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "ja",
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "ke-national-eml",
+      "jurisdictions": [
+        "KEN"
+      ],
+      "authority": "Kenya Pharmacy and Poisons Board",
+      "title": "KEN essential medicines / health-supplies list",
+      "dimension": "formulary",
+      "access_mode": "document",
+      "landing_page": "https://www.pharmacyboardkenya.org/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "EML/formulary evidence is not automatically reimbursement or registration.",
+      "interface_status": "documented_download",
+      "formats": [
+        "pdf",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Kenya EML/formulary entry identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.pharmacyboardkenya.org/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "ke-ppb-register",
+      "jurisdictions": [
+        "KEN"
+      ],
+      "authority": "Kenya Pharmacy and Poisons Board",
+      "title": "Kenya PPB product register",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.pharmacyboardkenya.org/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Registration evidence is not formulary, reimbursement, or current status from historical presence or absence.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-native registered product + manufacturer/sponsor",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Kenya PPB product registration number",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.pharmacyboardkenya.org/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "ke-ppb-safety",
+      "jurisdictions": [
+        "KEN"
+      ],
+      "authority": "Kenya Pharmacy and Poisons Board",
+      "title": "Kenya Pharmacy and Poisons Board public safety/recall notices",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.pharmacyboardkenya.org/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Safety/recall notices are not registration status, shortage evidence, or causality beyond the regulator statement.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Kenya PPB safety/recall notice identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.pharmacyboardkenya.org/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "kr-hira-atc",
@@ -3712,6 +5989,217 @@
       ]
     },
     {
+      "source_id": "mus-approved-drug-list",
+      "jurisdictions": [
+        "MUS"
+      ],
+      "authority": "Mauritius Ministry of Health and Wellness",
+      "title": "Mauritius Approved Drug List / EML",
+      "dimension": "formulary",
+      "access_mode": "document",
+      "landing_page": "https://health.govmu.org/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Approved Drug List is formulary evidence, not registration or reimbursement.",
+      "interface_status": "documented_download",
+      "formats": [
+        "pdf",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Mauritius Approved Drug List / EML entry identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://health.govmu.org/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en",
+        "fr"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "mus-historical-eml-archive",
+      "jurisdictions": [
+        "MUS"
+      ],
+      "authority": "Mauritius Ministry of Health and Wellness",
+      "title": "Mauritius historical EML/Approved Drug List editions",
+      "dimension": "formulary",
+      "access_mode": "document",
+      "landing_page": "https://health.govmu.org/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Historical editions are archived only where lawful; absence of an edition is not negative formulary evidence.",
+      "interface_status": "documented_download",
+      "formats": [
+        "pdf"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Mauritius historical EML edition identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://health.govmu.org/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en",
+        "fr"
+      ],
+      "change_semantics": "append_only_history",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "mus-pharmacy-board-register",
+      "jurisdictions": [
+        "MUS"
+      ],
+      "authority": "Mauritius Pharmacy Board",
+      "title": "Mauritius public product registration",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://health.govmu.org/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Registration evidence is not formulary, reimbursement, or current status from historical presence or absence.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-native registered product + manufacturer/sponsor",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Mauritius Pharmacy Board product registration number",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://health.govmu.org/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "mus-pharmacy-board-safety",
+      "jurisdictions": [
+        "MUS"
+      ],
+      "authority": "Mauritius Pharmacy Board",
+      "title": "Mauritius Pharmacy Board public safety/recall notices",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://health.govmu.org/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Safety/recall notices are not registration status, shortage evidence, or causality beyond the regulator statement.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Mauritius safety/recall notice identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://health.govmu.org/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
       "source_id": "mx-cofepris-register",
       "jurisdictions": [
         "MEX"
@@ -3889,7 +6377,7 @@
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "source-native identifier",
+      "native_identifier": "NAFDAC registration number",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
@@ -3920,6 +6408,60 @@
       "qualification_references": []
     },
     {
+      "source_id": "ng-nafdac-safety",
+      "jurisdictions": [
+        "NGA"
+      ],
+      "authority": "National Agency for Food and Drug Administration and Control",
+      "title": "NAFDAC public safety/recall notices",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.nafdac.gov.ng/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Safety/recall notices are not NAFDAC registration or NHIA formulary evidence.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "NAFDAC safety/recall notice identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.nafdac.gov.ng/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
       "source_id": "ng-nhia-medicines",
       "jurisdictions": [
         "NGA"
@@ -3940,7 +6482,7 @@
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "source-native identifier",
+      "native_identifier": "NHIA medicines list entry identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
@@ -3970,6 +6512,62 @@
       ],
       "qualification_state": "declared",
       "qualification_references": []
+    },
+    {
+      "source_id": "nl-gipdatabank",
+      "jurisdictions": [
+        "NLD"
+      ],
+      "authority": "Zorginstituut Nederland",
+      "title": "GIPdatabank medicines utilisation",
+      "dimension": "funding",
+      "access_mode": "download",
+      "landing_page": "https://www.gipdatabank.nl/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Retain GIPdatabank methodology and classification-version. No ATC or canonical transform in Bronze. Not reimbursement status.",
+      "interface_status": "documented_download",
+      "formats": [
+        "xlsx",
+        "csv",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "GIPdatabank ATC/product + classification-version year",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.gipdatabank.nl/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "mixed"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "nl",
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://www.gipdatabank.nl/",
+      "acquisition_profile": "public-bulk"
     },
     {
       "source_id": "nl-medicijnkosten",
@@ -4145,6 +6743,60 @@
       "qualification_references": [
         "https://www.dmp.no/en/about-us/distribution-of-data-on-medicinal-products/electronic-prescription-support-system-fest/downloading-fest-and-safest"
       ]
+    },
+    {
+      "source_id": "no-norpd-utilisation",
+      "jurisdictions": [
+        "NOR"
+      ],
+      "authority": "Norwegian Institute of Public Health",
+      "title": "Norwegian Prescription Database",
+      "dimension": "funding",
+      "access_mode": "licensed_feed",
+      "landing_page": "https://www.norpd.no/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "blocked",
+      "evidence_limit": "NorPD is credentialed/restricted; metadata-only until lawful access. Not comparable by default to DK/SE.",
+      "interface_status": "restricted",
+      "formats": [
+        "csv"
+      ],
+      "authentication": "manual_approval",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "NorPD product/ATC identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.fhi.no/en/he/norpd/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "mixed"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "no",
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://www.norpd.no/",
+      "acquisition_profile": "account-download"
     },
     {
       "source_id": "nz-medsafe-documents",
@@ -4654,6 +7306,164 @@
       ]
     },
     {
+      "source_id": "pk-drap-register",
+      "jurisdictions": [
+        "PAK"
+      ],
+      "authority": "Pakistan Drug Regulatory Authority",
+      "title": "DRAP registered/provisional products",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.dra.gov.pk/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Registration evidence is not formulary, reimbursement, or current status from historical presence or absence.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-native registered product + manufacturer/sponsor",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "DRAP registration/provisional/historical native status identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.dra.gov.pk/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "pk-drap-safety",
+      "jurisdictions": [
+        "PAK"
+      ],
+      "authority": "Pakistan Drug Regulatory Authority",
+      "title": "Pakistan Drug Regulatory Authority public safety/recall notices",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.dra.gov.pk/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Safety/recall notices are not registration status, shortage evidence, or causality beyond the regulator statement. Distinguish provisional, registered, and historical source-native states; shortage notices stay a separate facet of this source.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "DRAP safety/recall/shortage notice identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.dra.gov.pk/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "pk-neml",
+      "jurisdictions": [
+        "PAK"
+      ],
+      "authority": "Pakistan Drug Regulatory Authority",
+      "title": "PAK essential medicines / health-supplies list",
+      "dimension": "formulary",
+      "access_mode": "document",
+      "landing_page": "https://www.dra.gov.pk/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "EML/formulary evidence is not automatically reimbursement or registration.",
+      "interface_status": "documented_download",
+      "formats": [
+        "pdf",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Pakistan NEML entry identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.dra.gov.pk/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
       "source_id": "qa-moh-medicines",
       "jurisdictions": [
         "QAT"
@@ -4706,6 +7516,164 @@
       "qualification_references": [
         "https://www.moph.gov.qa/"
       ]
+    },
+    {
+      "source_id": "rw-national-eml",
+      "jurisdictions": [
+        "RWA"
+      ],
+      "authority": "Rwanda Food and Drugs Authority",
+      "title": "RWA essential medicines / health-supplies list",
+      "dimension": "formulary",
+      "access_mode": "document",
+      "landing_page": "https://rwandafda.gov.rw/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "EML/formulary evidence is not automatically reimbursement or registration.",
+      "interface_status": "documented_download",
+      "formats": [
+        "pdf",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Rwanda EML entry identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://rwandafda.gov.rw/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "rw-rwandafda-register",
+      "jurisdictions": [
+        "RWA"
+      ],
+      "authority": "Rwanda Food and Drugs Authority",
+      "title": "Rwanda FDA product register",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://rwandafda.gov.rw/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Registration evidence is not formulary, reimbursement, or current status from historical presence or absence.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-native registered product + manufacturer/sponsor",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Rwanda FDA product registration number",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://rwandafda.gov.rw/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "rw-rwandafda-safety",
+      "jurisdictions": [
+        "RWA"
+      ],
+      "authority": "Rwanda Food and Drugs Authority",
+      "title": "Rwanda Food and Drugs Authority public safety/recall notices",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://rwandafda.gov.rw/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Safety/recall notices are not registration status, shortage evidence, or causality beyond the regulator statement.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Rwanda FDA safety notice identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://rwandafda.gov.rw/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "sa-chi-formulary",
@@ -4873,6 +7841,60 @@
       "qualification_references": [
         "https://www.lakemedelsverket.se/sv/om-webbplatsen/oppna-data"
       ]
+    },
+    {
+      "source_id": "se-socialstyrelsen-utilisation",
+      "jurisdictions": [
+        "SWE"
+      ],
+      "authority": "National Board of Health and Welfare",
+      "title": "Socialstyrelsen medicines statistics",
+      "dimension": "funding",
+      "access_mode": "download",
+      "landing_page": "https://www.socialstyrelsen.se/statistik-och-data/statistik/statistikamnen/lakemedel/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Swedish utilisation is a separate source from DK/NO; no cross-country comparability claim.",
+      "interface_status": "documented_download",
+      "formats": [
+        "xlsx",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Socialstyrelsen läkemedelsstatistik ATC + year",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.socialstyrelsen.se/statistik-och-data/statistik/statistikamnen/lakemedel/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "mixed"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "sv"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://www.socialstyrelsen.se/statistik-och-data/statistik/statistikamnen/lakemedel/",
+      "acquisition_profile": "public-bulk"
     },
     {
       "source_id": "se-tlv-subsidies",
@@ -5091,6 +8113,164 @@
       "qualification_references": []
     },
     {
+      "source_id": "sn-dpm-register",
+      "jurisdictions": [
+        "SEN"
+      ],
+      "authority": "Senegal Direction de la Pharmacie et du Médicament",
+      "title": "Senegal DPM product register",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.sante.gouv.sn/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Registration evidence is not formulary, reimbursement, or current status from historical presence or absence.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-native registered product + manufacturer/sponsor",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Senegal DPM product registration number",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.sante.gouv.sn/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "fr"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "sn-dpm-safety",
+      "jurisdictions": [
+        "SEN"
+      ],
+      "authority": "Senegal Direction de la Pharmacie et du Médicament",
+      "title": "Senegal Direction de la Pharmacie et du Médicament public safety/recall notices",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.sante.gouv.sn/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Safety/recall notices are not registration status, shortage evidence, or causality beyond the regulator statement.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Senegal DPM safety notice identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.sante.gouv.sn/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "fr"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "sn-national-eml",
+      "jurisdictions": [
+        "SEN"
+      ],
+      "authority": "Senegal Direction de la Pharmacie et du Médicament",
+      "title": "SEN essential medicines / health-supplies list",
+      "dimension": "formulary",
+      "access_mode": "document",
+      "landing_page": "https://www.sante.gouv.sn/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "EML/formulary evidence is not automatically reimbursement or registration.",
+      "interface_status": "documented_download",
+      "formats": [
+        "pdf",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Senegal EML/LNME entry identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.sante.gouv.sn/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "fr"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
       "source_id": "th-fda-search",
       "jurisdictions": [
         "THA"
@@ -5143,6 +8323,322 @@
       "qualification_references": [
         "https://pertento.fda.moph.go.th/FDA_SEARCH_DRUG/SEARCH_DRUG/FRM_SEARCH_PAGE.aspx"
       ]
+    },
+    {
+      "source_id": "tz-national-eml",
+      "jurisdictions": [
+        "TZA"
+      ],
+      "authority": "Tanzania Medicines and Medical Devices Authority",
+      "title": "TZA essential medicines / health-supplies list",
+      "dimension": "formulary",
+      "access_mode": "document",
+      "landing_page": "https://www.tmda.go.tz/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "EML/formulary evidence is not automatically reimbursement or registration.",
+      "interface_status": "documented_download",
+      "formats": [
+        "pdf",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Tanzania EML entry identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.tmda.go.tz/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "tz-tmda-products",
+      "jurisdictions": [
+        "TZA"
+      ],
+      "authority": "Tanzania Medicines and Medical Devices Authority",
+      "title": "TMDA registered products",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.tmda.go.tz/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Registration evidence is not formulary, reimbursement, or current status from historical presence or absence.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-native registered product + manufacturer/sponsor",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "TMDA product registration number + manufacturer/sponsor",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.tmda.go.tz/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "tz-tmda-safety",
+      "jurisdictions": [
+        "TZA"
+      ],
+      "authority": "Tanzania Medicines and Medical Devices Authority",
+      "title": "Tanzania Medicines and Medical Devices Authority public safety/recall notices",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.tmda.go.tz/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Safety/recall notices are not registration status, shortage evidence, or causality beyond the regulator statement.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "TMDA safety notice identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.tmda.go.tz/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "ug-national-eml",
+      "jurisdictions": [
+        "UGA"
+      ],
+      "authority": "Uganda National Drug Authority",
+      "title": "Uganda EML and health supplies list",
+      "dimension": "formulary",
+      "access_mode": "document",
+      "landing_page": "https://www.nda.or.ug/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "EML/formulary evidence is not automatically reimbursement or registration.",
+      "interface_status": "documented_download",
+      "formats": [
+        "pdf",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Uganda EML/health supplies list entry",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.nda.or.ug/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "ug-nda-register",
+      "jurisdictions": [
+        "UGA"
+      ],
+      "authority": "Uganda National Drug Authority",
+      "title": "Uganda NDA product register",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.nda.or.ug/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Registration evidence is not formulary, reimbursement, or current status from historical presence or absence.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-native registered product + manufacturer/sponsor",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Uganda NDA product/registration number",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.nda.or.ug/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "ug-nda-safety",
+      "jurisdictions": [
+        "UGA"
+      ],
+      "authority": "Uganda National Drug Authority",
+      "title": "Uganda National Drug Authority public safety/recall notices",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.nda.or.ug/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Safety/recall notices are not registration status, shortage evidence, or causality beyond the regulator statement.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Uganda NDA safety/recall notice identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.nda.or.ug/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     },
     {
       "source_id": "us-cms-mdrp",
@@ -5274,7 +8770,7 @@
       "update_cadence": "monthly and quarterly",
       "rights_status": "CMS agreement_for_use review required",
       "readiness": "verified",
-      "evidence_limit": "Plan-level Medicare coverage; not a single US national formulary.",
+      "evidence_limit": "Part D formulary evidence is not total US utilisation or national registration.",
       "interface_status": "documented_download",
       "formats": [
         "source_native"
@@ -5282,7 +8778,7 @@
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "source-native identifier",
+      "native_identifier": "CMS Part D formulary/plan identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
@@ -5313,6 +8809,60 @@
       ],
       "qualification_state": "declared",
       "qualification_references": []
+    },
+    {
+      "source_id": "us-cms-partd-spending",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "Centers for Medicare & Medicaid Services",
+      "title": "Medicare Part D spending by drug",
+      "dimension": "funding",
+      "access_mode": "download",
+      "landing_page": "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-part-d-spending-by-drug",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Part D spending/utilisation is not total US utilisation and is not a national registration or formulary completeness claim.",
+      "interface_status": "documented_download",
+      "formats": [
+        "csv",
+        "xlsx"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "CMS Part D spending-by-drug brand/generic identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
+      "documentation_url": "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-part-d-spending-by-drug",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "funding_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "funding_listing"
+      ],
+      "status_semantics": [
+        "mixed"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "defined_population",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-part-d-spending-by-drug",
+      "acquisition_profile": "public-bulk"
     },
     {
       "source_id": "us-dailymed-spl",
@@ -5434,6 +8984,230 @@
       "qualification_references": []
     },
     {
+      "source_id": "us-fda-drug-shortages",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "US Food and Drug Administration",
+      "title": "FDA drug shortages current and historical snapshots",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.accessdata.fda.gov/scripts/drugshortages/default.cfm",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Absence from the current shortage list is not evidence of no historical shortage; missing coverage is not negative evidence.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "FDA shortage drug/update identifier + snapshot date",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.fda.gov/drugs/drug-safety-and-availability/drug-shortages",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "us-fda-faers",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "US Food and Drug Administration",
+      "title": "FDA FAERS quarterly public ASCII/XML releases",
+      "dimension": "regulatory",
+      "access_mode": "download",
+      "landing_page": "https://fis.fda.gov/extensions/FPD-QDE-FAERS/FPD-QDE-FAERS.html",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "FAERS reports are not causation. Bronze keeps native case identity for later FDA case-version handling; no dedup or normalisation beyond lossless parse.",
+      "interface_status": "documented_download",
+      "formats": [
+        "zip",
+        "ascii",
+        "xml"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "FAERS primaryid / caseid (case-version retained)",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
+      "documentation_url": "https://fis.fda.gov/extensions/FPD-QDE-FAERS/FPD-QDE-FAERS.html",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "append_only_history",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://fis.fda.gov/extensions/FPD-QDE-FAERS/FPD-QDE-FAERS.html",
+      "acquisition_profile": "public-bulk"
+    },
+    {
+      "source_id": "us-fda-ndc-directory",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "US Food and Drug Administration",
+      "title": "FDA NDC Directory files",
+      "dimension": "terminology",
+      "access_mode": "download",
+      "landing_page": "https://www.fda.gov/drugs/drug-approvals-and-databases/national-drug-code-directory",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "NDC listing is not approval. Preserve product versus package granularity; do not treat this as Orange Book substitutability.",
+      "interface_status": "documented_download",
+      "formats": [
+        "zip",
+        "txt"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "FDA NDC Directory product/package NDC",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.fda.gov/drugs/drug-approvals-and-databases/national-drug-code-directory",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "terminology_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "terminology_relationships"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://www.fda.gov/drugs/drug-approvals-and-databases/national-drug-code-directory",
+      "acquisition_profile": "public-bulk"
+    },
+    {
+      "source_id": "us-fda-nsde",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "US Food and Drug Administration",
+      "title": "FDA NDC SPL Data Elements (NSDE) comprehensive file",
+      "dimension": "terminology",
+      "access_mode": "download",
+      "landing_page": "https://www.fda.gov/industry/structured-product-labeling-resources/nsde",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Verified authoritative dataset is the FDA SPL NSDE zip on https://www.fda.gov/industry/structured-product-labeling-resources/nsde. NSDE/NDC listing is not approval or reimbursement. openFDA /other/nsde is a derived API, not the origin.",
+      "interface_status": "documented_download",
+      "formats": [
+        "zip",
+        "txt"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "NSDE item code / NDC11 from FDA SPL NSDE zip",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.fda.gov/industry/structured-product-labeling-resources/nsde",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "terminology_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "terminology_relationships"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "download_url": "https://www.fda.gov/industry/structured-product-labeling-resources/nsde",
+      "acquisition_profile": "public-bulk"
+    },
+    {
       "source_id": "us-fda-orange-book",
       "jurisdictions": [
         "USA"
@@ -5447,7 +9221,7 @@
       "update_cadence": "monthly",
       "rights_status": "US government data; verify endpoint terms",
       "readiness": "verified",
-      "evidence_limit": "Focused on approved drug products and therapeutic equivalence; not funding evidence.",
+      "evidence_limit": "Orange Book TE codes are not clinical substitutability; complete versioned files belong in Bronze, not catalog-only.",
       "interface_status": "documented_download",
       "formats": [
         "zip",
@@ -5456,7 +9230,7 @@
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "source-native identifier",
+      "native_identifier": "FDA Orange Book Appl_No + ingredient + TE code",
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
@@ -5488,6 +9262,117 @@
       "qualification_references": []
     },
     {
+      "source_id": "us-fda-recalls-notices",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "US Food and Drug Administration",
+      "title": "FDA recall, market-withdrawal, and safety-alert notices",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Firm press notices overlap openFDA enforcement; keep both identities. Recalls are not FAERS causality.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "FDA recall firm-press notice identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "us-fda-rems",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "US Food and Drug Administration",
+      "title": "FDA Risk Evaluation and Mitigation Strategies",
+      "dimension": "regulatory",
+      "access_mode": "document",
+      "landing_page": "https://www.accessdata.fda.gov/scripts/cder/rems/index.cfm",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "REMS is distinct from approval and from pharmacovigilance. Documents are payloads; structural metadata stays source-faithful.",
+      "interface_status": "documented_download",
+      "formats": [
+        "html",
+        "pdf"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "FDA REMS program/application identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.accessdata.fda.gov/scripts/cder/rems/index.cfm",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "clinical_documentation"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization",
+        "document_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
       "source_id": "us-gsrs-unii",
       "jurisdictions": [
         "USA"
@@ -5502,7 +9387,7 @@
       "readiness": "verified",
       "discovery_status": "declaration_verified",
       "implemented_ingestion": false,
-      "evidence_limit": "UNII does not imply regulatory review or approval.",
+      "evidence_limit": "UNII/GSRS is terminology/substance evidence, not canonical medicine identity; Silver crosswalks must not alter Bronze payloads.",
       "interface_status": "interactive_only",
       "formats": [
         "json",
@@ -5511,7 +9396,7 @@
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "source-native identifier",
+      "native_identifier": "UNII",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "documentation_url": "https://gsrs.ncats.nih.gov/",
@@ -5604,6 +9489,120 @@
       ]
     },
     {
+      "source_id": "us-openfda-enforcement",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "US Food and Drug Administration",
+      "title": "openFDA drug enforcement/recalls API",
+      "dimension": "regulatory",
+      "access_mode": "api",
+      "landing_page": "https://open.fda.gov/apis/drug/enforcement/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Enforcement API overlaps FDA recall notices; model the relationship and do not silent-dedup.",
+      "interface_status": "supported",
+      "formats": [
+        "json"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "openFDA enforcement report number / event_id",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
+      "documentation_url": "https://open.fda.gov/apis/drug/enforcement/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "api_url": "https://api.fda.gov/drug/enforcement.json",
+      "acquisition_profile": "public-rest"
+    },
+    {
+      "source_id": "us-openfda-faers",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "US Food and Drug Administration",
+      "title": "openFDA drug adverse-event API (FAERS-derived)",
+      "dimension": "regulatory",
+      "access_mode": "api",
+      "landing_page": "https://open.fda.gov/apis/drug/event/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Overlaps FAERS files; do not silent-dedup. Reports are not causation. openFDA is derived, not evidentiary origin.",
+      "interface_status": "supported",
+      "formats": [
+        "json"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "openFDA safetyreportid overlapping FAERS files",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
+      "documentation_url": "https://open.fda.gov/apis/drug/event/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "api_url": "https://api.fda.gov/drug/event.json",
+      "acquisition_profile": "public-rest"
+    },
+    {
       "source_id": "us-openfda-ndc",
       "jurisdictions": [
         "USA"
@@ -5618,7 +9617,7 @@
       "update_cadence": "daily",
       "rights_status": "openFDA terms apply",
       "readiness": "verified",
-      "evidence_limit": "FDA explicitly states that an NDC listing does not denote approval or reimbursement.",
+      "evidence_limit": "NDC listing is not approval or reimbursement; preserve product and package grain separately.",
       "interface_status": "supported",
       "formats": [
         "json"
@@ -5626,7 +9625,7 @@
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "source-native identifier",
+      "native_identifier": "NDC product_ndc / package_ndc",
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
@@ -5656,6 +9655,60 @@
       ],
       "qualification_state": "declared",
       "qualification_references": []
+    },
+    {
+      "source_id": "us-openfda-nsde",
+      "jurisdictions": [
+        "USA"
+      ],
+      "authority": "US Food and Drug Administration",
+      "title": "openFDA NSDE API (derived from FDA NSDE)",
+      "dimension": "terminology",
+      "access_mode": "api",
+      "landing_page": "https://open.fda.gov/apis/other/nsde/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Derived API over FDA NSDE; not the authoritative file and not an approval register.",
+      "interface_status": "supported",
+      "formats": [
+        "json"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "openFDA other/nsde package_ndc",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
+      "documentation_url": "https://open.fda.gov/apis/other/nsde/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "terminology"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "terminology_concept"
+      ],
+      "status_semantics": [
+        "terminology_only"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "terminology_relationships"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": [],
+      "api_url": "https://api.fda.gov/other/nsde.json",
+      "acquisition_profile": "public-rest"
     },
     {
       "source_id": "us-rxnorm-api",
@@ -5741,7 +9794,7 @@
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "source-native identifier",
+      "native_identifier": "South Africa NEML entry identifier",
       "last_verified_at": "2026-07-29",
       "integration_layer": "acquisition",
       "acquisition_profile": "public-bulk",
@@ -5794,7 +9847,7 @@
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "source-native identifier",
+      "native_identifier": "SAHPRA register number",
       "last_verified_at": "2026-07-29",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
@@ -5820,6 +9873,60 @@
         "identifiers",
         "names",
         "status_dates"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "za-sahpra-safety",
+      "jurisdictions": [
+        "ZAF"
+      ],
+      "authority": "South African Health Products Regulatory Authority",
+      "title": "SAHPRA public safety/recall notices",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.sahpra.org.za/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Safety/recall notices are not SAHPRA registration or NEML inclusion.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "SAHPRA safety/recall notice identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.sahpra.org.za/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices"
       ],
       "qualification_state": "declared",
       "qualification_references": []
@@ -5884,6 +9991,164 @@
       "qualification_references": [
         "https://www.health.gov.za/nhi-pee/"
       ]
+    },
+    {
+      "source_id": "zw-mcaz-register",
+      "jurisdictions": [
+        "ZWE"
+      ],
+      "authority": "Medicines Control Authority of Zimbabwe",
+      "title": "MCAZ product register",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.mcaz.co.zw/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Registration evidence is not formulary, reimbursement, or current status from historical presence or absence.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-native registered product + manufacturer/sponsor",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "MCAZ product registration number",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.mcaz.co.zw/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "zw-mcaz-safety",
+      "jurisdictions": [
+        "ZWE"
+      ],
+      "authority": "Medicines Control Authority of Zimbabwe",
+      "title": "Medicines Control Authority of Zimbabwe public safety/recall notices",
+      "dimension": "regulatory",
+      "access_mode": "web_search",
+      "landing_page": "https://www.mcaz.co.zw/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "Safety/recall notices are not registration status, shortage evidence, or causality beyond the regulator statement.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "MCAZ safety/recall identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.mcaz.co.zw/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "regulatory_status",
+        "safety"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "approval",
+        "document"
+      ],
+      "status_semantics": [
+        "authorization"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names",
+        "safety_notices",
+        "documents"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
+    },
+    {
+      "source_id": "zw-national-eml",
+      "jurisdictions": [
+        "ZWE"
+      ],
+      "authority": "Medicines Control Authority of Zimbabwe",
+      "title": "ZWE essential medicines / health-supplies list",
+      "dimension": "formulary",
+      "access_mode": "document",
+      "landing_page": "https://www.mcaz.co.zw/",
+      "update_cadence": "source-declared",
+      "rights_status": "review_required",
+      "readiness": "candidate",
+      "evidence_limit": "EML/formulary evidence is not automatically reimbursement or registration.",
+      "interface_status": "documented_download",
+      "formats": [
+        "pdf",
+        "html"
+      ],
+      "authentication": "none",
+      "product_grain": "source-defined medicine, product, package, decision, or document",
+      "historical_scope": "source-declared current and historical scope",
+      "native_identifier": "Zimbabwe EML entry identifier",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "catalogued",
+      "implemented_ingestion": false,
+      "documentation_url": "https://www.mcaz.co.zw/",
+      "discovery_status": "declaration_verified",
+      "information_domains": [
+        "product_identity",
+        "formulary_status"
+      ],
+      "record_entities": [
+        "medicinal_product",
+        "formulary_entry"
+      ],
+      "status_semantics": [
+        "formulary_inclusion"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "names"
+      ],
+      "qualification_state": "declared",
+      "qualification_references": []
     }
   ]
 }
