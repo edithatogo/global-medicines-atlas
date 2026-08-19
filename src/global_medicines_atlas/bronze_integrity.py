@@ -103,7 +103,9 @@ def sniff_payload_kind(payload: bytes) -> str:
     kind = "bytes"
     if payload.startswith((b"PK\x03\x04", b"PK\x05\x06", b"PK\x07\x08")):
         kind = "zip"
-    elif len(payload) > TAR_MAGIC_END and payload[257:TAR_MAGIC_END] == TAR_MAGIC:
+    elif (
+        len(payload) > TAR_MAGIC_END and payload[257:TAR_MAGIC_END] == TAR_MAGIC
+    ):
         kind = "tar"
     elif payload.startswith(b"\x1f\x8b"):
         kind = "gzip"
@@ -113,9 +115,7 @@ def sniff_payload_kind(payload: bytes) -> str:
             kind = "json"
         elif stripped.startswith((b"<", b"<?xml")):
             kind = "xml"
-        elif (
-            b"," in payload[:CSV_SNIFF_BYTES]
-        ):
+        elif b"," in payload[:CSV_SNIFF_BYTES]:
             kind = "csv"
     return kind
 

@@ -66,7 +66,9 @@ def _zip(entries: list[tuple[str, bytes]]) -> bytes:
     return stream.getvalue()
 
 
-def _tar(entries: list[tuple[str, bytes]], *, compressed: bool = False) -> bytes:
+def _tar(
+    entries: list[tuple[str, bytes]], *, compressed: bool = False
+) -> bytes:
     stream = BytesIO()
     mode = "w:gz" if compressed else "w"
     with tarfile.open(fileobj=stream, mode=mode) as archive:
@@ -123,7 +125,9 @@ def test_schema_poisoning_and_malformed_documents() -> None:
         b'<!DOCTYPE x [<!ENTITY y "z">]><x>&y;</x>',
         declared_media="xml",
     )
-    csv_payload = inspect_untrusted_payload(b"a,b\x00\n1,2", declared_media="csv")
+    csv_payload = inspect_untrusted_payload(
+        b"a,b\x00\n1,2", declared_media="csv"
+    )
     assert "schema_poisoning" in poison.reason_codes
     assert "malformed_payload" in xml.reason_codes
     assert "malformed_payload" in csv_payload.reason_codes

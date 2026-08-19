@@ -248,10 +248,7 @@ def _validate_tar_members(
                 "archive total uncompressed bytes limit exceeded"
             )
         members.append((info, path))
-    if (
-        payload_len > 0
-        and total / payload_len > policy.max_decompression_ratio
-    ):
+    if payload_len > 0 and total / payload_len > policy.max_decompression_ratio:
         raise ArchiveSafetyError("archive decompression ratio exceeded")
     return members
 
