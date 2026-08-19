@@ -6,13 +6,14 @@ from collections.abc import Mapping
 from datetime import datetime
 from enum import StrEnum
 from hashlib import sha256
-from typing import TYPE_CHECKING, Literal, Self, cast
+from typing import TYPE_CHECKING, Any, Literal, Self, cast
 
 import orjson
 from pydantic import AnyUrl, AwareDatetime, Field, model_validator
 
 from .models import FrozenModel
 from .reuse_gate import ReuseGateDecision
+from .rights_policy import AcquisitionRightsPolicy, coarse_rights_state
 
 if TYPE_CHECKING:
     import httpx
@@ -393,6 +394,7 @@ class SourceReceipt(DeterministicReceipt):
     reuse: ReuseGateDecision | None = None
     rights_state: RightsState
     rights_reference: AnyUrl | None = None
+    rights_policy: AcquisitionRightsPolicy | None = None
     evidence_class: EvidenceClass
     transformation: TransformationEvidence
 
@@ -402,6 +404,31 @@ class SourceReceipt(DeterministicReceipt):
         if isinstance(data, dict):
             return _bind_temporal_payload(cast("dict[str, object]", data))
         return data
+
+    def model_copy(
+        self,
+        *,
+        update: Mapping[str, Any] | None = None,
+        deep: bool = False,
+    ) -> Self:
+        """Keep temporal.content_id coupled to payload digest on copy."""
+
+        updates: dict[str, Any] = dict(update) if update is not None else {}
+        payload = updates.get("payload", self.payload)
+        digest = (
+            payload.sha256 if isinstance(payload, PayloadEvidence) else None
+        )
+        temporal = updates.get("temporal", self.temporal)
+        if (
+            digest is not None
+            and "temporal" not in updates
+            and isinstance(temporal, TemporalIdentity)
+            and temporal.content_id != digest
+        ):
+            updates["temporal"] = temporal.model_copy(
+                update={"content_id": digest}
+            )
+        return super().model_copy(update=updates or None, deep=deep)
 
     @model_validator(mode="after")
     def validate_success_contract(self) -> SourceReceipt:
@@ -430,7 +457,31 @@ class SourceReceipt(DeterministicReceipt):
             return self.model_copy(update={"temporal": temporal})
         if temporal.content_id != self.payload.sha256:
             raise ValueError("content_id must equal payload digest")
+        self._validate_bound_rights_policy()
         return self
+
+    def _validate_bound_rights_policy(self) -> None:
+        policy = self.rights_policy
+        if policy is None:
+            return
+        if policy.source_id != self.source.source_id:
+            raise ValueError("rights policy source_id must match receipt")
+        temporal = self.temporal
+        if (
+            temporal is not None
+            and policy.acquisition_id != temporal.acquisition_id
+        ):
+            raise ValueError("rights policy acquisition_id must match receipt")
+        if coarse_rights_state(policy) != self.rights_state:
+            raise ValueError(
+                "rights policy does not match receipt rights_state"
+            )
+
+    def canonical_json(self) -> bytes:
+        payload = self.model_dump(mode="json", exclude_none=False)
+        if payload.get("rights_policy") is None:
+            del payload["rights_policy"]
+        return orjson.dumps(payload, option=orjson.OPT_SORT_KEYS)
 
     @property
     def satisfies_live_gate(self) -> bool:

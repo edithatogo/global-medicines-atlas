@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import gzip
 import hashlib
 import stat
+import tarfile
 import tempfile
 import zipfile
 from dataclasses import dataclass
@@ -188,6 +190,196 @@ def extract_zip(
                     )
                 )
             staging.replace(destination)
+    extracted.sort(key=lambda item: item.path)
+    return ExtractionReceipt(
+        archive_sha256=hashlib.sha256(payload).hexdigest(),
+        members=tuple(extracted),
+        total_uncompressed_bytes=sum(item.size_bytes for item in extracted),
+    )
+
+
+def inspect_zip(
+    payload: bytes,
+    policy: ArchivePolicy = DEFAULT_ARCHIVE_POLICY,
+) -> int:
+    """Validate ZIP members without extracting them."""
+
+    if len(payload) > policy.max_archive_bytes:
+        raise ArchiveSafetyError("archive byte limit exceeded")
+    try:
+        archive = zipfile.ZipFile(BytesIO(payload))
+    except zipfile.BadZipFile as error:
+        raise ArchiveSafetyError(
+            "payload is not a valid ZIP archive"
+        ) from error
+    with archive:
+        members = _validate_members(archive, policy)
+    return len(members)
+
+
+def _validate_tar_members(
+    archive: tarfile.TarFile,
+    policy: ArchivePolicy,
+    payload_len: int,
+) -> list[tuple[tarfile.TarInfo, PurePosixPath]]:
+    infos = archive.getmembers()
+    if len(infos) > policy.max_entries:
+        raise ArchiveSafetyError("archive entry count limit exceeded")
+    total = 0
+    members: list[tuple[tarfile.TarInfo, PurePosixPath]] = []
+    seen: set[tuple[str, ...]] = set()
+    for info in infos:
+        if info.issym() or info.islnk():
+            raise ArchiveSafetyError("archive symlink members are forbidden")
+        if not (info.isfile() or info.isdir()):
+            raise ArchiveSafetyError("special archive members are forbidden")
+        path = _member_path(info.name, policy)
+        portable_key = _portable_path_key(path)
+        if portable_key in seen:
+            raise ArchiveSafetyError(f"duplicate archive member: {path}")
+        seen.add(portable_key)
+        if info.isdir():
+            continue
+        if info.size > policy.max_entry_uncompressed_bytes:
+            raise ArchiveSafetyError("archive member byte limit exceeded")
+        total += info.size
+        if total > policy.max_total_uncompressed_bytes:
+            raise ArchiveSafetyError(
+                "archive total uncompressed bytes limit exceeded"
+            )
+        members.append((info, path))
+    if payload_len > 0 and total / payload_len > policy.max_decompression_ratio:
+        raise ArchiveSafetyError("archive decompression ratio exceeded")
+    return members
+
+
+def inspect_tar(
+    payload: bytes,
+    policy: ArchivePolicy = DEFAULT_ARCHIVE_POLICY,
+) -> int:
+    """Validate tar/tar.gz members without extracting them."""
+
+    if len(payload) > policy.max_archive_bytes:
+        raise ArchiveSafetyError("archive byte limit exceeded")
+    try:
+        with tarfile.open(fileobj=BytesIO(payload), mode="r:*") as archive:
+            members = _validate_tar_members(archive, policy, len(payload))
+    except (tarfile.TarError, OSError, EOFError) as error:
+        raise ArchiveSafetyError(
+            "payload is not a valid tar archive"
+        ) from error
+    return len(members)
+
+
+def _count_gzip_bytes(
+    handle: gzip.GzipFile,
+    policy: ArchivePolicy,
+    payload_len: int,
+) -> int:
+    read = 0
+    while block := handle.read(policy.chunk_bytes):
+        read += len(block)
+        if read > policy.max_total_uncompressed_bytes:
+            raise ArchiveSafetyError("gzip expanded size limit exceeded")
+        if (
+            payload_len > 0
+            and read / payload_len > policy.max_decompression_ratio
+        ):
+            raise ArchiveSafetyError("archive decompression ratio exceeded")
+    return read
+
+
+def inspect_gzip(
+    payload: bytes,
+    policy: ArchivePolicy = DEFAULT_ARCHIVE_POLICY,
+) -> int:
+    """Expand gzip only up to policy limits; never return inflated bytes."""
+
+    if len(payload) > policy.max_archive_bytes:
+        raise ArchiveSafetyError("archive byte limit exceeded")
+    try:
+        with gzip.GzipFile(fileobj=BytesIO(payload), mode="rb") as handle:
+            return _count_gzip_bytes(handle, policy, len(payload))
+    except ArchiveSafetyError:
+        raise
+    except (OSError, EOFError) as error:
+        raise ArchiveSafetyError("gzip stream is corrupted") from error
+
+
+def _extract_tar_member(
+    archive: tarfile.TarFile,
+    info: tarfile.TarInfo,
+    relative: PurePosixPath,
+    staging: Path,
+    policy: ArchivePolicy,
+) -> ExtractedMember:
+    target = staging.joinpath(*relative.parts)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    extracted_file = archive.extractfile(info)
+    if extracted_file is None:
+        raise ArchiveSafetyError("tar member could not be read")
+    digest = hashlib.sha256()
+    written = 0
+    with extracted_file, target.open("xb") as output:
+        while block := extracted_file.read(policy.chunk_bytes):
+            written += len(block)
+            if written > info.size:
+                raise ArchiveSafetyError(
+                    "archive member exceeded declared size"
+                )
+            digest.update(block)
+            output.write(block)
+    if written != info.size:
+        raise ArchiveSafetyError("archive member size did not match directory")
+    return ExtractedMember(
+        path=relative.as_posix(),
+        sha256=digest.hexdigest(),
+        size_bytes=written,
+    )
+
+
+def _publish_tar(
+    archive: tarfile.TarFile,
+    payload: bytes,
+    destination: Path,
+    policy: ArchivePolicy,
+) -> list[ExtractedMember]:
+    members = _validate_tar_members(archive, policy, len(payload))
+    extracted: list[ExtractedMember] = []
+    with tempfile.TemporaryDirectory(
+        dir=destination.parent,
+        prefix=f".{destination.name}.extract-",
+    ) as temporary:
+        staging = Path(temporary) / "payload"
+        staging.mkdir()
+        for info, relative in members:
+            extracted.append(
+                _extract_tar_member(archive, info, relative, staging, policy)
+            )
+        staging.replace(destination)
+    return extracted
+
+
+def extract_tar(
+    payload: bytes,
+    destination: Path,
+    *,
+    policy: ArchivePolicy = DEFAULT_ARCHIVE_POLICY,
+) -> ExtractionReceipt:
+    """Validate then atomically extract regular files from a tar payload."""
+
+    if destination.is_symlink():
+        raise ArchiveSafetyError("destination must not be a symlink")
+    if destination.exists():
+        raise ArchiveSafetyError("destination must not exist")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with tarfile.open(fileobj=BytesIO(payload), mode="r:*") as opened:
+            extracted = _publish_tar(opened, payload, destination, policy)
+    except (tarfile.TarError, OSError, EOFError) as error:
+        raise ArchiveSafetyError(
+            "payload is not a valid tar archive"
+        ) from error
     extracted.sort(key=lambda item: item.path)
     return ExtractionReceipt(
         archive_sha256=hashlib.sha256(payload).hexdigest(),

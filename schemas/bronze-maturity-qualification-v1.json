@@ -1,0 +1,257 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/bronze-maturity-qualification-v1.json",
+  "title": "Global Medicines Atlas bronze maturity qualification",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "schema_version",
+    "horizon",
+    "authorities",
+    "properties",
+    "residual_risks",
+    "blockers",
+    "adversarial_review",
+    "bronze_mature",
+    "qualification_state",
+    "report_complete"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "global-medicines-atlas.bronze-maturity-qualification"
+    },
+    "schema_version": {"const": 1},
+    "horizon": {"const": "bronze-current-public-scope"},
+    "evaluated_at": {"type": "string", "minLength": 1},
+    "git_commit": {"type": "string", "minLength": 1},
+    "authorities": {
+      "type": "object",
+      "required": [
+        "requirements",
+        "maturity_model",
+        "source_catalog",
+        "bronze_completion_spec",
+        "reuse_policy"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "requirements": {"const": "conductor/requirements.md"},
+        "maturity_model": {"const": "conductor/maturity-model.json"},
+        "source_catalog": {
+          "const": "src/global_medicines_atlas/data/medicine_source_catalog.json"
+        },
+        "bronze_completion_spec": {
+          "const": "conductor/tracks/bronze_medallion_completion_20260819/spec.md"
+        },
+        "reuse_policy": {"const": "docs/ECOSYSTEM_REUSE.md"}
+      }
+    },
+    "properties": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/property"}
+    },
+    "residual_risks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/risk"}
+    },
+    "blockers": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/blocker"}
+    },
+    "adversarial_review": {"$ref": "#/$defs/adversarialReview"},
+    "bronze_mature": {"type": "boolean"},
+    "qualification_state": {"enum": ["blocked", "qualified"]},
+    "report_complete": {"type": "boolean"},
+    "completeness_inventory": {
+      "type": "object",
+      "required": [
+        "catalog_source_count",
+        "bronze_in_scope_count",
+        "fixture_only_count",
+        "excluded_count",
+        "in_scope_without_landing_or_blocker",
+        "missing_coverage_is_not_negative_evidence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "catalog_source_count": {"type": "integer", "minimum": 1},
+        "bronze_in_scope_count": {"type": "integer", "minimum": 0},
+        "fixture_only_count": {"type": "integer", "minimum": 0},
+        "excluded_count": {"type": "integer", "minimum": 0},
+        "in_scope_without_landing_or_blocker": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_coverage_is_not_negative_evidence": {"const": true}
+      }
+    }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {"properties": {"bronze_mature": {"const": true}}},
+      "then": {
+        "properties": {
+          "qualification_state": {"const": "qualified"},
+          "report_complete": {"const": true},
+          "blockers": {"maxItems": 0},
+          "properties": {
+            "items": {
+              "properties": {
+                "state": {"const": "evidenced"},
+                "blocker_ids": {"maxItems": 0}
+              }
+            }
+          },
+          "residual_risks": {
+            "not": {
+              "contains": {
+                "properties": {
+                  "blocking": {"const": true},
+                  "disposition": {"const": "unresolved"}
+                },
+                "required": ["blocking", "disposition"]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {"properties": {"bronze_mature": {"const": false}}},
+      "then": {
+        "properties": {
+          "qualification_state": {"const": "blocked"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"qualification_state": {"const": "blocked"}}},
+      "then": {
+        "properties": {
+          "blockers": {"minItems": 1}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "pathArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "idArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "property": {
+      "type": "object",
+      "required": [
+        "property_id",
+        "mandatory",
+        "state",
+        "requirement_ids",
+        "evidence",
+        "blocker_ids",
+        "notes"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "property_id": {
+          "enum": [
+            "completeness",
+            "immutability",
+            "temporal_identity",
+            "provenance",
+            "rights",
+            "reuse_discovery",
+            "lineage",
+            "quarantine",
+            "reproducibility",
+            "disaster_recovery",
+            "security",
+            "performance",
+            "interoperability",
+            "documentation"
+          ]
+        },
+        "mandatory": {"type": "boolean"},
+        "state": {"enum": ["evidenced", "blocked"]},
+        "requirement_ids": {"$ref": "#/$defs/idArray"},
+        "evidence": {"$ref": "#/$defs/pathArray"},
+        "blocker_ids": {"$ref": "#/$defs/idArray"},
+        "notes": {"type": "string", "minLength": 1}
+      }
+    },
+    "risk": {
+      "type": "object",
+      "required": [
+        "risk_id",
+        "description",
+        "disposition",
+        "blocking",
+        "evidence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "risk_id": {"pattern": "^RISK-[0-9]{3}$"},
+        "description": {"type": "string", "minLength": 1},
+        "disposition": {"enum": ["accepted", "mitigated", "unresolved"]},
+        "blocking": {"type": "boolean"},
+        "evidence": {"$ref": "#/$defs/pathArray"}
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "required": [
+        "blocker_id",
+        "property_id",
+        "description",
+        "evidence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "blocker_id": {"type": "string", "minLength": 1},
+        "property_id": {"type": "string", "minLength": 1},
+        "description": {"type": "string", "minLength": 1},
+        "evidence": {"$ref": "#/$defs/pathArray"}
+      }
+    },
+    "adversarialReview": {
+      "type": "object",
+      "required": [
+        "kind",
+        "actor",
+        "method",
+        "passed",
+        "findings"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {"const": "independent-repository-evidence-review"},
+        "actor": {"const": "criteria-versus-code-tests-docs"},
+        "method": {"type": "string", "minLength": 1},
+        "passed": {"type": "boolean"},
+        "findings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["finding_id", "severity", "detail"],
+            "additionalProperties": false,
+            "properties": {
+              "finding_id": {"type": "string", "minLength": 1},
+              "severity": {"enum": ["info", "warning", "error"]},
+              "detail": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      }
+    }
+  }
+}

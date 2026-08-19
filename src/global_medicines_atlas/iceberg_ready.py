@@ -241,16 +241,29 @@ def iceberg_rest_create_body(
     }
 
 
+def _as_object_map(value: object, label: str) -> dict[str, object]:
+    if not isinstance(value, dict):
+        raise TypeError(f"{label} must be an object")
+    typed = cast("dict[object, object]", value)
+    mapped: dict[str, object] = {}
+    for key, item in typed.items():
+        mapped[str(key)] = item
+    return mapped
+
+
+def _as_object_list(value: object, label: str) -> list[object]:
+    if not isinstance(value, list):
+        raise TypeError(f"{label} must be an array")
+    return cast("list[object]", value)
+
+
 def _schema_fields_from_body(
     schema: Mapping[str, object],
 ) -> list[tuple[str, str]]:
-    raw_fields = schema.get("fields")
-    if not isinstance(raw_fields, list):
-        raise TypeError("create-table fields must be an array")
+    raw_fields = _as_object_list(schema.get("fields"), "create-table fields")
     schema_fields: list[tuple[str, str]] = []
-    for item in raw_fields:
-        if not isinstance(item, dict):
-            raise TypeError("schema field must be an object")
+    for raw_item in raw_fields:
+        item = _as_object_map(raw_item, "schema field")
         name = item.get("name")
         field_type = item.get("type")
         if not isinstance(name, str) or not isinstance(field_type, str):
@@ -263,31 +276,37 @@ def _partition_names_from_body(body: Mapping[str, object]) -> tuple[str, ...]:
     partition = body.get("partition-spec")
     if not isinstance(partition, dict):
         return ()
-    raw_parts = partition.get("fields", [])
+    typed = _as_object_map(cast("object", partition), "partition-spec")
+    raw_parts = typed.get("fields", [])
     if not isinstance(raw_parts, list):
         return ()
-    return tuple(
-        str(part["name"])
-        for part in raw_parts
-        if isinstance(part, dict) and isinstance(part.get("name"), str)
-    )
+    names: list[str] = []
+    for raw_part in cast("list[object]", raw_parts):
+        if not isinstance(raw_part, dict):
+            continue
+        part = _as_object_map(cast("object", raw_part), "partition field")
+        name = part.get("name")
+        if isinstance(name, str):
+            names.append(name)
+    return tuple(names)
 
 
 def spec_from_create_body(body: Mapping[str, object]) -> IcebergReadyTableSpec:
     """Rebuild a table spec from an Iceberg REST create-table document."""
 
-    schema = body.get("schema")
-    if not isinstance(schema, dict):
-        raise TypeError("create-table schema must be an object")
+    schema = _as_object_map(body.get("schema"), "create-table schema")
     schema_fields = _schema_fields_from_body(schema)
-    properties = body.get("properties")
-    if not isinstance(properties, dict):
-        raise TypeError("create-table properties must be an object")
+    properties = _as_object_map(
+        body.get("properties"),
+        "create-table properties",
+    )
     location = properties.get("location")
-    namespace = body.get("namespace", properties.get("gma.namespace", "bronze"))
+    raw_namespace = body.get(
+        "namespace", properties.get("gma.namespace", "bronze")
+    )
     if not isinstance(location, str):
         raise TypeError("location must be a string")
-    if not isinstance(namespace, str):
+    if not isinstance(raw_namespace, str):
         raise TypeError("namespace must be a string")
     name = body.get("name")
     if not isinstance(name, str):
@@ -299,13 +318,14 @@ def spec_from_create_body(body: Mapping[str, object]) -> IcebergReadyTableSpec:
     acquisition = properties.get("gma.acquisition-id")
     content = properties.get("gma.content-id")
     parquet = properties.get("gma.parquet-digest")
+    format_version = properties.get("format-version", "2")
     return IcebergReadyTableSpec(
-        identifier=f"{namespace}.{name}",
+        identifier=f"{raw_namespace}.{name}",
         location=location,
         partition_fields=_partition_names_from_body(body),
         schema_fields=tuple(schema_fields),
-        format_version=int(str(properties.get("format-version", "2"))),
-        namespace=namespace,
+        format_version=int(str(format_version)),
+        namespace=raw_namespace,
         schema_id=schema_id,
         last_column_id=last_column,
         acquisition_id=acquisition if isinstance(acquisition, str) else None,
@@ -355,8 +375,6 @@ def load_optional_rest_catalog(rest_uri: str) -> object:
     try:
         module = importlib.import_module("pyiceberg.catalog.rest")
     except ImportError as exc:
-        raise RuntimeError(
-            "optional extra 'iceberg' is not installed"
-        ) from exc
+        raise RuntimeError("optional extra 'iceberg' is not installed") from exc
     catalog_cls = module.RestCatalog
     return catalog_cls(name="gma-bronze", uri=rest_uri)

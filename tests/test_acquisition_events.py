@@ -153,6 +153,18 @@ def test_source_receipt_binds_content_id_from_payload_digest() -> None:
 
 
 @pytest.mark.unit
+def test_receipt_copy_keeps_content_id_coupled_to_payload() -> None:
+    receipt = source_receipt()
+    payload = PayloadEvidence.from_bytes(b"member-bytes")
+    copied = receipt.model_copy(update={"payload": payload})
+    assert copied.temporal is not None
+    assert receipt.temporal is not None
+    assert copied.payload.sha256 == payload.sha256
+    assert copied.temporal.content_id == payload.sha256
+    assert copied.temporal.acquisition_id == receipt.temporal.acquisition_id
+
+
+@pytest.mark.unit
 def test_identical_bytes_are_deduplicated_but_events_are_appended(
     tmp_path: Path,
 ) -> None:
@@ -268,6 +280,20 @@ def test_event_model_rejects_collapsed_content_and_acquisition_ids() -> None:
         AcquisitionEvent(
             acquisition_id=SHA,
             content_id=SHA,
+            source_id="us-drugsfda",
+            source_version=None,
+            retrieved_at=NOW,
+            payload_sha256=SHA,
+        )
+
+
+@pytest.mark.edge
+def test_event_model_rejects_content_id_decoupled_from_payload() -> None:
+    other = "b" * 64
+    with pytest.raises(ValidationError, match="must equal payload digest"):
+        AcquisitionEvent(
+            acquisition_id=SHA,
+            content_id=other,
             source_id="us-drugsfda",
             source_version=None,
             retrieved_at=NOW,

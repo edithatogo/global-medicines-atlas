@@ -169,6 +169,32 @@ def test_redirect_history_uses_original_and_final_uri() -> None:
     assert "authorization" not in dumped.lower()
 
 
+@pytest.mark.unit
+def test_unknown_and_non_numeric_headers_are_dropped() -> None:
+    cleaned = redact_http_headers({
+        "X-Request-Id": "trace-1",
+        "Content-Length": "not-a-number",
+        "ETag": '"keep"',
+    })
+    assert "x-request-id" not in cleaned
+    assert cleaned["etag"] == '"keep"'
+    request = httpx.Request("GET", "https://example.test/a")
+    response = httpx.Response(
+        200,
+        headers={"content-length": "not-a-number", "etag": '"keep"'},
+        content=b"{}",
+        request=request,
+    )
+    evidence = http_retrieval_from_response(
+        response,
+        original_uri="https://example.test/a",
+        observed_byte_length=2,
+        agent_version="0+test",
+    )
+    assert evidence.content_length is None
+    assert evidence.etag == '"keep"'
+
+
 @pytest.mark.edge
 def test_http_evidence_forbids_unknown_secret_fields() -> None:
     with pytest.raises(ValidationError):

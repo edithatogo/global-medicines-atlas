@@ -1,0 +1,16 @@
+{
+  "$schema": "./bronze-scale-budgets.schema.json",
+  "schema_version": "1.0.0",
+  "profile": "ci",
+  "pipeline_seconds": {"maximum": 20.0, "unit": "seconds"},
+  "hashing_mib_per_second": {"minimum": 40.0, "unit": "mib_per_second"},
+  "archive_inspect_seconds": {"maximum": 8.0, "unit": "seconds"},
+  "parquet_seconds": {"maximum": 12.0, "unit": "seconds"},
+  "receipt_validation_seconds": {"maximum": 5.0, "unit": "seconds"},
+  "lineage_seconds": {"maximum": 5.0, "unit": "seconds"},
+  "catalogue_ops_per_second": {
+    "minimum": 200.0,
+    "unit": "operations_per_second"
+  },
+  "rust_rewrite": {"min_wall_share": 0.2, "min_speedup": 2.0}
+}
