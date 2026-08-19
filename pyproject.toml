@@ -139,6 +139,7 @@ timeout = 30
 [tool.pytest-gremlins]
 paths = [
   "src/global_medicines_atlas/publication_gate.py",
+  "src/global_medicines_atlas/data_layer_archive.py",
   "src/global_medicines_atlas/parity.py",
   "src/global_medicines_atlas/source_health.py",
   "src/global_medicines_atlas/adapters/_receipt.py",

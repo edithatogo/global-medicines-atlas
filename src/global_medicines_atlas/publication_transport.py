@@ -8,7 +8,7 @@ from collections.abc import Mapping
 from datetime import datetime
 from enum import StrEnum
 from pathlib import Path, PurePosixPath
-from typing import Annotated, Self
+from typing import Annotated, Protocol, Self
 
 from pydantic import (
     AwareDatetime,
@@ -292,3 +292,59 @@ def assert_external_write_authorized(
             "external publication requires production environment and "
             "explicit maintainer approval"
         )
+
+
+class PublicationUploader(Protocol):
+    """Execute a prepared upload without embedding credentials."""
+
+    def upload_folder(
+        self,
+        *,
+        repository: str,
+        folder: Path,
+        commit_message: str,
+    ) -> str: ...
+
+
+def execute_publication(
+    *,
+    plan: PublicationPlan,
+    authorization: PublicationAuthorization,
+    root: Path,
+    uploader: PublicationUploader,
+    recorded_at: datetime,
+) -> PublicationTransportReceipt:
+    """Upload prepared artifacts after the dual external-write gate."""
+
+    assert_external_write_authorized(authorization)
+    current = bind_artifacts(
+        root, tuple(item.relative_path for item in plan.artifacts)
+    )
+    planned = tuple(item.sha256 for item in plan.artifacts)
+    observed = tuple(item.sha256 for item in current)
+    if planned != observed:
+        return PublicationTransportReceipt(
+            plan_sha256=plan.sha256(),
+            artifact_sha256=planned,
+            target=plan.target,
+            state=PublicationTransportState.VERIFICATION_FAILED,
+            recorded_at=recorded_at,
+            failure_reason="local artifacts no longer match the prepared plan",
+        )
+    revision = uploader.upload_folder(
+        repository=plan.target.repository,
+        folder=root,
+        commit_message=f"Archive {plan.release_version}",
+    )
+    verification_uri = (
+        f"{plan.target.public_base_url.rstrip('/')}/tree/{revision}"
+    )
+    return PublicationTransportReceipt(
+        plan_sha256=plan.sha256(),
+        artifact_sha256=planned,
+        target=plan.target,
+        state=PublicationTransportState.PUBLIC,
+        recorded_at=recorded_at,
+        remote_revision=revision,
+        verification_uri=verification_uri,
+    )
