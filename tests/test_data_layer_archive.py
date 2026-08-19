@@ -116,10 +116,10 @@ def test_inventory_covers_every_catalog_source_exactly_once() -> None:
     inventory = inventory_data_layer(ROOT)
     catalog_ids = {source.source_id for source in load_source_catalog()}
     inventory_ids = {row.source_id for row in inventory.sources}
-    assert len(inventory.sources) == 96
+    assert len(inventory.sources) == 172
     assert inventory_ids == catalog_ids
-    assert inventory.public_no_credential_count == 85
-    assert inventory.credential_restricted_count == 11
+    assert inventory.public_no_credential_count == 154
+    assert inventory.credential_restricted_count == 18
 
 
 def test_credential_sources_are_classified_without_payload_archival() -> None:
@@ -132,12 +132,19 @@ def test_credential_sources_are_classified_without_payload_archival() -> None:
     assert set(restricted) == {
         "au-amt-rf2",
         "au-pbs-embargo",
+        "ca-cihi-nhex-medicines",
         "eu-ema-pms-fhir",
+        "eu-ema-xevmpd-credentialed",
+        "eu-eudravigilance-public",
         "eu-spor-rms-oms",
         "gb-nhs-dmd",
         "gb-trud-api",
+        "global-umc-vigibase",
+        "in-pvpi-safety",
+        "jp-mhlw-ndb-utilisation",
         "kr-hira-reimbursement",
         "kr-mfds-nedrug",
+        "no-norpd-utilisation",
         "nz-nzhts-fhir",
         "nz-nzulm-bulk",
         "sa-sfda-drug-list",
@@ -201,10 +208,10 @@ def test_archive_includes_catalog_schema_and_governed_fixtures(
     table = pq.read_table(
         tmp_path / "archive" / "inventory" / "source-inventory.parquet"
     )
-    assert table.num_rows == 96
+    assert table.num_rows == 172
     access = table.column("access_class").to_pylist()
-    assert access.count("public_no_credential") == 85
-    assert access.count("credential_restricted") == 11
+    assert access.count("public_no_credential") == 154
+    assert access.count("credential_restricted") == 18
 
 
 def test_restricted_paths_and_oversize_files_fail_closed(

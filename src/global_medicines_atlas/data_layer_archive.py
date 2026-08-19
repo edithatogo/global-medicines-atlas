@@ -148,6 +148,30 @@ SCOPED_AUTHORITY_GROUPS = frozenset({
     AuthorityGroup.TGA,
     AuthorityGroup.MEDSAFE,
 })
+FDA_ARCHIVAL_SOURCE_IDS = frozenset({
+    "us-drugsfda",
+    "us-fda-orange-book",
+    "us-gsrs-unii",
+    "us-openfda-drugsfda",
+    "us-openfda-ndc",
+})
+EMA_ARCHIVAL_SOURCE_IDS = frozenset({
+    "eu-ema-article57",
+    "eu-ema-json",
+    "eu-ema-medicines",
+    "eu-ema-pms-fhir",
+    "eu-spor-rms-oms",
+    "eu-union-register",
+})
+TGA_ARCHIVAL_SOURCE_IDS = frozenset({
+    "au-artg",
+    "au-tga-pi-cmi",
+    "au-tga-regulatory-events",
+})
+MEDSAFE_ARCHIVAL_SOURCE_IDS = frozenset({
+    "nz-medsafe-documents",
+    "nz-medsafe-products",
+})
 
 
 class HuggingFaceAuthError(RuntimeError):
@@ -300,35 +324,21 @@ def classify_source_access(mode: AuthenticationMode) -> AccessClass:
 
 
 def classify_authority_group(source: MedicineDataSource) -> AuthorityGroup:
-    """Map a catalog source to a scoped archival authority."""
+    """Map a catalog source to a rights-approved archival authority.
 
-    authority = source.authority.casefold()
+    Expansion sources remain OTHER until a maintainer rights gate adds them
+    to an archival allowlist. Prefix matching must not silently publish new
+    payloads.
+    """
+
     source_id = source.source_id
-    jurisdictions = tuple(source.jurisdictions)
-    if jurisdictions == ("USA",) and (
-        "food and drug administration" in authority or "us fda" in authority
-    ):
+    if source_id in FDA_ARCHIVAL_SOURCE_IDS:
         return AuthorityGroup.FDA
-    if source_id.startswith((
-        "us-drugsfda",
-        "us-fda-",
-        "us-openfda-",
-        "us-gsrs-",
-    )):
-        return AuthorityGroup.FDA
-    if (
-        authority == "european medicines agency"
-        or source_id.startswith("eu-ema-")
-        or source_id in {"eu-union-register", "eu-spor-rms-oms"}
-    ):
+    if source_id in EMA_ARCHIVAL_SOURCE_IDS:
         return AuthorityGroup.EMA
-    if (
-        authority == "therapeutic goods administration"
-        or source_id.startswith("au-tga-")
-        or source_id == "au-artg"
-    ):
+    if source_id in TGA_ARCHIVAL_SOURCE_IDS:
         return AuthorityGroup.TGA
-    if authority == "medsafe" or source_id.startswith("nz-medsafe-"):
+    if source_id in MEDSAFE_ARCHIVAL_SOURCE_IDS:
         return AuthorityGroup.MEDSAFE
     return AuthorityGroup.OTHER
 

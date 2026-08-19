@@ -61,8 +61,8 @@ data is not interpreted as unapproved or unfunded.
 ## Jurisdiction and source census
 
 The governed denominator is catalog schema v5
-at `src/global_medicines_atlas/data/medicine_source_catalog.json`: 34 jurisdictions and
-96 source surfaces. The prospective census is every jurisdiction and source row in catalog schema v5; implementation and current-receipt coverage are reported separately and never inferred from catalog presence.
+at `src/global_medicines_atlas/data/medicine_source_catalog.json`: 45 jurisdictions and
+172 source surfaces. The prospective census is every jurisdiction and source row in catalog schema v5; implementation and current-receipt coverage are reported separately and never inferred from catalog presence.
 
 ### Jurisdiction inclusion
 
