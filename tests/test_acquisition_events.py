@@ -153,6 +153,18 @@ def test_source_receipt_binds_content_id_from_payload_digest() -> None:
 
 
 @pytest.mark.unit
+def test_receipt_copy_keeps_content_id_coupled_to_payload() -> None:
+    receipt = source_receipt()
+    payload = PayloadEvidence.from_bytes(b"member-bytes")
+    copied = receipt.model_copy(update={"payload": payload})
+    assert copied.temporal is not None
+    assert receipt.temporal is not None
+    assert copied.payload.sha256 == payload.sha256
+    assert copied.temporal.content_id == payload.sha256
+    assert copied.temporal.acquisition_id == receipt.temporal.acquisition_id
+
+
+@pytest.mark.unit
 def test_identical_bytes_are_deduplicated_but_events_are_appended(
     tmp_path: Path,
 ) -> None:

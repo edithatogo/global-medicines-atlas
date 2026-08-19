@@ -232,7 +232,7 @@ def _require_mapping(value: object, label: str) -> dict[str, object]:
 def _require_sequence(value: object, label: str) -> Sequence[object]:
     if not isinstance(value, list):
         raise TypeError(f"OpenLineage {label} must be an array")
-    return value
+    return cast("list[object]", value)
 
 
 def _conform_facet(facet: Mapping[str, object], label: str) -> None:

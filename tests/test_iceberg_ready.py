@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import builtins
+import importlib
 import json
 import sys
 import tomllib
@@ -40,6 +40,14 @@ from global_medicines_atlas.reuse_gate import acquire_new_decision
 
 ROOT = Path(__file__).resolve().parents[1]
 PAYLOAD = b'{"application_number":"012345"}'
+
+
+def _object_map(value: object) -> dict[str, object]:
+    assert isinstance(value, dict)
+    mapped: dict[str, object] = {}
+    for key, item in value.items():
+        mapped[str(key)] = item
+    return mapped
 
 
 def _landable_receipt() -> SourceReceipt:
@@ -97,14 +105,15 @@ def test_core_dependencies_do_not_require_iceberg_or_marquez() -> None:
 
 @pytest.mark.unit
 def test_iceberg_ready_module_does_not_import_pyiceberg() -> None:
-    source = (
-        ROOT / "src/global_medicines_atlas/iceberg_ready.py"
-    ).read_text()
+    source = (ROOT / "src/global_medicines_atlas/iceberg_ready.py").read_text()
     assert "import pyiceberg" not in source
-    assert "from pyiceberg" not in source.split(
-        "def load_optional_rest_catalog",
-        maxsplit=1,
-    )[0]
+    assert (
+        "from pyiceberg"
+        not in source.split(
+            "def load_optional_rest_catalog",
+            maxsplit=1,
+        )[0]
+    )
 
 
 @pytest.mark.unit
@@ -122,8 +131,7 @@ def test_table_identity_is_stable_and_partitioned(tmp_path: Path) -> None:
         ),
         tmp_path / "bronze" / "table.parquet",
     )
-    properties = iceberg_rest_create_body(spec)["properties"]
-    assert isinstance(properties, dict)
+    properties = _object_map(iceberg_rest_create_body(spec)["properties"])
     assert properties["gma.acquisition-id"] == spec.acquisition_id
     assert "gma.snapshot-id" not in properties
 
@@ -137,9 +145,9 @@ def test_iceberg_rest_catalogue_registration_over_bronze(
     body = iceberg_rest_create_body(spec, binding)
     assert body["name"] == spec.table_name
     assert body["namespace"] == "bronze"
-    assert body["partition-spec"]["fields"]
-    properties = body["properties"]
-    assert isinstance(properties, dict)
+    partition_spec = _object_map(body["partition-spec"])
+    assert partition_spec["fields"]
+    properties = _object_map(body["properties"])
     assert properties["gma.evidentiary-truth"] == "payload-and-receipt"
     assert properties["gma.row-lineage-authority"] == "atlas-receipt"
     assert properties["gma.acquisition-id"] == spec.acquisition_id
@@ -148,11 +156,16 @@ def test_iceberg_rest_catalogue_registration_over_bronze(
     encoded = json.dumps(body)
     assert PAYLOAD.decode() not in encoded
     field_ids = spec.field_ids()
-    partitions = {
-        item["name"]: item["source-id"]
-        for item in body["partition-spec"]["fields"]
-        if isinstance(item, dict)
-    }
+    raw_partitions = partition_spec["fields"]
+    assert isinstance(raw_partitions, list)
+    partitions: dict[str, int] = {}
+    for item in raw_partitions:
+        field = _object_map(item)
+        name = field["name"]
+        source_id = field["source-id"]
+        assert isinstance(name, str)
+        assert isinstance(source_id, int)
+        partitions[name] = source_id
     assert partitions["jurisdiction"] == field_ids["jurisdiction"]
     assert partitions["source_id"] == field_ids["source_id"]
     assert partitions["rights_state"] == field_ids["rights_state"]
@@ -173,7 +186,9 @@ def test_iceberg_rest_catalogue_registration_over_bronze(
         transport=httpx.MockTransport(handler),
         binding=binding,
     )
-    assert result["metadata-location"].endswith("metadata")
+    metadata_location = result["metadata-location"]
+    assert isinstance(metadata_location, str)
+    assert metadata_location.endswith("metadata")
 
 
 @pytest.mark.unit
@@ -199,9 +214,7 @@ def test_schema_evolution_is_append_only(tmp_path: Path) -> None:
     assert_compatible_evolution(spec, evolved)
     assert evolved.schema_id == spec.schema_id + 1
     assert evolved.field_ids()["source_id"] == spec.field_ids()["source_id"]
-    dropped = spec.model_copy(
-        update={"schema_fields": spec.schema_fields[:-1]}
-    )
+    dropped = spec.model_copy(update={"schema_fields": spec.schema_fields[:-1]})
     with pytest.raises(ValueError, match="cannot drop"):
         assert_compatible_evolution(spec, dropped)
     retyped = spec.model_copy(
@@ -262,14 +275,14 @@ def test_register_rejects_non_object_and_optional_import(
 def test_optional_rest_catalog_fails_closed_without_extra(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    real_import = builtins.__import__
+    real_import = importlib.import_module
 
-    def blocked(name: str, *args: object, **kwargs: object) -> object:
+    def blocked(name: str, package: str | None = None) -> ModuleType:
         if name.startswith("pyiceberg"):
             raise ImportError("iceberg extra absent")
-        return real_import(name, *args, **kwargs)
+        return real_import(name, package)
 
-    monkeypatch.setattr(builtins, "__import__", blocked)
+    monkeypatch.setattr(importlib, "import_module", blocked)
     with pytest.raises(RuntimeError, match="optional extra 'iceberg'"):
         load_optional_rest_catalog("https://iceberg.example.test")
 

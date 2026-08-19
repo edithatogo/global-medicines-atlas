@@ -6,7 +6,7 @@ from collections.abc import Mapping
 from datetime import datetime
 from enum import StrEnum
 from hashlib import sha256
-from typing import TYPE_CHECKING, Literal, Self, cast
+from typing import TYPE_CHECKING, Any, Literal, Self, cast
 
 import orjson
 from pydantic import AnyUrl, AwareDatetime, Field, model_validator
@@ -402,6 +402,31 @@ class SourceReceipt(DeterministicReceipt):
         if isinstance(data, dict):
             return _bind_temporal_payload(cast("dict[str, object]", data))
         return data
+
+    def model_copy(
+        self,
+        *,
+        update: Mapping[str, Any] | None = None,
+        deep: bool = False,
+    ) -> Self:
+        """Keep temporal.content_id coupled to payload digest on copy."""
+
+        updates: dict[str, Any] = dict(update) if update is not None else {}
+        payload = updates.get("payload", self.payload)
+        digest = (
+            payload.sha256 if isinstance(payload, PayloadEvidence) else None
+        )
+        temporal = updates.get("temporal", self.temporal)
+        if (
+            digest is not None
+            and "temporal" not in updates
+            and isinstance(temporal, TemporalIdentity)
+            and temporal.content_id != digest
+        ):
+            updates["temporal"] = temporal.model_copy(
+                update={"content_id": digest}
+            )
+        return super().model_copy(update=updates or None, deep=deep)
 
     @model_validator(mode="after")
     def validate_success_contract(self) -> SourceReceipt:
