@@ -64,6 +64,23 @@ public data. It runs before any acquire/download, including Drugs@FDA.
     - [ ] Run focused tests, coverage, typing, and licensing checks
     - [ ] Record payload digests, acquisition IDs, and Parquet identities in evidence
 
+### Phase 3c: Rights and retention engine
+
+- [x] Task: Write failing tests for acquisition rights policy ([#167](https://github.com/edithatogo/global-medicines-atlas/issues/167))
+    - [x] Assert every acquisition can record licence evidence, retention, redistribution, transformation, attribution, access restriction, review status, and review dates
+    - [x] Assert retaining internal provenance is independent of publishing source bytes
+    - [x] Assert unresolved, expired, credentialed, and conflicting rights fail closed for publication
+    - [x] Assert later revisions can withdraw publication without rewriting earlier snapshots
+    - [x] Confirm the intended ImportError / failing tests before implementation
+- [x] Task: Implement the machine-readable policy layer
+    - [x] Reuse `RightsState`, `publication_contracts`, `DATA_LICENSE.md`, and source-rights receipts; do not invent a parallel licence conclusion
+    - [x] Bind optional `rights_policy` on `SourceReceipt` without changing unbound receipt digests
+    - [x] Fail closed in `require_publishable_source_bytes` while allowing lawful internal provenance
+    - [x] Leave maintainer licence and publication approval as explicit human gates
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused rights, receipt, and publication tests plus typing
+    - [x] Record evidence; do not claim source licences concluded or bytes published
+
 ## Phase 4: Iceberg-ready identities and OpenLineage projection
 
 - [ ] Task: Write failing tests for Iceberg-ready metadata and OpenLineage ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
