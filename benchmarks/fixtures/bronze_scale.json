@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_class": "synthetic",
+  "seed": 20260820,
+  "catalog_source_count_observed": 96,
+  "notes": [
+    "CI profile is a deterministic scaled fixture, not live source bytes.",
+    "global_projection records future catalog-scale dimensions for local runs.",
+    "Payloads are synthetic; they are not evidentiary source artefacts."
+  ],
+  "profiles": {
+    "ci": {
+      "source_count": 8,
+      "json_bytes": 8192,
+      "csv_bytes": 65536,
+      "zip_member_bytes": 16384,
+      "zip_members": 8,
+      "hash_iterations": 4,
+      "catalogue_iterations": 48,
+      "receipt_iterations": 24,
+      "parse_iterations": 32
+    },
+    "global_projection": {
+      "source_count": 96,
+      "json_bytes": 1048576,
+      "csv_bytes": 8388608,
+      "zip_member_bytes": 1048576,
+      "zip_members": 32,
+      "hash_iterations": 1,
+      "catalogue_iterations": 96,
+      "receipt_iterations": 96,
+      "parse_iterations": 8
+    }
+  }
+}
