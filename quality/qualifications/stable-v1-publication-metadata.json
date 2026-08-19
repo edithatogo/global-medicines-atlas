@@ -162,8 +162,8 @@
     },
     {
       "path": "src/global_medicines_atlas/publication_package.py",
-      "sha256": "05e91eedae952b103554a3f8c0a0a8813f631891e7c40858a3f29dba7d6410a6",
-      "size": 9814
+      "sha256": "52143dff1b574f62e46cce1fdbb911fffe8e0810e719d02f96a9305a432326b9",
+      "size": 10935
     },
     {
       "path": "uv.lock",
@@ -255,7 +255,7 @@
   },
   "qualification_id": "stable-v1-release-candidate-publication-metadata",
   "ready_for_publication": false,
-  "receipt_sha256": "fe14e9bf36ce738a0cc128f416e70719e33ecfcbe47b3e3ab8a7a3c3574e9d47",
+  "receipt_sha256": "437309383c7319d60885a132c21e116dfa5323465181f955cbb334c650bb0c0f",
   "result": "metadata_qualified_external_gates_blocked",
   "schema_id": "global-medicines-atlas.stable-v1-publication-metadata",
   "schema_version": 1

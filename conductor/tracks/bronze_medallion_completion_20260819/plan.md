@@ -81,6 +81,23 @@ public data. It runs before any acquire/download, including Drugs@FDA.
     - [x] Focused unit, property, edge, and acquisition tests passed locally
     - [x] Record evidence; do not claim silver or live ingest complete
 
+### Phase 3c: Rights and retention engine
+
+- [x] Task: Write failing tests for acquisition rights policy ([#167](https://github.com/edithatogo/global-medicines-atlas/issues/167))
+    - [x] Assert every acquisition can record licence evidence, retention, redistribution, transformation, attribution, access restriction, review status, and review dates
+    - [x] Assert retaining internal provenance is independent of publishing source bytes
+    - [x] Assert unresolved, expired, credentialed, and conflicting rights fail closed for publication
+    - [x] Assert later revisions can withdraw publication without rewriting earlier snapshots
+    - [x] Confirm the intended ImportError / failing tests before implementation
+- [x] Task: Implement the machine-readable policy layer
+    - [x] Reuse `RightsState`, `publication_contracts`, `DATA_LICENSE.md`, and source-rights receipts; do not invent a parallel licence conclusion
+    - [x] Bind optional `rights_policy` on `SourceReceipt` without changing unbound receipt digests
+    - [x] Fail closed in `require_publishable_source_bytes` while allowing lawful internal provenance
+    - [x] Leave maintainer licence and publication approval as explicit human gates
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused rights, receipt, and publication tests plus typing
+    - [x] Record evidence; do not claim source licences concluded or bytes published
+
 ## Phase 4: Iceberg-ready identities and OpenLineage projection
 
 - [x] Task: Write failing tests for Iceberg-ready metadata and OpenLineage ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
@@ -96,7 +113,26 @@ public data. It runs before any acquire/download, including Drugs@FDA.
     - [x] Do not add Marquez to the default install
 - [ ] Task: Phase Verification & Checkpoint
     - [ ] Run focused tests and typing
-    - [ ] Record lineage event field names in evidence
+    - [x] Record lineage event field names in evidence
+
+## Phase 4b: Scale and performance engineering
+
+Benchmark bronze primitives under a deterministic synthetic scale fixture
+before any hot-path rewrite. Python remains orchestration.
+
+- [x] Task: Write failing tests for bronze scale fixtures and budgets
+    - [x] Assert CI fixture generation is deterministic and synthetic
+    - [x] Assert published budgets validate against schema
+    - [x] Assert a custom Rust crate is gated on a hot pure-Python path
+    - [x] Confirm the intended failure before implementation
+- [x] Task: Implement reproducible bronze scale benchmarks
+    - [x] Measure ingestion, hashing, compression, Parquet, receipts, lineage, catalogue, archive inspection, and parsing
+    - [x] Rank bottlenecks from measurements before optimizing
+    - [x] Evaluate Rust for streaming hashing, archive inspection, parsing, compression, and high-volume validation
+    - [x] Keep Python as orchestration; do not add a Rust crate without the wall-share and speedup gates
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused tests with `uv run --python 3.14.5 pytest tests/test_bronze_scale.py`
+    - [x] Record bottleneck ranking and Rust disposition in evidence
 
 ## Phase 5: Public ingest and governed-fixture landing
 
