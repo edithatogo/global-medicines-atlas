@@ -75,6 +75,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_conductor_github_sync.py",
         "tests/test_country_adapter_registry.py",
         "tests/test_context_validation.py",
+        "tests/test_medallion_datahouse_contract.py",
         "tests/test_ecosystem_reuse.py",
         "tests/test_settings.py",
         "tests/test_logging.py",

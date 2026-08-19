@@ -50,6 +50,23 @@ Every gate requires:
 - reproducible artifacts and recovery instructions;
 - explicit human approval for licensing, publication and consequential claims.
 
+## Medallion datahouse evolution
+
+The v0.1–v1.0 train remains the current release sequence. In parallel, the
+repository evolves toward a bleeding-edge medallion datahouse:
+
+| Horizon | Product outcome | Conductor track |
+|---|---|---|
+| Bronze (current scope) | Raw-as-landed public/no-credential and governed-fixture landing with receipts, rights, partitioned Parquet, and Hugging Face as archive boundary | `bronze_medallion_completion_20260819` |
+| Silver (later) | Source-faithful normalized tables; dimensions remain independent | not opened |
+| Gold (later) | Reviewable cross-jurisdiction evidence | not opened |
+| Platinum (later) | Comparison products over gold | not opened |
+
+Bronze completion does not claim global coverage, does not ingest credentialed
+or restricted payloads, and does not implement later layers. Hugging Face
+archival of public data is an output boundary consumed by this horizon, not a
+substitute for repository Parquet and receipts.
+
 ## Feature maturity
 
 Features advance through six levels:

@@ -2,9 +2,19 @@
 
 ## Product Vision
 
-Create a global, evidence-based data platform for comparing medicines across national regulatory approval systems and public funding, reimbursement, and formulary systems.
+Create a global, evidence-based medallion datahouse for comparing medicines across national regulatory approval systems and public funding, reimbursement, and formulary systems.
+
+The datahouse lands source-native bronze evidence first, then derives silver, gold, and platinum layers without collapsing regulatory, funding, formulary, or terminology meanings. Current delivery completes bronze for in-scope public and no-credential sources; later layers remain planned, not implied complete.
 
 The platform will begin with available data from New Zealand, Australia, and the United States, then expand systematically across jurisdictions. New Zealand Universal List of Medicines and New Zealand Medicines Terminology (NZULM/NZMT) product structures are a named first-class source family. The platform will preserve source provenance, effective dates, terminology mappings, and the distinction between regulatory approval and funding status.
+
+## Product Mission
+
+Operate a provenance-first medicines datahouse that makes regulatory approval and public funding comparable across jurisdictions while remaining honest about coverage, rights, uncertainty, and layer.
+
+## Product Purpose
+
+Give researchers, policymakers, clinicians, and analysts a reproducible, layer-explicit evidence platform: bronze preserves what sources actually published; silver, gold, and platinum may later normalize, match, and publish only what rights and evidence allow. Hugging Face archives reviewed public bronze outputs; it is not the source of truth.
 
 ## Problem
 
