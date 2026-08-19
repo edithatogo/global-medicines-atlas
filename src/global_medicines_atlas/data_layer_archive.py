@@ -7,17 +7,20 @@ import json
 import os
 import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from enum import StrEnum
 from pathlib import Path, PurePosixPath
 from typing import Protocol
+from urllib.parse import urlsplit
 
 import httpx
 import pyarrow as pa
 import pyarrow.parquet as pq
 from pydantic import Field
 
+from .adapters.us_acquisition import DRUGSFDA_API_URL, DRUGSFDA_BULK_URL
 from .models import FrozenModel
 from .publication_transport import PublicationDestination, PublicationTarget
 from .source_catalog import MedicineDataSource, load_source_catalog
@@ -28,11 +31,24 @@ CATALOGUE_PUBLIC_URL = (
     "https://huggingface.co/datasets/"
     "edithatogo/global-medicines-atlas-catalogue"
 )
-ARCHIVE_REVISION = "data-layer-archive-v1"
+ARCHIVE_REVISION = "data-layer-archive-v2"
+ARCHIVE_WORKFLOW_RELATIVE = ".github/workflows/data-layer-archive.yml"
 FIXTURE_PROVENANCE_NOTE = "representative_fixture_not_live_coverage"
+LIVE_PUBLIC_PROVENANCE_NOTE = "live_public_artefact"
 MAX_ARCHIVAL_FILE_BYTES = 1_000_000
+MAX_LIVE_PAYLOAD_BYTES = 32 * 1024 * 1024
+LIVE_RETRIEVAL_ATTEMPTS = 3
+HTTP_CLIENT_ERROR_STATUS = 400
 HF_TOKEN_SECRET_NAME = "HF_TOKEN"  # ruff: ignore[hardcoded-password-string]
 HUGGINGFACE_EXTERNAL_GATE_FILENAME = "huggingface-external-gate.json"
+HUGGINGFACE_HUB_PIN = "huggingface-hub==0.34.4"
+ADAPTER_ALIASES = {
+    "eu-ema-medicines": "eu-ema",
+    "nz-medsafe-products": "nz-medsafe",
+}
+GOVERNED_BULK_URIS: dict[str, tuple[str, ...]] = {
+    "us-drugsfda": (DRUGSFDA_BULK_URL, DRUGSFDA_API_URL),
+}
 RESTRICTED_PATH_PREFIXES = (
     "vendor/",
     "vendor/nzmedicines",
@@ -103,7 +119,35 @@ class ArchivalDisposition(StrEnum):
     """What this archival may publish for one source."""
 
     CATALOG_AND_FIXTURE = "catalog_and_fixture"
+    CATALOG_AND_LIVE_PAYLOAD = "catalog_and_live_payload"
     CATALOG_METADATA_ONLY = "catalog_metadata_only"
+
+
+class AuthorityGroup(StrEnum):
+    """Maintainer-scoped archival authorities."""
+
+    FDA = "fda"
+    EMA = "ema"
+    TGA = "tga"
+    MEDSAFE = "medsafe"
+    OTHER = "other"
+
+
+class PayloadKind(StrEnum):
+    """How a scoped source payload was obtained."""
+
+    NONE = "none"
+    LIVE_PUBLIC = "live_public"
+    REPRESENTATIVE_FIXTURE = "representative_fixture"
+    METADATA_ONLY = "metadata_only"
+
+
+SCOPED_AUTHORITY_GROUPS = frozenset({
+    AuthorityGroup.FDA,
+    AuthorityGroup.EMA,
+    AuthorityGroup.TGA,
+    AuthorityGroup.MEDSAFE,
+})
 
 
 class HuggingFaceAuthError(RuntimeError):
@@ -163,6 +207,7 @@ class SourceArchiveRow(FrozenModel):
     source_id: str = Field(min_length=1)
     jurisdictions: str = Field(min_length=1)
     authority: str = Field(min_length=1)
+    authority_group: AuthorityGroup
     dimension: str = Field(min_length=1)
     authentication: str = Field(min_length=1)
     access_class: AccessClass
@@ -171,10 +216,16 @@ class SourceArchiveRow(FrozenModel):
     integration_layer: str = Field(min_length=1)
     qualification_state: str = Field(min_length=1)
     archival_disposition: ArchivalDisposition
+    payload_kind: PayloadKind
     skip_reason: str
     fixture_paths: str
     evidence_limit: str = Field(min_length=1)
     fixture_provenance: str
+    retrieval_uri: str = ""
+    retrieved_at: str = ""
+    payload_sha256: str = ""
+    live_attempts: int = Field(default=0, ge=0)
+    adapter_alias: str = ""
 
 
 class DataLayerInventory(FrozenModel):
@@ -202,6 +253,28 @@ class ArchiveFile:
 
 
 @dataclass(frozen=True, slots=True)
+class RetrievedPayload:
+    """Result of one public payload retrieval attempt series."""
+
+    source_id: str
+    uri: str
+    content: bytes
+    content_type: str
+    retrieved_at: str
+    attempts: int
+    sha256: str
+    kind: PayloadKind
+    skip_reason: str
+    filename: str = "public-artefact.bin"
+
+
+class PayloadRetriever(Protocol):
+    """Fetch one public source artefact without credentials."""
+
+    def retrieve(self, source: MedicineDataSource) -> RetrievedPayload: ...
+
+
+@dataclass(frozen=True, slots=True)
 class DataLayerArchivePackage:
     """Deterministic archival tree bound to the catalogue identity."""
 
@@ -224,6 +297,235 @@ def classify_source_access(mode: AuthenticationMode) -> AccessClass:
     if mode is AuthenticationMode.NONE:
         return AccessClass.PUBLIC_NO_CREDENTIAL
     return AccessClass.CREDENTIAL_RESTRICTED
+
+
+def classify_authority_group(source: MedicineDataSource) -> AuthorityGroup:
+    """Map a catalog source to a scoped archival authority."""
+
+    authority = source.authority.casefold()
+    source_id = source.source_id
+    jurisdictions = tuple(source.jurisdictions)
+    if jurisdictions == ("USA",) and (
+        "food and drug administration" in authority or "us fda" in authority
+    ):
+        return AuthorityGroup.FDA
+    if source_id.startswith((
+        "us-drugsfda",
+        "us-fda-",
+        "us-openfda-",
+        "us-gsrs-",
+    )):
+        return AuthorityGroup.FDA
+    if (
+        authority == "european medicines agency"
+        or source_id.startswith("eu-ema-")
+        or source_id in {"eu-union-register", "eu-spor-rms-oms"}
+    ):
+        return AuthorityGroup.EMA
+    if (
+        authority == "therapeutic goods administration"
+        or source_id.startswith("au-tga-")
+        or source_id == "au-artg"
+    ):
+        return AuthorityGroup.TGA
+    if authority == "medsafe" or source_id.startswith("nz-medsafe-"):
+        return AuthorityGroup.MEDSAFE
+    return AuthorityGroup.OTHER
+
+
+def retrieval_uris_for_source(source: MedicineDataSource) -> tuple[str, ...]:
+    """Return catalog and already-governed public retrieval URIs."""
+
+    uris: list[str] = []
+    candidates = (
+        *GOVERNED_BULK_URIS.get(source.source_id, ()),
+        None if source.download_url is None else str(source.download_url),
+        None if source.api_url is None else str(source.api_url),
+        str(source.landing_page),
+    )
+    for uri in candidates:
+        if uri and uri not in uris:
+            uris.append(uri)
+    return tuple(uris)
+
+
+def parse_authority_groups(raw: str) -> frozenset[AuthorityGroup]:
+    """Parse a CLI authority list into scoped groups."""
+
+    groups: list[AuthorityGroup] = []
+    for part in raw.split(","):
+        token = part.strip().casefold()
+        if not token:
+            continue
+        groups.append(AuthorityGroup(token))
+    selected = frozenset(groups)
+    if not selected:
+        return SCOPED_AUTHORITY_GROUPS
+    unknown = selected - SCOPED_AUTHORITY_GROUPS
+    if unknown:
+        names = ", ".join(sorted(item.value for item in unknown))
+        raise ValueError(f"unsupported archival authority: {names}")
+    return selected
+
+
+class HttpPayloadRetriever:
+    """HTTPS retriever for public catalog surfaces."""
+
+    def __init__(
+        self,
+        *,
+        transport: httpx.BaseTransport | None = None,
+        clock: Callable[[], datetime] | None = None,
+        max_bytes: int = MAX_LIVE_PAYLOAD_BYTES,
+        max_attempts: int = LIVE_RETRIEVAL_ATTEMPTS,
+        timeout_seconds: float = 60.0,
+    ) -> None:
+        self._transport = transport
+        self._clock = clock or (lambda: datetime.now(UTC))
+        self._max_bytes = max_bytes
+        self._max_attempts = max_attempts
+        self._timeout_seconds = timeout_seconds
+
+    def retrieve(self, source: MedicineDataSource) -> RetrievedPayload:
+        """Fetch the first successful public URI, else label a fixture."""
+
+        retrieved_at = self._clock().isoformat()
+        last_reason = "live_retrieval_failed_after_3_attempts"
+        attempts = 0
+        for uri in retrieval_uris_for_source(source):
+            if not _uri_is_allowed(uri, source):
+                last_reason = "host_not_in_catalog"
+                continue
+            for _attempt in range(1, self._max_attempts + 1):
+                attempts += 1
+                result = self._download(source.source_id, uri, retrieved_at)
+                if result is None:
+                    last_reason = "live_retrieval_failed_after_3_attempts"
+                    continue
+                if result.kind is PayloadKind.LIVE_PUBLIC:
+                    return result
+                last_reason = result.skip_reason
+                return result
+        return RetrievedPayload(
+            source_id=source.source_id,
+            uri=retrieval_uris_for_source(source)[0],
+            content=b"",
+            content_type="application/octet-stream",
+            retrieved_at=retrieved_at,
+            attempts=max(attempts, self._max_attempts),
+            sha256="",
+            kind=PayloadKind.REPRESENTATIVE_FIXTURE,
+            skip_reason=last_reason,
+        )
+
+    def _download(
+        self,
+        source_id: str,
+        uri: str,
+        retrieved_at: str,
+    ) -> RetrievedPayload | None:
+        headers = {
+            "User-Agent": (
+                "GlobalMedicinesAtlas-archival/1 "
+                "(https://github.com/edithatogo/global-medicines-atlas)"
+            )
+        }
+        try:
+            payload, content_type = self._get_bytes(uri, headers)
+        except httpx.HTTPError, ValueError, OSError:
+            return None
+        if content_type == "live_file_too_large":
+            return _failed_payload(
+                source_id,
+                uri,
+                retrieved_at,
+                1,
+                "live_file_too_large",
+            )
+        if payload is None:
+            return None
+        filename = PurePosixPath(urlsplit(uri).path).name or (
+            "public-artefact.bin"
+        )
+        if "." not in filename:
+            filename = "public-artefact.bin"
+        return RetrievedPayload(
+            source_id=source_id,
+            uri=uri,
+            content=payload,
+            content_type=content_type.split(";", 1)[0].strip(),
+            retrieved_at=retrieved_at,
+            attempts=1,
+            sha256=hashlib.sha256(payload).hexdigest(),
+            kind=PayloadKind.LIVE_PUBLIC,
+            skip_reason="",
+            filename=filename,
+        )
+
+    def _get_bytes(
+        self, uri: str, headers: dict[str, str]
+    ) -> tuple[bytes | None, str]:
+        with (
+            httpx.Client(
+                transport=self._transport,
+                follow_redirects=True,
+                timeout=self._timeout_seconds,
+                headers=headers,
+            ) as client,
+            client.stream("GET", uri) as response,
+        ):
+            if response.status_code >= HTTP_CLIENT_ERROR_STATUS:
+                return None, ""
+            content_type = response.headers.get(
+                "content-type", "application/octet-stream"
+            )
+            length = response.headers.get("content-length")
+            if length is not None and int(length) > self._max_bytes:
+                return None, "live_file_too_large"
+            chunks: list[bytes] = []
+            total = 0
+            for chunk in response.iter_bytes():
+                total += len(chunk)
+                if total > self._max_bytes:
+                    return None, "live_file_too_large"
+                chunks.append(chunk)
+            return b"".join(chunks), content_type
+
+
+def _failed_payload(
+    source_id: str,
+    uri: str,
+    retrieved_at: str,
+    attempts: int,
+    skip_reason: str,
+) -> RetrievedPayload:
+    return RetrievedPayload(
+        source_id=source_id,
+        uri=uri,
+        content=b"",
+        content_type="application/octet-stream",
+        retrieved_at=retrieved_at,
+        attempts=attempts,
+        sha256="",
+        kind=PayloadKind.REPRESENTATIVE_FIXTURE,
+        skip_reason=skip_reason,
+    )
+
+
+def _uri_is_allowed(uri: str, source: MedicineDataSource) -> bool:
+    parsed = urlsplit(uri)
+    if parsed.scheme.lower() != "https" or parsed.hostname is None:
+        return False
+    allowed = {urlsplit(str(source.landing_page)).hostname}
+    if source.download_url is not None:
+        allowed.add(urlsplit(str(source.download_url)).hostname)
+    if source.api_url is not None:
+        allowed.add(urlsplit(str(source.api_url)).hostname)
+    allowed.update(
+        urlsplit(extra).hostname
+        for extra in GOVERNED_BULK_URIS.get(source.source_id, ())
+    )
+    return parsed.hostname.lower() in {host.lower() for host in allowed if host}
 
 
 def assert_no_restricted_artifacts(
@@ -251,12 +553,22 @@ def assert_no_restricted_artifacts(
             )
 
 
-def inventory_data_layer(root: Path) -> DataLayerInventory:
+def inventory_data_layer(
+    root: Path,
+    *,
+    retrieved: Mapping[str, RetrievedPayload] | None = None,
+) -> DataLayerInventory:
     """Classify every catalog source without fetching live dumps."""
 
     fixture_index = _fixture_index()
+    payloads = {} if retrieved is None else dict(retrieved)
     rows = tuple(
-        _row_for_source(source, fixture_index, root)
+        _row_for_source(
+            source,
+            fixture_index,
+            root,
+            payloads.get(source.source_id),
+        )
         for source in load_source_catalog()
     )
     public = sum(
@@ -274,11 +586,61 @@ def inventory_data_layer(root: Path) -> DataLayerInventory:
 
 
 def build_data_layer_archive(
-    root: Path, destination: Path
+    root: Path,
+    destination: Path,
+    *,
+    retriever: PayloadRetriever | None = None,
+    authority_groups: frozenset[AuthorityGroup] | None = None,
 ) -> DataLayerArchivePackage:
-    """Materialise catalogue, inventory, and governed fixture bytes."""
+    """Materialise catalogue, inventory, payloads, and governed fixtures."""
 
-    inventory = inventory_data_layer(root)
+    scoped = (
+        SCOPED_AUTHORITY_GROUPS
+        if authority_groups is None
+        else authority_groups
+    )
+    catalog = load_source_catalog()
+    retrieved: dict[str, RetrievedPayload] = {}
+    if retriever is not None:
+        for source in catalog:
+            group = classify_authority_group(source)
+            if group not in scoped:
+                continue
+            if classify_source_access(source.authentication) is (
+                AccessClass.CREDENTIAL_RESTRICTED
+            ):
+                continue
+            retrieved[source.source_id] = retriever.retrieve(source)
+    inventory = inventory_data_layer(root, retrieved=retrieved)
+    members = _archive_members(root, catalog, inventory, retrieved, scoped)
+    checksums = "".join(
+        f"{hashlib.sha256(content).hexdigest()}  {path}\n"
+        for path, content in sorted(members.items())
+    ).encode()
+    members["SHA256SUMS"] = checksums
+    assert_no_restricted_artifacts(tuple(sorted(members)))
+    files = _write_members(destination, members)
+    target = PublicationTarget(
+        destination=PublicationDestination.HUGGING_FACE,
+        repository=CATALOGUE_REPOSITORY,
+        revision=ARCHIVE_REVISION,
+        public_base_url=CATALOGUE_PUBLIC_URL,
+    )
+    return DataLayerArchivePackage(
+        files=tuple(files),
+        target=target,
+        inventory=inventory,
+    )
+
+
+def _archive_members(
+    root: Path,
+    catalog: tuple[MedicineDataSource, ...],
+    inventory: DataLayerInventory,
+    retrieved: Mapping[str, RetrievedPayload],
+    scoped: frozenset[AuthorityGroup],
+) -> dict[str, bytes]:
+    catalog_by_id = {item.source_id: item for item in catalog}
     members: dict[str, bytes] = {
         "README.md": _read_text(root, _CARD_RELATIVE),
         "medicine_source_catalog.json": _read_text(root, _CATALOG_RELATIVE),
@@ -291,40 +653,62 @@ def build_data_layer_archive(
         "metadata/source-rights-disposition.json": _read_text(
             root, _RIGHTS_MATRIX_RELATIVE
         ),
-        "inventory/source-inventory.json": _canonical_json(
-            inventory.model_dump(mode="json")
-        ),
-        "inventory/source-inventory.parquet": _inventory_parquet(inventory),
     }
+    for row in inventory.sources:
+        if row.authority_group not in scoped:
+            continue
+        payload = retrieved.get(row.source_id)
+        members[f"metadata/sources/{row.source_id}.json"] = _source_metadata(
+            catalog_by_id[row.source_id], row, payload
+        )
+        if payload is not None and payload.kind is PayloadKind.LIVE_PUBLIC:
+            name = payload.filename
+            members[f"payloads/{row.source_id}/{name}"] = payload.content
     for relative_path, packaged_path in _eligible_fixture_copies(inventory):
-        payload = (root / relative_path).read_bytes()
-        if len(payload) > MAX_ARCHIVAL_FILE_BYTES:
+        payload_bytes = (root / relative_path).read_bytes()
+        if len(payload_bytes) > MAX_ARCHIVAL_FILE_BYTES:
             raise ValueError(
                 f"archival artifact exceeds {MAX_ARCHIVAL_FILE_BYTES} bytes: "
                 f"{relative_path}"
             )
-        members[packaged_path] = payload
-    skipped = tuple(
+        members[packaged_path] = payload_bytes
+    skipped = [
         row.source_id
         for row in inventory.sources
         if row.archival_disposition is ArchivalDisposition.CATALOG_METADATA_ONLY
+        or row.skip_reason
+    ]
+    live_ids = [
+        row.source_id
+        for row in inventory.sources
+        if row.payload_kind is PayloadKind.LIVE_PUBLIC
+    ]
+    members["inventory/source-inventory.json"] = _canonical_json(
+        inventory.model_dump(mode="json")
+    )
+    members["inventory/source-inventory.parquet"] = _inventory_parquet(
+        inventory
     )
     members["inventory/archival-manifest.json"] = _canonical_json({
+        "authority_groups": sorted(group.value for group in scoped),
         "catalogue_repository": CATALOGUE_REPOSITORY,
+        "credential_restricted_count": inventory.credential_restricted_count,
         "fixture_provenance": FIXTURE_PROVENANCE_NOTE,
         "generated_at": inventory.generated_at,
-        "live_source_dump_downloaded": False,
+        "live_payload_source_ids": live_ids,
+        "live_source_dump_downloaded": bool(live_ids),
         "public_no_credential_count": inventory.public_no_credential_count,
-        "credential_restricted_count": inventory.credential_restricted_count,
-        "skipped_source_ids": list(skipped),
+        "publisher": "github-actions",
+        "skipped_source_ids": skipped,
         "source_count": len(inventory.sources),
+        "workflow": ARCHIVE_WORKFLOW_RELATIVE,
     })
-    checksums = "".join(
-        f"{hashlib.sha256(content).hexdigest()}  {path}\n"
-        for path, content in sorted(members.items())
-    ).encode()
-    members["SHA256SUMS"] = checksums
-    assert_no_restricted_artifacts(tuple(sorted(members)))
+    return members
+
+
+def _write_members(
+    destination: Path, members: Mapping[str, bytes]
+) -> list[ArchiveFile]:
     destination.mkdir(parents=True, exist_ok=True)
     files: list[ArchiveFile] = []
     for relative_path, content in sorted(members.items()):
@@ -332,17 +716,7 @@ def build_data_layer_archive(
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_bytes(content)
         files.append(ArchiveFile(relative_path, content))
-    target = PublicationTarget(
-        destination=PublicationDestination.HUGGING_FACE,
-        repository=CATALOGUE_REPOSITORY,
-        revision=ARCHIVE_REVISION,
-        public_base_url=CATALOGUE_PUBLIC_URL,
-    )
-    return DataLayerArchivePackage(
-        files=tuple(files),
-        target=target,
-        inventory=inventory,
-    )
+    return files
 
 
 def resolve_huggingface_identity(
@@ -471,6 +845,7 @@ def _row_for_source(
     source: MedicineDataSource,
     fixture_index: dict[str, tuple[str, ...]],
     root: Path,
+    retrieved: RetrievedPayload | None = None,
 ) -> SourceArchiveRow:
     access = classify_source_access(source.authentication)
     fixtures = tuple(
@@ -480,17 +855,42 @@ def _row_for_source(
     )
     skip_reason = ""
     disposition = ArchivalDisposition.CATALOG_METADATA_ONLY
+    payload_kind = PayloadKind.NONE
+    fixture_provenance = FIXTURE_PROVENANCE_NOTE
+    retrieval_uri = ""
+    retrieved_at = ""
+    payload_sha256 = ""
+    live_attempts = 0
     if access is AccessClass.CREDENTIAL_RESTRICTED:
+        payload_kind = PayloadKind.METADATA_ONLY
         if source.source_id == "nz-nzulm-bulk":
             skip_reason = "credentials_and_restricted_bytes"
         else:
             skip_reason = "credentials_required"
+    elif retrieved is not None and retrieved.kind is PayloadKind.LIVE_PUBLIC:
+        disposition = ArchivalDisposition.CATALOG_AND_LIVE_PAYLOAD
+        payload_kind = PayloadKind.LIVE_PUBLIC
+        fixture_provenance = LIVE_PUBLIC_PROVENANCE_NOTE
+        retrieval_uri = retrieved.uri
+        retrieved_at = retrieved.retrieved_at
+        payload_sha256 = retrieved.sha256
+        live_attempts = retrieved.attempts
+    elif retrieved is not None:
+        payload_kind = PayloadKind.REPRESENTATIVE_FIXTURE
+        skip_reason = retrieved.skip_reason
+        live_attempts = retrieved.attempts
+        retrieval_uri = retrieved.uri
+        retrieved_at = retrieved.retrieved_at
+        if fixtures:
+            disposition = ArchivalDisposition.CATALOG_AND_FIXTURE
     elif fixtures:
         disposition = ArchivalDisposition.CATALOG_AND_FIXTURE
+        payload_kind = PayloadKind.REPRESENTATIVE_FIXTURE
     return SourceArchiveRow(
         source_id=source.source_id,
         jurisdictions=",".join(source.jurisdictions),
         authority=source.authority,
+        authority_group=classify_authority_group(source),
         dimension=source.dimension.value,
         authentication=source.authentication.value,
         access_class=access,
@@ -499,11 +899,55 @@ def _row_for_source(
         integration_layer=source.integration_layer.value,
         qualification_state=source.qualification_state.value,
         archival_disposition=disposition,
+        payload_kind=payload_kind,
         skip_reason=skip_reason,
         fixture_paths=",".join(fixtures),
         evidence_limit=source.evidence_limit,
-        fixture_provenance=FIXTURE_PROVENANCE_NOTE,
+        fixture_provenance=fixture_provenance,
+        retrieval_uri=retrieval_uri,
+        retrieved_at=retrieved_at,
+        payload_sha256=payload_sha256,
+        live_attempts=live_attempts,
+        adapter_alias=ADAPTER_ALIASES.get(source.source_id, ""),
     )
+
+
+def _source_metadata(
+    source: MedicineDataSource,
+    row: SourceArchiveRow,
+    payload: RetrievedPayload | None,
+) -> bytes:
+    return _canonical_json({
+        "adapter_alias": row.adapter_alias or None,
+        "api_url": None if source.api_url is None else str(source.api_url),
+        "authentication": row.authentication,
+        "authority": row.authority,
+        "authority_group": row.authority_group.value,
+        "dimension": row.dimension,
+        "documentation_url": str(source.documentation_url),
+        "download_url": (
+            None if source.download_url is None else str(source.download_url)
+        ),
+        "evidence_limit": row.evidence_limit,
+        "formats": list(source.formats),
+        "jurisdictions": list(source.jurisdictions),
+        "landing_page": str(source.landing_page),
+        "licence_or_rights": row.rights_status,
+        "live_attempts": row.live_attempts,
+        "native_identifier": source.native_identifier,
+        "payload_bytes": 0 if payload is None else len(payload.content),
+        "payload_kind": row.payload_kind.value,
+        "payload_sha256": row.payload_sha256 or None,
+        "retrieval_uri": row.retrieval_uri or None,
+        "retrieved_at": row.retrieved_at or None,
+        "rights_status": row.rights_status,
+        "schema_notes": (
+            "Source-native identifiers and dimension are preserved; "
+            "regulatory, funding, formulary, and terminology stay independent."
+        ),
+        "skip_reason": row.skip_reason or None,
+        "source_id": row.source_id,
+    })
 
 
 def _fixture_index() -> dict[str, tuple[str, ...]]:

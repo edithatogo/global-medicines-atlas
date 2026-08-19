@@ -10,7 +10,7 @@ separate publication identities.
 | Source and software release | GitHub | `v1.0.0rc1` published as a prerelease |
 | Software archival record | Zenodo | Published at [10.5281/zenodo.21734811](https://doi.org/10.5281/zenodo.21734811) from `v1.0.0rc1`; software-only |
 | Protocol and preregistration | OSF | Submission package prepared; registration remains gated by final preview |
-| Catalogue metadata and governed fixtures | Hugging Face | Published at [`edithatogo/global-medicines-atlas-catalogue`](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue) revision [`b25af36da32ffa3ddc5d525f1c568459d23f6e11`](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue/tree/b25af36da32ffa3ddc5d525f1c568459d23f6e11); live source-derived bulk data remains rights-gated |
+| Catalogue metadata and public FDA/EMA/TGA/Medsafe artefacts | Hugging Face | Published at [`edithatogo/global-medicines-atlas-catalogue`](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue); durable publisher is GitHub Actions `.github/workflows/data-layer-archive.yml`. Credential-gated payloads remain withheld. |
 | Dataset archival record | Zenodo | Separate record, only for assets with explicit redistribution rights |
 
 ## Required evidence before publication
@@ -34,9 +34,10 @@ does not license third-party medicine data.
    seven-asset manifest, and software-only boundary during subsequent audits.
 3. Create the OSF project, upload the prepared submission package, connect
    GitHub and the archival records, and preview the registration.
-4. The Hugging Face catalogue identity is published with a dataset card,
-   Parquet source inventory, and representative governed fixtures. Its public
-   identifier still does not grant rights in live source-derived medicine data.
+4. GitHub Actions workflow
+   [`.github/workflows/data-layer-archive.yml`](../../.github/workflows/data-layer-archive.yml)
+   packages FDA, EMA, TGA, and Medsafe public artefacts plus catalogue
+   metadata and publishes them to the Hugging Face catalogue identity.
    See [`data-layer-archive-receipt.md`](./data-layer-archive-receipt.md).
 5. Publish a separate Hugging Face/Zenodo dataset version only after the rights
    manifest is approved.
