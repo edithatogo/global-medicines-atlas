@@ -94,7 +94,26 @@ public data. It runs before any acquire/download, including Drugs@FDA.
     - [ ] Do not add Marquez to the default install
 - [ ] Task: Phase Verification & Checkpoint
     - [ ] Run focused tests and typing
-    - [ ] Record lineage event field names in evidence
+    - [x] Record lineage event field names in evidence
+
+## Phase 4b: Scale and performance engineering
+
+Benchmark bronze primitives under a deterministic synthetic scale fixture
+before any hot-path rewrite. Python remains orchestration.
+
+- [x] Task: Write failing tests for bronze scale fixtures and budgets
+    - [x] Assert CI fixture generation is deterministic and synthetic
+    - [x] Assert published budgets validate against schema
+    - [x] Assert a custom Rust crate is gated on a hot pure-Python path
+    - [x] Confirm the intended failure before implementation
+- [x] Task: Implement reproducible bronze scale benchmarks
+    - [x] Measure ingestion, hashing, compression, Parquet, receipts, lineage, catalogue, archive inspection, and parsing
+    - [x] Rank bottlenecks from measurements before optimizing
+    - [x] Evaluate Rust for streaming hashing, archive inspection, parsing, compression, and high-volume validation
+    - [x] Keep Python as orchestration; do not add a Rust crate without the wall-share and speedup gates
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused tests with `uv run --python 3.14.5 pytest tests/test_bronze_scale.py`
+    - [x] Record bottleneck ranking and Rust disposition in evidence
 
 ## Phase 5: Public ingest and governed-fixture landing
 
