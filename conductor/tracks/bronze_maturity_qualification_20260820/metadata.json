@@ -1,0 +1,34 @@
+{
+  "track_id": "bronze_maturity_qualification_20260820",
+  "type": "chore",
+  "status": "in_progress",
+  "created_at": "2026-08-20T06:48:00+10:00",
+  "updated_at": "2026-08-20T07:20:00+10:00",
+  "description": "Qualify current-scope bronze maturity against repository evidence without treating later-layer success as bronze.",
+  "target_versions": ["1.0.0"],
+  "requirements": [
+    "M-092",
+    "M-093",
+    "M-094",
+    "M-095",
+    "M-096",
+    "M-097",
+    "M-098",
+    "M-099",
+    "M-100",
+    "M-101",
+    "S-012",
+    "S-013",
+    "W-007"
+  ],
+  "related_github_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/167",
+  "execution_policy": {
+    "mode": "autonomous",
+    "interaction": "decision_gates_only",
+    "decision_protocol": "options_recommendation_rationale",
+    "phase_checkpoints": "automatic_evidence_gated",
+    "failure_recovery": "bounded_self_correction",
+    "max_identical_failures": 3,
+    "merge_policy": "required_checks_then_merge"
+  }
+}
