@@ -12,7 +12,7 @@ import tomllib
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from enum import StrEnum
 from pathlib import Path
-from typing import Literal
+from typing import Literal, cast
 
 from pydantic import Field
 
@@ -128,7 +128,11 @@ def _tables(
     value = document.get(key)
     if not isinstance(value, list):
         return ()
-    return tuple(item for item in value if isinstance(item, dict))
+    return tuple(
+        cast("dict[str, object]", raw)
+        for raw in cast("list[object]", value)
+        if isinstance(raw, dict)
+    )
 
 
 def search_local_clones(

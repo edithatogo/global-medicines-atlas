@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Mapping
+from typing import cast
 
 import httpx
 from pydantic import Field
@@ -46,7 +47,7 @@ def table_identifier_for(*, jurisdiction: str, source_id: str) -> str:
 def iceberg_rest_create_body(spec: IcebergReadyTableSpec) -> dict[str, object]:
     """Iceberg REST create-table document; does not load pyiceberg."""
 
-    fields = []
+    fields: list[dict[str, object]] = []
     for index, (name, field_type) in enumerate(spec.schema_fields, start=1):
         fields.append({
             "id": index,
@@ -98,7 +99,7 @@ def register_iceberg_table(
         payload = response.json()
     if not isinstance(payload, dict):
         raise TypeError("Iceberg REST catalogue returned a non-object")
-    return payload
+    return cast("dict[str, object]", payload)
 
 
 def optional_pyiceberg_available() -> bool:

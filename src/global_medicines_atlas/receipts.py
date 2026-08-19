@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from enum import StrEnum
 from hashlib import sha256
-from typing import Literal, Self
+from typing import Literal, Self, cast
 
 import orjson
 from pydantic import AnyUrl, AwareDatetime, Field, model_validator
@@ -167,9 +167,17 @@ def temporal_identity_from_source(
     )
 
 
+def require_temporal(temporal: TemporalIdentity | None) -> TemporalIdentity:
+    """Narrow a bound temporal identity; receipts must always carry one."""
+
+    if temporal is None:
+        raise ValueError("temporal identity is required")
+    return temporal
+
+
 def _model_field(value: object, name: str) -> object:
     if isinstance(value, dict):
-        return value.get(name)
+        return cast("dict[str, object]", value).get(name)
     return getattr(value, name, None)
 
 
@@ -217,7 +225,7 @@ class SourceReceipt(DeterministicReceipt):
     payload: PayloadEvidence
     effective_from: AwareDatetime | None = None
     effective_to: AwareDatetime | None = None
-    temporal: TemporalIdentity
+    temporal: TemporalIdentity | None = None
     reuse: ReuseGateDecision | None = None
     rights_state: RightsState
     rights_reference: AnyUrl | None = None
@@ -228,7 +236,7 @@ class SourceReceipt(DeterministicReceipt):
     @classmethod
     def bind_temporal_identity(cls, data: object) -> object:
         if isinstance(data, dict):
-            return _bind_temporal_payload(data)
+            return _bind_temporal_payload(cast("dict[str, object]", data))
         return data
 
     @model_validator(mode="after")
@@ -246,6 +254,8 @@ class SourceReceipt(DeterministicReceipt):
             and self.rights_reference is None
         ):
             raise ValueError("permitted rights require a rights reference")
+        if self.temporal is None:
+            raise ValueError("temporal identity is required")
         if self.temporal.retrieved_at != self.retrieval.retrieved_at:
             raise ValueError("temporal.retrieved_at must match retrieval")
         return self
@@ -266,7 +276,7 @@ class FailureReceipt(DeterministicReceipt):
     receipt_id: str = Field(min_length=1)
     source: SourceIdentity
     retrieval: RetrievalEvidence
-    temporal: TemporalIdentity
+    temporal: TemporalIdentity | None = None
     reuse: ReuseGateDecision | None = None
     evidence_class: EvidenceClass
     rights_state: RightsState
@@ -279,7 +289,7 @@ class FailureReceipt(DeterministicReceipt):
     @classmethod
     def bind_temporal_identity(cls, data: object) -> object:
         if isinstance(data, dict):
-            return _bind_temporal_payload(data)
+            return _bind_temporal_payload(cast("dict[str, object]", data))
         return data
 
     @model_validator(mode="after")
@@ -290,6 +300,8 @@ class FailureReceipt(DeterministicReceipt):
             )
         if self.evidence_class is EvidenceClass.LIVE:
             raise ValueError("FailureReceipt cannot claim live evidence")
+        if self.temporal is None:
+            raise ValueError("temporal identity is required")
         return self
 
     @property

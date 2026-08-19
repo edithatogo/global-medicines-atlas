@@ -61,3 +61,22 @@ def test_openlineage_event_uses_real_field_names(tmp_path: Path) -> None:
     reuse = event["run"]["facets"]["gmaReuseGate"]
     assert reuse["disposition"] == "acquire-new"
     assert "local_clones" in reuse["searchedSurfaces"]
+
+
+@pytest.mark.unit
+def test_openlineage_without_table_keeps_payload_distinct_from_parquet(
+    tmp_path: Path,
+) -> None:
+    receipt = source_receipt().model_copy(
+        update={"reuse": acquire_new_decision("medsafe-product-register")}
+    )
+    event = project_openlineage_event(
+        receipt,
+        payload_uri=(tmp_path / "payload.bin").as_uri(),
+        parquet_uri=(tmp_path / "table.parquet").as_uri(),
+    )
+    payload, parquet = event["outputs"]
+    assert payload["namespace"] == "gma.payload"
+    assert parquet["namespace"] == "gma.parquet"
+    assert parquet["facets"]["storage"]["storageLayer"] == "file"
+    assert "gmaIcebergReady" not in parquet["facets"]

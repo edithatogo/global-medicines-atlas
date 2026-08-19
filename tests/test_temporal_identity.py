@@ -9,7 +9,9 @@ from pydantic import ValidationError
 from tests.test_source_receipts import source_receipt
 
 from global_medicines_atlas.receipts import (
+    SourceReceipt,
     acquisition_id_for,
+    require_temporal,
     temporal_identity_from_source,
 )
 
@@ -81,6 +83,16 @@ def test_receipt_does_not_fill_published_from_retrieved() -> None:
 
 
 @pytest.mark.unit
+def test_temporal_binds_from_nested_dicts() -> None:
+    receipt = source_receipt()
+    payload = receipt.model_dump(mode="python")
+    payload.pop("temporal", None)
+    rebuilt = SourceReceipt.model_validate(payload)
+    assert rebuilt.temporal is not None
+    assert rebuilt.temporal.acquisition_id == receipt.temporal.acquisition_id
+
+
+@pytest.mark.unit
 def test_acquisition_id_stable_for_same_payload() -> None:
     first = acquisition_id_for(source_id="us-drugsfda", payload_sha256=SHA)
     second = acquisition_id_for(source_id="us-drugsfda", payload_sha256=SHA)
@@ -91,6 +103,12 @@ def test_acquisition_id_stable_for_same_payload() -> None:
 
     assert first == second
     assert first != other
+
+
+@pytest.mark.unit
+def test_require_temporal_rejects_missing_identity() -> None:
+    with pytest.raises(ValueError, match="temporal identity is required"):
+        require_temporal(None)
 
 
 @pytest.mark.edge

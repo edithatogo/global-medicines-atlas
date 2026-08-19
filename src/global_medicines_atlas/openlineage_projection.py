@@ -10,7 +10,7 @@ from __future__ import annotations
 from typing import Any
 
 from .iceberg_ready import IcebergReadyTableSpec
-from .receipts import SourceReceipt
+from .receipts import SourceReceipt, require_temporal
 from .reuse_gate import HF_CATALOGUE_REVISION
 
 PRODUCER = (
@@ -80,7 +80,7 @@ def project_openlineage_event(
 ) -> dict[str, Any]:
     """Emit one COMPLETE RunEvent from a native source receipt."""
 
-    temporal = receipt.temporal
+    temporal = require_temporal(receipt.temporal)
     reuse = receipt.reuse
     acquisition_id = temporal.acquisition_id
     source_uri = str(receipt.retrieval.uri)

@@ -6,6 +6,8 @@ representation; table/catalogue layers are rebuildable metadata over those
 artefacts. Parquet is not raw-as-landed and is not bronze evidentiary truth.
 """
 
+# pyright: reportUnknownMemberType=false
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -17,7 +19,7 @@ import pyarrow.parquet as pq
 
 from .iceberg_ready import IcebergReadyTableSpec, table_identifier_for
 from .openlineage_projection import project_openlineage_event
-from .receipts import SourceReceipt
+from .receipts import SourceReceipt, require_temporal
 from .reuse_gate import ReuseGateDecision
 
 EVIDENTIARY_TRUTH_SENTENCE = (
@@ -94,9 +96,12 @@ def bronze_table_spec(
 
 
 def _analytical_table(receipt: SourceReceipt, payload: bytes) -> pa.Table:
-    temporal = receipt.temporal
+    temporal = require_temporal(receipt.temporal)
     native = payload.decode("utf-8", errors="replace")
-    reuse = receipt.reuse.disposition.value if receipt.reuse is not None else ""
+    reuse_gate = receipt.reuse
+    if reuse_gate is None:
+        raise ValueError("analytical parquet requires a reuse gate decision")
+    reuse = reuse_gate.disposition.value
     return pa.table({
         "source_id": [receipt.source.source_id],
         "jurisdiction": [receipt.source.jurisdiction],
@@ -134,7 +139,7 @@ def land_bronze_payload(
     if not bound.payload.matches(payload):
         raise ValueError("payload digest does not match receipt")
 
-    acquisition_id = bound.temporal.acquisition_id
+    acquisition_id = require_temporal(bound.temporal).acquisition_id
     source_id = bound.source.source_id
     payload_dir = bronze_root / PAYLOAD_DIR / source_id / acquisition_id
     parquet_dir = bronze_root / PARQUET_DIR / source_id

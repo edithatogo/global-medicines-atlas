@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import sys
 import tomllib
 from pathlib import Path
+from types import ModuleType
 
 import httpx
 import pytest
@@ -74,3 +76,27 @@ def test_iceberg_rest_catalogue_registration_over_bronze(
         transport=httpx.MockTransport(handler),
     )
     assert result["metadata-location"].endswith("metadata")
+
+
+@pytest.mark.unit
+def test_register_rejects_non_object_and_optional_import(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    receipt = source_receipt().model_copy(
+        update={"reuse": acquire_new_decision("medsafe-product-register")}
+    )
+    spec = bronze_table_spec(receipt, tmp_path / "table.parquet")
+
+    def handler(_request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json=["not-an-object"])
+
+    with pytest.raises(TypeError, match="non-object"):
+        register_iceberg_table(
+            spec,
+            rest_uri="https://iceberg.example.test",
+            transport=httpx.MockTransport(handler),
+        )
+
+    monkeypatch.setitem(sys.modules, "pyiceberg", ModuleType("pyiceberg"))
+    assert optional_pyiceberg_available() is True
