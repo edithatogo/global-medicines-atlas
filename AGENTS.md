@@ -19,6 +19,10 @@ separate “proceed”.
 Repository state, source receipts, tests, hosted checks, and external artifacts
 take precedence over checklist summaries.
 
+The pinned Conductor agent plugin is the Git submodule at
+`.agents/plugins/conductor`. Cursor loads those protocols through
+`.cursor/skills/`. After clone, run `git submodule update --init --recursive`.
+
 ## Invariants
 
 - Regulatory, funding, formulary, and terminology assertions are independent.
