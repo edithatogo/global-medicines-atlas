@@ -19,7 +19,7 @@ artefacts.
 
 ## Authoritative inputs
 
-- `conductor/requirements.md` (M-092 to M-101, S-012, S-013, W-007, W-008)
+- `conductor/requirements.md` (M-092 to M-100, S-012, S-013, W-007, W-008)
 - `conductor/maturity-model.json`
 - `conductor/tracks/bronze_medallion_completion_20260819/spec.md`
 - `src/global_medicines_atlas/data/medicine_source_catalog.json`

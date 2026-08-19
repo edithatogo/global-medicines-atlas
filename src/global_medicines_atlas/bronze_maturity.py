@@ -395,7 +395,7 @@ def evaluate_properties(root: Path) -> list[dict[str, Any]]:
             root,
             property_id="lineage",
             mandatory=True,
-            requirement_ids=("M-100", "M-101"),
+            requirement_ids=("M-100",),
             checks={
                 "src/global_medicines_atlas/openlineage_projection.py": (
                     "eventType",

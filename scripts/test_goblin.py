@@ -80,6 +80,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_reuse_gate.py",
         "tests/test_temporal_identity.py",
         "tests/test_bronze_landing.py",
+        "tests/test_bronze_maturity.py",
         "tests/test_openlineage_projection.py",
         "tests/test_iceberg_ready.py",
         "tests/test_settings.py",
