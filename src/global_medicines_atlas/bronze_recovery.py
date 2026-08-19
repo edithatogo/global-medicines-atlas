@@ -125,9 +125,7 @@ def load_receipt_for_reconstruction(
     document = _as_object_map(json.loads(raw), "receipt")
     known = _receipt_field_names()
     extra = [key for key in document if key not in known]
-    compatible = {
-        key: value for key, value in document.items() if key in known
-    }
+    compatible = {key: value for key, value in document.items() if key in known}
     if extra and parser_generation > CURRENT_PARSER_GENERATION:
         raise BronzeRecoveryError("receipt fields exceed this parser")
     receipt = SourceReceipt.model_validate(compatible)
