@@ -87,6 +87,11 @@ def execute(directory: Path) -> dict[str, object]:
         "outcome": outcome,
         "correctness_verified": outcome == "passed",
         "historical_recovery_verified": False,
+        "conflict_behavior": "not_exercised_single_writer_workload",
+        "compaction": "not_exercised_bounded_workload",
+        "portability": (
+            "engine_neutral_records_and_oracle; engine_specific_physical_readback"
+        ),
         "final_records": records,
         "elapsed_seconds": round(
             (time.monotonic_ns() - started) / 1_000_000_000, 6
@@ -105,6 +110,7 @@ def execute(directory: Path) -> dict[str, object]:
         },
         "error": error,
         "synthetic_only": True,
+        "governed_input_reconstruction": "not_applicable_synthetic_workload",
         "core_dependency_added": False,
     }
 

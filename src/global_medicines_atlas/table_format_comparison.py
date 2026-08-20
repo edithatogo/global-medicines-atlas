@@ -183,6 +183,11 @@ def run_table_format(engine: str, directory: Path) -> dict[str, Any]:
         },
         "correctness_verified": outcome == "passed",
         "historical_recovery_verified": historical_recovery,
+        "conflict_behavior": "not_exercised_single_writer_workload",
+        "compaction": "not_exercised_bounded_workload",
+        "portability": (
+            "engine_neutral_records_and_oracle; engine_specific_physical_readback"
+        ),
         "final_records": _normalized(final_records),
         "elapsed_seconds": round((completed - started) / 1_000_000_000, 6),
         "peak_rss_delta_native_units": max(0, after_memory - before_memory),
@@ -192,5 +197,6 @@ def run_table_format(engine: str, directory: Path) -> dict[str, Any]:
         },
         "error": error,
         "synthetic_only": True,
+        "governed_input_reconstruction": "not_applicable_synthetic_workload",
         "core_dependency_added": False,
     }

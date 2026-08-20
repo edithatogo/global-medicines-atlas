@@ -16,3 +16,4 @@ def test_git_mechanics_exercises_conflict_rollback_and_restore(
     assert receipt["observed_restore_seconds"] >= 0
     assert receipt["core_dependency_added"] is False
     assert "immutable_history" in receipt["claims_explicitly_not_established"]
+    assert receipt["operations"]["retention_reference_verified"] is True

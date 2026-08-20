@@ -35,6 +35,11 @@ def test_iceberg_ready_baseline_runs_common_workload(tmp_path: Path) -> None:
         "expected_final_rows": 2,
     }
     assert receipt["core_dependency_added"] is False
+    assert (
+        receipt["conflict_behavior"] == "not_exercised_single_writer_workload"
+    )
+    assert receipt["compaction"] == "not_exercised_bounded_workload"
+    assert "engine_neutral" in receipt["portability"]
 
 
 def test_missing_optional_engine_becomes_failure_evidence(

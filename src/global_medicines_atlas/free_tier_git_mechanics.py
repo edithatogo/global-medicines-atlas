@@ -80,6 +80,9 @@ def run_git_mechanics(work_root: Path) -> dict[str, Any]:  # ruff: ignore[too-ma
     )
     restored_inventory = _inventory(restored)
     restored_commit = _git(restored, "rev-parse", "HEAD").stdout.strip()
+    retained_tag_commit = _git(
+        restored, "rev-list", "-n", "1", "accepted-v1"
+    ).stdout.strip()
     completed = time.monotonic_ns()
     rollback_contents = _git(
         restored, "show", f"{initial_commit}:evidence.json"
@@ -96,6 +99,8 @@ def run_git_mechanics(work_root: Path) -> dict[str, Any]:  # ruff: ignore[too-ma
             "rollback_read_verified": json.loads(rollback_contents)["revision"]
             == 1,
             "clean_restore_verified": inventory == restored_inventory,
+            "retention_reference_verified": retained_tag_commit
+            == accepted_commit,
         },
         "commits": {
             "initial": initial_commit,
