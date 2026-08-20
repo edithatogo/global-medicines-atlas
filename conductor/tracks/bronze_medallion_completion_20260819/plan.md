@@ -342,3 +342,10 @@ for credentialed or rights-unresolved sources.
     - [ ] Retry the 90 exact FDA Archive-It releases under a respectful failure-receipt schedule
     - [ ] Establish a complete official inventory of prior structured ZIP releases and historical annual editions, or retain an explicit unavailable disposition
     - [ ] Keep historical completeness, coverage, public release, and external publication fail closed until separately evidenced and approved
+- [x] Task: Complete the current FDA NDC Directory family (Prompt 17)
+    - [x] Resolve and acquire the finished, unfinished, compounder, excluded, and complete openFDA current bulk surfaces under the approved internal-only U.S. cohort
+    - [x] Preserve immutable ZIP payloads, source-native TXT/XLS aliases, product/package grain, receipts, rights, admission, and temporal identity
+    - [x] Project and clean-room reconstruct 1,122,796 source-native rows across five accepted release products
+    - [x] Create and verify the 403,507,200-byte private TAR with SHA-256 `df73bb27c0e9f10881631a267f1b1a3be55bae0605431d80f168ba6ea0fa75f1`
+    - [x] Reconcile Prompt 17 as live complete while preserving the invariant that NDC listing does not establish FDA approval
+    - [x] Keep public release, external publication, and historical daily-snapshot coverage outside this qualification
