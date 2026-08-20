@@ -2,8 +2,8 @@
   "schema_id": "global-medicines-atlas.bronze-maturity-qualification",
   "schema_version": 1,
   "horizon": "bronze-current-public-scope",
-  "evaluated_at": "2026-08-20T05:22:06.875657+00:00",
-  "git_commit": "7d464d219474d7669793107f4cf98fc0aeb8e9f8",
+  "evaluated_at": "2026-08-20T05:48:36.090534+00:00",
+  "git_commit": "53b26713d62f73caf6e73f86420239c9a20dc679",
   "authorities": {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -28,7 +28,7 @@
       "blocker_ids": [
         "bronze-ingest-incomplete"
       ],
-      "notes": "146 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
+      "notes": "136 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
     },
     {
       "property_id": "immutability",
@@ -233,7 +233,7 @@
   "residual_risks": [
     {
       "risk_id": "RISK-001",
-      "description": "146 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "136 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "disposition": "unresolved",
       "blocking": true,
       "evidence": [
@@ -294,7 +294,7 @@
     {
       "blocker_id": "bronze-ingest-incomplete",
       "property_id": "completeness",
-      "description": "146 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "136 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "evidence": [
         "src/global_medicines_atlas/data/medicine_source_catalog.json",
         "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
@@ -333,7 +333,7 @@
     "bronze_in_scope_count": 152,
     "fixture_only_count": 2,
     "excluded_count": 18,
-    "in_scope_without_landing_or_blocker": 146,
+    "in_scope_without_landing_or_blocker": 136,
     "missing_coverage_is_not_negative_evidence": true
   }
 }
