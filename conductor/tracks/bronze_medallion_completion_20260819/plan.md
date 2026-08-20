@@ -250,6 +250,9 @@ before any hot-path rewrite. Python remains orchestration.
     - [x] Fault-isolate source-record parsing so one schema drift cannot stop the authorized acquisition batch or clean-room recovery
     - [x] Exercise malformed objects, technical-column collisions, alternate encoding, blank and short rows, header failures, fallback identities, and media mismatch
     - [x] Raise `us_source_records.py` changed-line coverage to 100% without weakening the Codecov patch gate
+- [x] Task: CI repair for NSDE prompt qualification (`a575926`)
+    - [x] Apply the repository-wide Ruff formatter to the new qualification assertion
+    - [x] Re-run formatting, lint, `ty`, context, ecosystem, and JavaScript-style routine gates locally
 - [x] Task: Phase Verification & Checkpoint
     - [x] Run focused, integration, and source-boundary tests
     - [x] Measure completeness with S-012 denominators; missing coverage is not negative evidence
