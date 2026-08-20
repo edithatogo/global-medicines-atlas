@@ -103,7 +103,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_openlineage_conformance.py",
         "tests/test_iceberg_ready.py",
         "tests/test_iceberg_interop.py",
-        "tests/test_datahouse_experiments.py",
+        "tests/test_datahouse_experiment_matrix.py",
         "tests/test_batch_attestation.py",
         "tests/test_ducklake_experiment.py",
         "tests/test_experiment_prerequisites.py",

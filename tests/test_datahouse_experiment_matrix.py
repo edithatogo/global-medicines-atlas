@@ -11,7 +11,7 @@ from typing import cast
 import pytest
 from pydantic import ValidationError
 
-from global_medicines_atlas.datahouse_experiments import (
+from global_medicines_atlas.datahouse_experiment_matrix import (
     ALL_EXPERIMENTS,
     ExperimentMatrix,
     ExperimentOutcome,
