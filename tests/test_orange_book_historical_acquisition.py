@@ -21,7 +21,7 @@ AUTHORIZATION = (
     ROOT / "quality/qualifications/orange-book-historical-authorization.json"
 )
 QUALIFICATION = (
-    ROOT / "quality/qualifications/orange-book-historical-corpus-20260820.json"
+    ROOT / "quality/qualifications/orange-book-historical-corpus-20260821.json"
 )
 
 
@@ -53,8 +53,11 @@ def test_committed_live_qualification_is_partial_internal_evidence():
     assert qualification["coverage_complete"] is False
     assert qualification["historical_inventory_complete"] is False
     assert qualification["inventoried_release_count"] == 259
-    assert qualification["unique_acquisition_succeeded_count"] == 169
-    assert qualification["unique_acquisition_failed_count"] == 90
+    assert qualification["unique_acquisition_succeeded_count"] == 200
+    assert qualification["unique_acquisition_failed_count"] == 59
+    assert qualification["unique_accepted_count"] == 18
+    assert qualification["unique_quarantined_count"] == 182
+    assert qualification["unique_payload_byte_count"] == 59737593
     assert qualification["source_record_rows"] == 73239
     assert all(
         archive["checksum_verified"]
@@ -63,9 +66,9 @@ def test_committed_live_qualification_is_partial_internal_evidence():
     assert qualification["failure_scope"] == {
         "host": "wayback.archive-it.org",
         "failure_code": "http_status",
-        "failed_release_count": 90,
+        "failed_release_count": 59,
         "observed_rate_limit_status": 429,
-        "bounded_correction_passes": 3,
+        "bounded_correction_passes": 4,
         "retry_required": True,
     }
 
