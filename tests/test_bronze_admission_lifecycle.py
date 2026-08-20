@@ -8,9 +8,11 @@ from pathlib import Path
 import pytest
 from tests.test_source_receipts import source_receipt
 
+from global_medicines_atlas import bronze_landing
 from global_medicines_atlas.bronze_admission import (
     BronzeAdmissionState,
     DownstreamAdmissionError,
+    admit_bronze_landing,
     create_admission_decision,
     latest_admission_decision,
     persist_admission_decision,
@@ -21,6 +23,9 @@ from global_medicines_atlas.bronze_landing import (
     BronzeLanding,
     land_bronze_payload,
     regenerate_parquet,
+)
+from global_medicines_atlas.bronze_transformation import (
+    TransformationRunReceipt,
 )
 from global_medicines_atlas.receipts import (
     PayloadEvidence,
@@ -311,6 +316,13 @@ def test_review_defaults_to_latest_durable_predecessor(tmp_path: Path) -> None:
 
     assert reviewed.supersedes_decision_id == outcome.admission.decision_id
 
+    automated = admit_bronze_landing(
+        outcome,
+        decided_at=NOW + timedelta(minutes=2),
+    )
+    assert automated.state is BronzeAdmissionState.ACCEPTED
+    assert automated.supersedes_decision_id == reviewed.decision_id
+
 
 @pytest.mark.unit
 def test_transformation_cannot_precede_admission(tmp_path: Path) -> None:
@@ -321,5 +333,33 @@ def test_transformation_cannot_precede_admission(tmp_path: Path) -> None:
             bronze_root=tmp_path / "bronze",
             media_hint="json",
             admission_decided_at=NOW + timedelta(seconds=1),
+            transformation_completed_at=NOW,
+        )
+
+
+@pytest.mark.unit
+def test_transformation_requires_durable_run_path(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def discard_path(
+        receipt: TransformationRunReceipt,
+        **_kwargs: object,
+    ) -> TransformationRunReceipt:
+        return receipt
+
+    monkeypatch.setattr(
+        bronze_landing,
+        "write_transformation_run_receipt",
+        discard_path,
+    )
+
+    with pytest.raises(ValueError, match="receipt path is required"):
+        land_bronze_payload(
+            VALID,
+            _receipt(VALID),
+            bronze_root=tmp_path / "bronze",
+            media_hint="json",
+            admission_decided_at=NOW,
             transformation_completed_at=NOW,
         )

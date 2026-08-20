@@ -20,6 +20,8 @@ from tests.test_source_receipts import source_receipt
 
 from global_medicines_atlas.bronze_admission import (
     BronzeAdmissionState,
+    create_admission_decision,
+    persist_admission_decision,
     record_admission_decision,
 )
 from global_medicines_atlas.bronze_landing import (
@@ -79,12 +81,14 @@ def _landable(
 
 
 def _seed_store(root: Path, payload: bytes = PAYLOAD) -> BronzeLanding:
-    return land_bronze_payload(
+    landing = land_bronze_payload(
         payload,
         _landable(payload),
         bronze_root=root,
         media_hint="json",
     )
+    assert isinstance(landing, BronzeLanding)
+    return landing
 
 
 def _acquisition_id(landing: BronzeLanding) -> str:
@@ -214,6 +218,7 @@ def test_interrupted_acquisition_fails_closed_then_resumes(
         receipt=receipt,
         media_hint="json",
     )
+    assert isinstance(landing, BronzeLanding)
     evidence = reconstruct_bronze(bronze)
 
     assert landing.payload_path.read_bytes() == PAYLOAD
@@ -284,6 +289,30 @@ def test_recovery_respects_superseding_rejection(tmp_path: Path) -> None:
 
 
 @pytest.mark.unit
+def test_recovery_rejects_branched_admission_history(tmp_path: Path) -> None:
+    bronze = tmp_path / "bronze"
+    landing = _seed_store(bronze)
+    temporal = require_temporal(landing.receipt.temporal)
+    independent = create_admission_decision(
+        acquisition_id=temporal.acquisition_id,
+        content_id=temporal.content_id or landing.receipt.payload.sha256,
+        state=BronzeAdmissionState.ACCEPTED,
+        reason_codes=("independent_review",),
+        actor="maintainer:review",
+        decided_at=NOW + timedelta(minutes=1),
+    )
+    persist_admission_decision(
+        independent,
+        receipt_path=landing.receipt_path,
+        receipt=landing.receipt,
+    )
+    landing.parquet_path.unlink()
+
+    with pytest.raises(BronzeRecoveryError, match="one unsuperseded"):
+        reconstruct_bronze(bronze)
+
+
+@pytest.mark.unit
 def test_partial_storage_loss_rebuilds_analytical_layers(
     tmp_path: Path,
 ) -> None:
@@ -324,6 +353,8 @@ def test_duplicate_retrieval_keeps_one_payload_two_acquisitions(
         bronze_root=bronze,
         media_hint="json",
     )
+    assert isinstance(first, BronzeLanding)
+    assert isinstance(second, BronzeLanding)
 
     evidence = reconstruct_bronze(bronze)
 

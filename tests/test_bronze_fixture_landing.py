@@ -288,10 +288,13 @@ def test_fixture_projection_guards_fail_closed(
     outcome: object,
     message: str,
 ) -> None:
+    def return_outcome(*_args: object, **_kwargs: object) -> object:
+        return outcome
+
     monkeypatch.setattr(
         fixture_landing,
         "land_bronze_payload",
-        lambda *_args, **_kwargs: outcome,
+        return_outcome,
     )
     if isinstance(outcome, SimpleNamespace):
         monkeypatch.setattr(fixture_landing, "BronzeLanding", SimpleNamespace)
