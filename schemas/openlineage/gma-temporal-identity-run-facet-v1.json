@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.org/schemas/openlineage/gma-temporal-identity-run-facet-v1.json",
+  "title": "GmaTemporalIdentityRunFacet",
+  "description": "Source-native and retrieval clocks for one acquisition.",
+  "x-openlineage-facet-key": "gma_temporalIdentity",
+  "allOf": [
+    {"$ref": "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/RunFacet"},
+    {
+      "type": "object",
+      "required": ["sourcePublishedAt", "sourceEffectiveAt", "retrievedAt", "validFrom", "validTo"],
+      "properties": {
+        "sourcePublishedAt": {"type": ["string", "null"], "format": "date-time"},
+        "sourceEffectiveAt": {"type": ["string", "null"], "format": "date-time"},
+        "retrievedAt": {"type": "string", "format": "date-time"},
+        "validFrom": {"type": ["string", "null"], "format": "date-time"},
+        "validTo": {"type": ["string", "null"], "format": "date-time"}
+      }
+    }
+  ]
+}

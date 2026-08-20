@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.org/schemas/openlineage/gma-iceberg-ready-dataset-facet-v1.json",
+  "title": "GmaIcebergReadyDatasetFacet",
+  "description": "Rebuildable Iceberg-ready identity not represented by standard catalogue metadata.",
+  "x-openlineage-facet-key": "gma_icebergReady",
+  "allOf": [
+    {"$ref": "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/DatasetFacet"},
+    {
+      "type": "object",
+      "required": ["identifier", "location", "partitionFields", "formatVersion"],
+      "properties": {
+        "identifier": {"type": "string", "minLength": 1},
+        "location": {"type": "string", "minLength": 1},
+        "partitionFields": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["sourceField", "name", "transform"],
+            "properties": {
+              "sourceField": {"type": "string", "minLength": 1},
+              "name": {"type": "string", "minLength": 1},
+              "transform": {"type": "string", "minLength": 1}
+            },
+            "additionalProperties": false
+          }
+        },
+        "formatVersion": {"type": "integer", "minimum": 1}
+      }
+    }
+  ]
+}

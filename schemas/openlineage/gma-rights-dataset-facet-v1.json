@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.org/schemas/openlineage/gma-rights-dataset-facet-v1.json",
+  "title": "GmaRightsDatasetFacet",
+  "description": "Rights state and native evidence reference without a licensing conclusion.",
+  "x-openlineage-facet-key": "gma_rights",
+  "allOf": [
+    {"$ref": "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/DatasetFacet"},
+    {
+      "type": "object",
+      "required": ["rightsState", "rightsReference"],
+      "properties": {
+        "rightsState": {"type": "string", "minLength": 1},
+        "rightsReference": {"type": ["string", "null"]}
+      }
+    }
+  ]
+}

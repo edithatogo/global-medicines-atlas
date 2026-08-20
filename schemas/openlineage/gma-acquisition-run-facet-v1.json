@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.org/schemas/openlineage/gma-acquisition-run-facet-v1.json",
+  "title": "GmaAcquisitionRunFacet",
+  "description": "Native acquisition identity projected onto an OpenLineage acquisition run.",
+  "x-openlineage-facet-key": "gma_acquisition",
+  "allOf": [
+    {"$ref": "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/RunFacet"},
+    {
+      "type": "object",
+      "required": ["acquisitionId", "contentId", "sourceId", "catalogVersion"],
+      "properties": {
+        "acquisitionId": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "contentId": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "sourceId": {"type": "string", "minLength": 1},
+        "catalogVersion": {"type": "integer", "minimum": 1},
+        "sourceVersion": {"type": ["string", "null"]}
+      }
+    }
+  ]
+}

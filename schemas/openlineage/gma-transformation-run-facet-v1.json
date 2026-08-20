@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.org/schemas/openlineage/gma-transformation-run-facet-v1.json",
+  "title": "GmaTransformationRunFacet",
+  "description": "Native transformation-run identity and actual output digest.",
+  "x-openlineage-facet-key": "gma_transformation",
+  "allOf": [
+    {"$ref": "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/RunFacet"},
+    {
+      "type": "object",
+      "required": [
+        "transformationRunId",
+        "acquisitionId",
+        "inputContentId",
+        "parserIdentity",
+        "transformationIdentity",
+        "codeCommit",
+        "outputSchemaVersion",
+        "environmentSha256",
+        "outputSha256",
+        "outputByteCount"
+      ],
+      "properties": {
+        "transformationRunId": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "acquisitionId": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "inputContentId": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "parserIdentity": {"type": "string", "minLength": 1},
+        "transformationIdentity": {"type": "string", "minLength": 1},
+        "codeCommit": {"type": "string", "pattern": "^[0-9a-f]{40,64}$"},
+        "outputSchemaVersion": {"type": "string", "minLength": 1},
+        "environmentSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "outputSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "outputByteCount": {"type": "integer", "minimum": 0}
+      }
+    }
+  ]
+}
