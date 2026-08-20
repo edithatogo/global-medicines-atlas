@@ -20,12 +20,18 @@ from typing import Literal
 import orjson
 from pydantic import Field
 
+from .bronze_admission import (
+    DownstreamAdmissionError,
+    latest_admission_for_receipt,
+    require_admitted_for_processing,
+)
 from .bronze_landing import (
     ACQUISITION_DIR,
     LINEAGE_DIR,
     PARQUET_DIR,
     PAYLOAD_DIR,
     RECEIPT_DIR,
+    BronzeAcquisition,
     BronzeLanding,
     land_bronze_payload,
     write_rebuildable_layers,
@@ -204,7 +210,7 @@ def resume_interrupted_acquisition(
     payload: bytes,
     receipt: SourceReceipt,
     media_hint: str | None = None,
-) -> BronzeLanding:
+) -> BronzeAcquisition | BronzeLanding:
     """Finish an acquisition after payload staging without rewriting bytes."""
 
     temporal = require_temporal(receipt.temporal)
@@ -302,14 +308,43 @@ def _rebuild_one(
         / source_id
         / f"{temporal.acquisition_id}.openlineage.json"
     )
-    spec = write_rebuildable_layers(
-        receipt,
-        payload,
-        payload_path=payload_path,
-        parquet_path=parquet_path,
-        lineage_path=lineage_path,
-        bronze_root=bronze_root,
-    )
+    try:
+        admission = latest_admission_for_receipt(
+            receipt_path=receipt_path,
+            receipt=receipt,
+        )
+    except DownstreamAdmissionError as error:
+        admission_dir = (
+            bronze_root / "admissions" / source_id / temporal.acquisition_id
+        )
+        if any(admission_dir.glob("*.json")):
+            raise BronzeRecoveryError(str(error)) from error
+        outcome = land_bronze_payload(
+            payload,
+            receipt,
+            bronze_root=bronze_root,
+            media_hint=payload_path.suffix.lstrip("."),
+            admission_decided_at=temporal.retrieved_at,
+            transformation_completed_at=temporal.retrieved_at,
+        )
+        if not isinstance(outcome, BronzeLanding):
+            return None, content_id, had_extra
+        parquet_path = outcome.parquet_path
+        spec = outcome.table
+    else:
+        try:
+            require_admitted_for_processing(admission)
+        except DownstreamAdmissionError:
+            return None, content_id, had_extra
+        spec = write_rebuildable_layers(
+            receipt,
+            payload,
+            payload_path=payload_path,
+            parquet_path=parquet_path,
+            lineage_path=lineage_path,
+            bronze_root=bronze_root,
+            admission=admission,
+        )
     _write_catalogue(bronze_root, spec)
     _ensure_acquisition_event(bronze_root, receipt, content_id=content_id)
     landing = RecoveredLandingEvidence(

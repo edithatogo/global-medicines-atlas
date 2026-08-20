@@ -118,7 +118,10 @@ def test_unknown_media_uses_bin_and_digest_must_match(tmp_path) -> None:
             media_hint="json",
         )
 
-    missing_reuse = replace(landing, receipt=source_receipt())
+    missing_reuse = replace(
+        landing,
+        receipt=landing.receipt.model_copy(update={"reuse": None}),
+    )
     with pytest.raises(ValueError, match="reuse gate"):
         regenerate_parquet(missing_reuse)
 

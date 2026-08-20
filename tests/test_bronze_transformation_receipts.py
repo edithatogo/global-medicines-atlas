@@ -131,7 +131,7 @@ def test_three_receipt_types_are_separate_and_append_only(
     assert second.path.is_file()
     assert second.supersedes_decision_id == first.decision_id
     admissions = tuple((tmp_path / "bronze" / "admissions").rglob("*.json"))
-    assert len(admissions) == 2
+    assert len(admissions) == 4
 
 
 @pytest.mark.edge

@@ -426,16 +426,18 @@ def test_rebuild_fails_closed_if_receipt_bytes_change(
 def test_reconstructed_parquet_digest_tracks_payload(payload: bytes) -> None:
     with tempfile.TemporaryDirectory() as raw:
         bronze = Path(raw)
+        admitted_payload = json.dumps({"value": payload.hex()}).encode()
         landing = land_bronze_payload(
-            payload,
-            _landable(payload),
+            admitted_payload,
+            _landable(admitted_payload),
             bronze_root=bronze,
-            media_hint="bin",
+            media_hint="json",
         )
+        assert isinstance(landing, BronzeLanding)
         landing.parquet_path.unlink()
         reconstruct_bronze(bronze)
         table = pq.read_table(landing.parquet_path)
         assert (
             table.column("payload_sha256")[0].as_py()
-            == sha256(payload).hexdigest()
+            == sha256(admitted_payload).hexdigest()
         )

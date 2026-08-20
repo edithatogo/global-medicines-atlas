@@ -11,7 +11,7 @@ artefacts. Parquet is not raw-as-landed and is not bronze evidentiary truth.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 from hashlib import sha256
 from pathlib import Path
 
@@ -19,6 +19,17 @@ import orjson
 import pyarrow as pa
 import pyarrow.parquet as pq
 
+from .bronze_admission import (
+    BronzeAdmissionRecord,
+    BronzeAdmissionState,
+    ValidationResult,
+    create_admission_decision,
+    evaluate_bronze_payload,
+    latest_admission_decision,
+    persist_admission_decision,
+    require_admitted_for_processing,
+)
+from .bronze_integrity import inspect_untrusted_payload
 from .bronze_transformation import (
     TransformationRunReceipt,
     receipt_for_parquet,
@@ -48,16 +59,25 @@ ADMISSION_DIR = "admissions"
 
 
 @dataclass(frozen=True, slots=True)
-class BronzeLanding:
-    """One landed payload plus its analytical Parquet projection."""
+class BronzeAcquisition:
+    """Persisted acquisition evidence plus its admission outcome."""
 
     payload_path: Path
-    parquet_path: Path
     receipt_path: Path
+    acquisition_receipt_path: Path
+    receipt: SourceReceipt
+    landed_admission: BronzeAdmissionRecord
+    admission: BronzeAdmissionRecord
+
+
+@dataclass(frozen=True, slots=True)
+class BronzeLanding(BronzeAcquisition):
+    """An accepted acquisition plus its analytical Parquet projection."""
+
+    parquet_path: Path
     lineage_path: Path
     transformation_receipt_path: Path
     table: IcebergReadyTableSpec
-    receipt: SourceReceipt
     transformation_run: TransformationRunReceipt
 
 
@@ -233,16 +253,18 @@ def _write_analytical_outputs(
     return spec, transformation_run
 
 
-def land_bronze_payload(
+def land_bronze_payload(  # ruff: ignore[too-many-locals]
     payload: bytes,
     receipt: SourceReceipt,
     *,
     bronze_root: Path,
     media_hint: str | None = None,
     reuse: ReuseGateDecision | None = None,
+    admission_actor: str = "global-medicines-atlas:automated-admission-v2",
+    admission_decided_at: datetime | None = None,
     transformation_completed_at: datetime | None = None,
-) -> BronzeLanding:
-    """Persist payload bytes, receipt, analytical Parquet, and lineage."""
+) -> BronzeAcquisition | BronzeLanding:
+    """Stage, admit, and project a payload only after acceptance."""
 
     bound = (
         receipt
@@ -262,8 +284,19 @@ def land_bronze_payload(
         content_id,
         _payload_extension(media_hint),
     )
+    http = getattr(bound.retrieval, "http", None)
+    raw_length = None if http is None else getattr(http, "content_length", None)
+    declared_length = raw_length if isinstance(raw_length, int) else None
+    inspect_untrusted_payload(
+        payload,
+        declared_media=payload_path.suffix,
+        declared_filename=payload_path.name,
+        expected_sha256=bound.payload.sha256,
+        declared_length=declared_length,
+        acquisition_id=temporal.acquisition_id,
+    )
     _store_payload_bytes(payload_path, payload)
-    for folder in (PARQUET_DIR, RECEIPT_DIR, LINEAGE_DIR, ACQUISITION_DIR):
+    for folder in (RECEIPT_DIR, ACQUISITION_DIR):
         (bronze_root / folder / source_id).mkdir(parents=True, exist_ok=True)
     event_path = (
         bronze_root
@@ -282,6 +315,62 @@ def land_bronze_payload(
         / f"{temporal.acquisition_id}.json"
     )
     _write_append_only(receipt_path, bound.canonical_json() + b"\n")
+    staged_at = (
+        admission_decided_at or transformation_completed_at or datetime.now(UTC)
+    )
+    landed_admission = persist_admission_decision(
+        create_admission_decision(
+            acquisition_id=temporal.acquisition_id,
+            content_id=content_id,
+            state=BronzeAdmissionState.LANDED,
+            reason_codes=("awaiting_admission_inspection",),
+            validation_results=(
+                ValidationResult(
+                    check_id="payload-staged",
+                    passed=True,
+                    message="payload and acquisition receipt are persisted",
+                ),
+            ),
+            actor=admission_actor,
+            decided_at=staged_at,
+        ),
+        receipt_path=receipt_path,
+        receipt=bound,
+    )
+    evaluated = evaluate_bronze_payload(payload_path, bound)
+    admission = persist_admission_decision(
+        create_admission_decision(
+            acquisition_id=evaluated.acquisition_id,
+            content_id=evaluated.content_id,
+            state=evaluated.state,
+            reason_codes=evaluated.reason_codes,
+            validation_results=evaluated.validation_results,
+            reviewer_status=evaluated.reviewer_status,
+            actor=admission_actor,
+            decided_at=staged_at,
+            supersedes_decision_id=landed_admission.decision_id,
+        ),
+        receipt_path=receipt_path,
+        receipt=bound,
+    )
+    acquisition = BronzeAcquisition(
+        payload_path=payload_path,
+        receipt_path=receipt_path,
+        acquisition_receipt_path=event_path,
+        receipt=bound,
+        landed_admission=landed_admission,
+        admission=admission,
+    )
+    if admission.state is not BronzeAdmissionState.ACCEPTED:
+        return acquisition
+    require_admitted_for_processing(admission)
+    if (
+        transformation_completed_at is not None
+        and transformation_completed_at < admission.decided_at
+    ):
+        raise ValueError("transformation cannot complete before admission")
+    for folder in (PARQUET_DIR, LINEAGE_DIR):
+        (bronze_root / folder / source_id).mkdir(parents=True, exist_ok=True)
     parquet_path = (
         bronze_root
         / PARQUET_DIR
@@ -307,13 +396,16 @@ def land_bronze_payload(
     if transformation_path is None:
         raise ValueError("transformation run receipt path is required")
     return BronzeLanding(
-        payload_path=payload_path,
+        payload_path=acquisition.payload_path,
+        receipt_path=acquisition.receipt_path,
+        acquisition_receipt_path=acquisition.acquisition_receipt_path,
+        receipt=acquisition.receipt,
+        landed_admission=acquisition.landed_admission,
+        admission=acquisition.admission,
         parquet_path=parquet_path,
-        receipt_path=receipt_path,
         lineage_path=lineage_path,
         transformation_receipt_path=transformation_path,
         table=spec,
-        receipt=bound,
         transformation_run=transformation_run,
     )
 
@@ -326,9 +418,11 @@ def write_rebuildable_layers(
     parquet_path: Path,
     lineage_path: Path,
     bronze_root: Path,
+    admission: BronzeAdmissionRecord,
 ) -> IcebergReadyTableSpec:
     """Rebuild Parquet and lineage; never rewrite payload or receipt bytes."""
 
+    require_admitted_for_processing(admission)
     parquet_path.parent.mkdir(parents=True, exist_ok=True)
     lineage_path.parent.mkdir(parents=True, exist_ok=True)
     spec, _run = _write_analytical_outputs(
@@ -346,6 +440,7 @@ def regenerate_parquet(landing: BronzeLanding) -> Path:
     """Rebuild analytical Parquet from the immutable payload and receipt."""
 
     payload = landing.payload_path.read_bytes()
+    admission = latest_admission_decision(landing)
     write_rebuildable_layers(
         landing.receipt,
         payload,
@@ -353,5 +448,6 @@ def regenerate_parquet(landing: BronzeLanding) -> Path:
         parquet_path=landing.parquet_path,
         lineage_path=landing.lineage_path,
         bronze_root=landing.receipt_path.parents[2],
+        admission=admission,
     )
     return landing.parquet_path

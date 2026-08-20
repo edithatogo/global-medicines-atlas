@@ -671,14 +671,15 @@ def _land_sources(
     landings: list[BronzeLanding] = []
     for index in range(source_count):
         source_id = f"synthetic-scale-{index:03d}"
-        landings.append(
-            land_bronze_payload(
-                payload,
-                _landable_receipt(source_id, payload),
-                bronze_root=bronze_root,
-                media_hint="json",
-            )
+        outcome = land_bronze_payload(
+            payload,
+            _landable_receipt(source_id, payload),
+            bronze_root=bronze_root,
+            media_hint="json",
         )
+        if not isinstance(outcome, BronzeLanding):
+            raise TypeError("synthetic scale payload was not admitted")
+        landings.append(outcome)
     return tuple(landings)
 
 
