@@ -293,6 +293,8 @@ def _faers_table(member: str) -> str | None:
     filename = member.rsplit("/", 1)[-1]
     if not filename.casefold().endswith(".txt"):
         return None
+    if filename.casefold().endswith("deletedcases.txt"):
+        return "deleted_case"
     prefix = filename[:4].upper()
     table = _FAERS_TABLE_PREFIXES.get(prefix)
     if table is None:

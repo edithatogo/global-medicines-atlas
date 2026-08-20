@@ -161,13 +161,15 @@ def test_faers_ascii_archive_preserves_all_source_native_tables() -> None:
         "ascii/RPSR04Q1.TXT": "ISR$RPSR_COD\n1$MD\n",
         "ascii/THER04Q1.TXT": "ISR$DRUG_SEQ$START_DT\n1$1$20040101\n",
         "ascii/STAT04Q1.TXT": "STATISTIC$VALUE\nCASES$1\n",
+        "deleted/ADR04Q1DeletedCases.txt": "CASEID\n10\n",
+        "deleted/AllDeletedCases.txt": "CASEID\n11\n",
         "README.doc": b"source documentation",
     })
 
     batch = us_source_record_batch("us-fda-faers", payload, "zip")
 
     assert batch is not None
-    assert batch.table.num_rows == 8
+    assert batch.table.num_rows == 10
     assert set(batch.table.column("source_table").to_pylist()) == {
         "demographic",
         "drug",
@@ -177,6 +179,7 @@ def test_faers_ascii_archive_preserves_all_source_native_tables() -> None:
         "reporter",
         "statistics",
         "therapy",
+        "deleted_case",
     }
     assert "CASE" in batch.table.column_names
     assert "DRUGNAME" in batch.table.column_names

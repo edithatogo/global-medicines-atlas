@@ -5,6 +5,7 @@ from __future__ import annotations
 import io
 import json
 import re
+import shutil
 import zipfile
 from datetime import UTC, datetime
 from pathlib import Path
@@ -231,6 +232,52 @@ def test_runner_acquires_by_verified_ranges_lands_recovers_and_archives(
     assert (
         (output / "SHA256SUMS").read_text().startswith(manifest.archive_sha256)
     )
+
+    with pytest.raises(FileExistsError, match="finalized"):
+        exercise_faers_history(
+            repository_root=ROOT,
+            output_dir=output,
+            authorization_path=authorization,
+            transport=httpx.MockTransport(handler),
+            observed_at=datetime(2026, 8, 22, tzinfo=UTC),
+            resume=True,
+        )
+
+    repaired_item = next(
+        item
+        for item in manifest.items
+        if item.item_id == "2026-Q2" and item.acquisition_id is not None
+    )
+    product = (
+        output
+        / "runs/corpus/bronze/parquet/us-fda-faers"
+        / repaired_item.acquisition_id
+        / "source_records.parquet"
+    )
+    product.unlink()
+    shutil.rmtree(output / "runs/corpus/clean-room")
+    for filename in (
+        "faers-history.private.tar",
+        "faers-history.manifest.json",
+        "SHA256SUMS",
+    ):
+        (output / filename).unlink()
+
+    resumed = exercise_faers_history(
+        repository_root=ROOT,
+        output_dir=output,
+        authorization_path=authorization,
+        transport=httpx.MockTransport(
+            lambda _: pytest.fail("resume must not reacquire retained payloads")
+        ),
+        observed_at=datetime(2026, 8, 22, tzinfo=UTC),
+        resume=True,
+    )
+
+    assert resumed.release_count == 2
+    assert resumed.source_record_projection_count == 2
+    assert resumed.source_record_parquet_pairs_byte_identical == 2
+    assert product.is_file()
 
 
 def test_runner_rejects_inventory_gap_before_release_download(
