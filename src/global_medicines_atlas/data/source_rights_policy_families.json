@@ -1,0 +1,54 @@
+{
+  "schema_id": "global-medicines-atlas.source-rights-policy-families",
+  "schema_version": 1,
+  "observed_at": "2026-08-21T00:00:00Z",
+  "families": {
+    "fda-website-public-domain": {
+      "evidence": [
+        {
+          "official_url": "https://www.fda.gov/about-fda/about-website/website-policies",
+          "observed_at": "2026-08-21T00:00:00Z",
+          "content_sha256": "3931902d3d2acba8acd2f44c959645755802b7ddb09d62aec9e96654d68b97e2",
+          "scope": "authority",
+          "reuse_statement": "Unless otherwise noted, FDA website text and graphics are public domain and may be reused; FDA recommends source credit, retrieval date, and a link to current material."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
+      "disposition": "approved_public_source",
+      "attribution": "Credit the U.S. Food and Drug Administration, include the exact source URL and retrieval date, and identify any transformation.",
+      "field_exclusions": [
+        "material marked as third-party, copyrighted, or separately licensed",
+        "FDA names, logos, seals, and marks as branding",
+        "claims of approval, safety, efficacy, causality, equivalence, or reimbursement not stated by the source"
+      ],
+      "review_trigger": "FDA policy, endpoint notice, source schema, or sensitivity change"
+    },
+    "openfda-cc0": {
+      "evidence": [
+        {
+          "official_url": "https://open.fda.gov/terms/",
+          "observed_at": "2026-08-21T00:00:00Z",
+          "content_sha256": "f1c9fa3daaa6c816340ea0d714d81817d61926ea07336cd0b755a0a1dd8cb336",
+          "scope": "authority",
+          "reuse_statement": "Unless otherwise noted, openFDA content and data are public domain under CC0; marked third-party content is excluded from that dedication."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
+      "disposition": "approved_public_source",
+      "attribution": "Data provided by the U.S. Food and Drug Administration through openFDA; include endpoint, retrieval date, and transformation notice.",
+      "field_exclusions": [
+        "content marked as third-party or outside CC0",
+        "GMDN terms, descriptions, and other separately licensed terminology",
+        "FDA names, logos, seals, and marks as branding",
+        "claims of approval, safety, efficacy, causality, equivalence, or reimbursement not stated by the source"
+      ],
+      "review_trigger": "openFDA terms, endpoint warning, source schema, or sensitivity change"
+    }
+  }
+}

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections import Counter
+from datetime import datetime, timedelta
 from enum import StrEnum
 from typing import Literal, Self
 
@@ -180,6 +181,9 @@ class SourceRightsReview(FrozenModel):
 def validate_catalogue_reviews(
     source_ids: tuple[str, ...],
     reviews: tuple[SourceRightsReview, ...],
+    *,
+    as_of: datetime | None = None,
+    max_evidence_age: timedelta = timedelta(days=365),
 ) -> None:
     """Require exactly one source rights review per catalogue source."""
 
@@ -198,3 +202,17 @@ def validate_catalogue_reviews(
             f"source rights coverage mismatch; missing={missing}, "
             f"unexpected={unexpected}"
         )
+    if as_of is None:
+        return
+    for review in reviews:
+        if review.reviewed_at > as_of:
+            raise ValueError(
+                f"source rights review is future-dated: {review.source_id}"
+            )
+        for evidence in review.evidence:
+            if evidence.observed_at > review.reviewed_at:
+                raise ValueError(
+                    f"rights evidence postdates its review: {review.source_id}"
+                )
+            if as_of - evidence.observed_at > max_evidence_age:
+                raise ValueError(f"stale rights evidence: {review.source_id}")

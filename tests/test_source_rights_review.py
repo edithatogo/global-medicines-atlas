@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -120,6 +120,30 @@ def test_catalogue_review_requires_exact_source_coverage() -> None:
         validate_catalogue_reviews(("first", "second"), (first,))
     with pytest.raises(ValueError, match="duplicate"):
         validate_catalogue_reviews(("first",), (first, first))
+
+
+def test_catalogue_review_rejects_stale_or_temporally_invalid_evidence() -> (
+    None
+):
+    stale = _review(
+        evidence=(
+            _evidence().model_copy(
+                update={"observed_at": NOW - timedelta(days=366)}
+            ),
+        )
+    )
+    with pytest.raises(ValueError, match="stale"):
+        validate_catalogue_reviews(("example-source",), (stale,), as_of=NOW)
+
+    future = _review(
+        evidence=(
+            _evidence().model_copy(
+                update={"observed_at": NOW + timedelta(seconds=1)}
+            ),
+        )
+    )
+    with pytest.raises(ValueError, match="postdates"):
+        validate_catalogue_reviews(("example-source",), (future,), as_of=NOW)
 
 
 def test_public_evidence_must_be_content_digested() -> None:

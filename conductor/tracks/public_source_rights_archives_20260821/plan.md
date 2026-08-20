@@ -2,11 +2,11 @@
 
 ## Phase 1: Inventory and rights contracts
 
-- [~] Task: Establish the 172-source rights ledger, schemas, validators, and tests (AC-01, AC-02)
-  - [ ] Capture the exact catalogue census and source-family groupings
-  - [ ] Add negative tests for missing, duplicate, stale, unsupported, and contradictory decisions
-  - [ ] Implement deterministic rights evidence and disposition generation
-- [ ] Checkpoint: Review and validate Phase 1
+- [x] Task: Establish the 172-source rights ledger, schemas, validators, and tests (AC-01, AC-02)
+  - [x] Capture the exact catalogue census and source-family groupings
+  - [x] Add negative tests for missing, duplicate, stale, unsupported, and contradictory decisions
+  - [x] Implement deterministic rights evidence and disposition generation
+- [~] Checkpoint: Local focused validation passes; hosted review remains pending
 
 ## Phase 2: FDA rights review and proposed public packages
 
