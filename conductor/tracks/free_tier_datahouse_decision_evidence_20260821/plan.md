@@ -64,6 +64,11 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     - [ ] Reconcile GitHub issues, public Hugging Face revision, receipts, metadata, and registry
     - [ ] Preserve the final technology-promotion decision for the maintainer
 
+## Review Fixes
+
+- [x] Task: Make retained-reference, conflict, compaction, portability, and reconstruction outcomes explicit (`a314d80`)
+- [x] Task: Regenerate digest-bound local and public receipts after review remediation (`3addadc`)
+
 ## GitHub hierarchy
 
 - Parent issue: [#231](https://github.com/edithatogo/global-medicines-atlas/issues/231)
