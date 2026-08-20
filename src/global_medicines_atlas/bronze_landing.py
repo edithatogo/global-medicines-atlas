@@ -277,10 +277,36 @@ def land_bronze_payload(
     )
 
 
+def write_rebuildable_layers(
+    receipt: SourceReceipt,
+    payload: bytes,
+    *,
+    payload_path: Path,
+    parquet_path: Path,
+    lineage_path: Path,
+) -> IcebergReadyTableSpec:
+    """Rebuild Parquet and lineage; never rewrite payload or receipt bytes."""
+
+    parquet_path.parent.mkdir(parents=True, exist_ok=True)
+    lineage_path.parent.mkdir(parents=True, exist_ok=True)
+    return _write_analytical_outputs(
+        receipt,
+        payload,
+        payload_path=payload_path,
+        parquet_path=parquet_path,
+        lineage_path=lineage_path,
+    )
+
+
 def regenerate_parquet(landing: BronzeLanding) -> Path:
     """Rebuild analytical Parquet from the immutable payload and receipt."""
 
     payload = landing.payload_path.read_bytes()
-    table = _analytical_table(landing.receipt, payload)
-    pq.write_table(table, landing.parquet_path)
+    write_rebuildable_layers(
+        landing.receipt,
+        payload,
+        payload_path=landing.payload_path,
+        parquet_path=landing.parquet_path,
+        lineage_path=landing.lineage_path,
+    )
     return landing.parquet_path

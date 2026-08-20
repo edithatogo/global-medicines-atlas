@@ -122,8 +122,8 @@ def test_bronze_track_artifacts_are_complete_and_tdd_shaped() -> None:
     assert metadata["github_issue"].endswith("/issues/167")
     assert set(metadata["requirements"]) >= BRONZE_MUST
     assert "Write failing tests" in plan
-    assert plan.count("Write failing tests") >= 7
-    assert plan.count(failure_note) == 7
+    assert plan.count("Write failing tests") >= 8
+    assert plan.count(failure_note) >= 8
     assert "Phase Verification & Checkpoint" in plan
     assert "## Phase 2: Pre-acquisition reuse gate" in plan
     assert "temporal identity" in plan.lower()
