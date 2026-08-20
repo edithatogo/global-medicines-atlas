@@ -8,8 +8,8 @@ Silver transformations included: **no**.
 ## State summary
 
 - `landed_and_evidenced`: 16
-- `temporarily_unavailable`: 0
-- `rights_blocked`: 45
+- `temporarily_unavailable`: 1
+- `rights_blocked`: 44
 - `credentialed_and_excluded`: 18
 - `manual_only_documented_acquisition`: 93
 - `superseded_by_reused_source`: 0
@@ -63,7 +63,7 @@ Silver transformations included: **no**.
 - [x] `us-fda-faers` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `us-fda-ndc-directory` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `us-fda-nsde` — `rights_blocked`; record source-specific retention and transformation rights.
-- [ ] `us-fda-orange-book` — `rights_blocked`; record source-specific retention and transformation rights.
+- [ ] `us-fda-orange-book` — `temporarily_unavailable`; retry under the failure-receipt schedule.
 
 ## `paginated_rest_api`
 

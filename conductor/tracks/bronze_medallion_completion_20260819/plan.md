@@ -331,3 +331,14 @@ for credentialed or rights-unresolved sources.
     - [x] Record blockers honestly; missing coverage is not negative evidence
     - [x] Generate a schema-validated completion audit joining every numbered prompt to its exact queue and measured live-evidence state
     - [x] Keep fixture, catalogue, and archive evidence from satisfying any live-acquisition completion claim
+- [x] Task: Exercise authorized FDA Orange Book historical acquisition and private archiving
+    - [x] Bind the maintainer's Orange Book-only decision to an internal-retention authorization that prohibits public release and external publication
+    - [x] Discover 259 exact current and historical release URLs from the approved FDA and FDA Archive-It surfaces
+    - [x] Exercise reuse, immutable acquisition, receipts, rights binding, admission, source-faithful Parquet, clean-room recovery, private tar archiving, and SHA-256 verification
+    - [x] Preserve 169 unique release payloads across three bounded passes; record 90 Archive-It HTTP 429 outcomes as temporary unavailability
+    - [x] Project 73,239 current structured-ZIP rows without converting therapeutic-equivalence codes into clinical substitutability claims
+    - [x] Reconcile the generated source queue and prompt audit from `rights_blocked` to `temporarily_unavailable` without marking Prompt 16 complete
+- [ ] Task: Complete the FDA Orange Book versioned family (Prompt 16)
+    - [ ] Retry the 90 exact FDA Archive-It releases under a respectful failure-receipt schedule
+    - [ ] Establish a complete official inventory of prior structured ZIP releases and historical annual editions, or retain an explicit unavailable disposition
+    - [ ] Keep historical completeness, coverage, public release, and external publication fail closed until separately evidenced and approved
