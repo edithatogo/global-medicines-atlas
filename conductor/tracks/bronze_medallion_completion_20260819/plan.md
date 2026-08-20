@@ -159,13 +159,22 @@ before any hot-path rewrite. Python remains orchestration.
     - [x] Assert credentials and restricted bytes are never persisted
     - [x] Assert Drugs@FDA ingest runs the reuse gate first
     - [x] Confirm the intended failure before implementation
+- [x] Task: Make source-family landing the dominant generated workstream (`ddc1ecb`)
+    - [x] Write failing factory, state-exhaustiveness, override-evidence, schema, and generated-queue contracts first
+    - [x] Generate standardized configurations for static files, archives, paginated REST APIs, regulator search exports, document collections, and reproducible manual exports
+    - [x] Resolve all 172 catalogue sources to exactly one state without persisting credentials or generating Silver transformations
+    - [x] Generate the versioned JSON Schema, machine-readable queue, and Conductor Markdown projection from catalogue plus sparse overrides
+    - [x] Preserve source-specific rights and credential gates; blockers are work items, not landing evidence
+    - Current generated state is 16 landed-and-evidenced, 45 rights-blocked,
+      18 credentialed-and-excluded, and 93 manual-only. Temporary failure,
+      reused-source, and genuinely-not-yet-implemented states remain explicit
+      zero-count categories until supported by evidence.
 - [~] Task: Implement public ingest and fixture landing for current scope
     - [x] Use existing untrusted acquisition, admission, and first-cohort fixture contracts
     - [x] Inspect truncated downloads, hostile ZIP/tar, decompression bombs, path traversal, MIME mismatch, malformed XML/JSON/CSV, schema poisoning, collisions, source mutation, replays, checksum mismatch, and hostile filenames; land bytes; quarantine processing; keep forensic receipts
     - [x] Land Medsafe, PHARMAC, ARTG, PBS, DPD/NOC, MHRA/NICE, EMA/Union Register, PMDA/NHI, Drugs@FDA, and CMS Part D fixtures (`53b2671`)
     - [x] Leave NZULM bulk, NZHTS, AMT, embargoed PBS, dm+d/TRUD, EMA PMS, SPOR, and live RxNorm payloads excluded
     - [ ] Complete source-specific rights receipts and live landing evidence for the remaining 136 public/no-credential sources; a catalogue blocker is not landing completion
-    - [x] Generate an exhaustive source-family landing queue for all 172 catalogue sources, assigning exactly one fail-closed disposition and one of six reusable adapter families without claiming live coverage (`ddc1ecb`)
 - [x] Task: Phase Verification & Checkpoint
     - [x] Run focused, integration, and source-boundary tests
     - [x] Measure completeness with S-012 denominators; missing coverage is not negative evidence

@@ -147,11 +147,30 @@ in the default install. Use real OpenLineage field names (`eventType`,
 - Tests precede implementation in every phase.
 - External publication remains a human gate.
 
+### Source-family landing factory
+
+The source catalogue is the authoritative work inventory. A deterministic
+factory assigns every catalogue row to one of six reusable acquisition
+families: static files, archive releases, paginated REST APIs, regulator search
+exports, document collections, or reproducible manual exports. It emits a
+standard adapter configuration, acquisition instructions, and exactly one
+current disposition for every source.
+
+Sparse source overrides may record a failure receipt, reuse reference, manual
+procedure, or additional landing evidence. Overrides cannot move a
+credentialed source into public acquisition. Unresolved rights fail closed,
+and a blocker remains a queue item rather than landing evidence. The generated
+JSON queue, JSON Schema, and Conductor Markdown projection are deterministic
+and contain no Silver transformation contract.
+
 ## Acceptance
 
 - Failing tests exist for the bronze contract before landing code is added.
 - Acquisition without the reuse gate fails; each disposition is representable;
   acquire-new is last resort.
+- Every catalogue source occurs exactly once in the generated source-family
+  queue, and all landing dispositions and adapter families remain explicit even
+  when their current count is zero.
 - Temporal fields are distinct; substituting retrieved_at for published time
   fails; valid_* are absent when the source did not supply them; acquisition ID
   is immutable across Parquet regeneration.

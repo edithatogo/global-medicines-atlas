@@ -581,6 +581,17 @@ NZHTS FHIR, AMT RF2, PBS embargo, dm+d/TRUD, EMA PMS, and SPOR. RxNorm/UMLS
 source payloads remain fixture-only because restricted terminology bytes are
 not public bronze.
 
+Source landing is driven by `medicine_source_catalog.json`, not a handwritten
+module per source. `source_landing_factory.py` maps catalogue metadata into six
+standard acquisition families and generates the complete machine-readable
+work queue plus its schema and Conductor projection. The queue assigns exactly
+one fail-closed disposition to each source and carries reusable instructions,
+endpoint, formats, pagination shape, evidence scope, next action, and priority.
+Exceptional failure, reuse, or manual evidence lives in a sparse versioned
+override file. These are acquisition configurations: the existing reuse,
+rights, credential, untrusted-byte admission, and content-addressed receipt
+gates remain authoritative, and no Silver normalization is generated.
+
 Bronze partitions are keyed by jurisdiction, source identifier, dimension, and
 rights state. Each landed file carries source-native identifiers, retrieval and
 effective dates, receipt digest, uncertainty, and an explicit rights expression.

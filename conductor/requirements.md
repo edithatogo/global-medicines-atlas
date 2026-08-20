@@ -240,6 +240,14 @@
   into Parquet, Iceberg, or storage-table identity. Native receipts remain
   authoritative. Events must conform to the current OpenLineage RunEvent
   shape.
+- **M-102:** Make source landing the dominant Bronze workstream through one
+  catalogue-driven factory for static files, archives, paginated APIs,
+  regulator search exports, document collections, and reproducible manual
+  exports. Generate exactly one evidenced landing disposition and one
+  Conductor work item for every catalogued source. Source-specific overrides
+  are sparse, validated evidence; they must not bypass reuse, rights,
+  credential, admission, or receipt gates. The factory configures acquisition
+  only and must not introduce Silver transformations.
 
 ## Should Have
 
