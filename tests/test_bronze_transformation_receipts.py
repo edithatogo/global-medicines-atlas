@@ -82,7 +82,7 @@ def test_actual_parquet_bytes_define_every_parquet_identity(
     parquet = next(
         item
         for item in lineage["outputs"]
-        if item["namespace"] == "gma.parquet"
+        if item["namespace"] == "gma.acquisition_manifest"
     )
     assert parquet["facets"]["version"]["datasetVersion"] == actual_digest
     assert parquet["name"].endswith(actual_digest)

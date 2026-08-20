@@ -114,6 +114,18 @@ public data. It runs before any acquire/download, including Drugs@FDA.
     - [x] Run focused lifecycle, integrity, recovery, archive, typing, and coverage checks
     - [x] Record evidence without claiming live-source or publication completion
 
+### Phase 3e: Separate Bronze Parquet products
+
+- [x] Task: Split the acquisition manifest from adapter-native source records ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
+    - [x] Write failing tests for the mandatory one-row acquisition manifest and optional record-grain product
+    - [x] Remove replacement-decoded payload content from generic Parquet projection
+    - [x] Preserve adapter-native field names and types with record, acquisition, content, and schema-fingerprint linkage
+    - [x] Give each emitted Parquet product its own actual-byte transformation receipt, Iceberg-ready identity, and OpenLineage event
+    - [x] Rebuild the two-product layout deterministically while keeping canonical medicine/product normalization in Silver
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused landing, transformation, lineage, Iceberg, recovery, archive, typing, and coverage checks
+    - [x] Record evidence without claiming binary parsing, live-source completion, or Silver implementation
+
 ## Phase 4: Iceberg-ready identities and OpenLineage projection
 
 - [x] Task: Write failing tests for Iceberg-ready metadata and OpenLineage ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))

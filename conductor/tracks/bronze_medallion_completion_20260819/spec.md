@@ -59,6 +59,13 @@ synthetic fixtures.
 - Preserve source payload bytes (JSON/XML/CSV/ZIP/PDF or whatever arrived)
   byte-for-byte where rights permit. Produce source-faithful Parquet alongside
   payloads. Parsers will improve and be wrong; Parquet is not the payload.
+- Emit a mandatory `acquisition_manifest.parquet` with one row per acquisition
+  and an optional adapter-specific `source_records.parquet` with one row per
+  source-native record. Preserve native names and types where feasible, attach
+  record/acquisition/content/schema-fingerprint linkage, and do not perform
+  cross-country semantic normalization in Bronze.
+- Keep binary payloads byte-faithful. Extracted text, layout, tables, and chunks
+  are separate derived datasets, never replacement-decoded source records.
 - Keep regulatory, funding, formulary, and terminology independent in bronze.
 - Record missing coverage as not covered, never as negative evidence.
 - The immutable source payload and its content-addressed receipt are
@@ -117,6 +124,17 @@ created only after acceptance. Deterministic regeneration and recovery resolve
 the latest durable admission decision and fail closed unless it is accepted.
 Later automated or human decisions are new append-only events that reference
 the decision they supersede; no admission record is overwritten.
+
+### Separate Parquet products (Must)
+
+The acquisition manifest records source, jurisdiction, acquisition/content
+identity, temporal and rights/admission states, URI and media type, immutable
+payload location/digest, parser availability, and reuse disposition. An adapter
+may additionally emit source records with source-native fields and types plus
+durable linkage. Each product has its own actual-byte transformation receipt,
+Iceberg-ready identity, and OpenLineage event. Rebuilds reproduce only products
+whose parser identity and adapter input are available. The canonical
+medicine/product model remains Silver.
 
 ### Iceberg-ready (Should)
 

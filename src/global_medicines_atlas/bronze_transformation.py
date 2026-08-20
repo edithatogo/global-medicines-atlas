@@ -22,6 +22,11 @@ TRANSFORMATION_DIR = "transformations"
 PARSER_IDENTITY = "utf-8-replace"
 TRANSFORMATION_IDENTITY = "gma.bronze.source-faithful-parquet.v1"
 PARQUET_SCHEMA_VERSION = "bronze-parquet-v1"
+MANIFEST_PARSER_IDENTITY = "gma.acquisition-receipt.v2"
+MANIFEST_TRANSFORMATION_IDENTITY = "gma.bronze.acquisition-manifest.v1"
+MANIFEST_SCHEMA_VERSION = "bronze-acquisition-manifest-v1"
+SOURCE_RECORDS_TRANSFORMATION_IDENTITY = "gma.bronze.source-records.v1"
+SOURCE_RECORDS_SCHEMA_VERSION = "bronze-source-records-v1"
 
 
 class TransformationOutput(FrozenModel):

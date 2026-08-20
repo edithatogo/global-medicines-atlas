@@ -300,13 +300,15 @@ def _rebuild_one(
         bronze_root
         / PARQUET_DIR
         / source_id
-        / f"{temporal.acquisition_id}.parquet"
+        / temporal.acquisition_id
+        / "acquisition_manifest.parquet"
     )
     lineage_path = (
         bronze_root
         / LINEAGE_DIR
         / source_id
-        / f"{temporal.acquisition_id}.openlineage.json"
+        / temporal.acquisition_id
+        / "acquisition_manifest.openlineage.json"
     )
     try:
         admission = latest_admission_for_receipt(
