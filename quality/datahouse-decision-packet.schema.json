@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/datahouse-decision-packet/1.0.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_at", "constraints", "evidence", "decisions", "maintainer_gate"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "constraints": {"type": "array", "items": {"type": "string"}},
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sha256"],
+        "properties": {
+          "path": {"type": "string"},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["capability", "disposition", "observed", "inference", "external_gate", "benefit", "risk_or_cost", "python_3_14", "rollback"],
+        "properties": {
+          "capability": {"type": "string"},
+          "disposition": {"enum": ["adopt_candidate", "continue_experiment", "reject", "superseded", "not_justified"]},
+          "observed": {"type": "string"},
+          "inference": {"type": "string"},
+          "external_gate": {"type": ["string", "null"]},
+          "benefit": {"type": "string"},
+          "risk_or_cost": {"type": "string"},
+          "python_3_14": {"type": "string"},
+          "rollback": {"type": "string"}
+        }
+      }
+    },
+    "maintainer_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["promotion_claimed", "production_durability_claimed", "recommended_decision"],
+      "properties": {
+        "promotion_claimed": {"const": false},
+        "production_durability_claimed": {"const": false},
+        "recommended_decision": {"type": "string"}
+      }
+    }
+  }
+}

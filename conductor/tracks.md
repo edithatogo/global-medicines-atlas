@@ -31,3 +31,6 @@ and rationale contract in that policy.
 
 - [x] **Track: Evaluate optional datahouse interoperability and versioning technologies**
   *Archived: [archive/datahouse_interoperability_experiments_20260820/index.md](./archive/datahouse_interoperability_experiments_20260820/index.md); GitHub parent [#207](https://github.com/edithatogo/global-medicines-atlas/issues/207). The pinned Iceberg REST lifecycle and DuckLake and batch-attestation experiments passed bounded checks; Iceberg v3 was degraded, while object versioning and Delta/Hudi remain explicitly prerequisite-gated.*
+
+- [ ] **Track: Produce free-tier datahouse decision evidence**
+  *Link: [tracks/free_tier_datahouse_decision_evidence_20260821/index.md](./tracks/free_tier_datahouse_decision_evidence_20260821/index.md); GitHub parent [#231](https://github.com/edithatogo/global-medicines-atlas/issues/231). GitHub Actions and rights-cleared Hugging Face publication will produce bounded workflow, recovery, high-update-format, and maintainer decision evidence without claiming production durability.*

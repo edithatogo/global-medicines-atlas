@@ -1,0 +1,17 @@
+{
+  "evidence_scope": "governed_repository_receipts_as_of_2026-08-21",
+  "high_update_format_demand": "not_evidenced",
+  "inputs": [
+    "quality/qualifications/delta-hudi-prerequisite.json",
+    "quality/qualifications/datahouse-experiment-matrix.json",
+    "conductor/archive/datahouse_interoperability_experiments_20260820/evidence.jsonl"
+  ],
+  "interpretation": "Absence of governed measurements is not evidence of zero source events; synthetic benchmark events must not be counted as Atlas demand.",
+  "observed_requirements": {
+    "multi_writer_concurrency": null,
+    "source_record_deletes": null,
+    "source_record_updates": null,
+    "transaction_gap_in_baseline": null
+  },
+  "schema_version": "1.0"
+}

@@ -1,0 +1,43 @@
+{
+  "all_inclusion_proofs_verified": true,
+  "manifest": {
+    "algorithm": "sha256-domain-separated-binary-tree-v1",
+    "leaf_count": 2,
+    "non_membership_proofs_supported": false,
+    "ordered_content_ids": [
+      "artifact:datahouse-fixture",
+      "artifact:uv-lock"
+    ],
+    "per_object_receipts_authoritative": true,
+    "root_sha256": "fff1c1d3246f66150b9a27dac7e4dabedb2eef910eae1746e79db01b031cada2",
+    "schema_id": "global-medicines-atlas.merkle-manifest",
+    "schema_version": 1
+  },
+  "proofs": [
+    {
+      "content_id": "artifact:datahouse-fixture",
+      "leaf_sha256": "f5f2b56824852355c200c72246f25b7009f60ee0d4326535d34eb2340588b1da",
+      "root_sha256": "fff1c1d3246f66150b9a27dac7e4dabedb2eef910eae1746e79db01b031cada2",
+      "steps": [
+        {
+          "sibling_sha256": "72fc6d35f1935f01b40f07acfd8910c012f1459250a2bef4ee08ae02eb85e4e3",
+          "side": "right"
+        }
+      ]
+    },
+    {
+      "content_id": "artifact:uv-lock",
+      "leaf_sha256": "c45a361fd8dac3beb630583903d47ad62f31c76bdd81aef3780451bed7e6a9aa",
+      "root_sha256": "fff1c1d3246f66150b9a27dac7e4dabedb2eef910eae1746e79db01b031cada2",
+      "steps": [
+        {
+          "sibling_sha256": "b4569fd6eb1c47b413af117bcccfc498d878130884e49f0329bc2537e0095b44",
+          "side": "left"
+        }
+      ]
+    }
+  ],
+  "schema_id": "global-medicines-atlas.merkle-experiment-receipt",
+  "schema_version": 1,
+  "source_receipts_remain_authoritative": true
+}

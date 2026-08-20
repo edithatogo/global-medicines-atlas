@@ -1,0 +1,167 @@
+{
+  "artifacts": [
+    {
+      "contains_credentials": false,
+      "exclusion_reason": null,
+      "license": "Apache-2.0",
+      "origin": "repository_authored_synthetic",
+      "path": "README.md",
+      "publication_state": "approved_public",
+      "rights_resolved": true,
+      "sensitivity": "public",
+      "sha256": "0685d902b07a58cbcffcac6670fafc933be02255ce456c03c37e53af80b0d4c5"
+    },
+    {
+      "contains_credentials": false,
+      "exclusion_reason": null,
+      "license": "Apache-2.0",
+      "origin": "aggregate_evidence",
+      "path": "decision/free-tier-datahouse-decision-packet.json",
+      "publication_state": "approved_public",
+      "rights_resolved": true,
+      "sensitivity": "public",
+      "sha256": "334b898451294991a7a9519378a41fa7dd1407d3c6b3a8214509ee0a049d2b1a"
+    },
+    {
+      "contains_credentials": false,
+      "exclusion_reason": null,
+      "license": "Apache-2.0",
+      "origin": "aggregate_evidence",
+      "path": "receipts/delta-comparison.json",
+      "publication_state": "approved_public",
+      "rights_resolved": true,
+      "sensitivity": "public",
+      "sha256": "34bc8bb03b682d7e81f15c1c2ca016a3f70c2f1361dc7d410519b7ee3bb7da60"
+    },
+    {
+      "contains_credentials": false,
+      "exclusion_reason": null,
+      "license": "Apache-2.0",
+      "origin": "aggregate_evidence",
+      "path": "receipts/ducklake-comparison.json",
+      "publication_state": "approved_public",
+      "rights_resolved": true,
+      "sensitivity": "public",
+      "sha256": "d781fca4e96e127d51cd56a4ad4adedad9aabd1bb359cc33c1fb166d3d73ed62"
+    },
+    {
+      "contains_credentials": false,
+      "exclusion_reason": null,
+      "license": "Apache-2.0",
+      "origin": "aggregate_evidence",
+      "path": "receipts/free-tier-git-mechanics.json",
+      "publication_state": "approved_public",
+      "rights_resolved": true,
+      "sensitivity": "public",
+      "sha256": "d2a730ff4606be87a1989ffd082ed16c3929ef8061f755b5e0155f3236ed1524"
+    },
+    {
+      "contains_credentials": false,
+      "exclusion_reason": null,
+      "license": "Apache-2.0",
+      "origin": "aggregate_evidence",
+      "path": "receipts/hudi-comparison.json",
+      "publication_state": "approved_public",
+      "rights_resolved": true,
+      "sensitivity": "public",
+      "sha256": "46962bd1ec63a4fe20791888704d4fa9e958823e0d26c25f699315fd8b3bae1c"
+    },
+    {
+      "contains_credentials": false,
+      "exclusion_reason": null,
+      "license": "Apache-2.0",
+      "origin": "aggregate_evidence",
+      "path": "receipts/hugging-face-free-tier-restore.json",
+      "publication_state": "approved_public",
+      "rights_resolved": true,
+      "sensitivity": "public",
+      "sha256": "cf6bde0a1e1cd3e116131ddd8d7738d218a95e59a35fc50f806ea6d3ed8a6379"
+    },
+    {
+      "contains_credentials": false,
+      "exclusion_reason": null,
+      "license": "Apache-2.0",
+      "origin": "aggregate_evidence",
+      "path": "receipts/iceberg-ready-parquet-comparison.json",
+      "publication_state": "approved_public",
+      "rights_resolved": true,
+      "sensitivity": "public",
+      "sha256": "b7eaf0efa45c8284174b2d0d697121bc0c978dcfaba0a300e10c47ac0dc40dcf"
+    },
+    {
+      "contains_credentials": false,
+      "exclusion_reason": null,
+      "license": "Apache-2.0",
+      "origin": "aggregate_evidence",
+      "path": "receipts/iceberg-rest-interoperability.json",
+      "publication_state": "approved_public",
+      "rights_resolved": true,
+      "sensitivity": "public",
+      "sha256": "900fb046806117b8d0086f9e06b8067266fa3615cbf74abf44a1393d0b4171b3"
+    },
+    {
+      "contains_credentials": false,
+      "exclusion_reason": null,
+      "license": "Apache-2.0",
+      "origin": "aggregate_evidence",
+      "path": "receipts/merkle-attestation.json",
+      "publication_state": "approved_public",
+      "rights_resolved": true,
+      "sensitivity": "public",
+      "sha256": "527230206fc4e9d389b7721ffecebf54e483d6e93340fa6bc7c69f46aad38da9"
+    },
+    {
+      "contains_credentials": false,
+      "exclusion_reason": null,
+      "license": "Apache-2.0",
+      "origin": "aggregate_evidence",
+      "path": "receipts/table-format-workload-demand.json",
+      "publication_state": "approved_public",
+      "rights_resolved": true,
+      "sensitivity": "public",
+      "sha256": "8b0658b641c3974ec41adf927d8aa21abc83327a981aea5912d2bae62e8b15a3"
+    },
+    {
+      "contains_credentials": false,
+      "exclusion_reason": null,
+      "license": "Apache-2.0",
+      "origin": "repository_authored_synthetic",
+      "path": "schemas/datahouse-decision-packet.schema.json",
+      "publication_state": "approved_public",
+      "rights_resolved": true,
+      "sensitivity": "public",
+      "sha256": "24420e0c5fa0875c00d61e7b48bd5a29fca60b3d3930918810a03d507afa2127"
+    },
+    {
+      "contains_credentials": false,
+      "exclusion_reason": null,
+      "license": "Apache-2.0",
+      "origin": "repository_authored_synthetic",
+      "path": "schemas/public-manifest.schema.json",
+      "publication_state": "approved_public",
+      "rights_resolved": true,
+      "sensitivity": "public",
+      "sha256": "4220f057ebe604558d5a80c9d5340bc8744f305e834d7999e3254bf0aeaf1521"
+    },
+    {
+      "contains_credentials": false,
+      "exclusion_reason": null,
+      "license": "Apache-2.0",
+      "origin": "repository_authored_synthetic",
+      "path": "synthetic/bronze_records.json",
+      "publication_state": "approved_public",
+      "rights_resolved": true,
+      "sensitivity": "public",
+      "sha256": "f5f2b56824852355c200c72246f25b7009f60ee0d4326535d34eb2340588b1da"
+    }
+  ],
+  "excluded_classes": [
+    "credentials",
+    "personal_or_sensitive_data",
+    "source_derived_payload_bytes",
+    "unresolved_rights_material"
+  ],
+  "maintainer_authorization": "2026-08-21-public-synthetic-evidence-only",
+  "package_id": "global-medicines-atlas-free-tier-evidence",
+  "schema_version": "1.0"
+}
