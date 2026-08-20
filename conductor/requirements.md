@@ -207,7 +207,13 @@
   restricted-payload sources remain catalogued with explicit exclusion from this
   completion horizon. Python 3.14 remains the complete fallback. Credentials and
   restricted source bytes must never be inspected, committed, logged, or
-  published.
+  published. Make source landing the dominant workstream through one
+  catalogue-driven factory for static files, archives, paginated APIs,
+  regulator search exports, document collections, and reproducible manual
+  exports. Generate exactly one evidenced disposition and one Conductor work
+  item for every source; sparse overrides cannot bypass reuse, rights,
+  credential, admission, or receipt gates. The factory configures acquisition
+  only and must not introduce Silver transformations.
 - **M-096:** Treat Hugging Face as a bronze archive and output boundary, never
   as the source of truth or as an ingest origin for medicine payloads.
 - **M-097:** Provide bleeding-edge bronze mechanics for in-scope public sources
@@ -240,15 +246,6 @@
   into Parquet, Iceberg, or storage-table identity. Native receipts remain
   authoritative. Events must conform to the current OpenLineage RunEvent
   shape.
-- **M-102:** Make source landing the dominant Bronze workstream through one
-  catalogue-driven factory for static files, archives, paginated APIs,
-  regulator search exports, document collections, and reproducible manual
-  exports. Generate exactly one evidenced landing disposition and one
-  Conductor work item for every catalogued source. Source-specific overrides
-  are sparse, validated evidence; they must not bypass reuse, rights,
-  credential, admission, or receipt gates. The factory configures acquisition
-  only and must not introduce Silver transformations.
-
 ## Should Have
 
 - **S-001:** Evaluate Apache DataFusion for measured Rust-native query or streaming requirements without displacing DuckDB prematurely.
