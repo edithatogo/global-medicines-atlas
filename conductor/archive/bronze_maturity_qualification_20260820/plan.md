@@ -36,3 +36,15 @@ and GitHub [#167](https://github.com/edithatogo/global-medicines-atlas/issues/16
 - [x] Task: Phase Verification & Checkpoint
     - [x] Run focused tests, typing where available
     - [x] Record evidence; do not declare Bronze mature if blockers remain
+
+## Phase 3: Exact-head reconciliation and closeout
+
+- [x] Task: Requalify after all ten Bronze hardening prompt PRs
+    - [x] Bind the report to implementation commit `7d464d2`
+    - [x] Recognize merged quarantine, recovery, performance, and
+      interoperability evidence
+    - [x] Preserve incomplete public-source landing as an explicit blocker
+- [x] Task: Final adversarial review and archive checkpoint
+    - [x] Evaluate all 14 mandatory properties
+    - [x] Reject stable-v1, Hugging Face, Silver, Gold, and dashboard evidence
+    - [x] Keep production disaster-recovery operation as a separate human gate

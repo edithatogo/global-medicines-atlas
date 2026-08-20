@@ -458,24 +458,38 @@ def evaluate_properties(root: Path) -> list[dict[str, Any]]:
             failing_notes="Deterministic Parquet regeneration is unevidenced.",
             blocker_id="bronze-regeneration-unevidenced",
         ),
-        _property(
-            "disaster_recovery",
+        _evaluate_file_property(
+            root,
+            property_id="disaster_recovery",
             mandatory=True,
-            state="blocked",
-            requirement_ids=("M-082",),
-            evidence=(
-                (
-                    "quality/qualifications/"
-                    "stable-v1-production-dr-authority-blocker.json"
+            requirement_ids=("M-082", "M-097"),
+            checks={
+                "src/global_medicines_atlas/bronze_recovery.py": (
+                    "CLEAN_ROOM_REBUILD",
+                    "PARTIAL_STORAGE_LOSS",
+                    "CODE_ROLLBACK_NEWER_PAYLOADS",
+                    "def reconstruct_bronze",
                 ),
-                "docs/operations/governed-recovery-runbook.md",
+                "tests/test_bronze_recovery.py": (
+                    "test_clean_room_rebuild_from_payloads_and_receipts_only",
+                    "test_catalogue_deletion_rebuilds_from_receipts",
+                    "test_parquet_deletion_regenerates_without_new_acquisition",
+                    "test_interrupted_acquisition_fails_closed_then_resumes",
+                    "test_partial_storage_loss_rebuilds_analytical_layers",
+                    "test_duplicate_retrieval_keeps_one_payload_two_acquisitions",
+                ),
+            },
+            passing_notes=(
+                "Bronze metadata, Parquet, and catalogue are reconstructed "
+                "from immutable payloads and receipts across the required "
+                "clean-room and loss scenarios. Production operation remains "
+                "a separate authority gate."
             ),
-            blocker_ids=("bronze-production-dr",),
-            notes=(
-                "Local recovery rehearsals exist for other layers. "
-                "Production disaster recovery for bronze payloads remains "
-                "authority-gated and is not claimed."
+            failing_notes=(
+                "Bronze clean-room reconstruction and loss-scenario evidence "
+                "is incomplete."
             ),
+            blocker_id="bronze-disaster-recovery-unevidenced",
         ),
         _evaluate_file_property(
             root,
@@ -539,11 +553,12 @@ def evaluate_properties(root: Path) -> list[dict[str, Any]]:
             requirement_ids=("M-094", "S-013"),
             checks={
                 "src/global_medicines_atlas/iceberg_ready.py": (
-                    "Python 3.14 core does not import or require Iceberg",
-                    "bronze.",
+                    "Python 3.14 core does not import",
+                    "Iceberg REST catalogue",
                 ),
                 "tests/test_iceberg_ready.py": (
-                    "test_core_dependencies_do_not_require_iceberg",
+                    "test_iceberg_ready_module_does_not_import_pyiceberg",
+                    "test_parquet_remains_valid_without_iceberg",
                 ),
                 "src/global_medicines_atlas/bronze_landing.py": (
                     "analytical representation",
@@ -620,6 +635,20 @@ def _residual_risks(
         })
         index += 1
     human_gates = (
+        (
+            (
+                "Production disaster-recovery operation, independent backup "
+                "storage, RPO, and RTO remain authority-gated; the in-repo "
+                "Bronze reconstruction qualification is synthetic and local."
+            ),
+            [
+                (
+                    "quality/qualifications/"
+                    "stable-v1-production-dr-authority-blocker.json"
+                ),
+                "docs/operations/governed-recovery-runbook.md",
+            ],
+        ),
         (
             "Licensing conclusions remain a maintainer human gate.",
             ["docs/governance/licensing-decision.md", "DATA_LICENSE.md"],

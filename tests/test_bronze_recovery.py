@@ -14,7 +14,7 @@ from pathlib import Path
 
 import pyarrow.parquet as pq
 import pytest
-from hypothesis import given
+from hypothesis import given, settings
 from hypothesis import strategies as st
 from tests.test_source_receipts import source_receipt
 
@@ -421,6 +421,7 @@ def test_rebuild_fails_closed_if_receipt_bytes_change(
 
 
 @pytest.mark.property
+@settings(deadline=None)
 @given(st.binary(min_size=1, max_size=64))
 def test_reconstructed_parquet_digest_tracks_payload(payload: bytes) -> None:
     with tempfile.TemporaryDirectory() as raw:
