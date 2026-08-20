@@ -14,6 +14,7 @@ from io import BytesIO
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal
 
+import pyarrow as pa
 import pyarrow.parquet as pq
 from pydantic import AnyUrl, Field, model_validator
 
@@ -27,6 +28,7 @@ from .bronze_landing import (
     RECEIPT_DIR,
     BronzeAcquisition,
     BronzeLanding,
+    SourceRecordBatch,
     land_bronze_payload,
 )
 from .bronze_recovery import reconstruct_bronze
@@ -146,6 +148,7 @@ class USLiveCorpusItem(FrozenModel):
     parquet_projected: bool = False
     source_records_projected: bool = False
     source_record_count: int | None = Field(default=None, ge=0)
+    source_record_failure_code: str | None = None
     reuse_disposition: str
     failure_code: str | None = None
 
@@ -179,6 +182,17 @@ class USLiveCorpusManifest(FrozenModel):
 
 ReuseSearcher = Callable[[str], ReuseGateDecision]
 Clock = Callable[[], datetime]
+
+
+def _recoverable_source_record_batch(
+    source_id: str,
+    payload: bytes,
+    media_hint: str,
+) -> SourceRecordBatch | None:
+    try:
+        return us_source_record_batch(source_id, payload, media_hint)
+    except TypeError, ValueError, pa.ArrowException:
+        return None
 
 
 def _catalog_source(
@@ -337,6 +351,8 @@ def _success_item(
     receipt: SourceReceipt,
     landing: BronzeAcquisition | BronzeLanding,
     decision: ReuseGateDecision,
+    *,
+    source_record_failure_code: str | None = None,
 ) -> USLiveCorpusItem:
     temporal = receipt.temporal
     if temporal is None:
@@ -364,11 +380,12 @@ def _success_item(
         parquet_projected=isinstance(landing, BronzeLanding),
         source_records_projected=source_records_path is not None,
         source_record_count=source_record_count,
+        source_record_failure_code=source_record_failure_code,
         reuse_disposition=decision.disposition.value,
     )
 
 
-def exercise_us_live_bronze_corpus(  # ruff: ignore[too-many-locals]
+def exercise_us_live_bronze_corpus(  # ruff: ignore[too-many-locals, too-many-statements]
     *,
     repository_root: Path,
     output_dir: Path,
@@ -440,6 +457,16 @@ def exercise_us_live_bronze_corpus(  # ruff: ignore[too-many-locals]
         payload = destination.read_bytes()
         _reject_excluded_openfda_material(item, payload)
         bound = _bind_rights(item, receipt, exercised_at)
+        source_record_failure_code = None
+        try:
+            source_records = us_source_record_batch(
+                item.source_id,
+                payload,
+                item.media_hint,
+            )
+        except TypeError, ValueError, pa.ArrowException:
+            source_records = None
+            source_record_failure_code = "source_record_projection_failed"
         landing = land_bronze_payload(
             payload,
             bound,
@@ -447,13 +474,16 @@ def exercise_us_live_bronze_corpus(  # ruff: ignore[too-many-locals]
             media_hint=item.media_hint,
             admission_decided_at=exercised_at,
             transformation_completed_at=exercised_at,
-            source_records=us_source_record_batch(
-                item.source_id,
-                payload,
-                item.media_hint,
-            ),
+            source_records=source_records,
         )
-        results.append(_success_item(bound, landing, decision))
+        results.append(
+            _success_item(
+                bound,
+                landing,
+                decision,
+                source_record_failure_code=source_record_failure_code,
+            )
+        )
 
     result_bytes = (
         json.dumps(
@@ -469,7 +499,7 @@ def exercise_us_live_bronze_corpus(  # ruff: ignore[too-many-locals]
     recovery = reconstruct_bronze(
         clean_room,
         fail_closed_on_incomplete=False,
-        source_record_factory=us_source_record_batch,
+        source_record_factory=_recoverable_source_record_batch,
     )
     archive_path = output_dir / PRIVATE_ARCHIVE_FILENAME
     archive_digest, archive_size = _write_private_archive(corpus, archive_path)

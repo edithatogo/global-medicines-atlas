@@ -370,3 +370,66 @@ def test_runner_fault_isolates_an_endpoint_failure(tmp_path: Path) -> None:
     failed = next(item for item in manifest.items if item.status == "failed")
     assert failed.source_id == failed_source
     assert failed.failure_code == "http_status"
+
+
+@pytest.mark.integration
+def test_runner_fault_isolates_a_source_record_projection_failure(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    authorization = USLiveAcquisitionAuthorization.model_validate_json(
+        AUTHORIZATION.read_bytes()
+    )
+    by_path = {
+        str(item.endpoint): item for item in authorization.authorized_sources
+    }
+    failed_source = "us-openfda-faers"
+    real_projector = live_mod.us_source_record_batch
+
+    def projector(source_id: str, payload: bytes, media_hint: str):
+        if source_id == failed_source:
+            raise ValueError("redacted source schema failure")
+        return real_projector(source_id, payload, media_hint)
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        item = by_path[str(request.url)]
+        if item.media_hint == "zip":
+            return httpx.Response(
+                200,
+                headers={"content-type": "application/zip"},
+                content=_zip_payload(item.source_id),
+            )
+        if item.media_hint == "html":
+            return httpx.Response(
+                200,
+                headers={"content-type": "text/html"},
+                content=b"<!doctype html><html><body>FDA source</body></html>",
+            )
+        return httpx.Response(
+            200,
+            headers={"content-type": "application/json"},
+            content=b'{"results": []}',
+        )
+
+    monkeypatch.setattr(live_mod, "us_source_record_batch", projector)
+    manifest = exercise_us_live_bronze_corpus(
+        repository_root=tmp_path,
+        output_dir=tmp_path / "build" / "projection-fault",
+        authorization_path=AUTHORIZATION,
+        catalog=load_source_catalog(),
+        transport=httpx.MockTransport(handler),
+        reuse_searcher=acquire_new_decision,
+        clock=lambda: NOW,
+    )
+
+    failed = next(
+        item for item in manifest.items if item.source_id == failed_source
+    )
+    assert failed.status == "succeeded"
+    assert failed.parquet_projected is True
+    assert failed.source_records_projected is False
+    assert (
+        failed.source_record_failure_code == "source_record_projection_failed"
+    )
+    assert manifest.acquisition_succeeded_count == 13
+    assert manifest.source_record_projection_count == 7
