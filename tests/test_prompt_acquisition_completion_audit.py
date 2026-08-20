@@ -30,6 +30,9 @@ REMS_QUALIFICATION = (
 FAERS_QUALIFICATION = (
     ROOT / "quality/qualifications/faers-live-corpus-20260821.json"
 )
+SHORTAGES_QUALIFICATION = (
+    ROOT / "quality/qualifications/fda-shortages-live-corpus-20260821.json"
+)
 
 
 def _audit() -> dict[str, Any]:
@@ -57,13 +60,14 @@ def test_live_qualification_completes_verified_prompts() -> None:
     audit = _audit()
     measured = json.loads(MEASURED.read_text(encoding="utf-8"))["body"]
     assert measured["totals"]["live_qualified_sources"] == 1
-    assert audit["live_qualified_source_count"] == 11
-    assert audit["live_complete_prompt_count"] == 6
+    assert audit["live_qualified_source_count"] == 12
+    assert audit["live_complete_prompt_count"] == 7
     assert audit["program_completion"] == "incomplete_live_acquisition"
     complete = [entry for entry in audit["prompts"] if entry["live_complete"]]
     assert [entry["prompt_id"] for entry in complete] == [
         12,
         13,
+        14,
         15,
         17,
         19,
@@ -77,16 +81,17 @@ def test_live_qualification_completes_verified_prompts() -> None:
         "us-openfda-enforcement",
         "us-fda-recalls-notices",
     ]
-    assert complete[2]["live_qualified_source_ids"] == ["us-fda-rems"]
-    assert complete[3]["live_qualified_source_ids"] == [
+    assert complete[2]["live_qualified_source_ids"] == ["us-fda-drug-shortages"]
+    assert complete[3]["live_qualified_source_ids"] == ["us-fda-rems"]
+    assert complete[4]["live_qualified_source_ids"] == [
         "us-openfda-ndc",
         "us-fda-ndc-directory",
     ]
-    assert complete[4]["live_qualified_source_ids"] == [
+    assert complete[5]["live_qualified_source_ids"] == [
         "us-fda-nsde",
         "us-openfda-nsde",
     ]
-    assert complete[5]["live_qualified_source_ids"] == ["eu-union-register"]
+    assert complete[6]["live_qualified_source_ids"] == ["eu-union-register"]
     fixture_and_live = {
         source_id
         for entry in audit["prompts"]
@@ -110,6 +115,7 @@ def test_live_qualification_completes_verified_prompts() -> None:
         "us-fda-nsde",
         "us-fda-rems",
         "us-fda-recalls-notices",
+        "us-fda-drug-shortages",
     }
 
     orange = audit["prompts"][15]
@@ -350,12 +356,65 @@ def test_faers_qualification_fails_closed_on_scope_or_evidence_drift(
         audit_mod._qualified_faers_record_sources()
 
 
+@pytest.mark.parametrize(
+    ("mutate", "message"),
+    [
+        (
+            lambda raw: raw.update(prompt_complete=False),
+            "reviewed scope",
+        ),
+        (
+            lambda raw: raw.update(
+                historical_detail_snapshot_coverage_complete=True
+            ),
+            "reviewed scope",
+        ),
+        (
+            lambda raw: raw.update(
+                historical_detail_disposition="scope_decision_pending"
+            ),
+            "reviewed scope",
+        ),
+        (
+            lambda raw: raw.update(
+                unique_historical_list_snapshots_archived=128
+            ),
+            "lack recovery evidence",
+        ),
+        (
+            lambda raw: raw.update(archive_checksums_verified=6),
+            "lack recovery evidence",
+        ),
+        (
+            lambda raw: raw["prompt_audit_qualified_source_ids"].append(
+                "us-fda-orange-book"
+            ),
+            "exceeds reviewed source scope",
+        ),
+    ],
+)
+def test_shortages_qualification_fails_closed_on_scope_or_evidence_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutate,
+    message: str,
+) -> None:
+    raw = json.loads(SHORTAGES_QUALIFICATION.read_bytes())
+    mutate(raw)
+    unsafe = tmp_path / "unsafe-shortages-qualification.json"
+    unsafe.write_text(json.dumps(raw), encoding="utf-8")
+    monkeypatch.setattr(audit_mod, "SHORTAGES_QUALIFICATION", unsafe)
+
+    with pytest.raises(ValueError, match=message):
+        audit_mod._qualified_shortages_sources()
+
+
 def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     audit = _audit()
     assert audit["queue_state_counts"] == {
         "credentialed_and_excluded": 18,
-        "landed_and_evidenced": 21,
-        "manual_only_documented_acquisition": 91,
+        "landed_and_evidenced": 22,
+        "manual_only_documented_acquisition": 90,
         "not_yet_implemented": 0,
         "rights_blocked": 41,
         "superseded_by_reused_source": 0,
