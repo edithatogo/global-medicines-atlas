@@ -7,6 +7,7 @@ import json
 from copy import deepcopy
 from datetime import UTC, datetime
 from pathlib import Path
+from types import SimpleNamespace
 
 import pyarrow.parquet as pq
 import pytest
@@ -14,6 +15,7 @@ import scripts.apply_bronze_fixture_catalog as apply_catalog_script
 from scripts.land_bronze_fixtures import main as landing_main
 
 import global_medicines_atlas.bronze_fixture_landing as fixture_landing
+from global_medicines_atlas.bronze_admission import BronzeAdmissionState
 from global_medicines_atlas.bronze_fixture_landing import (
     CURRENT_SCOPE_FIXTURE_SOURCE_IDS,
     apply_fixture_qualification_to_catalog,
@@ -238,6 +240,63 @@ def test_missing_catalog_binding_stops_before_landing(
     monkeypatch.setattr(fixture_landing, "load_source_catalog", lambda: catalog)
 
     with pytest.raises(KeyError, match="absent from catalog"):
+        land_governed_fixtures(
+            ROOT,
+            bronze_root=tmp_path / "bronze",
+            retrieved_at=FIXED_RETRIEVED_AT,
+        )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("outcome", "message"),
+    [
+        (object(), "not admitted"),
+        (
+            SimpleNamespace(
+                admission=SimpleNamespace(
+                    state=BronzeAdmissionState.QUARANTINED,
+                    path=Path("admission.json"),
+                )
+            ),
+            "must be accepted",
+        ),
+        (
+            SimpleNamespace(
+                admission=SimpleNamespace(
+                    state=BronzeAdmissionState.ACCEPTED,
+                    path=None,
+                )
+            ),
+            "lacks a durable path",
+        ),
+        (
+            SimpleNamespace(
+                admission=SimpleNamespace(
+                    state=BronzeAdmissionState.ACCEPTED,
+                    path=Path("admission.json"),
+                ),
+                receipt=SimpleNamespace(temporal=None),
+            ),
+            "lacks temporal identity",
+        ),
+    ],
+)
+def test_fixture_projection_guards_fail_closed(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    outcome: object,
+    message: str,
+) -> None:
+    monkeypatch.setattr(
+        fixture_landing,
+        "land_bronze_payload",
+        lambda *_args, **_kwargs: outcome,
+    )
+    if isinstance(outcome, SimpleNamespace):
+        monkeypatch.setattr(fixture_landing, "BronzeLanding", SimpleNamespace)
+
+    with pytest.raises((TypeError, ValueError), match=message):
         land_governed_fixtures(
             ROOT,
             bronze_root=tmp_path / "bronze",
