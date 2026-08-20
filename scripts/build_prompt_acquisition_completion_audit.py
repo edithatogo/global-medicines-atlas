@@ -16,6 +16,9 @@ from global_medicines_atlas.source_expansion import (
 ROOT = Path(__file__).resolve().parents[1]
 QUEUE = ROOT / "quality/qualifications/bronze-source-landing-queue.json"
 MEASURED = ROOT / "quality/qualifications/stable-v1-measured-coverage.json"
+US_LIVE_QUALIFICATION = (
+    ROOT / "quality/qualifications/us-live-bronze-corpus-20260820.json"
+)
 DEFAULT_OUTPUT = (
     ROOT / "quality/qualifications/prompt-acquisition-completion-audit.json"
 )
@@ -102,7 +105,7 @@ def _prompt_entry(
         completion_state = (
             "reconciliation_generated_but_live_program_incomplete"
         )
-    distinct_states = set(states.values())
+    incomplete_states = {states[source_id] for source_id in missing}
     return {
         "prompt_id": track.track_id,
         "title": track.title,
@@ -117,10 +120,40 @@ def _prompt_entry(
         "sources_without_live_evidence": missing,
         "live_complete": live_complete,
         "completion_state": completion_state,
-        "blocker_categories": _blocker_categories(distinct_states),
+        "blocker_categories": _blocker_categories(incomplete_states),
         "next_actions": [
-            NEXT_ACTIONS[state] for state in sorted(distinct_states)
+            NEXT_ACTIONS[state] for state in sorted(incomplete_states)
         ],
+    }
+
+
+def _qualified_us_live_sources() -> set[str]:
+    qualification = json.loads(
+        US_LIVE_QUALIFICATION.read_text(encoding="utf-8")
+    )
+    if qualification["evidence_class"] != "live_bounded_internal":
+        raise ValueError("U.S. live qualification has the wrong evidence class")
+    if (
+        qualification["coverage_complete"]
+        or qualification["external_publication_performed"]
+        or qualification["public_release_authorized"]
+    ):
+        raise ValueError(
+            "U.S. live qualification crossed its internal-only boundary"
+        )
+    if (
+        qualification["acquisition_succeeded_count"]
+        != qualification["source_count"]
+    ):
+        raise ValueError(
+            "U.S. live qualification contains acquisition failures"
+        )
+    return {
+        item["source_id"]
+        for item in qualification["authorized_source_results"]
+        if item["rights_state"] == "permitted"
+        and item["admission_state"] == "accepted"
+        and item["parquet_projected"] is True
     }
 
 
@@ -135,6 +168,10 @@ def build() -> dict[str, Any]:
     measured_by_source = {
         item["source_id"]: item for item in measured["sources"]
     }
+    qualified_us_live = _qualified_us_live_sources()
+    for source_id in qualified_us_live:
+        existing = measured_by_source.get(source_id, {})
+        measured_by_source[source_id] = existing | {"live_qualified": True}
     prompts: list[dict[str, Any]] = []
     prompt_sources: set[str] = set()
     for track in expansion_tracks():
@@ -155,9 +192,11 @@ def build() -> dict[str, Any]:
         "fixture_qualified_source_count": measured["totals"][
             "fixture_qualified_sources"
         ],
-        "live_qualified_source_count": measured["totals"][
-            "live_qualified_sources"
-        ],
+        "live_qualified_source_count": len({
+            source_id
+            for source_id, item in measured_by_source.items()
+            if item.get("live_qualified")
+        }),
         "live_complete_prompt_count": live_complete_count,
         "program_completion": (
             "complete"

@@ -1,0 +1,60 @@
+{
+  "schema_id": "global-medicines-atlas.us-live-bronze-corpus-qualification",
+  "schema_version": 1,
+  "exercised_at": "2026-08-20T10:28:27.585752Z",
+  "evidence_class": "live_bounded_internal",
+  "scope": "13-source authorized U.S. current-source cohort",
+  "coverage_complete": false,
+  "external_publication_performed": false,
+  "public_release_authorized": false,
+  "source_count": 13,
+  "acquisition_succeeded_count": 13,
+  "acquisition_failed_count": 0,
+  "accepted_admission_count": 8,
+  "quarantined_admission_count": 5,
+  "recovered_acquisition_count": 8,
+  "private_archive": {
+    "filename": "us-live-bronze-corpus.private.tar",
+    "sha256": "2b2a9486c9fb32c4274263353920112ea4c78af35e297e379c1b6bfefd19d85e",
+    "byte_count": 103249920,
+    "entry_count": 441,
+    "storage": "maintainer-local private archive; not committed or uploaded"
+  },
+  "bronze_outputs": {
+    "immutable_payloads": 13,
+    "source_receipts": 13,
+    "admission_events": 26,
+    "acquisition_manifest_parquet_products": 8,
+    "clean_room_catalogue_entries": 8
+  },
+  "authorized_source_results": [
+    {"source_id": "us-openfda-drugsfda", "rights_state": "permitted", "admission_state": "accepted", "parquet_projected": true, "payload_sha256": "10c7a53e09494d2f5682e7e2ff2c9309cc3281c63d44c5a322a94c2d0958165f", "payload_byte_count": 466854, "reuse_disposition": "fork"},
+    {"source_id": "us-openfda-enforcement", "rights_state": "permitted", "admission_state": "accepted", "parquet_projected": true, "payload_sha256": "636ec8afa8fd7ed950b1e54400acb3f5750bea6b00cceafe7fa4d6662799e984", "payload_byte_count": 161865, "reuse_disposition": "fork"},
+    {"source_id": "us-openfda-faers", "rights_state": "permitted", "admission_state": "accepted", "parquet_projected": true, "payload_sha256": "97940c455cef4321de35f8c8ec01d8b35dfc28498d8b093062e8e32d5fa9234f", "payload_byte_count": 2876049, "reuse_disposition": "fork"},
+    {"source_id": "us-openfda-ndc", "rights_state": "permitted", "admission_state": "accepted", "parquet_projected": true, "payload_sha256": "ab05aa7e5b2929f8c7c5b8f9420b0d69087d30277eedbf7e04fd327a17b59ca9", "payload_byte_count": 165358, "reuse_disposition": "fork"},
+    {"source_id": "us-openfda-nsde", "rights_state": "permitted", "admission_state": "accepted", "parquet_projected": true, "payload_sha256": "302d272a4fd333a54660987bdbd0e2573d48774a55554cea95e2233625cf3ad2", "payload_byte_count": 39759, "reuse_disposition": "fork"},
+    {"source_id": "us-drugsfda", "rights_state": "restricted", "admission_state": "accepted", "parquet_projected": true, "payload_sha256": "77217a9f7392287eb78a690121be6e1bdf0ae612b01cfe54600f320af9cd5db8", "payload_byte_count": 6069807, "reuse_disposition": "reuse"},
+    {"source_id": "us-fda-drug-shortages", "rights_state": "restricted", "admission_state": "quarantined", "parquet_projected": false, "payload_sha256": "36a00b4add49a6ce095c3802c3744e36e0b662f6317ae44797a54bdc2b65aec9", "payload_byte_count": 210077, "reuse_disposition": "fork"},
+    {"source_id": "us-fda-faers", "rights_state": "restricted", "admission_state": "quarantined", "parquet_projected": false, "payload_sha256": "663146999ee02c7950c25fd27f160865974e192060b75d689c52dc094cc4333c", "payload_byte_count": 52467, "reuse_disposition": "fork"},
+    {"source_id": "us-fda-ndc-directory", "rights_state": "restricted", "admission_state": "quarantined", "parquet_projected": false, "payload_sha256": "744f24b8cea8e80e4ce0e6f4e12aab835a6992bbe2f745634c6e9a8c44512e83", "payload_byte_count": 36464, "reuse_disposition": "fork"},
+    {"source_id": "us-fda-nsde", "rights_state": "restricted", "admission_state": "accepted", "parquet_projected": true, "payload_sha256": "594167b8612519eb3deeb1a51e7a8e671c63773966fbd45b20bede011de86f63", "payload_byte_count": 21659038, "reuse_disposition": "fork"},
+    {"source_id": "us-fda-orange-book", "rights_state": "restricted", "admission_state": "accepted", "parquet_projected": true, "payload_sha256": "caaa826d4ba72f1abb156c8a38063929d3930d3700e091130474a876513a4da3", "payload_byte_count": 1095244, "reuse_disposition": "fork"},
+    {"source_id": "us-fda-recalls-notices", "rights_state": "restricted", "admission_state": "quarantined", "parquet_projected": false, "payload_sha256": "ee73ad677d9658ea5be7264ec9e0aa16e32688afc702dad8caf256cea6f3e44f", "payload_byte_count": 73731, "reuse_disposition": "fork"},
+    {"source_id": "us-fda-rems", "rights_state": "restricted", "admission_state": "quarantined", "parquet_projected": false, "payload_sha256": "a5cd88ff2501c713ade7ac75a141e1e000896248cd2a001f7bf3ba9247b74a03", "payload_byte_count": 1088275, "reuse_disposition": "fork"}
+  ],
+  "catalogue_only_sources": [
+    "us-cms-mdrp",
+    "us-cms-nadac",
+    "us-cms-partd-formulary",
+    "us-cms-partd-spending",
+    "us-dailymed-spl",
+    "us-gsrs-unii",
+    "us-rxnorm-api"
+  ],
+  "limitations": [
+    "The five openFDA responses are limit=100 canaries, not complete releases.",
+    "The FDA HTML and interactive surfaces are preserved as evidence but quarantined from Parquet projection.",
+    "The run does not claim complete historical FAERS, recall, shortage, REMS, NDC, NSDE, Drugs@FDA, or Orange Book coverage.",
+    "No source bytes were committed, uploaded, redistributed, or publicly released."
+  ]
+}
