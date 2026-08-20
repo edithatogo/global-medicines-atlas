@@ -146,7 +146,11 @@ optional and lives behind an optional dependency extra. Iceberg row lineage,
 branching, and tagging may be evaluated as catalogue aliases; Atlas
 acquisition provenance remains authoritative. Do not migrate bronze
 evidentiary truth into Iceberg metadata. Python 3.14 core must not require
-Iceberg.
+Iceberg. Leave small tables unpartitioned. For configured large recurring
+products, prefer a month transform over a source-release field and fall back
+to acquisition month; optionally bucket high-volume native record identifiers.
+Never partition on jurisdiction or source identifier already held constant by
+table identity, or on mutable rights, admission, or review status.
 
 ### OpenLineage projection (Must)
 
