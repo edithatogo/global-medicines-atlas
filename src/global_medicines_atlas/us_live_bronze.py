@@ -81,7 +81,7 @@ class AuthorizedUSSource(FrozenModel):
 
     source_id: str = Field(min_length=1)
     endpoint: AnyUrl
-    media_hint: Literal["json", "zip", "pdf", "html"]
+    media_hint: Literal["json", "zip", "xlsx", "pdf", "html"]
     rights_profile: Literal[
         "scoped_cc0_metadata_only",
         "government_public_domain_policy_review",

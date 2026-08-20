@@ -1,0 +1,53 @@
+{
+  "schema_id": "global-medicines-atlas.fda-enforcement-live-qualification",
+  "schema_version": 1,
+  "observed_at": "2026-08-21",
+  "evidence_class": "live_bounded_internal",
+  "prompt_id": 13,
+  "authorization": "quality/qualifications/fda-enforcement-live-authorization.json",
+  "source_ids": [
+    "us-openfda-enforcement",
+    "us-fda-recalls-notices"
+  ],
+  "prompt_audit_qualified_source_ids": [
+    "us-openfda-enforcement"
+  ],
+  "current_enforcement_bulk_complete": true,
+  "current_notice_snapshot_acquired": true,
+  "historical_notice_archive_complete": false,
+  "prompt_complete": false,
+  "internal_retention_authorized": true,
+  "public_release_authorized": false,
+  "external_publication_performed": false,
+  "surface_count": 5,
+  "acquisition_succeeded_count": 5,
+  "acquisition_failed_count": 0,
+  "accepted_admission_count": 2,
+  "quarantined_admission_count": 3,
+  "recovered_acquisition_count": 2,
+  "inventory_export_date": "2026-08-19",
+  "inventory_total_records": 17876,
+  "source_record_projection_count": 1,
+  "source_record_rows": 17876,
+  "recovered_source_record_projection_count": 1,
+  "source_record_parquet_pairs_byte_identical": 1,
+  "private_archive_byte_count": 23582720,
+  "private_archive_sha256": "5c568f5b767787b5d763d39b5b5068d49de6af85918cbbb89fa6e7947bea7d97",
+  "archive_checksum_verified": true,
+  "overlap_contract": {
+    "automatic_record_linkage_performed": false,
+    "silent_deduplication_performed": false
+  },
+  "invariants": [
+    "The openFDA enforcement export and FDA recall notices retain separate source identities.",
+    "No automatic record linkage or silent deduplication is performed.",
+    "Recall records do not establish medicine safety causality.",
+    "Missing historical notices are not negative evidence."
+  ],
+  "limitations": [
+    "This qualifies the complete current openFDA enforcement bulk export observed on 2026-08-21.",
+    "The current recall-notice workbook was archived but does not establish complete historical notice coverage.",
+    "Prompt 13 remains incomplete until the historical recall-notice archive is reproducibly acquired or explicitly dispositioned.",
+    "Public release and external publication remain separately gated."
+  ]
+}

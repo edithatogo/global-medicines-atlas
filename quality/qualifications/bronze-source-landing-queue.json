@@ -4289,14 +4289,14 @@
         "source_id": "us-openfda-enforcement"
       },
       "evidence_references": [
-        "https://open.fda.gov/apis/drug/enforcement/"
+        "quality/qualifications/fda-enforcement-live-corpus-20260821.json"
       ],
       "evidence_scope": "none",
-      "next_action": "record source-specific retention and transformation rights",
-      "priority": 20,
-      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "The complete current openFDA drug-enforcement bulk export was acquired, projected, clean-room reconstructed, and privately archived without linking or deduplicating it against recall notices.",
       "source_id": "us-openfda-enforcement",
-      "state": "rights_blocked"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4593,10 +4593,10 @@
   "source_count": 172,
   "state_counts": {
     "credentialed_and_excluded": 18,
-    "landed_and_evidenced": 18,
+    "landed_and_evidenced": 19,
     "manual_only_documented_acquisition": 93,
     "not_yet_implemented": 0,
-    "rights_blocked": 42,
+    "rights_blocked": 41,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 1
   }

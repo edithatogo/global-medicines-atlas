@@ -161,6 +161,7 @@ def _payload_extension(media_hint: str | None) -> str:
         "xml": ".xml",
         "csv": ".csv",
         "zip": ".zip",
+        "xlsx": ".xlsx",
         "pdf": ".pdf",
         "tsv": ".tsv",
     }
@@ -243,6 +244,7 @@ def _media_type(receipt: SourceReceipt, payload_path: Path) -> str:
         ".csv": "text/csv",
         ".tsv": "text/tab-separated-values",
         ".zip": "application/zip",
+        ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         ".pdf": "application/pdf",
     }.get(payload_path.suffix.lower(), "application/octet-stream")
 

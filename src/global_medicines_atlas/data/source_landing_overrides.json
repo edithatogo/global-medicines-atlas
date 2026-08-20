@@ -26,6 +26,14 @@
       "evidence_references": [
         "quality/qualifications/ndc-directory-live-corpus-20260821.json"
       ]
+    },
+    {
+      "source_id": "us-openfda-enforcement",
+      "state": "landed_and_evidenced",
+      "reason": "The complete current openFDA drug-enforcement bulk export was acquired, projected, clean-room reconstructed, and privately archived without linking or deduplicating it against recall notices.",
+      "evidence_references": [
+        "quality/qualifications/fda-enforcement-live-corpus-20260821.json"
+      ]
     }
   ]
 }
