@@ -2,7 +2,7 @@
   "schema_id": "global-medicines-atlas.fda-enforcement-live-authorization",
   "schema_version": 1,
   "decision_date": "2026-08-21",
-  "decision_basis": "The maintainer-approved internal-only U.S. acquisition cohort includes us-openfda-enforcement and us-fda-recalls-notices; this authorization exercises the complete current openFDA drug-enforcement bulk export and the distinct current FDA public-notice snapshot without widening publication or licensing authority.",
+  "decision_basis": "The maintainer-approved internal-only U.S. acquisition cohort includes us-openfda-enforcement and us-fda-recalls-notices; this authorization exercises the complete current openFDA drug-enforcement bulk export, the distinct current FDA public-notice snapshot, and the FDA-published archive documentation needed to disposition historical notice coverage without widening publication or licensing authority.",
   "acquisition_authorized": true,
   "internal_retention_authorized": true,
   "public_release_authorized": false,
@@ -40,6 +40,22 @@
       "surface_id": "recall-notices-documentation",
       "source_id": "us-fda-recalls-notices",
       "url": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts",
+      "media_hint": "html",
+      "rights_profile": "government_public_domain_policy_review",
+      "max_bytes": 16777216
+    },
+    {
+      "surface_id": "fdagov-archive-documentation",
+      "source_id": "us-fda-recalls-notices",
+      "url": "https://www.fda.gov/about-fda/about-website/fdagov-archive",
+      "media_hint": "html",
+      "rights_profile": "government_public_domain_policy_review",
+      "max_bytes": 16777216
+    },
+    {
+      "surface_id": "recall-notices-legacy-archive-index",
+      "source_id": "us-fda-recalls-notices",
+      "url": "https://wayback.archive-it.org/7993/20201217182838/https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/archive-recalls-market-withdrawals-safety-alerts",
       "media_hint": "html",
       "rights_profile": "government_public_domain_policy_review",
       "max_bytes": 16777216

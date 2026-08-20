@@ -373,10 +373,12 @@ for credentialed or rights-unresolved sources.
     - [x] Verify the source-record Parquet byte-for-byte and create the checksum-verified 23,582,720-byte private archive
     - [x] Record an explicit overlap contract that performs no automatic linkage or silent deduplication
     - [x] Keep Prompt 13, historical notice coverage, public release, and external publication fail closed
-- [ ] Task: Complete the historical FDA recall-notice family (Prompt 13)
-    - [ ] Acquire the official historical notice archive through a bounded reproducible inventory and retention path
-    - [ ] Preserve stable notice identity where the source exposes it without inferring enforcement-event equivalence
-    - [ ] Reconcile Prompt 13 only after both source identities have complete live evidence or an explicit approved disposition
+- [x] Task: Complete the FDA recall/enforcement family with an explicit historical-notice disposition (Prompt 13)
+    - [x] Archive the FDA live archive-policy page and its immutable legacy recall-index snapshot alongside the current notice workbook
+    - [x] Record that FDA delegates older pages across multiple archive services and publishes no single complete historical announcement inventory
+    - [x] Preserve the complete openFDA enforcement export as the structured record corpus and keep announcements as a separate selected-publication provenance
+    - [x] Exercise Bronze admission, clean-room recovery, private archive creation, and independent checksum verification without inferring notice-to-event equivalence
+    - [x] Reconcile Prompt 13 from both source identities under the explicit disposition; retain historical-announcement completeness, public release, and external publication as unclaimed
 - [x] Task: Acquire current FDA drug shortages and monthly list history (Prompt 14 partial)
     - [x] Acquire and project the complete current 1,628-record openFDA drug-shortages export at source-native grain
     - [x] Inventory one monthly official FDA shortage-list capture where available from June 2014 through August 2026

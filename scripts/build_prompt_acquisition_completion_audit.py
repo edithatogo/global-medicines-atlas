@@ -31,6 +31,9 @@ REMS_RECORD_QUALIFICATION = (
 FAERS_RECORD_QUALIFICATION = (
     ROOT / "quality/qualifications/faers-live-corpus-20260821.json"
 )
+ENFORCEMENT_QUALIFICATION = (
+    ROOT / "quality/qualifications/fda-enforcement-live-corpus-20260821.json"
+)
 UNION_REGISTER_QUALIFICATION = (
     ROOT / "quality/qualifications/union-register-live-corpus-20260821.json"
 )
@@ -49,6 +52,10 @@ HTTP_NOT_FOUND = 404
 FAERS_PROMPT_AUDIT_SOURCE_IDS = frozenset({"us-fda-faers"})
 FAERS_EXPECTED_RELEASE_COUNT = 90
 UNION_REGISTER_SOURCE_IDS = frozenset({"eu-union-register"})
+ENFORCEMENT_SOURCE_IDS = frozenset({
+    "us-openfda-enforcement",
+    "us-fda-recalls-notices",
+})
 
 NEXT_ACTIONS = {
     "credentialed_and_excluded": (
@@ -387,6 +394,44 @@ def _qualified_union_register_sources() -> set[str]:
     return qualified
 
 
+def _qualified_enforcement_sources() -> set[str]:
+    qualification = json.loads(
+        ENFORCEMENT_QUALIFICATION.read_text(encoding="utf-8")
+    )
+    boundary = (
+        qualification["evidence_class"] == "live_bounded_internal",
+        qualification["internal_retention_authorized"],
+        not qualification["public_release_authorized"],
+        not qualification["external_publication_performed"],
+        qualification["prompt_complete"],
+        not qualification["historical_notice_archive_complete"],
+        qualification["historical_notice_disposition"]
+        == "no_single_complete_official_inventory_structured_enforcement_is_record_corpus",
+    )
+    if not all(boundary):
+        raise ValueError("enforcement qualification crossed its reviewed scope")
+    recovery = (
+        qualification["acquisition_succeeded_count"]
+        == qualification["surface_count"],
+        qualification["acquisition_failed_count"] == 0,
+        qualification["current_enforcement_bulk_complete"],
+        qualification["current_notice_snapshot_acquired"],
+        qualification["source_record_projection_count"] == 1,
+        qualification["recovered_source_record_projection_count"] == 1,
+        qualification["source_record_parquet_pairs_byte_identical"] == 1,
+        qualification["source_record_rows"] > 0,
+        qualification["archive_checksum_verified"],
+    )
+    if not all(recovery):
+        raise ValueError("enforcement products lack recovery evidence")
+    qualified = set(qualification["prompt_audit_qualified_source_ids"])
+    if qualified != set(ENFORCEMENT_SOURCE_IDS):
+        raise ValueError(
+            "enforcement qualification exceeds reviewed source scope"
+        )
+    return qualified
+
+
 def build() -> dict[str, Any]:
     """Join locked prompt scope to queue and measured evidence."""
 
@@ -405,6 +450,7 @@ def build() -> dict[str, Any]:
         | _qualified_rems_record_sources()
         | _qualified_faers_record_sources()
         | _qualified_union_register_sources()
+        | _qualified_enforcement_sources()
     )
     for source_id in qualified_us_live:
         existing = measured_by_source.get(source_id, {})
