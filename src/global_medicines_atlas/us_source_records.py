@@ -199,6 +199,79 @@ def _archive_batch(
     )
 
 
+def _ndc_directory_batch(payload: bytes) -> SourceRecordBatch:
+    """Project the current FDA NDC text-table family without XLS aliases."""
+    inspect_zip(payload)
+    with zipfile.ZipFile(BytesIO(payload)) as archive:
+        members = tuple(
+            item.filename for item in archive.infolist() if not item.is_dir()
+        )
+        text_members = tuple(
+            member for member in members if member.casefold().endswith(".txt")
+        )
+        if not text_members:
+            raise ValueError("NDC directory archive has no text tables")
+        unsupported = tuple(
+            member
+            for member in members
+            if not member.casefold().endswith((".txt", ".xls"))
+        )
+        if unsupported:
+            raise ValueError("NDC directory archive has unsupported members")
+        native_columns: list[str] = []
+        records: list[dict[str, str | int | None]] = []
+        for member in sorted(text_members):
+            reader = csv.reader(
+                StringIO(_decode_member(archive.read(member)), newline=""),
+                delimiter="\t",
+            )
+            header, rows = _header(reader, member)
+            native_columns.extend(
+                name for name in header if name not in native_columns
+            )
+            for row_number, values in enumerate(rows, start=1):
+                if not values or (len(values) == 1 and not values[0]):
+                    continue
+                record: dict[str, str | int | None] = {
+                    "source_record_key": f"{member}:{row_number}",
+                    "source_member": member,
+                    "source_row_number": row_number,
+                    "source_field_count": len(values),
+                }
+                record.update(dict(zip(header, values, strict=False)))
+                for offset, value in enumerate(values[len(header) :], start=1):
+                    column = f"{_UNLABELLED_FIELD_PREFIX}{offset}"
+                    if column not in native_columns:
+                        native_columns.append(column)
+                    record[column] = value
+                records.append(record)
+    schema = pa.schema([
+        pa.field("source_record_key", pa.string(), nullable=False),
+        pa.field("source_member", pa.string(), nullable=False),
+        pa.field("source_row_number", pa.int64(), nullable=False),
+        pa.field("source_field_count", pa.int64(), nullable=False),
+        *(pa.field(name, pa.string()) for name in native_columns),
+    ])
+    return SourceRecordBatch(
+        table=pa.Table.from_pylist(records, schema=schema),
+        parser_identity="gma:us-fda-ndc-directory:text-archive:v1",
+        record_id_column="source_record_key",
+    )
+
+
+def _single_json_member(payload: bytes) -> bytes:
+    inspect_zip(payload)
+    with zipfile.ZipFile(BytesIO(payload)) as archive:
+        members = tuple(
+            item.filename for item in archive.infolist() if not item.is_dir()
+        )
+        if len(members) != 1 or not members[0].casefold().endswith(".json"):
+            raise ValueError(
+                "openFDA bulk archive must contain one JSON member"
+            )
+        return archive.read(members[0])
+
+
 def us_source_record_batch(
     source_id: str,
     payload: bytes,
@@ -207,9 +280,15 @@ def us_source_record_batch(
     """Project an authorized payload to source-native Bronze records."""
 
     if source_id in _OPENFDA_IDENTIFIERS:
-        if media_hint != "json":
-            raise ValueError(f"{source_id} requires json media")
-        return _openfda_batch(source_id, payload)
+        if media_hint == "zip":
+            return _openfda_batch(source_id, _single_json_member(payload))
+        if media_hint == "json":
+            return _openfda_batch(source_id, payload)
+        raise ValueError(f"{source_id} requires json or zip media")
+    if source_id == "us-fda-ndc-directory":
+        if media_hint != "zip":
+            raise ValueError("us-fda-ndc-directory requires zip media")
+        return _ndc_directory_batch(payload)
     archive_spec = _ARCHIVE_SPECS.get(source_id)
     if archive_spec is not None:
         if media_hint != "zip":

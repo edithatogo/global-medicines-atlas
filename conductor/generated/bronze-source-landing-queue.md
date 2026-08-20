@@ -7,9 +7,9 @@ Silver transformations included: **no**.
 
 ## State summary
 
-- `landed_and_evidenced`: 16
+- `landed_and_evidenced`: 18
 - `temporarily_unavailable`: 1
-- `rights_blocked`: 44
+- `rights_blocked`: 42
 - `credentialed_and_excluded`: 18
 - `manual_only_documented_acquisition`: 93
 - `superseded_by_reused_source`: 0
@@ -61,7 +61,7 @@ Silver transformations included: **no**.
 - [x] `gb-trud-api` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [ ] `no-fest` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `us-fda-faers` — `landed_and_evidenced`; verify receipt freshness on schedule.
-- [ ] `us-fda-ndc-directory` — `rights_blocked`; record source-specific retention and transformation rights.
+- [x] `us-fda-ndc-directory` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `us-fda-nsde` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `us-fda-orange-book` — `temporarily_unavailable`; retry under the failure-receipt schedule.
 
@@ -78,7 +78,7 @@ Silver transformations included: **no**.
 - [ ] `us-openfda-drugsfda` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `us-openfda-enforcement` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `us-openfda-faers` — `rights_blocked`; record source-specific retention and transformation rights.
-- [ ] `us-openfda-ndc` — `rights_blocked`; record source-specific retention and transformation rights.
+- [x] `us-openfda-ndc` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `us-openfda-nsde` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `us-rxnorm-api` — `rights_blocked`; record source-specific retention and transformation rights.
 

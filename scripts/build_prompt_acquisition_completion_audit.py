@@ -22,11 +22,18 @@ US_LIVE_QUALIFICATION = (
 US_RECORD_QUALIFICATION = (
     ROOT / "quality/qualifications/us-live-bronze-records-20260820.json"
 )
+NDC_RECORD_QUALIFICATION = (
+    ROOT / "quality/qualifications/ndc-directory-live-corpus-20260821.json"
+)
 DEFAULT_OUTPUT = (
     ROOT / "quality/qualifications/prompt-acquisition-completion-audit.json"
 )
 RECONCILIATION_PROMPT_ID = 36
 PROMPT_AUDIT_RECORD_SOURCE_IDS = frozenset({"us-fda-nsde"})
+NDC_PROMPT_AUDIT_SOURCE_IDS = frozenset({
+    "us-fda-ndc-directory",
+    "us-openfda-ndc",
+})
 
 NEXT_ACTIONS = {
     "credentialed_and_excluded": (
@@ -204,6 +211,43 @@ def _qualified_us_record_sources() -> set[str]:
     return qualified
 
 
+def _qualified_ndc_record_sources() -> set[str]:
+    qualification = json.loads(
+        NDC_RECORD_QUALIFICATION.read_text(encoding="utf-8")
+    )
+    if qualification["evidence_class"] != "live_bounded_internal":
+        raise ValueError("NDC qualification has the wrong evidence class")
+    if (
+        not qualification["current_bulk_surface_complete"]
+        or qualification["historical_snapshot_coverage_claimed"]
+        or qualification["external_publication_performed"]
+        or qualification["public_release_authorized"]
+    ):
+        raise ValueError("NDC qualification crossed its reviewed scope")
+    if (
+        qualification["acquisition_succeeded_count"]
+        != qualification["release_count"]
+        or qualification["acquisition_failed_count"] != 0
+        or qualification["accepted_admission_count"]
+        != qualification["release_count"]
+    ):
+        raise ValueError("NDC qualification contains incomplete acquisition")
+    expected = qualification["source_record_projection_count"]
+    if (
+        expected != qualification["release_count"]
+        or qualification["recovered_source_record_projection_count"] != expected
+        or qualification["source_record_parquet_pairs_byte_identical"]
+        != expected
+        or qualification["source_record_rows"] <= 0
+        or not qualification["archive_checksum_verified"]
+    ):
+        raise ValueError("NDC record products lack recovery evidence")
+    qualified = set(qualification["prompt_audit_qualified_source_ids"])
+    if qualified != set(NDC_PROMPT_AUDIT_SOURCE_IDS):
+        raise ValueError("NDC qualification exceeds reviewed source scope")
+    return qualified
+
+
 def build() -> dict[str, Any]:
     """Join locked prompt scope to queue and measured evidence."""
 
@@ -216,7 +260,9 @@ def build() -> dict[str, Any]:
         item["source_id"]: item for item in measured["sources"]
     }
     qualified_us_live = (
-        _qualified_us_live_sources() | _qualified_us_record_sources()
+        _qualified_us_live_sources()
+        | _qualified_us_record_sources()
+        | _qualified_ndc_record_sources()
     )
     for source_id in qualified_us_live:
         existing = measured_by_source.get(source_id, {})
