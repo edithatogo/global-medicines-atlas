@@ -4,12 +4,12 @@ The stable-v1 projection is a qualification view over existing authorities. It
 does not replace `conductor/requirements.md`, `conductor/maturity-model.json`,
 the medicine source catalog, or the governed publication contracts.
 
-Stable promotion fails closed. Every Must requirement must appear in the
+Stable promotion fails closed. Every Must requirement appears in the
 projection with evidence or an explicit blocker; every blocking maturity
-dimension must reach M5; and every release gate must pass. An unresolved
-licence, publication identity, source-maturity assignment, support boundary,
-clean-room rehearsal, or maintainer approval keeps `qualification_state`
-`blocked`.
+dimension must reach M5; and every release gate must pass. The reconciled
+contract remains blocked by current-scope Bronze landing, observable Renovate
+output, the resulting M5 transition, and explicit final stable-release
+approval. The existing `v1.0.0rc1` authority is not final-v1 approval.
 
 ## Contract boundaries
 
@@ -49,9 +49,12 @@ the rehearsal independently on Windows, Linux, and macOS and retain one
 receipt per platform; the support gate remains unverified until all hosted
 receipts pass for the same commit.
 
-The initial projection intentionally records unresolved gates. It is a contract
-for subsequent implementation and evidence collection, not a stable-release
-claim.
+The software contracts, clean consumers, structural migration, comparison
+validity, discovery, independent fixture reproduction, support documentation,
+hosted governance, and bounded publication controls are now verified. This is
+still not a stable-release claim: Bronze current-scope completion and Renovate
+output remain observable technical gates, and final promotion remains a human
+gate.
 
 ## Rehearsal and support gates
 
@@ -61,9 +64,11 @@ as separate receipt-producing rehearsals. It deliberately does not implement
 the structural schema migration.
 
 `quality/qualifications/stable-v1-support-readiness.json` is the authoritative
-Phase 1 register for candidate platforms, documentation readiness, limitations,
-and residual risks. It remains blocked while any blocking risk is unresolved
-or a support boundary is unverified.
+register for platforms, documentation readiness, limitations, and residual
+risks. Its support boundaries pass. The register remains blocked only because
+maintainer-confirmed Renovate activation has not yet produced an observable
+Dashboard or update pull request. Production DR remains unqualified but is a
+separate, accepted limitation of a software-only stable release.
 
 `quality/qualifications/publication-identities.json` is the authoritative
 publication-surface registry. GitHub identifies software source/releases,

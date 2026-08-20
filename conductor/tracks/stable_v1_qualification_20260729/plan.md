@@ -249,3 +249,17 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     bytes and credential-gated payloads were omitted. No live dump was
     downloaded. Receipt:
     `quality/qualifications/data-layer-archive-receipt.json`.
+
+## Phase 3C: Authoritative contract reconciliation
+
+- [x] Task: Reconcile the stable-v1 contract with current evidence (`776d52b`)
+  - Canonical v2, comparison validity, bounded discovery, clean consumers,
+    independent fixture reproduction, support documentation, hosted governance,
+    and bounded software/publication controls are recorded as passed.
+  - Current-scope Bronze landing (M-095) and observable Renovate output (M-046)
+    remain technical blockers; both dependent maturity dimensions stay M4.
+  - `v1.0.0rc1` authority is explicitly prerelease-only. Final stable promotion
+    remains blocked pending a distinct maintainer decision after the technical
+    blockers pass.
+  - Production DR and dataset publication remain separate boundaries and are
+    not implied by software-only release qualification.
