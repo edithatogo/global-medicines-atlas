@@ -190,6 +190,9 @@ before any hot-path rewrite. Python remains orchestration.
     - [x] Reject non-UUID OpenLineage run IDs and mismatched or non-accepted admissions
     - [x] Reconcile immutable schema URLs after rebasing onto merged PR #201
     - [x] Raise changed-line coverage for the OpenLineage projection to 100%
+- [x] Task: Hosted CI Repair (`cc0dd18`)
+    - [x] Assign the new conformance test module to the exhaustive Test-Goblin unit inventory
+    - [x] Revalidate all 154 test modules and the focused harness/conformance tests
 
 ### Phase 4c: Reproducibility and disaster recovery
 
