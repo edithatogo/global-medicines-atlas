@@ -11,6 +11,7 @@ import pyarrow.parquet as pq
 import pytest
 from tests.test_source_receipts import source_receipt
 
+from global_medicines_atlas import bronze_landing
 from global_medicines_atlas.bronze_landing import (
     BronzeLanding,
     SourceRecordBatch,
@@ -64,6 +65,14 @@ def test_binary_payload_emits_manifest_without_replacement_decoding(
         outcome.acquisition_manifest_path.name == "acquisition_manifest.parquet"
     )
     assert outcome.source_records_path is None
+    assert (
+        outcome.transformation_receipt_path
+        == outcome.acquisition_manifest_transformation_receipt_path
+    )
+    assert outcome.table == outcome.acquisition_manifest_table
+    assert outcome.transformation_run == (
+        outcome.acquisition_manifest_transformation_run
+    )
     manifest = pq.read_table(outcome.acquisition_manifest_path)
     assert manifest.num_rows == 1
     assert "native_record" not in manifest.column_names
@@ -223,9 +232,11 @@ def test_manifest_prefers_evidenced_http_media_type(tmp_path: Path) -> None:
         original_uri=receipt.retrieval.uri,
         content_type="application/vnd.example.records+json",
     )
-    receipt = receipt.model_copy(update={
-        "retrieval": receipt.retrieval.model_copy(update={"http": http})
-    })
+    receipt = receipt.model_copy(
+        update={
+            "retrieval": receipt.retrieval.model_copy(update={"http": http})
+        }
+    )
 
     outcome = land_bronze_payload(
         JSON,
@@ -279,6 +290,97 @@ def test_rebuild_requires_matching_payload_and_record_paths(
             lineage_path=target / "acquisition_manifest.openlineage.json",
             bronze_root=bronze_root,
             admission=outcome.admission,
+            source_records=batch,
+        )
+
+
+@pytest.mark.unit
+def test_manifest_requires_reuse_decision_even_for_direct_rebuild(
+    tmp_path: Path,
+) -> None:
+    outcome = land_bronze_payload(
+        JSON,
+        _receipt(JSON),
+        bronze_root=tmp_path / "bronze",
+        media_hint="json",
+    )
+    assert isinstance(outcome, BronzeLanding)
+    receipt_without_reuse = outcome.receipt.model_copy(update={"reuse": None})
+
+    with pytest.raises(ValueError, match="manifest requires a reuse gate"):
+        bronze_landing._acquisition_manifest_table(
+            receipt_without_reuse,
+            payload_path=outcome.payload_path,
+            admission=outcome.admission,
+            source_records=None,
+        )
+
+
+@pytest.mark.unit
+def test_product_rejects_divergent_parquet_identity(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = bronze_landing.bronze_table_spec
+
+    def divergent_spec(*args, **kwargs):
+        spec = original(*args, **kwargs)
+        return spec.model_copy(update={"parquet_digest": "0" * 64})
+
+    monkeypatch.setattr(bronze_landing, "bronze_table_spec", divergent_spec)
+    with pytest.raises(ValueError, match="identity diverged"):
+        land_bronze_payload(
+            JSON,
+            _receipt(JSON),
+            bronze_root=tmp_path / "bronze",
+            media_hint="json",
+        )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("with_records", [False, True])
+def test_landing_requires_persisted_transformation_receipt_paths(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    with_records: bool,
+) -> None:
+    original = bronze_landing.write_transformation_run_receipt
+    calls = 0
+
+    def missing_path(receipt, **kwargs):
+        nonlocal calls
+        calls += 1
+        persisted = original(receipt, **kwargs)
+        if not with_records or calls == 2:
+            return persisted.model_copy(update={"path": None})
+        return persisted
+
+    monkeypatch.setattr(
+        bronze_landing,
+        "write_transformation_run_receipt",
+        missing_path,
+    )
+    batch = (
+        SourceRecordBatch(
+            table=pa.table({"native_id": ["A-1"]}),
+            parser_identity="tests.missing-receipt-path.v1",
+            record_id_column="native_id",
+        )
+        if with_records
+        else None
+    )
+    message = (
+        "source-record transformation receipt path"
+        if with_records
+        else "transformation run receipt path"
+    )
+    with pytest.raises(ValueError, match=message):
+        land_bronze_payload(
+            JSON,
+            _receipt(JSON),
+            bronze_root=tmp_path / "bronze",
+            media_hint="json",
             source_records=batch,
         )
 

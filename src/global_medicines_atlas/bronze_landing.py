@@ -489,11 +489,6 @@ def _write_analytical_outputs(
     source_records_lineage_path: Path | None,
     completed_at: datetime | None = None,
 ) -> tuple[_ProductOutput, _ProductOutput | None]:
-    projected_records = (
-        None
-        if source_records is None
-        else _source_records_table(bound, source_records)[0]
-    )
     manifest_table = _acquisition_manifest_table(
         bound,
         payload_path=payload_path,
@@ -513,12 +508,11 @@ def _write_analytical_outputs(
         schema_version=MANIFEST_SCHEMA_VERSION,
         completed_at=completed_at,
     )
-    if projected_records is None:
-        return manifest, None
     if source_records is None:
-        raise TypeError("projected source records require their batch metadata")
+        return manifest, None
     if source_records_path is None or source_records_lineage_path is None:
         raise ValueError("source-record output paths are required")
+    projected_records = _source_records_table(bound, source_records)[0]
     records = _write_parquet_product(
         bound,
         projected_records,
