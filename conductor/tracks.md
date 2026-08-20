@@ -29,5 +29,5 @@ and rationale contract in that policy.
 - [x] **Track: Qualify bronze maturity for current public scope**
   *Archived: [archive/bronze_maturity_qualification_20260820/index.md](./archive/bronze_maturity_qualification_20260820/index.md); related bronze parent [#167](https://github.com/edithatogo/global-medicines-atlas/issues/167). The complete fail-closed report evidences 13 of 14 properties and retains incomplete public-source landing as the sole blocker; Bronze is not declared mature.*
 
-- [ ] **Track: Evaluate optional datahouse interoperability and versioning technologies**
+- [~] **Track: Evaluate optional datahouse interoperability and versioning technologies**
   *Link: [tracks/datahouse_interoperability_experiments_20260820/index.md](./tracks/datahouse_interoperability_experiments_20260820/index.md); GitHub parent [#207](https://github.com/edithatogo/global-medicines-atlas/issues/207). Iceberg REST/v3, DuckLake, object versioning, batch attestation, and Delta/Hudi remain non-blocking experiments.*
