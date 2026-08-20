@@ -53,6 +53,14 @@
       ]
     },
     {
+      "source_id": "us-fda-recalls-notices",
+      "state": "landed_and_evidenced",
+      "reason": "The current FDA notice workbook and official live, archive-policy, and legacy archive-index documentation were acquired, Bronze-landed, clean-room exercised where admitted, and privately archived separately from the complete structured enforcement export.",
+      "evidence_references": [
+        "quality/qualifications/fda-enforcement-live-corpus-20260821.json"
+      ]
+    },
+    {
       "source_id": "us-fda-drug-shortages",
       "state": "manual_only_documented_acquisition",
       "reason": "The complete current openFDA export and all 129 inventoried monthly FDA list snapshots were acquired, reconstructed where admitted, and privately archived; complete historical detail-page coverage remains pending.",
