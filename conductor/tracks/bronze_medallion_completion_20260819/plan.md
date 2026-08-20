@@ -258,6 +258,7 @@ before any hot-path rewrite. Python remains orchestration.
         - [x] Exercise immutable landing, rights-bound receipts, append-only admission, accepted-only Parquet/OpenLineage, and clean-room recovery against the live corpus; 8 acquisitions were accepted and rebuilt while 5 HTML/interactive payloads were preserved and quarantined
         - [x] Produce adapter-native Bronze records for the five bounded openFDA JSON canaries and the accepted Drugs@FDA, NSDE, and Orange Book archives; regenerate all eight record products byte-for-byte from immutable payloads and receipts
         - [x] Reconcile prompt 19 as the first live-complete acquisition prompt: the authoritative FDA NSDE comprehensive file and bounded openFDA NSDE projection are both live-qualified; keep Orange Book and other historical families incomplete
+        - [x] Inventory the bounded official Orange Book history surfaces without payload retrieval and add a fail-closed maintainer authorization contract; do not equate current ZIP, current PDFs, monthly change pages, and the legacy FDA archive
         - [ ] Acquire complete historical releases for the applicable FDA source families; the bounded canaries and current snapshots do not complete prompt-level coverage
 - [x] Task: Review Fixes for bounded U.S. live acquisition (`9a7dc7b`)
     - [x] Prevent bound GET/HEAD requests from gaining a chunked request body and skip compressed-wire Content-Length comparisons against decoded bytes
@@ -270,6 +271,10 @@ before any hot-path rewrite. Python remains orchestration.
 - [x] Task: CI repair for NSDE prompt qualification (`a575926`)
     - [x] Apply the repository-wide Ruff formatter to the new qualification assertion
     - [x] Re-run formatting, lint, `ty`, context, ecosystem, and JavaScript-style routine gates locally
+- [x] Task: Review fixes for Orange Book historical planning
+    - [x] Require both maintainer authorization and a complete exact-release inventory before any payload GET can be emitted
+    - [x] Validate official documentation hosts independently from release-surface hosts
+    - [x] Exercise authorization-only bypass, false completeness, and host-drift negative controls
 - [x] Task: Phase Verification & Checkpoint
     - [x] Run focused, integration, and source-boundary tests
     - [x] Measure completeness with S-012 denominators; missing coverage is not negative evidence
