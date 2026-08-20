@@ -11,9 +11,9 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 - [x] Task: Implement the synthetic package, schemas, dataset card, and deterministic manifest (AC-01, AC-07) (`5a894f3`)
     - [x] Bind all artifacts to Apache-2.0 repository provenance
     - [x] Keep every source-derived payload outside the package
-- [ ] Task: Phase review and verification checkpoint (AC-01, AC-06, AC-08)
-    - [ ] Run focused tests, coverage, typing, security, licence, provenance, and core-isolation checks
-    - [ ] Record publication boundary evidence
+- [x] Task: Phase review and verification checkpoint (AC-01, AC-06, AC-08) (`eb8e685`)
+    - [x] Run focused tests, coverage, typing, security, licence, provenance, and core-isolation checks
+    - [x] Record publication boundary evidence
 
 ## Phase 2: Free-tier workflow mechanics and recovery
 
@@ -22,9 +22,9 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 - [x] Task: Implement and run the GitHub-hosted mechanics experiment (AC-02, AC-06) (`5a894f3`)
     - [x] Measure experimental RPO/RTO and dependency footprint
     - [x] Reject WORM, Object Lock, geographic guarantee, and production-SLA claims
-- [ ] Task: Phase review and verification checkpoint (AC-02, AC-08)
-    - [ ] Run fault, tamper, credential-leak, deterministic-replay, and restoration checks
-    - [ ] Record hosted workflow evidence
+- [x] Task: Phase review and verification checkpoint (AC-02, AC-08) (`eb8e685`)
+    - [x] Run fault, tamper, credential-leak, deterministic-replay, and restoration checks
+    - [x] Record hosted workflow evidence
 
 ## Phase 3: Hugging Face replication and restore
 
@@ -50,19 +50,19 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 - [x] Task: Execute bounded equivalent engine workloads (AC-05, AC-06) (`5a894f3`)
     - [x] Pin runtime and format identities
     - [x] Record complete results or reproducible implementation-specific failures
-- [ ] Task: Phase review and verification checkpoint (AC-04, AC-05, AC-08)
-    - [ ] Review benchmark comparability, runner cost, dependency isolation, and evidence language
-    - [ ] Run focused and affected validation
+- [x] Task: Phase review and verification checkpoint (AC-04, AC-05, AC-08) (`eb8e685`)
+    - [x] Review benchmark comparability, runner cost, dependency isolation, and evidence language
+    - [x] Run focused and affected validation
 
 ## Phase 5: Maintainer decision evidence
 
 - [x] Task: Produce the schema-validated decision packet (AC-07) (`2966d38`)
     - [x] Classify each capability and separate evidence, inference, and external gates
     - [x] Include benefits, risks, costs, compatibility, rollback, and recommended disposition
-- [ ] Task: Whole-track Conductor review and completion verification (AC-08)
-    - [ ] Run the full hosted Test-Goblin matrix and required repository checks
-    - [ ] Reconcile GitHub issues, public Hugging Face revision, receipts, metadata, and registry
-    - [ ] Preserve the final technology-promotion decision for the maintainer
+- [x] Task: Whole-track Conductor review and completion verification (AC-08) (`4d39ad2`)
+    - [x] Run the full hosted Test-Goblin matrix and required repository checks
+    - [x] Reconcile GitHub issues, public Hugging Face revision, receipts, metadata, and registry
+    - [x] Preserve the final technology-promotion decision for the maintainer
 
 ## Review Fixes
 
@@ -74,8 +74,8 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 
 - Parent issue: [#231](https://github.com/edithatogo/global-medicines-atlas/issues/231)
 - Nested subissues:
-    - [ ] [#232](https://github.com/edithatogo/global-medicines-atlas/issues/232): rights-cleared synthetic public evidence (AC-01, AC-03)
-    - [ ] [#233](https://github.com/edithatogo/global-medicines-atlas/issues/233): free-tier workflow mechanics and restore (AC-02)
-    - [ ] [#234](https://github.com/edithatogo/global-medicines-atlas/issues/234): measured Atlas workload demand (AC-04)
-    - [ ] [#235](https://github.com/edithatogo/global-medicines-atlas/issues/235): Iceberg-ready, Delta, and Hudi comparison (AC-05, AC-06)
-    - [ ] [#236](https://github.com/edithatogo/global-medicines-atlas/issues/236): maintainer decision packet (AC-07, AC-08)
+    - [x] [#232](https://github.com/edithatogo/global-medicines-atlas/issues/232): rights-cleared synthetic public evidence (AC-01, AC-03)
+    - [x] [#233](https://github.com/edithatogo/global-medicines-atlas/issues/233): free-tier workflow mechanics and restore (AC-02)
+    - [x] [#234](https://github.com/edithatogo/global-medicines-atlas/issues/234): measured Atlas workload demand (AC-04)
+    - [x] [#235](https://github.com/edithatogo/global-medicines-atlas/issues/235): Iceberg-ready, Delta, and Hudi comparison (AC-05, AC-06)
+    - [x] [#236](https://github.com/edithatogo/global-medicines-atlas/issues/236): maintainer decision packet (AC-07, AC-08)
