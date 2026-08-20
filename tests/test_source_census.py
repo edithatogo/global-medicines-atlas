@@ -103,7 +103,7 @@ def test_coverage_measures_each_required_capability() -> None:
     assert coverage.source_health_scheduled == coverage.denominator
     assert coverage.schema_drift_scheduled == coverage.denominator
     assert coverage.parser_capable_sources > 0
-    assert coverage.live_receipt_sources == 0
+    assert coverage.live_receipt_sources == 1
     assert coverage.production_qualified_sources == 0
 
 

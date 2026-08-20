@@ -66,6 +66,22 @@ CATALOG_PATH = "src/global_medicines_atlas/data/medicine_source_catalog.json"
 SCHEMA_PATH = "schemas/stable-v1-measured-coverage-v1.json"
 _ZERO_DIGEST = "0" * 64
 _FIXTURE_TIME = datetime(2026, 7, 29, tzinfo=UTC)
+_LIVE_QUALIFICATIONS = {
+    "eu-union-register": (
+        "quality/qualifications/union-register-live-corpus-20260821.json"
+    ),
+}
+_LIVE_IMPLEMENTATIONS = {
+    "eu-union-register": (
+        "src/global_medicines_atlas/union_register_acquisition.py",
+        "union_register_acquisition:union_register_source_record_batch",
+    ),
+}
+_DEFAULT_UNSUPPORTED_CLAIMS = (
+    "current/live source coverage",
+    "exhaustive jurisdiction coverage",
+    "medicine-level negative status from absence",
+)
 
 
 def _canonical_bytes(value: object) -> bytes:
@@ -160,11 +176,7 @@ class SourceCoverage(FrozenModel):
     implementation_artifacts: tuple[ArtifactEvidence, ...] = ()
     implementations: tuple[str, ...] = ()
     live_receipt_id: str | None = Field(default=None, min_length=1)
-    unsupported_claims: tuple[str, ...] = (
-        "current/live source coverage",
-        "exhaustive jurisdiction coverage",
-        "medicine-level negative status from absence",
-    )
+    unsupported_claims: tuple[str, ...] = _DEFAULT_UNSUPPORTED_CLAIMS
 
     @model_validator(mode="after")
     def evidence_layers_are_coherent(self) -> Self:
@@ -691,6 +703,14 @@ def _source_row(
             highest_maturity=EvidenceMaturity.CATALOGUE,
         )
     measured_records, dimensions = _measure_probe(root, spec)
+    live_receipt_id = _validated_live_receipt_id(root, source)
+    implementation_paths = set(spec.implementation_paths)
+    implementations = set(spec.implementations)
+    live_implementation = _LIVE_IMPLEMENTATIONS.get(source.source_id)
+    if live_implementation is not None:
+        implementation_path, implementation = live_implementation
+        implementation_paths.add(implementation_path)
+        implementations.add(implementation)
     return SourceCoverage(
         source_id=source.source_id,
         jurisdictions=tuple(sorted(source.jurisdictions)),
@@ -705,18 +725,76 @@ def _source_row(
             sorted(item.value for item in source.available_fields)
         ),
         fixture_qualified=True,
-        live_qualified=False,
-        highest_maturity=EvidenceMaturity.FIXTURE,
+        live_qualified=live_receipt_id is not None,
+        highest_maturity=(
+            EvidenceMaturity.LIVE
+            if live_receipt_id is not None
+            else EvidenceMaturity.FIXTURE
+        ),
         measured_fixture_dimensions=dimensions,
         catalog_fixture_dimension_agreement=(dimensions == (source.dimension,)),
         measured_fixture_records=measured_records,
         fixture_artifacts=_fixture_artifacts(root, spec),
         implementation_artifacts=tuple(
-            _artifact(root, path)
-            for path in sorted(set(spec.implementation_paths))
+            _artifact(root, path) for path in sorted(implementation_paths)
         ),
-        implementations=tuple(sorted(spec.implementations)),
+        implementations=tuple(sorted(implementations)),
+        live_receipt_id=live_receipt_id,
+        unsupported_claims=(
+            (
+                "exhaustive jurisdiction coverage",
+                "medicine-level negative status from absence",
+            )
+            if live_receipt_id is not None
+            else _DEFAULT_UNSUPPORTED_CLAIMS
+        ),
     )
+
+
+def _validated_live_receipt_id(
+    root: Path,
+    source: MedicineDataSource,
+) -> str | None:
+    qualification_path = _LIVE_QUALIFICATIONS.get(source.source_id)
+    if qualification_path is None:
+        return None
+    if source.current_receipt_id is None:
+        raise ValueError(
+            f"{source.source_id} live capability lacks catalog receipt identity"
+        )
+    if qualification_path not in source.qualification_references:
+        raise ValueError(
+            f"{source.source_id} live qualification is not catalog-bound"
+        )
+    payload = cast(
+        "dict[str, object]",
+        json.loads((root / qualification_path).read_bytes()),
+    )
+    if payload.get("source_ids") != [source.source_id]:
+        raise ValueError(
+            f"{source.source_id} live qualification source identity mismatch"
+        )
+    required = {
+        "current_source_snapshot_complete": True,
+        "external_publication_performed": False,
+        "archive_checksum_verified": True,
+    }
+    for field, expected in required.items():
+        if payload.get(field) is not expected:
+            raise ValueError(
+                f"{source.source_id} live qualification lacks {field}"
+            )
+    for field in (
+        "accepted_admission_count",
+        "recovered_acquisition_count",
+        "source_record_parquet_pairs_byte_identical",
+    ):
+        value = payload.get(field)
+        if not isinstance(value, int) or value < 1:
+            raise ValueError(
+                f"{source.source_id} live qualification lacks {field}"
+            )
+    return source.current_receipt_id
 
 
 def _jurisdiction_rows(
@@ -816,6 +894,7 @@ def _catalog_context(
 
 
 def _validate_probe_contract(
+    root: Path,
     catalog: tuple[MedicineDataSource, ...],
     specs: dict[str, _ProbeSpec],
 ) -> None:
@@ -841,10 +920,16 @@ def _validate_probe_contract(
         for declaration in capabilities
         if Capability.LIVE_RECEIPT in declaration.capabilities
     }
-    if live_capabilities:
+    catalog_by_id = {source.source_id: source for source in catalog}
+    missing_live_receipts = sorted(
+        source_id
+        for source_id in live_capabilities
+        if _validated_live_receipt_id(root, catalog_by_id[source_id]) is None
+    )
+    if missing_live_receipts:
         raise ValueError(
             "live capability requires durable receipt integration before "
-            f"qualification: {sorted(live_capabilities)}"
+            f"qualification: {missing_live_receipts}"
         )
 
 
@@ -855,7 +940,7 @@ def build_measured_coverage_receipt(
     root = root.resolve()
     catalog, catalog_jurisdictions = _catalog_context(root)
     specs = {spec.catalog_source_id: spec for spec in _PROBES}
-    _validate_probe_contract(catalog, specs)
+    _validate_probe_contract(root, catalog, specs)
 
     rows = tuple(
         _source_row(root, source, specs.get(source.source_id))
@@ -877,6 +962,10 @@ def build_measured_coverage_receipt(
                     "scripts/qualify_stable_v1_measured_coverage.py",
                 ),
                 _artifact(root, SCHEMA_PATH),
+                *(
+                    _artifact(root, path)
+                    for path in sorted(_LIVE_QUALIFICATIONS.values())
+                ),
             ),
             key=lambda item: item.path,
         )
@@ -894,7 +983,7 @@ def build_measured_coverage_receipt(
         limitations=(
             "Catalogue rows describe declared resource scope, not current medicine-level coverage.",
             "Fixture qualification measures committed representative payloads, not live source currency or completeness.",
-            "No source has a durable live receipt in this offline qualification.",
+            "Live maturity is limited to sources with committed, content-bound qualification receipts; it is not exhaustive global coverage.",
             "Absence from a source is unknown or not covered and never evidence of unapproval or non-funding.",
             "Regulatory, funding, formulary and terminology dimensions remain separate.",
         ),

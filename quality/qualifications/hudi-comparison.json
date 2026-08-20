@@ -1,0 +1,37 @@
+{
+  "core_dependency_added": false,
+  "correctness_verified": true,
+  "elapsed_seconds": 21.509633,
+  "engine": "hudi",
+  "error": null,
+  "final_records": [
+    {
+      "native_id": "A-001",
+      "value": 11
+    },
+    {
+      "native_id": "C-003",
+      "value": 3
+    }
+  ],
+  "historical_recovery_verified": false,
+  "outcome": "passed",
+  "runtime": {
+    "dependency": "3.5.6",
+    "hudi_bundle": "org.apache.hudi:hudi-spark3.5-bundle_2.12:1.2.0",
+    "python": "3.11.15"
+  },
+  "schema_version": "1.0",
+  "synthetic_only": true,
+  "workload": {
+    "appends": 1,
+    "deletes": 1,
+    "expected_final_rows": 2,
+    "initial_rows": 2,
+    "updates": 1
+  },
+  "conflict_behavior": "not_exercised_single_writer_workload",
+  "compaction": "not_exercised_bounded_workload",
+  "portability": "engine_neutral_records_and_oracle; engine_specific_physical_readback",
+  "governed_input_reconstruction": "not_applicable_synthetic_workload"
+}

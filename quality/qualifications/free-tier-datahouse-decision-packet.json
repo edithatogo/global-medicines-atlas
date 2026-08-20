@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-20T22:03:00Z",
+  "constraints": [
+    "GitHub and Hugging Face free tiers only",
+    "repository-authored synthetic and non-sensitive aggregate evidence only",
+    "no core dependency promotion",
+    "no WORM, Object Lock, guaranteed replication, provider SLA, or production RPO/RTO claim"
+  ],
+  "evidence": [
+    {"path": "quality/qualifications/iceberg-rest-interoperability.json", "sha256": "900fb046806117b8d0086f9e06b8067266fa3615cbf74abf44a1393d0b4171b3"},
+    {"path": "quality/qualifications/ducklake-comparison.json", "sha256": "d781fca4e96e127d51cd56a4ad4adedad9aabd1bb359cc33c1fb166d3d73ed62"},
+    {"path": "quality/qualifications/merkle-attestation.json", "sha256": "527230206fc4e9d389b7721ffecebf54e483d6e93340fa6bc7c69f46aad38da9"},
+    {"path": "quality/qualifications/free-tier-git-mechanics.json", "sha256": "d2a730ff4606be87a1989ffd082ed16c3929ef8061f755b5e0155f3236ed1524"},
+    {"path": "quality/qualifications/hugging-face-free-tier-restore.json", "sha256": "cf6bde0a1e1cd3e116131ddd8d7738d218a95e59a35fc50f806ea6d3ed8a6379"},
+    {"path": "quality/qualifications/table-format-workload-demand.json", "sha256": "8b0658b641c3974ec41adf927d8aa21abc83327a981aea5912d2bae62e8b15a3"},
+    {"path": "quality/qualifications/iceberg-ready-parquet-comparison.json", "sha256": "b7eaf0efa45c8284174b2d0d697121bc0c978dcfaba0a300e10c47ac0dc40dcf"},
+    {"path": "quality/qualifications/delta-comparison.json", "sha256": "34bc8bb03b682d7e81f15c1c2ca016a3f70c2f1361dc7d410519b7ee3bb7da60"},
+    {"path": "quality/qualifications/hudi-comparison.json", "sha256": "46962bd1ec63a4fe20791888704d4fa9e958823e0d26c25f699315fd8b3bae1c"}
+  ],
+  "decisions": [
+    {
+      "capability": "Iceberg REST catalogue",
+      "disposition": "continue_experiment",
+      "observed": "Pinned Apache fixture namespace, table, snapshot, schema-evolution, and partition-evolution workload passed on GitHub.",
+      "inference": "Interoperability is promising but one implementation is not universal conformance.",
+      "external_gate": "A production catalogue and durable object store are not available.",
+      "benefit": "Open catalogue protocol over rebuildable Iceberg metadata.",
+      "risk_or_cost": "Adds a service and operational failure domain.",
+      "python_3_14": "PyIceberg 0.11.1 passed in the optional Python 3.14.6 hosted job.",
+      "rollback": "Delete optional catalogue metadata and rebuild from governed Parquet and receipts."
+    },
+    {
+      "capability": "Iceberg v3",
+      "disposition": "continue_experiment",
+      "observed": "Table creation, nanosecond timestamps, defaults, and row-lineage symbols passed; multi-argument transforms and deletion-vector symbols were unavailable.",
+      "inference": "Selective capability checks are required before any v3 use.",
+      "external_gate": "No Atlas workload currently requires a v3-only feature.",
+      "benefit": "Potential future precision and row-lineage features.",
+      "risk_or_cost": "Partial client support and reduced interoperability.",
+      "python_3_14": "Optional PyIceberg path passed on hosted Python 3.14.6.",
+      "rollback": "Retain the v2-compatible specification and governed Parquet."
+    },
+    {
+      "capability": "DuckLake",
+      "disposition": "continue_experiment",
+      "observed": "A local single-client workload passed correctness, snapshot history, reattachment, and source fallback.",
+      "inference": "Useful for DuckDB-native analysis, not qualified for shared production operation.",
+      "external_gate": "Multi-client and durable-catalogue evidence is absent.",
+      "benefit": "Low-friction DuckDB-native catalogue experimentation.",
+      "risk_or_cost": "Younger ecosystem and single-client evidence only.",
+      "python_3_14": "Core remains independent; the experiment uses the DuckDB extension.",
+      "rollback": "Drop the disposable catalogue and query governed Parquet directly."
+    },
+    {
+      "capability": "Git and Hugging Face replication workflow",
+      "disposition": "adopt_candidate",
+      "observed": "Conflict, merge, rollback read, inventory, clean restore, public revision pinning, and all package digests passed.",
+      "inference": "Suitable as an additional public synthetic evidence mirror, not authoritative Bronze storage.",
+      "external_gate": "WORM, guaranteed independent replication, production RPO/RTO, and SLA remain unmet.",
+      "benefit": "No-cost public reproducibility across the two available providers.",
+      "risk_or_cost": "Both histories are mutable and free-tier availability is best effort.",
+      "python_3_14": "Packaging and verification passed on Python 3.14; Git mechanics have no added Python dependency.",
+      "rollback": "Remove the optional mirror reference; retain repository and authoritative per-object receipts."
+    },
+    {
+      "capability": "lakeFS or equivalent production object versioning",
+      "disposition": "not_justified",
+      "observed": "Portable Git mechanics passed, but no qualifying durable object store, Object Lock, replication, or production recovery contract exists.",
+      "inference": "The workflow semantics alone do not close the storage gate.",
+      "external_gate": "A qualifying storage provider or independently administered durable replica is required.",
+      "benefit": "Branch and merge semantics could improve governed batch promotion.",
+      "risk_or_cost": "Additional service complexity without a free-tier durability foundation.",
+      "python_3_14": "No core dependency was added.",
+      "rollback": "Keep immutable payload receipts authoritative and discard optional workflow metadata."
+    },
+    {
+      "capability": "Merkle batch attestation",
+      "disposition": "adopt_candidate",
+      "observed": "Root reproducibility, inclusion proofs, tamper detection, ordering, duplicate, and absent-leaf controls passed without dependencies.",
+      "inference": "An additive batch index can improve audit efficiency without replacing object identity.",
+      "external_gate": null,
+      "benefit": "Compact batch integrity verification over existing SHA-256 receipts.",
+      "risk_or_cost": "Non-membership proofs are unsupported and roots must never replace per-object receipts.",
+      "python_3_14": "Pure Python 3.14 implementation passed.",
+      "rollback": "Discard the batch root and verify objects directly from their receipts."
+    },
+    {
+      "capability": "Delta Lake",
+      "disposition": "not_justified",
+      "observed": "deltalake 1.6.2 passed one update, delete, append, final-state oracle, and version-0 recovery on Python 3.14.",
+      "inference": "Technical viability does not establish Atlas demand.",
+      "external_gate": "Governed update, delete, multi-writer, or unmet-transaction demand is not evidenced.",
+      "benefit": "Native row mutation and time travel with a Python 3.14 client.",
+      "risk_or_cost": "Adds an optional format and dependency while duplicating current append-oriented capabilities.",
+      "python_3_14": "deltalake 1.6.2 passed on local 3.14.5 and hosted 3.14.6.",
+      "rollback": "Remove the isolated dependency and retain Iceberg-ready Parquet."
+    },
+    {
+      "capability": "Apache Hudi",
+      "disposition": "not_justified",
+      "observed": "Hudi 1.2.0 with Spark 3.5.6 passed the common update, delete, append, and final-state workload in 21.509633 seconds; historical recovery was not verified.",
+      "inference": "The Java, Spark, Maven bundle, and separate Python 3.11 runtime are disproportionate without measured high-update demand.",
+      "external_gate": "Governed high-update demand and historical recovery evidence are absent.",
+      "benefit": "Mature update/delete table semantics for genuinely high-update workloads.",
+      "risk_or_cost": "Highest dependency and operational footprint of the evaluated options.",
+      "python_3_14": "The isolated Hudi workload required Python 3.11; core Python 3.14 remained unaffected.",
+      "rollback": "Remove the isolated Spark/Hudi job and retain Iceberg-ready Parquet."
+    }
+  ],
+  "maintainer_gate": {
+    "promotion_claimed": false,
+    "production_durability_claimed": false,
+    "recommended_decision": "Use the Hugging Face mirror for public synthetic evidence and consider additive Merkle manifests; continue bounded Iceberg, v3, and DuckLake experiments; do not adopt lakeFS, Delta, or Hudi until governed workload or durable-storage evidence changes."
+  }
+}

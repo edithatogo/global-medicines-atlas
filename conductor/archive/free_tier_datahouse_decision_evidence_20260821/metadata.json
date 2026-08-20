@@ -1,0 +1,48 @@
+{
+  "track_id": "free_tier_datahouse_decision_evidence_20260821",
+  "type": "feature",
+  "status": "complete",
+  "created_at": "2026-08-20T21:32:19Z",
+  "updated_at": "2026-08-20T22:34:00Z",
+  "description": "Produce rights-cleared free-tier GitHub and Hugging Face evidence for datahouse workflow, recovery, high-update formats, and maintainer technology decisions.",
+  "evidence_schema": "1.0",
+  "target_versions": ["1.0.0"],
+  "requirements": ["C-007", "C-008", "C-009", "C-010"],
+  "github_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/231",
+  "github_subissues": [
+    "https://github.com/edithatogo/global-medicines-atlas/issues/232",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/233",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/234",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/235",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/236"
+  ],
+  "gates": [
+    {
+      "id": "source-byte-publication",
+      "kind": "rights-and-publication",
+      "status": "pending",
+      "evidence": "Only repository-authored synthetic artifacts are authorized; every source-derived acquisition requires its own rights decision."
+    },
+    {
+      "id": "production-durability",
+      "kind": "external-prerequisite",
+      "status": "pending",
+      "evidence": "Free-tier GitHub and Hugging Face do not establish WORM/Object Lock, guaranteed independent replication, or production RPO/RTO."
+    },
+    {
+      "id": "technology-promotion",
+      "kind": "human-approval",
+      "status": "pending",
+      "evidence": "The maintainer requested decision evidence; promotion remains a later explicit decision."
+    }
+  ],
+  "execution_policy": {
+    "mode": "autonomous",
+    "interaction": "decision_gates_only",
+    "decision_protocol": "options_recommendation_rationale",
+    "phase_checkpoints": "automatic_evidence_gated",
+    "failure_recovery": "bounded_self_correction",
+    "max_identical_failures": 3,
+    "merge_policy": "required_checks_then_merge"
+  }
+}

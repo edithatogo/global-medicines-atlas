@@ -1,0 +1,37 @@
+{
+  "compaction": "not_exercised_bounded_workload",
+  "conflict_behavior": "not_exercised_single_writer_workload",
+  "core_dependency_added": false,
+  "correctness_verified": true,
+  "elapsed_seconds": 1.587123,
+  "engine": "delta",
+  "error": null,
+  "final_records": [
+    {
+      "native_id": "A-001",
+      "value": 11
+    },
+    {
+      "native_id": "C-003",
+      "value": 3
+    }
+  ],
+  "governed_input_reconstruction": "not_applicable_synthetic_workload",
+  "historical_recovery_verified": true,
+  "outcome": "passed",
+  "peak_rss_delta_native_units": 67158016,
+  "portability": "engine_neutral_records_and_oracle; engine_specific_physical_readback",
+  "runtime": {
+    "dependency": "1.6.2",
+    "python": "3.14.5"
+  },
+  "schema_version": "1.0",
+  "synthetic_only": true,
+  "workload": {
+    "appends": 1,
+    "deletes": 1,
+    "expected_final_rows": 2,
+    "initial_rows": 2,
+    "updates": 1
+  }
+}
