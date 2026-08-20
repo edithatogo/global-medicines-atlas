@@ -95,6 +95,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_bronze_maturity.py",
         "tests/test_bronze_scale.py",
         "tests/test_openlineage_projection.py",
+        "tests/test_openlineage_conformance.py",
         "tests/test_iceberg_ready.py",
         "tests/test_settings.py",
         "tests/test_logging.py",
