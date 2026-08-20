@@ -13,7 +13,7 @@ from global_medicines_atlas.archive_safety import ArchiveSafetyError
 from global_medicines_atlas.us_source_records import us_source_record_batch
 
 
-def _zip(members: dict[str, str]) -> bytes:
+def _zip(members: dict[str, str | bytes]) -> bytes:
     output = io.BytesIO()
     with zipfile.ZipFile(output, mode="w") as archive:
         for name, content in members.items():
@@ -75,10 +75,36 @@ def test_openfda_duplicate_native_identity_gets_stable_record_link() -> None:
 
 
 def test_openfda_malformed_results_fail_closed() -> None:
+    with pytest.raises(TypeError, match="payload must be an object"):
+        us_source_record_batch("us-openfda-faers", b"[]", "json")
     with pytest.raises(TypeError, match="results must be a list"):
         us_source_record_batch(
             "us-openfda-faers",
             b'{"results": {"unexpected": true}}',
+            "json",
+        )
+
+    with pytest.raises(TypeError, match="result 1 must be an object"):
+        us_source_record_batch(
+            "us-openfda-faers", b'{"results": ["unexpected"]}', "json"
+        )
+
+
+def test_openfda_fallback_identity_and_technical_collision() -> None:
+    batch = us_source_record_batch(
+        "us-openfda-ndc",
+        b'{"results": [{"brand_name": "Native"}]}',
+        "json",
+    )
+    assert batch is not None
+    assert (
+        batch.table.column("source_record_key")[0].as_py().startswith("row:1:")
+    )
+
+    with pytest.raises(ValueError, match="technical record key"):
+        us_source_record_batch(
+            "us-openfda-ndc",
+            b'{"results": [{"product_ndc": "1", "source_record_key": "x"}]}',
             "json",
         )
 
@@ -157,7 +183,9 @@ def test_archive_preserves_unlabelled_overflow_without_guessing() -> None:
     batch = us_source_record_batch(
         "us-fda-orange-book",
         _zip({
-            "patent.txt": "Appl_No~Patent_No\n1~P1~unlabelled\n",
+            "patent.txt": (
+                "Appl_No~Patent_No\n1~P1~unlabelled\n2~P2~also-unlabelled\n"
+            ),
             "products.txt": "Appl_No~Product_No\n1~1\n",
             "exclusivity.txt": "Appl_No~Code\n1~NCE\n",
         }),
@@ -165,12 +193,67 @@ def test_archive_preserves_unlabelled_overflow_without_guessing() -> None:
     )
 
     assert batch is not None
-    assert batch.table.column("source_field_count").to_pylist() == [2, 3, 2]
+    assert batch.table.column("source_field_count").to_pylist() == [
+        2,
+        3,
+        3,
+        2,
+    ]
     overflow = batch.table.column("source_unlabelled_field_1").to_pylist()
-    assert overflow == [None, "unlabelled", None]
+    assert overflow == [None, "unlabelled", "also-unlabelled", None]
+
+
+@pytest.mark.parametrize(
+    ("patent", "message"),
+    [
+        ("", "no header"),
+        ("~Patent_No\n1~P1\n", "empty header"),
+        ("Appl_No~Appl_No\n1~P1\n", "duplicate columns"),
+        ("source_member~Patent_No\n1~P1\n", "technical columns"),
+        (
+            "source_unlabelled_field_1~Patent_No\n1~P1\n",
+            "technical columns",
+        ),
+    ],
+)
+def test_archive_header_contract_fails_closed(
+    patent: str,
+    message: str,
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        us_source_record_batch(
+            "us-fda-orange-book",
+            _zip({
+                "patent.txt": patent,
+                "products.txt": "Appl_No~Product_No\n1~1\n",
+                "exclusivity.txt": "Appl_No~Code\n1~NCE\n",
+            }),
+            "zip",
+        )
+
+
+def test_archive_cp1252_short_row_and_blank_row_are_source_faithful() -> None:
+    batch = us_source_record_batch(
+        "us-fda-orange-book",
+        _zip({
+            "patent.txt": "Appl_No~Patent_No~Note\n1~P1\n",
+            "products.txt": ("Appl_No~Product_No~Name\n\n1~1~caf\xe9\n").encode(
+                "cp1252"
+            ),
+            "exclusivity.txt": "Appl_No~Code\n1~NCE\n",
+        }),
+        "zip",
+    )
+
+    assert batch is not None
+    assert batch.table.num_rows == 3
+    assert "caf\xe9" in batch.table.column("Name").to_pylist()
+    assert batch.table.column("Note").to_pylist() == [None, None, None]
 
 
 def test_non_record_and_media_mismatch_sources_do_not_project() -> None:
     assert us_source_record_batch("us-fda-rems", b"<html/>", "html") is None
     with pytest.raises(ValueError, match="requires json"):
         us_source_record_batch("us-openfda-faers", b"{}", "zip")
+    with pytest.raises(ValueError, match="requires zip"):
+        us_source_record_batch("us-fda-orange-book", b"{}", "json")
