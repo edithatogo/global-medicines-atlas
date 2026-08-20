@@ -203,6 +203,12 @@ def test_admission_persistence_rejects_mismatched_identity(
             receipt_path=outcome.receipt_path,
             receipt=outcome.receipt,
         )
+    with pytest.raises(ValueError, match="cannot be rewritten"):
+        persist_admission_decision(
+            outcome.admission.model_copy(update={"actor": "tampered"}),
+            receipt_path=outcome.receipt_path,
+            receipt=outcome.receipt,
+        )
 
 
 @pytest.mark.unit
@@ -245,6 +251,65 @@ def test_latest_admission_rejects_missing_or_branched_history(
         )
     with pytest.raises(DownstreamAdmissionError, match="one unsuperseded"):
         latest_admission_decision(outcome)
+
+
+@pytest.mark.unit
+def test_admission_history_rejects_corruption_and_unknown_predecessor(
+    tmp_path: Path,
+) -> None:
+    outcome = land_bronze_payload(
+        VALID,
+        _receipt(VALID),
+        bronze_root=tmp_path / "bronze",
+        media_hint="json",
+        admission_decided_at=NOW,
+        transformation_completed_at=NOW,
+    )
+    assert isinstance(outcome, BronzeLanding)
+
+    unknown = create_admission_decision(
+        acquisition_id=outcome.admission.acquisition_id,
+        content_id=outcome.admission.content_id,
+        state=BronzeAdmissionState.ACCEPTED,
+        reason_codes=("reviewed",),
+        actor="maintainer:review",
+        decided_at=NOW + timedelta(minutes=1),
+        supersedes_decision_id="f" * 64,
+    )
+    with pytest.raises(ValueError, match="does not exist"):
+        persist_admission_decision(
+            unknown,
+            receipt_path=outcome.receipt_path,
+            receipt=outcome.receipt,
+        )
+
+    assert outcome.admission.path is not None
+    outcome.admission.path.write_bytes(b"not-json")
+    with pytest.raises(ValueError, match="cannot be rewritten or corrupted"):
+        latest_admission_decision(outcome)
+
+
+@pytest.mark.unit
+def test_review_defaults_to_latest_durable_predecessor(tmp_path: Path) -> None:
+    outcome = land_bronze_payload(
+        VALID,
+        _receipt(VALID),
+        bronze_root=tmp_path / "bronze",
+        media_hint="json",
+        admission_decided_at=NOW,
+        transformation_completed_at=NOW,
+    )
+    assert isinstance(outcome, BronzeLanding)
+
+    reviewed = record_admission_decision(
+        outcome,
+        state=BronzeAdmissionState.ACCEPTED,
+        actor="maintainer:review",
+        decided_at=NOW + timedelta(minutes=1),
+        reason_codes=("human_review_accepted",),
+    )
+
+    assert reviewed.supersedes_decision_id == outcome.admission.decision_id
 
 
 @pytest.mark.unit
