@@ -14,6 +14,7 @@ from pydantic import ValidationError
 
 import global_medicines_atlas.stable_v1_measured_coverage as coverage
 from global_medicines_atlas.countries import SourceDimension
+from global_medicines_atlas.source_catalog import load_source_catalog
 from global_medicines_atlas.stable_v1_measured_coverage import (
     ContentBoundMeasuredCoverageReceipt,
     EvidenceMaturity,
@@ -43,6 +44,34 @@ def test_portable_file_binding_normalizes_only_text(
     assert coverage._portable_file_bytes(binary) == b"\x00\r\n\xff"
 
 
+def test_live_receipt_integration_is_catalog_bound_and_fail_closed(
+    tmp_path: Path,
+) -> None:
+    source = next(
+        item
+        for item in load_source_catalog()
+        if item.source_id == "eu-union-register"
+    )
+    relative = coverage._LIVE_QUALIFICATIONS[source.source_id]
+    destination = tmp_path / relative
+    destination.parent.mkdir(parents=True)
+    payload = json.loads((ROOT / relative).read_bytes())
+    destination.write_text(json.dumps(payload), encoding="utf-8")
+
+    assert coverage._validated_live_receipt_id(tmp_path, source) == (
+        source.current_receipt_id
+    )
+
+    unbound = source.model_copy(update={"qualification_references": ()})
+    with pytest.raises(ValueError, match="not catalog-bound"):
+        coverage._validated_live_receipt_id(tmp_path, unbound)
+
+    payload["archive_checksum_verified"] = False
+    destination.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(ValueError, match="archive_checksum_verified"):
+        coverage._validated_live_receipt_id(tmp_path, source)
+
+
 @pytest.fixture(scope="module")
 def receipt() -> ContentBoundMeasuredCoverageReceipt:
     return build_measured_coverage_receipt(ROOT)
@@ -57,7 +86,7 @@ def test_receipt_measures_complete_catalog_and_local_evidence(
     assert totals.represented_jurisdictions == 46
     assert totals.catalog_sources == 172
     assert totals.fixture_qualified_sources == 16
-    assert totals.live_qualified_sources == 0
+    assert totals.live_qualified_sources == 1
     assert totals.catalog_dimensions.model_dump() == {
         "regulatory": 91,
         "funding": 44,
@@ -71,7 +100,7 @@ def test_receipt_measures_complete_catalog_and_local_evidence(
         "terminology": 2,
     }
     assert totals.live_dimensions.model_dump() == {
-        "regulatory": 0,
+        "regulatory": 1,
         "funding": 0,
         "formulary": 0,
         "terminology": 0,
@@ -129,7 +158,7 @@ def test_fixture_dimensions_are_measured_not_assumed(
     )
 
 
-def test_maturity_is_catalogue_fixture_or_live_without_promotion(
+def test_maturity_tracks_catalogue_fixture_and_receipt_backed_live_evidence(
     receipt: ContentBoundMeasuredCoverageReceipt,
 ) -> None:
     fixture_rows = [
@@ -141,17 +170,22 @@ def test_maturity_is_catalogue_fixture_or_live_without_promotion(
 
     assert fixture_rows
     assert catalog_rows
+    union_register = next(
+        row for row in fixture_rows if row.source_id == "eu-union-register"
+    )
+    assert union_register.highest_maturity == EvidenceMaturity.LIVE
+    assert union_register.live_qualified is True
+    assert union_register.live_receipt_id is not None
     assert all(
-        row.highest_maturity == EvidenceMaturity.FIXTURE for row in fixture_rows
+        row.highest_maturity == EvidenceMaturity.FIXTURE
+        for row in fixture_rows
+        if row is not union_register
     )
     assert all(
         row.highest_maturity == EvidenceMaturity.CATALOGUE
         for row in catalog_rows
     )
-    assert all(
-        not row.live_qualified and row.live_receipt_id is None
-        for row in receipt.body.sources
-    )
+    assert sum(row.live_qualified for row in receipt.body.sources) == 1
     assert all(row.fixture_artifacts for row in fixture_rows)
     assert all(row.implementation_artifacts for row in fixture_rows)
     assert all(row.measured_fixture_records > 0 for row in fixture_rows)
@@ -169,7 +203,12 @@ def test_jurisdiction_rows_keep_dimensions_separate(
     assert rows["USA"].fixture_dimensions.funding == 0
     assert rows["GLOBAL"].catalog_source_count == 12
     assert rows["GLOBAL"].fixture_dimensions.terminology == 1
-    assert all(row.live_source_count == 0 for row in rows.values())
+    assert rows["EU"].live_source_count == 1
+    assert all(
+        row.live_source_count == 0
+        for jurisdiction, row in rows.items()
+        if jurisdiction != "EU"
+    )
 
 
 def test_receipt_validates_against_json_schema(
