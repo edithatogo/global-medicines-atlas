@@ -99,6 +99,32 @@ def test_specification_references_are_version_or_revision_pinned() -> None:
         for reference in item.specifications
     )
 
+    payload = _payload()
+    experiments = payload["experiments"]
+    assert isinstance(experiments, list)
+    item = cast("dict[str, object]", experiments[0])
+    specifications = item["specifications"]
+    assert isinstance(specifications, list)
+    reference = cast("dict[str, object]", specifications[0])
+    reference.pop("version", None)
+    reference.pop("revision", None)
+    with pytest.raises(ValidationError, match="version or revision"):
+        ExperimentMatrix.model_validate(payload)
+
+
+@pytest.mark.unit
+def test_executed_outcome_rejects_unmet_prerequisites() -> None:
+    payload = _payload()
+    experiments = payload["experiments"]
+    assert isinstance(experiments, list)
+    item = cast("dict[str, object]", experiments[0])
+    item["outcome"] = ExperimentOutcome.FAILED
+    item["prerequisites_met"] = False
+    item["evidence"] = ["quality/qualifications/failure.json"]
+
+    with pytest.raises(ValidationError, match="satisfied prerequisites"):
+        ExperimentMatrix.model_validate(payload)
+
 
 @pytest.mark.unit
 def test_matrix_input_digests_are_verified(tmp_path: Path) -> None:
