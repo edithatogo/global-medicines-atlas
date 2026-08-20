@@ -29,7 +29,8 @@
     "inherits": "github>edithatogo/renovate-config",
     "dependency_dashboard_requested": true,
     "dependabot_configuration": "absent",
-    "hosted_onboarding": "unverified",
+    "app_activation": "maintainer_confirmed_2026-08-21",
+    "hosted_onboarding": "activation_accepted_output_unverified",
     "dashboard_or_first_pr": "not_observed"
   },
   "closure_state": "repository_controls_complete_external_renovate_gate_open",
