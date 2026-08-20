@@ -137,6 +137,8 @@ def test_record_qualification_captures_real_projection_and_recovery() -> None:
     assert qualification["coverage_complete"] is False
     assert qualification["external_publication_performed"] is False
     assert len(qualification["record_products"]) == 8
+    assert qualification["prompt_audit_qualified_source_ids"] == ["us-fda-nsde"]
+    assert qualification["prompt_audit_qualification_basis"]["prompt_id"] == 19
 
 
 @pytest.mark.integration

@@ -6,7 +6,9 @@ import json
 from pathlib import Path
 from typing import Any
 
+import pytest
 from jsonschema import Draft202012Validator
+from scripts import build_prompt_acquisition_completion_audit as audit_mod
 from scripts.build_prompt_acquisition_completion_audit import build
 
 from global_medicines_atlas.source_expansion import expansion_tracks
@@ -16,6 +18,9 @@ AUDIT = ROOT / "quality/qualifications/prompt-acquisition-completion-audit.json"
 QUEUE = ROOT / "quality/qualifications/bronze-source-landing-queue.json"
 MEASURED = ROOT / "quality/qualifications/stable-v1-measured-coverage.json"
 SCHEMA = ROOT / "schemas/prompt-acquisition-completion-audit-v1.json"
+RECORD_QUALIFICATION = (
+    ROOT / "quality/qualifications/us-live-bronze-records-20260820.json"
+)
 
 
 def _audit() -> dict[str, Any]:
@@ -39,19 +44,19 @@ def test_audit_is_generated_from_all_36_locked_prompts() -> None:
     } == {track.track_id: list(track.source_ids) for track in tracks}
 
 
-def test_live_qualification_is_counted_without_claiming_prompt_completion() -> (
-    None
-):
+def test_live_qualification_completes_only_the_verified_nsde_prompt() -> None:
     audit = _audit()
     measured = json.loads(MEASURED.read_text(encoding="utf-8"))["body"]
     assert measured["totals"]["live_qualified_sources"] == 0
-    assert audit["live_qualified_source_count"] == 5
-    assert audit["live_complete_prompt_count"] == 0
+    assert audit["live_qualified_source_count"] == 6
+    assert audit["live_complete_prompt_count"] == 1
     assert audit["program_completion"] == "incomplete_live_acquisition"
-    assert all(not entry["live_complete"] for entry in audit["prompts"])
-    assert all(
-        entry["sources_without_live_evidence"] for entry in audit["prompts"]
-    )
+    complete = [entry for entry in audit["prompts"] if entry["live_complete"]]
+    assert [entry["prompt_id"] for entry in complete] == [19]
+    assert complete[0]["live_qualified_source_ids"] == [
+        "us-fda-nsde",
+        "us-openfda-nsde",
+    ]
     assert all(
         set(entry["fixture_qualified_source_ids"]).isdisjoint(
             entry["live_qualified_source_ids"]
@@ -68,7 +73,13 @@ def test_live_qualification_is_counted_without_claiming_prompt_completion() -> (
         "us-openfda-faers",
         "us-openfda-ndc",
         "us-openfda-nsde",
+        "us-fda-nsde",
     }
+
+    orange = audit["prompts"][15]
+    assert orange["prompt_id"] == 16
+    assert orange["live_complete"] is False
+    assert orange["live_qualified_source_ids"] == []
 
 
 def test_every_prompt_source_has_exactly_one_current_queue_state() -> None:
@@ -86,6 +97,63 @@ def test_every_prompt_source_has_exactly_one_current_queue_state() -> None:
         )
 
 
+@pytest.mark.parametrize(
+    ("mutate", "message"),
+    [
+        (
+            lambda raw: raw.update(evidence_class="synthetic_fixture_only"),
+            "wrong evidence class",
+        ),
+        (
+            lambda raw: raw["prompt_audit_qualified_source_ids"].append(
+                "us-fda-orange-book"
+            ),
+            "exceeds reviewed source scope",
+        ),
+        (
+            lambda raw: raw.update(recovered_source_record_projection_count=7),
+            "byte-identical clean-room recovery",
+        ),
+        (
+            lambda raw: raw.update(
+                source_record_parquet_pairs_byte_identical=7
+            ),
+            "byte-identical clean-room recovery",
+        ),
+        (
+            lambda raw: raw.update(record_products=[]),
+            "lacks a nonempty record product",
+        ),
+        (
+            lambda raw: raw.update(external_publication_performed=True),
+            "internal-only boundary",
+        ),
+        (
+            lambda raw: raw.update(public_release_authorized=True),
+            "internal-only boundary",
+        ),
+        (
+            lambda raw: raw.update(coverage_complete=True),
+            "internal-only boundary",
+        ),
+    ],
+)
+def test_record_qualification_fails_closed_on_scope_or_evidence_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutate,
+    message: str,
+) -> None:
+    raw = json.loads(RECORD_QUALIFICATION.read_bytes())
+    mutate(raw)
+    unsafe = tmp_path / "unsafe-record-qualification.json"
+    unsafe.write_text(json.dumps(raw), encoding="utf-8")
+    monkeypatch.setattr(audit_mod, "US_RECORD_QUALIFICATION", unsafe)
+
+    with pytest.raises(ValueError, match=message):
+        audit_mod._qualified_us_record_sources()
+
+
 def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     audit = _audit()
     assert audit["queue_state_counts"] == {
@@ -98,7 +166,10 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
         "temporarily_unavailable": 0,
     }
     for entry in audit["prompts"]:
-        assert entry["next_actions"]
+        if entry["live_complete"]:
+            assert entry["next_actions"] == []
+        else:
+            assert entry["next_actions"]
         assert "catalogue_complete" not in entry["completion_state"]
         if "landed_and_evidenced" in entry["queue_states"].values():
             assert "fixture_only_is_not_live" in entry["blocker_categories"]

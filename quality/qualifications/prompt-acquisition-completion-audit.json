@@ -6,8 +6,8 @@
   "unique_prompt_source_count": 94,
   "catalog_source_count": 172,
   "fixture_qualified_source_count": 16,
-  "live_qualified_source_count": 5,
-  "live_complete_prompt_count": 0,
+  "live_qualified_source_count": 6,
+  "live_complete_prompt_count": 1,
   "program_completion": "incomplete_live_acquisition",
   "queue_state_counts": {
     "credentialed_and_excluded": 18,
@@ -716,19 +716,14 @@
       },
       "fixture_qualified_source_ids": [],
       "live_qualified_source_ids": [
+        "us-fda-nsde",
         "us-openfda-nsde"
       ],
-      "sources_without_live_evidence": [
-        "us-fda-nsde"
-      ],
-      "live_complete": false,
-      "completion_state": "live_acquisition_incomplete",
-      "blocker_categories": [
-        "source_specific_rights_decision_required"
-      ],
-      "next_actions": [
-        "obtain a maintainer-approved source-specific rights decision"
-      ]
+      "sources_without_live_evidence": [],
+      "live_complete": true,
+      "completion_state": "live_acquisition_complete",
+      "blocker_categories": [],
+      "next_actions": []
     },
     {
       "prompt_id": 20,

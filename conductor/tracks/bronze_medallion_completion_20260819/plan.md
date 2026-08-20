@@ -240,6 +240,7 @@ before any hot-path rewrite. Python remains orchestration.
         - [x] Acquire all 13 authorized current-source payloads through the four-surface reuse gate and archive them locally without external publication
         - [x] Exercise immutable landing, rights-bound receipts, append-only admission, accepted-only Parquet/OpenLineage, and clean-room recovery against the live corpus; 8 acquisitions were accepted and rebuilt while 5 HTML/interactive payloads were preserved and quarantined
         - [x] Produce adapter-native Bronze records for the five bounded openFDA JSON canaries and the accepted Drugs@FDA, NSDE, and Orange Book archives; regenerate all eight record products byte-for-byte from immutable payloads and receipts
+        - [x] Reconcile prompt 19 as the first live-complete acquisition prompt: the authoritative FDA NSDE comprehensive file and bounded openFDA NSDE projection are both live-qualified; keep Orange Book and other historical families incomplete
         - [ ] Acquire complete historical releases for the applicable FDA source families; the bounded canaries and current snapshots do not complete prompt-level coverage
 - [x] Task: Review Fixes for bounded U.S. live acquisition (`9a7dc7b`)
     - [x] Prevent bound GET/HEAD requests from gaining a chunked request body and skip compressed-wire Content-Length comparisons against decoded bytes
@@ -249,6 +250,9 @@ before any hot-path rewrite. Python remains orchestration.
     - [x] Fault-isolate source-record parsing so one schema drift cannot stop the authorized acquisition batch or clean-room recovery
     - [x] Exercise malformed objects, technical-column collisions, alternate encoding, blank and short rows, header failures, fallback identities, and media mismatch
     - [x] Raise `us_source_records.py` changed-line coverage to 100% without weakening the Codecov patch gate
+- [x] Task: CI repair for NSDE prompt qualification (`a575926`)
+    - [x] Apply the repository-wide Ruff formatter to the new qualification assertion
+    - [x] Re-run formatting, lint, `ty`, context, ecosystem, and JavaScript-style routine gates locally
 - [x] Task: Phase Verification & Checkpoint
     - [x] Run focused, integration, and source-boundary tests
     - [x] Measure completeness with S-012 denominators; missing coverage is not negative evidence
