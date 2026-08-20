@@ -209,6 +209,15 @@ def test_generated_queue_schema_and_conductor_projection_are_current() -> None:
         committed
     )
     assert committed == queue.model_dump(mode="json")
+    orange = next(
+        item for item in queue.items if item.source_id == "us-fda-orange-book"
+    )
+    assert orange.state is LandingDisposition.TEMPORARILY_UNAVAILABLE
+    assert orange.next_action == "retry under the failure-receipt schedule"
+    assert (
+        "quality/qualifications/orange-book-historical-corpus-20260820.json"
+        in orange.evidence_references
+    )
     assert MARKDOWN_PATH.read_text(encoding="utf-8") == (
         render_conductor_queue(queue)
     )

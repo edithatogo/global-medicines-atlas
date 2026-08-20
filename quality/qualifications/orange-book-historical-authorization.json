@@ -1,0 +1,22 @@
+{
+  "schema_id": "global-medicines-atlas.orange-book-historical-authorization",
+  "schema_version": 1,
+  "decision_date": "2026-08-20",
+  "decision_basis": "The maintainer approved the recommended Orange Book-only historical acquisition by directing Codex to proceed with its recommendations.",
+  "acquisition_authorized": true,
+  "internal_retention_authorized": true,
+  "public_release_authorized": false,
+  "external_publication_authorized": false,
+  "max_releases": 320,
+  "max_total_bytes": 2147483648,
+  "max_release_bytes": 134217728,
+  "archive_request_interval_seconds": 0.5,
+  "discovery_required": true,
+  "seeds": [
+    {"release_id": "current-structured-zip", "url": "https://www.fda.gov/media/76860/download?attachment=", "media_hint": "zip", "discover_links": false},
+    {"release_id": "current-annual-edition", "url": "https://www.fda.gov/media/71474/download?attachment=", "media_hint": "pdf", "discover_links": false},
+    {"release_id": "current-cumulative-supplement", "url": "https://www.fda.gov/media/72973/download?attachment=", "media_hint": "pdf", "discover_links": false},
+    {"release_id": "monthly-additions-deletions-index", "url": "https://www.fda.gov/drugs/drug-approvals-and-databases/additionsdeletions-prescription-and-otc-drug-product-lists", "media_hint": "html", "discover_links": true},
+    {"release_id": "legacy-fda-archive-index", "url": "https://wayback.archive-it.org/7993/20170111194908/http%3A//www.fda.gov/Drugs/InformationOnDrugs/ucm086229.htm", "media_hint": "html", "discover_links": true}
+  ]
+}
