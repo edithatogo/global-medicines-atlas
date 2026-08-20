@@ -1,6 +1,6 @@
 # NZ medicines rights and compatibility disposition
 
-**Status:** implementation record; unresolved rights and maintainer decisions remain gates  
+**Status:** compatibility decision executed; source rights remain fail-closed
 **Issues:** [#50](https://github.com/edithatogo/global-medicines-atlas/issues/50), [#51](https://github.com/edithatogo/global-medicines-atlas/issues/51), [closed migration #6](https://github.com/edithatogo/global-medicines-atlas/issues/6)  
 **Source snapshot:** [`nzmedicines` at `6a8ecfae67f15d635750d11d5f446b93d76c1865`](./nzmedicines.md)
 
@@ -24,8 +24,8 @@ is **retain locally / do not redistribute**.
 | First-party adapter code, schemas, tests, documentation, and deterministic tooling | Maintainer-created implementation in this repository | Apache-2.0 repository software boundary applies | Publish as software under the repository licence, excluding restricted payloads | Software-only releases may include code and synthetic/minimal fixtures that pass the manifest gate | Existing repository release controls |
 | Catalogue-only metadata already published to Hugging Face | [`global-medicines-atlas-catalogue`](https://huggingface.co/datasets/edithatogo/global-medicines-atlas-catalogue); source payloads intentionally omitted | Publication boundary was designed as catalogue metadata, not source redistribution | Keep as catalogue metadata; re-check before adding fields | Do not expand with source-derived fields until #51 approves the manifest | #51 manifest review |
 | Software-only Zenodo release | DOI [`10.5281/zenodo.21734811`](https://doi.org/10.5281/zenodo.21734811); seven software assets | Software release boundary; not evidence of source-data permission | Keep software-only | Do not upload source payloads, preserved bundle, or restricted fixtures | #51 approved public artifact manifest |
-| Proposed upstream compatibility notice and README/description change | Draft only in [`nzmedicines-compatibility-notice.md`](./nzmedicines-compatibility-notice.md) | Requires maintainer approval and action-time hosted receipt | Do not publish or mutate upstream | No upstream change has been made by this implementation | #50 explicit approval |
-| Narrow compatibility mirror or upstream archival | Policy option only; canonical repository remains this repository | Requires an explicit maintainer choice and resulting hosted-state evidence | No mirror/archive action | Do not alter upstream repository settings or content | #50 explicit decision |
+| Upstream compatibility notice and README/description change | Published through [`nzmedicines` PR #1](https://github.com/edithatogo/nzmedicines/pull/1) as `74f48d27caa22755a6c296e1d5b54b52af93397f` | Maintainer approved and hosted state verified | Keep the notice and canonical links current | Notice grants no payload access or redistribution rights | Executed #50 decision |
+| Narrow compatibility mirror or upstream archival | Canonical development remains in this repository | Maintainer selected an unarchived compatibility and provenance mirror | Retain without a synchronization or new-development promise during the quiet period | Any later archival is a separate reversible decision | Executed #50 decision |
 
 ## Implemented local decisions
 
@@ -43,22 +43,19 @@ is **retain locally / do not redistribute**.
 6. Unknown, mixed, or source-restricted rights fail closed. The public release
    boundary is limited to first-party software and explicitly approved
    metadata/fixtures.
+7. On 2026-08-21 the maintainer approved that narrow public boundary as policy;
+   each release still requires an exact manifest, and no restricted source
+   bytes or derived restricted fields were approved.
 
 ## Compatibility decision status
 
-The local compatibility work is complete enough to support the NZ adapter and
-fixtures. The upstream repository remains unchanged. The following actions are
-still intentionally pending:
+The local compatibility work supports the NZ adapter and fixtures. The
+upstream notice, description, canonical homepage, and unarchived mirror state
+are now verified. Redistribution of preserved history, NZULM/NZMT/NZF,
+terminology, regulatory, or funding payloads remains pending, as does adding
+any such payload to Hugging Face, Zenodo, or another public artefact.
 
-- publish the compatibility notice;
-- change the upstream README or description;
-- retain a narrow compatibility mirror;
-- archive or otherwise alter the upstream repository;
-- redistribute the preserved history, NZULM/NZMT/NZF, terminology, regulatory,
-  or funding payloads; and
-- add any such payloads to Hugging Face, Zenodo, or another public artefact.
-
-These actions require explicit approval and action-time receipts. See the
+Those redistribution actions require explicit approval and action-time receipts. See the
 [external gate register](./nzmedicines-external-gates.md) for the authoritative
 hosted-action boundary and the archived [asset inventory](../../conductor/archive/nzmedicines_migration_20260727/migration-inventory.md)
 for file-level evidence.
