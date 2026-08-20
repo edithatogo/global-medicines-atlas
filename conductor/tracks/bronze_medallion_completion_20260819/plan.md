@@ -195,6 +195,11 @@ before any hot-path rewrite. Python remains orchestration.
 - [x] Task: Bind the Hugging Face archive boundary without duplicating sibling archival work
     - [x] Reuse the sibling Hugging Face public-data archival path when it has landed
     - [x] Do not publish source-derived payloads without the rights gate
+- [x] Task: Exercise and archive the governed Bronze acquisition corpus (`bbfb76e`)
+    - [x] Assess all 172 catalogue entries through the exhaustive landing queue
+    - [x] Run reuse, immutable landing, admission, Parquet, OpenLineage, and clean-room recovery over all 17 governed acquisitions for 16 sources
+    - [x] Emit a 419-entry tar archive, machine-readable manifest, and verified SHA-256 checksum without claiming live-source coverage
+    - [x] Upload the exercised corpus as a GitHub Actions artifact; require an explicit `publish=true` dispatch for external Hugging Face publication
 - [x] Task: Record bronze-completion evidence for current scope
     - [x] Update this track's evidence ledger with observable tests, coverage, and exclusions
     - [x] Leave silver/gold/platinum unimplemented
