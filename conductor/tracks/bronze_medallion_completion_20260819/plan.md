@@ -271,7 +271,7 @@ before any hot-path rewrite. Python remains orchestration.
 - [x] Task: CI repair for NSDE prompt qualification (`a575926`)
     - [x] Apply the repository-wide Ruff formatter to the new qualification assertion
     - [x] Re-run formatting, lint, `ty`, context, ecosystem, and JavaScript-style routine gates locally
-- [x] Task: Review fixes for Orange Book historical planning
+- [x] Task: Review fixes for Orange Book historical planning (`87264e8`)
     - [x] Require both maintainer authorization and a complete exact-release inventory before any payload GET can be emitted
     - [x] Validate official documentation hosts independently from release-surface hosts
     - [x] Exercise authorization-only bypass, false completeness, and host-drift negative controls
