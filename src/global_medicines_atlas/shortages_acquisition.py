@@ -119,6 +119,16 @@ class FDAShortagesAuthorization(FrozenModel):
             raise ValueError(
                 "historical inventory must use Internet Archive CDX"
             )
+        detail_query = str(self.detail_cdx_url.query or "").casefold()
+        if (
+            self.detail_cdx_url.path != "/cdx/search/cdx"
+            or "dsp_activeingredientdetails.cfm%3f*" not in detail_query
+            or "output=json" not in detail_query
+            or "collapse=digest" not in detail_query
+        ):
+            raise ValueError(
+                "detail inventory must remain the bounded FDA CDX query"
+            )
         if self.download_index_url.host != "api.fda.gov":
             raise ValueError("download inventory must use official openFDA")
         if self.expected_bulk_url.host != "download.open.fda.gov":
@@ -176,11 +186,11 @@ class FDAShortagesManifest(FrozenModel):
         "live_internal_historical"
     )
     external_publication_performed: Literal[False] = False
-    prompt_complete: bool
+    prompt_complete: Literal[False] = False
     historical_detail_snapshot_coverage_complete: Literal[False] = False
     historical_detail_capture_inventory_count: int
     historical_detail_disposition: Literal[
-        "no_complete_source_denominator_monthly_lists_are_temporal_corpus"
+        "complete_denominator_not_identified_scope_decision_pending"
     ]
     current_export_date: date
     current_record_count: int
@@ -250,6 +260,7 @@ def parse_detail_cdx_inventory(payload: bytes) -> int:
     raw = json.loads(payload)
     if not isinstance(raw, list) or not raw or tuple(raw[0]) != _CDX_HEADER:
         raise ValueError("detail CDX inventory header drifted")
+    digests: set[str] = set()
     for number, row in enumerate(raw[1:], start=1):
         if not isinstance(row, list) or len(row) != len(_CDX_HEADER):
             raise ValueError(f"detail CDX inventory row {number} drifted")
@@ -262,16 +273,30 @@ def parse_detail_cdx_inventory(payload: bytes) -> int:
         official_path = source_path == base_path or source_path.startswith(
             f"{base_path}%3f"
         )
-        valid_response = status == "200" and media == "text/html" and digest
-        if (
-            not _TIMESTAMP.fullmatch(timestamp)
-            or not valid_response
-            or parsed.hostname != "www.accessdata.fda.gov"
-            or not official_path
+        has_detail_identity = bool(parsed.query) or source_path.startswith(
+            f"{base_path}%3f"
+        )
+        valid_response = (
+            status == "200"
+            and media == "text/html"
+            and bool(digest)
+            and digest not in digests
+        )
+        official_source = (
+            parsed.scheme in {"http", "https"}
+            and parsed.hostname == "www.accessdata.fda.gov"
+            and official_path
+            and has_detail_identity
+        )
+        if not (
+            _TIMESTAMP.fullmatch(timestamp)
+            and valid_response
+            and official_source
         ):
             raise ValueError(
                 f"detail CDX capture {number} is outside official scope"
             )
+        digests.add(digest)
     return len(raw) - 1
 
 
@@ -667,25 +692,13 @@ def exercise_fda_shortages(  # ruff: ignore[too-many-branches,too-many-locals,to
         for item in results
         if item.surface_id.startswith("historical-list-")
     )
-    prompt_complete = (
-        len(historical) == len(captures)
-        and all(item.status == "succeeded" for item in historical)
-        and any(
-            item.surface_id == "openfda-shortages-bulk"
-            and item.status == "succeeded"
-            and item.source_records_projected
-            and item.source_record_count == record_count
-            for item in results
-        )
-    )
     manifest = FDAShortagesManifest(
         exercised_at=timestamp,
-        prompt_complete=prompt_complete,
         historical_detail_capture_inventory_count=(
             detail_capture_inventory_count
         ),
         historical_detail_disposition=(
-            "no_complete_source_denominator_monthly_lists_are_temporal_corpus"
+            "complete_denominator_not_identified_scope_decision_pending"
         ),
         current_export_date=export_date,
         current_record_count=record_count,

@@ -156,9 +156,7 @@ def test_authorization_is_bounded_and_internal_only() -> None:
 def test_live_qualification_preserves_detail_inventory_boundary() -> None:
     qualification = json.loads(QUALIFICATION.read_text(encoding="utf-8"))
     assert qualification["evidence_class"] == "live_internal_historical"
-    assert qualification["prompt_audit_qualified_source_ids"] == [
-        "us-fda-drug-shortages"
-    ]
+    assert qualification["prompt_audit_qualified_source_ids"] == []
     assert qualification["current_bulk_export_complete"] is True
     assert qualification["historical_list_snapshot_inventory_complete"] is True
     assert qualification["unique_historical_list_snapshots_archived"] == 129
@@ -167,9 +165,9 @@ def test_live_qualification_preserves_detail_inventory_boundary() -> None:
     )
     assert qualification["historical_detail_capture_inventory_count"] == 35_494
     assert qualification["historical_detail_disposition"] == (
-        "no_complete_source_denominator_monthly_lists_are_temporal_corpus"
+        "complete_denominator_not_identified_scope_decision_pending"
     )
-    assert qualification["prompt_complete"] is True
+    assert qualification["prompt_complete"] is False
     assert qualification["current_source_record_rows"] == 1_628
     assert (
         qualification["current_source_record_parquet_pairs_byte_identical"] == 1
@@ -190,6 +188,11 @@ def test_live_qualification_preserves_detail_inventory_boundary() -> None:
             "download_index_url",
             "https://example.test/download.json",
             "official openFDA",
+        ),
+        (
+            "detail_cdx_url",
+            "https://web.archive.org/cdx/search/cdx?url=example.test/*&output=json&collapse=digest",
+            "bounded FDA CDX query",
         ),
         (
             "expected_bulk_url",
@@ -225,6 +228,18 @@ def test_cdx_inventory_rejects_nonofficial_or_duplicate_captures() -> None:
         parse_cdx_inventory(json.dumps(duplicate).encode())
 
     assert parse_detail_cdx_inventory(_detail_cdx()) == 2
+    duplicate_detail = json.loads(_detail_cdx())
+    duplicate_detail[2][-1] = duplicate_detail[1][-1]
+    with pytest.raises(ValueError, match="outside official scope"):
+        parse_detail_cdx_inventory(json.dumps(duplicate_detail).encode())
+
+    missing_identity = json.loads(_detail_cdx())
+    missing_identity[1][1] = (
+        "https://www.accessdata.fda.gov/scripts/drugshortages/"
+        "dsp_ActiveIngredientDetails.cfm"
+    )
+    with pytest.raises(ValueError, match="outside official scope"):
+        parse_detail_cdx_inventory(json.dumps(missing_identity).encode())
 
 
 @pytest.mark.parametrize(
@@ -320,9 +335,9 @@ def test_runner_archives_current_and_historical_surfaces(
     assert manifest.historical_detail_snapshot_coverage_complete is False
     assert manifest.historical_detail_capture_inventory_count == 2
     assert manifest.historical_detail_disposition == (
-        "no_complete_source_denominator_monthly_lists_are_temporal_corpus"
+        "complete_denominator_not_identified_scope_decision_pending"
     )
-    assert manifest.prompt_complete is True
+    assert manifest.prompt_complete is False
     assert manifest.external_publication_performed is False
     assert (output / "fda-shortages-live.private.tar").is_file()
     assert (
