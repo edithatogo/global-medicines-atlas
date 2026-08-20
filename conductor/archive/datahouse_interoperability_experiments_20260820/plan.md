@@ -99,10 +99,10 @@ produce explicit not-run evidence rather than weakened gates.
 
 ## Review Fixes
 
-- [~] Task: Reconcile completion, registry, evidence, and archive integrity (AC-09, AC-10)
+- [x] Task: Reconcile completion, registry, evidence, and archive integrity (AC-09, AC-10) (`6253ee1`)
     - [x] Reconcile intentionally not-run experiment tasks with their prerequisite receipts
     - [x] Reconcile the hosted review, merged pull request, and closed GitHub hierarchy
-    - [ ] Run targeted and broader validation and append the final review receipt
+    - [x] Run targeted and broader validation and append the final review receipt
 
 ## GitHub hierarchy
 
