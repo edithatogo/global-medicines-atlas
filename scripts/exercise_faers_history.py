@@ -19,11 +19,17 @@ def main() -> int:
         type=Path,
         default=ROOT / "quality/qualifications/faers-live-authorization.json",
     )
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="resume a non-finalized partial corpus without reacquiring evidence",
+    )
     args = parser.parse_args()
     manifest = exercise_faers_history(
         repository_root=ROOT,
         output_dir=args.output.resolve(),
         authorization_path=args.authorization.resolve(),
+        resume=args.resume,
     )
     print(manifest.model_dump_json(indent=2))
     return 0

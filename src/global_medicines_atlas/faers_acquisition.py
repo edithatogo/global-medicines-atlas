@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Literal
 from urllib.parse import urljoin, urlsplit
 
-import pyarrow as pa
+import pyarrow.parquet as pq
 from pydantic import AnyHttpUrl, Field, model_validator
 
 if TYPE_CHECKING:
@@ -24,11 +24,15 @@ from .acquisition import (
     acquire_source,
     acquire_source_by_ranges,
 )
-from .bronze_admission import BronzeAdmissionState
+from .bronze_admission import (
+    BronzeAdmissionState,
+    latest_admission_for_receipt,
+)
 from .bronze_landing import (
     BronzeAcquisition,
     BronzeLanding,
     land_bronze_payload,
+    write_rebuildable_layers,
 )
 from .bronze_recovery import reconstruct_bronze
 from .models import FrozenModel
@@ -241,6 +245,67 @@ def _byte_identical_source_record_pairs(bronze: Path, clean_room: Path) -> int:
     )
 
 
+def _receipt_indexes(
+    bronze: Path,
+) -> tuple[dict[str, SourceReceipt], dict[str, SourceReceipt]]:
+    by_uri: dict[str, SourceReceipt] = {}
+    by_version: dict[str, SourceReceipt] = {}
+    for path in (bronze / "receipts" / _SOURCE_ID).glob("*.json"):
+        receipt = SourceReceipt.model_validate_json(path.read_bytes())
+        uri = str(receipt.retrieval.uri)
+        if uri in by_uri:
+            raise ValueError(f"duplicate FAERS receipt URI: {uri}")
+        by_uri[uri] = receipt
+        temporal = receipt.temporal
+        if temporal is not None and temporal.source_version is not None:
+            version = temporal.source_version
+            if version in by_version:
+                raise ValueError(f"duplicate FAERS source version: {version}")
+            by_version[version] = receipt
+    return by_uri, by_version
+
+
+def _existing_item(
+    *,
+    item_id: str,
+    kind: Literal["documentation", "quarterly_release"],
+    url: AnyHttpUrl,
+    receipt: SourceReceipt,
+    bronze: Path,
+) -> FAERSCorpusItem:
+    temporal = receipt.temporal
+    if temporal is None:
+        raise ValueError("FAERS acquisition requires temporal identity")
+    receipt_path = (
+        bronze / "receipts" / _SOURCE_ID / f"{temporal.acquisition_id}.json"
+    )
+    admission = latest_admission_for_receipt(
+        receipt_path=receipt_path, receipt=receipt
+    )
+    product = (
+        bronze
+        / "parquet"
+        / _SOURCE_ID
+        / temporal.acquisition_id
+        / "source_records.parquet"
+    )
+    projected = product.is_file()
+    return FAERSCorpusItem(
+        item_id=item_id,
+        kind=kind,
+        url=url,
+        status="succeeded",
+        acquisition_id=temporal.acquisition_id,
+        payload_sha256=receipt.payload.sha256,
+        payload_byte_count=receipt.payload.byte_count,
+        admission_state=admission.state.value,
+        source_records_projected=projected,
+        source_record_count=(
+            pq.ParquetFile(product).metadata.num_rows if projected else None
+        ),
+    )
+
+
 def discover_faers_ascii_releases(
     payload: bytes,
     base_url: str = "https://fis.fda.gov/extensions/FPD-QDE-FAERS/FPD-QDE-FAERS.html",
@@ -317,20 +382,44 @@ def exercise_faers_history(  # ruff: ignore[too-many-branches,too-many-locals,to
     catalog: Iterable[MedicineDataSource] | None = None,
     transport: httpx.BaseTransport | None = None,
     observed_at: datetime | None = None,
+    resume: bool = False,
 ) -> FAERSCorpusManifest:
     """Acquire, project, recover, and privately archive every public quarter."""
     authorization = FAERSAuthorization.model_validate_json(
         authorization_path.read_bytes()
     )
-    if output_dir.exists() and any(output_dir.iterdir()):
+    output_nonempty = output_dir.exists() and any(output_dir.iterdir())
+    if output_nonempty and not resume:
         raise FileExistsError("output directory must be empty")
+    if resume and not output_nonempty:
+        raise FileNotFoundError("resume requires an existing partial corpus")
     output_dir.mkdir(parents=True, exist_ok=True)
     corpus = output_dir / "runs" / "corpus"
     bronze = corpus / "bronze"
     downloads = corpus / "downloads"
     evidence = corpus / "evidence"
-    evidence.mkdir(parents=True)
-    shutil.copy2(authorization_path, evidence / authorization_path.name)
+    evidence.mkdir(parents=True, exist_ok=resume)
+    copied_authorization = evidence / authorization_path.name
+    if resume:
+        if (
+            not copied_authorization.is_file()
+            or copied_authorization.read_bytes()
+            != authorization_path.read_bytes()
+        ):
+            raise ValueError(
+                "resume authorization does not match partial corpus"
+            )
+        if any(
+            (output_dir / filename).exists()
+            for filename in (
+                ARCHIVE_FILENAME,
+                MANIFEST_FILENAME,
+                CHECKSUM_FILENAME,
+            )
+        ):
+            raise FileExistsError("resume refuses a finalized FAERS corpus")
+    else:
+        shutil.copy2(authorization_path, copied_authorization)
     sources = tuple(load_source_catalog() if catalog is None else catalog)
     source = _catalog_source(sources)
     decision = evaluate_reuse_gate(
@@ -341,6 +430,9 @@ def exercise_faers_history(  # ruff: ignore[too-many-branches,too-many-locals,to
         raise ValueError("acquisition time must be timezone-aware")
     results: list[FAERSCorpusItem] = []
     discovery_payloads: list[tuple[bytes, str]] = []
+    receipts_by_uri, receipts_by_version = (
+        _receipt_indexes(bronze) if resume else ({}, {})
+    )
 
     for document in authorization.documentation:
         item = AuthorizedUSSource(
@@ -354,6 +446,30 @@ def exercise_faers_history(  # ruff: ignore[too-many-branches,too-many-locals,to
         destination = (
             downloads / "documentation" / f"{document.document_id}.html"
         )
+        if resume and destination.is_file():
+            receipt = receipts_by_uri.get(str(document.url))
+            if receipt is None or not receipt.payload.matches(
+                destination.read_bytes()
+            ):
+                raise ValueError(
+                    "partial documentation lacks matching receipt: "
+                    f"{document.document_id}"
+                )
+            results.append(
+                _existing_item(
+                    item_id=document.document_id,
+                    kind="documentation",
+                    url=document.url,
+                    receipt=receipt,
+                    bronze=bronze,
+                )
+            )
+            if document.discover_releases:
+                discovery_payloads.append((
+                    destination.read_bytes(),
+                    str(document.url),
+                ))
+            continue
         receipt = acquire_source(
             _SOURCE_ID,
             destination,
@@ -451,70 +567,147 @@ def exercise_faers_history(  # ruff: ignore[too-many-branches,too-many-locals,to
         )
         bound_source = endpoint_source(item, (source,))
         destination = downloads / "releases" / f"{release.release_id}.zip"
-        receipt = acquire_source_by_ranges(
-            _SOURCE_ID,
-            destination,
-            repository_root=output_dir,
-            chunk_bytes=authorization.range_chunk_bytes,
-            catalog=(bound_source,),
-            policy=AcquisitionPolicy(
-                timeout_seconds=120,
-                max_bytes=item.max_bytes,
-                max_attempts=3,
-                max_concurrency_per_host=authorization.range_concurrency,
-                max_redirects=3,
-                allowed_content_types=(
-                    "application/zip",
-                    "application/x-zip-compressed",
-                    "application/octet-stream",
-                    "binary/octet-stream",
+        if resume and destination.is_file():
+            receipt = receipts_by_version.get(release.release_id)
+            payload = destination.read_bytes()
+            if receipt is None or not receipt.payload.matches(payload):
+                raise ValueError(
+                    "partial release lacks matching receipt: "
+                    f"{release.release_id}"
+                )
+            total_bytes += len(payload)
+            existing = _existing_item(
+                item_id=release.release_id,
+                kind="quarterly_release",
+                url=release.url,
+                receipt=receipt,
+                bronze=bronze,
+            )
+            if existing.source_records_projected:
+                results.append(existing)
+                continue
+            bound = receipt
+            temporal = bound.temporal
+            if temporal is None:  # pragma: no cover - receipt validation
+                raise ValueError("FAERS acquisition requires temporal identity")
+            landing_timestamp = temporal.retrieved_at
+            repair_existing = True
+        else:
+            receipt = acquire_source_by_ranges(
+                _SOURCE_ID,
+                destination,
+                repository_root=output_dir,
+                chunk_bytes=authorization.range_chunk_bytes,
+                catalog=(bound_source,),
+                policy=AcquisitionPolicy(
+                    timeout_seconds=120,
+                    max_bytes=item.max_bytes,
+                    max_attempts=3,
+                    max_concurrency_per_host=authorization.range_concurrency,
+                    max_redirects=3,
+                    allowed_content_types=(
+                        "application/zip",
+                        "application/x-zip-compressed",
+                        "application/octet-stream",
+                        "binary/octet-stream",
+                    ),
                 ),
-            ),
-            transport=transport,
-            evidence_class=EvidenceClass.LIVE,
-            clock=lambda: timestamp,
-            reuse_decision=decision,
-            source_native_version=release.release_id,
+                transport=transport,
+                evidence_class=EvidenceClass.LIVE,
+                clock=lambda: timestamp,
+                reuse_decision=decision,
+                source_native_version=release.release_id,
+            )
+            if isinstance(receipt, FailureReceipt):
+                results.append(
+                    FAERSCorpusItem(
+                        item_id=release.release_id,
+                        kind="quarterly_release",
+                        url=release.url,
+                        status="failed",
+                        failure_code=receipt.failure_code,
+                    )
+                )
+                continue
+            payload = destination.read_bytes()
+            total_bytes += len(payload)
+            valid_from, valid_to = _quarter_bounds(release.release_id)
+            temporal = temporal_identity_from_source(
+                retrieved_at=timestamp,
+                source_id=_SOURCE_ID,
+                payload_sha256=receipt.payload.sha256,
+                valid_from=valid_from,
+                valid_to=valid_to,
+                source_version=release.release_id,
+                original_uri=str(release.url),
+            )
+            versioned = receipt.model_copy(update={"temporal": temporal})
+            bound = bind_us_acquisition_rights(item, versioned, timestamp)
+            landing_timestamp = timestamp
+            repair_existing = False
+        source_records = recoverable_us_source_record_batch(
+            _SOURCE_ID, payload, "zip"
         )
-        if isinstance(receipt, FailureReceipt):
+        if repair_existing:
+            content_id = temporal.content_id or bound.payload.sha256
+            payload_matches = tuple(
+                (bronze / "payloads" / "by_content" / content_id).glob(
+                    "payload.*"
+                )
+            )
+            if len(payload_matches) != 1:
+                raise ValueError(
+                    "partial release lacks exactly one immutable payload"
+                )
+            receipt_path = (
+                bronze
+                / "receipts"
+                / _SOURCE_ID
+                / f"{temporal.acquisition_id}.json"
+            )
+            admission = latest_admission_for_receipt(
+                receipt_path=receipt_path, receipt=bound
+            )
+            product_dir = (
+                bronze / "parquet" / _SOURCE_ID / temporal.acquisition_id
+            )
+            lineage_dir = (
+                bronze / "lineage" / _SOURCE_ID / temporal.acquisition_id
+            )
+            write_rebuildable_layers(
+                bound,
+                payload,
+                payload_path=payload_matches[0],
+                parquet_path=product_dir / "acquisition_manifest.parquet",
+                lineage_path=(
+                    lineage_dir / "acquisition_manifest.openlineage.json"
+                ),
+                bronze_root=bronze,
+                admission=admission,
+                source_records=source_records,
+                source_records_path=product_dir / "source_records.parquet",
+                source_records_lineage_path=(
+                    lineage_dir / "source_records.openlineage.json"
+                ),
+            )
             results.append(
-                FAERSCorpusItem(
+                _existing_item(
                     item_id=release.release_id,
                     kind="quarterly_release",
                     url=release.url,
-                    status="failed",
-                    failure_code=receipt.failure_code,
+                    receipt=bound,
+                    bronze=bronze,
                 )
             )
             continue
-        payload = destination.read_bytes()
-        total_bytes += len(payload)
-        valid_from, valid_to = _quarter_bounds(release.release_id)
-        temporal = temporal_identity_from_source(
-            retrieved_at=timestamp,
-            source_id=_SOURCE_ID,
-            payload_sha256=receipt.payload.sha256,
-            valid_from=valid_from,
-            valid_to=valid_to,
-            source_version=release.release_id,
-            original_uri=str(release.url),
-        )
-        versioned = receipt.model_copy(update={"temporal": temporal})
-        bound = bind_us_acquisition_rights(item, versioned, timestamp)
-        try:
-            source_records = recoverable_us_source_record_batch(
-                _SOURCE_ID, payload, "zip"
-            )
-        except TypeError, ValueError, pa.ArrowException:
-            source_records = None
         landing = land_bronze_payload(
             payload,
             bound,
             bronze_root=bronze,
             media_hint="zip",
             reuse=decision,
-            admission_decided_at=timestamp,
-            transformation_completed_at=timestamp,
+            admission_decided_at=landing_timestamp,
+            transformation_completed_at=landing_timestamp,
             source_records=source_records,
         )
         if not isinstance(landing, BronzeLanding):
