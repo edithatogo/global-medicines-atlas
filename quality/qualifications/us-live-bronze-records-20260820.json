@@ -1,0 +1,46 @@
+{
+  "schema_id": "global-medicines-atlas.us-live-bronze-records-qualification",
+  "schema_version": 1,
+  "exercised_at": "2026-08-20T11:03:33.005138Z",
+  "evidence_class": "live_bounded_internal",
+  "scope": "13-source authorized U.S. current-source cohort",
+  "coverage_complete": false,
+  "external_publication_performed": false,
+  "public_release_authorized": false,
+  "source_count": 13,
+  "acquisition_succeeded_count": 13,
+  "acquisition_failed_count": 0,
+  "accepted_admission_count": 8,
+  "quarantined_admission_count": 5,
+  "source_record_projection_count": 8,
+  "source_record_count": 1701269,
+  "recovered_acquisition_count": 8,
+  "recovered_source_record_projection_count": 8,
+  "source_record_parquet_pairs_byte_identical": 8,
+  "private_archive": {
+    "filename": "us-live-bronze-corpus.private.tar",
+    "sha256": "774ea1bc3249ae80957457229eb88fff92d231a4bc317fd32ca5cd1a58ce8334",
+    "byte_count": 219596800,
+    "entry_count": 489,
+    "storage": "maintainer-local private archive; not committed or uploaded"
+  },
+  "record_products": [
+    {"source_id": "us-openfda-drugsfda", "row_count": 100},
+    {"source_id": "us-openfda-enforcement", "row_count": 100},
+    {"source_id": "us-openfda-faers", "row_count": 100},
+    {"source_id": "us-openfda-ndc", "row_count": 100},
+    {"source_id": "us-openfda-nsde", "row_count": 100},
+    {"source_id": "us-drugsfda", "row_count": 961578},
+    {"source_id": "us-fda-nsde", "row_count": 665952},
+    {"source_id": "us-fda-orange-book", "row_count": 73239}
+  ],
+  "source_structure_observations": [
+    "One DrugsFDA ApplicationDocs row has nine fields under an eight-column header; Bronze preserves the extra positional value as source_unlabelled_field_1 and does not infer a semantic column.",
+    "Five FDA HTML or interactive surfaces remain quarantined and have no source-record projection."
+  ],
+  "limitations": [
+    "The five openFDA responses are limit=100 canaries, not complete releases.",
+    "Current FDA archive snapshots do not establish complete historical coverage.",
+    "No source bytes were committed, uploaded, redistributed, or publicly released."
+  ]
+}

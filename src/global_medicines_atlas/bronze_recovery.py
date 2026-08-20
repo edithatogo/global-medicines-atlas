@@ -15,7 +15,7 @@ from collections.abc import Mapping
 from enum import StrEnum
 from hashlib import sha256
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Protocol
 
 import orjson
 from pydantic import Field
@@ -33,6 +33,7 @@ from .bronze_landing import (
     RECEIPT_DIR,
     BronzeAcquisition,
     BronzeLanding,
+    SourceRecordBatch,
     land_bronze_payload,
     write_rebuildable_layers,
 )
@@ -53,6 +54,17 @@ CURRENT_PARSER_GENERATION = 1
 _DERIVATIVE_SUFFIXES = (".duckdb", ".lance", ".lancedb")
 _PARTIAL_LAYER_FLOOR = 2
 _DUPLICATE_COUNT = 2
+
+
+class SourceRecordFactory(Protocol):
+    """Recreate adapter-native records from immutable source bytes."""
+
+    def __call__(
+        self,
+        source_id: str,
+        payload: bytes,
+        media_hint: str,
+    ) -> SourceRecordBatch | None: ...
 
 
 class BronzeRecoveryError(ValueError):
@@ -274,11 +286,12 @@ def _ensure_acquisition_event(
     event_path.write_bytes(event.canonical_json() + b"\n")
 
 
-def _rebuild_one(
+def _rebuild_one(  # ruff: ignore[too-many-locals]
     bronze_root: Path,
     receipt_path: Path,
     *,
     parser_generation: int,
+    source_record_factory: SourceRecordFactory | None,
 ) -> tuple[RecoveredLandingEvidence | None, str, bool]:
     raw = receipt_path.read_bytes()
     receipt, had_extra = load_receipt_for_reconstruction(
@@ -296,6 +309,7 @@ def _rebuild_one(
     if not receipt.payload.matches(payload):
         raise BronzeRecoveryError("payload digest does not match receipt")
     source_id = receipt.source.source_id
+    media_hint = payload_path.suffix.lstrip(".")
     parquet_path = (
         bronze_root
         / PARQUET_DIR
@@ -325,9 +339,14 @@ def _rebuild_one(
             payload,
             receipt,
             bronze_root=bronze_root,
-            media_hint=payload_path.suffix.lstrip("."),
+            media_hint=media_hint,
             admission_decided_at=temporal.retrieved_at,
             transformation_completed_at=temporal.retrieved_at,
+            source_records=(
+                None
+                if source_record_factory is None
+                else source_record_factory(source_id, payload, media_hint)
+            ),
         )
         if not isinstance(outcome, BronzeLanding):
             return None, content_id, had_extra
@@ -338,6 +357,13 @@ def _rebuild_one(
             require_admitted_for_processing(admission)
         except DownstreamAdmissionError:
             return None, content_id, had_extra
+        source_records = (
+            None
+            if source_record_factory is None
+            else source_record_factory(source_id, payload, media_hint)
+        )
+        product_dir = parquet_path.parent
+        lineage_dir = lineage_path.parent
         spec = write_rebuildable_layers(
             receipt,
             payload,
@@ -346,6 +372,17 @@ def _rebuild_one(
             lineage_path=lineage_path,
             bronze_root=bronze_root,
             admission=admission,
+            source_records=source_records,
+            source_records_path=(
+                None
+                if source_records is None
+                else product_dir / "source_records.parquet"
+            ),
+            source_records_lineage_path=(
+                None
+                if source_records is None
+                else lineage_dir / "source_records.openlineage.json"
+            ),
         )
     _write_catalogue(bronze_root, spec)
     _ensure_acquisition_event(bronze_root, receipt, content_id=content_id)
@@ -398,6 +435,7 @@ def reconstruct_bronze(
     *,
     fail_closed_on_incomplete: bool = False,
     parser_generation: int = CURRENT_PARSER_GENERATION,
+    source_record_factory: SourceRecordFactory | None = None,
 ) -> BronzeRecoveryEvidence:
     """Rebuild Parquet, lineage, and catalogue from local evidentiary truth."""
 
@@ -418,6 +456,7 @@ def reconstruct_bronze(
             bronze_root,
             receipt_path,
             parser_generation=parser_generation,
+            source_record_factory=source_record_factory,
         )
         newer_fields = newer_fields or had_extra
         referenced.add(content_id)

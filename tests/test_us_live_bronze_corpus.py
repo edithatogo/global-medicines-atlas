@@ -29,13 +29,44 @@ AUTHORIZATION = (
 QUALIFICATION = (
     ROOT / "quality/qualifications/us-live-bronze-corpus-20260820.json"
 )
+RECORD_QUALIFICATION = (
+    ROOT / "quality/qualifications/us-live-bronze-records-20260820.json"
+)
 NOW = datetime(2026, 8, 20, 8, 0, tzinfo=UTC)
 
 
-def _zip_payload() -> bytes:
+def _zip_payload(source_id: str) -> bytes:
+    members = {
+        "us-drugsfda": {
+            "ActionTypes_Lookup.txt": "ActionType\tDescription\nA\tApproval\n",
+            "ApplicationDocs.txt": "ApplicationDocsID\tApplication_No\n1\t1\n",
+            "Applications.txt": "ApplNo\tSponsorName\n1\tSponsor\n",
+            "ApplicationsDocsType_Lookup.txt": "ApplicationDocsTypeID\tDescription\n1\tLabel\n",
+            "Join_Submission_ActionTypes_Lookup.txt": "SubmissionID\tActionType\n1\tA\n",
+            "MarketingStatus.txt": "ApplNo\tProductNo\n1\t1\n",
+            "MarketingStatus_Lookup.txt": "MarketingStatusID\tDescription\n1\tPrescription\n",
+            "Products.txt": "ApplNo\tProductNo\tDrugName\n1\t1\tNative\n",
+            "SubmissionClass_Lookup.txt": "SubmissionClassCodeID\tDescription\n1\tClass\n",
+            "SubmissionPropertyType.txt": "SubmissionPropertyTypeID\tDescription\n1\tType\n",
+            "Submissions.txt": "ApplNo\tSubmissionID\n1\t1\n",
+            "TE.txt": "ApplNo\tProductNo\tTECode\n1\t1\tAB\n",
+        },
+        "us-fda-orange-book": {
+            "patent.txt": "Appl_No~Patent_No\n1~P1\n",
+            "products.txt": "Appl_No~Product_No~Ingredient\n1~1~Native\n",
+            "exclusivity.txt": "Appl_No~Exclusivity_Code\n1~NCE\n",
+        },
+        "us-fda-nsde": {
+            "Comprehensive_NDC_SPL_Data_Elements_File.csv": (
+                "PRODUCTNDC,NDCPACKAGECODE,PROPRIETARYNAME\n"
+                "0001-0001,0001-0001-01,Native\n"
+            )
+        },
+    }[source_id]
     output = io.BytesIO()
     with zipfile.ZipFile(output, mode="w") as archive:
-        archive.writestr("source.txt", "source-native fixture\n")
+        for name, content in members.items():
+            archive.writestr(name, content)
     return output.getvalue()
 
 
@@ -94,6 +125,20 @@ def test_live_qualification_records_real_private_corpus_without_overclaim() -> (
     assert len(qualification["catalogue_only_sources"]) == 7
 
 
+def test_record_qualification_captures_real_projection_and_recovery() -> None:
+    qualification = json.loads(RECORD_QUALIFICATION.read_bytes())
+
+    assert qualification["source_count"] == 13
+    assert qualification["source_record_projection_count"] == 8
+    assert qualification["source_record_count"] == 1_701_269
+    assert qualification["recovered_source_record_projection_count"] == 8
+    assert qualification["source_record_parquet_pairs_byte_identical"] == 8
+    assert qualification["private_archive"]["entry_count"] == 489
+    assert qualification["coverage_complete"] is False
+    assert qualification["external_publication_performed"] is False
+    assert len(qualification["record_products"]) == 8
+
+
 @pytest.mark.integration
 def test_live_corpus_runner_acquires_lands_recovers_and_archives(
     tmp_path: Path,
@@ -111,7 +156,7 @@ def test_live_corpus_runner_acquires_lands_recovers_and_archives(
             return httpx.Response(
                 200,
                 headers={"content-type": "application/zip"},
-                content=_zip_payload(),
+                content=_zip_payload(item.source_id),
             )
         if item.media_hint == "html":
             return httpx.Response(
@@ -122,7 +167,21 @@ def test_live_corpus_runner_acquires_lands_recovers_and_archives(
         return httpx.Response(
             200,
             headers={"content-type": "application/json"},
-            content=json.dumps({"meta": {}, "results": []}).encode(),
+            content=json.dumps({
+                "meta": {},
+                "results": [
+                    {
+                        "application_number": "NDA001",
+                        "recall_number": "R-001",
+                        "event_id": "E-001",
+                        "safetyreportid": "100",
+                        "safetyreportversion": "1",
+                        "product_ndc": "0001-0001",
+                        "package_ndc": "0001-0001",
+                        "package_ndc11": "00001000101",
+                    }
+                ],
+            }).encode(),
         )
 
     output = tmp_path / "build" / "us-live"
@@ -142,10 +201,13 @@ def test_live_corpus_runner_acquires_lands_recovers_and_archives(
     assert manifest.accepted_admission_count == 8
     assert manifest.quarantined_admission_count == 5
     assert manifest.recovered_acquisition_count == 8
+    assert manifest.source_record_projection_count == 8
+    assert manifest.recovered_source_record_projection_count == 8
     assert manifest.external_publication_performed is False
     assert manifest.coverage_complete is False
     assert len(manifest.items) == 13
     assert all(item.payload_sha256 for item in manifest.items)
+    assert sum(item.source_record_count or 0 for item in manifest.items) == 21
     assert all(
         item.reuse_disposition == "acquire-new" for item in manifest.items
     )
@@ -160,6 +222,7 @@ def test_live_corpus_runner_acquires_lands_recovers_and_archives(
     assert any(
         name.startswith("corpus/clean-room/catalogue/") for name in names
     )
+    assert sum(name.endswith("source_records.parquet") for name in names) == 16
 
 
 def test_runner_refuses_public_or_partial_authorization(tmp_path: Path) -> None:
@@ -284,7 +347,7 @@ def test_runner_fault_isolates_an_endpoint_failure(tmp_path: Path) -> None:
             return httpx.Response(
                 200,
                 headers={"content-type": "application/zip"},
-                content=_zip_payload(),
+                content=_zip_payload(item.source_id),
             )
         return httpx.Response(
             200,
@@ -307,3 +370,66 @@ def test_runner_fault_isolates_an_endpoint_failure(tmp_path: Path) -> None:
     failed = next(item for item in manifest.items if item.status == "failed")
     assert failed.source_id == failed_source
     assert failed.failure_code == "http_status"
+
+
+@pytest.mark.integration
+def test_runner_fault_isolates_a_source_record_projection_failure(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    authorization = USLiveAcquisitionAuthorization.model_validate_json(
+        AUTHORIZATION.read_bytes()
+    )
+    by_path = {
+        str(item.endpoint): item for item in authorization.authorized_sources
+    }
+    failed_source = "us-openfda-faers"
+    real_projector = live_mod.us_source_record_batch
+
+    def projector(source_id: str, payload: bytes, media_hint: str):
+        if source_id == failed_source:
+            raise ValueError("redacted source schema failure")
+        return real_projector(source_id, payload, media_hint)
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        item = by_path[str(request.url)]
+        if item.media_hint == "zip":
+            return httpx.Response(
+                200,
+                headers={"content-type": "application/zip"},
+                content=_zip_payload(item.source_id),
+            )
+        if item.media_hint == "html":
+            return httpx.Response(
+                200,
+                headers={"content-type": "text/html"},
+                content=b"<!doctype html><html><body>FDA source</body></html>",
+            )
+        return httpx.Response(
+            200,
+            headers={"content-type": "application/json"},
+            content=b'{"results": []}',
+        )
+
+    monkeypatch.setattr(live_mod, "us_source_record_batch", projector)
+    manifest = exercise_us_live_bronze_corpus(
+        repository_root=tmp_path,
+        output_dir=tmp_path / "build" / "projection-fault",
+        authorization_path=AUTHORIZATION,
+        catalog=load_source_catalog(),
+        transport=httpx.MockTransport(handler),
+        reuse_searcher=acquire_new_decision,
+        clock=lambda: NOW,
+    )
+
+    failed = next(
+        item for item in manifest.items if item.source_id == failed_source
+    )
+    assert failed.status == "succeeded"
+    assert failed.parquet_projected is True
+    assert failed.source_records_projected is False
+    assert (
+        failed.source_record_failure_code == "source_record_projection_failed"
+    )
+    assert manifest.acquisition_succeeded_count == 13
+    assert manifest.source_record_projection_count == 7
