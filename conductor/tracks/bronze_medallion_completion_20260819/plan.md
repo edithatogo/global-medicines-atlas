@@ -162,6 +162,19 @@ before any hot-path rewrite. Python remains orchestration.
     - [x] Run focused tests with `uv run --python 3.14.5 pytest tests/test_bronze_scale.py`
     - [x] Record bottleneck ranking and Rust disposition in evidence
 
+### Phase 4d: Scale-aware Iceberg partition planning
+
+- [~] Task: Replace constant and mutable Bronze partition keys with a
+  scale-aware policy ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
+    - [ ] Write failing tests proving small tables are unpartitioned
+    - [ ] Partition large recurring products by source-release or acquisition month
+    - [ ] Optionally bucket high-volume source-record identifiers
+    - [ ] Reject jurisdiction, source, rights, admission, and review state as physical partition keys
+    - [ ] Preserve transforms through Iceberg REST create-body round trips
+- [ ] Task: Phase Verification & Checkpoint
+    - [ ] Run focused landing, Iceberg, lineage, recovery, typing, and coverage checks
+    - [ ] Record evidence without claiming production-scale tuning or Iceberg deployment
+
 ### Phase 4c: Reproducibility and disaster recovery
 
 - [x] Task: Write failing tests for bronze reconstruction ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169), parent [#167](https://github.com/edithatogo/global-medicines-atlas/issues/167))
