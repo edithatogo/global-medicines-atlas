@@ -66,10 +66,27 @@ def test_live_receipt_integration_is_catalog_bound_and_fail_closed(
     with pytest.raises(ValueError, match="not catalog-bound"):
         coverage._validated_live_receipt_id(tmp_path, unbound)
 
+    missing_receipt = source.model_copy(update={"current_receipt_id": None})
+    with pytest.raises(ValueError, match="lacks catalog receipt identity"):
+        coverage._validated_live_receipt_id(tmp_path, missing_receipt)
+
+    payload["source_ids"] = ["wrong-source"]
+    destination.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(ValueError, match="source identity mismatch"):
+        coverage._validated_live_receipt_id(tmp_path, source)
+
+    payload = json.loads((ROOT / relative).read_bytes())
     payload["archive_checksum_verified"] = False
     destination.write_text(json.dumps(payload), encoding="utf-8")
     with pytest.raises(ValueError, match="archive_checksum_verified"):
         coverage._validated_live_receipt_id(tmp_path, source)
+
+    payload = json.loads((ROOT / relative).read_bytes())
+    for invalid in (0, "1"):
+        payload["accepted_admission_count"] = invalid
+        destination.write_text(json.dumps(payload), encoding="utf-8")
+        with pytest.raises(ValueError, match="accepted_admission_count"):
+            coverage._validated_live_receipt_id(tmp_path, source)
 
 
 @pytest.fixture(scope="module")
