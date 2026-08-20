@@ -63,12 +63,29 @@ def test_committed_live_qualification_is_partial_internal_evidence():
         archive["checksum_verified"]
         for archive in qualification["private_archives"]
     )
+    assert len(qualification["private_archives"]) == 5
+    assert qualification["private_archive_byte_count"] == 540129280
+    assert qualification["private_archives"][-1] == {
+        "attempt": "full-inventory-availability-retry",
+        "release_count": 259,
+        "succeeded_count": 144,
+        "failed_count": 115,
+        "accepted_count": 6,
+        "quarantined_count": 138,
+        "recovered_count": 6,
+        "source_record_projection_count": 1,
+        "archive_byte_count": 169697280,
+        "archive_sha256": (
+            "c6d2008ada386fd8bb8d72fef6d95c2b1378f544ed517d3baf11b7beb6dbb27e"
+        ),
+        "checksum_verified": True,
+    }
     assert qualification["failure_scope"] == {
         "host": "wayback.archive-it.org",
         "failure_code": "http_status",
         "failed_release_count": 59,
         "observed_rate_limit_status": 429,
-        "bounded_correction_passes": 4,
+        "bounded_correction_passes": 5,
         "retry_required": True,
     }
 
