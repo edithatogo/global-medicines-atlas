@@ -10,6 +10,22 @@
         "quality/qualifications/orange-book-historical-authorization.json",
         "quality/qualifications/orange-book-historical-plan.json"
       ]
+    },
+    {
+      "source_id": "us-fda-ndc-directory",
+      "state": "landed_and_evidenced",
+      "reason": "All four current official FDA NDC bulk dataset surfaces were acquired, projected at product/package granularity, reconstructed, and privately archived.",
+      "evidence_references": [
+        "quality/qualifications/ndc-directory-live-corpus-20260821.json"
+      ]
+    },
+    {
+      "source_id": "us-openfda-ndc",
+      "state": "landed_and_evidenced",
+      "reason": "The complete current openFDA NDC bulk partition was acquired, projected, reconstructed, and privately archived.",
+      "evidence_references": [
+        "quality/qualifications/ndc-directory-live-corpus-20260821.json"
+      ]
     }
   ]
 }

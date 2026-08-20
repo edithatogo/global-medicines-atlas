@@ -21,6 +21,9 @@ SCHEMA = ROOT / "schemas/prompt-acquisition-completion-audit-v1.json"
 RECORD_QUALIFICATION = (
     ROOT / "quality/qualifications/us-live-bronze-records-20260820.json"
 )
+NDC_QUALIFICATION = (
+    ROOT / "quality/qualifications/ndc-directory-live-corpus-20260821.json"
+)
 
 
 def _audit() -> dict[str, Any]:
@@ -44,16 +47,20 @@ def test_audit_is_generated_from_all_36_locked_prompts() -> None:
     } == {track.track_id: list(track.source_ids) for track in tracks}
 
 
-def test_live_qualification_completes_only_the_verified_nsde_prompt() -> None:
+def test_live_qualification_completes_verified_ndc_and_nsde_prompts() -> None:
     audit = _audit()
     measured = json.loads(MEASURED.read_text(encoding="utf-8"))["body"]
     assert measured["totals"]["live_qualified_sources"] == 0
-    assert audit["live_qualified_source_count"] == 6
-    assert audit["live_complete_prompt_count"] == 1
+    assert audit["live_qualified_source_count"] == 7
+    assert audit["live_complete_prompt_count"] == 2
     assert audit["program_completion"] == "incomplete_live_acquisition"
     complete = [entry for entry in audit["prompts"] if entry["live_complete"]]
-    assert [entry["prompt_id"] for entry in complete] == [19]
+    assert [entry["prompt_id"] for entry in complete] == [17, 19]
     assert complete[0]["live_qualified_source_ids"] == [
+        "us-openfda-ndc",
+        "us-fda-ndc-directory",
+    ]
+    assert complete[1]["live_qualified_source_ids"] == [
         "us-fda-nsde",
         "us-openfda-nsde",
     ]
@@ -73,6 +80,7 @@ def test_live_qualification_completes_only_the_verified_nsde_prompt() -> None:
         "us-openfda-faers",
         "us-openfda-ndc",
         "us-openfda-nsde",
+        "us-fda-ndc-directory",
         "us-fda-nsde",
     }
 
@@ -161,14 +169,61 @@ def test_record_qualification_fails_closed_on_scope_or_evidence_drift(
         audit_mod._qualified_us_record_sources()
 
 
+@pytest.mark.parametrize(
+    ("mutate", "message"),
+    [
+        (
+            lambda raw: raw.update(current_bulk_surface_complete=False),
+            "reviewed scope",
+        ),
+        (
+            lambda raw: raw.update(historical_snapshot_coverage_claimed=True),
+            "reviewed scope",
+        ),
+        (
+            lambda raw: raw.update(acquisition_failed_count=1),
+            "incomplete acquisition",
+        ),
+        (
+            lambda raw: raw.update(recovered_source_record_projection_count=4),
+            "lack recovery evidence",
+        ),
+        (
+            lambda raw: raw.update(archive_checksum_verified=False),
+            "lack recovery evidence",
+        ),
+        (
+            lambda raw: raw["prompt_audit_qualified_source_ids"].append(
+                "us-fda-orange-book"
+            ),
+            "exceeds reviewed source scope",
+        ),
+    ],
+)
+def test_ndc_qualification_fails_closed_on_scope_or_evidence_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutate,
+    message: str,
+) -> None:
+    raw = json.loads(NDC_QUALIFICATION.read_bytes())
+    mutate(raw)
+    unsafe = tmp_path / "unsafe-ndc-qualification.json"
+    unsafe.write_text(json.dumps(raw), encoding="utf-8")
+    monkeypatch.setattr(audit_mod, "NDC_RECORD_QUALIFICATION", unsafe)
+
+    with pytest.raises(ValueError, match=message):
+        audit_mod._qualified_ndc_record_sources()
+
+
 def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     audit = _audit()
     assert audit["queue_state_counts"] == {
         "credentialed_and_excluded": 18,
-        "landed_and_evidenced": 16,
+        "landed_and_evidenced": 18,
         "manual_only_documented_acquisition": 93,
         "not_yet_implemented": 0,
-        "rights_blocked": 44,
+        "rights_blocked": 42,
         "superseded_by_reused_source": 0,
         "temporarily_unavailable": 1,
     }
@@ -178,7 +233,10 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
         else:
             assert entry["next_actions"]
         assert "catalogue_complete" not in entry["completion_state"]
-        if "landed_and_evidenced" in entry["queue_states"].values():
+        if (
+            not entry["live_complete"]
+            and "landed_and_evidenced" in entry["queue_states"].values()
+        ):
             assert "fixture_only_is_not_live" in entry["blocker_categories"]
     reconciliation = audit["prompts"][-1]
     assert reconciliation["prompt_id"] == 36

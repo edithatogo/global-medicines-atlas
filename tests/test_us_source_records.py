@@ -74,6 +74,81 @@ def test_openfda_duplicate_native_identity_gets_stable_record_link() -> None:
     ]
 
 
+def test_openfda_bulk_zip_preserves_complete_native_records() -> None:
+    payload = _zip({
+        "drug-ndc-0001-of-0001.json": json.dumps({
+            "results": [
+                {
+                    "product_ndc": "0001-0001",
+                    "packaging": [{"package_ndc": "0001-0001-01"}],
+                }
+            ]
+        })
+    })
+
+    batch = us_source_record_batch("us-openfda-ndc", payload, "zip")
+
+    assert batch is not None
+    assert batch.table.num_rows == 1
+    assert batch.table.column("product_ndc")[0].as_py() == "0001-0001"
+    assert batch.table.column("packaging")[0].as_py() == [
+        {"package_ndc": "0001-0001-01"}
+    ]
+
+
+def test_ndc_directory_archives_preserve_product_and_package_granularity() -> (
+    None
+):
+    payload = _zip({
+        "product.txt": (
+            "PRODUCTID\tPRODUCTNDC\tLABELERNAME\tNONPROPRIETARYNAME\n"
+            "id-1\t0001-0001\tLabeler\tNative ingredient\n"
+        ),
+        "product.xls": b"alternate source-native copy",
+        "package.txt": (
+            "PRODUCTID\tPRODUCTNDC\tNDCPACKAGECODE\tPACKAGEDESCRIPTION\n"
+            "id-1\t0001-0001\t0001-0001-01\t1 vial\n"
+        ),
+        "package.xls": b"alternate source-native copy",
+    })
+
+    batch = us_source_record_batch("us-fda-ndc-directory", payload, "zip")
+
+    assert batch is not None
+    assert batch.table.num_rows == 2
+    assert set(batch.table.column("source_member").to_pylist()) == {
+        "package.txt",
+        "product.txt",
+    }
+    assert batch.table.column("PRODUCTNDC").to_pylist() == [
+        "0001-0001",
+        "0001-0001",
+    ]
+    assert "NDCPACKAGECODE" in batch.table.column_names
+    assert "NONPROPRIETARYNAME" in batch.table.column_names
+
+
+def test_ndc_archive_shape_and_media_fail_closed() -> None:
+    with pytest.raises(ValueError, match="requires zip"):
+        us_source_record_batch("us-fda-ndc-directory", b"payload", "json")
+    with pytest.raises(ValueError, match="no text tables"):
+        us_source_record_batch(
+            "us-fda-ndc-directory", _zip({"product.xls": b"alias"}), "zip"
+        )
+    with pytest.raises(ValueError, match="unsupported members"):
+        us_source_record_batch(
+            "us-fda-ndc-directory",
+            _zip({"product.txt": "A\n1\n", "unexpected.csv": "A\n1\n"}),
+            "zip",
+        )
+    with pytest.raises(ValueError, match="one JSON member"):
+        us_source_record_batch(
+            "us-openfda-ndc",
+            _zip({"one.json": "{}", "two.json": "{}"}),
+            "zip",
+        )
+
+
 def test_openfda_malformed_results_fail_closed() -> None:
     with pytest.raises(TypeError, match="payload must be an object"):
         us_source_record_batch("us-openfda-faers", b"[]", "json")
@@ -253,7 +328,7 @@ def test_archive_cp1252_short_row_and_blank_row_are_source_faithful() -> None:
 
 def test_non_record_and_media_mismatch_sources_do_not_project() -> None:
     assert us_source_record_batch("us-fda-rems", b"<html/>", "html") is None
-    with pytest.raises(ValueError, match="requires json"):
+    with pytest.raises(ArchiveSafetyError, match="valid ZIP"):
         us_source_record_batch("us-openfda-faers", b"{}", "zip")
     with pytest.raises(ValueError, match="requires zip"):
         us_source_record_batch("us-fda-orange-book", b"{}", "json")
