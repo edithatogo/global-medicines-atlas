@@ -177,15 +177,15 @@ before any hot-path rewrite. Python remains orchestration.
 
 ### Phase 4e: OpenLineage custom-facet conformance
 
-- [~] Task: Tighten OpenLineage conformance ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
-    - [ ] Commit a JSON Schema for every GMA custom facet before pinning immutable schema URLs
-    - [ ] Use correctly prefixed custom-facet keys and reject mutable branch schema references
-    - [ ] Model acquisition and transformation as separate OpenLineage runs
-    - [ ] Prefer standard Catalog, Dataset Type, and Data Quality Assertions facets
-    - [ ] Populate data-quality assertions from admission and integrity validation results
-- [ ] Task: Phase Verification & Checkpoint
-    - [ ] Run focused lineage, landing, recovery, scale, schema, typing, and coverage checks
-    - [ ] Record immutable schema revision and conformance evidence
+- [x] Task: Tighten OpenLineage conformance (`d9074d0`; schemas `af756a5`; [#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
+    - [x] Commit a JSON Schema for every GMA custom facet before pinning immutable schema URLs
+    - [x] Use correctly prefixed custom-facet keys and reject mutable branch schema references
+    - [x] Model acquisition and transformation as separate OpenLineage runs
+    - [x] Prefer standard Catalog, Dataset Type, and Data Quality Assertions facets
+    - [x] Populate data-quality assertions from admission and integrity validation results
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused lineage, landing, recovery, scale, schema, typing, and coverage checks
+    - [x] Record immutable schema revision and conformance evidence
 
 ### Phase 4c: Reproducibility and disaster recovery
 
