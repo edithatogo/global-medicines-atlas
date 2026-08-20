@@ -152,7 +152,7 @@ before any hot-path rewrite. Python remains orchestration.
 
 ## Phase 5: Public ingest and governed-fixture landing
 
-- [ ] Task: Write failing tests for in-scope bronze ingest ([#170](https://github.com/edithatogo/global-medicines-atlas/issues/170))
+- [~] Task: Write failing tests for in-scope bronze ingest ([#170](https://github.com/edithatogo/global-medicines-atlas/issues/170))
     - [ ] Assert each in-scope public/no-credential source can land raw bytes or has an explicit non-completion blocker
     - [ ] Assert already-governed fixtures land as bronze without becoming canonical silver
     - [ ] Assert credentialed sources cannot land through this path
