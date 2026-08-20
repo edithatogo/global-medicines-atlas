@@ -196,15 +196,15 @@ before any hot-path rewrite. Python remains orchestration.
 
 ### Phase 4f: Durable payload storage and sensitivity contracts
 
-- [~] Task: Add durable-storage and independent sensitivity contracts ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
-    - [~] Write failing local/object-store, immutability, replication, inventory, restore, RPO/RTO, sensitivity, publication, schema, and landing tests
-    - [ ] Route authoritative payload persistence through a local-development or durable-object-storage abstraction
-    - [ ] Require versioning or Object Lock/WORM, independent replication, checksum inventory cadence, restore rehearsal cadence, and explicit RPO/RTO for durable operation
-    - [ ] Keep rights, personal-data sensitivity, and publication disposition independent and fail closed for publication
-    - [ ] Record Iceberg REST/v3, DuckLake, lakeFS, Merkle manifests, Delta/Hudi, graph, vector, OMOP, semantic normalization, and Rust terminology as non-blocking later experiments
-- [ ] Task: Phase Verification & Checkpoint
-    - [ ] Run focused storage, receipt, landing, recovery, schema, typing, and coverage checks
-    - [ ] Record repository evidence without claiming a deployed object store, production RPO/RTO qualification, external publication, or Bronze source completeness
+- [x] Task: Add durable-storage and independent sensitivity contracts ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
+    - [x] Write failing local/object-store, immutability, replication, inventory, restore, RPO/RTO, sensitivity, publication, schema, and landing tests
+    - [x] Route authoritative payload persistence through a local-development or durable-object-storage abstraction
+    - [x] Require versioning or Object Lock/WORM, independent replication, checksum inventory cadence, restore rehearsal cadence, and explicit RPO/RTO for durable operation
+    - [x] Keep rights, personal-data sensitivity, and publication disposition independent and fail closed for publication
+    - [x] Record Iceberg REST/v3, DuckLake, lakeFS, Merkle manifests, Delta/Hudi, graph, vector, OMOP, semantic normalization, and Rust terminology as non-blocking later experiments
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused storage, receipt, landing, recovery, schema, typing, and coverage checks
+    - [x] Record repository evidence without claiming a deployed object store, production RPO/RTO qualification, external publication, or Bronze source completeness
 
 ### Phase 4c: Reproducibility and disaster recovery
 
