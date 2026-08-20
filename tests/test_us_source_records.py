@@ -149,6 +149,56 @@ def test_ndc_archive_shape_and_media_fail_closed() -> None:
         )
 
 
+def test_faers_ascii_archive_preserves_all_source_native_tables() -> None:
+    payload = _zip({
+        "ascii/DEMO04Q1.TXT": "ISR$CASE$I_F_COD\n1$10$I\n",
+        "ascii/DRUG04Q1.TXT": (
+            "ISR$DRUG_SEQ$DRUGNAME\n\n1$1$NATIVE$PRESERVED_OVERFLOW\n"
+        ),
+        "ascii/INDI04Q1.TXT": "ISR$DRUG_SEQ$INDI_PT\n1$1$PAIN\n",
+        "ascii/OUTC04Q1.TXT": "ISR$OUTC_COD\n1$OT\n",
+        "ascii/REAC04Q1.TXT": "ISR$PT\n1$HEADACHE\n",
+        "ascii/RPSR04Q1.TXT": "ISR$RPSR_COD\n1$MD\n",
+        "ascii/THER04Q1.TXT": "ISR$DRUG_SEQ$START_DT\n1$1$20040101\n",
+        "ascii/STAT04Q1.TXT": "STATISTIC$VALUE\nCASES$1\n",
+        "README.doc": b"source documentation",
+    })
+
+    batch = us_source_record_batch("us-fda-faers", payload, "zip")
+
+    assert batch is not None
+    assert batch.table.num_rows == 8
+    assert set(batch.table.column("source_table").to_pylist()) == {
+        "demographic",
+        "drug",
+        "indication",
+        "outcome",
+        "reaction",
+        "reporter",
+        "statistics",
+        "therapy",
+    }
+    assert "CASE" in batch.table.column_names
+    assert "DRUGNAME" in batch.table.column_names
+    assert "source_unlabelled_field_1" in batch.table.column_names
+    assert (
+        "PRESERVED_OVERFLOW"
+        in batch.table.column("source_unlabelled_field_1").to_pylist()
+    )
+    assert batch.parser_identity == "gma:us-fda-faers:ascii-archive:v1"
+
+
+def test_faers_ascii_archive_requires_core_tables_and_zip_media() -> None:
+    with pytest.raises(ValueError, match="requires zip"):
+        us_source_record_batch("us-fda-faers", b"payload", "html")
+    with pytest.raises(ValueError, match="missing core tables"):
+        us_source_record_batch(
+            "us-fda-faers",
+            _zip({"ascii/DEMO04Q1.TXT": "ISR$CASE\n1$10\n"}),
+            "zip",
+        )
+
+
 def test_openfda_malformed_results_fail_closed() -> None:
     with pytest.raises(TypeError, match="payload must be an object"):
         us_source_record_batch("us-openfda-faers", b"[]", "json")
