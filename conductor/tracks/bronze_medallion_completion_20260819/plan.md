@@ -165,6 +165,7 @@ before any hot-path rewrite. Python remains orchestration.
     - [x] Land Medsafe, PHARMAC, ARTG, PBS, DPD/NOC, MHRA/NICE, EMA/Union Register, PMDA/NHI, Drugs@FDA, and CMS Part D fixtures (`53b2671`)
     - [x] Leave NZULM bulk, NZHTS, AMT, embargoed PBS, dm+d/TRUD, EMA PMS, SPOR, and live RxNorm payloads excluded
     - [ ] Complete source-specific rights receipts and live landing evidence for the remaining 136 public/no-credential sources; a catalogue blocker is not landing completion
+    - [x] Generate an exhaustive source-family landing queue for all 172 catalogue sources, assigning exactly one fail-closed disposition and one of six reusable adapter families without claiming live coverage (`ddc1ecb`)
 - [x] Task: Phase Verification & Checkpoint
     - [x] Run focused, integration, and source-boundary tests
     - [x] Measure completeness with S-012 denominators; missing coverage is not negative evidence
