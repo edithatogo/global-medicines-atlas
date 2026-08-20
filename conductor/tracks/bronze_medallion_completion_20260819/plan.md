@@ -235,3 +235,5 @@ for credentialed or rights-unresolved sources.
     - [x] African source-coverage matrix is a derived catalogue artefact
     - [x] Hugging Face stays an archive boundary; new FDA/EMA rows are not auto-archived
     - [x] Record blockers honestly; missing coverage is not negative evidence
+    - [x] Generate a schema-validated completion audit joining every numbered prompt to its exact queue and measured live-evidence state
+    - [x] Keep fixture, catalogue, and archive evidence from satisfying any live-acquisition completion claim

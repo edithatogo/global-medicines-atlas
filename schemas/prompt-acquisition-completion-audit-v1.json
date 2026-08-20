@@ -1,0 +1,79 @@
+{
+  "$id": "https://global-medicines-atlas.example/schemas/prompt-acquisition-completion-audit-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "type": "object",
+  "required": [
+    "schema_id", "schema_version", "generated_at", "prompt_count",
+    "unique_prompt_source_count", "catalog_source_count",
+    "fixture_qualified_source_count", "live_qualified_source_count",
+    "live_complete_prompt_count", "program_completion",
+    "queue_state_counts", "evidence_policy", "prompts"
+  ],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.prompt-acquisition-completion-audit"},
+    "schema_version": {"const": 1},
+    "generated_at": {"type": "string", "format": "date"},
+    "prompt_count": {"const": 36},
+    "unique_prompt_source_count": {"type": "integer", "minimum": 1},
+    "catalog_source_count": {"type": "integer", "minimum": 1},
+    "fixture_qualified_source_count": {"type": "integer", "minimum": 0},
+    "live_qualified_source_count": {"type": "integer", "minimum": 0},
+    "live_complete_prompt_count": {"type": "integer", "minimum": 0, "maximum": 36},
+    "program_completion": {"enum": ["complete", "incomplete_live_acquisition"]},
+    "queue_state_counts": {
+      "type": "object",
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "evidence_policy": {"type": "string", "minLength": 1},
+    "prompts": {
+      "type": "array",
+      "minItems": 36,
+      "maxItems": 36,
+      "items": {"$ref": "#/$defs/prompt"}
+    }
+  },
+  "$defs": {
+    "queueState": {
+      "enum": [
+        "credentialed_and_excluded", "derived_reconciliation_output",
+        "landed_and_evidenced", "manual_only_documented_acquisition",
+        "not_yet_implemented", "rights_blocked",
+        "superseded_by_reused_source", "temporarily_unavailable"
+      ]
+    },
+    "prompt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "prompt_id", "title", "family", "invariant", "source_count",
+        "source_ids", "queue_states", "queue_state_counts",
+        "fixture_qualified_source_ids", "live_qualified_source_ids",
+        "sources_without_live_evidence", "live_complete",
+        "completion_state", "blocker_categories", "next_actions"
+      ],
+      "properties": {
+        "prompt_id": {"type": "integer", "minimum": 1, "maximum": 36},
+        "title": {"type": "string", "minLength": 1},
+        "family": {"type": "string", "minLength": 1},
+        "invariant": {"type": "string", "minLength": 1},
+        "source_count": {"type": "integer", "minimum": 1},
+        "source_ids": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "queue_states": {"type": "object", "additionalProperties": {"$ref": "#/$defs/queueState"}},
+        "queue_state_counts": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+        "fixture_qualified_source_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "live_qualified_source_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "sources_without_live_evidence": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "live_complete": {"type": "boolean"},
+        "completion_state": {
+          "enum": [
+            "live_acquisition_complete", "live_acquisition_incomplete",
+            "reconciliation_generated_but_live_program_incomplete"
+          ]
+        },
+        "blocker_categories": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "next_actions": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}
