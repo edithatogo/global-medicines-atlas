@@ -1,5 +1,7 @@
 """Bounded, internal-only acquisition and Bronze exercise for U.S. sources."""
 
+# pyright: reportUnknownMemberType=false
+
 from __future__ import annotations
 
 import json
@@ -12,6 +14,7 @@ from io import BytesIO
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal
 
+import pyarrow.parquet as pq
 from pydantic import AnyUrl, Field, model_validator
 
 if TYPE_CHECKING:
@@ -38,6 +41,7 @@ from .rights_policy import (
     coarse_rights_state,
 )
 from .source_catalog import AccessMode, MedicineDataSource, load_source_catalog
+from .us_source_records import us_source_record_batch
 
 PRIVATE_ARCHIVE_FILENAME = "us-live-bronze-corpus.private.tar"
 PRIVATE_MANIFEST_FILENAME = "us-live-bronze-corpus.manifest.json"
@@ -140,6 +144,8 @@ class USLiveCorpusItem(FrozenModel):
     rights_state: str
     admission_state: str | None = None
     parquet_projected: bool = False
+    source_records_projected: bool = False
+    source_record_count: int | None = Field(default=None, ge=0)
     reuse_disposition: str
     failure_code: str | None = None
 
@@ -150,7 +156,7 @@ class USLiveCorpusManifest(FrozenModel):
     schema_id: Literal["global-medicines-atlas.us-live-bronze-corpus"] = (
         "global-medicines-atlas.us-live-bronze-corpus"
     )
-    schema_version: Literal[1] = 1
+    schema_version: Literal[2] = 2
     exercised_at: datetime
     evidence_class: Literal["live_bounded_internal"] = "live_bounded_internal"
     external_publication_performed: Literal[False] = False
@@ -161,6 +167,8 @@ class USLiveCorpusManifest(FrozenModel):
     accepted_admission_count: int
     quarantined_admission_count: int
     recovered_acquisition_count: int
+    source_record_projection_count: int
+    recovered_source_record_projection_count: int
     items: tuple[USLiveCorpusItem, ...]
     archive_filename: Literal["us-live-bronze-corpus.private.tar"] = (
         PRIVATE_ARCHIVE_FILENAME
@@ -334,6 +342,17 @@ def _success_item(
     if temporal is None:
         raise ValueError("live acquisition requires temporal identity")
     admission = landing.admission
+    source_records_path = (
+        landing.source_records_path
+        if isinstance(landing, BronzeLanding)
+        else None
+    )
+    source_record_count = (
+        pq.read_metadata(source_records_path).num_rows
+        if isinstance(landing, BronzeLanding)
+        and source_records_path is not None
+        else None
+    )
     return USLiveCorpusItem(
         source_id=receipt.source.source_id,
         status="succeeded",
@@ -343,6 +362,8 @@ def _success_item(
         rights_state=receipt.rights_state.value,
         admission_state=admission.state.value,
         parquet_projected=isinstance(landing, BronzeLanding),
+        source_records_projected=source_records_path is not None,
+        source_record_count=source_record_count,
         reuse_disposition=decision.disposition.value,
     )
 
@@ -426,6 +447,11 @@ def exercise_us_live_bronze_corpus(  # ruff: ignore[too-many-locals]
             media_hint=item.media_hint,
             admission_decided_at=exercised_at,
             transformation_completed_at=exercised_at,
+            source_records=us_source_record_batch(
+                item.source_id,
+                payload,
+                item.media_hint,
+            ),
         )
         results.append(_success_item(bound, landing, decision))
 
@@ -443,6 +469,7 @@ def exercise_us_live_bronze_corpus(  # ruff: ignore[too-many-locals]
     recovery = reconstruct_bronze(
         clean_room,
         fail_closed_on_incomplete=False,
+        source_record_factory=us_source_record_batch,
     )
     archive_path = output_dir / PRIVATE_ARCHIVE_FILENAME
     archive_digest, archive_size = _write_private_archive(corpus, archive_path)
@@ -457,6 +484,12 @@ def exercise_us_live_bronze_corpus(  # ruff: ignore[too-many-locals]
         for item in succeeded
         if item.admission_state == BronzeAdmissionState.QUARANTINED.value
     )
+    projected = tuple(
+        item for item in succeeded if item.source_records_projected
+    )
+    recovered_source_records = len(
+        tuple((clean_room / "parquet").rglob("source_records.parquet"))
+    )
     manifest = USLiveCorpusManifest(
         exercised_at=exercised_at,
         source_count=len(results),
@@ -465,6 +498,8 @@ def exercise_us_live_bronze_corpus(  # ruff: ignore[too-many-locals]
         accepted_admission_count=len(accepted),
         quarantined_admission_count=len(quarantined),
         recovered_acquisition_count=len(recovery.landings),
+        source_record_projection_count=len(projected),
+        recovered_source_record_projection_count=recovered_source_records,
         items=tuple(results),
         archive_sha256=archive_digest,
         archive_byte_count=archive_size,
