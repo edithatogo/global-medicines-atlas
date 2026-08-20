@@ -1,0 +1,4601 @@
+{
+  "catalog_reviewed_at": "2026-08-20",
+  "catalog_schema_version": 5,
+  "family_counts": {
+    "archive_release": 6,
+    "document_collection": 27,
+    "manual_reproducible_export": 10,
+    "paginated_rest_api": 14,
+    "regulator_search_export": 77,
+    "static_file_download": 38
+  },
+  "items": [
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://dha.gov.ae/en/HealthRegulationSector/DrugControl",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ae-dha-prices"
+      },
+      "evidence_references": [
+        "https://dha.gov.ae/en/HealthRegulationSector/DrugControl"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "ae-dha-prices",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://services.ede.gov.ae/drugdirectory?lang=en-US",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ae-ede-register"
+      },
+      "evidence_references": [
+        "https://services.ede.gov.ae/drugdirectory?lang=en-US"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "ae-ede-register",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.argentina.gob.ar/anmat",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ar-anmat-vademecum"
+      },
+      "evidence_references": [
+        "https://www.argentina.gob.ar/anmat"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "ar-anmat-vademecum",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Follow the documented public retrieval steps, record parameters, and receipt the source-native export.",
+        "acquisition_profile": "account-download",
+        "credentials_persisted": false,
+        "endpoint": "https://www.healthterminologies.gov.au/",
+        "family": "manual_reproducible_export",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "au-amt-rf2"
+      },
+      "evidence_references": [
+        "https://www.healthterminologies.gov.au/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode account is excluded",
+      "source_id": "au-amt-rf2",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.tga.gov.au/resources/artg",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "au-artg"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/bronze_fixture_landing.py",
+        "tests/test_bronze_fixture_landing.py",
+        "tests/fixtures/adapters/au_artg.csv"
+      ],
+      "evidence_scope": "governed_fixture",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "catalogue implementation claim has committed qualification evidence",
+      "source_id": "au-artg",
+      "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Traverse the configured API pagination contract, preserve each source response, and receipt the completed page set.",
+        "acquisition_profile": "rate-limited-rest",
+        "credentials_persisted": false,
+        "endpoint": "https://data-api.pbs.gov.au/",
+        "family": "paginated_rest_api",
+        "formats": [
+          "json",
+          "csv"
+        ],
+        "pagination": "source_config_required",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "au-pbs-api"
+      },
+      "evidence_references": [
+        "https://data.pbs.gov.au/data-distribution/data-distribution.html"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: terms_review_required",
+      "source_id": "au-pbs-api",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Follow the documented public retrieval steps, record parameters, and receipt the source-native export.",
+        "acquisition_profile": "account-download",
+        "credentials_persisted": false,
+        "endpoint": "https://data.pbs.gov.au/document/90473.html",
+        "family": "manual_reproducible_export",
+        "formats": [
+          "json",
+          "csv"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "au-pbs-embargo"
+      },
+      "evidence_references": [
+        "https://data.pbs.gov.au/document/90473.html"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode manual_approval is excluded",
+      "source_id": "au-pbs-embargo",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://info.data.pbs.gov.au/xml-schema/doc/html/guide.html",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "au-pbs-historical-xml"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/bronze_fixture_landing.py",
+        "tests/test_bronze_fixture_landing.py",
+        "tests/fixtures/adapters/au_pbs.xml"
+      ],
+      "evidence_scope": "governed_fixture",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "catalogue implementation claim has committed qualification evidence",
+      "source_id": "au-pbs-historical-xml",
+      "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.tga.gov.au/safety/safety/safety-monitoring-daen-database-adverse-event-notifications",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "au-tga-daen"
+      },
+      "evidence_references": [
+        "https://www.tga.gov.au/safety/safety/safety-monitoring-daen-database-adverse-event-notifications"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "au-tga-daen",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.tga.gov.au/products/regulations-all-products/about-australian-register-therapeutic-goods-artg/product-information-pi",
+        "family": "document_collection",
+        "formats": [
+          "pdf"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "au-tga-pi-cmi"
+      },
+      "evidence_references": [
+        "https://www.tga.gov.au/products/regulations-all-products/about-australian-register-therapeutic-goods-artg/product-information-pi"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "au-tga-pi-cmi",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.tga.gov.au/resources/datasets",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "au-tga-regulatory-events"
+      },
+      "evidence_references": [
+        "https://www.tga.gov.au/resources/datasets"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "au-tga-regulatory-events",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.moh.gov.bh/OtherPages/Faq?lang=en",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "bh-moh-drug-prices"
+      },
+      "evidence_references": [
+        "https://www.moh.gov.bh/OtherPages/Faq?lang=en"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "bh-moh-drug-prices",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://consultas.anvisa.gov.br/#/medicamentos/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "br-anvisa-medicines"
+      },
+      "evidence_references": [
+        "https://consultas.anvisa.gov.br/#/medicamentos/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "br-anvisa-medicines",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/cmed/precos",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "br-cmed-prices"
+      },
+      "evidence_references": [
+        "https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/cmed/precos"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "br-cmed-prices",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.gov.br/conitec/pt-br",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "br-conitec-decisions"
+      },
+      "evidence_references": [
+        "https://www.gov.br/conitec/pt-br"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "br-conitec-decisions",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.canada.ca/en/health-canada/services/drugs-health-products/medeffect-canada/adverse-reaction-database.html",
+        "family": "static_file_download",
+        "formats": [
+          "xlsx",
+          "csv"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ca-canada-vigilance"
+      },
+      "evidence_references": [
+        "https://www.canada.ca/en/health-canada/services/drugs-health-products/medeffect-canada/adverse-reaction-database.html"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "ca-canada-vigilance",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.cda-amc.ca/reimbursement-reviews",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ca-cda-recommendations"
+      },
+      "evidence_references": [
+        "https://www.cda-amc.ca/reimbursement-reviews"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "ca-cda-recommendations",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Follow the documented public retrieval steps, record parameters, and receipt the source-native export.",
+        "acquisition_profile": "account-download",
+        "credentials_persisted": false,
+        "endpoint": "https://www.cihi.ca/en/national-health-expenditure-trends",
+        "family": "manual_reproducible_export",
+        "formats": [
+          "xlsx"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ca-cihi-nhex-medicines"
+      },
+      "evidence_references": [
+        "https://www.cihi.ca/en/national-health-expenditure-trends"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode subscription is excluded",
+      "source_id": "ca-cihi-nhex-medicines",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Traverse the configured API pagination contract, preserve each source response, and receipt the completed page set.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://health-products.canada.ca/api/drug/",
+        "family": "paginated_rest_api",
+        "formats": [
+          "json",
+          "csv"
+        ],
+        "pagination": "source_config_required",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ca-dpd"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/bronze_fixture_landing.py",
+        "tests/test_bronze_fixture_landing.py",
+        "tests/fixtures/native/ca/dpd_api.json",
+        "tests/fixtures/native/ca/dpd_bulk.csv"
+      ],
+      "evidence_scope": "governed_fixture",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "catalogue implementation claim has committed qualification evidence",
+      "source_id": "ca-dpd",
+      "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/notice-compliance/database/data-extract.html",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ca-noc"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/bronze_fixture_landing.py",
+        "tests/test_bronze_fixture_landing.py",
+        "tests/fixtures/native/ca/noc_extract.csv"
+      ],
+      "evidence_scope": "governed_fixture",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "catalogue implementation claim has committed qualification evidence",
+      "source_id": "ca-noc",
+      "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://open.canada.ca/data/en/dataset/e49db542-48db-8656-c4d5-f1f32516ddad",
+        "family": "static_file_download",
+        "formats": [
+          "csv",
+          "tsv",
+          "xml",
+          "json",
+          "rdf",
+          "rss"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ca-nova-scotia-pharmacare"
+      },
+      "evidence_references": [
+        "https://open.canada.ca/data/en/dataset/e49db542-48db-8656-c4d5-f1f32516ddad"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "ca-nova-scotia-pharmacare",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.ontario.ca/document/ontario-drug-benefit-odb-formulary-comparative-drug-index-cdi-and-monthly-formulary-0",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ca-ontario-odb"
+      },
+      "evidence_references": [
+        "https://www.ontario.ca/document/ontario-drug-benefit-odb-formulary-comparative-drug-index-cdi-and-monthly-formulary-0"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "ca-ontario-odb",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://sl.bag.admin.ch/resources/current-and-archived-data",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ch-foph-sl-fhir"
+      },
+      "evidence_references": [
+        "https://sl.bag.admin.ch/resources/current-and-archived-data"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "ch-foph-sl-fhir",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.spezialitaetenliste.ch/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ch-foph-specialities"
+      },
+      "evidence_references": [
+        "https://www.spezialitaetenliste.ch/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "ch-foph-specialities",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.swissmedic.ch/swissmedic/en/home/humanarzneimittel/authorisations/aips.html/1000",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ch-swissmedic-aips"
+      },
+      "evidence_references": [
+        "https://www.swissmedic.ch/swissmedic/en/home/humanarzneimittel/authorisations/aips.html/1000"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "ch-swissmedic-aips",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.swissmedic.ch/swissmedic/en/home/services/listen_neu.html",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ch-swissmedic-authorised"
+      },
+      "evidence_references": [
+        "https://www.swissmedic.ch/swissmedic/en/home/services/listen_neu.html"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "ch-swissmedic-authorised",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://registrosanitario.ispch.gob.cl/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "cl-isp-register"
+      },
+      "evidence_references": [
+        "https://registrosanitario.ispch.gob.cl/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "cl-isp-register",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://mesagil.invima.gov.co/productos-vigilados/medicamentos-y-productos-biologicos/autorizacion-de-comercializacion-registros",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "co-invima-cum"
+      },
+      "evidence_references": [
+        "https://mesagil.invima.gov.co/productos-vigilados/medicamentos-y-productos-biologicos/autorizacion-de-comercializacion-registros"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "co-invima-cum",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.invima.gov.co/consulta-registros-sanitarios",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "co-invima-register"
+      },
+      "evidence_references": [
+        "https://www.invima.gov.co/consulta-registros-sanitarios"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "co-invima-register",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.bfarm.de/DE/Arzneimittel/Arzneimittelinformationen/Arzneimittel-recherchieren/AMIce/_artikel.html",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "de-bfarm-amice"
+      },
+      "evidence_references": [
+        "https://www.bfarm.de/DE/Arzneimittel/Arzneimittelinformationen/Arzneimittel-recherchieren/AMIce/_artikel.html"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "de-bfarm-amice",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://laegemiddelstyrelsen.dk/en/reimbursement/prices/medicine-prices-for-companies",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "dk-medicinpriser"
+      },
+      "evidence_references": [
+        "https://laegemiddelstyrelsen.dk/en/reimbursement/prices/medicine-prices-for-companies"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "dk-medicinpriser",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://medstat.dk/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "dk-medstat-utilisation"
+      },
+      "evidence_references": [
+        "https://medstat.dk/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "dk-medstat-utilisation",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.edaegypt.gov.eg/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "eg-eda-register"
+      },
+      "evidence_references": [
+        "https://www.edaegypt.gov.eg/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "eg-eda-register",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.edaegypt.gov.eg/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "eg-eda-safety"
+      },
+      "evidence_references": [
+        "https://www.edaegypt.gov.eg/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "eg-eda-safety",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.edaegypt.gov.eg/",
+        "family": "document_collection",
+        "formats": [
+          "pdf",
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "eg-national-eml"
+      },
+      "evidence_references": [
+        "https://www.edaegypt.gov.eg/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "eg-national-eml",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/data-medicines-iso-idmp-standards-post-authorisation/public-data-article-57-database",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "eu-ema-article57"
+      },
+      "evidence_references": [
+        "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/data-medicines-iso-idmp-standards-post-authorisation/public-data-article-57-database"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "eu-ema-article57",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.ema.europa.eu/en/medicines",
+        "family": "document_collection",
+        "formats": [
+          "pdf",
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "eu-ema-epar-documents"
+      },
+      "evidence_references": [
+        "https://www.ema.europa.eu/en/medicines/download-medicine-data"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "eu-ema-epar-documents",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.ema.europa.eu/en/about-us/about-website/download-website-data-json-data-format",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "eu-ema-json"
+      },
+      "evidence_references": [
+        "https://www.ema.europa.eu/en/about-us/about-website/download-website-data-json-data-format"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "eu-ema-json",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "eu-ema-medicines"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/bronze_fixture_landing.py",
+        "tests/test_bronze_fixture_landing.py",
+        "tests/fixtures/native/eu/ema_medicines.csv"
+      ],
+      "evidence_scope": "governed_fixture",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "catalogue implementation claim has committed qualification evidence",
+      "source_id": "eu-ema-medicines",
+      "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+        "family": "static_file_download",
+        "formats": [
+          "xlsx",
+          "html"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "eu-ema-orphan"
+      },
+      "evidence_references": [
+        "https://www.ema.europa.eu/en/human-regulatory-overview/orphan-designation-overview"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "eu-ema-orphan",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Traverse the configured API pagination contract, preserve each source response, and receipt the completed page set.",
+        "acquisition_profile": "account-download",
+        "credentials_persisted": false,
+        "endpoint": "https://api.pms.ema.europa.eu/public/v1/",
+        "family": "paginated_rest_api",
+        "formats": [
+          "fhir-json",
+          "fhir-xml"
+        ],
+        "pagination": "source_config_required",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "eu-ema-pms-fhir"
+      },
+      "evidence_references": [
+        "https://api.pms.ema.europa.eu/public/v1/swagger"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode account is excluded",
+      "source_id": "eu-ema-pms-fhir",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.ema.europa.eu/en/medicines/download-medicine-data",
+        "family": "static_file_download",
+        "formats": [
+          "xlsx",
+          "html"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "eu-ema-referrals"
+      },
+      "evidence_references": [
+        "https://www.ema.europa.eu/en/medicines/download-medicine-data"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "eu-ema-referrals",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/pharmacovigilance-post-authorisation/safety-communication",
+        "family": "document_collection",
+        "formats": [
+          "html",
+          "pdf"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "eu-ema-safety-communications"
+      },
+      "evidence_references": [
+        "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/pharmacovigilance-post-authorisation/safety-communication"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "eu-ema-safety-communications",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Follow the documented public retrieval steps, record parameters, and receipt the source-native export.",
+        "acquisition_profile": "account-download",
+        "credentials_persisted": false,
+        "endpoint": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/data-medicines-iso-idmp-standards-post-authorisation",
+        "family": "manual_reproducible_export",
+        "formats": [
+          "xml"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "eu-ema-xevmpd-credentialed"
+      },
+      "evidence_references": [
+        "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/data-medicines-iso-idmp-standards-post-authorisation"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode account is excluded",
+      "source_id": "eu-ema-xevmpd-credentialed",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.adrreports.eu/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "eu-eudravigilance-public"
+      },
+      "evidence_references": [
+        "https://www.adrreports.eu/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode account is excluded",
+      "source_id": "eu-eudravigilance-public",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://spor.ema.europa.eu/sporwi/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "eu-spor-public-metadata"
+      },
+      "evidence_references": [
+        "https://spor.ema.europa.eu/sporwi/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "eu-spor-public-metadata",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Follow the documented public retrieval steps, record parameters, and receipt the source-native export.",
+        "acquisition_profile": "account-download",
+        "credentials_persisted": false,
+        "endpoint": "https://spor.ema.europa.eu/",
+        "family": "manual_reproducible_export",
+        "formats": [
+          "json",
+          "xml",
+          "csv"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "eu-spor-rms-oms"
+      },
+      "evidence_references": [
+        "https://spor.ema.europa.eu/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode account is excluded",
+      "source_id": "eu-spor-rms-oms",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://ec.europa.eu/health/documents/community-register/html/index_en.htm",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "eu-union-register"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/bronze_fixture_landing.py",
+        "tests/test_bronze_fixture_landing.py",
+        "tests/fixtures/native/eu/union_register.xml"
+      ],
+      "evidence_scope": "governed_fixture",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "catalogue implementation claim has committed qualification evidence",
+      "source_id": "eu-union-register",
+      "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "fr-bdpm"
+      },
+      "evidence_references": [
+        "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "fr-bdpm",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "fr-bdpm-smr-asmr"
+      },
+      "evidence_references": [
+        "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "fr-bdpm-smr-asmr",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.data.gouv.fr/fr/datasets/open-medic-base-complete-sur-les-depenses-de-medicaments-interregimes/",
+        "family": "static_file_download",
+        "formats": [
+          "csv"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "fr-open-medic"
+      },
+      "evidence_references": [
+        "https://www.data.gouv.fr/fr/datasets/open-medic-base-complete-sur-les-depenses-de-medicaments-interregimes/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "fr-open-medic",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.gov.uk/government/publications/drugs-and-pharmaceutical-electronic-market-information-emit",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "gb-emit"
+      },
+      "evidence_references": [
+        "https://www.gov.uk/government/publications/drugs-and-pharmaceutical-electronic-market-information-emit"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "gb-emit",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://products.mhra.gov.uk/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "gb-mhra-products"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/bronze_fixture_landing.py",
+        "tests/test_bronze_fixture_landing.py",
+        "tests/fixtures/native/gb/mhra_products.csv"
+      ],
+      "evidence_scope": "governed_fixture",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "catalogue implementation claim has committed qualification evidence",
+      "source_id": "gb-mhra-products",
+      "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://yellowcard.mhra.gov.uk/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "gb-mhra-yellow-card"
+      },
+      "evidence_references": [
+        "https://yellowcard.mhra.gov.uk/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "gb-mhra-yellow-card",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Follow the documented public retrieval steps, record parameters, and receipt the source-native export.",
+        "acquisition_profile": "account-download",
+        "credentials_persisted": false,
+        "endpoint": "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd",
+        "family": "manual_reproducible_export",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "gb-nhs-dmd"
+      },
+      "evidence_references": [
+        "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode subscription is excluded",
+      "source_id": "gb-nhs-dmd",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/drug-tariff",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "gb-nhs-drug-tariff"
+      },
+      "evidence_references": [
+        "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/drug-tariff"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "gb-nhs-drug-tariff",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.england.nhs.uk/",
+        "family": "document_collection",
+        "formats": [
+          "xlsx",
+          "csv",
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "gb-nice-medicines-utilisation"
+      },
+      "evidence_references": [
+        "https://digital.nhs.uk/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "gb-nice-medicines-utilisation",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.nice.org.uk/what-nice-does/our-guidance/about-technology-appraisal-guidance",
+        "family": "document_collection",
+        "formats": [
+          "html",
+          "csv"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "gb-nice-ta"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/bronze_fixture_landing.py",
+        "tests/test_bronze_fixture_landing.py",
+        "tests/fixtures/native/gb/nice_appraisals.xml"
+      ],
+      "evidence_scope": "governed_fixture",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "catalogue implementation claim has committed qualification evidence",
+      "source_id": "gb-nice-ta",
+      "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Traverse the configured API pagination contract, preserve each source response, and receipt the completed page set.",
+        "acquisition_profile": "public-rest",
+        "credentials_persisted": false,
+        "endpoint": "https://openprescribing.net/api/1.0/",
+        "family": "paginated_rest_api",
+        "formats": [
+          "json",
+          "csv"
+        ],
+        "pagination": "source_config_required",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "gb-openprescribing"
+      },
+      "evidence_references": [
+        "https://openprescribing.net/api/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "gb-openprescribing",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download and receipt the archive before safely enumerating and extracting its members.",
+        "acquisition_profile": "account-download",
+        "credentials_persisted": false,
+        "endpoint": "https://digital.nhs.uk/developer/api-catalogue/technology-reference-update-distribution-api",
+        "family": "archive_release",
+        "formats": [
+          "json",
+          "xml",
+          "zip"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "gb-trud-api"
+      },
+      "evidence_references": [
+        "https://digital.nhs.uk/developer/api-catalogue/technology-reference-update-distribution-api"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode api_key is excluded",
+      "source_id": "gb-trud-api",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://ghc.sa/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "gcc-central-registration"
+      },
+      "evidence_references": [
+        "https://ghc.sa/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "gcc-central-registration",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://fdaghana.gov.gh/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "gh-fda-register"
+      },
+      "evidence_references": [
+        "https://fdaghana.gov.gh/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "gh-fda-register",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://fdaghana.gov.gh/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "gh-fda-safety"
+      },
+      "evidence_references": [
+        "https://fdaghana.gov.gh/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "gh-fda-safety",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://fdaghana.gov.gh/",
+        "family": "document_collection",
+        "formats": [
+          "pdf",
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "gh-national-eml"
+      },
+      "evidence_references": [
+        "https://fdaghana.gov.gh/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "gh-national-eml",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Traverse the configured API pagination contract, preserve each source response, and receipt the completed page set.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://rxnav.nlm.nih.gov/REST/",
+        "family": "paginated_rest_api",
+        "formats": [
+          "json",
+          "xml",
+          "rrf",
+          "zip"
+        ],
+        "pagination": "source_config_required",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "global-rxnorm"
+      },
+      "evidence_references": [
+        "https://www.nlm.nih.gov/research/umls/rxnorm/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: UMLS/RxNorm terms apply",
+      "source_id": "global-rxnorm",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Follow the documented public retrieval steps, record parameters, and receipt the source-native export.",
+        "acquisition_profile": "account-download",
+        "credentials_persisted": false,
+        "endpoint": "https://who-umc.org/vigibase/",
+        "family": "manual_reproducible_export",
+        "formats": [
+          "csv"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "global-umc-vigibase"
+      },
+      "evidence_references": [
+        "https://who-umc.org/vigibase/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode subscription is excluded",
+      "source_id": "global-umc-vigibase",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.who.int/teams/global-hiv-hepatitis-and-stis-programmes/hiv/treatment/aids-medicines-and-diagnostics-service",
+        "family": "regulator_search_export",
+        "formats": [
+          "html",
+          "xlsx"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "global-who-amds-gprm"
+      },
+      "evidence_references": [
+        "https://www.who.int/teams/global-hiv-hepatitis-and-stis-programmes/hiv/treatment/aids-medicines-and-diagnostics-service"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "global-who-amds-gprm",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing",
+        "family": "document_collection",
+        "formats": [
+          "html",
+          "pdf"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "global-who-availability-surveys"
+      },
+      "evidence_references": [
+        "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "global-who-availability-surveys",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.who.int/tools/monitoring-and-evaluation/databases",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "global-who-databases"
+      },
+      "evidence_references": [
+        "https://www.who.int/tools/monitoring-and-evaluation/databases"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "global-who-databases",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists",
+        "family": "document_collection",
+        "formats": [
+          "xlsx",
+          "pdf",
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "global-who-eml"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/bronze_fixture_landing.py",
+        "tests/test_bronze_fixture_landing.py",
+        "tests/fixtures/source_expansion/who-eml.csv"
+      ],
+      "evidence_scope": "governed_fixture",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "catalogue implementation claim has committed qualification evidence",
+      "source_id": "global-who-eml",
+      "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing",
+        "family": "document_collection",
+        "formats": [
+          "html",
+          "pdf",
+          "xlsx"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "global-who-medicine-prices"
+      },
+      "evidence_references": [
+        "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "global-who-medicine-prices",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a",
+        "family": "document_collection",
+        "formats": [
+          "xlsx",
+          "pdf",
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "global-who-mi4a"
+      },
+      "evidence_references": [
+        "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "global-who-mi4a",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists/national-essential-medicines-lists",
+        "family": "document_collection",
+        "formats": [
+          "html",
+          "pdf"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "global-who-national-eml-index"
+      },
+      "evidence_references": [
+        "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists/national-essential-medicines-lists"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "global-who-national-eml-index",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.who.int/teams/regulation-prequalification",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "global-who-shortage-sources"
+      },
+      "evidence_references": [
+        "https://www.who.int/teams/regulation-prequalification"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "global-who-shortage-sources",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.who.int/tools/global-benchmarking-tools/",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "global-who-wla"
+      },
+      "evidence_references": [
+        "https://www.who.int/initiatives/who-listed-authority-reg-authorities"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: WHO terms apply",
+      "source_id": "global-who-wla",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://cekbpom.pom.go.id/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "id-bpom-product"
+      },
+      "evidence_references": [
+        "https://cekbpom.pom.go.id/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "id-bpom-product",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.hse.ie/eng/staff/pcrs/pcrs-publications/",
+        "family": "document_collection",
+        "formats": [
+          "pdf",
+          "xlsx"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ie-pcrs-reimbursement"
+      },
+      "evidence_references": [
+        "https://www.hse.ie/eng/staff/pcrs/pcrs-publications/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "ie-pcrs-reimbursement",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://cdsco.gov.in/opencms/opencms/en/Approval_new/Approved-New-Drugs/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "in-cdsco-approved-drugs"
+      },
+      "evidence_references": [
+        "https://cdsco.gov.in/opencms/opencms/en/Approval_new/Approved-New-Drugs/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "in-cdsco-approved-drugs",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://cdsco.gov.in/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "in-cdsco-products"
+      },
+      "evidence_references": [
+        "https://cdsco.gov.in/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "in-cdsco-products",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://main.mohfw.gov.in/newshighlights-104",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "in-nlem"
+      },
+      "evidence_references": [
+        "https://main.mohfw.gov.in/newshighlights-104"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "in-nlem",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.nppaindia.nic.in/",
+        "family": "document_collection",
+        "formats": [
+          "xlsx",
+          "pdf",
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "in-nppa-ceiling-prices"
+      },
+      "evidence_references": [
+        "https://www.nppaindia.nic.in/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "in-nppa-ceiling-prices",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://gem.gov.in/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "in-procurement-availability"
+      },
+      "evidence_references": [
+        "https://gem.gov.in/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "in-procurement-availability",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.ipc.gov.in/PvPI/pv_home.html",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "in-pvpi-safety"
+      },
+      "evidence_references": [
+        "https://www.ipc.gov.in/PvPI/pv_home.html"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode account is excluded",
+      "source_id": "in-pvpi-safety",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Follow the documented public retrieval steps, record parameters, and receipt the source-native export.",
+        "acquisition_profile": "account-download",
+        "credentials_persisted": false,
+        "endpoint": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000139390.html",
+        "family": "manual_reproducible_export",
+        "formats": [
+          "xlsx"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "jp-mhlw-ndb-utilisation"
+      },
+      "evidence_references": [
+        "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000139390.html"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode manual_approval is excluded",
+      "source_id": "jp-mhlw-ndb-utilisation",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.mhlw.go.jp/topics/2025/04/tp20250401-01.html",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "jp-mhlw-nhi-price"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/bronze_fixture_landing.py",
+        "tests/test_bronze_fixture_landing.py",
+        "tests/fixtures/native/jp/mhlw_nhi_prices.csv"
+      ],
+      "evidence_scope": "governed_fixture",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "catalogue implementation claim has committed qualification evidence",
+      "source_id": "jp-mhlw-nhi-price",
+      "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.pmda.go.jp/english/review-services/reviews/approved-information/drugs/0001.html",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "jp-pmda-approvals"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/bronze_fixture_landing.py",
+        "tests/test_bronze_fixture_landing.py",
+        "tests/fixtures/native/jp/pmda_approvals.csv"
+      ],
+      "evidence_scope": "governed_fixture",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "catalogue implementation claim has committed qualification evidence",
+      "source_id": "jp-pmda-approvals",
+      "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.info.pmda.go.jp/psearch/tenpulist.jsp",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "jp-pmda-package-inserts"
+      },
+      "evidence_references": [
+        "https://www.info.pmda.go.jp/psearch/tenpulist.jsp"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "jp-pmda-package-inserts",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.pmda.go.jp/english/safety/info-services/0001.html",
+        "family": "document_collection",
+        "formats": [
+          "html",
+          "pdf"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "jp-pmda-safety"
+      },
+      "evidence_references": [
+        "https://www.pmda.go.jp/english/safety/info-services/0001.html"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "jp-pmda-safety",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.pharmacyboardkenya.org/",
+        "family": "document_collection",
+        "formats": [
+          "pdf",
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ke-national-eml"
+      },
+      "evidence_references": [
+        "https://www.pharmacyboardkenya.org/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "ke-national-eml",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.pharmacyboardkenya.org/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ke-ppb-register"
+      },
+      "evidence_references": [
+        "https://www.pharmacyboardkenya.org/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "ke-ppb-register",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.pharmacyboardkenya.org/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ke-ppb-safety"
+      },
+      "evidence_references": [
+        "https://www.pharmacyboardkenya.org/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "ke-ppb-safety",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.data.go.kr/data/15118958/fileData.do",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "kr-hira-atc"
+      },
+      "evidence_references": [
+        "https://www.data.go.kr/data/15118958/fileData.do"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "kr-hira-atc",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.hira.or.kr/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "kr-hira-reimbursement"
+      },
+      "evidence_references": [
+        "https://www.hira.or.kr/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode api_key is excluded",
+      "source_id": "kr-hira-reimbursement",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.data.go.kr/data/15067462/fileData.do",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "kr-hira-standard-code"
+      },
+      "evidence_references": [
+        "https://www.data.go.kr/data/15067462/fileData.do"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "kr-hira-standard-code",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://nedrug.mfds.go.kr/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "kr-mfds-nedrug"
+      },
+      "evidence_references": [
+        "https://nedrug.mfds.go.kr/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode api_key is excluded",
+      "source_id": "kr-mfds-nedrug",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.moh.gov.kw/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "kw-moh-medicines"
+      },
+      "evidence_references": [
+        "https://www.moh.gov.kw/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "kw-moh-medicines",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://health.govmu.org/",
+        "family": "document_collection",
+        "formats": [
+          "pdf",
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "mus-approved-drug-list"
+      },
+      "evidence_references": [
+        "https://health.govmu.org/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "mus-approved-drug-list",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://health.govmu.org/",
+        "family": "document_collection",
+        "formats": [
+          "pdf"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "mus-historical-eml-archive"
+      },
+      "evidence_references": [
+        "https://health.govmu.org/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "mus-historical-eml-archive",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://health.govmu.org/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "mus-pharmacy-board-register"
+      },
+      "evidence_references": [
+        "https://health.govmu.org/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "mus-pharmacy-board-register",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://health.govmu.org/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "mus-pharmacy-board-safety"
+      },
+      "evidence_references": [
+        "https://health.govmu.org/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "mus-pharmacy-board-safety",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.gob.mx/cofepris",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "mx-cofepris-register"
+      },
+      "evidence_references": [
+        "https://www.gob.mx/cofepris"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "mx-cofepris-register",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.csg.gob.mx/Compendio/CNIS/cnis.html",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "mx-csg-compendium"
+      },
+      "evidence_references": [
+        "https://www.csg.gob.mx/Compendio/CNIS/cnis.html"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "mx-csg-compendium",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://quest3plus.bpfk.gov.my/front-end/product-search.php",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "my-npra-quest"
+      },
+      "evidence_references": [
+        "https://quest3plus.bpfk.gov.my/front-end/product-search.php"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "my-npra-quest",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://greenbook.nafdac.gov.ng/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ng-nafdac-products"
+      },
+      "evidence_references": [
+        "https://greenbook.nafdac.gov.ng/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "ng-nafdac-products",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.nafdac.gov.ng/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ng-nafdac-safety"
+      },
+      "evidence_references": [
+        "https://www.nafdac.gov.ng/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "ng-nafdac-safety",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.nhia.gov.ng/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ng-nhia-medicines"
+      },
+      "evidence_references": [
+        "https://www.nhia.gov.ng/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "ng-nhia-medicines",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.gipdatabank.nl/",
+        "family": "static_file_download",
+        "formats": [
+          "xlsx",
+          "csv",
+          "html"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "nl-gipdatabank"
+      },
+      "evidence_references": [
+        "https://www.gipdatabank.nl/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "nl-gipdatabank",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.medicijnkosten.nl/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "nl-medicijnkosten"
+      },
+      "evidence_references": [
+        "https://www.medicijnkosten.nl/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "nl-medicijnkosten",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.dmp.no/om-oss/distribusjon-av-legemiddeldata/FHIR-tjenesten/innhold-i-tjenesten",
+        "family": "document_collection",
+        "formats": [
+          "fhir-json",
+          "fhir-xml"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "no-dmp-fhir"
+      },
+      "evidence_references": [
+        "https://www.dmp.no/om-oss/distribusjon-av-legemiddeldata/FHIR-tjenesten/innhold-i-tjenesten"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "no-dmp-fhir",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download and receipt the archive before safely enumerating and extracting its members.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.dmp.no/en/about-us/distribution-of-data-on-medicinal-products/electronic-prescription-support-system-fest/downloading-fest-and-safest",
+        "family": "archive_release",
+        "formats": [
+          "xml",
+          "zip"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "no-fest"
+      },
+      "evidence_references": [
+        "https://www.dmp.no/en/about-us/distribution-of-data-on-medicinal-products/electronic-prescription-support-system-fest/downloading-fest-and-safest"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "no-fest",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Follow the documented public retrieval steps, record parameters, and receipt the source-native export.",
+        "acquisition_profile": "account-download",
+        "credentials_persisted": false,
+        "endpoint": "https://www.norpd.no/",
+        "family": "manual_reproducible_export",
+        "formats": [
+          "csv"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "no-norpd-utilisation"
+      },
+      "evidence_references": [
+        "https://www.fhi.no/en/he/norpd/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode manual_approval is excluded",
+      "source_id": "no-norpd-utilisation",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.medsafe.govt.nz/DbSearch/InfoSearch",
+        "family": "document_collection",
+        "formats": [
+          "pdf"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "nz-medsafe-documents"
+      },
+      "evidence_references": [
+        "https://www.medsafe.govt.nz/DbSearch/InfoSearch"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "nz-medsafe-documents",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.medsafe.govt.nz/DbSearch/InfoSearch",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "nz-medsafe-products"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/bronze_fixture_landing.py",
+        "tests/test_bronze_fixture_landing.py",
+        "tests/fixtures/adapters/nz_medsafe_registry.csv"
+      ],
+      "evidence_scope": "governed_fixture",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "catalogue implementation claim has committed qualification evidence",
+      "source_id": "nz-medsafe-products",
+      "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Traverse the configured API pagination contract, preserve each source response, and receipt the completed page set.",
+        "acquisition_profile": "keyed-rest",
+        "credentials_persisted": false,
+        "endpoint": "https://nzhts.digital.health.nz/fhir/",
+        "family": "paginated_rest_api",
+        "formats": [
+          "fhir-json",
+          "fhir-xml"
+        ],
+        "pagination": "source_config_required",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "nz-nzhts-fhir"
+      },
+      "evidence_references": [
+        "https://www.healthnz.govt.nz/health-professionals/guidance-standards/topic/data-and-standards/health-information-standards/nz-health-terminology-service-nzhts"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode api_key is excluded",
+      "source_id": "nz-nzhts-fhir",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Follow the documented public retrieval steps, record parameters, and receipt the source-native export.",
+        "acquisition_profile": "account-download",
+        "credentials_persisted": false,
+        "endpoint": "https://info.nzulm.org.nz/data-access",
+        "family": "manual_reproducible_export",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "nz-nzulm-bulk"
+      },
+      "evidence_references": [
+        "https://info.nzulm.org.nz/data-access"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode manual_approval is excluded",
+      "source_id": "nz-nzulm-bulk",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://schedule.pharmac.govt.nz/pub/HML/archive/",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "nz-pharmac-hml"
+      },
+      "evidence_references": [
+        "https://schedule.pharmac.govt.nz/pub/HML/archive/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "nz-pharmac-hml",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://schedule.pharmac.govt.nz/pub/schedule/archive/",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "nz-pharmac-schedule"
+      },
+      "evidence_references": [
+        "https://schedule.pharmac.govt.nz/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: production_terms_and_schema_review_required",
+      "source_id": "nz-pharmac-schedule",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://schedule.pharmac.govt.nz/pub/Schedule/",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "nz-pharmac-schedule-xml"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/bronze_fixture_landing.py",
+        "tests/test_bronze_fixture_landing.py",
+        "tests/fixtures/adapters/nz_pharmac_schedule.xml"
+      ],
+      "evidence_scope": "governed_fixture",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "catalogue implementation claim has committed qualification evidence",
+      "source_id": "nz-pharmac-schedule-xml",
+      "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.moh.gov.om/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "om-moh-medicines"
+      },
+      "evidence_references": [
+        "https://www.moh.gov.om/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "om-moh-medicines",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://verification.fda.gov.ph/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ph-fda-verification"
+      },
+      "evidence_references": [
+        "https://verification.fda.gov.ph/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "ph-fda-verification",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.dra.gov.pk/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "pk-drap-register"
+      },
+      "evidence_references": [
+        "https://www.dra.gov.pk/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "pk-drap-register",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.dra.gov.pk/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "pk-drap-safety"
+      },
+      "evidence_references": [
+        "https://www.dra.gov.pk/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "pk-drap-safety",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.dra.gov.pk/",
+        "family": "document_collection",
+        "formats": [
+          "pdf",
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "pk-neml"
+      },
+      "evidence_references": [
+        "https://www.dra.gov.pk/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "pk-neml",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.moph.gov.qa/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "qa-moh-medicines"
+      },
+      "evidence_references": [
+        "https://www.moph.gov.qa/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "qa-moh-medicines",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://rwandafda.gov.rw/",
+        "family": "document_collection",
+        "formats": [
+          "pdf",
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "rw-national-eml"
+      },
+      "evidence_references": [
+        "https://rwandafda.gov.rw/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "rw-national-eml",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://rwandafda.gov.rw/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "rw-rwandafda-register"
+      },
+      "evidence_references": [
+        "https://rwandafda.gov.rw/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "rw-rwandafda-register",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://rwandafda.gov.rw/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "rw-rwandafda-safety"
+      },
+      "evidence_references": [
+        "https://rwandafda.gov.rw/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "rw-rwandafda-safety",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.chi.gov.sa/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "sa-chi-formulary"
+      },
+      "evidence_references": [
+        "https://www.chi.gov.sa/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "sa-chi-formulary",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.sfda.gov.sa/en/drugs-list",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "sa-sfda-drug-list"
+      },
+      "evidence_references": [
+        "https://www.sfda.gov.sa/en/drugs-list"
+      ],
+      "evidence_scope": "none",
+      "next_action": "retain exclusion until credentials are explicitly authorised",
+      "priority": 100,
+      "reason": "authentication mode oauth is excluded",
+      "source_id": "sa-sfda-drug-list",
+      "state": "credentialed_and_excluded"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.lakemedelsverket.se/sv/om-webbplatsen/oppna-data",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "se-npl-nsl"
+      },
+      "evidence_references": [
+        "https://www.lakemedelsverket.se/sv/om-webbplatsen/oppna-data"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "se-npl-nsl",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.socialstyrelsen.se/statistik-och-data/statistik/statistikamnen/lakemedel/",
+        "family": "static_file_download",
+        "formats": [
+          "xlsx",
+          "html"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "se-socialstyrelsen-utilisation"
+      },
+      "evidence_references": [
+        "https://www.socialstyrelsen.se/statistik-och-data/statistik/statistikamnen/lakemedel/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "se-socialstyrelsen-utilisation",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.tlv.se/lakemedelsforetag/pris-och-subvention-av-lakemedel/subventionerade-lakemedel.html",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "se-tlv-subsidies"
+      },
+      "evidence_references": [
+        "https://www.tlv.se/lakemedelsforetag/pris-och-subvention-av-lakemedel/subventionerade-lakemedel.html"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "se-tlv-subsidies",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.hsa.gov.sg/therapeutic-products/registration-of-therapeutic-products/tools-and-resources/listing-of-approvals-and-post-registration-actions/listing-of-approvals/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "sg-hsa-approval-deltas"
+      },
+      "evidence_references": [
+        "https://www.hsa.gov.sg/therapeutic-products/registration-of-therapeutic-products/tools-and-resources/listing-of-approvals-and-post-registration-actions/listing-of-approvals/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "sg-hsa-approval-deltas",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.hsa.gov.sg/therapeutic-products/register",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "sg-hsa-register"
+      },
+      "evidence_references": [
+        "https://www.hsa.gov.sg/therapeutic-products/register"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "sg-hsa-register",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/drug-subsidies-schemes",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "sg-moh-drug-list"
+      },
+      "evidence_references": [
+        "https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/drug-subsidies-schemes"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "sg-moh-drug-list",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.sante.gouv.sn/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "sn-dpm-register"
+      },
+      "evidence_references": [
+        "https://www.sante.gouv.sn/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "sn-dpm-register",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.sante.gouv.sn/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "sn-dpm-safety"
+      },
+      "evidence_references": [
+        "https://www.sante.gouv.sn/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "sn-dpm-safety",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.sante.gouv.sn/",
+        "family": "document_collection",
+        "formats": [
+          "pdf",
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "sn-national-eml"
+      },
+      "evidence_references": [
+        "https://www.sante.gouv.sn/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "sn-national-eml",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://pertento.fda.moph.go.th/FDA_SEARCH_DRUG/SEARCH_DRUG/FRM_SEARCH_PAGE.aspx",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "th-fda-search"
+      },
+      "evidence_references": [
+        "https://pertento.fda.moph.go.th/FDA_SEARCH_DRUG/SEARCH_DRUG/FRM_SEARCH_PAGE.aspx"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "th-fda-search",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.tmda.go.tz/",
+        "family": "document_collection",
+        "formats": [
+          "pdf",
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "tz-national-eml"
+      },
+      "evidence_references": [
+        "https://www.tmda.go.tz/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "tz-national-eml",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.tmda.go.tz/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "tz-tmda-products"
+      },
+      "evidence_references": [
+        "https://www.tmda.go.tz/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "tz-tmda-products",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.tmda.go.tz/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "tz-tmda-safety"
+      },
+      "evidence_references": [
+        "https://www.tmda.go.tz/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "tz-tmda-safety",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.nda.or.ug/",
+        "family": "document_collection",
+        "formats": [
+          "pdf",
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ug-national-eml"
+      },
+      "evidence_references": [
+        "https://www.nda.or.ug/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "ug-national-eml",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.nda.or.ug/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ug-nda-register"
+      },
+      "evidence_references": [
+        "https://www.nda.or.ug/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "ug-nda-register",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.nda.or.ug/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "ug-nda-safety"
+      },
+      "evidence_references": [
+        "https://www.nda.or.ug/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "ug-nda-safety",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://data.medicaid.gov/datasets",
+        "family": "regulator_search_export",
+        "formats": [
+          "csv",
+          "json"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-cms-mdrp"
+      },
+      "evidence_references": [
+        "https://data.medicaid.gov/datasets"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "us-cms-mdrp",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://data.medicaid.gov/datasets",
+        "family": "regulator_search_export",
+        "formats": [
+          "csv",
+          "json"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-cms-nadac"
+      },
+      "evidence_references": [
+        "https://data.medicaid.gov/datasets"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "us-cms-nadac",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.cms.gov/medicare/coverage/prescription-drug-coverage/formulary-guidance",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-cms-partd-formulary"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/bronze_fixture_landing.py",
+        "tests/test_bronze_fixture_landing.py",
+        "tests/fixtures/us/cms_partd_formulary.csv"
+      ],
+      "evidence_scope": "governed_fixture",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "catalogue implementation claim has committed qualification evidence",
+      "source_id": "us-cms-partd-formulary",
+      "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-part-d-spending-by-drug",
+        "family": "static_file_download",
+        "formats": [
+          "csv",
+          "xlsx"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-cms-partd-spending"
+      },
+      "evidence_references": [
+        "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-part-d-spending-by-drug"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "us-cms-partd-spending",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Traverse the configured API pagination contract, preserve each source response, and receipt the completed page set.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls.json",
+        "family": "paginated_rest_api",
+        "formats": [
+          "json",
+          "xml",
+          "zip"
+        ],
+        "pagination": "source_config_required",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-dailymed-spl"
+      },
+      "evidence_references": [
+        "https://dailymed.nlm.nih.gov/dailymed/webservices-help/v2/spls_api.cfm"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "us-dailymed-spl",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Traverse the configured API pagination contract, preserve each source response, and receipt the completed page set.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://api.fda.gov/drug/drugsfda.json",
+        "family": "paginated_rest_api",
+        "formats": [
+          "json",
+          "zip",
+          "tab-delimited-text"
+        ],
+        "pagination": "source_config_required",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-drugsfda"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/bronze_fixture_landing.py",
+        "tests/test_bronze_fixture_landing.py",
+        "tests/fixtures/us/drugsfda_api.json"
+      ],
+      "evidence_scope": "parser_contract",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "catalogue implementation claim has committed qualification evidence",
+      "source_id": "us-drugsfda",
+      "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.accessdata.fda.gov/scripts/drugshortages/default.cfm",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-fda-drug-shortages"
+      },
+      "evidence_references": [
+        "https://www.fda.gov/drugs/drug-safety-and-availability/drug-shortages"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "us-fda-drug-shortages",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download and receipt the archive before safely enumerating and extracting its members.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://fis.fda.gov/extensions/FPD-QDE-FAERS/FPD-QDE-FAERS.html",
+        "family": "archive_release",
+        "formats": [
+          "zip",
+          "ascii",
+          "xml"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-fda-faers"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/bronze_fixture_landing.py",
+        "tests/test_bronze_fixture_landing.py",
+        "tests/fixtures/source_expansion/faers.json"
+      ],
+      "evidence_scope": "governed_fixture",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "catalogue implementation claim has committed qualification evidence",
+      "source_id": "us-fda-faers",
+      "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download and receipt the archive before safely enumerating and extracting its members.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.fda.gov/drugs/drug-approvals-and-databases/national-drug-code-directory",
+        "family": "archive_release",
+        "formats": [
+          "zip",
+          "txt"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-fda-ndc-directory"
+      },
+      "evidence_references": [
+        "https://www.fda.gov/drugs/drug-approvals-and-databases/national-drug-code-directory"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "us-fda-ndc-directory",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download and receipt the archive before safely enumerating and extracting its members.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.fda.gov/industry/structured-product-labeling-resources/nsde",
+        "family": "archive_release",
+        "formats": [
+          "zip",
+          "txt"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-fda-nsde"
+      },
+      "evidence_references": [
+        "https://www.fda.gov/industry/structured-product-labeling-resources/nsde"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "us-fda-nsde",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download and receipt the archive before safely enumerating and extracting its members.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.fda.gov/drugs/drug-approvals-and-databases/orange-book-data-files",
+        "family": "archive_release",
+        "formats": [
+          "zip",
+          "tilde-delimited-text"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-fda-orange-book"
+      },
+      "evidence_references": [
+        "https://www.fda.gov/drugs/drug-approvals-and-databases/orange-book-data-files"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: US government data; verify endpoint terms",
+      "source_id": "us-fda-orange-book",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-fda-recalls-notices"
+      },
+      "evidence_references": [
+        "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "us-fda-recalls-notices",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.accessdata.fda.gov/scripts/cder/rems/index.cfm",
+        "family": "document_collection",
+        "formats": [
+          "html",
+          "pdf"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-fda-rems"
+      },
+      "evidence_references": [
+        "https://www.accessdata.fda.gov/scripts/cder/rems/index.cfm"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "us-fda-rems",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://gsrs.ncats.nih.gov/",
+        "family": "regulator_search_export",
+        "formats": [
+          "json",
+          "sdf"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-gsrs-unii"
+      },
+      "evidence_references": [
+        "https://gsrs.ncats.nih.gov/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "us-gsrs-unii",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Traverse the configured API pagination contract, preserve each source response, and receipt the completed page set.",
+        "acquisition_profile": "public-rest",
+        "credentials_persisted": false,
+        "endpoint": "https://api.fda.gov/drug/drugsfda.json",
+        "family": "paginated_rest_api",
+        "formats": [
+          "json"
+        ],
+        "pagination": "source_config_required",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-openfda-drugsfda"
+      },
+      "evidence_references": [
+        "https://open.fda.gov/apis/drug/drugsfda/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "us-openfda-drugsfda",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Traverse the configured API pagination contract, preserve each source response, and receipt the completed page set.",
+        "acquisition_profile": "public-rest",
+        "credentials_persisted": false,
+        "endpoint": "https://api.fda.gov/drug/enforcement.json",
+        "family": "paginated_rest_api",
+        "formats": [
+          "json"
+        ],
+        "pagination": "source_config_required",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-openfda-enforcement"
+      },
+      "evidence_references": [
+        "https://open.fda.gov/apis/drug/enforcement/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "us-openfda-enforcement",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Traverse the configured API pagination contract, preserve each source response, and receipt the completed page set.",
+        "acquisition_profile": "public-rest",
+        "credentials_persisted": false,
+        "endpoint": "https://api.fda.gov/drug/event.json",
+        "family": "paginated_rest_api",
+        "formats": [
+          "json"
+        ],
+        "pagination": "source_config_required",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-openfda-faers"
+      },
+      "evidence_references": [
+        "https://open.fda.gov/apis/drug/event/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "us-openfda-faers",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Traverse the configured API pagination contract, preserve each source response, and receipt the completed page set.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://api.fda.gov/drug/ndc.json",
+        "family": "paginated_rest_api",
+        "formats": [
+          "json"
+        ],
+        "pagination": "source_config_required",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-openfda-ndc"
+      },
+      "evidence_references": [
+        "https://open.fda.gov/apis/drug/ndc/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: openFDA terms apply",
+      "source_id": "us-openfda-ndc",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Traverse the configured API pagination contract, preserve each source response, and receipt the completed page set.",
+        "acquisition_profile": "public-rest",
+        "credentials_persisted": false,
+        "endpoint": "https://api.fda.gov/other/nsde.json",
+        "family": "paginated_rest_api",
+        "formats": [
+          "json"
+        ],
+        "pagination": "source_config_required",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-openfda-nsde"
+      },
+      "evidence_references": [
+        "https://open.fda.gov/apis/other/nsde/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "us-openfda-nsde",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Traverse the configured API pagination contract, preserve each source response, and receipt the completed page set.",
+        "acquisition_profile": "public-rest",
+        "credentials_persisted": false,
+        "endpoint": "https://rxnav.nlm.nih.gov/REST/",
+        "family": "paginated_rest_api",
+        "formats": [
+          "json",
+          "xml"
+        ],
+        "pagination": "source_config_required",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "us-rxnorm-api"
+      },
+      "evidence_references": [
+        "https://www.nlm.nih.gov/research/umls/rxnorm/index.html"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "us-rxnorm-api",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.health.gov.za/national-essential-medicine-list/",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "za-national-eml"
+      },
+      "evidence_references": [
+        "https://www.health.gov.za/national-essential-medicine-list/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "za-national-eml",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.sahpra.org.za/registered-health-products/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "za-sahpra-register"
+      },
+      "evidence_references": [
+        "https://www.sahpra.org.za/registered-health-products/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "za-sahpra-register",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.sahpra.org.za/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "za-sahpra-safety"
+      },
+      "evidence_references": [
+        "https://www.sahpra.org.za/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "za-sahpra-safety",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.health.gov.za/nhi-pee/",
+        "family": "static_file_download",
+        "formats": [
+          "source_native"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "za-single-exit-price"
+      },
+      "evidence_references": [
+        "https://www.health.gov.za/nhi-pee/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "source_id": "za-single-exit-price",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.mcaz.co.zw/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "zw-mcaz-register"
+      },
+      "evidence_references": [
+        "https://www.mcaz.co.zw/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "zw-mcaz-register",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.mcaz.co.zw/",
+        "family": "regulator_search_export",
+        "formats": [
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "zw-mcaz-safety"
+      },
+      "evidence_references": [
+        "https://www.mcaz.co.zw/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "zw-mcaz-safety",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://www.mcaz.co.zw/",
+        "family": "document_collection",
+        "formats": [
+          "pdf",
+          "html"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "zw-national-eml"
+      },
+      "evidence_references": [
+        "https://www.mcaz.co.zw/"
+      ],
+      "evidence_scope": "none",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "source_id": "zw-national-eml",
+      "state": "manual_only_documented_acquisition"
+    }
+  ],
+  "schema_id": "global-medicines-atlas.bronze-source-landing-queue",
+  "schema_version": 1,
+  "silver_transformations_included": false,
+  "source_count": 172,
+  "state_counts": {
+    "credentialed_and_excluded": 18,
+    "landed_and_evidenced": 16,
+    "manual_only_documented_acquisition": 93,
+    "not_yet_implemented": 0,
+    "rights_blocked": 45,
+    "superseded_by_reused_source": 0,
+    "temporarily_unavailable": 0
+  }
+}
