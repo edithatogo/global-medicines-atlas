@@ -2,8 +2,8 @@
   "schema_id": "global-medicines-atlas.bronze-maturity-qualification",
   "schema_version": 1,
   "horizon": "bronze-current-public-scope",
-  "evaluated_at": "2026-08-19T21:36:06.964305+00:00",
-  "git_commit": "unspecified",
+  "evaluated_at": "2026-08-20T05:22:23.646825+00:00",
+  "git_commit": "fde23408d4f86c37811389a1fa89ed1bf275a7d1",
   "authorities": {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -28,7 +28,7 @@
       "blocker_ids": [
         "bronze-ingest-incomplete"
       ],
-      "notes": "77 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
+      "notes": "146 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
     },
     {
       "property_id": "immutability",
@@ -122,7 +122,7 @@
     {
       "property_id": "quarantine",
       "mandatory": true,
-      "state": "blocked",
+      "state": "evidenced",
       "requirement_ids": [
         "M-089",
         "M-097"
@@ -131,10 +131,8 @@
         "src/global_medicines_atlas/bronze_admission.py",
         "tests/test_bronze_admission.py"
       ],
-      "blocker_ids": [
-        "bronze-quarantine-admission"
-      ],
-      "notes": "Bronze admission/quarantine lifecycle is not evidenced on this revision. Canonical data-integrity quarantine is a later or adjacent layer and is not counted."
+      "blocker_ids": [],
+      "notes": "Bronze admission preserves malformed payloads and fails closed downstream."
     },
     {
       "property_id": "reproducibility",
@@ -236,7 +234,7 @@
   "residual_risks": [
     {
       "risk_id": "RISK-001",
-      "description": "77 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "146 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "disposition": "unresolved",
       "blocking": true,
       "evidence": [
@@ -247,16 +245,6 @@
     },
     {
       "risk_id": "RISK-002",
-      "description": "Bronze admission/quarantine lifecycle is not evidenced on this revision. Canonical data-integrity quarantine is a later or adjacent layer and is not counted.",
-      "disposition": "unresolved",
-      "blocking": true,
-      "evidence": [
-        "src/global_medicines_atlas/bronze_admission.py",
-        "tests/test_bronze_admission.py"
-      ]
-    },
-    {
-      "risk_id": "RISK-003",
       "description": "Local recovery rehearsals exist for other layers. Production disaster recovery for bronze payloads remains authority-gated and is not claimed.",
       "disposition": "unresolved",
       "blocking": true,
@@ -266,7 +254,7 @@
       ]
     },
     {
-      "risk_id": "RISK-004",
+      "risk_id": "RISK-003",
       "description": "Licensing conclusions remain a maintainer human gate.",
       "disposition": "accepted",
       "blocking": false,
@@ -276,7 +264,7 @@
       ]
     },
     {
-      "risk_id": "RISK-005",
+      "risk_id": "RISK-004",
       "description": "Public software or dataset release remains a human gate.",
       "disposition": "accepted",
       "blocking": false,
@@ -285,7 +273,7 @@
       ]
     },
     {
-      "risk_id": "RISK-006",
+      "risk_id": "RISK-005",
       "description": "External dataset publication, including Hugging Face archives, remains a human gate and is not bronze evidentiary truth.",
       "disposition": "accepted",
       "blocking": false,
@@ -294,7 +282,7 @@
       ]
     },
     {
-      "risk_id": "RISK-007",
+      "risk_id": "RISK-006",
       "description": "Consequential clinical or policy claims remain a human gate.",
       "disposition": "accepted",
       "blocking": false,
@@ -307,20 +295,11 @@
     {
       "blocker_id": "bronze-ingest-incomplete",
       "property_id": "completeness",
-      "description": "77 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "146 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "evidence": [
         "src/global_medicines_atlas/data/medicine_source_catalog.json",
         "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
         "src/global_medicines_atlas/adapters/fixture_contracts.py"
-      ]
-    },
-    {
-      "blocker_id": "bronze-quarantine-admission",
-      "property_id": "quarantine",
-      "description": "Bronze admission/quarantine lifecycle is not evidenced on this revision. Canonical data-integrity quarantine is a later or adjacent layer and is not counted.",
-      "evidence": [
-        "src/global_medicines_atlas/bronze_admission.py",
-        "tests/test_bronze_admission.py"
       ]
     },
     {
@@ -347,7 +326,7 @@
       {
         "finding_id": "ADV-FALSE-MATURITY",
         "severity": "info",
-        "detail": "Bronze maturity is not declared. Blocked mandatory properties: completeness, quarantine, disaster_recovery."
+        "detail": "Bronze maturity is not declared. Blocked mandatory properties: completeness, disaster_recovery."
       },
       {
         "finding_id": "ADV-PROPERTY-SET",
@@ -360,11 +339,11 @@
   "qualification_state": "blocked",
   "report_complete": true,
   "completeness_inventory": {
-    "catalog_source_count": 96,
-    "bronze_in_scope_count": 83,
+    "catalog_source_count": 172,
+    "bronze_in_scope_count": 152,
     "fixture_only_count": 2,
-    "excluded_count": 11,
-    "in_scope_without_landing_or_blocker": 77,
+    "excluded_count": 18,
+    "in_scope_without_landing_or_blocker": 146,
     "missing_coverage_is_not_negative_evidence": true
   }
 }

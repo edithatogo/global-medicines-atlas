@@ -539,11 +539,11 @@ def evaluate_properties(root: Path) -> list[dict[str, Any]]:
             requirement_ids=("M-094", "S-013"),
             checks={
                 "src/global_medicines_atlas/iceberg_ready.py": (
-                    "Python 3.14 core does not import or require Iceberg",
-                    "bronze.",
+                    "Python 3.14 core does not import",
+                    "Iceberg metadata is rebuildable",
                 ),
                 "tests/test_iceberg_ready.py": (
-                    "test_core_dependencies_do_not_require_iceberg",
+                    "test_core_dependencies_do_not_require_iceberg_or_marquez",
                 ),
                 "src/global_medicines_atlas/bronze_landing.py": (
                     "analytical representation",
