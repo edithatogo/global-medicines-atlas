@@ -60,6 +60,8 @@ public data. It runs before any acquire/download, including Drugs@FDA.
     - [x] Reuse `receipts.py`; do not treat DuckDB or Parquet as evidentiary truth
     - [x] Record source published/effective time, retrieved_at, valid_from/to, acquisition ID
     - [x] Fail closed on missing rights, provenance, or receipt fields
+    - [x] Bind actual Parquet output bytes to a distinct append-only transformation-run receipt, OpenLineage run identity, code commit, environment digest, parser, and output schema
+    - [x] Preserve acquisition, transformation, and admission as separate append-only event histories; admission reversals supersede rather than rewrite decisions
 - [x] Task: Phase Verification & Checkpoint
     - [x] Run focused tests, coverage, typing, and licensing checks
     - [x] Record payload digests, acquisition IDs, and Parquet identities in evidence
