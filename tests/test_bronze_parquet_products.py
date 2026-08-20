@@ -16,8 +16,10 @@ from global_medicines_atlas.bronze_landing import (
     SourceRecordBatch,
     land_bronze_payload,
     regenerate_parquet,
+    write_rebuildable_layers,
 )
 from global_medicines_atlas.receipts import (
+    HttpRetrievalEvidence,
     PayloadEvidence,
     require_temporal,
     temporal_identity_from_source,
@@ -85,6 +87,8 @@ def test_adapter_records_preserve_native_schema_and_have_independent_evidence(
         "native_id": pa.array(["A-1", "A-2"], type=pa.string()),
         "quantity": pa.array([7, 11], type=pa.int64()),
         "listed": pa.array([True, False], type=pa.bool_()),
+        "ratio": pa.array([1.5, 2.5], type=pa.float64()),
+        "observed_at": pa.array([1, 2], type=pa.timestamp("us")),
     })
     batch = SourceRecordBatch(
         table=native,
@@ -106,6 +110,8 @@ def test_adapter_records_preserve_native_schema_and_have_independent_evidence(
     assert records.num_rows == 2
     assert records.schema.field("quantity").type == pa.int64()
     assert records.schema.field("listed").type == pa.bool_()
+    assert records.schema.field("ratio").type == pa.float64()
+    assert records.schema.field("observed_at").type == pa.timestamp("us")
     assert records.column("native_id").to_pylist() == ["A-1", "A-2"]
     assert records.column("gma_source_record_id").to_pylist() == ["A-1", "A-2"]
     temporal = require_temporal(outcome.receipt.temporal)
@@ -158,6 +164,121 @@ def test_source_record_projection_requires_native_record_identifier(
             _receipt(JSON),
             bronze_root=tmp_path / "bronze",
             media_hint="json",
+            source_records=batch,
+        )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("batch", "message"),
+    [
+        (
+            SourceRecordBatch(
+                table=pa.table({"native_id": ["A-1"]}),
+                parser_identity="",
+                record_id_column="native_id",
+            ),
+            "parser identity",
+        ),
+        (
+            SourceRecordBatch(
+                table=pa.table({
+                    "native_id": ["A-1"],
+                    "gma_content_id": ["collision"],
+                }),
+                parser_identity="tests.collision.v1",
+                record_id_column="native_id",
+            ),
+            "reserved GMA linkage",
+        ),
+        (
+            SourceRecordBatch(
+                table=pa.table({"native_id": ["A-1", None]}),
+                parser_identity="tests.null-id.v1",
+                record_id_column="native_id",
+            ),
+            "contains nulls",
+        ),
+    ],
+)
+def test_source_record_projection_rejects_ambiguous_adapter_contracts(
+    tmp_path: Path,
+    batch: SourceRecordBatch,
+    message: str,
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        land_bronze_payload(
+            JSON,
+            _receipt(JSON),
+            bronze_root=tmp_path / "bronze",
+            media_hint="json",
+            source_records=batch,
+        )
+
+
+@pytest.mark.unit
+def test_manifest_prefers_evidenced_http_media_type(tmp_path: Path) -> None:
+    receipt = _receipt(JSON)
+    http = HttpRetrievalEvidence(
+        original_uri=receipt.retrieval.uri,
+        content_type="application/vnd.example.records+json",
+    )
+    receipt = receipt.model_copy(update={
+        "retrieval": receipt.retrieval.model_copy(update={"http": http})
+    })
+
+    outcome = land_bronze_payload(
+        JSON,
+        receipt,
+        bronze_root=tmp_path / "bronze",
+        media_hint="json",
+    )
+
+    assert isinstance(outcome, BronzeLanding)
+    manifest = pq.read_table(outcome.acquisition_manifest_path)
+    assert manifest.column("media_type")[0].as_py() == (
+        "application/vnd.example.records+json"
+    )
+
+
+@pytest.mark.unit
+def test_rebuild_requires_matching_payload_and_record_paths(
+    tmp_path: Path,
+) -> None:
+    bronze_root = tmp_path / "bronze"
+    outcome = land_bronze_payload(
+        JSON,
+        _receipt(JSON),
+        bronze_root=bronze_root,
+        media_hint="json",
+    )
+    assert isinstance(outcome, BronzeLanding)
+    target = tmp_path / "rebuild"
+    with pytest.raises(ValueError, match="payload digest"):
+        write_rebuildable_layers(
+            outcome.receipt,
+            b"changed",
+            payload_path=outcome.payload_path,
+            parquet_path=target / "acquisition_manifest.parquet",
+            lineage_path=target / "acquisition_manifest.openlineage.json",
+            bronze_root=bronze_root,
+            admission=outcome.admission,
+        )
+
+    batch = SourceRecordBatch(
+        table=pa.table({"native_id": ["A-1"]}),
+        parser_identity="tests.rebuild.v1",
+        record_id_column="native_id",
+    )
+    with pytest.raises(ValueError, match="output paths"):
+        write_rebuildable_layers(
+            outcome.receipt,
+            JSON,
+            payload_path=outcome.payload_path,
+            parquet_path=target / "acquisition_manifest.parquet",
+            lineage_path=target / "acquisition_manifest.openlineage.json",
+            bronze_root=bronze_root,
+            admission=outcome.admission,
             source_records=batch,
         )
 
