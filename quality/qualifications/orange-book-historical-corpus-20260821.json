@@ -73,15 +73,28 @@
       "archive_byte_count": 18032640,
       "archive_sha256": "7a6f956399d0965dfea0304621de887b55bd67ea529f6fe677f038c1128106fb",
       "checksum_verified": true
+    },
+    {
+      "attempt": "full-inventory-availability-retry",
+      "release_count": 259,
+      "succeeded_count": 144,
+      "failed_count": 115,
+      "accepted_count": 6,
+      "quarantined_count": 138,
+      "recovered_count": 6,
+      "source_record_projection_count": 1,
+      "archive_byte_count": 169697280,
+      "archive_sha256": "c6d2008ada386fd8bb8d72fef6d95c2b1378f544ed517d3baf11b7beb6dbb27e",
+      "checksum_verified": true
     }
   ],
-  "private_archive_byte_count": 370432000,
+  "private_archive_byte_count": 540129280,
   "failure_scope": {
     "host": "wayback.archive-it.org",
     "failure_code": "http_status",
     "failed_release_count": 59,
     "observed_rate_limit_status": 429,
-    "bounded_correction_passes": 4,
+    "bounded_correction_passes": 5,
     "retry_required": true
   },
   "machinery_exercised": [
@@ -96,7 +109,7 @@
     "sha256_verification"
   ],
   "limitations": [
-    "Fifty-nine FDA Archive-It release URLs remained rate-limited after four bounded acquisition passes.",
+    "Fifty-nine FDA Archive-It release URLs remained rate-limited after five bounded acquisition passes; the fifth full-inventory pass added no unique release payloads.",
     "The official surfaces do not establish a complete inventory of prior structured ZIP releases or every historical annual edition.",
     "Only the current structured ZIP produced a source-record projection; historical PDF and HTML bytes remain source-faithful evidentiary payloads with admission recorded separately.",
     "Therapeutic-equivalence codes are preserved as source-native values and are not clinical substitutability claims."
