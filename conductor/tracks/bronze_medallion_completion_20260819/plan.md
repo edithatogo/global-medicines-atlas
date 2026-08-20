@@ -177,7 +177,7 @@ before any hot-path rewrite. Python remains orchestration.
 
 ### Phase 4e: OpenLineage custom-facet conformance
 
-- [x] Task: Tighten OpenLineage conformance (`d9074d0`; schemas `af756a5`; [#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
+- [x] Task: Tighten OpenLineage conformance (`9fde27a`; schemas `804f5ce`; [#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
     - [x] Commit a JSON Schema for every GMA custom facet before pinning immutable schema URLs
     - [x] Use correctly prefixed custom-facet keys and reject mutable branch schema references
     - [x] Model acquisition and transformation as separate OpenLineage runs

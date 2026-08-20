@@ -425,6 +425,20 @@ def test_run_event_rejects_non_conforming_shapes(tmp_path: Path) -> None:
         conform_run_event(incomplete_run_facet)
 
 
+@pytest.mark.unit
+def test_run_event_requires_uuid_run_id(tmp_path: Path) -> None:
+    _, _, events = _event(tmp_path, table=_table(tmp_path))
+    numeric_run_id = copy.deepcopy(events.transformation)
+    numeric_run_id["run"]["runId"] = 1
+    with pytest.raises(TypeError, match="runId must be a string"):
+        conform_run_event(numeric_run_id)
+
+    invalid_run_id = copy.deepcopy(events.transformation)
+    invalid_run_id["run"]["runId"] = "not-a-uuid"
+    with pytest.raises(ValueError, match="runId must be a UUID"):
+        conform_run_event(invalid_run_id)
+
+
 @pytest.mark.property
 @given(st.sampled_from(sorted(EVENT_TYPES)))
 def test_event_type_enum_matches_openlineage_spec(event_type: str) -> None:
