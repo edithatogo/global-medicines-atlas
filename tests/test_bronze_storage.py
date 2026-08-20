@@ -514,7 +514,13 @@ def test_legacy_receipt_digest_is_stable_until_sensitivity_is_bound(
     legacy = _landable()
     assert "sensitivity" not in legacy.model_fields_set
     assert b'"sensitivity"' not in legacy.canonical_json()
-    explicit = legacy.model_copy(update={"sensitivity": legacy.sensitivity})
+    explicit = legacy.model_copy(
+        update={
+            "sensitivity": legacy.sensitivity.model_copy(
+                update={"reason_codes": ("not_assessed",)}
+            )
+        }
+    )
     assert b'"sensitivity"' in explicit.canonical_json()
     assert explicit.digest() != legacy.digest()
     landing = land_bronze_payload(

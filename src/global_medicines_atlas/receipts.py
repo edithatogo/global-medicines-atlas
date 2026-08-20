@@ -558,7 +558,7 @@ class SourceReceipt(DeterministicReceipt):
         payload = self.model_dump(mode="json", exclude_none=False)
         if payload.get("rights_policy") is None:
             del payload["rights_policy"]
-        if "sensitivity" not in self.model_fields_set:
+        if self.sensitivity == SensitivityClassification():
             del payload["sensitivity"]
         return orjson.dumps(payload, option=orjson.OPT_SORT_KEYS)
 

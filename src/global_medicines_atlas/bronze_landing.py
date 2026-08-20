@@ -56,6 +56,7 @@ from .iceberg_ready import (
 from .openlineage_projection import project_openlineage_events
 from .receipts import (
     AcquisitionEvent,
+    SensitivityClassification,
     SourceReceipt,
     require_temporal,
 )
@@ -646,11 +647,22 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals,too-many-statements]
         / source_id
         / f"{temporal.acquisition_id}.json"
     )
-    if (
-        not receipt_path.exists()
-        and "sensitivity" not in bound.model_fields_set
-    ):
-        bound = bound.model_copy(update={"sensitivity": bound.sensitivity})
+    if "sensitivity" not in bound.model_fields_set:
+        existing_sensitivity: SensitivityClassification | None = None
+        if receipt_path.exists():
+            existing = SourceReceipt.model_validate_json(
+                receipt_path.read_bytes()
+            )
+            if "sensitivity" in existing.model_fields_set:
+                existing_sensitivity = existing.sensitivity
+        else:
+            existing_sensitivity = SensitivityClassification(
+                reason_codes=("not_assessed",)
+            )
+        if existing_sensitivity is not None:
+            bound = bound.model_copy(
+                update={"sensitivity": existing_sensitivity}
+            )
     _write_append_only(receipt_path, bound.canonical_json() + b"\n")
     storage_receipt_path = write_payload_storage_receipt(
         stored.receipt,
