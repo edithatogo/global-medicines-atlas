@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 from jsonschema import Draft202012Validator
 from pydantic import ValidationError
+from scripts.build_bronze_source_landing_queue import main as build_queue_main
 
 from global_medicines_atlas.source_catalog import (
     AccessMode,
@@ -341,3 +342,39 @@ def test_override_document_loader_rejects_non_objects(tmp_path: Path) -> None:
     array_path.write_text("[]", encoding="utf-8")
     with pytest.raises(TypeError, match="must be a JSON object"):
         load_override_document(array_path)
+
+
+@pytest.mark.unit
+def test_build_script_writes_all_generated_outputs(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    json_path = tmp_path / "queue.json"
+    schema_path = tmp_path / "queue.schema.json"
+    markdown_path = tmp_path / "queue.md"
+
+    assert (
+        build_queue_main([
+            "--json-output",
+            str(json_path),
+            "--schema-output",
+            str(schema_path),
+            "--markdown-output",
+            str(markdown_path),
+        ])
+        == 0
+    )
+    queue = json.loads(json_path.read_text(encoding="utf-8"))
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+
+    assert queue["source_count"] == 172
+    Draft202012Validator.check_schema(schema)
+    Draft202012Validator(schema).validate(  # pyright: ignore[reportUnknownMemberType]
+        queue
+    )
+    assert markdown_path.read_text(encoding="utf-8") == (
+        render_conductor_queue(
+            build_source_landing_queue(load_catalog(), LandingOverrides.load())
+        )
+    )
+    assert "generated 172 source work items" in capsys.readouterr().out
