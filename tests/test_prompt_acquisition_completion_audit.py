@@ -56,7 +56,7 @@ def test_audit_is_generated_from_all_36_locked_prompts() -> None:
 def test_live_qualification_completes_verified_prompts() -> None:
     audit = _audit()
     measured = json.loads(MEASURED.read_text(encoding="utf-8"))["body"]
-    assert measured["totals"]["live_qualified_sources"] == 0
+    assert measured["totals"]["live_qualified_sources"] == 1
     assert audit["live_qualified_source_count"] == 10
     assert audit["live_complete_prompt_count"] == 5
     assert audit["program_completion"] == "incomplete_live_acquisition"
