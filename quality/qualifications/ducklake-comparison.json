@@ -1,0 +1,22 @@
+{
+  "baseline_rows": 2,
+  "baseline_sum": 3,
+  "catalogue_authoritative": false,
+  "correctness_verified": true,
+  "direct_parquet_or_source_fallback_verified": true,
+  "duckdb_version": "1.5.5",
+  "ducklake_rows": 2,
+  "ducklake_spec_version": "1.0",
+  "ducklake_sum": 3,
+  "elapsed_ms": 1078.1708330614492,
+  "extension_version": "d8a1881e",
+  "fixture_sha256": "f5f2b56824852355c200c72246f25b7009f60ee0d4326535d34eb2340588b1da",
+  "historical_sum": 3,
+  "optional_for_core": true,
+  "production_deployment_claimed": false,
+  "reattach_verified": true,
+  "schema_id": "global-medicines-atlas.ducklake-comparison",
+  "schema_version": 1,
+  "snapshot_count": 3,
+  "updated_sum": 13
+}

@@ -1,0 +1,31 @@
+{
+  "schema_id": "global-medicines-atlas.experiment-prerequisite-receipt",
+  "schema_version": 1,
+  "experiment_id": "delta_hudi",
+  "checks": [
+    {
+      "name": "measured high-update source workload",
+      "satisfied": false,
+      "evidence": []
+    },
+    {
+      "name": "measured delete workload",
+      "satisfied": false,
+      "evidence": []
+    },
+    {
+      "name": "measured multi-writer concurrency requirement",
+      "satisfied": false,
+      "evidence": []
+    },
+    {
+      "name": "transaction requirement not met by current baseline",
+      "satisfied": false,
+      "evidence": []
+    }
+  ],
+  "eligible": false,
+  "outcome": "not_run_prerequisite_unmet",
+  "credentials_created": false,
+  "production_deployment_claimed": false
+}

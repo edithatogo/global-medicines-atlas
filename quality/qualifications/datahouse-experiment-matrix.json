@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.datahouse-experiment-matrix",
   "schema_version": 1,
-  "generated_at": "2026-08-20T14:05:00Z",
+  "generated_at": "2026-08-20T14:25:00Z",
   "fixture_path": "tests/fixtures/datahouse/bronze_records.json",
   "fixture_sha256": "f5f2b56824852355c200c72246f25b7009f60ee0d4326535d34eb2340588b1da",
   "dependency_lock_path": "uv.lock",
@@ -54,9 +54,9 @@
     },
     {
       "experiment_id": "ducklake",
-      "outcome": "not_run_prerequisite_unmet",
+      "outcome": "supported",
       "prerequisites": ["common governed workload", "DuckLake extension available in an isolated environment"],
-      "prerequisites_met": false,
+      "prerequisites_met": true,
       "specifications": [
         {
           "title": "DuckLake Specification",
@@ -66,8 +66,8 @@
       ],
       "feature_flags": ["catalog-transactions", "parquet-storage", "recovery", "portability"],
       "dependencies": ["ducklake DuckDB extension in isolated experiment"],
-      "evidence": [],
-      "limitations": ["DuckLake is not part of the core dependency set."],
+      "evidence": ["quality/qualifications/ducklake-comparison.json"],
+      "limitations": ["DuckLake 1.0 was exercised with a local single-client DuckDB catalogue and two-row governed fixture; this is not a multi-user or production qualification."],
       "rollback_procedure": "Drop the disposable DuckLake catalogue and read the governed Parquet fixture directly with DuckDB.",
       "optional_for_core": true,
       "production_deployment_claimed": false,
@@ -87,7 +87,7 @@
       ],
       "feature_flags": ["commit", "branch", "merge-conflict", "rollback", "retention", "independent-restore"],
       "dependencies": [],
-      "evidence": [],
+      "evidence": ["quality/qualifications/object-versioning-prerequisite.json"],
       "limitations": ["The repository contract is not evidence of a deployed durable object store."],
       "rollback_procedure": "Remove disposable workflow metadata while retaining provider versions, locked objects, replicas, inventories, and storage receipts.",
       "optional_for_core": true,
@@ -96,9 +96,9 @@
     },
     {
       "experiment_id": "batch_attestation",
-      "outcome": "not_run_prerequisite_unmet",
+      "outcome": "supported",
       "prerequisites": ["deterministic leaf encoding", "per-object SHA-256 receipt fixture"],
-      "prerequisites_met": false,
+      "prerequisites_met": true,
       "specifications": [
         {
           "title": "GMA additive batch-attestation contract",
@@ -108,8 +108,8 @@
       ],
       "feature_flags": ["root-reproducibility", "inclusion", "tamper-detection", "incremental-update"],
       "dependencies": [],
-      "evidence": [],
-      "limitations": ["A root cannot replace any per-object content identity or receipt."],
+      "evidence": ["quality/qualifications/merkle-attestation.json"],
+      "limitations": ["A root cannot replace any per-object content identity or receipt; non-membership proofs are explicitly unsupported in version 1."],
       "rollback_procedure": "Discard the additive batch receipt and verify every object directly against its authoritative SHA-256 receipt.",
       "optional_for_core": true,
       "production_deployment_claimed": false,
@@ -134,7 +134,7 @@
       ],
       "feature_flags": ["updates", "deletes", "concurrency", "recovery", "compaction", "portability"],
       "dependencies": [],
-      "evidence": [],
+      "evidence": ["quality/qualifications/delta-hudi-prerequisite.json"],
       "limitations": ["Current source evidence has not established a high-update transaction requirement."],
       "rollback_procedure": "Do not install or promote either format; retain the Iceberg-ready Parquet baseline.",
       "optional_for_core": true,

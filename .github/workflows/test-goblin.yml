@@ -14,6 +14,76 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  ducklake-comparison:
+    name: DuckLake / governed comparison
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.29"
+          enable-cache: true
+      - name: Synchronize locked Python 3.14 core environment
+        run: uv sync --python 3.14.6 --locked
+      - name: Exercise DuckLake with the governed fixture
+        run: >-
+          uv run --python 3.14.6 python scripts/run_ducklake_experiment.py
+          --fixture tests/fixtures/datahouse/bronze_records.json
+          --output build/quality-receipts/ducklake-comparison.json
+      - name: Upload DuckLake comparison receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: ducklake-comparison-receipt
+          path: build/quality-receipts/ducklake-comparison.json
+          if-no-files-found: error
+          retention-days: 30
+
+  iceberg-rest-interoperability:
+    name: Iceberg REST / actual fixture
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      iceberg-rest:
+        image: apache/iceberg-rest-fixture@sha256:db8de90b5b7693d4ac334c336f91d9bbe320d7b19f4f514d26de84cdfbcbfe8d
+        ports:
+          - 8181:8181
+        env:
+          CATALOG_WAREHOUSE: file:///tmp/gma-warehouse
+        options: >-
+          --health-cmd "curl --fail http://localhost:8181/v1/config"
+          --health-interval 2s
+          --health-timeout 2s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.29"
+          enable-cache: true
+      - name: Synchronize locked optional Iceberg environment
+        run: uv sync --python 3.14.6 --locked --extra iceberg
+      - name: Exercise actual Iceberg REST catalogue and v3 capability surface
+        run: >-
+          uv run --python 3.14.6 --extra iceberg python
+          scripts/run_iceberg_rest_interop.py
+          --uri http://127.0.0.1:8181
+          --fixture tests/fixtures/datahouse/bronze_records.json
+          --output build/quality-receipts/iceberg-rest-interoperability.json
+      - name: Upload Iceberg interoperability receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: iceberg-rest-interoperability-receipt
+          path: build/quality-receipts/iceberg-rest-interoperability.json
+          if-no-files-found: error
+          retention-days: 30
+
   tests:
     name: Python 3.14 / ${{ matrix.lane }}
     runs-on: ubuntu-24.04
