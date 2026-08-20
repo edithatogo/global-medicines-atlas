@@ -318,9 +318,7 @@ def _rebuild_one(
             bronze_root / "admissions" / source_id / temporal.acquisition_id
         )
         if any(admission_dir.glob("*.json")):
-            raise BronzeRecoveryError(  # pragma: no cover - exercised on 3.14.6
-                str(error)
-            ) from error
+            raise BronzeRecoveryError(str(error)) from error
         outcome = land_bronze_payload(
             payload,
             receipt,
@@ -330,22 +328,14 @@ def _rebuild_one(
             transformation_completed_at=temporal.retrieved_at,
         )
         if not isinstance(outcome, BronzeLanding):
-            return (  # pragma: no cover - exercised; 3.14.6 tracer misses exit
-                None,
-                content_id,
-                had_extra,
-            )
+            return None, content_id, had_extra
         parquet_path = outcome.parquet_path
         spec = outcome.table
     else:
         try:
             require_admitted_for_processing(admission)
         except DownstreamAdmissionError:
-            return (  # pragma: no cover - exercised; 3.14.6 tracer misses exit
-                None,
-                content_id,
-                had_extra,
-            )
+            return None, content_id, had_extra
         spec = write_rebuildable_layers(
             receipt,
             payload,
