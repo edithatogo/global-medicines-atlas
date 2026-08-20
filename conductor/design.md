@@ -637,6 +637,16 @@ Symlinks record the catalogue as an alternative identity of Parquet, never of
 the payload. Acquisition identity, clocks, reuse disposition, rights, and
 content digests appear as facets.
 
+Acquisition and transformation are distinct OpenLineage runs with deterministic
+UUIDs over their native append-only IDs; the standard Parent Run facet links
+transformation back to acquisition. Standard Dataset Type facets classify
+source, payload, Parquet, and catalogue datasets; the standard Catalog facet
+describes the optional Iceberg catalogue; and the payload transformation input
+carries standard Data Quality Assertions derived from durable admission and
+integrity results. GMA-only facets use `gma_`-prefixed keys and committed JSON
+Schemas under `schemas/openlineage/`, with raw GitHub schema URLs pinned to the
+commit containing those schemas rather than `blob/main` or another branch.
+
 ```mermaid
 flowchart LR
     SRC["gma.source"]

@@ -159,6 +159,18 @@ def test_adapter_records_preserve_native_schema_and_have_independent_evidence(
     lineage = json.loads(outcome.source_records_lineage_path.read_bytes())
     projected = {item["namespace"] for item in lineage["outputs"]}
     assert "gma.source_records" in projected
+    acquisition_lineage = json.loads(
+        (
+            outcome.source_records_lineage_path.parent
+            / "acquisition.openlineage.json"
+        ).read_bytes()
+    )
+    assert acquisition_lineage["run"]["runId"] != lineage["run"]["runId"]
+    assert acquisition_lineage["outputs"][0]["namespace"] == "gma.payload"
+    assertions = lineage["inputs"][0]["inputFacets"]["dataQualityAssertions"][
+        "assertions"
+    ]
+    assert {item["assertion"] for item in assertions} >= {"checksum", "length"}
 
 
 @pytest.mark.unit

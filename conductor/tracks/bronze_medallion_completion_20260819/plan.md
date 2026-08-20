@@ -175,6 +175,25 @@ before any hot-path rewrite. Python remains orchestration.
     - [x] Run focused landing, Iceberg, lineage, recovery, typing, and coverage checks
     - [x] Record evidence without claiming production-scale tuning or Iceberg deployment
 
+### Phase 4e: OpenLineage custom-facet conformance
+
+- [x] Task: Tighten OpenLineage conformance (`9fde27a`; schemas `804f5ce`; [#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
+    - [x] Commit a JSON Schema for every GMA custom facet before pinning immutable schema URLs
+    - [x] Use correctly prefixed custom-facet keys and reject mutable branch schema references
+    - [x] Model acquisition and transformation as separate OpenLineage runs
+    - [x] Prefer standard Catalog, Dataset Type, and Data Quality Assertions facets
+    - [x] Populate data-quality assertions from admission and integrity validation results
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused lineage, landing, recovery, scale, schema, typing, and coverage checks
+    - [x] Record immutable schema revision and conformance evidence
+- [x] Task: Review Fixes (`b3285c8`)
+    - [x] Reject non-UUID OpenLineage run IDs and mismatched or non-accepted admissions
+    - [x] Reconcile immutable schema URLs after rebasing onto merged PR #201
+    - [x] Raise changed-line coverage for the OpenLineage projection to 100%
+- [x] Task: Hosted CI Repair (`cc0dd18`)
+    - [x] Assign the new conformance test module to the exhaustive Test-Goblin unit inventory
+    - [x] Revalidate all 154 test modules and the focused harness/conformance tests
+
 ### Phase 4c: Reproducibility and disaster recovery
 
 - [x] Task: Write failing tests for bronze reconstruction ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169), parent [#167](https://github.com/edithatogo/global-medicines-atlas/issues/167))

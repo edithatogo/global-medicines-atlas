@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.org/schemas/openlineage/gma-reuse-gate-run-facet-v1.json",
+  "title": "GmaReuseGateRunFacet",
+  "description": "Pre-acquisition reuse search and disposition.",
+  "x-openlineage-facet-key": "gma_reuseGate",
+  "allOf": [
+    {"$ref": "https://openlineage.io/spec/2-0-2/OpenLineage.json#/$defs/RunFacet"},
+    {
+      "type": "object",
+      "required": ["disposition", "searchedSurfaces", "catalogueRevision"],
+      "properties": {
+        "disposition": {
+          "type": "string",
+          "enum": ["reuse", "link", "mirror", "extend", "fork", "acquire-new", "unknown"]
+        },
+        "searchedSurfaces": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "catalogueRevision": {"type": "string", "minLength": 1}
+      }
+    }
+  ]
+}

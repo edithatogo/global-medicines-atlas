@@ -86,7 +86,10 @@ def test_actual_parquet_bytes_define_every_parquet_identity(
     )
     assert parquet["facets"]["version"]["datasetVersion"] == actual_digest
     assert parquet["name"].endswith(actual_digest)
-    assert lineage["run"]["runId"] == run.run_id
+    assert (
+        lineage["run"]["facets"]["gma_transformation"]["transformationRunId"]
+        == run.run_id
+    )
 
 
 @pytest.mark.unit

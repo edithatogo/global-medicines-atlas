@@ -240,7 +240,10 @@
 - **M-100:** Project OpenLineage-compatible Datasets, Jobs, and Runs from
   native receipts using real OpenLineage field names. Payload datasets are not
   Parquet datasets. Receipts remain richer native provenance. Marquez is not
-  part of the default install.
+  part of the default install. Model acquisition and transformation as separate
+  UUID-addressed runs linked with the standard Parent Run facet. Every GMA
+  custom facet has a committed JSON Schema, a `gma_`-prefixed facet key, and a
+  schema URL pinned to an immutable repository commit rather than a branch.
 - **M-101:** Represent the source payload, source-faithful Parquet, and
   optional table/catalogue representation as distinct OpenLineage datasets
   linked by derivation (ColumnLineage) and alternative identity (Symlinks).
@@ -250,6 +253,9 @@
   authoritative. Events must conform to the current OpenLineage RunEvent
   shape. Give the acquisition manifest and source-record products distinct
   output identities, actual-byte transformation receipts, and lineage events.
+  Prefer standard Catalog and Dataset Type facets, and project durable
+  admission/integrity validation results through the standard Data Quality
+  Assertions input-dataset facet.
 ## Should Have
 
 - **S-001:** Evaluate Apache DataFusion for measured Rust-native query or streaming requirements without displacing DuckDB prematurely.

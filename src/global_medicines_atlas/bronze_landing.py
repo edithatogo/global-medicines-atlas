@@ -47,7 +47,7 @@ from .iceberg_ready import (
     plan_iceberg_partitions,
     table_identifier_for,
 )
-from .openlineage_projection import project_openlineage_event
+from .openlineage_projection import project_openlineage_events
 from .receipts import (
     AcquisitionEvent,
     SourceReceipt,
@@ -445,6 +445,7 @@ def _write_parquet_product(
     lineage_path: Path,
     payload_path: Path,
     bronze_root: Path,
+    admission: BronzeAdmissionRecord,
     parser_identity: str,
     transformation_identity: str,
     schema_version: str,
@@ -478,16 +479,32 @@ def _write_parquet_product(
     )
     if spec.parquet_digest != transformation_run.output.sha256:
         raise ValueError("Parquet identity diverged after transformation")
-    event_lineage = project_openlineage_event(
+    event_lineage = project_openlineage_events(
         receipt,
         payload_uri=payload_path.as_uri(),
         parquet_uri=parquet_path.as_uri(),
         transformation_run=transformation_run,
+        admission=admission,
         table=spec,
         parquet_product=product,
     )
+    acquisition_lineage_path = (
+        lineage_path.parent / "acquisition.openlineage.json"
+    )
+    _write_append_only(
+        acquisition_lineage_path,
+        orjson.dumps(
+            event_lineage.acquisition,
+            option=orjson.OPT_SORT_KEYS,
+        )
+        + b"\n",
+    )
     lineage_path.write_bytes(
-        orjson.dumps(event_lineage, option=orjson.OPT_SORT_KEYS) + b"\n"
+        orjson.dumps(
+            event_lineage.transformation,
+            option=orjson.OPT_SORT_KEYS,
+        )
+        + b"\n"
     )
     return _ProductOutput(
         path=parquet_path,
@@ -524,6 +541,7 @@ def _write_analytical_outputs(
         lineage_path=manifest_lineage_path,
         payload_path=payload_path,
         bronze_root=bronze_root,
+        admission=admission,
         parser_identity=MANIFEST_PARSER_IDENTITY,
         transformation_identity=MANIFEST_TRANSFORMATION_IDENTITY,
         schema_version=MANIFEST_SCHEMA_VERSION,
@@ -543,6 +561,7 @@ def _write_analytical_outputs(
         lineage_path=source_records_lineage_path,
         payload_path=payload_path,
         bronze_root=bronze_root,
+        admission=admission,
         parser_identity=source_records.parser_identity,
         transformation_identity=SOURCE_RECORDS_TRANSFORMATION_IDENTITY,
         schema_version=SOURCE_RECORDS_SCHEMA_VERSION,

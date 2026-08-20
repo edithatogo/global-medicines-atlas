@@ -239,9 +239,24 @@ def evaluate_bronze_payload(
         state = BronzeAdmissionState.QUARANTINED
         reasons = inspection.reason_codes
     elif inspection.sniffed_kind == "json":
-        return classify_bronze_payload(
+        classified = classify_bronze_payload(
             payload,
             acquisition_id=temporal.acquisition_id,
+        )
+        return create_admission_decision(
+            acquisition_id=classified.acquisition_id,
+            content_id=classified.content_id,
+            state=classified.state,
+            reason_codes=classified.reason_codes,
+            validation_results=tuple(
+                ValidationResult(
+                    check_id=item.check_id,
+                    passed=item.passed,
+                    message=item.message,
+                )
+                for item in inspection.findings
+            )
+            + classified.validation_results,
         )
     else:
         state = BronzeAdmissionState.ACCEPTED

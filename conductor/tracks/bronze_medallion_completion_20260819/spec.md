@@ -166,6 +166,14 @@ in the default install. Use real OpenLineage field names (`eventType`,
 `eventTime`, `producer`, `schemaURL`, `run`, `job`, `inputs`, `outputs`,
 `storageLayer`, `fileFormat`, `symlinks`, `columnLineage`).
 
+Acquisition and transformation are separate OpenLineage runs linked by the
+standard Parent Run facet; their native append-only IDs remain explicit in GMA
+run facets. Every GMA custom facet has a committed JSON Schema, uses the
+OpenLineage `gma_` key-prefix convention, and resolves through a schema URL
+pinned to an immutable commit. Use standard Catalog and Dataset Type facets,
+and attach admission/integrity checks to the transformation payload input with
+the standard Data Quality Assertions facet rather than a bespoke equivalent.
+
 ## Non-functional requirements
 
 - Python 3.14 is the complete fallback; Mojo is optional and not required for

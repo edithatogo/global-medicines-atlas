@@ -10,6 +10,11 @@ from hypothesis import given
 from hypothesis import strategies as st
 from tests.test_source_receipts import source_receipt
 
+from global_medicines_atlas.bronze_admission import (
+    BronzeAdmissionState,
+    ValidationResult,
+    create_admission_decision,
+)
 from global_medicines_atlas.bronze_transformation import receipt_for_parquet
 from global_medicines_atlas.iceberg_ready import (
     IcebergPartitionField,
@@ -24,7 +29,9 @@ from global_medicines_atlas.openlineage_projection import (
     parquet_dataset_name,
     payload_dataset_name,
     project_openlineage_event,
+    project_openlineage_events,
 )
+from global_medicines_atlas.receipts import SourceReceipt, require_temporal
 from global_medicines_atlas.reuse_gate import acquire_new_decision
 
 
@@ -47,42 +54,69 @@ def _table(tmp_path: Path) -> IcebergReadyTableSpec:
     )
 
 
+def _admission(receipt: SourceReceipt):
+    temporal = require_temporal(receipt.temporal)
+    return create_admission_decision(
+        acquisition_id=temporal.acquisition_id,
+        content_id=receipt.payload.sha256,
+        state=BronzeAdmissionState.ACCEPTED,
+        validation_results=(
+            ValidationResult(
+                check_id="checksum",
+                passed=True,
+                message="payload digest matches receipt",
+            ),
+        ),
+        decided_at=temporal.retrieved_at,
+    )
+
+
 def _event(tmp_path: Path, *, table: IcebergReadyTableSpec | None = None):
     receipt = source_receipt().model_copy(
         update={"reuse": acquire_new_decision("medsafe-product-register")}
     )
     parquet_path = tmp_path / "table.parquet"
     parquet_path.write_bytes(b"parquet-output")
+    temporal = require_temporal(receipt.temporal)
     run = receipt_for_parquet(
         parquet_path,
-        acquisition_id=receipt.temporal.acquisition_id,
+        acquisition_id=temporal.acquisition_id,
         input_content_id=receipt.payload.sha256,
-        completed_at=receipt.temporal.retrieved_at,
+        completed_at=temporal.retrieved_at,
     )
-    event = project_openlineage_event(
+    admission = _admission(receipt)
+    events = project_openlineage_events(
         receipt,
         payload_uri=(tmp_path / "payload.json").as_uri(),
         parquet_uri=parquet_path.as_uri(),
         transformation_run=run,
+        admission=admission,
         table=table,
     )
-    return receipt, run, event
+    return receipt, run, events
 
 
 @pytest.mark.unit
 def test_openlineage_event_uses_real_field_names(tmp_path: Path) -> None:
-    receipt, run, event = _event(tmp_path, table=_table(tmp_path))
+    receipt, run, events = _event(tmp_path, table=_table(tmp_path))
+    acquisition, event = events
 
     assert event["eventType"] == "COMPLETE"
-    assert event["eventTime"] == receipt.temporal.retrieved_at.isoformat()
+    assert (
+        event["eventTime"]
+        == require_temporal(receipt.temporal).retrieved_at.isoformat()
+    )
     assert event["producer"].startswith("https://github.com/edithatogo/")
     assert event["schemaURL"] == SCHEMA_URL
-    assert event["run"]["runId"] == run.run_id
+    assert (
+        event["run"]["facets"]["gma_transformation"]["transformationRunId"]
+        == run.run_id
+    )
     assert event["job"]["namespace"] == "global-medicines-atlas"
-    assert event["job"]["name"].startswith("bronze.land.")
+    assert event["job"]["name"].startswith("bronze.transform.")
     outputs = {item["namespace"]: item for item in event["outputs"]}
-    assert set(outputs) == {"gma.payload", "gma.parquet", "gma.catalogue"}
-    payload = outputs["gma.payload"]
+    assert set(outputs) == {"gma.parquet", "gma.catalogue"}
+    payload = acquisition["outputs"][0]
     parquet = outputs["gma.parquet"]
     catalogue = outputs["gma.catalogue"]
     assert payload["name"] == payload_dataset_name(receipt)
@@ -99,17 +133,20 @@ def test_openlineage_event_uses_real_field_names(tmp_path: Path) -> None:
             "transform": "month",
         }
     ]
-    assert parquet["facets"]["gmaIcebergReady"]["partitionFields"] == (
+    assert parquet["facets"]["gma_icebergReady"]["partitionFields"] == (
         expected_partitions
     )
-    assert catalogue["facets"]["gmaIcebergReady"]["partitionFields"] == (
+    assert catalogue["facets"]["gma_icebergReady"]["partitionFields"] == (
         expected_partitions
     )
-    temporal = event["run"]["facets"]["gmaTemporalIdentity"]
-    assert temporal["retrievedAt"] == event["eventTime"]
+    temporal = acquisition["run"]["facets"]["gma_temporalIdentity"]
+    assert temporal["retrievedAt"] == acquisition["eventTime"]
     assert temporal["sourcePublishedAt"] is None
-    assert temporal["acquisitionId"] == receipt.temporal.acquisition_id
-    reuse = event["run"]["facets"]["gmaReuseGate"]
+    assert (
+        acquisition["run"]["facets"]["gma_acquisition"]["acquisitionId"]
+        == require_temporal(receipt.temporal).acquisition_id
+    )
+    reuse = acquisition["run"]["facets"]["gma_reuseGate"]
     assert reuse["disposition"] == "acquire-new"
     assert "local_clones" in reuse["searchedSurfaces"]
 
@@ -118,13 +155,14 @@ def test_openlineage_event_uses_real_field_names(tmp_path: Path) -> None:
 def test_openlineage_without_table_keeps_payload_distinct_from_parquet(
     tmp_path: Path,
 ) -> None:
-    _receipt, _run, event = _event(tmp_path)
-    payload, parquet = event["outputs"]
+    _receipt, _run, events = _event(tmp_path)
+    payload = events.acquisition["outputs"][0]
+    parquet = events.transformation["outputs"][0]
     assert payload["namespace"] == "gma.payload"
     assert parquet["namespace"] == "gma.parquet"
     assert parquet["facets"]["storage"]["storageLayer"] == "file"
-    assert "gmaIcebergReady" not in parquet["facets"]
-    assert len(event["outputs"]) == 2
+    assert "gma_icebergReady" not in parquet["facets"]
+    assert len(events.transformation["outputs"]) == 1
     assert payload["name"] != parquet["name"]
 
 
@@ -132,9 +170,11 @@ def test_openlineage_without_table_keeps_payload_distinct_from_parquet(
 def test_payload_parquet_and_catalogue_identities_are_not_collapsed(
     tmp_path: Path,
 ) -> None:
-    receipt, run, event = _event(tmp_path, table=_table(tmp_path))
-    by_ns = {item["namespace"]: item for item in event["outputs"]}
-    payload = by_ns["gma.payload"]
+    receipt, run, events = _event(tmp_path, table=_table(tmp_path))
+    by_ns = {
+        item["namespace"]: item for item in events.transformation["outputs"]
+    }
+    payload = events.acquisition["outputs"][0]
     parquet = by_ns["gma.parquet"]
     catalogue = by_ns["gma.catalogue"]
     iceberg_id = _table(tmp_path).identifier
@@ -160,9 +200,11 @@ def test_payload_parquet_and_catalogue_identities_are_not_collapsed(
 def test_parquet_derives_from_payload_and_catalogue_is_alternative_identity(
     tmp_path: Path,
 ) -> None:
-    _receipt, _run, event = _event(tmp_path, table=_table(tmp_path))
-    by_ns = {item["namespace"]: item for item in event["outputs"]}
-    payload = by_ns["gma.payload"]
+    _receipt, _run, events = _event(tmp_path, table=_table(tmp_path))
+    by_ns = {
+        item["namespace"]: item for item in events.transformation["outputs"]
+    }
+    payload = events.acquisition["outputs"][0]
     parquet = by_ns["gma.parquet"]
     catalogue = by_ns["gma.catalogue"]
 
@@ -193,23 +235,24 @@ def test_parquet_derives_from_payload_and_catalogue_is_alternative_identity(
 def test_facets_project_acquisition_temporal_reuse_rights_and_digests(
     tmp_path: Path,
 ) -> None:
-    receipt, _run, event = _event(tmp_path, table=_table(tmp_path))
-    run_facets = event["run"]["facets"]
-    payload = next(
-        item for item in event["outputs"] if item["namespace"] == "gma.payload"
+    receipt, _run, events = _event(tmp_path, table=_table(tmp_path))
+    run_facets = events.acquisition["run"]["facets"]
+    payload = events.acquisition["outputs"][0]
+    identity = run_facets["gma_acquisition"]
+    rights = payload["facets"]["gma_rights"]
+    assert (
+        identity["acquisitionId"]
+        == require_temporal(receipt.temporal).acquisition_id
     )
-    identity = payload["facets"]["gmaAcquisitionIdentity"]
-    rights = payload["facets"]["gmaRights"]
-    assert identity["acquisitionId"] == receipt.temporal.acquisition_id
     assert identity["contentId"] == receipt.payload.sha256
     assert identity["sourceId"] == receipt.source.source_id
     assert identity["catalogVersion"] == receipt.source.catalog_version
     assert rights["rightsState"] == receipt.rights_state.value
     assert str(receipt.rights_reference) in str(rights["rightsReference"])
-    assert run_facets["gmaTemporalIdentity"]["retrievedAt"] == (
-        receipt.temporal.retrieved_at.isoformat()
+    assert run_facets["gma_temporalIdentity"]["retrievedAt"] == (
+        require_temporal(receipt.temporal).retrieved_at.isoformat()
     )
-    assert run_facets["gmaReuseGate"]["disposition"] == "acquire-new"
+    assert run_facets["gma_reuseGate"]["disposition"] == "acquire-new"
 
 
 @pytest.mark.unit
@@ -222,15 +265,16 @@ def test_projection_does_not_mutate_native_receipt(tmp_path: Path) -> None:
     parquet_path.write_bytes(b"parquet-output")
     run = receipt_for_parquet(
         parquet_path,
-        acquisition_id=receipt.temporal.acquisition_id,
+        acquisition_id=require_temporal(receipt.temporal).acquisition_id,
         input_content_id=receipt.payload.sha256,
-        completed_at=receipt.temporal.retrieved_at,
+        completed_at=require_temporal(receipt.temporal).retrieved_at,
     )
     project_openlineage_event(
         receipt,
         payload_uri=(tmp_path / "p.bin").as_uri(),
         parquet_uri=parquet_path.as_uri(),
         transformation_run=run,
+        admission=_admission(receipt),
         table=_table(tmp_path),
     )
     assert receipt.canonical_json() == before
@@ -249,7 +293,7 @@ def test_projection_rejects_mismatched_transformation_run(
         parquet_path,
         acquisition_id="f" * 64,
         input_content_id=receipt.payload.sha256,
-        completed_at=receipt.temporal.retrieved_at,
+        completed_at=require_temporal(receipt.temporal).retrieved_at,
     )
     with pytest.raises(ValueError, match="does not match acquisition"):
         project_openlineage_event(
@@ -257,12 +301,49 @@ def test_projection_rejects_mismatched_transformation_run(
             payload_uri=(tmp_path / "payload").as_uri(),
             parquet_uri=parquet_path.as_uri(),
             transformation_run=wrong_acquisition,
+            admission=_admission(receipt),
+        )
+
+    valid_run = receipt_for_parquet(
+        parquet_path,
+        acquisition_id=require_temporal(receipt.temporal).acquisition_id,
+        input_content_id=receipt.payload.sha256,
+        completed_at=require_temporal(receipt.temporal).retrieved_at,
+    )
+    admission = _admission(receipt)
+    with pytest.raises(
+        ValueError, match="admission does not match acquisition"
+    ):
+        project_openlineage_event(
+            receipt,
+            payload_uri=(tmp_path / "payload").as_uri(),
+            parquet_uri=parquet_path.as_uri(),
+            transformation_run=valid_run,
+            admission=admission.model_copy(update={"acquisition_id": "e" * 64}),
+        )
+    with pytest.raises(ValueError, match="admission does not match content"):
+        project_openlineage_event(
+            receipt,
+            payload_uri=(tmp_path / "payload").as_uri(),
+            parquet_uri=parquet_path.as_uri(),
+            transformation_run=valid_run,
+            admission=admission.model_copy(update={"content_id": "e" * 64}),
+        )
+    with pytest.raises(ValueError, match="requires accepted admission"):
+        project_openlineage_event(
+            receipt,
+            payload_uri=(tmp_path / "payload").as_uri(),
+            parquet_uri=parquet_path.as_uri(),
+            transformation_run=valid_run,
+            admission=admission.model_copy(
+                update={"state": BronzeAdmissionState.QUARANTINED}
+            ),
         )
     wrong_input = receipt_for_parquet(
         parquet_path,
-        acquisition_id=receipt.temporal.acquisition_id,
+        acquisition_id=require_temporal(receipt.temporal).acquisition_id,
         input_content_id="f" * 64,
-        completed_at=receipt.temporal.retrieved_at,
+        completed_at=require_temporal(receipt.temporal).retrieved_at,
     )
     with pytest.raises(ValueError, match="does not match input content"):
         project_openlineage_event(
@@ -270,6 +351,7 @@ def test_projection_rejects_mismatched_transformation_run(
             payload_uri=(tmp_path / "payload").as_uri(),
             parquet_uri=parquet_path.as_uri(),
             transformation_run=wrong_input,
+            admission=_admission(receipt),
         )
 
 
@@ -277,7 +359,8 @@ def test_projection_rejects_mismatched_transformation_run(
 def test_run_event_conforms_to_openlineage_required_shape(
     tmp_path: Path,
 ) -> None:
-    _, _, event = _event(tmp_path, table=_table(tmp_path))
+    _, _, events = _event(tmp_path, table=_table(tmp_path))
+    event = events.transformation
     conform_run_event(event)
     clone = copy.deepcopy(event)
     del clone["schemaURL"]
@@ -290,7 +373,8 @@ def test_run_event_conforms_to_openlineage_required_shape(
 
 @pytest.mark.unit
 def test_run_event_rejects_non_conforming_shapes(tmp_path: Path) -> None:
-    _, _, event = _event(tmp_path, table=_table(tmp_path))
+    _, _, events = _event(tmp_path, table=_table(tmp_path))
+    event = events.transformation
     not_object = copy.deepcopy(event)
     not_object["run"] = []
     with pytest.raises(TypeError, match="run must be an object"):
@@ -336,9 +420,23 @@ def test_run_event_rejects_non_conforming_shapes(tmp_path: Path) -> None:
     with pytest.raises(ValueError, match="job missing namespace or name"):
         conform_run_event(missing_job)
     incomplete_run_facet = copy.deepcopy(event)
-    incomplete_run_facet["run"]["facets"]["gmaRights"] = {"_producer": "x"}
+    incomplete_run_facet["run"]["facets"]["gma_rights"] = {"_producer": "x"}
     with pytest.raises(ValueError, match="facet is missing spec keys"):
         conform_run_event(incomplete_run_facet)
+
+
+@pytest.mark.unit
+def test_run_event_requires_uuid_run_id(tmp_path: Path) -> None:
+    _, _, events = _event(tmp_path, table=_table(tmp_path))
+    numeric_run_id = copy.deepcopy(events.transformation)
+    numeric_run_id["run"]["runId"] = 1
+    with pytest.raises(TypeError, match="runId must be a string"):
+        conform_run_event(numeric_run_id)
+
+    invalid_run_id = copy.deepcopy(events.transformation)
+    invalid_run_id["run"]["runId"] = "not-a-uuid"
+    with pytest.raises(ValueError, match="runId must be a UUID"):
+        conform_run_event(invalid_run_id)
 
 
 @pytest.mark.property
