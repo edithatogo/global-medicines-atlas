@@ -81,9 +81,7 @@ def test_live_qualification_completes_verified_prompts() -> None:
         "us-openfda-enforcement",
         "us-fda-recalls-notices",
     ]
-    assert complete[2]["live_qualified_source_ids"] == [
-        "us-fda-drug-shortages"
-    ]
+    assert complete[2]["live_qualified_source_ids"] == ["us-fda-drug-shortages"]
     assert complete[3]["live_qualified_source_ids"] == ["us-fda-rems"]
     assert complete[4]["live_qualified_source_ids"] == [
         "us-openfda-ndc",
