@@ -164,16 +164,16 @@ before any hot-path rewrite. Python remains orchestration.
 
 ### Phase 4d: Scale-aware Iceberg partition planning
 
-- [~] Task: Replace constant and mutable Bronze partition keys with a
+- [x] Task: Replace constant and mutable Bronze partition keys with a
   scale-aware policy ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
-    - [ ] Write failing tests proving small tables are unpartitioned
-    - [ ] Partition large recurring products by source-release or acquisition month
-    - [ ] Optionally bucket high-volume source-record identifiers
-    - [ ] Reject jurisdiction, source, rights, admission, and review state as physical partition keys
-    - [ ] Preserve transforms through Iceberg REST create-body round trips
-- [ ] Task: Phase Verification & Checkpoint
-    - [ ] Run focused landing, Iceberg, lineage, recovery, typing, and coverage checks
-    - [ ] Record evidence without claiming production-scale tuning or Iceberg deployment
+    - [x] Write failing tests proving small tables are unpartitioned
+    - [x] Partition large recurring products by source-release or acquisition month
+    - [x] Optionally bucket high-volume source-record identifiers
+    - [x] Reject jurisdiction, source, rights, admission, and review state as physical partition keys
+    - [x] Preserve transforms through Iceberg REST create-body round trips
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused landing, Iceberg, lineage, recovery, typing, and coverage checks
+    - [x] Record evidence without claiming production-scale tuning or Iceberg deployment
 
 ### Phase 4c: Reproducibility and disaster recovery
 
