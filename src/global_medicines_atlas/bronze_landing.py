@@ -260,15 +260,16 @@ def _acquisition_manifest_table(
     if reuse_gate is None:
         raise ValueError("acquisition manifest requires a reuse gate decision")
     reuse = reuse_gate.disposition.value
+    sensitivity = receipt.sensitivity or SensitivityClassification()
     strings = {
         "source_id": receipt.source.source_id,
         "jurisdiction": receipt.source.jurisdiction,
         "acquisition_id": temporal.acquisition_id,
         "content_id": temporal.content_id or receipt.payload.sha256,
         "rights_state": receipt.rights_state.value,
-        "data_sensitivity": receipt.sensitivity.data_sensitivity.value,
-        "personal_data_state": receipt.sensitivity.personal_data.value,
-        "publication_disposition": receipt.sensitivity.publication.value,
+        "data_sensitivity": sensitivity.data_sensitivity.value,
+        "personal_data_state": sensitivity.personal_data.value,
+        "publication_disposition": sensitivity.publication.value,
         "admission_state": admission.state.value,
         "source_uri": str(receipt.retrieval.uri),
         "media_type": _media_type(receipt, payload_path),
@@ -423,7 +424,7 @@ def _acquisition_event_for(receipt: SourceReceipt) -> AcquisitionEvent:
         rights_state=receipt.rights_state,
         rights_reference=receipt.rights_reference,
         rights_policy=receipt.rights_policy,
-        sensitivity=receipt.sensitivity,
+        sensitivity=receipt.sensitivity or SensitivityClassification(),
         evidence_class=receipt.evidence_class,
     )
 
@@ -647,14 +648,13 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals,too-many-statements]
         / source_id
         / f"{temporal.acquisition_id}.json"
     )
-    if "sensitivity" not in bound.model_fields_set:
+    if bound.sensitivity is None:
         existing_sensitivity: SensitivityClassification | None = None
         if receipt_path.exists():
             existing = SourceReceipt.model_validate_json(
                 receipt_path.read_bytes()
             )
-            if "sensitivity" in existing.model_fields_set:
-                existing_sensitivity = existing.sensitivity
+            existing_sensitivity = existing.sensitivity
         else:
             existing_sensitivity = SensitivityClassification(
                 reason_codes=("not_assessed",)

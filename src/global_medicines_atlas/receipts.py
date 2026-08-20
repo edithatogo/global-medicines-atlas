@@ -469,9 +469,7 @@ class SourceReceipt(DeterministicReceipt):
     rights_state: RightsState
     rights_reference: AnyUrl | None = None
     rights_policy: AcquisitionRightsPolicy | None = None
-    sensitivity: SensitivityClassification = Field(
-        default_factory=SensitivityClassification
-    )
+    sensitivity: SensitivityClassification | None = None
     evidence_class: EvidenceClass
     transformation: TransformationEvidence
 
@@ -558,7 +556,7 @@ class SourceReceipt(DeterministicReceipt):
         payload = self.model_dump(mode="json", exclude_none=False)
         if payload.get("rights_policy") is None:
             del payload["rights_policy"]
-        if self.sensitivity == SensitivityClassification():
+        if self.sensitivity is None:
             del payload["sensitivity"]
         return orjson.dumps(payload, option=orjson.OPT_SORT_KEYS)
 
@@ -576,6 +574,10 @@ def require_publication_permitted(receipt: SourceReceipt) -> None:
 
     if receipt.rights_state is not RightsState.PERMITTED:
         raise ValueError("publication is not permitted by the rights state")
+    if receipt.sensitivity is None:
+        raise ValueError(
+            "publication is blocked by an absent sensitivity classification"
+        )
     if receipt.sensitivity.publication is not PublicationDisposition.PERMITTED:
         raise ValueError(
             "publication is blocked by sensitivity/publication classification"

@@ -512,12 +512,12 @@ def test_legacy_receipt_digest_is_stable_until_sensitivity_is_bound(
     tmp_path: Path,
 ) -> None:
     legacy = _landable()
-    assert "sensitivity" not in legacy.model_fields_set
+    assert legacy.sensitivity is None
     assert b'"sensitivity"' not in legacy.canonical_json()
     explicit = legacy.model_copy(
         update={
-            "sensitivity": legacy.sensitivity.model_copy(
-                update={"reason_codes": ("not_assessed",)}
+            "sensitivity": SensitivityClassification(
+                reason_codes=("not_assessed",)
             )
         }
     )
