@@ -1,0 +1,646 @@
+{
+  "schema_id": "global-medicines-atlas.us-source-rights-review-packet",
+  "schema_version": 1,
+  "generated_at": "2026-08-20",
+  "decision_id": "conductor/decisions/0008-source-derived-dataset-licensing-batch.md",
+  "source_count": 20,
+  "licensing_decision": "maintainer_approval_required",
+  "live_acquisition": "not_authorized",
+  "public_release": "not_approved",
+  "scope_note": "Candidate evidence for bounded maintainer review; not a licence conclusion, acquisition authority, coverage claim, or publication approval.",
+  "entries": [
+    {
+      "source_id": "us-cms-mdrp",
+      "authority": "Centers for Medicare and Medicaid Services",
+      "source_reference": "https://data.medicaid.gov/datasets",
+      "catalogue_rights_status": "review_required",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "terms_gap_catalogue_only",
+      "retain_source_bytes": "unknown",
+      "terms_evidence": [
+        {
+          "url": "https://data.cms.gov/api-docs",
+          "observed_at": "2026-08-20",
+          "finding": "CMS documents public API access and retrieval mechanics.",
+          "remaining_gap": "The API documentation is not, by itself, a dataset-specific retention or redistribution grant."
+        },
+        {
+          "url": "https://www.cms.gov/about-cms/information-systems/privacy/data-use-agreement-dua",
+          "observed_at": "2026-08-20",
+          "finding": "CMS documents Data Use Agreements for disclosures involving protected or identifiable information.",
+          "remaining_gap": "Applicability to each public aggregate dataset and any dataset-specific agreement remains unresolved."
+        }
+      ],
+      "candidate_fields": [],
+      "field_exclusions": [
+        "all source-derived fields pending dataset-specific terms review"
+      ],
+      "attribution_candidate": "unresolved"
+    },
+    {
+      "source_id": "us-cms-nadac",
+      "authority": "Centers for Medicare and Medicaid Services",
+      "source_reference": "https://data.medicaid.gov/datasets",
+      "catalogue_rights_status": "review_required",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "terms_gap_catalogue_only",
+      "retain_source_bytes": "unknown",
+      "terms_evidence": [
+        {
+          "url": "https://data.cms.gov/api-docs",
+          "observed_at": "2026-08-20",
+          "finding": "CMS documents public API access and retrieval mechanics.",
+          "remaining_gap": "The API documentation is not, by itself, a dataset-specific retention or redistribution grant."
+        },
+        {
+          "url": "https://www.cms.gov/about-cms/information-systems/privacy/data-use-agreement-dua",
+          "observed_at": "2026-08-20",
+          "finding": "CMS documents Data Use Agreements for disclosures involving protected or identifiable information.",
+          "remaining_gap": "Applicability to each public aggregate dataset and any dataset-specific agreement remains unresolved."
+        }
+      ],
+      "candidate_fields": [],
+      "field_exclusions": [
+        "all source-derived fields pending dataset-specific terms review"
+      ],
+      "attribution_candidate": "unresolved"
+    },
+    {
+      "source_id": "us-cms-partd-formulary",
+      "authority": "Centers for Medicare & Medicaid Services",
+      "source_reference": "https://data.cms.gov/provider-summary-by-type-of-service/medicare-part-d-prescribers/quarterly-prescription-drug-plan-formulary-pharmacy-network-and-pricing-information",
+      "catalogue_rights_status": "CMS agreement_for_use review required",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "terms_gap_catalogue_only",
+      "retain_source_bytes": "unknown",
+      "terms_evidence": [
+        {
+          "url": "https://data.cms.gov/api-docs",
+          "observed_at": "2026-08-20",
+          "finding": "CMS documents public API access and retrieval mechanics.",
+          "remaining_gap": "The API documentation is not, by itself, a dataset-specific retention or redistribution grant."
+        },
+        {
+          "url": "https://www.cms.gov/about-cms/information-systems/privacy/data-use-agreement-dua",
+          "observed_at": "2026-08-20",
+          "finding": "CMS documents Data Use Agreements for disclosures involving protected or identifiable information.",
+          "remaining_gap": "Applicability to each public aggregate dataset and any dataset-specific agreement remains unresolved."
+        }
+      ],
+      "candidate_fields": [],
+      "field_exclusions": [
+        "all source-derived fields pending dataset-specific terms review"
+      ],
+      "attribution_candidate": "unresolved"
+    },
+    {
+      "source_id": "us-cms-partd-spending",
+      "authority": "Centers for Medicare & Medicaid Services",
+      "source_reference": "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-part-d-spending-by-drug",
+      "catalogue_rights_status": "review_required",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "terms_gap_catalogue_only",
+      "retain_source_bytes": "unknown",
+      "terms_evidence": [
+        {
+          "url": "https://data.cms.gov/api-docs",
+          "observed_at": "2026-08-20",
+          "finding": "CMS documents public API access and retrieval mechanics.",
+          "remaining_gap": "The API documentation is not, by itself, a dataset-specific retention or redistribution grant."
+        },
+        {
+          "url": "https://www.cms.gov/about-cms/information-systems/privacy/data-use-agreement-dua",
+          "observed_at": "2026-08-20",
+          "finding": "CMS documents Data Use Agreements for disclosures involving protected or identifiable information.",
+          "remaining_gap": "Applicability to each public aggregate dataset and any dataset-specific agreement remains unresolved."
+        }
+      ],
+      "candidate_fields": [],
+      "field_exclusions": [
+        "all source-derived fields pending dataset-specific terms review"
+      ],
+      "attribution_candidate": "unresolved"
+    },
+    {
+      "source_id": "us-dailymed-spl",
+      "authority": "US National Library of Medicine",
+      "source_reference": "https://dailymed.nlm.nih.gov/dailymed/spl-resources-all-drug-labels.cfm",
+      "catalogue_rights_status": "review_required",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "terms_gap_catalogue_only",
+      "retain_source_bytes": "unknown",
+      "terms_evidence": [
+        {
+          "url": "https://www.nlm.nih.gov/web_policies.html",
+          "observed_at": "2026-08-20",
+          "finding": "An official agency policy or service page identifies the responsible government surface.",
+          "remaining_gap": "Dataset-specific retention, transformation, terminology, attribution, and redistribution terms are not established by this evidence alone."
+        }
+      ],
+      "candidate_fields": [],
+      "field_exclusions": [
+        "all source-derived fields pending dataset-specific terms review"
+      ],
+      "attribution_candidate": "unresolved"
+    },
+    {
+      "source_id": "us-drugsfda",
+      "authority": "US Food and Drug Administration",
+      "source_reference": "https://www.accessdata.fda.gov/scripts/cder/daf/",
+      "catalogue_rights_status": "US government data; verify endpoint terms",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "government_public_domain_policy_review",
+      "retain_source_bytes": "conditional",
+      "terms_evidence": [
+        {
+          "url": "https://www.fda.gov/about-fda/about-website/website-policies",
+          "observed_at": "2026-08-20",
+          "finding": "FDA states that FDA.gov text and graphics are generally public domain unless otherwise noted.",
+          "remaining_gap": "The exact endpoint, files, embedded third-party content, notices, and field-level transformations still require review."
+        }
+      ],
+      "candidate_fields": [
+        "source-native identifiers and government-authored metadata where no contrary notice applies"
+      ],
+      "field_exclusions": [
+        "third-party or separately licensed content",
+        "FDA names, logos, marks, and inferred clinical, approval, or reimbursement claims"
+      ],
+      "attribution_candidate": "Credit the U.S. Food and Drug Administration, source URL, and retrieval date."
+    },
+    {
+      "source_id": "us-fda-drug-shortages",
+      "authority": "US Food and Drug Administration",
+      "source_reference": "https://www.accessdata.fda.gov/scripts/drugshortages/default.cfm",
+      "catalogue_rights_status": "review_required",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "government_public_domain_policy_review",
+      "retain_source_bytes": "conditional",
+      "terms_evidence": [
+        {
+          "url": "https://www.fda.gov/about-fda/about-website/website-policies",
+          "observed_at": "2026-08-20",
+          "finding": "FDA states that FDA.gov text and graphics are generally public domain unless otherwise noted.",
+          "remaining_gap": "The exact endpoint, files, embedded third-party content, notices, and field-level transformations still require review."
+        }
+      ],
+      "candidate_fields": [
+        "source-native identifiers and government-authored metadata where no contrary notice applies"
+      ],
+      "field_exclusions": [
+        "third-party or separately licensed content",
+        "FDA names, logos, marks, and inferred clinical, approval, or reimbursement claims"
+      ],
+      "attribution_candidate": "Credit the U.S. Food and Drug Administration, source URL, and retrieval date."
+    },
+    {
+      "source_id": "us-fda-faers",
+      "authority": "US Food and Drug Administration",
+      "source_reference": "https://fis.fda.gov/extensions/FPD-QDE-FAERS/FPD-QDE-FAERS.html",
+      "catalogue_rights_status": "review_required",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "government_public_domain_policy_review",
+      "retain_source_bytes": "conditional",
+      "terms_evidence": [
+        {
+          "url": "https://www.fda.gov/about-fda/about-website/website-policies",
+          "observed_at": "2026-08-20",
+          "finding": "FDA states that FDA.gov text and graphics are generally public domain unless otherwise noted.",
+          "remaining_gap": "The exact endpoint, files, embedded third-party content, notices, and field-level transformations still require review."
+        }
+      ],
+      "candidate_fields": [
+        "source-native identifiers and government-authored metadata where no contrary notice applies"
+      ],
+      "field_exclusions": [
+        "third-party or separately licensed content",
+        "FDA names, logos, marks, and inferred clinical, approval, or reimbursement claims"
+      ],
+      "attribution_candidate": "Credit the U.S. Food and Drug Administration, source URL, and retrieval date."
+    },
+    {
+      "source_id": "us-fda-ndc-directory",
+      "authority": "US Food and Drug Administration",
+      "source_reference": "https://www.fda.gov/drugs/drug-approvals-and-databases/national-drug-code-directory",
+      "catalogue_rights_status": "review_required",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "government_public_domain_policy_review",
+      "retain_source_bytes": "conditional",
+      "terms_evidence": [
+        {
+          "url": "https://www.fda.gov/about-fda/about-website/website-policies",
+          "observed_at": "2026-08-20",
+          "finding": "FDA states that FDA.gov text and graphics are generally public domain unless otherwise noted.",
+          "remaining_gap": "The exact endpoint, files, embedded third-party content, notices, and field-level transformations still require review."
+        }
+      ],
+      "candidate_fields": [
+        "source-native identifiers and government-authored metadata where no contrary notice applies"
+      ],
+      "field_exclusions": [
+        "third-party or separately licensed content",
+        "FDA names, logos, marks, and inferred clinical, approval, or reimbursement claims"
+      ],
+      "attribution_candidate": "Credit the U.S. Food and Drug Administration, source URL, and retrieval date."
+    },
+    {
+      "source_id": "us-fda-nsde",
+      "authority": "US Food and Drug Administration",
+      "source_reference": "https://www.fda.gov/industry/structured-product-labeling-resources/nsde",
+      "catalogue_rights_status": "review_required",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "government_public_domain_policy_review",
+      "retain_source_bytes": "conditional",
+      "terms_evidence": [
+        {
+          "url": "https://www.fda.gov/about-fda/about-website/website-policies",
+          "observed_at": "2026-08-20",
+          "finding": "FDA states that FDA.gov text and graphics are generally public domain unless otherwise noted.",
+          "remaining_gap": "The exact endpoint, files, embedded third-party content, notices, and field-level transformations still require review."
+        }
+      ],
+      "candidate_fields": [
+        "source-native identifiers and government-authored metadata where no contrary notice applies"
+      ],
+      "field_exclusions": [
+        "third-party or separately licensed content",
+        "FDA names, logos, marks, and inferred clinical, approval, or reimbursement claims"
+      ],
+      "attribution_candidate": "Credit the U.S. Food and Drug Administration, source URL, and retrieval date."
+    },
+    {
+      "source_id": "us-fda-orange-book",
+      "authority": "US Food and Drug Administration",
+      "source_reference": "https://www.fda.gov/drugs/drug-approvals-and-databases/orange-book-data-files",
+      "catalogue_rights_status": "US government data; verify endpoint terms",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "government_public_domain_policy_review",
+      "retain_source_bytes": "conditional",
+      "terms_evidence": [
+        {
+          "url": "https://www.fda.gov/about-fda/about-website/website-policies",
+          "observed_at": "2026-08-20",
+          "finding": "FDA states that FDA.gov text and graphics are generally public domain unless otherwise noted.",
+          "remaining_gap": "The exact endpoint, files, embedded third-party content, notices, and field-level transformations still require review."
+        }
+      ],
+      "candidate_fields": [
+        "source-native identifiers and government-authored metadata where no contrary notice applies"
+      ],
+      "field_exclusions": [
+        "third-party or separately licensed content",
+        "FDA names, logos, marks, and inferred clinical, approval, or reimbursement claims"
+      ],
+      "attribution_candidate": "Credit the U.S. Food and Drug Administration, source URL, and retrieval date."
+    },
+    {
+      "source_id": "us-fda-recalls-notices",
+      "authority": "US Food and Drug Administration",
+      "source_reference": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts",
+      "catalogue_rights_status": "review_required",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "government_public_domain_policy_review",
+      "retain_source_bytes": "conditional",
+      "terms_evidence": [
+        {
+          "url": "https://www.fda.gov/about-fda/about-website/website-policies",
+          "observed_at": "2026-08-20",
+          "finding": "FDA states that FDA.gov text and graphics are generally public domain unless otherwise noted.",
+          "remaining_gap": "The exact endpoint, files, embedded third-party content, notices, and field-level transformations still require review."
+        }
+      ],
+      "candidate_fields": [
+        "source-native identifiers and government-authored metadata where no contrary notice applies"
+      ],
+      "field_exclusions": [
+        "third-party or separately licensed content",
+        "FDA names, logos, marks, and inferred clinical, approval, or reimbursement claims"
+      ],
+      "attribution_candidate": "Credit the U.S. Food and Drug Administration, source URL, and retrieval date."
+    },
+    {
+      "source_id": "us-fda-rems",
+      "authority": "US Food and Drug Administration",
+      "source_reference": "https://www.accessdata.fda.gov/scripts/cder/rems/index.cfm",
+      "catalogue_rights_status": "review_required",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "government_public_domain_policy_review",
+      "retain_source_bytes": "conditional",
+      "terms_evidence": [
+        {
+          "url": "https://www.fda.gov/about-fda/about-website/website-policies",
+          "observed_at": "2026-08-20",
+          "finding": "FDA states that FDA.gov text and graphics are generally public domain unless otherwise noted.",
+          "remaining_gap": "The exact endpoint, files, embedded third-party content, notices, and field-level transformations still require review."
+        }
+      ],
+      "candidate_fields": [
+        "source-native identifiers and government-authored metadata where no contrary notice applies"
+      ],
+      "field_exclusions": [
+        "third-party or separately licensed content",
+        "FDA names, logos, marks, and inferred clinical, approval, or reimbursement claims"
+      ],
+      "attribution_candidate": "Credit the U.S. Food and Drug Administration, source URL, and retrieval date."
+    },
+    {
+      "source_id": "us-gsrs-unii",
+      "authority": "US FDA and NIH NCATS",
+      "source_reference": "https://gsrs.ncats.nih.gov/",
+      "catalogue_rights_status": "review_required",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "terms_gap_catalogue_only",
+      "retain_source_bytes": "unknown",
+      "terms_evidence": [
+        {
+          "url": "https://gsrs.ncats.nih.gov/#/about",
+          "observed_at": "2026-08-20",
+          "finding": "An official agency policy or service page identifies the responsible government surface.",
+          "remaining_gap": "Dataset-specific retention, transformation, terminology, attribution, and redistribution terms are not established by this evidence alone."
+        }
+      ],
+      "candidate_fields": [],
+      "field_exclusions": [
+        "all source-derived fields pending dataset-specific terms review"
+      ],
+      "attribution_candidate": "unresolved"
+    },
+    {
+      "source_id": "us-openfda-drugsfda",
+      "authority": "US Food and Drug Administration",
+      "source_reference": "https://open.fda.gov/apis/drug/drugsfda/",
+      "catalogue_rights_status": "review_required",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "scoped_cc0_metadata_only",
+      "retain_source_bytes": "conditional",
+      "terms_evidence": [
+        {
+          "url": "https://open.fda.gov/terms/",
+          "observed_at": "2026-08-20",
+          "finding": "openFDA generally dedicates unmarked content and data to the public domain under CC0.",
+          "remaining_gap": "Every acquired field and linked material still requires review for marked third-party rights."
+        }
+      ],
+      "candidate_fields": [
+        "source-native identifiers",
+        "source-native product or event metadata explicitly covered by openFDA CC0 terms"
+      ],
+      "field_exclusions": [
+        "all content marked third-party or non-CC0",
+        "GMDN terms or descriptions and any other separately licensed terminology",
+        "FDA names, logos, marks, and inferred approval, safety, efficacy, or reimbursement claims"
+      ],
+      "attribution_candidate": "Data provided by the U.S. Food and Drug Administration through openFDA."
+    },
+    {
+      "source_id": "us-openfda-enforcement",
+      "authority": "US Food and Drug Administration",
+      "source_reference": "https://open.fda.gov/apis/drug/enforcement/",
+      "catalogue_rights_status": "review_required",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "scoped_cc0_metadata_only",
+      "retain_source_bytes": "conditional",
+      "terms_evidence": [
+        {
+          "url": "https://open.fda.gov/terms/",
+          "observed_at": "2026-08-20",
+          "finding": "openFDA generally dedicates unmarked content and data to the public domain under CC0.",
+          "remaining_gap": "Every acquired field and linked material still requires review for marked third-party rights."
+        }
+      ],
+      "candidate_fields": [
+        "source-native identifiers",
+        "source-native product or event metadata explicitly covered by openFDA CC0 terms"
+      ],
+      "field_exclusions": [
+        "all content marked third-party or non-CC0",
+        "GMDN terms or descriptions and any other separately licensed terminology",
+        "FDA names, logos, marks, and inferred approval, safety, efficacy, or reimbursement claims"
+      ],
+      "attribution_candidate": "Data provided by the U.S. Food and Drug Administration through openFDA."
+    },
+    {
+      "source_id": "us-openfda-faers",
+      "authority": "US Food and Drug Administration",
+      "source_reference": "https://open.fda.gov/apis/drug/event/",
+      "catalogue_rights_status": "review_required",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "scoped_cc0_metadata_only",
+      "retain_source_bytes": "conditional",
+      "terms_evidence": [
+        {
+          "url": "https://open.fda.gov/terms/",
+          "observed_at": "2026-08-20",
+          "finding": "openFDA generally dedicates unmarked content and data to the public domain under CC0.",
+          "remaining_gap": "Every acquired field and linked material still requires review for marked third-party rights."
+        }
+      ],
+      "candidate_fields": [
+        "source-native identifiers",
+        "source-native product or event metadata explicitly covered by openFDA CC0 terms"
+      ],
+      "field_exclusions": [
+        "all content marked third-party or non-CC0",
+        "GMDN terms or descriptions and any other separately licensed terminology",
+        "FDA names, logos, marks, and inferred approval, safety, efficacy, or reimbursement claims"
+      ],
+      "attribution_candidate": "Data provided by the U.S. Food and Drug Administration through openFDA."
+    },
+    {
+      "source_id": "us-openfda-ndc",
+      "authority": "US Food and Drug Administration",
+      "source_reference": "https://open.fda.gov/apis/drug/ndc/",
+      "catalogue_rights_status": "openFDA terms apply",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "scoped_cc0_metadata_only",
+      "retain_source_bytes": "conditional",
+      "terms_evidence": [
+        {
+          "url": "https://open.fda.gov/terms/",
+          "observed_at": "2026-08-20",
+          "finding": "openFDA generally dedicates unmarked content and data to the public domain under CC0.",
+          "remaining_gap": "Every acquired field and linked material still requires review for marked third-party rights."
+        }
+      ],
+      "candidate_fields": [
+        "source-native identifiers",
+        "source-native product or event metadata explicitly covered by openFDA CC0 terms"
+      ],
+      "field_exclusions": [
+        "all content marked third-party or non-CC0",
+        "GMDN terms or descriptions and any other separately licensed terminology",
+        "FDA names, logos, marks, and inferred approval, safety, efficacy, or reimbursement claims"
+      ],
+      "attribution_candidate": "Data provided by the U.S. Food and Drug Administration through openFDA."
+    },
+    {
+      "source_id": "us-openfda-nsde",
+      "authority": "US Food and Drug Administration",
+      "source_reference": "https://open.fda.gov/apis/other/nsde/",
+      "catalogue_rights_status": "review_required",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "scoped_cc0_metadata_only",
+      "retain_source_bytes": "conditional",
+      "terms_evidence": [
+        {
+          "url": "https://open.fda.gov/terms/",
+          "observed_at": "2026-08-20",
+          "finding": "openFDA generally dedicates unmarked content and data to the public domain under CC0.",
+          "remaining_gap": "Every acquired field and linked material still requires review for marked third-party rights."
+        }
+      ],
+      "candidate_fields": [
+        "source-native identifiers",
+        "source-native product or event metadata explicitly covered by openFDA CC0 terms"
+      ],
+      "field_exclusions": [
+        "all content marked third-party or non-CC0",
+        "GMDN terms or descriptions and any other separately licensed terminology",
+        "FDA names, logos, marks, and inferred approval, safety, efficacy, or reimbursement claims"
+      ],
+      "attribution_candidate": "Data provided by the U.S. Food and Drug Administration through openFDA."
+    },
+    {
+      "source_id": "us-rxnorm-api",
+      "authority": "US National Library of Medicine",
+      "source_reference": "https://www.nlm.nih.gov/research/umls/rxnorm/index.html",
+      "catalogue_rights_status": "review_required",
+      "review_status": "candidate_unapproved",
+      "maintainer_licence_approved": false,
+      "maintainer_publication_approved": false,
+      "live_acquisition": "not_authorized",
+      "public_release": "not_approved",
+      "raw_payload_redistribution": "not_approved",
+      "required_next_decision": "maintainer_source_specific_licensing_decision",
+      "candidate_disposition": "terms_gap_catalogue_only",
+      "retain_source_bytes": "unknown",
+      "terms_evidence": [
+        {
+          "url": "https://www.nlm.nih.gov/web_policies.html",
+          "observed_at": "2026-08-20",
+          "finding": "An official agency policy or service page identifies the responsible government surface.",
+          "remaining_gap": "Dataset-specific retention, transformation, terminology, attribution, and redistribution terms are not established by this evidence alone."
+        }
+      ],
+      "candidate_fields": [],
+      "field_exclusions": [
+        "all source-derived fields pending dataset-specific terms review"
+      ],
+      "attribution_candidate": "unresolved"
+    }
+  ]
+}

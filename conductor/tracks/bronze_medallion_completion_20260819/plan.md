@@ -175,6 +175,8 @@ before any hot-path rewrite. Python remains orchestration.
     - [x] Land Medsafe, PHARMAC, ARTG, PBS, DPD/NOC, MHRA/NICE, EMA/Union Register, PMDA/NHI, Drugs@FDA, and CMS Part D fixtures (`53b2671`)
     - [x] Leave NZULM bulk, NZHTS, AMT, embargoed PBS, dm+d/TRUD, EMA PMS, SPOR, and live RxNorm payloads excluded
     - [ ] Complete source-specific rights receipts and live landing evidence for the remaining 136 public/no-credential sources; a catalogue blocker is not landing completion
+        - [x] Generate a fail-closed review packet for all 20 U.S. sources from official FDA, openFDA, CMS, NLM, and NCATS policy surfaces; retain maintainer licensing, acquisition, and publication gates
+        - [ ] Record the maintainer's source-specific U.S. licensing decisions before acquiring live bytes
 - [x] Task: Phase Verification & Checkpoint
     - [x] Run focused, integration, and source-boundary tests
     - [x] Measure completeness with S-012 denominators; missing coverage is not negative evidence
