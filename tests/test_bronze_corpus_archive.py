@@ -1,3 +1,4 @@
+# pyright: reportPrivateUsage=false
 """Executable archive proof for the governed Bronze acquisition corpus."""
 
 from __future__ import annotations
@@ -11,6 +12,7 @@ from pathlib import Path
 import pytest
 from scripts.exercise_bronze_corpus import main as exercise_main
 
+import global_medicines_atlas.bronze_corpus_archive as archive_mod
 from global_medicines_atlas.bronze_corpus_archive import (
     ARCHIVE_FILENAME,
     CHECKSUM_FILENAME,
@@ -22,6 +24,7 @@ from global_medicines_atlas.bronze_corpus_archive import (
 ROOT = Path(__file__).resolve().parents[1]
 EXERCISED_AT = datetime(2026, 8, 20, 6, 0, tzinfo=UTC)
 WORKFLOW = ROOT / ".github" / "workflows" / "data-layer-archive.yml"
+QUEUE = ROOT / "quality/qualifications/bronze-source-landing-queue.json"
 
 
 @pytest.mark.unit
@@ -124,3 +127,44 @@ def test_corpus_archive_cli_executes_and_requires_aware_time(
             "--exercised-at",
             "2026-08-20T06:00:00",
         ])
+
+
+@pytest.mark.unit
+def test_archive_boundaries_fail_closed(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    with pytest.raises(ValueError, match="include a timezone"):
+        build_bronze_corpus_archive(
+            ROOT,
+            tmp_path / "naive",
+            exercised_at=datetime.fromisoformat("2026-08-20T06:00:00"),
+        )
+
+    empty_truth = tmp_path / "empty-truth"
+    archive_mod._copy_evidentiary_truth(empty_truth, tmp_path / "empty-copy")
+    assert not (tmp_path / "empty-copy").exists()
+
+    symlink_corpus = tmp_path / "symlink-corpus"
+    symlink_corpus.mkdir()
+    target = symlink_corpus / "payload.json"
+    target.write_text("{}", encoding="utf-8")
+    (symlink_corpus / "payload-link").symlink_to(target)
+    with pytest.raises(ValueError, match="cannot contain symlinks"):
+        archive_mod._write_archive(
+            symlink_corpus,
+            tmp_path / "unsafe.tar",
+        )
+
+    queue = archive_mod._load_queue(QUEUE)
+    catalog = archive_mod.load_source_catalog()
+    monkeypatch.setattr(
+        archive_mod,
+        "load_source_catalog",
+        lambda: catalog[:-1],
+    )
+    evidence = tmp_path / "inventory" / "evidence"
+    evidence.mkdir(parents=True)
+    with pytest.raises(ValueError, match="must be exhaustive"):
+        archive_mod._load_corpus_inventory(ROOT, evidence.parent)
+    assert queue.source_count == 172
