@@ -1,0 +1,16 @@
+{
+  "acquisition_authorized": false,
+  "coverage_complete": false,
+  "dataset_url": "https://ec.europa.eu/health/documents/community-register/ods/ods_products.json",
+  "decision_basis": "Pending maintainer approval of internal acquisition and retention under the source-declared CC BY 4.0 licence.",
+  "decision_date": "2026-08-21",
+  "external_publication_authorized": false,
+  "internal_retention_authorized": false,
+  "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+  "maintainer_licence_approved": false,
+  "max_bytes": 67108864,
+  "public_release_authorized": false,
+  "schema_id": "global-medicines-atlas.union-register-live-authorization",
+  "schema_version": 1,
+  "source_release_date": "2026-08-17"
+}
