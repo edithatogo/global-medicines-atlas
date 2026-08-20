@@ -1,9 +1,9 @@
 {
   "track_id": "free_tier_datahouse_decision_evidence_20260821",
   "type": "feature",
-  "status": "in_progress",
+  "status": "complete",
   "created_at": "2026-08-20T21:32:19Z",
-  "updated_at": "2026-08-20T22:10:00Z",
+  "updated_at": "2026-08-20T22:34:00Z",
   "description": "Produce rights-cleared free-tier GitHub and Hugging Face evidence for datahouse workflow, recovery, high-update formats, and maintainer technology decisions.",
   "evidence_schema": "1.0",
   "target_versions": ["1.0.0"],
