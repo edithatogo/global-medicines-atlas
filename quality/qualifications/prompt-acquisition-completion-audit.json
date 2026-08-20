@@ -6,13 +6,13 @@
   "unique_prompt_source_count": 94,
   "catalog_source_count": 172,
   "fixture_qualified_source_count": 16,
-  "live_qualified_source_count": 7,
-  "live_complete_prompt_count": 2,
+  "live_qualified_source_count": 8,
+  "live_complete_prompt_count": 3,
   "program_completion": "incomplete_live_acquisition",
   "queue_state_counts": {
     "credentialed_and_excluded": 18,
-    "landed_and_evidenced": 19,
-    "manual_only_documented_acquisition": 93,
+    "landed_and_evidenced": 20,
+    "manual_only_documented_acquisition": 92,
     "not_yet_implemented": 0,
     "rights_blocked": 41,
     "superseded_by_reused_source": 0,
@@ -587,24 +587,20 @@
         "us-fda-rems"
       ],
       "queue_states": {
-        "us-fda-rems": "manual_only_documented_acquisition"
+        "us-fda-rems": "landed_and_evidenced"
       },
       "queue_state_counts": {
-        "manual_only_documented_acquisition": 1
+        "landed_and_evidenced": 1
       },
       "fixture_qualified_source_ids": [],
-      "live_qualified_source_ids": [],
-      "sources_without_live_evidence": [
+      "live_qualified_source_ids": [
         "us-fda-rems"
       ],
-      "live_complete": false,
-      "completion_state": "live_acquisition_incomplete",
-      "blocker_categories": [
-        "documented_manual_acquisition_required"
-      ],
-      "next_actions": [
-        "execute the documented reproducible acquisition after source-specific rights confirmation"
-      ]
+      "sources_without_live_evidence": [],
+      "live_complete": true,
+      "completion_state": "live_acquisition_complete",
+      "blocker_categories": [],
+      "next_actions": []
     },
     {
       "prompt_id": 16,

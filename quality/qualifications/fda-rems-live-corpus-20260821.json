@@ -1,0 +1,58 @@
+{
+  "schema_id": "global-medicines-atlas.fda-rems-live-qualification",
+  "schema_version": 1,
+  "observed_at": "2026-08-21",
+  "evidence_class": "live_internal_documents",
+  "prompt_id": 15,
+  "authorization": "quality/qualifications/fda-rems-live-authorization.json",
+  "source_ids": ["us-fda-rems"],
+  "prompt_audit_qualified_source_ids": ["us-fda-rems"],
+  "current_detail_inventory_complete": true,
+  "current_detail_inventory_count": 72,
+  "current_document_inventory_complete": true,
+  "current_document_inventory_count": 829,
+  "current_documents_acquired": 827,
+  "current_documents_explicitly_unavailable": 2,
+  "unavailable_documents": [
+    {
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/rems/%20Thalidomide_2023_04_27_REMS_Document.pdf",
+      "failure_code": "http_status",
+      "observed_http_status": 404
+    },
+    {
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/rems/assessment/Alvimopan_REMS_2019_12_19_Assessment_Plan.pdf",
+      "failure_code": "http_status",
+      "observed_http_status": 404
+    }
+  ],
+  "official_csv_surface_count": 4,
+  "source_record_rows": 3112,
+  "source_record_projection_count": 4,
+  "recovered_source_record_projection_count": 4,
+  "source_record_parquet_pairs_byte_identical": 4,
+  "acquisition_surface_count": 907,
+  "acquisition_succeeded_count": 905,
+  "acquisition_failed_count": 2,
+  "accepted_admission_count": 30,
+  "quarantined_admission_count": 875,
+  "recovered_acquisition_count": 30,
+  "private_archive_byte_count": 3927029760,
+  "private_archive_sha256": "e0e9145cd1d84ac5994772cc1e32d863eaa3a4689ba7e2d5ae2a89f0f851abc5",
+  "archive_checksum_verified": true,
+  "explicit_unavailability_satisfies_public_surface_coverage": true,
+  "prompt_complete": true,
+  "public_redistribution_rights_approved": false,
+  "public_release_authorized": false,
+  "external_publication_performed": false,
+  "invariants": [
+    "REMS status and requirements remain distinct from approval status and pharmacovigilance case reports.",
+    "Program, version, product and document relationships retain source-native REMS identifiers.",
+    "Document payloads remain evidentiary bytes and do not overwrite authoritative relational CSV fields.",
+    "Two current official document links are explicitly unavailable with retained HTTP failure receipts; no document bytes are invented."
+  ],
+  "limitations": [
+    "The official data page warns that active and inactive status in its historical download file is currently inaccurate; the source-native value is preserved without correction.",
+    "The document inventory covers every FDA-hosted PDF linked by the 72 current REMS detail pages on the observation date; it does not claim unlinked historical document versions.",
+    "Public redistribution, public release and external publication remain separately gated."
+  ]
+}

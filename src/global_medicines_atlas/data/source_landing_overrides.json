@@ -43,6 +43,14 @@
       "evidence_references": [
         "quality/qualifications/fda-shortages-live-corpus-20260821.json"
       ]
+    },
+    {
+      "source_id": "us-fda-rems",
+      "state": "landed_and_evidenced",
+      "reason": "All four official relational CSV surfaces, all 72 current REMS detail pages, and 827 of 829 linked FDA-hosted documents were acquired, reconstructed where admitted, and privately archived; the remaining two document links returned explicit HTTP 404 failure receipts.",
+      "evidence_references": [
+        "quality/qualifications/fda-rems-live-corpus-20260821.json"
+      ]
     }
   ]
 }

@@ -25,6 +25,9 @@ US_RECORD_QUALIFICATION = (
 NDC_RECORD_QUALIFICATION = (
     ROOT / "quality/qualifications/ndc-directory-live-corpus-20260821.json"
 )
+REMS_RECORD_QUALIFICATION = (
+    ROOT / "quality/qualifications/fda-rems-live-corpus-20260821.json"
+)
 DEFAULT_OUTPUT = (
     ROOT / "quality/qualifications/prompt-acquisition-completion-audit.json"
 )
@@ -34,6 +37,9 @@ NDC_PROMPT_AUDIT_SOURCE_IDS = frozenset({
     "us-fda-ndc-directory",
     "us-openfda-ndc",
 })
+REMS_PROMPT_AUDIT_SOURCE_IDS = frozenset({"us-fda-rems"})
+REMS_EXPORT_COUNT = 4
+HTTP_NOT_FOUND = 404
 
 NEXT_ACTIONS = {
     "credentialed_and_excluded": (
@@ -248,6 +254,53 @@ def _qualified_ndc_record_sources() -> set[str]:
     return qualified
 
 
+def _qualified_rems_record_sources() -> set[str]:
+    qualification = json.loads(
+        REMS_RECORD_QUALIFICATION.read_text(encoding="utf-8")
+    )
+    if qualification["evidence_class"] != "live_internal_documents":
+        raise ValueError("REMS qualification has the wrong evidence class")
+    if (
+        not qualification["prompt_complete"]
+        or qualification["external_publication_performed"]
+        or qualification["public_release_authorized"]
+        or qualification["public_redistribution_rights_approved"]
+    ):
+        raise ValueError("REMS qualification crossed its reviewed scope")
+    unavailable = qualification["current_documents_explicitly_unavailable"]
+    coverage_checks = (
+        qualification["current_detail_inventory_complete"],
+        qualification["current_document_inventory_complete"],
+        qualification[
+            "explicit_unavailability_satisfies_public_surface_coverage"
+        ],
+        qualification["current_documents_acquired"] + unavailable
+        == qualification["current_document_inventory_count"],
+        unavailable == len(qualification["unavailable_documents"]),
+    )
+    if not all(coverage_checks) or any(
+        item["observed_http_status"] != HTTP_NOT_FOUND
+        or item["failure_code"] != "http_status"
+        for item in qualification["unavailable_documents"]
+    ):
+        raise ValueError("REMS public document coverage is incomplete")
+    expected = qualification["official_csv_surface_count"]
+    recovery_checks = (
+        expected == REMS_EXPORT_COUNT,
+        qualification["source_record_projection_count"] == expected,
+        qualification["recovered_source_record_projection_count"] == expected,
+        qualification["source_record_parquet_pairs_byte_identical"] == expected,
+        qualification["source_record_rows"] > 0,
+        qualification["archive_checksum_verified"],
+    )
+    if not all(recovery_checks):
+        raise ValueError("REMS record products lack recovery evidence")
+    qualified = set(qualification["prompt_audit_qualified_source_ids"])
+    if qualified != set(REMS_PROMPT_AUDIT_SOURCE_IDS):
+        raise ValueError("REMS qualification exceeds reviewed source scope")
+    return qualified
+
+
 def build() -> dict[str, Any]:
     """Join locked prompt scope to queue and measured evidence."""
 
@@ -263,6 +316,7 @@ def build() -> dict[str, Any]:
         _qualified_us_live_sources()
         | _qualified_us_record_sources()
         | _qualified_ndc_record_sources()
+        | _qualified_rems_record_sources()
     )
     for source_id in qualified_us_live:
         existing = measured_by_source.get(source_id, {})
