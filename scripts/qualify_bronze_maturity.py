@@ -39,6 +39,15 @@ def _git_commit(root: Path) -> str:
     if head.startswith("ref:"):
         ref = head.split(":", 1)[1].strip()
         ref_path = git_dir / ref
+        if not ref_path.is_file():
+            common_dir_path = git_dir / "commondir"
+            if common_dir_path.is_file():
+                common_dir = Path(
+                    common_dir_path.read_text(encoding="utf-8").strip()
+                )
+                if not common_dir.is_absolute():
+                    common_dir = (git_dir / common_dir).resolve()
+                ref_path = common_dir / ref
         if ref_path.is_file():
             return ref_path.read_text(encoding="utf-8").strip()
         return "unspecified"

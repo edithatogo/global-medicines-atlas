@@ -48,3 +48,4 @@ and GitHub [#167](https://github.com/edithatogo/global-medicines-atlas/issues/16
     - [x] Evaluate all 14 mandatory properties
     - [x] Reject stable-v1, Hugging Face, Silver, Gold, and dashboard evidence
     - [x] Keep production disaster-recovery operation as a separate human gate
+    - [x] Repair worktree-aware exact Git revision discovery
