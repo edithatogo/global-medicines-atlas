@@ -26,5 +26,5 @@ and rationale contract in that policy.
   *Link: [tracks/academic_protocol_preregistration_20260729/index.md](./tracks/academic_protocol_preregistration_20260729/index.md); GitHub parent [#66](https://github.com/edithatogo/global-medicines-atlas/issues/66). OSF is deprecated; persistent protocol identity is the in-repo artefacts plus Zenodo `10.5281/zenodo.21734811`.*
 - [~] **Track: Complete bronze medallion landing for current public scope**
   *Link: [tracks/bronze_medallion_completion_20260819/index.md](./tracks/bronze_medallion_completion_20260819/index.md); GitHub parent [#167](https://github.com/edithatogo/global-medicines-atlas/issues/167). Evidentiary payload/receipt truth, reuse gate, temporal identity, Iceberg-ready identities, and OpenLineage projection are in progress.*
-- [~] **Track: Qualify bronze maturity for current public scope**
-  *Link: [tracks/bronze_maturity_qualification_20260820/index.md](./tracks/bronze_maturity_qualification_20260820/index.md); related bronze parent [#167](https://github.com/edithatogo/global-medicines-atlas/issues/167). Measures bronze against 14 properties; does not implement Silver/Gold.*
+- [x] **Track: Qualify bronze maturity for current public scope**
+  *Archived: [archive/bronze_maturity_qualification_20260820/index.md](./archive/bronze_maturity_qualification_20260820/index.md); report complete, with bronze still blocked by incomplete public ingest and production disaster-recovery authority.*

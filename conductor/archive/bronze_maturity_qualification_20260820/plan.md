@@ -36,3 +36,11 @@ and GitHub [#167](https://github.com/edithatogo/global-medicines-atlas/issues/16
 - [x] Task: Phase Verification & Checkpoint
     - [x] Run focused tests, typing where available
     - [x] Record evidence; do not declare Bronze mature if blockers remain
+
+## Review Fixes
+
+- [x] Task: Requalify against the merged bronze implementation
+    - [x] Refresh the committed report at exact main revision `fde2340`
+    - [x] Repair worktree-aware Git revision discovery
+    - [x] Reconcile Iceberg-ready evidence probes with the merged contracts
+    - [x] Keep completeness and production disaster recovery fail-closed
