@@ -257,6 +257,7 @@ before any hot-path rewrite. Python remains orchestration.
         - [x] Review fixes: register the receipt-backed JSON parser and live-receipt capability in the source capability census (`d386a66`)
         - [x] Review fixes: bind the committed live qualification into stable-v1 measured coverage with fail-closed identity, recovery, archive-checksum, and Parquet-parity verification (`68c07c9`)
         - [x] Review fixes: reconcile the all-prompt audit assertion with the single receipt-backed live source and re-run the affected branch-coverage suite (`8a911f9`)
+        - [x] Review fixes: cover catalog identity, source identity, and quantitative live-receipt failure edges required by the protected patch-coverage gate (`c64d3bf`)
         - [x] Generate a fail-closed review packet for all 20 U.S. sources from official FDA, openFDA, CMS, NLM, and NCATS policy surfaces; retain maintainer licensing, acquisition, and publication gates
         - [x] Record the maintainer's bounded internal-only U.S. licensing decision: five scoped openFDA candidates and eight FDA government-policy candidates may be acquired; seven CMS/NLM/NCATS terms gaps remain catalogue-only; public release remains prohibited
         - [x] Acquire all 13 authorized current-source payloads through the four-surface reuse gate and archive them locally without external publication
