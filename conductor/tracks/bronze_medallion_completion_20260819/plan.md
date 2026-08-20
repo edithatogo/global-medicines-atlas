@@ -12,56 +12,56 @@ table/catalogue layers are rebuildable metadata over those artefacts.
 
 ## Phase 1: Inventory, layer contract, and identity reconciliation
 
-- [ ] Task: Write failing tests for bronze scope classification and catalog/fixture identity reconciliation ([#168](https://github.com/edithatogo/global-medicines-atlas/issues/168))
-    - [ ] Assert in-scope first-cohort and global public/no-credential sources are enumerated from `medicine_source_catalog.json`
-    - [ ] Assert credentialed and licensed-feed sources are excluded with reasons
-    - [ ] Assert adapter and fixture identifiers map to catalog `source_id` values or an explicit alias
-    - [ ] Assert RxNorm/UMLS live payloads are fixture-only
-    - [ ] Confirm the intended failure before implementation
-- [ ] Task: Implement the bronze inventory and layer contract
-    - [ ] Record public ingest versus fixture-only versus excluded
-    - [ ] Preserve independent regulatory, funding, formulary, and terminology dimensions
-    - [ ] Cross-reference M-092 to M-100 and design section Medallion Datahouse
-- [ ] Task: Phase Verification & Checkpoint
-    - [ ] Run focused tests, affected harness, typing, and provenance checks
-    - [ ] Record evidence; do not claim live bronze landing complete
+- [x] Task: Write failing tests for bronze scope classification and catalog/fixture identity reconciliation ([#168](https://github.com/edithatogo/global-medicines-atlas/issues/168))
+    - [x] Assert in-scope first-cohort and global public/no-credential sources are enumerated from `medicine_source_catalog.json`
+    - [x] Assert credentialed and licensed-feed sources are excluded with reasons
+    - [x] Assert adapter and fixture identifiers map to catalog `source_id` values or an explicit alias
+    - [x] Assert RxNorm/UMLS live payloads are fixture-only
+    - [x] Confirm the intended failure before implementation
+- [x] Task: Implement the bronze inventory and layer contract
+    - [x] Record public ingest versus fixture-only versus excluded
+    - [x] Preserve independent regulatory, funding, formulary, and terminology dimensions
+    - [x] Cross-reference M-092 to M-100 and design section Medallion Datahouse
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused tests, affected harness, typing, and provenance checks
+    - [x] Record evidence; do not claim live bronze landing complete
 
 ## Phase 2: Pre-acquisition reuse gate
 
 This phase is first-class. It exists to stop independent copies of the same
 public data. It runs before any acquire/download, including Drugs@FDA.
 
-- [ ] Task: Write failing tests for the reuse gate ([#167](https://github.com/edithatogo/global-medicines-atlas/issues/167) nested sub-issue)
-    - [ ] Assert acquisition without the gate fails
-    - [ ] Assert each disposition reuse | link | mirror | extend | fork | acquire-new is representable
-    - [ ] Assert acquire-new is last resort when a payload copy already exists
-    - [ ] Assert searches cover local clones, GitHub, Hugging Face, and the source registry
-    - [ ] Confirm the intended failure before implementation
-- [ ] Task: Implement the reuse gate against existing contracts
-    - [ ] Reuse `docs/ECOSYSTEM_REUSE.md` and `.context/ecosystem.toml`
-    - [ ] Search `medicine_source_catalog.json` and the Hugging Face catalogue
-    - [ ] Bind the chosen disposition onto receipts and OpenLineage
-    - [ ] Fail closed when Drugs@FDA or any acquire path skips the gate
-- [ ] Task: Phase Verification & Checkpoint
-    - [ ] Run focused tests, typing, and provenance checks
-    - [ ] Record the disposition vocabulary in evidence
+- [x] Task: Write failing tests for the reuse gate ([#176](https://github.com/edithatogo/global-medicines-atlas/issues/176))
+    - [x] Assert acquisition without the gate fails
+    - [x] Assert each disposition reuse | link | mirror | extend | fork | acquire-new is representable
+    - [x] Assert acquire-new is last resort when a payload copy already exists
+    - [x] Assert searches cover local clones, GitHub, Hugging Face, and the source registry
+    - [x] Confirm the intended failure before implementation
+- [x] Task: Implement the reuse gate against existing contracts
+    - [x] Reuse `docs/ECOSYSTEM_REUSE.md` and `.context/ecosystem.toml`
+    - [x] Search `medicine_source_catalog.json` and the Hugging Face catalogue
+    - [x] Bind the chosen disposition onto receipts and OpenLineage
+    - [x] Fail closed when Drugs@FDA or any acquire path skips the gate
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused tests, typing, and provenance checks
+    - [x] Record the disposition vocabulary in evidence
 
 ## Phase 3: Evidentiary payloads, temporal identity, and source-faithful Parquet
 
-- [ ] Task: Write failing tests for bronze landing storage ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
-    - [ ] Assert payload bytes are preserved and Parquet is not the payload
-    - [ ] Assert receipts are content-addressed and bind payload digest, source identity, dates, and rights
-    - [ ] Assert temporal fields are distinct; substituting retrieved_at for published time fails
-    - [ ] Assert valid_* are absent when the source did not supply them
-    - [ ] Assert acquisition ID is immutable across Parquet regeneration
-    - [ ] Assert DuckDB and LanceDB are absent from bronze identity
-    - [ ] Confirm the intended failure before implementation
-- [ ] Task: Implement payload landing, temporal identity, and analytical Parquet
-    - [ ] Reuse `receipts.py`; do not treat DuckDB or Parquet as evidentiary truth
-    - [ ] Record source published/effective time, retrieved_at, valid_from/to, acquisition ID
-    - [ ] Fail closed on missing rights, provenance, or receipt fields
-- [ ] Task: Phase Verification & Checkpoint
-    - [ ] Run focused tests, coverage, typing, and licensing checks
+- [x] Task: Write failing tests for bronze landing storage ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
+    - [x] Assert payload bytes are preserved and Parquet is not the payload
+    - [x] Assert receipts are content-addressed and bind payload digest, source identity, dates, and rights
+    - [x] Assert temporal fields are distinct; substituting retrieved_at for published time fails
+    - [x] Assert valid_* are absent when the source did not supply them
+    - [x] Assert acquisition ID is immutable across Parquet regeneration
+    - [x] Assert DuckDB and LanceDB are absent from bronze identity
+    - [x] Confirm the intended failure before implementation
+- [x] Task: Implement payload landing, temporal identity, and analytical Parquet
+    - [x] Reuse `receipts.py`; do not treat DuckDB or Parquet as evidentiary truth
+    - [x] Record source published/effective time, retrieved_at, valid_from/to, acquisition ID
+    - [x] Fail closed on missing rights, provenance, or receipt fields
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused tests, coverage, typing, and licensing checks
     - [x] Record payload digests, acquisition IDs, and Parquet identities in evidence
 
 ### Phase 3b: Append-only acquisition, admission, and HTTP receipts
@@ -111,8 +111,8 @@ public data. It runs before any acquire/download, including Drugs@FDA.
 - [x] Task: Implement Iceberg-ready specs and OpenLineage projection
     - [x] Keep Iceberg optional; Python 3.14 core must not import it
     - [x] Do not add Marquez to the default install
-- [ ] Task: Phase Verification & Checkpoint
-    - [ ] Run focused tests and typing
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused tests and typing
     - [x] Record lineage event field names in evidence
 
 ## Phase 4b: Scale and performance engineering
@@ -170,18 +170,18 @@ before any hot-path rewrite. Python remains orchestration.
 
 ## Phase 6: Hugging Face archive boundary, regeneration, and completion evidence
 
-- [ ] Task: Write failing tests for archive boundary and regeneration ([#171](https://github.com/edithatogo/global-medicines-atlas/issues/171))
-    - [ ] Assert Hugging Face is an output/archive boundary and not an ingest origin
-    - [ ] Assert repository payloads and receipts remain evidentiary truth
-    - [ ] Assert deterministic regeneration from receipts and fixtures
-    - [ ] Assert restricted payloads cannot enter a public archive package
-    - [ ] Confirm the intended failure before implementation
-- [ ] Task: Bind the Hugging Face archive boundary without duplicating sibling archival work
-    - [ ] Reuse the sibling Hugging Face public-data archival path when it has landed
-    - [ ] Do not publish source-derived payloads without the rights gate
-- [ ] Task: Record bronze-completion evidence for current scope
-    - [ ] Update this track's evidence ledger with observable tests, coverage, and exclusions
-    - [ ] Leave silver/gold/platinum unimplemented
+- [x] Task: Write failing tests for archive boundary and regeneration ([#171](https://github.com/edithatogo/global-medicines-atlas/issues/171))
+    - [x] Assert Hugging Face is an output/archive boundary and not an ingest origin
+    - [x] Assert repository payloads and receipts remain evidentiary truth
+    - [x] Assert deterministic regeneration from receipts and fixtures
+    - [x] Assert restricted payloads cannot enter a public archive package
+    - [x] Confirm the intended failure before implementation
+- [x] Task: Bind the Hugging Face archive boundary without duplicating sibling archival work
+    - [x] Reuse the sibling Hugging Face public-data archival path when it has landed
+    - [x] Do not publish source-derived payloads without the rights gate
+- [x] Task: Record bronze-completion evidence for current scope
+    - [x] Update this track's evidence ledger with observable tests, coverage, and exclusions
+    - [x] Leave silver/gold/platinum unimplemented
 - [ ] Task: Phase Verification & Checkpoint
     - [ ] Run focused tests then `uv run python scripts/test_goblin.py full` where the platform permits
     - [ ] Open a scoped `codex/` pull request, wait for required checks, repair, and merge
