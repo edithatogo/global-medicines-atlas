@@ -56,26 +56,37 @@ def test_audit_is_generated_from_all_36_locked_prompts() -> None:
 def test_live_qualification_completes_verified_prompts() -> None:
     audit = _audit()
     measured = json.loads(MEASURED.read_text(encoding="utf-8"))["body"]
-    assert measured["totals"]["live_qualified_sources"] == 0
-    assert audit["live_qualified_source_count"] == 10
-    assert audit["live_complete_prompt_count"] == 5
+    assert measured["totals"]["live_qualified_sources"] == 1
+    assert audit["live_qualified_source_count"] == 11
+    assert audit["live_complete_prompt_count"] == 6
     assert audit["program_completion"] == "incomplete_live_acquisition"
     complete = [entry for entry in audit["prompts"] if entry["live_complete"]]
-    assert [entry["prompt_id"] for entry in complete] == [12, 15, 17, 19, 25]
+    assert [entry["prompt_id"] for entry in complete] == [
+        12,
+        13,
+        15,
+        17,
+        19,
+        25,
+    ]
     assert complete[0]["live_qualified_source_ids"] == [
         "us-fda-faers",
         "us-openfda-faers",
     ]
-    assert complete[1]["live_qualified_source_ids"] == ["us-fda-rems"]
-    assert complete[2]["live_qualified_source_ids"] == [
+    assert complete[1]["live_qualified_source_ids"] == [
+        "us-openfda-enforcement",
+        "us-fda-recalls-notices",
+    ]
+    assert complete[2]["live_qualified_source_ids"] == ["us-fda-rems"]
+    assert complete[3]["live_qualified_source_ids"] == [
         "us-openfda-ndc",
         "us-fda-ndc-directory",
     ]
-    assert complete[3]["live_qualified_source_ids"] == [
+    assert complete[4]["live_qualified_source_ids"] == [
         "us-fda-nsde",
         "us-openfda-nsde",
     ]
-    assert complete[4]["live_qualified_source_ids"] == ["eu-union-register"]
+    assert complete[5]["live_qualified_source_ids"] == ["eu-union-register"]
     fixture_and_live = {
         source_id
         for entry in audit["prompts"]
@@ -98,6 +109,7 @@ def test_live_qualification_completes_verified_prompts() -> None:
         "us-fda-faers",
         "us-fda-nsde",
         "us-fda-rems",
+        "us-fda-recalls-notices",
     }
 
     orange = audit["prompts"][15]
@@ -342,8 +354,8 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     audit = _audit()
     assert audit["queue_state_counts"] == {
         "credentialed_and_excluded": 18,
-        "landed_and_evidenced": 20,
-        "manual_only_documented_acquisition": 92,
+        "landed_and_evidenced": 21,
+        "manual_only_documented_acquisition": 91,
         "not_yet_implemented": 0,
         "rights_blocked": 41,
         "superseded_by_reused_source": 0,

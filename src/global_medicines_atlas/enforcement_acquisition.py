@@ -80,6 +80,18 @@ _EXPECTED_SURFACES = {
         "html",
         "government_public_domain_policy_review",
     ),
+    "fdagov-archive-documentation": (
+        _NOTICE_SOURCE_ID,
+        "https://www.fda.gov/about-fda/about-website/fdagov-archive",
+        "html",
+        "government_public_domain_policy_review",
+    ),
+    "recall-notices-legacy-archive-index": (
+        _NOTICE_SOURCE_ID,
+        "https://wayback.archive-it.org/7993/20201217182838/https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/archive-recalls-market-withdrawals-safety-alerts",
+        "html",
+        "government_public_domain_policy_review",
+    ),
 }
 
 
@@ -151,7 +163,7 @@ class FDAEnforcementAuthorization(FrozenModel):
         }
         if observed != _EXPECTED_SURFACES:
             raise ValueError(
-                "authorization must match four exact current surfaces"
+                "authorization must match six exact authorized surfaces"
             )
         return self
 
@@ -201,8 +213,11 @@ class FDAEnforcementManifest(FrozenModel):
     exercised_at: datetime
     evidence_class: Literal["live_bounded_internal"] = "live_bounded_internal"
     external_publication_performed: Literal[False] = False
-    prompt_complete: Literal[False] = False
+    prompt_complete: bool
     historical_notice_archive_complete: Literal[False] = False
+    historical_notice_disposition: Literal[
+        "no_single_complete_official_inventory_structured_enforcement_is_record_corpus"
+    ]
     inventory_export_date: date
     inventory_total_records: int
     surface_count: int
@@ -625,8 +640,29 @@ def exercise_fda_enforcement(  # ruff: ignore[too-many-locals,too-many-statement
         corpus, output_dir / ARCHIVE_FILENAME
     )
     succeeded = tuple(item for item in results if item.status == "succeeded")
+    required_notice_surfaces = {
+        "recall-notices-current-xlsx",
+        "recall-notices-documentation",
+        "fdagov-archive-documentation",
+        "recall-notices-legacy-archive-index",
+    }
+    succeeded_surface_ids = {item.surface_id for item in succeeded}
+    prompt_complete = (
+        any(
+            item.surface_id == _BULK_SURFACE_ID
+            and item.status == "succeeded"
+            and item.source_records_projected
+            and item.source_record_count == inventory.total_records
+            for item in results
+        )
+        and required_notice_surfaces <= succeeded_surface_ids
+    )
     manifest = FDAEnforcementManifest(
         exercised_at=timestamp,
+        prompt_complete=prompt_complete,
+        historical_notice_disposition=(
+            "no_single_complete_official_inventory_structured_enforcement_is_record_corpus"
+        ),
         inventory_export_date=inventory.export_date,
         inventory_total_records=inventory.total_records,
         surface_count=len(results),

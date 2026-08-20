@@ -254,6 +254,10 @@ before any hot-path rewrite. Python remains orchestration.
     - [ ] Complete source-specific rights receipts and live landing evidence for the remaining 136 public/no-credential sources; a catalogue blocker is not landing completion
         - [x] Implement and exercise the Union Register JSON acquisition, source-record projection, clean-room recovery, and private archive machinery against a representative corpus; keep live acquisition disabled pending the maintainer licence decision
         - [x] Record the maintainer's internal-only Union Register licence decision, acquire the official 2026-08-17 JSON snapshot, exercise Bronze and clean-room recovery over all 6,440 source-native records, and verify the private archive checksum; public release remains prohibited
+        - [x] Review fixes: register the receipt-backed JSON parser and live-receipt capability in the source capability census (`d386a66`)
+        - [x] Review fixes: bind the committed live qualification into stable-v1 measured coverage with fail-closed identity, recovery, archive-checksum, and Parquet-parity verification (`68c07c9`)
+        - [x] Review fixes: reconcile the all-prompt audit assertion with the single receipt-backed live source and re-run the affected branch-coverage suite (`8a911f9`)
+        - [x] Review fixes: cover catalog identity, source identity, and quantitative live-receipt failure edges required by the protected patch-coverage gate (`c64d3bf`)
         - [x] Generate a fail-closed review packet for all 20 U.S. sources from official FDA, openFDA, CMS, NLM, and NCATS policy surfaces; retain maintainer licensing, acquisition, and publication gates
         - [x] Record the maintainer's bounded internal-only U.S. licensing decision: five scoped openFDA candidates and eight FDA government-policy candidates may be acquired; seven CMS/NLM/NCATS terms gaps remain catalogue-only; public release remains prohibited
         - [x] Acquire all 13 authorized current-source payloads through the four-surface reuse gate and archive them locally without external publication
@@ -369,10 +373,12 @@ for credentialed or rights-unresolved sources.
     - [x] Verify the source-record Parquet byte-for-byte and create the checksum-verified 23,582,720-byte private archive
     - [x] Record an explicit overlap contract that performs no automatic linkage or silent deduplication
     - [x] Keep Prompt 13, historical notice coverage, public release, and external publication fail closed
-- [ ] Task: Complete the historical FDA recall-notice family (Prompt 13)
-    - [ ] Acquire the official historical notice archive through a bounded reproducible inventory and retention path
-    - [ ] Preserve stable notice identity where the source exposes it without inferring enforcement-event equivalence
-    - [ ] Reconcile Prompt 13 only after both source identities have complete live evidence or an explicit approved disposition
+- [x] Task: Complete the FDA recall/enforcement family with an explicit historical-notice disposition (Prompt 13)
+    - [x] Archive the FDA live archive-policy page and its immutable legacy recall-index snapshot alongside the current notice workbook
+    - [x] Record that FDA delegates older pages across multiple archive services and publishes no single complete historical announcement inventory
+    - [x] Preserve the complete openFDA enforcement export as the structured record corpus and keep announcements as a separate selected-publication provenance
+    - [x] Exercise Bronze admission, clean-room recovery, private archive creation, and independent checksum verification without inferring notice-to-event equivalence
+    - [x] Reconcile Prompt 13 from both source identities under the explicit disposition; retain historical-announcement completeness, public release, and external publication as unclaimed
 - [x] Task: Acquire current FDA drug shortages and monthly list history (Prompt 14 partial)
     - [x] Acquire and project the complete current 1,628-record openFDA drug-shortages export at source-native grain
     - [x] Inventory one monthly official FDA shortage-list capture where available from June 2014 through August 2026

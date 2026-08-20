@@ -126,12 +126,16 @@ def test_live_qualification_is_bound_to_recovered_internal_evidence() -> None:
 
     assert qualification["evidence_class"] == "live_bounded_internal"
     assert qualification["prompt_audit_qualified_source_ids"] == [
-        "us-openfda-enforcement"
+        "us-openfda-enforcement",
+        "us-fda-recalls-notices",
     ]
     assert qualification["current_enforcement_bulk_complete"] is True
     assert qualification["current_notice_snapshot_acquired"] is True
     assert qualification["historical_notice_archive_complete"] is False
-    assert qualification["prompt_complete"] is False
+    assert qualification["historical_notice_disposition"] == (
+        "no_single_complete_official_inventory_structured_enforcement_is_record_corpus"
+    )
+    assert qualification["prompt_complete"] is True
     assert qualification["public_release_authorized"] is False
     assert qualification["external_publication_performed"] is False
     assert qualification["source_record_rows"] == 17_876
@@ -166,7 +170,7 @@ _AUTHORIZATION_MUTATIONS: list[
     ),
     (
         lambda raw: raw["surfaces"].pop(),
-        "four exact current surfaces",
+        "six exact authorized surfaces",
     ),
     (
         lambda raw: raw.update(expected_partition_count=2),
@@ -230,8 +234,8 @@ def test_runner_preserves_distinct_surfaces_projects_bulk_and_archives(
         observed_at=datetime(2026, 8, 21, tzinfo=UTC),
     )
 
-    assert manifest.surface_count == 5
-    assert manifest.succeeded_count == 5
+    assert manifest.surface_count == 7
+    assert manifest.succeeded_count == 7
     assert manifest.failed_count == 0
     assert manifest.inventory_export_date.isoformat() == "2026-08-19"
     assert manifest.inventory_total_records == 2
@@ -241,7 +245,10 @@ def test_runner_preserves_distinct_surfaces_projects_bulk_and_archives(
     assert manifest.source_record_parquet_pairs_byte_identical == 1
     assert manifest.current_notice_snapshot_acquired is True
     assert manifest.historical_notice_archive_complete is False
-    assert manifest.prompt_complete is False
+    assert manifest.historical_notice_disposition == (
+        "no_single_complete_official_inventory_structured_enforcement_is_record_corpus"
+    )
+    assert manifest.prompt_complete is True
     assert manifest.external_publication_performed is False
     assert (output / "fda-enforcement-live.private.tar").is_file()
     assert (
@@ -428,7 +435,7 @@ def test_runner_records_fault_isolated_bulk_and_surface_failures(
     )
 
     assert manifest.succeeded_count == 1
-    assert manifest.failed_count == 4
+    assert manifest.failed_count == 6
     assert manifest.source_record_projection_count == 0
     assert manifest.current_notice_snapshot_acquired is False
 

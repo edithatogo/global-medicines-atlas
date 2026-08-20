@@ -333,8 +333,8 @@ def builtin_source_capabilities() -> SourceCapabilityRegistry:
 
     Implementation identifiers are stable ``module:symbol`` references. Each
     identifier occurs once, so code cannot silently imply two source records.
-    Live-receipt and production-qualification capabilities are deliberately
-    absent until receipt-backed evidence exists.
+    Live-receipt capabilities are added only after receipt-backed evidence
+    exists. Production qualification remains separately gated.
     """
 
     acquisition = frozenset({Capability.ACQUISITION})
@@ -346,6 +346,11 @@ def builtin_source_capabilities() -> SourceCapabilityRegistry:
     source_projected = frozenset({
         Capability.SOURCE_PARSER,
         Capability.CANONICAL_PROJECTION,
+    })
+    union_register_live = fixture_projected | frozenset({
+        Capability.ACQUISITION,
+        Capability.SOURCE_PARSER,
+        Capability.LIVE_RECEIPT,
     })
     return SourceCapabilityRegistry((
         SourceCapabilityDeclaration(
@@ -380,9 +385,10 @@ def builtin_source_capabilities() -> SourceCapabilityRegistry:
         ),
         SourceCapabilityDeclaration(
             source_id="eu-union-register",
-            capabilities=fixture_projected,
+            capabilities=union_register_live,
             implementations=(
                 "adapters.european_union:project_union_register_xml",
+                "union_register_acquisition:union_register_source_record_batch",
             ),
         ),
         SourceCapabilityDeclaration(
