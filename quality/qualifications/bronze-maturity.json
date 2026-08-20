@@ -2,8 +2,8 @@
   "schema_id": "global-medicines-atlas.bronze-maturity-qualification",
   "schema_version": 1,
   "horizon": "bronze-current-public-scope",
-  "evaluated_at": "2026-08-20T05:22:23.646825+00:00",
-  "git_commit": "fde23408d4f86c37811389a1fa89ed1bf275a7d1",
+  "evaluated_at": "2026-08-20T05:22:06.875657+00:00",
+  "git_commit": "7d464d219474d7669793107f4cf98fc0aeb8e9f8",
   "authorities": {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -152,18 +152,17 @@
     {
       "property_id": "disaster_recovery",
       "mandatory": true,
-      "state": "blocked",
+      "state": "evidenced",
       "requirement_ids": [
-        "M-082"
+        "M-082",
+        "M-097"
       ],
       "evidence": [
-        "quality/qualifications/stable-v1-production-dr-authority-blocker.json",
-        "docs/operations/governed-recovery-runbook.md"
+        "src/global_medicines_atlas/bronze_recovery.py",
+        "tests/test_bronze_recovery.py"
       ],
-      "blocker_ids": [
-        "bronze-production-dr"
-      ],
-      "notes": "Local recovery rehearsals exist for other layers. Production disaster recovery for bronze payloads remains authority-gated and is not claimed."
+      "blocker_ids": [],
+      "notes": "Bronze metadata, Parquet, and catalogue are reconstructed from immutable payloads and receipts across the required clean-room and loss scenarios. Production operation remains a separate authority gate."
     },
     {
       "property_id": "security",
@@ -245,9 +244,9 @@
     },
     {
       "risk_id": "RISK-002",
-      "description": "Local recovery rehearsals exist for other layers. Production disaster recovery for bronze payloads remains authority-gated and is not claimed.",
-      "disposition": "unresolved",
-      "blocking": true,
+      "description": "Production disaster-recovery operation, independent backup storage, RPO, and RTO remain authority-gated; the in-repo Bronze reconstruction qualification is synthetic and local.",
+      "disposition": "accepted",
+      "blocking": false,
       "evidence": [
         "quality/qualifications/stable-v1-production-dr-authority-blocker.json",
         "docs/operations/governed-recovery-runbook.md"
@@ -301,15 +300,6 @@
         "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
         "src/global_medicines_atlas/adapters/fixture_contracts.py"
       ]
-    },
-    {
-      "blocker_id": "bronze-production-dr",
-      "property_id": "disaster_recovery",
-      "description": "Local recovery rehearsals exist for other layers. Production disaster recovery for bronze payloads remains authority-gated and is not claimed.",
-      "evidence": [
-        "quality/qualifications/stable-v1-production-dr-authority-blocker.json",
-        "docs/operations/governed-recovery-runbook.md"
-      ]
     }
   ],
   "adversarial_review": {
@@ -326,7 +316,7 @@
       {
         "finding_id": "ADV-FALSE-MATURITY",
         "severity": "info",
-        "detail": "Bronze maturity is not declared. Blocked mandatory properties: completeness, disaster_recovery."
+        "detail": "Bronze maturity is not declared. Blocked mandatory properties: completeness."
       },
       {
         "finding_id": "ADV-PROPERTY-SET",

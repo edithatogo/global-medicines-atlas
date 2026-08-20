@@ -27,4 +27,4 @@ and rationale contract in that policy.
 - [~] **Track: Complete bronze medallion landing for current public scope**
   *Link: [tracks/bronze_medallion_completion_20260819/index.md](./tracks/bronze_medallion_completion_20260819/index.md); GitHub parent [#167](https://github.com/edithatogo/global-medicines-atlas/issues/167). Evidentiary payload/receipt truth, reuse gate, temporal identity, Iceberg-ready identities, and OpenLineage projection are in progress.*
 - [x] **Track: Qualify bronze maturity for current public scope**
-  *Archived: [archive/bronze_maturity_qualification_20260820/index.md](./archive/bronze_maturity_qualification_20260820/index.md); report complete, with bronze still blocked by incomplete public ingest and production disaster-recovery authority.*
+  *Archived: [archive/bronze_maturity_qualification_20260820/index.md](./archive/bronze_maturity_qualification_20260820/index.md); related bronze parent [#167](https://github.com/edithatogo/global-medicines-atlas/issues/167). The complete fail-closed report evidences 13 of 14 properties and retains incomplete public-source landing as the sole blocker; Bronze is not declared mature.*
