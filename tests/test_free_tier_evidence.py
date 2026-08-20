@@ -17,7 +17,7 @@ from global_medicines_atlas.free_tier_evidence import (
 
 
 def artifact(**overrides: object) -> PublicArtifact:
-    values = {
+    values: dict[str, object] = {
         "path": "synthetic/records.json",
         "origin": ArtifactOrigin.REPOSITORY_AUTHORED_SYNTHETIC,
         "license": "Apache-2.0",
