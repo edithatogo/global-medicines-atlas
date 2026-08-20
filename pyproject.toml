@@ -159,6 +159,7 @@ paths = [
   "src/global_medicines_atlas/api.py",
   "src/global_medicines_atlas/atlas.py",
   "src/global_medicines_atlas/product_release.py",
+  "src/global_medicines_atlas/datahouse_experiments.py",
 ]
 exclude = ["**/_version.py"]
 operators = ["comparison", "boundary", "boolean", "arithmetic", "return"]
