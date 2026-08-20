@@ -1,12 +1,11 @@
-# Draft nzmedicines Compatibility-Mirror Notice
+# nzmedicines Compatibility-Mirror Notice
 
-> **DRAFT — DO NOT PUBLISH**
->
-> This text has not been posted to the upstream repository. Publishing it,
-> changing repository settings, or archiving the upstream repository requires
-> explicit maintainer approval.
+Published in [`edithatogo/nzmedicines` PR #1](https://github.com/edithatogo/nzmedicines/pull/1)
+on 2026-08-21 and merged as
+`74f48d27caa22755a6c296e1d5b54b52af93397f`. The repository remains
+unarchived as a compatibility and provenance mirror.
 
-## Proposed Notice
+## Published Notice
 
 Development of `nzmedicines` has moved to
 [`edithatogo/global-medicines-atlas`][canonical].
@@ -36,26 +35,25 @@ The preservation bundle is not distributed from the canonical repository.
 Access to restricted or locally governed source material is not implied by
 this notice.
 
-## Proposed Repository State
+## Repository State
 
-If separately approved, the upstream repository may be:
+The maintainer selected the first option for a quiet period:
 
-1. retained as a read-only compatibility mirror; or
-2. archived after the notice and canonical links are verified.
+1. retain the repository as an unarchived compatibility and provenance mirror;
+2. consider archival later as a separate reversible decision.
 
-Neither action is authorized by this draft. Repository settings, topics,
-descriptions, default branches, releases, and issue state must remain
-unchanged until the maintainer gives explicit approval at action time.
+The README, description, and canonical homepage were updated. No release,
+payload, issue, archive, or other repository state was altered.
 
 ## Publication Checklist
 
-- [ ] Confirm the canonical repository and migration links resolve.
-- [ ] Confirm the imported commit and provenance evidence.
-- [ ] Confirm licensing and redistribution boundaries.
-- [ ] Confirm compatibility guidance for existing users.
-- [ ] Obtain explicit maintainer approval to publish this notice.
-- [ ] Obtain separate explicit approval for mirror or archive settings.
-- [ ] Record the published notice URL and repository-setting receipt.
+- [x] Confirm the canonical repository and migration links resolve.
+- [x] Confirm the imported commit and provenance evidence.
+- [x] Confirm licensing and redistribution boundaries.
+- [x] Confirm compatibility guidance for existing users.
+- [x] Obtain explicit maintainer approval to publish this notice.
+- [x] Obtain separate explicit approval for mirror or archive settings.
+- [x] Record the published notice URL and repository-setting receipt.
 
 These actions remain assigned in the canonical
 [external gate register](nzmedicines-external-gates.md).
