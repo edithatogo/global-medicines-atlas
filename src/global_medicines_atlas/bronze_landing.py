@@ -6,7 +6,7 @@ representation; table/catalogue layers are rebuildable metadata over those
 artefacts. Parquet is not raw-as-landed and is not bronze evidentiary truth.
 """
 
-# pyright: reportUnknownMemberType=false
+# pyright: reportUnknownMemberType=false, reportUnknownVariableType=false
 
 from __future__ import annotations
 
@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from hashlib import sha256
 from pathlib import Path
+from typing import Literal, cast
 
 import orjson
 import pyarrow as pa
@@ -31,6 +32,11 @@ from .bronze_admission import (
 )
 from .bronze_integrity import inspect_untrusted_payload
 from .bronze_transformation import (
+    MANIFEST_PARSER_IDENTITY,
+    MANIFEST_SCHEMA_VERSION,
+    MANIFEST_TRANSFORMATION_IDENTITY,
+    SOURCE_RECORDS_SCHEMA_VERSION,
+    SOURCE_RECORDS_TRANSFORMATION_IDENTITY,
     TransformationRunReceipt,
     receipt_for_parquet,
     write_transformation_run_receipt,
@@ -56,6 +62,14 @@ RECEIPT_DIR = "receipts"
 LINEAGE_DIR = "lineage"
 ACQUISITION_DIR = "acquisitions"
 ADMISSION_DIR = "admissions"
+ACQUISITION_MANIFEST_PRODUCT = "acquisition_manifest"
+SOURCE_RECORDS_PRODUCT = "source_records"
+_RECORD_LINK_COLUMNS = (
+    "gma_source_record_id",
+    "gma_acquisition_id",
+    "gma_content_id",
+    "gma_schema_fingerprint",
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -71,14 +85,58 @@ class BronzeAcquisition:
 
 
 @dataclass(frozen=True, slots=True)
-class BronzeLanding(BronzeAcquisition):
-    """An accepted acquisition plus its analytical Parquet projection."""
+class SourceRecordBatch:
+    """Adapter-produced native records and their durable parser identity."""
 
-    parquet_path: Path
-    lineage_path: Path
-    transformation_receipt_path: Path
-    table: IcebergReadyTableSpec
-    transformation_run: TransformationRunReceipt
+    table: pa.Table
+    parser_identity: str
+    record_id_column: str
+
+
+@dataclass(frozen=True, slots=True)
+class BronzeLanding(BronzeAcquisition):
+    """An accepted acquisition plus distinct Bronze Parquet products."""
+
+    acquisition_manifest_path: Path
+    acquisition_manifest_lineage_path: Path
+    acquisition_manifest_transformation_receipt_path: Path
+    acquisition_manifest_table: IcebergReadyTableSpec
+    acquisition_manifest_transformation_run: TransformationRunReceipt
+    source_records_path: Path | None = None
+    source_records_lineage_path: Path | None = None
+    source_records_transformation_receipt_path: Path | None = None
+    source_records_table: IcebergReadyTableSpec | None = None
+    source_records_transformation_run: TransformationRunReceipt | None = None
+
+    @property
+    def parquet_path(self) -> Path:
+        """Compatibility alias for the mandatory acquisition manifest."""
+
+        return self.acquisition_manifest_path
+
+    @property
+    def lineage_path(self) -> Path:
+        """Compatibility alias for acquisition-manifest lineage."""
+
+        return self.acquisition_manifest_lineage_path
+
+    @property
+    def transformation_receipt_path(self) -> Path:
+        """Compatibility alias for the manifest transformation receipt."""
+
+        return self.acquisition_manifest_transformation_receipt_path
+
+    @property
+    def table(self) -> IcebergReadyTableSpec:
+        """Compatibility alias for the manifest Iceberg-ready table."""
+
+        return self.acquisition_manifest_table
+
+    @property
+    def transformation_run(self) -> TransformationRunReceipt:
+        """Compatibility alias for the manifest transformation run."""
+
+        return self.acquisition_manifest_transformation_run
 
 
 def _payload_extension(media_hint: str | None) -> str:
@@ -99,66 +157,171 @@ def _payload_extension(media_hint: str | None) -> str:
 def bronze_table_spec(
     receipt: SourceReceipt,
     parquet_path: Path,
+    *,
+    product: str = ACQUISITION_MANIFEST_PRODUCT,
+    schema_fields: tuple[tuple[str, str], ...] | None = None,
 ) -> IcebergReadyTableSpec:
-    """Stable Iceberg-ready identity over source-faithful Parquet."""
+    """Stable Iceberg-ready identity for one explicit Bronze product."""
 
     source_id = receipt.source.source_id
     jurisdiction = receipt.source.jurisdiction
     temporal = require_temporal(receipt.temporal)
+    manifest_fields = (
+        ("source_id", "string"),
+        ("jurisdiction", "string"),
+        ("acquisition_id", "string"),
+        ("content_id", "string"),
+        ("retrieved_at", "timestamptz"),
+        ("source_published_at", "timestamptz"),
+        ("source_effective_at", "timestamptz"),
+        ("valid_from", "timestamptz"),
+        ("valid_to", "timestamptz"),
+        ("rights_state", "string"),
+        ("admission_state", "string"),
+        ("source_uri", "string"),
+        ("media_type", "string"),
+        ("payload_location", "string"),
+        ("payload_sha256", "string"),
+        ("payload_byte_count", "long"),
+        ("receipt_digest", "string"),
+        ("parser_available", "boolean"),
+        ("source_parser_identity", "string"),
+        ("reuse_disposition", "string"),
+    )
+    fields = schema_fields or manifest_fields
+    identifier = table_identifier_for(
+        jurisdiction=jurisdiction,
+        source_id=source_id,
+    )
+    identifier = f"{identifier}_{product}"
+    partitions = (
+        ("jurisdiction", "source_id", "rights_state")
+        if product == ACQUISITION_MANIFEST_PRODUCT
+        else ()
+    )
     return IcebergReadyTableSpec(
-        identifier=table_identifier_for(
-            jurisdiction=jurisdiction,
-            source_id=source_id,
-        ),
+        identifier=identifier,
         location=str(parquet_path.parent),
-        partition_fields=("jurisdiction", "source_id", "rights_state"),
+        partition_fields=partitions,
         format_version=2,
-        schema_fields=(
-            ("source_id", "string"),
-            ("jurisdiction", "string"),
-            ("rights_state", "string"),
-            ("payload_sha256", "string"),
-            ("content_id", "string"),
-            ("receipt_digest", "string"),
-            ("acquisition_id", "string"),
-            ("retrieved_at", "timestamptz"),
-            ("source_published_at", "timestamptz"),
-            ("source_effective_at", "timestamptz"),
-            ("valid_from", "timestamptz"),
-            ("valid_to", "timestamptz"),
-            ("reuse_disposition", "string"),
-            ("native_record", "string"),
-        ),
-        last_column_id=14,
+        schema_fields=fields,
+        last_column_id=len(fields),
         acquisition_id=temporal.acquisition_id,
         content_id=receipt.payload.sha256,
         parquet_digest=sha256(parquet_path.read_bytes()).hexdigest(),
     )
 
 
-def _analytical_table(receipt: SourceReceipt, payload: bytes) -> pa.Table:
+def _media_type(receipt: SourceReceipt, payload_path: Path) -> str:
+    http = receipt.retrieval.http
+    if http is not None and http.content_type is not None:
+        return http.content_type
+    return {
+        ".json": "application/json",
+        ".xml": "application/xml",
+        ".csv": "text/csv",
+        ".tsv": "text/tab-separated-values",
+        ".zip": "application/zip",
+        ".pdf": "application/pdf",
+    }.get(payload_path.suffix.lower(), "application/octet-stream")
+
+
+def _acquisition_manifest_table(
+    receipt: SourceReceipt,
+    *,
+    payload_path: Path,
+    admission: BronzeAdmissionRecord,
+    source_records: SourceRecordBatch | None,
+) -> pa.Table:
     temporal = require_temporal(receipt.temporal)
-    native = payload.decode("utf-8", errors="replace")
     reuse_gate = receipt.reuse
     if reuse_gate is None:
-        raise ValueError("analytical parquet requires a reuse gate decision")
+        raise ValueError("acquisition manifest requires a reuse gate decision")
     reuse = reuse_gate.disposition.value
     return pa.table({
         "source_id": [receipt.source.source_id],
         "jurisdiction": [receipt.source.jurisdiction],
-        "rights_state": [receipt.rights_state.value],
-        "payload_sha256": [receipt.payload.sha256],
-        "content_id": [temporal.content_id or receipt.payload.sha256],
-        "receipt_digest": [receipt.digest()],
         "acquisition_id": [temporal.acquisition_id],
+        "content_id": [temporal.content_id or receipt.payload.sha256],
         "retrieved_at": [temporal.retrieved_at],
         "source_published_at": [temporal.source_published_at],
         "source_effective_at": [temporal.source_effective_at],
         "valid_from": [temporal.valid_from],
         "valid_to": [temporal.valid_to],
+        "rights_state": [receipt.rights_state.value],
+        "admission_state": [admission.state.value],
+        "source_uri": [str(receipt.retrieval.uri)],
+        "media_type": [_media_type(receipt, payload_path)],
+        "payload_location": [payload_path.as_uri()],
+        "payload_sha256": [receipt.payload.sha256],
+        "payload_byte_count": [receipt.payload.byte_count],
+        "receipt_digest": [receipt.digest()],
+        "parser_available": [source_records is not None],
+        "source_parser_identity": [
+            None if source_records is None else source_records.parser_identity
+        ],
         "reuse_disposition": [reuse],
-        "native_record": [native],
     })
+
+
+def _iceberg_type(field: pa.Field[pa.DataType]) -> str:
+    if pa.types.is_boolean(field.type):
+        return "boolean"
+    if pa.types.is_integer(field.type):
+        return "long"
+    if pa.types.is_floating(field.type):
+        return "double"
+    if pa.types.is_timestamp(field.type):
+        return "timestamptz" if field.type.tz is not None else "timestamp"
+    return "string"
+
+
+def _iceberg_schema_fields(
+    schema: pa.Schema,
+) -> tuple[tuple[str, str], ...]:
+    return tuple(
+        (
+            typed.name,
+            _iceberg_type(typed),
+        )
+        for raw in schema
+        for typed in (cast("pa.Field[pa.DataType]", raw),)
+    )
+
+
+def _source_records_table(
+    receipt: SourceReceipt,
+    batch: SourceRecordBatch,
+) -> tuple[pa.Table, str]:
+    if not batch.parser_identity:
+        raise ValueError("source-record parser identity is required")
+    if batch.record_id_column not in batch.table.column_names:
+        raise ValueError("source record identifier column is absent")
+    collisions = set(batch.table.column_names).intersection(
+        _RECORD_LINK_COLUMNS
+    )
+    if collisions:
+        raise ValueError("source records use reserved GMA linkage columns")
+    identifier = batch.table.column(batch.record_id_column)
+    if identifier.null_count:
+        raise ValueError("source record identifier column contains nulls")
+    temporal = require_temporal(receipt.temporal)
+    fingerprint = sha256(
+        batch.table.schema.serialize().to_pybytes()
+    ).hexdigest()
+    count = batch.table.num_rows
+    linked = batch.table
+    linked = linked.append_column(
+        "gma_source_record_id",
+        pa.array([str(value.as_py()) for value in identifier]),
+    )
+    for name, value in (
+        ("gma_acquisition_id", temporal.acquisition_id),
+        ("gma_content_id", temporal.content_id or receipt.payload.sha256),
+        ("gma_schema_fingerprint", fingerprint),
+    ):
+        linked = linked.append_column(name, pa.array([value] * count))
+    return linked, fingerprint
 
 
 def _write_append_only(path: Path, payload: bytes) -> None:
@@ -213,44 +376,129 @@ def _store_payload_bytes(path: Path, payload: bytes) -> None:
         path.write_bytes(payload)
 
 
-def _write_analytical_outputs(
-    bound: SourceReceipt,
-    payload: bytes,
+@dataclass(frozen=True, slots=True)
+class _ProductOutput:
+    path: Path
+    lineage_path: Path
+    transformation_run: TransformationRunReceipt
+    table: IcebergReadyTableSpec
+
+
+def _write_parquet_product(
+    receipt: SourceReceipt,
+    table: pa.Table,
     *,
-    payload_path: Path,
+    product: Literal["acquisition_manifest", "source_records"],
     parquet_path: Path,
     lineage_path: Path,
+    payload_path: Path,
     bronze_root: Path,
-    completed_at: datetime | None = None,
-) -> tuple[IcebergReadyTableSpec, TransformationRunReceipt]:
-    table = _analytical_table(bound, payload)
+    parser_identity: str,
+    transformation_identity: str,
+    schema_version: str,
+    completed_at: datetime | None,
+) -> _ProductOutput:
     pq.write_table(table, parquet_path)
-    temporal = require_temporal(bound.temporal)
+    temporal = require_temporal(receipt.temporal)
     transformation_run = receipt_for_parquet(
         parquet_path,
         acquisition_id=temporal.acquisition_id,
-        input_content_id=temporal.content_id or bound.payload.sha256,
+        input_content_id=temporal.content_id or receipt.payload.sha256,
         completed_at=completed_at,
+        parser_identity=parser_identity,
+        transformation_identity=transformation_identity,
+        output_schema_version=schema_version,
     )
     transformation_run = write_transformation_run_receipt(
         transformation_run,
         bronze_root=bronze_root,
-        source_id=bound.source.source_id,
+        source_id=receipt.source.source_id,
     )
-    spec = bronze_table_spec(bound, parquet_path)
+    schema_fields = _iceberg_schema_fields(table.schema)
+    spec = bronze_table_spec(
+        receipt,
+        parquet_path,
+        product=product,
+        schema_fields=schema_fields,
+    )
     if spec.parquet_digest != transformation_run.output.sha256:
         raise ValueError("Parquet identity diverged after transformation")
     event_lineage = project_openlineage_event(
-        bound,
+        receipt,
         payload_uri=payload_path.as_uri(),
         parquet_uri=parquet_path.as_uri(),
         transformation_run=transformation_run,
         table=spec,
+        parquet_product=product,
     )
     lineage_path.write_bytes(
         orjson.dumps(event_lineage, option=orjson.OPT_SORT_KEYS) + b"\n"
     )
-    return spec, transformation_run
+    return _ProductOutput(
+        path=parquet_path,
+        lineage_path=lineage_path,
+        transformation_run=transformation_run,
+        table=spec,
+    )
+
+
+def _write_analytical_outputs(
+    bound: SourceReceipt,
+    *,
+    payload_path: Path,
+    manifest_path: Path,
+    manifest_lineage_path: Path,
+    bronze_root: Path,
+    admission: BronzeAdmissionRecord,
+    source_records: SourceRecordBatch | None,
+    source_records_path: Path | None,
+    source_records_lineage_path: Path | None,
+    completed_at: datetime | None = None,
+) -> tuple[_ProductOutput, _ProductOutput | None]:
+    projected_records = (
+        None
+        if source_records is None
+        else _source_records_table(bound, source_records)[0]
+    )
+    manifest_table = _acquisition_manifest_table(
+        bound,
+        payload_path=payload_path,
+        admission=admission,
+        source_records=source_records,
+    )
+    manifest = _write_parquet_product(
+        bound,
+        manifest_table,
+        product=ACQUISITION_MANIFEST_PRODUCT,
+        parquet_path=manifest_path,
+        lineage_path=manifest_lineage_path,
+        payload_path=payload_path,
+        bronze_root=bronze_root,
+        parser_identity=MANIFEST_PARSER_IDENTITY,
+        transformation_identity=MANIFEST_TRANSFORMATION_IDENTITY,
+        schema_version=MANIFEST_SCHEMA_VERSION,
+        completed_at=completed_at,
+    )
+    if projected_records is None:
+        return manifest, None
+    if source_records is None:
+        raise TypeError("projected source records require their batch metadata")
+    if source_records_path is None or source_records_lineage_path is None:
+        raise ValueError("source-record output paths are required")
+    records = _write_parquet_product(
+        bound,
+        projected_records,
+        product=SOURCE_RECORDS_PRODUCT,
+        parquet_path=source_records_path,
+        lineage_path=source_records_lineage_path,
+        payload_path=payload_path,
+        bronze_root=bronze_root,
+        parser_identity=source_records.parser_identity,
+        transformation_identity=SOURCE_RECORDS_TRANSFORMATION_IDENTITY,
+        schema_version=SOURCE_RECORDS_SCHEMA_VERSION,
+        completed_at=completed_at,
+    )
+    return manifest, records
 
 
 def land_bronze_payload(  # ruff: ignore[too-many-locals]
@@ -263,6 +511,7 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals]
     admission_actor: str = "global-medicines-atlas:automated-admission-v2",
     admission_decided_at: datetime | None = None,
     transformation_completed_at: datetime | None = None,
+    source_records: SourceRecordBatch | None = None,
 ) -> BronzeAcquisition | BronzeLanding:
     """Stage, admit, and project a payload only after acceptance."""
 
@@ -369,32 +618,50 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals]
         and transformation_completed_at < admission.decided_at
     ):
         raise ValueError("transformation cannot complete before admission")
-    for folder in (PARQUET_DIR, LINEAGE_DIR):
-        (bronze_root / folder / source_id).mkdir(parents=True, exist_ok=True)
-    parquet_path = (
-        bronze_root
-        / PARQUET_DIR
-        / source_id
-        / f"{temporal.acquisition_id}.parquet"
+    product_dir = (
+        bronze_root / PARQUET_DIR / source_id / temporal.acquisition_id
     )
-    lineage_path = (
-        bronze_root
-        / LINEAGE_DIR
-        / source_id
-        / f"{temporal.acquisition_id}.openlineage.json"
+    lineage_dir = (
+        bronze_root / LINEAGE_DIR / source_id / temporal.acquisition_id
     )
-    spec, transformation_run = _write_analytical_outputs(
+    product_dir.mkdir(parents=True, exist_ok=True)
+    lineage_dir.mkdir(parents=True, exist_ok=True)
+    manifest_path = product_dir / "acquisition_manifest.parquet"
+    manifest_lineage_path = (
+        lineage_dir / "acquisition_manifest.openlineage.json"
+    )
+    source_records_path = (
+        None
+        if source_records is None
+        else product_dir / "source_records.parquet"
+    )
+    source_records_lineage_path = (
+        None
+        if source_records is None
+        else lineage_dir / "source_records.openlineage.json"
+    )
+    manifest, records = _write_analytical_outputs(
         bound,
-        payload,
         payload_path=payload_path,
-        parquet_path=parquet_path,
-        lineage_path=lineage_path,
+        manifest_path=manifest_path,
+        manifest_lineage_path=manifest_lineage_path,
         bronze_root=bronze_root,
+        admission=admission,
+        source_records=source_records,
+        source_records_path=source_records_path,
+        source_records_lineage_path=source_records_lineage_path,
         completed_at=transformation_completed_at,
     )
-    transformation_path = transformation_run.path
-    if transformation_path is None:
+    manifest_receipt_path = manifest.transformation_run.path
+    if manifest_receipt_path is None:
         raise ValueError("transformation run receipt path is required")
+    records_receipt_path = (
+        None if records is None else records.transformation_run.path
+    )
+    if records is not None and records_receipt_path is None:
+        raise ValueError(
+            "source-record transformation receipt path is required"
+        )
     return BronzeLanding(
         payload_path=acquisition.payload_path,
         receipt_path=acquisition.receipt_path,
@@ -402,11 +669,20 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals]
         receipt=acquisition.receipt,
         landed_admission=acquisition.landed_admission,
         admission=acquisition.admission,
-        parquet_path=parquet_path,
-        lineage_path=lineage_path,
-        transformation_receipt_path=transformation_path,
-        table=spec,
-        transformation_run=transformation_run,
+        acquisition_manifest_path=manifest.path,
+        acquisition_manifest_lineage_path=manifest.lineage_path,
+        acquisition_manifest_transformation_receipt_path=manifest_receipt_path,
+        acquisition_manifest_table=manifest.table,
+        acquisition_manifest_transformation_run=manifest.transformation_run,
+        source_records_path=None if records is None else records.path,
+        source_records_lineage_path=(
+            None if records is None else records.lineage_path
+        ),
+        source_records_transformation_receipt_path=records_receipt_path,
+        source_records_table=None if records is None else records.table,
+        source_records_transformation_run=(
+            None if records is None else records.transformation_run
+        ),
     )
 
 
@@ -419,25 +695,37 @@ def write_rebuildable_layers(
     lineage_path: Path,
     bronze_root: Path,
     admission: BronzeAdmissionRecord,
+    source_records: SourceRecordBatch | None = None,
+    source_records_path: Path | None = None,
+    source_records_lineage_path: Path | None = None,
 ) -> IcebergReadyTableSpec:
-    """Rebuild Parquet and lineage; never rewrite payload or receipt bytes."""
+    """Rebuild admitted Bronze products; never rewrite evidentiary bytes."""
 
     require_admitted_for_processing(admission)
+    if not receipt.payload.matches(payload):
+        raise ValueError("payload digest does not match receipt")
     parquet_path.parent.mkdir(parents=True, exist_ok=True)
     lineage_path.parent.mkdir(parents=True, exist_ok=True)
-    spec, _run = _write_analytical_outputs(
+    manifest, _records = _write_analytical_outputs(
         receipt,
-        payload,
         payload_path=payload_path,
-        parquet_path=parquet_path,
-        lineage_path=lineage_path,
+        manifest_path=parquet_path,
+        manifest_lineage_path=lineage_path,
         bronze_root=bronze_root,
+        admission=admission,
+        source_records=source_records,
+        source_records_path=source_records_path,
+        source_records_lineage_path=source_records_lineage_path,
     )
-    return spec
+    return manifest.table
 
 
-def regenerate_parquet(landing: BronzeLanding) -> Path:
-    """Rebuild analytical Parquet from the immutable payload and receipt."""
+def regenerate_parquet(
+    landing: BronzeLanding,
+    *,
+    source_records: SourceRecordBatch | None = None,
+) -> Path:
+    """Rebuild the manifest and any supplied adapter-native record batch."""
 
     payload = landing.payload_path.read_bytes()
     admission = latest_admission_decision(landing)
@@ -449,5 +737,8 @@ def regenerate_parquet(landing: BronzeLanding) -> Path:
         lineage_path=landing.lineage_path,
         bronze_root=landing.receipt_path.parents[2],
         admission=admission,
+        source_records=source_records,
+        source_records_path=landing.source_records_path,
+        source_records_lineage_path=landing.source_records_lineage_path,
     )
-    return landing.parquet_path
+    return landing.acquisition_manifest_path

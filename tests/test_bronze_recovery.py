@@ -124,7 +124,8 @@ def test_clean_room_rebuild_from_payloads_and_receipts_only(
         empty
         / PARQUET_DIR
         / landing.receipt.source.source_id
-        / f"{_acquisition_id(landing)}.parquet"
+        / _acquisition_id(landing)
+        / "acquisition_manifest.parquet"
     )
     assert rebuilt.column("payload_sha256")[0].as_py() == (
         landing.receipt.payload.sha256

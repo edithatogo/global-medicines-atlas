@@ -9,7 +9,7 @@ part of the default install.
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Any, cast
+from typing import Any, Literal, cast
 
 from .bronze_transformation import TransformationRunReceipt
 from .iceberg_ready import IcebergReadyTableSpec
@@ -78,10 +78,16 @@ def payload_dataset_name(receipt: SourceReceipt) -> str:
 def parquet_dataset_name(
     receipt: SourceReceipt,
     transformation_run: TransformationRunReceipt,
+    product: Literal[
+        "parquet", "acquisition_manifest", "source_records"
+    ] = "parquet",
 ) -> str:
     """Stable OpenLineage name for source-faithful Parquet, not Iceberg."""
 
-    return f"{receipt.source.source_id}/{transformation_run.output.sha256}"
+    return (
+        f"{receipt.source.source_id}/{product}/"
+        f"{transformation_run.output.sha256}"
+    )
 
 
 def catalogue_dataset_name(table: IcebergReadyTableSpec) -> str:
@@ -295,13 +301,16 @@ def conform_run_event(event: Mapping[str, object]) -> None:
             _conform_dataset(dataset, f"{label}[{index}]")
 
 
-def project_openlineage_event(
+def project_openlineage_event(  # ruff: ignore[too-many-locals]
     receipt: SourceReceipt,
     *,
     payload_uri: str,
     parquet_uri: str,
     transformation_run: TransformationRunReceipt,
     table: IcebergReadyTableSpec | None = None,
+    parquet_product: Literal[
+        "parquet", "acquisition_manifest", "source_records"
+    ] = "parquet",
 ) -> dict[str, Any]:
     """Emit one COMPLETE RunEvent from a native source receipt."""
 
@@ -314,11 +323,24 @@ def project_openlineage_event(
         raise ValueError("transformation run does not match acquisition")
     if transformation_run.input_content_id != receipt.payload.sha256:
         raise ValueError("transformation run does not match input content")
-    parquet_name = parquet_dataset_name(receipt, transformation_run)
+    parquet_name = parquet_dataset_name(
+        receipt,
+        transformation_run,
+        parquet_product,
+    )
+    parquet_namespace = {
+        "parquet": "gma.parquet",
+        "acquisition_manifest": "gma.acquisition_manifest",
+        "source_records": "gma.source_records",
+    }[parquet_product]
     payload_extra = dict(identity)
     parquet_extra = dict(identity)
     parquet_extra["columnLineage"] = _column_lineage(
-        field="payload_sha256",
+        field=(
+            "gma_content_id"
+            if parquet_product == "source_records"
+            else "payload_sha256"
+        ),
         namespace="gma.payload",
         name=payload_name,
         input_field="sha256",
@@ -352,7 +374,7 @@ def project_openlineage_event(
             formatVersion=table.format_version,
         )
     parquet_dataset = _dataset(
-        namespace="gma.parquet",
+        namespace=parquet_namespace,
         name=parquet_name,
         storage_layer="file",
         file_format="parquet",
@@ -377,7 +399,7 @@ def project_openlineage_event(
             SYMLINKS_SCHEMA_URL,
             identifiers=[
                 _symlink(
-                    namespace="gma.parquet",
+                    namespace=parquet_namespace,
                     name=parquet_name,
                     kind="LOCATION",
                 )
@@ -385,9 +407,13 @@ def project_openlineage_event(
         )
         catalogue_extra["columnLineage"] = _column_lineage(
             field="identifier",
-            namespace="gma.parquet",
+            namespace=parquet_namespace,
             name=parquet_name,
-            input_field="payload_sha256",
+            input_field=(
+                "gma_content_id"
+                if parquet_product == "source_records"
+                else "payload_sha256"
+            ),
         )
         catalogue_extra["gmaIcebergReady"] = _facet(
             f"{PRODUCER}#iceberg-ready",
@@ -418,7 +444,9 @@ def project_openlineage_event(
         },
         "job": {
             "namespace": JOB_NAMESPACE,
-            "name": f"bronze.land.{receipt.source.source_id}",
+            "name": (
+                f"bronze.land.{receipt.source.source_id}.{parquet_product}"
+            ),
         },
         "inputs": [source_dataset],
         "outputs": outputs,

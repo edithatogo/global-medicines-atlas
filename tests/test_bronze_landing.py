@@ -64,7 +64,11 @@ def test_payload_bytes_are_preserved_and_parquet_is_not_the_payload(
     assert landing.payload_path.suffix == ".json"
     table = pq.read_table(landing.parquet_path)
     assert table.column("payload_sha256")[0].as_py() == receipt.payload.sha256
-    assert table.column("native_record")[0].as_py() == PAYLOAD.decode()
+    assert "native_record" not in table.column_names
+    assert table.column("payload_location")[0].as_py() == (
+        landing.payload_path.as_uri()
+    )
+    assert table.column("parser_available")[0].as_py() is False
     assert landing.parquet_path.read_bytes() != PAYLOAD
     assert "evidentiary" not in landing.parquet_path.name
 
