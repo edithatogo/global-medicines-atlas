@@ -17,6 +17,17 @@
   "recovered_acquisition_count": 8,
   "recovered_source_record_projection_count": 8,
   "source_record_parquet_pairs_byte_identical": 8,
+  "prompt_audit_qualified_source_ids": [
+    "us-fda-nsde"
+  ],
+  "prompt_audit_qualification_basis": {
+    "source_id": "us-fda-nsde",
+    "prompt_id": 19,
+    "authoritative_dataset": "FDA NDC SPL Data Elements (NSDE) comprehensive file",
+    "publication_mechanism": "https://download.open.fda.gov/Comprehensive_NDC_SPL_Data_Elements_File.zip",
+    "documentation": "https://www.fda.gov/industry/structured-product-labeling-resources/nsde",
+    "qualification_reason": "Prompt 19 requires verified current publication and the standard immutable Bronze contract; it does not require historical release depth."
+  },
   "private_archive": {
     "filename": "us-live-bronze-corpus.private.tar",
     "sha256": "774ea1bc3249ae80957457229eb88fff92d231a4bc317fd32ca5cd1a58ce8334",

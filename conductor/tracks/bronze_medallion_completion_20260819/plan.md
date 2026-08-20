@@ -240,6 +240,7 @@ before any hot-path rewrite. Python remains orchestration.
         - [x] Acquire all 13 authorized current-source payloads through the four-surface reuse gate and archive them locally without external publication
         - [x] Exercise immutable landing, rights-bound receipts, append-only admission, accepted-only Parquet/OpenLineage, and clean-room recovery against the live corpus; 8 acquisitions were accepted and rebuilt while 5 HTML/interactive payloads were preserved and quarantined
         - [x] Produce adapter-native Bronze records for the five bounded openFDA JSON canaries and the accepted Drugs@FDA, NSDE, and Orange Book archives; regenerate all eight record products byte-for-byte from immutable payloads and receipts
+        - [x] Reconcile prompt 19 as the first live-complete acquisition prompt: the authoritative FDA NSDE comprehensive file and bounded openFDA NSDE projection are both live-qualified; keep Orange Book and other historical families incomplete
         - [ ] Acquire complete historical releases for the applicable FDA source families; the bounded canaries and current snapshots do not complete prompt-level coverage
 - [x] Task: Review Fixes for bounded U.S. live acquisition (`9a7dc7b`)
     - [x] Prevent bound GET/HEAD requests from gaining a chunked request body and skip compressed-wire Content-Length comparisons against decoded bytes

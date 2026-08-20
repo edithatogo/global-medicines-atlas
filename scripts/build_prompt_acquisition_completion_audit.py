@@ -19,10 +19,14 @@ MEASURED = ROOT / "quality/qualifications/stable-v1-measured-coverage.json"
 US_LIVE_QUALIFICATION = (
     ROOT / "quality/qualifications/us-live-bronze-corpus-20260820.json"
 )
+US_RECORD_QUALIFICATION = (
+    ROOT / "quality/qualifications/us-live-bronze-records-20260820.json"
+)
 DEFAULT_OUTPUT = (
     ROOT / "quality/qualifications/prompt-acquisition-completion-audit.json"
 )
 RECONCILIATION_PROMPT_ID = 36
+PROMPT_AUDIT_RECORD_SOURCE_IDS = frozenset({"us-fda-nsde"})
 
 NEXT_ACTIONS = {
     "credentialed_and_excluded": (
@@ -157,6 +161,49 @@ def _qualified_us_live_sources() -> set[str]:
     }
 
 
+def _qualified_us_record_sources() -> set[str]:
+    qualification = json.loads(
+        US_RECORD_QUALIFICATION.read_text(encoding="utf-8")
+    )
+    if qualification["evidence_class"] != "live_bounded_internal":
+        raise ValueError(
+            "U.S. record qualification has the wrong evidence class"
+        )
+    if (
+        qualification["coverage_complete"]
+        or qualification["external_publication_performed"]
+        or qualification["public_release_authorized"]
+    ):
+        raise ValueError(
+            "U.S. record qualification crossed its internal-only boundary"
+        )
+    projected = {
+        item["source_id"]
+        for item in qualification["record_products"]
+        if item["row_count"] > 0
+    }
+    qualified = set(qualification["prompt_audit_qualified_source_ids"])
+    if qualified != set(PROMPT_AUDIT_RECORD_SOURCE_IDS):
+        raise ValueError(
+            "U.S. record prompt qualification exceeds reviewed source scope"
+        )
+    if not qualified.issubset(projected):
+        raise ValueError(
+            "prompt-qualified source lacks a nonempty record product"
+        )
+    expected_products = qualification["source_record_projection_count"]
+    if (
+        qualification["recovered_source_record_projection_count"]
+        != expected_products
+        or qualification["source_record_parquet_pairs_byte_identical"]
+        != expected_products
+    ):
+        raise ValueError(
+            "U.S. record products lack byte-identical clean-room recovery"
+        )
+    return qualified
+
+
 def build() -> dict[str, Any]:
     """Join locked prompt scope to queue and measured evidence."""
 
@@ -168,7 +215,9 @@ def build() -> dict[str, Any]:
     measured_by_source = {
         item["source_id"]: item for item in measured["sources"]
     }
-    qualified_us_live = _qualified_us_live_sources()
+    qualified_us_live = (
+        _qualified_us_live_sources() | _qualified_us_record_sources()
+    )
     for source_id in qualified_us_live:
         existing = measured_by_source.get(source_id, {})
         measured_by_source[source_id] = existing | {"live_qualified": True}
