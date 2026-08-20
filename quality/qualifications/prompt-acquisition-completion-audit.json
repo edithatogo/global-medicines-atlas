@@ -1,0 +1,1313 @@
+{
+  "schema_id": "global-medicines-atlas.prompt-acquisition-completion-audit",
+  "schema_version": 1,
+  "generated_at": "2026-08-20",
+  "prompt_count": 36,
+  "unique_prompt_source_count": 94,
+  "catalog_source_count": 172,
+  "fixture_qualified_source_count": 16,
+  "live_qualified_source_count": 0,
+  "live_complete_prompt_count": 0,
+  "program_completion": "incomplete_live_acquisition",
+  "queue_state_counts": {
+    "credentialed_and_excluded": 18,
+    "landed_and_evidenced": 16,
+    "manual_only_documented_acquisition": 93,
+    "not_yet_implemented": 0,
+    "rights_blocked": 45,
+    "superseded_by_reused_source": 0,
+    "temporarily_unavailable": 0
+  },
+  "evidence_policy": "catalogue, fixture, and archive evidence do not prove live acquisition; each prompt completes only when every scoped source is live-qualified or an explicit unavailable/excluded disposition satisfies that prompt",
+  "prompts": [
+    {
+      "prompt_id": 1,
+      "title": "WHO National Essential Medicines Lists / Global EML",
+      "family": "who",
+      "invariant": "EML/formulary evidence is not automatically reimbursement.",
+      "source_count": 2,
+      "source_ids": [
+        "global-who-eml",
+        "global-who-national-eml-index"
+      ],
+      "queue_states": {
+        "global-who-eml": "landed_and_evidenced",
+        "global-who-national-eml-index": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "landed_and_evidenced": 1,
+        "manual_only_documented_acquisition": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "global-who-eml",
+        "global-who-national-eml-index"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "documented_manual_acquisition_required",
+        "fixture_only_is_not_live"
+      ],
+      "next_actions": [
+        "replace governed fixture evidence with a receipt-backed live source acquisition",
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
+      ]
+    },
+    {
+      "prompt_id": 2,
+      "title": "WHO AMDS / GPRM",
+      "family": "who",
+      "invariant": "Procurement price is not reimbursement, retail, list, or PPP-normalised.",
+      "source_count": 1,
+      "source_ids": [
+        "global-who-amds-gprm"
+      ],
+      "queue_states": {
+        "global-who-amds-gprm": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "manual_only_documented_acquisition": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "global-who-amds-gprm"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "documented_manual_acquisition_required"
+      ],
+      "next_actions": [
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
+      ]
+    },
+    {
+      "prompt_id": 3,
+      "title": "WHO medicines price, availability, and shortage sources",
+      "family": "who",
+      "invariant": "Register each dataset separately; do not infer shortage from missing data.",
+      "source_count": 3,
+      "source_ids": [
+        "global-who-medicine-prices",
+        "global-who-availability-surveys",
+        "global-who-shortage-sources"
+      ],
+      "queue_states": {
+        "global-who-medicine-prices": "manual_only_documented_acquisition",
+        "global-who-availability-surveys": "manual_only_documented_acquisition",
+        "global-who-shortage-sources": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "manual_only_documented_acquisition": 3
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "global-who-medicine-prices",
+        "global-who-availability-surveys",
+        "global-who-shortage-sources"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "documented_manual_acquisition_required"
+      ],
+      "next_actions": [
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
+      ]
+    },
+    {
+      "prompt_id": 4,
+      "title": "WHO MI4A vaccines",
+      "family": "who",
+      "invariant": "Vaccine-market evidence is distinct from conventional medicines reimbursement.",
+      "source_count": 1,
+      "source_ids": [
+        "global-who-mi4a"
+      ],
+      "queue_states": {
+        "global-who-mi4a": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "manual_only_documented_acquisition": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "global-who-mi4a"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "documented_manual_acquisition_required"
+      ],
+      "next_actions": [
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
+      ]
+    },
+    {
+      "prompt_id": 5,
+      "title": "Uganda NDA, EML, and public safety",
+      "family": "africa",
+      "invariant": "Keep registration, formulary, and safety dimensions separate.",
+      "source_count": 3,
+      "source_ids": [
+        "ug-nda-register",
+        "ug-national-eml",
+        "ug-nda-safety"
+      ],
+      "queue_states": {
+        "ug-nda-register": "manual_only_documented_acquisition",
+        "ug-national-eml": "manual_only_documented_acquisition",
+        "ug-nda-safety": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "manual_only_documented_acquisition": 3
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "ug-nda-register",
+        "ug-national-eml",
+        "ug-nda-safety"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "documented_manual_acquisition_required"
+      ],
+      "next_actions": [
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
+      ]
+    },
+    {
+      "prompt_id": 6,
+      "title": "Kenya PPB, formularies, and safety",
+      "family": "africa",
+      "invariant": "Do not infer current registration from historical presence or absence.",
+      "source_count": 3,
+      "source_ids": [
+        "ke-ppb-register",
+        "ke-national-eml",
+        "ke-ppb-safety"
+      ],
+      "queue_states": {
+        "ke-ppb-register": "manual_only_documented_acquisition",
+        "ke-national-eml": "manual_only_documented_acquisition",
+        "ke-ppb-safety": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "manual_only_documented_acquisition": 3
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "ke-ppb-register",
+        "ke-national-eml",
+        "ke-ppb-safety"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "documented_manual_acquisition_required"
+      ],
+      "next_actions": [
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
+      ]
+    },
+    {
+      "prompt_id": 7,
+      "title": "Tanzania TMDA products, EML, and safety",
+      "family": "africa",
+      "invariant": "Preserve manufacturer/sponsor as source-native fields.",
+      "source_count": 3,
+      "source_ids": [
+        "tz-tmda-products",
+        "tz-national-eml",
+        "tz-tmda-safety"
+      ],
+      "queue_states": {
+        "tz-tmda-products": "manual_only_documented_acquisition",
+        "tz-national-eml": "manual_only_documented_acquisition",
+        "tz-tmda-safety": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "manual_only_documented_acquisition": 3
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "tz-tmda-products",
+        "tz-national-eml",
+        "tz-tmda-safety"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "documented_manual_acquisition_required"
+      ],
+      "next_actions": [
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
+      ]
+    },
+    {
+      "prompt_id": 8,
+      "title": "Pakistan DRAP, NEML, and safety",
+      "family": "africa",
+      "invariant": "Distinguish provisional, registered, and historical source-native states.",
+      "source_count": 3,
+      "source_ids": [
+        "pk-drap-register",
+        "pk-neml",
+        "pk-drap-safety"
+      ],
+      "queue_states": {
+        "pk-drap-register": "manual_only_documented_acquisition",
+        "pk-neml": "manual_only_documented_acquisition",
+        "pk-drap-safety": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "manual_only_documented_acquisition": 3
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "pk-drap-register",
+        "pk-neml",
+        "pk-drap-safety"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "documented_manual_acquisition_required"
+      ],
+      "next_actions": [
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
+      ]
+    },
+    {
+      "prompt_id": 9,
+      "title": "African regulatory registries expansion",
+      "family": "africa",
+      "invariant": "Per-jurisdiction inventory; measured matrix; missing lists are not negatives.",
+      "source_count": 26,
+      "source_ids": [
+        "eg-eda-register",
+        "eg-national-eml",
+        "eg-eda-safety",
+        "gh-fda-register",
+        "gh-national-eml",
+        "gh-fda-safety",
+        "rw-rwandafda-register",
+        "rw-national-eml",
+        "rw-rwandafda-safety",
+        "sn-dpm-register",
+        "sn-national-eml",
+        "sn-dpm-safety",
+        "zw-mcaz-register",
+        "zw-national-eml",
+        "zw-mcaz-safety",
+        "mus-pharmacy-board-register",
+        "ng-nafdac-products",
+        "ng-nhia-medicines",
+        "za-sahpra-register",
+        "za-national-eml",
+        "za-sahpra-safety",
+        "ng-nafdac-safety",
+        "mus-pharmacy-board-safety",
+        "ug-nda-register",
+        "ke-ppb-register",
+        "tz-tmda-products"
+      ],
+      "queue_states": {
+        "eg-eda-register": "manual_only_documented_acquisition",
+        "eg-national-eml": "manual_only_documented_acquisition",
+        "eg-eda-safety": "manual_only_documented_acquisition",
+        "gh-fda-register": "manual_only_documented_acquisition",
+        "gh-national-eml": "manual_only_documented_acquisition",
+        "gh-fda-safety": "manual_only_documented_acquisition",
+        "rw-rwandafda-register": "manual_only_documented_acquisition",
+        "rw-national-eml": "manual_only_documented_acquisition",
+        "rw-rwandafda-safety": "manual_only_documented_acquisition",
+        "sn-dpm-register": "manual_only_documented_acquisition",
+        "sn-national-eml": "manual_only_documented_acquisition",
+        "sn-dpm-safety": "manual_only_documented_acquisition",
+        "zw-mcaz-register": "manual_only_documented_acquisition",
+        "zw-national-eml": "manual_only_documented_acquisition",
+        "zw-mcaz-safety": "manual_only_documented_acquisition",
+        "mus-pharmacy-board-register": "manual_only_documented_acquisition",
+        "ng-nafdac-products": "manual_only_documented_acquisition",
+        "ng-nhia-medicines": "manual_only_documented_acquisition",
+        "za-sahpra-register": "manual_only_documented_acquisition",
+        "za-national-eml": "rights_blocked",
+        "za-sahpra-safety": "manual_only_documented_acquisition",
+        "ng-nafdac-safety": "manual_only_documented_acquisition",
+        "mus-pharmacy-board-safety": "manual_only_documented_acquisition",
+        "ug-nda-register": "manual_only_documented_acquisition",
+        "ke-ppb-register": "manual_only_documented_acquisition",
+        "tz-tmda-products": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "manual_only_documented_acquisition": 25,
+        "rights_blocked": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "eg-eda-register",
+        "eg-national-eml",
+        "eg-eda-safety",
+        "gh-fda-register",
+        "gh-national-eml",
+        "gh-fda-safety",
+        "rw-rwandafda-register",
+        "rw-national-eml",
+        "rw-rwandafda-safety",
+        "sn-dpm-register",
+        "sn-national-eml",
+        "sn-dpm-safety",
+        "zw-mcaz-register",
+        "zw-national-eml",
+        "zw-mcaz-safety",
+        "mus-pharmacy-board-register",
+        "ng-nafdac-products",
+        "ng-nhia-medicines",
+        "za-sahpra-register",
+        "za-national-eml",
+        "za-sahpra-safety",
+        "ng-nafdac-safety",
+        "mus-pharmacy-board-safety",
+        "ug-nda-register",
+        "ke-ppb-register",
+        "tz-tmda-products"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "source_specific_rights_decision_required",
+        "documented_manual_acquisition_required"
+      ],
+      "next_actions": [
+        "execute the documented reproducible acquisition after source-specific rights confirmation",
+        "obtain a maintainer-approved source-specific rights decision"
+      ]
+    },
+    {
+      "prompt_id": 10,
+      "title": "Mauritius approved drug list and public registration",
+      "family": "africa",
+      "invariant": "Distinguish registration, formulary, and reimbursement.",
+      "source_count": 3,
+      "source_ids": [
+        "mus-approved-drug-list",
+        "mus-pharmacy-board-register",
+        "mus-historical-eml-archive"
+      ],
+      "queue_states": {
+        "mus-approved-drug-list": "manual_only_documented_acquisition",
+        "mus-pharmacy-board-register": "manual_only_documented_acquisition",
+        "mus-historical-eml-archive": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "manual_only_documented_acquisition": 3
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "mus-approved-drug-list",
+        "mus-pharmacy-board-register",
+        "mus-historical-eml-archive"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "documented_manual_acquisition_required"
+      ],
+      "next_actions": [
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
+      ]
+    },
+    {
+      "prompt_id": 11,
+      "title": "India expansion beyond CDSCO/NLEM seeds",
+      "family": "india",
+      "invariant": "NPPA ceiling price is not a transaction or reimbursement price.",
+      "source_count": 6,
+      "source_ids": [
+        "in-cdsco-approved-drugs",
+        "in-cdsco-products",
+        "in-nlem",
+        "in-nppa-ceiling-prices",
+        "in-procurement-availability",
+        "in-pvpi-safety"
+      ],
+      "queue_states": {
+        "in-cdsco-approved-drugs": "manual_only_documented_acquisition",
+        "in-cdsco-products": "manual_only_documented_acquisition",
+        "in-nlem": "rights_blocked",
+        "in-nppa-ceiling-prices": "manual_only_documented_acquisition",
+        "in-procurement-availability": "manual_only_documented_acquisition",
+        "in-pvpi-safety": "credentialed_and_excluded"
+      },
+      "queue_state_counts": {
+        "credentialed_and_excluded": 1,
+        "manual_only_documented_acquisition": 4,
+        "rights_blocked": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "in-cdsco-approved-drugs",
+        "in-cdsco-products",
+        "in-nlem",
+        "in-nppa-ceiling-prices",
+        "in-procurement-availability",
+        "in-pvpi-safety"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "source_specific_rights_decision_required",
+        "documented_manual_acquisition_required",
+        "credential_or_licence_boundary"
+      ],
+      "next_actions": [
+        "retain metadata-only until credentials, licence, and access authority are approved",
+        "execute the documented reproducible acquisition after source-specific rights confirmation",
+        "obtain a maintainer-approved source-specific rights decision"
+      ]
+    },
+    {
+      "prompt_id": 12,
+      "title": "FDA FAERS public releases",
+      "family": "fda",
+      "invariant": "Reports are not causation; no dedup or identity collapse in Bronze.",
+      "source_count": 2,
+      "source_ids": [
+        "us-fda-faers",
+        "us-openfda-faers"
+      ],
+      "queue_states": {
+        "us-fda-faers": "landed_and_evidenced",
+        "us-openfda-faers": "rights_blocked"
+      },
+      "queue_state_counts": {
+        "landed_and_evidenced": 1,
+        "rights_blocked": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "us-fda-faers",
+        "us-openfda-faers"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "source_specific_rights_decision_required",
+        "fixture_only_is_not_live"
+      ],
+      "next_actions": [
+        "replace governed fixture evidence with a receipt-backed live source acquisition",
+        "obtain a maintainer-approved source-specific rights decision"
+      ]
+    },
+    {
+      "prompt_id": 13,
+      "title": "FDA recalls and enforcement",
+      "family": "fda",
+      "invariant": "API and files overlap; model the relationship, do not silent-dedup.",
+      "source_count": 2,
+      "source_ids": [
+        "us-openfda-enforcement",
+        "us-fda-recalls-notices"
+      ],
+      "queue_states": {
+        "us-openfda-enforcement": "rights_blocked",
+        "us-fda-recalls-notices": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "manual_only_documented_acquisition": 1,
+        "rights_blocked": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "us-openfda-enforcement",
+        "us-fda-recalls-notices"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "source_specific_rights_decision_required",
+        "documented_manual_acquisition_required"
+      ],
+      "next_actions": [
+        "execute the documented reproducible acquisition after source-specific rights confirmation",
+        "obtain a maintainer-approved source-specific rights decision"
+      ]
+    },
+    {
+      "prompt_id": 14,
+      "title": "FDA drug shortages",
+      "family": "fda",
+      "invariant": "Absence from the current list is not evidence of no historical shortage.",
+      "source_count": 1,
+      "source_ids": [
+        "us-fda-drug-shortages"
+      ],
+      "queue_states": {
+        "us-fda-drug-shortages": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "manual_only_documented_acquisition": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "us-fda-drug-shortages"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "documented_manual_acquisition_required"
+      ],
+      "next_actions": [
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
+      ]
+    },
+    {
+      "prompt_id": 15,
+      "title": "FDA REMS",
+      "family": "fda",
+      "invariant": "REMS is distinct from approval and from pharmacovigilance case data.",
+      "source_count": 1,
+      "source_ids": [
+        "us-fda-rems"
+      ],
+      "queue_states": {
+        "us-fda-rems": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "manual_only_documented_acquisition": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "us-fda-rems"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "documented_manual_acquisition_required"
+      ],
+      "next_actions": [
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
+      ]
+    },
+    {
+      "prompt_id": 16,
+      "title": "FDA Orange Book versioned family",
+      "family": "fda",
+      "invariant": "Therapeutic equivalence codes are not clinical substitutability.",
+      "source_count": 1,
+      "source_ids": [
+        "us-fda-orange-book"
+      ],
+      "queue_states": {
+        "us-fda-orange-book": "rights_blocked"
+      },
+      "queue_state_counts": {
+        "rights_blocked": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "us-fda-orange-book"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "source_specific_rights_decision_required"
+      ],
+      "next_actions": [
+        "obtain a maintainer-approved source-specific rights decision"
+      ]
+    },
+    {
+      "prompt_id": 17,
+      "title": "FDA NDC Directory",
+      "family": "fda",
+      "invariant": "Listing is not approval; preserve product versus package grain.",
+      "source_count": 2,
+      "source_ids": [
+        "us-openfda-ndc",
+        "us-fda-ndc-directory"
+      ],
+      "queue_states": {
+        "us-openfda-ndc": "rights_blocked",
+        "us-fda-ndc-directory": "rights_blocked"
+      },
+      "queue_state_counts": {
+        "rights_blocked": 2
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "us-openfda-ndc",
+        "us-fda-ndc-directory"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "source_specific_rights_decision_required"
+      ],
+      "next_actions": [
+        "obtain a maintainer-approved source-specific rights decision"
+      ]
+    },
+    {
+      "prompt_id": 18,
+      "title": "FDA UNII / GSRS",
+      "family": "fda",
+      "invariant": "Substance terminology is not canonical medicine identity.",
+      "source_count": 1,
+      "source_ids": [
+        "us-gsrs-unii"
+      ],
+      "queue_states": {
+        "us-gsrs-unii": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "manual_only_documented_acquisition": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "us-gsrs-unii"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "documented_manual_acquisition_required"
+      ],
+      "next_actions": [
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
+      ]
+    },
+    {
+      "prompt_id": 19,
+      "title": "FDA NSDE",
+      "family": "fda",
+      "invariant": "Authoritative NSDE is the FDA SPL NDC SPL Data Elements file.",
+      "source_count": 2,
+      "source_ids": [
+        "us-fda-nsde",
+        "us-openfda-nsde"
+      ],
+      "queue_states": {
+        "us-fda-nsde": "rights_blocked",
+        "us-openfda-nsde": "rights_blocked"
+      },
+      "queue_state_counts": {
+        "rights_blocked": 2
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "us-fda-nsde",
+        "us-openfda-nsde"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "source_specific_rights_decision_required"
+      ],
+      "next_actions": [
+        "obtain a maintainer-approved source-specific rights decision"
+      ]
+    },
+    {
+      "prompt_id": 20,
+      "title": "EMA EPAR structured data and documents",
+      "family": "ema",
+      "invariant": "Documents must not overwrite structured source-native fields.",
+      "source_count": 3,
+      "source_ids": [
+        "eu-ema-medicines",
+        "eu-ema-json",
+        "eu-ema-epar-documents"
+      ],
+      "queue_states": {
+        "eu-ema-medicines": "landed_and_evidenced",
+        "eu-ema-json": "rights_blocked",
+        "eu-ema-epar-documents": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "landed_and_evidenced": 1,
+        "manual_only_documented_acquisition": 1,
+        "rights_blocked": 1
+      },
+      "fixture_qualified_source_ids": [
+        "eu-ema-medicines"
+      ],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "eu-ema-medicines",
+        "eu-ema-json",
+        "eu-ema-epar-documents"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "source_specific_rights_decision_required",
+        "documented_manual_acquisition_required",
+        "fixture_only_is_not_live"
+      ],
+      "next_actions": [
+        "replace governed fixture evidence with a receipt-backed live source acquisition",
+        "execute the documented reproducible acquisition after source-specific rights confirmation",
+        "obtain a maintainer-approved source-specific rights decision"
+      ]
+    },
+    {
+      "prompt_id": 21,
+      "title": "EMA EudraVigilance public",
+      "family": "ema",
+      "invariant": "Public dashboards are not unrestricted case-level data.",
+      "source_count": 1,
+      "source_ids": [
+        "eu-eudravigilance-public"
+      ],
+      "queue_states": {
+        "eu-eudravigilance-public": "credentialed_and_excluded"
+      },
+      "queue_state_counts": {
+        "credentialed_and_excluded": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "eu-eudravigilance-public"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "credential_or_licence_boundary"
+      ],
+      "next_actions": [
+        "retain metadata-only until credentials, licence, and access authority are approved"
+      ]
+    },
+    {
+      "prompt_id": 22,
+      "title": "EMA orphan designations",
+      "family": "ema",
+      "invariant": "Orphan designation is distinct from marketing authorisation.",
+      "source_count": 1,
+      "source_ids": [
+        "eu-ema-orphan"
+      ],
+      "queue_states": {
+        "eu-ema-orphan": "rights_blocked"
+      },
+      "queue_state_counts": {
+        "rights_blocked": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "eu-ema-orphan"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "source_specific_rights_decision_required"
+      ],
+      "next_actions": [
+        "obtain a maintainer-approved source-specific rights decision"
+      ]
+    },
+    {
+      "prompt_id": 23,
+      "title": "EMA referrals",
+      "family": "ema",
+      "invariant": "Referral events must not collapse into ordinary approval status.",
+      "source_count": 1,
+      "source_ids": [
+        "eu-ema-referrals"
+      ],
+      "queue_states": {
+        "eu-ema-referrals": "rights_blocked"
+      },
+      "queue_state_counts": {
+        "rights_blocked": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "eu-ema-referrals"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "source_specific_rights_decision_required"
+      ],
+      "next_actions": [
+        "obtain a maintainer-approved source-specific rights decision"
+      ]
+    },
+    {
+      "prompt_id": 24,
+      "title": "EMA safety communications",
+      "family": "ema",
+      "invariant": "Do not infer causality beyond the regulator statement.",
+      "source_count": 1,
+      "source_ids": [
+        "eu-ema-safety-communications"
+      ],
+      "queue_states": {
+        "eu-ema-safety-communications": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "manual_only_documented_acquisition": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "eu-ema-safety-communications"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "documented_manual_acquisition_required"
+      ],
+      "next_actions": [
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
+      ]
+    },
+    {
+      "prompt_id": 25,
+      "title": "EMA Union Register",
+      "family": "ema",
+      "invariant": "Fully catalogued and versioned; fixtures are not complete acquisition.",
+      "source_count": 1,
+      "source_ids": [
+        "eu-union-register"
+      ],
+      "queue_states": {
+        "eu-union-register": "landed_and_evidenced"
+      },
+      "queue_state_counts": {
+        "landed_and_evidenced": 1
+      },
+      "fixture_qualified_source_ids": [
+        "eu-union-register"
+      ],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "eu-union-register"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "fixture_only_is_not_live"
+      ],
+      "next_actions": [
+        "replace governed fixture evidence with a receipt-backed live source acquisition"
+      ]
+    },
+    {
+      "prompt_id": 26,
+      "title": "EMA Article 57 / xEVMPD",
+      "family": "ema",
+      "invariant": "Public metadata stays public; credentialed payloads stay metadata-only.",
+      "source_count": 2,
+      "source_ids": [
+        "eu-ema-article57",
+        "eu-ema-xevmpd-credentialed"
+      ],
+      "queue_states": {
+        "eu-ema-article57": "rights_blocked",
+        "eu-ema-xevmpd-credentialed": "credentialed_and_excluded"
+      },
+      "queue_state_counts": {
+        "credentialed_and_excluded": 1,
+        "rights_blocked": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "eu-ema-article57",
+        "eu-ema-xevmpd-credentialed"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "source_specific_rights_decision_required",
+        "credential_or_licence_boundary"
+      ],
+      "next_actions": [
+        "retain metadata-only until credentials, licence, and access authority are approved",
+        "obtain a maintainer-approved source-specific rights decision"
+      ]
+    },
+    {
+      "prompt_id": 27,
+      "title": "EMA SPOR / PMS / RMS / OMS",
+      "family": "ema",
+      "invariant": "Metadata-only credentialed rows are not bronze coverage.",
+      "source_count": 3,
+      "source_ids": [
+        "eu-spor-rms-oms",
+        "eu-ema-pms-fhir",
+        "eu-spor-public-metadata"
+      ],
+      "queue_states": {
+        "eu-spor-rms-oms": "credentialed_and_excluded",
+        "eu-ema-pms-fhir": "credentialed_and_excluded",
+        "eu-spor-public-metadata": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "credentialed_and_excluded": 2,
+        "manual_only_documented_acquisition": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "eu-spor-rms-oms",
+        "eu-ema-pms-fhir",
+        "eu-spor-public-metadata"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "documented_manual_acquisition_required",
+        "credential_or_licence_boundary"
+      ],
+      "next_actions": [
+        "retain metadata-only until credentials, licence, and access authority are approved",
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
+      ]
+    },
+    {
+      "prompt_id": 28,
+      "title": "UK NICE technology appraisals",
+      "family": "uk",
+      "invariant": "A recommendation is not actual funding or utilisation.",
+      "source_count": 1,
+      "source_ids": [
+        "gb-nice-ta"
+      ],
+      "queue_states": {
+        "gb-nice-ta": "landed_and_evidenced"
+      },
+      "queue_state_counts": {
+        "landed_and_evidenced": 1
+      },
+      "fixture_qualified_source_ids": [
+        "gb-nice-ta"
+      ],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "gb-nice-ta"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "fixture_only_is_not_live"
+      ],
+      "next_actions": [
+        "replace governed fixture evidence with a receipt-backed live source acquisition"
+      ]
+    },
+    {
+      "prompt_id": 29,
+      "title": "UK use of NICE-appraised medicines",
+      "family": "uk",
+      "invariant": "Do not force a universal utilisation unit across methodology changes.",
+      "source_count": 1,
+      "source_ids": [
+        "gb-nice-medicines-utilisation"
+      ],
+      "queue_states": {
+        "gb-nice-medicines-utilisation": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "manual_only_documented_acquisition": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "gb-nice-medicines-utilisation"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "documented_manual_acquisition_required"
+      ],
+      "next_actions": [
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
+      ]
+    },
+    {
+      "prompt_id": 30,
+      "title": "England OpenPrescribing",
+      "family": "uk",
+      "invariant": "Rights and volume constraints; no cross-country unit normalisation.",
+      "source_count": 1,
+      "source_ids": [
+        "gb-openprescribing"
+      ],
+      "queue_states": {
+        "gb-openprescribing": "rights_blocked"
+      },
+      "queue_state_counts": {
+        "rights_blocked": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "gb-openprescribing"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "source_specific_rights_decision_required"
+      ],
+      "next_actions": [
+        "obtain a maintainer-approved source-specific rights decision"
+      ]
+    },
+    {
+      "prompt_id": 31,
+      "title": "US Medicare Part D utilisation",
+      "family": "utilisation",
+      "invariant": "Part D is not total US utilisation; population limits stay explicit.",
+      "source_count": 2,
+      "source_ids": [
+        "us-cms-partd-spending",
+        "us-cms-partd-formulary"
+      ],
+      "queue_states": {
+        "us-cms-partd-spending": "rights_blocked",
+        "us-cms-partd-formulary": "landed_and_evidenced"
+      },
+      "queue_state_counts": {
+        "landed_and_evidenced": 1,
+        "rights_blocked": 1
+      },
+      "fixture_qualified_source_ids": [
+        "us-cms-partd-formulary"
+      ],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "us-cms-partd-spending",
+        "us-cms-partd-formulary"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "source_specific_rights_decision_required",
+        "fixture_only_is_not_live"
+      ],
+      "next_actions": [
+        "replace governed fixture evidence with a receipt-backed live source acquisition",
+        "obtain a maintainer-approved source-specific rights decision"
+      ]
+    },
+    {
+      "prompt_id": 32,
+      "title": "Netherlands GIPdatabank",
+      "family": "utilisation",
+      "invariant": "Retain methodology and classification version; no ATC transform in Bronze.",
+      "source_count": 1,
+      "source_ids": [
+        "nl-gipdatabank"
+      ],
+      "queue_states": {
+        "nl-gipdatabank": "rights_blocked"
+      },
+      "queue_state_counts": {
+        "rights_blocked": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "nl-gipdatabank"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "source_specific_rights_decision_required"
+      ],
+      "next_actions": [
+        "obtain a maintainer-approved source-specific rights decision"
+      ]
+    },
+    {
+      "prompt_id": 33,
+      "title": "Nordic utilisation (DK/NO/SE)",
+      "family": "utilisation",
+      "invariant": "Separate sources; no cross-country comparability claim.",
+      "source_count": 3,
+      "source_ids": [
+        "dk-medstat-utilisation",
+        "no-norpd-utilisation",
+        "se-socialstyrelsen-utilisation"
+      ],
+      "queue_states": {
+        "dk-medstat-utilisation": "manual_only_documented_acquisition",
+        "no-norpd-utilisation": "credentialed_and_excluded",
+        "se-socialstyrelsen-utilisation": "rights_blocked"
+      },
+      "queue_state_counts": {
+        "credentialed_and_excluded": 1,
+        "manual_only_documented_acquisition": 1,
+        "rights_blocked": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "dk-medstat-utilisation",
+        "no-norpd-utilisation",
+        "se-socialstyrelsen-utilisation"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "source_specific_rights_decision_required",
+        "documented_manual_acquisition_required",
+        "credential_or_licence_boundary"
+      ],
+      "next_actions": [
+        "retain metadata-only until credentials, licence, and access authority are approved",
+        "execute the documented reproducible acquisition after source-specific rights confirmation",
+        "obtain a maintainer-approved source-specific rights decision"
+      ]
+    },
+    {
+      "prompt_id": 34,
+      "title": "Additional public utilisation (FR/JP/CA/IE)",
+      "family": "utilisation",
+      "invariant": "Bounded discovery; prefer national/payer authorities over aggregators.",
+      "source_count": 4,
+      "source_ids": [
+        "fr-open-medic",
+        "jp-mhlw-ndb-utilisation",
+        "ca-cihi-nhex-medicines",
+        "ie-pcrs-reimbursement"
+      ],
+      "queue_states": {
+        "fr-open-medic": "rights_blocked",
+        "jp-mhlw-ndb-utilisation": "credentialed_and_excluded",
+        "ca-cihi-nhex-medicines": "credentialed_and_excluded",
+        "ie-pcrs-reimbursement": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "credentialed_and_excluded": 2,
+        "manual_only_documented_acquisition": 1,
+        "rights_blocked": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "fr-open-medic",
+        "jp-mhlw-ndb-utilisation",
+        "ca-cihi-nhex-medicines",
+        "ie-pcrs-reimbursement"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "source_specific_rights_decision_required",
+        "documented_manual_acquisition_required",
+        "credential_or_licence_boundary"
+      ],
+      "next_actions": [
+        "retain metadata-only until credentials, licence, and access authority are approved",
+        "execute the documented reproducible acquisition after source-specific rights confirmation",
+        "obtain a maintainer-approved source-specific rights decision"
+      ]
+    },
+    {
+      "prompt_id": 35,
+      "title": "Global PV expansion beyond FDA/EMA",
+      "family": "pharmacovigilance",
+      "invariant": "Register restricted systems; bronze coverage only for acquired evidence.",
+      "source_count": 5,
+      "source_ids": [
+        "global-umc-vigibase",
+        "gb-mhra-yellow-card",
+        "au-tga-daen",
+        "ca-canada-vigilance",
+        "jp-pmda-safety"
+      ],
+      "queue_states": {
+        "global-umc-vigibase": "credentialed_and_excluded",
+        "gb-mhra-yellow-card": "manual_only_documented_acquisition",
+        "au-tga-daen": "manual_only_documented_acquisition",
+        "ca-canada-vigilance": "rights_blocked",
+        "jp-pmda-safety": "manual_only_documented_acquisition"
+      },
+      "queue_state_counts": {
+        "credentialed_and_excluded": 1,
+        "manual_only_documented_acquisition": 3,
+        "rights_blocked": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "global-umc-vigibase",
+        "gb-mhra-yellow-card",
+        "au-tga-daen",
+        "ca-canada-vigilance",
+        "jp-pmda-safety"
+      ],
+      "live_complete": false,
+      "completion_state": "live_acquisition_incomplete",
+      "blocker_categories": [
+        "source_specific_rights_decision_required",
+        "documented_manual_acquisition_required",
+        "credential_or_licence_boundary"
+      ],
+      "next_actions": [
+        "retain metadata-only until credentials, licence, and access authority are approved",
+        "execute the documented reproducible acquisition after source-specific rights confirmation",
+        "obtain a maintainer-approved source-specific rights decision"
+      ]
+    },
+    {
+      "prompt_id": 36,
+      "title": "Final source-coverage reconciliation",
+      "family": "reconciliation",
+      "invariant": "Citable versioned index from the registry; new tracks only for high-value gaps.",
+      "source_count": 1,
+      "source_ids": [
+        "global-medicines-source-index"
+      ],
+      "queue_states": {
+        "global-medicines-source-index": "derived_reconciliation_output"
+      },
+      "queue_state_counts": {
+        "derived_reconciliation_output": 1
+      },
+      "fixture_qualified_source_ids": [],
+      "live_qualified_source_ids": [],
+      "sources_without_live_evidence": [
+        "global-medicines-source-index"
+      ],
+      "live_complete": false,
+      "completion_state": "reconciliation_generated_but_live_program_incomplete",
+      "blocker_categories": [
+        "dependent_on_live_acquisition_program"
+      ],
+      "next_actions": [
+        "regenerate the versioned source index after every scoped live acquisition is reconciled"
+      ]
+    }
+  ]
+}

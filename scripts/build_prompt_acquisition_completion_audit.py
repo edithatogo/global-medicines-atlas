@@ -1,0 +1,195 @@
+"""Build the evidence-gated completion audit for acquisition prompts 1-36."""
+
+from __future__ import annotations
+
+import argparse
+import json
+from collections import Counter
+from pathlib import Path
+from typing import Any
+
+from global_medicines_atlas.source_expansion import (
+    ExpansionTrack,
+    expansion_tracks,
+)
+
+ROOT = Path(__file__).resolve().parents[1]
+QUEUE = ROOT / "quality/qualifications/bronze-source-landing-queue.json"
+MEASURED = ROOT / "quality/qualifications/stable-v1-measured-coverage.json"
+DEFAULT_OUTPUT = (
+    ROOT / "quality/qualifications/prompt-acquisition-completion-audit.json"
+)
+RECONCILIATION_PROMPT_ID = 36
+
+NEXT_ACTIONS = {
+    "credentialed_and_excluded": (
+        "retain metadata-only until credentials, licence, and access authority are approved"
+    ),
+    "landed_and_evidenced": (
+        "replace governed fixture evidence with a receipt-backed live source acquisition"
+    ),
+    "manual_only_documented_acquisition": (
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
+    ),
+    "not_yet_implemented": "implement and test the declared acquisition adapter",
+    "rights_blocked": "obtain a maintainer-approved source-specific rights decision",
+    "superseded_by_reused_source": (
+        "verify the reused source has current live evidence for this source identity"
+    ),
+    "temporarily_unavailable": (
+        "record a dated availability observation and retry without treating absence as negative evidence"
+    ),
+    "derived_reconciliation_output": (
+        "regenerate the versioned source index after every scoped live acquisition is reconciled"
+    ),
+}
+
+
+def _blocker_categories(states: set[str]) -> list[str]:
+    categories: list[str] = []
+    if "rights_blocked" in states:
+        categories.append("source_specific_rights_decision_required")
+    if "manual_only_documented_acquisition" in states:
+        categories.append("documented_manual_acquisition_required")
+    if "credentialed_and_excluded" in states:
+        categories.append("credential_or_licence_boundary")
+    if "landed_and_evidenced" in states:
+        categories.append("fixture_only_is_not_live")
+    if "temporarily_unavailable" in states:
+        categories.append("temporarily_unavailable")
+    if "not_yet_implemented" in states:
+        categories.append("adapter_implementation_required")
+    if "superseded_by_reused_source" in states:
+        categories.append("reused_source_live_evidence_required")
+    if "derived_reconciliation_output" in states:
+        categories.append("dependent_on_live_acquisition_program")
+    return categories
+
+
+def _prompt_entry(
+    track: ExpansionTrack,
+    queue_by_source: dict[str, str],
+    measured_by_source: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    source_ids = list(track.source_ids)
+    states = {
+        source_id: queue_by_source.get(
+            source_id,
+            "derived_reconciliation_output",
+        )
+        for source_id in source_ids
+    }
+    live = [
+        source_id
+        for source_id in source_ids
+        if source_id in measured_by_source
+        and measured_by_source[source_id]["live_qualified"]
+    ]
+    fixtures = [
+        source_id
+        for source_id in source_ids
+        if source_id in measured_by_source
+        and measured_by_source[source_id]["fixture_qualified"]
+    ]
+    missing = [source_id for source_id in source_ids if source_id not in live]
+    live_complete = not missing
+    completion_state = (
+        "live_acquisition_complete"
+        if live_complete
+        else "live_acquisition_incomplete"
+    )
+    if track.track_id == RECONCILIATION_PROMPT_ID and not live_complete:
+        completion_state = (
+            "reconciliation_generated_but_live_program_incomplete"
+        )
+    distinct_states = set(states.values())
+    return {
+        "prompt_id": track.track_id,
+        "title": track.title,
+        "family": track.family.value,
+        "invariant": track.invariant,
+        "source_count": len(source_ids),
+        "source_ids": source_ids,
+        "queue_states": states,
+        "queue_state_counts": dict(sorted(Counter(states.values()).items())),
+        "fixture_qualified_source_ids": fixtures,
+        "live_qualified_source_ids": live,
+        "sources_without_live_evidence": missing,
+        "live_complete": live_complete,
+        "completion_state": completion_state,
+        "blocker_categories": _blocker_categories(distinct_states),
+        "next_actions": [
+            NEXT_ACTIONS[state] for state in sorted(distinct_states)
+        ],
+    }
+
+
+def build() -> dict[str, Any]:
+    """Join locked prompt scope to queue and measured evidence."""
+
+    queue = json.loads(QUEUE.read_text(encoding="utf-8"))
+    measured = json.loads(MEASURED.read_text(encoding="utf-8"))["body"]
+    queue_by_source = {
+        item["source_id"]: item["state"] for item in queue["items"]
+    }
+    measured_by_source = {
+        item["source_id"]: item for item in measured["sources"]
+    }
+    prompts: list[dict[str, Any]] = []
+    prompt_sources: set[str] = set()
+    for track in expansion_tracks():
+        prompt_sources.update(track.source_ids)
+        prompts.append(
+            _prompt_entry(track, queue_by_source, measured_by_source)
+        )
+    live_complete_count = sum(item["live_complete"] for item in prompts)
+    return {
+        "schema_id": (
+            "global-medicines-atlas.prompt-acquisition-completion-audit"
+        ),
+        "schema_version": 1,
+        "generated_at": queue["catalog_reviewed_at"],
+        "prompt_count": len(prompts),
+        "unique_prompt_source_count": len(prompt_sources),
+        "catalog_source_count": measured["totals"]["catalog_sources"],
+        "fixture_qualified_source_count": measured["totals"][
+            "fixture_qualified_sources"
+        ],
+        "live_qualified_source_count": measured["totals"][
+            "live_qualified_sources"
+        ],
+        "live_complete_prompt_count": live_complete_count,
+        "program_completion": (
+            "complete"
+            if live_complete_count == len(prompts)
+            else "incomplete_live_acquisition"
+        ),
+        "queue_state_counts": queue["state_counts"],
+        "evidence_policy": (
+            "catalogue, fixture, and archive evidence do not prove live acquisition; "
+            "each prompt completes only when every scoped source is live-qualified or "
+            "an explicit unavailable/excluded disposition satisfies that prompt"
+        ),
+        "prompts": prompts,
+    }
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--check", action="store_true")
+    args = parser.parse_args()
+    expected = json.dumps(build(), indent=2) + "\n"
+    if args.check:
+        if (
+            not args.output.exists()
+            or args.output.read_text(encoding="utf-8") != expected
+        ):
+            raise SystemExit("prompt acquisition completion audit is stale")
+        return
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(expected, encoding="utf-8")
+
+
+if __name__ == "__main__":
+    main()
