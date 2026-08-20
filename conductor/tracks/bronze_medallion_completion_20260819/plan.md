@@ -165,9 +165,14 @@ before any hot-path rewrite. Python remains orchestration.
     - [x] Land Medsafe, PHARMAC, ARTG, PBS, DPD/NOC, MHRA/NICE, EMA/Union Register, PMDA/NHI, Drugs@FDA, and CMS Part D fixtures (`53b2671`)
     - [x] Leave NZULM bulk, NZHTS, AMT, embargoed PBS, dm+d/TRUD, EMA PMS, SPOR, and live RxNorm payloads excluded
     - [ ] Complete source-specific rights receipts and live landing evidence for the remaining 136 public/no-credential sources; a catalogue blocker is not landing completion
-- [ ] Task: Phase Verification & Checkpoint
-    - [ ] Run focused, integration, and source-boundary tests
-    - [ ] Measure completeness with S-012 denominators; missing coverage is not negative evidence
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused, integration, and source-boundary tests
+    - [x] Measure completeness with S-012 denominators; missing coverage is not negative evidence
+    - PR #189 merged from exact head `8ced444` as `ffc5f60` after all 29
+      protected checks, including Codecov patch coverage, passed. The
+      checkpoint qualifies 17 fixture acquisitions across 16 source IDs and
+      measures 136 remaining sources without observable landing evidence; it
+      does not complete the partially implemented Phase 5 task.
 
 ## Phase 6: Hugging Face archive boundary, regeneration, and completion evidence
 
@@ -183,10 +188,14 @@ before any hot-path rewrite. Python remains orchestration.
 - [x] Task: Record bronze-completion evidence for current scope
     - [x] Update this track's evidence ledger with observable tests, coverage, and exclusions
     - [x] Leave silver/gold/platinum unimplemented
-- [ ] Task: Phase Verification & Checkpoint
-    - [ ] Run focused tests then `uv run python scripts/test_goblin.py full` where the platform permits
-    - [ ] Open a scoped `codex/` pull request, wait for required checks, repair, and merge
-    - [ ] Classify unresolved Hugging Face publication as an external gate, never as bronze source-of-truth
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused tests then `uv run python scripts/test_goblin.py full` where the platform permits
+    - [x] Open a scoped `codex/` pull request, wait for required checks, repair, and merge
+    - [x] Classify unresolved Hugging Face publication as an external gate, never as bronze source-of-truth
+    - PR #189 preserved repository payloads and receipts as evidentiary truth,
+      kept fixture evidence distinct from live source evidence, and left any
+      source-derived external publication behind source-specific rights and
+      maintainer approval gates.
 
 ## Source expansion program (WHO, Africa, FDA, EMA, utilisation)
 
