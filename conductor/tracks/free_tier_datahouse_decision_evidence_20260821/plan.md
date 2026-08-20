@@ -68,6 +68,7 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 
 - [x] Task: Make retained-reference, conflict, compaction, portability, and reconstruction outcomes explicit (`a314d80`)
 - [x] Task: Regenerate digest-bound local and public receipts after review remediation (`3addadc`)
+- [x] Task: Remove the duplicate core Hudi path and close optional-engine/publication branch coverage (`ccf15a0`)
 
 ## GitHub hierarchy
 
