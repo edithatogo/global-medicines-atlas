@@ -11,6 +11,9 @@ import pytest
 from pydantic import ValidationError
 
 from global_medicines_atlas import source_catalog
+from global_medicines_atlas.bronze_fixture_landing import (
+    CURRENT_SCOPE_FIXTURE_SOURCE_IDS,
+)
 from global_medicines_atlas.countries import SourceDimension
 from global_medicines_atlas.source_catalog import (
     AccessMode,
@@ -330,7 +333,10 @@ def test_only_executable_local_capabilities_are_marked_implemented() -> None:
         for source in load_source_catalog()
         if source.readiness == SourceReadiness.IMPLEMENTED
     }
-    assert implemented == {"global-rxnorm", "us-drugsfda"}
+    assert implemented == {
+        "global-rxnorm",
+        *CURRENT_SCOPE_FIXTURE_SOURCE_IDS,
+    }
 
 
 def test_receipt_and_implementation_claims_are_fail_closed() -> None:

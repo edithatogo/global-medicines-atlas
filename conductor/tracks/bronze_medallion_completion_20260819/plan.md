@@ -152,18 +152,19 @@ before any hot-path rewrite. Python remains orchestration.
 
 ## Phase 5: Public ingest and governed-fixture landing
 
-- [ ] Task: Write failing tests for in-scope bronze ingest ([#170](https://github.com/edithatogo/global-medicines-atlas/issues/170))
-    - [ ] Assert each in-scope public/no-credential source can land raw bytes or has an explicit non-completion blocker
-    - [ ] Assert already-governed fixtures land as bronze without becoming canonical silver
-    - [ ] Assert credentialed sources cannot land through this path
-    - [ ] Assert credentials and restricted bytes are never persisted
-    - [ ] Assert Drugs@FDA ingest runs the reuse gate first
-    - [ ] Confirm the intended failure before implementation
-- [ ] Task: Implement public ingest and fixture landing for current scope
-    - [ ] Use existing untrusted acquisition and first-cohort adapters
+- [x] Task: Write failing tests for in-scope bronze ingest (`53b2671`; [#170](https://github.com/edithatogo/global-medicines-atlas/issues/170))
+    - [x] Assert each in-scope public/no-credential source can land raw bytes or has an explicit non-completion blocker
+    - [x] Assert already-governed fixtures land as bronze without becoming canonical silver
+    - [x] Assert credentialed sources cannot land through this path
+    - [x] Assert credentials and restricted bytes are never persisted
+    - [x] Assert Drugs@FDA ingest runs the reuse gate first
+    - [x] Confirm the intended failure before implementation
+- [~] Task: Implement public ingest and fixture landing for current scope
+    - [x] Use existing untrusted acquisition, admission, and first-cohort fixture contracts
     - [x] Inspect truncated downloads, hostile ZIP/tar, decompression bombs, path traversal, MIME mismatch, malformed XML/JSON/CSV, schema poisoning, collisions, source mutation, replays, checksum mismatch, and hostile filenames; land bytes; quarantine processing; keep forensic receipts
-    - [ ] Land Medsafe, PHARMAC, ARTG, PBS, DPD/NOC, MHRA/NICE, EMA/Union Register, PMDA/NHI, Drugs@FDA, and CMS Part D fixtures
-    - [ ] Leave NZULM bulk, NZHTS, AMT, embargoed PBS, dm+d/TRUD, EMA PMS, SPOR, and live RxNorm payloads excluded
+    - [x] Land Medsafe, PHARMAC, ARTG, PBS, DPD/NOC, MHRA/NICE, EMA/Union Register, PMDA/NHI, Drugs@FDA, and CMS Part D fixtures (`53b2671`)
+    - [x] Leave NZULM bulk, NZHTS, AMT, embargoed PBS, dm+d/TRUD, EMA PMS, SPOR, and live RxNorm payloads excluded
+    - [ ] Complete source-specific rights receipts and live landing evidence for the remaining 136 public/no-credential sources; a catalogue blocker is not landing completion
 - [ ] Task: Phase Verification & Checkpoint
     - [ ] Run focused, integration, and source-boundary tests
     - [ ] Measure completeness with S-012 denominators; missing coverage is not negative evidence

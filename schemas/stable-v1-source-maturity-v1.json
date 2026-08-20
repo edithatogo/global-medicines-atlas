@@ -69,7 +69,12 @@
         "dimension": {"type": "string", "minLength": 1},
         "maturity_level": {"$ref": "#/$defs/level"},
         "documentation_readiness": {
-          "enum": ["candidate", "declared", "documentation_verified"]
+          "enum": [
+            "declared",
+            "documentation_verified",
+            "fixture_verified",
+            "live_verified"
+          ]
         },
         "assignment_basis": {
           "type": "array",
