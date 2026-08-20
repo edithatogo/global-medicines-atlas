@@ -8,18 +8,21 @@ produce explicit not-run evidence rather than weakened gates.
 
 ## Phase 1: Shared experiment contract and fixtures
 
-- [ ] Task: Write failing contract tests for the experiment matrix (AC-01, AC-08)
-    - [ ] Require every requested experiment and every explicit outcome state
-    - [ ] Require pinned specifications, dependency identities, fixture digests, limitations, and rollback procedures
-    - [ ] Prove the Python 3.14 core imports and Bronze recovery path remain independent of experiment dependencies
-    - [ ] Confirm the intended failures before implementation
-- [ ] Task: Implement the shared matrix, schemas, governed fixtures, and receipt writer (AC-01, AC-08, AC-09)
-    - [ ] Reuse existing Bronze Parquet, table-specification, storage-policy, and acquisition/snapshot contracts
-    - [ ] Add deterministic regeneration and schema validation
-    - [ ] Record dependency classification and retirement conditions
-- [ ] Task: Phase review and verification checkpoint (AC-09)
-    - [ ] Run focused and affected tests, coverage, Ruff, ty, BasedPyright, dependency, provenance, and security checks
-    - [ ] Record review findings and append-only evidence
+- [x] Task: Write failing contract tests for the experiment matrix (AC-01, AC-08) (`9231554`)
+    - [x] Require every requested experiment and every explicit outcome state
+    - [x] Require pinned specifications, dependency identities, fixture digests, limitations, and rollback procedures
+    - [x] Prove the Python 3.14 core imports and Bronze recovery path remain independent of experiment dependencies
+    - [x] Confirm the intended failures before implementation
+- [x] Task: Implement the shared matrix, schemas, governed fixtures, and receipt writer (AC-01, AC-08, AC-09) (`9231554`)
+    - [x] Reuse existing Bronze Parquet, table-specification, storage-policy, and acquisition/snapshot contracts
+    - [x] Add deterministic regeneration and schema validation
+    - [x] Record dependency classification and retirement conditions
+- [x] Task: Review fixes for experiment-contract edge coverage (AC-01, AC-09) (`acd41da`)
+    - [x] Exercise unpinned specifications and executed outcomes with unmet prerequisites
+    - [x] Raise the shared contract module to 100% line and branch coverage
+- [x] Task: Phase review and verification checkpoint (AC-09)
+    - [x] Run focused and affected tests, coverage, Ruff, ty, BasedPyright, dependency, provenance, and security checks
+    - [x] Record review findings and append-only evidence
 
 ## Phase 2: Iceberg REST and Iceberg v3
 
