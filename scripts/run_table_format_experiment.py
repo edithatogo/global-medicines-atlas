@@ -13,9 +13,7 @@ from global_medicines_atlas.table_format_comparison import run_table_format
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--engine",
-        required=True,
-        choices=("iceberg_ready_parquet", "delta", "hudi"),
+        "--engine", required=True, choices=("iceberg_ready_parquet", "delta")
     )
     parser.add_argument("--output", required=True, type=Path)
     arguments = parser.parse_args()

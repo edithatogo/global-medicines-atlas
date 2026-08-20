@@ -3,10 +3,14 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from types import SimpleNamespace
+from typing import Any
 
 import jsonschema
+import pyarrow as pa
 import pytest
 
+import global_medicines_atlas.table_format_comparison as comparison
 from global_medicines_atlas.table_format_comparison import (
     run_table_format,
     workload_demand_receipt,
@@ -60,6 +64,69 @@ def test_missing_optional_engine_becomes_failure_evidence(
     assert receipt["outcome"] == "failed"
     assert receipt["error"]["type"] == "ModuleNotFoundError"
     assert receipt["correctness_verified"] is False
+
+
+def test_wrong_engine_result_becomes_failure_evidence(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setitem(
+        comparison._RUNNERS,  # pyright: ignore[reportPrivateUsage]
+        "delta",
+        lambda _: ([{"native_id": "wrong", "value": 0}], False),
+    )
+    receipt = run_table_format("delta", tmp_path)
+    assert receipt["outcome"] == "failed"
+    assert receipt["error"]["type"] == "ValueError"
+
+
+def test_delta_runner_executes_update_delete_append_and_history(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    current: list[dict[str, object]] = []
+    version_zero: list[dict[str, object]] = []
+
+    class FakeDeltaTable:
+        def __init__(self, _: Path, version: int | None = None) -> None:
+            self.version = version
+
+        def update(self, **_: object) -> None:
+            current[0]["value"] = 11
+
+        def delete(self, **_: object) -> None:
+            current[:] = [row for row in current if row["native_id"] != "B-002"]
+
+        def to_pyarrow_table(self) -> pa.Table:
+            records = version_zero if self.version == 0 else current
+            return pa.Table.from_pylist(records)
+
+    def fake_write(_: Path, table: pa.Table, mode: str | None = None) -> None:
+        records = table.to_pylist()
+        if mode == "append":
+            current.extend(records)
+        else:
+            current[:] = records
+            version_zero[:] = [dict(record) for record in records]
+
+    fake_module = SimpleNamespace(
+        DeltaTable=FakeDeltaTable, write_deltalake=fake_write
+    )
+    original_import = comparison.importlib.import_module
+
+    def fake_import(name: str) -> Any:
+        return fake_module if name == "deltalake" else original_import(name)
+
+    monkeypatch.setattr(
+        comparison.importlib,
+        "import_module",
+        fake_import,
+    )
+    receipt = run_table_format("delta", tmp_path)
+    assert receipt["outcome"] == "passed"
+    assert receipt["historical_recovery_verified"] is True
+    assert receipt["final_records"] == [
+        {"native_id": "A-001", "value": 11},
+        {"native_id": "C-003", "value": 3},
+    ]
 
 
 def test_unknown_engine_is_rejected(tmp_path: Path) -> None:

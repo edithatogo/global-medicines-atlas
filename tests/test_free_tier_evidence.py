@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+import global_medicines_atlas.free_tier_evidence as public_evidence
 from global_medicines_atlas.free_tier_evidence import (
     ArtifactOrigin,
     PublicArtifact,
@@ -60,6 +61,11 @@ def test_artifact_path_cannot_escape_package() -> None:
         artifact(path="../secret")
 
 
+def test_artifact_digest_must_be_lowercase_sha256() -> None:
+    with pytest.raises(ValueError, match="64 lowercase"):
+        artifact(sha256="not-a-digest")
+
+
 def test_manifest_is_deterministic_exact_and_digest_bound(
     tmp_path: Path,
 ) -> None:
@@ -87,3 +93,14 @@ def test_receipts_are_classified_as_aggregate_evidence(tmp_path: Path) -> None:
     (tmp_path / "receipts" / "result.json").write_text("{}\n")
     manifest = build_public_manifest(tmp_path)
     assert manifest["artifacts"][0]["origin"] == "aggregate_evidence"
+
+
+def test_manifest_verification_rejects_excluded_entry(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    manifest = {"artifacts": [{"publication_state": "excluded"}]}
+    monkeypatch.setattr(
+        public_evidence, "build_public_manifest", lambda _: manifest
+    )
+    with pytest.raises(ValueError, match="excluded artifact"):
+        verify_public_manifest(tmp_path, manifest)

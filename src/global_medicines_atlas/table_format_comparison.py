@@ -88,48 +88,9 @@ def _delta(directory: Path) -> tuple[list[dict[str, Any]], bool]:
     )
 
 
-def _hudi(directory: Path) -> tuple[list[dict[str, Any]], bool]:
-    spark_session = importlib.import_module("pyspark.sql").SparkSession
-
-    target = directory / "hudi"
-    spark = spark_session.builder.appName("gma-synthetic-hudi").getOrCreate()
-    options = {
-        "hoodie.table.name": "gma_synthetic",
-        "hoodie.datasource.write.recordkey.field": "native_id",
-        "hoodie.datasource.write.precombine.field": "value",
-        "hoodie.datasource.write.table.type": "COPY_ON_WRITE",
-    }
-    try:
-        spark.createDataFrame(list(INITIAL_RECORDS)).write.format(
-            "hudi"
-        ).options(**options).mode("overwrite").save(str(target))
-        changes = [
-            {"native_id": "A-001", "value": 11, "_hoodie_is_deleted": False},
-            {"native_id": "B-002", "value": 2, "_hoodie_is_deleted": True},
-            {"native_id": "C-003", "value": 3, "_hoodie_is_deleted": False},
-        ]
-        spark.createDataFrame(changes).write.format("hudi").options(
-            **options
-        ).option("hoodie.datasource.write.operation", "upsert").mode(
-            "append"
-        ).save(str(target))
-        current = [
-            row.asDict()
-            for row in spark.read
-            .format("hudi")
-            .load(str(target))
-            .select("native_id", "value")
-            .collect()
-        ]
-        return current, False
-    finally:
-        spark.stop()
-
-
 _RUNNERS: dict[str, Callable[[Path], tuple[list[dict[str, Any]], bool]]] = {
     "iceberg_ready_parquet": _baseline,
     "delta": _delta,
-    "hudi": _hudi,
 }
 
 
