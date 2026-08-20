@@ -56,7 +56,7 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 
 ## Phase 5: Maintainer decision evidence
 
-- [x] Task: Produce the schema-validated decision packet (AC-07)
+- [x] Task: Produce the schema-validated decision packet (AC-07) (`2966d38`)
     - [x] Classify each capability and separate evidence, inference, and external gates
     - [x] Include benefits, risks, costs, compatibility, rollback, and recommended disposition
 - [ ] Task: Whole-track Conductor review and completion verification (AC-08)
