@@ -345,9 +345,9 @@ for credentialed or rights-unresolved sources.
     - [x] Project 73,239 current structured-ZIP rows without converting therapeutic-equivalence codes into clinical substitutability claims
     - [x] Reconcile the generated source queue and prompt audit from `rights_blocked` to `temporarily_unavailable` without marking Prompt 16 complete
 - [ ] Task: Complete the FDA Orange Book versioned family (Prompt 16)
-    - [~] Retry the exact FDA Archive-It releases under a respectful failure-receipt schedule; a fourth bounded pass reduced the unresolved set from 90 to 59, while a fifth full-inventory pass added no unique payloads
-    - [x] Checksum-verify the fourth and fifth private archives and clean-room reconstruction evidence without committing source bytes
-    - [ ] Establish a complete official inventory of prior structured ZIP releases and historical annual editions, or retain an explicit unavailable disposition
+    - [x] Retry the exact FDA Archive-It releases under a respectful failure-receipt schedule; after six bounded passes, retain an explicit unavailable disposition rather than continuing unchanged retries
+    - [x] Checksum-verify the fourth, fifth, and sixth private archives and clean-room reconstruction evidence without committing source bytes
+    - [x] Retain an explicit unavailable disposition because the official surfaces still do not establish a complete inventory of prior structured ZIP releases and historical annual editions
     - [ ] Keep historical completeness, coverage, public release, and external publication fail closed until separately evidenced and approved
 - [x] Task: Complete the current FDA NDC Directory family (Prompt 17)
     - [x] Resolve and acquire the finished, unfinished, compounder, excluded, and complete openFDA current bulk surfaces under the approved internal-only U.S. cohort

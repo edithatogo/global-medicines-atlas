@@ -86,16 +86,31 @@
       "archive_byte_count": 169697280,
       "archive_sha256": "c6d2008ada386fd8bb8d72fef6d95c2b1378f544ed517d3baf11b7beb6dbb27e",
       "checksum_verified": true
+    },
+    {
+      "attempt": "sixth-full-inventory-availability-observation",
+      "release_count": 259,
+      "succeeded_count": 156,
+      "failed_count": 103,
+      "accepted_count": 6,
+      "quarantined_count": 150,
+      "recovered_count": 6,
+      "source_record_projection_count": 1,
+      "archive_byte_count": 174325760,
+      "archive_sha256": "a8bf3b7ed1ec12c8fa7051559f8120d9f26d884837f2893cec8e160deddc2333",
+      "checksum_verified": true
     }
   ],
-  "private_archive_byte_count": 540129280,
+  "private_archive_byte_count": 714455040,
   "failure_scope": {
     "host": "wayback.archive-it.org",
     "failure_code": "http_status",
     "failed_release_count": 59,
     "observed_rate_limit_status": 429,
-    "bounded_correction_passes": 5,
-    "retry_required": true
+    "latest_full_inventory_failed_count": 103,
+    "bounded_correction_passes": 6,
+    "retry_required": false,
+    "disposition": "explicitly_unavailable_without_complete_official_denominator"
   },
   "machinery_exercised": [
     "reuse_gate",
@@ -109,7 +124,8 @@
     "sha256_verification"
   ],
   "limitations": [
-    "Fifty-nine FDA Archive-It release URLs remained rate-limited after five bounded acquisition passes; the fifth full-inventory pass added no unique release payloads.",
+    "Fifty-nine FDA Archive-It release URLs remained cumulatively unresolved after five bounded acquisition passes; a sixth full-inventory observation still failed on 103 releases and does not revise the cumulative unique-release totals without a cross-pass identity reconciliation.",
+    "Further automatic retries are stopped under an explicit unavailable disposition; a materially changed official inventory or archive response may reopen acquisition.",
     "The official surfaces do not establish a complete inventory of prior structured ZIP releases or every historical annual edition.",
     "Only the current structured ZIP produced a source-record projection; historical PDF and HTML bytes remain source-faithful evidentiary payloads with admission recorded separately.",
     "Therapeutic-equivalence codes are preserved as source-native values and are not clinical substitutability claims."
