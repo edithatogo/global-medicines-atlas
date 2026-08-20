@@ -27,6 +27,9 @@ NDC_QUALIFICATION = (
 REMS_QUALIFICATION = (
     ROOT / "quality/qualifications/fda-rems-live-corpus-20260821.json"
 )
+FAERS_QUALIFICATION = (
+    ROOT / "quality/qualifications/faers-live-corpus-20260821.json"
+)
 
 
 def _audit() -> dict[str, Any]:
@@ -50,23 +53,25 @@ def test_audit_is_generated_from_all_36_locked_prompts() -> None:
     } == {track.track_id: list(track.source_ids) for track in tracks}
 
 
-def test_live_qualification_completes_verified_rems_ndc_and_nsde_prompts() -> (
-    None
-):
+def test_live_qualification_completes_verified_fda_prompts() -> None:
     audit = _audit()
     measured = json.loads(MEASURED.read_text(encoding="utf-8"))["body"]
     assert measured["totals"]["live_qualified_sources"] == 0
-    assert audit["live_qualified_source_count"] == 8
-    assert audit["live_complete_prompt_count"] == 3
+    assert audit["live_qualified_source_count"] == 9
+    assert audit["live_complete_prompt_count"] == 4
     assert audit["program_completion"] == "incomplete_live_acquisition"
     complete = [entry for entry in audit["prompts"] if entry["live_complete"]]
-    assert [entry["prompt_id"] for entry in complete] == [15, 17, 19]
-    assert complete[0]["live_qualified_source_ids"] == ["us-fda-rems"]
-    assert complete[1]["live_qualified_source_ids"] == [
+    assert [entry["prompt_id"] for entry in complete] == [12, 15, 17, 19]
+    assert complete[0]["live_qualified_source_ids"] == [
+        "us-fda-faers",
+        "us-openfda-faers",
+    ]
+    assert complete[1]["live_qualified_source_ids"] == ["us-fda-rems"]
+    assert complete[2]["live_qualified_source_ids"] == [
         "us-openfda-ndc",
         "us-fda-ndc-directory",
     ]
-    assert complete[2]["live_qualified_source_ids"] == [
+    assert complete[3]["live_qualified_source_ids"] == [
         "us-fda-nsde",
         "us-openfda-nsde",
     ]
@@ -87,6 +92,7 @@ def test_live_qualification_completes_verified_rems_ndc_and_nsde_prompts() -> (
         "us-openfda-ndc",
         "us-openfda-nsde",
         "us-fda-ndc-directory",
+        "us-fda-faers",
         "us-fda-nsde",
         "us-fda-rems",
     }
@@ -268,6 +274,65 @@ def test_rems_qualification_fails_closed_on_scope_or_evidence_drift(
 
     with pytest.raises(ValueError, match=message):
         audit_mod._qualified_rems_record_sources()
+
+
+@pytest.mark.parametrize(
+    ("mutate", "message"),
+    [
+        (
+            lambda raw: raw.update(evidence_class="synthetic_fixture_only"),
+            "wrong evidence class",
+        ),
+        (
+            lambda raw: raw.update(internal_retention_authorized=False),
+            "internal-only boundary",
+        ),
+        (
+            lambda raw: raw.update(public_release_authorized=True),
+            "internal-only boundary",
+        ),
+        (
+            lambda raw: raw.update(quarter_coverage_complete=False),
+            "incomplete quarter coverage",
+        ),
+        (
+            lambda raw: raw.update(last_release="2026-Q1"),
+            "incomplete quarter coverage",
+        ),
+        (
+            lambda raw: raw.update(release_failed_count=1),
+            "incomplete acquisition",
+        ),
+        (
+            lambda raw: raw.update(recovered_source_record_projection_count=89),
+            "lack recovery evidence",
+        ),
+        (
+            lambda raw: raw.update(archive_checksum_verified=False),
+            "lack recovery evidence",
+        ),
+        (
+            lambda raw: raw["prompt_audit_qualified_source_ids"].append(
+                "us-fda-orange-book"
+            ),
+            "exceeds reviewed source scope",
+        ),
+    ],
+)
+def test_faers_qualification_fails_closed_on_scope_or_evidence_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutate,
+    message: str,
+) -> None:
+    raw = json.loads(FAERS_QUALIFICATION.read_bytes())
+    mutate(raw)
+    unsafe = tmp_path / "unsafe-faers-qualification.json"
+    unsafe.write_text(json.dumps(raw), encoding="utf-8")
+    monkeypatch.setattr(audit_mod, "FAERS_RECORD_QUALIFICATION", unsafe)
+
+    with pytest.raises(ValueError, match=message):
+        audit_mod._qualified_faers_record_sources()
 
 
 def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:

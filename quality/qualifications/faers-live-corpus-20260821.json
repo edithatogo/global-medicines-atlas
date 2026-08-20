@@ -1,0 +1,52 @@
+{
+  "schema_id": "global-medicines-atlas.faers-live-qualification",
+  "schema_version": 1,
+  "observed_at": "2026-08-21",
+  "evidence_class": "live_internal_historical",
+  "source_id": "us-fda-faers",
+  "prompt_id": 12,
+  "authorization": "quality/qualifications/faers-live-authorization.json",
+  "authorized": true,
+  "internal_retention_authorized": true,
+  "public_release_authorized": false,
+  "external_publication_performed": false,
+  "first_release": "2004-Q1",
+  "last_release": "2026-Q2",
+  "release_count": 90,
+  "documentation_count": 2,
+  "release_succeeded_count": 90,
+  "release_failed_count": 0,
+  "accepted_release_count": 90,
+  "quarantined_documentation_count": 2,
+  "release_payload_byte_count": 3547347845,
+  "source_record_projection_count": 90,
+  "source_record_rows": 328720957,
+  "clean_room_recovered_release_count": 90,
+  "recovered_source_record_projection_count": 90,
+  "source_record_parquet_pairs_byte_identical": 90,
+  "quarter_coverage_complete": true,
+  "private_archive_byte_count": 28000696320,
+  "private_archive_sha256": "b13bedc9a07ec53abd77d818a7395a8e6e019b0b1d1c2072e4b535819d792767",
+  "archive_checksum_verified": true,
+  "prompt_audit_qualified_source_ids": [
+    "us-fda-faers"
+  ],
+  "machinery_exercised": [
+    "four_surface_reuse_gate",
+    "atomic_verified_range_acquisition",
+    "immutable_payload",
+    "content_addressed_receipt",
+    "rights_binding",
+    "bronze_admission",
+    "source_faithful_relational_parquet",
+    "clean_room_reconstruction",
+    "byte_identical_product_comparison",
+    "private_tar_archive",
+    "sha256_verification"
+  ],
+  "limitations": [
+    "FAERS records are spontaneous adverse-event reports and are not evidence that a medicine caused an event.",
+    "Bronze preserves source-native case versions and tables without deduplication, causality assessment, or medicine normalization.",
+    "Public release and external publication remain prohibited pending separate approval."
+  ]
+}

@@ -4074,12 +4074,13 @@
       "evidence_references": [
         "src/global_medicines_atlas/bronze_fixture_landing.py",
         "tests/test_bronze_fixture_landing.py",
-        "tests/fixtures/source_expansion/faers.json"
+        "tests/fixtures/source_expansion/faers.json",
+        "quality/qualifications/faers-live-corpus-20260821.json"
       ],
       "evidence_scope": "governed_fixture",
       "next_action": "verify receipt freshness on schedule",
       "priority": 90,
-      "reason": "catalogue implementation claim has committed qualification evidence",
+      "reason": "All 90 contiguous official FDA AERS/FAERS quarterly ASCII releases from 2004-Q1 through 2026-Q2 were acquired, projected without deduplication or causality inference, reconstructed, and privately archived.",
       "source_id": "us-fda-faers",
       "state": "landed_and_evidenced"
     },
