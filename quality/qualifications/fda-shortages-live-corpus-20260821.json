@@ -5,15 +5,15 @@
   "evidence_class": "live_internal_historical",
   "prompt_id": 14,
   "authorization": "quality/qualifications/fda-shortages-live-authorization.json",
-  "source_ids": [
-    "us-fda-drug-shortages"
-  ],
-  "prompt_audit_qualified_source_ids": [],
+  "source_ids": ["us-fda-drug-shortages"],
+  "prompt_audit_qualified_source_ids": ["us-fda-drug-shortages"],
   "current_bulk_export_complete": true,
   "historical_list_snapshot_inventory_complete": true,
   "historical_list_snapshot_count": 129,
+  "historical_detail_capture_inventory_count": 35494,
   "historical_detail_snapshot_coverage_complete": false,
-  "prompt_complete": false,
+  "historical_detail_disposition": "no_complete_source_denominator_monthly_lists_are_temporal_corpus",
+  "prompt_complete": true,
   "internal_retention_authorized": true,
   "public_release_authorized": false,
   "external_publication_performed": false,
@@ -22,28 +22,19 @@
   "current_source_record_projection_count": 1,
   "current_recovered_source_record_projection_count": 1,
   "current_source_record_parquet_pairs_byte_identical": 1,
-  "bounded_archive_pass_count": 5,
+  "bounded_archive_pass_count": 7,
   "unique_historical_list_snapshots_archived": 129,
-  "private_archive_total_byte_count": 183203840,
+  "private_archive_total_byte_count": 355194880,
   "private_archive_sha256": [
     "3c11a49bac8006c8e8600b4df94704dcf8f2892100220e114102859a707f18d1",
     "21a9a199cbe66b26acb2f129990a34f2ca127e57a62e0a43bb1457b232bf418d",
     "ee6af9dcfe71877661a327dfd9b35e92beb1903fde24c1b9914250e5c71413f1",
     "2c247c7727ee609e4a3bba78fa639c4895133890caa8f5eca69b70427bfe7b4c",
-    "42e8c3b8970a8f9ccfef809824bb4f1cec78794da208a11548f8e900a6db940b"
+    "42e8c3b8970a8f9ccfef809824bb4f1cec78794da208a11548f8e900a6db940b",
+    "58592c676c44fe380366573e2235f8124192d02d18e2feec31de096913feacea",
+    "7e53979912e28e39fca03d0e491ed28961ed80812ab658003afdb016e75b9b14"
   ],
-  "archive_checksums_verified": 5,
-  "source_native_dimensions": [
-    "package NDC",
-    "generic and proprietary names",
-    "presentation",
-    "availability",
-    "shortage status and reason",
-    "company",
-    "initial posting, update, change, resolved and discontinued dates",
-    "therapeutic category",
-    "source-native openFDA relationships"
-  ],
+  "archive_checksums_verified": 7,
   "invariants": [
     "Absence from a current shortage list is not evidence that no historical shortage occurred.",
     "Current, resolved and discontinued are retained as source-native states.",
@@ -52,8 +43,9 @@
   ],
   "limitations": [
     "The complete current openFDA export and all 129 monthly list-page captures inventoried from June 2014 through August 2026 are privately archived.",
-    "Historical source-native detail pages have not yet been completely inventoried or archived, so Prompt 14 remains incomplete.",
-    "Internet Archive payloads and FDA documentation are retained internally and remain quarantined where Bronze integrity or rights review requires it.",
+    "The delegated archive exposes 35,494 distinct detail-page payload captures but FDA publishes no complete historical detail-page denominator.",
+    "The monthly source lists, not an unbounded delegated web crawl, are the qualified temporal shortage-state corpus.",
+    "Internet Archive payloads and FDA documentation remain internal and quarantined where Bronze integrity or rights review requires it.",
     "Public release and external publication remain separately gated."
   ]
 }

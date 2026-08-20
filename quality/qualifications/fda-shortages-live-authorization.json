@@ -11,10 +11,14 @@
   "max_surface_bytes": 16777216,
   "archive_request_interval_seconds": 1.0,
   "cdx_url": "https://web.archive.org/cdx/search/cdx?url=www.accessdata.fda.gov/scripts/drugshortages/default.cfm&output=json&from=2012&to=2026&fl=timestamp,original,statuscode,mimetype,digest&filter=statuscode:200&collapse=timestamp:6",
+  "detail_cdx_url": "https://web.archive.org/cdx/search/cdx?url=www.accessdata.fda.gov/scripts/drugshortages/dsp_ActiveIngredientDetails.cfm%3F*&output=json&from=2012&to=2026&fl=timestamp,original,statuscode,mimetype,digest&filter=statuscode:200&filter=mimetype:text/html&collapse=digest",
+  "expected_detail_capture_inventory_count": 35494,
   "expected_historical_capture_count": 129,
   "expected_first_capture": "20140622235409",
   "expected_last_capture": "20260801200107",
   "capture_replay_overrides": {
+    "20151007005010": "https://web.archive.org/web/20150926220712id_/http://www.accessdata.fda.gov/scripts/drugshortages/default.cfm",
+    "20230101101515": "https://web.archive.org/web/20230101153440id_/https://www.accessdata.fda.gov/scripts/drugshortages/default.cfm",
     "20240803045248": "https://web.archive.org/web/20240730194615id_/https://www.accessdata.fda.gov/scripts/drugshortages/default.cfm"
   },
   "download_index_url": "https://api.fda.gov/download.json",
