@@ -14,6 +14,83 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  free-tier-git-mechanics:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          enable-cache: true
+      - run: uv sync --python 3.14.6 --locked
+      - name: Run disposable Git conflict and restore experiment
+        run: >-
+          uv run --python 3.14.6 python
+          scripts/run_free_tier_git_mechanics.py
+          --output build/quality-receipts/free-tier-git-mechanics.json
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: free-tier-git-mechanics-receipt
+          path: build/quality-receipts/free-tier-git-mechanics.json
+
+  table-format-comparison:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - engine: iceberg_ready_parquet
+            dependency: ""
+          - engine: delta
+            dependency: deltalake==1.6.2
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          enable-cache: true
+      - run: uv sync --python 3.14.6 --locked
+      - name: Run isolated common workload
+        env:
+          EXPERIMENT_DEPENDENCY: ${{ matrix.dependency }}
+        run: |
+          if [ -n "$EXPERIMENT_DEPENDENCY" ]; then
+            uv run --python 3.14.6 --with "$EXPERIMENT_DEPENDENCY" python scripts/run_table_format_experiment.py --engine "${{ matrix.engine }}" --output "build/quality-receipts/${{ matrix.engine }}.json"
+          else
+            uv run --python 3.14.6 python scripts/run_table_format_experiment.py --engine "${{ matrix.engine }}" --output "build/quality-receipts/${{ matrix.engine }}.json"
+          fi
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: table-format-${{ matrix.engine }}-receipt
+          path: build/quality-receipts/${{ matrix.engine }}.json
+
+  hudi-comparison:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Run isolated Hudi 1.2.0 common workload
+        env:
+          PYSPARK_SUBMIT_ARGS: >-
+            --packages org.apache.hudi:hudi-spark3.5-bundle_2.12:1.2.0
+            --conf spark.serializer=org.apache.spark.serializer.KryoSerializer
+            pyspark-shell
+        run: >-
+          uv run --isolated --python 3.11 --with pyspark==3.5.6
+          python scripts/run_hudi_experiment.py
+          --output build/quality-receipts/hudi.json
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: table-format-hudi-receipt
+          path: build/quality-receipts/hudi.json
+
   ducklake-comparison:
     name: DuckLake / governed comparison
     runs-on: ubuntu-24.04

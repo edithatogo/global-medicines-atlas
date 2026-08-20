@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/free-tier-public-manifest/1.0.json",
+  "title": "Global Medicines Atlas free-tier public evidence manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "package_id", "maintainer_authorization", "artifacts", "excluded_classes"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "package_id": {"const": "global-medicines-atlas-free-tier-evidence"},
+    "maintainer_authorization": {"type": "string", "minLength": 1},
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "origin", "license", "sensitivity", "sha256", "contains_credentials", "rights_resolved", "publication_state", "exclusion_reason"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "origin": {"enum": ["repository_authored_synthetic", "aggregate_evidence"]},
+          "license": {"const": "Apache-2.0"},
+          "sensitivity": {"const": "public"},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "contains_credentials": {"const": false},
+          "rights_resolved": {"const": true},
+          "publication_state": {"const": "approved_public"},
+          "exclusion_reason": {"type": "null"}
+        }
+      }
+    },
+    "excluded_classes": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 4
+    }
+  }
+}

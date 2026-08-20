@@ -1,0 +1,46 @@
+{
+  "artifacts": [
+    {
+      "contains_credentials": false,
+      "exclusion_reason": null,
+      "license": "Apache-2.0",
+      "origin": "repository_authored_synthetic",
+      "path": "README.md",
+      "publication_state": "approved_public",
+      "rights_resolved": true,
+      "sensitivity": "public",
+      "sha256": "0685d902b07a58cbcffcac6670fafc933be02255ce456c03c37e53af80b0d4c5"
+    },
+    {
+      "contains_credentials": false,
+      "exclusion_reason": null,
+      "license": "Apache-2.0",
+      "origin": "repository_authored_synthetic",
+      "path": "schemas/public-manifest.schema.json",
+      "publication_state": "approved_public",
+      "rights_resolved": true,
+      "sensitivity": "public",
+      "sha256": "4220f057ebe604558d5a80c9d5340bc8744f305e834d7999e3254bf0aeaf1521"
+    },
+    {
+      "contains_credentials": false,
+      "exclusion_reason": null,
+      "license": "Apache-2.0",
+      "origin": "repository_authored_synthetic",
+      "path": "synthetic/bronze_records.json",
+      "publication_state": "approved_public",
+      "rights_resolved": true,
+      "sensitivity": "public",
+      "sha256": "f5f2b56824852355c200c72246f25b7009f60ee0d4326535d34eb2340588b1da"
+    }
+  ],
+  "excluded_classes": [
+    "credentials",
+    "personal_or_sensitive_data",
+    "source_derived_payload_bytes",
+    "unresolved_rights_material"
+  ],
+  "maintainer_authorization": "2026-08-21-public-synthetic-evidence-only",
+  "package_id": "global-medicines-atlas-free-tier-evidence",
+  "schema_version": "1.0"
+}
