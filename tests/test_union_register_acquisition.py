@@ -21,6 +21,9 @@ ROOT = Path(__file__).resolve().parents[1]
 AUTHORIZATION = (
     ROOT / "quality/qualifications/union-register-live-authorization.json"
 )
+QUALIFICATION = (
+    ROOT / "quality/qualifications/union-register-live-corpus-20260821.json"
+)
 
 
 def _authorization() -> dict[str, object]:
@@ -40,14 +43,27 @@ def _approve(tmp_path: Path) -> Path:
     return path
 
 
-def test_committed_authorization_is_exact_and_blocked() -> None:
+def _block(tmp_path: Path) -> Path:
+    value = _authorization()
+    value.update(
+        acquisition_authorized=False,
+        internal_retention_authorized=False,
+        maintainer_licence_approved=False,
+        decision_basis="Test-only blocked authorization.",
+    )
+    path = tmp_path / "blocked-authorization.json"
+    path.write_text(json.dumps(value), encoding="utf-8")
+    return path
+
+
+def test_committed_authorization_is_exact_internal_only_and_approved() -> None:
     authorization = UnionRegisterAuthorization.model_validate_json(
         AUTHORIZATION.read_bytes()
     )
 
-    assert authorization.acquisition_authorized is False
-    assert authorization.internal_retention_authorized is False
-    assert authorization.maintainer_licence_approved is False
+    assert authorization.acquisition_authorized is True
+    assert authorization.internal_retention_authorized is True
+    assert authorization.maintainer_licence_approved is True
     assert authorization.public_release_authorized is False
     assert authorization.external_publication_authorized is False
 
@@ -67,12 +83,28 @@ def test_blocked_runner_never_calls_transport_or_creates_output(
         exercise_union_register(
             repository_root=ROOT,
             output_dir=output,
-            authorization_path=AUTHORIZATION,
+            authorization_path=_block(tmp_path),
             transport=httpx.MockTransport(handler),
         )
 
     assert called is False
     assert output.exists() is False
+
+
+def test_live_qualification_binds_recovered_records_to_verified_archive() -> (
+    None
+):
+    qualification = json.loads(QUALIFICATION.read_text(encoding="utf-8"))
+
+    assert qualification["prompt_complete"] is True
+    assert qualification["current_source_snapshot_complete"] is True
+    assert qualification["source_record_rows"] == 6440
+    assert qualification["source_record_projection_count"] == 1
+    assert qualification["recovered_source_record_projection_count"] == 1
+    assert qualification["source_record_parquet_pairs_byte_identical"] == 1
+    assert qualification["archive_checksum_verified"] is True
+    assert qualification["public_release_authorized"] is False
+    assert qualification["external_publication_performed"] is False
 
 
 @pytest.mark.parametrize(
@@ -82,7 +114,7 @@ def test_blocked_runner_never_calls_transport_or_creates_output(
         {"external_publication_authorized": True},
         {"dataset_url": "https://example.invalid/products.json"},
         {"licence_url": "https://example.invalid/licence"},
-        {"acquisition_authorized": True},
+        {"acquisition_authorized": False},
         {"coverage_complete": True},
     ],
 )

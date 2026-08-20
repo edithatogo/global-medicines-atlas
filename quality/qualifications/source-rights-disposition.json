@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.source-rights-disposition",
   "schema_version": 1,
-  "generated_at": "2026-08-20",
+  "generated_at": "2026-08-21",
   "decision_id": "conductor/decisions/0008-source-derived-dataset-licensing-batch.md",
   "source_count": 172,
   "batch_recommendation": "catalogue_only_for_all_unresolved_sources",

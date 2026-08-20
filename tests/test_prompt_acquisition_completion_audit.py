@@ -53,15 +53,15 @@ def test_audit_is_generated_from_all_36_locked_prompts() -> None:
     } == {track.track_id: list(track.source_ids) for track in tracks}
 
 
-def test_live_qualification_completes_verified_fda_prompts() -> None:
+def test_live_qualification_completes_verified_prompts() -> None:
     audit = _audit()
     measured = json.loads(MEASURED.read_text(encoding="utf-8"))["body"]
     assert measured["totals"]["live_qualified_sources"] == 0
-    assert audit["live_qualified_source_count"] == 9
-    assert audit["live_complete_prompt_count"] == 4
+    assert audit["live_qualified_source_count"] == 10
+    assert audit["live_complete_prompt_count"] == 5
     assert audit["program_completion"] == "incomplete_live_acquisition"
     complete = [entry for entry in audit["prompts"] if entry["live_complete"]]
-    assert [entry["prompt_id"] for entry in complete] == [12, 15, 17, 19]
+    assert [entry["prompt_id"] for entry in complete] == [12, 15, 17, 19, 25]
     assert complete[0]["live_qualified_source_ids"] == [
         "us-fda-faers",
         "us-openfda-faers",
@@ -75,18 +75,21 @@ def test_live_qualification_completes_verified_fda_prompts() -> None:
         "us-fda-nsde",
         "us-openfda-nsde",
     ]
-    assert all(
-        set(entry["fixture_qualified_source_ids"]).isdisjoint(
-            entry["live_qualified_source_ids"]
-        )
+    assert complete[4]["live_qualified_source_ids"] == ["eu-union-register"]
+    fixture_and_live = {
+        source_id
         for entry in audit["prompts"]
-    )
+        for source_id in set(entry["fixture_qualified_source_ids"])
+        & set(entry["live_qualified_source_ids"])
+    }
+    assert fixture_and_live == {"eu-union-register"}
     live = {
         source_id
         for entry in audit["prompts"]
         for source_id in entry["live_qualified_source_ids"]
     }
     assert live == {
+        "eu-union-register",
         "us-openfda-enforcement",
         "us-openfda-faers",
         "us-openfda-ndc",
