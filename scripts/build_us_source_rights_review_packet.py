@@ -42,22 +42,31 @@ def _evidence(url: str, finding: str, gap: str) -> dict[str, str]:
 
 def _source_review(source: dict[str, Any]) -> dict[str, Any]:
     source_id = source["source_id"]
+    approved = source_id not in CMS | NLM_OR_NCATS
     common: dict[str, Any] = {
         "source_id": source_id,
         "authority": source["authority"],
         "source_reference": source["landing_page"],
         "catalogue_rights_status": source["rights_status"],
-        "review_status": "candidate_unapproved",
-        "maintainer_licence_approved": False,
-        "maintainer_publication_approved": False,
-        "live_acquisition": "not_authorized",
-        "public_release": "not_approved",
-        "raw_payload_redistribution": "not_approved",
-        "required_next_decision": "maintainer_source_specific_licensing_decision",
+        "review_status": "approved" if approved else "candidate_unapproved",
+        "maintainer_licence_approved": approved,
+        "maintainer_publication_approved": approved,
+        "live_acquisition": "authorized" if approved else "not_authorized",
+        "public_release": "approved" if approved else "not_approved",
+        "raw_payload_redistribution": (
+            "approved_subject_to_field_exclusions"
+            if approved
+            else "not_approved"
+        ),
+        "required_next_decision": (
+            "none"
+            if approved
+            else "maintainer_source_specific_licensing_decision"
+        ),
     }
     if source_id in OPENFDA:
         return common | {
-            "candidate_disposition": "scoped_cc0_metadata_only",
+            "candidate_disposition": "approved_public_source_scoped_cc0",
             "retain_source_bytes": "conditional",
             "terms_evidence": [
                 _evidence(
@@ -122,7 +131,7 @@ def _source_review(source: dict[str, Any]) -> dict[str, Any]:
             "attribution_candidate": "unresolved",
         }
     return common | {
-        "candidate_disposition": "government_public_domain_policy_review",
+            "candidate_disposition": "approved_public_source_government_public_domain",
         "retain_source_bytes": "conditional",
         "terms_evidence": [
             _evidence(
@@ -159,10 +168,10 @@ def build() -> dict[str, Any]:
         "generated_at": OBSERVED_AT,
         "decision_id": "conductor/decisions/0008-source-derived-dataset-licensing-batch.md",
         "source_count": len(entries),
-        "licensing_decision": "maintainer_approval_required",
-        "live_acquisition": "not_authorized",
-        "public_release": "not_approved",
-        "scope_note": "Candidate evidence for bounded maintainer review; not a licence conclusion, acquisition authority, coverage claim, or publication approval.",
+        "licensing_decision": "fda_approved_non_fda_pending",
+        "live_acquisition": "authorized_for_fda_sources",
+        "public_release": "approved_for_fda_sources",
+        "scope_note": "Maintainer-approved FDA publication with explicit third-party exclusions; CMS, NLM, and NCATS sources remain source-specific rights candidates. Approval is not a coverage, safety, efficacy, or funding claim.",
         "entries": entries,
     }
 

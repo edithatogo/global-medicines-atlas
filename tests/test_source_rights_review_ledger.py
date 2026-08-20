@@ -29,7 +29,7 @@ def test_ledger_is_deterministic_and_covers_all_sources() -> None:
     assert len({entry["source_id"] for entry in entries}) == 172
 
 
-def test_fda_sources_have_candidate_evidence_but_no_blanket_approval() -> None:
+def test_fda_sources_are_approved_with_explicit_exclusions() -> None:
     entries = {entry["source_id"]: entry for entry in _entries()}
     candidates = {
         source_id
@@ -54,16 +54,16 @@ def test_fda_sources_have_candidate_evidence_but_no_blanket_approval() -> None:
     }
     assert candidates == expected
     assert _ledger()["publication_gate"] == (
-        "pending_exact_manifest_maintainer_approval"
+        "maintainer_authorized_fda_publication_20260821"
     )
     for source_id in expected:
         entry = entries[source_id]
-        assert entry["maintainer_licence_approved"] is False
-        assert entry["maintainer_publication_approved"] is False
-        assert entry["public_source_eligible"] is False
-        assert entry["disposition"] == "catalogue_only"
+        assert entry["maintainer_licence_approved"] is True
+        assert entry["maintainer_publication_approved"] is True
+        assert entry["public_source_eligible"] is True
+        assert entry["disposition"] == "approved_public_source"
         assert entry["evidence"]
-        assert "pending" in entry["blocker"]
+        assert entry["blocker"] is None
         exclusions = " ".join(entry["field_exclusions"]).casefold()
         assert "third-party" in exclusions
         assert "claim" in exclusions
@@ -76,6 +76,6 @@ def test_unreviewed_international_sources_remain_explicitly_fail_closed() -> (
     unresolved = [
         entry for entry in entries if entry["disposition"] == "catalogue_only"
     ]
-    assert len(unresolved) == 172
+    assert len(unresolved) == 159
     assert all(entry["blocker"] for entry in unresolved)
     assert all(entry["public_source_eligible"] is False for entry in unresolved)

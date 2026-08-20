@@ -33,17 +33,26 @@ def test_packet_is_generated_and_covers_the_us_catalogue_exactly() -> None:
     assert len(entries) == len(expected)
 
 
-def test_packet_cannot_authorize_acquisition_or_publication() -> None:
+def test_packet_authorizes_fda_and_keeps_non_fda_fail_closed() -> None:
     packet = _packet()
-    assert packet["licensing_decision"] == "maintainer_approval_required"
-    assert packet["live_acquisition"] == "not_authorized"
-    assert packet["public_release"] == "not_approved"
+    assert packet["licensing_decision"] == "fda_approved_non_fda_pending"
+    assert packet["live_acquisition"] == "authorized_for_fda_sources"
+    assert packet["public_release"] == "approved_for_fda_sources"
     for entry in packet["entries"]:
-        assert entry["maintainer_licence_approved"] is False
-        assert entry["maintainer_publication_approved"] is False
-        assert entry["live_acquisition"] == "not_authorized"
-        assert entry["public_release"] == "not_approved"
-        assert entry["review_status"] == "candidate_unapproved"
+        unresolved = entry["source_id"] in {
+            "us-cms-mdrp",
+            "us-cms-nadac",
+            "us-cms-partd-formulary",
+            "us-cms-partd-spending",
+            "us-dailymed-spl",
+            "us-gsrs-unii",
+            "us-rxnorm-api",
+        }
+        assert entry["maintainer_licence_approved"] is (not unresolved)
+        assert entry["maintainer_publication_approved"] is (not unresolved)
+        assert entry["public_release"] == (
+            "not_approved" if unresolved else "approved"
+        )
 
 
 def test_terms_evidence_uses_only_official_authority_domains() -> None:
@@ -76,11 +85,17 @@ def test_openfda_candidates_exclude_third_party_content() -> None:
     ]
     assert len(openfda) == 5
     for entry in openfda:
-        assert entry["candidate_disposition"] == "scoped_cc0_metadata_only"
+        assert (
+            entry["candidate_disposition"]
+            == "approved_public_source_scoped_cc0"
+        )
         exclusions = " ".join(entry["field_exclusions"]).casefold()
         assert "third-party" in exclusions
         assert "gmdn" in exclusions
-        assert entry["raw_payload_redistribution"] == "not_approved"
+        assert (
+            entry["raw_payload_redistribution"]
+            == "approved_subject_to_field_exclusions"
+        )
 
 
 def test_cms_and_terminology_sources_remain_evidence_gaps() -> None:
