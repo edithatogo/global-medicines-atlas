@@ -99,7 +99,7 @@ def test_coverage_measures_each_required_capability() -> None:
     assert 0 < coverage.api <= coverage.denominator
     assert 0 < coverage.bulk <= coverage.denominator
     assert 0 < coverage.implemented_ingestion <= coverage.denominator
-    assert coverage.current_receipt == 0
+    assert coverage.current_receipt == 1
     assert coverage.source_health_scheduled == coverage.denominator
     assert coverage.schema_drift_scheduled == coverage.denominator
     assert coverage.parser_capable_sources > 0
