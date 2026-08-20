@@ -11,6 +11,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import Any, cast
 
+from .bronze_transformation import TransformationRunReceipt
 from .iceberg_ready import IcebergReadyTableSpec
 from .receipts import SourceReceipt, require_temporal
 from .reuse_gate import HF_CATALOGUE_REVISION
@@ -74,10 +75,13 @@ def payload_dataset_name(receipt: SourceReceipt) -> str:
     return f"{receipt.source.source_id}/{receipt.payload.sha256}"
 
 
-def parquet_dataset_name(receipt: SourceReceipt) -> str:
+def parquet_dataset_name(
+    receipt: SourceReceipt,
+    transformation_run: TransformationRunReceipt,
+) -> str:
     """Stable OpenLineage name for source-faithful Parquet, not Iceberg."""
 
-    return f"{receipt.source.source_id}/{receipt.transformation.output_sha256}"
+    return f"{receipt.source.source_id}/{transformation_run.output.sha256}"
 
 
 def catalogue_dataset_name(table: IcebergReadyTableSpec) -> str:
@@ -296,6 +300,7 @@ def project_openlineage_event(
     *,
     payload_uri: str,
     parquet_uri: str,
+    transformation_run: TransformationRunReceipt,
     table: IcebergReadyTableSpec | None = None,
 ) -> dict[str, Any]:
     """Emit one COMPLETE RunEvent from a native source receipt."""
@@ -305,7 +310,11 @@ def project_openlineage_event(
     acquisition_id = temporal.acquisition_id
     source_uri = str(receipt.retrieval.uri)
     payload_name = payload_dataset_name(receipt)
-    parquet_name = parquet_dataset_name(receipt)
+    if transformation_run.acquisition_id != acquisition_id:
+        raise ValueError("transformation run does not match acquisition")
+    if transformation_run.input_content_id != receipt.payload.sha256:
+        raise ValueError("transformation run does not match input content")
+    parquet_name = parquet_dataset_name(receipt, transformation_run)
     payload_extra = dict(identity)
     parquet_extra = dict(identity)
     parquet_extra["columnLineage"] = _column_lineage(
@@ -348,7 +357,7 @@ def project_openlineage_event(
         storage_layer="file",
         file_format="parquet",
         source_uri=parquet_uri,
-        version=receipt.transformation.output_sha256,
+        version=transformation_run.output.sha256,
         extra=parquet_extra,
     )
     source_dataset = _dataset(
@@ -400,11 +409,11 @@ def project_openlineage_event(
         )
     event: dict[str, Any] = {
         "eventType": "COMPLETE",
-        "eventTime": temporal.retrieved_at.isoformat(),
+        "eventTime": transformation_run.completed_at.isoformat(),
         "producer": PRODUCER,
         "schemaURL": SCHEMA_URL,
         "run": {
-            "runId": acquisition_id,
+            "runId": transformation_run.run_id,
             "facets": identity,
         },
         "job": {

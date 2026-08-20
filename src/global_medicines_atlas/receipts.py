@@ -359,7 +359,7 @@ class AcquisitionEvent(DeterministicReceipt):
     schema_id: Literal["global-medicines-atlas.bronze-acquisition-event"] = (
         "global-medicines-atlas.bronze-acquisition-event"
     )
-    schema_version: Literal[1] = 1
+    schema_version: Literal[2] = 2
     acquisition_id: str = Field(pattern=SHA256_PATTERN)
     content_id: str = Field(pattern=SHA256_PATTERN)
     source_id: str = Field(min_length=1)
@@ -370,6 +370,13 @@ class AcquisitionEvent(DeterministicReceipt):
     valid_from: AwareDatetime | None = None
     valid_to: AwareDatetime | None = None
     payload_sha256: str = Field(pattern=SHA256_PATTERN)
+    source: SourceIdentity | None = None
+    retrieval: RetrievalEvidence | None = None
+    reuse: ReuseGateDecision | None = None
+    rights_state: RightsState | None = None
+    rights_reference: AnyUrl | None = None
+    rights_policy: AcquisitionRightsPolicy | None = None
+    evidence_class: EvidenceClass | None = None
 
     @model_validator(mode="after")
     def validate_distinct_identities(self) -> AcquisitionEvent:

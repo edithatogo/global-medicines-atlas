@@ -14,12 +14,12 @@ from pydantic import ValidationError
 from tests.test_source_receipts import source_receipt
 
 from global_medicines_atlas.bronze_admission import (
-    BronzeAdmissionRecord,
     BronzeAdmissionState,
     DownstreamAdmissionError,
     ValidationResult,
     admit_bronze_landing,
     classify_bronze_payload,
+    create_admission_decision,
     evaluate_bronze_admission,
     require_admitted_for_processing,
 )
@@ -32,7 +32,7 @@ from global_medicines_atlas.receipts import (
 from global_medicines_atlas.reuse_gate import acquire_new_decision
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMA = ROOT / "schemas/bronze-admission-v1.json"
+SCHEMA = ROOT / "schemas/bronze-admission-v2.json"
 NOW = datetime(2026, 8, 20, 6, 30, tzinfo=UTC)
 PAYLOAD = b'{"ok":true}'
 MALFORMED = b"{not-json"
@@ -125,7 +125,7 @@ def test_admission_never_deletes_or_rewrites_payload(tmp_path: Path) -> None:
 
 @pytest.mark.unit
 def test_landed_state_is_not_yet_processable() -> None:
-    record = BronzeAdmissionRecord(
+    record = create_admission_decision(
         acquisition_id="a" * 64,
         content_id="b" * 64,
         state=BronzeAdmissionState.LANDED,
@@ -172,7 +172,7 @@ def test_schema_rejects_unknown_admission_state() -> None:
 
 @pytest.mark.edge
 def test_admission_record_is_immutable() -> None:
-    record = BronzeAdmissionRecord(
+    record = create_admission_decision(
         acquisition_id="a" * 64,
         content_id="b" * 64,
         state=BronzeAdmissionState.LANDED,

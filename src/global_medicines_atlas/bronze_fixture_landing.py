@@ -397,8 +397,9 @@ def land_governed_fixtures(
             receipt,
             bronze_root=bronze_root,
             media_hint=spec.media_hint,
+            transformation_completed_at=retrieved_at,
         )
-        admission = admit_bronze_landing(landing)
+        admission = admit_bronze_landing(landing, decided_at=retrieved_at)
         if admission.path is None:
             raise ValueError("fixture admission record lacks a durable path")
         temporal = landing.receipt.temporal

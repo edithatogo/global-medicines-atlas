@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 import pyarrow.parquet as pq
 import pytest
 from tests.test_source_receipts import source_receipt
 
 from global_medicines_atlas.bronze_landing import (
     EVIDENTIARY_TRUTH_SENTENCE,
-    BronzeLanding,
-    bronze_table_spec,
     land_bronze_payload,
     regenerate_parquet,
 )
@@ -118,17 +118,7 @@ def test_unknown_media_uses_bin_and_digest_must_match(tmp_path) -> None:
             media_hint="json",
         )
 
-    payload_path = tmp_path / "payload.bin"
-    payload_path.write_bytes(PAYLOAD)
-    parquet_path = tmp_path / "table.parquet"
-    missing_reuse = BronzeLanding(
-        payload_path=payload_path,
-        parquet_path=parquet_path,
-        receipt_path=tmp_path / "receipt.json",
-        lineage_path=tmp_path / "lineage.json",
-        table=bronze_table_spec(source_receipt(), parquet_path),
-        receipt=source_receipt(),
-    )
+    missing_reuse = replace(landing, receipt=source_receipt())
     with pytest.raises(ValueError, match="reuse gate"):
         regenerate_parquet(missing_reuse)
 

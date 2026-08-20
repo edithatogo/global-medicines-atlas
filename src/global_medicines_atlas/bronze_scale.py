@@ -705,6 +705,7 @@ def _measure_lineage(landings: tuple[BronzeLanding, ...]) -> float:
             landing.receipt,
             payload_uri=landing.payload_path.as_uri(),
             parquet_uri=landing.parquet_path.as_uri(),
+            transformation_run=landing.transformation_run,
             table=landing.table,
         )
         if event["eventType"] != "COMPLETE":

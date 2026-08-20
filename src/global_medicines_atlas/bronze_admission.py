@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import json
+from datetime import UTC, datetime
 from enum import StrEnum
 from hashlib import sha256
 from pathlib import Path
 from typing import Literal
 
 import orjson
-from pydantic import Field
+from pydantic import AwareDatetime, Field, model_validator
 
 from .bronze_integrity import inspect_untrusted_payload
 from .bronze_landing import ADMISSION_DIR, BronzeLanding
@@ -46,7 +47,8 @@ class BronzeAdmissionRecord(FrozenModel):
     schema_id: Literal["global-medicines-atlas.bronze-admission"] = (
         ADMISSION_SCHEMA_ID
     )
-    schema_version: Literal[1] = 1
+    schema_version: Literal[2] = 2
+    decision_id: str = Field(pattern=SHA256_PATTERN)
     acquisition_id: str = Field(pattern=SHA256_PATTERN)
     content_id: str = Field(pattern=SHA256_PATTERN)
     state: BronzeAdmissionState
@@ -55,7 +57,104 @@ class BronzeAdmissionRecord(FrozenModel):
     reviewer_status: Literal["unreviewed", "approved", "rejected"] = (
         "unreviewed"
     )
+    actor: str = Field(min_length=1)
+    decided_at: AwareDatetime
+    supersedes_decision_id: str | None = Field(
+        default=None,
+        pattern=SHA256_PATTERN,
+    )
     path: Path | None = Field(default=None, exclude=True)
+
+    @model_validator(mode="after")
+    def validate_decision_identity(self) -> BronzeAdmissionRecord:
+        if self.supersedes_decision_id == self.decision_id:
+            raise ValueError("admission decision cannot supersede itself")
+        expected = admission_decision_id_for(
+            acquisition_id=self.acquisition_id,
+            content_id=self.content_id,
+            state=self.state,
+            reason_codes=self.reason_codes,
+            validation_results=self.validation_results,
+            reviewer_status=self.reviewer_status,
+            actor=self.actor,
+            decided_at=self.decided_at,
+            supersedes_decision_id=self.supersedes_decision_id,
+        )
+        if self.decision_id != expected:
+            raise ValueError("decision_id does not bind the admission decision")
+        return self
+
+
+def admission_decision_id_for(
+    *,
+    acquisition_id: str,
+    content_id: str,
+    state: BronzeAdmissionState,
+    reason_codes: tuple[str, ...],
+    validation_results: tuple[ValidationResult, ...],
+    reviewer_status: str,
+    actor: str,
+    decided_at: datetime,
+    supersedes_decision_id: str | None,
+) -> str:
+    """Bind an admission event to its evidence, actor, clock, and parent."""
+
+    material = {
+        "acquisition_id": acquisition_id,
+        "actor": actor,
+        "content_id": content_id,
+        "decided_at": decided_at.isoformat(),
+        "reason_codes": reason_codes,
+        "reviewer_status": reviewer_status,
+        "state": state.value,
+        "supersedes_decision_id": supersedes_decision_id,
+        "validation_results": [
+            item.model_dump(mode="json") for item in validation_results
+        ],
+    }
+    return sha256(
+        orjson.dumps(material, option=orjson.OPT_SORT_KEYS)
+    ).hexdigest()
+
+
+def create_admission_decision(
+    *,
+    acquisition_id: str,
+    content_id: str,
+    state: BronzeAdmissionState,
+    reason_codes: tuple[str, ...] = (),
+    validation_results: tuple[ValidationResult, ...] = (),
+    reviewer_status: Literal[
+        "unreviewed", "approved", "rejected"
+    ] = "unreviewed",
+    actor: str = "global-medicines-atlas:automated-admission-v2",
+    decided_at: datetime | None = None,
+    supersedes_decision_id: str | None = None,
+) -> BronzeAdmissionRecord:
+    finished = decided_at or datetime.now(UTC)
+    decision_id = admission_decision_id_for(
+        acquisition_id=acquisition_id,
+        content_id=content_id,
+        state=state,
+        reason_codes=reason_codes,
+        validation_results=validation_results,
+        reviewer_status=reviewer_status,
+        actor=actor,
+        decided_at=finished,
+        supersedes_decision_id=supersedes_decision_id,
+    )
+    return BronzeAdmissionRecord(
+        decision_id=decision_id,
+        acquisition_id=acquisition_id,
+        content_id=content_id,
+        state=state,
+        reason_codes=reason_codes,
+        validation_results=validation_results,
+        reviewer_status=reviewer_status,
+        actor=actor,
+        decided_at=finished,
+        supersedes_decision_id=supersedes_decision_id,
+    )
 
 
 def classify_bronze_payload(
@@ -72,7 +171,7 @@ def classify_bronze_payload(
     try:
         parsed = json.loads(payload)
     except (json.JSONDecodeError, UnicodeDecodeError, ValueError) as error:
-        return BronzeAdmissionRecord(
+        return create_admission_decision(
             acquisition_id=event_id,
             content_id=content_id,
             state=BronzeAdmissionState.QUARANTINED,
@@ -86,7 +185,7 @@ def classify_bronze_payload(
             ),
         )
     if not isinstance(parsed, dict):
-        return BronzeAdmissionRecord(
+        return create_admission_decision(
             acquisition_id=event_id,
             content_id=content_id,
             state=BronzeAdmissionState.QUARANTINED,
@@ -99,7 +198,7 @@ def classify_bronze_payload(
                 ),
             ),
         )
-    return BronzeAdmissionRecord(
+    return create_admission_decision(
         acquisition_id=event_id,
         content_id=content_id,
         state=BronzeAdmissionState.ACCEPTED,
@@ -140,7 +239,7 @@ def evaluate_bronze_admission(landing: BronzeLanding) -> BronzeAdmissionRecord:
     else:
         state = BronzeAdmissionState.ACCEPTED
         reasons = ()
-    return BronzeAdmissionRecord(
+    return create_admission_decision(
         acquisition_id=temporal.acquisition_id,
         content_id=inspection.content_id,
         state=state,
@@ -156,18 +255,50 @@ def evaluate_bronze_admission(landing: BronzeLanding) -> BronzeAdmissionRecord:
     )
 
 
-def admit_bronze_landing(landing: BronzeLanding) -> BronzeAdmissionRecord:
+def admit_bronze_landing(
+    landing: BronzeLanding,
+    *,
+    actor: str = "global-medicines-atlas:automated-admission-v2",
+    decided_at: datetime | None = None,
+    supersedes_decision_id: str | None = None,
+) -> BronzeAdmissionRecord:
     """Persist an admission record beside an immutable payload."""
 
-    record = evaluate_bronze_admission(landing)
+    evaluated = evaluate_bronze_admission(landing)
+    record = create_admission_decision(
+        acquisition_id=evaluated.acquisition_id,
+        content_id=evaluated.content_id,
+        state=evaluated.state,
+        reason_codes=evaluated.reason_codes,
+        validation_results=evaluated.validation_results,
+        reviewer_status=evaluated.reviewer_status,
+        actor=actor,
+        decided_at=decided_at,
+        supersedes_decision_id=supersedes_decision_id,
+    )
     temporal = require_temporal(landing.receipt.temporal)
     source_id = landing.receipt.source.source_id
     bronze_root = landing.receipt_path.parents[2]
     admission_dir = bronze_root / ADMISSION_DIR / source_id
     admission_dir.mkdir(parents=True, exist_ok=True)
-    path = admission_dir / f"{temporal.acquisition_id}.json"
+    if supersedes_decision_id is not None:
+        superseded = (
+            admission_dir
+            / temporal.acquisition_id
+            / f"{supersedes_decision_id}.json"
+        )
+        if not superseded.is_file():
+            raise ValueError("superseded admission decision does not exist")
+    path = (
+        admission_dir / temporal.acquisition_id / f"{record.decision_id}.json"
+    )
+    path.parent.mkdir(parents=True, exist_ok=True)
     payload = record.model_dump(mode="json", exclude_none=False)
-    path.write_bytes(orjson.dumps(payload, option=orjson.OPT_SORT_KEYS) + b"\n")
+    serialized = orjson.dumps(payload, option=orjson.OPT_SORT_KEYS) + b"\n"
+    if path.exists() and path.read_bytes() != serialized:
+        raise ValueError("append-only admission history cannot be rewritten")
+    if not path.exists():
+        path.write_bytes(serialized)
     return record.model_copy(update={"path": path})
 
 
