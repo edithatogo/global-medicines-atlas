@@ -205,6 +205,11 @@ before any hot-path rewrite. Python remains orchestration.
 - [x] Task: Phase Verification & Checkpoint
     - [x] Run focused storage, receipt, landing, recovery, schema, typing, and coverage checks
     - [x] Record repository evidence without claiming a deployed object store, production RPO/RTO qualification, external publication, or Bronze source completeness
+- [x] Task: Review Fixes (`5d2ad1f`, `7012859`)
+    - [x] Preserve legacy SourceReceipt and acquisition-event canonical identities while binding sensitivity on new landings
+    - [x] Keep repeated and recovery landings append-only and deterministic
+    - [x] Reject hostile payload suffixes, unverified object writes, and same-bucket replica claims
+    - [x] Remove duplicate negative-test scaffolding introduced during concurrent branch reconciliation
 
 ### Phase 4c: Reproducibility and disaster recovery
 
