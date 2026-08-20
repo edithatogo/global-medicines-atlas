@@ -243,6 +243,21 @@ def test_cdx_inventory_rejects_nonofficial_or_duplicate_captures() -> None:
 
 
 @pytest.mark.parametrize(
+    "payload",
+    [
+        b"{}",
+        json.dumps([
+            ["timestamp", "original", "statuscode", "mimetype", "digest"],
+            ["too", "short"],
+        ]).encode(),
+    ],
+)
+def test_detail_cdx_inventory_rejects_structural_drift(payload: bytes) -> None:
+    with pytest.raises(ValueError, match="detail CDX inventory"):
+        parse_detail_cdx_inventory(payload)
+
+
+@pytest.mark.parametrize(
     ("payload", "message"),
     [
         (b"{}", "lacks drug shortages"),
@@ -395,6 +410,56 @@ def test_runner_can_retry_an_exact_inventory_subset(tmp_path: Path) -> None:
             transport=httpx.MockTransport(handler),
             observed_at=datetime(2026, 8, 21, tzinfo=UTC),
             capture_timestamps=frozenset({"20000101000000"}),
+        )
+
+
+@pytest.mark.parametrize(
+    ("detail_status", "expected_count", "error", "message"),
+    [
+        (503, 2, TypeError, "historical detail inventory acquisition failed"),
+        (200, 3, ValueError, "historical detail capture inventory drifted"),
+    ],
+)
+def test_runner_fails_closed_on_detail_inventory_failure(
+    tmp_path: Path,
+    detail_status: int,
+    expected_count: int,
+    error: type[Exception],
+    message: str,
+) -> None:
+    authorization = json.loads(AUTHORIZATION.read_text(encoding="utf-8"))
+    authorization["expected_historical_capture_count"] = 2
+    authorization["expected_first_capture"] = CAPTURES[0][0]
+    authorization["expected_last_capture"] = CAPTURES[-1][0]
+    authorization["capture_replay_overrides"] = {}
+    authorization["expected_detail_capture_inventory_count"] = expected_count
+    authorization_path = tmp_path / "authorization.json"
+    authorization_path.write_text(json.dumps(authorization), encoding="utf-8")
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if "dsp_ActiveIngredientDetails" in str(request.url):
+            return httpx.Response(
+                detail_status,
+                content=_detail_cdx(),
+                headers={"content-type": "application/json"},
+            )
+        if request.url.path.startswith("/cdx/search/cdx"):
+            return httpx.Response(
+                200,
+                content=_cdx(),
+                headers={"content-type": "application/json"},
+            )
+        raise AssertionError(
+            f"unexpected request after detail failure: {request.url}"
+        )
+
+    with pytest.raises(error, match=message):
+        exercise_fda_shortages(
+            repository_root=ROOT,
+            output_dir=tmp_path / f"failure-{detail_status}-{expected_count}",
+            authorization_path=authorization_path,
+            transport=httpx.MockTransport(handler),
+            observed_at=datetime(2026, 8, 21, tzinfo=UTC),
         )
 
 
