@@ -57,13 +57,14 @@ def test_live_qualification_completes_verified_prompts() -> None:
     audit = _audit()
     measured = json.loads(MEASURED.read_text(encoding="utf-8"))["body"]
     assert measured["totals"]["live_qualified_sources"] == 0
-    assert audit["live_qualified_source_count"] == 11
-    assert audit["live_complete_prompt_count"] == 6
+    assert audit["live_qualified_source_count"] == 12
+    assert audit["live_complete_prompt_count"] == 7
     assert audit["program_completion"] == "incomplete_live_acquisition"
     complete = [entry for entry in audit["prompts"] if entry["live_complete"]]
     assert [entry["prompt_id"] for entry in complete] == [
         12,
         13,
+        14,
         15,
         17,
         19,
@@ -77,16 +78,17 @@ def test_live_qualification_completes_verified_prompts() -> None:
         "us-openfda-enforcement",
         "us-fda-recalls-notices",
     ]
-    assert complete[2]["live_qualified_source_ids"] == ["us-fda-rems"]
-    assert complete[3]["live_qualified_source_ids"] == [
+    assert complete[2]["live_qualified_source_ids"] == ["us-fda-drug-shortages"]
+    assert complete[3]["live_qualified_source_ids"] == ["us-fda-rems"]
+    assert complete[4]["live_qualified_source_ids"] == [
         "us-openfda-ndc",
         "us-fda-ndc-directory",
     ]
-    assert complete[4]["live_qualified_source_ids"] == [
+    assert complete[5]["live_qualified_source_ids"] == [
         "us-fda-nsde",
         "us-openfda-nsde",
     ]
-    assert complete[5]["live_qualified_source_ids"] == ["eu-union-register"]
+    assert complete[6]["live_qualified_source_ids"] == ["eu-union-register"]
     fixture_and_live = {
         source_id
         for entry in audit["prompts"]
@@ -110,6 +112,7 @@ def test_live_qualification_completes_verified_prompts() -> None:
         "us-fda-nsde",
         "us-fda-rems",
         "us-fda-recalls-notices",
+        "us-fda-drug-shortages",
     }
 
     orange = audit["prompts"][15]
@@ -354,8 +357,8 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     audit = _audit()
     assert audit["queue_state_counts"] == {
         "credentialed_and_excluded": 18,
-        "landed_and_evidenced": 21,
-        "manual_only_documented_acquisition": 91,
+        "landed_and_evidenced": 22,
+        "manual_only_documented_acquisition": 90,
         "not_yet_implemented": 0,
         "rights_blocked": 41,
         "superseded_by_reused_source": 0,

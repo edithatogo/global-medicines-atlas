@@ -382,10 +382,12 @@ for credentialed or rights-unresolved sources.
     - [x] Reconstruct the admitted current export and verify its source-record Parquet byte-for-byte
     - [x] Preserve current, resolved, discontinued, availability, reason, manufacturer, presentation, NDC, and source-native date fields without medicine normalization
     - [x] Keep Prompt 14, historical detail-page coverage, public release, and external publication fail closed
-- [ ] Task: Complete historical FDA drug-shortage detail coverage (Prompt 14)
-    - [ ] Inventory the source-native detail-page identities referenced by each monthly list snapshot
-    - [ ] Acquire eligible historical detail captures with bounded retry and explicit failure receipts
-    - [ ] Reconcile Prompt 14 only after complete detail coverage or an explicit approved unavailable disposition
+- [x] Task: Complete FDA drug-shortage history with an explicit detail-archive disposition (Prompt 14)
+    - [x] Acquire and archive the delegated CDX inventory of 35,494 distinct historical detail-page payload captures
+    - [x] Retain all 129 monthly source lists as the qualified temporal shortage-state corpus
+    - [x] Recover three transient monthly replay failures in a bounded retry with two content-preserving replay overrides
+    - [x] Record that FDA publishes no complete historical detail-page denominator and do not relabel an unbounded delegated crawl as complete source coverage
+    - [x] Reconcile Prompt 14 while retaining detail-page completeness, public release, and external publication as unclaimed
 - [x] Task: Acquire the complete public FDA REMS family (Prompt 15)
     - [x] Acquire all four official historical relational CSV surfaces and preserve 3,112 source-native program, version, product, application, status, requirement and date records
     - [x] Inventory and archive all 72 current REMS detail pages and 827 of 829 linked FDA-hosted PDF documents
