@@ -186,6 +186,10 @@ before any hot-path rewrite. Python remains orchestration.
 - [x] Task: Phase Verification & Checkpoint
     - [x] Run focused lineage, landing, recovery, scale, schema, typing, and coverage checks
     - [x] Record immutable schema revision and conformance evidence
+- [x] Task: Review Fixes (`b3285c8`)
+    - [x] Reject non-UUID OpenLineage run IDs and mismatched or non-accepted admissions
+    - [x] Reconcile immutable schema URLs after rebasing onto merged PR #201
+    - [x] Raise changed-line coverage for the OpenLineage projection to 100%
 
 ### Phase 4c: Reproducibility and disaster recovery
 
