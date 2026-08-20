@@ -1,0 +1,36 @@
+{
+  "schema_id": "global-medicines-atlas.experiment-prerequisite-receipt",
+  "schema_version": 1,
+  "experiment_id": "object_versioning",
+  "checks": [
+    {
+      "name": "deployed non-production durable object store",
+      "satisfied": false,
+      "evidence": []
+    },
+    {
+      "name": "provider versioning or Object Lock/WORM enabled",
+      "satisfied": false,
+      "evidence": []
+    },
+    {
+      "name": "geographically and administratively independent replica",
+      "satisfied": false,
+      "evidence": []
+    },
+    {
+      "name": "checksum inventory and restore rehearsal observed",
+      "satisfied": false,
+      "evidence": []
+    },
+    {
+      "name": "production RPO and RTO qualified",
+      "satisfied": false,
+      "evidence": []
+    }
+  ],
+  "eligible": false,
+  "outcome": "not_run_prerequisite_unmet",
+  "credentials_created": false,
+  "production_deployment_claimed": false
+}

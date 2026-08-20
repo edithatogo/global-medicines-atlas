@@ -1,0 +1,10 @@
+[
+  {
+    "content_id": "artifact:datahouse-fixture",
+    "sha256": "f5f2b56824852355c200c72246f25b7009f60ee0d4326535d34eb2340588b1da"
+  },
+  {
+    "content_id": "artifact:uv-lock",
+    "sha256": "c45a361fd8dac3beb630583903d47ad62f31c76bdd81aef3780451bed7e6a9aa"
+  }
+]
