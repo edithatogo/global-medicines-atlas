@@ -32,9 +32,10 @@ The repository contains a Renovate configuration inheriting
 approval-gated updates, immutable GitHub Action pins, and no competing
 Dependabot configuration.
 
-Hosted Renovate installation, repository access, and a visible Dependency
-Dashboard or first Renovate pull request are not verifiable from the current
-repository checkout. That remains an external hosted-setting gate for #81,
+The maintainer reconfirmed Renovate App activation on 2026-08-21. No visible
+Dependency Dashboard or Renovate pull request is observable through the hosted
+repository API, so output verification remains an external hosted-setting gate
+for #81. Activation alone is not evidence of a completed Renovate cycle and is
 not a reason to add a second update bot or weaken the dependency policy.
 
 ## Closure interpretation

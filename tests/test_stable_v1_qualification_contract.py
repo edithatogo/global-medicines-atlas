@@ -12,6 +12,7 @@ import pytest
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import ValidationError
 from scripts.build_stable_v1_source_maturity import build_projection
+from scripts.reconcile_stable_v1_contract import build_contract, build_support
 
 ROOT = Path(__file__).resolve().parents[1]
 QUALIFICATION_SCHEMA = ROOT / "schemas/stable-v1-qualification-v1.json"
@@ -79,20 +80,21 @@ def test_consumer_compatibility_contract_is_complete_and_fail_closed() -> None:
     assert contract["state"] == "qualified"
 
 
-def test_frontier_requirements_trace_to_the_correct_runtime_gates() -> None:
+def test_frontier_requirements_trace_to_verified_runtime_evidence() -> None:
     projection = _load(QUALIFICATION)
     requirements = {
         item["requirement_id"]: item for item in projection["requirements"]
     }
     expected = {
-        "M-085": ("stable-v1-canonical-schema-v2", "canonical_v2.py"),
-        "M-086": ("stable-v1-concept-discovery", "query_service.py"),
-        "M-089": ("stable-v1-clean-room-rehearsal", "acquisition.py"),
-        "M-090": ("stable-v1-comparison-validity", "comparison_validity.py"),
+        "M-085": "canonical_v2.py",
+        "M-086": "query_service.py",
+        "M-089": "acquisition.py",
+        "M-090": "comparison_validity.py",
     }
-    for requirement_id, (gate_id, evidence_suffix) in expected.items():
+    for requirement_id, evidence_suffix in expected.items():
         item = requirements[requirement_id]
-        assert gate_id in item["blocker_ids"]
+        assert item["state"] == "verified"
+        assert item["blocker_ids"] == []
         assert any(path.endswith(evidence_suffix) for path in item["evidence"])
 
     identities = requirements["M-088"]
@@ -207,6 +209,37 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
         if gate["state"] != "passed"
     }
     assert set(projection["unresolved_gate_ids"]) == unresolved
+    assert unresolved == {
+        "renovate-output-verification",
+        "stable-v1-bronze-current-scope",
+        "stable-v1-maturity-m5",
+        "stable-v1-release-approval",
+    }
+
+    gates = {item["gate_id"]: item for item in projection["release_gates"]}
+    for gate_id in (
+        "stable-v1-canonical-schema-v2",
+        "stable-v1-clean-room-rehearsal",
+        "stable-v1-comparison-validity",
+        "stable-v1-concept-discovery",
+        "stable-v1-evidence-unverified",
+        "stable-v1-hosted-governance",
+        "stable-v1-publication-gates",
+        "stable-v1-support-readiness",
+    ):
+        assert gates[gate_id]["state"] == "passed"
+    assert gates["stable-v1-release-approval"]["state"] == "blocked"
+    assert "v1.0.0rc1" in gates["stable-v1-release-approval"]["description"]
+
+    requirements = {
+        item["requirement_id"]: item for item in projection["requirements"]
+    }
+    blocked_requirements = {
+        requirement_id
+        for requirement_id, item in requirements.items()
+        if item["state"] != "verified"
+    }
+    assert blocked_requirements == {"M-046", "M-095"}
 
     invalid = copy.deepcopy(projection)
     invalid["qualification_state"] = "qualified"
@@ -304,6 +337,26 @@ def test_support_readiness_fails_closed_and_matches_residual_risks() -> None:
         item["blocking"] and item["disposition"] == "unresolved"
         for item in support["residual_risks"]
     )
+    unresolved = {
+        item["risk_id"]
+        for item in support["residual_risks"]
+        if item["blocking"] and item["disposition"] == "unresolved"
+    }
+    assert unresolved == {"RISK-002"}
+    production_dr = next(
+        item
+        for item in support["residual_risks"]
+        if item["risk_id"] == "RISK-001"
+    )
+    assert production_dr["disposition"] == "accepted"
+    assert production_dr["blocking"] is False
+
+
+def test_stable_contract_reconciliation_is_deterministic() -> None:
+    contract = _load(QUALIFICATION)
+    support = _load(SUPPORT)
+    assert build_contract(contract) == contract
+    assert build_support(support) == support
 
 
 def test_source_maturity_matrix_is_complete_conservative_projection() -> None:
