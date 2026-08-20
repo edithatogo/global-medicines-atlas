@@ -4029,7 +4029,7 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_instructions": "Inventory and acquire the historical FDA shortage detail pages referenced by each archived monthly list snapshot, preserving immutable source bytes, capture timestamps, receipts, rights evidence, and unresolved replay failures before proposing complete Prompt 14 coverage.",
         "acquisition_profile": null,
         "credentials_persisted": false,
         "endpoint": "https://www.accessdata.fda.gov/scripts/drugshortages/default.cfm",
@@ -4044,12 +4044,12 @@
         "source_id": "us-fda-drug-shortages"
       },
       "evidence_references": [
-        "https://www.fda.gov/drugs/drug-safety-and-availability/drug-shortages"
+        "quality/qualifications/fda-shortages-live-corpus-20260821.json"
       ],
       "evidence_scope": "none",
       "next_action": "execute and receipt the documented public manual acquisition",
       "priority": 30,
-      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "reason": "The complete current openFDA export and all 129 inventoried monthly FDA list snapshots were acquired, reconstructed where admitted, and privately archived; complete historical detail-page coverage remains pending.",
       "source_id": "us-fda-drug-shortages",
       "state": "manual_only_documented_acquisition"
     },

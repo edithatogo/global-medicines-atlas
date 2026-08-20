@@ -23,6 +23,11 @@ _OPENFDA_IDENTIFIERS: dict[str, tuple[str, ...]] = {
     "us-openfda-faers": ("safetyreportid", "safetyreportversion"),
     "us-openfda-ndc": ("product_ndc",),
     "us-openfda-nsde": ("package_ndc11", "package_ndc"),
+    "us-fda-drug-shortages": (
+        "package_ndc",
+        "initial_posting_date",
+        "update_date",
+    ),
 }
 _DRUGSFDA_MEMBERS = frozenset({
     "ActionTypes_Lookup.txt",

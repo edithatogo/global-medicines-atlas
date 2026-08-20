@@ -370,3 +370,14 @@ for credentialed or rights-unresolved sources.
     - [ ] Acquire the official historical notice archive through a bounded reproducible inventory and retention path
     - [ ] Preserve stable notice identity where the source exposes it without inferring enforcement-event equivalence
     - [ ] Reconcile Prompt 13 only after both source identities have complete live evidence or an explicit approved disposition
+- [x] Task: Acquire current FDA drug shortages and monthly list history (Prompt 14 partial)
+    - [x] Acquire and project the complete current 1,628-record openFDA drug-shortages export at source-native grain
+    - [x] Inventory one monthly official FDA shortage-list capture where available from June 2014 through August 2026
+    - [x] Archive all 129 inventoried list snapshots across five bounded, checksum-verified private passes without treating transient archive failures as missing data
+    - [x] Reconstruct the admitted current export and verify its source-record Parquet byte-for-byte
+    - [x] Preserve current, resolved, discontinued, availability, reason, manufacturer, presentation, NDC, and source-native date fields without medicine normalization
+    - [x] Keep Prompt 14, historical detail-page coverage, public release, and external publication fail closed
+- [ ] Task: Complete historical FDA drug-shortage detail coverage (Prompt 14)
+    - [ ] Inventory the source-native detail-page identities referenced by each monthly list snapshot
+    - [ ] Acquire eligible historical detail captures with bounded retry and explicit failure receipts
+    - [ ] Reconcile Prompt 14 only after complete detail coverage or an explicit approved unavailable disposition
