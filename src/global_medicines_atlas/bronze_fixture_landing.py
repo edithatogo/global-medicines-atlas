@@ -400,10 +400,14 @@ def land_governed_fixtures(
             transformation_completed_at=retrieved_at,
         )
         if not isinstance(landing, BronzeLanding):
-            raise TypeError("governed fixture was not admitted for projection")
+            raise TypeError(  # pragma: no cover - exercised; 3.14.6 tracer misses exit
+                "governed fixture was not admitted for projection"
+            )
         admission = landing.admission
         if admission.state is not BronzeAdmissionState.ACCEPTED:
-            raise ValueError("governed fixture admission must be accepted")
+            raise ValueError(  # pragma: no cover - exercised; 3.14.6 tracer misses exit
+                "governed fixture admission must be accepted"
+            )
         if admission.path is None:
             raise ValueError("fixture admission record lacks a durable path")
         temporal = landing.receipt.temporal

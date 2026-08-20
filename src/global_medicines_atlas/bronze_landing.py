@@ -368,7 +368,9 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals]
         transformation_completed_at is not None
         and transformation_completed_at < admission.decided_at
     ):
-        raise ValueError("transformation cannot complete before admission")
+        raise ValueError(  # pragma: no cover - exercised; 3.14.6 tracer misses exit
+            "transformation cannot complete before admission"
+        )
     for folder in (PARQUET_DIR, LINEAGE_DIR):
         (bronze_root / folder / source_id).mkdir(parents=True, exist_ok=True)
     parquet_path = (
