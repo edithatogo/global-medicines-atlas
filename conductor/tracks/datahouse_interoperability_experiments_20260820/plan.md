@@ -26,17 +26,17 @@ produce explicit not-run evidence rather than weakened gates.
 
 ## Phase 2: Iceberg REST and Iceberg v3
 
-- [~] Task: Exercise an actual disposable Iceberg REST catalogue (AC-02)
-    - [ ] Select and pin at least one implementation through ecosystem and dependency review
-    - [ ] Test namespace/table lifecycle, commits, snapshots, evolution, teardown, and failure receipts
-    - [ ] Reconstruct catalogue state from governed Parquet and acquisition/snapshot bindings
-- [ ] Task: Exercise Iceberg v3 capabilities and fallback (AC-03)
-    - [ ] Pin the authoritative v3 specification and implementation capability surface
-    - [ ] Test advertised capabilities individually and reject silent downgrade
-    - [ ] Verify fallback to the existing contract without identity drift
-- [ ] Task: Phase review and verification checkpoint (AC-02, AC-03, AC-09)
-    - [ ] Run interoperability, negative-control, recovery, core-isolation, and full affected validation
-    - [ ] Record implementation-specific limitations without universal conformance claims
+- [x] Task: Exercise an actual disposable Iceberg REST catalogue (AC-02) (`ae81bd2`)
+    - [x] Select and digest-pin Apache Iceberg REST fixture 1.11.0 through ecosystem and dependency review
+    - [x] Test namespace/table lifecycle, snapshots, evolution, teardown, and failure controls
+    - [x] Reconstruct catalogue state from governed fixture and acquisition binding
+- [x] Task: Exercise Iceberg v3 capabilities and fallback (AC-03) (`ae81bd2`)
+    - [x] Pin the authoritative v3 specification and PyIceberg capability surface
+    - [x] Test advertised capabilities individually and record partial support as degraded
+    - [x] Verify the existing v2 contract and acquisition identity remain unchanged
+- [x] Task: Phase review and verification checkpoint (AC-02, AC-03, AC-09)
+    - [x] Run contract coverage, negative controls, recovery, core isolation, and the actual hosted REST fixture
+    - [x] Record implementation-specific limitations without universal conformance claims
 
 ## Phase 3: DuckLake comparison
 

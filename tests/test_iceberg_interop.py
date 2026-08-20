@@ -254,6 +254,7 @@ def test_rest_catalog_lifecycle_receipt_uses_actual_fixture_digest(
 
 @pytest.mark.unit
 def test_installed_pyiceberg_v3_symbols_are_observed_not_inferred() -> None:
+    pytest.importorskip("pyiceberg")
     symbols = installed_pyiceberg_v3_symbols()
 
     assert {

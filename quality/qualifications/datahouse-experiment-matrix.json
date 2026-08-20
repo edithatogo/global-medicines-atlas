@@ -12,9 +12,9 @@
   "experiments": [
     {
       "experiment_id": "iceberg_rest",
-      "outcome": "not_run_prerequisite_unmet",
+      "outcome": "supported",
       "prerequisites": ["disposable REST catalogue implementation", "governed Parquet fixture"],
-      "prerequisites_met": false,
+      "prerequisites_met": true,
       "specifications": [
         {
           "title": "Apache Iceberg REST Catalog API",
@@ -24,8 +24,8 @@
       ],
       "feature_flags": ["namespace", "table", "snapshot", "schema-evolution", "partition-evolution"],
       "dependencies": ["pyiceberg optional extra"],
-      "evidence": [],
-      "limitations": ["No disposable REST catalogue has been exercised yet."],
+      "evidence": ["quality/qualifications/iceberg-rest-interoperability.json"],
+      "limitations": ["Apache Iceberg REST fixture 1.11.0 was exercised through PyIceberg 0.11.1 on one disposable Linux runner; this is implementation-specific, not universal conformance."],
       "rollback_procedure": "Delete the disposable catalogue and rebuild optional metadata from governed Parquet and table specifications.",
       "optional_for_core": true,
       "production_deployment_claimed": false,
@@ -33,9 +33,9 @@
     },
     {
       "experiment_id": "iceberg_v3",
-      "outcome": "not_run_prerequisite_unmet",
+      "outcome": "degraded",
       "prerequisites": ["pinned v3 capability vector", "v2 fallback fixture"],
-      "prerequisites_met": false,
+      "prerequisites_met": true,
       "specifications": [
         {
           "title": "Apache Iceberg Table Specification",
@@ -45,8 +45,8 @@
       ],
       "feature_flags": ["nanosecond-timestamps", "default-values", "multi-argument-transforms", "row-lineage", "deletion-vectors"],
       "dependencies": ["pyiceberg optional extra"],
-      "evidence": [],
-      "limitations": ["Capability support is not inferred from the table-format version alone."],
+      "evidence": ["quality/qualifications/iceberg-rest-interoperability.json"],
+      "limitations": ["PyIceberg 0.11.1 created a v3 table and exposed nanosecond timestamps, defaults, and row-lineage symbols, but did not expose multi-argument transforms or deletion-vector symbols; support is never inferred from format version alone."],
       "rollback_procedure": "Retain or regenerate the existing v2-compatible table specification without modifying acquisition identity.",
       "optional_for_core": true,
       "production_deployment_claimed": false,
