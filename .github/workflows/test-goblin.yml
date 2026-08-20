@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   free-tier-git-mechanics:
+    name: Free-tier Git mechanics and restore
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -37,6 +38,7 @@ jobs:
           path: build/quality-receipts/free-tier-git-mechanics.json
 
   table-format-comparison:
+    name: Table format / ${{ matrix.engine }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     strategy:
@@ -72,6 +74,7 @@ jobs:
           path: build/quality-receipts/${{ matrix.engine }}.json
 
   hudi-comparison:
+    name: Table format / Apache Hudi 1.2.0
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
