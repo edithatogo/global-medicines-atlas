@@ -159,6 +159,16 @@ before any hot-path rewrite. Python remains orchestration.
     - [x] Assert credentials and restricted bytes are never persisted
     - [x] Assert Drugs@FDA ingest runs the reuse gate first
     - [x] Confirm the intended failure before implementation
+- [x] Task: Make source-family landing the dominant generated workstream (`ddc1ecb`)
+    - [x] Write failing factory, state-exhaustiveness, override-evidence, schema, and generated-queue contracts first
+    - [x] Generate standardized configurations for static files, archives, paginated REST APIs, regulator search exports, document collections, and reproducible manual exports
+    - [x] Resolve all 172 catalogue sources to exactly one state without persisting credentials or generating Silver transformations
+    - [x] Generate the versioned JSON Schema, machine-readable queue, and Conductor Markdown projection from catalogue plus sparse overrides
+    - [x] Preserve source-specific rights and credential gates; blockers are work items, not landing evidence
+    - Current generated state is 16 landed-and-evidenced, 45 rights-blocked,
+      18 credentialed-and-excluded, and 93 manual-only. Temporary failure,
+      reused-source, and genuinely-not-yet-implemented states remain explicit
+      zero-count categories until supported by evidence.
 - [~] Task: Implement public ingest and fixture landing for current scope
     - [x] Use existing untrusted acquisition, admission, and first-cohort fixture contracts
     - [x] Inspect truncated downloads, hostile ZIP/tar, decompression bombs, path traversal, MIME mismatch, malformed XML/JSON/CSV, schema poisoning, collisions, source mutation, replays, checksum mismatch, and hostile filenames; land bytes; quarantine processing; keep forensic receipts
@@ -185,6 +195,11 @@ before any hot-path rewrite. Python remains orchestration.
 - [x] Task: Bind the Hugging Face archive boundary without duplicating sibling archival work
     - [x] Reuse the sibling Hugging Face public-data archival path when it has landed
     - [x] Do not publish source-derived payloads without the rights gate
+- [x] Task: Exercise and archive the governed Bronze acquisition corpus (`bbfb76e`)
+    - [x] Assess all 172 catalogue entries through the exhaustive landing queue
+    - [x] Run reuse, immutable landing, admission, Parquet, OpenLineage, and clean-room recovery over all 17 governed acquisitions for 16 sources
+    - [x] Emit a 419-entry tar archive, machine-readable manifest, and verified SHA-256 checksum without claiming live-source coverage
+    - [x] Upload the exercised corpus as a GitHub Actions artifact; require an explicit `publish=true` dispatch for external Hugging Face publication
 - [x] Task: Record bronze-completion evidence for current scope
     - [x] Update this track's evidence ledger with observable tests, coverage, and exclusions
     - [x] Leave silver/gold/platinum unimplemented

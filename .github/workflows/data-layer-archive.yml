@@ -19,6 +19,35 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  bronze-corpus:
+    name: Exercise and archive governed Bronze corpus
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.29"
+          enable-cache: true
+      - name: Synchronize Python 3.14 environment
+        run: uv sync --python 3.14.6 --locked
+      - name: Exercise Bronze machinery against governed corpus
+        run: >
+          uv run --python 3.14.6 python scripts/exercise_bronze_corpus.py
+          --output-dir build/bronze-corpus-archive
+      - name: Verify archive checksum
+        working-directory: build/bronze-corpus-archive
+        run: sha256sum --check SHA256SUMS
+      - name: Upload exercised Bronze corpus archive
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: bronze-source-acquisition-corpus
+          path: build/bronze-corpus-archive
+          if-no-files-found: error
+          retention-days: 30
+
   archive:
     name: Package FDA EMA TGA Medsafe archive
     runs-on: ubuntu-24.04
@@ -49,9 +78,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
       - name: Publish to Hugging Face
-        if: >-
-          github.event_name == 'push' && github.ref == 'refs/heads/main' ||
-          (github.event_name == 'workflow_dispatch' && inputs.publish)
+        if: github.event_name == 'workflow_dispatch' && inputs.publish
         env:
           GMA_MAINTAINER_PUBLICATION_APPROVED: yes-i-approve-publication
           GMA_PUBLICATION_ENVIRONMENT: production
