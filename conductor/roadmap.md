@@ -69,6 +69,20 @@ immutable source payload and its content-addressed receipt are evidentiary
 truth; source-faithful Parquet is the portable analytical representation;
 table/catalogue layers are rebuildable metadata over those artefacts.
 
+### Non-blocking datahouse experiments
+
+The following experiments may proceed after their prerequisites are evidenced,
+but none is a Bronze completion gate:
+
+| Experiment | Entry condition | Bronze boundary |
+|---|---|---|
+| Iceberg REST interoperability and Iceberg v3 | A disposable external catalogue and compatibility fixture exist | Catalogue metadata remains rebuildable and optional |
+| DuckLake | A measured DuckDB-native catalogue use case exists | Does not replace payload/receipt truth |
+| lakeFS or similar workflows | Durable object storage is deployed and its policy is evidenced | Complements, never substitutes for provider version/Object Lock receipts |
+| Cryptographic batch manifests or Merkle roots | Per-object inventories need efficient batch attestation | Additive to per-object SHA-256 receipts |
+| Delta Lake or Hudi | High-update workloads demonstrate a transaction need | No speculative Bronze dependency |
+| Graph, vector, OMOP, semantic normalization, Rust terminology | A Bronze or Silver consumer contract exists | Later-layer work, never a Bronze blocker |
+
 ## Feature maturity
 
 Features advance through six levels:

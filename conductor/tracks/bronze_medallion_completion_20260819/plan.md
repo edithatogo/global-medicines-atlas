@@ -194,6 +194,23 @@ before any hot-path rewrite. Python remains orchestration.
     - [x] Assign the new conformance test module to the exhaustive Test-Goblin unit inventory
     - [x] Revalidate all 154 test modules and the focused harness/conformance tests
 
+### Phase 4f: Durable payload storage and sensitivity contracts
+
+- [x] Task: Add durable-storage and independent sensitivity contracts ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
+    - [x] Write failing local/object-store, immutability, replication, inventory, restore, RPO/RTO, sensitivity, publication, schema, and landing tests
+    - [x] Route authoritative payload persistence through a local-development or durable-object-storage abstraction
+    - [x] Require versioning or Object Lock/WORM, independent replication, checksum inventory cadence, restore rehearsal cadence, and explicit RPO/RTO for durable operation
+    - [x] Keep rights, personal-data sensitivity, and publication disposition independent and fail closed for publication
+    - [x] Record Iceberg REST/v3, DuckLake, lakeFS, Merkle manifests, Delta/Hudi, graph, vector, OMOP, semantic normalization, and Rust terminology as non-blocking later experiments
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused storage, receipt, landing, recovery, schema, typing, and coverage checks
+    - [x] Record repository evidence without claiming a deployed object store, production RPO/RTO qualification, external publication, or Bronze source completeness
+- [x] Task: Review Fixes (`5d2ad1f`, `7012859`)
+    - [x] Preserve legacy SourceReceipt and acquisition-event canonical identities while binding sensitivity on new landings
+    - [x] Keep repeated and recovery landings append-only and deterministic
+    - [x] Reject hostile payload suffixes, unverified object writes, and same-bucket replica claims
+    - [x] Remove duplicate negative-test scaffolding introduced during concurrent branch reconciliation
+
 ### Phase 4c: Reproducibility and disaster recovery
 
 - [x] Task: Write failing tests for bronze reconstruction ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169), parent [#167](https://github.com/edithatogo/global-medicines-atlas/issues/167))

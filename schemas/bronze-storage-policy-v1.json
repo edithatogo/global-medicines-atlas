@@ -1,0 +1,21 @@
+{
+  "$id": "https://global-medicines-atlas.example/schemas/bronze-storage-policy-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_id", "schema_version", "operation", "immutability", "rpo_seconds", "rto_seconds", "checksum_inventory_interval_hours", "restore_rehearsal_interval_days", "primary_region", "primary_administrative_domain", "replica_region", "replica_administrative_domain"],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.bronze-storage-policy"},
+    "schema_version": {"const": 1},
+    "operation": {"enum": ["local_development", "durable_object_storage"]},
+    "immutability": {"enum": ["none", "versioning", "object_lock", "worm"]},
+    "rpo_seconds": {"type": ["integer", "null"], "minimum": 1},
+    "rto_seconds": {"type": ["integer", "null"], "minimum": 1},
+    "checksum_inventory_interval_hours": {"type": ["integer", "null"], "minimum": 1},
+    "restore_rehearsal_interval_days": {"type": ["integer", "null"], "minimum": 1},
+    "primary_region": {"type": ["string", "null"]},
+    "primary_administrative_domain": {"type": ["string", "null"]},
+    "replica_region": {"type": ["string", "null"]},
+    "replica_administrative_domain": {"type": ["string", "null"]}
+  }
+}

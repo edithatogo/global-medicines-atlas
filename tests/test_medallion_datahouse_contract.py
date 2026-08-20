@@ -19,9 +19,10 @@ BRONZE_MUST = {
     "M-099",
     "M-100",
     "M-101",
+    "M-102",
 }
 BRONZE_SHOULD = {"S-011", "S-012", "S-013"}
-BRONZE_WONT = {"W-007", "W-008"}
+BRONZE_WONT = {"W-007", "W-008", "W-009"}
 WONT_HEADING = "## Won't Have in the Initial Increment"
 TRUTH = (
     "the immutable source payload and its content-addressed receipt are "

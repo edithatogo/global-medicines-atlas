@@ -1,0 +1,37 @@
+{
+  "$id": "https://global-medicines-atlas.example/schemas/bronze-payload-storage-receipt-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_id", "schema_version", "acquisition_id", "content_id", "payload_sha256", "payload_byte_count", "policy", "primary", "replicas"],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.bronze-payload-storage"},
+    "schema_version": {"const": 1},
+    "acquisition_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "content_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "payload_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "payload_byte_count": {"type": "integer", "minimum": 0},
+    "policy": {"type": "object"},
+    "primary": {"$ref": "#/$defs/object"},
+    "replicas": {"type": "array", "items": {"$ref": "#/$defs/object"}}
+  },
+  "$defs": {
+    "object": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uri", "bucket", "key", "region", "administrative_domain", "version_id", "etag", "object_lock_mode", "sha256", "byte_count"],
+      "properties": {
+        "uri": {"type": "string", "minLength": 1},
+        "bucket": {"type": ["string", "null"]},
+        "key": {"type": "string", "minLength": 1},
+        "region": {"type": "string", "minLength": 1},
+        "administrative_domain": {"type": "string", "minLength": 1},
+        "version_id": {"type": ["string", "null"]},
+        "etag": {"type": ["string", "null"]},
+        "object_lock_mode": {"type": ["string", "null"]},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "byte_count": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

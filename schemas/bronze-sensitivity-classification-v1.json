@@ -1,0 +1,15 @@
+{
+  "$id": "https://global-medicines-atlas.example/schemas/bronze-sensitivity-classification-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_id", "schema_version", "data_sensitivity", "personal_data", "publication", "reason_codes"],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.bronze-sensitivity-classification"},
+    "schema_version": {"const": 1},
+    "data_sensitivity": {"enum": ["unknown", "non_sensitive", "sensitive", "restricted"]},
+    "personal_data": {"enum": ["unknown", "none", "possible", "present"]},
+    "publication": {"enum": ["review_required", "permitted", "prohibited"]},
+    "reason_codes": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+  }
+}

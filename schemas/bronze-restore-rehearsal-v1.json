@@ -1,0 +1,17 @@
+{
+  "$id": "https://global-medicines-atlas.example/schemas/bronze-restore-rehearsal-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "completed_at", "source_role", "restored_payloads", "elapsed_seconds", "rto_seconds", "within_rto", "restored_inventory_sha256"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "completed_at": {"type": "string", "format": "date-time"},
+    "source_role": {"enum": ["primary", "replica"]},
+    "restored_payloads": {"type": "integer", "minimum": 0},
+    "elapsed_seconds": {"type": "number", "minimum": 0},
+    "rto_seconds": {"type": "integer", "minimum": 1},
+    "within_rto": {"type": "boolean"},
+    "restored_inventory_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

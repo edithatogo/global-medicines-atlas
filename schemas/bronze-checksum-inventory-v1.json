@@ -1,0 +1,14 @@
+{
+  "$id": "https://global-medicines-atlas.example/schemas/bronze-checksum-inventory-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_at", "checked_payloads", "checked_objects", "inventory_sha256"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "checked_payloads": {"type": "integer", "minimum": 0},
+    "checked_objects": {"type": "integer", "minimum": 0},
+    "inventory_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     import httpx
 
 SHA256_PATTERN = r"^[0-9a-f]{64}$"
+LEGACY_ACQUISITION_EVENT_SCHEMA_VERSION = 2
 _SENSITIVE_HTTP_HEADERS = frozenset({
     "authorization",
     "proxy-authorization",
@@ -75,6 +76,60 @@ class RightsState(StrEnum):
     PERMITTED = "permitted"
     RESTRICTED = "restricted"
     PROHIBITED = "prohibited"
+
+
+class DataSensitivity(StrEnum):
+    """Intrinsic disclosure risk, independent from licensing permission."""
+
+    UNKNOWN = "unknown"
+    NON_SENSITIVE = "non_sensitive"
+    SENSITIVE = "sensitive"
+    RESTRICTED = "restricted"
+
+
+class PersonalDataState(StrEnum):
+    """Observed or plausible personal-data content in source bytes."""
+
+    UNKNOWN = "unknown"
+    NONE = "none"
+    POSSIBLE = "possible"
+    PRESENT = "present"
+
+
+class PublicationDisposition(StrEnum):
+    """Publication decision, evaluated separately from source rights."""
+
+    REVIEW_REQUIRED = "review_required"
+    PERMITTED = "permitted"
+    PROHIBITED = "prohibited"
+
+
+class SensitivityClassification(FrozenModel):
+    """Independent sensitivity and publication classification for bytes."""
+
+    schema_id: Literal[
+        "global-medicines-atlas.bronze-sensitivity-classification"
+    ] = "global-medicines-atlas.bronze-sensitivity-classification"
+    schema_version: Literal[1] = 1
+    data_sensitivity: DataSensitivity = DataSensitivity.UNKNOWN
+    personal_data: PersonalDataState = PersonalDataState.UNKNOWN
+    publication: PublicationDisposition = PublicationDisposition.REVIEW_REQUIRED
+    reason_codes: tuple[str, ...] = ("unassessed",)
+
+    @model_validator(mode="after")
+    def validate_reason_codes(self) -> SensitivityClassification:
+        if not self.reason_codes or any(
+            not reason.strip() for reason in self.reason_codes
+        ):
+            raise ValueError("sensitivity classification requires reason codes")
+        if (
+            self.publication is PublicationDisposition.PERMITTED
+            and self.data_sensitivity is DataSensitivity.UNKNOWN
+        ):
+            raise ValueError(
+                "publication cannot be permitted while sensitivity is unknown"
+            )
+        return self
 
 
 class SourceIdentity(FrozenModel):
@@ -359,7 +414,7 @@ class AcquisitionEvent(DeterministicReceipt):
     schema_id: Literal["global-medicines-atlas.bronze-acquisition-event"] = (
         "global-medicines-atlas.bronze-acquisition-event"
     )
-    schema_version: Literal[2] = 2
+    schema_version: Literal[2, 3] = 3
     acquisition_id: str = Field(pattern=SHA256_PATTERN)
     content_id: str = Field(pattern=SHA256_PATTERN)
     source_id: str = Field(min_length=1)
@@ -376,6 +431,9 @@ class AcquisitionEvent(DeterministicReceipt):
     rights_state: RightsState | None = None
     rights_reference: AnyUrl | None = None
     rights_policy: AcquisitionRightsPolicy | None = None
+    sensitivity: SensitivityClassification = Field(
+        default_factory=SensitivityClassification
+    )
     evidence_class: EvidenceClass | None = None
 
     @model_validator(mode="after")
@@ -385,6 +443,15 @@ class AcquisitionEvent(DeterministicReceipt):
         if self.content_id != self.payload_sha256:
             raise ValueError("content_id must equal payload digest")
         return self
+
+    def canonical_json(self) -> bytes:
+        payload = self.model_dump(mode="json", exclude_none=False)
+        if (
+            self.schema_version == LEGACY_ACQUISITION_EVENT_SCHEMA_VERSION
+            and "sensitivity" not in self.model_fields_set
+        ):
+            del payload["sensitivity"]
+        return orjson.dumps(payload, option=orjson.OPT_SORT_KEYS)
 
 
 class SourceReceipt(DeterministicReceipt):
@@ -402,6 +469,7 @@ class SourceReceipt(DeterministicReceipt):
     rights_state: RightsState
     rights_reference: AnyUrl | None = None
     rights_policy: AcquisitionRightsPolicy | None = None
+    sensitivity: SensitivityClassification | None = None
     evidence_class: EvidenceClass
     transformation: TransformationEvidence
 
@@ -488,6 +556,8 @@ class SourceReceipt(DeterministicReceipt):
         payload = self.model_dump(mode="json", exclude_none=False)
         if payload.get("rights_policy") is None:
             del payload["rights_policy"]
+        if self.sensitivity is None:
+            del payload["sensitivity"]
         return orjson.dumps(payload, option=orjson.OPT_SORT_KEYS)
 
     @property
@@ -496,6 +566,21 @@ class SourceReceipt(DeterministicReceipt):
             self.evidence_class is EvidenceClass.LIVE
             and self.retrieval.status is AcquisitionStatus.SUCCEEDED
             and self.rights_state is RightsState.PERMITTED
+        )
+
+
+def require_publication_permitted(receipt: SourceReceipt) -> None:
+    """Fail closed across independent rights and sensitivity decisions."""
+
+    if receipt.rights_state is not RightsState.PERMITTED:
+        raise ValueError("publication is not permitted by the rights state")
+    if receipt.sensitivity is None:
+        raise ValueError(
+            "publication is blocked by an absent sensitivity classification"
+        )
+    if receipt.sensitivity.publication is not PublicationDisposition.PERMITTED:
+        raise ValueError(
+            "publication is blocked by sensitivity/publication classification"
         )
 
 

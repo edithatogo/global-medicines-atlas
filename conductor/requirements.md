@@ -256,6 +256,14 @@
   Prefer standard Catalog and Dataset Type facets, and project durable
   admission/integrity validation results through the standard Data Quality
   Assertions input-dataset facet.
+- **M-102:** Persist Bronze payload truth through an explicit storage boundary:
+  local content-addressed files are development-only, while durable operation
+  requires versioning or Object Lock/WORM, geographically and administratively
+  independent replication, periodic checksum inventories, rehearsed restores,
+  and explicit RPO/RTO targets. Bind every acquisition to an append-only
+  storage receipt. Classify data sensitivity, possible personal data, and
+  publication disposition independently from licensing rights; lawful public
+  access must never imply that source bytes are safe to publish.
 ## Should Have
 
 - **S-001:** Evaluate Apache DataFusion for measured Rust-native query or streaming requirements without displacing DuckDB prematurely.
@@ -298,6 +306,15 @@
 - **C-005:** Add a Qdrant service deployment after benchmarked need is demonstrated.
 - **C-006:** Record machine-readable contracts for silver, gold, and platinum
   layers without implementing those layers.
+- **C-007:** Run actual Iceberg REST catalogue interoperability and Iceberg v3
+  capability experiments without making either a Bronze completion gate.
+- **C-008:** Compare DuckLake and lakeFS-style object-versioning workflows only
+  after the durable Bronze storage contract is deployed and measured.
+- **C-009:** Evaluate cryptographic batch manifests or Merkle-root attestations
+  as additive evidence; per-object SHA-256 receipts remain sufficient for
+  Bronze completion.
+- **C-010:** Compare Delta Lake and Hudi only if future high-update source
+  workloads establish a transactional requirement.
 
 ## Won't Have in the Initial Increment
 
@@ -311,3 +328,6 @@
   serving layers in this bronze-completion horizon.
 - **W-008:** Expand bronze-completion work to credentialed, licensed-feed, or
   restricted-payload sources in this horizon.
+- **W-009:** Make graph, vector, OMOP, cross-source semantic normalization, or
+  Rust terminology work a Bronze completion gate; those capabilities consume
+  Bronze or Silver outputs later.
