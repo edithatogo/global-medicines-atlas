@@ -7,9 +7,9 @@ Silver transformations included: **no**.
 
 ## State summary
 
-- `landed_and_evidenced`: 18
+- `landed_and_evidenced`: 19
 - `temporarily_unavailable`: 1
-- `rights_blocked`: 42
+- `rights_blocked`: 41
 - `credentialed_and_excluded`: 18
 - `manual_only_documented_acquisition`: 93
 - `superseded_by_reused_source`: 0
@@ -76,7 +76,7 @@ Silver transformations included: **no**.
 - [ ] `us-dailymed-spl` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `us-drugsfda` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `us-openfda-drugsfda` — `rights_blocked`; record source-specific retention and transformation rights.
-- [ ] `us-openfda-enforcement` — `rights_blocked`; record source-specific retention and transformation rights.
+- [x] `us-openfda-enforcement` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `us-openfda-faers` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `us-openfda-ndc` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `us-openfda-nsde` — `rights_blocked`; record source-specific retention and transformation rights.

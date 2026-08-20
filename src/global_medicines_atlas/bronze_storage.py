@@ -24,6 +24,7 @@ _PAYLOAD_SUFFIXES = frozenset({
     ".pdf",
     ".tsv",
     ".xml",
+    ".xlsx",
     ".zip",
 })
 

@@ -220,10 +220,10 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     audit = _audit()
     assert audit["queue_state_counts"] == {
         "credentialed_and_excluded": 18,
-        "landed_and_evidenced": 18,
+        "landed_and_evidenced": 19,
         "manual_only_documented_acquisition": 93,
         "not_yet_implemented": 0,
-        "rights_blocked": 42,
+        "rights_blocked": 41,
         "superseded_by_reused_source": 0,
         "temporarily_unavailable": 1,
     }
@@ -233,10 +233,11 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
         else:
             assert entry["next_actions"]
         assert "catalogue_complete" not in entry["completion_state"]
-        if (
-            not entry["live_complete"]
-            and "landed_and_evidenced" in entry["queue_states"].values()
-        ):
+        missing_states = {
+            entry["queue_states"][source_id]
+            for source_id in entry["sources_without_live_evidence"]
+        }
+        if "landed_and_evidenced" in missing_states:
             assert "fixture_only_is_not_live" in entry["blocker_categories"]
     reconciliation = audit["prompts"][-1]
     assert reconciliation["prompt_id"] == 36

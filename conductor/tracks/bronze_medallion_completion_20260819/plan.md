@@ -359,3 +359,14 @@ for credentialed or rights-unresolved sources.
     - [ ] Acquire and admit every authorized quarter from the official release index
     - [ ] Reconstruct every source-record product from immutable evidentiary truth and verify byte-identical Parquet pairs
     - [ ] Create and checksum-verify the private archive, then reconcile Prompt 12 only from observed complete evidence
+- [x] Task: Acquire current FDA enforcement and recall-notice surfaces (Prompt 13 partial)
+    - [x] Resolve the official openFDA download inventory and acquire its complete current drug-enforcement bulk partition
+    - [x] Acquire the distinct current FDA recall-notice XLSX and both official documentation surfaces under the approved internal-only U.S. cohort
+    - [x] Preserve immutable payloads and receipts, project 17,876 source-native enforcement rows, and reconstruct the accepted Bronze products in a clean room
+    - [x] Verify the source-record Parquet byte-for-byte and create the checksum-verified 23,582,720-byte private archive
+    - [x] Record an explicit overlap contract that performs no automatic linkage or silent deduplication
+    - [x] Keep Prompt 13, historical notice coverage, public release, and external publication fail closed
+- [ ] Task: Complete the historical FDA recall-notice family (Prompt 13)
+    - [ ] Acquire the official historical notice archive through a bounded reproducible inventory and retention path
+    - [ ] Preserve stable notice identity where the source exposes it without inferring enforcement-event equivalence
+    - [ ] Reconcile Prompt 13 only after both source identities have complete live evidence or an explicit approved disposition

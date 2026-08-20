@@ -11,10 +11,10 @@
   "program_completion": "incomplete_live_acquisition",
   "queue_state_counts": {
     "credentialed_and_excluded": 18,
-    "landed_and_evidenced": 18,
+    "landed_and_evidenced": 19,
     "manual_only_documented_acquisition": 93,
     "not_yet_implemented": 0,
-    "rights_blocked": 42,
+    "rights_blocked": 41,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 1
   },
@@ -525,12 +525,12 @@
         "us-fda-recalls-notices"
       ],
       "queue_states": {
-        "us-openfda-enforcement": "rights_blocked",
+        "us-openfda-enforcement": "landed_and_evidenced",
         "us-fda-recalls-notices": "manual_only_documented_acquisition"
       },
       "queue_state_counts": {
-        "manual_only_documented_acquisition": 1,
-        "rights_blocked": 1
+        "landed_and_evidenced": 1,
+        "manual_only_documented_acquisition": 1
       },
       "fixture_qualified_source_ids": [],
       "live_qualified_source_ids": [

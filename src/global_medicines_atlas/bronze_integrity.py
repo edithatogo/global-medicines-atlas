@@ -129,6 +129,7 @@ def _normalize_media(declared_media: str | None) -> str | None:
         "xml": "xml",
         "csv": "csv",
         "zip": "zip",
+        "xlsx": "zip",
         "gz": "gzip",
         "gzip": "gzip",
         "tgz": "tar",
