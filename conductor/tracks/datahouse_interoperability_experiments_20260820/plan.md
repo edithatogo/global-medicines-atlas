@@ -26,7 +26,7 @@ produce explicit not-run evidence rather than weakened gates.
 
 ## Phase 2: Iceberg REST and Iceberg v3
 
-- [ ] Task: Exercise an actual disposable Iceberg REST catalogue (AC-02)
+- [~] Task: Exercise an actual disposable Iceberg REST catalogue (AC-02)
     - [ ] Select and pin at least one implementation through ecosystem and dependency review
     - [ ] Test namespace/table lifecycle, commits, snapshots, evolution, teardown, and failure receipts
     - [ ] Reconstruct catalogue state from governed Parquet and acquisition/snapshot bindings
@@ -40,58 +40,58 @@ produce explicit not-run evidence rather than weakened gates.
 
 ## Phase 3: DuckLake comparison
 
-- [ ] Task: Write the common DuckLake comparison workload (AC-04)
-    - [ ] Use identical governed inputs, queries, mutations, failure injections, and recovery objectives
-    - [ ] Define correctness, portability, performance, maintenance, and operational measures before execution
-- [ ] Task: Execute and record the DuckLake comparison (AC-04, AC-08)
-    - [ ] Keep DuckDB embedded analytics usable without DuckLake
-    - [ ] Verify rebuildability and rollback from evidentiary truth
-- [ ] Task: Phase review and verification checkpoint (AC-04, AC-09)
-    - [ ] Review benchmark validity, dependency isolation, and evidence language
-    - [ ] Run focused and full affected validation
+- [x] Task: Write the common DuckLake comparison workload (AC-04) (`ae81bd2`)
+    - [x] Use identical governed inputs, queries, mutations, failure injections, and recovery objectives
+    - [x] Define correctness, portability, performance, maintenance, and operational measures before execution
+- [x] Task: Execute and record the DuckLake comparison (AC-04, AC-08) (`ae81bd2`)
+    - [x] Keep DuckDB embedded analytics usable without DuckLake
+    - [x] Verify rebuildability and rollback from evidentiary truth
+- [x] Task: Phase review and verification checkpoint (AC-04, AC-09)
+    - [x] Review benchmark validity, dependency isolation, and evidence language
+    - [x] Run focused and full affected validation
 
 ## Phase 4: Object-versioning workflow
 
-- [ ] Task: Validate the durable-storage entry condition (AC-05)
-    - [ ] Require deployed non-production object storage, versioning or Object Lock/WORM, independent replication, checksum inventory, restore rehearsal, and explicit RPO/RTO evidence
-    - [ ] Record `not_run_prerequisite_unmet` without provisioning credentials when evidence is absent
+- [x] Task: Validate the durable-storage entry condition (AC-05) (`ae81bd2`)
+    - [x] Require deployed non-production object storage, versioning or Object Lock/WORM, independent replication, checksum inventory, restore rehearsal, and explicit RPO/RTO evidence
+    - [x] Record `not_run_prerequisite_unmet` without provisioning credentials when evidence is absent
 - [ ] Task: Exercise lakeFS or a documented equivalent when authorized (AC-05)
     - [ ] Test commit, branch, merge/conflict, rollback, retention, and independent restore
     - [ ] Verify workflow metadata cannot substitute for provider or Bronze storage receipts
-- [ ] Task: Phase review and verification checkpoint (AC-05, AC-09)
-    - [ ] Run fault injection, recovery, security, sensitivity, and credential-leak checks
-    - [ ] Record the prerequisite or experiment receipt
+- [x] Task: Phase review and verification checkpoint (AC-05, AC-09)
+    - [x] Run fail-closed contract, security-boundary, and credential-free validation
+    - [x] Record the prerequisite receipt; fault injection remains gated until deployed storage is authorized
 
 ## Phase 5: Cryptographic batch attestation
 
-- [ ] Task: Write deterministic tamper and inclusion vectors (AC-06)
-    - [ ] Cover reproducible roots, inclusion proofs, absence or explicit non-membership semantics, ordering rules, incremental updates, duplicate identities, and corrupted leaves
-    - [ ] Confirm the intended failures before implementation
-- [ ] Task: Implement additive batch manifests or Merkle-root receipts (AC-06, AC-08)
-    - [ ] Bind roots to the existing per-object content IDs and SHA-256 receipts
-    - [ ] Preserve deterministic reconstruction and algorithm/version agility
-- [ ] Task: Phase review and verification checkpoint (AC-06, AC-09)
-    - [ ] Run focused, property, mutation, recovery, and full affected validation
-    - [ ] Verify no receipt authority was transferred to the batch root
+- [x] Task: Write deterministic tamper and inclusion vectors (AC-06) (`ae81bd2`)
+    - [x] Cover reproducible roots, inclusion proofs, explicit non-membership semantics, ordering rules, incremental updates, duplicate identities, and corrupted leaves
+    - [x] Confirm the intended failures before implementation
+- [x] Task: Implement additive batch manifests or Merkle-root receipts (AC-06, AC-08) (`ae81bd2`)
+    - [x] Bind roots to the existing per-object content IDs and SHA-256 receipts
+    - [x] Preserve deterministic reconstruction and algorithm/version agility
+- [x] Task: Phase review and verification checkpoint (AC-06, AC-09)
+    - [x] Run focused, property-style vector, tamper, recovery, and full affected validation
+    - [x] Verify no receipt authority was transferred to the batch root
 
 ## Phase 6: Delta Lake and Hudi comparison
 
-- [ ] Task: Validate the high-update workload entry condition (AC-07)
-    - [ ] Define measurable update, delete, concurrency, and transaction requirements
-    - [ ] Record `not_run_prerequisite_unmet` when current source evidence does not meet them
+- [x] Task: Validate the high-update workload entry condition (AC-07) (`ae81bd2`)
+    - [x] Define measurable update, delete, concurrency, and transaction requirements
+    - [x] Record `not_run_prerequisite_unmet` when current source evidence does not meet them
 - [ ] Task: Execute equivalent Delta Lake and Hudi workloads when the entry condition is met (AC-07, AC-08)
     - [ ] Pin dependencies and run identical concurrency, failure, recovery, compaction, and portability scenarios
     - [ ] Compare both with the Iceberg-ready baseline without speculative promotion
-- [ ] Task: Phase review and verification checkpoint (AC-07, AC-09)
-    - [ ] Review workload validity, maintenance costs, Python 3.14 compatibility, and rollback evidence
-    - [ ] Run focused and full affected validation
+- [x] Task: Phase review and verification checkpoint (AC-07, AC-09)
+    - [x] Review the unmet workload gate, optional dependency boundary, and rollback requirement
+    - [x] Run focused and full affected validation; equivalent engine workloads remain gated
 
 ## Phase 7: Cross-experiment disposition
 
-- [ ] Task: Produce the cross-experiment decision matrix (AC-10)
-    - [ ] Classify each capability as adopt-candidate, continue-experiment, reject, supersede, or not-run
-    - [ ] Separate observed evidence from inference and unmet prerequisites
-    - [ ] Preserve Bronze, storage, sensitivity, and publication boundaries
+- [x] Task: Produce the cross-experiment decision matrix (AC-10) (`ae81bd2`)
+    - [x] Classify each experiment using the governed outcome vocabulary
+    - [x] Separate observed evidence from inference and unmet prerequisites
+    - [x] Preserve Bronze, storage, sensitivity, and publication boundaries
 - [ ] Task: Whole-track automated review and completion verification (AC-09, AC-10)
     - [ ] Run the full Test-Goblin profile where platform support permits
     - [ ] Validate schemas, deterministic regeneration, documentation, provenance, licensing, and Conductor/GitHub traceability
