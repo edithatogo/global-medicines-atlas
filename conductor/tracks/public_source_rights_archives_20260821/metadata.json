@@ -27,5 +27,14 @@
       "status": "pending",
       "evidence": "No publication unless affirmative official reuse evidence is recorded"
     }
-  ]
+  ],
+  "execution_policy": {
+    "mode": "autonomous",
+    "interaction": "decision_gates_only",
+    "decision_protocol": "options_recommendation_rationale",
+    "phase_checkpoints": "automatic_evidence_gated",
+    "failure_recovery": "bounded_self_correction",
+    "max_identical_failures": 3,
+    "merge_policy": "required_checks_then_merge"
+  }
 }

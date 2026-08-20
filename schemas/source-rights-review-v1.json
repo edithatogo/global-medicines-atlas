@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.org/schemas/source-rights-review-v1.json",
+  "title": "Global Medicines Atlas source rights review",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "schema_version",
+    "source_id",
+    "policy_family_id",
+    "evidence",
+    "redistribute",
+    "transform",
+    "publish_source_bytes",
+    "sensitivity",
+    "disposition",
+    "attribution",
+    "field_exclusions",
+    "maintainer_licence_approved",
+    "maintainer_publication_approved",
+    "reviewed_at",
+    "review_trigger"
+  ],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.source-rights-review"},
+    "schema_version": {"const": 1},
+    "source_id": {"type": "string", "minLength": 1},
+    "policy_family_id": {"type": "string", "minLength": 1},
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["official_url", "observed_at", "content_sha256", "scope", "reuse_statement"],
+        "properties": {
+          "official_url": {"type": "string", "format": "uri"},
+          "observed_at": {"type": "string", "format": "date-time"},
+          "content_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "scope": {"enum": ["dataset", "endpoint", "authority", "national_open_data"]},
+          "reuse_statement": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "redistribute": {"enum": ["unknown", "permitted", "conditional", "prohibited"]},
+    "transform": {"enum": ["unknown", "permitted", "conditional", "prohibited"]},
+    "publish_source_bytes": {"enum": ["unknown", "permitted", "conditional", "prohibited"]},
+    "sensitivity": {"enum": ["public", "controlled", "publication_prohibited", "unknown"]},
+    "disposition": {"enum": ["approved_public_source", "approved_public_derived_only", "catalogue_only", "rights_blocked", "credentialed_excluded"]},
+    "attribution": {"type": ["string", "null"]},
+    "field_exclusions": {
+      "type": "array",
+      "items": {"type": "string"}
+    },
+    "maintainer_licence_approved": {"type": "boolean"},
+    "maintainer_publication_approved": {"type": "boolean"},
+    "reviewed_at": {"type": "string", "format": "date-time"},
+    "review_trigger": {"type": "string", "minLength": 1},
+    "blocker": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}
