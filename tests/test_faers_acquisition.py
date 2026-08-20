@@ -151,7 +151,7 @@ def test_discovery_deduplicates_and_requires_contiguous_official_ascii() -> (
     assert all(item.representation == "ascii" for item in releases)
 
 
-def test_runner_acquires_by_verified_ranges_lands_recovers_and_archives(
+def test_runner_acquires_by_verified_ranges_lands_recovers_and_archives(  # ruff: ignore[too-many-locals,too-many-statements]
     tmp_path: Path,
 ) -> None:
     auth = _authorization()
@@ -248,6 +248,7 @@ def test_runner_acquires_by_verified_ranges_lands_recovers_and_archives(
         for item in manifest.items
         if item.item_id == "2026-Q2" and item.acquisition_id is not None
     )
+    assert repaired_item.acquisition_id is not None
     product = (
         output
         / "runs/corpus/bronze/parquet/us-fda-faers"
@@ -278,6 +279,102 @@ def test_runner_acquires_by_verified_ranges_lands_recovers_and_archives(
     assert resumed.source_record_projection_count == 2
     assert resumed.source_record_parquet_pairs_byte_identical == 2
     assert product.is_file()
+    assert repaired_item.payload_sha256 is not None
+
+    def remove_finalization() -> None:
+        for filename in (
+            "faers-history.private.tar",
+            "faers-history.manifest.json",
+            "SHA256SUMS",
+        ):
+            (output / filename).unlink(missing_ok=True)
+
+    remove_finalization()
+    receipts_dir = output / "runs/corpus/bronze/receipts/us-fda-faers"
+    release_receipt = receipts_dir / f"{repaired_item.acquisition_id}.json"
+    duplicate_receipt = receipts_dir / "duplicate.json"
+    duplicate_receipt.write_bytes(release_receipt.read_bytes())
+    with pytest.raises(ValueError, match="duplicate FAERS receipt URI"):
+        exercise_faers_history(
+            repository_root=ROOT,
+            output_dir=output,
+            authorization_path=authorization,
+            transport=httpx.MockTransport(handler),
+            observed_at=datetime(2026, 8, 22, tzinfo=UTC),
+            resume=True,
+        )
+    duplicate_receipt.unlink()
+
+    duplicate_payload = json.loads(release_receipt.read_text(encoding="utf-8"))
+    duplicate_payload["retrieval"]["uri"] = (
+        "https://fis.fda.gov/content/Exports/duplicate.zip"
+    )
+    duplicate_receipt.write_text(
+        json.dumps(duplicate_payload), encoding="utf-8"
+    )
+    with pytest.raises(ValueError, match="duplicate FAERS source version"):
+        exercise_faers_history(
+            repository_root=ROOT,
+            output_dir=output,
+            authorization_path=authorization,
+            transport=httpx.MockTransport(handler),
+            observed_at=datetime(2026, 8, 22, tzinfo=UTC),
+            resume=True,
+        )
+    duplicate_receipt.unlink()
+
+    document = (
+        output
+        / "runs/corpus/downloads/documentation/quarterly-release-index.html"
+    )
+    document_payload = document.read_bytes()
+    document.write_bytes(b"corrupted")
+    with pytest.raises(
+        ValueError, match="documentation lacks matching receipt"
+    ):
+        exercise_faers_history(
+            repository_root=ROOT,
+            output_dir=output,
+            authorization_path=authorization,
+            transport=httpx.MockTransport(handler),
+            observed_at=datetime(2026, 8, 22, tzinfo=UTC),
+            resume=True,
+        )
+    document.write_bytes(document_payload)
+
+    release = output / "runs/corpus/downloads/releases/2026-Q2.zip"
+    release_payload = release.read_bytes()
+    release.write_bytes(b"corrupted")
+    with pytest.raises(ValueError, match="release lacks matching receipt"):
+        exercise_faers_history(
+            repository_root=ROOT,
+            output_dir=output,
+            authorization_path=authorization,
+            transport=httpx.MockTransport(handler),
+            observed_at=datetime(2026, 8, 22, tzinfo=UTC),
+            resume=True,
+        )
+    release.write_bytes(release_payload)
+
+    product.unlink()
+    immutable_payloads = tuple(
+        (
+            output
+            / "runs/corpus/bronze/payloads/by_content"
+            / repaired_item.payload_sha256
+        ).glob("payload.*")
+    )
+    assert len(immutable_payloads) == 1
+    immutable_payloads[0].unlink()
+    with pytest.raises(ValueError, match="exactly one immutable payload"):
+        exercise_faers_history(
+            repository_root=ROOT,
+            output_dir=output,
+            authorization_path=authorization,
+            transport=httpx.MockTransport(handler),
+            observed_at=datetime(2026, 8, 22, tzinfo=UTC),
+            resume=True,
+        )
 
 
 def test_runner_rejects_inventory_gap_before_release_download(
@@ -334,4 +431,136 @@ def test_runner_rejects_nonempty_output_and_naive_time(tmp_path: Path) -> None:
             output_dir=tmp_path / "naive-time",
             authorization_path=AUTHORIZATION,
             observed_at=datetime(2026, 8, 21, tzinfo=UTC).replace(tzinfo=None),
+        )
+
+
+def test_resume_rejects_empty_output_and_authorization_drift(
+    tmp_path: Path,
+) -> None:
+    empty = tmp_path / "empty"
+    with pytest.raises(FileNotFoundError, match="existing partial corpus"):
+        exercise_faers_history(
+            repository_root=ROOT,
+            output_dir=empty,
+            authorization_path=AUTHORIZATION,
+            resume=True,
+        )
+
+    partial = tmp_path / "partial"
+    evidence = partial / "runs/corpus/evidence"
+    evidence.mkdir(parents=True)
+    (evidence / AUTHORIZATION.name).write_text("{}", encoding="utf-8")
+    with pytest.raises(ValueError, match="authorization does not match"):
+        exercise_faers_history(
+            repository_root=ROOT,
+            output_dir=partial,
+            authorization_path=AUTHORIZATION,
+            resume=True,
+        )
+
+
+def test_runner_records_document_and_release_transport_failures(
+    tmp_path: Path,
+) -> None:
+    auth = _authorization()
+    auth.update(
+        expected_first_release="2026-Q1",
+        expected_last_release="2026-Q1",
+        expected_release_count=1,
+        max_releases=1,
+    )
+    authorization = tmp_path / "authorization.json"
+    authorization.write_text(json.dumps(auth), encoding="utf-8")
+
+    def document_failure(_request: httpx.Request) -> httpx.Response:
+        return httpx.Response(503, content=b"temporarily unavailable")
+
+    with pytest.raises(ValueError, match="inventory does not match"):
+        exercise_faers_history(
+            repository_root=ROOT,
+            output_dir=tmp_path / "document-failure",
+            authorization_path=authorization,
+            transport=httpx.MockTransport(document_failure),
+            observed_at=datetime(2026, 8, 21, tzinfo=UTC),
+        )
+
+    def release_failure(request: httpx.Request) -> httpx.Response:
+        if request.url.path.endswith("FPD-QDE-FAERS.html"):
+            return httpx.Response(
+                200,
+                content=_index("2026-Q1", "2026-Q1"),
+                headers={"content-type": "text/html"},
+            )
+        if request.url.host == "www.fda.gov":
+            return httpx.Response(
+                200,
+                content=b"<html>documentation</html>",
+                headers={"content-type": "text/html"},
+            )
+        return httpx.Response(503, content=b"temporarily unavailable")
+
+    manifest = exercise_faers_history(
+        repository_root=ROOT,
+        output_dir=tmp_path / "release-failure",
+        authorization_path=authorization,
+        transport=httpx.MockTransport(release_failure),
+        observed_at=datetime(2026, 8, 21, tzinfo=UTC),
+    )
+    failed = next(
+        item for item in manifest.items if item.kind == "quarterly_release"
+    )
+    assert failed.status == "failed"
+    assert failed.failure_code is not None
+
+
+def test_runner_refuses_total_byte_budget_exhaustion(tmp_path: Path) -> None:
+    archive = _zip("2026-Q1")
+    auth = _authorization()
+    auth.update(
+        expected_first_release="2026-Q1",
+        expected_last_release="2026-Q2",
+        expected_release_count=2,
+        max_releases=2,
+        max_total_bytes=len(archive),
+        max_release_bytes=len(archive),
+        range_chunk_bytes=128,
+    )
+    authorization = tmp_path / "authorization.json"
+    authorization.write_text(json.dumps(auth), encoding="utf-8")
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path.endswith("FPD-QDE-FAERS.html"):
+            return httpx.Response(
+                200,
+                content=_index("2026-Q1", "2026-Q2"),
+                headers={"content-type": "text/html"},
+            )
+        if request.url.host == "www.fda.gov":
+            return httpx.Response(
+                200,
+                content=b"<html>documentation</html>",
+                headers={"content-type": "text/html"},
+            )
+        range_header = request.headers["range"]
+        start_text, end_text = range_header.removeprefix("bytes=").split("-")
+        start = int(start_text)
+        end = min(int(end_text), len(archive) - 1)
+        content = archive[start : end + 1]
+        return httpx.Response(
+            206,
+            content=content,
+            headers={
+                "content-type": "application/zip",
+                "content-range": f"bytes {start}-{end}/{len(archive)}",
+                "content-length": str(len(content)),
+            },
+        )
+
+    with pytest.raises(ValueError, match="exceeded total byte budget"):
+        exercise_faers_history(
+            repository_root=ROOT,
+            output_dir=tmp_path / "output",
+            authorization_path=authorization,
+            transport=httpx.MockTransport(handler),
+            observed_at=datetime(2026, 8, 21, tzinfo=UTC),
         )
