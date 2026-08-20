@@ -89,18 +89,18 @@ produce explicit not-run evidence rather than weakened gates.
     - [x] Classify each capability as adopt-candidate, continue-experiment, reject, supersede, or not-run
     - [x] Separate observed evidence from inference and unmet prerequisites
     - [x] Preserve Bronze, storage, sensitivity, and publication boundaries
-- [~] Task: Whole-track automated review and completion verification (AC-09, AC-10)
-    - [ ] Run the full Test-Goblin profile where platform support permits
-    - [ ] Validate schemas, deterministic regeneration, documentation, provenance, licensing, and Conductor/GitHub traceability
-    - [ ] Record unresolved external gates and do not imply deployment or promotion
+- [x] Task: Whole-track automated review and completion verification (AC-09, AC-10) (`46a9456`)
+    - [x] Run the full Test-Goblin profile where platform support permits
+    - [x] Validate schemas, deterministic regeneration, documentation, provenance, licensing, and Conductor/GitHub traceability
+    - [x] Record unresolved external gates and do not imply deployment or promotion
 
 ## GitHub hierarchy
 
 - Parent issue: [#207](https://github.com/edithatogo/global-medicines-atlas/issues/207)
 - Nested subissues:
-    - [ ] [#208](https://github.com/edithatogo/global-medicines-atlas/issues/208): actual Iceberg REST catalogue interoperability (AC-02)
-    - [ ] [#209](https://github.com/edithatogo/global-medicines-atlas/issues/209): Iceberg v3 capability and fallback testing (AC-03)
-    - [ ] [#210](https://github.com/edithatogo/global-medicines-atlas/issues/210): DuckLake comparison (AC-04)
-    - [ ] [#211](https://github.com/edithatogo/global-medicines-atlas/issues/211): lakeFS or equivalent object-versioning workflow (AC-05)
-    - [ ] [#212](https://github.com/edithatogo/global-medicines-atlas/issues/212): cryptographic batch manifests or Merkle-root attestations (AC-06)
-    - [ ] [#213](https://github.com/edithatogo/global-medicines-atlas/issues/213): Delta Lake and Hudi comparison for evidenced high-update sources (AC-07)
+    - [x] [#208](https://github.com/edithatogo/global-medicines-atlas/issues/208): actual Iceberg REST catalogue interoperability (AC-02; reproducible failed preflight)
+    - [x] [#209](https://github.com/edithatogo/global-medicines-atlas/issues/209): Iceberg v3 capability and fallback testing (AC-03)
+    - [x] [#210](https://github.com/edithatogo/global-medicines-atlas/issues/210): DuckLake comparison (AC-04)
+    - [x] [#211](https://github.com/edithatogo/global-medicines-atlas/issues/211): lakeFS or equivalent object-versioning workflow (AC-05; prerequisite unmet)
+    - [x] [#212](https://github.com/edithatogo/global-medicines-atlas/issues/212): cryptographic batch manifests or Merkle-root attestations (AC-06)
+    - [x] [#213](https://github.com/edithatogo/global-medicines-atlas/issues/213): Delta Lake and Hudi comparison for evidenced high-update sources (AC-07; prerequisite unmet)
