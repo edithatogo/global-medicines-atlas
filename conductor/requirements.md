@@ -275,7 +275,12 @@
   REST catalogue behind an optional extra. Iceberg is not mandatory. Parquet
   remains valid without Iceberg. Iceberg row lineage, branches, and tags are
   optional aliases; Atlas acquisition provenance remains authoritative. Do not
-  migrate bronze evidentiary truth into Iceberg metadata. Python 3.14 core
+  migrate bronze evidentiary truth into Iceberg metadata. Leave small tables
+  unpartitioned. For configured large recurring products, partition by a
+  source-release month or acquisition month and optionally bucket a
+  high-volume record identifier. Jurisdiction and source identity are table
+  identity, not repeated physical partitions; mutable rights, admission, and
+  review state must never be partition keys. Python 3.14 core
   must not require Iceberg.
 
 ## Could Have

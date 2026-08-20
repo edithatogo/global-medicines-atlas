@@ -370,7 +370,14 @@ def project_openlineage_event(  # ruff: ignore[too-many-locals]
             f"{PRODUCER}#iceberg-ready",
             identifier=table.identifier,
             location=table.location,
-            partitionFields=list(table.partition_fields),
+            partitionFields=[
+                {
+                    "sourceField": field.source_field,
+                    "name": field.name,
+                    "transform": field.transform,
+                }
+                for field in table.partition_fields
+            ],
             formatVersion=table.format_version,
         )
     parquet_dataset = _dataset(
@@ -419,7 +426,14 @@ def project_openlineage_event(  # ruff: ignore[too-many-locals]
             f"{PRODUCER}#iceberg-ready",
             identifier=table.identifier,
             location=table.location,
-            partitionFields=list(table.partition_fields),
+            partitionFields=[
+                {
+                    "sourceField": field.source_field,
+                    "name": field.name,
+                    "transform": field.transform,
+                }
+                for field in table.partition_fields
+            ],
             formatVersion=table.format_version,
         )
         outputs.append(

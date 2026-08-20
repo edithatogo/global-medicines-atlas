@@ -611,16 +611,22 @@ override file. These are acquisition configurations: the existing reuse,
 rights, credential, untrusted-byte admission, and content-addressed receipt
 gates remain authoritative, and no Silver normalization is generated.
 
-Bronze partitions are keyed by jurisdiction, source identifier, dimension, and
-rights state. Each landed file carries source-native identifiers, retrieval and
-effective dates, receipt digest, uncertainty, and an explicit rights expression.
+Bronze table identity already includes jurisdiction and source identifier, so
+those constants are not repeated as physical partition keys. Small tables are
+unpartitioned. A configured large recurring product is partitioned by
+source-release month when the source supplies a temporal field, otherwise by
+acquisition month; high-volume record identifiers may additionally use a
+bounded bucket transform. Mutable rights, admission, and review state are
+never physical partitions. Each landed file carries source-native identifiers,
+retrieval and effective dates, receipt digest, uncertainty, and an explicit
+rights expression.
 Python 3.14 is the complete fallback path. DuckDB and LanceDB may read bronze
 Parquet; they do not store bronze evidentiary truth. Iceberg REST registration
 is optional and must not be imported by Python 3.14 core. Iceberg-ready
-metadata records namespace `bronze`, identity-transform partitions on
-`jurisdiction`, `source_id`, and `rights_state`, append-only schema evolution,
-and snapshot aliases bound to `acquisition_id`. Iceberg metadata is rebuildable
-catalogue state; payload bytes and receipts remain evidentiary truth.
+metadata records namespace `bronze`, explicit temporal/bucket transforms when
+scale evidence activates them, append-only schema evolution, and snapshot
+aliases bound to `acquisition_id`. Iceberg metadata is rebuildable catalogue
+state; payload bytes and receipts remain evidentiary truth.
 
 ### Lineage and identity graph
 

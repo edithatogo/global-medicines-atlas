@@ -19,6 +19,8 @@ from global_medicines_atlas.bronze_landing import (
     land_bronze_payload,
 )
 from global_medicines_atlas.iceberg_ready import (
+    IcebergPartitionField,
+    IcebergPartitionPolicy,
     IcebergReadyTableSpec,
     SnapshotAcquisitionBinding,
     assert_compatible_evolution,
@@ -27,6 +29,7 @@ from global_medicines_atlas.iceberg_ready import (
     iceberg_rest_create_body,
     load_optional_rest_catalog,
     optional_pyiceberg_available,
+    plan_iceberg_partitions,
     register_iceberg_table,
     spec_from_create_body,
     table_identifier_for,
@@ -40,6 +43,11 @@ from global_medicines_atlas.reuse_gate import acquire_new_decision
 
 ROOT = Path(__file__).resolve().parents[1]
 PAYLOAD = b'{"application_number":"012345"}'
+LARGE_SCHEMA = (
+    ("release_date", "date"),
+    ("gma_acquired_at", "timestamptz"),
+    ("native_id", "string"),
+)
 
 
 def _object_map(value: object) -> dict[str, object]:
@@ -143,6 +151,262 @@ def test_table_identity_is_stable_and_partitioned(tmp_path: Path) -> None:
 
 
 @pytest.mark.unit
+def test_small_bronze_tables_are_unpartitioned(tmp_path: Path) -> None:
+    spec = _spec(tmp_path)
+
+    assert spec.partition_fields == ()
+    body = iceberg_rest_create_body(spec)
+    partition_spec = _object_map(body["partition-spec"])
+    assert partition_spec["fields"] == []
+
+
+@pytest.mark.unit
+def test_large_recurring_sources_use_temporal_and_optional_bucket_transforms() -> (
+    None
+):
+    policy = IcebergPartitionPolicy(
+        recurring=True,
+        large_table_min_rows=1_000,
+        source_release_field="release_date",
+        record_id_field="native_id",
+        record_id_buckets=32,
+    )
+
+    assert (
+        plan_iceberg_partitions(
+            LARGE_SCHEMA,
+            row_count=999,
+            policy=policy,
+        )
+        == ()
+    )
+    assert plan_iceberg_partitions(
+        LARGE_SCHEMA,
+        row_count=1_000,
+        policy=policy,
+    ) == (
+        IcebergPartitionField(
+            source_field="release_date",
+            name="release_date_month",
+            transform="month",
+        ),
+        IcebergPartitionField(
+            source_field="native_id",
+            name="native_id_bucket_32",
+            transform="bucket[32]",
+        ),
+    )
+
+
+@pytest.mark.unit
+def test_large_recurring_source_falls_back_to_acquisition_month() -> None:
+    policy = IcebergPartitionPolicy(
+        recurring=True,
+        large_table_min_rows=10,
+    )
+
+    assert plan_iceberg_partitions(
+        LARGE_SCHEMA,
+        row_count=10,
+        policy=policy,
+    ) == (
+        IcebergPartitionField(
+            source_field="gma_acquired_at",
+            name="gma_acquired_at_month",
+            transform="month",
+        ),
+    )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "field",
+    [
+        "jurisdiction",
+        "source_id",
+        "rights_state",
+        "admission_state",
+        "review_status",
+        "rights_review_status",
+    ],
+)
+def test_constant_and_mutable_governance_partition_keys_are_rejected(
+    field: str,
+) -> None:
+    with pytest.raises(ValueError, match="physical partition key"):
+        IcebergReadyTableSpec(
+            identifier="bronze.example",
+            location="file://bronze",
+            partition_fields=(
+                IcebergPartitionField(
+                    source_field=field,
+                    name=field,
+                    transform="identity",
+                ),
+            ),
+            schema_fields=((field, "string"),),
+        )
+
+
+@pytest.mark.unit
+def test_partition_transforms_round_trip_through_rest_body() -> None:
+    fields = plan_iceberg_partitions(
+        LARGE_SCHEMA,
+        row_count=10,
+        policy=IcebergPartitionPolicy(
+            recurring=True,
+            large_table_min_rows=10,
+            source_release_field="release_date",
+            record_id_field="native_id",
+            record_id_buckets=16,
+        ),
+    )
+    spec = IcebergReadyTableSpec(
+        identifier="bronze.example",
+        location="file://bronze",
+        partition_fields=fields,
+        schema_fields=LARGE_SCHEMA,
+    )
+
+    body = iceberg_rest_create_body(spec)
+    raw_partition_spec = _object_map(body["partition-spec"])
+    raw_fields = raw_partition_spec["fields"]
+    assert isinstance(raw_fields, list)
+    transforms = [_object_map(item)["transform"] for item in raw_fields]
+    assert transforms == ["month", "bucket[16]"]
+    assert spec_from_create_body(body).partition_fields == fields
+
+
+@pytest.mark.unit
+def test_partition_planner_rejects_invalid_scale_and_temporal_contracts() -> (
+    None
+):
+    policy = IcebergPartitionPolicy(
+        recurring=True,
+        large_table_min_rows=1,
+        source_release_field="release_date",
+    )
+    with pytest.raises(ValueError, match="row_count"):
+        plan_iceberg_partitions(LARGE_SCHEMA, row_count=-1, policy=policy)
+    with pytest.raises(ValueError, match="must be temporal"):
+        plan_iceberg_partitions(
+            (("release_date", "string"),),
+            row_count=1,
+            policy=policy,
+        )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "values",
+    [
+        {"record_id_field": "native_id"},
+        {"record_id_buckets": 16},
+    ],
+)
+def test_partition_policy_requires_complete_bucket_configuration(
+    values: dict[str, object],
+) -> None:
+    with pytest.raises(ValueError, match="configured together"):
+        IcebergPartitionPolicy.model_validate(values)
+
+
+@pytest.mark.unit
+def test_partition_planner_fails_closed_on_missing_configured_fields() -> None:
+    release_policy = IcebergPartitionPolicy(
+        recurring=True,
+        large_table_min_rows=1,
+        source_release_field="missing_release",
+    )
+    with pytest.raises(ValueError, match="partition time field"):
+        plan_iceberg_partitions(
+            LARGE_SCHEMA,
+            row_count=1,
+            policy=release_policy,
+        )
+
+    bucket_policy = IcebergPartitionPolicy(
+        recurring=True,
+        large_table_min_rows=1,
+        record_id_field="missing_id",
+        record_id_buckets=16,
+    )
+    with pytest.raises(ValueError, match="record identifier field"):
+        plan_iceberg_partitions(
+            LARGE_SCHEMA,
+            row_count=1,
+            policy=bucket_policy,
+        )
+    assert (
+        plan_iceberg_partitions(
+            LARGE_SCHEMA,
+            row_count=1_000_000,
+            policy=IcebergPartitionPolicy(recurring=False),
+        )
+        == ()
+    )
+
+
+@pytest.mark.unit
+def test_partition_spec_rejects_duplicate_names_and_invalid_transforms() -> (
+    None
+):
+    with pytest.raises(ValueError, match="duplicate partition name"):
+        IcebergReadyTableSpec(
+            identifier="bronze.example",
+            location="file://bronze",
+            partition_fields=(
+                IcebergPartitionField(
+                    source_field="release_date",
+                    name="month",
+                    transform="month",
+                ),
+                IcebergPartitionField(
+                    source_field="gma_acquired_at",
+                    name="month",
+                    transform="month",
+                ),
+            ),
+            schema_fields=LARGE_SCHEMA,
+        )
+    with pytest.raises(ValueError, match="pattern"):
+        IcebergPartitionField(
+            source_field="release_date",
+            name="release_date_month",
+            transform="void",
+        )
+
+
+@pytest.mark.unit
+def test_rest_round_trip_rejects_unbound_partition_source_id() -> None:
+    fields = plan_iceberg_partitions(
+        LARGE_SCHEMA,
+        row_count=1,
+        policy=IcebergPartitionPolicy(
+            recurring=True,
+            large_table_min_rows=1,
+        ),
+    )
+    spec = IcebergReadyTableSpec(
+        identifier="bronze.example",
+        location="file://bronze",
+        partition_fields=fields,
+        schema_fields=LARGE_SCHEMA,
+    )
+    body = iceberg_rest_create_body(spec)
+    partition = _object_map(body["partition-spec"])
+    raw_fields = partition["fields"]
+    assert isinstance(raw_fields, list)
+    raw_field = _object_map(raw_fields[0])
+    raw_field["source-id"] = 99
+    partition["fields"] = [raw_field]
+    body["partition-spec"] = partition
+
+    with pytest.raises(TypeError, match="bind a source id"):
+        spec_from_create_body(body)
+
+
+@pytest.mark.unit
 def test_iceberg_rest_catalogue_registration_over_bronze(
     tmp_path: Path,
 ) -> None:
@@ -152,7 +416,7 @@ def test_iceberg_rest_catalogue_registration_over_bronze(
     assert body["name"] == spec.table_name
     assert body["namespace"] == "bronze"
     partition_spec = _object_map(body["partition-spec"])
-    assert partition_spec["fields"]
+    assert partition_spec["fields"] == []
     properties = _object_map(body["properties"])
     assert properties["gma.evidentiary-truth"] == "payload-and-receipt"
     assert properties["gma.row-lineage-authority"] == "atlas-receipt"
@@ -161,20 +425,8 @@ def test_iceberg_rest_catalogue_registration_over_bronze(
     assert "native_record" not in properties
     encoded = json.dumps(body)
     assert PAYLOAD.decode() not in encoded
-    field_ids = spec.field_ids()
     raw_partitions = partition_spec["fields"]
     assert isinstance(raw_partitions, list)
-    partitions: dict[str, int] = {}
-    for item in raw_partitions:
-        field = _object_map(item)
-        name = field["name"]
-        source_id = field["source-id"]
-        assert isinstance(name, str)
-        assert isinstance(source_id, int)
-        partitions[name] = source_id
-    assert partitions["jurisdiction"] == field_ids["jurisdiction"]
-    assert partitions["source_id"] == field_ids["source_id"]
-    assert partitions["rights_state"] == field_ids["rights_state"]
 
     def handler(request: httpx.Request) -> httpx.Response:
         assert request.method == "POST"
@@ -301,7 +553,13 @@ def test_create_body_rejects_malformed_documents() -> None:
         IcebergReadyTableSpec(
             identifier="bronze.example",
             location="file://bronze",
-            partition_fields=("missing",),
+            partition_fields=(
+                IcebergPartitionField(
+                    source_field="missing",
+                    name="missing",
+                    transform="identity",
+                ),
+            ),
             schema_fields=(("source_id", "string"),),
         )
     with pytest.raises(ValueError, match="schema_fields must not be empty"):

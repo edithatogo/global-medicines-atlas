@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from datetime import date
 from hashlib import sha256
 from pathlib import Path
 
@@ -19,6 +20,7 @@ from global_medicines_atlas.bronze_landing import (
     regenerate_parquet,
     write_rebuildable_layers,
 )
+from global_medicines_atlas.iceberg_ready import IcebergPartitionPolicy
 from global_medicines_atlas.receipts import (
     HttpRetrievalEvidence,
     PayloadEvidence,
@@ -147,14 +149,66 @@ def test_adapter_records_preserve_native_schema_and_have_independent_evidence(
     )
     assert outcome.source_records_table is not None
     assert outcome.source_records_table.identifier.endswith("_source_records")
+    assert outcome.source_records_table.partition_fields == ()
     assert outcome.acquisition_manifest_table.identifier.endswith(
         "_acquisition_manifest"
     )
+    assert outcome.acquisition_manifest_table.partition_fields == ()
 
     assert outcome.source_records_lineage_path is not None
     lineage = json.loads(outcome.source_records_lineage_path.read_bytes())
     projected = {item["namespace"] for item in lineage["outputs"]}
     assert "gma.source_records" in projected
+
+
+@pytest.mark.unit
+def test_large_recurring_source_records_apply_configured_partition_policy(
+    tmp_path: Path,
+) -> None:
+    batch = SourceRecordBatch(
+        table=pa.table({
+            "native_id": pa.array(["A-1", "A-2"], type=pa.string()),
+            "release_date": pa.array(
+                [date(2026, 7, 1), date(2026, 8, 1)],
+                type=pa.date32(),
+            ),
+        }),
+        parser_identity="tests.recurring-json.v1",
+        record_id_column="native_id",
+        partition_policy=IcebergPartitionPolicy(
+            recurring=True,
+            large_table_min_rows=2,
+            source_release_field="release_date",
+            record_id_field="native_id",
+            record_id_buckets=16,
+        ),
+    )
+
+    outcome = land_bronze_payload(
+        JSON,
+        _receipt(JSON),
+        bronze_root=tmp_path / "bronze",
+        media_hint="json",
+        source_records=batch,
+    )
+
+    assert isinstance(outcome, BronzeLanding)
+    assert outcome.source_records_table is not None
+    assert dict(outcome.source_records_table.schema_fields)["release_date"] == (
+        "date"
+    )
+    assert [
+        (field.source_field, field.transform)
+        for field in outcome.source_records_table.partition_fields
+    ] == [
+        ("release_date", "month"),
+        ("native_id", "bucket[16]"),
+    ]
+    assert outcome.source_records_path is not None
+    records = pq.read_table(outcome.source_records_path)
+    assert records.schema.field("gma_acquired_at").type == pa.timestamp(
+        "us", tz="UTC"
+    )
 
 
 @pytest.mark.unit
