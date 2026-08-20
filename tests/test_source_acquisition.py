@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import gzip
 from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
@@ -237,6 +238,30 @@ def test_content_length_mismatch_is_removed_without_promotion(
     assert not tuple((tmp_path / "artifacts").glob("*.tmp"))
 
 
+@pytest.mark.integration
+def test_compressed_content_length_is_not_compared_to_decoded_bytes(
+    tmp_path: Path,
+) -> None:
+    payload = b"decoded-source-payload"
+    compressed = gzip.compress(payload)
+    receipt = acquire(
+        tmp_path,
+        lambda request: httpx.Response(
+            200,
+            headers={
+                "content-type": "application/octet-stream",
+                "content-encoding": "gzip",
+                "content-length": str(len(compressed)),
+            },
+            content=compressed,
+            request=request,
+        ),
+    )
+
+    assert isinstance(receipt, SourceReceipt)
+    assert receipt.payload.matches(payload)
+
+
 @pytest.mark.edge
 def test_timeout_is_recorded_once_without_implicit_retry(
     tmp_path: Path,
@@ -447,6 +472,27 @@ def test_bound_transport_defeats_dns_rebinding_without_network() -> None:
     assert connected_requests[0].url.host == "93.184.216.34"
     assert connected_requests[0].headers["host"] == "example.test"
     assert connected_requests[0].extensions["sni_hostname"] == "example.test"
+    assert "transfer-encoding" not in connected_requests[0].headers
+
+
+@pytest.mark.edge
+def test_bound_transport_preserves_non_get_request_body() -> None:
+    connected_requests: list[httpx.Request] = []
+
+    def connected(request: httpx.Request) -> httpx.Response:
+        connected_requests.append(request)
+        return httpx.Response(200, request=request)
+
+    transport = BoundIPAddressTransport(
+        policy=AcquisitionPolicy(allowed_hosts=("example.test",)),
+        resolver=lambda _: ("93.184.216.34",),
+        inner=httpx.MockTransport(connected),
+    )
+    with httpx.Client(transport=transport) as client:
+        response = client.post("https://example.test/data", content=b"body")
+
+    assert response.status_code == 200
+    assert connected_requests[0].read() == b"body"
 
 
 @pytest.mark.integration

@@ -6,7 +6,7 @@
   "unique_prompt_source_count": 94,
   "catalog_source_count": 172,
   "fixture_qualified_source_count": 16,
-  "live_qualified_source_count": 0,
+  "live_qualified_source_count": 5,
   "live_complete_prompt_count": 0,
   "program_completion": "incomplete_live_acquisition",
   "queue_state_counts": {
@@ -499,20 +499,19 @@
         "rights_blocked": 1
       },
       "fixture_qualified_source_ids": [],
-      "live_qualified_source_ids": [],
-      "sources_without_live_evidence": [
-        "us-fda-faers",
+      "live_qualified_source_ids": [
         "us-openfda-faers"
+      ],
+      "sources_without_live_evidence": [
+        "us-fda-faers"
       ],
       "live_complete": false,
       "completion_state": "live_acquisition_incomplete",
       "blocker_categories": [
-        "source_specific_rights_decision_required",
         "fixture_only_is_not_live"
       ],
       "next_actions": [
-        "replace governed fixture evidence with a receipt-backed live source acquisition",
-        "obtain a maintainer-approved source-specific rights decision"
+        "replace governed fixture evidence with a receipt-backed live source acquisition"
       ]
     },
     {
@@ -534,20 +533,19 @@
         "rights_blocked": 1
       },
       "fixture_qualified_source_ids": [],
-      "live_qualified_source_ids": [],
+      "live_qualified_source_ids": [
+        "us-openfda-enforcement"
+      ],
       "sources_without_live_evidence": [
-        "us-openfda-enforcement",
         "us-fda-recalls-notices"
       ],
       "live_complete": false,
       "completion_state": "live_acquisition_incomplete",
       "blocker_categories": [
-        "source_specific_rights_decision_required",
         "documented_manual_acquisition_required"
       ],
       "next_actions": [
-        "execute the documented reproducible acquisition after source-specific rights confirmation",
-        "obtain a maintainer-approved source-specific rights decision"
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
       ]
     },
     {
@@ -655,9 +653,10 @@
         "rights_blocked": 2
       },
       "fixture_qualified_source_ids": [],
-      "live_qualified_source_ids": [],
+      "live_qualified_source_ids": [
+        "us-openfda-ndc"
+      ],
       "sources_without_live_evidence": [
-        "us-openfda-ndc",
         "us-fda-ndc-directory"
       ],
       "live_complete": false,
@@ -716,10 +715,11 @@
         "rights_blocked": 2
       },
       "fixture_qualified_source_ids": [],
-      "live_qualified_source_ids": [],
-      "sources_without_live_evidence": [
-        "us-fda-nsde",
+      "live_qualified_source_ids": [
         "us-openfda-nsde"
+      ],
+      "sources_without_live_evidence": [
+        "us-fda-nsde"
       ],
       "live_complete": false,
       "completion_state": "live_acquisition_incomplete",

@@ -39,11 +39,13 @@ def test_audit_is_generated_from_all_36_locked_prompts() -> None:
     } == {track.track_id: list(track.source_ids) for track in tracks}
 
 
-def test_fixture_and_catalogue_evidence_never_claim_live_completion() -> None:
+def test_live_qualification_is_counted_without_claiming_prompt_completion() -> (
+    None
+):
     audit = _audit()
     measured = json.loads(MEASURED.read_text(encoding="utf-8"))["body"]
     assert measured["totals"]["live_qualified_sources"] == 0
-    assert audit["live_qualified_source_count"] == 0
+    assert audit["live_qualified_source_count"] == 5
     assert audit["live_complete_prompt_count"] == 0
     assert audit["program_completion"] == "incomplete_live_acquisition"
     assert all(not entry["live_complete"] for entry in audit["prompts"])
@@ -56,6 +58,17 @@ def test_fixture_and_catalogue_evidence_never_claim_live_completion() -> None:
         )
         for entry in audit["prompts"]
     )
+    live = {
+        source_id
+        for entry in audit["prompts"]
+        for source_id in entry["live_qualified_source_ids"]
+    }
+    assert live == {
+        "us-openfda-enforcement",
+        "us-openfda-faers",
+        "us-openfda-ndc",
+        "us-openfda-nsde",
+    }
 
 
 def test_every_prompt_source_has_exactly_one_current_queue_state() -> None:

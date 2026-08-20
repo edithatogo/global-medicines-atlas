@@ -1,0 +1,118 @@
+{
+  "schema_id": "global-medicines-atlas.us-live-acquisition-authorization",
+  "schema_version": 1,
+  "decision_date": "2026-08-20",
+  "decision_basis": "Maintainer approved the recommended bounded internal-only U.S. acquisition cohort in the Codex task.",
+  "internal_retention_authorized": true,
+  "public_release_authorized": false,
+  "external_publication_authorized": false,
+  "coverage_complete": false,
+  "scope_note": "A bounded current-source exercise, not complete historical coverage of any source family.",
+  "authorized_sources": [
+    {
+      "source_id": "us-openfda-drugsfda",
+      "endpoint": "https://api.fda.gov/drug/drugsfda.json?limit=100",
+      "media_hint": "json",
+      "rights_profile": "scoped_cc0_metadata_only",
+      "max_bytes": 16777216
+    },
+    {
+      "source_id": "us-openfda-enforcement",
+      "endpoint": "https://api.fda.gov/drug/enforcement.json?limit=100",
+      "media_hint": "json",
+      "rights_profile": "scoped_cc0_metadata_only",
+      "max_bytes": 16777216
+    },
+    {
+      "source_id": "us-openfda-faers",
+      "endpoint": "https://api.fda.gov/drug/event.json?limit=100",
+      "media_hint": "json",
+      "rights_profile": "scoped_cc0_metadata_only",
+      "max_bytes": 33554432
+    },
+    {
+      "source_id": "us-openfda-ndc",
+      "endpoint": "https://api.fda.gov/drug/ndc.json?limit=100",
+      "media_hint": "json",
+      "rights_profile": "scoped_cc0_metadata_only",
+      "max_bytes": 16777216
+    },
+    {
+      "source_id": "us-openfda-nsde",
+      "endpoint": "https://api.fda.gov/other/nsde.json?limit=100",
+      "media_hint": "json",
+      "rights_profile": "scoped_cc0_metadata_only",
+      "max_bytes": 16777216
+    },
+    {
+      "source_id": "us-drugsfda",
+      "endpoint": "https://www.fda.gov/media/89850/download?attachment=",
+      "media_hint": "zip",
+      "rights_profile": "government_public_domain_policy_review",
+      "max_bytes": 134217728
+    },
+    {
+      "source_id": "us-fda-drug-shortages",
+      "endpoint": "https://www.accessdata.fda.gov/scripts/drugshortages/default.cfm",
+      "media_hint": "html",
+      "rights_profile": "government_public_domain_policy_review",
+      "max_bytes": 16777216
+    },
+    {
+      "source_id": "us-fda-faers",
+      "endpoint": "https://fis.fda.gov/extensions/FPD-QDE-FAERS/FPD-QDE-FAERS.html",
+      "media_hint": "html",
+      "rights_profile": "government_public_domain_policy_review",
+      "max_bytes": 16777216
+    },
+    {
+      "source_id": "us-fda-ndc-directory",
+      "endpoint": "https://www.fda.gov/drugs/drug-approvals-and-databases/national-drug-code-directory",
+      "media_hint": "html",
+      "rights_profile": "government_public_domain_policy_review",
+      "max_bytes": 16777216
+    },
+    {
+      "source_id": "us-fda-nsde",
+      "endpoint": "https://download.open.fda.gov/Comprehensive_NDC_SPL_Data_Elements_File.zip",
+      "media_hint": "zip",
+      "rights_profile": "government_public_domain_policy_review",
+      "max_bytes": 268435456
+    },
+    {
+      "source_id": "us-fda-orange-book",
+      "endpoint": "https://www.fda.gov/media/76860/download?attachment=",
+      "media_hint": "zip",
+      "rights_profile": "government_public_domain_policy_review",
+      "max_bytes": 134217728
+    },
+    {
+      "source_id": "us-fda-recalls-notices",
+      "endpoint": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts",
+      "media_hint": "html",
+      "rights_profile": "government_public_domain_policy_review",
+      "max_bytes": 16777216
+    },
+    {
+      "source_id": "us-fda-rems",
+      "endpoint": "https://www.accessdata.fda.gov/scripts/cder/rems/index.cfm",
+      "media_hint": "html",
+      "rights_profile": "government_public_domain_policy_review",
+      "max_bytes": 16777216
+    }
+  ],
+  "catalogue_only_sources": [
+    "us-cms-mdrp",
+    "us-cms-nadac",
+    "us-cms-partd-formulary",
+    "us-cms-partd-spending",
+    "us-dailymed-spl",
+    "us-gsrs-unii",
+    "us-rxnorm-api"
+  ],
+  "field_exclusions": [
+    "all content marked third-party or non-CC0",
+    "GMDN terms and descriptions and other separately licensed terminology",
+    "FDA names, logos, marks, and inferred clinical, approval, safety, efficacy, or reimbursement claims"
+  ]
+}

@@ -52,6 +52,7 @@ class _WritableBinary(Protocol):
 
 _LOCAL_PAYLOAD_ROOTS = frozenset({
     "artifacts",
+    "build",
     "drugbank",
     "ema_data",
     "gtop_data",
@@ -306,13 +307,21 @@ class BoundIPAddressTransport(httpx.BaseTransport):
         extensions = dict(request.extensions)
         extensions["sni_hostname"] = hostname
         bound_url = request.url.copy_with(host=selected_address)
-        bound_request = httpx.Request(
-            request.method,
-            bound_url,
-            headers=headers,
-            content=request.stream,
-            extensions=extensions,
-        )
+        if request.method in {"GET", "HEAD"}:
+            bound_request = httpx.Request(
+                request.method,
+                bound_url,
+                headers=headers,
+                extensions=extensions,
+            )
+        else:
+            bound_request = httpx.Request(
+                request.method,
+                bound_url,
+                headers=headers,
+                content=request.stream,
+                extensions=extensions,
+            )
         return self._transport_for(network_authority).handle_request(
             bound_request
         )
@@ -426,7 +435,12 @@ def _write_bounded(
         digest.update(chunk)
     staged.flush()
     os.fsync(staged.fileno())
-    declared = response.headers.get("content-length")
+    content_encoding = response.headers.get("content-encoding", "identity")
+    declared = (
+        response.headers.get("content-length")
+        if content_encoding.casefold() in {"", "identity"}
+        else None
+    )
     if declared is not None and declared.isdigit():
         expected = int(declared)
         if byte_count < expected:
