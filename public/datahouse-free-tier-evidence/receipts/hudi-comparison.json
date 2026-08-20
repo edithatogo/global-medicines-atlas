@@ -29,5 +29,9 @@
     "expected_final_rows": 2,
     "initial_rows": 2,
     "updates": 1
-  }
+  },
+  "conflict_behavior": "not_exercised_single_writer_workload",
+  "compaction": "not_exercised_bounded_workload",
+  "portability": "engine_neutral_records_and_oracle; engine_specific_physical_readback",
+  "governed_input_reconstruction": "not_applicable_synthetic_workload"
 }

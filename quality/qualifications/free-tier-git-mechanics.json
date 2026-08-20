@@ -7,24 +7,25 @@
     "immutable_history"
   ],
   "commits": {
-    "accepted": "9e5e1f6b341104373b70d3d7ca1b88bb65f0f833",
-    "divergent": "acfa1d7b09015651446c40cf48dbe359509faf36",
-    "initial": "f8815f99afae2822115a985924eba175b968d67a",
-    "restored": "9e5e1f6b341104373b70d3d7ca1b88bb65f0f833"
+    "accepted": "1403638f8d95d03528787190b9b4f78136d2a1d2",
+    "divergent": "8ec2658ac11068e905140e159585574d61216f79",
+    "initial": "35b7292f3681221199c0fa85b7359e6eef5bfff6",
+    "restored": "1403638f8d95d03528787190b9b4f78136d2a1d2"
   },
   "core_dependency_added": false,
   "inventory": {
     "evidence.json": "7ee99616fc04ea4367474ea787d6807d85571abf6f41c6e63b086ae89aa7ab92"
   },
   "observed_experimental_rpo_seconds": 0,
-  "observed_restore_seconds": 0.24382,
-  "observed_total_seconds": 2.080902,
+  "observed_restore_seconds": 0.173638,
+  "observed_total_seconds": 1.903029,
   "operations": {
     "branch_created": true,
     "clean_restore_verified": true,
     "conflict_detected": true,
     "conflict_resolved": true,
     "divergent_update_created": true,
+    "retention_reference_verified": true,
     "rollback_read_verified": true
   },
   "provider_scope": "portable_git_on_standard_github_hosted_runner",
