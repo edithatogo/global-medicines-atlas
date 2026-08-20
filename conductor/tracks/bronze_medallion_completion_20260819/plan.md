@@ -200,6 +200,12 @@ before any hot-path rewrite. Python remains orchestration.
     - [x] Run reuse, immutable landing, admission, Parquet, OpenLineage, and clean-room recovery over all 17 governed acquisitions for 16 sources
     - [x] Emit a 419-entry tar archive, machine-readable manifest, and verified SHA-256 checksum without claiming live-source coverage
     - [x] Upload the exercised corpus as a GitHub Actions artifact; require an explicit `publish=true` dispatch for external Hugging Face publication
+    - PR #191 merged as `d2b9237` after all 31 checks passed. Manual
+      `publish=false` dispatch 32341782680 on merged `main` uploaded artifact
+      9396593978; its 419-entry tar verified as
+      `26ca3ee27ba645f2e3ce6b4fba6681709858203916fccc8366d4023e92c1b212`.
+      The run exercised 17 fixture acquisitions across 16 source IDs and did
+      not perform external publication or claim live-source coverage.
 - [x] Task: Record bronze-completion evidence for current scope
     - [x] Update this track's evidence ledger with observable tests, coverage, and exclusions
     - [x] Leave silver/gold/platinum unimplemented
