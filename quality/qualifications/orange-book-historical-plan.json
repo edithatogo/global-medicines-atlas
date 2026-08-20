@@ -1,0 +1,66 @@
+{
+  "schema_id": "global-medicines-atlas.orange-book-historical-plan",
+  "schema_version": 1,
+  "source_id": "us-fda-orange-book",
+  "prompt_id": 16,
+  "observed_at": "2026-08-20",
+  "official_documentation": [
+    "https://www.fda.gov/drugs/drug-approvals-and-databases/approved-drug-products-therapeutic-equivalence-evaluations-orange-book",
+    "https://www.fda.gov/drugs/drug-approvals-and-databases/orange-book-data-files",
+    "https://www.fda.gov/drugs/drug-approvals-and-databases/frequently-asked-questions-orange-book",
+    "https://www.fda.gov/drugs/drug-approvals-and-databases/additionsdeletions-prescription-and-otc-drug-product-lists"
+  ],
+  "observed_release_link_count": 137,
+  "observed_release_range": "2015-01 through 2026-07",
+  "historical_inventory_complete": false,
+  "acquisition_authorized": false,
+  "internal_retention_authorized": false,
+  "public_release_authorized": false,
+  "external_publication_authorized": false,
+  "maintainer_decision": null,
+  "rights_profile": "government_public_domain_policy_review",
+  "surfaces": [
+    {
+      "release_kind": "current_structured_zip",
+      "url": "https://www.fda.gov/media/76860/download?attachment=",
+      "media_hint": "zip",
+      "source_version": "monthly current snapshot; version must be read from source receipt",
+      "max_bytes": 134217728
+    },
+    {
+      "release_kind": "current_annual_edition",
+      "url": "https://www.fda.gov/media/71474/download?attachment=",
+      "media_hint": "pdf",
+      "source_version": "46th annual edition observed 2026-08-20",
+      "max_bytes": 33554432
+    },
+    {
+      "release_kind": "current_cumulative_supplement",
+      "url": "https://www.fda.gov/media/72973/download?attachment=",
+      "media_hint": "pdf",
+      "source_version": "46th edition cumulative supplement 7, July 2026",
+      "max_bytes": 16777216
+    },
+    {
+      "release_kind": "monthly_additions_deletions_index",
+      "url": "https://www.fda.gov/drugs/drug-approvals-and-databases/additionsdeletions-prescription-and-otc-drug-product-lists",
+      "media_hint": "html",
+      "source_version": "bounded index observation 2015-01 through 2026-07",
+      "max_bytes": 4194304
+    },
+    {
+      "release_kind": "legacy_fda_archive_index",
+      "url": "https://wayback.archive-it.org/7993/20170111194908/http%3A//www.fda.gov/Drugs/InformationOnDrugs/ucm086229.htm",
+      "media_hint": "html",
+      "source_version": "FDA-linked 2014-2007 archive index",
+      "max_bytes": 4194304
+    }
+  ],
+  "limitations": [
+    "FDA exposes only the current structured ZIP at the observed data-files page; prior structured ZIP snapshots were not established.",
+    "The live additions/deletions index exposes 137 monthly links from January 2015 through July 2026, with gaps in the 2015 page listing.",
+    "FDA directs 2014-2007 additions/deletions to an Archive-It snapshot that has not been traversed or claimed complete.",
+    "Annual and cumulative PDF publication history is described by FDA but the observed live home page links only the current documents.",
+    "No historical payload acquisition, retention, Bronze admission, or coverage-completeness claim is authorized by this plan."
+  ]
+}
