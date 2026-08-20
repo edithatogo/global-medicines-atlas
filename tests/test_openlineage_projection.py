@@ -303,6 +303,42 @@ def test_projection_rejects_mismatched_transformation_run(
             transformation_run=wrong_acquisition,
             admission=_admission(receipt),
         )
+
+    valid_run = receipt_for_parquet(
+        parquet_path,
+        acquisition_id=require_temporal(receipt.temporal).acquisition_id,
+        input_content_id=receipt.payload.sha256,
+        completed_at=require_temporal(receipt.temporal).retrieved_at,
+    )
+    admission = _admission(receipt)
+    with pytest.raises(
+        ValueError, match="admission does not match acquisition"
+    ):
+        project_openlineage_event(
+            receipt,
+            payload_uri=(tmp_path / "payload").as_uri(),
+            parquet_uri=parquet_path.as_uri(),
+            transformation_run=valid_run,
+            admission=admission.model_copy(update={"acquisition_id": "e" * 64}),
+        )
+    with pytest.raises(ValueError, match="admission does not match content"):
+        project_openlineage_event(
+            receipt,
+            payload_uri=(tmp_path / "payload").as_uri(),
+            parquet_uri=parquet_path.as_uri(),
+            transformation_run=valid_run,
+            admission=admission.model_copy(update={"content_id": "e" * 64}),
+        )
+    with pytest.raises(ValueError, match="requires accepted admission"):
+        project_openlineage_event(
+            receipt,
+            payload_uri=(tmp_path / "payload").as_uri(),
+            parquet_uri=parquet_path.as_uri(),
+            transformation_run=valid_run,
+            admission=admission.model_copy(
+                update={"state": BronzeAdmissionState.QUARANTINED}
+            ),
+        )
     wrong_input = receipt_for_parquet(
         parquet_path,
         acquisition_id=require_temporal(receipt.temporal).acquisition_id,

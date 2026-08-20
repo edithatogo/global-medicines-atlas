@@ -19,7 +19,7 @@ from .receipts import SourceReceipt, require_temporal
 from .reuse_gate import HF_CATALOGUE_REVISION
 
 PRODUCER = "https://github.com/edithatogo/global-medicines-atlas"
-SCHEMA_REVISION = "af756a59f524e8da9fa7a572b51badac5939df20"
+SCHEMA_REVISION = "804f5ce5a718922bd5597c5421d45ec65700b640"
 CUSTOM_SCHEMA_BASE = (
     "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/"
     f"{SCHEMA_REVISION}/schemas/openlineage"
