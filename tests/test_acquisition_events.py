@@ -27,7 +27,7 @@ from global_medicines_atlas.receipts import (
 from global_medicines_atlas.reuse_gate import acquire_new_decision
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMA = ROOT / "schemas/bronze-acquisition-event-v2.json"
+SCHEMA = ROOT / "schemas/bronze-acquisition-event-v3.json"
 PAYLOAD = b'{"application_number":"012345"}'
 NOW = datetime(2026, 8, 20, 6, 0, tzinfo=UTC)
 LATER = NOW + timedelta(hours=3)
@@ -272,6 +272,25 @@ def test_acquisition_event_schema_accepts_canonical_dump(
     assert document["acquisition_id"] == (
         landing.receipt.temporal.acquisition_id
     )
+
+
+@pytest.mark.unit
+def test_v2_acquisition_event_remains_migration_safe_without_sensitivity() -> (
+    None
+):
+    receipt = _landable()
+    temporal = receipt.temporal
+    assert temporal is not None
+    rebuilt = AcquisitionEvent.model_validate({
+        "schema_version": 2,
+        "acquisition_id": temporal.acquisition_id,
+        "content_id": receipt.payload.sha256,
+        "source_id": receipt.source.source_id,
+        "retrieved_at": temporal.retrieved_at,
+        "payload_sha256": receipt.payload.sha256,
+    })
+    assert rebuilt.schema_version == 2
+    assert rebuilt.sensitivity.publication.value == "review_required"
 
 
 @pytest.mark.edge

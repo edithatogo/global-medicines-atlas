@@ -3,7 +3,7 @@
   "type": "feature",
   "status": "active",
   "created_at": "2026-08-19T15:50:00+10:00",
-  "updated_at": "2026-08-20T09:21:08Z",
+  "updated_at": "2026-08-20T12:00:00Z",
   "target_versions": ["1.0.0"],
   "requirements": [
     "M-001",
@@ -25,12 +25,14 @@
     "M-099",
     "M-100",
     "M-101",
+    "M-102",
     "S-004",
     "S-011",
     "S-012",
     "S-013",
     "W-007",
-    "W-008"
+    "W-008",
+    "W-009"
   ],
   "github_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/167",
   "github_subissues": [

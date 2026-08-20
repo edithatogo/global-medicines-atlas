@@ -619,7 +619,22 @@ acquisition month; high-volume record identifiers may additionally use a
 bounded bucket transform. Mutable rights, admission, and review state are
 never physical partitions. Each landed file carries source-native identifiers,
 retrieval and effective dates, receipt digest, uncertainty, and an explicit
-rights expression.
+rights expression. The same acquisition carries an independent sensitivity
+classification: intrinsic sensitivity, possible personal data, and
+publication disposition are never inferred from licensing rights.
+
+Authoritative payload persistence is storage-neutral. Development uses a
+content-addressed local filesystem. Durable operation writes the same content
+key to a versioned or Object-Locked primary object store and at least one
+geographically and administratively independent replica, then records provider
+version identities in an append-only storage receipt. Landing uses a local
+materialization for inspection and source parsing, while the acquisition
+manifest and OpenLineage payload dataset retain the authoritative object URI.
+Periodic checksum inventories read every physical copy; durable restore
+rehearsals read the policy-matching independent replica into an empty target,
+hash the bytes, and compare measured
+elapsed time with the declared RTO. A durable policy is invalid without an
+explicit RPO, RTO, inventory cadence, and rehearsal cadence.
 Python 3.14 is the complete fallback path. DuckDB and LanceDB may read bronze
 Parquet; they do not store bronze evidentiary truth. Iceberg REST registration
 is optional and must not be imported by Python 3.14 core. Iceberg-ready
@@ -678,3 +693,9 @@ Silver may normalize names, units, and identifiers while retaining every
 source-native key. Gold may emit cross-jurisdiction mapping candidates with
 M-090 validity states. Platinum may serve comparison products. None of those
 behaviours are in the bronze-completion track.
+
+Actual Iceberg REST and Iceberg v3 interoperability, DuckLake, lakeFS-style
+workflows, cryptographic batch or Merkle attestations, and Delta/Hudi
+comparisons remain non-blocking experiments. Graph, vector, OMOP, semantic
+normalization, and Rust terminology capabilities consume Bronze or Silver
+outputs later and are not Bronze qualification evidence.

@@ -77,6 +77,60 @@ class RightsState(StrEnum):
     PROHIBITED = "prohibited"
 
 
+class DataSensitivity(StrEnum):
+    """Intrinsic disclosure risk, independent from licensing permission."""
+
+    UNKNOWN = "unknown"
+    NON_SENSITIVE = "non_sensitive"
+    SENSITIVE = "sensitive"
+    RESTRICTED = "restricted"
+
+
+class PersonalDataState(StrEnum):
+    """Observed or plausible personal-data content in source bytes."""
+
+    UNKNOWN = "unknown"
+    NONE = "none"
+    POSSIBLE = "possible"
+    PRESENT = "present"
+
+
+class PublicationDisposition(StrEnum):
+    """Publication decision, evaluated separately from source rights."""
+
+    REVIEW_REQUIRED = "review_required"
+    PERMITTED = "permitted"
+    PROHIBITED = "prohibited"
+
+
+class SensitivityClassification(FrozenModel):
+    """Independent sensitivity and publication classification for bytes."""
+
+    schema_id: Literal[
+        "global-medicines-atlas.bronze-sensitivity-classification"
+    ] = "global-medicines-atlas.bronze-sensitivity-classification"
+    schema_version: Literal[1] = 1
+    data_sensitivity: DataSensitivity = DataSensitivity.UNKNOWN
+    personal_data: PersonalDataState = PersonalDataState.UNKNOWN
+    publication: PublicationDisposition = PublicationDisposition.REVIEW_REQUIRED
+    reason_codes: tuple[str, ...] = ("unassessed",)
+
+    @model_validator(mode="after")
+    def validate_reason_codes(self) -> SensitivityClassification:
+        if not self.reason_codes or any(
+            not reason.strip() for reason in self.reason_codes
+        ):
+            raise ValueError("sensitivity classification requires reason codes")
+        if (
+            self.publication is PublicationDisposition.PERMITTED
+            and self.data_sensitivity is DataSensitivity.UNKNOWN
+        ):
+            raise ValueError(
+                "publication cannot be permitted while sensitivity is unknown"
+            )
+        return self
+
+
 class SourceIdentity(FrozenModel):
     """Stable catalog and publisher identity for a source."""
 
@@ -359,7 +413,7 @@ class AcquisitionEvent(DeterministicReceipt):
     schema_id: Literal["global-medicines-atlas.bronze-acquisition-event"] = (
         "global-medicines-atlas.bronze-acquisition-event"
     )
-    schema_version: Literal[2] = 2
+    schema_version: Literal[2, 3] = 3
     acquisition_id: str = Field(pattern=SHA256_PATTERN)
     content_id: str = Field(pattern=SHA256_PATTERN)
     source_id: str = Field(min_length=1)
@@ -376,6 +430,9 @@ class AcquisitionEvent(DeterministicReceipt):
     rights_state: RightsState | None = None
     rights_reference: AnyUrl | None = None
     rights_policy: AcquisitionRightsPolicy | None = None
+    sensitivity: SensitivityClassification = Field(
+        default_factory=SensitivityClassification
+    )
     evidence_class: EvidenceClass | None = None
 
     @model_validator(mode="after")
@@ -402,6 +459,9 @@ class SourceReceipt(DeterministicReceipt):
     rights_state: RightsState
     rights_reference: AnyUrl | None = None
     rights_policy: AcquisitionRightsPolicy | None = None
+    sensitivity: SensitivityClassification = Field(
+        default_factory=SensitivityClassification
+    )
     evidence_class: EvidenceClass
     transformation: TransformationEvidence
 
@@ -496,6 +556,17 @@ class SourceReceipt(DeterministicReceipt):
             self.evidence_class is EvidenceClass.LIVE
             and self.retrieval.status is AcquisitionStatus.SUCCEEDED
             and self.rights_state is RightsState.PERMITTED
+        )
+
+
+def require_publication_permitted(receipt: SourceReceipt) -> None:
+    """Fail closed across independent rights and sensitivity decisions."""
+
+    if receipt.rights_state is not RightsState.PERMITTED:
+        raise ValueError("publication is not permitted by the rights state")
+    if receipt.sensitivity.publication is not PublicationDisposition.PERMITTED:
+        raise ValueError(
+            "publication is blocked by sensitivity/publication classification"
         )
 
 

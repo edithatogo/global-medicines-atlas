@@ -51,6 +51,13 @@ synthetic fixtures.
 - Expanding bronze completion beyond first-cohort/global public sources and
   already-governed fixtures.
 - Requiring Iceberg or Marquez in the Python 3.14 core install.
+- Production deployment credentials or claims that an object-store RPO/RTO has
+  been qualified merely because its fail-closed contract passes locally.
+- Actual Iceberg REST interoperability, Iceberg v3, DuckLake, lakeFS,
+  cryptographic batch/Merkle attestations, and Delta/Hudi comparisons. These
+  remain roadmap experiments and do not block Bronze completion.
+- Graph, vector, OMOP, cross-source semantic normalization, and Rust
+  terminology work. These consume Bronze or Silver outputs later.
 
 ## Functional requirements
 
@@ -135,6 +142,22 @@ durable linkage. Each product has its own actual-byte transformation receipt,
 Iceberg-ready identity, and OpenLineage event. Rebuilds reproduce only products
 whose parser identity and adapter input are available. The canonical
 medicine/product model remains Silver.
+
+### Durable payload storage and sensitivity (Must)
+
+All payload persistence resolves through one storage contract. Local
+content-addressed filesystem storage is explicitly development-only. Durable
+operation uses a versioned object-store boundary and is invalid unless its
+policy and append-only receipt evidence versioning or Object Lock/WORM,
+geographically and administratively independent replication, checksum
+inventory cadence, restore-rehearsal cadence, and explicit RPO/RTO targets.
+Landing retains a local materialization only for safe inspection and parsing;
+the acquisition manifest and lineage identify the authoritative object URI.
+
+Licensing rights and data sensitivity are independent. Every receipt carries a
+fail-closed classification for intrinsic sensitivity, possible personal data,
+and publication disposition. Public or redistributable rights do not override
+a sensitivity review or publication prohibition.
 
 ### Iceberg-ready (Should)
 

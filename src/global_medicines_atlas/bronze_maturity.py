@@ -287,7 +287,7 @@ def evaluate_properties(root: Path) -> list[dict[str, Any]]:
             root,
             property_id="immutability",
             mandatory=True,
-            requirement_ids=("M-092", "M-094"),
+            requirement_ids=("M-092", "M-094", "M-102"),
             checks={
                 "src/global_medicines_atlas/bronze_landing.py": (
                     "evidentiary truth",
@@ -298,10 +298,20 @@ def evaluate_properties(root: Path) -> list[dict[str, Any]]:
                     "payload_bytes_are_preserved",
                     "parquet_is_not_the_payload",
                 ),
+                "src/global_medicines_atlas/bronze_storage.py": (
+                    "ObjectStoragePayloadStore",
+                    "ImmutabilityMode",
+                    "PayloadStorageReceipt",
+                ),
+                "tests/test_bronze_storage.py": (
+                    "test_local_store_is_explicitly_development_only_and_immutable",
+                    "test_object_store_versions_replicates_inventories_and_restores",
+                ),
             },
             passing_notes=(
                 "Payload bytes and content-addressed receipts are "
-                "evidentiary truth; Parquet is analytical only."
+                "evidentiary truth; Parquet is analytical only. Local and "
+                "durable object-storage paths share an immutable contract."
             ),
             failing_notes=(
                 "Bronze landing tests or payload/receipt split are missing."
@@ -353,16 +363,24 @@ def evaluate_properties(root: Path) -> list[dict[str, Any]]:
             root,
             property_id="rights",
             mandatory=True,
-            requirement_ids=("M-040", "M-095"),
+            requirement_ids=("M-040", "M-095", "M-102"),
             checks={
-                "src/global_medicines_atlas/receipts.py": ("RightsState",),
+                "src/global_medicines_atlas/receipts.py": (
+                    "RightsState",
+                    "SensitivityClassification",
+                    "require_publication_permitted",
+                ),
+                "tests/test_bronze_storage.py": (
+                    "test_rights_and_sensitivity_are_independent_publication_gates",
+                ),
                 "docs/data-sources/SOURCE_RIGHTS.md": ("rights",),
                 "DATA_LICENSE.md": ("CC-BY-4.0",),
             },
             passing_notes=(
                 "Rights states are explicit. Licensing conclusions remain "
                 "a human gate and are not inferred as approved by this "
-                "qualification."
+                "qualification. Sensitivity and publication disposition are "
+                "independent and fail closed."
             ),
             failing_notes="Rights documentation or receipt fields are missing.",
             blocker_id="bronze-rights-unevidenced",
@@ -462,7 +480,7 @@ def evaluate_properties(root: Path) -> list[dict[str, Any]]:
             root,
             property_id="disaster_recovery",
             mandatory=True,
-            requirement_ids=("M-082", "M-097"),
+            requirement_ids=("M-082", "M-097", "M-102"),
             checks={
                 "src/global_medicines_atlas/bronze_recovery.py": (
                     "CLEAN_ROOM_REBUILD",
@@ -478,12 +496,21 @@ def evaluate_properties(root: Path) -> list[dict[str, Any]]:
                     "test_partial_storage_loss_rebuilds_analytical_layers",
                     "test_duplicate_retrieval_keeps_one_payload_two_acquisitions",
                 ),
+                "src/global_medicines_atlas/bronze_storage.py": (
+                    "create_checksum_inventory",
+                    "rehearse_restore",
+                    "rpo_seconds",
+                    "rto_seconds",
+                ),
+                "tests/test_bronze_storage.py": (
+                    "test_checksum_inventory_detects_replica_corruption",
+                ),
             },
             passing_notes=(
                 "Bronze metadata, Parquet, and catalogue are reconstructed "
                 "from immutable payloads and receipts across the required "
                 "clean-room and loss scenarios. Production operation remains "
-                "a separate authority gate."
+                "a separate deployment and qualification gate."
             ),
             failing_notes=(
                 "Bronze clean-room reconstruction and loss-scenario evidence "

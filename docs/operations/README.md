@@ -13,6 +13,7 @@ usage support and private security reporting boundaries, see
 - [Source monitoring and release evidence](source-monitoring-and-release-evidence.md)
 - [Parser, archive, and recovery safety](parser-archive-recovery.md)
 - [Governed recovery rehearsal](governed-recovery-runbook.md)
+- [Bronze durable storage and sensitivity](bronze-durable-storage.md)
 - [Data incident response](data-incident-response.md)
 
 ## Action boundaries

@@ -31,6 +31,12 @@ from .bronze_admission import (
     require_admitted_for_processing,
 )
 from .bronze_integrity import inspect_untrusted_payload
+from .bronze_storage import (
+    LocalFilesystemPayloadStore,
+    PayloadStorageReceipt,
+    PayloadStore,
+    write_payload_storage_receipt,
+)
 from .bronze_transformation import (
     MANIFEST_PARSER_IDENTITY,
     MANIFEST_SCHEMA_VERSION,
@@ -85,6 +91,8 @@ class BronzeAcquisition:
     payload_path: Path
     receipt_path: Path
     acquisition_receipt_path: Path
+    storage_receipt_path: Path
+    storage_receipt: PayloadStorageReceipt
     receipt: SourceReceipt
     landed_admission: BronzeAdmissionRecord
     admission: BronzeAdmissionRecord
@@ -186,6 +194,9 @@ def bronze_table_spec(
         ("valid_from", "timestamptz"),
         ("valid_to", "timestamptz"),
         ("rights_state", "string"),
+        ("data_sensitivity", "string"),
+        ("personal_data_state", "string"),
+        ("publication_disposition", "string"),
         ("admission_state", "string"),
         ("source_uri", "string"),
         ("media_type", "string"),
@@ -241,6 +252,7 @@ def _acquisition_manifest_table(
     payload_path: Path,
     admission: BronzeAdmissionRecord,
     source_records: SourceRecordBatch | None,
+    payload_uri: str | None = None,
 ) -> pa.Table:
     temporal = require_temporal(receipt.temporal)
     reuse_gate = receipt.reuse
@@ -253,10 +265,13 @@ def _acquisition_manifest_table(
         "acquisition_id": temporal.acquisition_id,
         "content_id": temporal.content_id or receipt.payload.sha256,
         "rights_state": receipt.rights_state.value,
+        "data_sensitivity": receipt.sensitivity.data_sensitivity.value,
+        "personal_data_state": receipt.sensitivity.personal_data.value,
+        "publication_disposition": receipt.sensitivity.publication.value,
         "admission_state": admission.state.value,
         "source_uri": str(receipt.retrieval.uri),
         "media_type": _media_type(receipt, payload_path),
-        "payload_location": payload_path.as_uri(),
+        "payload_location": payload_uri or payload_path.as_uri(),
         "payload_sha256": receipt.payload.sha256,
         "receipt_digest": receipt.digest(),
         "source_parser_identity": (
@@ -293,6 +308,9 @@ def _acquisition_manifest_table(
         "valid_from",
         "valid_to",
         "rights_state",
+        "data_sensitivity",
+        "personal_data_state",
+        "publication_disposition",
         "admission_state",
         "source_uri",
         "media_type",
@@ -384,19 +402,6 @@ def _write_append_only(path: Path, payload: bytes) -> None:
         path.write_bytes(payload)
 
 
-def _content_payload_path(
-    bronze_root: Path,
-    content_id: str,
-    suffix: str,
-) -> Path:
-    content_dir = bronze_root / PAYLOAD_DIR / "by_content" / content_id
-    existing = sorted(content_dir.glob("payload.*"))
-    if existing:
-        return existing[0]
-    content_dir.mkdir(parents=True, exist_ok=True)
-    return content_dir / f"payload{suffix}"
-
-
 def _acquisition_event_for(receipt: SourceReceipt) -> AcquisitionEvent:
     temporal = require_temporal(receipt.temporal)
     content_id = temporal.content_id or receipt.payload.sha256
@@ -417,15 +422,9 @@ def _acquisition_event_for(receipt: SourceReceipt) -> AcquisitionEvent:
         rights_state=receipt.rights_state,
         rights_reference=receipt.rights_reference,
         rights_policy=receipt.rights_policy,
+        sensitivity=receipt.sensitivity,
         evidence_class=receipt.evidence_class,
     )
-
-
-def _store_payload_bytes(path: Path, payload: bytes) -> None:
-    if path.exists() and path.read_bytes() != payload:
-        raise ValueError("content store conflict; payload bytes are immutable")
-    if not path.exists():
-        path.write_bytes(payload)
 
 
 @dataclass(frozen=True, slots=True)
@@ -443,7 +442,7 @@ def _write_parquet_product(
     product: Literal["acquisition_manifest", "source_records"],
     parquet_path: Path,
     lineage_path: Path,
-    payload_path: Path,
+    payload_uri: str,
     bronze_root: Path,
     admission: BronzeAdmissionRecord,
     parser_identity: str,
@@ -481,7 +480,7 @@ def _write_parquet_product(
         raise ValueError("Parquet identity diverged after transformation")
     event_lineage = project_openlineage_events(
         receipt,
-        payload_uri=payload_path.as_uri(),
+        payload_uri=payload_uri,
         parquet_uri=parquet_path.as_uri(),
         transformation_run=transformation_run,
         admission=admission,
@@ -518,6 +517,7 @@ def _write_analytical_outputs(
     bound: SourceReceipt,
     *,
     payload_path: Path,
+    payload_uri: str,
     manifest_path: Path,
     manifest_lineage_path: Path,
     bronze_root: Path,
@@ -530,6 +530,7 @@ def _write_analytical_outputs(
     manifest_table = _acquisition_manifest_table(
         bound,
         payload_path=payload_path,
+        payload_uri=payload_uri,
         admission=admission,
         source_records=source_records,
     )
@@ -539,7 +540,7 @@ def _write_analytical_outputs(
         product=ACQUISITION_MANIFEST_PRODUCT,
         parquet_path=manifest_path,
         lineage_path=manifest_lineage_path,
-        payload_path=payload_path,
+        payload_uri=payload_uri,
         bronze_root=bronze_root,
         admission=admission,
         parser_identity=MANIFEST_PARSER_IDENTITY,
@@ -559,7 +560,7 @@ def _write_analytical_outputs(
         product=SOURCE_RECORDS_PRODUCT,
         parquet_path=source_records_path,
         lineage_path=source_records_lineage_path,
-        payload_path=payload_path,
+        payload_uri=payload_uri,
         bronze_root=bronze_root,
         admission=admission,
         parser_identity=source_records.parser_identity,
@@ -582,6 +583,7 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals]
     admission_decided_at: datetime | None = None,
     transformation_completed_at: datetime | None = None,
     source_records: SourceRecordBatch | None = None,
+    payload_store: PayloadStore | None = None,
 ) -> BronzeAcquisition | BronzeLanding:
     """Stage, admit, and project a payload only after acceptance."""
 
@@ -598,23 +600,34 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals]
     temporal = require_temporal(bound.temporal)
     source_id = bound.source.source_id
     content_id = temporal.content_id or bound.payload.sha256
-    payload_path = _content_payload_path(
-        bronze_root,
-        content_id,
-        _payload_extension(media_hint),
+    suffix = _payload_extension(media_hint)
+    selected_store = payload_store or LocalFilesystemPayloadStore(bronze_root)
+    candidate_path = (
+        bronze_root
+        / PAYLOAD_DIR
+        / "by_content"
+        / content_id
+        / f"payload{suffix}"
     )
     http = getattr(bound.retrieval, "http", None)
     raw_length = None if http is None else getattr(http, "content_length", None)
     declared_length = raw_length if isinstance(raw_length, int) else None
     inspect_untrusted_payload(
         payload,
-        declared_media=payload_path.suffix,
-        declared_filename=payload_path.name,
+        declared_media=candidate_path.suffix,
+        declared_filename=candidate_path.name,
         expected_sha256=bound.payload.sha256,
         declared_length=declared_length,
         acquisition_id=temporal.acquisition_id,
     )
-    _store_payload_bytes(payload_path, payload)
+    stored = selected_store.store(
+        payload,
+        acquisition_id=temporal.acquisition_id,
+        content_id=content_id,
+        suffix=suffix,
+    )
+    payload_path = stored.materialized_path
+    payload_uri = stored.receipt.primary.uri
     for folder in (RECEIPT_DIR, ACQUISITION_DIR):
         (bronze_root / folder / source_id).mkdir(parents=True, exist_ok=True)
     event_path = (
@@ -634,6 +647,11 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals]
         / f"{temporal.acquisition_id}.json"
     )
     _write_append_only(receipt_path, bound.canonical_json() + b"\n")
+    storage_receipt_path = write_payload_storage_receipt(
+        stored.receipt,
+        bronze_root=bronze_root,
+        source_id=source_id,
+    )
     staged_at = (
         admission_decided_at or transformation_completed_at or datetime.now(UTC)
     )
@@ -676,6 +694,8 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals]
         payload_path=payload_path,
         receipt_path=receipt_path,
         acquisition_receipt_path=event_path,
+        storage_receipt_path=storage_receipt_path,
+        storage_receipt=stored.receipt,
         receipt=bound,
         landed_admission=landed_admission,
         admission=admission,
@@ -713,6 +733,7 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals]
     manifest, records = _write_analytical_outputs(
         bound,
         payload_path=payload_path,
+        payload_uri=payload_uri,
         manifest_path=manifest_path,
         manifest_lineage_path=manifest_lineage_path,
         bronze_root=bronze_root,
@@ -736,6 +757,8 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals]
         payload_path=acquisition.payload_path,
         receipt_path=acquisition.receipt_path,
         acquisition_receipt_path=acquisition.acquisition_receipt_path,
+        storage_receipt_path=acquisition.storage_receipt_path,
+        storage_receipt=acquisition.storage_receipt,
         receipt=acquisition.receipt,
         landed_admission=acquisition.landed_admission,
         admission=acquisition.admission,
@@ -768,6 +791,7 @@ def write_rebuildable_layers(
     source_records: SourceRecordBatch | None = None,
     source_records_path: Path | None = None,
     source_records_lineage_path: Path | None = None,
+    payload_uri: str | None = None,
 ) -> IcebergReadyTableSpec:
     """Rebuild admitted Bronze products; never rewrite evidentiary bytes."""
 
@@ -779,6 +803,7 @@ def write_rebuildable_layers(
     manifest, _records = _write_analytical_outputs(
         receipt,
         payload_path=payload_path,
+        payload_uri=payload_uri or payload_path.as_uri(),
         manifest_path=parquet_path,
         manifest_lineage_path=lineage_path,
         bronze_root=bronze_root,
@@ -810,5 +835,6 @@ def regenerate_parquet(
         source_records=source_records,
         source_records_path=landing.source_records_path,
         source_records_lineage_path=landing.source_records_lineage_path,
+        payload_uri=landing.storage_receipt.primary.uri,
     )
     return landing.acquisition_manifest_path
