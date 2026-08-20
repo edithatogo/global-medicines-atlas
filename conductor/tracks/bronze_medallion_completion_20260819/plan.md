@@ -71,9 +71,11 @@ public data. It runs before any acquire/download, including Drugs@FDA.
     - [x] Keep source/version, published/effective, retrieved_at, and source-supplied validity independent
     - [x] Physically deduplicate identical bytes without collapsing acquisition history
     - [x] Schema contract and migration-safe TemporalIdentity without content_id
+    - [x] Version acquisition events to bind source, retrieval, reuse, rights, and evidence context independently from transformation output
 - [x] Task: Bronze quarantine and admission lifecycle ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
     - [x] States landed → accepted | quarantined | rejected-from-processing
     - [x] Preserve malformed payloads; fail closed downstream unless authorised
+    - [x] Keep append-only admission decisions and transformation-run receipts distinct from acquisition events; bind actual Parquet bytes, code commit, lock environment, actor, clock, and supersession
 - [x] Task: Evidence-grade HTTP retrieval receipts
     - [x] Capture original/final URI, redirects, method, status, ETag, Last-Modified, type, encoding, lengths, agent version
     - [x] Never persist credentials or authorization headers
