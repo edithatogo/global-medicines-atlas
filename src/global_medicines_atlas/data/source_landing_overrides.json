@@ -2,6 +2,14 @@
   "schema_version": 1,
   "overrides": [
     {
+      "source_id": "eu-union-register",
+      "state": "landed_and_evidenced",
+      "reason": "The official 2026-08-17 Union Register JSON snapshot was acquired under maintainer-approved internal-only CC BY 4.0 handling, projected at source-native record grain, clean-room reconstructed, and privately archived.",
+      "evidence_references": [
+        "quality/qualifications/union-register-live-corpus-20260821.json"
+      ]
+    },
+    {
       "source_id": "us-fda-orange-book",
       "state": "temporarily_unavailable",
       "reason": "Internal historical acquisition was authorized and exercised; 200 of 259 exact release URLs were retained while 59 FDA Archive-It releases remained HTTP 429 rate-limited after four bounded passes.",

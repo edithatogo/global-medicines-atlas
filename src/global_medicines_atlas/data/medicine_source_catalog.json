@@ -1,6 +1,6 @@
 {
   "schema_version": 5,
-  "reviewed_at": "2026-08-20",
+  "reviewed_at": "2026-08-21",
   "monitoring_contract": {
     "source_health": "weekly",
     "schema_drift": "monthly"
@@ -3343,23 +3343,24 @@
       "dimension": "regulatory",
       "access_mode": "download",
       "landing_page": "https://health.ec.europa.eu/medicinal-products/union-register_en",
-      "download_url": "https://ec.europa.eu/health/documents/community-register/html/index_en.htm",
+      "download_url": "https://ec.europa.eu/health/documents/community-register/ods/ods_products.json",
       "update_cadence": "regular",
       "rights_status": "CC-BY-4.0 dataset; verify per release",
       "readiness": "implemented",
       "evidence_limit": "Union Register must be versioned in Bronze; fixtures are not complete acquisition. Nationally authorised products remain out of this source.",
       "interface_status": "documented_download",
       "formats": [
-        "source_native"
+        "json"
       ],
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
       "native_identifier": "EU Union Register EU number",
-      "last_verified_at": "2026-08-20",
-      "integration_layer": "fixture",
+      "last_verified_at": "2026-08-21",
+      "integration_layer": "live_receipt",
       "acquisition_profile": "public-bulk",
       "implemented_ingestion": true,
+      "current_receipt_id": "a5abf72cbd5a62ac5d2ca82b03c48c2ffb1bc042127ce7010b53602b83376ffb",
       "documentation_url": "https://health.ec.europa.eu/medicinal-products/union-register_en",
       "information_domains": [
         "product_identity",
@@ -3383,13 +3384,14 @@
         "names",
         "status_dates"
       ],
-      "qualification_state": "fixture_verified",
+      "qualification_state": "live_verified",
       "qualification_references": [
         "src/global_medicines_atlas/bronze_fixture_landing.py",
         "tests/test_bronze_fixture_landing.py",
-        "tests/fixtures/native/eu/union_register.xml"
+        "tests/fixtures/native/eu/union_register.xml",
+        "quality/qualifications/union-register-live-corpus-20260821.json"
       ],
-      "discovery_status": "declaration_verified"
+      "discovery_status": "receipt_backed"
     },
     {
       "source_id": "fr-bdpm",

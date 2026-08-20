@@ -1,13 +1,13 @@
 {
   "schema_id": "global-medicines-atlas.prompt-acquisition-completion-audit",
   "schema_version": 1,
-  "generated_at": "2026-08-20",
+  "generated_at": "2026-08-21",
   "prompt_count": 36,
   "unique_prompt_source_count": 94,
   "catalog_source_count": 172,
   "fixture_qualified_source_count": 16,
-  "live_qualified_source_count": 9,
-  "live_complete_prompt_count": 4,
+  "live_qualified_source_count": 10,
+  "live_complete_prompt_count": 5,
   "program_completion": "incomplete_live_acquisition",
   "queue_state_counts": {
     "credentialed_and_excluded": 18,
@@ -888,18 +888,14 @@
       "fixture_qualified_source_ids": [
         "eu-union-register"
       ],
-      "live_qualified_source_ids": [],
-      "sources_without_live_evidence": [
+      "live_qualified_source_ids": [
         "eu-union-register"
       ],
-      "live_complete": false,
-      "completion_state": "live_acquisition_incomplete",
-      "blocker_categories": [
-        "fixture_only_is_not_live"
-      ],
-      "next_actions": [
-        "replace governed fixture evidence with a receipt-backed live source acquisition"
-      ]
+      "sources_without_live_evidence": [],
+      "live_complete": true,
+      "completion_state": "live_acquisition_complete",
+      "blocker_categories": [],
+      "next_actions": []
     },
     {
       "prompt_id": 26,

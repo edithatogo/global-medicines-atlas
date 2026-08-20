@@ -31,6 +31,9 @@ REMS_RECORD_QUALIFICATION = (
 FAERS_RECORD_QUALIFICATION = (
     ROOT / "quality/qualifications/faers-live-corpus-20260821.json"
 )
+UNION_REGISTER_QUALIFICATION = (
+    ROOT / "quality/qualifications/union-register-live-corpus-20260821.json"
+)
 DEFAULT_OUTPUT = (
     ROOT / "quality/qualifications/prompt-acquisition-completion-audit.json"
 )
@@ -45,6 +48,7 @@ REMS_EXPORT_COUNT = 4
 HTTP_NOT_FOUND = 404
 FAERS_PROMPT_AUDIT_SOURCE_IDS = frozenset({"us-fda-faers"})
 FAERS_EXPECTED_RELEASE_COUNT = 90
+UNION_REGISTER_SOURCE_IDS = frozenset({"eu-union-register"})
 
 NEXT_ACTIONS = {
     "credentialed_and_excluded": (
@@ -351,6 +355,38 @@ def _qualified_faers_record_sources() -> set[str]:
     return qualified
 
 
+def _qualified_union_register_sources() -> set[str]:
+    qualification = json.loads(
+        UNION_REGISTER_QUALIFICATION.read_text(encoding="utf-8")
+    )
+    boundary = (
+        qualification["evidence_class"] == "live_bounded_internal",
+        qualification["internal_retention_authorized"],
+        not qualification["public_release_authorized"],
+        not qualification["external_publication_performed"],
+        qualification["prompt_complete"],
+        qualification["current_source_snapshot_complete"],
+    )
+    if not all(boundary):
+        raise ValueError("Union Register qualification crossed its scope")
+    recovery = (
+        qualification["acquisition_succeeded_count"] == 1,
+        qualification["accepted_admission_count"] == 1,
+        qualification["recovered_acquisition_count"] == 1,
+        qualification["source_record_projection_count"] == 1,
+        qualification["recovered_source_record_projection_count"] == 1,
+        qualification["source_record_parquet_pairs_byte_identical"] == 1,
+        qualification["source_record_rows"] > 0,
+        qualification["archive_checksum_verified"],
+    )
+    if not all(recovery):
+        raise ValueError("Union Register products lack recovery evidence")
+    qualified = set(qualification["prompt_audit_qualified_source_ids"])
+    if qualified != set(UNION_REGISTER_SOURCE_IDS):
+        raise ValueError("Union Register qualification exceeds source scope")
+    return qualified
+
+
 def build() -> dict[str, Any]:
     """Join locked prompt scope to queue and measured evidence."""
 
@@ -368,6 +404,7 @@ def build() -> dict[str, Any]:
         | _qualified_ndc_record_sources()
         | _qualified_rems_record_sources()
         | _qualified_faers_record_sources()
+        | _qualified_union_register_sources()
     )
     for source_id in qualified_us_live:
         existing = measured_by_source.get(source_id, {})
