@@ -178,6 +178,14 @@ def test_capability_registry_distinguishes_evidence_layers() -> None:
     assert (
         Capability.LIVE_RECEIPT not in declarations["us-drugsfda"].capabilities
     )
+    assert (
+        Capability.LIVE_RECEIPT
+        in declarations["eu-union-register"].capabilities
+    )
+    assert (
+        Capability.SOURCE_PARSER
+        in declarations["eu-union-register"].capabilities
+    )
     assert all(
         Capability.PRODUCTION_QUALIFICATION not in declaration.capabilities
         for declaration in declarations.values()
