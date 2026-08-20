@@ -54,6 +54,7 @@ _ARCHIVE_SPECS: dict[str, tuple[frozenset[str], str]] = {
 _TECHNICAL_COLUMNS = (
     "source_record_key",
     "source_member",
+    "source_table",
     "source_row_number",
     "source_field_count",
 )
@@ -123,14 +124,10 @@ def _decode_member(payload: bytes) -> str:
         return payload.decode("cp1252")
 
 
-def _header(
-    reader: Iterable[list[str]], member: str
-) -> tuple[list[str], list[list[str]]]:
-    rows = list(reader)
-    if not rows:
+def _validated_header(header: list[str], member: str) -> list[str]:
+    if not header:
         raise ValueError(f"archive member has no header: {member}")
-    header = rows[0]
-    if not header or any(not name for name in header):
+    if any(not name for name in header):
         raise ValueError(f"archive member has an empty header: {member}")
     if len(header) != len(set(header)):
         raise ValueError(f"archive member has duplicate columns: {member}")
@@ -142,6 +139,16 @@ def _header(
         raise ValueError(
             f"archive member collides with technical columns: {member}"
         )
+    return header
+
+
+def _header(
+    reader: Iterable[list[str]], member: str
+) -> tuple[list[str], list[list[str]]]:
+    rows = list(reader)
+    if not rows:
+        raise ValueError(f"archive member has no header: {member}")
+    header = _validated_header(rows[0], member)
     return header, rows[1:]
 
 
@@ -259,6 +266,107 @@ def _ndc_directory_batch(payload: bytes) -> SourceRecordBatch:
     )
 
 
+_FAERS_TABLE_PREFIXES = {
+    "DEMO": "demographic",
+    "DRUG": "drug",
+    "INDI": "indication",
+    "OUTC": "outcome",
+    "REAC": "reaction",
+    "RPSR": "reporter",
+    "THER": "therapy",
+    "STAT": "statistics",
+    "SIZE": "size",
+    "DELE": "deleted_case",
+}
+_FAERS_CORE_TABLES = frozenset({
+    "demographic",
+    "drug",
+    "indication",
+    "outcome",
+    "reaction",
+    "reporter",
+    "therapy",
+})
+
+
+def _faers_table(member: str) -> str | None:
+    filename = member.rsplit("/", 1)[-1]
+    if not filename.casefold().endswith(".txt"):
+        return None
+    prefix = filename[:4].upper()
+    table = _FAERS_TABLE_PREFIXES.get(prefix)
+    if table is None:
+        raise ValueError(f"FAERS archive has unsupported text table: {member}")
+    return table
+
+
+def _faers_ascii_batch(payload: bytes) -> SourceRecordBatch:
+    """Preserve every relational ASCII table without case-version collapse."""
+    inspect_zip(payload)
+    with zipfile.ZipFile(BytesIO(payload)) as archive:
+        members = tuple(
+            item.filename for item in archive.infolist() if not item.is_dir()
+        )
+        table_members = tuple(
+            (member, table)
+            for member in members
+            if (table := _faers_table(member)) is not None
+        )
+        observed_tables = frozenset(table for _, table in table_members)
+        missing = _FAERS_CORE_TABLES - observed_tables
+        if missing:
+            raise ValueError(
+                "FAERS archive is missing core tables: "
+                + ", ".join(sorted(missing))
+            )
+        native_columns: list[str] = []
+        records: list[dict[str, str | int | None]] = []
+        for member, table in sorted(table_members):
+            reader = csv.reader(
+                StringIO(_decode_member(archive.read(member)), newline=""),
+                delimiter="$",
+            )
+            try:
+                header = _validated_header(next(reader), member)
+            except StopIteration as error:
+                raise ValueError(
+                    f"archive member has no header: {member}"
+                ) from error
+            native_columns.extend(
+                name for name in header if name not in native_columns
+            )
+            for row_number, values in enumerate(reader, start=1):
+                if not values or (len(values) == 1 and not values[0]):
+                    continue
+                record: dict[str, str | int | None] = {
+                    "source_record_key": f"{member}:{row_number}",
+                    "source_member": member,
+                    "source_table": table,
+                    "source_row_number": row_number,
+                    "source_field_count": len(values),
+                }
+                record.update(dict(zip(header, values, strict=False)))
+                for offset, value in enumerate(values[len(header) :], start=1):
+                    column = f"{_UNLABELLED_FIELD_PREFIX}{offset}"
+                    if column not in native_columns:
+                        native_columns.append(column)
+                    record[column] = value
+                records.append(record)
+    schema = pa.schema([
+        pa.field("source_record_key", pa.string(), nullable=False),
+        pa.field("source_member", pa.string(), nullable=False),
+        pa.field("source_table", pa.string(), nullable=False),
+        pa.field("source_row_number", pa.int64(), nullable=False),
+        pa.field("source_field_count", pa.int64(), nullable=False),
+        *(pa.field(name, pa.string()) for name in native_columns),
+    ])
+    return SourceRecordBatch(
+        table=pa.Table.from_pylist(records, schema=schema),
+        parser_identity="gma:us-fda-faers:ascii-archive:v1",
+        record_id_column="source_record_key",
+    )
+
+
 def _single_json_member(payload: bytes) -> bytes:
     inspect_zip(payload)
     with zipfile.ZipFile(BytesIO(payload)) as archive:
@@ -289,6 +397,10 @@ def us_source_record_batch(
         if media_hint != "zip":
             raise ValueError("us-fda-ndc-directory requires zip media")
         return _ndc_directory_batch(payload)
+    if source_id == "us-fda-faers":
+        if media_hint != "zip":
+            raise ValueError("us-fda-faers requires zip media")
+        return _faers_ascii_batch(payload)
     archive_spec = _ARCHIVE_SPECS.get(source_id)
     if archive_spec is not None:
         if media_hint != "zip":

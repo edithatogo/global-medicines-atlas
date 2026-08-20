@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import os
+import re
 import socket
 from collections.abc import Callable, Iterable
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from hashlib import sha256
@@ -13,6 +15,7 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 from typing import Protocol
 from urllib.parse import urlsplit
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 import httpx
 from pydantic import AnyUrl
@@ -646,6 +649,382 @@ def acquire_source(
             observed_at=observed_at,
             code="http_status",
             message=f"HTTP status {error.response.status_code}",
+            reuse=decision,
+        )
+    except httpx.HTTPError as error:
+        return _failure(
+            source=source,
+            uri=uri,
+            method=method,
+            observed_at=observed_at,
+            code="transport_error",
+            message=str(error),
+            retryable=True,
+            reuse=decision,
+        )
+    finally:
+        if isinstance(temporary_path, Path):
+            temporary_path.unlink(missing_ok=True)
+
+
+_CONTENT_RANGE = re.compile(r"bytes (\d+)-(\d+)/(\d+)", re.IGNORECASE)
+_HTTP_PARTIAL_CONTENT = 206
+
+
+def _validated_range_response(
+    response: httpx.Response,
+    *,
+    start: int,
+    end: int,
+    expected_total: int | None,
+    policy: AcquisitionPolicy,
+) -> tuple[bytes, dict[str, str], int]:
+    headers = {
+        str(key).lower(): str(value) for key, value in response.headers.items()
+    }
+    payload, total = _validated_range_payload(
+        status=response.status_code,
+        headers=headers,
+        payload=response.content,
+        start=start,
+        end=end,
+        expected_total=expected_total,
+        policy=policy,
+    )
+    return payload, headers, total
+
+
+def _validated_range_payload(
+    *,
+    status: int,
+    headers: dict[str, str],
+    payload: bytes,
+    start: int,
+    end: int,
+    expected_total: int | None,
+    policy: AcquisitionPolicy,
+) -> tuple[bytes, int]:
+    if status != _HTTP_PARTIAL_CONTENT:
+        raise DestinationPolicyError(
+            "range_not_supported",
+            f"range request returned HTTP {status}",
+        )
+    content_type = headers.get("content-type", "").split(";", 1)[0].lower()
+    if content_type not in policy.allowed_content_types:
+        raise DestinationPolicyError(
+            "content_type_rejected",
+            f"Response content type is not allowed: {content_type or 'missing'}",
+        )
+    match = _CONTENT_RANGE.fullmatch(headers.get("content-range", "").strip())
+    if match is None:
+        raise DestinationPolicyError(
+            "content_range_invalid", "response omitted a valid Content-Range"
+        )
+    observed_start, observed_end, total = map(int, match.groups())
+    if observed_start != start or observed_end != end:
+        raise DestinationPolicyError(
+            "content_range_mismatch", "response range does not match request"
+        )
+    if expected_total is not None and total != expected_total:
+        raise DestinationPolicyError(
+            "source_mutated", "range responses disagree on total byte length"
+        )
+    if len(payload) != end - start + 1:
+        raise DestinationPolicyError(
+            "truncated_body", "range response body length does not match range"
+        )
+    return payload, total
+
+
+def _get_verified_range(
+    client: httpx.Client,
+    uri: str,
+    *,
+    start: int,
+    end: int,
+    expected_total: int | None,
+    policy: AcquisitionPolicy,
+) -> tuple[bytes, dict[str, str], int]:
+    last_error: Exception | None = None
+    for _ in range(policy.max_attempts):
+        try:
+            response = client.get(
+                uri, headers={"Range": f"bytes={start}-{end}"}
+            )
+            payload, headers, total = _validated_range_response(
+                response,
+                start=start,
+                end=end,
+                expected_total=expected_total,
+                policy=policy,
+            )
+        except (DestinationPolicyError, httpx.HTTPError) as error:
+            last_error = error
+        else:
+            return payload, headers, total
+    if last_error is None:  # pragma: no cover - policy forbids zero attempts
+        raise RuntimeError("range acquisition exhausted without an attempt")
+    raise last_error
+
+
+class _NoRedirect(HTTPRedirectHandler):
+    def redirect_request(self, *_args: object, **_kwargs: object) -> None:
+        return None
+
+
+def _require_same_uri(observed: str, expected: str) -> None:
+    if observed != expected:
+        raise DestinationPolicyError(
+            "redirect_rejected", "range request redirected"
+        )
+
+
+def _get_verified_stdlib_range(
+    uri: str,
+    *,
+    start: int,
+    end: int,
+    expected_total: int | None,
+    policy: AcquisitionPolicy,
+    resolver: Resolver | None,
+) -> tuple[bytes, dict[str, str], int]:
+    last_error: Exception | None = None
+    for _ in range(policy.max_attempts):
+        try:  # ruff: ignore[too-many-statements-in-try-clause]
+            validate_remote_destination(
+                uri,
+                policy,
+                resolver=resolver,
+                require_host_allowlist=True,
+            )
+            request = Request(  # ruff: ignore[suspicious-url-open-usage] - validated above
+                uri,
+                headers={
+                    "Range": f"bytes={start}-{end}",
+                    "Connection": "close",
+                },
+                method="GET",
+            )
+            with build_opener(_NoRedirect).open(
+                request, timeout=policy.timeout_seconds
+            ) as response:
+                _require_same_uri(response.geturl(), uri)
+                status = response.status
+                headers = {
+                    str(key).lower(): str(value)
+                    for key, value in response.headers.items()
+                }
+                payload = response.read(end - start + 2)
+            payload, total = _validated_range_payload(
+                status=status,
+                headers=headers,
+                payload=payload,
+                start=start,
+                end=end,
+                expected_total=expected_total,
+                policy=policy,
+            )
+        except (DestinationPolicyError, OSError) as error:
+            last_error = error
+        else:
+            return payload, headers, total
+    if last_error is None:  # pragma: no cover - policy forbids zero attempts
+        raise RuntimeError("range acquisition exhausted without an attempt")
+    if isinstance(last_error, DestinationPolicyError):
+        raise last_error
+    raise DestinationPolicyError(
+        "transport_error", str(last_error)
+    ) from last_error
+
+
+RangeFetcher = Callable[
+    [int, int, int | None], tuple[bytes, dict[str, str], int]
+]
+
+
+def _assemble_range_payload(
+    *,
+    target: Path,
+    chunk_bytes: int,
+    policy: AcquisitionPolicy,
+    fetch: RangeFetcher,
+) -> tuple[Path, PayloadEvidence, dict[str, str]]:
+    _, probe_headers, total = fetch(0, 0, None)
+    if total <= 0 or total > policy.max_bytes:
+        _reject_oversize()
+    ranges = tuple(
+        (start, min(start + chunk_bytes - 1, total - 1))
+        for start in range(0, total, chunk_bytes)
+    )
+    temporary_path: Path | None = None
+    try:  # ruff: ignore[too-many-statements-in-try-clause]
+        with NamedTemporaryFile(
+            dir=target.parent,
+            prefix=f".{target.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as staged:
+            temporary_path = Path(staged.name)
+            staged.truncate(total)
+            with ThreadPoolExecutor(
+                max_workers=policy.max_concurrency_per_host
+            ) as executor:
+                futures = {
+                    executor.submit(fetch, start, end, total): (start, end)
+                    for start, end in ranges
+                }
+                for future in as_completed(futures):
+                    start, _ = futures[future]
+                    payload, _, _ = future.result()
+                    staged.seek(start)
+                    staged.write(payload)
+            staged.flush()
+            os.fsync(staged.fileno())
+        digest = sha256()
+        with temporary_path.open("rb") as assembled:
+            while chunk := assembled.read(1024 * 1024):
+                digest.update(chunk)
+        return (
+            temporary_path,
+            PayloadEvidence(sha256=digest.hexdigest(), byte_count=total),
+            probe_headers,
+        )
+    except Exception:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
+        raise
+
+
+def acquire_source_by_ranges(
+    source_id: str,
+    destination: Path,
+    *,
+    repository_root: Path,
+    chunk_bytes: int,
+    policy: AcquisitionPolicy = DEFAULT_ACQUISITION_POLICY,
+    catalog: Iterable[MedicineDataSource] | None = None,
+    transport: httpx.BaseTransport | None = None,
+    resolver: Resolver | None = None,
+    evidence_class: EvidenceClass = EvidenceClass.FIXTURE,
+    clock: Clock = lambda: datetime.now(UTC),
+    reuse_decision: ReuseGateDecision | None = None,
+    source_native_version: str | None = None,
+) -> Receipt:
+    """Atomically acquire a large immutable payload through verified ranges."""
+
+    if chunk_bytes <= 0:
+        raise ValueError("chunk_bytes must be positive")
+    decision = require_reuse_decision(reuse_decision, source_id)
+    sources = load_source_catalog() if catalog is None else tuple(catalog)
+    source = _catalog_source(source_id, sources)
+    uri, method = _download_surface(source)
+    effective_policy = policy_for_catalog_uri(policy, uri)
+    observed_at = clock()
+    target = _local_destination(repository_root, destination)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    temporary_path: Path | None = None
+    try:  # ruff: ignore[too-many-statements-in-try-clause]
+        if transport is None:
+
+            def fetch(
+                start: int, end: int, expected_total: int | None
+            ) -> tuple[bytes, dict[str, str], int]:
+                return _get_verified_stdlib_range(
+                    uri,
+                    start=start,
+                    end=end,
+                    expected_total=expected_total,
+                    policy=effective_policy,
+                    resolver=resolver,
+                )
+
+            temporary_path, payload_evidence, headers = _assemble_range_payload(
+                target=target,
+                chunk_bytes=chunk_bytes,
+                policy=effective_policy,
+                fetch=fetch,
+            )
+        else:
+            effective_transport = transport_for_destination(
+                uri,
+                effective_policy,
+                resolver=resolver,
+                transport=transport,
+            )
+            with httpx.Client(
+                transport=effective_transport,
+                timeout=effective_policy.timeout_seconds,
+                follow_redirects=False,
+                max_redirects=effective_policy.max_redirects,
+            ) as client:
+
+                def fetch(
+                    start: int, end: int, expected_total: int | None
+                ) -> tuple[bytes, dict[str, str], int]:
+                    return _get_verified_range(
+                        client,
+                        uri,
+                        start=start,
+                        end=end,
+                        expected_total=expected_total,
+                        policy=effective_policy,
+                    )
+
+                temporary_path, payload_evidence, headers = (
+                    _assemble_range_payload(
+                        target=target,
+                        chunk_bytes=chunk_bytes,
+                        policy=effective_policy,
+                        fetch=fetch,
+                    )
+                )
+        http = HttpRetrievalEvidence(
+            original_uri=AnyUrl(uri),
+            final_uri=AnyUrl(uri),
+            http_method="GET",
+            http_status=_HTTP_PARTIAL_CONTENT,
+            etag=headers.get("etag"),
+            last_modified=headers.get("last-modified"),
+            content_type=headers.get("content-type", "").split(";", 1)[0]
+            or None,
+            content_encoding=headers.get("content-encoding"),
+            content_length=payload_evidence.byte_count,
+            observed_byte_length=payload_evidence.byte_count,
+            source_native_version=source_native_version,
+            acquisition_agent_version=__version__,
+        )
+        temporary_path.replace(target)
+        temporary_path = None
+        return _success(
+            source=source,
+            uri=uri,
+            method=method,
+            observed_at=observed_at,
+            payload=payload_evidence,
+            evidence_class=evidence_class,
+            reuse=decision,
+            http=http,
+        )
+    except DestinationPolicyError as error:
+        return _failure(
+            source=source,
+            uri=uri,
+            method=method,
+            observed_at=observed_at,
+            code=error.code,
+            message=str(error),
+            retryable=error.code in {"truncated_body", "source_mutated"},
+            reuse=decision,
+        )
+    except httpx.TimeoutException as error:
+        return _failure(
+            source=source,
+            uri=uri,
+            method=method,
+            observed_at=observed_at,
+            code="timeout",
+            message=str(error),
+            retryable=True,
             reuse=decision,
         )
     except httpx.HTTPError as error:

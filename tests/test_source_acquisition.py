@@ -15,6 +15,7 @@ from global_medicines_atlas.acquisition import (
     DestinationPolicyError,
     Receipt,
     acquire_source,
+    acquire_source_by_ranges,
     validate_remote_destination,
 )
 from global_medicines_atlas.countries import SourceDimension
@@ -96,6 +97,52 @@ def acquire(
     )
 
 
+def acquire_ranges(
+    tmp_path: Path,
+    handler: Callable[[httpx.Request], httpx.Response],
+    *,
+    chunk_bytes: int = 3,
+    policy: AcquisitionPolicy = SMALL_POLICY,
+    source_native_version: str | None = "2026-Q2",
+) -> Receipt:
+    return acquire_source_by_ranges(
+        "test-regulator",
+        Path("artifacts/ranged-source.bin"),
+        repository_root=tmp_path,
+        chunk_bytes=chunk_bytes,
+        catalog=(catalog_source(),),
+        transport=httpx.MockTransport(handler),
+        policy=policy,
+        evidence_class=EvidenceClass.LIVE,
+        clock=lambda: NOW,
+        reuse_decision=acquire_new_decision("test-regulator"),
+        source_native_version=source_native_version,
+    )
+
+
+def ranged_response(
+    request: httpx.Request,
+    payload: bytes,
+    *,
+    total: int | None = None,
+) -> httpx.Response:
+    unit, requested_range = request.headers["range"].split("=", 1)
+    assert unit == "bytes"
+    start_text, end_text = requested_range.split("-", 1)
+    start, end = int(start_text), int(end_text)
+    observed_total = len(payload) if total is None else total
+    return httpx.Response(
+        206,
+        headers={
+            "content-type": "application/zip",
+            "content-range": f"bytes {start}-{end}/{observed_total}",
+            "etag": '"immutable"',
+        },
+        content=payload[start : end + 1],
+        request=request,
+    )
+
+
 @pytest.mark.integration
 def test_acquisition_stages_hashes_and_atomically_promotes(
     tmp_path: Path,
@@ -118,6 +165,237 @@ def test_acquisition_stages_hashes_and_atomically_promotes(
     assert receipt.payload.matches(payload)
     assert (tmp_path / "artifacts/source.bin").read_bytes() == payload
     assert not tuple((tmp_path / "artifacts").glob("*.tmp"))
+
+
+@pytest.mark.integration
+def test_range_acquisition_assembles_and_atomically_promotes(
+    tmp_path: Path,
+) -> None:
+    payload = b"governed-range-payload"
+    requests: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requests.append(request.headers["range"])
+        return ranged_response(request, payload)
+
+    receipt = acquire_ranges(tmp_path, handler, chunk_bytes=5)
+
+    assert isinstance(receipt, SourceReceipt)
+    assert receipt.evidence_class is EvidenceClass.LIVE
+    assert receipt.payload.matches(payload)
+    assert receipt.retrieval.http is not None
+    assert receipt.retrieval.http.source_native_version == "2026-Q2"
+    assert receipt.retrieval.http.etag == '"immutable"'
+    assert requests[0] == "bytes=0-0"
+    assert set(requests[1:]) == {
+        "bytes=0-4",
+        "bytes=5-9",
+        "bytes=10-14",
+        "bytes=15-19",
+        "bytes=20-21",
+    }
+    assert (tmp_path / "artifacts/ranged-source.bin").read_bytes() == payload
+    assert not tuple((tmp_path / "artifacts").glob("*.tmp"))
+
+
+@pytest.mark.unit
+def test_range_acquisition_requires_positive_chunk_size(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="chunk_bytes must be positive"):
+        acquire_ranges(
+            tmp_path,
+            lambda _: pytest.fail("transport should not run"),
+            chunk_bytes=0,
+        )
+
+
+@pytest.mark.edge
+@pytest.mark.parametrize(
+    ("response", "code"),
+    [
+        (
+            httpx.Response(
+                200,
+                headers={"content-type": "application/zip"},
+                content=b"x",
+            ),
+            "range_not_supported",
+        ),
+        (
+            httpx.Response(
+                206,
+                headers={"content-type": "application/zip"},
+                content=b"x",
+            ),
+            "content_range_invalid",
+        ),
+        (
+            httpx.Response(
+                206,
+                headers={
+                    "content-type": "application/zip",
+                    "content-range": "bytes 1-1/1",
+                },
+                content=b"x",
+            ),
+            "content_range_mismatch",
+        ),
+        (
+            httpx.Response(
+                206,
+                headers={
+                    "content-type": "application/zip",
+                    "content-range": "bytes 0-0/1",
+                },
+                content=b"",
+            ),
+            "truncated_body",
+        ),
+    ],
+)
+def test_range_acquisition_rejects_invalid_probe_responses(
+    tmp_path: Path,
+    response: httpx.Response,
+    code: str,
+) -> None:
+    receipt = acquire_ranges(tmp_path, lambda _: response)
+
+    assert isinstance(receipt, FailureReceipt)
+    assert receipt.failure_code == code
+    assert not (tmp_path / "artifacts/ranged-source.bin").exists()
+    assert not tuple((tmp_path / "artifacts").glob("*.tmp"))
+
+
+@pytest.mark.edge
+def test_range_acquisition_rejects_oversized_source(tmp_path: Path) -> None:
+    receipt = acquire_ranges(
+        tmp_path,
+        lambda request: ranged_response(request, b"x" * 33),
+    )
+
+    assert isinstance(receipt, FailureReceipt)
+    assert receipt.failure_code == "max_bytes_exceeded"
+    assert not (tmp_path / "artifacts/ranged-source.bin").exists()
+    assert not tuple((tmp_path / "artifacts").glob("*.tmp"))
+
+
+@pytest.mark.edge
+def test_range_acquisition_rejects_source_that_mutates_after_probe(
+    tmp_path: Path,
+) -> None:
+    payload = b"immutable"
+    calls = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal calls
+        calls += 1
+        total = len(payload) if calls == 1 else len(payload) + 1
+        return ranged_response(request, payload, total=total)
+
+    receipt = acquire_ranges(tmp_path, handler)
+
+    assert isinstance(receipt, FailureReceipt)
+    assert receipt.failure_code == "source_mutated"
+    assert receipt.retryable
+    assert not (tmp_path / "artifacts/ranged-source.bin").exists()
+    assert not tuple((tmp_path / "artifacts").glob("*.tmp"))
+
+
+@pytest.mark.edge
+def test_range_acquisition_retries_timeout_within_explicit_budget(
+    tmp_path: Path,
+) -> None:
+    attempts = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal attempts
+        attempts += 1
+        raise httpx.ReadTimeout("offline", request=request)
+
+    receipt = acquire_ranges(
+        tmp_path,
+        handler,
+        policy=AcquisitionPolicy(max_bytes=32, max_attempts=3),
+    )
+
+    assert isinstance(receipt, FailureReceipt)
+    assert receipt.failure_code == "timeout"
+    assert receipt.retryable
+    assert attempts == 3
+    assert not (tmp_path / "artifacts/ranged-source.bin").exists()
+    assert not tuple((tmp_path / "artifacts").glob("*.tmp"))
+
+
+@pytest.mark.integration
+def test_range_acquisition_production_backend_validates_every_request(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    payload = b"official-range-payload"
+    opened: list[tuple[str, float]] = []
+    resolutions: list[str] = []
+
+    class Response:
+        status = 206
+
+        def __init__(self, request) -> None:
+            requested = request.get_header("Range")
+            assert requested is not None
+            start_text, end_text = requested.removeprefix("bytes=").split("-")
+            self.start = int(start_text)
+            self.end = int(end_text)
+            self.headers = {
+                "content-type": "application/zip",
+                "content-range": (
+                    f"bytes {self.start}-{self.end}/{len(payload)}"
+                ),
+            }
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args: object) -> None:
+            return None
+
+        def geturl(self) -> str:
+            return "https://example.test/medicines.zip"
+
+        def read(self, limit: int) -> bytes:
+            return payload[self.start : self.end + 1][:limit]
+
+    class Opener:
+        def open(self, request, *, timeout: float):
+            opened.append((request.full_url, timeout))
+            return Response(request)
+
+    monkeypatch.setattr(
+        acquisition_module,
+        "build_opener",
+        lambda *_handlers: Opener(),
+    )
+
+    def resolver(hostname: str) -> tuple[str, ...]:
+        resolutions.append(hostname)
+        return ("93.184.216.34",)
+
+    receipt = acquire_source_by_ranges(
+        "test-regulator",
+        Path("artifacts/ranged-source.bin"),
+        repository_root=tmp_path,
+        chunk_bytes=5,
+        catalog=(catalog_source(),),
+        policy=AcquisitionPolicy(
+            max_bytes=32,
+            allowed_hosts=("example.test",),
+        ),
+        resolver=resolver,
+        clock=lambda: NOW,
+        reuse_decision=acquire_new_decision("test-regulator"),
+    )
+
+    assert isinstance(receipt, SourceReceipt)
+    assert receipt.payload.matches(payload)
+    assert len(opened) == 1 + 5
+    assert resolutions == ["example.test"] * len(opened)
 
 
 @pytest.mark.unit
