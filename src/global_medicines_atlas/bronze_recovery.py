@@ -256,6 +256,13 @@ def _ensure_acquisition_event(
         valid_from=temporal.valid_from,
         valid_to=temporal.valid_to,
         payload_sha256=receipt.payload.sha256,
+        source=receipt.source,
+        retrieval=receipt.retrieval,
+        reuse=receipt.reuse,
+        rights_state=receipt.rights_state,
+        rights_reference=receipt.rights_reference,
+        rights_policy=receipt.rights_policy,
+        evidence_class=receipt.evidence_class,
     )
     event_path.parent.mkdir(parents=True, exist_ok=True)
     event_path.write_bytes(event.canonical_json() + b"\n")
@@ -301,6 +308,7 @@ def _rebuild_one(
         payload_path=payload_path,
         parquet_path=parquet_path,
         lineage_path=lineage_path,
+        bronze_root=bronze_root,
     )
     _write_catalogue(bronze_root, spec)
     _ensure_acquisition_event(bronze_root, receipt, content_id=content_id)

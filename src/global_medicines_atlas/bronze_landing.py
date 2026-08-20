@@ -11,12 +11,19 @@ artefacts. Parquet is not raw-as-landed and is not bronze evidentiary truth.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
+from hashlib import sha256
 from pathlib import Path
 
 import orjson
 import pyarrow as pa
 import pyarrow.parquet as pq
 
+from .bronze_transformation import (
+    TransformationRunReceipt,
+    receipt_for_parquet,
+    write_transformation_run_receipt,
+)
 from .iceberg_ready import IcebergReadyTableSpec, table_identifier_for
 from .openlineage_projection import project_openlineage_event
 from .receipts import (
@@ -48,8 +55,10 @@ class BronzeLanding:
     parquet_path: Path
     receipt_path: Path
     lineage_path: Path
+    transformation_receipt_path: Path
     table: IcebergReadyTableSpec
     receipt: SourceReceipt
+    transformation_run: TransformationRunReceipt
 
 
 def _payload_extension(media_hint: str | None) -> str:
@@ -103,7 +112,7 @@ def bronze_table_spec(
         last_column_id=14,
         acquisition_id=temporal.acquisition_id,
         content_id=receipt.payload.sha256,
-        parquet_digest=receipt.transformation.output_sha256,
+        parquet_digest=sha256(parquet_path.read_bytes()).hexdigest(),
     )
 
 
@@ -167,6 +176,13 @@ def _acquisition_event_for(receipt: SourceReceipt) -> AcquisitionEvent:
         valid_from=temporal.valid_from,
         valid_to=temporal.valid_to,
         payload_sha256=receipt.payload.sha256,
+        source=receipt.source,
+        retrieval=receipt.retrieval,
+        reuse=receipt.reuse,
+        rights_state=receipt.rights_state,
+        rights_reference=receipt.rights_reference,
+        rights_policy=receipt.rights_policy,
+        evidence_class=receipt.evidence_class,
     )
 
 
@@ -184,20 +200,37 @@ def _write_analytical_outputs(
     payload_path: Path,
     parquet_path: Path,
     lineage_path: Path,
-) -> IcebergReadyTableSpec:
+    bronze_root: Path,
+    completed_at: datetime | None = None,
+) -> tuple[IcebergReadyTableSpec, TransformationRunReceipt]:
     table = _analytical_table(bound, payload)
     pq.write_table(table, parquet_path)
+    temporal = require_temporal(bound.temporal)
+    transformation_run = receipt_for_parquet(
+        parquet_path,
+        acquisition_id=temporal.acquisition_id,
+        input_content_id=temporal.content_id or bound.payload.sha256,
+        completed_at=completed_at,
+    )
+    transformation_run = write_transformation_run_receipt(
+        transformation_run,
+        bronze_root=bronze_root,
+        source_id=bound.source.source_id,
+    )
     spec = bronze_table_spec(bound, parquet_path)
+    if spec.parquet_digest != transformation_run.output.sha256:
+        raise ValueError("Parquet identity diverged after transformation")
     event_lineage = project_openlineage_event(
         bound,
         payload_uri=payload_path.as_uri(),
         parquet_uri=parquet_path.as_uri(),
+        transformation_run=transformation_run,
         table=spec,
     )
     lineage_path.write_bytes(
         orjson.dumps(event_lineage, option=orjson.OPT_SORT_KEYS) + b"\n"
     )
-    return spec
+    return spec, transformation_run
 
 
 def land_bronze_payload(
@@ -207,6 +240,7 @@ def land_bronze_payload(
     bronze_root: Path,
     media_hint: str | None = None,
     reuse: ReuseGateDecision | None = None,
+    transformation_completed_at: datetime | None = None,
 ) -> BronzeLanding:
     """Persist payload bytes, receipt, analytical Parquet, and lineage."""
 
@@ -260,20 +294,27 @@ def land_bronze_payload(
         / source_id
         / f"{temporal.acquisition_id}.openlineage.json"
     )
-    spec = _write_analytical_outputs(
+    spec, transformation_run = _write_analytical_outputs(
         bound,
         payload,
         payload_path=payload_path,
         parquet_path=parquet_path,
         lineage_path=lineage_path,
+        bronze_root=bronze_root,
+        completed_at=transformation_completed_at,
     )
+    transformation_path = transformation_run.path
+    if transformation_path is None:
+        raise ValueError("transformation run receipt path is required")
     return BronzeLanding(
         payload_path=payload_path,
         parquet_path=parquet_path,
         receipt_path=receipt_path,
         lineage_path=lineage_path,
+        transformation_receipt_path=transformation_path,
         table=spec,
         receipt=bound,
+        transformation_run=transformation_run,
     )
 
 
@@ -284,18 +325,21 @@ def write_rebuildable_layers(
     payload_path: Path,
     parquet_path: Path,
     lineage_path: Path,
+    bronze_root: Path,
 ) -> IcebergReadyTableSpec:
     """Rebuild Parquet and lineage; never rewrite payload or receipt bytes."""
 
     parquet_path.parent.mkdir(parents=True, exist_ok=True)
     lineage_path.parent.mkdir(parents=True, exist_ok=True)
-    return _write_analytical_outputs(
+    spec, _run = _write_analytical_outputs(
         receipt,
         payload,
         payload_path=payload_path,
         parquet_path=parquet_path,
         lineage_path=lineage_path,
+        bronze_root=bronze_root,
     )
+    return spec
 
 
 def regenerate_parquet(landing: BronzeLanding) -> Path:
@@ -308,5 +352,6 @@ def regenerate_parquet(landing: BronzeLanding) -> Path:
         payload_path=landing.payload_path,
         parquet_path=landing.parquet_path,
         lineage_path=landing.lineage_path,
+        bronze_root=landing.receipt_path.parents[2],
     )
     return landing.parquet_path

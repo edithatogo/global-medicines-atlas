@@ -1,0 +1,34 @@
+{
+  "$id": "https://global-medicines-atlas.example/schemas/bronze-acquisition-event-v2.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "type": "object",
+  "required": [
+    "schema_id", "schema_version", "acquisition_id", "content_id",
+    "source_id", "source_version", "retrieved_at", "source_published_at",
+    "source_effective_at", "valid_from", "valid_to", "payload_sha256",
+    "source", "retrieval", "reuse", "rights_state", "rights_reference",
+    "rights_policy", "evidence_class"
+  ],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.bronze-acquisition-event"},
+    "schema_version": {"const": 2},
+    "acquisition_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "content_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source_id": {"type": "string", "minLength": 1},
+    "source_version": {"type": ["string", "null"]},
+    "retrieved_at": {"type": "string", "format": "date-time"},
+    "source_published_at": {"type": ["string", "null"], "format": "date-time"},
+    "source_effective_at": {"type": ["string", "null"], "format": "date-time"},
+    "valid_from": {"type": ["string", "null"], "format": "date-time"},
+    "valid_to": {"type": ["string", "null"], "format": "date-time"},
+    "payload_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source": {"type": "object"},
+    "retrieval": {"type": "object"},
+    "reuse": {"type": ["object", "null"]},
+    "rights_state": {"enum": ["unknown", "permitted", "restricted", "prohibited", null]},
+    "rights_reference": {"type": ["string", "null"]},
+    "rights_policy": {"type": ["object", "null"]},
+    "evidence_class": {"enum": ["fixture", "synthetic", "dry_run", "live", "unavailable", null]}
+  }
+}

@@ -70,7 +70,10 @@ def _spec(tmp_path: Path) -> IcebergReadyTableSpec:
     receipt = source_receipt().model_copy(
         update={"reuse": acquire_new_decision("medsafe-product-register")}
     )
-    return bronze_table_spec(receipt, tmp_path / "bronze" / "table.parquet")
+    parquet_path = tmp_path / "bronze" / "table.parquet"
+    parquet_path.parent.mkdir(parents=True)
+    parquet_path.write_bytes(b"parquet-output")
+    return bronze_table_spec(receipt, parquet_path)
 
 
 def _binding(spec: IcebergReadyTableSpec) -> SnapshotAcquisitionBinding:
@@ -125,11 +128,14 @@ def test_table_identity_is_stable_and_partitioned(tmp_path: Path) -> None:
     receipt = source_receipt()
     assert identifier == "bronze.usa_us_drugsfda"
     assert receipt.source.source_id != identifier
+    parquet_path = tmp_path / "bronze" / "table.parquet"
+    parquet_path.parent.mkdir(parents=True)
+    parquet_path.write_bytes(b"parquet-output")
     spec = bronze_table_spec(
         receipt.model_copy(
             update={"reuse": acquire_new_decision("medsafe-product-register")}
         ),
-        tmp_path / "bronze" / "table.parquet",
+        parquet_path,
     )
     properties = _object_map(iceberg_rest_create_body(spec)["properties"])
     assert properties["gma.acquisition-id"] == spec.acquisition_id

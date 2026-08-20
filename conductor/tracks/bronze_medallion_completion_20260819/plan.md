@@ -60,6 +60,8 @@ public data. It runs before any acquire/download, including Drugs@FDA.
     - [x] Reuse `receipts.py`; do not treat DuckDB or Parquet as evidentiary truth
     - [x] Record source published/effective time, retrieved_at, valid_from/to, acquisition ID
     - [x] Fail closed on missing rights, provenance, or receipt fields
+    - [x] Bind actual Parquet output bytes to a distinct append-only transformation-run receipt, OpenLineage run identity, code commit, environment digest, parser, and output schema
+    - [x] Preserve acquisition, transformation, and admission as separate append-only event histories; admission reversals supersede rather than rewrite decisions
 - [x] Task: Phase Verification & Checkpoint
     - [x] Run focused tests, coverage, typing, and licensing checks
     - [x] Record payload digests, acquisition IDs, and Parquet identities in evidence
@@ -71,9 +73,11 @@ public data. It runs before any acquire/download, including Drugs@FDA.
     - [x] Keep source/version, published/effective, retrieved_at, and source-supplied validity independent
     - [x] Physically deduplicate identical bytes without collapsing acquisition history
     - [x] Schema contract and migration-safe TemporalIdentity without content_id
+    - [x] Version acquisition events to bind source, retrieval, reuse, rights, and evidence context independently from transformation output
 - [x] Task: Bronze quarantine and admission lifecycle ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
     - [x] States landed → accepted | quarantined | rejected-from-processing
     - [x] Preserve malformed payloads; fail closed downstream unless authorised
+    - [x] Keep append-only admission decisions and transformation-run receipts distinct from acquisition events; bind actual Parquet bytes, code commit, lock environment, actor, clock, and supersession
 - [x] Task: Evidence-grade HTTP retrieval receipts
     - [x] Capture original/final URI, redirects, method, status, ETag, Last-Modified, type, encoding, lengths, agent version
     - [x] Never persist credentials or authorization headers

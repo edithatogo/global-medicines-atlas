@@ -27,7 +27,7 @@ from global_medicines_atlas.receipts import (
 from global_medicines_atlas.reuse_gate import acquire_new_decision
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMA = ROOT / "schemas/bronze-acquisition-event-v1.json"
+SCHEMA = ROOT / "schemas/bronze-acquisition-event-v2.json"
 PAYLOAD = b'{"application_number":"012345"}'
 NOW = datetime(2026, 8, 20, 6, 0, tzinfo=UTC)
 LATER = NOW + timedelta(hours=3)
