@@ -1,0 +1,256 @@
+{
+  "$defs": {
+    "LandingAdapterConfig": {
+      "additionalProperties": false,
+      "description": "Standardized family configuration for one catalogue source.",
+      "properties": {
+        "acquisition_instructions": {
+          "minLength": 1,
+          "title": "Acquisition Instructions",
+          "type": "string"
+        },
+        "acquisition_profile": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Acquisition Profile"
+        },
+        "credentials_persisted": {
+          "const": false,
+          "default": false,
+          "title": "Credentials Persisted",
+          "type": "boolean"
+        },
+        "endpoint": {
+          "minLength": 1,
+          "title": "Endpoint",
+          "type": "string"
+        },
+        "family": {
+          "$ref": "#/$defs/LandingAdapterFamily"
+        },
+        "formats": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Formats",
+          "type": "array"
+        },
+        "pagination": {
+          "enum": [
+            "none",
+            "source_config_required",
+            "manual"
+          ],
+          "title": "Pagination",
+          "type": "string"
+        },
+        "preserves_source_bytes": {
+          "const": true,
+          "default": true,
+          "title": "Preserves Source Bytes",
+          "type": "boolean"
+        },
+        "requires_reuse_gate": {
+          "const": true,
+          "default": true,
+          "title": "Requires Reuse Gate",
+          "type": "boolean"
+        },
+        "requires_rights_gate": {
+          "const": true,
+          "default": true,
+          "title": "Requires Rights Gate",
+          "type": "boolean"
+        },
+        "source_id": {
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "family",
+        "endpoint",
+        "formats",
+        "acquisition_instructions",
+        "pagination"
+      ],
+      "title": "LandingAdapterConfig",
+      "type": "object"
+    },
+    "LandingAdapterFamily": {
+      "description": "Reusable acquisition shapes supported by the Bronze factory.",
+      "enum": [
+        "static_file_download",
+        "archive_release",
+        "paginated_rest_api",
+        "regulator_search_export",
+        "document_collection",
+        "manual_reproducible_export"
+      ],
+      "title": "LandingAdapterFamily",
+      "type": "string"
+    },
+    "LandingDisposition": {
+      "description": "Exactly-one current state for each governed catalogue source.",
+      "enum": [
+        "landed_and_evidenced",
+        "temporarily_unavailable",
+        "rights_blocked",
+        "credentialed_and_excluded",
+        "manual_only_documented_acquisition",
+        "superseded_by_reused_source",
+        "not_yet_implemented"
+      ],
+      "title": "LandingDisposition",
+      "type": "string"
+    },
+    "SourceLandingWorkItem": {
+      "additionalProperties": false,
+      "description": "One deterministic Conductor queue item derived from the catalogue.",
+      "properties": {
+        "adapter": {
+          "$ref": "#/$defs/LandingAdapterConfig"
+        },
+        "evidence_references": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Evidence References",
+          "type": "array"
+        },
+        "evidence_scope": {
+          "enum": [
+            "live_receipt",
+            "governed_fixture",
+            "parser_contract",
+            "none"
+          ],
+          "title": "Evidence Scope",
+          "type": "string"
+        },
+        "next_action": {
+          "minLength": 1,
+          "title": "Next Action",
+          "type": "string"
+        },
+        "priority": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Priority",
+          "type": "integer"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "source_id": {
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/LandingDisposition"
+        }
+      },
+      "required": [
+        "source_id",
+        "state",
+        "evidence_scope",
+        "adapter",
+        "reason",
+        "evidence_references",
+        "next_action",
+        "priority"
+      ],
+      "title": "SourceLandingWorkItem",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Exhaustive source-family work queue generated from the catalogue.",
+  "properties": {
+    "catalog_reviewed_at": {
+      "minLength": 10,
+      "title": "Catalog Reviewed At",
+      "type": "string"
+    },
+    "catalog_schema_version": {
+      "minimum": 1,
+      "title": "Catalog Schema Version",
+      "type": "integer"
+    },
+    "family_counts": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "propertyNames": {
+        "$ref": "#/$defs/LandingAdapterFamily"
+      },
+      "title": "Family Counts",
+      "type": "object"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/$defs/SourceLandingWorkItem"
+      },
+      "minItems": 1,
+      "title": "Items",
+      "type": "array"
+    },
+    "schema_id": {
+      "const": "global-medicines-atlas.bronze-source-landing-queue",
+      "default": "global-medicines-atlas.bronze-source-landing-queue",
+      "title": "Schema Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "silver_transformations_included": {
+      "const": false,
+      "default": false,
+      "title": "Silver Transformations Included",
+      "type": "boolean"
+    },
+    "source_count": {
+      "minimum": 1,
+      "title": "Source Count",
+      "type": "integer"
+    },
+    "state_counts": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "propertyNames": {
+        "$ref": "#/$defs/LandingDisposition"
+      },
+      "title": "State Counts",
+      "type": "object"
+    }
+  },
+  "required": [
+    "catalog_schema_version",
+    "catalog_reviewed_at",
+    "source_count",
+    "state_counts",
+    "family_counts",
+    "items"
+  ],
+  "title": "SourceLandingQueue",
+  "type": "object"
+}
