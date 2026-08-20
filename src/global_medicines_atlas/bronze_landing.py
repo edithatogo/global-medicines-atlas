@@ -572,7 +572,7 @@ def _write_analytical_outputs(
     return manifest, records
 
 
-def land_bronze_payload(  # ruff: ignore[too-many-locals]
+def land_bronze_payload(  # ruff: ignore[too-many-locals,too-many-statements]
     payload: bytes,
     receipt: SourceReceipt,
     *,
@@ -646,6 +646,11 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals]
         / source_id
         / f"{temporal.acquisition_id}.json"
     )
+    if (
+        not receipt_path.exists()
+        and "sensitivity" not in bound.model_fields_set
+    ):
+        bound = bound.model_copy(update={"sensitivity": bound.sensitivity})
     _write_append_only(receipt_path, bound.canonical_json() + b"\n")
     storage_receipt_path = write_payload_storage_receipt(
         stored.receipt,

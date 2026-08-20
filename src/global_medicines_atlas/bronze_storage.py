@@ -17,6 +17,16 @@ from pydantic import AwareDatetime, Field, model_validator
 from .models import FrozenModel
 from .receipts import SHA256_PATTERN
 
+_PAYLOAD_SUFFIXES = frozenset({
+    ".bin",
+    ".csv",
+    ".json",
+    ".pdf",
+    ".tsv",
+    ".xml",
+    ".zip",
+})
+
 
 class ImmutabilityMode(StrEnum):
     """Physical controls preventing silent replacement of payload bytes."""
@@ -101,6 +111,7 @@ class ObjectStorageTarget(FrozenModel):
     prefix: str = ""
     region: str = Field(min_length=1)
     administrative_domain: str = Field(min_length=1)
+    uri_scheme: str = Field(default="s3", pattern=r"^[a-z][a-z0-9+.-]*$")
 
 
 class ObjectWriteResult(FrozenModel):
@@ -243,6 +254,11 @@ def _write_immutable(path: Path, payload: bytes) -> None:
     path.write_bytes(payload)
 
 
+def _require_payload_suffix(suffix: str) -> None:
+    if suffix not in _PAYLOAD_SUFFIXES:
+        raise ValueError("payload suffix is not allowlisted")
+
+
 class LocalFilesystemPayloadStore:
     """Content-addressed local store for development and tests."""
 
@@ -258,6 +274,7 @@ class LocalFilesystemPayloadStore:
         content_id: str,
         suffix: str,
     ) -> StoredPayload:
+        _require_payload_suffix(suffix)
         digest = sha256(payload).hexdigest()
         if digest != content_id:
             raise ValueError("content_id does not match payload checksum")
@@ -332,6 +349,10 @@ class ObjectStoragePayloadStore:
             raise ValueError(
                 "independent replica target does not match durability policy"
             )
+        if any(target.bucket == targets[0].bucket for target in targets[1:]):
+            raise ValueError(
+                "independent replication requires a distinct bucket"
+            )
 
     @staticmethod
     def _key(target: ObjectStorageTarget, content_id: str, suffix: str) -> str:
@@ -374,7 +395,7 @@ class ObjectStoragePayloadStore:
                 "durable object checksum verification failed after write"
             )
         return StoredObjectEvidence(
-            uri=f"s3://{target.bucket}/{key}",
+            uri=f"{target.uri_scheme}://{target.bucket}/{key}",
             bucket=target.bucket,
             key=key,
             region=target.region,
@@ -394,6 +415,7 @@ class ObjectStoragePayloadStore:
         content_id: str,
         suffix: str,
     ) -> StoredPayload:
+        _require_payload_suffix(suffix)
         if sha256(payload).hexdigest() != content_id:
             raise ValueError("content_id does not match payload checksum")
         primary = self._write_copy(self.primary, payload, content_id, suffix)

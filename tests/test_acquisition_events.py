@@ -291,6 +291,7 @@ def test_v2_acquisition_event_remains_migration_safe_without_sensitivity() -> (
     })
     assert rebuilt.schema_version == 2
     assert rebuilt.sensitivity.publication.value == "review_required"
+    assert b'"sensitivity"' not in rebuilt.canonical_json()
 
 
 @pytest.mark.edge

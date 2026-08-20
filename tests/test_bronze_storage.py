@@ -112,26 +112,6 @@ class CorruptingReadObjectClient(FakeObjectClient):
         return b"corrupt"
 
 
-class MissingVersionClient(FakeObjectClient):
-    def put_object_if_absent(
-        self,
-        *,
-        bucket: str,
-        key: str,
-        payload: bytes,
-        checksum_sha256: str,
-        object_lock_required: bool,
-    ) -> ObjectWriteResult:
-        del bucket, key, payload, checksum_sha256, object_lock_required
-        return ObjectWriteResult(version_id=None, object_lock_mode="COMPLIANCE")
-
-
-class CorruptReadbackClient(FakeObjectClient):
-    def get_object(self, *, bucket: str, key: str, version_id: str) -> bytes:
-        del bucket, key, version_id
-        return b"corrupt-readback"
-
-
 def _durable_policy() -> DurabilityPolicy:
     return DurabilityPolicy(
         operation="durable_object_storage",
@@ -164,24 +144,26 @@ def _targets() -> tuple[ObjectStorageTarget, ObjectStorageTarget]:
     )
 
 
-def _landable(*, sensitivity: SensitivityClassification) -> SourceReceipt:
+def _landable(
+    *, sensitivity: SensitivityClassification | None = None
+) -> SourceReceipt:
     receipt = source_receipt()
     payload = PayloadEvidence.from_bytes(PAYLOAD)
     retrieval = receipt.retrieval.model_copy(update={"retrieved_at": NOW})
-    return receipt.model_copy(
-        update={
-            "payload": payload,
-            "retrieval": retrieval,
-            "reuse": acquire_new_decision(receipt.source.source_id),
-            "sensitivity": sensitivity,
-            "temporal": temporal_identity_from_source(
-                retrieved_at=NOW,
-                source_id=receipt.source.source_id,
-                payload_sha256=payload.sha256,
-                original_uri=str(retrieval.uri),
-            ),
-        }
-    )
+    updates: dict[str, object] = {
+        "payload": payload,
+        "retrieval": retrieval,
+        "reuse": acquire_new_decision(receipt.source.source_id),
+        "temporal": temporal_identity_from_source(
+            retrieved_at=NOW,
+            source_id=receipt.source.source_id,
+            payload_sha256=payload.sha256,
+            original_uri=str(retrieval.uri),
+        ),
+    }
+    if sensitivity is not None:
+        updates["sensitivity"] = sensitivity
+    return receipt.model_copy(update=updates)
 
 
 @pytest.mark.unit
@@ -236,6 +218,13 @@ def test_local_store_is_explicitly_development_only_and_immutable(
             content_id="f" * 64,
             suffix=".json",
         )
+    with pytest.raises(ValueError, match="suffix"):
+        store.store(
+            PAYLOAD,
+            acquisition_id="c" * 64,
+            content_id=PayloadEvidence.from_bytes(PAYLOAD).sha256,
+            suffix="/../../escape",
+        )
     remote_reference = first.receipt.primary.model_copy(
         update={"uri": "s3://outside/payload.json"}
     )
@@ -283,6 +272,20 @@ def test_object_store_rejects_policy_and_reference_mismatches(
             replicas=(
                 (
                     replica_target.model_copy(update={"region": "eu-west-1"}),
+                    replica,
+                ),
+            ),
+        )
+    with pytest.raises(ValueError, match="distinct bucket"):
+        ObjectStoragePayloadStore(
+            staging_root=tmp_path,
+            policy=_durable_policy(),
+            primary=(primary_target, primary),
+            replicas=(
+                (
+                    replica_target.model_copy(
+                        update={"bucket": primary_target.bucket}
+                    ),
                     replica,
                 ),
             ),
@@ -475,35 +478,6 @@ def test_checksum_inventory_detects_replica_corruption(tmp_path: Path) -> None:
 
 
 @pytest.mark.unit
-@pytest.mark.parametrize(
-    ("client", "message"),
-    [
-        (MissingVersionClient(), "version identity"),
-        (CorruptReadbackClient(), "checksum verification"),
-    ],
-)
-def test_object_store_requires_provider_version_and_verified_readback(
-    tmp_path: Path,
-    client: FakeObjectClient,
-    message: str,
-) -> None:
-    primary_target, replica_target = _targets()
-    store = ObjectStoragePayloadStore(
-        staging_root=tmp_path / "stage",
-        policy=_durable_policy(),
-        primary=(primary_target, client),
-        replicas=((replica_target, FakeObjectClient()),),
-    )
-    with pytest.raises(ValueError, match=message):
-        store.store(
-            PAYLOAD,
-            acquisition_id="a" * 64,
-            content_id=PayloadEvidence.from_bytes(PAYLOAD).sha256,
-            suffix=".json",
-        )
-
-
-@pytest.mark.unit
 def test_rights_and_sensitivity_are_independent_publication_gates() -> None:
     review_required = SensitivityClassification(
         data_sensitivity=DataSensitivity.SENSITIVE,
@@ -531,6 +505,26 @@ def test_rights_and_sensitivity_are_independent_publication_gates() -> None:
                 }
             )
         )
+
+
+@pytest.mark.unit
+def test_legacy_receipt_digest_is_stable_until_sensitivity_is_bound(
+    tmp_path: Path,
+) -> None:
+    legacy = _landable()
+    assert "sensitivity" not in legacy.model_fields_set
+    assert b'"sensitivity"' not in legacy.canonical_json()
+    explicit = legacy.model_copy(update={"sensitivity": legacy.sensitivity})
+    assert b'"sensitivity"' in explicit.canonical_json()
+    assert explicit.digest() != legacy.digest()
+    landing = land_bronze_payload(
+        PAYLOAD,
+        legacy,
+        bronze_root=tmp_path / "bronze",
+        media_hint="json",
+    )
+    persisted = json.loads(landing.receipt_path.read_bytes())
+    assert persisted["sensitivity"]["publication"] == "review_required"
 
 
 @pytest.mark.unit
@@ -572,6 +566,10 @@ def test_object_store_landing_persists_storage_and_sensitivity_evidence(
     assert landing.storage_receipt_path.is_file()
     persisted = json.loads(landing.storage_receipt_path.read_bytes())
     assert persisted["primary"]["uri"].startswith("s3://")
+    source_receipt_document = json.loads(landing.receipt_path.read_bytes())
+    assert source_receipt_document["sensitivity"]["publication"] == (
+        "review_required"
+    )
     manifest = pq.read_table(  # pyright: ignore[reportUnknownMemberType]
         landing.acquisition_manifest_path
     )

@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     import httpx
 
 SHA256_PATTERN = r"^[0-9a-f]{64}$"
+LEGACY_ACQUISITION_EVENT_SCHEMA_VERSION = 2
 _SENSITIVE_HTTP_HEADERS = frozenset({
     "authorization",
     "proxy-authorization",
@@ -443,6 +444,15 @@ class AcquisitionEvent(DeterministicReceipt):
             raise ValueError("content_id must equal payload digest")
         return self
 
+    def canonical_json(self) -> bytes:
+        payload = self.model_dump(mode="json", exclude_none=False)
+        if (
+            self.schema_version == LEGACY_ACQUISITION_EVENT_SCHEMA_VERSION
+            and "sensitivity" not in self.model_fields_set
+        ):
+            del payload["sensitivity"]
+        return orjson.dumps(payload, option=orjson.OPT_SORT_KEYS)
+
 
 class SourceReceipt(DeterministicReceipt):
     """Evidence that a source payload was acquired and transformed."""
@@ -548,6 +558,8 @@ class SourceReceipt(DeterministicReceipt):
         payload = self.model_dump(mode="json", exclude_none=False)
         if payload.get("rights_policy") is None:
             del payload["rights_policy"]
+        if "sensitivity" not in self.model_fields_set:
+            del payload["sensitivity"]
         return orjson.dumps(payload, option=orjson.OPT_SORT_KEYS)
 
     @property
