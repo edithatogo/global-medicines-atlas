@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import hashlib
+import json
 from pathlib import Path
 
+import jsonschema
 import pytest
 
 from global_medicines_atlas.table_format_comparison import (
@@ -57,3 +60,24 @@ def test_missing_optional_engine_becomes_failure_evidence(
 def test_unknown_engine_is_rejected(tmp_path: Path) -> None:
     with pytest.raises(ValueError, match="unknown table-format"):
         run_table_format("unknown", tmp_path)
+
+
+def test_decision_packet_schema_and_evidence_digests() -> None:
+    root = Path(__file__).resolve().parents[1]
+    packet = json.loads(
+        (
+            root
+            / "quality/qualifications/free-tier-datahouse-decision-packet.json"
+        ).read_text()
+    )
+    schema = json.loads(
+        (root / "quality/datahouse-decision-packet.schema.json").read_text()
+    )
+    jsonschema.validate(packet, schema)
+    for evidence in packet["evidence"]:
+        assert (
+            hashlib.sha256((root / evidence["path"]).read_bytes()).hexdigest()
+            == evidence["sha256"]
+        )
+    assert packet["maintainer_gate"]["promotion_claimed"] is False
+    assert packet["maintainer_gate"]["production_durability_claimed"] is False

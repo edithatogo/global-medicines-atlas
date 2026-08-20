@@ -1,0 +1,24 @@
+{
+  "core_optional": true,
+  "empty_snapshot_observed": true,
+  "fixture_sha256": "f5f2b56824852355c200c72246f25b7009f60ee0d4326535d34eb2340588b1da",
+  "iceberg_release": "1.11.0",
+  "operations": ["create_namespace", "create_table", "evolve_schema", "evolve_partition_spec", "drop_table", "reconstruct_table", "create_v3_table"],
+  "partition_evolution_verified": true,
+  "production_deployment_claimed": false,
+  "pyiceberg_version": "0.11.1",
+  "reconstruction_verified": true,
+  "schema_evolution_verified": true,
+  "schema_id": "global-medicines-atlas.iceberg-interop-receipt",
+  "schema_version": 1,
+  "server_image": "apache/iceberg-rest-fixture@sha256:db8de90b5b7693d4ac334c336f91d9bbe320d7b19f4f514d26de84cdfbcbfe8d",
+  "universal_interoperability_claimed": false,
+  "v3_capabilities": [
+    {"capability": "nanosecond_timestamps", "missing_symbols": [], "required_symbols": ["TimestampNanoType", "TimestamptzNanoType"], "supported": true},
+    {"capability": "default_values", "missing_symbols": [], "required_symbols": ["NestedFieldDefaults"], "supported": true},
+    {"capability": "multi_argument_transforms", "missing_symbols": ["MultiArgumentTransform"], "required_symbols": ["MultiArgumentTransform"], "supported": false},
+    {"capability": "row_lineage", "missing_symbols": [], "required_symbols": ["Snapshot.first_row_id", "TableMetadataV3.next_row_id"], "supported": true},
+    {"capability": "deletion_vectors", "missing_symbols": ["DataFileContent.DELETION_VECTOR"], "required_symbols": ["DataFileContent.DELETION_VECTOR"], "supported": false}
+  ],
+  "v3_table_created": true
+}

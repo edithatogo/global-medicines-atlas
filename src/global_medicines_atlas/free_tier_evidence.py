@@ -105,9 +105,15 @@ def build_public_manifest(package_root: Path) -> dict[str, Any]:
     ):
         if path.name == "manifest.json":
             continue
+        relative_path = path.relative_to(package_root).as_posix()
+        origin = (
+            ArtifactOrigin.AGGREGATE_EVIDENCE
+            if relative_path.startswith(("receipts/", "decision/"))
+            else ArtifactOrigin.REPOSITORY_AUTHORED_SYNTHETIC
+        )
         artifact = PublicArtifact(
-            path=path.relative_to(package_root).as_posix(),
-            origin=ArtifactOrigin.REPOSITORY_AUTHORED_SYNTHETIC,
+            path=relative_path,
+            origin=origin,
             license="Apache-2.0",
             sensitivity=Sensitivity.PUBLIC,
             sha256=sha256_file(path),

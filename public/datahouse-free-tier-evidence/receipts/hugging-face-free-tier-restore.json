@@ -1,0 +1,21 @@
+{
+  "all_sha256_verified": true,
+  "artifact_count": 3,
+  "claims_explicitly_not_established": [
+    "worm_or_object_lock",
+    "immutable_history",
+    "guaranteed_replication",
+    "production_rpo_or_rto",
+    "provider_sla"
+  ],
+  "clean_restore_verified": true,
+  "credentials_recorded": false,
+  "observed_restore_seconds": null,
+  "provider": "hugging_face_free_public_dataset",
+  "repository": "edithatogo/global-medicines-atlas-datahouse-evidence",
+  "revision": "9694c5435ad6dd4c593a0f6d9c533a38ed7882c8",
+  "rights_scope": "repository-authored synthetic artifacts under Apache-2.0 only",
+  "schema_version": "1.0",
+  "source_derived_bytes_published": false,
+  "url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-datahouse-evidence"
+}

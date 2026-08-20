@@ -80,3 +80,10 @@ def test_manifest_is_deterministic_exact_and_digest_bound(
     fixture.write_text("[]\n", encoding="utf-8")
     with pytest.raises(ValueError, match="does not match"):
         verify_public_manifest(tmp_path, manifest)
+
+
+def test_receipts_are_classified_as_aggregate_evidence(tmp_path: Path) -> None:
+    (tmp_path / "receipts").mkdir()
+    (tmp_path / "receipts" / "result.json").write_text("{}\n")
+    manifest = build_public_manifest(tmp_path)
+    assert manifest["artifacts"][0]["origin"] == "aggregate_evidence"

@@ -1,0 +1,33 @@
+{
+  "core_dependency_added": false,
+  "correctness_verified": true,
+  "elapsed_seconds": 1.096214,
+  "engine": "delta",
+  "error": null,
+  "final_records": [
+    {
+      "native_id": "A-001",
+      "value": 11
+    },
+    {
+      "native_id": "C-003",
+      "value": 3
+    }
+  ],
+  "historical_recovery_verified": true,
+  "outcome": "passed",
+  "peak_rss_delta_native_units": 66945024,
+  "runtime": {
+    "dependency": "1.6.2",
+    "python": "3.14.5"
+  },
+  "schema_version": "1.0",
+  "synthetic_only": true,
+  "workload": {
+    "appends": 1,
+    "deletes": 1,
+    "expected_final_rows": 2,
+    "initial_rows": 2,
+    "updates": 1
+  }
+}
