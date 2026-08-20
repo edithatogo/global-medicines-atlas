@@ -29,6 +29,10 @@ def _zip(members: dict[str, str | bytes]) -> bytes:
         ("us-openfda-faers", "100:2"),
         ("us-openfda-ndc", "0001-0001"),
         ("us-openfda-nsde", "00001000101:0001-0001"),
+        (
+            "us-fda-drug-shortages",
+            "0001-0001:01/01/2026:08/20/2026",
+        ),
     ],
 )
 def test_openfda_records_preserve_native_nested_fields(
@@ -44,6 +48,8 @@ def test_openfda_records_preserve_native_nested_fields(
         "product_ndc": "0001-0001",
         "package_ndc": "0001-0001",
         "package_ndc11": "00001000101",
+        "initial_posting_date": "01/01/2026",
+        "update_date": "08/20/2026",
         "patient": {"reaction": [{"reactionmeddrapt": "Headache"}]},
         "openfda": {"brand_name": ["Source native name"]},
     }

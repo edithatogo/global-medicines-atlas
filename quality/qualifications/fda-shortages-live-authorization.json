@@ -1,0 +1,23 @@
+{
+  "schema_id": "global-medicines-atlas.fda-shortages-live-authorization",
+  "schema_version": 1,
+  "decision_date": "2026-08-21",
+  "decision_basis": "The maintainer-approved internal-only U.S. acquisition cohort includes us-fda-drug-shortages. This contract narrows that authority to the complete current openFDA drug-shortages bulk export, official FDA documentation, and one content-preserving monthly Internet Archive capture of the official FDA shortage list where available; it does not widen publication or licensing authority.",
+  "acquisition_authorized": true,
+  "internal_retention_authorized": true,
+  "public_release_authorized": false,
+  "external_publication_authorized": false,
+  "max_total_bytes": 268435456,
+  "max_surface_bytes": 16777216,
+  "archive_request_interval_seconds": 1.0,
+  "cdx_url": "https://web.archive.org/cdx/search/cdx?url=www.accessdata.fda.gov/scripts/drugshortages/default.cfm&output=json&from=2012&to=2026&fl=timestamp,original,statuscode,mimetype,digest&filter=statuscode:200&collapse=timestamp:6",
+  "expected_historical_capture_count": 129,
+  "expected_first_capture": "20140622235409",
+  "expected_last_capture": "20260801200107",
+  "capture_replay_overrides": {
+    "20240803045248": "https://web.archive.org/web/20240730194615id_/https://www.accessdata.fda.gov/scripts/drugshortages/default.cfm"
+  },
+  "download_index_url": "https://api.fda.gov/download.json",
+  "expected_bulk_url": "https://download.open.fda.gov/drug/shortages/drug-shortages-0001-of-0001.json.zip",
+  "documentation_url": "https://www.fda.gov/drugs/drug-safety-and-availability/drug-shortages"
+}
