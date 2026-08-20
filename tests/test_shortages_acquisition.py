@@ -17,6 +17,7 @@ from global_medicines_atlas.shortages_acquisition import (
     FDAShortagesAuthorization,
     exercise_fda_shortages,
     parse_cdx_inventory,
+    parse_detail_cdx_inventory,
     parse_download_inventory,
 )
 
@@ -51,6 +52,7 @@ def _authorization(tmp_path: Path) -> Path:
     raw["expected_first_capture"] = CAPTURES[0][0]
     raw["expected_last_capture"] = CAPTURES[-1][0]
     raw["capture_replay_overrides"] = {}
+    raw["expected_detail_capture_inventory_count"] = 2
     path = tmp_path / "authorization.json"
     path.write_text(json.dumps(raw), encoding="utf-8")
     return path
@@ -62,6 +64,26 @@ def _cdx() -> bytes:
         *[
             [timestamp, original, "200", "text/html", digest]
             for timestamp, original, digest in CAPTURES
+        ],
+    ]).encode()
+
+
+def _detail_cdx() -> bytes:
+    return json.dumps([
+        ["timestamp", "original", "statuscode", "mimetype", "digest"],
+        [
+            "20140915103445",
+            "https://www.accessdata.fda.gov/scripts/drugshortages/dsp_ActiveIngredientDetails.cfm?AI=Source+A&st=c",
+            "200",
+            "text/html",
+            "DETAIL-A",
+        ],
+        [
+            "20250704190550",
+            "https://www.accessdata.fda.gov/scripts/drugshortages/dsp_ActiveIngredientDetails.cfm?AI=Source+B&st=r",
+            "200",
+            "text/html",
+            "DETAIL-B",
         ],
     ]).encode()
 
@@ -131,7 +153,7 @@ def test_authorization_is_bounded_and_internal_only() -> None:
     assert authorization.expected_historical_capture_count == 129
 
 
-def test_live_qualification_preserves_partial_historical_boundary() -> None:
+def test_live_qualification_preserves_detail_inventory_boundary() -> None:
     qualification = json.loads(QUALIFICATION.read_text(encoding="utf-8"))
     assert qualification["evidence_class"] == "live_internal_historical"
     assert qualification["prompt_audit_qualified_source_ids"] == []
@@ -141,12 +163,16 @@ def test_live_qualification_preserves_partial_historical_boundary() -> None:
     assert (
         qualification["historical_detail_snapshot_coverage_complete"] is False
     )
+    assert qualification["historical_detail_capture_inventory_count"] == 35_494
+    assert qualification["historical_detail_disposition"] == (
+        "complete_denominator_not_identified_scope_decision_pending"
+    )
     assert qualification["prompt_complete"] is False
     assert qualification["current_source_record_rows"] == 1_628
     assert (
         qualification["current_source_record_parquet_pairs_byte_identical"] == 1
     )
-    assert qualification["archive_checksums_verified"] == 5
+    assert qualification["archive_checksums_verified"] == 7
     assert qualification["public_release_authorized"] is False
     assert qualification["external_publication_performed"] is False
 
@@ -162,6 +188,11 @@ def test_live_qualification_preserves_partial_historical_boundary() -> None:
             "download_index_url",
             "https://example.test/download.json",
             "official openFDA",
+        ),
+        (
+            "detail_cdx_url",
+            "https://web.archive.org/cdx/search/cdx?url=example.test/*&output=json&collapse=digest",
+            "bounded FDA CDX query",
         ),
         (
             "expected_bulk_url",
@@ -195,6 +226,35 @@ def test_cdx_inventory_rejects_nonofficial_or_duplicate_captures() -> None:
     duplicate[2][0] = "20140630235959"
     with pytest.raises(ValueError, match="duplicate monthly"):
         parse_cdx_inventory(json.dumps(duplicate).encode())
+
+    assert parse_detail_cdx_inventory(_detail_cdx()) == 2
+    duplicate_detail = json.loads(_detail_cdx())
+    duplicate_detail[2][-1] = duplicate_detail[1][-1]
+    with pytest.raises(ValueError, match="outside official scope"):
+        parse_detail_cdx_inventory(json.dumps(duplicate_detail).encode())
+
+    missing_identity = json.loads(_detail_cdx())
+    missing_identity[1][1] = (
+        "https://www.accessdata.fda.gov/scripts/drugshortages/"
+        "dsp_ActiveIngredientDetails.cfm"
+    )
+    with pytest.raises(ValueError, match="outside official scope"):
+        parse_detail_cdx_inventory(json.dumps(missing_identity).encode())
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        b"{}",
+        json.dumps([
+            ["timestamp", "original", "statuscode", "mimetype", "digest"],
+            ["too", "short"],
+        ]).encode(),
+    ],
+)
+def test_detail_cdx_inventory_rejects_structural_drift(payload: bytes) -> None:
+    with pytest.raises(ValueError, match="detail CDX inventory"):
+        parse_detail_cdx_inventory(payload)
 
 
 @pytest.mark.parametrize(
@@ -238,7 +298,11 @@ def test_runner_archives_current_and_historical_surfaces(
         if request.url.path.startswith("/cdx/search/cdx"):
             return httpx.Response(
                 200,
-                content=_cdx(),
+                content=(
+                    _detail_cdx()
+                    if "dsp_ActiveIngredientDetails" in str(request.url)
+                    else _cdx()
+                ),
                 headers={"content-type": "application/json"},
             )
         if request.url.path == "/download.json":
@@ -273,17 +337,21 @@ def test_runner_archives_current_and_historical_surfaces(
     assert manifest.historical_capture_inventory_complete is True
     assert manifest.historical_capture_succeeded_count == 2
     assert manifest.historical_capture_failed_count == 0
-    assert manifest.surface_count == 6
-    assert manifest.succeeded_count == 6
+    assert manifest.surface_count == 7
+    assert manifest.succeeded_count == 7
     assert manifest.failed_count == 0
     assert manifest.accepted_count == 5
-    assert manifest.quarantined_count == 1
+    assert manifest.quarantined_count == 2
     assert manifest.recovered_count == 5
     assert manifest.source_record_projection_count == 1
     assert manifest.source_record_rows == 2
     assert manifest.recovered_source_record_projection_count == 1
     assert manifest.source_record_parquet_pairs_byte_identical == 1
     assert manifest.historical_detail_snapshot_coverage_complete is False
+    assert manifest.historical_detail_capture_inventory_count == 2
+    assert manifest.historical_detail_disposition == (
+        "complete_denominator_not_identified_scope_decision_pending"
+    )
     assert manifest.prompt_complete is False
     assert manifest.external_publication_performed is False
     assert (output / "fda-shortages-live.private.tar").is_file()
@@ -297,7 +365,11 @@ def test_runner_can_retry_an_exact_inventory_subset(tmp_path: Path) -> None:
         if request.url.path.startswith("/cdx/search/cdx"):
             return httpx.Response(
                 200,
-                content=_cdx(),
+                content=(
+                    _detail_cdx()
+                    if "dsp_ActiveIngredientDetails" in str(request.url)
+                    else _cdx()
+                ),
                 headers={"content-type": "application/json"},
             )
         if request.url.path == "/download.json":
@@ -328,7 +400,7 @@ def test_runner_can_retry_an_exact_inventory_subset(tmp_path: Path) -> None:
     )
     assert manifest.historical_capture_inventory_count == 2
     assert manifest.historical_capture_succeeded_count == 1
-    assert manifest.surface_count == 5
+    assert manifest.surface_count == 6
 
     with pytest.raises(ValueError, match="retry scope"):
         exercise_fda_shortages(
@@ -338,6 +410,56 @@ def test_runner_can_retry_an_exact_inventory_subset(tmp_path: Path) -> None:
             transport=httpx.MockTransport(handler),
             observed_at=datetime(2026, 8, 21, tzinfo=UTC),
             capture_timestamps=frozenset({"20000101000000"}),
+        )
+
+
+@pytest.mark.parametrize(
+    ("detail_status", "expected_count", "error", "message"),
+    [
+        (503, 2, TypeError, "historical detail inventory acquisition failed"),
+        (200, 3, ValueError, "historical detail capture inventory drifted"),
+    ],
+)
+def test_runner_fails_closed_on_detail_inventory_failure(
+    tmp_path: Path,
+    detail_status: int,
+    expected_count: int,
+    error: type[Exception],
+    message: str,
+) -> None:
+    authorization = json.loads(AUTHORIZATION.read_text(encoding="utf-8"))
+    authorization["expected_historical_capture_count"] = 2
+    authorization["expected_first_capture"] = CAPTURES[0][0]
+    authorization["expected_last_capture"] = CAPTURES[-1][0]
+    authorization["capture_replay_overrides"] = {}
+    authorization["expected_detail_capture_inventory_count"] = expected_count
+    authorization_path = tmp_path / "authorization.json"
+    authorization_path.write_text(json.dumps(authorization), encoding="utf-8")
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if "dsp_ActiveIngredientDetails" in str(request.url):
+            return httpx.Response(
+                detail_status,
+                content=_detail_cdx(),
+                headers={"content-type": "application/json"},
+            )
+        if request.url.path.startswith("/cdx/search/cdx"):
+            return httpx.Response(
+                200,
+                content=_cdx(),
+                headers={"content-type": "application/json"},
+            )
+        raise AssertionError(
+            f"unexpected request after detail failure: {request.url}"
+        )
+
+    with pytest.raises(error, match=message):
+        exercise_fda_shortages(
+            repository_root=ROOT,
+            output_dir=tmp_path / f"failure-{detail_status}-{expected_count}",
+            authorization_path=authorization_path,
+            transport=httpx.MockTransport(handler),
+            observed_at=datetime(2026, 8, 21, tzinfo=UTC),
         )
 
 

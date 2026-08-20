@@ -63,8 +63,8 @@
     {
       "source_id": "us-fda-drug-shortages",
       "state": "manual_only_documented_acquisition",
-      "reason": "The complete current openFDA export and all 129 inventoried monthly FDA list snapshots were acquired, reconstructed where admitted, and privately archived; complete historical detail-page coverage remains pending.",
-      "manual_instructions": "Inventory and acquire the historical FDA shortage detail pages referenced by each archived monthly list snapshot, preserving immutable source bytes, capture timestamps, receipts, rights evidence, and unresolved replay failures before proposing complete Prompt 14 coverage.",
+      "reason": "The complete current openFDA export, all 129 inventoried monthly FDA list snapshots, and a metadata-only inventory of 35,494 delegated detail captures were Bronze-exercised and privately archived. No complete historical detail-page denominator was identified; the maintainer must explicitly decide whether monthly lists define the qualified temporal corpus.",
+      "manual_instructions": "Obtain the maintainer's explicit Prompt 14 scope disposition. Do not acquire delegated detail-page payloads or claim complete historical coverage under the metadata-only inventory authorization.",
       "evidence_references": [
         "quality/qualifications/fda-shortages-live-corpus-20260821.json"
       ]

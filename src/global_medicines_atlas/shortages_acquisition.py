@@ -89,6 +89,8 @@ class FDAShortagesAuthorization(FrozenModel):
     max_surface_bytes: int = Field(ge=1, le=512 * 1024 * 1024)
     archive_request_interval_seconds: float = Field(ge=0, le=5)
     cdx_url: AnyHttpUrl
+    detail_cdx_url: AnyHttpUrl
+    expected_detail_capture_inventory_count: int = Field(ge=1)
     expected_historical_capture_count: int = Field(ge=1, le=512)
     expected_first_capture: str
     expected_last_capture: str
@@ -110,9 +112,22 @@ class FDAShortagesAuthorization(FrozenModel):
             or self.external_publication_authorized
         ):
             raise ValueError("authorization must remain internal-only")
-        if self.cdx_url.host != "web.archive.org":
+        if (
+            self.cdx_url.host != "web.archive.org"
+            or self.detail_cdx_url.host != "web.archive.org"
+        ):
             raise ValueError(
                 "historical inventory must use Internet Archive CDX"
+            )
+        detail_query = str(self.detail_cdx_url.query or "").casefold()
+        if (
+            self.detail_cdx_url.path != "/cdx/search/cdx"
+            or "dsp_activeingredientdetails.cfm%3f*" not in detail_query
+            or "output=json" not in detail_query
+            or "collapse=digest" not in detail_query
+        ):
+            raise ValueError(
+                "detail inventory must remain the bounded FDA CDX query"
             )
         if self.download_index_url.host != "api.fda.gov":
             raise ValueError("download inventory must use official openFDA")
@@ -173,6 +188,10 @@ class FDAShortagesManifest(FrozenModel):
     external_publication_performed: Literal[False] = False
     prompt_complete: Literal[False] = False
     historical_detail_snapshot_coverage_complete: Literal[False] = False
+    historical_detail_capture_inventory_count: int
+    historical_detail_disposition: Literal[
+        "complete_denominator_not_identified_scope_decision_pending"
+    ]
     current_export_date: date
     current_record_count: int
     historical_capture_inventory_count: int
@@ -234,6 +253,51 @@ def parse_cdx_inventory(payload: bytes) -> tuple[ShortageCapture, ...]:
             )
         )
     return tuple(captures)
+
+
+def parse_detail_cdx_inventory(payload: bytes) -> int:
+    """Validate the delegated detail-capture inventory without claiming coverage."""
+    raw = json.loads(payload)
+    if not isinstance(raw, list) or not raw or tuple(raw[0]) != _CDX_HEADER:
+        raise ValueError("detail CDX inventory header drifted")
+    digests: set[str] = set()
+    for number, row in enumerate(raw[1:], start=1):
+        if not isinstance(row, list) or len(row) != len(_CDX_HEADER):
+            raise ValueError(f"detail CDX inventory row {number} drifted")
+        timestamp, original, status, media, digest = (
+            str(value) for value in row
+        )
+        parsed = urlsplit(original)
+        base_path = "/scripts/drugshortages/dsp_activeingredientdetails.cfm"
+        source_path = parsed.path.casefold()
+        official_path = source_path == base_path or source_path.startswith(
+            f"{base_path}%3f"
+        )
+        has_detail_identity = bool(parsed.query) or source_path.startswith(
+            f"{base_path}%3f"
+        )
+        valid_response = (
+            status == "200"
+            and media == "text/html"
+            and bool(digest)
+            and digest not in digests
+        )
+        official_source = (
+            parsed.scheme in {"http", "https"}
+            and parsed.hostname == "www.accessdata.fda.gov"
+            and official_path
+            and has_detail_identity
+        )
+        if not (
+            _TIMESTAMP.fullmatch(timestamp)
+            and valid_response
+            and official_source
+        ):
+            raise ValueError(
+                f"detail CDX capture {number} is outside official scope"
+            )
+        digests.add(digest)
+    return len(raw) - 1
 
 
 def parse_download_inventory(
@@ -418,7 +482,7 @@ def _acquire_one(
     ), payload
 
 
-def exercise_fda_shortages(  # ruff: ignore[too-many-locals,too-many-statements]
+def exercise_fda_shortages(  # ruff: ignore[too-many-branches,too-many-locals,too-many-statements]
     *,
     repository_root: Path,
     output_dir: Path,
@@ -546,6 +610,24 @@ def exercise_fda_shortages(  # ruff: ignore[too-many-locals,too-many-statements]
         encoding="utf-8",
     )
 
+    detail_cdx_payload = acquire(
+        surface_id="wayback-detail-cdx-inventory",
+        url=authorization.detail_cdx_url,
+        media_hint="json",
+        rights_profile="government_public_domain_policy_review",
+        source_version=f"wayback-detail-cdx-{timestamp.date().isoformat()}",
+    )
+    if detail_cdx_payload is None:
+        raise TypeError("historical detail inventory acquisition failed")
+    detail_capture_inventory_count = parse_detail_cdx_inventory(
+        detail_cdx_payload
+    )
+    if (
+        detail_capture_inventory_count
+        != authorization.expected_detail_capture_inventory_count
+    ):
+        raise ValueError("historical detail capture inventory drifted")
+
     index_payload = acquire(
         surface_id="openfda-download-index",
         url=authorization.download_index_url,
@@ -612,6 +694,12 @@ def exercise_fda_shortages(  # ruff: ignore[too-many-locals,too-many-statements]
     )
     manifest = FDAShortagesManifest(
         exercised_at=timestamp,
+        historical_detail_capture_inventory_count=(
+            detail_capture_inventory_count
+        ),
+        historical_detail_disposition=(
+            "complete_denominator_not_identified_scope_decision_pending"
+        ),
         current_export_date=export_date,
         current_record_count=record_count,
         historical_capture_inventory_count=len(captures),

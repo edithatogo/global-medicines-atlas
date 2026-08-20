@@ -386,10 +386,13 @@ for credentialed or rights-unresolved sources.
     - [x] Reconstruct the admitted current export and verify its source-record Parquet byte-for-byte
     - [x] Preserve current, resolved, discontinued, availability, reason, manufacturer, presentation, NDC, and source-native date fields without medicine normalization
     - [x] Keep Prompt 14, historical detail-page coverage, public release, and external publication fail closed
-- [ ] Task: Complete historical FDA drug-shortage detail coverage (Prompt 14)
-    - [ ] Inventory the source-native detail-page identities referenced by each monthly list snapshot
-    - [ ] Acquire eligible historical detail captures with bounded retry and explicit failure receipts
-    - [ ] Reconcile Prompt 14 only after complete detail coverage or an explicit approved unavailable disposition
+- [~] Task: Complete FDA drug-shortage history with an explicit detail-archive disposition (Prompt 14)
+    - [x] Acquire and archive 35,494 delegated CDX metadata records describing distinct historical detail-page payload captures; do not acquire the detail payloads
+    - [x] Retain all 129 monthly source lists as a candidate temporal shortage-state corpus
+    - [x] Recover three transient monthly replay failures in a bounded retry with two content-preserving replay overrides
+    - [x] Record that no complete historical detail-page denominator was identified in the reviewed official surfaces; do not relabel an unbounded delegated crawl as complete source coverage
+    - [ ] Obtain the maintainer's explicit scope disposition before treating monthly lists as the qualified temporal corpus or reconciling Prompt 14
+    - [x] Keep detail-page completeness, public release, and external publication unclaimed
 - [x] Task: Acquire the complete public FDA REMS family (Prompt 15)
     - [x] Acquire all four official historical relational CSV surfaces and preserve 3,112 source-native program, version, product, application, status, requirement and date records
     - [x] Inventory and archive all 72 current REMS detail pages and 827 of 829 linked FDA-hosted PDF documents
