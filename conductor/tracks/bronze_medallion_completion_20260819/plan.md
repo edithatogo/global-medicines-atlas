@@ -245,6 +245,10 @@ before any hot-path rewrite. Python remains orchestration.
     - [x] Prevent bound GET/HEAD requests from gaining a chunked request body and skip compressed-wire Content-Length comparisons against decoded bytes
     - [x] Add authorization drift, fault isolation, excluded-content, private-archive, and transport regression tests; targeted branch coverage reached 93%
     - [x] Reconcile the completion audit to 5 live-qualified openFDA sources without claiming any completed acquisition prompt
+- [x] Task: Review Fixes for U.S. source-record projection (`373f5e1`, `9749380`)
+    - [x] Fault-isolate source-record parsing so one schema drift cannot stop the authorized acquisition batch or clean-room recovery
+    - [x] Exercise malformed objects, technical-column collisions, alternate encoding, blank and short rows, header failures, fallback identities, and media mismatch
+    - [x] Raise `us_source_records.py` changed-line coverage to 100% without weakening the Codecov patch gate
 - [x] Task: Phase Verification & Checkpoint
     - [x] Run focused, integration, and source-boundary tests
     - [x] Measure completeness with S-012 denominators; missing coverage is not negative evidence
