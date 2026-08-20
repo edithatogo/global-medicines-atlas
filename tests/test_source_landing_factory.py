@@ -215,7 +215,7 @@ def test_generated_queue_schema_and_conductor_projection_are_current() -> None:
     assert orange.state is LandingDisposition.TEMPORARILY_UNAVAILABLE
     assert orange.next_action == "retry under the failure-receipt schedule"
     assert (
-        "quality/qualifications/orange-book-historical-corpus-20260820.json"
+        "quality/qualifications/orange-book-historical-corpus-20260821.json"
         in orange.evidence_references
     )
     assert MARKDOWN_PATH.read_text(encoding="utf-8") == (
