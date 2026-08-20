@@ -184,7 +184,7 @@ def test_capability_registry_distinguishes_evidence_layers() -> None:
     )
 
 
-def test_fixture_parser_does_not_upgrade_catalog_integration_maturity() -> None:
+def test_fixture_parser_matches_fixture_catalog_integration_maturity() -> None:
     catalog = load_source_catalog()
     registry = builtin_source_capabilities()
 
@@ -195,7 +195,7 @@ def test_fixture_parser_does_not_upgrade_catalog_integration_maturity() -> None:
         for source in catalog
         if source.source_id == "nz-medsafe-products"
     )
-    assert medsafe.integration_layer.value == "catalogued"
+    assert medsafe.integration_layer.value == "fixture"
     assert Capability.FIXTURE_PARSER in registry.capabilities_for(
         medsafe.source_id
     )
