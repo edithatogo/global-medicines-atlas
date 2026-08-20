@@ -94,10 +94,12 @@
         "AUS"
       ],
       "dimension": "regulatory",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M2",
+      "documentation_readiness": "fixture_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists",
+        "catalog declares implemented ingestion"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -149,11 +151,12 @@
         "AUS"
       ],
       "dimension": "funding",
-      "maturity_level": "M1",
-      "documentation_readiness": "documentation_verified",
+      "maturity_level": "M2",
+      "documentation_readiness": "fixture_verified",
       "assignment_basis": [
         "catalog row exists",
-        "documentation qualification reference exists"
+        "documentation qualification reference exists",
+        "catalog declares implemented ingestion"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -353,10 +356,12 @@
         "CAN"
       ],
       "dimension": "regulatory",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M2",
+      "documentation_readiness": "fixture_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists",
+        "catalog declares implemented ingestion"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -371,10 +376,12 @@
         "CAN"
       ],
       "dimension": "regulatory",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M2",
+      "documentation_readiness": "fixture_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists",
+        "catalog declares implemented ingestion"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -724,10 +731,12 @@
         "EU"
       ],
       "dimension": "regulatory",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M2",
+      "documentation_readiness": "fixture_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists",
+        "catalog declares implemented ingestion"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -888,10 +897,12 @@
         "EU"
       ],
       "dimension": "regulatory",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M2",
+      "documentation_readiness": "fixture_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists",
+        "catalog declares implemented ingestion"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -981,10 +992,12 @@
         "GBR"
       ],
       "dimension": "regulatory",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M2",
+      "documentation_readiness": "fixture_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists",
+        "catalog declares implemented ingestion"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -1072,10 +1085,12 @@
         "GBR"
       ],
       "dimension": "funding",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M2",
+      "documentation_readiness": "fixture_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists",
+        "catalog declares implemented ingestion"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -1292,10 +1307,12 @@
         "GLOBAL"
       ],
       "dimension": "formulary",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M2",
+      "documentation_readiness": "fixture_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists",
+        "catalog declares implemented ingestion"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -1563,10 +1580,12 @@
         "JPN"
       ],
       "dimension": "funding",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M2",
+      "documentation_readiness": "fixture_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists",
+        "catalog declares implemented ingestion"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -1581,10 +1600,12 @@
         "JPN"
       ],
       "dimension": "regulatory",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M2",
+      "documentation_readiness": "fixture_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists",
+        "catalog declares implemented ingestion"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -2076,10 +2097,12 @@
         "NZL"
       ],
       "dimension": "regulatory",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M2",
+      "documentation_readiness": "fixture_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists",
+        "catalog declares implemented ingestion"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -2169,11 +2192,12 @@
         "NZL"
       ],
       "dimension": "funding",
-      "maturity_level": "M1",
-      "documentation_readiness": "documentation_verified",
+      "maturity_level": "M2",
+      "documentation_readiness": "fixture_verified",
       "assignment_basis": [
         "catalog row exists",
-        "documentation qualification reference exists"
+        "documentation qualification reference exists",
+        "catalog declares implemented ingestion"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -2719,10 +2743,12 @@
         "USA"
       ],
       "dimension": "funding",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M2",
+      "documentation_readiness": "fixture_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists",
+        "catalog declares implemented ingestion"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -2775,9 +2801,10 @@
       ],
       "dimension": "regulatory",
       "maturity_level": "M2",
-      "documentation_readiness": "declared",
+      "documentation_readiness": "fixture_verified",
       "assignment_basis": [
         "catalog row exists",
+        "documentation qualification reference exists",
         "catalog declares implemented ingestion"
       ],
       "blocking_gaps": [
@@ -2811,10 +2838,12 @@
         "USA"
       ],
       "dimension": "regulatory",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M2",
+      "documentation_readiness": "fixture_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists",
+        "catalog declares implemented ingestion"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -3194,8 +3223,8 @@
       "source_count": 8,
       "regulatory_source_count": 4,
       "funding_or_formulary_source_count": 3,
-      "highest_maturity_level": "M1",
-      "documentation_ready_source_count": 5,
+      "highest_maturity_level": "M2",
+      "documentation_ready_source_count": 6,
       "stable_ready": false
     },
     {
@@ -3221,8 +3250,8 @@
       "source_count": 7,
       "regulatory_source_count": 3,
       "funding_or_formulary_source_count": 4,
-      "highest_maturity_level": "M1",
-      "documentation_ready_source_count": 3,
+      "highest_maturity_level": "M2",
+      "documentation_ready_source_count": 5,
       "stable_ready": false
     },
     {
@@ -3284,8 +3313,8 @@
       "source_count": 13,
       "regulatory_source_count": 11,
       "funding_or_formulary_source_count": 0,
-      "highest_maturity_level": "M1",
-      "documentation_ready_source_count": 4,
+      "highest_maturity_level": "M2",
+      "documentation_ready_source_count": 6,
       "stable_ready": false
     },
     {
@@ -3302,8 +3331,8 @@
       "source_count": 9,
       "regulatory_source_count": 2,
       "funding_or_formulary_source_count": 5,
-      "highest_maturity_level": "M1",
-      "documentation_ready_source_count": 3,
+      "highest_maturity_level": "M2",
+      "documentation_ready_source_count": 5,
       "stable_ready": false
     },
     {
@@ -3321,7 +3350,7 @@
       "regulatory_source_count": 4,
       "funding_or_formulary_source_count": 6,
       "highest_maturity_level": "M2",
-      "documentation_ready_source_count": 1,
+      "documentation_ready_source_count": 2,
       "stable_ready": false
     },
     {
@@ -3356,8 +3385,8 @@
       "source_count": 5,
       "regulatory_source_count": 3,
       "funding_or_formulary_source_count": 2,
-      "highest_maturity_level": "M1",
-      "documentation_ready_source_count": 1,
+      "highest_maturity_level": "M2",
+      "documentation_ready_source_count": 3,
       "stable_ready": false
     },
     {
@@ -3446,8 +3475,8 @@
       "source_count": 7,
       "regulatory_source_count": 2,
       "funding_or_formulary_source_count": 3,
-      "highest_maturity_level": "M1",
-      "documentation_ready_source_count": 5,
+      "highest_maturity_level": "M2",
+      "documentation_ready_source_count": 6,
       "stable_ready": false
     },
     {
@@ -3564,7 +3593,7 @@
       "regulatory_source_count": 10,
       "funding_or_formulary_source_count": 4,
       "highest_maturity_level": "M2",
-      "documentation_ready_source_count": 6,
+      "documentation_ready_source_count": 9,
       "stable_ready": false
     },
     {

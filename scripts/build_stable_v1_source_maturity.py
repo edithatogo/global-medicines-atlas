@@ -25,7 +25,11 @@ def _maturity(source: dict[str, Any]) -> tuple[str, list[str], list[str]]:
         "release approval",
     ]
     level = "M0"
-    if source["qualification_state"] == "documentation_verified":
+    if source["qualification_state"] in {
+        "documentation_verified",
+        "fixture_verified",
+        "live_verified",
+    }:
         level = "M1"
         basis.append("documentation qualification reference exists")
     if source.get("implemented_ingestion"):
@@ -68,7 +72,12 @@ def build_projection(catalog: dict[str, Any]) -> dict[str, Any]:
             ),
             "highest_maturity_level": f"M{max(levels)}",
             "documentation_ready_source_count": sum(
-                source["documentation_readiness"] == "documentation_verified"
+                source["documentation_readiness"]
+                in {
+                    "documentation_verified",
+                    "fixture_verified",
+                    "live_verified",
+                }
                 for source in sources
             ),
             "stable_ready": False,
