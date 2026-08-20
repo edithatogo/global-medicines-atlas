@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.source-rights-source-decisions",
   "schema_version": 1,
-  "publication_gate": "maintainer_authorized_fda_publication_20260821",
+  "publication_gate": "pending_exact_manifest_maintainer_approval",
   "policy_family_assignments": {
     "us-drugsfda": "fda-website-public-domain",
     "us-fda-drug-shortages": "fda-website-public-domain",

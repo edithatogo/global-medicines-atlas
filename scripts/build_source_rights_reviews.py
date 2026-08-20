@@ -55,9 +55,15 @@ def _review(
         "source_id": source_id,
         "policy_family_id": family_id,
         **family,
-        "maintainer_licence_approved": True,
-        "maintainer_publication_approved": True,
+        "disposition": "catalogue_only",
+        "maintainer_licence_approved": False,
+        "maintainer_publication_approved": False,
         "reviewed_at": REVIEWED_AT,
+        "blocker": (
+            "official reuse evidence is a candidate only; maintainer "
+            "licensing conclusion and exact-manifest publication approval "
+            "remain pending"
+        ),
     })
 
 

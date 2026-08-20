@@ -8,11 +8,11 @@
   - [x] Implement deterministic rights evidence and disposition generation
 - [~] Checkpoint: Local focused validation passes; hosted review remains pending
 
-## Phase 2: FDA authorization and public packages
+## Phase 2: FDA rights review and proposed public packages
 
-- [~] Task: Apply maintainer FDA publication authorization with third-party exclusions (AC-03)
-  - [x] Enumerate every FDA source and bind official FDA/openFDA evidence
-  - [x] Separate copyright permission from sensitivity and completeness
+- [ ] Task: Prepare an exact-manifest FDA publication decision with third-party exclusions (AC-03)
+  - [ ] Enumerate every FDA source and bind official FDA/openFDA evidence
+  - [ ] Separate copyright permission from sensitivity and completeness
   - [ ] Build public packages from acquired and admitted FDA products
 - [ ] Checkpoint: Review and validate Phase 2
 
@@ -26,7 +26,7 @@
 
 ## Phase 4: Public Hugging Face archives
 
-- [ ] Task: Publish and restore every acquired, admitted, public-eligible package (AC-05, AC-06)
+- [ ] Task: After exact-manifest approval, publish and restore every acquired, admitted, public-eligible package (AC-05, AC-06)
   - [ ] Generate source-specific cards, manifests, attribution, and withdrawal metadata
   - [ ] Exclude restricted fields and run sensitivity/publication gates
   - [ ] Publish, resolve immutable revisions, restore, and verify all SHA-256 digests
