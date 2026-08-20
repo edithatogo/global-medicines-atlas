@@ -1,0 +1,45 @@
+{
+  "schema_id": "global-medicines-atlas.fda-rems-live-authorization",
+  "schema_version": 1,
+  "decision_date": "2026-08-21",
+  "decision_basis": "The maintainer-approved internal-only U.S. acquisition cohort includes us-fda-rems. This contract narrows that authority to the four official historical REMS CSV surfaces, the current FDA REMS index and data page, all 72 current source-native detail pages, and all 829 FDA-hosted PDF documents linked by those pages on the decision date. It permits the repository's existing conditional internal source-faithful processing policy but does not approve a general licensing conclusion, public redistribution, public release, or external publication.",
+  "acquisition_authorized": true,
+  "internal_retention_authorized": true,
+  "public_release_authorized": false,
+  "external_publication_authorized": false,
+  "public_redistribution_rights_approved": false,
+  "index_url": "https://www.accessdata.fda.gov/scripts/cder/rems/index.cfm",
+  "data_page_url": "https://www.accessdata.fda.gov/scripts/cder/rems/index.cfm?event=RemsData.page",
+  "exports": [
+    {
+      "surface_id": "released-rems-report",
+      "url": "https://www.accessdata.fda.gov/scripts/cder/rems/index.cfm?event=csvReleasedReportRems.page",
+      "expected_filename": "RemsReleasedReport.csv",
+      "max_bytes": 67108864
+    },
+    {
+      "surface_id": "rems-programs",
+      "url": "https://www.accessdata.fda.gov/scripts/cder/rems/index.cfm?event=csvAllRems.page",
+      "expected_filename": "REMS.csv",
+      "max_bytes": 67108864
+    },
+    {
+      "surface_id": "rems-versions",
+      "url": "https://www.accessdata.fda.gov/scripts/cder/rems/index.cfm?event=csvModification.page",
+      "expected_filename": "REMS_Versions.csv",
+      "max_bytes": 67108864
+    },
+    {
+      "surface_id": "rems-products",
+      "url": "https://www.accessdata.fda.gov/scripts/cder/rems/index.cfm?event=csvRemsProduct.page",
+      "expected_filename": "REMS_Products.csv",
+      "max_bytes": 67108864
+    }
+  ],
+  "expected_current_detail_count": 72,
+  "expected_current_document_count": 829,
+  "max_total_bytes": 4294967296,
+  "max_detail_page_bytes": 16777216,
+  "max_document_bytes": 268435456,
+  "request_interval_seconds": 0.1
+}

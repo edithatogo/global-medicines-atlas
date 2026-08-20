@@ -67,6 +67,36 @@ def test_openfda_records_preserve_native_nested_fields(
     assert "gma_acquisition_id" not in batch.table.column_names
 
 
+@pytest.mark.unit
+def test_rems_csv_preserves_relational_identity_and_native_fields() -> None:
+    batch = us_source_record_batch(
+        "us-fda-rems",
+        b'\n    \n"REMSID","VersionID","Version_Date","REMS_Goals"\n'
+        b'    "7","3","01/02/2026","Source-native goal"\n',
+        "csv",
+    )
+    assert batch is not None
+    assert batch.parser_identity == "gma:us-fda-rems:relational-csv:v1"
+    assert batch.table.to_pylist() == [
+        {
+            "source_record_key": "7:3",
+            "source_row_number": 1,
+            "source_field_count": 4,
+            "REMSID": "7",
+            "VersionID": "3",
+            "Version_Date": "01/02/2026",
+            "REMS_Goals": "Source-native goal",
+        }
+    ]
+
+
+@pytest.mark.unit
+def test_rems_source_records_reject_wrong_media_and_missing_identity() -> None:
+    assert us_source_record_batch("us-fda-rems", b"<html/>", "html") is None
+    with pytest.raises(ValueError, match="lacks REMSID"):
+        us_source_record_batch("us-fda-rems", b"name\nexample\n", "csv")
+
+
 def test_openfda_duplicate_native_identity_gets_stable_record_link() -> None:
     record = {"product_ndc": "0001-0001", "brand_name": "Native"}
     payload = json.dumps({"results": [record, record]}).encode()

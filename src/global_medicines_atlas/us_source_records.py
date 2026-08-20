@@ -387,7 +387,61 @@ def _single_json_member(payload: bytes) -> bytes:
         return archive.read(members[0])
 
 
-def us_source_record_batch(
+def _rems_csv_batch(payload: bytes) -> SourceRecordBatch:
+    """Preserve one official REMS relational CSV at its native grain."""
+    rows = [
+        row
+        for row in csv.reader(
+            StringIO(_decode_member(payload), newline=""), skipinitialspace=True
+        )
+        if row and any(value.strip() for value in row)
+    ]
+    if not rows:
+        raise ValueError("REMS CSV has no header")
+    header = _validated_header(rows[0], "REMS CSV")
+    if "REMSID" not in header:
+        raise ValueError("REMS CSV lacks REMSID")
+    identity_columns = ["REMSID"]
+    identity_columns.extend(
+        candidate
+        for candidate in ("VersionID", "REMS_Product_ID", "Application_Number")
+        if candidate in header
+    )
+    records: list[dict[str, str | int | None]] = []
+    identities: list[str] = []
+    for row_number, values in enumerate(rows[1:], start=1):
+        native = dict(zip(header, values, strict=False))
+        identity = ":".join(
+            native[column].strip()
+            for column in identity_columns
+            if native.get(column)
+        )
+        identities.append(identity or f"row:{row_number}")
+        record: dict[str, str | int | None] = {
+            "source_record_key": "",
+            "source_row_number": row_number,
+            "source_field_count": len(values),
+        }
+        record.update(native)
+        records.append(record)
+    for record, identity in zip(
+        records, _deduplicate_identities(identities), strict=True
+    ):
+        record["source_record_key"] = identity
+    schema = pa.schema([
+        pa.field("source_record_key", pa.string(), nullable=False),
+        pa.field("source_row_number", pa.int64(), nullable=False),
+        pa.field("source_field_count", pa.int64(), nullable=False),
+        *(pa.field(name, pa.string()) for name in header),
+    ])
+    return SourceRecordBatch(
+        table=pa.Table.from_pylist(records, schema=schema),
+        parser_identity="gma:us-fda-rems:relational-csv:v1",
+        record_id_column="source_record_key",
+    )
+
+
+def us_source_record_batch(  # ruff: ignore[too-many-return-statements]
     source_id: str,
     payload: bytes,
     media_hint: str,
@@ -408,6 +462,10 @@ def us_source_record_batch(
         if media_hint != "zip":
             raise ValueError("us-fda-faers requires zip media")
         return _faers_ascii_batch(payload)
+    if source_id == "us-fda-rems":
+        if media_hint != "csv":
+            return None
+        return _rems_csv_batch(payload)
     archive_spec = _ARCHIVE_SPECS.get(source_id)
     if archive_spec is not None:
         if media_hint != "zip":

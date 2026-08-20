@@ -381,3 +381,10 @@ for credentialed or rights-unresolved sources.
     - [ ] Inventory the source-native detail-page identities referenced by each monthly list snapshot
     - [ ] Acquire eligible historical detail captures with bounded retry and explicit failure receipts
     - [ ] Reconcile Prompt 14 only after complete detail coverage or an explicit approved unavailable disposition
+- [x] Task: Acquire the complete public FDA REMS family (Prompt 15)
+    - [x] Acquire all four official historical relational CSV surfaces and preserve 3,112 source-native program, version, product, application, status, requirement and date records
+    - [x] Inventory and archive all 72 current REMS detail pages and 827 of 829 linked FDA-hosted PDF documents
+    - [x] Retain explicit HTTP 404 failure receipts for the two broken official document links rather than inventing unavailable bytes
+    - [x] Reconstruct all four admitted source-record products and verify their Parquet bytes exactly
+    - [x] Create and checksum-verify the 3,927,029,760-byte private archive
+    - [x] Keep REMS distinct from approval and pharmacovigilance, preserve the FDA historical-status warning, and keep public redistribution/release/publication fail closed

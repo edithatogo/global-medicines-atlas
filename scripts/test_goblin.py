@@ -94,6 +94,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_faers_acquisition.py",
         "tests/test_enforcement_acquisition.py",
         "tests/test_shortages_acquisition.py",
+        "tests/test_rems_acquisition.py",
         "tests/test_source_landing_factory.py",
         "tests/test_bronze_admission.py",
         "tests/test_bronze_admission_lifecycle.py",

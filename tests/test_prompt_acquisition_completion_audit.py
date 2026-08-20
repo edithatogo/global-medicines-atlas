@@ -24,6 +24,9 @@ RECORD_QUALIFICATION = (
 NDC_QUALIFICATION = (
     ROOT / "quality/qualifications/ndc-directory-live-corpus-20260821.json"
 )
+REMS_QUALIFICATION = (
+    ROOT / "quality/qualifications/fda-rems-live-corpus-20260821.json"
+)
 
 
 def _audit() -> dict[str, Any]:
@@ -47,20 +50,23 @@ def test_audit_is_generated_from_all_36_locked_prompts() -> None:
     } == {track.track_id: list(track.source_ids) for track in tracks}
 
 
-def test_live_qualification_completes_verified_ndc_and_nsde_prompts() -> None:
+def test_live_qualification_completes_verified_rems_ndc_and_nsde_prompts() -> (
+    None
+):
     audit = _audit()
     measured = json.loads(MEASURED.read_text(encoding="utf-8"))["body"]
     assert measured["totals"]["live_qualified_sources"] == 0
-    assert audit["live_qualified_source_count"] == 7
-    assert audit["live_complete_prompt_count"] == 2
+    assert audit["live_qualified_source_count"] == 8
+    assert audit["live_complete_prompt_count"] == 3
     assert audit["program_completion"] == "incomplete_live_acquisition"
     complete = [entry for entry in audit["prompts"] if entry["live_complete"]]
-    assert [entry["prompt_id"] for entry in complete] == [17, 19]
-    assert complete[0]["live_qualified_source_ids"] == [
+    assert [entry["prompt_id"] for entry in complete] == [15, 17, 19]
+    assert complete[0]["live_qualified_source_ids"] == ["us-fda-rems"]
+    assert complete[1]["live_qualified_source_ids"] == [
         "us-openfda-ndc",
         "us-fda-ndc-directory",
     ]
-    assert complete[1]["live_qualified_source_ids"] == [
+    assert complete[2]["live_qualified_source_ids"] == [
         "us-fda-nsde",
         "us-openfda-nsde",
     ]
@@ -82,6 +88,7 @@ def test_live_qualification_completes_verified_ndc_and_nsde_prompts() -> None:
         "us-openfda-nsde",
         "us-fda-ndc-directory",
         "us-fda-nsde",
+        "us-fda-rems",
     }
 
     orange = audit["prompts"][15]
@@ -216,12 +223,59 @@ def test_ndc_qualification_fails_closed_on_scope_or_evidence_drift(
         audit_mod._qualified_ndc_record_sources()
 
 
+@pytest.mark.parametrize(
+    ("mutate", "message"),
+    [
+        (
+            lambda raw: raw.update(prompt_complete=False),
+            "reviewed scope",
+        ),
+        (
+            lambda raw: raw.update(current_documents_acquired=826),
+            "document coverage",
+        ),
+        (
+            lambda raw: raw["unavailable_documents"][0].update(
+                observed_http_status=503
+            ),
+            "document coverage",
+        ),
+        (
+            lambda raw: raw.update(
+                source_record_parquet_pairs_byte_identical=3
+            ),
+            "lack recovery evidence",
+        ),
+        (
+            lambda raw: raw["prompt_audit_qualified_source_ids"].append(
+                "us-fda-orange-book"
+            ),
+            "exceeds reviewed source scope",
+        ),
+    ],
+)
+def test_rems_qualification_fails_closed_on_scope_or_evidence_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutate,
+    message: str,
+) -> None:
+    raw = json.loads(REMS_QUALIFICATION.read_bytes())
+    mutate(raw)
+    unsafe = tmp_path / "unsafe-rems-qualification.json"
+    unsafe.write_text(json.dumps(raw), encoding="utf-8")
+    monkeypatch.setattr(audit_mod, "REMS_RECORD_QUALIFICATION", unsafe)
+
+    with pytest.raises(ValueError, match=message):
+        audit_mod._qualified_rems_record_sources()
+
+
 def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     audit = _audit()
     assert audit["queue_state_counts"] == {
         "credentialed_and_excluded": 18,
-        "landed_and_evidenced": 19,
-        "manual_only_documented_acquisition": 93,
+        "landed_and_evidenced": 20,
+        "manual_only_documented_acquisition": 92,
         "not_yet_implemented": 0,
         "rights_blocked": 41,
         "superseded_by_reused_source": 0,

@@ -4210,14 +4210,14 @@
         "source_id": "us-fda-rems"
       },
       "evidence_references": [
-        "https://www.accessdata.fda.gov/scripts/cder/rems/index.cfm"
+        "quality/qualifications/fda-rems-live-corpus-20260821.json"
       ],
       "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
-      "priority": 30,
-      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "All four official relational CSV surfaces, all 72 current REMS detail pages, and 827 of 829 linked FDA-hosted documents were acquired, reconstructed where admitted, and privately archived; the remaining two document links returned explicit HTTP 404 failure receipts.",
       "source_id": "us-fda-rems",
-      "state": "manual_only_documented_acquisition"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4593,8 +4593,8 @@
   "source_count": 172,
   "state_counts": {
     "credentialed_and_excluded": 18,
-    "landed_and_evidenced": 19,
-    "manual_only_documented_acquisition": 93,
+    "landed_and_evidenced": 20,
+    "manual_only_documented_acquisition": 92,
     "not_yet_implemented": 0,
     "rights_blocked": 41,
     "superseded_by_reused_source": 0,
