@@ -102,6 +102,18 @@ public data. It runs before any acquire/download, including Drugs@FDA.
     - [x] Run focused rights, receipt, and publication tests plus typing
     - [x] Record evidence; do not claim source licences concluded or bytes published
 
+### Phase 3d: Admission-gated analytical projection
+
+- [x] Task: Integrate admission into the Bronze landing lifecycle ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))
+    - [x] Stage verified bytes and acquisition evidence before admission
+    - [x] Persist a landed event followed by an accepted or quarantined decision
+    - [x] Permit Parquet, transformation receipts, and OpenLineage only after acceptance
+    - [x] Preserve later automated and human decisions as superseding append-only events
+    - [x] Gate deterministic regeneration and recovery projection on admission
+- [x] Task: Phase Verification & Checkpoint
+    - [x] Run focused lifecycle, integrity, recovery, archive, typing, and coverage checks
+    - [x] Record evidence without claiming live-source or publication completion
+
 ## Phase 4: Iceberg-ready identities and OpenLineage projection
 
 - [x] Task: Write failing tests for Iceberg-ready metadata and OpenLineage ([#169](https://github.com/edithatogo/global-medicines-atlas/issues/169))

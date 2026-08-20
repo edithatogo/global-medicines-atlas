@@ -18,6 +18,12 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 from tests.test_source_receipts import source_receipt
 
+from global_medicines_atlas.bronze_admission import (
+    BronzeAdmissionState,
+    create_admission_decision,
+    persist_admission_decision,
+    record_admission_decision,
+)
 from global_medicines_atlas.bronze_landing import (
     PARQUET_DIR,
     PAYLOAD_DIR,
@@ -75,12 +81,14 @@ def _landable(
 
 
 def _seed_store(root: Path, payload: bytes = PAYLOAD) -> BronzeLanding:
-    return land_bronze_payload(
+    landing = land_bronze_payload(
         payload,
         _landable(payload),
         bronze_root=root,
         media_hint="json",
     )
+    assert isinstance(landing, BronzeLanding)
+    return landing
 
 
 def _acquisition_id(landing: BronzeLanding) -> str:
@@ -210,11 +218,98 @@ def test_interrupted_acquisition_fails_closed_then_resumes(
         receipt=receipt,
         media_hint="json",
     )
+    assert isinstance(landing, BronzeLanding)
     evidence = reconstruct_bronze(bronze)
 
     assert landing.payload_path.read_bytes() == PAYLOAD
     assert landing.parquet_path.is_file()
     assert RecoveryScenario.INTERRUPTED_ACQUISITION in evidence.scenarios
+
+
+@pytest.mark.unit
+def test_recovery_restores_missing_acquisition_event(tmp_path: Path) -> None:
+    bronze = tmp_path / "bronze"
+    landing = _seed_store(bronze)
+    event = landing.acquisition_receipt_path
+    event.unlink()
+    landing.parquet_path.unlink()
+
+    reconstruct_bronze(bronze)
+
+    assert event.is_file()
+    assert landing.parquet_path.is_file()
+
+
+@pytest.mark.unit
+def test_recovery_keeps_quarantined_acquisition_unprojected(
+    tmp_path: Path,
+) -> None:
+    bronze = tmp_path / "bronze"
+    malformed = b"{not-json"
+    receipt = _landable(malformed)
+    content_id = receipt.payload.sha256
+    payload_path = (
+        bronze / PAYLOAD_DIR / "by_content" / content_id / "payload.json"
+    )
+    payload_path.parent.mkdir(parents=True, exist_ok=True)
+    payload_path.write_bytes(malformed)
+    temporal = require_temporal(receipt.temporal)
+    receipt_path = (
+        bronze
+        / RECEIPT_DIR
+        / receipt.source.source_id
+        / f"{temporal.acquisition_id}.json"
+    )
+    receipt_path.parent.mkdir(parents=True, exist_ok=True)
+    receipt_path.write_bytes(receipt.canonical_json() + b"\n")
+
+    evidence = reconstruct_bronze(bronze)
+
+    assert evidence.landings == ()
+    assert not (bronze / PARQUET_DIR).exists()
+
+
+@pytest.mark.unit
+def test_recovery_respects_superseding_rejection(tmp_path: Path) -> None:
+    bronze = tmp_path / "bronze"
+    landing = _seed_store(bronze)
+    record_admission_decision(
+        landing,
+        state=BronzeAdmissionState.REJECTED_FROM_PROCESSING,
+        actor="maintainer:review",
+        reason_codes=("human_review_rejected",),
+        decided_at=NOW + timedelta(minutes=1),
+    )
+    landing.parquet_path.unlink()
+
+    evidence = reconstruct_bronze(bronze)
+
+    assert evidence.landings == ()
+    assert not landing.parquet_path.exists()
+
+
+@pytest.mark.unit
+def test_recovery_rejects_branched_admission_history(tmp_path: Path) -> None:
+    bronze = tmp_path / "bronze"
+    landing = _seed_store(bronze)
+    temporal = require_temporal(landing.receipt.temporal)
+    independent = create_admission_decision(
+        acquisition_id=temporal.acquisition_id,
+        content_id=temporal.content_id or landing.receipt.payload.sha256,
+        state=BronzeAdmissionState.ACCEPTED,
+        reason_codes=("independent_review",),
+        actor="maintainer:review",
+        decided_at=NOW + timedelta(minutes=1),
+    )
+    persist_admission_decision(
+        independent,
+        receipt_path=landing.receipt_path,
+        receipt=landing.receipt,
+    )
+    landing.parquet_path.unlink()
+
+    with pytest.raises(BronzeRecoveryError, match="one unsuperseded"):
+        reconstruct_bronze(bronze)
 
 
 @pytest.mark.unit
@@ -258,6 +353,8 @@ def test_duplicate_retrieval_keeps_one_payload_two_acquisitions(
         bronze_root=bronze,
         media_hint="json",
     )
+    assert isinstance(first, BronzeLanding)
+    assert isinstance(second, BronzeLanding)
 
     evidence = reconstruct_bronze(bronze)
 
@@ -426,16 +523,18 @@ def test_rebuild_fails_closed_if_receipt_bytes_change(
 def test_reconstructed_parquet_digest_tracks_payload(payload: bytes) -> None:
     with tempfile.TemporaryDirectory() as raw:
         bronze = Path(raw)
+        admitted_payload = json.dumps({"value": payload.hex()}).encode()
         landing = land_bronze_payload(
-            payload,
-            _landable(payload),
+            admitted_payload,
+            _landable(admitted_payload),
             bronze_root=bronze,
-            media_hint="bin",
+            media_hint="json",
         )
+        assert isinstance(landing, BronzeLanding)
         landing.parquet_path.unlink()
         reconstruct_bronze(bronze)
         table = pq.read_table(landing.parquet_path)
         assert (
             table.column("payload_sha256")[0].as_py()
-            == sha256(payload).hexdigest()
+            == sha256(admitted_payload).hexdigest()
         )

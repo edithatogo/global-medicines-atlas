@@ -106,6 +106,18 @@ Every acquisition receipt distinguishes as independent fields, never collapsed:
 OpenLineage projection carries these as facets without replacing native
 receipts.
 
+### Admission-gated projection (Must)
+
+Bronze landing follows one ordered lifecycle: verify the candidate bytes and
+basic archive safety, persist the immutable payload and acquisition evidence,
+append a `landed` admission event, inspect the staged payload, and append an
+`accepted` or `quarantined` decision that supersedes the landed event. Parquet,
+transformation-run receipts, Iceberg-ready metadata, and OpenLineage may be
+created only after acceptance. Deterministic regeneration and recovery resolve
+the latest durable admission decision and fail closed unless it is accepted.
+Later automated or human decisions are new append-only events that reference
+the decision they supersede; no admission record is overwritten.
+
 ### Iceberg-ready (Should)
 
 Parquet files remain Parquet and remain valid without Iceberg. Define stable

@@ -16,8 +16,8 @@ from typing import Any, cast
 
 from pydantic import AnyUrl, Field
 
-from .bronze_admission import admit_bronze_landing
-from .bronze_landing import land_bronze_payload
+from .bronze_admission import BronzeAdmissionState
+from .bronze_landing import BronzeLanding, land_bronze_payload
 from .models import FrozenModel
 from .receipts import (
     AcquisitionMethod,
@@ -399,7 +399,11 @@ def land_governed_fixtures(
             media_hint=spec.media_hint,
             transformation_completed_at=retrieved_at,
         )
-        admission = admit_bronze_landing(landing, decided_at=retrieved_at)
+        if not isinstance(landing, BronzeLanding):
+            raise TypeError("governed fixture was not admitted for projection")
+        admission = landing.admission
+        if admission.state is not BronzeAdmissionState.ACCEPTED:
+            raise ValueError("governed fixture admission must be accepted")
         if admission.path is None:
             raise ValueError("fixture admission record lacks a durable path")
         temporal = landing.receipt.temporal
