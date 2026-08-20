@@ -11,6 +11,9 @@ from tests.test_source_receipts import source_receipt
 from global_medicines_atlas.bronze_admission import (
     BronzeAdmissionState,
     DownstreamAdmissionError,
+    create_admission_decision,
+    latest_admission_decision,
+    persist_admission_decision,
     record_admission_decision,
 )
 from global_medicines_atlas.bronze_landing import (
@@ -29,6 +32,7 @@ from global_medicines_atlas.reuse_gate import acquire_new_decision
 NOW = datetime(2026, 8, 20, 8, 30, tzinfo=UTC)
 VALID = b'{"medicine":"accepted"}'
 MALFORMED = b"{not-json"
+NON_OBJECT = b"[]"
 
 
 def _receipt(payload: bytes):
@@ -95,6 +99,24 @@ def test_malformed_payload_is_quarantined_before_projection(
 
 
 @pytest.mark.unit
+def test_non_object_json_is_quarantined_before_projection(
+    tmp_path: Path,
+) -> None:
+    outcome = land_bronze_payload(
+        NON_OBJECT,
+        _receipt(NON_OBJECT),
+        bronze_root=tmp_path / "bronze",
+        media_hint="json",
+        admission_decided_at=NOW,
+    )
+
+    assert type(outcome) is BronzeAcquisition
+    assert outcome.admission.state is BronzeAdmissionState.QUARANTINED
+    assert outcome.admission.reason_codes == ("schema_breaking",)
+    assert not (tmp_path / "bronze" / "parquet").exists()
+
+
+@pytest.mark.unit
 def test_acceptance_precedes_parquet_and_lineage_projection(
     tmp_path: Path,
 ) -> None:
@@ -153,3 +175,86 @@ def test_human_review_supersedes_without_overwriting_history(
     assert all(path is not None and path.is_file() for path in previous_paths)
     with pytest.raises(DownstreamAdmissionError, match="fail closed"):
         regenerate_parquet(outcome)
+
+
+@pytest.mark.unit
+def test_admission_persistence_rejects_mismatched_identity(
+    tmp_path: Path,
+) -> None:
+    outcome = land_bronze_payload(
+        VALID,
+        _receipt(VALID),
+        bronze_root=tmp_path / "bronze",
+        media_hint="json",
+        admission_decided_at=NOW,
+        transformation_completed_at=NOW,
+    )
+    assert isinstance(outcome, BronzeLanding)
+
+    with pytest.raises(ValueError, match="does not match acquisition"):
+        persist_admission_decision(
+            outcome.admission.model_copy(update={"acquisition_id": "f" * 64}),
+            receipt_path=outcome.receipt_path,
+            receipt=outcome.receipt,
+        )
+    with pytest.raises(ValueError, match="does not match content"):
+        persist_admission_decision(
+            outcome.admission.model_copy(update={"content_id": "e" * 64}),
+            receipt_path=outcome.receipt_path,
+            receipt=outcome.receipt,
+        )
+
+
+@pytest.mark.unit
+def test_latest_admission_rejects_missing_or_branched_history(
+    tmp_path: Path,
+) -> None:
+    outcome = land_bronze_payload(
+        VALID,
+        _receipt(VALID),
+        bronze_root=tmp_path / "bronze",
+        media_hint="json",
+        admission_decided_at=NOW,
+        transformation_completed_at=NOW,
+    )
+    assert isinstance(outcome, BronzeLanding)
+    admission_paths = {
+        event.path
+        for event in _admission_events(outcome)
+        if event.path is not None
+    }
+    for path in admission_paths:
+        path.unlink()
+    with pytest.raises(DownstreamAdmissionError, match="no durable"):
+        latest_admission_decision(outcome)
+
+    temporal = require_temporal(outcome.receipt.temporal)
+    independent = create_admission_decision(
+        acquisition_id=temporal.acquisition_id,
+        content_id=temporal.content_id or outcome.receipt.payload.sha256,
+        state=BronzeAdmissionState.LANDED,
+        reason_codes=("independent_review",),
+        actor="maintainer:review",
+        decided_at=NOW + timedelta(minutes=1),
+    )
+    for record in (outcome.landed_admission, independent):
+        persist_admission_decision(
+            record,
+            receipt_path=outcome.receipt_path,
+            receipt=outcome.receipt,
+        )
+    with pytest.raises(DownstreamAdmissionError, match="one unsuperseded"):
+        latest_admission_decision(outcome)
+
+
+@pytest.mark.unit
+def test_transformation_cannot_precede_admission(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="cannot complete before admission"):
+        land_bronze_payload(
+            VALID,
+            _receipt(VALID),
+            bronze_root=tmp_path / "bronze",
+            media_hint="json",
+            admission_decided_at=NOW + timedelta(seconds=1),
+            transformation_completed_at=NOW,
+        )
