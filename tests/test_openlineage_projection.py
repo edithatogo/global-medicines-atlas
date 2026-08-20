@@ -11,7 +11,10 @@ from hypothesis import strategies as st
 from tests.test_source_receipts import source_receipt
 
 from global_medicines_atlas.bronze_transformation import receipt_for_parquet
-from global_medicines_atlas.iceberg_ready import IcebergReadyTableSpec
+from global_medicines_atlas.iceberg_ready import (
+    IcebergPartitionField,
+    IcebergReadyTableSpec,
+)
 from global_medicines_atlas.openlineage_projection import (
     COLUMN_LINEAGE_SCHEMA_URL,
     EVENT_TYPES,
@@ -29,10 +32,17 @@ def _table(tmp_path: Path) -> IcebergReadyTableSpec:
     return IcebergReadyTableSpec(
         identifier="bronze.nz_medsafe_products",
         location=str(tmp_path / "parquet"),
-        partition_fields=("jurisdiction", "source_id"),
+        partition_fields=(
+            IcebergPartitionField(
+                source_field="gma_acquired_at",
+                name="gma_acquired_at_month",
+                transform="month",
+            ),
+        ),
         schema_fields=(
             ("jurisdiction", "string"),
             ("source_id", "string"),
+            ("gma_acquired_at", "timestamptz"),
         ),
     )
 
@@ -82,6 +92,19 @@ def test_openlineage_event_uses_real_field_names(tmp_path: Path) -> None:
     assert parquet["facets"]["storage"]["fileFormat"] == "parquet"
     assert parquet["facets"]["storage"]["storageLayer"] == "file"
     assert catalogue["facets"]["storage"]["storageLayer"] == "iceberg"
+    expected_partitions = [
+        {
+            "sourceField": "gma_acquired_at",
+            "name": "gma_acquired_at_month",
+            "transform": "month",
+        }
+    ]
+    assert parquet["facets"]["gmaIcebergReady"]["partitionFields"] == (
+        expected_partitions
+    )
+    assert catalogue["facets"]["gmaIcebergReady"]["partitionFields"] == (
+        expected_partitions
+    )
     temporal = event["run"]["facets"]["gmaTemporalIdentity"]
     assert temporal["retrievedAt"] == event["eventTime"]
     assert temporal["sourcePublishedAt"] is None

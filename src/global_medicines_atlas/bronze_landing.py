@@ -41,7 +41,12 @@ from .bronze_transformation import (
     receipt_for_parquet,
     write_transformation_run_receipt,
 )
-from .iceberg_ready import IcebergReadyTableSpec, table_identifier_for
+from .iceberg_ready import (
+    IcebergPartitionPolicy,
+    IcebergReadyTableSpec,
+    plan_iceberg_partitions,
+    table_identifier_for,
+)
 from .openlineage_projection import project_openlineage_event
 from .receipts import (
     AcquisitionEvent,
@@ -68,6 +73,7 @@ _RECORD_LINK_COLUMNS = (
     "gma_source_record_id",
     "gma_acquisition_id",
     "gma_content_id",
+    "gma_acquired_at",
     "gma_schema_fingerprint",
 )
 
@@ -91,6 +97,7 @@ class SourceRecordBatch:
     table: pa.Table
     parser_identity: str
     record_id_column: str
+    partition_policy: IcebergPartitionPolicy | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -160,6 +167,8 @@ def bronze_table_spec(
     *,
     product: str = ACQUISITION_MANIFEST_PRODUCT,
     schema_fields: tuple[tuple[str, str], ...] | None = None,
+    row_count: int = 1,
+    partition_policy: IcebergPartitionPolicy | None = None,
 ) -> IcebergReadyTableSpec:
     """Stable Iceberg-ready identity for one explicit Bronze product."""
 
@@ -194,10 +203,10 @@ def bronze_table_spec(
         source_id=source_id,
     )
     identifier = f"{identifier}_{product}"
-    partitions = (
-        ("jurisdiction", "source_id", "rights_state")
-        if product == ACQUISITION_MANIFEST_PRODUCT
-        else ()
+    partitions = plan_iceberg_partitions(
+        fields,
+        row_count=row_count,
+        policy=partition_policy,
     )
     return IcebergReadyTableSpec(
         identifier=identifier,
@@ -305,6 +314,8 @@ def _iceberg_type(field: pa.Field[pa.DataType]) -> str:
         return "long"
     if pa.types.is_floating(field.type):
         return "double"
+    if pa.types.is_date(field.type):
+        return "date"
     if pa.types.is_timestamp(field.type):
         return "timestamptz" if field.type.tz is not None else "timestamp"
     return "string"
@@ -355,6 +366,13 @@ def _source_records_table(
         ("gma_schema_fingerprint", fingerprint),
     ):
         linked = linked.append_column(name, pa.array([value] * count))
+    linked = linked.append_column(
+        "gma_acquired_at",
+        pa.array(
+            [temporal.retrieved_at] * count,
+            type=pa.timestamp("us", tz="UTC"),
+        ),
+    )
     return linked, fingerprint
 
 
@@ -430,6 +448,7 @@ def _write_parquet_product(
     parser_identity: str,
     transformation_identity: str,
     schema_version: str,
+    partition_policy: IcebergPartitionPolicy | None,
     completed_at: datetime | None,
 ) -> _ProductOutput:
     pq.write_table(table, parquet_path)
@@ -454,6 +473,8 @@ def _write_parquet_product(
         parquet_path,
         product=product,
         schema_fields=schema_fields,
+        row_count=table.num_rows,
+        partition_policy=partition_policy,
     )
     if spec.parquet_digest != transformation_run.output.sha256:
         raise ValueError("Parquet identity diverged after transformation")
@@ -506,6 +527,7 @@ def _write_analytical_outputs(
         parser_identity=MANIFEST_PARSER_IDENTITY,
         transformation_identity=MANIFEST_TRANSFORMATION_IDENTITY,
         schema_version=MANIFEST_SCHEMA_VERSION,
+        partition_policy=None,
         completed_at=completed_at,
     )
     if source_records is None:
@@ -524,6 +546,7 @@ def _write_analytical_outputs(
         parser_identity=source_records.parser_identity,
         transformation_identity=SOURCE_RECORDS_TRANSFORMATION_IDENTITY,
         schema_version=SOURCE_RECORDS_SCHEMA_VERSION,
+        partition_policy=source_records.partition_policy,
         completed_at=completed_at,
     )
     return manifest, records
