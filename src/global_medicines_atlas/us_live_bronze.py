@@ -81,7 +81,7 @@ class AuthorizedUSSource(FrozenModel):
 
     source_id: str = Field(min_length=1)
     endpoint: AnyUrl
-    media_hint: Literal["json", "zip", "html"]
+    media_hint: Literal["json", "zip", "pdf", "html"]
     rights_profile: Literal[
         "scoped_cc0_metadata_only",
         "government_public_domain_policy_review",
@@ -332,6 +332,42 @@ def _write_private_archive(corpus: Path, destination: Path) -> tuple[str, int]:
             _add_tar_entry(archive, path, corpus)
     payload = destination.read_bytes()
     return sha256(payload).hexdigest(), len(payload)
+
+
+def endpoint_source(
+    item: AuthorizedUSSource,
+    catalog: tuple[MedicineDataSource, ...],
+) -> MedicineDataSource:
+    """Bind an authorized exact endpoint to its catalog source contract."""
+    return _endpoint_source(item, catalog)
+
+
+def bind_us_acquisition_rights(
+    item: AuthorizedUSSource,
+    receipt: SourceReceipt,
+    observed_at: datetime,
+) -> SourceReceipt:
+    """Bind the reviewed U.S. internal-retention policy to a receipt."""
+    return _bind_rights(item, receipt, observed_at)
+
+
+def copy_evidentiary_truth(source: Path, destination: Path) -> None:
+    """Copy only payload and receipt truth into a clean-room root."""
+    _copy_evidentiary_truth(source, destination)
+
+
+def recoverable_us_source_record_batch(
+    source_id: str, payload: bytes, media_hint: str
+) -> SourceRecordBatch | None:
+    """Build a fault-isolated U.S. source-record batch for recovery."""
+    return _recoverable_source_record_batch(source_id, payload, media_hint)
+
+
+def write_private_corpus_archive(
+    corpus: Path, destination: Path
+) -> tuple[str, int]:
+    """Write the deterministic private corpus archive."""
+    return _write_private_archive(corpus, destination)
 
 
 def _failure_item(

@@ -1,175 +1,234 @@
-"""Contracts for optional, non-blocking datahouse experiments."""
+"""Contracts for optional datahouse experiments."""
 
 from __future__ import annotations
 
-import importlib.util
+import hashlib
 import json
-import tomllib
 from pathlib import Path
-from typing import cast
 
 import pytest
-from pydantic import ValidationError
+from jsonschema import Draft202012Validator
 
 from global_medicines_atlas.datahouse_experiments import (
-    ALL_EXPERIMENTS,
-    ExperimentMatrix,
+    EXPERIMENT_IDS,
     ExperimentOutcome,
-    matrix_digest,
-    verify_matrix_inputs,
+    ExperimentReceipt,
+    batch_manifest,
+    classify_prerequisite,
+    decision_matrix,
+    ducklake_comparison,
+    experiment_matrix,
+    iceberg_rest_attempt,
+    iceberg_v3_capabilities,
+    verify_batch_manifest,
 )
 
-ROOT = Path(__file__).resolve().parents[1]
-MATRIX = ROOT / "quality/qualifications/datahouse-experiment-matrix.json"
-SCHEMA = ROOT / "schemas/datahouse-experiment-matrix-v1.json"
 
+def test_matrix_covers_every_experiment_and_explicit_outcome(tmp_path) -> None:
+    fixture = tmp_path / "fixture.parquet"
+    fixture.write_bytes(b"governed synthetic parquet fixture")
 
-def _payload() -> dict[str, object]:
-    return json.loads(MATRIX.read_text(encoding="utf-8"))
+    matrix = experiment_matrix(fixture)
 
-
-@pytest.mark.unit
-def test_committed_matrix_covers_every_experiment_once() -> None:
-    matrix = ExperimentMatrix.model_validate_json(MATRIX.read_bytes())
-
-    assert {item.experiment_id for item in matrix.experiments} == set(
-        ALL_EXPERIMENTS
-    )
-    assert len(matrix.experiments) == len(ALL_EXPERIMENTS)
-    assert matrix.bronze_completion_blocking is False
-    assert matrix.payload_receipts_remain_authoritative is True
-    assert matrix_digest(matrix) == matrix_digest(
-        ExperimentMatrix.model_validate(matrix.model_dump(mode="json"))
-    )
-
-
-@pytest.mark.unit
-def test_matrix_rejects_missing_and_duplicate_experiments() -> None:
-    payload = _payload()
-    experiments = payload["experiments"]
-    assert isinstance(experiments, list)
-    payload["experiments"] = experiments[:-1]
-    with pytest.raises(ValidationError, match="exactly once"):
-        ExperimentMatrix.model_validate(payload)
-
-    payload = _payload()
-    experiments = payload["experiments"]
-    assert isinstance(experiments, list)
-    experiments[-1] = experiments[0]
-    with pytest.raises(ValidationError, match="exactly once"):
-        ExperimentMatrix.model_validate(payload)
-
-
-@pytest.mark.unit
-def test_not_run_outcome_requires_unmet_prerequisites() -> None:
-    payload = _payload()
-    experiments = payload["experiments"]
-    assert isinstance(experiments, list)
-    item = cast("dict[str, object]", experiments[0])
-    assert isinstance(item, dict)
-    item["outcome"] = ExperimentOutcome.NOT_RUN_PREREQUISITE_UNMET
-    item["prerequisites_met"] = True
-
-    with pytest.raises(ValidationError, match="unmet prerequisite"):
-        ExperimentMatrix.model_validate(payload)
-
-
-@pytest.mark.unit
-def test_executed_outcome_requires_measured_evidence() -> None:
-    payload = _payload()
-    experiments = payload["experiments"]
-    assert isinstance(experiments, list)
-    item = cast("dict[str, object]", experiments[0])
-    assert isinstance(item, dict)
-    item["outcome"] = ExperimentOutcome.SUPPORTED
-    item["prerequisites_met"] = True
-    item["evidence"] = []
-
-    with pytest.raises(ValidationError, match="evidence"):
-        ExperimentMatrix.model_validate(payload)
-
-
-@pytest.mark.unit
-def test_specification_references_are_version_or_revision_pinned() -> None:
-    matrix = ExperimentMatrix.model_validate_json(MATRIX.read_bytes())
-
+    assert tuple(item.experiment_id for item in matrix) == EXPERIMENT_IDS
+    assert {item.outcome for item in matrix} == {ExperimentOutcome.NOT_RUN}
+    assert all(item.specification.uri.startswith("https://") for item in matrix)
+    assert all(item.specification.revision for item in matrix)
     assert all(
-        reference.version or reference.revision
-        for item in matrix.experiments
-        for reference in item.specifications
+        item.fixture_sha256 == hashlib.sha256(fixture.read_bytes()).hexdigest()
+        for item in matrix
+    )
+    assert all(item.limitations and item.rollback_procedure for item in matrix)
+
+
+def test_receipt_schema_accepts_serialized_matrix(tmp_path) -> None:
+    fixture = tmp_path / "fixture.parquet"
+    fixture.write_bytes(b"fixture")
+    schema = json.loads(
+        Path("schemas/datahouse-experiment-receipt-v1.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    validator = Draft202012Validator(schema)
+
+    for receipt in experiment_matrix(fixture):
+        validator.validate(receipt.to_dict())
+
+
+def test_receipt_rejects_unpinned_specification() -> None:
+    with pytest.raises(ValueError, match="revision"):
+        ExperimentReceipt.from_dict({
+            "schema_version": "1.0",
+            "experiment_id": "iceberg_rest",
+            "outcome": "not_run",
+            "specification": {
+                "uri": "https://example.test/spec",
+                "revision": "",
+            },
+            "runtime": {"python": "3.14", "dependencies": []},
+            "fixture_sha256": "0" * 64,
+            "feature_flags": [],
+            "limitations": ["not executed"],
+            "rollback_procedure": "remove rebuildable metadata",
+        })
+
+
+@pytest.mark.parametrize(
+    ("override", "message"),
+    [
+        ({"experiment_id": "unknown"}, "unknown experiment"),
+        (
+            {"specification": {"uri": "http://example.test", "revision": "v1"}},
+            "HTTPS",
+        ),
+        ({"limitations": []}, "limitation"),
+        ({"rollback_procedure": ""}, "rollback"),
+    ],
+)
+def test_receipt_rejects_incomplete_authority(override, message) -> None:
+    value = {
+        "schema_version": "1.0",
+        "experiment_id": "iceberg_rest",
+        "outcome": "not_run",
+        "specification": {"uri": "https://example.test", "revision": "v1"},
+        "runtime": {"python": "3.14", "dependencies": []},
+        "fixture_sha256": "0" * 64,
+        "feature_flags": [],
+        "limitations": ["not run"],
+        "rollback_procedure": "delete derivatives",
+    }
+    value.update(override)
+    with pytest.raises(ValueError, match=message):
+        ExperimentReceipt.from_dict(value)
+
+
+def test_receipt_rejects_non_object_runtime() -> None:
+    with pytest.raises(TypeError, match="must be objects"):
+        ExperimentReceipt.from_dict({"specification": [], "runtime": []})
+
+
+def test_batch_manifest_is_order_independent_and_detects_tampering() -> None:
+    objects = {
+        "sha256:alpha": hashlib.sha256(b"alpha").hexdigest(),
+        "sha256:beta": hashlib.sha256(b"beta").hexdigest(),
+        "sha256:gamma": hashlib.sha256(b"gamma").hexdigest(),
+    }
+
+    first = batch_manifest(objects)
+    second = batch_manifest(dict(reversed(tuple(objects.items()))))
+
+    assert first == second
+    assert verify_batch_manifest(first, objects)
+    corrupted = dict(objects)
+    corrupted["sha256:beta"] = hashlib.sha256(b"corrupted").hexdigest()
+    assert not verify_batch_manifest(first, corrupted)
+
+
+def test_batch_manifest_rejects_duplicate_or_invalid_authority() -> None:
+    digest = hashlib.sha256(b"alpha").hexdigest()
+    with pytest.raises(ValueError, match="content ID"):
+        batch_manifest([("sha256:alpha", digest), ("sha256:alpha", digest)])
+    with pytest.raises(ValueError, match="SHA-256"):
+        batch_manifest({"sha256:alpha": "not-a-digest"})
+    with pytest.raises(ValueError, match="content ID"):
+        batch_manifest([("", digest)])
+    assert batch_manifest([])["leaf_count"] == 0
+    assert verify_batch_manifest({}, {"sha256:alpha": "invalid"}) is False
+
+
+def test_iceberg_v3_capabilities_fall_back_without_identity_drift() -> None:
+    identity = "gma.bronze.synthetic@sha256:abc"
+    result = iceberg_v3_capabilities(
+        advertised={"variant", "row_lineage"},
+        requested={"variant", "deletion_vectors"},
+        table_identity=identity,
     )
 
-    payload = _payload()
-    experiments = payload["experiments"]
-    assert isinstance(experiments, list)
-    item = cast("dict[str, object]", experiments[0])
-    specifications = item["specifications"]
-    assert isinstance(specifications, list)
-    reference = cast("dict[str, object]", specifications[0])
-    reference.pop("version", None)
-    reference.pop("revision", None)
-    with pytest.raises(ValidationError, match="version or revision"):
-        ExperimentMatrix.model_validate(payload)
+    assert result["supported"] == ["variant"]
+    assert result["fallback"] == ["deletion_vectors"]
+    assert result["table_identity"] == identity
+    assert result["fallback_format_version"] == 2
+    with pytest.raises(ValueError, match="identity"):
+        iceberg_v3_capabilities(
+            advertised=set(), requested=set(), table_identity=""
+        )
 
 
-@pytest.mark.unit
-def test_executed_outcome_rejects_unmet_prerequisites() -> None:
-    payload = _payload()
-    experiments = payload["experiments"]
-    assert isinstance(experiments, list)
-    item = cast("dict[str, object]", experiments[0])
-    item["outcome"] = ExperimentOutcome.FAILED
-    item["prerequisites_met"] = False
-    item["evidence"] = ["quality/qualifications/failure.json"]
-
-    with pytest.raises(ValidationError, match="satisfied prerequisites"):
-        ExperimentMatrix.model_validate(payload)
-
-
-@pytest.mark.unit
-def test_matrix_input_digests_are_verified(tmp_path: Path) -> None:
-    matrix = ExperimentMatrix.model_validate_json(MATRIX.read_bytes())
-    verify_matrix_inputs(matrix, ROOT)
-
-    fixture = tmp_path / matrix.fixture_path
-    fixture.parent.mkdir(parents=True)
-    fixture.write_bytes(b"changed")
-    lock = tmp_path / matrix.dependency_lock_path
-    lock.write_bytes((ROOT / matrix.dependency_lock_path).read_bytes())
-
-    with pytest.raises(ValueError, match="digest mismatch"):
-        verify_matrix_inputs(matrix, tmp_path)
-
-
-@pytest.mark.unit
-def test_matrix_input_verification_rejects_missing_files(
-    tmp_path: Path,
+def test_ducklake_uses_disposable_catalogue_and_preserves_baseline(
+    tmp_path,
 ) -> None:
-    matrix = ExperimentMatrix.model_validate_json(MATRIX.read_bytes())
-
-    with pytest.raises(FileNotFoundError):
-        verify_matrix_inputs(matrix, tmp_path)
-
-
-@pytest.mark.unit
-def test_experiment_dependencies_remain_outside_core() -> None:
-    project = tomllib.loads((ROOT / "pyproject.toml").read_text())
-    runtime = "\n".join(project["project"]["dependencies"]).lower()
-
-    assert "pyiceberg" not in runtime
-    assert "ducklake" not in runtime
-    assert "lakefs" not in runtime
-    assert "deltalake" not in runtime
-    assert "hudi" not in runtime
-    assert (
-        importlib.util.find_spec("global_medicines_atlas.bronze_recovery")
-        is not None
+    result = ducklake_comparison(
+        tmp_path,
+        rows=[(1, "synthetic"), (2, "redistributable")],
     )
 
+    assert result["outcome"] == "supported"
+    assert result["row_count"] == 2
+    assert result["baseline_sha256"] == result["recovered_sha256"]
+    assert result["catalogue_authoritative"] is False
 
-@pytest.mark.unit
-def test_committed_json_schema_matches_model() -> None:
-    committed = json.loads(SCHEMA.read_text(encoding="utf-8"))
-    generated = ExperimentMatrix.model_json_schema()
 
-    assert committed == generated
+@pytest.mark.parametrize("experiment_id", ["object_versioning", "delta_hudi"])
+def test_unmet_entry_conditions_are_explicit(experiment_id) -> None:
+    result = classify_prerequisite(
+        experiment_id,
+        evidence={},
+    )
+
+    assert result.outcome is ExperimentOutcome.NOT_RUN_PREREQUISITE_UNMET
+    assert result.limitations
+    if experiment_id == "delta_hudi":
+        complete = classify_prerequisite(
+            experiment_id,
+            evidence={
+                "update_rate": 1,
+                "delete_rate": 1,
+                "concurrency": 1,
+                "transaction_requirements": "atomic updates",
+            },
+        )
+        assert complete.outcome is ExperimentOutcome.NOT_RUN
+
+
+def test_unknown_prerequisite_gate_is_rejected() -> None:
+    with pytest.raises(ValueError, match="no prerequisite gate"):
+        classify_prerequisite("iceberg_rest", {})
+
+
+def test_iceberg_rest_unavailable_is_a_reproducible_failure_receipt(
+    tmp_path,
+) -> None:
+    fixture = tmp_path / "fixture.parquet"
+    fixture.write_bytes(b"fixture")
+
+    receipt = iceberg_rest_attempt(fixture, endpoint=None)
+
+    assert receipt.outcome is ExperimentOutcome.FAILED
+    assert receipt.feature_flags == ("endpoint_unconfigured",)
+    assert "No disposable Iceberg REST endpoint" in receipt.limitations[0]
+    with pytest.raises(NotImplementedError, match="endpoint"):
+        iceberg_rest_attempt(fixture, endpoint="http://127.0.0.1:8181")
+
+
+def test_cross_experiment_disposition_separates_evidence_from_inference(
+    tmp_path,
+) -> None:
+    fixture = tmp_path / "fixture.parquet"
+    fixture.write_bytes(b"fixture")
+    receipts = list(experiment_matrix(fixture))
+    receipts[2] = ExperimentReceipt(
+        experiment_id="ducklake",
+        outcome=ExperimentOutcome.SUPPORTED,
+        specification=receipts[2].specification,
+        fixture_sha256=receipts[2].fixture_sha256,
+        limitations=("Single embedded implementation only.",),
+        rollback_procedure="Delete disposable derivatives.",
+    )
+
+    matrix = decision_matrix(receipts)
+
+    assert matrix["ducklake"]["disposition"] == "continue-experiment"
+    assert matrix["object_versioning"]["disposition"] == "not-run"
+    assert matrix["ducklake"]["deployment_authorized"] is False
+    with pytest.raises(ValueError, match="missing experiment"):
+        decision_matrix(receipts[:-1])
