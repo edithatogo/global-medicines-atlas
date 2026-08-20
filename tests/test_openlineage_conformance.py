@@ -6,6 +6,7 @@ import copy
 import json
 import re
 from pathlib import Path
+from typing import Protocol, cast
 
 import pytest
 from jsonschema import Draft202012Validator
@@ -27,6 +28,7 @@ from global_medicines_atlas.openlineage_projection import (
     conform_run_event,
     project_openlineage_events,
 )
+from global_medicines_atlas.receipts import require_temporal
 from global_medicines_atlas.reuse_gate import acquire_new_decision
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,20 +38,25 @@ PINNED_SCHEMA = re.compile(
 )
 
 
+class _SchemaValidator(Protocol):
+    def validate(self, instance: object) -> None: ...
+
+
 def _projection(tmp_path: Path):
     receipt = source_receipt().model_copy(
         update={"reuse": acquire_new_decision("medsafe-product-register")}
     )
+    temporal = require_temporal(receipt.temporal)
     parquet_path = tmp_path / "manifest.parquet"
     parquet_path.write_bytes(b"parquet-output")
     run = receipt_for_parquet(
         parquet_path,
-        acquisition_id=receipt.temporal.acquisition_id,
+        acquisition_id=temporal.acquisition_id,
         input_content_id=receipt.payload.sha256,
-        completed_at=receipt.temporal.retrieved_at,
+        completed_at=temporal.retrieved_at,
     )
     admission = create_admission_decision(
-        acquisition_id=receipt.temporal.acquisition_id,
+        acquisition_id=temporal.acquisition_id,
         content_id=receipt.payload.sha256,
         state=BronzeAdmissionState.ACCEPTED,
         validation_results=(
@@ -64,7 +71,7 @@ def _projection(tmp_path: Path):
                 message="archive limits satisfied",
             ),
         ),
-        decided_at=receipt.temporal.retrieved_at,
+        decided_at=temporal.retrieved_at,
     )
     table = IcebergReadyTableSpec(
         identifier="bronze.nz_medsafe_products",
@@ -108,20 +115,31 @@ def test_custom_facet_urls_are_immutable_and_keys_are_prefixed(
     _receipt, _run, events = _projection(tmp_path)
     assert set(CUSTOM_FACET_SCHEMA_URLS) == set(CUSTOM_FACET_SCHEMA_PATHS)
     assert all(
-        PINNED_SCHEMA.match(url)
-        for url in CUSTOM_FACET_SCHEMA_URLS.values()
+        PINNED_SCHEMA.match(url) for url in CUSTOM_FACET_SCHEMA_URLS.values()
     )
+    observed: dict[str, dict[str, object]] = {}
     for event in events:
         entities = [event["run"], *event["inputs"], *event["outputs"]]
         for entity in entities:
             for facet_group in ("facets", "inputFacets", "outputFacets"):
                 for key, facet in entity.get(facet_group, {}).items():
                     if key.startswith("gma"):
+                        observed[key] = facet
                         assert key.startswith("gma_")
-                        assert facet["_schemaURL"] == (
-                            CUSTOM_FACET_SCHEMA_URLS[key]
+                        assert (
+                            facet["_schemaURL"]
+                            == (CUSTOM_FACET_SCHEMA_URLS[key])
                         )
                         assert "/blob/main/" not in facet["_schemaURL"]
+    assert set(observed) == set(CUSTOM_FACET_SCHEMA_PATHS)
+    for key, facet in observed.items():
+        schema = json.loads(
+            (ROOT / CUSTOM_FACET_SCHEMA_PATHS[key]).read_bytes()
+        )
+        validator = cast(
+            "_SchemaValidator", Draft202012Validator(schema["allOf"][1])
+        )
+        validator.validate(facet)
 
 
 @pytest.mark.unit
@@ -133,15 +151,20 @@ def test_acquisition_and_transformation_are_distinct_linked_runs(
     assert acquisition["job"]["name"].startswith("bronze.acquire.")
     assert transformation["job"]["name"].startswith("bronze.transform.")
     assert acquisition["run"]["runId"] != transformation["run"]["runId"]
-    assert acquisition["run"]["facets"]["gma_acquisition"][
-        "acquisitionId"
-    ] == receipt.temporal.acquisition_id
-    assert transformation["run"]["facets"]["gma_transformation"][
-        "transformationRunId"
-    ] == run.run_id
-    assert transformation["run"]["facets"]["parent"]["run"][
-        "runId"
-    ] == acquisition["run"]["runId"]
+    assert (
+        acquisition["run"]["facets"]["gma_acquisition"]["acquisitionId"]
+        == require_temporal(receipt.temporal).acquisition_id
+    )
+    assert (
+        transformation["run"]["facets"]["gma_transformation"][
+            "transformationRunId"
+        ]
+        == run.run_id
+    )
+    assert (
+        transformation["run"]["facets"]["parent"]["run"]["runId"]
+        == acquisition["run"]["runId"]
+    )
     assert acquisition["outputs"][0]["namespace"] == "gma.payload"
     assert transformation["inputs"][0]["namespace"] == "gma.payload"
 

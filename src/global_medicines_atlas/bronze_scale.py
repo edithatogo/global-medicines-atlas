@@ -707,6 +707,7 @@ def _measure_lineage(landings: tuple[BronzeLanding, ...]) -> float:
             payload_uri=landing.payload_path.as_uri(),
             parquet_uri=landing.parquet_path.as_uri(),
             transformation_run=landing.transformation_run,
+            admission=landing.admission,
             table=landing.table,
             parquet_product="acquisition_manifest",
         )
