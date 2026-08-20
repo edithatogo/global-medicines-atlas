@@ -202,6 +202,9 @@
   representation; table/catalogue layers are rebuildable metadata over those
   artefacts. DuckDB and LanceDB remain regenerable derivatives and are not
   bronze. Parquet is not raw-as-landed and is not bronze evidentiary truth.
+  This representation consists of a mandatory one-row acquisition manifest
+  and optional adapter-native source records; binary payloads remain immutable
+  bytes and are never replacement-decoded into either product.
 - **M-095:** Complete bronze for current-scope public/no-credential catalog
   sources and already-governed fixtures. Credentialed, licensed-feed, and
   restricted-payload sources remain catalogued with explicit exclusion from this
@@ -245,7 +248,8 @@
   state, and content digests into facets. Do not collapse payload identity
   into Parquet, Iceberg, or storage-table identity. Native receipts remain
   authoritative. Events must conform to the current OpenLineage RunEvent
-  shape.
+  shape. Give the acquisition manifest and source-record products distinct
+  output identities, actual-byte transformation receipts, and lineage events.
 ## Should Have
 
 - **S-001:** Evaluate Apache DataFusion for measured Rust-native query or streaming requirements without displacing DuckDB prematurely.

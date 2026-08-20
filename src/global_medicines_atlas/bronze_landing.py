@@ -207,7 +207,7 @@ def bronze_table_spec(
         schema_fields=fields,
         last_column_id=len(fields),
         acquisition_id=temporal.acquisition_id,
-        content_id=receipt.payload.sha256,
+        content_id=temporal.content_id or receipt.payload.sha256,
         parquet_digest=sha256(parquet_path.read_bytes()).hexdigest(),
     )
 
@@ -238,30 +238,64 @@ def _acquisition_manifest_table(
     if reuse_gate is None:
         raise ValueError("acquisition manifest requires a reuse gate decision")
     reuse = reuse_gate.disposition.value
-    return pa.table({
-        "source_id": [receipt.source.source_id],
-        "jurisdiction": [receipt.source.jurisdiction],
-        "acquisition_id": [temporal.acquisition_id],
-        "content_id": [temporal.content_id or receipt.payload.sha256],
-        "retrieved_at": [temporal.retrieved_at],
-        "source_published_at": [temporal.source_published_at],
-        "source_effective_at": [temporal.source_effective_at],
-        "valid_from": [temporal.valid_from],
-        "valid_to": [temporal.valid_to],
-        "rights_state": [receipt.rights_state.value],
-        "admission_state": [admission.state.value],
-        "source_uri": [str(receipt.retrieval.uri)],
-        "media_type": [_media_type(receipt, payload_path)],
-        "payload_location": [payload_path.as_uri()],
-        "payload_sha256": [receipt.payload.sha256],
-        "payload_byte_count": [receipt.payload.byte_count],
-        "receipt_digest": [receipt.digest()],
-        "parser_available": [source_records is not None],
-        "source_parser_identity": [
+    strings = {
+        "source_id": receipt.source.source_id,
+        "jurisdiction": receipt.source.jurisdiction,
+        "acquisition_id": temporal.acquisition_id,
+        "content_id": temporal.content_id or receipt.payload.sha256,
+        "rights_state": receipt.rights_state.value,
+        "admission_state": admission.state.value,
+        "source_uri": str(receipt.retrieval.uri),
+        "media_type": _media_type(receipt, payload_path),
+        "payload_location": payload_path.as_uri(),
+        "payload_sha256": receipt.payload.sha256,
+        "receipt_digest": receipt.digest(),
+        "source_parser_identity": (
             None if source_records is None else source_records.parser_identity
-        ],
-        "reuse_disposition": [reuse],
-    })
+        ),
+        "reuse_disposition": reuse,
+    }
+    columns: dict[str, pa.Array[pa.Scalar[pa.DataType]]] = {
+        name: pa.array([value], type=pa.string())
+        for name, value in strings.items()
+    }
+    for name, value in (
+        ("retrieved_at", temporal.retrieved_at),
+        ("source_published_at", temporal.source_published_at),
+        ("source_effective_at", temporal.source_effective_at),
+        ("valid_from", temporal.valid_from),
+        ("valid_to", temporal.valid_to),
+    ):
+        columns[name] = pa.array([value], type=pa.timestamp("us", tz="UTC"))
+    columns["payload_byte_count"] = pa.array(
+        [receipt.payload.byte_count], type=pa.int64()
+    )
+    columns["parser_available"] = pa.array(
+        [source_records is not None], type=pa.bool_()
+    )
+    ordered = (
+        "source_id",
+        "jurisdiction",
+        "acquisition_id",
+        "content_id",
+        "retrieved_at",
+        "source_published_at",
+        "source_effective_at",
+        "valid_from",
+        "valid_to",
+        "rights_state",
+        "admission_state",
+        "source_uri",
+        "media_type",
+        "payload_location",
+        "payload_sha256",
+        "payload_byte_count",
+        "receipt_digest",
+        "parser_available",
+        "source_parser_identity",
+        "reuse_disposition",
+    )
+    return pa.table({name: columns[name] for name in ordered})
 
 
 def _iceberg_type(field: pa.Field[pa.DataType]) -> str:

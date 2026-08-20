@@ -450,7 +450,8 @@ flowchart TB
         PAYLOAD["Immutable source payload"]
         RECEIPT["Content-addressed receipts"]
         TIME["Temporal identity"]
-        PARQUET["Source-faithful Parquet analytical representation"]
+        MANIFEST["acquisition_manifest.parquet — one acquisition row"]
+        RECORDS["source_records.parquet — optional native records"]
         CATALOGUE["Rebuildable table/catalogue metadata"]
     end
 
@@ -476,17 +477,23 @@ flowchart TB
     INGEST --> PAYLOAD
     PAYLOAD --> RECEIPT
     PAYLOAD --> TIME
-    RECEIPT --> PARQUET
-    TIME --> PARQUET
-    PARQUET --> CATALOGUE
+    RECEIPT --> MANIFEST
+    TIME --> MANIFEST
+    PAYLOAD --> RECORDS
+    MANIFEST --> CATALOGUE
+    RECORDS --> CATALOGUE
     CATALOGUE --> SILVER
-    PARQUET --> SILVER
+    MANIFEST --> SILVER
+    RECORDS --> SILVER
     SILVER --> GOLD
     GOLD --> PLATINUM
-    PARQUET --> DUCK
-    PARQUET --> LANCE
+    MANIFEST --> DUCK
+    RECORDS --> DUCK
+    MANIFEST --> LANCE
+    RECORDS --> LANCE
     PAYLOAD --> HF
-    PARQUET --> HF
+    MANIFEST --> HF
+    RECORDS --> HF
 ```
 
 Hugging Face is an archive and publication boundary for reviewed public bronze
@@ -501,10 +508,17 @@ design consumes that boundary.
 
 Bronze landing preserves the bytes a source published together with a
 content-addressed receipt. That payload-and-receipt pair is evidentiary truth.
-Source-faithful Parquet is produced alongside it as an analytical
-representation that parsers may later improve. Regulatory, funding, formulary,
-and terminology land in independent partitions or tables. Missing coverage is
-recorded as not covered, never as unapproved or unfunded.
+Source-faithful Parquet is produced alongside it as two explicit analytical
+products: mandatory `acquisition_manifest.parquet`, with one row per
+acquisition, and optional adapter-specific `source_records.parquet`, with one
+row per source-native record. The latter preserves native names and types where
+feasible and carries record, acquisition, content, and schema-fingerprint
+linkage without cross-country semantic normalization. Binary documents remain
+immutable payloads; extracted text, layout, tables, and chunks are separate
+derived datasets. Regulatory, funding, formulary, and terminology land in
+independent partitions or tables. Missing coverage is recorded as not covered,
+never as unapproved or unfunded. Canonical medicine and product normalization
+remains a Silver responsibility.
 
 ```mermaid
 flowchart LR
@@ -519,7 +533,8 @@ flowchart LR
     PAYLOAD["Immutable payload bytes"]
     RECEIPT["Content-addressed receipt"]
     TIME["source published, retrieved_at, valid_from/to, acquisition_id"]
-    PARQUET["Source-faithful Parquet"]
+    MANIFEST["acquisition_manifest.parquet"]
+    RECORDS["optional source_records.parquet"]
     OL["OpenLineage projection"]
     ICE["Iceberg-ready table identity"]
     HF["Hugging Face archive boundary"]
@@ -537,14 +552,18 @@ flowchart LR
     FIXTURE --> PAYLOAD
     PAYLOAD --> RECEIPT
     PAYLOAD --> TIME
-    RECEIPT --> PARQUET
-    TIME --> PARQUET
+    RECEIPT --> MANIFEST
+    TIME --> MANIFEST
+    PAYLOAD --> RECORDS
     RECEIPT --> OL
     PAYLOAD --> OL
-    PARQUET --> OL
+    MANIFEST --> OL
+    RECORDS --> OL
     ICE --> OL
-    PARQUET --> ICE
-    PARQUET --> HF
+    MANIFEST --> ICE
+    RECORDS --> ICE
+    MANIFEST --> HF
+    RECORDS --> HF
 ```
 
 ### Pre-acquisition reuse gate

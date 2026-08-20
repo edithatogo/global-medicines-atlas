@@ -708,6 +708,7 @@ def _measure_lineage(landings: tuple[BronzeLanding, ...]) -> float:
             parquet_uri=landing.parquet_path.as_uri(),
             transformation_run=landing.transformation_run,
             table=landing.table,
+            parquet_product="acquisition_manifest",
         )
         if event["eventType"] != "COMPLETE":
             raise ValueError("lineage eventType is not COMPLETE")
