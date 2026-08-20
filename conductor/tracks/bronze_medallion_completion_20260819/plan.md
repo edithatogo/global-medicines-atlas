@@ -356,10 +356,10 @@ for credentialed or rights-unresolved sources.
     - [x] Preserve demographic, drug, indication, outcome, reaction, reporter, therapy, statistics, size, and deleted-case tables without deduplication, identity collapse, medicine normalization, or causality inference
     - [x] Exercise immutable landing, rights-bound receipts, Bronze admission, source-faithful Parquet, clean-room reconstruction, byte-identical product checks, and private archive generation in repository tests
     - [x] Keep public release and external publication prohibited; commit no FAERS source bytes
-- [ ] Task: Qualify the complete live FDA AERS/FAERS quarterly corpus (Prompt 12)
-    - [ ] Acquire and admit every authorized quarter from the official release index
-    - [ ] Reconstruct every source-record product from immutable evidentiary truth and verify byte-identical Parquet pairs
-    - [ ] Create and checksum-verify the private archive, then reconcile Prompt 12 only from observed complete evidence
+- [x] Task: Qualify the complete live FDA AERS/FAERS quarterly corpus (Prompt 12)
+    - [x] Acquire and admit every authorized quarter from the official release index
+    - [x] Reconstruct every source-record product from immutable evidentiary truth and verify byte-identical Parquet pairs
+    - [x] Create and checksum-verify the private archive, then reconcile Prompt 12 only from observed complete evidence
 - [x] Task: Acquire current FDA enforcement and recall-notice surfaces (Prompt 13 partial)
     - [x] Resolve the official openFDA download inventory and acquire its complete current drug-enforcement bulk partition
     - [x] Acquire the distinct current FDA recall-notice XLSX and both official documentation surfaces under the approved internal-only U.S. cohort

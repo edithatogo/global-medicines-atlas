@@ -13,6 +13,14 @@
       ]
     },
     {
+      "source_id": "us-fda-faers",
+      "state": "landed_and_evidenced",
+      "reason": "All 90 contiguous official FDA AERS/FAERS quarterly ASCII releases from 2004-Q1 through 2026-Q2 were acquired, projected without deduplication or causality inference, reconstructed, and privately archived.",
+      "evidence_references": [
+        "quality/qualifications/faers-live-corpus-20260821.json"
+      ]
+    },
+    {
       "source_id": "us-fda-ndc-directory",
       "state": "landed_and_evidenced",
       "reason": "All four current official FDA NDC bulk dataset surfaces were acquired, projected at product/package granularity, reconstructed, and privately archived.",

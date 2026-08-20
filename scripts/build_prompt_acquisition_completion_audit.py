@@ -28,6 +28,9 @@ NDC_RECORD_QUALIFICATION = (
 REMS_RECORD_QUALIFICATION = (
     ROOT / "quality/qualifications/fda-rems-live-corpus-20260821.json"
 )
+FAERS_RECORD_QUALIFICATION = (
+    ROOT / "quality/qualifications/faers-live-corpus-20260821.json"
+)
 DEFAULT_OUTPUT = (
     ROOT / "quality/qualifications/prompt-acquisition-completion-audit.json"
 )
@@ -40,6 +43,8 @@ NDC_PROMPT_AUDIT_SOURCE_IDS = frozenset({
 REMS_PROMPT_AUDIT_SOURCE_IDS = frozenset({"us-fda-rems"})
 REMS_EXPORT_COUNT = 4
 HTTP_NOT_FOUND = 404
+FAERS_PROMPT_AUDIT_SOURCE_IDS = frozenset({"us-fda-faers"})
+FAERS_EXPECTED_RELEASE_COUNT = 90
 
 NEXT_ACTIONS = {
     "credentialed_and_excluded": (
@@ -301,6 +306,51 @@ def _qualified_rems_record_sources() -> set[str]:
     return qualified
 
 
+def _qualified_faers_record_sources() -> set[str]:
+    qualification = json.loads(
+        FAERS_RECORD_QUALIFICATION.read_text(encoding="utf-8")
+    )
+    if qualification["evidence_class"] != "live_internal_historical":
+        raise ValueError("FAERS qualification has the wrong evidence class")
+    if (
+        not qualification["internal_retention_authorized"]
+        or qualification["public_release_authorized"]
+        or qualification["external_publication_performed"]
+    ):
+        raise ValueError(
+            "FAERS qualification crossed its internal-only boundary"
+        )
+    if (
+        qualification["first_release"] != "2004-Q1"
+        or qualification["last_release"] != "2026-Q2"
+        or qualification["release_count"] != FAERS_EXPECTED_RELEASE_COUNT
+        or not qualification["quarter_coverage_complete"]
+    ):
+        raise ValueError("FAERS qualification has incomplete quarter coverage")
+    if (
+        qualification["release_succeeded_count"]
+        != qualification["release_count"]
+        or qualification["release_failed_count"] != 0
+        or qualification["accepted_release_count"]
+        != qualification["release_count"]
+    ):
+        raise ValueError("FAERS qualification contains incomplete acquisition")
+    expected = qualification["source_record_projection_count"]
+    if (
+        expected != qualification["release_count"]
+        or qualification["recovered_source_record_projection_count"] != expected
+        or qualification["source_record_parquet_pairs_byte_identical"]
+        != expected
+        or qualification["source_record_rows"] <= 0
+        or not qualification["archive_checksum_verified"]
+    ):
+        raise ValueError("FAERS record products lack recovery evidence")
+    qualified = set(qualification["prompt_audit_qualified_source_ids"])
+    if qualified != set(FAERS_PROMPT_AUDIT_SOURCE_IDS):
+        raise ValueError("FAERS qualification exceeds reviewed source scope")
+    return qualified
+
+
 def build() -> dict[str, Any]:
     """Join locked prompt scope to queue and measured evidence."""
 
@@ -317,6 +367,7 @@ def build() -> dict[str, Any]:
         | _qualified_us_record_sources()
         | _qualified_ndc_record_sources()
         | _qualified_rems_record_sources()
+        | _qualified_faers_record_sources()
     )
     for source_id in qualified_us_live:
         existing = measured_by_source.get(source_id, {})
