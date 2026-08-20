@@ -66,10 +66,12 @@ def test_public_source_requires_affirmative_permissions_and_evidence() -> None:
     ("field", "value", "match"),
     [
         ("redistribute", ReusePermission.UNKNOWN, "redistribute"),
+        ("transform", ReusePermission.UNKNOWN, "transform"),
         ("publish_source_bytes", ReusePermission.PROHIBITED, "source bytes"),
         ("sensitivity", PublicationSensitivity.CONTROLLED, "sensitivity"),
         ("evidence", (), "official evidence"),
         ("maintainer_publication_approved", False, "maintainer"),
+        ("attribution", None, "attribution"),
     ],
 )
 def test_public_source_fails_closed(
@@ -94,6 +96,9 @@ def test_derived_only_never_claims_source_byte_permission() -> None:
 @pytest.mark.parametrize(
     ("field", "value", "match"),
     [
+        ("evidence", (), "official evidence"),
+        ("redistribute", ReusePermission.UNKNOWN, "redistribute"),
+        ("transform", ReusePermission.UNKNOWN, "transform"),
         ("sensitivity", PublicationSensitivity.CONTROLLED, "sensitivity"),
         ("maintainer_licence_approved", False, "maintainer"),
         ("attribution", None, "attribution"),
@@ -120,6 +125,16 @@ def test_catalogue_review_requires_exact_source_coverage() -> None:
         validate_catalogue_reviews(("first", "second"), (first,))
     with pytest.raises(ValueError, match="duplicate"):
         validate_catalogue_reviews(("first",), (first, first))
+
+
+def test_non_public_review_requires_an_explicit_blocker() -> None:
+    with pytest.raises(ValidationError, match="blocker"):
+        _review(
+            disposition=ReviewDisposition.CATALOGUE_ONLY,
+            maintainer_licence_approved=False,
+            maintainer_publication_approved=False,
+            blocker=None,
+        )
 
 
 def test_catalogue_review_rejects_stale_or_temporally_invalid_evidence() -> (
