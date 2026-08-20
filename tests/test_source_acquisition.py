@@ -223,6 +223,17 @@ def test_range_acquisition_requires_positive_chunk_size(tmp_path: Path) -> None:
         (
             httpx.Response(
                 206,
+                headers={
+                    "content-type": "text/html",
+                    "content-range": "bytes 0-0/1",
+                },
+                content=b"x",
+            ),
+            "content_type_rejected",
+        ),
+        (
+            httpx.Response(
+                206,
                 headers={"content-type": "application/zip"},
                 content=b"x",
             ),

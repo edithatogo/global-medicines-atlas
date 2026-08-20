@@ -152,7 +152,9 @@ def test_ndc_archive_shape_and_media_fail_closed() -> None:
 def test_faers_ascii_archive_preserves_all_source_native_tables() -> None:
     payload = _zip({
         "ascii/DEMO04Q1.TXT": "ISR$CASE$I_F_COD\n1$10$I\n",
-        "ascii/DRUG04Q1.TXT": "ISR$DRUG_SEQ$DRUGNAME\n1$1$NATIVE\n",
+        "ascii/DRUG04Q1.TXT": (
+            "ISR$DRUG_SEQ$DRUGNAME\n\n1$1$NATIVE$PRESERVED_OVERFLOW\n"
+        ),
         "ascii/INDI04Q1.TXT": "ISR$DRUG_SEQ$INDI_PT\n1$1$PAIN\n",
         "ascii/OUTC04Q1.TXT": "ISR$OUTC_COD\n1$OT\n",
         "ascii/REAC04Q1.TXT": "ISR$PT\n1$HEADACHE\n",
@@ -178,6 +180,11 @@ def test_faers_ascii_archive_preserves_all_source_native_tables() -> None:
     }
     assert "CASE" in batch.table.column_names
     assert "DRUGNAME" in batch.table.column_names
+    assert "source_unlabelled_field_1" in batch.table.column_names
+    assert (
+        "PRESERVED_OVERFLOW"
+        in batch.table.column("source_unlabelled_field_1").to_pylist()
+    )
     assert batch.parser_identity == "gma:us-fda-faers:ascii-archive:v1"
 
 
