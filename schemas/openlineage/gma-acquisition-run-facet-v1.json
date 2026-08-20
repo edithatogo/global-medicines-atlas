@@ -13,7 +13,7 @@
         "acquisitionId": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
         "contentId": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
         "sourceId": {"type": "string", "minLength": 1},
-        "catalogVersion": {"type": "integer", "minimum": 1},
+        "catalogVersion": {"type": "string", "minLength": 1},
         "sourceVersion": {"type": ["string", "null"]}
       }
     }
