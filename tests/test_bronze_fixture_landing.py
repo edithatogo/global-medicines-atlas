@@ -51,13 +51,18 @@ def test_current_scope_fixture_inventory_is_explicit_and_complete() -> None:
 
 
 @pytest.mark.unit
-def test_catalog_declares_fixture_landing_without_live_receipts() -> None:
+def test_catalog_declares_fixture_or_superseding_live_evidence() -> None:
     catalog = {source.source_id: source for source in load_source_catalog()}
 
     for source_id in CURRENT_SCOPE_FIXTURE_SOURCE_IDS:
         source = catalog[source_id]
         assert source.implemented_ingestion is True
         assert source.readiness.value == "implemented"
+        if source_id == "eu-union-register":
+            assert source.integration_layer.value == "live_receipt"
+            assert source.qualification_state.value == "live_verified"
+            assert source.current_receipt_id is not None
+            continue
         assert source.integration_layer.value in {"fixture", "parser"}
         assert source.qualification_state.value == "fixture_verified"
         assert source.qualification_references

@@ -1,5 +1,5 @@
 {
-  "catalog_reviewed_at": "2026-08-20",
+  "catalog_reviewed_at": "2026-08-21",
   "catalog_schema_version": 5,
   "family_counts": {
     "archive_release": 6,
@@ -1265,10 +1265,10 @@
         "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
         "acquisition_profile": "public-bulk",
         "credentials_persisted": false,
-        "endpoint": "https://ec.europa.eu/health/documents/community-register/html/index_en.htm",
+        "endpoint": "https://ec.europa.eu/health/documents/community-register/ods/ods_products.json",
         "family": "static_file_download",
         "formats": [
-          "source_native"
+          "json"
         ],
         "pagination": "none",
         "preserves_source_bytes": true,
@@ -1279,12 +1279,13 @@
       "evidence_references": [
         "src/global_medicines_atlas/bronze_fixture_landing.py",
         "tests/test_bronze_fixture_landing.py",
-        "tests/fixtures/native/eu/union_register.xml"
+        "tests/fixtures/native/eu/union_register.xml",
+        "quality/qualifications/union-register-live-corpus-20260821.json"
       ],
-      "evidence_scope": "governed_fixture",
+      "evidence_scope": "live_receipt",
       "next_action": "verify receipt freshness on schedule",
       "priority": 90,
-      "reason": "catalogue implementation claim has committed qualification evidence",
+      "reason": "The official 2026-08-17 Union Register JSON snapshot was acquired under maintainer-approved internal-only CC BY 4.0 handling, projected at source-native record grain, clean-room reconstructed, and privately archived.",
       "source_id": "eu-union-register",
       "state": "landed_and_evidenced"
     },

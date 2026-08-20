@@ -1,0 +1,38 @@
+{
+  "accepted_admission_count": 1,
+  "acquisition_succeeded_count": 1,
+  "archive_checksum_verified": true,
+  "authorization": "quality/qualifications/union-register-live-authorization.json",
+  "current_source_snapshot_complete": true,
+  "evidence_class": "live_bounded_internal",
+  "external_publication_performed": false,
+  "internal_retention_authorized": true,
+  "observed_at": "2026-08-21",
+  "payload_byte_count": 16665125,
+  "payload_sha256": "7f0ffbd581f4803c5bbd82f2eba6ac7bc6f7aca0097a3a078eb4ed0c6d4d1bf0",
+  "private_archive_byte_count": 54292480,
+  "private_archive_sha256": "a56daa1f5044a50a5db6bc168c65f7ac819ee08d70689d7166b22832e9f55849",
+  "prompt_audit_qualified_source_ids": [
+    "eu-union-register"
+  ],
+  "prompt_complete": true,
+  "prompt_id": 25,
+  "public_release_authorized": false,
+  "recovered_acquisition_count": 1,
+  "recovered_source_record_projection_count": 1,
+  "schema_id": "global-medicines-atlas.union-register-live-qualification",
+  "schema_version": 1,
+  "source_ids": [
+    "eu-union-register"
+  ],
+  "source_record_parquet_pairs_byte_identical": 1,
+  "source_record_projection_count": 1,
+  "source_record_rows": 6440,
+  "source_release_date": "2026-08-17",
+  "invariants": [
+    "Union Register source-native fields and nested values are preserved in Bronze without medicine identity harmonisation.",
+    "Nationally authorised products remain outside this source.",
+    "Regulatory status is not a funding or formulary assertion.",
+    "Public release and external publication remain separately prohibited."
+  ]
+}

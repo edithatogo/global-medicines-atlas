@@ -898,7 +898,7 @@
       ],
       "dimension": "regulatory",
       "maturity_level": "M2",
-      "documentation_readiness": "fixture_verified",
+      "documentation_readiness": "live_verified",
       "assignment_basis": [
         "catalog row exists",
         "documentation qualification reference exists",
