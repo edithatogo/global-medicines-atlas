@@ -393,7 +393,9 @@ def test_nordic_public_aggregate_sources_are_not_credential_or_rights_blocked() 
     }
 
 
-def test_additional_utilisation_public_surfaces_are_not_credential_blocked() -> None:
+def test_additional_utilisation_public_surfaces_are_not_credential_blocked() -> (
+    None
+):
     prompt = next(
         entry for entry in _audit()["prompts"] if entry["prompt_id"] == 34
     )
