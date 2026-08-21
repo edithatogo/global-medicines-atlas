@@ -13,6 +13,7 @@ from pydantic import AnyHttpUrl, ValidationError
 
 from global_medicines_atlas.gsrs_acquisition import (
     GSRSAuthorization,
+    GSRSRelease,
     parse_gsrs_release_inventory,
 )
 
@@ -73,6 +74,10 @@ def test_pending_authorization_cannot_fetch_payloads() -> None:
             {"archive_index_url": "https://example.test/archive"},
             "precision.fda.gov",
         ),
+        (
+            {"licensing_url": "https://example.test/licensing"},
+            "stay on NCATS",
+        ),
     ],
 )
 def test_authorization_rejects_scope_widening(
@@ -101,6 +106,32 @@ def test_approved_internal_authority_requires_date_and_both_flags() -> None:
         )
 
 
+@pytest.mark.parametrize(
+    ("data_url", "names_url", "message"),
+    [
+        (
+            "https://example.test/archive/2026-08-04/data.zip",
+            "https://precision.fda.gov/archive/2026-08-04/names.zip",
+            "precision.fda.gov",
+        ),
+        (
+            "https://precision.fda.gov/archive/2026-08-03/data.zip",
+            "https://precision.fda.gov/archive/2026-08-04/names.zip",
+            "match their release date",
+        ),
+    ],
+)
+def test_release_rejects_host_or_date_drift(
+    data_url: str, names_url: str, message: str
+) -> None:
+    with pytest.raises(ValidationError, match=message):
+        GSRSRelease(
+            release_date=date(2026, 8, 4),
+            data_url=AnyHttpUrl(data_url),
+            names_url=AnyHttpUrl(names_url),
+        )
+
+
 def test_inventory_requires_all_paired_releases() -> None:
     payload = _inventory()
     authorization = _inventory_authorization(payload)
@@ -113,6 +144,26 @@ def test_inventory_requires_all_paired_releases() -> None:
     assert str(inventory.releases[0].data_url).startswith(
         "https://precision.fda.gov/uniisearch/archive/"
     )
+
+    harmless_non_link = payload + b"<span>not an archive link</span>"
+    assert (
+        parse_gsrs_release_inventory(
+            harmless_non_link,
+            base_url=BASE_URL,
+            authorization=authorization,
+        ).release_count
+        == 68
+    )
+
+    conflicting = payload + (
+        b'<a href="archive/2026-08-04/UNII_Data_conflict.zip">Conflict</a>'
+    )
+    with pytest.raises(ValueError, match="conflicting GSRS release URL"):
+        parse_gsrs_release_inventory(
+            conflicting,
+            base_url=BASE_URL,
+            authorization=authorization,
+        )
 
     with pytest.raises(ValueError, match="inventories differ"):
         parse_gsrs_release_inventory(
