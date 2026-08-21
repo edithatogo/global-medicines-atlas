@@ -64,6 +64,33 @@ def test_release_inventory_and_correction_cannot_drift() -> None:
     ):
         NICEUtilisationAuthorization.model_validate(raw)
 
+    raw = _raw()
+    releases = list(raw["releases"])  # type: ignore[arg-type]
+    releases[0] = {**releases[0], "label": "2009"}
+    raw["releases"] = releases
+    with pytest.raises(
+        ValidationError, match="historic release sequence drifted"
+    ):
+        NICEUtilisationAuthorization.model_validate(raw)
+
+
+@pytest.mark.parametrize(
+    ("update", "message"),
+    [
+        ({"publication_url": "https://example.test/release"}, "digital.nhs.uk"),
+        ({"period_start": "2008-01-02"}, "period must be ordered"),
+    ],
+)
+def test_release_rejects_host_and_period_drift(
+    update: dict[str, object], message: str
+) -> None:
+    raw = _raw()
+    releases = list(raw["releases"])  # type: ignore[arg-type]
+    releases[0] = {**releases[0], **update}
+    raw["releases"] = releases
+    with pytest.raises(ValidationError, match=message):
+        NICEUtilisationAuthorization.model_validate(raw)
+
 
 def test_approved_internal_scope_requires_date_and_retention() -> None:
     raw = _raw()
