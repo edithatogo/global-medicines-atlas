@@ -527,6 +527,10 @@ for credentialed or rights-unresolved sources.
     - [x] Document B1 authority boundaries and update the existing acquisition-manifest implementation
     - [ ] Run focused and affected recovery tests, deterministic regeneration, context validation, formatting, linting, strict typing and full Test-Goblin
     - [ ] Record exact pull-request head, hosted checks and merged SHA without changing existing receipt digests, acquisition IDs or content IDs
+- [x] Task: Review Fixes
+    - [x] Preserve idempotent admission history when the same acquisition is landed again instead of appending a redundant supersession chain
+    - [x] Add a regression contract for stable admission history and byte-identical B1 Parquet on re-landing
+    - [x] Record review-fix commit `89955f1a62339b8eca4b969cd27db5475ea4ee98`
 
 ### Phase Verification & Checkpoint
 
