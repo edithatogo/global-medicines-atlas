@@ -1,0 +1,24 @@
+{
+  "schema_id": "global-medicines-atlas.publication-containment",
+  "schema_version": 1,
+  "observed_at": "2026-08-21T03:41:39Z",
+  "authorization_status": "exact_manifest_publication_not_approved",
+  "datasets": [
+    {
+      "dataset": "edithatogo/global-medicines-atlas-fda-public",
+      "observed_revision": "da2e5c9faa7ea9ac84cfed328e776e83af135c3d",
+      "repository_private": true
+    },
+    {
+      "dataset": "edithatogo/global-medicines-atlas-international-open",
+      "observed_revision": "83fa068067ae90e98318e80237488421c411dfbf",
+      "repository_private": true
+    }
+  ],
+  "action": "restored_private_visibility_without_deleting_bytes",
+  "limitations": [
+    "The international repository advanced beyond the previously reviewed private candidate revision.",
+    "This receipt records containment only and makes no licensing or publication conclusion.",
+    "The exact contents of the newly observed international revision require separate review."
+  ]
+}
