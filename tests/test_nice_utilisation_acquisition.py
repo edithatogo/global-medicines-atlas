@@ -1,10 +1,13 @@
 """Tests for the historic NHS NICE-utilisation acquisition gate."""
 
+from __future__ import annotations
+
 import json
 from pathlib import Path
 
 import pytest
 from pydantic import ValidationError
+from scripts import acquire_nice_utilisation_private as acquisition_script
 
 from global_medicines_atlas.nice_utilisation_acquisition import (
     NICE_UTILISATION_ARTIFACTS,
@@ -154,3 +157,72 @@ def test_payload_inspection_rejects_extension_magic_mismatch(
     assert inspect_nice_utilisation_payload(filename, payload) == expected_media
     with pytest.raises(ValueError, match="does not match"):
         inspect_nice_utilisation_payload(filename, b"not the declared format")
+
+
+def test_private_runner_lands_and_clean_room_restores_exact_payload(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    artifact = NICE_UTILISATION_ARTIFACTS[0]
+    payload = b"%PDF-1.7\nprivate governed fixture"
+    input_dir = tmp_path / "input"
+    source_path = input_dir / artifact.release_label / artifact.filename
+    source_path.parent.mkdir(parents=True)
+    source_path.write_bytes(payload)
+    monkeypatch.setattr(
+        acquisition_script, "NICE_UTILISATION_ARTIFACTS", (artifact,)
+    )
+
+    result = acquisition_script.acquire(
+        input_dir, tmp_path / "output", download=False
+    )
+
+    assert result["file_count"] == 1
+    assert result["restore_verified"] is True
+    assert result["restore_verified_payload_count"] == 1
+    assert result["publication_authorized"] is False
+    assert result["external_publication_authorized"] is False
+    assert Path(str(result["archive_path"])).is_file()
+    assert len(str(result["archive_sha256"])) == 64
+
+
+def test_private_runner_downloads_only_missing_reviewed_files(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    artifact = NICE_UTILISATION_ARTIFACTS[0]
+    payload = b"%PDF-1.7\ndownloaded fixture"
+    requests: list[str] = []
+
+    class Response:
+        content = payload
+
+        @staticmethod
+        def raise_for_status() -> None:
+            return None
+
+    class Client:
+        def __init__(self, **_kwargs: object) -> None:
+            pass
+
+        def __enter__(self) -> Client:
+            return self
+
+        def __exit__(self, *_args: object) -> None:
+            return None
+
+        @staticmethod
+        def get(url: str) -> Response:
+            requests.append(url)
+            return Response()
+
+    monkeypatch.setattr(
+        acquisition_script, "NICE_UTILISATION_ARTIFACTS", (artifact,)
+    )
+    monkeypatch.setattr(acquisition_script.httpx, "Client", Client)
+
+    acquisition_script._retrieve(tmp_path)
+    acquisition_script._retrieve(tmp_path)
+
+    assert requests == [str(artifact.url)]
+    assert (
+        tmp_path / artifact.release_label / artifact.filename
+    ).read_bytes() == payload
