@@ -1588,8 +1588,8 @@ def _utilisation_rows() -> tuple[dict[str, Any], ...]:
             "Assurance Maladie",
             "Open Medic interregime medicines expenditure",
             SourceDimension.FUNDING,
-            landing="https://www.data.gouv.fr/fr/datasets/open-medic-base-complete-sur-les-depenses-de-medicaments-interregimes/",
-            documentation="https://www.data.gouv.fr/fr/datasets/open-medic-base-complete-sur-les-depenses-de-medicaments-interregimes/",
+            landing="https://www.assurance-maladie.ameli.fr/etudes-et-donnees/open-medic-base-complete-depenses-medicaments",
+            documentation="https://www.assurance-maladie.ameli.fr/etudes-et-donnees/open-medic-base-complete-depenses-medicaments",
             evidence_limit=(
                 "French Open Medic expenditure is not a European utilisation "
                 "standard and is not registration evidence."
@@ -1597,8 +1597,8 @@ def _utilisation_rows() -> tuple[dict[str, Any], ...]:
             native_identifier="Open Medic CIP/ATC + year + regime",
             access_mode=AccessMode.DOWNLOAD,
             interface_status=InterfaceStatus.DOCUMENTED_DOWNLOAD,
-            download_url="https://www.data.gouv.fr/fr/datasets/open-medic-base-complete-sur-les-depenses-de-medicaments-interregimes/",
-            formats=("csv",),
+            download_url="https://open-data-assurance-maladie.ameli.fr/medicaments/download.php?Dir_Rep=Open_MEDIC_Base_Complete&Annee=2025",
+            formats=("zip", "csv"),
             integration=IntegrationLayer.ACQUISITION,
             acquisition_profile="public-bulk",
             languages=(LanguageCode.FRENCH,),

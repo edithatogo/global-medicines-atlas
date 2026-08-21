@@ -1,0 +1,64 @@
+name: Acquire Open Medic official releases
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: open-medic-acquisition-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  acquire:
+    name: Open Medic ${{ matrix.year }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        year: [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
+    steps:
+      - name: Acquire and verify official archive
+        env:
+          YEAR: ${{ matrix.year }}
+        run: |
+          set -euo pipefail
+          page_url="https://open-data-assurance-maladie.ameli.fr/medicaments/download.php?Dir_Rep=Open_MEDIC_Base_Complete&Annee=${YEAR}"
+          page=$(curl --fail --show-error --silent --location --retry 3 --max-time 60 "$page_url")
+          file_path=$(sed -n 's/.*href="\.\/\([^"]*\)".*/\1/p' <<<"$page")
+          expected="download_file.php?token="
+          if [[ "$file_path" != "$expected"*"&file=Open_MEDIC_Base_Complete/OPEN_MEDIC_${YEAR}.zip" ]]; then
+            echo "Unexpected Open Medic token page" >&2
+            exit 1
+          fi
+          mkdir -p payload
+          target="payload/OPEN_MEDIC_${YEAR}.zip"
+          curl --fail --show-error --silent --location --retry 5 --retry-all-errors \
+            --connect-timeout 20 --max-time 900 \
+            "https://open-data-assurance-maladie.ameli.fr/medicaments/${file_path}" \
+            --output "$target"
+          if grep --quiet 'chargements atteinte' "$target"; then
+            echo "Open Medic download limiter refused the archive" >&2
+            exit 1
+          fi
+          unzip -tq "$target"
+          digest=$(sha256sum "$target" | cut -d' ' -f1)
+          bytes=$(stat --format=%s "$target")
+          jq -n \
+            --arg source_id fr-open-medic \
+            --argjson year "$YEAR" \
+            --arg resource_url "$page_url" \
+            --arg sha256 "$digest" \
+            --argjson byte_count "$bytes" \
+            '{schema_id:"global-medicines-atlas.open-medic-acquisition",schema_version:1,source_id:$source_id,year:$year,resource_url:$resource_url,sha256:$sha256,byte_count:$byte_count,rights:"Etalab-2.0",admission_state:"accepted"}' \
+            > "payload/OPEN_MEDIC_${YEAR}.receipt.json"
+
+      - name: Upload verified archive evidence
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: open-medic-${{ matrix.year }}
+          path: payload/
+          if-no-files-found: error
+          retention-days: 1
