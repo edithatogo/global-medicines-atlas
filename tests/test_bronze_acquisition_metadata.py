@@ -9,12 +9,15 @@ from pathlib import Path
 import pyarrow.parquet as pq
 import pytest
 from jsonschema import Draft202012Validator
+from pydantic import ValidationError
 from tests.test_source_receipts import source_receipt
 
 from global_medicines_atlas.bronze_acquisition_metadata import (
     B1AcquisitionMetadataManifest,
     acquisition_metadata_parquet_bytes,
+    build_b1_acquisition_metadata_manifest,
     reconstruct_b1_acquisition_metadata,
+    redact_retrieval_location,
 )
 from global_medicines_atlas.bronze_landing import (
     BronzeLanding,
@@ -316,6 +319,47 @@ def test_b1_model_has_no_field_for_source_payload_contents() -> None:
     assert "payload_content" not in fields
     assert {"payload_sha256", "payload_byte_count", "raw_evidence_locator"} <= (
         fields
+    )
+
+
+@pytest.mark.unit
+def test_b1_identity_validators_reject_drift(tmp_path: Path) -> None:
+    bronze_root = tmp_path / "bronze"
+    _land(bronze_root, _landable())
+    manifest = reconstruct_b1_acquisition_metadata(bronze_root)
+    row = manifest.rows[0]
+
+    with pytest.raises(ValidationError, match="content_id must equal"):
+        type(row).model_validate({
+            **row.model_dump(mode="json"),
+            "content_id": "0" * 64,
+        })
+    with pytest.raises(ValidationError, match="distinct from content_id"):
+        type(row).model_validate({
+            **row.model_dump(mode="json"),
+            "acquisition_id": row.content_id,
+        })
+    with pytest.raises(ValidationError, match="event_count"):
+        B1AcquisitionMetadataManifest.model_validate({
+            **manifest.model_dump(mode="json"),
+            "event_count": 2,
+        })
+    with pytest.raises(ValidationError, match="manifest digest"):
+        B1AcquisitionMetadataManifest.model_validate({
+            **manifest.model_dump(mode="json"),
+            "manifest_sha256": "0" * 64,
+        })
+    with pytest.raises(ValueError, match="at least one acquisition event"):
+        build_b1_acquisition_metadata_manifest(())
+
+
+@pytest.mark.unit
+def test_b1_uri_redaction_preserves_ipv6_host_and_port() -> None:
+    projected = redact_retrieval_location(
+        "https://user:password@[2001:db8::1]:8443/data?token=secret&part=1"
+    )
+    assert projected == (
+        "https://[2001:db8::1]:8443/data?token=REDACTED&part=1"
     )
 
 
