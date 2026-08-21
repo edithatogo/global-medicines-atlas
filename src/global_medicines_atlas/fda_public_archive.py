@@ -92,6 +92,8 @@ class FdaPublicationCandidateManifest(FrozenModel):
 
     @model_validator(mode="after")
     def exact_source_set(self) -> FdaPublicationCandidateManifest:
+        if self.publication_approved:
+            raise ValueError("FDA candidate cannot encode publication approval")
         ids = {entry.source_id for entry in self.entries}
         if ids != set(FDA_SOURCE_IDS) or self.source_count != len(
             FDA_SOURCE_IDS

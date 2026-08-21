@@ -10,6 +10,7 @@ import pytest
 
 from global_medicines_atlas.fda_public_archive import (
     FDA_SOURCE_IDS,
+    FdaPublicationCandidateManifest,
     build_fda_publication_candidate,
 )
 
@@ -54,3 +55,14 @@ def test_rejects_digest_mismatch(tmp_path: Path) -> None:
     next((corpus / "downloads").iterdir()).write_bytes(b"changed")
     with pytest.raises(ValueError, match="digest mismatch"):
         build_fda_publication_candidate(corpus, tmp_path / "public")
+
+
+def test_candidate_cannot_encode_publication_approval(tmp_path: Path) -> None:
+    manifest = build_fda_publication_candidate(
+        _corpus(tmp_path / "corpus"), tmp_path / "candidate"
+    )
+    with pytest.raises(ValueError, match="cannot encode publication approval"):
+        FdaPublicationCandidateManifest.model_validate({
+            **manifest.model_dump(),
+            "publication_approved": True,
+        })
