@@ -380,8 +380,12 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     )
 
 
-def test_nordic_public_aggregate_sources_are_not_credential_or_rights_blocked() -> None:
-    prompt = next(entry for entry in _audit()["prompts"] if entry["prompt_id"] == 33)
+def test_nordic_public_aggregate_sources_are_not_credential_or_rights_blocked() -> (
+    None
+):
+    prompt = next(
+        entry for entry in _audit()["prompts"] if entry["prompt_id"] == 33
+    )
     assert prompt["queue_states"] == {
         "dk-medstat-utilisation": "manual_only_documented_acquisition",
         "no-norpd-utilisation": "manual_only_documented_acquisition",

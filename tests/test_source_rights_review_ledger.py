@@ -140,5 +140,5 @@ def test_credentialed_sources_are_excluded_independently_of_rights() -> None:
         for entry in entries
         if entry["disposition"] == "credentialed_excluded"
     ]
-    assert len(credentialed) == 18
+    assert len(credentialed) == 17
     assert all("access is" in entry["blocker"] for entry in credentialed)

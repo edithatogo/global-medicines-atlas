@@ -42,13 +42,20 @@ def _denmark(*, last_year: int = 2025, population: bool = True) -> bytes:
     ]
     if population:
         names.append("population_data.txt")
-    return "".join(f"<a href='/download/{index}'>{name}</a>" for index, name in enumerate(names)).encode()
+    return "".join(
+        f"<a href='/download/{index}'>{name}</a>"
+        for index, name in enumerate(names)
+    ).encode()
 
 
 def _options(identifier: str, values: tuple[str, ...]) -> str:
-    return f"<select id='{identifier}'>" + "".join(
-        f"<option value='{value}'>{value}</option>" for value in values
-    ) + "</select>"
+    return (
+        f"<select id='{identifier}'>"
+        + "".join(
+            f"<option value='{value}'>{value}</option>" for value in values
+        )
+        + "</select>"
+    )
 
 
 def _sweden(
@@ -58,21 +65,21 @@ def _sweden(
     measures: tuple[int, ...] = (1, 2, 3, 4, 9),
     limits: bool = True,
 ) -> bytes:
-    html = "".join(
-        (
-            _options("ARMANAD_IND", ("AR", "MAN_EJ_ALD", "MAN_EJ_REG")),
-            _options("OMR", tuple(str(value) for value in range(geography_count))),
-            _options("AGI", tuple(str(value) for value in range(18))),
-            _options("KON", ("3", "1", "2")),
-            _options("AR", tuple(str(value) for value in range(2006, annual_end + 1))),
-            _options("AR_MANAD", tuple(str(value) for value in range(2006, 2027))),
-            "".join(
-                f"<input id='matti_{measure}_1'><label for='matti_{measure}_1'>measure</label>"
-                for measure in measures
-            ),
-            "max antal 70 000 fler än 100 ATC-koder" if limits else "",
-        )
-    )
+    html = "".join((
+        _options("ARMANAD_IND", ("AR", "MAN_EJ_ALD", "MAN_EJ_REG")),
+        _options("OMR", tuple(str(value) for value in range(geography_count))),
+        _options("AGI", tuple(str(value) for value in range(18))),
+        _options("KON", ("3", "1", "2")),
+        _options(
+            "AR", tuple(str(value) for value in range(2006, annual_end + 1))
+        ),
+        _options("AR_MANAD", tuple(str(value) for value in range(2006, 2027))),
+        "".join(
+            f"<input id='matti_{measure}_1'><label for='matti_{measure}_1'>measure</label>"
+            for measure in measures
+        ),
+        "max antal 70 000 fler än 100 ATC-koder" if limits else "",
+    ))
     return html.encode()
 
 
@@ -84,7 +91,9 @@ def test_authorization_is_independent_and_fail_closed() -> None:
         "se-socialstyrelsen-utilisation",
     )
     for source in authorization.sources:
-        with pytest.raises(PermissionError, match="payload decision is pending"):
+        with pytest.raises(
+            PermissionError, match="payload decision is pending"
+        ):
             source.require_payload_authority()
 
 

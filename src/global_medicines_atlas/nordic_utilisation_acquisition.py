@@ -41,7 +41,10 @@ class NordicSourceAuthorization(FrozenModel):
 
     @model_validator(mode="after")
     def fail_closed(self) -> NordicSourceAuthorization:
-        if self.public_release_authorized or self.external_publication_authorized:
+        if (
+            self.public_release_authorized
+            or self.external_publication_authorized
+        ):
             raise ValueError("Nordic publication must remain separately gated")
         if self.decision_status == "pending":
             if (
@@ -49,19 +52,25 @@ class NordicSourceAuthorization(FrozenModel):
                 or self.acquisition_authorized
                 or self.internal_retention_authorized
             ):
-                raise ValueError("pending Nordic decision cannot authorize payloads")
+                raise ValueError(
+                    "pending Nordic decision cannot authorize payloads"
+                )
         elif (
             self.decision_date is None
             or not self.acquisition_authorized
             or not self.internal_retention_authorized
         ):
-            raise ValueError("approved Nordic acquisition requires dated authority")
+            raise ValueError(
+                "approved Nordic acquisition requires dated authority"
+            )
         return self
 
     def require_payload_authority(self) -> None:
         """Raise unless this exact source has internal payload authority."""
         if self.decision_status != "approved_internal":
-            raise PermissionError(f"{self.source_id} payload decision is pending")
+            raise PermissionError(
+                f"{self.source_id} payload decision is pending"
+            )
 
 
 class NordicAuthorization(FrozenModel):
@@ -122,7 +131,9 @@ class _SurfaceParser(HTMLParser):
             self.select = values.get("id") or ""
             self.options.setdefault(self.select, [])
         elif tag == "option" and self.select is not None:
-            self.options[self.select].append((values.get("value") or "").strip())
+            self.options[self.select].append(
+                (values.get("value") or "").strip()
+            )
         elif tag == "a":
             self._capture_link = True
             self._chunks = []
@@ -147,15 +158,23 @@ class _SurfaceParser(HTMLParser):
 
 def load_nordic_authorization(path: Path) -> NordicAuthorization:
     """Load the checked-in decision record."""
-    return NordicAuthorization.model_validate_json(path.read_text(encoding="utf-8"))
+    return NordicAuthorization.model_validate_json(
+        path.read_text(encoding="utf-8")
+    )
 
 
-def parse_denmark_metadata_inventory(payload: bytes) -> DenmarkMetadataInventory:
+def parse_denmark_metadata_inventory(
+    payload: bytes,
+) -> DenmarkMetadataInventory:
     """Verify the exact Medstat metadata-only download inventory."""
     parser = _SurfaceParser()
     parser.feed(payload.decode("utf-8"))
     names = [name for name in parser.links if name.endswith(".txt")]
-    years = [int(match.group("year")) for name in names if (match := _DK_FILE.match(name))]
+    years = [
+        int(match.group("year"))
+        for name in names
+        if (match := _DK_FILE.match(name))
+    ]
     if len(years) != _DK_METADATA_FILE_COUNT or sorted(set(years)) != list(
         range(1996, 2026)
     ):
@@ -176,19 +195,24 @@ def parse_sweden_query_inventory(payload: bytes) -> SwedenQueryInventory:
     parser = _SurfaceParser()
     parser.feed(text)
     expected_counts = {"ARMANAD_IND": 3, "OMR": 22, "AGI": 18, "KON": 3}
-    if any(len(parser.options.get(key, ())) != value for key, value in expected_counts.items()):
+    if any(
+        len(parser.options.get(key, ())) != value
+        for key, value in expected_counts.items()
+    ):
         raise ValueError("Socialstyrelsen query dimensions drifted")
     annual = tuple(sorted(int(value) for value in parser.options.get("AR", ())))
-    monthly = tuple(sorted(int(value) for value in parser.options.get("AR_MANAD", ())))
-    if annual != tuple(range(2006, 2026)) or monthly != tuple(range(2006, 2027)):
+    monthly = tuple(
+        sorted(int(value) for value in parser.options.get("AR_MANAD", ()))
+    )
+    if annual != tuple(range(2006, 2026)) or monthly != tuple(
+        range(2006, 2027)
+    ):
         raise ValueError("Socialstyrelsen year inventory drifted")
     measures = tuple(
-        sorted(
-            {
-                int(value.split("_")[1])
-                for value in re.findall(r"matti_\d+_1", text)
-            }
-        )
+        sorted({
+            int(value.split("_")[1])
+            for value in re.findall(r"matti_\d+_1", text)
+        })
     )
     if measures != (1, 2, 3, 4, 9):
         raise ValueError("Socialstyrelsen measure inventory drifted")
