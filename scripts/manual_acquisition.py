@@ -1,4 +1,6 @@
 """Offline CLI for bounded manual-acquisition sessions."""
+
+# pyright: reportUnknownMemberType=false, reportUnknownVariableType=false, reportUnknownArgumentType=false
 from __future__ import annotations
 
 import argparse
@@ -18,7 +20,9 @@ from global_medicines_atlas.source_landing_factory import (
 
 
 def recipes() -> tuple:
-    return generate_manual_recipes(build_source_landing_queue(load_catalog(), LandingOverrides.load()))
+    return generate_manual_recipes(
+        build_source_landing_queue(load_catalog(), LandingOverrides.load())
+    )
 
 
 def main() -> int:
@@ -36,16 +40,33 @@ def main() -> int:
     args = parser.parse_args()
     by_id = {item.source_id: item for item in recipes()}
     if args.command == "list":
-        print(json.dumps([item.model_dump(mode="json") for item in by_id.values()], sort_keys=True, indent=2))
+        print(
+            json.dumps(
+                [item.model_dump(mode="json") for item in by_id.values()],
+                sort_keys=True,
+                indent=2,
+            )
+        )
     elif args.command == "init":
         if args.source_id not in by_id:
             parser.error(f"unknown or non-manual source: {args.source_id}")
-        args.output.write_text(by_id[args.source_id].model_dump_json(indent=2), encoding="utf-8")
+        args.output.write_text(
+            by_id[args.source_id].model_dump_json(indent=2), encoding="utf-8"
+        )
     else:
-        recipe = next(item for item in by_id.values() if item.recipe_id == json.loads(args.recipe.read_text())["recipe_id"])
-        receipt = ManualAcquisitionReceipt.model_validate_json(args.receipt.read_bytes())
+        recipe = next(
+            item
+            for item in by_id.values()
+            if item.recipe_id
+            == json.loads(args.recipe.read_text())["recipe_id"]
+        )
+        receipt = ManualAcquisitionReceipt.model_validate_json(
+            args.receipt.read_bytes()
+        )
         completed = validate_receipt_files(recipe, receipt, args.files)
-        args.output.write_text(completed.model_dump_json(indent=2), encoding="utf-8")
+        args.output.write_text(
+            completed.model_dump_json(indent=2), encoding="utf-8"
+        )
     return 0
 
 

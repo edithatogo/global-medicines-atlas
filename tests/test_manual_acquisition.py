@@ -22,15 +22,23 @@ from global_medicines_atlas.source_landing_factory import (
 
 def test_every_manual_queue_item_has_a_deterministic_recipe() -> None:
     queue = build_source_landing_queue(load_catalog(), LandingOverrides.load())
-    manual = [item for item in queue.items if item.state is LandingDisposition.MANUAL_ONLY]
+    manual = [
+        item
+        for item in queue.items
+        if item.state is LandingDisposition.MANUAL_ONLY
+    ]
     recipes = generate_manual_recipes(queue)
     assert len(recipes) == len(manual)
-    assert [recipe.recipe_id for recipe in recipes] == [recipe.recipe_id for recipe in generate_manual_recipes(queue)]
+    assert [recipe.recipe_id for recipe in recipes] == [
+        recipe.recipe_id for recipe in generate_manual_recipes(queue)
+    ]
     assert len({recipe.source_id for recipe in recipes}) == len(recipes)
     assert all(recipe.authoritative_location for recipe in recipes)
 
 
-def test_receipt_requires_rights_reuse_and_redacts_parameters(tmp_path: Path) -> None:
+def test_receipt_requires_rights_reuse_and_redacts_parameters(
+    tmp_path: Path,
+) -> None:
     output = tmp_path / "export.csv"
     output.write_bytes(b"id,name\n1,aspirin\n")
     recipe = ManualAcquisitionRecipe(
@@ -59,7 +67,9 @@ def test_receipt_requires_rights_reuse_and_redacts_parameters(tmp_path: Path) ->
         validate_receipt_files(recipe, receipt, tmp_path)
 
 
-def test_receipt_validation_hashes_files_and_detects_missing_output(tmp_path: Path) -> None:
+def test_receipt_validation_hashes_files_and_detects_missing_output(
+    tmp_path: Path,
+) -> None:
     output = tmp_path / "export.csv"
     output.write_bytes(b"id,name\n1,aspirin\n")
     recipe = ManualAcquisitionRecipe(

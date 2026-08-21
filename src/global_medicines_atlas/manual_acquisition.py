@@ -5,6 +5,8 @@ operator evidence which can be validated and handed to the ordinary Bronze
 landing path; this module never performs network access or stores credentials.
 """
 
+# pyright: reportUnknownMemberType=false, reportUnknownVariableType=false, reportUnknownArgumentType=false
+
 from __future__ import annotations
 
 import json
@@ -26,11 +28,20 @@ from .source_landing_factory import (
 
 SCHEMA_VERSION = 1
 REDACTED = "[REDACTED]"
-_SECRET_KEY = re.compile(r"(token|secret|password|cookie|authorization|api[_-]?key|credential)", re.IGNORECASE)
+_SECRET_KEY = re.compile(
+    r"(token|secret|password|cookie|authorization|api[_-]?key|credential)",
+    re.IGNORECASE,
+)
 
 
 def _canonical(value: Any) -> bytes:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, default=str).encode()
+    return json.dumps(
+        value,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+        default=str,
+    ).encode()
 
 
 def _digest(value: Any) -> str:
@@ -39,6 +50,7 @@ def _digest(value: Any) -> str:
 
 def redact_parameters(value: Mapping[str, Any]) -> dict[str, Any]:
     """Return a recursively redacted copy suitable for an evidence receipt."""
+
     def clean(item: Any, key: str = "") -> Any:
         if _SECRET_KEY.search(key):
             return REDACTED
@@ -47,6 +59,7 @@ def redact_parameters(value: Mapping[str, Any]) -> dict[str, Any]:
         if isinstance(item, (list, tuple)):
             return [clean(v, key) for v in item]
         return item
+
     return clean(value)
 
 
@@ -61,26 +74,44 @@ class ManualAcquisitionRecipe(FrozenModel):
     rights_prerequisites: tuple[str, ...] = ("rights_permitted",)
     reuse_prerequisites: tuple[str, ...] = ("pinned_discovery_snapshot",)
     public_interface: str | None = None
-    navigation_steps: tuple[str, ...] = ("Open the authoritative public interface.",)
+    navigation_steps: tuple[str, ...] = (
+        "Open the authoritative public interface.",
+    )
     search_terms: tuple[str, ...] = ()
     filters: Mapping[str, Any] = {}
     locale: str | None = None
     sort_order: str | None = None
-    pagination_procedure: str = "Record every page or export and verify completeness."
+    pagination_procedure: str = (
+        "Record every page or export and verify completeness."
+    )
     expected_export_format: str | None = None
     expected_scope: str = "Record the bounded scope actually exported."
-    permitted_automation: Literal["none", "assistive", "public_export"] = "assistive"
+    permitted_automation: Literal["none", "assistive", "public_export"] = (
+        "assistive"
+    )
     expected_output_names: tuple[str, ...] = ()
     expected_media_types: tuple[str, ...] = ()
-    source_version_capture: str = "Record source-published and effective dates when supplied."
-    failure_handling: str = "Record unavailable or blocked state; do not bypass controls."
-    status: Literal["pending", "complete", "blocked", "temporarily_unavailable", "superseded"] = "pending"
+    source_version_capture: str = (
+        "Record source-published and effective dates when supplied."
+    )
+    failure_handling: str = (
+        "Record unavailable or blocked state; do not bypass controls."
+    )
+    status: Literal[
+        "pending",
+        "complete",
+        "blocked",
+        "temporarily_unavailable",
+        "superseded",
+    ] = "pending"
 
     @model_validator(mode="before")
     @classmethod
     def assign_deterministic_id(cls, data: Any) -> Any:
         if isinstance(data, dict) and not data.get("recipe_id"):
-            payload = {key: value for key, value in data.items() if key != "recipe_id"}
+            payload = {
+                key: value for key, value in data.items() if key != "recipe_id"
+            }
             data = dict(data)
             data["recipe_id"] = _digest(payload)
         return data
@@ -123,18 +154,32 @@ class ManualAcquisitionReceipt(FrozenModel):
     rights_state: Literal["permitted", "review", "blocked"]
     admission_state: Literal["pending", "accepted", "quarantined", "blocked"]
     deviations: tuple[str, ...] = ()
-    operator_state: Literal["self_recorded", "blocked", "unavailable"] = "self_recorded"
-    reviewer_state: Literal["not_reviewed", "reviewed", "rejected"] = "not_reviewed"
-    status: Literal["session", "complete", "blocked", "temporarily_unavailable", "superseded"] = "session"
+    operator_state: Literal["self_recorded", "blocked", "unavailable"] = (
+        "self_recorded"
+    )
+    reviewer_state: Literal["not_reviewed", "reviewed", "rejected"] = (
+        "not_reviewed"
+    )
+    status: Literal[
+        "session",
+        "complete",
+        "blocked",
+        "temporarily_unavailable",
+        "superseded",
+    ] = "session"
 
     @model_validator(mode="before")
     @classmethod
     def redact_and_id(cls, data: Any) -> Any:
         if isinstance(data, dict):
             payload = dict(data)
-            payload["actual_parameters"] = redact_parameters(payload.get("actual_parameters", {}))
+            payload["actual_parameters"] = redact_parameters(
+                payload.get("actual_parameters", {})
+            )
             if payload.get("receipt_id") is None:
-                identity = {k: v for k, v in payload.items() if k != "receipt_id"}
+                identity = {
+                    k: v for k, v in payload.items() if k != "receipt_id"
+                }
                 payload["receipt_id"] = _digest(identity)
             return payload
         return data
@@ -155,7 +200,9 @@ def generate_manual_recipes(
             "authoritative_location": item.endpoint,
             "public_interface": item.adapter.family.value,
             "navigation_steps": (item.adapter.acquisition_instructions,),
-            "expected_export_format": item.adapter.formats[0] if item.adapter.formats else None,
+            "expected_export_format": item.adapter.formats[0]
+            if item.adapter.formats
+            else None,
             "expected_scope": item.reason,
         }
         data.update(overrides.get(item.source_id, {}))
@@ -169,11 +216,16 @@ def validate_receipt_files(
     files_root: Path,
 ) -> ManualAcquisitionReceipt:
     """Hash declared output files and return a completed immutable receipt."""
-    if receipt.recipe_id != recipe.recipe_id or receipt.source_id != recipe.source_id:
+    if (
+        receipt.recipe_id != recipe.recipe_id
+        or receipt.source_id != recipe.source_id
+    ):
         raise ValueError("receipt is not bound to recipe")
     if receipt.rights_state != "permitted":
         raise ValueError("rights prerequisite is not permitted")
-    names = recipe.expected_output_names or tuple(path.name for path in files_root.iterdir() if path.is_file())
+    names = recipe.expected_output_names or tuple(
+        path.name for path in files_root.iterdir() if path.is_file()
+    )
     outputs: list[ManualOutputFile] = []
     for name in names:
         path = files_root / name
@@ -181,8 +233,22 @@ def validate_receipt_files(
             raise ValueError(f"missing output file: {name}")
         raw = path.read_bytes()
         media = mimetypes.guess_type(name)[0] or "application/octet-stream"
-        outputs.append(ManualOutputFile(name=name, sha256="sha256:" + sha256(raw).hexdigest(), byte_count=len(raw), media_type=media))
+        outputs.append(
+            ManualOutputFile(
+                name=name,
+                sha256="sha256:" + sha256(raw).hexdigest(),
+                byte_count=len(raw),
+                media_type=media,
+            )
+        )
     computed_ids = tuple(item.sha256 for item in outputs)
     if receipt.content_ids and receipt.content_ids != computed_ids:
         raise ValueError("output content_ids do not match downloaded files")
-    return receipt.model_copy(update={"output_files": tuple(outputs), "content_ids": computed_ids, "status": "complete", "retrieved_at": receipt.retrieved_at or datetime.now(UTC)})
+    return receipt.model_copy(
+        update={
+            "output_files": tuple(outputs),
+            "content_ids": computed_ids,
+            "status": "complete",
+            "retrieved_at": receipt.retrieved_at or datetime.now(UTC),
+        }
+    )
