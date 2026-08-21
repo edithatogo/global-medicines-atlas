@@ -41,7 +41,9 @@ def test_evidenced_sources_still_require_exact_manifest_review() -> None:
     )
 
 
-def test_rxnorm_is_derived_only_and_source_vocabulary_bytes_stay_blocked() -> None:
+def test_rxnorm_is_derived_only_and_source_vocabulary_bytes_stay_blocked() -> (
+    None
+):
     entries = {
         entry["source_id"]: entry
         for entry in cast("list[dict[str, Any]]", _queue()["entries"])

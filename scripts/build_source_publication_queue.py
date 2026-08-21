@@ -10,9 +10,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 LEDGER = ROOT / "quality/qualifications/source-rights-review-ledger.json"
-DEFAULT_OUTPUT = (
-    ROOT / "quality/qualifications/source-publication-queue.json"
-)
+DEFAULT_OUTPUT = ROOT / "quality/qualifications/source-publication-queue.json"
 ACQUISITION_EVIDENCE = {
     "us-live-bronze": (
         ROOT / "quality/qualifications/us-live-bronze-corpus-20260820.json"
@@ -75,9 +73,7 @@ def build() -> dict[str, Any]:
                 if review["publish_source_bytes"] == "prohibited"
                 else "source_bytes_candidate"
             ),
-            "acquisition_state": (
-                "evidenced" if acquisition else "pending"
-            ),
+            "acquisition_state": ("evidenced" if acquisition else "pending"),
             "admission_state": (
                 acquisition["admission_state"]
                 if acquisition

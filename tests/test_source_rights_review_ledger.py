@@ -76,8 +76,7 @@ def test_unreviewed_international_sources_remain_explicitly_fail_closed() -> (
     non_public = [
         entry
         for entry in entries
-        if entry["disposition"]
-        in {"catalogue_only", "credentialed_excluded"}
+        if entry["disposition"] in {"catalogue_only", "credentialed_excluded"}
     ]
     assert len(non_public) == 172
     assert all(entry["blocker"] for entry in non_public)
@@ -121,7 +120,9 @@ def test_permissive_international_candidates_have_official_evidence() -> None:
         assert entry["maintainer_publication_approved"] is False
 
 
-def test_every_international_review_has_observation_or_failure_receipt() -> None:
+def test_every_international_review_has_observation_or_failure_receipt() -> (
+    None
+):
     entries = _entries()
     assert sum(bool(entry["evidence"]) for entry in entries) == 154
     unavailable = [entry for entry in entries if not entry["evidence"]]

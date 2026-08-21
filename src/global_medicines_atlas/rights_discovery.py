@@ -125,7 +125,9 @@ def discover_rights_evidence(
     links: tuple[RightsLink, ...] = ()
     if media_type is not None and "html" in media_type.casefold():
         parser = _RightsLinkParser(str(response.url))
-        parser.feed(content.decode(response.encoding or "utf-8", errors="replace"))
+        parser.feed(
+            content.decode(response.encoding or "utf-8", errors="replace")
+        )
         unique = {(item.url, item.label): item for item in parser.links}
         links = tuple(unique[key] for key in sorted(unique))
     return RightsDiscoveryReceipt(
