@@ -94,3 +94,37 @@ def test_receipt_validation_hashes_files_and_detects_missing_output(
     completed = validate_receipt_files(recipe, receipt, tmp_path)
     assert completed.output_files[0].sha256.startswith("sha256:")
     assert completed.content_ids == (completed.output_files[0].sha256,)
+
+
+def test_redaction_recurses_through_lists_and_rejects_bad_recipe_id() -> None:
+    assert redact_parameters({"items": [{"api_key": "secret"}]}) == {
+        "items": [{"api_key": REDACTED_VALUE}]
+    }
+    with pytest.raises(ValueError, match="recipe_id"):
+        ManualAcquisitionRecipe.model_validate({
+            "recipe_id": "not-a-digest",
+            "source_id": "example",
+            "authoritative_location": "https://example.test",
+        })
+
+
+def test_receipt_validation_rejects_unpermitted_and_missing_files(
+    tmp_path: Path,
+) -> None:
+    recipe = ManualAcquisitionRecipe(
+        source_id="example",
+        authoritative_location="https://example.test",
+        expected_output_names=("export.csv",),
+    )
+    receipt = ManualAcquisitionReceipt(
+        recipe_id=recipe.recipe_id,
+        source_id=recipe.source_id,
+        acquisition_id="acq-example-1",
+        executed_at=datetime.now(UTC),
+        tool_version="test",
+        reuse_discovery_snapshot_id="sha256:" + "b" * 64,
+        rights_state="review",
+        admission_state="pending",
+    )
+    with pytest.raises(ValueError, match="rights"):
+        validate_receipt_files(recipe, receipt, tmp_path)
