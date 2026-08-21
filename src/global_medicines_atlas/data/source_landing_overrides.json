@@ -23,7 +23,7 @@
     {
       "source_id": "us-fda-orange-book",
       "state": "temporarily_unavailable",
-      "reason": "Internal historical acquisition was authorized and exercised; 200 of 259 exact release URLs were retained while 59 FDA Archive-It releases remained HTTP 429 rate-limited after four bounded passes.",
+      "reason": "Internal historical acquisition was authorized and exercised; 200 of 259 exact release URLs were retained, 59 remained cumulatively unresolved after six bounded passes, and the latest full-inventory observation still failed on 103 releases.",
       "failure_receipt": "quality/qualifications/orange-book-historical-corpus-20260821.json",
       "evidence_references": [
         "quality/qualifications/orange-book-historical-authorization.json",
