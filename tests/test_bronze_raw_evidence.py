@@ -11,14 +11,17 @@ import zipfile
 from hashlib import sha256
 from pathlib import Path
 
+import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 from jsonschema import Draft202012Validator
 from tests.test_source_receipts import source_receipt
 
+from global_medicines_atlas import us_source_records
 from global_medicines_atlas.archive_safety import ArchiveSafetyError
 from global_medicines_atlas.bronze_landing import (
     BronzeLanding,
+    SourceRecordBatch,
     land_bronze_payload,
 )
 from global_medicines_atlas.bronze_raw_evidence import (
@@ -64,6 +67,57 @@ def test_raw_evidence_record_is_content_addressed_and_explicitly_b2() -> None:
     assert record.payload_sha256 == record.content_id
     assert record.byte_count == len(payload)
     assert record.payload_contents_in_metadata is False
+
+
+@pytest.mark.unit
+def test_raw_evidence_state_validation_is_fail_closed() -> None:
+    receipt = _receipt(b"state")
+    with pytest.raises(ValueError, match="locator"):
+        build_raw_evidence_record(
+            receipt,
+            raw_locator=" ",
+            state=RawEvidenceState.RETAINED,
+        )
+    with pytest.raises(ValueError, match="retained bytes"):
+        build_raw_evidence_record(
+            receipt,
+            raw_locator="https://example.invalid/payload",
+            state=RawEvidenceState.RETAINED,
+            retain_bytes=False,
+        )
+    with pytest.raises(ValueError, match="retain bytes"):
+        build_raw_evidence_record(
+            receipt,
+            raw_locator="https://example.invalid/payload",
+            state=RawEvidenceState.EXTERNAL_REFERENCE_ONLY,
+        )
+
+
+@pytest.mark.unit
+def test_raw_evidence_manifest_rejects_tampering_and_conflicting_rewrites(
+    tmp_path: Path,
+) -> None:
+    record = build_raw_evidence_record(
+        _receipt(b"manifest"),
+        raw_locator="file:///tmp/manifest.bin",
+        state=RawEvidenceState.RETAINED,
+    )
+    path = tmp_path / "manifest.json"
+    write_raw_evidence_manifest(path, (record,))
+    with pytest.raises(ValueError, match="cannot be rewritten"):
+        write_raw_evidence_manifest(
+            path,
+            (
+                record.model_copy(
+                    update={"media_type": "application/octet-stream"}
+                ),
+            ),
+        )
+    tampered = json.loads(path.read_text())
+    tampered["manifest_sha256"] = "0" * 64
+    path.write_text(json.dumps(tampered))
+    with pytest.raises(ValueError, match="digest"):
+        read_raw_evidence_manifest(path)
 
 
 @pytest.mark.unit
@@ -124,6 +178,22 @@ def test_archive_member_manifest_preserves_archive_as_raw_bytes() -> None:
     ]
     assert manifest.members[0].byte_count == 3
     assert manifest.members[0].text_decoding is None
+
+
+@pytest.mark.unit
+def test_archive_manifest_rejects_non_archive_and_tracks_tar_directories() -> (
+    None
+):
+    with pytest.raises(ValueError, match="supported"):
+        build_archive_member_manifest(b"plain bytes", media_hint="bin")
+    output = io.BytesIO()
+    with tarfile.open(fileobj=output, mode="w") as archive:
+        archive.addfile(tarfile.TarInfo("directory/"))
+    manifest = build_archive_member_manifest(
+        output.getvalue(), media_hint="tar"
+    )
+    assert manifest.members[0].is_directory is True
+    assert manifest.members[0].byte_count == 0
 
 
 @pytest.mark.unit
@@ -215,3 +285,51 @@ def test_b2_manifest_does_not_include_source_native_or_silver_columns(
     assert "native_record" not in table.column_names
     assert "canonical_medicine" not in table.column_names
     assert "normalized_product" not in table.column_names
+
+
+@pytest.mark.unit
+def test_landing_exposes_b2_manifest_and_rejects_non_native_projection(
+    tmp_path: Path,
+) -> None:
+    payload = b'{"records":[{"id":"A"}]}'
+    landing = land_bronze_payload(
+        payload,
+        _receipt(payload),
+        bronze_root=tmp_path / "bronze",
+        media_hint="json",
+    )
+    assert isinstance(landing, BronzeLanding)
+    assert landing.raw_evidence_manifest_path.is_file()
+    assert (
+        landing.raw_evidence_manifest.rows[0].state is RawEvidenceState.RETAINED
+    )
+    for batch in (
+        SourceRecordBatch(
+            table=pa.table({"id": ["A"]}),
+            parser_identity="tests.invalid.v1",
+            record_id_column="id",
+            projection_kind="source_native",
+            preserves_native_columns=False,
+        ),
+        SourceRecordBatch(
+            table=pa.table({"id": ["A"], "canonical_medicine": ["x"]}),
+            parser_identity="tests.invalid.v1",
+            record_id_column="id",
+        ),
+    ):
+        with pytest.raises(ValueError, match=r"Silver|harmonise"):
+            land_bronze_payload(
+                payload,
+                _receipt(payload),
+                bronze_root=tmp_path / "other",
+                media_hint="json",
+                source_records=batch,
+            )
+
+
+@pytest.mark.unit
+def test_archive_record_decoder_rejects_opaque_or_replacement_text() -> None:
+    with pytest.raises(ValueError, match="opaque"):
+        us_source_records._decode_member(b"id\x00value")
+    with pytest.raises(ValueError, match="replacement"):
+        us_source_records._decode_member(b"id\n\xef\xbf\xbd")
