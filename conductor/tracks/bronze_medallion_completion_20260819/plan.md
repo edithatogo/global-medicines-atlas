@@ -542,7 +542,7 @@ for credentialed or rights-unresolved sources.
 
 ## Phase 9: Explicit B2 Raw Evidence and Native Projection Boundary
 
-- [~] Task: Formalize B2 raw evidence and split source-native projections ([#295](https://github.com/edithatogo/global-medicines-atlas/issues/295))
+- [x] Task: Formalize B2 raw evidence and split source-native projections ([#295](https://github.com/edithatogo/global-medicines-atlas/issues/295))
     - [x] Inspect existing content-addressed storage, landing, recovery, archive, receipt, fixture, and Parquet contracts
     - [x] Write failing B2 tests before implementation
     - [x] Add explicit retained, external-reference-only, and blocked B2 states without changing historical identities
@@ -550,11 +550,11 @@ for credentialed or rights-unresolved sources.
     - [x] Gate optional source-native records from Silver normalization and lossy binary decoding
     - [x] Rebuild B2 references and native projections after deleting Parquet/catalogue outputs
     - [x] Run focused, recovery, archive-safety, integrity, fixture, context, formatting, lint, and typing checks
-    - [ ] Record exact pull-request head, hosted checks, and merged SHA without changing existing receipts, acquisition IDs, content IDs, or raw bytes
+    - [x] Record PR [#296](https://github.com/edithatogo/global-medicines-atlas/pull/296) head `dddbbd1f8dd837a32ea83a810a06bca344a6c9a1`, 37 passing hosted checks, and merged SHA `13d2698675eb35a195a7d5fcb54f2355a5b54d6c` without changing existing receipts, acquisition IDs, content IDs, or raw bytes
 
 ### Phase Verification & Checkpoint
 
 - [x] B2 byte/reference state is explicit and content-addressed when retained
 - [x] B1 contains references and metadata only; source-native records are separate rebuildable projections
 - [x] ZIP/tar, document, opaque-binary, identity, and projection-boundary tests pass
-- [ ] Required hosted checks pass at the exact pull-request head before merge
+- [x] Required hosted checks pass at the exact pull-request head before merge
