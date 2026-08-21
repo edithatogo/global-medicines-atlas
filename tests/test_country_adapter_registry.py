@@ -160,6 +160,14 @@ def test_capability_registry_distinguishes_evidence_layers() -> None:
 
     assert Capability.SOURCE_PARSER in declarations["us-drugsfda"].capabilities
     assert (
+        Capability.SOURCE_PARSER in declarations["fr-open-medic"].capabilities
+    )
+    assert Capability.ACQUISITION in declarations["fr-open-medic"].capabilities
+    assert (
+        Capability.CANONICAL_PROJECTION
+        not in declarations["fr-open-medic"].capabilities
+    )
+    assert (
         Capability.CANONICAL_PROJECTION
         in declarations["nz-medsafe-products"].capabilities
     )

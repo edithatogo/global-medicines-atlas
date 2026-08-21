@@ -3528,7 +3528,7 @@
       "landing_page": "https://www.assurance-maladie.ameli.fr/etudes-et-donnees/open-medic-base-complete-depenses-medicaments",
       "update_cadence": "source-declared",
       "rights_status": "Etalab-2.0",
-      "readiness": "candidate",
+      "readiness": "implemented",
       "evidence_limit": "French Open Medic expenditure is not a European utilisation standard and is not registration evidence.",
       "interface_status": "documented_download",
       "formats": [
@@ -3540,8 +3540,8 @@
       "historical_scope": "source-declared current and historical scope",
       "native_identifier": "Open Medic CIP/ATC + year + regime",
       "last_verified_at": "2026-08-21",
-      "integration_layer": "acquisition",
-      "implemented_ingestion": false,
+      "integration_layer": "parser",
+      "implemented_ingestion": true,
       "documentation_url": "https://www.assurance-maladie.ameli.fr/etudes-et-donnees/open-medic-base-complete-depenses-medicaments",
       "discovery_status": "declaration_verified",
       "information_domains": [
@@ -3566,7 +3566,9 @@
         "names"
       ],
       "qualification_state": "declared",
-      "qualification_references": [],
+      "qualification_references": [
+        "quality/qualifications/open-medic-parser-qualification-20260821.json"
+      ],
       "download_url": "https://open-data-assurance-maladie.ameli.fr/medicaments/download.php?Dir_Rep=Open_MEDIC_Base_Complete&Annee=2025",
       "acquisition_profile": "public-bulk"
     },

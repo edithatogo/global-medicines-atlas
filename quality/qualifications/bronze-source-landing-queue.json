@@ -1363,12 +1363,13 @@
         "source_id": "fr-open-medic"
       },
       "evidence_references": [
+        "quality/qualifications/open-medic-parser-qualification-20260821.json",
         "quality/qualifications/additional-utilisation-rights-preflight-20260821.json",
         "quality/qualifications/source-publication-queue.json",
         "quality/qualifications/open-medic-acquisition-success-20260821.json",
         "quality/qualifications/open-medic-public-huggingface-20260821.json"
       ],
-      "evidence_scope": "none",
+      "evidence_scope": "parser_contract",
       "next_action": "verify receipt freshness on schedule",
       "priority": 90,
       "reason": "All 12 official Open Medic annual archives for 2014 through 2025 were acquired as immutable source bytes, checksum verified, published under the approved Etalab-2.0 decision, and anonymously restored; transformed Bronze records and complete French medicines coverage remain unclaimed.",

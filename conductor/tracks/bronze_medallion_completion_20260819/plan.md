@@ -457,6 +457,7 @@ for credentialed or rights-unresolved sources.
     - [x] Reconcile the generated Bronze queue and completion audit without treating source metadata as live utilisation coverage
     - [ ] Obtain independent source-specific decisions for Japan, Canada, and Ireland before payload acquisition and retention
     - [x] Retry the already-authorized Open Medic payload under its bounded failure-receipt schedule; all 12 annual archives were acquired, checksum verified, published under the approved Etalab-2.0 decision, and anonymously restored
+    - [x] Implement the source-faithful Open Medic ZIP/CSV projection and exercise the oldest 2014 and newest 2025 schemas against the immutable public revision; retain all source values as strings and add only release-year and row-number linkage fields
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and archive verification for each acquired source
     - [ ] Keep cross-country comparability and unapproved publication fail closed
 - [~] Task: Expand authoritative global pharmacovigilance sources (Prompt 35)

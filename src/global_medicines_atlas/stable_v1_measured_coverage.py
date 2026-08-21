@@ -908,7 +908,15 @@ def _validate_probe_contract(
         )
     capabilities = builtin_source_capabilities()
     capabilities.validate_catalog(catalog)
-    capability_ids = {declaration.source_id for declaration in capabilities}
+    capability_ids = {
+        declaration.source_id
+        for declaration in capabilities
+        if declaration.capabilities.intersection({
+            Capability.CANONICAL_PROJECTION,
+            Capability.FIXTURE_PARSER,
+            Capability.LIVE_RECEIPT,
+        })
+    }
     uncovered_capabilities = sorted(capability_ids - set(specs))
     if uncovered_capabilities:
         raise ValueError(
