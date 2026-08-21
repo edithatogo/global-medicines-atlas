@@ -70,10 +70,10 @@ def build() -> dict[str, Any]:
         entries.append({
             "source_id": source_id,
             "policy_family_id": review["policy_family_id"],
-            "candidate_disposition": (
-                "public_derived_only"
+            "candidate_packaging_shape": (
+                "derived_projection_only"
                 if review["publish_source_bytes"] == "prohibited"
-                else "public_source"
+                else "source_bytes_candidate"
             ),
             "acquisition_state": (
                 "evidenced" if acquisition else "pending"
@@ -87,7 +87,7 @@ def build() -> dict[str, Any]:
                 acquisition["evidence"] if acquisition else None
             ),
             "next_action": (
-                "build_and_review_exact_public_manifest"
+                "prepare_exact_manifest_for_human_review"
                 if acquisition
                 else "acquire_with_source_family_adapter"
             ),
@@ -97,6 +97,12 @@ def build() -> dict[str, Any]:
         "schema_id": "global-medicines-atlas.source-publication-queue",
         "schema_version": 1,
         "generated_at": ledger["generated_at"],
+        "publication_gate": ledger["publication_gate"],
+        "public_eligible_count": sum(
+            bool(item["public_source_eligible"])
+            or bool(item["public_derived_eligible"])
+            for item in candidates
+        ),
         "candidate_count": len(entries),
         "acquisition_evidenced_count": sum(
             item["acquisition_state"] == "evidenced" for item in entries
