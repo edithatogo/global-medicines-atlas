@@ -126,3 +126,10 @@ def test_inventory_requires_all_paired_releases() -> None:
             base_url=BASE_URL,
             authorization=authorization,
         )
+
+    with pytest.raises(ValueError, match="inventory drifted"):
+        parse_gsrs_release_inventory(
+            b"<html><body>No releases</body></html>",
+            base_url=BASE_URL,
+            authorization=authorization,
+        )

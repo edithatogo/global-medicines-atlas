@@ -168,7 +168,8 @@ def parse_gsrs_release_inventory(
         ("\n".join(item.isoformat() for item in dates) + "\n").encode()
     ).hexdigest()
     if (
-        len(dates) != authorization.expected_release_count
+        not dates
+        or len(dates) != authorization.expected_release_count
         or dates[0] != authorization.expected_first_release
         or dates[-1] != authorization.expected_last_release
         or dates_sha256 != authorization.expected_release_dates_sha256
