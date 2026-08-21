@@ -18,11 +18,11 @@
 
 ## Phase 3: International rights review
 
-- [x] Task: Review all international sources against official terms (AC-02, AC-04)
-  - [x] Capture authority/source-family policy snapshots and digests
-  - [x] Record source-level permissive, conditional, restricted, credentialed, or unresolved dispositions
-  - [x] Generate the public-eligibility and acquisition-pending queues
-- [~] Checkpoint: Local focused validation passes; hosted review remains pending
+- [~] Task: Review all international sources against official terms (AC-02, AC-04)
+  - [~] Capture bounded official landing-page observations for all sources; 18 unavailable endpoints and source-specific terms remain unresolved
+  - [~] Record 13 additional candidate policy-family assignments; every licensing conclusion and publication disposition remains pending maintainer approval
+  - [x] Generate a fail-closed candidate acquisition and manifest-preparation queue with zero public-eligible sources
+- [~] Checkpoint: Local focused validation passes; source-specific review and hosted review remain pending
 
 ## Phase 4: Public Hugging Face archives
 
