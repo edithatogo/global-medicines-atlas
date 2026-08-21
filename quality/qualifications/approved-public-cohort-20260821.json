@@ -3,9 +3,9 @@
   "schema_version": 1,
   "approved_at": "2026-08-21T06:34:24Z",
   "decision_actor": "repository_maintainer",
-  "decision_scope": "recommended exact 31-file cohort in fresh clean Hugging Face repositories",
-  "source_count": 23,
-  "file_count": 31,
+  "decision_scope": "recommended exact cohort plus the separately authorized Open Medic expansion in fresh clean Hugging Face repositories",
+  "source_count": 24,
+  "file_count": 55,
   "repositories": [
     {
       "dataset": "edithatogo/global-medicines-atlas-fda-open-20260821",
@@ -17,15 +17,14 @@
     },
     {
       "dataset": "edithatogo/global-medicines-atlas-international-permissive-20260821",
-      "immutable_revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
-      "manifest_sha256": "fc29fc2e7896ebcb066de3f4bc43b1cb480e78204f518a82f438a47227731148",
-      "file_count": 18,
+      "immutable_revision": "87d3b54ac932018c276a1c50033ac287520cf85e",
+      "manifest_sha256": "d058b78789cd8c2d0a19467063890d32c0757add10998d307422c3ec1550df86",
+      "file_count": 42,
       "anonymous_api_status": 200,
-      "digest_verification": "18_of_18_passed_after_clean_restore"
+      "digest_verification": "42_of_42_passed_after_clean_restore"
     }
   ],
   "excluded_sources": [
-    "fr-open-medic",
     "gb-nice-medicines-utilisation",
     "nl-gipdatabank"
   ],

@@ -26,12 +26,13 @@
     },
     {
       "repository": "edithatogo/global-medicines-atlas-international-permissive-20260821",
-      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
-      "manifest_sha256": "fc29fc2e7896ebcb066de3f4bc43b1cb480e78204f518a82f438a47227731148",
+      "revision": "87d3b54ac932018c276a1c50033ac287520cf85e",
+      "manifest_sha256": "d058b78789cd8c2d0a19467063890d32c0757add10998d307422c3ec1550df86",
       "source_ids": [
         "eu-union-register",
         "fr-bdpm",
         "fr-bdpm-smr-asmr",
+        "fr-open-medic",
         "gb-emit",
         "gb-nhs-drug-tariff",
         "global-rxnorm",
