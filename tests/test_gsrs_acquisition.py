@@ -56,7 +56,14 @@ def _inventory_authorization(payload: bytes) -> GSRSAuthorization:
 
 
 def test_pending_authorization_cannot_fetch_payloads() -> None:
-    authorization = _authorization()
+    authorization = _authorization(
+        decision_status="pending",
+        decision_date=None,
+        acquisition_authorized=False,
+        internal_retention_authorized=False,
+        public_release_authorized=False,
+        external_publication_authorized=False,
+    )
     assert authorization.decision_status == "pending"
     assert authorization.acquisition_authorized is False
     with pytest.raises(PermissionError, match="decision is pending"):
@@ -84,6 +91,14 @@ def test_authorization_rejects_scope_widening(
     updates: dict[str, object], message: str
 ) -> None:
     raw = json.loads(AUTHORIZATION.read_text(encoding="utf-8"))
+    raw.update({
+        "decision_status": "pending",
+        "decision_date": None,
+        "acquisition_authorized": False,
+        "internal_retention_authorized": False,
+        "public_release_authorized": False,
+        "external_publication_authorized": False,
+    })
     raw.update(updates)
     with pytest.raises(ValidationError, match=message):
         GSRSAuthorization.model_validate(raw)
@@ -95,15 +110,32 @@ def test_approved_internal_authority_requires_date_and_both_flags() -> None:
         decision_date="2026-08-21",
         acquisition_authorized=True,
         internal_retention_authorized=True,
+        public_release_authorized=False,
+        external_publication_authorized=False,
     )
     approved.require_payload_authority()
 
     with pytest.raises(ValidationError, match="dated authority"):
         _authorization(
             decision_status="approved_internal",
+            decision_date=None,
             acquisition_authorized=True,
             internal_retention_authorized=True,
+            public_release_authorized=False,
+            external_publication_authorized=False,
         )
+
+
+def test_approved_public_authority_allows_payload_gate() -> None:
+    approved = _authorization(
+        decision_status="approved_public",
+        decision_date="2026-08-22",
+        acquisition_authorized=True,
+        internal_retention_authorized=True,
+        public_release_authorized=True,
+        external_publication_authorized=True,
+    )
+    approved.require_payload_authority()
 
 
 @pytest.mark.parametrize(

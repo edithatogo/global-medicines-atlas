@@ -362,10 +362,10 @@ for credentialed or rights-unresolved sources.
     - [x] Verify the public FDA archive exposes 68 paired UNII data and name releases from 2014-01-25 through 2026-08-04
     - [x] Add an executable inventory parser that rejects missing pairs, release-count drift, date drift, and non-official hosts
     - [x] Keep acquisition, retention, public release, and external publication fail closed until the maintainer records a source-specific decision
-- [ ] Task: Acquire and archive the complete approved GSRS/UNII family (Prompt 18)
-    - [ ] Bind the maintainer's source-specific licensing decision to the exact authorization
-    - [ ] Acquire every authorized paired dated release without committing source bytes
-    - [ ] Exercise immutable landing, rights receipts, Bronze admission, source-faithful Parquet, clean-room recovery, private archiving, and checksum verification
+- [~] Task: Acquire and archive the complete approved GSRS/UNII family (Prompt 18)
+    - [x] Bind the maintainer's source-specific licensing decision to the exact authorization; private acquisition and retention approved 2026-08-22, public and external publication prohibited
+    - [ ] Acquire every authorized paired dated release without committing source bytes (live FDA transfer attempted; network transfer did not complete in bounded run)
+    - [x] Add the private acquisition, receipt, Bronze landing, and checksum-bound archive runner; execution evidence remains pending successful transfer
     - [ ] Preserve UNII, names, synonyms, substance types, and source relationships without treating terminology evidence as canonical medicine identity or regulatory approval
     - [ ] Keep any public release and external publication separately gated
 - [x] Task: Implement complete FDA AERS/FAERS quarterly acquisition machinery (Prompt 12)

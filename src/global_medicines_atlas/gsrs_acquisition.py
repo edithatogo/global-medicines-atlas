@@ -56,7 +56,7 @@ class GSRSAuthorization(FrozenModel):
     ]
     schema_version: Literal[1]
     decision_date: date | None
-    decision_status: Literal["pending", "approved_internal"]
+    decision_status: Literal["pending", "approved_internal", "approved_public"]
     decision_basis: str = Field(min_length=1)
     acquisition_authorized: bool
     internal_retention_authorized: bool
@@ -79,7 +79,7 @@ class GSRSAuthorization(FrozenModel):
             raise ValueError("GSRS licensing evidence must stay on NCATS")
         if self.expected_release_count != _EXPECTED_RELEASE_COUNT:
             raise ValueError("GSRS authorization must bind all 68 releases")
-        if (
+        if self.decision_status != "approved_public" and (
             self.public_release_authorized
             or self.external_publication_authorized
         ):
@@ -106,7 +106,7 @@ class GSRSAuthorization(FrozenModel):
     def require_payload_authority(self) -> None:
         """Raise unless the maintainer approved internal payload acquisition."""
 
-        if self.decision_status != "approved_internal":
+        if self.decision_status not in {"approved_internal", "approved_public"}:
             raise PermissionError(
                 "GSRS payload acquisition decision is pending"
             )
