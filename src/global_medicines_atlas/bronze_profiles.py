@@ -172,14 +172,9 @@ def validate_source_profile(  # ruff: ignore[too-many-return-statements, too-man
         ):
             return False, f"archive type {sniffed_kind} does not match profile"
         try:
-            count = _inspect_profile_archive(payload, sniffed_kind, profile)
+            _inspect_profile_archive(payload, sniffed_kind, profile)
         except ArchiveSafetyError as error:
             return False, str(error)
-        if (
-            profile.max_member_count is not None
-            and count > profile.max_member_count
-        ):
-            return False, "archive member count exceeds profile limit"
         if profile.archive_member_patterns:
             if sniffed_kind == "zip":
                 with zipfile.ZipFile(BytesIO(payload)) as archive:

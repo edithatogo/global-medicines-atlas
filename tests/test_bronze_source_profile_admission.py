@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import gzip
+import tarfile
 from io import BytesIO
 from pathlib import Path
 from typing import Any
@@ -19,6 +20,7 @@ from global_medicines_atlas.bronze_profiles import (
     BronzeAdmissionProfile,
     JsonContainer,
     ProfileMismatchAction,
+    validate_source_profile,
 )
 from global_medicines_atlas.receipts import (
     PayloadEvidence,
@@ -173,6 +175,81 @@ def test_gzip_profile_enforces_expansion_ratio(tmp_path: Path) -> None:
     assert "profile_mismatch" in record.reason_codes
 
 
+def test_tar_and_gzip_profiles_accept_safe_archives(tmp_path: Path) -> None:
+    tar_stream = BytesIO()
+    with tarfile.open(fileobj=tar_stream, mode="w") as archive:
+        info = tarfile.TarInfo("data/medicines.json")
+        info.size = 2
+        archive.addfile(info, BytesIO(b"[]"))
+    tar_record = _evaluate(
+        tar_stream.getvalue(),
+        tmp_path,
+        _profile(
+            expected_media=("tar",),
+            archive_type="tar",
+            archive_member_patterns=("data/*.json",),
+        ),
+    )
+    assert tar_record.state is BronzeAdmissionState.ACCEPTED
+
+    gzip_stream = BytesIO()
+    with gzip.GzipFile(fileobj=gzip_stream, mode="wb") as archive:
+        archive.write(b"medicines")
+    gzip_record = _evaluate(
+        gzip_stream.getvalue(),
+        tmp_path,
+        _profile(expected_media=("gzip",), archive_type="gzip"),
+    )
+    assert gzip_record.state is BronzeAdmissionState.ACCEPTED
+
+
+@pytest.mark.parametrize(
+    ("payload", "sniffed_kind", "profile", "message"),
+    [
+        (b"long", "document", _profile(max_size_bytes=2), "size limit"),
+        (
+            b"{}",
+            "json",
+            _profile(expected_media=("csv",)),
+            "expects media",
+        ),
+        (b"null", "json", _profile(), "not permitted"),
+        (b"not-json", "json", _profile(), "not valid JSON"),
+        (
+            b"\xff",
+            "csv",
+            _profile(csv_encoding="utf-8"),
+            "CSV profile validation failed",
+        ),
+        (
+            b"name\nAspirin\n",
+            "csv",
+            _profile(csv_required_headers=("code",)),
+            "headers are missing",
+        ),
+        (b"<broken", "xml", _profile(), "XML"),
+        (
+            b"<medicines />",
+            "xml",
+            _profile(xml_namespace="urn:medicines"),
+            "namespace does not match",
+        ),
+        (b"not-used", "gzip", _profile(archive_type="zip"), "does not match"),
+    ],
+)
+def test_profile_mismatch_reasons_are_fail_closed(
+    payload: bytes,
+    sniffed_kind: str,
+    profile: BronzeAdmissionProfile,
+    message: str,
+) -> None:
+    accepted, reason = validate_source_profile(
+        payload, sniffed_kind=sniffed_kind, profile=profile
+    )
+    assert not accepted
+    assert message in reason
+
+
 def test_malformed_and_opaque_payloads_remain_quarantined_or_accepted_safely(
     tmp_path: Path,
 ) -> None:
@@ -188,3 +265,7 @@ def test_profile_schema_is_versioned_and_bounded() -> None:
     assert BronzeAdmissionProfile(profile_id="x").schema_version == 1
     with pytest.raises(ValueError, match="greater than or equal to 1"):
         BronzeAdmissionProfile(profile_id="x", max_size_bytes=0)
+    with pytest.raises(ValueError, match="one character"):
+        BronzeAdmissionProfile(profile_id="x", csv_delimiter="||")
+    with pytest.raises(ValueError, match="archive_type"):
+        BronzeAdmissionProfile(profile_id="x", archive_type="rar")
