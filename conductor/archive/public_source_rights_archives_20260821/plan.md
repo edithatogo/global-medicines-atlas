@@ -20,17 +20,17 @@
 
 - [x] Task: Review all international sources against official terms (AC-02, AC-04)
   - [x] Capture bounded official landing-page observations and retain unavailable endpoints as explicit unresolved states
-  - [x] Record policy-family assignments; 12 affirmatively reusable sources are publicly archived and Open Medic retains an explicit acquisition-failure receipt
-  - [x] Generate and reconcile the acquisition/publication queue: 25 published sources and one temporary acquisition failure
+  - [x] Record policy-family assignments; ten approved international sources are publicly archived and three candidates remain outside the exact manifest
+  - [x] Generate and reconcile the acquisition/publication queue: 23 published sources, two acquisition-pending sources, and one temporary acquisition failure
 - [x] Checkpoint: Rights review is source-specific and fail-closed; unavailable bytes are not represented as archived
 
 ## Phase 4: Public Hugging Face archives
 
 - [x] Task: Publish and restore every acquired, admitted, public-eligible package (AC-05, AC-06)
-  - [x] Generate source-specific cards, manifests, attribution, and withdrawal metadata for FDA and 12 international source IDs
+  - [x] Generate source-specific cards, manifests, attribution, and withdrawal metadata for FDA and ten international source IDs
   - [x] Exclude restricted fields and run sensitivity/publication gates for published packages
-  - [x] Publish, resolve immutable revisions, restore, and verify all SHA-256 digests; Open Medic remains temporarily unavailable
-- [x] Checkpoint: FDA 13/13 and international 51/51 restored digests pass; Open Medic has an explicit failure receipt
+  - [x] Publish to fresh repositories, resolve immutable revisions, restore, and verify all SHA-256 digests
+- [x] Checkpoint: FDA 13/13 and international 18/18 restored digests pass; GIP and NICE utilisation are outside the approval and Open Medic has an explicit failure receipt
 
 ## Phase 5: Qualification and closeout
 
@@ -44,3 +44,9 @@
 - [x] Reconcile the generated publication queue with immutable FDA and international publication receipts (`dc4691c`)
 - [x] Replace stale private-candidate wording in the reproducible FDA dataset card (`dc4691c`)
 - [x] Bind both publication receipts to their exact source-ID sets (`dc4691c`)
+
+## Post-archive authorization correction
+
+- [x] Supersede the overbroad 25-source receipt with the maintainer-approved exact 23-source, 31-file cohort
+- [x] Publish and anonymously verify fresh repositories whose histories contain only the approved manifests
+- [x] Keep the predecessor repositories private because their histories contain unapproved revisions

@@ -85,16 +85,26 @@ def _review(
     source_id: str,
     family_id: str,
     family: dict[str, Any],
+    approved_source_ids: frozenset[str],
+    approved_derived_ids: frozenset[str],
 ) -> SourceRightsReview:
+    approved = source_id in approved_source_ids
+    derived_only = source_id in approved_derived_ids
     return SourceRightsReview.model_validate({
         "source_id": source_id,
         "policy_family_id": family_id,
         **family,
-        "disposition": "catalogue_only",
-        "maintainer_licence_approved": False,
-        "maintainer_publication_approved": False,
+        "disposition": (
+            "approved_public_derived_only"
+            if derived_only
+            else "approved_public_source"
+            if approved
+            else "catalogue_only"
+        ),
+        "maintainer_licence_approved": approved,
+        "maintainer_publication_approved": approved,
         "reviewed_at": REVIEWED_AT,
-        "blocker": (
+        "blocker": None if approved else (
             "official reuse evidence is a candidate only; maintainer "
             "licensing conclusion and exact-manifest publication approval "
             "remain pending"
@@ -114,6 +124,24 @@ def build() -> dict[str, Any]:
         for entry in discovery_file["entries"]
     }
     decisions = decision_file["policy_family_assignments"]
+    manifests = decision_file["approved_publication_manifests"]
+    approved_source_ids = frozenset(
+        source_id
+        for manifest in manifests
+        for source_id in manifest["source_ids"]
+    )
+    approved_derived_ids = frozenset(
+        source_id
+        for manifest in manifests
+        for source_id in manifest["derived_only_source_ids"]
+    )
+    if not approved_derived_ids <= approved_source_ids:
+        raise ValueError("derived-only approvals must be in approved manifests")
+    approved_occurrences = sum(
+        len(manifest["source_ids"]) for manifest in manifests
+    )
+    if approved_occurrences != len(approved_source_ids):
+        raise ValueError("approved manifests contain duplicate sources")
     source_ids = tuple(source["source_id"] for source in catalog["sources"])
     unknown = sorted(set(decisions) - set(source_ids))
     if unknown:
@@ -131,6 +159,8 @@ def build() -> dict[str, Any]:
             source["source_id"],
             decisions[source["source_id"]],
             families[decisions[source["source_id"]]],
+            approved_source_ids,
+            approved_derived_ids,
         )
         if source["source_id"] in decisions
         else _unresolved(source, discovery_by_source[source["source_id"]])

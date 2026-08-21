@@ -1,7 +1,51 @@
 {
   "schema_id": "global-medicines-atlas.source-rights-source-decisions",
   "schema_version": 1,
-  "publication_gate": "pending_exact_manifest_maintainer_approval",
+  "publication_gate": "satisfied_for_exact_approved_manifests",
+  "approved_publication_manifests": [
+    {
+      "repository": "edithatogo/global-medicines-atlas-fda-open-20260821",
+      "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "manifest_sha256": "92ca4b2e4daa99ef6954f814358aba7c5c0a4f96d16b42953d8b8a780015281b",
+      "source_ids": [
+        "us-drugsfda",
+        "us-fda-drug-shortages",
+        "us-fda-faers",
+        "us-fda-ndc-directory",
+        "us-fda-nsde",
+        "us-fda-orange-book",
+        "us-fda-recalls-notices",
+        "us-fda-rems",
+        "us-openfda-drugsfda",
+        "us-openfda-enforcement",
+        "us-openfda-faers",
+        "us-openfda-ndc",
+        "us-openfda-nsde"
+      ],
+      "derived_only_source_ids": []
+    },
+    {
+      "repository": "edithatogo/global-medicines-atlas-international-permissive-20260821",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "manifest_sha256": "fc29fc2e7896ebcb066de3f4bc43b1cb480e78204f518a82f438a47227731148",
+      "source_ids": [
+        "eu-union-register",
+        "fr-bdpm",
+        "fr-bdpm-smr-asmr",
+        "gb-emit",
+        "gb-nhs-drug-tariff",
+        "global-rxnorm",
+        "nz-pharmac-hml",
+        "nz-pharmac-schedule",
+        "nz-pharmac-schedule-xml",
+        "us-rxnorm-api"
+      ],
+      "derived_only_source_ids": [
+        "global-rxnorm",
+        "us-rxnorm-api"
+      ]
+    }
+  ],
   "policy_family_assignments": {
     "us-drugsfda": "fda-website-public-domain",
     "us-fda-drug-shortages": "fda-website-public-domain",

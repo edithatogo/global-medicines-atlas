@@ -77,12 +77,13 @@ publication.
 
 ## External gates
 
-The maintainer's later instruction on 2026-08-21 explicitly authorizes all FDA
-data and all international sources with affirmative reuse permission to be
-published publicly. Publication remains bound to the exact qualification
-manifests, source-specific exclusions, and an independent sensitivity review.
-Credentials, restricted-source access, paid services, and permissions absent
-from official evidence remain ungranted.
+The maintainer explicitly approved the recommended exact 31-file cohort on
+2026-08-21. Authorization is limited to the two manifest digests and fresh
+repository revisions recorded in
+`quality/qualifications/approved-public-cohort-20260821.json`. GIP, NICE
+utilisation, OpenPrescribing, Open Medic, restricted RxNorm vocabulary bytes,
+credentials, paid services, and every unlisted source or revision remain
+unapproved.
 
 ## Out of scope
 
