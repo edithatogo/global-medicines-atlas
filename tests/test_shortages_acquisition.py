@@ -340,9 +340,9 @@ def test_runner_archives_current_and_historical_surfaces(
     assert manifest.surface_count == 7
     assert manifest.succeeded_count == 7
     assert manifest.failed_count == 0
-    assert manifest.accepted_count == 5
-    assert manifest.quarantined_count == 2
-    assert manifest.recovered_count == 5
+    assert manifest.accepted_count == 7
+    assert manifest.quarantined_count == 0
+    assert manifest.recovered_count == 7
     assert manifest.source_record_projection_count == 1
     assert manifest.source_record_rows == 2
     assert manifest.recovered_source_record_projection_count == 1

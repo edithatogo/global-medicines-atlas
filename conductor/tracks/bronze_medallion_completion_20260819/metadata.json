@@ -1,10 +1,40 @@
 {
-  "track_id": "bronze_medallion_completion_20260819",
-  "type": "feature",
-  "status": "active",
   "created_at": "2026-08-19T15:50:00+10:00",
-  "updated_at": "2026-08-21T18:50:00Z",
-  "target_versions": ["1.0.0"],
+  "execution_policy": {
+    "decision_protocol": "options_recommendation_rationale",
+    "failure_recovery": "bounded_self_correction",
+    "interaction": "decision_gates_only",
+    "max_identical_failures": 3,
+    "merge_policy": "required_checks_then_merge",
+    "mode": "autonomous",
+    "phase_checkpoints": "automatic_evidence_gated"
+  },
+  "external_gates": [
+    "Hugging Face archival of public bronze outputs after the sibling publication path lands",
+    "source-by-source rights review before any source-derived archive payload",
+    "maintainer approval of external dataset publication"
+  ],
+  "github_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/167",
+  "github_issue_drafts": [
+    ".github/generated-issues/bronze-medallion-parent.md",
+    ".github/generated-issues/bronze-medallion-inventory.md",
+    ".github/generated-issues/bronze-medallion-landing.md",
+    ".github/generated-issues/bronze-medallion-ingest.md",
+    ".github/generated-issues/bronze-medallion-archive.md",
+    ".github/generated-issues/bronze-medallion-reuse-gate.md"
+  ],
+  "github_subissues": [
+    "https://github.com/edithatogo/global-medicines-atlas/issues/168",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/169",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/170",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/171",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/176",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/177",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/275",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/281",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/289",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/295"
+  ],
   "requirements": [
     "M-001",
     "M-002",
@@ -35,39 +65,11 @@
     "W-008",
     "W-009"
   ],
-  "github_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/167",
-  "github_subissues": [
-    "https://github.com/edithatogo/global-medicines-atlas/issues/168",
-    "https://github.com/edithatogo/global-medicines-atlas/issues/169",
-    "https://github.com/edithatogo/global-medicines-atlas/issues/170",
-    "https://github.com/edithatogo/global-medicines-atlas/issues/171",
-    "https://github.com/edithatogo/global-medicines-atlas/issues/176",
-    "https://github.com/edithatogo/global-medicines-atlas/issues/177",
-    "https://github.com/edithatogo/global-medicines-atlas/issues/275",
-    "https://github.com/edithatogo/global-medicines-atlas/issues/281",
-    "https://github.com/edithatogo/global-medicines-atlas/issues/289",
-    "https://github.com/edithatogo/global-medicines-atlas/issues/295"
+  "status": "active",
+  "target_versions": [
+    "1.0.0"
   ],
-  "github_issue_drafts": [
-    ".github/generated-issues/bronze-medallion-parent.md",
-    ".github/generated-issues/bronze-medallion-inventory.md",
-    ".github/generated-issues/bronze-medallion-landing.md",
-    ".github/generated-issues/bronze-medallion-ingest.md",
-    ".github/generated-issues/bronze-medallion-archive.md",
-    ".github/generated-issues/bronze-medallion-reuse-gate.md"
-  ],
-  "external_gates": [
-    "Hugging Face archival of public bronze outputs after the sibling publication path lands",
-    "source-by-source rights review before any source-derived archive payload",
-    "maintainer approval of external dataset publication"
-  ],
-  "execution_policy": {
-    "mode": "autonomous",
-    "interaction": "decision_gates_only",
-    "decision_protocol": "options_recommendation_rationale",
-    "phase_checkpoints": "automatic_evidence_gated",
-    "failure_recovery": "bounded_self_correction",
-    "max_identical_failures": 3,
-    "merge_policy": "required_checks_then_merge"
-  }
+  "track_id": "bronze_medallion_completion_20260819",
+  "type": "feature",
+  "updated_at": "2026-08-22T00:00:00Z"
 }

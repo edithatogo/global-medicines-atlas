@@ -13,6 +13,11 @@ import orjson
 from pydantic import AwareDatetime, Field, model_validator
 
 from .bronze_integrity import inspect_untrusted_payload
+from .bronze_profiles import (
+    BronzeAdmissionProfile,
+    ProfileMismatchAction,
+    validate_source_profile,
+)
 from .models import FrozenModel
 from .receipts import SHA256_PATTERN, SourceReceipt, require_temporal
 
@@ -188,7 +193,11 @@ def classify_bronze_payload(
                 ),
             ),
         )
-    if not isinstance(parsed, dict):
+    if isinstance(parsed, dict):
+        message = "payload is a JSON object"
+    elif isinstance(parsed, list):
+        message = "payload is a JSON array"
+    else:
         return create_admission_decision(
             acquisition_id=event_id,
             content_id=content_id,
@@ -196,9 +205,9 @@ def classify_bronze_payload(
             reason_codes=("schema_breaking",),
             validation_results=(
                 ValidationResult(
-                    check_id="json-object",
+                    check_id="json-container",
                     passed=False,
-                    message="bronze JSON payloads must be objects",
+                    message="JSON top-level value must be an object or array",
                 ),
             ),
         )
@@ -208,9 +217,9 @@ def classify_bronze_payload(
         state=BronzeAdmissionState.ACCEPTED,
         validation_results=(
             ValidationResult(
-                check_id="json-object",
+                check_id="json-container",
                 passed=True,
-                message="payload is a JSON object",
+                message=message,
             ),
         ),
     )
@@ -219,6 +228,8 @@ def classify_bronze_payload(
 def evaluate_bronze_payload(
     payload_path: Path,
     receipt: SourceReceipt,
+    *,
+    profile: BronzeAdmissionProfile | None = None,
 ) -> BronzeAdmissionRecord:
     """Inspect staged bytes without creating any analytical projection."""
 
@@ -238,7 +249,7 @@ def evaluate_bronze_payload(
     if inspection.blocking:
         state = BronzeAdmissionState.QUARANTINED
         reasons = inspection.reason_codes
-    elif inspection.sniffed_kind == "json":
+    elif inspection.sniffed_kind == "json" and profile is None:
         classified = classify_bronze_payload(
             payload,
             acquisition_id=temporal.acquisition_id,
@@ -261,6 +272,26 @@ def evaluate_bronze_payload(
     else:
         state = BronzeAdmissionState.ACCEPTED
         reasons = ()
+    profile_results: tuple[ValidationResult, ...] = ()
+    if profile is not None:
+        profile_ok, profile_message = validate_source_profile(
+            payload,
+            sniffed_kind=inspection.sniffed_kind,
+            profile=profile,
+        )
+        profile_results = (
+            ValidationResult(
+                check_id=f"source-profile:{profile.profile_id}",
+                passed=profile_ok,
+                message=profile_message,
+            ),
+        )
+        if not profile_ok:
+            if profile.mismatch_action is ProfileMismatchAction.QUARANTINE:
+                state = BronzeAdmissionState.QUARANTINED
+                reasons = (*reasons, "profile_mismatch")
+            else:
+                reasons = (*reasons, "profile_warning")
     return create_admission_decision(
         acquisition_id=temporal.acquisition_id,
         content_id=inspection.content_id,
@@ -273,18 +304,22 @@ def evaluate_bronze_payload(
                 message=item.message,
             )
             for item in inspection.findings
-        ),
+        )
+        + profile_results,
     )
 
 
 def evaluate_bronze_admission(
     acquisition: BronzeAcquisition,
+    *,
+    profile: BronzeAdmissionProfile | None = None,
 ) -> BronzeAdmissionRecord:
     """Evaluate one staged acquisition; never rewrite its payload."""
 
     return evaluate_bronze_payload(
         acquisition.payload_path,
         acquisition.receipt,
+        profile=profile,
     )
 
 
@@ -422,10 +457,11 @@ def admit_bronze_landing(
     actor: str = "global-medicines-atlas:automated-admission-v2",
     decided_at: datetime | None = None,
     supersedes_decision_id: str | None = None,
+    profile: BronzeAdmissionProfile | None = None,
 ) -> BronzeAdmissionRecord:
     """Re-inspect and append a superseding automated admission decision."""
 
-    evaluated = evaluate_bronze_admission(acquisition)
+    evaluated = evaluate_bronze_admission(acquisition, profile=profile)
     predecessor = (
         supersedes_decision_id
         or latest_admission_decision(acquisition).decision_id

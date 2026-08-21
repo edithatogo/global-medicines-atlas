@@ -10,6 +10,7 @@ from typing import Any, Self, cast
 
 from pydantic import Field, HttpUrl, model_validator
 
+from .bronze_profiles import BronzeAdmissionProfile
 from .countries import SourceDimension
 from .logging import get_logger
 from .models import FrozenModel
@@ -203,6 +204,7 @@ class MedicineDataSource(FrozenModel):
     last_verified_at: date
     integration_layer: IntegrationLayer = IntegrationLayer.CATALOGUED
     acquisition_profile: str | None = Field(default=None, min_length=1)
+    bronze_admission_profile: BronzeAdmissionProfile | None = None
     landing_page: HttpUrl
     documentation_url: HttpUrl
     api_url: HttpUrl | None = None

@@ -302,6 +302,16 @@
   record Parquet only from an explicit parser that preserves native
   granularity and columns; never decode opaque binary with replacement text or
   perform Silver harmonisation in the Bronze writer.
+- **M-104:** Run Bronze admission in two stages: source-independent integrity
+  and safety inspection followed by an optional versioned source admission
+  profile attached through the canonical source catalogue or adapter contract.
+  Profiles may constrain media, JSON object/array/JSONL shape, CSV delimiter
+  and headers, XML root or namespace, archive members, document/opaque status,
+  and resource limits. An unprofiled source must not assume that JSON objects
+  are universal; valid arrays remain admissible. Profile mismatch must either
+  quarantine downstream processing or record a warning according to the
+  profile, while preserving landed bytes, receipts, identities, and reviewer
+  states.
 ## Should Have
 
 - **S-001:** Evaluate Apache DataFusion for measured Rust-native query or streaming requirements without displacing DuckDB prematurely.

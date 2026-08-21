@@ -104,7 +104,7 @@ def test_malformed_payload_is_quarantined_before_projection(
 
 
 @pytest.mark.unit
-def test_non_object_json_is_quarantined_before_projection(
+def test_json_array_is_admitted_without_universal_object_assumption(
     tmp_path: Path,
 ) -> None:
     outcome = land_bronze_payload(
@@ -115,10 +115,9 @@ def test_non_object_json_is_quarantined_before_projection(
         admission_decided_at=NOW,
     )
 
-    assert type(outcome) is BronzeAcquisition
-    assert outcome.admission.state is BronzeAdmissionState.QUARANTINED
-    assert outcome.admission.reason_codes == ("schema_breaking",)
-    assert not (tmp_path / "bronze" / "parquet").exists()
+    assert isinstance(outcome, BronzeLanding)
+    assert outcome.admission.state is BronzeAdmissionState.ACCEPTED
+    assert outcome.admission.reason_codes == ()
 
 
 @pytest.mark.unit

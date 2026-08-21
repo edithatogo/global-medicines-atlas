@@ -47,6 +47,179 @@
       "title": "AvailableField",
       "type": "string"
     },
+    "BronzeAdmissionProfile": {
+      "additionalProperties": false,
+      "description": "Optional source-native shape contract; absent means generic policy.",
+      "properties": {
+        "schema_version": {
+          "default": 1,
+          "maximum": 1,
+          "minimum": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "profile_id": {
+          "minLength": 1,
+          "title": "Profile Id",
+          "type": "string"
+        },
+        "expected_media": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Expected Media",
+          "type": "array"
+        },
+        "json_containers": {
+          "default": [
+            "object",
+            "array",
+            "json_lines"
+          ],
+          "items": {
+            "$ref": "#/$defs/JsonContainer"
+          },
+          "title": "Json Containers",
+          "type": "array"
+        },
+        "csv_delimiter": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Csv Delimiter"
+        },
+        "csv_encoding": {
+          "default": "utf-8",
+          "title": "Csv Encoding",
+          "type": "string"
+        },
+        "csv_required_headers": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Csv Required Headers",
+          "type": "array"
+        },
+        "xml_root": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Xml Root"
+        },
+        "xml_namespace": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Xml Namespace"
+        },
+        "archive_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Archive Type"
+        },
+        "archive_member_patterns": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Archive Member Patterns",
+          "type": "array"
+        },
+        "document_or_opaque": {
+          "default": false,
+          "title": "Document Or Opaque",
+          "type": "boolean"
+        },
+        "max_size_bytes": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Size Bytes"
+        },
+        "max_member_count": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Member Count"
+        },
+        "max_expansion_ratio": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Expansion Ratio"
+        },
+        "max_nesting": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Nesting"
+        },
+        "mismatch_action": {
+          "$ref": "#/$defs/ProfileMismatchAction",
+          "default": "quarantine"
+        }
+      },
+      "required": [
+        "profile_id"
+      ],
+      "title": "BronzeAdmissionProfile",
+      "type": "object"
+    },
     "ChangeSemantics": {
       "enum": [
         "current_state",
@@ -118,6 +291,15 @@
         "undocumented"
       ],
       "title": "InterfaceStatus",
+      "type": "string"
+    },
+    "JsonContainer": {
+      "enum": [
+        "object",
+        "array",
+        "json_lines"
+      ],
+      "title": "JsonContainer",
       "type": "string"
     },
     "JurisdictionCensusEntry": {
@@ -261,6 +443,17 @@
           ],
           "default": null,
           "title": "Acquisition Profile"
+        },
+        "bronze_admission_profile": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BronzeAdmissionProfile"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         },
         "landing_page": {
           "format": "uri",
@@ -483,6 +676,14 @@
         "unknown"
       ],
       "title": "PopulationScope",
+      "type": "string"
+    },
+    "ProfileMismatchAction": {
+      "enum": [
+        "quarantine",
+        "warn"
+      ],
+      "title": "ProfileMismatchAction",
       "type": "string"
     },
     "QualificationState": {

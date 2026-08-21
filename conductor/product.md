@@ -45,6 +45,11 @@ archive-member manifests, and document manifests are rebuildable products,
 not B1 authority or raw evidence. Opaque binary bytes are never replacement-
 decoded, and Silver harmonisation remains outside the Bronze writer.
 
+Admission is source-profile-aware: generic integrity and safety inspection
+runs before optional source-native structural validation. A mismatch can
+quarantine processing or be recorded as a warning under the profile, but never
+deletes or rewrites landed evidence.
+
 ## Problem
 
 Medicine availability differs substantially between countries. Regulatory approval, market registration, public reimbursement, formulary inclusion, restrictions, indications, and product presentation are recorded by separate organisations using incompatible identifiers and terminology.

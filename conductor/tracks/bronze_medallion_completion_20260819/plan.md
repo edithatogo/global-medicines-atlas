@@ -491,6 +491,23 @@ for credentialed or rights-unresolved sources.
 - [x] Executable contract tests prove the normative phrases and authority boundaries across all required documents
 - [x] Context validation recognizes the glossary as required project context
 - [x] Required hosted checks pass at the exact pull-request head before merge
+
+## Phase 10: Source-profile-aware Bronze admission
+
+- [~] Task: Add a versioned source-profile admission stage after generic integrity (#299)
+    - [x] Inspect admission, integrity, parser/archive safety, catalogue, adapters, and governed fixtures
+    - [x] Write failing object/array/JSONL/CSV/XML/archive/document and profile-mismatch tests first
+    - [ ] Add bounded profile schema and catalogue/adapter contract
+    - [ ] Apply generic integrity first, then profile validation without rewriting landed bytes
+    - [ ] Run focused and affected admission, parser, archive, fixture, context, formatting, lint, and typing checks
+    - [ ] Record exact hosted checks, merge SHA, and preserved evidence boundary
+
+### Phase Verification & Checkpoint
+
+- [ ] Generic integrity remains authoritative for hostile input and corruption
+- [ ] Unprofiled JSON arrays are accepted; explicit profile mismatches quarantine or warn
+- [ ] Profile limits and source-native structure do not convert index or landing into coverage
+- [ ] Required hosted checks pass at the exact pull-request head before merge
 - [x] Review confirms documentation-and-contract-only scope and no source, receipt, digest, or acquisition-identity mutation
 
 ## Phase 7: Deterministic B0 Source Index Layer
