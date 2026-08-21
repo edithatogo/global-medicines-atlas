@@ -37,7 +37,7 @@
 - [x] Task: Produce the maintainer decision/evidence packet and reconcile Bronze work queues (AC-01–AC-07)
 - [x] Task: Run focused, routine, strict, and full supported validation (AC-07)
 - [x] Task: Complete Conductor review and apply all blockers (AC-07)
-- [~] Task: Open scoped PRs, obtain green hosted checks, merge, archive the track, and leave clean synchronized main (AC-07)
+- [x] Task: Open scoped PRs, obtain green hosted checks, merge, archive the track, and leave clean synchronized main (AC-07)
 
 ## Review Fixes
 
