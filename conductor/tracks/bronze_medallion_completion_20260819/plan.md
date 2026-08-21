@@ -493,14 +493,14 @@ for credentialed or rights-unresolved sources.
 
 ## Phase 7: Deterministic B0 Source Index Layer
 
-- [~] Task: Implement the B0 Source Index projection ([#281](https://github.com/edithatogo/global-medicines-atlas/issues/281))
+- [x] Task: Implement the B0 Source Index projection ([#281](https://github.com/edithatogo/global-medicines-atlas/issues/281))
     - [x] Audit the canonical source catalogue, schema/model, census, coverage index, landing factory and queue, archival inventory, Hugging Face references, Conductor state, issues, and recent Bronze merges
     - [x] Reuse `medicine_source_catalog.json` and the landing queue as authorities; do not create a parallel source registry
     - [x] Write failing tests first and confirm the missing-module failure before implementation
     - [x] Implement schema-validated B0 rows with stable source IDs and independent discovery, acquisition-evidence, landing, rights, and qualification states
     - [x] Generate deterministic snapshot identity, JSON, Parquet, human-readable documentation, and citation/dataset metadata without external publication
     - [x] Run focused and affected tests, deterministic regeneration, context validation, formatting, linting, strict typing, and the full Test-Goblin profile
-    - [ ] Record exact pull-request head, hosted checks, and merged SHA without changing acquisition IDs, content digests, existing receipts, or evidence semantics
+    - [x] Record PR [#283](https://github.com/edithatogo/global-medicines-atlas/pull/283) head `616f8b20287b58e61a50ac5537f431144960d375`, 37 passing hosted checks, and merged SHA `ccf3daf795898bea122f03a6eff90dd2e5cef1e9` without changing acquisition IDs, content digests, existing receipts, or evidence semantics
 - [x] Task: Review Fixes
     - [x] Replace a vacuous qualification-reference assertion with field-for-field projection checks against the canonical catalogue and landing queue
     - [x] Re-run the 222-test affected source-index surface after review
@@ -510,5 +510,5 @@ for credentialed or rights-unresolved sources.
 - [x] Every catalogue source occurs once with referential integrity to the landing queue
 - [x] Committed JSON, Parquet, schema, documentation, and metadata regenerate deterministically
 - [x] Tests enforce indexed, verified, fixture, live, acquired, qualified, coverage, and negative-evidence distinctions
-- [ ] Required hosted checks pass at the exact pull-request head before merge
+- [x] Required hosted checks pass at the exact pull-request head before merge
 - [x] Review confirms no parallel registry, external publication, or mutation of B1/B2 evidence identity
