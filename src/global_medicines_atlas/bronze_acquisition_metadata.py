@@ -375,7 +375,7 @@ def project_b1_acquisition_metadata(  # ruff: ignore[too-many-locals]
             "unknown" if reuse is None else reuse.disposition.value
         ),
         reuse_discovery_snapshot_id=(
-            None if reuse is None else reuse.catalogue_revision
+            None if reuse is None else reuse.discovery_snapshot_id
         ),
         rights_state=rights_state.value,
         data_sensitivity=sensitivity.data_sensitivity.value,

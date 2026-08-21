@@ -2,6 +2,12 @@ schema_version = 1
 owner = "edithatogo"
 policy = "reuse-before-build"
 
+[reuse_discovery]
+schema_version = 1
+freshness_seconds = 86400
+required_surfaces = ["local_clones", "github", "hugging_face", "source_registry"]
+snapshot_path = "quality/reuse-discovery/"
+
 [[github]]
 id = "nzmedicines"
 repository = "edithatogo/nzmedicines"

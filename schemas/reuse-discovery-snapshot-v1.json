@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.org/schemas/reuse-discovery-snapshot-v1.json",
+  "type": "object",
+  "required": ["schema_id", "schema_version", "snapshot_id", "source_id", "generated_at", "freshness_seconds", "expires_at", "tool_version", "surfaces"],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.reuse-discovery"},
+    "schema_version": {"const": 1},
+    "snapshot_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "source_id": {"type": "string", "minLength": 1},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "freshness_seconds": {"type": "integer", "minimum": 1},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "tool_version": {"type": "string", "minLength": 1},
+    "surfaces": {
+      "type": "array", "minItems": 4, "maxItems": 4,
+      "items": {"$ref": "#/$defs/surface"}
+    }
+  },
+  "$defs": {
+    "candidate": {
+      "type": "object", "required": ["surface", "locator", "source_id", "kind"],
+      "properties": {
+        "surface": {"enum": ["local_clones", "github", "hugging_face", "source_registry"]},
+        "locator": {"type": "string", "minLength": 1}, "source_id": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["payload", "registry", "schema", "related"]},
+        "digest": {"type": ["string", "null"]}, "query": {"type": ["string", "null"]}, "revision": {"type": ["string", "null"]}
+      }
+    },
+    "surface": {
+      "type": "object", "required": ["name", "state", "query", "candidates"],
+      "properties": {
+        "name": {"enum": ["local_clones", "github", "hugging_face", "source_registry"]},
+        "state": {"enum": ["success", "unavailable", "incomplete"]}, "query": {"type": "string", "minLength": 1},
+        "candidates": {"type": "array", "items": {"$ref": "#/$defs/candidate"}}, "detail": {"type": ["string", "null"]}
+      }
+    }
+  }
+}
