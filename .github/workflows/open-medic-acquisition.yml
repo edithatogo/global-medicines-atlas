@@ -108,7 +108,7 @@ jobs:
               _sha256,
           )
 
-          repo = "edithatogo/global-medicines-atlas-international-open"
+          repo = "edithatogo/global-medicines-atlas-international-permissive-20260821"
           root = Path("artifacts")
           api = HfApi()
           current = json.loads(
