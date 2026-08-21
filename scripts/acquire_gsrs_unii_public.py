@@ -104,7 +104,7 @@ def _is_complete_zip(path: Path) -> bool:
     try:
         with zipfile.ZipFile(path) as archive:
             return archive.testzip() is None
-    except (OSError, zipfile.BadZipFile):
+    except OSError, zipfile.BadZipFile:
         return False
 
 
@@ -256,7 +256,9 @@ def acquire(  # ruff: ignore[too-many-locals]
         "manifest_sha256": _digest(manifest_path),
         "release_count": inventory.release_count,
         "paired_payload_count": len(rows),
-        "payload_bytes": sum(path.stat().st_size for path in download_paths.values()),
+        "payload_bytes": sum(
+            path.stat().st_size for path in download_paths.values()
+        ),
         "archive_path": str(archive_path),
         "archive_sha256": _digest(archive_path),
     }
