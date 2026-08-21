@@ -38,8 +38,7 @@ def test_published_sources_bind_exact_publication_receipts() -> None:
     assert len(evidenced) == 25
     assert all(entry["acquisition_evidence"] for entry in evidenced)
     assert all(
-        entry["next_action"] == "monitor_public_revision"
-        for entry in evidenced
+        entry["next_action"] == "monitor_public_revision" for entry in evidenced
     )
     assert all(entry["publication_state"] == "published" for entry in evidenced)
 

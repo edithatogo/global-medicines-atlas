@@ -20,8 +20,7 @@ ACQUISITION_EVIDENCE = {
     ),
 }
 PUBLICATION_EVIDENCE = {
-    "fda": ROOT
-    / "quality/qualifications/fda-public-huggingface-20260821.json",
+    "fda": ROOT / "quality/qualifications/fda-public-huggingface-20260821.json",
     "international": ROOT
     / "quality/qualifications/international-public-huggingface-20260821.json",
 }
@@ -130,8 +129,7 @@ def build() -> dict[str, Any]:
                 if publication_evidence
                 else "retry_source_acquisition"
                 if failure_evidence
-                else
-                "prepare_exact_manifest_for_human_review"
+                else "prepare_exact_manifest_for_human_review"
                 if acquisition
                 else "acquire_with_source_family_adapter"
             ),
