@@ -1,0 +1,31 @@
+{
+  "schema_id": "global-medicines-atlas.publication-verification",
+  "schema_version": 1,
+  "observed_at": "2026-08-21T02:03:29Z",
+  "dataset": "edithatogo/global-medicines-atlas-international-open",
+  "repository_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-international-open",
+  "immutable_revision": "15270721ef5733ce3ca824a112697bc7337f4162",
+  "manifest_sha256": "fc29fc2e7896ebcb066de3f4bc43b1cb480e78204f518a82f438a47227731148",
+  "archived_source_count": 10,
+  "file_count": 18,
+  "payload_digest_verification": "18_of_18_passed_after_clean_restore",
+  "repository_private": false,
+  "repository_gated": false,
+  "rights_families": [
+    "CC-BY-4.0",
+    "Etalab-2.0",
+    "OGL-3.0",
+    "NLM-created-RXCUI-identifiers-only"
+  ],
+  "pending_sources": {
+    "fr-open-medic": "upstream download-limit refusal",
+    "gb-nice-medicines-utilisation": "catalogue URL does not identify a public export",
+    "nl-gipdatabank": "manual interactive export not reproducibly resolved"
+  },
+  "limitations": [
+    "bounded current snapshots, not complete historical coverage",
+    "mixed licences and attribution obligations apply per file",
+    "RxNorm source vocabulary names and bytes are excluded",
+    "Hugging Face is a public archive, not WORM storage or source truth"
+  ]
+}

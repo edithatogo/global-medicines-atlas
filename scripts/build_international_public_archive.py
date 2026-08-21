@@ -1,4 +1,4 @@
-"""Build the private exact-manifest international publication candidate."""
+"""Build the exact-manifest public international source archive."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import argparse
 from pathlib import Path
 
 from global_medicines_atlas.international_public_archive import (
-    build_international_publication_candidate,
+    build_international_public_archive,
 )
 
 
@@ -16,7 +16,7 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     print(
-        build_international_publication_candidate(
+        build_international_public_archive(
             args.staging, args.output
         ).model_dump_json(indent=2)
     )

@@ -10,9 +10,9 @@
   "accepted_projection_count": 8,
   "quarantined_raw_only_count": 5,
   "payload_digest_verification": "13_of_13_passed_after_clean_restore",
-  "publication_status": "contained_private_pending_exact_manifest_approval",
+  "publication_status": "public_exact_manifest_authorized",
   "was_public_without_exact_manifest_approval": true,
-  "repository_private": true,
+  "repository_private": false,
   "repository_gated": false,
   "candidate_rights_evidence": [
     "17_USC_105",
@@ -29,7 +29,7 @@
     "bounded 2026-08-21 snapshots, not complete historical coverage",
     "FAERS, enforcement, and recall data remain public regulatory sensitive",
     "adverse-event reports do not establish causation",
-    "the repository is private and not approved for public release",
+    "the maintainer explicitly authorized public FDA publication after exact-manifest review",
     "Hugging Face is not WORM storage or source truth"
   ]
 }
