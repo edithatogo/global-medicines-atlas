@@ -1482,14 +1482,12 @@ _BINDINGS: tuple[SourceBinding, ...] = (
         (34,),
         (CoverageFacet.UTILISATION,),
         native_identifier="MHLW NDB tabulated identifier",
-        blocker="credentialed/restricted NDB; public tables only if separately published",
     ),
     _bind(
         "ca-cihi-nhex-medicines",
         (34,),
         (CoverageFacet.UTILISATION,),
         native_identifier="CIHI NHEX/plan expenditure identifier",
-        blocker="licensed/restricted CIHI extracts; metadata-only until rights",
     ),
     _bind(
         "ie-pcrs-reimbursement",

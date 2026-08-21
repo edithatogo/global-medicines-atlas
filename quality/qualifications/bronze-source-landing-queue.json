@@ -2,11 +2,11 @@
   "catalog_reviewed_at": "2026-08-21",
   "catalog_schema_version": 5,
   "family_counts": {
-    "archive_release": 6,
+    "archive_release": 7,
     "document_collection": 27,
-    "manual_reproducible_export": 9,
+    "manual_reproducible_export": 7,
     "paginated_rest_api": 14,
-    "regulator_search_export": 78,
+    "regulator_search_export": 79,
     "static_file_download": 38
   },
   "items": [
@@ -461,29 +461,31 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Follow the documented public retrieval steps, record parameters, and receipt the source-native export.",
-        "acquisition_profile": "account-download",
+        "acquisition_instructions": "Download and receipt the archive before safely enumerating and extracting its members.",
+        "acquisition_profile": "public-bulk",
         "credentials_persisted": false,
-        "endpoint": "https://www.cihi.ca/en/national-health-expenditure-trends",
-        "family": "manual_reproducible_export",
+        "endpoint": "https://www.cihi.ca/en/national-health-expenditure-trends/nhex-trends-data",
+        "family": "archive_release",
         "formats": [
-          "xlsx"
+          "xlsx",
+          "zip",
+          "pdf"
         ],
-        "pagination": "manual",
+        "pagination": "none",
         "preserves_source_bytes": true,
         "requires_reuse_gate": true,
         "requires_rights_gate": true,
         "source_id": "ca-cihi-nhex-medicines"
       },
       "evidence_references": [
-        "https://www.cihi.ca/en/national-health-expenditure-trends"
+        "quality/qualifications/additional-utilisation-rights-preflight-20260821.json"
       ],
       "evidence_scope": "none",
-      "next_action": "retain exclusion until credentials are explicitly authorised",
-      "priority": 100,
-      "reason": "authentication mode subscription is excluded",
+      "next_action": "record source-specific retention and transformation rights",
+      "priority": 20,
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
       "source_id": "ca-cihi-nhex-medicines",
-      "state": "credentialed_and_excluded"
+      "state": "rights_blocked"
     },
     {
       "adapter": {
@@ -1358,14 +1360,16 @@
         "source_id": "fr-open-medic"
       },
       "evidence_references": [
-        "https://www.data.gouv.fr/fr/datasets/open-medic-base-complete-sur-les-depenses-de-medicaments-interregimes/"
+        "quality/qualifications/additional-utilisation-rights-preflight-20260821.json",
+        "quality/qualifications/source-publication-queue.json",
+        "quality/qualifications/open-medic-acquisition-failure-20260821.json"
       ],
       "evidence_scope": "none",
-      "next_action": "record source-specific retention and transformation rights",
-      "priority": 20,
-      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "retry under the failure-receipt schedule",
+      "priority": 40,
+      "reason": "The official metadata inventory and public Etalab authorization are evidenced, but repeated bounded payload requests were refused, timed out, or reset upstream.",
       "source_id": "fr-open-medic",
-      "state": "rights_blocked"
+      "state": "temporarily_unavailable"
     },
     {
       "adapter": {
@@ -2047,11 +2051,11 @@
         "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
         "acquisition_profile": null,
         "credentials_persisted": false,
-        "endpoint": "https://www.hse.ie/eng/staff/pcrs/pcrs-publications/",
+        "endpoint": "https://about.hse.ie/publications/pcrs-statistical-analysis-of-claims-and-payments-2024/",
         "family": "document_collection",
         "formats": [
           "pdf",
-          "xlsx"
+          "html"
         ],
         "pagination": "manual",
         "preserves_source_bytes": true,
@@ -2060,7 +2064,7 @@
         "source_id": "ie-pcrs-reimbursement"
       },
       "evidence_references": [
-        "https://www.hse.ie/eng/staff/pcrs/pcrs-publications/"
+        "quality/qualifications/additional-utilisation-rights-preflight-20260821.json"
       ],
       "evidence_scope": "none",
       "next_action": "execute and receipt the documented public manual acquisition",
@@ -2229,13 +2233,13 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Follow the documented public retrieval steps, record parameters, and receipt the source-native export.",
-        "acquisition_profile": "account-download",
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_profile": null,
         "credentials_persisted": false,
-        "endpoint": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000139390.html",
-        "family": "manual_reproducible_export",
+        "endpoint": "https://www.mhlw.go.jp/ndb/opendatasite/",
+        "family": "regulator_search_export",
         "formats": [
-          "xlsx"
+          "html"
         ],
         "pagination": "manual",
         "preserves_source_bytes": true,
@@ -2244,14 +2248,14 @@
         "source_id": "jp-mhlw-ndb-utilisation"
       },
       "evidence_references": [
-        "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000139390.html"
+        "quality/qualifications/additional-utilisation-rights-preflight-20260821.json"
       ],
       "evidence_scope": "none",
-      "next_action": "retain exclusion until credentials are explicitly authorised",
-      "priority": 100,
-      "reason": "authentication mode manual_approval is excluded",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
       "source_id": "jp-mhlw-ndb-utilisation",
-      "state": "credentialed_and_excluded"
+      "state": "manual_only_documented_acquisition"
     },
     {
       "adapter": {
@@ -4595,12 +4599,12 @@
   "silver_transformations_included": false,
   "source_count": 172,
   "state_counts": {
-    "credentialed_and_excluded": 17,
+    "credentialed_and_excluded": 15,
     "landed_and_evidenced": 21,
-    "manual_only_documented_acquisition": 93,
+    "manual_only_documented_acquisition": 94,
     "not_yet_implemented": 0,
     "rights_blocked": 40,
     "superseded_by_reused_source": 0,
-    "temporarily_unavailable": 1
+    "temporarily_unavailable": 2
   }
 }

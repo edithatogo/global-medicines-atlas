@@ -8,10 +8,10 @@ Silver transformations included: **no**.
 ## State summary
 
 - `landed_and_evidenced`: 21
-- `temporarily_unavailable`: 1
+- `temporarily_unavailable`: 2
 - `rights_blocked`: 40
-- `credentialed_and_excluded`: 17
-- `manual_only_documented_acquisition`: 93
+- `credentialed_and_excluded`: 15
+- `manual_only_documented_acquisition`: 94
 - `superseded_by_reused_source`: 0
 - `not_yet_implemented`: 0
 
@@ -37,7 +37,7 @@ Silver transformations included: **no**.
 - [x] `eu-union-register` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `fr-bdpm` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `fr-bdpm-smr-asmr` — `rights_blocked`; record source-specific retention and transformation rights.
-- [ ] `fr-open-medic` — `rights_blocked`; record source-specific retention and transformation rights.
+- [ ] `fr-open-medic` — `temporarily_unavailable`; retry under the failure-receipt schedule.
 - [ ] `gb-emit` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `gb-nhs-drug-tariff` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `global-who-wla` — `rights_blocked`; record source-specific retention and transformation rights.
@@ -58,6 +58,7 @@ Silver transformations included: **no**.
 
 ## `archive_release`
 
+- [ ] `ca-cihi-nhex-medicines` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `gb-trud-api` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [ ] `no-fest` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `us-fda-faers` — `landed_and_evidenced`; verify receipt freshness on schedule.
@@ -115,6 +116,7 @@ Silver transformations included: **no**.
 - [ ] `in-cdsco-products` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `in-procurement-availability` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [x] `in-pvpi-safety` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
+- [ ] `jp-mhlw-ndb-utilisation` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [x] `jp-pmda-approvals` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `jp-pmda-package-inserts` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `ke-ppb-register` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
@@ -197,10 +199,8 @@ Silver transformations included: **no**.
 
 - [x] `au-amt-rf2` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [x] `au-pbs-embargo` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
-- [x] `ca-cihi-nhex-medicines` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [x] `eu-ema-xevmpd-credentialed` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [x] `eu-spor-rms-oms` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [x] `gb-nhs-dmd` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [x] `global-umc-vigibase` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
-- [x] `jp-mhlw-ndb-utilisation` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [x] `nz-nzulm-bulk` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.

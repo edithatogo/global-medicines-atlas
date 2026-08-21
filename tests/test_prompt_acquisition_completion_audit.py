@@ -353,13 +353,13 @@ def test_faers_qualification_fails_closed_on_scope_or_evidence_drift(
 def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     audit = _audit()
     assert audit["queue_state_counts"] == {
-        "credentialed_and_excluded": 17,
+        "credentialed_and_excluded": 15,
         "landed_and_evidenced": 21,
-        "manual_only_documented_acquisition": 93,
+        "manual_only_documented_acquisition": 94,
         "not_yet_implemented": 0,
         "rights_blocked": 40,
         "superseded_by_reused_source": 0,
-        "temporarily_unavailable": 1,
+        "temporarily_unavailable": 2,
     }
     for entry in audit["prompts"]:
         if entry["live_complete"]:
@@ -391,4 +391,17 @@ def test_nordic_public_aggregate_sources_are_not_credential_or_rights_blocked() 
         "no-norpd-utilisation": "manual_only_documented_acquisition",
         "se-socialstyrelsen-utilisation": "manual_only_documented_acquisition",
     }
+
+
+def test_additional_utilisation_public_surfaces_are_not_credential_blocked() -> None:
+    prompt = next(
+        entry for entry in _audit()["prompts"] if entry["prompt_id"] == 34
+    )
+    assert prompt["queue_states"] == {
+        "fr-open-medic": "temporarily_unavailable",
+        "jp-mhlw-ndb-utilisation": "manual_only_documented_acquisition",
+        "ca-cihi-nhex-medicines": "rights_blocked",
+        "ie-pcrs-reimbursement": "manual_only_documented_acquisition",
+    }
+    assert "credential_or_licence_boundary" not in prompt["blocker_categories"]
     assert prompt["live_complete"] is False

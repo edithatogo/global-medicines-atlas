@@ -1671,24 +1671,26 @@
       "authority": "Canadian Institute for Health Information",
       "title": "CIHI National Health Expenditure medicines components",
       "dimension": "funding",
-      "access_mode": "licensed_feed",
-      "landing_page": "https://www.cihi.ca/en/national-health-expenditure-trends",
+      "access_mode": "download",
+      "landing_page": "https://www.cihi.ca/en/national-health-expenditure-trends/nhex-trends-data",
       "update_cadence": "source-declared",
       "rights_status": "review_required",
-      "readiness": "blocked",
-      "evidence_limit": "CIHI extracts are often licensed. Metadata-only until rights are resolved; not a provincial formulary.",
-      "interface_status": "restricted",
+      "readiness": "candidate",
+      "evidence_limit": "Current NHEX Series G and open-data workbooks are public macro expenditure tables, not medicine-level utilisation or a formulary.",
+      "interface_status": "documented_download",
       "formats": [
-        "xlsx"
+        "xlsx",
+        "zip",
+        "pdf"
       ],
-      "authentication": "subscription",
+      "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
       "native_identifier": "CIHI NHEX/plan expenditure identifier",
-      "last_verified_at": "2026-08-20",
-      "integration_layer": "catalogued",
+      "last_verified_at": "2026-08-21",
+      "integration_layer": "acquisition",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.cihi.ca/en/national-health-expenditure-trends",
+      "documentation_url": "https://www.cihi.ca/en/national-health-expenditure-trends/nhex-trends-data",
       "discovery_status": "declaration_verified",
       "information_domains": [
         "product_identity",
@@ -1711,10 +1713,12 @@
         "identifiers",
         "names"
       ],
-      "qualification_state": "declared",
-      "qualification_references": [],
-      "download_url": "https://www.cihi.ca/en/national-health-expenditure-trends",
-      "acquisition_profile": "account-download"
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "quality/qualifications/additional-utilisation-rights-preflight-20260821.json"
+      ],
+      "download_url": "https://www.cihi.ca/en/national-health-expenditure-trends/nhex-trends-data",
+      "acquisition_profile": "public-bulk"
     },
     {
       "source_id": "ca-dpd",
@@ -4954,7 +4958,7 @@
       "title": "HSE PCRS reimbursement reports",
       "dimension": "funding",
       "access_mode": "document",
-      "landing_page": "https://www.hse.ie/eng/staff/pcrs/pcrs-publications/",
+      "landing_page": "https://about.hse.ie/publications/pcrs-statistical-analysis-of-claims-and-payments-2024/",
       "update_cadence": "source-declared",
       "rights_status": "review_required",
       "readiness": "candidate",
@@ -4962,16 +4966,16 @@
       "interface_status": "documented_download",
       "formats": [
         "pdf",
-        "xlsx"
+        "html"
       ],
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
       "native_identifier": "HSE PCRS ATC/product reimbursement identifier",
-      "last_verified_at": "2026-08-20",
-      "integration_layer": "catalogued",
+      "last_verified_at": "2026-08-21",
+      "integration_layer": "acquisition",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.hse.ie/eng/staff/pcrs/pcrs-publications/",
+      "documentation_url": "https://about.hse.ie/publications/pcrs-statistical-analysis-of-claims-and-payments-2024/",
       "discovery_status": "declaration_verified",
       "information_domains": [
         "product_identity",
@@ -4995,8 +4999,11 @@
         "identifiers",
         "names"
       ],
-      "qualification_state": "declared",
-      "qualification_references": []
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "quality/qualifications/additional-utilisation-rights-preflight-20260821.json"
+      ],
+      "download_url": "https://about.hse.ie/publications/pcrs-statistical-analysis-of-claims-and-payments-2024/"
     },
     {
       "source_id": "in-cdsco-approved-drugs",
@@ -5328,24 +5335,24 @@
       "authority": "Ministry of Health, Labour and Welfare",
       "title": "NDB tabulated medicines utilisation",
       "dimension": "funding",
-      "access_mode": "licensed_feed",
-      "landing_page": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000139390.html",
+      "access_mode": "web_search",
+      "landing_page": "https://www.mhlw.go.jp/ndb/opendatasite/",
       "update_cadence": "source-declared",
       "rights_status": "review_required",
-      "readiness": "blocked",
-      "evidence_limit": "NDB microdata are credentialed. This row inventories public tables if published; it is not NHI price or PMDA approval.",
-      "interface_status": "restricted",
+      "readiness": "candidate",
+      "evidence_limit": "Public aggregate NDB open-data tables are distinct from credentialed microdata; neither is NHI price or PMDA approval.",
+      "interface_status": "interactive_only",
       "formats": [
-        "xlsx"
+        "html"
       ],
-      "authentication": "manual_approval",
+      "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
       "native_identifier": "MHLW NDB tabulated identifier",
-      "last_verified_at": "2026-08-20",
-      "integration_layer": "catalogued",
+      "last_verified_at": "2026-08-21",
+      "integration_layer": "acquisition",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000139390.html",
+      "documentation_url": "https://www.mhlw.go.jp/ndb/opendatasite/",
       "discovery_status": "declaration_verified",
       "information_domains": [
         "product_identity",
@@ -5368,10 +5375,11 @@
         "identifiers",
         "names"
       ],
-      "qualification_state": "declared",
-      "qualification_references": [],
-      "download_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000139390.html",
-      "acquisition_profile": "account-download"
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "quality/qualifications/additional-utilisation-rights-preflight-20260821.json"
+      ],
+      "download_url": "https://www.mhlw.go.jp/ndb/opendatasite/"
     },
     {
       "source_id": "jp-mhlw-nhi-price",
