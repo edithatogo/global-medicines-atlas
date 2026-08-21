@@ -1165,7 +1165,7 @@
       ],
       "authority": "Assurance Maladie",
       "dimension": "funding",
-      "catalogue_rights_status": "review_required",
+      "catalogue_rights_status": "Etalab-2.0",
       "recommended_disposition": "catalogue_only",
       "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
       "public_derived_release": "not_approved",
