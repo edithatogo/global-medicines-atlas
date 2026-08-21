@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "global-medicines-atlas.manual-acquisition-recipe.v1",
+  "type": "object",
+  "required": ["schema_id", "schema_version", "recipe_id", "source_id", "authoritative_location"],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.manual-acquisition-recipe"},
+    "schema_version": {"const": 1},
+    "recipe_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "source_id": {"type": "string", "minLength": 1},
+    "authoritative_location": {"type": "string", "minLength": 1},
+    "navigation_steps": {"type": "array", "items": {"type": "string"}},
+    "expected_output_names": {"type": "array", "items": {"type": "string"}},
+    "status": {"enum": ["pending", "complete", "blocked", "temporarily_unavailable", "superseded"]}
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "global-medicines-atlas.manual-acquisition-receipt.v1",
+  "type": "object",
+  "required": ["schema_id", "schema_version", "receipt_id", "recipe_id", "source_id", "acquisition_id", "executed_at", "reuse_discovery_snapshot_id", "rights_state", "admission_state"],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.manual-acquisition-receipt"},
+    "schema_version": {"const": 1},
+    "receipt_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "recipe_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "source_id": {"type": "string", "minLength": 1},
+    "acquisition_id": {"type": "string", "minLength": 1},
+    "reuse_discovery_snapshot_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "rights_state": {"enum": ["permitted", "review", "blocked"]},
+    "admission_state": {"enum": ["pending", "accepted", "quarantined", "blocked"]}
+  },
+  "additionalProperties": true
+}
