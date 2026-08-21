@@ -525,7 +525,7 @@ for credentialed or rights-unresolved sources.
     - [x] Implement the versioned B1 schema and deterministic one-row-per-event JSON/Parquet projection
     - [x] Reconstruct the query manifest from authoritative receipts, acquisition events, storage receipts and admission records with legacy compatibility
     - [x] Document B1 authority boundaries and update the existing acquisition-manifest implementation
-    - [ ] Run focused and affected recovery tests, deterministic regeneration, context validation, formatting, linting, strict typing and full Test-Goblin
+    - [x] Run focused and affected recovery tests, deterministic regeneration, context validation, formatting, linting, strict typing and full Test-Goblin
     - [ ] Record exact pull-request head, hosted checks and merged SHA without changing existing receipt digests, acquisition IDs or content IDs
 - [x] Task: Review Fixes
     - [x] Preserve idempotent admission history when the same acquisition is landed again instead of appending a redundant supersession chain
