@@ -62,3 +62,121 @@ jobs:
           path: payload/
           if-no-files-found: error
           retention-days: 1
+
+  publish:
+    name: Publish exact Open Medic archive
+    needs: acquire
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out publication contracts
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v7.1.7
+
+      - name: Download verified annual archives
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          pattern: open-medic-*
+          path: artifacts
+          merge-multiple: true
+
+      - name: Publish atomic public revision
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          uv run --with huggingface-hub==1.14.0 --with pydantic==2.13.4 python - <<'PY'
+          import json
+          from pathlib import Path
+
+          from huggingface_hub import (
+              CommitOperationAdd,
+              CommitOperationDelete,
+              HfApi,
+              hf_hub_download,
+          )
+
+          from global_medicines_atlas.international_public_archive import (
+              InternationalArchiveFile,
+              InternationalPublicArchiveManifest,
+              PENDING_SOURCES,
+              SOURCE_RIGHTS,
+              _dataset_card,
+              _sha256,
+          )
+
+          repo = "edithatogo/global-medicines-atlas-international-open"
+          root = Path("artifacts")
+          api = HfApi()
+          current = json.loads(
+              Path(
+                  hf_hub_download(repo, "manifest.json", repo_type="dataset")
+              ).read_text(encoding="utf-8")
+          )
+          retained = [
+              item
+              for item in current["files"]
+              if item["source_id"] in SOURCE_RIGHTS
+              and item["source_id"] != "fr-open-medic"
+          ]
+          additions = []
+          for path in sorted(root.iterdir()):
+              if not path.is_file():
+                  continue
+              additions.append(
+                  InternationalArchiveFile(
+                      source_id="fr-open-medic",
+                      path=f"data/fr-open-medic/{path.name}",
+                      sha256=_sha256(path),
+                      byte_count=path.stat().st_size,
+                      rights=SOURCE_RIGHTS["fr-open-medic"],
+                  )
+              )
+          manifest = InternationalPublicArchiveManifest(
+              archived_source_count=len(SOURCE_RIGHTS),
+              files=tuple(
+                  InternationalArchiveFile.model_validate(item)
+                  for item in retained
+              )
+              + tuple(additions),
+              pending_sources=PENDING_SOURCES,
+          )
+          Path("manifest.json").write_text(
+              manifest.model_dump_json(indent=2) + "\n", encoding="utf-8"
+          )
+          Path("README.md").write_text(_dataset_card(), encoding="utf-8")
+
+          operations = [
+              CommitOperationAdd(
+                  path_in_repo="README.md", path_or_fileobj="README.md"
+              ),
+              CommitOperationAdd(
+                  path_in_repo="manifest.json", path_or_fileobj="manifest.json"
+              ),
+          ]
+          operations.extend(
+              CommitOperationAdd(
+                  path_in_repo=f"data/fr-open-medic/{path.name}",
+                  path_or_fileobj=path,
+              )
+              for path in sorted(root.iterdir())
+              if path.is_file()
+          )
+          operations.extend(
+              CommitOperationDelete(path_in_repo=sibling.rfilename)
+              for sibling in api.dataset_info(repo).siblings
+              if sibling.rfilename.startswith(
+                  ("data/gb-nice-medicines-utilisation/", "data/nl-gipdatabank/")
+              )
+          )
+          result = api.create_commit(
+              repo_id=repo,
+              repo_type="dataset",
+              operations=operations,
+              commit_message="Add verified Open Medic 2014-2025 releases",
+          )
+          print(result.oid)
+          PY
