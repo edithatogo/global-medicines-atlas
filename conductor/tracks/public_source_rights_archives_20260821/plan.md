@@ -10,27 +10,27 @@
 
 ## Phase 2: FDA rights review and proposed public packages
 
-- [x] Task: Prepare an exact-manifest FDA publication decision with third-party exclusions (AC-03)
+- [~] Task: Prepare an exact-manifest FDA publication decision with third-party exclusions (AC-03)
   - [x] Enumerate every FDA source and bind official FDA/openFDA evidence
   - [x] Separate copyright permission from sensitivity and completeness
-  - [x] Build and publish the exact-manifest package from acquired and admitted FDA products
-- [x] Checkpoint: Maintainer-authorized public revision restored; 13/13 payload digests verified
+  - [x] Build a private exact-manifest candidate from acquired and admitted FDA products
+- [~] Checkpoint: Candidate digests verified after clean restore; accidental public visibility was contained by making the repository private; exact-manifest licensing and publication approval remain pending
 
 ## Phase 3: International rights review
 
 - [~] Task: Review all international sources against official terms (AC-02, AC-04)
   - [~] Capture bounded official landing-page observations for all sources; 18 unavailable endpoints and source-specific terms remain unresolved
-  - [~] Record 13 additional policy-family assignments; 10 are publicly archived and three retain explicit acquisition failures
+  - [~] Record 13 additional candidate policy-family assignments; every licensing conclusion and publication disposition remains pending maintainer approval
   - [x] Generate a fail-closed candidate acquisition and manifest-preparation queue with zero public-eligible sources
 - [~] Checkpoint: Local focused validation passes; source-specific review and hosted review remain pending
 
 ## Phase 4: Public Hugging Face archives
 
-- [~] Task: Publish and restore every acquired, admitted, public-eligible package (AC-05, AC-06)
-  - [x] Generate source-specific cards, manifests, attribution, and withdrawal metadata for FDA and 10 international source IDs
-  - [x] Exclude restricted fields and run sensitivity/publication gates for published packages
-  - [~] Publish, resolve immutable revisions, restore, and verify all SHA-256 digests; three international acquisitions remain unresolved
-- [~] Checkpoint: FDA 13/13 and international 18/18 restored digests pass; Open Medic, NHS utilisation, and GIP remain pending
+- [ ] Task: After exact-manifest approval, publish and restore every acquired, admitted, public-eligible package (AC-05, AC-06)
+  - [ ] Generate source-specific cards, manifests, attribution, and withdrawal metadata
+  - [ ] Exclude restricted fields and run sensitivity/publication gates
+  - [ ] Publish, resolve immutable revisions, restore, and verify all SHA-256 digests
+- [ ] Checkpoint: Review and validate Phase 4
 
 ## Phase 5: Qualification and closeout
 

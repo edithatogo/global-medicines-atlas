@@ -1,4 +1,4 @@
-"""Build an exact-manifest public international source archive."""
+"""Build a private exact-manifest international publication candidate."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from pydantic import Field, model_validator
 
 from .models import FrozenModel
 
-SOURCE_RIGHTS: Final = {
+SOURCE_CANDIDATE_RIGHTS: Final = {
     "eu-union-register": "CC-BY-4.0",
     "fr-bdpm": "Etalab-2.0",
     "fr-bdpm-smr-asmr": "Etalab-2.0",
@@ -33,33 +33,38 @@ RXNORM_INPUT_SHA256: Final = (
 )
 
 
-class InternationalArchiveFile(FrozenModel):
+class InternationalCandidateFile(FrozenModel):
     source_id: str
     path: str
     sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     byte_count: int = Field(gt=0)
-    rights: str
+    candidate_rights_evidence: str
 
 
-class InternationalPublicArchiveManifest(FrozenModel):
+class InternationalPublicationCandidateManifest(FrozenModel):
     schema_id: str = "global-medicines-atlas.international-public-archive"
     schema_version: int = 1
     archived_source_count: int
-    files: tuple[InternationalArchiveFile, ...]
+    files: tuple[InternationalCandidateFile, ...]
     pending_sources: dict[str, str]
     rxnorm_input_sha256: str = RXNORM_INPUT_SHA256
     coverage_complete: bool = False
+    publication_approved: bool = False
 
     @model_validator(mode="after")
     def source_sets_are_exact(
         self,
-    ) -> InternationalPublicArchiveManifest:
+    ) -> InternationalPublicationCandidateManifest:
+        if self.publication_approved:
+            raise ValueError(
+                "international candidate cannot encode publication approval"
+            )
         archived = {item.source_id for item in self.files}
-        if archived != set(SOURCE_RIGHTS):
+        if archived != set(SOURCE_CANDIDATE_RIGHTS):
             raise ValueError("archive must cover each acquired source")
         if set(self.pending_sources) != set(PENDING_SOURCES):
             raise ValueError("pending source set must remain explicit")
-        if self.archived_source_count != len(SOURCE_RIGHTS):
+        if self.archived_source_count != len(SOURCE_CANDIDATE_RIGHTS):
             raise ValueError("archived source count is inconsistent")
         return self
 
@@ -72,16 +77,16 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def build_international_public_archive(
+def build_international_publication_candidate(
     staging: Path, output: Path
-) -> InternationalPublicArchiveManifest:
-    """Package source bytes and the identifiers-only RxNorm projection."""
+) -> InternationalPublicationCandidateManifest:
+    """Stage source bytes and identifiers-only RxNorm for private review."""
 
     if output.exists():
         raise FileExistsError(output)
     (output / "data").mkdir(parents=True)
-    files: list[InternationalArchiveFile] = []
-    for source_id, rights in sorted(SOURCE_RIGHTS.items()):
+    files: list[InternationalCandidateFile] = []
+    for source_id, rights in sorted(SOURCE_CANDIDATE_RIGHTS.items()):
         source_dir = (
             staging / "rxnorm-identifiers"
             if source_id in {"global-rxnorm", "us-rxnorm-api"}
@@ -105,16 +110,16 @@ def build_international_public_archive(
             target = target_dir / source.name
             shutil.copyfile(source, target)
             files.append(
-                InternationalArchiveFile(
+                InternationalCandidateFile(
                     source_id=source_id,
                     path=target.relative_to(output).as_posix(),
                     sha256=_sha256(target),
                     byte_count=target.stat().st_size,
-                    rights=rights,
+                    candidate_rights_evidence=rights,
                 )
             )
-    manifest = InternationalPublicArchiveManifest(
-        archived_source_count=len(SOURCE_RIGHTS),
+    manifest = InternationalPublicationCandidateManifest(
+        archived_source_count=len(SOURCE_CANDIDATE_RIGHTS),
         files=tuple(files),
         pending_sources=PENDING_SOURCES,
     )
@@ -128,27 +133,27 @@ def build_international_public_archive(
 def _dataset_card() -> str:
     return """---
 license: other
-pretty_name: Global Medicines Atlas permissive international snapshots
+pretty_name: Global Medicines Atlas international publication candidate
 tags:
 - medicines
 - regulatory
 - open-data
 ---
 
-# Permissive international medicine-source snapshots
+# International medicine-source publication candidate
 
-This mixed-licence archive contains bounded source-native snapshots for ten
-catalogue source IDs. Rights and attribution are recorded per file in
-`manifest.json`; users must comply with CC BY 4.0, Etalab Open Licence 2.0,
-Open Government Licence 3.0, and source-specific exclusions.
+This private review candidate stages bounded source-native snapshots for ten
+catalogue source IDs. Candidate rights evidence and attribution are recorded
+per file in `manifest.json`; source-specific licensing conclusions and exact-
+manifest publication approval remain pending.
 
 RxNorm content is limited to NLM-created RXCUI identifiers. Source vocabulary
 names and bytes are excluded. The NHS Drug Tariff must not be used to imply NHS
 endorsement; separately licensed dm+d/SNOMED content is not licensed by this
 archive.
 
-Three permissive candidates remain explicit acquisition failures rather than
-false archives: Open Medic 2025 was refused by the upstream download limiter,
+Three candidates remain explicit acquisition failures: Open Medic 2025 was
+refused by the upstream download limiter,
 the NHS utilisation catalogue entry lacks a concrete public export, and GIP
 requires an unresolved manual export. This is not complete source coverage.
 """
