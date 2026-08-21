@@ -29,7 +29,7 @@ def test_ledger_is_deterministic_and_covers_all_sources() -> None:
     assert len({entry["source_id"] for entry in entries}) == 172
 
 
-def test_fda_sources_have_candidate_evidence_but_no_blanket_approval() -> None:
+def test_fda_sources_bind_exact_manifest_approval() -> None:
     entries = {entry["source_id"]: entry for entry in _entries()}
     candidates = {
         source_id
@@ -54,31 +54,29 @@ def test_fda_sources_have_candidate_evidence_but_no_blanket_approval() -> None:
     }
     assert candidates == expected
     assert _ledger()["publication_gate"] == (
-        "pending_exact_manifest_maintainer_approval"
+        "satisfied_for_exact_approved_manifests"
     )
     for source_id in expected:
         entry = entries[source_id]
-        assert entry["maintainer_licence_approved"] is False
-        assert entry["maintainer_publication_approved"] is False
-        assert entry["public_source_eligible"] is False
-        assert entry["disposition"] == "catalogue_only"
+        assert entry["maintainer_licence_approved"] is True
+        assert entry["maintainer_publication_approved"] is True
+        assert entry["public_source_eligible"] is True
+        assert entry["disposition"] == "approved_public_source"
         assert entry["evidence"]
-        assert "pending" in entry["blocker"]
+        assert entry["blocker"] is None
         exclusions = " ".join(entry["field_exclusions"]).casefold()
         assert "third-party" in exclusions
         assert "claim" in exclusions
 
 
-def test_unreviewed_international_sources_remain_explicitly_fail_closed() -> (
-    None
-):
+def test_non_approved_sources_remain_explicitly_fail_closed() -> None:
     entries = _entries()
     non_public = [
         entry
         for entry in entries
         if entry["disposition"] in {"catalogue_only", "credentialed_excluded"}
     ]
-    assert len(non_public) == 172
+    assert len(non_public) == 149
     assert all(entry["blocker"] for entry in non_public)
     assert all(entry["public_source_eligible"] is False for entry in non_public)
 
@@ -112,12 +110,24 @@ def test_permissive_international_candidates_have_official_evidence() -> None:
     }
     assert candidates == expected
     assert _ledger()["candidate_policy_assignment_count"] == 26
+    approved = expected - {
+        "fr-open-medic",
+        "gb-nice-medicines-utilisation",
+        "nl-gipdatabank",
+    }
     for source_id in expected:
         entry = entries[source_id]
         assert entry["evidence"]
         assert all(item["content_sha256"] for item in entry["evidence"])
-        assert entry["disposition"] == "catalogue_only"
-        assert entry["maintainer_publication_approved"] is False
+        if source_id in approved:
+            assert entry["maintainer_publication_approved"] is True
+            assert entry["disposition"] in {
+                "approved_public_source",
+                "approved_public_derived_only",
+            }
+        else:
+            assert entry["disposition"] == "catalogue_only"
+            assert entry["maintainer_publication_approved"] is False
 
 
 def test_every_international_review_has_observation_or_failure_receipt() -> (

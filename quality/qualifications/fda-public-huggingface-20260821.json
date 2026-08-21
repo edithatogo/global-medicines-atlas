@@ -1,10 +1,10 @@
 {
   "schema_id": "global-medicines-atlas.publication-verification",
   "schema_version": 1,
-  "observed_at": "2026-08-21T00:41:41Z",
-  "dataset": "edithatogo/global-medicines-atlas-fda-public",
-  "repository_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-fda-public",
-  "immutable_revision": "da2e5c9faa7ea9ac84cfed328e776e83af135c3d",
+  "observed_at": "2026-08-21T06:34:24Z",
+  "dataset": "edithatogo/global-medicines-atlas-fda-open-20260821",
+  "repository_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-fda-open-20260821",
+  "immutable_revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
   "manifest_sha256": "92ca4b2e4daa99ef6954f814358aba7c5c0a4f96d16b42953d8b8a780015281b",
   "source_count": 13,
   "source_ids": [
@@ -26,7 +26,7 @@
   "quarantined_raw_only_count": 5,
   "payload_digest_verification": "13_of_13_passed_after_clean_restore",
   "publication_status": "public_exact_manifest_authorized",
-  "was_public_without_exact_manifest_approval": true,
+  "was_public_without_exact_manifest_approval": false,
   "repository_private": false,
   "repository_gated": false,
   "candidate_rights_evidence": [
@@ -44,7 +44,8 @@
     "bounded 2026-08-21 snapshots, not complete historical coverage",
     "FAERS, enforcement, and recall data remain public regulatory sensitive",
     "adverse-event reports do not establish causation",
-    "the maintainer explicitly authorized public FDA publication after exact-manifest review",
+    "the maintainer explicitly approved this exact 13-file manifest",
+    "the predecessor repository remains private because its history includes unapproved revisions",
     "Hugging Face is not WORM storage or source truth"
   ]
 }

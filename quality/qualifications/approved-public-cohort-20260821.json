@@ -1,0 +1,41 @@
+{
+  "schema_id": "global-medicines-atlas.approved-public-cohort",
+  "schema_version": 1,
+  "approved_at": "2026-08-21T06:34:24Z",
+  "decision_actor": "repository_maintainer",
+  "decision_scope": "recommended exact 31-file cohort in fresh clean Hugging Face repositories",
+  "source_count": 23,
+  "file_count": 31,
+  "repositories": [
+    {
+      "dataset": "edithatogo/global-medicines-atlas-fda-open-20260821",
+      "immutable_revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "manifest_sha256": "92ca4b2e4daa99ef6954f814358aba7c5c0a4f96d16b42953d8b8a780015281b",
+      "file_count": 13,
+      "anonymous_api_status": 200,
+      "digest_verification": "13_of_13_passed_after_clean_restore"
+    },
+    {
+      "dataset": "edithatogo/global-medicines-atlas-international-permissive-20260821",
+      "immutable_revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "manifest_sha256": "fc29fc2e7896ebcb066de3f4bc43b1cb480e78204f518a82f438a47227731148",
+      "file_count": 18,
+      "anonymous_api_status": 200,
+      "digest_verification": "18_of_18_passed_after_clean_restore"
+    }
+  ],
+  "excluded_sources": [
+    "fr-open-medic",
+    "gb-nice-medicines-utilisation",
+    "nl-gipdatabank"
+  ],
+  "excluded_content": [
+    "credentials and request headers",
+    "FDA marks and separately licensed third-party vocabularies",
+    "RxNorm source vocabulary names and bytes",
+    "any source or revision outside the two recorded manifests"
+  ],
+  "predecessor_repository_disposition": "private_due_to_unapproved_history",
+  "coverage_complete": false,
+  "clinical_inference_permitted": false
+}

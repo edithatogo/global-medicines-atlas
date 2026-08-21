@@ -36,9 +36,9 @@ def test_builds_archive_and_keeps_failures_explicit(tmp_path: Path) -> None:
     manifest = build_international_public_archive(
         _staging(tmp_path / "staging"), output
     )
-    assert manifest.archived_source_count == 12
-    assert len(manifest.pending_sources) == 1
-    assert len({item.source_id for item in manifest.files}) == 12
+    assert manifest.archived_source_count == 10
+    assert len(manifest.pending_sources) == 3
+    assert len({item.source_id for item in manifest.files}) == 10
     assert "Open Medic 2025" in (output / "README.md").read_text()
 
 
@@ -54,7 +54,7 @@ def test_rejects_rxnorm_source_vocabulary_bytes(tmp_path: Path) -> None:
     [
         ({"files": []}, "each acquired source"),
         ({"pending_sources": {}}, "pending source set"),
-        ({"archived_source_count": 9}, "count is inconsistent"),
+        ({"archived_source_count": 8}, "count is inconsistent"),
     ],
 )
 def test_manifest_rejects_scope_drift(

@@ -10,6 +10,9 @@ from scripts.build_source_publication_queue import build
 
 ROOT = Path(__file__).resolve().parents[1]
 QUEUE = ROOT / "quality/qualifications/source-publication-queue.json"
+DECISIONS = (
+    ROOT / "src/global_medicines_atlas/data/source_rights_source_decisions.json"
+)
 
 
 def _queue() -> dict[str, Any]:
@@ -23,10 +26,10 @@ def test_queue_is_deterministic_and_separates_rights_from_acquisition() -> None:
     assert queue["publication_gate"] == (
         "satisfied_exact_manifest_maintainer_approval"
     )
-    assert queue["public_eligible_count"] == 25
-    assert queue["published_count"] == 25
-    assert queue["acquisition_evidenced_count"] == 25
-    assert queue["acquisition_pending_count"] == 0
+    assert queue["public_eligible_count"] == 23
+    assert queue["published_count"] == 23
+    assert queue["acquisition_evidenced_count"] == 23
+    assert queue["acquisition_pending_count"] == 2
     assert queue["temporarily_unavailable_count"] == 1
 
 
@@ -35,12 +38,41 @@ def test_published_sources_bind_exact_publication_receipts() -> None:
     evidenced = [
         entry for entry in entries if entry["acquisition_state"] == "evidenced"
     ]
-    assert len(evidenced) == 25
+    assert len(evidenced) == 23
     assert all(entry["acquisition_evidence"] for entry in evidenced)
     assert all(
         entry["next_action"] == "monitor_public_revision" for entry in evidenced
     )
     assert all(entry["publication_state"] == "published" for entry in evidenced)
+
+
+def test_approved_manifests_match_publication_receipts() -> None:
+    decisions = json.loads(DECISIONS.read_text(encoding="utf-8"))
+    receipts = {
+        receipt["dataset"]: receipt
+        for receipt in (
+            json.loads(
+                (
+                    ROOT
+                    / "quality/qualifications/fda-public-huggingface-20260821.json"
+                ).read_text(encoding="utf-8")
+            ),
+            json.loads(
+                (
+                    ROOT
+                    / "quality/qualifications/international-public-huggingface-20260821.json"
+                ).read_text(encoding="utf-8")
+            ),
+        )
+    }
+    manifests = decisions["approved_publication_manifests"]
+    assert {item["repository"] for item in manifests} == set(receipts)
+    for manifest in manifests:
+        receipt = receipts[manifest["repository"]]
+        assert receipt["immutable_revision"] == manifest["revision"]
+        assert receipt["manifest_sha256"] == manifest["manifest_sha256"]
+        assert set(receipt["source_ids"]) == set(manifest["source_ids"])
+        assert receipt["repository_private"] is False
 
 
 def test_open_medic_retains_failure_receipt() -> None:

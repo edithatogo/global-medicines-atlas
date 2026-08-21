@@ -4,7 +4,7 @@
   "generated_at": "2026-08-21T00:00:00Z",
   "catalogue_source_count": 172,
   "review_count": 172,
-  "publication_gate": "pending_exact_manifest_maintainer_approval",
+  "publication_gate": "satisfied_for_exact_approved_manifests",
   "candidate_policy_assignment_count": 26,
   "entries": [
     {
@@ -1356,20 +1356,20 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Credit the European Union, link the exact source, state retrieval date, and indicate changes.",
       "field_exclusions": [
         "third-party works",
         "identifiable-person content",
         "logos, trademarks, patents, and registered designs"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "Commission legal notice, dataset notice, schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -1389,18 +1389,18 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Name the producer, title, source URL, and latest update date under Licence Ouverte 2.0.",
       "field_exclusions": [
         "third-party material or personal data outside the dataset licence"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "dataset licence, resource notice, schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -1420,18 +1420,18 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Name the producer, title, source URL, and latest update date under Licence Ouverte 2.0.",
       "field_exclusions": [
         "third-party material or personal data outside the dataset licence"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "dataset licence, resource notice, schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -1482,7 +1482,7 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Use the source-specified attribution and state that the information is licensed under the Open Government Licence v3.0.",
       "field_exclusions": [
         "personal data",
@@ -1492,13 +1492,13 @@
         "identity documents",
         "patents and trademarks"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "source notice, OGL version, schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -1605,20 +1605,20 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Use '[NHSBSA Title of Information], NHSBSA Copyright [year]' and the OGL 3.0 notice.",
       "field_exclusions": [
         "third-party content",
         "protected presentation features",
         "dm+d terminology or SNOMED content unless separately cleared"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "NHSBSA terms, dataset notice, terminology dependency, schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -1874,19 +1874,19 @@
       "transform": "permitted",
       "publish_source_bytes": "prohibited",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_derived_only",
       "attribution": "Credit the U.S. National Library of Medicine and identify the RxNorm release and retrieval date.",
       "field_exclusions": [
         "source vocabulary terms and content whose owners impose separate restrictions",
         "full RxNorm source archive bytes"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "RxNorm terms, source vocabulary composition, release, or schema change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
+      "blocker": null,
       "public_source_eligible": false,
-      "public_derived_eligible": false
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -3298,19 +3298,19 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Credit Pharmac, link the source, state CC BY 4.0, retrieval date, and changes.",
       "field_exclusions": [
         "identified third-party copyrighted material",
         "logos and marks"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "Pharmac copyright notice, source notice, schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -3330,19 +3330,19 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Credit Pharmac, link the source, state CC BY 4.0, retrieval date, and changes.",
       "field_exclusions": [
         "identified third-party copyrighted material",
         "logos and marks"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "Pharmac copyright notice, source notice, schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -3362,19 +3362,19 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Credit Pharmac, link the source, state CC BY 4.0, retrieval date, and changes.",
       "field_exclusions": [
         "identified third-party copyrighted material",
         "logos and marks"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "Pharmac copyright notice, source notice, schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -4274,20 +4274,20 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Credit the U.S. Food and Drug Administration, include the exact source URL and retrieval date, and identify any transformation.",
       "field_exclusions": [
         "material marked as third-party, copyrighted, or separately licensed",
         "FDA names, logos, seals, and marks as branding",
         "claims of approval, safety, efficacy, causality, equivalence, or reimbursement not stated by the source"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "FDA policy, endpoint notice, source schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -4307,20 +4307,20 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Credit the U.S. Food and Drug Administration, include the exact source URL and retrieval date, and identify any transformation.",
       "field_exclusions": [
         "material marked as third-party, copyrighted, or separately licensed",
         "FDA names, logos, seals, and marks as branding",
         "claims of approval, safety, efficacy, causality, equivalence, or reimbursement not stated by the source"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "FDA policy, endpoint notice, source schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -4340,20 +4340,20 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Credit the U.S. Food and Drug Administration, include the exact source URL and retrieval date, and identify any transformation.",
       "field_exclusions": [
         "material marked as third-party, copyrighted, or separately licensed",
         "FDA names, logos, seals, and marks as branding",
         "claims of approval, safety, efficacy, causality, equivalence, or reimbursement not stated by the source"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "FDA policy, endpoint notice, source schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -4373,20 +4373,20 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Credit the U.S. Food and Drug Administration, include the exact source URL and retrieval date, and identify any transformation.",
       "field_exclusions": [
         "material marked as third-party, copyrighted, or separately licensed",
         "FDA names, logos, seals, and marks as branding",
         "claims of approval, safety, efficacy, causality, equivalence, or reimbursement not stated by the source"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "FDA policy, endpoint notice, source schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -4406,20 +4406,20 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Credit the U.S. Food and Drug Administration, include the exact source URL and retrieval date, and identify any transformation.",
       "field_exclusions": [
         "material marked as third-party, copyrighted, or separately licensed",
         "FDA names, logos, seals, and marks as branding",
         "claims of approval, safety, efficacy, causality, equivalence, or reimbursement not stated by the source"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "FDA policy, endpoint notice, source schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -4439,20 +4439,20 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Credit the U.S. Food and Drug Administration, include the exact source URL and retrieval date, and identify any transformation.",
       "field_exclusions": [
         "material marked as third-party, copyrighted, or separately licensed",
         "FDA names, logos, seals, and marks as branding",
         "claims of approval, safety, efficacy, causality, equivalence, or reimbursement not stated by the source"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "FDA policy, endpoint notice, source schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -4472,20 +4472,20 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Credit the U.S. Food and Drug Administration, include the exact source URL and retrieval date, and identify any transformation.",
       "field_exclusions": [
         "material marked as third-party, copyrighted, or separately licensed",
         "FDA names, logos, seals, and marks as branding",
         "claims of approval, safety, efficacy, causality, equivalence, or reimbursement not stated by the source"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "FDA policy, endpoint notice, source schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -4505,20 +4505,20 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Credit the U.S. Food and Drug Administration, include the exact source URL and retrieval date, and identify any transformation.",
       "field_exclusions": [
         "material marked as third-party, copyrighted, or separately licensed",
         "FDA names, logos, seals, and marks as branding",
         "claims of approval, safety, efficacy, causality, equivalence, or reimbursement not stated by the source"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "FDA policy, endpoint notice, source schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -4567,7 +4567,7 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Data provided by the U.S. Food and Drug Administration through openFDA; include endpoint, retrieval date, and transformation notice.",
       "field_exclusions": [
         "content marked as third-party or outside CC0",
@@ -4575,13 +4575,13 @@
         "FDA names, logos, seals, and marks as branding",
         "claims of approval, safety, efficacy, causality, equivalence, or reimbursement not stated by the source"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "openFDA terms, endpoint warning, source schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -4601,7 +4601,7 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Data provided by the U.S. Food and Drug Administration through openFDA; include endpoint, retrieval date, and transformation notice.",
       "field_exclusions": [
         "content marked as third-party or outside CC0",
@@ -4609,13 +4609,13 @@
         "FDA names, logos, seals, and marks as branding",
         "claims of approval, safety, efficacy, causality, equivalence, or reimbursement not stated by the source"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "openFDA terms, endpoint warning, source schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -4635,7 +4635,7 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Data provided by the U.S. Food and Drug Administration through openFDA; include endpoint, retrieval date, and transformation notice.",
       "field_exclusions": [
         "content marked as third-party or outside CC0",
@@ -4643,13 +4643,13 @@
         "FDA names, logos, seals, and marks as branding",
         "claims of approval, safety, efficacy, causality, equivalence, or reimbursement not stated by the source"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "openFDA terms, endpoint warning, source schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -4669,7 +4669,7 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Data provided by the U.S. Food and Drug Administration through openFDA; include endpoint, retrieval date, and transformation notice.",
       "field_exclusions": [
         "content marked as third-party or outside CC0",
@@ -4677,13 +4677,13 @@
         "FDA names, logos, seals, and marks as branding",
         "claims of approval, safety, efficacy, causality, equivalence, or reimbursement not stated by the source"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "openFDA terms, endpoint warning, source schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -4703,7 +4703,7 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Data provided by the U.S. Food and Drug Administration through openFDA; include endpoint, retrieval date, and transformation notice.",
       "field_exclusions": [
         "content marked as third-party or outside CC0",
@@ -4711,13 +4711,13 @@
         "FDA names, logos, seals, and marks as branding",
         "claims of approval, safety, efficacy, causality, equivalence, or reimbursement not stated by the source"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "openFDA terms, endpoint warning, source schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -4737,19 +4737,19 @@
       "transform": "permitted",
       "publish_source_bytes": "prohibited",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_derived_only",
       "attribution": "Credit the U.S. National Library of Medicine and identify the RxNorm release and retrieval date.",
       "field_exclusions": [
         "source vocabulary terms and content whose owners impose separate restrictions",
         "full RxNorm source archive bytes"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "RxNorm terms, source vocabulary composition, release, or schema change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
+      "blocker": null,
       "public_source_eligible": false,
-      "public_derived_eligible": false
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",

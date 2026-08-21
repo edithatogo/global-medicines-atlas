@@ -3,7 +3,7 @@
   "type": "feature",
   "status": "complete",
   "created_at": "2026-08-20T23:17:16Z",
-  "updated_at": "2026-08-21T05:16:00Z",
+  "updated_at": "2026-08-21T06:34:24Z",
   "archived_at": "2026-08-21T05:16:00Z",
   "description": "Review all source rights and prepare exact-manifest public archive decisions for acquired, affirmatively reusable data.",
   "evidence_schema": "1.0",
@@ -20,13 +20,13 @@
       "id": "maintainer-publication-authorization-20260821",
       "kind": "public-release",
       "status": "satisfied",
-      "evidence": "Maintainer explicitly directed all FDA data and affirmatively reusable international sources to be public; exact published manifests are recorded in qualification receipts"
+      "evidence": "Maintainer approved only the exact 31-file cohort recorded in quality/qualifications/approved-public-cohort-20260821.json"
     },
     {
       "id": "restricted-or-ambiguous-source-rights",
       "kind": "licensing",
       "status": "satisfied",
-      "evidence": "Only affirmatively reusable source bytes were published; third-party RxNorm vocabulary content was excluded and unresolved sources remain unpublished"
+      "evidence": "The approved 23-source cohort is public in fresh repositories; GIP, NICE utilisation, Open Medic, and third-party RxNorm vocabulary content remain excluded"
     }
   ],
   "execution_policy": {
