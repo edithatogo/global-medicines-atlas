@@ -1,0 +1,27 @@
+{
+  "$id": "https://global-medicines-atlas.example/schemas/bronze-admission-profile-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BronzeAdmissionProfile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "profile_id"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "profile_id": {"type": "string", "minLength": 1},
+    "expected_media": {"type": "array", "items": {"type": "string"}},
+    "json_containers": {"type": "array", "items": {"enum": ["object", "array", "json_lines"]}},
+    "csv_delimiter": {"anyOf": [{"type": "string", "minLength": 1, "maxLength": 1}, {"type": "null"}]},
+    "csv_encoding": {"type": "string", "minLength": 1},
+    "csv_required_headers": {"type": "array", "items": {"type": "string"}},
+    "xml_root": {"type": ["string", "null"]},
+    "xml_namespace": {"type": ["string", "null"]},
+    "archive_type": {"enum": ["zip", "tar", "gzip", null]},
+    "archive_member_patterns": {"type": "array", "items": {"type": "string"}},
+    "document_or_opaque": {"type": "boolean"},
+    "max_size_bytes": {"type": ["integer", "null"], "minimum": 1},
+    "max_member_count": {"type": ["integer", "null"], "minimum": 1},
+    "max_expansion_ratio": {"type": ["number", "null"], "exclusiveMinimum": 0},
+    "max_nesting": {"type": ["integer", "null"], "minimum": 1},
+    "mismatch_action": {"enum": ["quarantine", "warn"]}
+  }
+}

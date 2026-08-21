@@ -119,7 +119,10 @@ def sniff_payload_kind(payload: bytes) -> str:
             kind = "json"
         elif stripped.startswith((b"<", b"<?xml")):
             kind = "xml"
-        elif b"," in payload[:CSV_SNIFF_BYTES]:
+        elif any(
+            delimiter in payload[:CSV_SNIFF_BYTES]
+            for delimiter in (b",", b";", b"\t", b"|")
+        ):
             kind = "csv"
     return kind
 
@@ -366,12 +369,25 @@ def _check_json(collector: _Collector, payload: bytes) -> None:
     try:
         parsed = json.loads(payload)
     except (json.JSONDecodeError, UnicodeDecodeError, ValueError) as error:
-        collector.fail(
-            "parse",
-            "malformed_payload",
-            str(error) or "invalid JSON",
+        lines = [line for line in payload.splitlines() if line.strip()]
+        try:
+            valid_lines = bool(lines) and all(
+                isinstance(json.loads(line), (dict, list)) for line in lines
+            )
+        except json.JSONDecodeError, UnicodeDecodeError, ValueError:
+            collector.fail(
+                "parse", "malformed_payload", str(error) or "invalid JSON"
+            )
+            return
+        if not valid_lines:
+            collector.fail(
+                "parse", "malformed_payload", str(error) or "invalid JSON"
+            )
+            return
+        collector.ok(
+            "parse", "JSON Lines parsed without poison identity fields"
         )
-        return
+        parsed = [json.loads(line) for line in lines]
     poison = _walk_poison_keys(parsed)
     if poison is None:
         collector.ok("parse", "JSON parsed without poison identity fields")
