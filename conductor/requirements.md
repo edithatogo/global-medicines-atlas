@@ -294,7 +294,14 @@
   contents. OpenLineage and table catalogues remain interoperability
   projections, not authoritative metadata records. Preserve every existing
   acquisition ID and receipt digest through compatible parsing rather than
-  evidence rewriting.
+  evidence rewriting. B2 retention must be byte-for-byte and content
+  addressed when allowed; otherwise record `external_reference_only` or
+  `blocked` without fabricating a payload. ZIP/tar archives retain the
+  original archive and use separate member manifests; document manifests are
+  byte-level identities and text extraction is derived. Emit source-native
+  record Parquet only from an explicit parser that preserves native
+  granularity and columns; never decode opaque binary with replacement text or
+  perform Silver harmonisation in the Bronze writer.
 ## Should Have
 
 - **S-001:** Evaluate Apache DataFusion for measured Rust-native query or streaming requirements without displacing DuckDB prematurely.

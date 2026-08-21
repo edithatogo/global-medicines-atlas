@@ -111,6 +111,11 @@ synthetic fixtures.
   cross-country semantic normalization in Bronze.
 - Keep binary payloads byte-faithful. Extracted text, layout, tables, and chunks
   are separate derived datasets, never replacement-decoded source records.
+- B2 must record `retained`, `external_reference_only`, or `blocked` explicitly;
+  reference-only and blocked states never fabricate payload bytes or a raw
+  object. ZIP/tar inputs remain intact archives with separate byte-level member
+  manifests; PDF/HTML/opaque inputs receive document manifests with extraction
+  marked as derived processing.
 - Keep regulatory, funding, formulary, and terminology independent in bronze.
 - Record missing coverage as not covered, never as negative evidence.
 - The immutable source payload and its content-addressed receipt are
@@ -183,7 +188,9 @@ Existing acquisition IDs and receipt digests are preserved; older native
 records are parsed compatibly rather than rewritten.
 
 An adapter may additionally emit source records with source-native fields and
-types plus durable linkage. Each product has its own actual-byte transformation
+types plus durable linkage only when it declares source-native granularity and
+preserves native columns. The generic writer rejects Silver-normalized columns
+and opaque binary decoding. Each product has its own actual-byte transformation
 receipt, Iceberg-ready identity, and OpenLineage event. The query manifest,
 OpenLineage, and table catalogues are rebuildable interoperability projections,
 not authoritative B1 records. Rebuilds reproduce only products whose parser

@@ -123,10 +123,19 @@ def _openfda_batch(source_id: str, payload: bytes) -> SourceRecordBatch:
 
 
 def _decode_member(payload: bytes) -> str:
+    if b"\x00" in payload:
+        raise ValueError(
+            "opaque binary archive member cannot become native records"
+        )
     try:
-        return payload.decode("utf-8-sig")
+        text = payload.decode("utf-8-sig")
     except UnicodeDecodeError:
-        return payload.decode("cp1252")
+        text = payload.decode("cp1252")
+    if "\ufffd" in text:
+        raise ValueError(
+            "lossy replacement character in native archive records"
+        )
+    return text
 
 
 def _validated_header(header: list[str], member: str) -> list[str]:

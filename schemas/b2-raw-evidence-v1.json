@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.org/schemas/b2-raw-evidence-v1.json",
+  "title": "Global Medicines Atlas B2 Raw Evidence",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "schema_version",
+    "stratum",
+    "source_id",
+    "acquisition_id",
+    "content_id",
+    "state",
+    "payload_contents_in_metadata",
+    "source_native_bytes_immutable"
+  ],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.b2-raw-evidence"},
+    "schema_version": {"const": 1},
+    "stratum": {"const": "B2"},
+    "source_id": {"type": "string", "minLength": 1},
+    "acquisition_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "content_id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "kind": {"enum": ["source_payload", "source_archive", "source_document"]},
+    "state": {"enum": ["retained", "external_reference_only", "blocked"]},
+    "raw_object_locator": {"type": ["string", "null"]},
+    "external_reference": {"type": ["string", "null"]},
+    "blocked_reason": {"type": ["string", "null"]},
+    "payload_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "byte_count": {"type": ["integer", "null"], "minimum": 0},
+    "media_type": {"type": ["string", "null"]},
+    "payload_contents_in_metadata": {"const": false},
+    "source_native_bytes_immutable": {"const": true}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"state": {"const": "retained"}}},
+      "then": {
+        "required": ["raw_object_locator", "payload_sha256", "byte_count"],
+        "properties": {"raw_object_locator": {"type": "string"}}
+      }
+    },
+    {
+      "if": {"properties": {"state": {"const": "external_reference_only"}}},
+      "then": {"required": ["external_reference"]}
+    },
+    {
+      "if": {"properties": {"state": {"const": "blocked"}}},
+      "then": {"required": ["blocked_reason"]}
+    }
+  ],
+  "additionalProperties": false
+}

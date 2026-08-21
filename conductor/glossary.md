@@ -14,7 +14,16 @@ Bronze comprises three internal Bronze strata, not additional medallion levels.
   rebuildable query projection, while OpenLineage and table catalogues are
   interoperability projections.
 - **B2 Raw Evidence** — immutable source-native bytes, or a rights-constrained
-  immutable reference when bytes cannot lawfully be retained.
+  immutable reference when bytes cannot lawfully be retained. Its machine
+  states are `retained`, `external_reference_only`, and `blocked`; the latter
+  two never fabricate payload bytes. Archive-member and document manifests are
+  byte-level projections over B2, while text extraction and semantic
+  interpretation are derived processing.
+
+**Source-native record projection** is an optional Bronze product emitted by an
+explicit parser that preserves source record granularity, native columns, and
+identifiers. It is separate from the B1 acquisition manifest and must not
+contain Silver harmonisation or lossy binary-to-text decoding.
 
 Source-faithful Parquet, archive-member manifests, OpenLineage, Iceberg,
 DuckDB, and other query/catalogue objects are rebuildable Bronze projections

@@ -1,5 +1,10 @@
 # B1 Acquisition Metadata
 
+See the companion [B2 Raw Evidence contract](bronze-raw-evidence.md) for the
+immutable object/reference boundary. B1 contains acquisition metadata and raw
+object references only; optional source-native records are separate
+rebuildable projections.
+
 B1 is the append-only acquisition-metadata stratum inside Bronze. The native
 `SourceReceipt`, `AcquisitionEvent`, and admission-event history are the
 authority for what was retrieved, when it was retrieved, its temporal and

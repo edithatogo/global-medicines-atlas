@@ -37,6 +37,13 @@ from .bronze_admission import (
     require_admitted_for_processing,
 )
 from .bronze_integrity import inspect_untrusted_payload
+from .bronze_raw_evidence import (
+    RawEvidenceManifest,
+    RawEvidenceState,
+    build_raw_evidence_record,
+    read_raw_evidence_manifest,
+    write_raw_evidence_manifest,
+)
 from .bronze_storage import (
     LocalFilesystemPayloadStore,
     PayloadStorageReceipt,
@@ -80,6 +87,7 @@ RECEIPT_DIR = "receipts"
 LINEAGE_DIR = "lineage"
 ACQUISITION_DIR = "acquisitions"
 ADMISSION_DIR = "admissions"
+RAW_EVIDENCE_DIR = "raw_evidence"
 ACQUISITION_MANIFEST_PRODUCT = "acquisition_manifest"
 SOURCE_RECORDS_PRODUCT = "source_records"
 _RECORD_LINK_COLUMNS = (
@@ -104,15 +112,42 @@ class BronzeAcquisition:
     landed_admission: BronzeAdmissionRecord
     admission: BronzeAdmissionRecord
 
+    @property
+    def raw_evidence_manifest_path(self) -> Path:
+        """The B2 inventory path; raw bytes remain in the content store."""
+
+        bronze_root = self.receipt_path.parents[2]
+        source_id = self.receipt.source.source_id
+        acquisition_id = require_temporal(self.receipt.temporal).acquisition_id
+        return (
+            bronze_root
+            / RAW_EVIDENCE_DIR
+            / source_id
+            / acquisition_id
+            / "manifest.json"
+        )
+
+    @property
+    def raw_evidence_manifest(self) -> RawEvidenceManifest:
+        """Validate the persisted B2 row without reading derived products."""
+
+        return read_raw_evidence_manifest(self.raw_evidence_manifest_path)
+
 
 @dataclass(frozen=True, slots=True)
 class SourceRecordBatch:
-    """Adapter-produced native records and their durable parser identity."""
+    """Adapter-produced source-native records and durable parser identity.
+
+    This is an optional rebuildable projection over B2 bytes.  It is not an
+    acquisition manifest and cannot carry Silver harmonisation.
+    """
 
     table: pa.Table
     parser_identity: str
     record_id_column: str
     partition_policy: IcebergPartitionPolicy | None = None
+    projection_kind: Literal["source_native"] = "source_native"
+    preserves_native_columns: Literal[True] = True
 
 
 @dataclass(frozen=True, slots=True)
@@ -351,6 +386,12 @@ def _source_records_table(
 ) -> tuple[pa.Table, str]:
     if not batch.parser_identity:
         raise ValueError("source-record parser identity is required")
+    if batch.projection_kind != "source_native":
+        raise ValueError("Bronze source records must be source-native")
+    if not batch.preserves_native_columns:
+        raise ValueError(
+            "Bronze source records cannot harmonise native columns"
+        )
     if batch.record_id_column not in batch.table.column_names:
         raise ValueError("source record identifier column is absent")
     collisions = set(batch.table.column_names).intersection(
@@ -358,6 +399,14 @@ def _source_records_table(
     )
     if collisions:
         raise ValueError("source records use reserved GMA linkage columns")
+    silver_columns = {
+        "canonical_medicine",
+        "normalized_product",
+        "standardized_ingredient",
+        "matched_medicine_id",
+    }
+    if silver_columns.intersection(batch.table.column_names):
+        raise ValueError("Bronze source records cannot contain Silver columns")
     identifier = batch.table.column(batch.record_id_column)
     if identifier.null_count:
         raise ValueError("source record identifier column contains nulls")
@@ -729,6 +778,21 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals,too-many-statements]
         bronze_root=bronze_root,
         source_id=source_id,
     )
+    write_raw_evidence_manifest(
+        bronze_root
+        / RAW_EVIDENCE_DIR
+        / source_id
+        / temporal.acquisition_id
+        / "manifest.json",
+        (
+            build_raw_evidence_record(
+                bound,
+                raw_locator=payload_uri,
+                state=RawEvidenceState.RETAINED,
+                media_type=_media_type(bound, payload_path),
+            ),
+        ),
+    )
     staged_at = (
         admission_decided_at or transformation_completed_at or datetime.now(UTC)
     )
@@ -851,6 +915,22 @@ def write_rebuildable_layers(
     require_admitted_for_processing(admission)
     if not receipt.payload.matches(payload):
         raise ValueError("payload digest does not match receipt")
+    temporal = require_temporal(receipt.temporal)
+    write_raw_evidence_manifest(
+        bronze_root
+        / RAW_EVIDENCE_DIR
+        / receipt.source.source_id
+        / temporal.acquisition_id
+        / "manifest.json",
+        (
+            build_raw_evidence_record(
+                receipt,
+                raw_locator=payload_uri or payload_path.as_uri(),
+                state=RawEvidenceState.RETAINED,
+                media_type=_media_type(receipt, payload_path),
+            ),
+        ),
+    )
     parquet_path.parent.mkdir(parents=True, exist_ok=True)
     lineage_path.parent.mkdir(parents=True, exist_ok=True)
     manifest, _records = _write_analytical_outputs(

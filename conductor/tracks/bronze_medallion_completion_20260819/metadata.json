@@ -3,7 +3,7 @@
   "type": "feature",
   "status": "active",
   "created_at": "2026-08-19T15:50:00+10:00",
-  "updated_at": "2026-08-21T15:43:54Z",
+  "updated_at": "2026-08-21T16:09:05Z",
   "target_versions": ["1.0.0"],
   "requirements": [
     "M-001",
@@ -45,7 +45,8 @@
     "https://github.com/edithatogo/global-medicines-atlas/issues/177",
     "https://github.com/edithatogo/global-medicines-atlas/issues/275",
     "https://github.com/edithatogo/global-medicines-atlas/issues/281",
-    "https://github.com/edithatogo/global-medicines-atlas/issues/289"
+    "https://github.com/edithatogo/global-medicines-atlas/issues/289",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/295"
   ],
   "github_issue_drafts": [
     ".github/generated-issues/bronze-medallion-parent.md",
