@@ -34,3 +34,6 @@ and rationale contract in that policy.
 
 - [x] **Track: Produce free-tier datahouse decision evidence**
   *Archived: [archive/free_tier_datahouse_decision_evidence_20260821/index.md](./archive/free_tier_datahouse_decision_evidence_20260821/index.md); GitHub parent [#231](https://github.com/edithatogo/global-medicines-atlas/issues/231). Rights-cleared synthetic evidence and aggregate receipts are public at a digest-verified Hugging Face revision; Git, Iceberg-ready, Delta, and Hudi workloads passed while production durability and technology promotion remain explicit external gates.*
+
+- [~] **Track: Review source rights and publish reusable source archives**
+  *Link: [tracks/public_source_rights_archives_20260821/index.md](./tracks/public_source_rights_archives_20260821/index.md). Source-specific rights review and publication-package preparation may proceed; publishing source bytes remains gated on an exact maintainer-approved manifest.*

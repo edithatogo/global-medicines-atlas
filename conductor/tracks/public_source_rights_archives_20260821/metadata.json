@@ -1,0 +1,40 @@
+{
+  "track_id": "public_source_rights_archives_20260821",
+  "type": "feature",
+  "status": "in_progress",
+  "created_at": "2026-08-20T23:17:16Z",
+  "updated_at": "2026-08-20T23:17:16Z",
+  "description": "Review all source rights and prepare exact-manifest public archive decisions for acquired, affirmatively reusable data.",
+  "evidence_schema": "1.0",
+  "github_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/244",
+  "github_subissues": [
+    "https://github.com/edithatogo/global-medicines-atlas/issues/245",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/246",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/247",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/248",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/249"
+  ],
+  "gates": [
+    {
+      "id": "maintainer-publication-authorization-20260821",
+      "kind": "public-release",
+      "status": "pending",
+      "evidence": "No exact source-byte publication manifest has been approved"
+    },
+    {
+      "id": "restricted-or-ambiguous-source-rights",
+      "kind": "licensing",
+      "status": "pending",
+      "evidence": "No publication unless affirmative official reuse evidence is recorded"
+    }
+  ],
+  "execution_policy": {
+    "mode": "autonomous",
+    "interaction": "decision_gates_only",
+    "decision_protocol": "options_recommendation_rationale",
+    "phase_checkpoints": "automatic_evidence_gated",
+    "failure_recovery": "bounded_self_correction",
+    "max_identical_failures": 3,
+    "merge_policy": "required_checks_then_merge"
+  }
+}

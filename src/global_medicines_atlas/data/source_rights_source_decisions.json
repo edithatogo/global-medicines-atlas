@@ -1,0 +1,20 @@
+{
+  "schema_id": "global-medicines-atlas.source-rights-source-decisions",
+  "schema_version": 1,
+  "publication_gate": "pending_exact_manifest_maintainer_approval",
+  "policy_family_assignments": {
+    "us-drugsfda": "fda-website-public-domain",
+    "us-fda-drug-shortages": "fda-website-public-domain",
+    "us-fda-faers": "fda-website-public-domain",
+    "us-fda-ndc-directory": "fda-website-public-domain",
+    "us-fda-nsde": "fda-website-public-domain",
+    "us-fda-orange-book": "fda-website-public-domain",
+    "us-fda-recalls-notices": "fda-website-public-domain",
+    "us-fda-rems": "fda-website-public-domain",
+    "us-openfda-drugsfda": "openfda-cc0",
+    "us-openfda-enforcement": "openfda-cc0",
+    "us-openfda-faers": "openfda-cc0",
+    "us-openfda-ndc": "openfda-cc0",
+    "us-openfda-nsde": "openfda-cc0"
+  }
+}
