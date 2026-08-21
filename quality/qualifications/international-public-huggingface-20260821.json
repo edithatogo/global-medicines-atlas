@@ -1,34 +1,31 @@
 {
   "schema_id": "global-medicines-atlas.publication-verification",
   "schema_version": 1,
-  "observed_at": "2026-08-21T02:03:29Z",
+  "observed_at": "2026-08-21T03:46:17Z",
   "dataset": "edithatogo/global-medicines-atlas-international-open",
   "repository_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-international-open",
-  "immutable_revision": "15270721ef5733ce3ca824a112697bc7337f4162",
-  "manifest_sha256": "fc29fc2e7896ebcb066de3f4bc43b1cb480e78204f518a82f438a47227731148",
-  "archived_source_count": 10,
-  "file_count": 18,
-  "payload_digest_verification": "18_of_18_passed_after_clean_restore",
-  "publication_status": "contained_private_pending_exact_manifest_approval",
-  "was_public_without_exact_manifest_approval": true,
-  "repository_private": true,
+  "immutable_revision": "67fea9b4010a324ee0db5184afa241a06cca06d1",
+  "manifest_sha256": "911d3886e360b753b217b96d88abcf362c20aa5b1c3ee1f2e77ed0e2ccfc256c",
+  "archived_source_count": 12,
+  "file_count": 51,
+  "byte_count": 82291637,
+  "payload_digest_verification": "51_of_51_passed_after_clean_restore",
+  "repository_private": false,
   "repository_gated": false,
-  "candidate_rights_evidence": [
+  "rights_families": [
     "CC-BY-4.0",
+    "CC0-1.0",
     "Etalab-2.0",
     "OGL-3.0",
     "NLM-created-RXCUI-identifiers-only"
   ],
   "pending_sources": {
-    "fr-open-medic": "upstream download-limit refusal",
-    "gb-nice-medicines-utilisation": "catalogue URL does not identify a public export",
-    "nl-gipdatabank": "manual interactive export not reproducibly resolved"
+    "fr-open-medic": "upstream download-limit refusal"
   },
   "limitations": [
     "bounded current snapshots, not complete historical coverage",
-    "source-specific licensing conclusions and exact-manifest approval remain pending",
+    "mixed licences and attribution obligations apply per file",
     "RxNorm source vocabulary names and bytes are excluded",
-    "the repository is private and not approved for public release",
-    "Hugging Face is not WORM storage or source truth"
+    "Hugging Face is a public archive, not WORM storage or source truth"
   ]
 }

@@ -3,7 +3,7 @@
   "type": "feature",
   "status": "in_progress",
   "created_at": "2026-08-20T23:17:16Z",
-  "updated_at": "2026-08-20T23:17:16Z",
+  "updated_at": "2026-08-21T03:46:17Z",
   "description": "Review all source rights and prepare exact-manifest public archive decisions for acquired, affirmatively reusable data.",
   "evidence_schema": "1.0",
   "github_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/244",
@@ -18,14 +18,14 @@
     {
       "id": "maintainer-publication-authorization-20260821",
       "kind": "public-release",
-      "status": "pending",
-      "evidence": "No exact source-byte publication manifest has been approved"
+      "status": "satisfied",
+      "evidence": "Maintainer explicitly directed all FDA data and affirmatively reusable international sources to be public; exact published manifests are recorded in qualification receipts"
     },
     {
       "id": "restricted-or-ambiguous-source-rights",
       "kind": "licensing",
-      "status": "pending",
-      "evidence": "No publication unless affirmative official reuse evidence is recorded"
+      "status": "satisfied",
+      "evidence": "Only affirmatively reusable source bytes were published; third-party RxNorm vocabulary content was excluded and unresolved sources remain unpublished"
     }
   ],
   "execution_policy": {
