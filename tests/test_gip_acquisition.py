@@ -142,23 +142,22 @@ def test_approved_internal_scope_requires_date_and_retention() -> None:
 
 
 def test_release_rejects_host_and_addon_shape_drift() -> None:
-    common = {
-        "title": "release",
-        "period": "2025",
-        "version_date": date(2026, 6, 12),
-    }
     with pytest.raises(ValidationError, match=r"zorgcijfersdatabank\.nl"):
         GIPRelease(
-            **common,
+            title="release",
             family="farmacie",
             shape="lftgesl",
+            period="2025",
+            version_date=date(2026, 6, 12),
             download_url=AnyHttpUrl("https://example.test/file"),
         )
     with pytest.raises(ValidationError, match="rolling-table only"):
         GIPRelease(
-            **common,
+            title="release",
             family="addon",
             shape="lftgesl",
+            period="2025",
+            version_date=date(2026, 6, 12),
             download_url=AnyHttpUrl("https://www.zorgcijfersdatabank.nl/file"),
         )
     unexpected = (
