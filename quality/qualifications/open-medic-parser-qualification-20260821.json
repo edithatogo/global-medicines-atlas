@@ -1,0 +1,48 @@
+{
+  "schema_id": "global-medicines-atlas.open-medic-parser-qualification",
+  "schema_version": 1,
+  "observed_at": "2026-08-21T11:18:00Z",
+  "source_id": "fr-open-medic",
+  "parser_identity": "fr-open-medic-csv-iso8859-1-v1",
+  "implementation": "src/global_medicines_atlas/open_medic_acquisition.py:open_medic_source_record_batch",
+  "public_dataset": "edithatogo/global-medicines-atlas-open-medic-20260821",
+  "immutable_revision": "d19f7a66e35c58c557615bffa456856b485b7edc",
+  "rights": "Etalab-2.0",
+  "exercises": [
+    {
+      "year": 2014,
+      "path": "data/fr-open-medic/OPEN_MEDIC_2014.zip",
+      "payload_sha256": "4e2d603bc4abb872bd12cfb6d9b222b5b316778ab732a19ea7aa862d551fbebc",
+      "payload_byte_count": 24191744,
+      "source_record_count": 1833185,
+      "source_column_count": 15,
+      "result": "passed"
+    },
+    {
+      "year": 2025,
+      "path": "data/fr-open-medic/OPEN_MEDIC_2025.zip",
+      "payload_sha256": "4ca3d4b9204c46458014b68a47663028020eb52f50e09b50107ceed4088cceb3",
+      "payload_byte_count": 26746721,
+      "source_record_count": 1873062,
+      "source_column_count": 21,
+      "result": "passed"
+    }
+  ],
+  "preservation": {
+    "native_column_names": true,
+    "native_values_retained_as_strings": true,
+    "decimal_comma_normalized": false,
+    "missing_values_inferred": false,
+    "source_release_year_added": true,
+    "source_row_number_added": true
+  },
+  "evidence_class": "bounded_live_parser_exercise",
+  "external_network_used": true,
+  "source_bytes_committed": false,
+  "external_publication_performed": false,
+  "limitations": [
+    "The oldest and newest reviewed annual schemas were exercised; this receipt does not claim that every intermediate archive was transformed.",
+    "The source-faithful parser does not create canonical medicine identities or regulatory, formulary, equivalence, or cross-country comparability assertions.",
+    "Full clean-room Bronze landing, transformation receipts, recovery, and archive verification for all 12 annual releases remain pending."
+  ]
+}

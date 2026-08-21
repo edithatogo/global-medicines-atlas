@@ -347,6 +347,10 @@ def builtin_source_capabilities() -> SourceCapabilityRegistry:
         Capability.SOURCE_PARSER,
         Capability.CANONICAL_PROJECTION,
     })
+    acquisition_source = frozenset({
+        Capability.ACQUISITION,
+        Capability.SOURCE_PARSER,
+    })
     union_register_live = fixture_projected | frozenset({
         Capability.ACQUISITION,
         Capability.SOURCE_PARSER,
@@ -389,6 +393,13 @@ def builtin_source_capabilities() -> SourceCapabilityRegistry:
             implementations=(
                 "adapters.european_union:project_union_register_xml",
                 "union_register_acquisition:union_register_source_record_batch",
+            ),
+        ),
+        SourceCapabilityDeclaration(
+            source_id="fr-open-medic",
+            capabilities=acquisition_source,
+            implementations=(
+                "open_medic_acquisition:open_medic_source_record_batch",
             ),
         ),
         SourceCapabilityDeclaration(

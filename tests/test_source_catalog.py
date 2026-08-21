@@ -334,6 +334,7 @@ def test_only_executable_local_capabilities_are_marked_implemented() -> None:
         if source.readiness == SourceReadiness.IMPLEMENTED
     }
     assert implemented == {
+        "fr-open-medic",
         "global-rxnorm",
         *CURRENT_SCOPE_FIXTURE_SOURCE_IDS,
     }

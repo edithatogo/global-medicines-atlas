@@ -958,10 +958,11 @@
         "FRA"
       ],
       "dimension": "funding",
-      "maturity_level": "M0",
+      "maturity_level": "M2",
       "documentation_readiness": "declared",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "catalog declares implemented ingestion"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -3330,7 +3331,7 @@
       "source_count": 3,
       "regulatory_source_count": 1,
       "funding_or_formulary_source_count": 2,
-      "highest_maturity_level": "M1",
+      "highest_maturity_level": "M2",
       "documentation_ready_source_count": 2,
       "stable_ready": false
     },
