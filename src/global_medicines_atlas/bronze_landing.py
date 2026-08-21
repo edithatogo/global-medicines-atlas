@@ -395,6 +395,99 @@ def _write_append_only(path: Path, payload: bytes) -> None:
         path.write_bytes(payload)
 
 
+def _existing_admission_pair(
+    *,
+    admission_history: Path,
+    receipt_path: Path,
+    receipt: SourceReceipt,
+) -> tuple[BronzeAdmissionRecord, BronzeAdmissionRecord] | None:
+    """Resolve existing landed/current decisions for idempotent re-landing."""
+
+    admission_paths = tuple(sorted(admission_history.glob("*.json")))
+    if not admission_paths:
+        return None
+    admission = latest_admission_for_receipt(
+        receipt_path=receipt_path,
+        receipt=receipt,
+    )
+    history = tuple(
+        BronzeAdmissionRecord.model_validate_json(path.read_bytes()).model_copy(
+            update={"path": path}
+        )
+        for path in admission_paths
+    )
+    landed = tuple(
+        record
+        for record in history
+        if record.state is BronzeAdmissionState.LANDED
+    )
+    if not landed:
+        raise ValueError("admission history lacks its landed event")
+    initial_landed = min(
+        landed,
+        key=lambda record: (record.decided_at, record.decision_id),
+    )
+    return initial_landed, admission
+
+
+def _resolve_or_create_admission_pair(
+    *,
+    admission_history: Path,
+    receipt_path: Path,
+    receipt: SourceReceipt,
+    payload_path: Path,
+    actor: str,
+    decided_at: datetime,
+) -> tuple[BronzeAdmissionRecord, BronzeAdmissionRecord]:
+    """Reuse an acquisition admission ledger or create its initial pair."""
+
+    existing = _existing_admission_pair(
+        admission_history=admission_history,
+        receipt_path=receipt_path,
+        receipt=receipt,
+    )
+    if existing is not None:
+        return existing
+    temporal = require_temporal(receipt.temporal)
+    content_id = temporal.content_id or receipt.payload.sha256
+    landed = persist_admission_decision(
+        create_admission_decision(
+            acquisition_id=temporal.acquisition_id,
+            content_id=content_id,
+            state=BronzeAdmissionState.LANDED,
+            reason_codes=("awaiting_admission_inspection",),
+            validation_results=(
+                ValidationResult(
+                    check_id="payload-staged",
+                    passed=True,
+                    message="payload and acquisition receipt are persisted",
+                ),
+            ),
+            actor=actor,
+            decided_at=decided_at,
+        ),
+        receipt_path=receipt_path,
+        receipt=receipt,
+    )
+    evaluated = evaluate_bronze_payload(payload_path, receipt)
+    admission = persist_admission_decision(
+        create_admission_decision(
+            acquisition_id=evaluated.acquisition_id,
+            content_id=evaluated.content_id,
+            state=evaluated.state,
+            reason_codes=evaluated.reason_codes,
+            validation_results=evaluated.validation_results,
+            reviewer_status=evaluated.reviewer_status,
+            actor=actor,
+            decided_at=decided_at,
+            supersedes_decision_id=landed.decision_id,
+        ),
+        receipt_path=receipt_path,
+        receipt=receipt,
+    )
+    return landed, admission
+
+
 @dataclass(frozen=True, slots=True)
 class _ProductOutput:
     path: Path
@@ -642,49 +735,13 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals,too-many-statements]
     admission_history = (
         bronze_root / ADMISSION_DIR / source_id / temporal.acquisition_id
     )
-    predecessor = (
-        latest_admission_for_receipt(
-            receipt_path=receipt_path,
-            receipt=bound,
-        ).decision_id
-        if any(admission_history.glob("*.json"))
-        else None
-    )
-    landed_admission = persist_admission_decision(
-        create_admission_decision(
-            acquisition_id=temporal.acquisition_id,
-            content_id=content_id,
-            state=BronzeAdmissionState.LANDED,
-            reason_codes=("awaiting_admission_inspection",),
-            validation_results=(
-                ValidationResult(
-                    check_id="payload-staged",
-                    passed=True,
-                    message="payload and acquisition receipt are persisted",
-                ),
-            ),
-            actor=admission_actor,
-            decided_at=staged_at,
-            supersedes_decision_id=predecessor,
-        ),
+    landed_admission, admission = _resolve_or_create_admission_pair(
+        admission_history=admission_history,
         receipt_path=receipt_path,
         receipt=bound,
-    )
-    evaluated = evaluate_bronze_payload(payload_path, bound)
-    admission = persist_admission_decision(
-        create_admission_decision(
-            acquisition_id=evaluated.acquisition_id,
-            content_id=evaluated.content_id,
-            state=evaluated.state,
-            reason_codes=evaluated.reason_codes,
-            validation_results=evaluated.validation_results,
-            reviewer_status=evaluated.reviewer_status,
-            actor=admission_actor,
-            decided_at=staged_at,
-            supersedes_decision_id=landed_admission.decision_id,
-        ),
-        receipt_path=receipt_path,
-        receipt=bound,
+        payload_path=payload_path,
+        actor=admission_actor,
+        decided_at=staged_at,
     )
     acquisition = BronzeAcquisition(
         payload_path=payload_path,

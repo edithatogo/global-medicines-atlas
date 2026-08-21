@@ -170,6 +170,25 @@ def test_b1_reconstructs_one_row_per_append_only_acquisition_event(
 
 
 @pytest.mark.unit
+def test_b1_relanding_same_acquisition_does_not_append_admission_events(
+    tmp_path: Path,
+) -> None:
+    bronze_root = tmp_path / "bronze"
+    receipt = _landable()
+    first = _land(bronze_root, receipt)
+    assert first.admission.path is not None
+    admission_dir = first.admission.path.parent
+    first_admissions = tuple(sorted(admission_dir.glob("*.json")))
+    first_manifest = first.acquisition_manifest_path.read_bytes()
+
+    second = _land(bronze_root, receipt)
+
+    assert tuple(sorted(admission_dir.glob("*.json"))) == first_admissions
+    assert second.admission.decision_id == first.admission.decision_id
+    assert second.acquisition_manifest_path.read_bytes() == first_manifest
+
+
+@pytest.mark.unit
 def test_b1_redacts_sensitive_retrieval_locations_but_keeps_safe_query_keys(
     tmp_path: Path,
 ) -> None:
