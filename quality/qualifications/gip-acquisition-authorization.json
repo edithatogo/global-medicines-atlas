@@ -1,0 +1,15 @@
+{
+  "schema_id": "global-medicines-atlas.gip-acquisition-authorization",
+  "schema_version": 1,
+  "decision_date": null,
+  "decision_status": "pending",
+  "decision_basis": "The official Open Data GIP landing exposes a stable 28-file medicine-family inventory under current Zorginstituut reuse evidence. Source-specific acquisition and retention remain pending the maintainer's licensing decision.",
+  "acquisition_authorized": false,
+  "internal_retention_authorized": false,
+  "public_release_authorized": false,
+  "external_publication_authorized": false,
+  "landing_url": "https://www.zorgcijfersdatabank.nl/algemeen/open-data-gip",
+  "rights_url": "https://www.zorgcijfersdatabank.nl/algemeen/copyright",
+  "expected_release_count": 28,
+  "expected_title_set_sha256": "94a3f7bf2ceec4115f1c396ca5b0c474c472c7b429af961c6bccaa6f80f278c6"
+}
