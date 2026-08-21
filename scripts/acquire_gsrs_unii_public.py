@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Acquire, land, and privately archive approved GSRS/UNII releases."""
+"""Acquire, land, and publicly package approved GSRS/UNII releases."""
 
 from __future__ import annotations
 
@@ -100,7 +100,7 @@ def _is_complete_zip(path: Path) -> bool:
     try:
         with zipfile.ZipFile(path) as archive:
             return archive.testzip() is None
-    except OSError, zipfile.BadZipFile:
+    except (OSError, zipfile.BadZipFile):
         return False
 
 
@@ -162,6 +162,11 @@ def acquire(  # ruff: ignore[too-many-locals]
         AUTHORIZATION_PATH.read_bytes()
     )
     authorization.require_payload_authority()
+    if not (
+        authorization.public_release_authorized
+        and authorization.external_publication_authorized
+    ):
+        raise PermissionError("GSRS public publication authority is not approved")
     index_payload = _fetch(str(ARCHIVE_INDEX))
     inventory = parse_gsrs_release_inventory(
         index_payload, base_url=ARCHIVE_INDEX, authorization=authorization
@@ -222,27 +227,28 @@ def acquire(  # ruff: ignore[too-many-locals]
                 "acquisition_id": temporal.acquisition_id,
                 "bronze_manifest_sha256": _digest(landing.parquet_path),
                 "rights": "cc0_public_domain",
-                "publication_authorized": False,
+                "publication_authorized": True,
             })
-    output_dir.mkdir(parents=True, exist_ok=True)
+    public_root = output_dir / "public"
+    public_root.mkdir(parents=True, exist_ok=True)
     manifest = {
-        "schema_id": "global-medicines-atlas.gsrs-unii-private-retention",
+        "schema_id": "global-medicines-atlas.gsrs-unii-public-release",
         "schema_version": 1,
         "source_id": SOURCE_ID,
-        "license": "CC0-1.0; private retention only",
+        "license": "CC0-1.0",
         "source_license_evidence": str(LICENSING_URL),
         "release_count": inventory.release_count,
         "paired_payload_count": len(rows),
-        "public_release_authorized": False,
-        "external_publication_authorized": False,
+        "public_release_authorized": True,
+        "external_publication_authorized": True,
         "records": rows,
         "evidence_limit": "UNII and GSRS records are terminology and substance evidence; they do not establish regulatory approval, clinical equivalence, safety, efficacy, funding, availability, or canonical medicine identity.",
     }
-    manifest_path = output_dir / "gsrs-unii-private-retention-manifest.json"
+    manifest_path = public_root / "gsrs-unii-public-release-manifest.json"
     manifest_path.write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n"
     )
-    archive_path = output_dir / "gsrs-unii.private.tar.gz"
+    archive_path = output_dir / "gsrs-unii.public.tar.gz"
     with tarfile.open(archive_path, "w:gz") as archive:
         archive.add(payload_root, arcname="payloads")
         archive.add(bronze_root, arcname="bronze")
