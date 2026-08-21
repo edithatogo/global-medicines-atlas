@@ -3,12 +3,13 @@
   "overrides": [
     {
       "source_id": "fr-open-medic",
-      "state": "temporarily_unavailable",
-      "reason": "The official metadata inventory and public Etalab authorization are evidenced, but repeated bounded payload requests were refused, timed out, or reset upstream.",
-      "failure_receipt": "quality/qualifications/open-medic-acquisition-failure-20260821.json",
+      "state": "landed_and_evidenced",
+      "reason": "All 12 official Open Medic annual archives for 2014 through 2025 were acquired as immutable source bytes, checksum verified, published under the approved Etalab-2.0 decision, and anonymously restored; transformed Bronze records and complete French medicines coverage remain unclaimed.",
       "evidence_references": [
         "quality/qualifications/additional-utilisation-rights-preflight-20260821.json",
-        "quality/qualifications/source-publication-queue.json"
+        "quality/qualifications/source-publication-queue.json",
+        "quality/qualifications/open-medic-acquisition-success-20260821.json",
+        "quality/qualifications/open-medic-public-huggingface-20260821.json"
       ]
     },
     {

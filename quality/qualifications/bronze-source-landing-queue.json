@@ -1365,14 +1365,15 @@
       "evidence_references": [
         "quality/qualifications/additional-utilisation-rights-preflight-20260821.json",
         "quality/qualifications/source-publication-queue.json",
-        "quality/qualifications/open-medic-acquisition-failure-20260821.json"
+        "quality/qualifications/open-medic-acquisition-success-20260821.json",
+        "quality/qualifications/open-medic-public-huggingface-20260821.json"
       ],
       "evidence_scope": "none",
-      "next_action": "retry under the failure-receipt schedule",
-      "priority": 40,
-      "reason": "The official metadata inventory and public Etalab authorization are evidenced, but repeated bounded payload requests were refused, timed out, or reset upstream.",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "All 12 official Open Medic annual archives for 2014 through 2025 were acquired as immutable source bytes, checksum verified, published under the approved Etalab-2.0 decision, and anonymously restored; transformed Bronze records and complete French medicines coverage remain unclaimed.",
       "source_id": "fr-open-medic",
-      "state": "temporarily_unavailable"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4606,11 +4607,11 @@
   "source_count": 172,
   "state_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 21,
+    "landed_and_evidenced": 22,
     "manual_only_documented_acquisition": 94,
     "not_yet_implemented": 0,
     "rights_blocked": 40,
     "superseded_by_reused_source": 0,
-    "temporarily_unavailable": 2
+    "temporarily_unavailable": 1
   }
 }

@@ -456,7 +456,7 @@ for credentialed or rights-unresolved sources.
     - [x] Lock CIHI's 2025 Series G drug-expenditure and open-data workbooks and HSE's 2024 PCRS claims-and-payments report
     - [x] Reconcile the generated Bronze queue and completion audit without treating source metadata as live utilisation coverage
     - [ ] Obtain independent source-specific decisions for Japan, Canada, and Ireland before payload acquisition and retention
-    - [ ] Retry the already-authorized Open Medic payload under its bounded failure-receipt schedule
+    - [x] Retry the already-authorized Open Medic payload under its bounded failure-receipt schedule; all 12 annual archives were acquired, checksum verified, published under the approved Etalab-2.0 decision, and anonymously restored
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and archive verification for each acquired source
     - [ ] Keep cross-country comparability and unapproved publication fail closed
 - [~] Task: Expand authoritative global pharmacovigilance sources (Prompt 35)
