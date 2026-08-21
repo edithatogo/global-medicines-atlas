@@ -8,6 +8,10 @@ on:
       - tests/test_open_medic_acquisition.py
   workflow_dispatch:
 
+concurrency:
+  group: open-medic-acquisition-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -57,7 +61,7 @@ jobs:
             > "payload/OPEN_MEDIC_${YEAR}.receipt.json"
 
       - name: Upload verified archive evidence
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: open-medic-${{ matrix.year }}
           path: payload/
