@@ -38,13 +38,14 @@ def _archive(name: str = "OPEN_MEDIC_2025.CSV") -> bytes:
 
 def _source_archive(
     *,
+    name: str = "OPEN_MEDIC_2025.CSV",
     header: str = "ATC1;ATC2;ATC3;ATC4;ATC5;CIP13;TOP_GEN;GEN_NUM;AGE;sexe;BEN_REG;PSP_SPE;BOITES;REM;BSE",
     row: str = "A;A01;A01A;A01AA;A01AA01;3400932387656;0;0;99;9;99;99;41;135,06;150,47",
 ) -> bytes:
     stream = BytesIO()
     with ZipFile(stream, "w", ZIP_DEFLATED) as archive:
         archive.writestr(
-            "OPEN_MEDIC_2025.CSV",
+            name,
             (header + "\r\n" + row + "\r\n").encode("iso-8859-1"),
         )
     return stream.getvalue()
@@ -188,6 +189,39 @@ def test_source_record_projection_rejects_schema_drift(
     with pytest.raises(ValueError, match=message):
         open_medic_source_record_batch(
             "fr-open-medic", _source_archive(header=header), "zip"
+        )
+
+
+@pytest.mark.parametrize(
+    ("payload", "message"),
+    [
+        (b"not a zip", "not a ZIP"),
+        (
+            _source_archive(name="open_medic_2025.csv"),
+            "member name is not canonical",
+        ),
+        (
+            _source_archive(name="OPEN_MEDIC_2013.CSV"),
+            "outside reviewed scope",
+        ),
+        (_source_archive(row=""), "must contain source records"),
+    ],
+)
+def test_source_record_projection_rejects_invalid_archive_scope(
+    payload: bytes, message: str
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        open_medic_source_record_batch("fr-open-medic", payload, "zip")
+
+
+def test_source_record_projection_rejects_multiple_csv_members() -> None:
+    stream = BytesIO()
+    with ZipFile(stream, "w", ZIP_DEFLATED) as archive:
+        archive.writestr("OPEN_MEDIC_2024.CSV", "ATC1\n")
+        archive.writestr("OPEN_MEDIC_2025.CSV", "ATC1\n")
+    with pytest.raises(ValueError, match="one annual CSV"):
+        open_medic_source_record_batch(
+            "fr-open-medic", stream.getvalue(), "zip"
         )
 
 

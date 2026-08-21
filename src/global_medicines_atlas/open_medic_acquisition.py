@@ -161,7 +161,7 @@ def open_medic_source_record_batch(
         archive.open(member_name) as member,
     ):
         table = pacsv.read_csv(
-            pa.PythonFile(member),
+            member,
             read_options=pacsv.ReadOptions(
                 block_size=16 * 1024 * 1024,
                 encoding="iso-8859-1",
