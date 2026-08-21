@@ -494,10 +494,18 @@ for credentialed or rights-unresolved sources.
 
 ## Phase 10: Pinned Reuse Discovery Snapshot
 
-- [ ] Task: Bind pre-acquisition reuse decisions to deterministic discovery snapshots ([#302](https://github.com/edithatogo/global-medicines-atlas/issues/302), parent #167)
-    - [ ] Record required surfaces, queries, revisions, candidate digests, availability, freshness, and snapshot ID
-    - [ ] Fail closed for stale, skipped, unavailable, or incomplete discovery when choosing `acquire-new`
-    - [ ] Provide offline refresh/reconstruction, schema, documentation, and contract tests without copying source bytes
+- [x] Task: Bind pre-acquisition reuse decisions to deterministic discovery snapshots ([#302](https://github.com/edithatogo/global-medicines-atlas/issues/302), parent #167)
+    - [x] Record required surfaces, queries, revisions, candidate digests, availability, freshness, and snapshot ID
+    - [x] Fail closed for stale, skipped, unavailable, or incomplete discovery when choosing `acquire-new`
+    - [x] Provide offline refresh/reconstruction, schema, documentation, and contract tests without copying source bytes
+    - [x] Record PR [#303](https://github.com/edithatogo/global-medicines-atlas/pull/303) head `bd221ad` and merged SHA `00bc45e`, with all 37 required hosted checks and Codecov patch coverage passing
+
+### Phase Verification & Checkpoint
+
+- [x] Snapshot IDs are deterministic and bind query, candidates, tool version, freshness, and all four required surfaces
+- [x] Offline refresh and reconstruction distinguish no candidate from unavailable/incomplete or stale discovery
+- [x] Existing reuse dispositions and evidence identities remain unchanged; no source bytes were copied
+- [x] Required hosted checks pass at the exact pull-request head before merge
 
 ## Phase 10: Source-profile-aware Bronze admission
 
