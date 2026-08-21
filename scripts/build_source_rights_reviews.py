@@ -104,7 +104,9 @@ def _review(
         "maintainer_licence_approved": approved,
         "maintainer_publication_approved": approved,
         "reviewed_at": REVIEWED_AT,
-        "blocker": None if approved else (
+        "blocker": None
+        if approved
+        else (
             "official reuse evidence is a candidate only; maintainer "
             "licensing conclusion and exact-manifest publication approval "
             "remain pending"

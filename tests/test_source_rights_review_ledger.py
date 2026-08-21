@@ -69,9 +69,7 @@ def test_fda_sources_bind_exact_manifest_approval() -> None:
         assert "claim" in exclusions
 
 
-def test_non_approved_sources_remain_explicitly_fail_closed() -> (
-    None
-):
+def test_non_approved_sources_remain_explicitly_fail_closed() -> None:
     entries = _entries()
     non_public = [
         entry

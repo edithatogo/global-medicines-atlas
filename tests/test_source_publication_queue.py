@@ -11,8 +11,7 @@ from scripts.build_source_publication_queue import build
 ROOT = Path(__file__).resolve().parents[1]
 QUEUE = ROOT / "quality/qualifications/source-publication-queue.json"
 DECISIONS = (
-    ROOT
-    / "src/global_medicines_atlas/data/source_rights_source_decisions.json"
+    ROOT / "src/global_medicines_atlas/data/source_rights_source_decisions.json"
 )
 
 
