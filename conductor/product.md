@@ -38,6 +38,13 @@ source-faithful typed or harmonised structures; Gold remains
 cross-jurisdiction matched evidence; Platinum remains products and
 presentation.
 
+B2 records `retained`, `external_reference_only`, or `blocked` explicitly.
+Retained objects are byte-for-byte and content-addressed; reference-only and
+blocked states never invent a payload. Optional source-native records,
+archive-member manifests, and document manifests are rebuildable products,
+not B1 authority or raw evidence. Opaque binary bytes are never replacement-
+decoded, and Silver harmonisation remains outside the Bronze writer.
+
 ## Problem
 
 Medicine availability differs substantially between countries. Regulatory approval, market registration, public reimbursement, formulary inclusion, restrictions, indications, and product presentation are recorded by separate organisations using incompatible identifiers and terminology.

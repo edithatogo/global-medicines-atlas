@@ -21,3 +21,5 @@ with native phase subissues
 (deterministic B0 Source Index layer), and
 [#289](https://github.com/edithatogo/global-medicines-atlas/issues/289)
 (deterministic B1 Acquisition Metadata layer).
+[#295](https://github.com/edithatogo/global-medicines-atlas/issues/295)
+(explicit B2 Raw Evidence and native projection boundary).
