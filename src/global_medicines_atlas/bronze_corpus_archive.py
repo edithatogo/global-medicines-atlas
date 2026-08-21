@@ -14,6 +14,11 @@ from typing import Literal
 
 from pydantic import Field
 
+from .bronze_acquisition_metadata import (
+    acquisition_metadata_json_bytes,
+    acquisition_metadata_parquet_bytes,
+    reconstruct_b1_acquisition_metadata,
+)
 from .bronze_admission import BronzeAdmissionRecord, BronzeAdmissionState
 from .bronze_fixture_landing import (
     BronzeFixtureLandingManifest,
@@ -57,6 +62,10 @@ class BronzeCorpusArchiveManifest(FrozenModel):
     recovery_scenarios: tuple[str, ...]
     recovery_evidence_digest: str = Field(pattern=r"^[0-9a-f]{64}$")
     fixture_manifest_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    b1_manifest_id: str = Field(pattern=r"^sha256:[0-9a-f]{64}$")
+    b1_event_count: int = Field(ge=1)
+    b1_json_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    b1_parquet_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     archive_filename: Literal["bronze-source-acquisition-corpus.tar"] = (
         ARCHIVE_FILENAME
     )
@@ -70,6 +79,10 @@ class _CorpusExercise:
     fixture_manifest_bytes: bytes
     recovery: BronzeRecoveryEvidence
     accepted: int
+    b1_manifest_id: str
+    b1_event_count: int
+    b1_json_sha256: str
+    b1_parquet_sha256: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -118,11 +131,20 @@ def _exercise_fixture_corpus(
         recovery,
         evidence / "clean-room-recovery-evidence.json",
     )
+    b1_manifest = reconstruct_b1_acquisition_metadata(clean_room)
+    b1_json = acquisition_metadata_json_bytes(b1_manifest)
+    b1_parquet = acquisition_metadata_parquet_bytes(b1_manifest)
+    (evidence / "b1-acquisition-metadata.json").write_bytes(b1_json)
+    (evidence / "b1-acquisition-metadata.parquet").write_bytes(b1_parquet)
     return _CorpusExercise(
         fixture_manifest=fixture_manifest,
         fixture_manifest_bytes=fixture_bytes,
         recovery=recovery,
         accepted=accepted,
+        b1_manifest_id=b1_manifest.manifest_id,
+        b1_event_count=b1_manifest.event_count,
+        b1_json_sha256=sha256(b1_json).hexdigest(),
+        b1_parquet_sha256=sha256(b1_parquet).hexdigest(),
     )
 
 
@@ -241,6 +263,10 @@ def _build_manifest(
         fixture_manifest_sha256=sha256(
             exercise.fixture_manifest_bytes
         ).hexdigest(),
+        b1_manifest_id=exercise.b1_manifest_id,
+        b1_event_count=exercise.b1_event_count,
+        b1_json_sha256=exercise.b1_json_sha256,
+        b1_parquet_sha256=exercise.b1_parquet_sha256,
         archive_sha256=archive_digest,
         archive_byte_count=archive_byte_count,
     )

@@ -41,8 +41,8 @@ from .iceberg_ready import IcebergReadyTableSpec, iceberg_rest_create_body
 from .models import FrozenModel
 from .receipts import (
     SHA256_PATTERN,
-    AcquisitionEvent,
     SourceReceipt,
+    acquisition_event_from_receipt,
     require_temporal,
 )
 
@@ -263,25 +263,11 @@ def _ensure_acquisition_event(
     )
     if event_path.exists():
         return
-    event = AcquisitionEvent(
-        acquisition_id=temporal.acquisition_id,
-        content_id=content_id,
-        source_id=source_id,
-        source_version=temporal.source_version,
-        retrieved_at=temporal.retrieved_at,
-        source_published_at=temporal.source_published_at,
-        source_effective_at=temporal.source_effective_at,
-        valid_from=temporal.valid_from,
-        valid_to=temporal.valid_to,
-        payload_sha256=receipt.payload.sha256,
-        source=receipt.source,
-        retrieval=receipt.retrieval,
-        reuse=receipt.reuse,
-        rights_state=receipt.rights_state,
-        rights_reference=receipt.rights_reference,
-        rights_policy=receipt.rights_policy,
-        evidence_class=receipt.evidence_class,
-    )
+    event = acquisition_event_from_receipt(receipt)
+    if event.content_id != content_id:
+        raise BronzeRecoveryError(
+            "recovered content identity diverges from receipt"
+        )
     event_path.parent.mkdir(parents=True, exist_ok=True)
     event_path.write_bytes(event.canonical_json() + b"\n")
 

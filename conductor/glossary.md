@@ -9,7 +9,10 @@ Bronze comprises three internal Bronze strata, not additional medallion levels.
   qualification, or currency.
 - **B1 Acquisition Metadata** — append-only acquisition events, receipts,
   temporal identity, rights state, reuse decisions, HTTP or other retrieval
-  evidence, admission state, and provenance relationships.
+  evidence, admission state, and provenance relationships. These native
+  records are authoritative; the deterministic acquisition manifest is a
+  rebuildable query projection, while OpenLineage and table catalogues are
+  interoperability projections.
 - **B2 Raw Evidence** — immutable source-native bytes, or a rights-constrained
   immutable reference when bytes cannot lawfully be retained.
 

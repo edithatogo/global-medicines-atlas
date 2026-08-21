@@ -18,4 +18,6 @@ with native phase subissues
 [#275](https://github.com/edithatogo/global-medicines-atlas/issues/275)
 (B0/B1/B2 internal strata contract), and
 [#281](https://github.com/edithatogo/global-medicines-atlas/issues/281)
-(deterministic B0 Source Index layer).
+(deterministic B0 Source Index layer), and
+[#289](https://github.com/edithatogo/global-medicines-atlas/issues/289)
+(deterministic B1 Acquisition Metadata layer).

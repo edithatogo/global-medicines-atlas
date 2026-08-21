@@ -20,6 +20,11 @@ import orjson
 import pyarrow as pa
 import pyarrow.parquet as pq
 
+from .bronze_acquisition_metadata import (
+    B1NativeEvidence,
+    acquisition_metadata_table,
+    standard_projection_links,
+)
 from .bronze_admission import (
     BronzeAdmissionRecord,
     BronzeAdmissionState,
@@ -27,6 +32,7 @@ from .bronze_admission import (
     create_admission_decision,
     evaluate_bronze_payload,
     latest_admission_decision,
+    latest_admission_for_receipt,
     persist_admission_decision,
     require_admitted_for_processing,
 )
@@ -55,9 +61,9 @@ from .iceberg_ready import (
 )
 from .openlineage_projection import project_openlineage_events
 from .receipts import (
-    AcquisitionEvent,
     SensitivityClassification,
     SourceReceipt,
+    acquisition_event_from_receipt,
     require_temporal,
 )
 from .reuse_gate import ReuseGateDecision
@@ -256,77 +262,59 @@ def _acquisition_manifest_table(
     admission: BronzeAdmissionRecord,
     source_records: SourceRecordBatch | None,
     payload_uri: str | None = None,
+    bronze_root: Path | None = None,
 ) -> pa.Table:
+    """Build the B1 query projection from the persisted native evidence."""
+
     temporal = require_temporal(receipt.temporal)
-    reuse_gate = receipt.reuse
-    if reuse_gate is None:
+    if receipt.reuse is None:
         raise ValueError("acquisition manifest requires a reuse gate decision")
-    reuse = reuse_gate.disposition.value
-    sensitivity = receipt.sensitivity or SensitivityClassification()
-    strings = {
-        "source_id": receipt.source.source_id,
-        "jurisdiction": receipt.source.jurisdiction,
-        "acquisition_id": temporal.acquisition_id,
-        "content_id": temporal.content_id or receipt.payload.sha256,
-        "rights_state": receipt.rights_state.value,
-        "data_sensitivity": sensitivity.data_sensitivity.value,
-        "personal_data_state": sensitivity.personal_data.value,
-        "publication_disposition": sensitivity.publication.value,
-        "admission_state": admission.state.value,
-        "source_uri": str(receipt.retrieval.uri),
-        "media_type": _media_type(receipt, payload_path),
-        "payload_location": payload_uri or payload_path.as_uri(),
-        "payload_sha256": receipt.payload.sha256,
-        "receipt_digest": receipt.digest(),
-        "source_parser_identity": (
-            None if source_records is None else source_records.parser_identity
-        ),
-        "reuse_disposition": reuse,
-    }
-    columns: dict[str, pa.Array[pa.Scalar[pa.DataType]]] = {
-        name: pa.array([value], type=pa.string())
-        for name, value in strings.items()
-    }
-    for name, value in (
-        ("retrieved_at", temporal.retrieved_at),
-        ("source_published_at", temporal.source_published_at),
-        ("source_effective_at", temporal.source_effective_at),
-        ("valid_from", temporal.valid_from),
-        ("valid_to", temporal.valid_to),
-    ):
-        columns[name] = pa.array([value], type=pa.timestamp("us", tz="UTC"))
-    columns["payload_byte_count"] = pa.array(
-        [receipt.payload.byte_count], type=pa.int64()
+    source_id = receipt.source.source_id
+    event_id = temporal.acquisition_id
+    root = bronze_root or payload_path.parents[3]
+    admission_dir = root / ADMISSION_DIR / source_id / event_id
+    admission_paths = tuple(sorted(admission_dir.glob("*.json")))
+    admissions = tuple(
+        BronzeAdmissionRecord.model_validate_json(path.read_bytes())
+        for path in admission_paths
     )
-    columns["parser_available"] = pa.array(
-        [source_records is not None], type=pa.bool_()
+    if not admissions:
+        admissions = (admission,)
+        admission_locators = (
+            f"bronze://admissions/{source_id}/{event_id}/{admission.decision_id}.json",
+        )
+    else:
+        admission_locators = tuple(
+            f"bronze://admissions/{source_id}/{event_id}/{path.name}"
+            for path in admission_paths
+        )
+    return acquisition_metadata_table(
+        B1NativeEvidence(
+            event=acquisition_event_from_receipt(receipt),
+            receipt=receipt,
+            admissions=admissions,
+            raw_evidence_locator=payload_uri or payload_path.as_uri(),
+            source_receipt_locator=(
+                f"bronze://receipts/{source_id}/{event_id}.json"
+            ),
+            acquisition_event_locator=(
+                f"bronze://acquisitions/{source_id}/{event_id}.json"
+            ),
+            admission_record_locators=admission_locators,
+            media_type=_media_type(receipt, payload_path),
+            source_parser_identity=(
+                None
+                if source_records is None
+                else source_records.parser_identity
+            ),
+            projection_links=standard_projection_links(
+                source_id=source_id,
+                jurisdiction=receipt.source.jurisdiction,
+                acquisition_id=event_id,
+                include_source_records=source_records is not None,
+            ),
+        )
     )
-    ordered = (
-        "source_id",
-        "jurisdiction",
-        "acquisition_id",
-        "content_id",
-        "retrieved_at",
-        "source_published_at",
-        "source_effective_at",
-        "valid_from",
-        "valid_to",
-        "rights_state",
-        "data_sensitivity",
-        "personal_data_state",
-        "publication_disposition",
-        "admission_state",
-        "source_uri",
-        "media_type",
-        "payload_location",
-        "payload_sha256",
-        "payload_byte_count",
-        "receipt_digest",
-        "parser_available",
-        "source_parser_identity",
-        "reuse_disposition",
-    )
-    return pa.table({name: columns[name] for name in ordered})
 
 
 def _iceberg_type(field: pa.Field[pa.DataType]) -> str:
@@ -404,31 +392,6 @@ def _write_append_only(path: Path, payload: bytes) -> None:
     if not path.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(payload)
-
-
-def _acquisition_event_for(receipt: SourceReceipt) -> AcquisitionEvent:
-    temporal = require_temporal(receipt.temporal)
-    content_id = temporal.content_id or receipt.payload.sha256
-    return AcquisitionEvent(
-        acquisition_id=temporal.acquisition_id,
-        content_id=content_id,
-        source_id=receipt.source.source_id,
-        source_version=temporal.source_version,
-        retrieved_at=temporal.retrieved_at,
-        source_published_at=temporal.source_published_at,
-        source_effective_at=temporal.source_effective_at,
-        valid_from=temporal.valid_from,
-        valid_to=temporal.valid_to,
-        payload_sha256=receipt.payload.sha256,
-        source=receipt.source,
-        retrieval=receipt.retrieval,
-        reuse=receipt.reuse,
-        rights_state=receipt.rights_state,
-        rights_reference=receipt.rights_reference,
-        rights_policy=receipt.rights_policy,
-        sensitivity=receipt.sensitivity or SensitivityClassification(),
-        evidence_class=receipt.evidence_class,
-    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -537,6 +500,7 @@ def _write_analytical_outputs(
         payload_uri=payload_uri,
         admission=admission,
         source_records=source_records,
+        bronze_root=bronze_root,
     )
     manifest = _write_parquet_product(
         bound,
@@ -640,10 +604,6 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals,too-many-statements]
         / source_id
         / f"{temporal.acquisition_id}.json"
     )
-    _write_append_only(
-        event_path,
-        _acquisition_event_for(bound).canonical_json() + b"\n",
-    )
     receipt_path = (
         bronze_root
         / RECEIPT_DIR
@@ -665,6 +625,10 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals,too-many-statements]
             bound = bound.model_copy(
                 update={"sensitivity": existing_sensitivity}
             )
+    _write_append_only(
+        event_path,
+        acquisition_event_from_receipt(bound).canonical_json() + b"\n",
+    )
     _write_append_only(receipt_path, bound.canonical_json() + b"\n")
     storage_receipt_path = write_payload_storage_receipt(
         stored.receipt,
@@ -673,6 +637,17 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals,too-many-statements]
     )
     staged_at = (
         admission_decided_at or transformation_completed_at or datetime.now(UTC)
+    )
+    admission_history = (
+        bronze_root / ADMISSION_DIR / source_id / temporal.acquisition_id
+    )
+    predecessor = (
+        latest_admission_for_receipt(
+            receipt_path=receipt_path,
+            receipt=bound,
+        ).decision_id
+        if any(admission_history.glob("*.json"))
+        else None
     )
     landed_admission = persist_admission_decision(
         create_admission_decision(
@@ -689,6 +664,7 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals,too-many-statements]
             ),
             actor=admission_actor,
             decided_at=staged_at,
+            supersedes_decision_id=predecessor,
         ),
         receipt_path=receipt_path,
         receipt=bound,

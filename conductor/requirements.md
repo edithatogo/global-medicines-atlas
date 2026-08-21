@@ -285,7 +285,16 @@
   Parquet distributions, generated documentation, and citation metadata.
   Index presence must never be interpreted as source coverage or negative
   medicines evidence. Preparing these metadata does not authorize external
-  publication.
+  publication. Implement B1 without a second receipt system: existing
+  append-only `SourceReceipt`, `AcquisitionEvent`, and admission records remain
+  authoritative. Provide a versioned deterministic acquisition-metadata
+  manifest with one row per acquisition event, preserving acquisition/content
+  identity, temporal absence, redacted retrieval evidence, reuse, rights,
+  admission, and raw-object references. The manifest must never contain payload
+  contents. OpenLineage and table catalogues remain interoperability
+  projections, not authoritative metadata records. Preserve every existing
+  acquisition ID and receipt digest through compatible parsing rather than
+  evidence rewriting.
 ## Should Have
 
 - **S-001:** Evaluate Apache DataFusion for measured Rust-native query or streaming requirements without displacing DuckDB prematurely.

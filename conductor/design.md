@@ -211,6 +211,26 @@ flowchart TB
     GOLD --> PLATINUM
 ```
 
+Within B1, authority flows only from native append-only records. The portable
+manifest is a deterministic query view; OpenLineage and table catalogues are
+interoperability projections over that view and the same native evidence.
+
+```mermaid
+flowchart LR
+    RECEIPT["SourceReceipt<br/>native authority"]
+    EVENT["AcquisitionEvent<br/>native authority"]
+    ADMISSION["Admission history<br/>native authority"]
+    RAW["B2 object<br/>digest + immutable locator"]
+    MANIFEST["B1 acquisition manifest<br/>deterministic projection"]
+    INTEROP["OpenLineage + catalogues<br/>interoperability projections"]
+
+    RECEIPT --> MANIFEST
+    EVENT --> MANIFEST
+    ADMISSION --> MANIFEST
+    RAW -->|"reference only"| MANIFEST
+    MANIFEST --> INTEROP
+```
+
 ## Single-Maintainer Context Control Plane
 
 ```mermaid

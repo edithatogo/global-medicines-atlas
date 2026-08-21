@@ -513,3 +513,24 @@ for credentialed or rights-unresolved sources.
 - [x] Tests enforce indexed, verified, fixture, live, acquired, qualified, coverage, and negative-evidence distinctions
 - [x] Required hosted checks pass at the exact pull-request head before merge
 - [x] Review confirms no parallel registry, external publication, or mutation of B1/B2 evidence identity
+
+## Phase 8: Deterministic B1 Acquisition Metadata Layer
+
+- [~] Task: Formalize the B1 acquisition metadata authority and query manifest ([#289](https://github.com/edithatogo/global-medicines-atlas/issues/289))
+    - [x] Audit the existing `SourceReceipt`, `AcquisitionEvent`, temporal, HTTP, reuse, rights, storage, admission, recovery, Parquet and OpenLineage contracts
+    - [x] Reuse the native append-only ledgers and existing acquisition-manifest product; do not create a second receipt system
+    - [x] Write failing B1 reconstruction, redaction, identity, rights/admission, binary-reference and deterministic-manifest tests first
+    - [x] Confirm the intended missing-module failure before implementation
+    - [x] Implement the versioned B1 schema and deterministic one-row-per-event JSON/Parquet projection
+    - [x] Reconstruct the query manifest from authoritative receipts, acquisition events, storage receipts and admission records with legacy compatibility
+    - [x] Document B1 authority boundaries and update the existing acquisition-manifest implementation
+    - [ ] Run focused and affected recovery tests, deterministic regeneration, context validation, formatting, linting, strict typing and full Test-Goblin
+    - [ ] Record exact pull-request head, hosted checks and merged SHA without changing existing receipt digests, acquisition IDs or content IDs
+
+### Phase Verification & Checkpoint
+
+- [x] Native receipts and acquisition/admission events remain authoritative and append-only
+- [x] Query manifest, OpenLineage and table catalogue objects remain deterministic rebuildable projections
+- [x] Repeated identical content keeps distinct acquisition identities and one manifest row per event
+- [x] Retrieval locations are redacted and the manifest never contains payload contents
+- [ ] Required hosted checks pass at the exact pull-request head before merge

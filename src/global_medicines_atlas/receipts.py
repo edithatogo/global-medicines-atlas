@@ -569,6 +569,32 @@ class SourceReceipt(DeterministicReceipt):
         )
 
 
+def acquisition_event_from_receipt(receipt: SourceReceipt) -> AcquisitionEvent:
+    """Project one source receipt into its append-only acquisition event."""
+
+    temporal = require_temporal(receipt.temporal)
+    return AcquisitionEvent(
+        acquisition_id=temporal.acquisition_id,
+        content_id=temporal.content_id or receipt.payload.sha256,
+        source_id=receipt.source.source_id,
+        source_version=temporal.source_version,
+        retrieved_at=temporal.retrieved_at,
+        source_published_at=temporal.source_published_at,
+        source_effective_at=temporal.source_effective_at,
+        valid_from=temporal.valid_from,
+        valid_to=temporal.valid_to,
+        payload_sha256=receipt.payload.sha256,
+        source=receipt.source,
+        retrieval=receipt.retrieval,
+        reuse=receipt.reuse,
+        rights_state=receipt.rights_state,
+        rights_reference=receipt.rights_reference,
+        rights_policy=receipt.rights_policy,
+        sensitivity=receipt.sensitivity or SensitivityClassification(),
+        evidence_class=receipt.evidence_class,
+    )
+
+
 def require_publication_permitted(receipt: SourceReceipt) -> None:
     """Fail closed across independent rights and sensitivity decisions."""
 
