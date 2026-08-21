@@ -1,0 +1,1359 @@
+{
+  "schema_id": "global-medicines-atlas.final-source-coverage-reconciliation",
+  "schema_version": 1,
+  "as_of": "2026-08-21",
+  "evidence_policy": "catalog declarations; executable committed fixtures; durable live receipts",
+  "catalog_source_count": 172,
+  "facet_matrix": [
+    {
+      "facet": "regulatory_registration",
+      "catalogued": 91,
+      "fixture_qualified": 9,
+      "live_qualified": 1,
+      "jurisdictions": [
+        "ARE",
+        "ARG",
+        "AUS",
+        "BRA",
+        "CAN",
+        "CHE",
+        "CHL",
+        "COL",
+        "DEU",
+        "EGY",
+        "EU",
+        "FRA",
+        "GBR",
+        "GHA",
+        "GLOBAL",
+        "IDN",
+        "IND",
+        "JPN",
+        "KEN",
+        "KOR",
+        "KWT",
+        "MEX",
+        "MUS",
+        "MYS",
+        "NGA",
+        "NOR",
+        "NZL",
+        "OMN",
+        "PAK",
+        "PHL",
+        "QAT",
+        "RWA",
+        "SAU",
+        "SEN",
+        "SGP",
+        "SWE",
+        "THA",
+        "TZA",
+        "UGA",
+        "USA",
+        "ZAF",
+        "ZWE"
+      ],
+      "sources_without_live_evidence": [
+        "ae-ede-register",
+        "ar-anmat-vademecum",
+        "au-artg",
+        "au-tga-daen",
+        "au-tga-pi-cmi",
+        "au-tga-regulatory-events",
+        "br-anvisa-medicines",
+        "ca-canada-vigilance",
+        "ca-dpd",
+        "ca-noc",
+        "ch-swissmedic-aips",
+        "ch-swissmedic-authorised",
+        "cl-isp-register",
+        "co-invima-cum",
+        "co-invima-register",
+        "de-bfarm-amice",
+        "eg-eda-register",
+        "eg-eda-safety",
+        "eu-ema-article57",
+        "eu-ema-epar-documents",
+        "eu-ema-json",
+        "eu-ema-medicines",
+        "eu-ema-orphan",
+        "eu-ema-pms-fhir",
+        "eu-ema-referrals",
+        "eu-ema-safety-communications",
+        "eu-ema-xevmpd-credentialed",
+        "eu-eudravigilance-public",
+        "fr-bdpm",
+        "gb-mhra-products",
+        "gb-mhra-yellow-card",
+        "gcc-central-registration",
+        "gh-fda-register",
+        "gh-fda-safety",
+        "global-umc-vigibase",
+        "global-who-shortage-sources",
+        "global-who-wla",
+        "id-bpom-product",
+        "in-cdsco-approved-drugs",
+        "in-cdsco-products",
+        "in-pvpi-safety",
+        "jp-pmda-approvals",
+        "jp-pmda-package-inserts",
+        "jp-pmda-safety",
+        "ke-ppb-register",
+        "ke-ppb-safety",
+        "kr-mfds-nedrug",
+        "kw-moh-medicines",
+        "mus-pharmacy-board-register",
+        "mus-pharmacy-board-safety",
+        "mx-cofepris-register",
+        "my-npra-quest",
+        "ng-nafdac-products",
+        "ng-nafdac-safety",
+        "no-dmp-fhir",
+        "no-fest",
+        "nz-medsafe-documents",
+        "nz-medsafe-products",
+        "om-moh-medicines",
+        "ph-fda-verification",
+        "pk-drap-register",
+        "pk-drap-safety",
+        "qa-moh-medicines",
+        "rw-rwandafda-register",
+        "rw-rwandafda-safety",
+        "sa-sfda-drug-list",
+        "se-npl-nsl",
+        "sg-hsa-approval-deltas",
+        "sg-hsa-register",
+        "sn-dpm-register",
+        "sn-dpm-safety",
+        "th-fda-search",
+        "tz-tmda-products",
+        "tz-tmda-safety",
+        "ug-nda-register",
+        "ug-nda-safety",
+        "us-dailymed-spl",
+        "us-drugsfda",
+        "us-fda-drug-shortages",
+        "us-fda-faers",
+        "us-fda-orange-book",
+        "us-fda-recalls-notices",
+        "us-fda-rems",
+        "us-openfda-drugsfda",
+        "us-openfda-enforcement",
+        "us-openfda-faers",
+        "za-sahpra-register",
+        "za-sahpra-safety",
+        "zw-mcaz-register",
+        "zw-mcaz-safety"
+      ]
+    },
+    {
+      "facet": "essential_or_formulary_status",
+      "catalogued": 20,
+      "fixture_qualified": 0,
+      "live_qualified": 0,
+      "jurisdictions": [
+        "CAN",
+        "EGY",
+        "GHA",
+        "GLOBAL",
+        "IND",
+        "KEN",
+        "MEX",
+        "MUS",
+        "NZL",
+        "PAK",
+        "RWA",
+        "SAU",
+        "SEN",
+        "TZA",
+        "UGA",
+        "ZAF",
+        "ZWE"
+      ],
+      "sources_without_live_evidence": [
+        "ca-cda-recommendations",
+        "eg-national-eml",
+        "gh-national-eml",
+        "global-who-availability-surveys",
+        "global-who-eml",
+        "global-who-national-eml-index",
+        "in-nlem",
+        "ke-national-eml",
+        "mus-approved-drug-list",
+        "mus-historical-eml-archive",
+        "mx-csg-compendium",
+        "nz-pharmac-hml",
+        "pk-neml",
+        "rw-national-eml",
+        "sa-chi-formulary",
+        "sn-national-eml",
+        "tz-national-eml",
+        "ug-national-eml",
+        "za-national-eml",
+        "zw-national-eml"
+      ]
+    },
+    {
+      "facet": "reimbursement_or_funding",
+      "catalogued": 44,
+      "fixture_qualified": 5,
+      "live_qualified": 0,
+      "jurisdictions": [
+        "ARE",
+        "AUS",
+        "BHR",
+        "BRA",
+        "CAN",
+        "CHE",
+        "DNK",
+        "FRA",
+        "GBR",
+        "GLOBAL",
+        "IND",
+        "IRL",
+        "JPN",
+        "KOR",
+        "NGA",
+        "NLD",
+        "NOR",
+        "NZL",
+        "SGP",
+        "SWE",
+        "USA",
+        "ZAF"
+      ],
+      "sources_without_live_evidence": [
+        "ae-dha-prices",
+        "au-pbs-api",
+        "au-pbs-embargo",
+        "au-pbs-historical-xml",
+        "bh-moh-drug-prices",
+        "br-cmed-prices",
+        "br-conitec-decisions",
+        "ca-cihi-nhex-medicines",
+        "ca-nova-scotia-pharmacare",
+        "ca-ontario-odb",
+        "ch-foph-sl-fhir",
+        "ch-foph-specialities",
+        "dk-medicinpriser",
+        "dk-medstat-utilisation",
+        "fr-bdpm-smr-asmr",
+        "fr-open-medic",
+        "gb-emit",
+        "gb-nhs-drug-tariff",
+        "gb-nice-medicines-utilisation",
+        "gb-nice-ta",
+        "gb-openprescribing",
+        "global-who-amds-gprm",
+        "global-who-medicine-prices",
+        "global-who-mi4a",
+        "ie-pcrs-reimbursement",
+        "in-nppa-ceiling-prices",
+        "in-procurement-availability",
+        "jp-mhlw-ndb-utilisation",
+        "jp-mhlw-nhi-price",
+        "kr-hira-reimbursement",
+        "ng-nhia-medicines",
+        "nl-gipdatabank",
+        "nl-medicijnkosten",
+        "no-norpd-utilisation",
+        "nz-pharmac-schedule",
+        "nz-pharmac-schedule-xml",
+        "se-socialstyrelsen-utilisation",
+        "se-tlv-subsidies",
+        "sg-moh-drug-list",
+        "us-cms-mdrp",
+        "us-cms-nadac",
+        "us-cms-partd-formulary",
+        "us-cms-partd-spending",
+        "za-single-exit-price"
+      ]
+    },
+    {
+      "facet": "pricing_or_procurement",
+      "catalogued": 14,
+      "fixture_qualified": 1,
+      "live_qualified": 0,
+      "jurisdictions": [
+        "ARE",
+        "BHR",
+        "BRA",
+        "GBR",
+        "GLOBAL",
+        "IND",
+        "JPN",
+        "KOR",
+        "SWE",
+        "USA",
+        "ZAF"
+      ],
+      "sources_without_live_evidence": [
+        "ae-dha-prices",
+        "bh-moh-drug-prices",
+        "br-cmed-prices",
+        "gb-emit",
+        "global-who-amds-gprm",
+        "global-who-medicine-prices",
+        "global-who-mi4a",
+        "in-nppa-ceiling-prices",
+        "in-procurement-availability",
+        "jp-mhlw-nhi-price",
+        "kr-hira-reimbursement",
+        "se-tlv-subsidies",
+        "us-cms-nadac",
+        "za-single-exit-price"
+      ]
+    },
+    {
+      "facet": "pharmacovigilance",
+      "catalogued": 27,
+      "fixture_qualified": 0,
+      "live_qualified": 0,
+      "jurisdictions": [
+        "AUS",
+        "CAN",
+        "EGY",
+        "EU",
+        "GBR",
+        "GHA",
+        "GLOBAL",
+        "IND",
+        "JPN",
+        "KEN",
+        "MUS",
+        "NGA",
+        "PAK",
+        "RWA",
+        "SEN",
+        "TZA",
+        "UGA",
+        "USA",
+        "ZAF",
+        "ZWE"
+      ],
+      "sources_without_live_evidence": [
+        "au-tga-daen",
+        "au-tga-regulatory-events",
+        "ca-canada-vigilance",
+        "eg-eda-safety",
+        "eu-ema-safety-communications",
+        "eu-eudravigilance-public",
+        "gb-mhra-yellow-card",
+        "gh-fda-safety",
+        "global-umc-vigibase",
+        "global-who-shortage-sources",
+        "in-pvpi-safety",
+        "jp-pmda-safety",
+        "ke-ppb-safety",
+        "mus-pharmacy-board-safety",
+        "ng-nafdac-safety",
+        "pk-drap-safety",
+        "rw-rwandafda-safety",
+        "sn-dpm-safety",
+        "tz-tmda-safety",
+        "ug-nda-safety",
+        "us-fda-drug-shortages",
+        "us-fda-faers",
+        "us-fda-recalls-notices",
+        "us-openfda-enforcement",
+        "us-openfda-faers",
+        "za-sahpra-safety",
+        "zw-mcaz-safety"
+      ]
+    },
+    {
+      "facet": "recalls",
+      "catalogued": 14,
+      "fixture_qualified": 0,
+      "live_qualified": 0,
+      "jurisdictions": [
+        "EGY",
+        "GHA",
+        "KEN",
+        "MUS",
+        "NGA",
+        "PAK",
+        "RWA",
+        "SEN",
+        "TZA",
+        "UGA",
+        "USA",
+        "ZAF",
+        "ZWE"
+      ],
+      "sources_without_live_evidence": [
+        "eg-eda-safety",
+        "gh-fda-safety",
+        "ke-ppb-safety",
+        "mus-pharmacy-board-safety",
+        "ng-nafdac-safety",
+        "pk-drap-safety",
+        "rw-rwandafda-safety",
+        "sn-dpm-safety",
+        "tz-tmda-safety",
+        "ug-nda-safety",
+        "us-fda-recalls-notices",
+        "us-openfda-enforcement",
+        "za-sahpra-safety",
+        "zw-mcaz-safety"
+      ]
+    },
+    {
+      "facet": "shortages",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0,
+      "jurisdictions": [
+        "GLOBAL",
+        "USA"
+      ],
+      "sources_without_live_evidence": [
+        "global-who-shortage-sources",
+        "us-fda-drug-shortages"
+      ]
+    },
+    {
+      "facet": "clinical_trials",
+      "catalogued": 0,
+      "fixture_qualified": 0,
+      "live_qualified": 0,
+      "jurisdictions": [],
+      "sources_without_live_evidence": []
+    },
+    {
+      "facet": "utilisation",
+      "catalogued": 10,
+      "fixture_qualified": 1,
+      "live_qualified": 0,
+      "jurisdictions": [
+        "CAN",
+        "DNK",
+        "FRA",
+        "IRL",
+        "JPN",
+        "NLD",
+        "NOR",
+        "SWE",
+        "USA"
+      ],
+      "sources_without_live_evidence": [
+        "ca-cihi-nhex-medicines",
+        "dk-medstat-utilisation",
+        "fr-open-medic",
+        "ie-pcrs-reimbursement",
+        "jp-mhlw-ndb-utilisation",
+        "nl-gipdatabank",
+        "no-norpd-utilisation",
+        "se-socialstyrelsen-utilisation",
+        "us-cms-partd-formulary",
+        "us-cms-partd-spending"
+      ]
+    },
+    {
+      "facet": "terminology",
+      "catalogued": 19,
+      "fixture_qualified": 2,
+      "live_qualified": 0,
+      "jurisdictions": [
+        "AUS",
+        "EU",
+        "GBR",
+        "GLOBAL",
+        "KOR",
+        "NOR",
+        "NZL",
+        "SWE",
+        "USA"
+      ],
+      "sources_without_live_evidence": [
+        "au-amt-rf2",
+        "eu-spor-public-metadata",
+        "eu-spor-rms-oms",
+        "gb-nhs-dmd",
+        "gb-trud-api",
+        "global-rxnorm",
+        "global-who-databases",
+        "kr-hira-atc",
+        "kr-hira-standard-code",
+        "no-fest",
+        "nz-nzhts-fhir",
+        "nz-nzulm-bulk",
+        "se-npl-nsl",
+        "us-fda-ndc-directory",
+        "us-fda-nsde",
+        "us-gsrs-unii",
+        "us-openfda-ndc",
+        "us-openfda-nsde",
+        "us-rxnorm-api"
+      ]
+    }
+  ],
+  "jurisdiction_matrix": [
+    {
+      "jurisdiction": "ARE",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "ARG",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "AUS",
+      "catalogued": 8,
+      "fixture_qualified": 2,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "BHR",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "BRA",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "CAN",
+      "catalogued": 7,
+      "fixture_qualified": 2,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "CHE",
+      "catalogued": 4,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "CHL",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "COL",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "DEU",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "DNK",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "EGY",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "EU",
+      "catalogued": 13,
+      "fixture_qualified": 2,
+      "live_qualified": 1
+    },
+    {
+      "jurisdiction": "FRA",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "GBR",
+      "catalogued": 9,
+      "fixture_qualified": 2,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "GHA",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "GLOBAL",
+      "catalogued": 12,
+      "fixture_qualified": 1,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "IDN",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "IND",
+      "catalogued": 6,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "IRL",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "JPN",
+      "catalogued": 5,
+      "fixture_qualified": 2,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "KEN",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "KOR",
+      "catalogued": 4,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "KWT",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "MEX",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "MUS",
+      "catalogued": 4,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "MYS",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "NGA",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "NLD",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "NOR",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "NZL",
+      "catalogued": 7,
+      "fixture_qualified": 3,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "OMN",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "PAK",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "PHL",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "QAT",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "RWA",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "SAU",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "SEN",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "SGP",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "SWE",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "THA",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "TZA",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "UGA",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "USA",
+      "catalogued": 21,
+      "fixture_qualified": 3,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "ZAF",
+      "catalogued": 4,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "jurisdiction": "ZWE",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    }
+  ],
+  "regulator_matrix": [
+    {
+      "regulator": "ANMAT",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "ANVISA CMED",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Agencia Nacional de Vigilancia Sanitaria",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Assurance Maladie",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Australian Department of Health",
+      "catalogued": 2,
+      "fixture_qualified": 1,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Australian Digital Health Agency",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Australian Government Department of Health, Disability and Ageing",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Badan POM",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Bahrain Ministry of Health",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Bennett Institute for Applied Data Science / NHSBSA EPD",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "BfArM",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Canada's Drug Agency",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Canadian Institute for Health Information",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Centers for Medicare & Medicaid Services",
+      "catalogued": 2,
+      "fixture_qualified": 1,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Centers for Medicare and Medicaid Services",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Central Drugs Standard Control Organisation",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Comision Federal para la Proteccion contra Riesgos Sanitarios",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Comissao Nacional de Incorporacao de Tecnologias no Sistema Unico de Saude",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Consejo de Salubridad General",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Council of Health Insurance",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Danish Health Data Authority",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Danish Medicines Agency",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Dental and Pharmaceutical Benefits Agency",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Dubai Health Authority",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Egyptian Drug Authority",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Emirates Drug Establishment",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "European Commission",
+      "catalogued": 1,
+      "fixture_qualified": 1,
+      "live_qualified": 1
+    },
+    {
+      "regulator": "European Medicines Agency",
+      "catalogued": 12,
+      "fixture_qualified": 1,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Federal Office of Public Health",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "French Ministry of Health",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "French Ministry of Health and HAS",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "GCC Health Council",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Ghana Food and Drugs Authority",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Government of India Ministry of Health and Family Welfare",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Government of India public procurement portals",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Health Canada",
+      "catalogued": 3,
+      "fixture_qualified": 2,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Health Insurance Review and Assessment Service",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Health New Zealand",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Health Sciences Authority",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Health Service Executive Primary Care Reimbursement Service",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "INVIMA",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Instituto de Salud Publica de Chile",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Kenya Pharmacy and Poisons Board",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Kuwait Ministry of Health",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Mauritius Ministry of Health and Wellness",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Mauritius Pharmacy Board",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Medicines Control Authority of Zimbabwe",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Medicines and Healthcare products Regulatory Agency",
+      "catalogued": 2,
+      "fixture_qualified": 1,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Medsafe",
+      "catalogued": 2,
+      "fixture_qualified": 1,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Ministry of Food and Drug Safety",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Ministry of Health Singapore",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Ministry of Health, Labour and Welfare",
+      "catalogued": 2,
+      "fixture_qualified": 1,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "NHS Business Services Authority",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "NHS England",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "NHS England / NHS Digital utilisation publications",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "National Agency for Food and Drug Administration and Control",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "National Board of Health and Welfare",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "National Department of Health",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "National Health Insurance Authority",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "National Institute for Health and Care Excellence",
+      "catalogued": 1,
+      "fixture_qualified": 1,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "National Pharmaceutical Pricing Authority",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "National Pharmaceutical Regulatory Agency",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "New Zealand Medicines Formulary LP",
+      "catalogued": 1,
+      "fixture_qualified": 1,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Norwegian Institute of Public Health",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Norwegian Medical Products Agency",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Nova Scotia Department of Health",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Oman Ministry of Health",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Ontario Ministry of Health",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Pakistan Drug Regulatory Authority",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Pharmac",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Pharmaceutical Management Agency",
+      "catalogued": 2,
+      "fixture_qualified": 1,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Pharmaceuticals and Medical Devices Agency",
+      "catalogued": 3,
+      "fixture_qualified": 1,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Pharmacovigilance Programme of India",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Philippines Food and Drug Administration",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Qatar Ministry of Public Health",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Rwanda Food and Drugs Authority",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Saudi Food and Drug Authority",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Senegal Direction de la Pharmacie et du M\u00e9dicament",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "South African Health Products Regulatory Authority",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "South African National Department of Health",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Swedish Medical Products Agency",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Swissmedic",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Tanzania Medicines and Medical Devices Authority",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Thai Food and Drug Administration",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Therapeutic Goods Administration",
+      "catalogued": 4,
+      "fixture_qualified": 1,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "UK Department of Health and Social Care",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "US FDA and NIH NCATS",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "US Food and Drug Administration",
+      "catalogued": 13,
+      "fixture_qualified": 1,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "US National Library of Medicine",
+      "catalogued": 3,
+      "fixture_qualified": 1,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Uganda National Drug Authority",
+      "catalogued": 3,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Uppsala Monitoring Centre",
+      "catalogued": 1,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "World Health Organization",
+      "catalogued": 9,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    },
+    {
+      "regulator": "Zorginstituut Nederland",
+      "catalogued": 2,
+      "fixture_qualified": 0,
+      "live_qualified": 0
+    }
+  ],
+  "prompt_completion_states": {
+    "live_acquisition_complete": 6,
+    "live_acquisition_incomplete": 29,
+    "reconciliation_generated_but_live_program_incomplete": 1
+  },
+  "live_complete_prompt_ids": [
+    12,
+    13,
+    15,
+    17,
+    19,
+    25
+  ],
+  "high_value_gap_candidates": [
+    "track 1 blocked global-who-national-eml-index",
+    "track 3 blocked global-who-availability-surveys, global-who-shortage-sources",
+    "track 11 blocked in-pvpi-safety",
+    "track 21 blocked eu-eudravigilance-public",
+    "track 26 blocked eu-ema-xevmpd-credentialed",
+    "track 27 blocked eu-spor-rms-oms, eu-ema-pms-fhir",
+    "track 33 blocked no-norpd-utilisation",
+    "track 34 blocked jp-mhlw-ndb-utilisation",
+    "track 35 blocked global-umc-vigibase"
+  ],
+  "new_track_recommendation": "Do not open a new track until an existing high-value gap receives source-specific authority or a newly discovered source materially changes coverage.",
+  "coverage_complete": false,
+  "missing_coverage_is_negative_evidence": false,
+  "fixture_or_metadata_counts_as_live": false,
+  "external_publication_performed": false
+}
