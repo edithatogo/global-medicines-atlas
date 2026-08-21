@@ -1,0 +1,20 @@
+{
+  "schema_id": "global-medicines-atlas.publication-authorization",
+  "schema_version": 1,
+  "decision_date": "2026-08-21",
+  "source_id": "nl-gipdatabank",
+  "decision_status": "approved_public",
+  "decision_actor": "repository_maintainer",
+  "decision_basis": "The maintainer explicitly directed all international sources with permissive reuse terms to be archived as public Hugging Face datasets. The official GIP open-data inventory is offered under CC0.",
+  "rights_url": "https://www.zorgcijfersdatabank.nl/algemeen/copyright",
+  "landing_url": "https://www.zorgcijfersdatabank.nl/algemeen/open-data-gip",
+  "expected_release_count": 28,
+  "expected_title_set_sha256": "94a3f7bf2ceec4115f1c396ca5b0c474c472c7b429af961c6bccaa6f80f278c6",
+  "public_release_authorized": true,
+  "external_publication_authorized": true,
+  "sensitivity_classification": "public_non_personal_aggregate",
+  "limitations": [
+    "GIP utilisation and expenditure do not establish regulatory approval, reimbursement entitlement for an individual, clinical appropriateness, or medicine equivalence.",
+    "User counts must not be summed across medicine categories."
+  ]
+}

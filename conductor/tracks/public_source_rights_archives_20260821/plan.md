@@ -18,19 +18,19 @@
 
 ## Phase 3: International rights review
 
-- [~] Task: Review all international sources against official terms (AC-02, AC-04)
-  - [~] Capture bounded official landing-page observations for all sources; 18 unavailable endpoints and source-specific terms remain unresolved
-  - [~] Record 13 additional policy-family assignments; 11 are publicly archived and two retain explicit acquisition failures
+- [x] Task: Review all international sources against official terms (AC-02, AC-04)
+  - [x] Capture bounded official landing-page observations and retain unavailable endpoints as explicit unresolved states
+  - [x] Record policy-family assignments; 12 affirmatively reusable sources are publicly archived and Open Medic retains an explicit acquisition-failure receipt
   - [x] Generate a fail-closed candidate acquisition and manifest-preparation queue with zero public-eligible sources
-- [~] Checkpoint: Local focused validation passes; source-specific review and hosted review remain pending
+- [x] Checkpoint: Rights review is source-specific and fail-closed; unavailable bytes are not represented as archived
 
 ## Phase 4: Public Hugging Face archives
 
-- [~] Task: Publish and restore every acquired, admitted, public-eligible package (AC-05, AC-06)
-  - [x] Generate source-specific cards, manifests, attribution, and withdrawal metadata for FDA and 11 international source IDs
+- [x] Task: Publish and restore every acquired, admitted, public-eligible package (AC-05, AC-06)
+  - [x] Generate source-specific cards, manifests, attribution, and withdrawal metadata for FDA and 12 international source IDs
   - [x] Exclude restricted fields and run sensitivity/publication gates for published packages
-  - [~] Publish, resolve immutable revisions, restore, and verify all SHA-256 digests; two international acquisitions remain unresolved
-- [~] Checkpoint: FDA 13/13 and international 23/23 restored digests pass; Open Medic and GIP remain pending
+  - [x] Publish, resolve immutable revisions, restore, and verify all SHA-256 digests; Open Medic remains temporarily unavailable
+- [x] Checkpoint: FDA 13/13 and international 51/51 restored digests pass; Open Medic has an explicit failure receipt
 
 ## Phase 5: Qualification and closeout
 

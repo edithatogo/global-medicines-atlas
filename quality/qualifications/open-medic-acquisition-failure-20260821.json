@@ -1,0 +1,19 @@
+{
+  "schema_id": "global-medicines-atlas.acquisition-failure-receipt",
+  "schema_version": 1,
+  "observed_date": "2026-08-21",
+  "source_id": "fr-open-medic",
+  "resource_url": "https://www.data.gouv.fr/fr/datasets/open-medic-base-complete-sur-les-depenses-de-medicaments-interregimes/",
+  "rights_state": "permissive",
+  "licence": "Etalab-2.0",
+  "acquisition_state": "temporarily_unavailable",
+  "payload_acquired": false,
+  "attempt_outcomes": [
+    "upstream download-limit refusal",
+    "TLS connection timeout",
+    "TLS connection reset"
+  ],
+  "publication_state": "not_published_without_payload",
+  "retry_required": true,
+  "evidence_limit": "This receipt establishes repeated acquisition failure, not absence of the source data or withdrawal of reuse rights."
+}

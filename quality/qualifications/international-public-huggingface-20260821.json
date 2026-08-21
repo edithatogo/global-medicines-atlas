@@ -1,25 +1,26 @@
 {
   "schema_id": "global-medicines-atlas.publication-verification",
   "schema_version": 1,
-  "observed_at": "2026-08-21T02:03:29Z",
+  "observed_at": "2026-08-21T03:46:17Z",
   "dataset": "edithatogo/global-medicines-atlas-international-open",
   "repository_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-international-open",
-  "immutable_revision": "83fa068067ae90e98318e80237488421c411dfbf",
-  "manifest_sha256": "a34df063faf3ba4a0e1a4d7b2d96d379da0b477ee42400d27208ff0cb284c799",
-  "archived_source_count": 11,
-  "file_count": 23,
-  "payload_digest_verification": "23_of_23_passed_after_clean_restore",
+  "immutable_revision": "67fea9b4010a324ee0db5184afa241a06cca06d1",
+  "manifest_sha256": "911d3886e360b753b217b96d88abcf362c20aa5b1c3ee1f2e77ed0e2ccfc256c",
+  "archived_source_count": 12,
+  "file_count": 51,
+  "byte_count": 82291637,
+  "payload_digest_verification": "51_of_51_passed_after_clean_restore",
   "repository_private": false,
   "repository_gated": false,
   "rights_families": [
     "CC-BY-4.0",
+    "CC0-1.0",
     "Etalab-2.0",
     "OGL-3.0",
     "NLM-created-RXCUI-identifiers-only"
   ],
   "pending_sources": {
-    "fr-open-medic": "upstream download-limit refusal",
-    "nl-gipdatabank": "manual interactive export not reproducibly resolved"
+    "fr-open-medic": "upstream download-limit refusal"
   },
   "limitations": [
     "bounded current snapshots, not complete historical coverage",

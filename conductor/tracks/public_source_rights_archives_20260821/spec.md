@@ -77,11 +77,12 @@ publication.
 
 ## External gates
 
-The maintainer's instruction on 2026-08-21 authorizes proceeding with the
-recommended staged, source-by-source rights workflow. It does not approve an
-unspecified dataset or source-byte manifest for public release. Credentials,
-restricted-source access, paid services, and permissions absent from official
-evidence remain ungranted.
+The maintainer's later instruction on 2026-08-21 explicitly authorizes all FDA
+data and all international sources with affirmative reuse permission to be
+published publicly. Publication remains bound to the exact qualification
+manifests, source-specific exclusions, and an independent sensitivity review.
+Credentials, restricted-source access, paid services, and permissions absent
+from official evidence remain ungranted.
 
 ## Out of scope
 
