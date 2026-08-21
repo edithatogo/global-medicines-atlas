@@ -4,11 +4,11 @@
   "observed_at": "2026-08-21T02:03:29Z",
   "dataset": "edithatogo/global-medicines-atlas-international-open",
   "repository_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-international-open",
-  "immutable_revision": "15270721ef5733ce3ca824a112697bc7337f4162",
-  "manifest_sha256": "fc29fc2e7896ebcb066de3f4bc43b1cb480e78204f518a82f438a47227731148",
-  "archived_source_count": 10,
-  "file_count": 18,
-  "payload_digest_verification": "18_of_18_passed_after_clean_restore",
+  "immutable_revision": "83fa068067ae90e98318e80237488421c411dfbf",
+  "manifest_sha256": "a34df063faf3ba4a0e1a4d7b2d96d379da0b477ee42400d27208ff0cb284c799",
+  "archived_source_count": 11,
+  "file_count": 23,
+  "payload_digest_verification": "23_of_23_passed_after_clean_restore",
   "repository_private": false,
   "repository_gated": false,
   "rights_families": [
@@ -19,7 +19,6 @@
   ],
   "pending_sources": {
     "fr-open-medic": "upstream download-limit refusal",
-    "gb-nice-medicines-utilisation": "catalogue URL does not identify a public export",
     "nl-gipdatabank": "manual interactive export not reproducibly resolved"
   },
   "limitations": [

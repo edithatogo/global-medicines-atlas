@@ -17,6 +17,7 @@ SOURCE_RIGHTS: Final = {
     "fr-bdpm-smr-asmr": "Etalab-2.0",
     "gb-emit": "OGL-3.0",
     "gb-nhs-drug-tariff": "OGL-3.0-with-exclusions",
+    "gb-nice-medicines-utilisation": "OGL-3.0",
     "nz-pharmac-hml": "CC-BY-4.0",
     "nz-pharmac-schedule": "CC-BY-4.0",
     "nz-pharmac-schedule-xml": "CC-BY-4.0",
@@ -25,7 +26,6 @@ SOURCE_RIGHTS: Final = {
 }
 PENDING_SOURCES: Final = {
     "fr-open-medic": "upstream download-limit refusal",
-    "gb-nice-medicines-utilisation": "catalogue URL does not identify a public export",
     "nl-gipdatabank": "manual interactive export not reproducibly resolved",
 }
 RXNORM_INPUT_SHA256: Final = (
@@ -137,7 +137,7 @@ tags:
 
 # Permissive international medicine-source snapshots
 
-This mixed-licence archive contains bounded source-native snapshots for ten
+This mixed-licence archive contains bounded source-native snapshots for eleven
 catalogue source IDs. Rights and attribution are recorded per file in
 `manifest.json`; users must comply with CC BY 4.0, Etalab Open Licence 2.0,
 Open Government Licence 3.0, and source-specific exclusions.
@@ -147,8 +147,8 @@ names and bytes are excluded. The NHS Drug Tariff must not be used to imply NHS
 endorsement; separately licensed dm+d/SNOMED content is not licensed by this
 archive.
 
-Three permissive candidates remain explicit acquisition failures rather than
+Two permissive candidates remain explicit acquisition failures rather than
 false archives: Open Medic 2025 was refused by the upstream download limiter,
-the NHS utilisation catalogue entry lacks a concrete public export, and GIP
-requires an unresolved manual export. This is not complete source coverage.
+and GIP requires an unresolved manual export. This is not complete source
+coverage.
 """
