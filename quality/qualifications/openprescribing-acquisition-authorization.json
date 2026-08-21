@@ -1,0 +1,26 @@
+{
+  "schema_id": "global-medicines-atlas.openprescribing-acquisition-authorization",
+  "schema_version": 1,
+  "decision_date": null,
+  "decision_status": "pending",
+  "decision_basis": "OpenPrescribing states that its prescribing data comes from monthly NHSBSA files used under the Open Government Licence. Its documented public API exposes rolling five-year CSV/JSON views, but source-specific acquisition and retention remain pending the maintainer's licensing decision.",
+  "acquisition_authorized": false,
+  "internal_retention_authorized": false,
+  "public_release_authorized": false,
+  "external_publication_authorized": false,
+  "documentation_url": "https://openprescribing.net/api/",
+  "rights_url": "https://openprescribing.net/about/",
+  "upstream_monthly_source_url": "https://www.nhsbsa.nhs.uk/prescription-data/prescribing-data/english-prescribing-data-epd",
+  "documentation_commit": "93c1aea12712c6767a920c43272131e9a14f5fee",
+  "documentation_sha256": "e8fae6130f5515fb29cae8292df3371686f4e4eabfecabba43980dba3207e351",
+  "expected_endpoint_count": 6,
+  "archive_strategy": "receipt_bound_partitioned_queries",
+  "endpoints": [
+    {"name":"spending","url":"https://openprescribing.net/api/1.0/spending/","formats":["json","csv"],"role":"utilisation","rolling_window":true},
+    {"name":"spending_by_org","url":"https://openprescribing.net/api/1.0/spending_by_org/","formats":["json","csv"],"role":"utilisation","rolling_window":true},
+    {"name":"bnf_code","url":"https://openprescribing.net/api/1.0/bnf_code/","formats":["json","csv"],"role":"medicine_reference","rolling_window":false},
+    {"name":"org_code","url":"https://openprescribing.net/api/1.0/org_code/","formats":["json","csv"],"role":"organisation_reference","rolling_window":false},
+    {"name":"org_details","url":"https://openprescribing.net/api/1.0/org_details/","formats":["json","csv"],"role":"organisation_reference","rolling_window":false},
+    {"name":"org_location","url":"https://openprescribing.net/api/1.0/org_location/","formats":["json","csv"],"role":"organisation_reference","rolling_window":false}
+  ]
+}
