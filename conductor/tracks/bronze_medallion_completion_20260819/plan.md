@@ -467,3 +467,8 @@ for credentialed or rights-unresolved sources.
     - [ ] Obtain independent source-specific decisions before payload acquisition and retention
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and archive verification for each acquired source
     - [ ] Keep causality, incidence, public release, and external publication claims fail closed
+- [x] Task: Reconcile final measured source coverage (Prompt 36)
+    - [x] Produce reproducible matrices by jurisdiction, authority, and ten independent evidence facets
+    - [x] Report catalogued, fixture-qualified, and durable live-qualified counts independently
+    - [x] Preserve incomplete coverage, missing-not-negative-evidence, and no-external-publication boundaries
+    - [x] Carry forward only existing high-value gap candidates; do not invent a new track without new authority or materially new source evidence
