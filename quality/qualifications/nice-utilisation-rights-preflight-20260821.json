@@ -1,1 +1,28 @@
-{"schema_id":"global-medicines-atlas.nice-utilisation-rights-preflight","schema_version":1,"observed_at":"2026-08-21T06:30:00Z","source_id":"gb-nice-medicines-utilisation","prompt_id":29,"official_series":{"url":"https://digital.nhs.uk/data-and-information/publications/statistical/use-of-nice-appraised-medicines-in-the-nhs-in-england","release_count":4,"first_period":"2008","last_period":"2012","status":"discontinued","payloads_acquired":false},"methodology_boundaries":["Preserve source-defined measures and denominators by release; do not project a universal utilisation unit in Bronze.","Preserve unavailable comparisons and their source-stated reasons rather than treating missing comparison as negative evidence.","Preserve the 2012 variation approach separately from expected-versus-observed estimates.","Acquire only the corrected 2012 workbook and report version exposed by the official landing page, while recording the correction notice."],"recommended_decision":"approve_internal_acquisition_and_archival","maintainer_decision":"pending","public_release_authorized":false,"external_publication_authorized":false,"evidence_limit":"Use measurements do not establish recommendation, approval, funding, effectiveness, or clinical appropriateness. The historic series is distinct from the successor Innovation Scorecard."}
+{
+  "schema_id": "global-medicines-atlas.nice-utilisation-rights-preflight",
+  "schema_version": 1,
+  "observed_at": "2026-08-21T06:30:00Z",
+  "source_id": "gb-nice-medicines-utilisation",
+  "prompt_id": 29,
+  "official_series": {
+    "url": "https://digital.nhs.uk/data-and-information/publications/statistical/use-of-nice-appraised-medicines-in-the-nhs-in-england",
+    "release_count": 4,
+    "first_period": "2008",
+    "last_period": "2012",
+    "status": "discontinued",
+    "payloads_acquired": true
+  },
+  "methodology_boundaries": [
+    "Preserve source-defined measures and denominators by release; do not project a universal utilisation unit in Bronze.",
+    "Preserve unavailable comparisons and their source-stated reasons rather than treating missing comparison as negative evidence.",
+    "Preserve the 2012 variation approach separately from expected-versus-observed estimates.",
+    "Acquire only the corrected 2012 workbook and report version exposed by the official landing page, while recording the correction notice."
+  ],
+  "recommended_decision": "approve_internal_acquisition_and_archival",
+  "maintainer_decision": "approved_private_acquisition_and_retention_only",
+  "decision_date": "2026-08-21",
+  "rights_boundary": "NHS England content is generally released under the OGL, but the source pages declare IMS Health and pharmaceutical-company data. Acquire and retain privately; do not publish source files or derived records unless a later review proves an OGL-safe separable subset.",
+  "public_release_authorized": false,
+  "external_publication_authorized": false,
+  "evidence_limit": "Use measurements do not establish recommendation, approval, funding, effectiveness, or clinical appropriateness. The historic series is distinct from the successor Innovation Scorecard."
+}

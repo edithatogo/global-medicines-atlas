@@ -20,6 +20,7 @@ from .receipts import SHA256_PATTERN
 _PAYLOAD_SUFFIXES = frozenset({
     ".bin",
     ".csv",
+    ".doc",
     ".json",
     ".pdf",
     ".tsv",

@@ -411,13 +411,13 @@ for credentialed or rights-unresolved sources.
     - [x] Reconstruct all four admitted source-record products and verify their Parquet bytes exactly
     - [x] Create and checksum-verify the 3,927,029,760-byte private archive
     - [x] Keep REMS distinct from approval and pharmacovigilance, preserve the FDA historical-status warning, and keep public redistribution/release/publication fail closed
-- [~] Task: Acquire the discontinued NHS NICE-appraised medicines utilisation series (Prompt 29)
+- [x] Task: Acquire the discontinued NHS NICE-appraised medicines utilisation series (Prompt 29)
     - [x] Resolve the official historic corpus to four releases covering 2008 through 2012
     - [x] Lock release-specific methodology, denominator, amendment, and correction boundaries
     - [x] Keep the successor Innovation Scorecard out of the historic corpus
-    - [ ] Obtain the maintainer's source-specific licensing decision before payload acquisition
-    - [ ] Exercise immutable landing, receipt, source-faithful Bronze projection, clean-room recovery, and private archive verification
-    - [ ] Keep public release and external publication separately gated
+    - [x] Obtain the maintainer's source-specific licensing decision before payload acquisition
+    - [x] Exercise immutable landing, receipt, acquisition-manifest Bronze projection, clean-room recovery, and private archive verification
+    - [x] Keep public release and external publication separately gated
 - [~] Task: Acquire the Netherlands GIP medicine utilisation corpus (Prompt 32)
     - [x] Resolve the official corpus to 28 Farmacie and Add-on CSV releases through 2025
     - [x] Bind stable source titles while treating rotating service download keys as ephemeral transport metadata

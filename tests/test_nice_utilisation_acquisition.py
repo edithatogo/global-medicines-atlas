@@ -7,7 +7,9 @@ import pytest
 from pydantic import ValidationError
 
 from global_medicines_atlas.nice_utilisation_acquisition import (
+    NICE_UTILISATION_ARTIFACTS,
     NICEUtilisationAuthorization,
+    inspect_nice_utilisation_payload,
 )
 
 AUTHORIZATION = (
@@ -29,14 +31,20 @@ def test_inventory_locks_the_discontinued_four_release_series() -> None:
         "2012",
     ]
     assert authorization.releases[-1].corrected_after_publication is True
-    with pytest.raises(PermissionError, match="decision is pending"):
-        authorization.require_payload_authority()
+    authorization.require_payload_authority()
+    assert authorization.acquisition_authorized is True
+    assert authorization.internal_retention_authorized is True
+    assert authorization.public_release_authorized is False
+    assert authorization.external_publication_authorized is False
 
 
 @pytest.mark.parametrize(
     ("update", "message"),
     [
-        ({"acquisition_authorized": True}, "pending NICE-utilisation"),
+        (
+            {"internal_retention_authorized": False},
+            "requires dated authority",
+        ),
         ({"public_release_authorized": True}, "separately gated"),
         ({"series_url": "https://example.test/series"}, "official NHS hosts"),
     ],
@@ -104,3 +112,45 @@ def test_approved_internal_scope_requires_date_and_retention() -> None:
     raw["decision_date"] = None
     with pytest.raises(ValidationError, match="requires dated authority"):
         NICEUtilisationAuthorization.model_validate(raw)
+
+
+def test_exact_private_artifact_inventory_is_fail_closed() -> None:
+    assert len(NICE_UTILISATION_ARTIFACTS) == 15
+    assert {item.release_label for item in NICE_UTILISATION_ARTIFACTS} == {
+        "2008",
+        "2009",
+        "2010-and-2011",
+        "2012",
+    }
+    assert (
+        sum(item.source_record_eligible for item in NICE_UTILISATION_ARTIFACTS)
+        == 1
+    )
+    assert all(
+        item.url.host == "files.digital.nhs.uk"
+        for item in NICE_UTILISATION_ARTIFACTS
+    )
+    assert all(
+        item.publication_authorized is False
+        for item in NICE_UTILISATION_ARTIFACTS
+    )
+
+
+@pytest.mark.parametrize(
+    ("filename", "payload", "expected_media"),
+    [
+        ("report.pdf", b"%PDF-1.7\nfixture", "pdf"),
+        (
+            "tables.xlsx",
+            b"PK\x03\x04fixture-xl/workbook.xml-fixture",
+            "xlsx",
+        ),
+        ("feedback.doc", b"\xd0\xcf\x11\xe0fixture", "doc"),
+    ],
+)
+def test_payload_inspection_rejects_extension_magic_mismatch(
+    filename: str, payload: bytes, expected_media: str
+) -> None:
+    assert inspect_nice_utilisation_payload(filename, payload) == expected_media
+    with pytest.raises(ValueError, match="does not match"):
+        inspect_nice_utilisation_payload(filename, b"not the declared format")
