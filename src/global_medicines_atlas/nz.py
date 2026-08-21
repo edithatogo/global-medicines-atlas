@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, cast
 
 from sources.nz.nzulm_fhir import FhirResourceRecord
+from sources.nz.nzulm_fhir.adapter import SYNTHETIC_FIXTURE_URI
 
 from .models import (
     CanonicalMedicineRecord,
@@ -17,6 +18,7 @@ from .models import (
 )
 
 NZMT_SYSTEM = "http://nzmt.org.nz"
+SYNTHETIC_NZMT_SYSTEM = "https://global-medicines-atlas.invalid/synthetic/nzmt"
 NZMT_TYPE_EXTENSION = "http://hl7.org.nz/fhir/StructureDefinition/nzf-nzmt-type"
 RELATED_EXTENSION = (
     "http://hl7.org.nz/fhir/StructureDefinition/nzf-related-medication"
@@ -114,6 +116,9 @@ def project_nz_fhir_record(
         ),
         "unknown",
     )
+    synthetic = record.source_repository == SYNTHETIC_FIXTURE_URI
+    identifier_system = SYNTHETIC_NZMT_SYSTEM if synthetic else NZMT_SYSTEM
+    concept_prefix = "nzmt-synthetic" if synthetic else "nzmt"
     related: list[str] = []
     for extension in extension_rows:
         if extension.get("url") != RELATED_EXTENSION:
@@ -124,16 +129,16 @@ def project_nz_fhir_record(
         coding = _first_coding(code_extension.get("valueCodeableConcept"))
         value = coding.get("code") if coding else None
         if isinstance(value, str) and value:
-            related.append(f"nzmt:{value}")
+            related.append(f"{concept_prefix}:{value}")
     provenance = Provenance(
-        source_id="nzmedicines-fixtures",
+        source_id="nzmt-synthetic-fixtures",
         source_uri=record.source_repository,
         source_path=record.source_path,
         source_sha256=record.source_sha256,
         source_version=record.source_commit,
         transformation="nz-fhir-medication-to-canonical-v1",
     )
-    concept_id = f"nzmt:{record.resource_id}"
+    concept_id = f"{concept_prefix}:{record.resource_id}"
     return CanonicalMedicineRecord(
         concept=MedicineConcept(
             concept_id=concept_id,
@@ -142,7 +147,7 @@ def project_nz_fhir_record(
             preferred_name=_display(resource, record.resource_id),
             identifiers=(
                 Identifier(
-                    system=NZMT_SYSTEM,
+                    system=identifier_system,
                     value=record.resource_id,
                     identifier_type=level,
                 ),

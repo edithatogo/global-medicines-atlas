@@ -38,7 +38,7 @@ def test_nz_public_manifest_is_exact_and_hash_bound() -> None:
     manifest = build_manifest()
     files = manifest["approved_files"]
 
-    assert manifest["approved_file_count"] == len(files) == 14
+    assert manifest["approved_file_count"] == len(files) == 15
     assert all(len(item["sha256"]) == 64 for item in files)
     assert all(item["size_bytes"] > 0 for item in files)
     assert len({item["path"] for item in files}) == len(files)

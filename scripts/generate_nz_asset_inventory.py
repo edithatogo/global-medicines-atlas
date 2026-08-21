@@ -609,6 +609,14 @@ def verify_upstream_tree(inventory: dict[str, object]) -> None:
             raise ValueError(f"Upstream disposition differs for {path}")
 
 
+def verify_remediated_tree(inventory: dict[str, object]) -> None:
+    """Verify historical inventory identity and current vendor-tree absence."""
+    verify_preservation_identity(upstream_manifest(inventory))
+    discovered = [path for path in discover_upstream() if path.is_file()]
+    if discovered:
+        raise ValueError("Remediated vendor tree must remain absent")
+
+
 def generate() -> dict[str, object]:
     assets = [
         *(asset(path, scope="upstream") for path in discover_upstream()),
@@ -668,8 +676,7 @@ def main() -> None:
         "--check",
         action="store_true",
         help=(
-            "Verify the immutable upstream tree without requiring local-only "
-            "payloads."
+            "Verify historical inventory identity and current vendor removal."
         ),
     )
     parser.add_argument(
@@ -683,7 +690,7 @@ def main() -> None:
     args = parser.parse_args()
     if args.check:
         committed = json.loads(JSON_OUTPUT.read_text(encoding="utf-8"))
-        verify_upstream_tree(committed)
+        verify_remediated_tree(committed)
         if not args.check_local:
             return
         missing_local = [

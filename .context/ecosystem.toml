@@ -9,8 +9,8 @@ url = "https://github.com/edithatogo/nzmedicines"
 snapshot = "6a8ecfae67f15d635750d11d5f446b93d76c1865"
 licence = "review-required"
 authority = "nz-fhir-fixtures"
-disposition = "integrated"
-local_boundary = "vendor/nzmedicines"
+disposition = "adopt-pattern"
+local_boundary = "sources/nz/nzulm_fhir"
 
 [[github]]
 id = "reimbursement-atlas"

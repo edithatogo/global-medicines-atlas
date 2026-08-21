@@ -88,14 +88,6 @@ def _aggregate_digest(rows: list[dict[str, object]]) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
-def _relative_files(root: Path) -> dict[str, Path]:
-    return {
-        f"vendor/nzmedicines/{path.relative_to(root).as_posix()}": path
-        for path in sorted(root.rglob("*"))
-        if path.is_file()
-    }
-
-
 def _partition_rows(
     rows: list[dict[str, object]],
 ) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
@@ -152,20 +144,12 @@ def _verify_source_identity(
     return cast("str", source_commit), aggregate
 
 
-def _verify_vendor_tree(
-    upstream: list[dict[str, object]],
-    vendor_root: Path,
-) -> None:
-    actual_vendor = _relative_files(vendor_root)
-    expected_vendor = {cast("str", row["path"]): row for row in upstream}
-    if set(actual_vendor) != set(expected_vendor):
-        raise ValueError("Immutable vendor tree membership differs")
-    for path, file_path in actual_vendor.items():
-        row = expected_vendor[path]
-        if file_path.stat().st_size != row.get("size_bytes"):
-            raise ValueError(f"Immutable vendor size differs for {path}")
-        if _sha256(file_path) != row.get("sha256"):
-            raise ValueError(f"Immutable vendor digest differs for {path}")
+def _verify_vendor_tree_removed(vendor_root: Path) -> None:
+    """Fail closed if any remediated vendor bytes re-enter the current tree."""
+    if vendor_root.exists() and any(
+        path.is_file() for path in vendor_root.rglob("*")
+    ):
+        raise ValueError("Remediated vendor tree must remain absent")
 
 
 def _verify_local_work(
@@ -209,7 +193,7 @@ def verify_consolidation(
         upstream,
         preservation,
     )
-    _verify_vendor_tree(upstream, vendor_root)
+    _verify_vendor_tree_removed(vendor_root)
     adapted_paths, placeholder_count = _verify_local_work(local, upstream)
 
     local_comparison = [
@@ -223,13 +207,14 @@ def verify_consolidation(
         "schema_version": 1,
         "status": "passed",
         "checks": {
-            "immutable_vendor_tree": True,
+            "vendor_snapshot_removed": True,
             "isolated_import_boundary": True,
             "retained_local_inventory_metadata": True,
             "preservation_aggregate_matches": True,
             "source_fields_complete": True,
         },
         "historical_payload_preservation": "not_independently_verified",
+        "historical_inventory_retained": True,
         "source_commit": source_commit,
         "upstream_asset_count": len(upstream),
         "upstream_tree_sha256": aggregate,

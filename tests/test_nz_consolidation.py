@@ -37,7 +37,7 @@ def _copy_inputs(tmp_path: Path) -> tuple[Path, Path, Path]:
     vendor = tmp_path / "vendor/nzmedicines"
     shutil.copy(VERIFY.INVENTORY_PATH, inventory)
     shutil.copy(VERIFY.PRESERVATION_PATH, preservation)
-    shutil.copytree(VERIFY.VENDOR_ROOT, vendor)
+    vendor.mkdir(parents=True)
     return inventory, preservation, vendor
 
 
@@ -82,6 +82,7 @@ def test_receipt_uses_bounded_preservation_claims() -> None:
     checks = cast("dict[str, object]", receipt["checks"])
 
     assert checks["isolated_import_boundary"] is True
+    assert checks["vendor_snapshot_removed"] is True
     assert checks["retained_local_inventory_metadata"] is True
     assert "no_local_work_overwritten" not in checks
     assert receipt["historical_payload_preservation"] == (
@@ -144,29 +145,10 @@ def test_rejects_duplicate_artifact_disposition(tmp_path: Path) -> None:
         _verify(paths)
 
 
-def test_rejects_coordinated_inventory_and_vendor_tamper(
-    tmp_path: Path,
-) -> None:
-    paths = _copy_inputs(tmp_path)
-    inventory = _read(paths[0])
-    assets = cast("list[dict[str, object]]", inventory["assets"])
-    upstream = next(row for row in assets if row["scope"] == "upstream")
-    relative = Path(cast("str", upstream["path"])).relative_to(
-        "vendor/nzmedicines"
-    )
-    target = paths[2] / relative
-    target.write_bytes(target.read_bytes() + b"tamper")
-    upstream["size_bytes"] = target.stat().st_size
-    upstream["sha256"] = VERIFY._sha256(target)
-    _write(paths[0], inventory)
-    with pytest.raises(ValueError, match="Preservation aggregate differs"):
-        _verify(paths)
-
-
-def test_rejects_vendor_membership_drift(tmp_path: Path) -> None:
+def test_rejects_vendor_snapshot_reintroduction(tmp_path: Path) -> None:
     paths = _copy_inputs(tmp_path)
     (paths[2] / "unexpected.txt").write_text("extra", encoding="utf-8")
-    with pytest.raises(ValueError, match="tree membership differs"):
+    with pytest.raises(ValueError, match="must remain absent"):
         _verify(paths)
 
 
