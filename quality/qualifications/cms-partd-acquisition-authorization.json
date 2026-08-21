@@ -1,0 +1,19 @@
+{
+  "schema_id": "global-medicines-atlas.cms-partd-acquisition-authorization",
+  "schema_version": 1,
+  "decision_date": null,
+  "decision_status": "pending",
+  "decision_basis": "The official CMS and Data.gov catalogues identify both Prompt 31 families as public U.S. Government works. The formulary files additionally bind users to the official Agreement for Use, so acquisition and retention remain pending the maintainer's source-specific acceptance.",
+  "acquisition_authorized": false,
+  "internal_retention_authorized": false,
+  "public_release_authorized": false,
+  "external_publication_authorized": false,
+  "formulary_catalog_url": "https://catalog.data.gov/dataset/quarterly-prescription-drug-plan-formulary-pharmacy-network-and-pricing-information",
+  "spending_catalog_url": "https://catalog.data.gov/dataset/medicare-part-d-spending-by-drug",
+  "agreement_url": "https://data.cms.gov/sites/default/files/2023-10/4eeb19e1-525b-4a4e-9766-b33ff084fc5c/AGREEMENT-FOR-USE.pdf",
+  "license_url": "https://www.usa.gov/government-works",
+  "expected_formulary_release_count": 30,
+  "expected_formulary_url_set_sha256": "d960c4e537dfab9f7c078e8953e5e70ee69c5a26e48141585a38cb6369deeb8f",
+  "expected_spending_resource_count": 3,
+  "expected_spending_url_set_sha256": "f989d80a122020574688454477d66671a66036640a877c31a0ca22cedea07c72"
+}
