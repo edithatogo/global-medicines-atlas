@@ -1,0 +1,29 @@
+{
+  "schema_id": "global-medicines-atlas.publication-verification",
+  "schema_version": 1,
+  "observed_at": "2026-08-21T09:10:00Z",
+  "dataset": "edithatogo/global-medicines-atlas-open-medic-20260821",
+  "repository_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-open-medic-20260821",
+  "immutable_revision": "d19f7a66e35c58c557615bffa456856b485b7edc",
+  "manifest_sha256": "5a08e2eb4e99ec0e95f596a384df22007ca67b9df311a7af9b285f55eada0578",
+  "archived_source_count": 1,
+  "source_ids": [
+    "fr-open-medic"
+  ],
+  "file_count": 24,
+  "byte_count": 293405823,
+  "payload_digest_verification": "24_of_24_passed_after_anonymous_clean_restore",
+  "repository_private": false,
+  "repository_gated": false,
+  "rights_families": [
+    "Etalab-2.0"
+  ],
+  "pending_sources": {},
+  "limitations": [
+    "official annual base-complete ZIP releases for 2014 through 2025 only",
+    "not complete French medicine coverage or registration evidence",
+    "missing records are not negative evidence",
+    "Hugging Face is a public archive, not WORM storage or source truth",
+    "an earlier mixed-repository revision also contains these files and is retained pending a separate destructive-action decision"
+  ]
+}

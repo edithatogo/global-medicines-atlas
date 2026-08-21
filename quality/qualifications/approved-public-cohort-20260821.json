@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.approved-public-cohort",
   "schema_version": 1,
-  "approved_at": "2026-08-21T06:34:24Z",
+  "approved_at": "2026-08-21T09:10:00Z",
   "decision_actor": "repository_maintainer",
   "decision_scope": "recommended exact cohort plus the separately authorized Open Medic expansion in fresh clean Hugging Face repositories",
   "source_count": 24,
@@ -17,11 +17,19 @@
     },
     {
       "dataset": "edithatogo/global-medicines-atlas-international-permissive-20260821",
-      "immutable_revision": "87d3b54ac932018c276a1c50033ac287520cf85e",
-      "manifest_sha256": "d058b78789cd8c2d0a19467063890d32c0757add10998d307422c3ec1550df86",
-      "file_count": 42,
+      "immutable_revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "manifest_sha256": "fc29fc2e7896ebcb066de3f4bc43b1cb480e78204f518a82f438a47227731148",
+      "file_count": 18,
       "anonymous_api_status": 200,
-      "digest_verification": "42_of_42_passed_after_clean_restore"
+      "digest_verification": "18_of_18_passed_after_clean_restore"
+    },
+    {
+      "dataset": "edithatogo/global-medicines-atlas-open-medic-20260821",
+      "immutable_revision": "d19f7a66e35c58c557615bffa456856b485b7edc",
+      "manifest_sha256": "5a08e2eb4e99ec0e95f596a384df22007ca67b9df311a7af9b285f55eada0578",
+      "file_count": 24,
+      "anonymous_api_status": 200,
+      "digest_verification": "24_of_24_passed_after_anonymous_clean_restore"
     }
   ],
   "excluded_sources": [
@@ -32,9 +40,9 @@
     "credentials and request headers",
     "FDA marks and separately licensed third-party vocabularies",
     "RxNorm source vocabulary names and bytes",
-    "any source or revision outside the two recorded manifests"
+    "any source or revision outside the three recorded manifests"
   ],
-  "predecessor_repository_disposition": "private_due_to_unapproved_history",
+  "predecessor_repository_disposition": "original approved revisions remain immutable; later mixed Open Medic revision retained pending separate destructive-action authority",
   "coverage_complete": false,
   "clinical_inference_permitted": false
 }
