@@ -1613,20 +1613,18 @@ def _utilisation_rows() -> tuple[dict[str, Any], ...]:
             "Ministry of Health, Labour and Welfare",
             "NDB tabulated medicines utilisation",
             SourceDimension.FUNDING,
-            landing="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000139390.html",
-            documentation="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000139390.html",
+            landing="https://www.mhlw.go.jp/ndb/opendatasite/",
+            documentation="https://www.mhlw.go.jp/ndb/opendatasite/",
             evidence_limit=(
-                "NDB microdata are credentialed. This row inventories public "
-                "tables if published; it is not NHI price or PMDA approval."
+                "Public aggregate NDB open-data tables are distinct from "
+                "credentialed microdata; neither is NHI price or PMDA approval."
             ),
             native_identifier="MHLW NDB tabulated identifier",
-            access_mode=AccessMode.LICENSED_FEED,
-            interface_status=InterfaceStatus.RESTRICTED,
-            authentication=AuthenticationMode.MANUAL_APPROVAL,
-            readiness=SourceReadiness.BLOCKED,
-            download_url="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000139390.html",
-            formats=("xlsx",),
-            acquisition_profile="account-download",
+            access_mode=AccessMode.WEB_SEARCH,
+            interface_status=InterfaceStatus.INTERACTIVE_ONLY,
+            download_url="https://www.mhlw.go.jp/ndb/opendatasite/",
+            formats=("html",),
+            integration=IntegrationLayer.ACQUISITION,
             languages=(LanguageCode.JAPANESE,),
             domains=funding_util,
             entities=funding_entities,
@@ -1638,20 +1636,19 @@ def _utilisation_rows() -> tuple[dict[str, Any], ...]:
             "Canadian Institute for Health Information",
             "CIHI National Health Expenditure medicines components",
             SourceDimension.FUNDING,
-            landing="https://www.cihi.ca/en/national-health-expenditure-trends",
-            documentation="https://www.cihi.ca/en/national-health-expenditure-trends",
+            landing="https://www.cihi.ca/en/national-health-expenditure-trends/nhex-trends-data",
+            documentation="https://www.cihi.ca/en/national-health-expenditure-trends/nhex-trends-data",
             evidence_limit=(
-                "CIHI extracts are often licensed. Metadata-only until rights "
-                "are resolved; not a provincial formulary."
+                "Current NHEX Series G and open-data workbooks are public "
+                "macro expenditure tables, not medicine-level utilisation or a formulary."
             ),
             native_identifier="CIHI NHEX/plan expenditure identifier",
-            access_mode=AccessMode.LICENSED_FEED,
-            interface_status=InterfaceStatus.RESTRICTED,
-            authentication=AuthenticationMode.SUBSCRIPTION,
-            readiness=SourceReadiness.BLOCKED,
-            download_url="https://www.cihi.ca/en/national-health-expenditure-trends",
-            formats=("xlsx",),
-            acquisition_profile="account-download",
+            access_mode=AccessMode.DOWNLOAD,
+            interface_status=InterfaceStatus.DOCUMENTED_DOWNLOAD,
+            download_url="https://www.cihi.ca/en/national-health-expenditure-trends/nhex-trends-data",
+            formats=("xlsx", "zip", "pdf"),
+            integration=IntegrationLayer.ACQUISITION,
+            acquisition_profile="public-bulk",
             domains=funding_util,
             entities=funding_entities,
             semantics=(StatusSemantics.MIXED,),
@@ -1662,8 +1659,8 @@ def _utilisation_rows() -> tuple[dict[str, Any], ...]:
             "Health Service Executive Primary Care Reimbursement Service",
             "HSE PCRS reimbursement reports",
             SourceDimension.FUNDING,
-            landing="https://www.hse.ie/eng/staff/pcrs/pcrs-publications/",
-            documentation="https://www.hse.ie/eng/staff/pcrs/pcrs-publications/",
+            landing="https://about.hse.ie/publications/pcrs-statistical-analysis-of-claims-and-payments-2024/",
+            documentation="https://about.hse.ie/publications/pcrs-statistical-analysis-of-claims-and-payments-2024/",
             evidence_limit=(
                 "PCRS reimbursement volumes are not national utilisation of all "
                 "medicines and are not HPRA registration."
@@ -1671,7 +1668,9 @@ def _utilisation_rows() -> tuple[dict[str, Any], ...]:
             native_identifier="HSE PCRS ATC/product reimbursement identifier",
             access_mode=AccessMode.DOCUMENT,
             interface_status=InterfaceStatus.DOCUMENTED_DOWNLOAD,
-            formats=("pdf", "xlsx"),
+            download_url="https://about.hse.ie/publications/pcrs-statistical-analysis-of-claims-and-payments-2024/",
+            formats=("pdf", "html"),
+            integration=IntegrationLayer.ACQUISITION,
             domains=funding_util,
             entities=funding_entities,
             semantics=(StatusSemantics.REIMBURSEMENT, StatusSemantics.MIXED),

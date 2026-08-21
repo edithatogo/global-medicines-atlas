@@ -449,3 +449,13 @@ for credentialed or rights-unresolved sources.
     - [ ] Obtain independent maintainer source-specific decisions before payload acquisition and retention
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification for each approved source
     - [ ] Keep public release and external publication separately gated
+- [~] Task: Acquire additional public utilisation sources (Prompt 34)
+    - [x] Correct Japan NDB aggregate and CIHI NHEX public access states without weakening microdata or broader licensed-source boundaries
+    - [x] Lock the Open Medic 2014–2025 metadata inventory, Licence Ouverte identity, and repeated upstream payload-delivery failure
+    - [x] Lock Japan's sixth NDB prefectural prescribing Tableau surface without claiming an official bulk download
+    - [x] Lock CIHI's 2025 Series G drug-expenditure and open-data workbooks and HSE's 2024 PCRS claims-and-payments report
+    - [x] Reconcile the generated Bronze queue and completion audit without treating source metadata as live utilisation coverage
+    - [ ] Obtain independent source-specific decisions for Japan, Canada, and Ireland before payload acquisition and retention
+    - [ ] Retry the already-authorized Open Medic payload under its bounded failure-receipt schedule
+    - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and archive verification for each acquired source
+    - [ ] Keep cross-country comparability and unapproved publication fail closed

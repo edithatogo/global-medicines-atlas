@@ -2,6 +2,16 @@
   "schema_version": 1,
   "overrides": [
     {
+      "source_id": "fr-open-medic",
+      "state": "temporarily_unavailable",
+      "reason": "The official metadata inventory and public Etalab authorization are evidenced, but repeated bounded payload requests were refused, timed out, or reset upstream.",
+      "failure_receipt": "quality/qualifications/open-medic-acquisition-failure-20260821.json",
+      "evidence_references": [
+        "quality/qualifications/additional-utilisation-rights-preflight-20260821.json",
+        "quality/qualifications/source-publication-queue.json"
+      ]
+    },
+    {
       "source_id": "eu-union-register",
       "state": "landed_and_evidenced",
       "reason": "The official 2026-08-17 Union Register JSON snapshot was acquired under maintainer-approved internal-only CC BY 4.0 handling, projected at source-native record grain, clean-room reconstructed, and privately archived.",

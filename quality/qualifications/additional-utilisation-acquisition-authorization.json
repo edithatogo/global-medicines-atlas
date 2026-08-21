@@ -1,0 +1,54 @@
+{
+  "schema_id": "global-medicines-atlas.additional-utilisation-acquisition-authorization",
+  "schema_version": 1,
+  "sources": [
+    {
+      "source_id": "fr-open-medic",
+      "decision_date": "2026-08-21",
+      "decision_status": "approved_public",
+      "decision_basis": "The maintainer previously approved acquisition and public archiving of the Etalab-licensed Open Medic source; upstream payload delivery remains temporarily unavailable and no payload authority is inferred for another source.",
+      "acquisition_authorized": true,
+      "internal_retention_authorized": true,
+      "public_release_authorized": true,
+      "external_publication_authorized": true,
+      "landing_url": "https://www.data.gouv.fr/datasets/open-medic-base-complete-sur-les-depenses-de-medicaments-interregimes/",
+      "rights_url": "https://www.etalab.gouv.fr/licence-ouverte-open-licence/"
+    },
+    {
+      "source_id": "jp-mhlw-ndb-utilisation",
+      "decision_date": null,
+      "decision_status": "pending",
+      "decision_basis": "MHLW exposes public aggregate NDB open-data tables separately from credentialed microdata. Acquisition and retention of the aggregate files require a source-specific maintainer decision.",
+      "acquisition_authorized": false,
+      "internal_retention_authorized": false,
+      "public_release_authorized": false,
+      "external_publication_authorized": false,
+      "landing_url": "https://www.mhlw.go.jp/ndb/opendatasite/",
+      "rights_url": "https://www.mhlw.go.jp/ndb/opendatasite/"
+    },
+    {
+      "source_id": "ca-cihi-nhex-medicines",
+      "decision_date": null,
+      "decision_status": "pending",
+      "decision_basis": "CIHI publishes current NHEX Series G drug expenditure and an open-data workbook without subscription. Acquisition and retention remain independently gated from any broader CIHI licensed holdings.",
+      "acquisition_authorized": false,
+      "internal_retention_authorized": false,
+      "public_release_authorized": false,
+      "external_publication_authorized": false,
+      "landing_url": "https://www.cihi.ca/en/national-health-expenditure-trends/nhex-trends-data",
+      "rights_url": "https://www.cihi.ca/en/national-health-expenditure-trends/nhex-trends-data"
+    },
+    {
+      "source_id": "ie-pcrs-reimbursement",
+      "decision_date": null,
+      "decision_status": "pending",
+      "decision_basis": "HSE publishes the PCRS claims-and-payments report as a public document. Its scheme-bounded aggregate contents are not total Irish medicines utilisation, and payload retention requires a source-specific decision.",
+      "acquisition_authorized": false,
+      "internal_retention_authorized": false,
+      "public_release_authorized": false,
+      "external_publication_authorized": false,
+      "landing_url": "https://about.hse.ie/publications/pcrs-statistical-analysis-of-claims-and-payments-2024/",
+      "rights_url": "https://www2.hse.ie/conditions/terms/"
+    }
+  ]
+}
