@@ -42,6 +42,19 @@ from global_medicines_atlas.reuse_gate import acquire_new_decision
 PAYLOAD = b'{"ok":true}'
 
 
+@pytest.mark.parametrize(
+    ("payload", "kind"),
+    [(b"%PDF-1.7\nsource", "pdf"), (b"\xd0\xcf\x11\xe0source", "doc")],
+)
+def test_binary_document_magic_is_not_misclassified_as_csv(
+    payload: bytes, kind: str
+) -> None:
+    assert sniff_payload_kind(payload) == kind
+    result = inspect_untrusted_payload(payload, declared_media=f".{kind}")
+    assert result.sniffed_kind == kind
+    assert result.reason_codes == ()
+
+
 def _landable(payload: bytes = PAYLOAD) -> SourceReceipt:
     receipt = source_receipt()
     evidence = PayloadEvidence.from_bytes(payload)

@@ -109,6 +109,10 @@ def sniff_payload_kind(payload: bytes) -> str:
         kind = "tar"
     elif payload.startswith(b"\x1f\x8b"):
         kind = "gzip"
+    elif payload.startswith(b"%PDF-"):
+        kind = "pdf"
+    elif payload.startswith(b"\xd0\xcf\x11\xe0"):
+        kind = "doc"
     else:
         stripped = payload.lstrip()
         if stripped.startswith((b"{", b"[")):
@@ -134,6 +138,8 @@ def _normalize_media(declared_media: str | None) -> str | None:
         "gzip": "gzip",
         "tgz": "tar",
         "tar": "tar",
+        "pdf": "pdf",
+        "doc": "doc",
         "bin": None,
     }
     return aliases.get(lowered, lowered or None)

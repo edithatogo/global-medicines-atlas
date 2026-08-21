@@ -162,6 +162,7 @@ def _payload_extension(media_hint: str | None) -> str:
         "csv": ".csv",
         "zip": ".zip",
         "xlsx": ".xlsx",
+        "doc": ".doc",
         "pdf": ".pdf",
         "tsv": ".tsv",
     }
