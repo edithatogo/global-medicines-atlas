@@ -425,3 +425,4 @@ for credentialed or rights-unresolved sources.
     - [ ] Obtain the maintainer's source-specific licensing decision before payload acquisition
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
     - [ ] Keep public release and external publication separately gated
+    - [x] Review fixes: make direct `GIPRelease` test construction satisfy the typed `date` contract (`945b12f`, `fc11f61`); focused tests, Ruff, and BasedPyright pass
