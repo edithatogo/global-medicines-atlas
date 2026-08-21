@@ -3525,13 +3525,14 @@
       "title": "Open Medic interregime medicines expenditure",
       "dimension": "funding",
       "access_mode": "download",
-      "landing_page": "https://www.data.gouv.fr/fr/datasets/open-medic-base-complete-sur-les-depenses-de-medicaments-interregimes/",
+      "landing_page": "https://www.assurance-maladie.ameli.fr/etudes-et-donnees/open-medic-base-complete-depenses-medicaments",
       "update_cadence": "source-declared",
       "rights_status": "review_required",
       "readiness": "candidate",
       "evidence_limit": "French Open Medic expenditure is not a European utilisation standard and is not registration evidence.",
       "interface_status": "documented_download",
       "formats": [
+        "zip",
         "csv"
       ],
       "authentication": "none",
@@ -3541,7 +3542,7 @@
       "last_verified_at": "2026-08-20",
       "integration_layer": "acquisition",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.data.gouv.fr/fr/datasets/open-medic-base-complete-sur-les-depenses-de-medicaments-interregimes/",
+      "documentation_url": "https://www.assurance-maladie.ameli.fr/etudes-et-donnees/open-medic-base-complete-depenses-medicaments",
       "discovery_status": "declaration_verified",
       "information_domains": [
         "product_identity",
@@ -3566,7 +3567,7 @@
       ],
       "qualification_state": "declared",
       "qualification_references": [],
-      "download_url": "https://www.data.gouv.fr/fr/datasets/open-medic-base-complete-sur-les-depenses-de-medicaments-interregimes/",
+      "download_url": "https://open-data-assurance-maladie.ameli.fr/medicaments/download.php?Dir_Rep=Open_MEDIC_Base_Complete&Annee=2025",
       "acquisition_profile": "public-bulk"
     },
     {

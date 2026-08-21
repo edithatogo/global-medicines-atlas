@@ -2,12 +2,12 @@
   "catalog_reviewed_at": "2026-08-21",
   "catalog_schema_version": 5,
   "family_counts": {
-    "archive_release": 8,
+    "archive_release": 9,
     "document_collection": 27,
     "manual_reproducible_export": 7,
     "paginated_rest_api": 14,
     "regulator_search_export": 79,
-    "static_file_download": 37
+    "static_file_download": 36
   },
   "items": [
     {
@@ -1347,12 +1347,13 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_instructions": "Download and receipt the archive before safely enumerating and extracting its members.",
         "acquisition_profile": "public-bulk",
         "credentials_persisted": false,
-        "endpoint": "https://www.data.gouv.fr/fr/datasets/open-medic-base-complete-sur-les-depenses-de-medicaments-interregimes/",
-        "family": "static_file_download",
+        "endpoint": "https://open-data-assurance-maladie.ameli.fr/medicaments/download.php?Dir_Rep=Open_MEDIC_Base_Complete&Annee=2025",
+        "family": "archive_release",
         "formats": [
+          "zip",
           "csv"
         ],
         "pagination": "none",

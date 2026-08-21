@@ -36,7 +36,6 @@ Silver transformations included: **no**.
 - [x] `eu-union-register` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `fr-bdpm` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `fr-bdpm-smr-asmr` — `rights_blocked`; record source-specific retention and transformation rights.
-- [ ] `fr-open-medic` — `temporarily_unavailable`; retry under the failure-receipt schedule.
 - [ ] `gb-emit` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `gb-nhs-drug-tariff` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `global-who-wla` — `rights_blocked`; record source-specific retention and transformation rights.
@@ -59,6 +58,7 @@ Silver transformations included: **no**.
 
 - [ ] `ca-canada-vigilance` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `ca-cihi-nhex-medicines` — `rights_blocked`; record source-specific retention and transformation rights.
+- [ ] `fr-open-medic` — `temporarily_unavailable`; retry under the failure-receipt schedule.
 - [x] `gb-trud-api` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [ ] `no-fest` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `us-fda-faers` — `landed_and_evidenced`; verify receipt freshness on schedule.
