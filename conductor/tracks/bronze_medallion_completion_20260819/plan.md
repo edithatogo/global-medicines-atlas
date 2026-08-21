@@ -542,7 +542,7 @@ for credentialed or rights-unresolved sources.
 
 ## Phase 9: Explicit B2 Raw Evidence and Native Projection Boundary
 
-- [~] Task: Formalize B2 raw evidence and split source-native projections ([#295](https://github.com/edithatogo/global-medicines-atlas/issues/295))
+- [x] Task: Formalize B2 raw evidence and split source-native projections ([#295](https://github.com/edithatogo/global-medicines-atlas/issues/295))
     - [x] Inspect existing content-addressed storage, landing, recovery, archive, receipt, fixture, and Parquet contracts
     - [x] Write failing B2 tests before implementation
     - [x] Add explicit retained, external-reference-only, and blocked B2 states without changing historical identities
