@@ -15,6 +15,7 @@ from pydantic import Field, model_validator
 from .archive_safety import (
     ArchivePolicy,
     ArchiveSafetyError,
+    inspect_gzip,
     inspect_tar,
     inspect_zip,
 )
@@ -69,6 +70,28 @@ class BronzeAdmissionProfile(FrozenModel):
         }:
             raise ValueError("archive_type must be zip, tar, or gzip")
         return self
+
+
+def _inspect_profile_archive(
+    payload: bytes,
+    sniffed_kind: str,
+    profile: BronzeAdmissionProfile,
+) -> int:
+    default_policy = ArchivePolicy()
+    policy = ArchivePolicy(
+        max_archive_bytes=profile.max_size_bytes
+        or default_policy.max_archive_bytes,
+        max_entries=profile.max_member_count or default_policy.max_entries,
+        max_decompression_ratio=profile.max_expansion_ratio
+        or default_policy.max_decompression_ratio,
+        max_path_depth=profile.max_nesting or default_policy.max_path_depth,
+    )
+    if sniffed_kind == "zip":
+        return inspect_zip(payload, policy)
+    if sniffed_kind == "tar":
+        return inspect_tar(payload, policy)
+    inspect_gzip(payload, policy)
+    return 1
 
 
 def validate_source_profile(  # ruff: ignore[too-many-return-statements, too-many-branches]
@@ -149,21 +172,7 @@ def validate_source_profile(  # ruff: ignore[too-many-return-statements, too-man
         ):
             return False, f"archive type {sniffed_kind} does not match profile"
         try:
-            policy = ArchivePolicy(
-                max_archive_bytes=profile.max_size_bytes
-                or ArchivePolicy().max_archive_bytes,
-                max_entries=profile.max_member_count
-                or ArchivePolicy().max_entries,
-                max_decompression_ratio=profile.max_expansion_ratio
-                or ArchivePolicy().max_decompression_ratio,
-            )
-            count = (
-                inspect_zip(payload, policy)
-                if sniffed_kind == "zip"
-                else inspect_tar(payload, policy)
-                if sniffed_kind == "tar"
-                else 1
-            )
+            count = _inspect_profile_archive(payload, sniffed_kind, profile)
         except ArchiveSafetyError as error:
             return False, str(error)
         if (

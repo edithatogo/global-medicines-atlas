@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import gzip
 from io import BytesIO
 from pathlib import Path
 from typing import Any
@@ -136,6 +137,40 @@ def test_archive_profile_limits_members_without_discarding_archive(
     assert record.state is BronzeAdmissionState.QUARANTINED
     assert "profile_mismatch" in record.reason_codes
     assert (tmp_path / "fixture.zip").read_bytes() == stream.getvalue()
+
+
+def test_archive_profile_enforces_member_nesting(tmp_path: Path) -> None:
+    stream = BytesIO()
+    with ZipFile(stream, "w", compression=ZIP_DEFLATED) as archive:
+        archive.writestr("a/b/c/medicines.json", b"[]")
+    record = _evaluate(
+        stream.getvalue(),
+        tmp_path,
+        _profile(
+            expected_media=("zip",),
+            archive_type="zip",
+            max_nesting=2,
+        ),
+    )
+    assert record.state is BronzeAdmissionState.QUARANTINED
+    assert "profile_mismatch" in record.reason_codes
+
+
+def test_gzip_profile_enforces_expansion_ratio(tmp_path: Path) -> None:
+    stream = BytesIO()
+    with gzip.GzipFile(fileobj=stream, mode="wb") as archive:
+        archive.write(b"0" * 20_000)
+    record = _evaluate(
+        stream.getvalue(),
+        tmp_path,
+        _profile(
+            expected_media=("gzip",),
+            archive_type="gzip",
+            max_expansion_ratio=2,
+        ),
+    )
+    assert record.state is BronzeAdmissionState.QUARANTINED
+    assert "profile_mismatch" in record.reason_codes
 
 
 def test_malformed_and_opaque_payloads_remain_quarantined_or_accepted_safely(
