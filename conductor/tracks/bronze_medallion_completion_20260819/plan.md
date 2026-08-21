@@ -356,6 +356,17 @@ for credentialed or rights-unresolved sources.
     - [x] Create and verify the 403,507,200-byte private TAR with SHA-256 `df73bb27c0e9f10881631a267f1b1a3be55bae0605431d80f168ba6ea0fa75f1`
     - [x] Reconcile Prompt 17 as live complete while preserving the invariant that NDC listing does not establish FDA approval
     - [x] Keep public release, external publication, and historical daily-snapshot coverage outside this qualification
+- [x] Task: Prepare fail-closed GSRS/UNII rights and release preflight (Prompt 18)
+    - [x] Refresh the official GSRS licensing, openFDA UNII, and precisionFDA archive evidence without acquiring dataset payloads
+    - [x] Verify the public FDA archive exposes 68 paired UNII data and name releases from 2014-01-25 through 2026-08-04
+    - [x] Add an executable inventory parser that rejects missing pairs, release-count drift, date drift, and non-official hosts
+    - [x] Keep acquisition, retention, public release, and external publication fail closed until the maintainer records a source-specific decision
+- [ ] Task: Acquire and archive the complete approved GSRS/UNII family (Prompt 18)
+    - [ ] Bind the maintainer's source-specific licensing decision to the exact authorization
+    - [ ] Acquire every authorized paired dated release without committing source bytes
+    - [ ] Exercise immutable landing, rights receipts, Bronze admission, source-faithful Parquet, clean-room recovery, private archiving, and checksum verification
+    - [ ] Preserve UNII, names, synonyms, substance types, and source relationships without treating terminology evidence as canonical medicine identity or regulatory approval
+    - [ ] Keep any public release and external publication separately gated
 - [x] Task: Implement complete FDA AERS/FAERS quarterly acquisition machinery (Prompt 12)
     - [x] Lock the official ASCII release inventory to 90 contiguous quarters from 2004-Q1 through 2026-Q2 under the approved internal-only U.S. cohort
     - [x] Acquire large immutable releases through atomic, bounded, retry-limited, content-range-verified downloads without following redirects

@@ -1,0 +1,17 @@
+{
+  "schema_id": "global-medicines-atlas.gsrs-unii-acquisition-authorization",
+  "schema_version": 1,
+  "decision_date": null,
+  "decision_status": "pending",
+  "decision_basis": "Official GSRS licensing now states that GSRS data is public-domain/CC0, and the public FDA archive exposes paired dated UNII data and name releases. The repository may inventory those releases, but source payload acquisition remains pending the maintainer's source-specific licensing decision.",
+  "acquisition_authorized": false,
+  "internal_retention_authorized": false,
+  "public_release_authorized": false,
+  "external_publication_authorized": false,
+  "archive_index_url": "https://precision.fda.gov/uniisearch/archive",
+  "licensing_url": "https://gsrs.ncats.nih.gov/licensing",
+  "expected_release_count": 68,
+  "expected_first_release": "2014-01-25",
+  "expected_last_release": "2026-08-04",
+  "expected_release_dates_sha256": "a8d4de95b9934f29f65176faba11bee8ae98197df0795f2cd5c3ee1d539fdd36"
+}
