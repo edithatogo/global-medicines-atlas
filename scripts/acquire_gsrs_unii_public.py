@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Acquire, land, and package the maintainer-approved public GSRS/UNII releases."""
+"""Acquire, land, and privately archive approved GSRS/UNII releases."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ import argparse
 import json
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import tarfile
+import time
 import zipfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import UTC, datetime
@@ -39,8 +40,8 @@ from global_medicines_atlas.receipts import (
     SourceIdentity,
     SourceReceipt,
     TransformationEvidence,
-    temporal_identity_from_source,
     require_temporal,
+    temporal_identity_from_source,
 )
 from global_medicines_atlas.reuse_gate import acquire_new_decision
 
@@ -51,6 +52,7 @@ AUTHORIZATION_PATH = (
 SOURCE_ID = "us-gsrs-unii"
 ARCHIVE_INDEX = AnyHttpUrl("https://precision.fda.gov/uniisearch/archive")
 LICENSING_URL = AnyUrl("https://gsrs.ncats.nih.gov/licensing")
+_MAX_DOWNLOAD_ATTEMPTS = 3
 
 
 def _digest(path: Path) -> str:
@@ -65,26 +67,35 @@ def _fetch(url: str) -> bytes:
 def _download_to(url: str, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".part")
-    subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
-        [
-            "/usr/bin/curl",
-            "--fail",
-            "--location",
-            "--silent",
-            "--show-error",
-            "--retry",
-            "2",
-            "--retry-delay",
-            "2",
-            "--max-time",
-            "300",
-            "--output",
-            str(temporary),
-            url,
-        ],
-        check=True,
-    )
-    temporary.replace(path)
+    command = [
+        "/usr/bin/curl",
+        "--fail",
+        "--location",
+        "--silent",
+        "--show-error",
+        "--continue-at",
+        "-",
+        "--retry",
+        "2",
+        "--retry-delay",
+        "2",
+        "--max-time",
+        "300",
+        "--output",
+        str(temporary),
+        url,
+    ]
+    for attempt in range(_MAX_DOWNLOAD_ATTEMPTS):
+        result = subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
+            command,
+            check=False,
+        )
+        if result.returncode == 0:
+            temporary.replace(path)
+            return
+        if attempt < _MAX_DOWNLOAD_ATTEMPTS - 1:
+            time.sleep(2)
+    raise RuntimeError(f"GSRS download failed after retries: {url}")
 
 
 def _is_complete_zip(path: Path) -> bool:
@@ -155,13 +166,6 @@ def acquire(  # ruff: ignore[too-many-locals]
         AUTHORIZATION_PATH.read_bytes()
     )
     authorization.require_payload_authority()
-    if (
-        not authorization.public_release_authorized
-        or not authorization.external_publication_authorized
-    ):
-        raise PermissionError(
-            "GSRS public publication authority is not approved"
-        )
     index_payload = _fetch(str(ARCHIVE_INDEX))
     inventory = parse_gsrs_release_inventory(
         index_payload, base_url=ARCHIVE_INDEX, authorization=authorization
@@ -252,7 +256,7 @@ def acquire(  # ruff: ignore[too-many-locals]
         "manifest_sha256": _digest(manifest_path),
         "release_count": inventory.release_count,
         "paired_payload_count": len(rows),
-        "payload_bytes": sum(len(payload) for payload in downloaded.values()),
+        "payload_bytes": sum(path.stat().st_size for path in download_paths.values()),
         "archive_path": str(archive_path),
         "archive_sha256": _digest(archive_path),
     }
