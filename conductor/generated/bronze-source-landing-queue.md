@@ -9,9 +9,9 @@ Silver transformations included: **no**.
 
 - `landed_and_evidenced`: 21
 - `temporarily_unavailable`: 1
-- `rights_blocked`: 41
-- `credentialed_and_excluded`: 18
-- `manual_only_documented_acquisition`: 91
+- `rights_blocked`: 40
+- `credentialed_and_excluded`: 17
+- `manual_only_documented_acquisition`: 93
 - `superseded_by_reused_source`: 0
 - `not_yet_implemented`: 0
 
@@ -50,7 +50,7 @@ Silver transformations included: **no**.
 - [ ] `nz-pharmac-schedule` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `nz-pharmac-schedule-xml` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `se-npl-nsl` — `rights_blocked`; record source-specific retention and transformation rights.
-- [ ] `se-socialstyrelsen-utilisation` — `rights_blocked`; record source-specific retention and transformation rights.
+- [ ] `se-socialstyrelsen-utilisation` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [x] `us-cms-partd-formulary` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `us-cms-partd-spending` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `za-national-eml` — `rights_blocked`; record source-specific retention and transformation rights.
@@ -131,6 +131,7 @@ Silver transformations included: **no**.
 - [ ] `ng-nafdac-safety` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `ng-nhia-medicines` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `nl-medicijnkosten` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
+- [ ] `no-norpd-utilisation` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [x] `nz-medsafe-products` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `om-moh-medicines` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `ph-fda-verification` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
@@ -202,5 +203,4 @@ Silver transformations included: **no**.
 - [x] `gb-nhs-dmd` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [x] `global-umc-vigibase` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [x] `jp-mhlw-ndb-utilisation` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
-- [x] `no-norpd-utilisation` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [x] `nz-nzulm-bulk` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
