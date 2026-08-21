@@ -76,7 +76,7 @@ def test_non_approved_sources_remain_explicitly_fail_closed() -> None:
         for entry in entries
         if entry["disposition"] in {"catalogue_only", "credentialed_excluded"}
     ]
-    assert len(non_public) == 149
+    assert len(non_public) == 148
     assert all(entry["blocker"] for entry in non_public)
     assert all(entry["public_source_eligible"] is False for entry in non_public)
 
@@ -111,7 +111,6 @@ def test_permissive_international_candidates_have_official_evidence() -> None:
     assert candidates == expected
     assert _ledger()["candidate_policy_assignment_count"] == 26
     approved = expected - {
-        "fr-open-medic",
         "gb-nice-medicines-utilisation",
         "nl-gipdatabank",
     }
