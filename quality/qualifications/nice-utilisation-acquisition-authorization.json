@@ -1,0 +1,21 @@
+{
+  "schema_id": "global-medicines-atlas.nice-utilisation-acquisition-authorization",
+  "schema_version": 1,
+  "decision_date": null,
+  "decision_status": "pending",
+  "decision_basis": "The official NHS series page resolves a discontinued four-release experimental-statistics corpus for 2008 through 2012. Source-specific acquisition and retention remain pending the maintainer's licensing decision.",
+  "acquisition_authorized": false,
+  "internal_retention_authorized": false,
+  "public_release_authorized": false,
+  "external_publication_authorized": false,
+  "series_url": "https://digital.nhs.uk/data-and-information/publications/statistical/use-of-nice-appraised-medicines-in-the-nhs-in-england",
+  "terms_url": "https://www.england.nhs.uk/terms-and-conditions-2/",
+  "series_status": "discontinued",
+  "expected_release_count": 4,
+  "releases": [
+    {"label":"2008","publication_date":"2009-09-09","period_start":"2008-01-01","period_end":"2008-01-01","publication_url":"https://digital.nhs.uk/catalogue/PUB01400","methodology_change":"First experimental release; predicted use based on average dose and treatment length was compared with observed use where possible.","corrected_after_publication":false},
+    {"label":"2009","publication_date":"2011-01-26","period_start":"2009-01-01","period_end":"2009-12-31","publication_url":"https://digital.nhs.uk/data-and-information/publications/statistical/use-of-nice-appraised-medicines-in-the-nhs-in-england/use-of-nice-appraised-medicines-in-the-nhs-in-england-2009-experimental-statistics","methodology_change":"Second experimental release; unavailable comparisons retained their stated reasons.","corrected_after_publication":false},
+    {"label":"2010-and-2011","publication_date":"2012-10-17","period_start":"2010-01-01","period_end":"2011-12-31","publication_url":"https://digital.nhs.uk/catalogue/PUB07985","methodology_change":"Third experimental release added a separate exploratory biologics analysis; amended on 2012-12-11 without changing figures.","corrected_after_publication":false},
+    {"label":"2012","publication_date":"2014-01-21","period_start":"2010-01-01","period_end":"2012-12-31","publication_url":"https://digital.nhs.uk/catalogue/PUB13413","methodology_change":"Fourth and final release introduced a variation approach; corrected report and workbook versions were uploaded on 2014-02-07 after under-reporting was identified.","corrected_after_publication":true}
+  ]
+}
