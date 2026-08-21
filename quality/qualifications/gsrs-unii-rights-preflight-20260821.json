@@ -20,13 +20,12 @@
     "paired_release_count": 68,
     "first_release": "2014-01-25",
     "last_release": "2026-08-04",
-    "release_dates_sha256": "a8d4de95b9934f29f65176faba11bee8ae98197df0795f2cd5c3ee1d539fdd36",
-  "payloads_acquired": false
+    "release_dates_sha256": "a8d4de95b9934f29f65176faba11bee8ae98197df0795f2cd5c3ee1d539fdd36"
   },
-  "recommended_decision": "approve_internal_acquisition_and_archival",
+  "recommended_decision": "approve_public_acquisition_and_huggingface_release",
   "maintainer_decision": "approved_public_acquisition_and_huggingface_release",
   "decision_date": "2026-08-22",
-  "decision_date": "2026-08-22",
+  "payloads_acquired": false,
   "public_release_authorized": true,
   "external_publication_authorized": true,
   "evidence_limit": "UNII and GSRS records are terminology and substance evidence. UNII presence does not establish regulatory approval, medicine identity, clinical equivalence, safety, efficacy, funding, or availability."

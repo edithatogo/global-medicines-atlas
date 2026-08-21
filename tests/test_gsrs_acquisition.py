@@ -121,6 +121,8 @@ def test_approved_internal_authority_requires_date_and_both_flags() -> None:
             decision_date=None,
             acquisition_authorized=True,
             internal_retention_authorized=True,
+            public_release_authorized=False,
+            external_publication_authorized=False,
         )
 
 

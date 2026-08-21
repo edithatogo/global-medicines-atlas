@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
-import subprocess
+import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import tarfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import UTC, datetime
@@ -62,9 +62,9 @@ def _fetch(url: str) -> bytes:
 
 def _download_to(url: str, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    subprocess.run(
+    subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
         [
-            "curl",
+            "/usr/bin/curl",
             "--fail",
             "--location",
             "--retry",
@@ -205,19 +205,19 @@ def acquire(  # ruff: ignore[too-many-locals]
                 "acquisition_id": receipt.temporal.acquisition_id,
                 "bronze_manifest_sha256": _digest(landing.parquet_path),
                 "rights": "cc0_public_domain",
-                "publication_authorized": True,
+                "publication_authorized": False,
             })
-    public_root.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
     manifest = {
-        "schema_id": "global-medicines-atlas.gsrs-unii-public-release",
+        "schema_id": "global-medicines-atlas.gsrs-unii-private-retention",
         "schema_version": 1,
         "source_id": SOURCE_ID,
-        "license": "CC0-1.0",
+        "license": "CC0-1.0; private retention only",
         "source_license_evidence": str(LICENSING_URL),
         "release_count": inventory.release_count,
         "paired_payload_count": len(rows),
-        "public_release_authorized": True,
-        "external_publication_authorized": True,
+        "public_release_authorized": False,
+        "external_publication_authorized": False,
         "records": rows,
         "evidence_limit": "UNII and GSRS records are terminology and substance evidence; they do not establish regulatory approval, clinical equivalence, safety, efficacy, funding, availability, or canonical medicine identity.",
     }
