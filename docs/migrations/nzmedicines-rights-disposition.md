@@ -1,6 +1,6 @@
 # NZ medicines rights and compatibility disposition
 
-**Status:** compatibility decision executed; source rights remain fail-closed
+**Status:** narrow public manifest approved; restricted source rights remain fail-closed
 **Issues:** [#50](https://github.com/edithatogo/global-medicines-atlas/issues/50), [#51](https://github.com/edithatogo/global-medicines-atlas/issues/51), [closed migration #6](https://github.com/edithatogo/global-medicines-atlas/issues/6)  
 **Source snapshot:** [`nzmedicines` at `6a8ecfae67f15d635750d11d5f446b93d76c1865`](./nzmedicines.md)
 
@@ -44,8 +44,12 @@ is **retain locally / do not redistribute**.
    boundary is limited to first-party software and explicitly approved
    metadata/fixtures.
 7. On 2026-08-21 the maintainer approved that narrow public boundary as policy;
-   each release still requires an exact manifest, and no restricted source
-   bytes or derived restricted fields were approved.
+   the exact hash-bound cohort is recorded in
+   `quality/qualifications/nz-public-artifact-manifest-20260821.json`. No
+   restricted source bytes or derived restricted fields were approved.
+8. The approved cohort does not cure the historical presence of
+   `vendor/nzmedicines/` in public Git history. Those paths are excluded from
+   the approved manifest and require a separate remediation decision.
 
 ## Compatibility decision status
 

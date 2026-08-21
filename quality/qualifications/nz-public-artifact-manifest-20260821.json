@@ -1,0 +1,115 @@
+{
+  "approval_invalidated_by": [
+    "approved file digest or membership change",
+    "source terms or attribution change",
+    "fixture ceasing to be synthetic/minimal",
+    "addition of source-derived fields"
+  ],
+  "approved_file_count": 14,
+  "approved_files": [
+    {
+      "path": "docs/migrations/nzmedicines-compatibility-notice.md",
+      "sha256": "105915b555fab0ab298bbf67b16dbcca083fe55e8eb50da355fa1ee618dac156",
+      "size_bytes": 2462
+    },
+    {
+      "path": "docs/migrations/nzmedicines-external-gates.md",
+      "sha256": "1761864f4eda6c14fc7a3553aa1cc267e69777e11dcc4b051cd59a1b73f9803f",
+      "size_bytes": 3211
+    },
+    {
+      "path": "docs/migrations/nzmedicines-history-restoration.md",
+      "sha256": "3e72ef6a1ed98766d1becfc499a068c44e1f5630d71fd1c66b4dceb7381378e3",
+      "size_bytes": 1327
+    },
+    {
+      "path": "docs/migrations/nzmedicines-rights-disposition.md",
+      "sha256": "aeff70d43543f6cd06eae12472745a11c5255b58d6c4e04723c934fcd4f81804",
+      "size_bytes": 8453
+    },
+    {
+      "path": "sources/nz/nzulm_fhir/__init__.py",
+      "sha256": "2df5f4da7c8761d21a9fdbaf3927d613c128ac9b65ebb20c843c03a3487822c5",
+      "size_bytes": 269
+    },
+    {
+      "path": "sources/nz/nzulm_fhir/adapter.py",
+      "sha256": "f08c6990c55d9133d1fbf2b53f95e7d9281015d6d89da801ecd246971958f8e5",
+      "size_bytes": 4344
+    },
+    {
+      "path": "src/global_medicines_atlas/adapters/nz_medsafe.py",
+      "sha256": "f2aadca03d5c88815f897bc2071653e932546a36bae065893b2fce3999513cbb",
+      "size_bytes": 2884
+    },
+    {
+      "path": "src/global_medicines_atlas/adapters/nz_pharmac.py",
+      "sha256": "363b53a2db13451e801baa52b75c23bd03e72222a867850a12675865f341178e",
+      "size_bytes": 3425
+    },
+    {
+      "path": "src/global_medicines_atlas/nz.py",
+      "sha256": "62acfbab1227e8fad177a21f9338645946e1583c8c4fa38c6bc19bb476ea782a",
+      "size_bytes": 5550
+    },
+    {
+      "path": "tests/fixtures/adapters/nz_medsafe_registry.csv",
+      "sha256": "6c4880b8e10f3f3c7417e55568eb423dc07985325dd217a384110edc885d350d",
+      "size_bytes": 128
+    },
+    {
+      "path": "tests/fixtures/adapters/nz_pharmac_schedule.xml",
+      "sha256": "00316599f377c508544a793d162482609c20dc2d4f121d4e682b7c4d7f1dab3f",
+      "size_bytes": 420
+    },
+    {
+      "path": "tests/test_canonical_nz_adapter.py",
+      "sha256": "b1cbc38cfda28e3b3810dd8f757a82f31a32b3550d08058486311f5df5bb50fd",
+      "size_bytes": 4952
+    },
+    {
+      "path": "tests/test_nzulm_fhir_adapter.py",
+      "sha256": "67b6c3be4747e4fb62a06525aeb14abc3b29194ac8646b96729e35e82e168859",
+      "size_bytes": 2238
+    },
+    {
+      "path": "tests/test_nzulm_fhir_properties.py",
+      "sha256": "d4efa7914c1a09e510ddc46e46e4a3f49205acb09a1c5a6cc5e63536c66860bd",
+      "size_bytes": 2775
+    }
+  ],
+  "artifact_scope": "software_and_synthetic_fixture_cohort_only",
+  "clinical_inference_permitted": false,
+  "coverage_complete": false,
+  "decision_actor": "repository_maintainer",
+  "decision_basis": "Approved recommendation: publish only first-party code, synthetic/minimal fixtures, and already-approved metadata.",
+  "decision_date": "2026-08-21",
+  "derived_restricted_fields_included": false,
+  "excluded_path_prefixes": [
+    "vendor/nzmedicines/",
+    "local_data/",
+    "build/"
+  ],
+  "github_issues": [
+    "https://github.com/edithatogo/global-medicines-atlas/issues/6",
+    "https://github.com/edithatogo/global-medicines-atlas/issues/51"
+  ],
+  "preserved_bundle": {
+    "filename": "nzmedicines-all.bundle",
+    "included": false,
+    "sha256": "f4414798f1b35558c69472d86d29b0b83facb2e799c9a20692b62fc889847223"
+  },
+  "restricted_source_bytes_included": false,
+  "schema_id": "global-medicines-atlas.nz-public-artifact-manifest",
+  "schema_version": 1,
+  "source_family_decisions": {
+    "medsafe": "source_payloads_excluded; synthetic_fixture_approved",
+    "nzf": "linked_content_excluded; structure_only_code_is_approved",
+    "nzmedicines_git_bundle": "local_only_not_redistributed",
+    "nzmedicines_vendor_snapshot": "excluded_from_this_manifest; historical public Git exposure requires a separate remediation decision",
+    "nzulm_nzmt": "local_only_pending_written_licensor_clearance",
+    "pharmac": "source_payloads_excluded; synthetic_fixture_approved",
+    "rxnorm": "payloads_and_derived_mapping_dumps_excluded",
+    "snomed_amt": "payloads_and_mapping_dumps_excluded"
+  }
+}
