@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -11,6 +12,7 @@ from scripts import acquire_nice_utilisation_private as acquisition_script
 
 from global_medicines_atlas.nice_utilisation_acquisition import (
     NICE_UTILISATION_ARTIFACTS,
+    NICEUtilisationArtifact,
     NICEUtilisationAuthorization,
     inspect_nice_utilisation_payload,
 )
@@ -117,6 +119,22 @@ def test_approved_internal_scope_requires_date_and_retention() -> None:
         NICEUtilisationAuthorization.model_validate(raw)
 
 
+def test_pending_authority_remains_fail_closed() -> None:
+    raw = _raw()
+    raw.update({
+        "decision_status": "pending",
+        "decision_date": None,
+        "acquisition_authorized": False,
+        "internal_retention_authorized": False,
+    })
+    pending = NICEUtilisationAuthorization.model_validate(raw)
+    with pytest.raises(PermissionError, match="decision is pending"):
+        pending.require_payload_authority()
+    raw["acquisition_authorized"] = True
+    with pytest.raises(ValidationError, match="pending NICE-utilisation"):
+        NICEUtilisationAuthorization.model_validate(raw)
+
+
 def test_exact_private_artifact_inventory_is_fail_closed() -> None:
     assert len(NICE_UTILISATION_ARTIFACTS) == 15
     assert {item.release_label for item in NICE_UTILISATION_ARTIFACTS} == {
@@ -137,6 +155,24 @@ def test_exact_private_artifact_inventory_is_fail_closed() -> None:
         item.publication_authorized is False
         for item in NICE_UTILISATION_ARTIFACTS
     )
+
+
+@pytest.mark.parametrize(
+    ("update", "message"),
+    [
+        ({"url": "https://example.test/report.pdf"}, "official host"),
+        ({"filename": "report.exe"}, "outside reviewed scope"),
+        ({"source_record_eligible": True}, "only the reviewed workbook"),
+    ],
+)
+def test_private_artifact_rejects_scope_drift(
+    update: dict[str, object], message: str
+) -> None:
+    artifact = NICE_UTILISATION_ARTIFACTS[0]
+    raw = artifact.model_dump(mode="json")
+    raw.update(update)
+    with pytest.raises(ValidationError, match=message):
+        NICEUtilisationArtifact.model_validate(raw)
 
 
 @pytest.mark.parametrize(
@@ -219,10 +255,46 @@ def test_private_runner_downloads_only_missing_reviewed_files(
     )
     monkeypatch.setattr(acquisition_script.httpx, "Client", Client)
 
-    acquisition_script._retrieve(tmp_path)
-    acquisition_script._retrieve(tmp_path)
+    result = acquisition_script.acquire(
+        tmp_path, tmp_path / "output", download=True
+    )
 
     assert requests == [str(artifact.url)]
+    assert result["restore_verified"] is True
     assert (
         tmp_path / artifact.release_label / artifact.filename
     ).read_bytes() == payload
+
+
+def test_private_runner_cli_serializes_result(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    expected: dict[str, object] = {
+        "file_count": 0,
+        "publication_authorized": False,
+    }
+
+    def fake_acquire(
+        _input_dir: Path, _output_dir: Path, *, download: bool
+    ) -> dict[str, object]:
+        assert download is False
+        return expected
+
+    monkeypatch.setattr(acquisition_script, "acquire", fake_acquire)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "acquire_nice_utilisation_private.py",
+            "--input-dir",
+            str(tmp_path / "input"),
+            "--output-dir",
+            str(tmp_path / "output"),
+        ],
+    )
+
+    acquisition_script.main()
+
+    assert json.loads(capsys.readouterr().out) == expected
