@@ -426,3 +426,10 @@ for credentialed or rights-unresolved sources.
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
     - [ ] Keep public release and external publication separately gated
     - [x] Review fixes: make direct `GIPRelease` test construction satisfy the typed `date` contract (`945b12f`, `fc11f61`); focused tests, Ruff, and BasedPyright pass
+- [~] Task: Acquire England OpenPrescribing utilisation views (Prompt 30)
+    - [x] Resolve the six documented spending, medicine-reference, and organisation-reference API identities
+    - [x] Bind the current official API documentation commit and its Open Government Licence source statement
+    - [x] Select receipt-bound explicit date partitions instead of treating rolling five-year API views as static complete releases
+    - [ ] Obtain the maintainer's source-specific licensing decision before payload acquisition
+    - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
+    - [ ] Keep public release and external publication separately gated
