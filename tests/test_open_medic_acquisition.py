@@ -55,6 +55,17 @@ def test_resolver_rejects_substitution_or_incomplete_links(href: str) -> None:
         resolve_open_medic_release(_page(href), page_url=PAGE_URL, year=2025)
 
 
+def test_resolver_rejects_unreviewed_year_and_ignores_irrelevant_tags() -> None:
+    with pytest.raises(ValueError, match="outside the reviewed series"):
+        resolve_open_medic_release(b"", page_url=PAGE_URL, year=2013)
+    with pytest.raises(ValueError, match="one exact official"):
+        resolve_open_medic_release(
+            b"<div href='ignored'></div><a>missing href</a>",
+            page_url=PAGE_URL,
+            year=2025,
+        )
+
+
 def test_archive_integrity_and_year_are_required() -> None:
     assert inspect_open_medic_archive(_archive(), year=2025) == (
         "OPEN_MEDIC_2025.CSV",
