@@ -15,6 +15,19 @@
     "us-openfda-enforcement": "openfda-cc0",
     "us-openfda-faers": "openfda-cc0",
     "us-openfda-ndc": "openfda-cc0",
-    "us-openfda-nsde": "openfda-cc0"
+    "us-openfda-nsde": "openfda-cc0",
+    "eu-union-register": "eu-commission-cc-by-4.0",
+    "fr-bdpm": "fr-etalab-open-licence-2.0",
+    "fr-bdpm-smr-asmr": "fr-etalab-open-licence-2.0",
+    "fr-open-medic": "fr-etalab-open-licence-2.0",
+    "gb-emit": "uk-open-government-licence-3.0",
+    "gb-nhs-drug-tariff": "nhsbsa-ogl-3.0",
+    "gb-nice-medicines-utilisation": "nhs-england-ogl-3.0",
+    "global-rxnorm": "rxnorm-public-identifiers-only",
+    "nl-gipdatabank": "nl-zorg-cc0",
+    "nz-pharmac-hml": "nz-pharmac-cc-by-4.0",
+    "nz-pharmac-schedule": "nz-pharmac-cc-by-4.0",
+    "nz-pharmac-schedule-xml": "nz-pharmac-cc-by-4.0",
+    "us-rxnorm-api": "rxnorm-public-identifiers-only"
   }
 }

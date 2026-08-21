@@ -17,7 +17,7 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "approved_public_source",
+      "disposition": "catalogue_only",
       "attribution": "Credit the U.S. Food and Drug Administration, include the exact source URL and retrieval date, and identify any transformation.",
       "field_exclusions": [
         "material marked as third-party, copyrighted, or separately licensed",
@@ -40,7 +40,7 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "approved_public_source",
+      "disposition": "catalogue_only",
       "attribution": "Data provided by the U.S. Food and Drug Administration through openFDA; include endpoint, retrieval date, and transformation notice.",
       "field_exclusions": [
         "content marked as third-party or outside CC0",
@@ -49,6 +49,142 @@
         "claims of approval, safety, efficacy, causality, equivalence, or reimbursement not stated by the source"
       ],
       "review_trigger": "openFDA terms, endpoint warning, source schema, or sensitivity change"
+    },
+    "eu-commission-cc-by-4.0": {
+      "evidence": [{
+        "official_url": "https://commission.europa.eu/legal-notice_en",
+        "observed_at": "2026-08-21T00:00:00Z",
+        "content_sha256": "14bcddc81da5de40a3c228e0a954c1eb159d2b73d59467696b72cf1ee03313b3",
+        "scope": "authority",
+        "reuse_statement": "EU-owned Commission website content is licensed under CC BY 4.0 unless otherwise indicated; identifiable-person, third-party, logo, and other intellectual-property exclusions apply."
+      }],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
+      "disposition": "catalogue_only",
+      "attribution": "Credit the European Union, link the exact source, state retrieval date, and indicate changes.",
+      "field_exclusions": ["third-party works", "identifiable-person content", "logos, trademarks, patents, and registered designs"],
+      "review_trigger": "Commission legal notice, dataset notice, schema, or sensitivity change"
+    },
+    "fr-etalab-open-licence-2.0": {
+      "evidence": [{
+        "official_url": "https://raw.githubusercontent.com/etalab/licence-ouverte/master/LO.md",
+        "observed_at": "2026-08-21T00:00:00Z",
+        "content_sha256": "a1deb9d7554ad10e041dbd7440b3dec0ac0d3679f9e1655ee9d850908b015995",
+        "scope": "national_open_data",
+        "reuse_statement": "France's Open Licence 2.0 grants free reuse, adaptation, and commercial exploitation with attribution and date requirements."
+      }],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
+      "disposition": "catalogue_only",
+      "attribution": "Name the producer, title, source URL, and latest update date under Licence Ouverte 2.0.",
+      "field_exclusions": ["third-party material or personal data outside the dataset licence"],
+      "review_trigger": "dataset licence, resource notice, schema, or sensitivity change"
+    },
+    "uk-open-government-licence-3.0": {
+      "evidence": [{
+        "official_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+        "observed_at": "2026-08-21T00:00:00Z",
+        "content_sha256": "f5b2b9f2af63647cde889fa6c3508f5705925295b74912c68caa28dd37e64aa5",
+        "scope": "national_open_data",
+        "reuse_statement": "OGL 3.0 permits copying, adaptation, distribution, and commercial and non-commercial exploitation with attribution, subject to stated exemptions."
+      }],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
+      "disposition": "catalogue_only",
+      "attribution": "Use the source-specified attribution and state that the information is licensed under the Open Government Licence v3.0.",
+      "field_exclusions": ["personal data", "third-party rights", "departmental logos", "military insignia", "identity documents", "patents and trademarks"],
+      "review_trigger": "source notice, OGL version, schema, or sensitivity change"
+    },
+    "nhsbsa-ogl-3.0": {
+      "evidence": [{
+        "official_url": "https://www.nhsbsa.nhs.uk/our-policies/terms-and-conditions",
+        "observed_at": "2026-08-21T00:00:00Z",
+        "content_sha256": "3276ef8019315dccbe3047f2ae60b8b70e44d4dc50078d9aa92273ea8fd8cb39",
+        "scope": "authority",
+        "reuse_statement": "NHSBSA permits website material reuse under OGL 3.0 with its specified copyright attribution, subject to protected and third-party features."
+      }],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
+      "disposition": "catalogue_only",
+      "attribution": "Use '[NHSBSA Title of Information], NHSBSA Copyright [year]' and the OGL 3.0 notice.",
+      "field_exclusions": ["third-party content", "protected presentation features", "dm+d terminology or SNOMED content unless separately cleared"],
+      "review_trigger": "NHSBSA terms, dataset notice, terminology dependency, schema, or sensitivity change"
+    },
+    "nhs-england-ogl-3.0": {
+      "evidence": [{
+        "official_url": "https://www.england.nhs.uk/terms-and-conditions-2/",
+        "observed_at": "2026-08-21T00:00:00Z",
+        "content_sha256": "57fd41d2b66c3cc80322a0f219d4aed1600a53bf18ad42ce2e7de0ab8c9154c4",
+        "scope": "authority",
+        "reuse_statement": "NHS England permits reuse under OGL 3.0 except identified third-party copyright and photographs."
+      }],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
+      "disposition": "catalogue_only",
+      "attribution": "Credit NHS England and state that the information is licensed under the Open Government Licence v3.0.",
+      "field_exclusions": ["identified third-party content", "photographs", "personal or sensitive records"],
+      "review_trigger": "NHS England terms, dataset notice, schema, or sensitivity change"
+    },
+    "nz-pharmac-cc-by-4.0": {
+      "evidence": [{
+        "official_url": "https://www.pharmac.govt.nz/about-this-site/copyright",
+        "observed_at": "2026-08-21T00:00:00Z",
+        "content_sha256": "d51114a4e677d44d6bf57f9579c960d7b7230090682d105f491f88c174ee479b",
+        "scope": "authority",
+        "reuse_statement": "Nearly all Pharmac website content may be copied, distributed, and adapted under CC BY 4.0, excluding identified third-party material."
+      }],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
+      "disposition": "catalogue_only",
+      "attribution": "Credit Pharmac, link the source, state CC BY 4.0, retrieval date, and changes.",
+      "field_exclusions": ["identified third-party copyrighted material", "logos and marks"],
+      "review_trigger": "Pharmac copyright notice, source notice, schema, or sensitivity change"
+    },
+    "nl-zorg-cc0": {
+      "evidence": [{
+        "official_url": "https://www.zorgcijfersdatabank.nl/algemeen/copyright",
+        "observed_at": "2026-08-21T00:00:00Z",
+        "content_sha256": "3c312e766fe0950d392c239be38c925c81304ff1a485049b12249b63dabc60ce",
+        "scope": "authority",
+        "reuse_statement": "Unless otherwise stated, site content is under CC0 and may be reused; patent, trademark, privacy, publicity, and third-party rights remain unaffected."
+      }],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
+      "disposition": "catalogue_only",
+      "attribution": "Record Zorginstituut Nederland as source with URL and retrieval date despite CC0 not requiring attribution.",
+      "field_exclusions": ["components with a contrary notice", "personal data", "patents", "trademarks", "third-party rights"],
+      "review_trigger": "copyright page, component notice, schema, or sensitivity change"
+    },
+    "rxnorm-public-identifiers-only": {
+      "evidence": [{
+        "official_url": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/termsofservice.html",
+        "observed_at": "2026-08-21T00:00:00Z",
+        "content_sha256": "bc0268a0f5bd4705d8a56766a00aa509f0c55f3ca70a4c618ff4b325a49eba4e",
+        "scope": "dataset",
+        "reuse_statement": "NLM-created RXCUI identifiers are public domain and freely distributable; source vocabularies retain their own copyright and licence terms."
+      }],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "prohibited",
+      "sensitivity": "public",
+      "disposition": "catalogue_only",
+      "attribution": "Credit the U.S. National Library of Medicine and identify the RxNorm release and retrieval date.",
+      "field_exclusions": ["source vocabulary terms and content whose owners impose separate restrictions", "full RxNorm source archive bytes"],
+      "review_trigger": "RxNorm terms, source vocabulary composition, release, or schema change"
     }
   }
 }
