@@ -517,7 +517,7 @@ for credentialed or rights-unresolved sources.
 
 ## Phase 8: Deterministic B1 Acquisition Metadata Layer
 
-- [~] Task: Formalize the B1 acquisition metadata authority and query manifest ([#289](https://github.com/edithatogo/global-medicines-atlas/issues/289))
+- [x] Task: Formalize the B1 acquisition metadata authority and query manifest ([#289](https://github.com/edithatogo/global-medicines-atlas/issues/289))
     - [x] Audit the existing `SourceReceipt`, `AcquisitionEvent`, temporal, HTTP, reuse, rights, storage, admission, recovery, Parquet and OpenLineage contracts
     - [x] Reuse the native append-only ledgers and existing acquisition-manifest product; do not create a second receipt system
     - [x] Write failing B1 reconstruction, redaction, identity, rights/admission, binary-reference and deterministic-manifest tests first
@@ -526,7 +526,7 @@ for credentialed or rights-unresolved sources.
     - [x] Reconstruct the query manifest from authoritative receipts, acquisition events, storage receipts and admission records with legacy compatibility
     - [x] Document B1 authority boundaries and update the existing acquisition-manifest implementation
     - [x] Run focused and affected recovery tests, deterministic regeneration, context validation, formatting, linting, strict typing and full Test-Goblin
-    - [x] Record exact pull-request head, hosted checks and merged SHA without changing existing receipt digests, acquisition IDs or content IDs
+    - [x] Record PR [#291](https://github.com/edithatogo/global-medicines-atlas/pull/291) head `c4c3ba555edc51802bff513523891e7e365fd7ca`, 37 passing hosted checks, and merged SHA `ce674425e24f5a694e3fb4e37a0664c7bc34131f` without changing existing receipt digests, acquisition IDs or content IDs
 - [x] Task: Review Fixes
     - [x] Preserve idempotent admission history when the same acquisition is landed again instead of appending a redundant supersession chain
     - [x] Add a regression contract for stable admission history and byte-identical B1 Parquet on re-landing
