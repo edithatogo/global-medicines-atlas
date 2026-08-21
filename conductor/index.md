@@ -6,6 +6,7 @@
 - [Product Guidelines](./product-guidelines.md)
 - [Requirements](./requirements.md)
 - [Design](./design.md)
+- [Glossary](./glossary.md)
 - [Versioned Roadmap](./roadmap.md)
 - [Maturity Model](./maturity-model.json)
 - [Architecture Decisions](./decisions/)

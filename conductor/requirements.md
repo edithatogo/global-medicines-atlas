@@ -264,6 +264,21 @@
   storage receipt. Classify data sensitivity, possible personal data, and
   publication disposition independently from licensing rights; lawful public
   access must never imply that source bytes are safe to publish.
+- **M-103:** Define Bronze as three internal Bronze strata, not additional
+  medallion levels. **B0 Source Index** is the versioned index of agencies,
+  datasets, APIs, and source surfaces; indexing does not imply acquisition,
+  coverage, qualification, or currency. **B1 Acquisition Metadata** is the
+  append-only acquisition events, receipts, temporal identity, rights state,
+  reuse decisions, HTTP or other retrieval evidence, admission state, and
+  provenance relationships. **B2 Raw Evidence** is immutable source-native
+  bytes, or a rights-constrained immutable reference when bytes cannot
+  lawfully be retained. Source-faithful Parquet, archive-member manifests,
+  OpenLineage, Iceberg, DuckDB, and other query/catalogue objects are
+  rebuildable Bronze projections over B1/B2, not a fourth evidentiary source
+  of truth. Silver remains source-faithful typed or harmonised structures;
+  Gold remains cross-jurisdiction matched evidence; Platinum remains products
+  and presentation. Do not alter existing acquisition IDs, content digests,
+  receipts, or evidence semantics when applying this classification.
 ## Should Have
 
 - **S-001:** Evaluate Apache DataFusion for measured Rust-native query or streaming requirements without displacing DuckDB prematurely.

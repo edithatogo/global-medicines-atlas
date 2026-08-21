@@ -472,3 +472,21 @@ for credentialed or rights-unresolved sources.
     - [x] Report catalogued, fixture-qualified, and durable live-qualified counts independently
     - [x] Preserve incomplete coverage, missing-not-negative-evidence, and no-external-publication boundaries
     - [x] Carry forward only existing high-value gap candidates; do not invent a new track without new authority or materially new source evidence
+
+## Phase 6: B0/B1/B2 Internal Bronze Strata Contract
+
+- [~] Task: Formalize the three-strata Bronze authority boundary ([#275](https://github.com/edithatogo/global-medicines-atlas/issues/275))
+    - [x] Inspect current `main`, active Bronze tracks and issues, and recently merged Bronze work without disturbing concurrent work
+    - [x] Write failing executable contract tests for B0, B1, B2, projections, and later-medallion boundaries
+    - [x] Confirm the intended failure before implementation (`AGENTS.md: missing B0 Source Index`)
+    - [x] Define B0 Source Index, B1 Acquisition Metadata, and B2 Raw Evidence consistently in product, design, requirements, glossary, and track specification
+    - [x] Add Mermaid diagrams that distinguish internal Bronze strata from Silver, Gold, and Platinum
+    - [x] Run focused tests, context validation, formatting, linting, typing, and the full Test-Goblin profile; retain the exact-Python and local-load observations for hosted resolution
+    - [ ] Record the exact pull-request head, hosted checks, and merged SHA without changing acquisition IDs, digests, receipts, or evidence semantics
+
+### Phase Verification & Checkpoint
+
+- [x] Executable contract tests prove the normative phrases and authority boundaries across all required documents
+- [x] Context validation recognizes the glossary as required project context
+- [ ] Required hosted checks pass at the exact pull-request head before merge
+- [x] Review confirms documentation-and-contract-only scope and no source, receipt, digest, or acquisition-identity mutation

@@ -172,6 +172,45 @@ flowchart LR
 - Public datasets contain only reviewed redistributable material.
 - Credentials, restricted terminology payloads, and local source caches remain outside Git.
 
+## Bronze Internal Strata and Medallion Boundary
+
+Bronze comprises three internal Bronze strata, not additional medallion levels.
+**B0 Source Index** is the versioned index of agencies, datasets, APIs, and
+source surfaces; indexing does not imply acquisition, coverage, qualification,
+or currency. **B1 Acquisition Metadata** is the append-only record of
+acquisition events, receipts, temporal identity, rights state, reuse decisions,
+HTTP or other retrieval evidence, admission state, and provenance
+relationships. **B2 Raw Evidence** is immutable source-native bytes, or a
+rights-constrained immutable reference when bytes cannot lawfully be retained.
+
+Source-faithful Parquet, archive-member manifests, OpenLineage, Iceberg,
+DuckDB, and other query/catalogue objects are rebuildable Bronze projections
+over B1/B2, not a fourth evidentiary source of truth. Projections may aid
+inspection, recovery, lineage, or querying, but cannot replace the B1 event
+history or B2 evidence identity. Silver remains source-faithful typed or
+harmonised structures; Gold remains cross-jurisdiction matched evidence;
+Platinum remains products and presentation.
+
+```mermaid
+flowchart TB
+    B0["B0 Source Index<br/>versioned source surfaces"]
+    B1["B1 Acquisition Metadata<br/>append-only events and receipts"]
+    B2["B2 Raw Evidence<br/>immutable bytes or rights-constrained reference"]
+    PROJ["Rebuildable Bronze projections<br/>Source-faithful Parquet · archive-member manifests<br/>OpenLineage · Iceberg · DuckDB · catalogues"]
+    SILVER["Silver<br/>source-faithful typed or harmonised structures"]
+    GOLD["Gold<br/>cross-jurisdiction matched evidence"]
+    PLATINUM["Platinum<br/>products and presentation"]
+
+    B0 -->|select and identify| B1
+    B1 -->|records identity and authority| B2
+    B1 --> PROJ
+    B2 --> PROJ
+    B1 --> SILVER
+    B2 --> SILVER
+    SILVER --> GOLD
+    GOLD --> PLATINUM
+```
+
 ## Single-Maintainer Context Control Plane
 
 ```mermaid

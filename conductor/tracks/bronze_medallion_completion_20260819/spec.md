@@ -11,6 +11,25 @@ The immutable source payload and its content-addressed receipt are evidentiary
 truth; source-faithful Parquet is the portable analytical representation;
 table/catalogue layers are rebuildable metadata over those artefacts.
 
+## Internal Bronze strata
+
+Bronze comprises three internal Bronze strata, not additional medallion levels.
+**B0 Source Index** is the versioned index of agencies, datasets, APIs, and
+source surfaces; indexing does not imply acquisition, coverage, qualification,
+or currency. **B1 Acquisition Metadata** is the append-only record of
+acquisition events, receipts, temporal identity, rights state, reuse decisions,
+HTTP or other retrieval evidence, admission state, and provenance
+relationships. **B2 Raw Evidence** is immutable source-native bytes, or a
+rights-constrained immutable reference when bytes cannot lawfully be retained.
+
+Source-faithful Parquet, archive-member manifests, OpenLineage, Iceberg,
+DuckDB, and other query/catalogue objects are rebuildable Bronze projections
+over B1/B2, not a fourth evidentiary source of truth. Silver remains
+source-faithful typed or harmonised structures; Gold remains
+cross-jurisdiction matched evidence; Platinum remains products and
+presentation. This classification changes no acquisition ID, content digest,
+existing receipt, or evidence semantic.
+
 ## Authoritative inputs
 
 - `conductor/product.md`, `conductor/requirements.md`, `conductor/design.md`

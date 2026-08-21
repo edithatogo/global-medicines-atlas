@@ -14,4 +14,6 @@ with native phase subissues
 [#176](https://github.com/edithatogo/global-medicines-atlas/issues/176)
 (pre-acquisition reuse gate), and
 [#177](https://github.com/edithatogo/global-medicines-atlas/issues/177)
-(temporal identity).
+(temporal identity), and
+[#275](https://github.com/edithatogo/global-medicines-atlas/issues/275)
+(B0/B1/B2 internal strata contract).
