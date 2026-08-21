@@ -795,6 +795,17 @@
         "tests/test_medallion_datahouse_contract.py"
       ],
       "blocker_ids": []
+    },
+    {
+      "requirement_id": "M-104",
+      "state": "verified",
+      "evidence": [
+        "conductor/requirements.md",
+        "docs/data-sources/bronze-source-profile-admission.md",
+        "schemas/bronze-admission-profile-v1.json",
+        "tests/test_bronze_source_profile_admission.py"
+      ],
+      "blocker_ids": []
     }
   ],
   "maturity_dimensions": [
