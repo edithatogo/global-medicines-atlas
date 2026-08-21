@@ -38,6 +38,14 @@ from global_medicines_atlas.rights_policy import (
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = ROOT / "schemas/b1-acquisition-metadata-manifest-v1.json"
+AUTHORITY_CONTEXT = (
+    ROOT / "conductor/product.md",
+    ROOT / "conductor/design.md",
+    ROOT / "conductor/requirements.md",
+    ROOT / "conductor/glossary.md",
+    ROOT / "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
+    ROOT / "docs/data-sources/bronze-acquisition-metadata.md",
+)
 PAYLOAD = b"\x00\xffBINARY\x00PAYLOAD\n"
 NOW = datetime(2026, 8, 22, 1, 0, tzinfo=UTC)
 
@@ -290,3 +298,15 @@ def test_b1_model_has_no_field_for_source_payload_contents() -> None:
     assert {"payload_sha256", "payload_byte_count", "raw_evidence_locator"} <= (
         fields
     )
+
+
+@pytest.mark.unit
+def test_b1_authority_boundary_is_consistent_in_normative_context() -> None:
+    for path in AUTHORITY_CONTEXT:
+        context = path.read_text(encoding="utf-8").casefold().replace("-", " ")
+        assert "authoritative" in context or "authority" in context, path
+        assert "acquisition manifest" in context, path
+        assert "openlineage" in context, path
+        assert "table catalogue" in context, path
+        assert "projection" in context, path
+        assert "manifest is authoritative" not in context, path

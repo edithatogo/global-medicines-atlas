@@ -6,8 +6,9 @@ authority for what was retrieved, when it was retrieved, its temporal and
 rights identity, its reuse decision, and whether it was admitted. Existing
 receipt digests and acquisition identifiers remain unchanged.
 
-The `b1-acquisition-metadata-manifest-v1` schema is a query contract over those
-records. Its JSON and Parquet forms are deterministic, rebuildable projections
+The `b1-acquisition-metadata-manifest-v1` acquisition manifest schema is a
+query contract over those records. Its JSON and Parquet forms are deterministic,
+rebuildable projections
 with exactly one row per acquisition event. OpenLineage and table-catalogue
 entries are further interoperability projections. None supersedes the native
 receipt or event history.

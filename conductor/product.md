@@ -24,8 +24,12 @@ source surfaces; indexing does not imply acquisition, coverage, qualification,
 or currency. **B1 Acquisition Metadata** is the append-only record of
 acquisition events, receipts, temporal identity, rights state, reuse decisions,
 HTTP or other retrieval evidence, admission state, and provenance
-relationships. **B2 Raw Evidence** is immutable source-native bytes, or a
-rights-constrained immutable reference when bytes cannot lawfully be retained.
+relationships. Native receipts and acquisition/admission events are the B1
+authority. The deterministic acquisition manifest is a rebuildable query
+projection; OpenLineage and table catalogues are interoperability projections,
+not authoritative metadata records. **B2 Raw Evidence** is immutable
+source-native bytes, or a rights-constrained immutable reference when bytes
+cannot lawfully be retained.
 
 Source-faithful Parquet, archive-member manifests, OpenLineage, Iceberg,
 DuckDB, and other query/catalogue objects are rebuildable Bronze projections
