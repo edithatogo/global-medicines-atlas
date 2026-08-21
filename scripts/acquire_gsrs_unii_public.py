@@ -77,7 +77,7 @@ def _download_to(url: str, path: Path) -> None:
             "--retry-delay",
             "2",
             "--max-time",
-            "90",
+            "300",
             "--output",
             str(temporary),
             url,
