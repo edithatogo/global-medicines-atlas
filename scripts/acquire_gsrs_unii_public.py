@@ -7,6 +7,7 @@ import argparse
 import json
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import tarfile
+import zipfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import UTC, datetime
 from hashlib import sha256
@@ -39,6 +40,7 @@ from global_medicines_atlas.receipts import (
     SourceReceipt,
     TransformationEvidence,
     temporal_identity_from_source,
+    require_temporal,
 )
 from global_medicines_atlas.reuse_gate import acquire_new_decision
 
@@ -62,11 +64,14 @@ def _fetch(url: str) -> bytes:
 
 def _download_to(url: str, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".part")
     subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
         [
             "/usr/bin/curl",
             "--fail",
             "--location",
+            "--silent",
+            "--show-error",
             "--retry",
             "2",
             "--retry-delay",
@@ -74,11 +79,22 @@ def _download_to(url: str, path: Path) -> None:
             "--max-time",
             "90",
             "--output",
-            str(path),
+            str(temporary),
             url,
         ],
         check=True,
     )
+    temporary.replace(path)
+
+
+def _is_complete_zip(path: Path) -> bool:
+    if not path.exists():
+        return False
+    try:
+        with zipfile.ZipFile(path) as archive:
+            return archive.testzip() is None
+    except (OSError, zipfile.BadZipFile):
+        return False
 
 
 def _receipt(
@@ -170,7 +186,7 @@ def acquire(  # ruff: ignore[too-many-locals]
         futures = {
             pool.submit(_download_to, str(url), download_paths[key]): key
             for key, url in jobs.items()
-            if not download_paths[key].exists()
+            if not _is_complete_zip(download_paths[key])
         }
         for future in as_completed(futures):
             future.result()
@@ -195,6 +211,7 @@ def acquire(  # ruff: ignore[too-many-locals]
             )
             if not isinstance(landing, BronzeLanding):
                 raise TypeError(f"GSRS admission rejected {filename}")
+            temporal = require_temporal(receipt.temporal)
             rows.append({
                 "release_date": release.release_date.isoformat(),
                 "kind": kind,
@@ -202,7 +219,7 @@ def acquire(  # ruff: ignore[too-many-locals]
                 "filename": filename,
                 "sha256": receipt.payload.sha256,
                 "byte_count": len(payload),
-                "acquisition_id": receipt.temporal.acquisition_id,
+                "acquisition_id": temporal.acquisition_id,
                 "bronze_manifest_sha256": _digest(landing.parquet_path),
                 "rights": "cc0_public_domain",
                 "publication_authorized": False,
@@ -235,7 +252,7 @@ def acquire(  # ruff: ignore[too-many-locals]
         "manifest_sha256": _digest(manifest_path),
         "release_count": inventory.release_count,
         "paired_payload_count": len(rows),
-        "payload_bytes": sum(int(row["byte_count"]) for row in rows),
+        "payload_bytes": sum(len(payload) for payload in downloaded.values()),
         "archive_path": str(archive_path),
         "archive_sha256": _digest(archive_path),
     }
