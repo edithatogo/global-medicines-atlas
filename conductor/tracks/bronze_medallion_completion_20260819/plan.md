@@ -498,7 +498,7 @@ for credentialed or rights-unresolved sources.
     - [x] Record required surfaces, queries, revisions, candidate digests, availability, freshness, and snapshot ID
     - [x] Fail closed for stale, skipped, unavailable, or incomplete discovery when choosing `acquire-new`
     - [x] Provide offline refresh/reconstruction, schema, documentation, and contract tests without copying source bytes
-    - [x] Record PR [#303](https://github.com/edithatogo/global-medicines-atlas/pull/303) head `bd221ad` and merged SHA `00bc45e`, with all 37 required hosted checks and Codecov patch coverage passing
+    - [x] Record PR [#303](https://github.com/edithatogo/global-medicines-atlas/pull/303) head `bd221add29e89731de48dd63db0f6f9c7c6da10c` and merged SHA `00bc45e7d977b56fd01276dd18e3a6b4d92c9281`, with all 37 required hosted checks and Codecov patch coverage passing
 
 ### Phase Verification & Checkpoint
 
