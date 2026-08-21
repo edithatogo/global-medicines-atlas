@@ -1,0 +1,321 @@
+{
+  "$defs": {
+    "B0SourceIndexRow": {
+      "additionalProperties": false,
+      "description": "One citable B0 declaration with independent evidence states.",
+      "properties": {
+        "access_mode": {
+          "minLength": 1,
+          "title": "Access Mode",
+          "type": "string"
+        },
+        "acquisition_family": {
+          "minLength": 1,
+          "title": "Acquisition Family",
+          "type": "string"
+        },
+        "api_url": {
+          "default": "",
+          "title": "Api Url",
+          "type": "string"
+        },
+        "authentication": {
+          "minLength": 1,
+          "title": "Authentication",
+          "type": "string"
+        },
+        "authority": {
+          "minLength": 1,
+          "title": "Authority",
+          "type": "string"
+        },
+        "current_landing_disposition": {
+          "minLength": 1,
+          "title": "Current Landing Disposition",
+          "type": "string"
+        },
+        "discovery_state": {
+          "minLength": 1,
+          "title": "Discovery State",
+          "type": "string"
+        },
+        "documentation_url": {
+          "minLength": 1,
+          "title": "Documentation Url",
+          "type": "string"
+        },
+        "download_url": {
+          "default": "",
+          "title": "Download Url",
+          "type": "string"
+        },
+        "evidence_scope": {
+          "enum": [
+            "live_receipt",
+            "governed_fixture",
+            "parser_contract",
+            "none"
+          ],
+          "title": "Evidence Scope",
+          "type": "string"
+        },
+        "expected_formats": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Expected Formats",
+          "type": "array"
+        },
+        "index_presence_implies_coverage": {
+          "const": false,
+          "default": false,
+          "title": "Index Presence Implies Coverage",
+          "type": "boolean"
+        },
+        "indexed": {
+          "const": true,
+          "default": true,
+          "title": "Indexed",
+          "type": "boolean"
+        },
+        "information_domains": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Information Domains",
+          "type": "array"
+        },
+        "jurisdictions": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Jurisdictions",
+          "type": "array"
+        },
+        "landing_page": {
+          "minLength": 1,
+          "title": "Landing Page",
+          "type": "string"
+        },
+        "last_reviewed_at": {
+          "minLength": 10,
+          "title": "Last Reviewed At",
+          "type": "string"
+        },
+        "last_verified_at": {
+          "minLength": 10,
+          "title": "Last Verified At",
+          "type": "string"
+        },
+        "metadata_verified": {
+          "title": "Metadata Verified",
+          "type": "boolean"
+        },
+        "missing_source_is_negative_evidence": {
+          "const": false,
+          "default": false,
+          "title": "Missing Source Is Negative Evidence",
+          "type": "boolean"
+        },
+        "qualification_references": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Qualification References",
+          "type": "array"
+        },
+        "qualification_state": {
+          "minLength": 1,
+          "title": "Qualification State",
+          "type": "string"
+        },
+        "rights_review_state": {
+          "minLength": 1,
+          "title": "Rights Review State",
+          "type": "string"
+        },
+        "schema_drift_policy": {
+          "minLength": 1,
+          "title": "Schema Drift Policy",
+          "type": "string"
+        },
+        "source_health_policy": {
+          "minLength": 1,
+          "title": "Source Health Policy",
+          "type": "string"
+        },
+        "source_id": {
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "supersession_or_reuse_reference": {
+          "default": "",
+          "title": "Supersession Or Reuse Reference",
+          "type": "string"
+        },
+        "title": {
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "update_cadence": {
+          "minLength": 1,
+          "title": "Update Cadence",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "jurisdictions",
+        "authority",
+        "title",
+        "information_domains",
+        "landing_page",
+        "documentation_url",
+        "access_mode",
+        "authentication",
+        "expected_formats",
+        "acquisition_family",
+        "update_cadence",
+        "source_health_policy",
+        "schema_drift_policy",
+        "rights_review_state",
+        "discovery_state",
+        "metadata_verified",
+        "current_landing_disposition",
+        "evidence_scope",
+        "qualification_state",
+        "last_reviewed_at",
+        "last_verified_at"
+      ],
+      "title": "B0SourceIndexRow",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Versioned B0 snapshot derived from the canonical source catalogue.",
+  "properties": {
+    "catalog_reviewed_at": {
+      "minLength": 10,
+      "title": "Catalog Reviewed At",
+      "type": "string"
+    },
+    "catalog_schema_version": {
+      "minimum": 1,
+      "title": "Catalog Schema Version",
+      "type": "integer"
+    },
+    "dataset_id": {
+      "const": "global-medicines-source-index",
+      "default": "global-medicines-source-index",
+      "title": "Dataset Id",
+      "type": "string"
+    },
+    "discovery_state_counts": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Discovery State Counts",
+      "type": "object"
+    },
+    "evidence_scope_counts": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Evidence Scope Counts",
+      "type": "object"
+    },
+    "generated_from": {
+      "const": "src/global_medicines_atlas/data/medicine_source_catalog.json",
+      "default": "src/global_medicines_atlas/data/medicine_source_catalog.json",
+      "title": "Generated From",
+      "type": "string"
+    },
+    "index_presence_implies_coverage": {
+      "const": false,
+      "default": false,
+      "title": "Index Presence Implies Coverage",
+      "type": "boolean"
+    },
+    "landing_disposition_counts": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Landing Disposition Counts",
+      "type": "object"
+    },
+    "missing_source_is_negative_evidence": {
+      "const": false,
+      "default": false,
+      "title": "Missing Source Is Negative Evidence",
+      "type": "boolean"
+    },
+    "qualification_state_counts": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Qualification State Counts",
+      "type": "object"
+    },
+    "schema_id": {
+      "const": "global-medicines-atlas.b0-source-index",
+      "default": "global-medicines-atlas.b0-source-index",
+      "title": "Schema Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "snapshot_id": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "snapshot_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Snapshot Sha256",
+      "type": "string"
+    },
+    "source_count": {
+      "minimum": 1,
+      "title": "Source Count",
+      "type": "integer"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/B0SourceIndexRow"
+      },
+      "minItems": 1,
+      "title": "Sources",
+      "type": "array"
+    },
+    "stratum": {
+      "const": "B0 Source Index",
+      "default": "B0 Source Index",
+      "title": "Stratum",
+      "type": "string"
+    }
+  },
+  "required": [
+    "catalog_schema_version",
+    "catalog_reviewed_at",
+    "snapshot_sha256",
+    "snapshot_id",
+    "source_count",
+    "discovery_state_counts",
+    "evidence_scope_counts",
+    "qualification_state_counts",
+    "landing_disposition_counts",
+    "sources"
+  ],
+  "title": "B0SourceIndex",
+  "type": "object"
+}

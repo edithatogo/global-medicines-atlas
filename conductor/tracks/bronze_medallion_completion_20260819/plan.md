@@ -490,3 +490,25 @@ for credentialed or rights-unresolved sources.
 - [x] Context validation recognizes the glossary as required project context
 - [x] Required hosted checks pass at the exact pull-request head before merge
 - [x] Review confirms documentation-and-contract-only scope and no source, receipt, digest, or acquisition-identity mutation
+
+## Phase 7: Deterministic B0 Source Index Layer
+
+- [~] Task: Implement the B0 Source Index projection ([#281](https://github.com/edithatogo/global-medicines-atlas/issues/281))
+    - [x] Audit the canonical source catalogue, schema/model, census, coverage index, landing factory and queue, archival inventory, Hugging Face references, Conductor state, issues, and recent Bronze merges
+    - [x] Reuse `medicine_source_catalog.json` and the landing queue as authorities; do not create a parallel source registry
+    - [x] Write failing tests first and confirm the missing-module failure before implementation
+    - [x] Implement schema-validated B0 rows with stable source IDs and independent discovery, acquisition-evidence, landing, rights, and qualification states
+    - [x] Generate deterministic snapshot identity, JSON, Parquet, human-readable documentation, and citation/dataset metadata without external publication
+    - [x] Run focused and affected tests, deterministic regeneration, context validation, formatting, linting, strict typing, and the full Test-Goblin profile
+    - [ ] Record exact pull-request head, hosted checks, and merged SHA without changing acquisition IDs, content digests, existing receipts, or evidence semantics
+- [x] Task: Review Fixes
+    - [x] Replace a vacuous qualification-reference assertion with field-for-field projection checks against the canonical catalogue and landing queue
+    - [x] Re-run the 222-test affected source-index surface after review
+
+### Phase Verification & Checkpoint
+
+- [x] Every catalogue source occurs once with referential integrity to the landing queue
+- [x] Committed JSON, Parquet, schema, documentation, and metadata regenerate deterministically
+- [x] Tests enforce indexed, verified, fixture, live, acquired, qualified, coverage, and negative-evidence distinctions
+- [ ] Required hosted checks pass at the exact pull-request head before merge
+- [x] Review confirms no parallel registry, external publication, or mutation of B1/B2 evidence identity

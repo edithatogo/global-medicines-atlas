@@ -278,7 +278,14 @@
   of truth. Silver remains source-faithful typed or harmonised structures;
   Gold remains cross-jurisdiction matched evidence; Platinum remains products
   and presentation. Do not alter existing acquisition IDs, content digests,
-  receipts, or evidence semantics when applying this classification.
+  receipts, or evidence semantics when applying this classification. Implement
+  B0 as a deterministic, schema-validated projection of the governed source
+  catalogue and landing queue, with stable source identifiers, independent
+  discovery/acquisition/qualification states, a content digest, JSON and
+  Parquet distributions, generated documentation, and citation metadata.
+  Index presence must never be interpreted as source coverage or negative
+  medicines evidence. Preparing these metadata does not authorize external
+  publication.
 ## Should Have
 
 - **S-001:** Evaluate Apache DataFusion for measured Rust-native query or streaming requirements without displacing DuckDB prematurely.

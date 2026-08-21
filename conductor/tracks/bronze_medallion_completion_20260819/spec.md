@@ -30,6 +30,25 @@ cross-jurisdiction matched evidence; Platinum remains products and
 presentation. This classification changes no acquisition ID, content digest,
 existing receipt, or evidence semantic.
 
+### B0 Source Index implementation
+
+B0 is a deterministic projection of the existing governed
+`medicine_source_catalog.json` and Bronze source-landing queue; it is not a
+parallel registry. The schema-validated snapshot assigns a content-derived
+snapshot identifier and projects every stable `source_id` to jurisdiction,
+authority, title, information domains, official locations, access and
+authentication, formats, acquisition family, update and monitoring policy,
+rights-review state, discovery state, landing disposition, evidence scope,
+qualification references, reuse or supersession evidence, and review clocks.
+
+The committed JSON and Parquet distributions and generated documentation must
+regenerate byte-for-byte under the locked environment. Citation and dataset
+metadata are prepared without external publication. The model keeps these
+states independent: indexed is not metadata verified; metadata verified is not
+payload acquired; a governed fixture is not a live acquisition; payload
+acquisition is not current source qualification; and a missing source is not
+negative medicines evidence.
+
 ## Authoritative inputs
 
 - `conductor/product.md`, `conductor/requirements.md`, `conductor/design.md`
