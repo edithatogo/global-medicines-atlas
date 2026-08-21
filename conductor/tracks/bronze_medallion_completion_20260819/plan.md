@@ -492,6 +492,15 @@ for credentialed or rights-unresolved sources.
 - [x] Context validation recognizes the glossary as required project context
 - [x] Required hosted checks pass at the exact pull-request head before merge
 
+## Phase 10: Reproducible Manual Acquisition Recipes and Receipts
+
+- [ ] Task: Add deterministic, rights- and reuse-gated manual acquisition contracts
+    - [x] Generate one versioned recipe per current manual-only queue item without duplicating the queue
+    - [x] Add receipt schema, redaction, deterministic identity, file hashing, and explicit blocked/unavailable states
+    - [x] Provide offline list, bounded-session initialization, and receipt-validation CLI workflow
+    - [x] Require pinned discovery snapshots and permitted rights before completion
+    - [ ] Validate handoff through the ordinary B1/B2 landing path and record hosted merge evidence
+
 ## Phase 10: Pinned Reuse Discovery Snapshot
 
 - [x] Task: Bind pre-acquisition reuse decisions to deterministic discovery snapshots ([#302](https://github.com/edithatogo/global-medicines-atlas/issues/302), parent #167)
