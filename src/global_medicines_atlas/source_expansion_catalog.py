@@ -1542,20 +1542,17 @@ def _utilisation_rows() -> tuple[dict[str, Any], ...]:
             "Norwegian Institute of Public Health",
             "Norwegian Prescription Database",
             SourceDimension.FUNDING,
-            landing="https://www.norpd.no/",
-            documentation="https://www.fhi.no/en/he/norpd/",
+            landing="https://statistikk.fhi.no/lmr/default.aspx",
+            documentation="https://norpd.no/default.aspx",
             evidence_limit=(
-                "NorPD is credentialed/restricted; metadata-only until lawful "
-                "access. Not comparable by default to DK/SE."
+                "Historic anonymous reports are frozen through 2020; do not "
+                "infer successor coverage or person-level access. Not "
+                "comparable by default to DK/SE."
             ),
             native_identifier="NorPD product/ATC identifier",
-            access_mode=AccessMode.LICENSED_FEED,
-            interface_status=InterfaceStatus.RESTRICTED,
-            authentication=AuthenticationMode.MANUAL_APPROVAL,
-            readiness=SourceReadiness.BLOCKED,
-            download_url="https://www.norpd.no/",
-            formats=("csv",),
-            acquisition_profile="account-download",
+            access_mode=AccessMode.WEB_SEARCH,
+            interface_status=InterfaceStatus.INTERACTIVE_ONLY,
+            formats=("html",),
             languages=(LanguageCode.NORWEGIAN, LanguageCode.ENGLISH),
             domains=funding_util,
             entities=funding_entities,

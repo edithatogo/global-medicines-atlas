@@ -1,0 +1,42 @@
+{
+  "schema_id": "global-medicines-atlas.nordic-utilisation-acquisition-authorization",
+  "schema_version": 1,
+  "sources": [
+    {
+      "source_id": "dk-medstat-utilisation",
+      "decision_date": null,
+      "decision_status": "pending",
+      "decision_basis": "Medstat aggregate statistics have affirmative official reuse terms with attribution, but the public bulk-download page contains supporting metadata rather than utilisation results. Acquisition and retention of exported result payloads require the maintainer's source-specific acceptance.",
+      "acquisition_authorized": false,
+      "internal_retention_authorized": false,
+      "public_release_authorized": false,
+      "external_publication_authorized": false,
+      "landing_url": "https://medstat.dk/",
+      "rights_url": "https://medstat.dk/apps/lms/public/dokumentation/Hvordan-du-maa-anvende-data.pdf"
+    },
+    {
+      "source_id": "no-norpd-utilisation",
+      "decision_date": null,
+      "decision_status": "pending",
+      "decision_basis": "The historic anonymous NorPD report service permits reuse with source attribution and is frozen with data through 2020. This does not authorize restricted person-level registry access or imply post-2020 coverage.",
+      "acquisition_authorized": false,
+      "internal_retention_authorized": false,
+      "public_release_authorized": false,
+      "external_publication_authorized": false,
+      "landing_url": "https://statistikk.fhi.no/lmr/default.aspx",
+      "rights_url": "https://norpd.no/default.aspx"
+    },
+    {
+      "source_id": "se-socialstyrelsen-utilisation",
+      "decision_date": null,
+      "decision_status": "pending",
+      "decision_basis": "Socialstyrelsen exposes public aggregate statistics databases and API reuse under CC0 with source attribution guidance. This does not authorize person-level medicines-register data or external publication by this project.",
+      "acquisition_authorized": false,
+      "internal_retention_authorized": false,
+      "public_release_authorized": false,
+      "external_publication_authorized": false,
+      "landing_url": "https://sdb.socialstyrelsen.se/if_lak/val.aspx",
+      "rights_url": "https://www.socialstyrelsen.se/statistik-och-data/oppna-data/statistikdatabaser/"
+    }
+  ]
+}

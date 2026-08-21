@@ -4,9 +4,9 @@
   "family_counts": {
     "archive_release": 6,
     "document_collection": 27,
-    "manual_reproducible_export": 10,
+    "manual_reproducible_export": 9,
     "paginated_rest_api": 14,
-    "regulator_search_export": 77,
+    "regulator_search_export": 78,
     "static_file_download": 38
   },
   "items": [
@@ -836,7 +836,7 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
+        "acquisition_instructions": "After source-specific maintainer acceptance, export aggregate utilisation results with recorded query parameters and receipt the source-native result separately from the metadata downloads.",
         "acquisition_profile": null,
         "credentials_persisted": false,
         "endpoint": "https://medstat.dk/",
@@ -851,12 +851,12 @@
         "source_id": "dk-medstat-utilisation"
       },
       "evidence_references": [
-        "https://medstat.dk/"
+        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
       ],
       "evidence_scope": "none",
       "next_action": "execute and receipt the documented public manual acquisition",
       "priority": 30,
-      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "reason": "Medstat is a public aggregate statistics surface with affirmative attribution terms; its bulk download inventory contains supporting ATC, product-name, and population metadata rather than utilisation results.",
       "source_id": "dk-medstat-utilisation",
       "state": "manual_only_documented_acquisition"
     },
@@ -2942,13 +2942,13 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Follow the documented public retrieval steps, record parameters, and receipt the source-native export.",
-        "acquisition_profile": "account-download",
+        "acquisition_instructions": "After source-specific maintainer acceptance, preserve only anonymous historic report outputs and parameters through 2020; do not request restricted registry records or infer current successor coverage.",
+        "acquisition_profile": null,
         "credentials_persisted": false,
-        "endpoint": "https://www.norpd.no/",
-        "family": "manual_reproducible_export",
+        "endpoint": "https://statistikk.fhi.no/lmr/default.aspx",
+        "family": "regulator_search_export",
         "formats": [
-          "csv"
+          "html"
         ],
         "pagination": "manual",
         "preserves_source_bytes": true,
@@ -2957,14 +2957,14 @@
         "source_id": "no-norpd-utilisation"
       },
       "evidence_references": [
-        "https://www.fhi.no/en/he/norpd/"
+        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
       ],
       "evidence_scope": "none",
-      "next_action": "retain exclusion until credentials are explicitly authorised",
-      "priority": 100,
-      "reason": "authentication mode manual_approval is excluded",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "The historic anonymous NorPD report surface is public with attribution and frozen with data through 2020; this is distinct from restricted person-level registry access.",
       "source_id": "no-norpd-utilisation",
-      "state": "credentialed_and_excluded"
+      "state": "manual_only_documented_acquisition"
     },
     {
       "adapter": {
@@ -3469,7 +3469,7 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_instructions": "After source-specific maintainer acceptance, execute bounded aggregate database or API queries, preserve every query parameter, and receipt the source-native result without acquiring person-level records.",
         "acquisition_profile": "public-bulk",
         "credentials_persisted": false,
         "endpoint": "https://www.socialstyrelsen.se/statistik-och-data/statistik/statistikamnen/lakemedel/",
@@ -3485,14 +3485,14 @@
         "source_id": "se-socialstyrelsen-utilisation"
       },
       "evidence_references": [
-        "https://www.socialstyrelsen.se/statistik-och-data/statistik/statistikamnen/lakemedel/"
+        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
       ],
       "evidence_scope": "none",
-      "next_action": "record source-specific retention and transformation rights",
-      "priority": 20,
-      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "priority": 30,
+      "reason": "Socialstyrelsen exposes a current public aggregate statistics database and API under CC0 with source-attribution guidance; this does not include person-level medicines-register records.",
       "source_id": "se-socialstyrelsen-utilisation",
-      "state": "rights_blocked"
+      "state": "manual_only_documented_acquisition"
     },
     {
       "adapter": {
@@ -4595,11 +4595,11 @@
   "silver_transformations_included": false,
   "source_count": 172,
   "state_counts": {
-    "credentialed_and_excluded": 18,
+    "credentialed_and_excluded": 17,
     "landed_and_evidenced": 21,
-    "manual_only_documented_acquisition": 91,
+    "manual_only_documented_acquisition": 93,
     "not_yet_implemented": 0,
-    "rights_blocked": 41,
+    "rights_blocked": 40,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 1
   }

@@ -76,6 +76,33 @@
       "evidence_references": [
         "quality/qualifications/fda-rems-live-corpus-20260821.json"
       ]
+    },
+    {
+      "source_id": "dk-medstat-utilisation",
+      "state": "manual_only_documented_acquisition",
+      "reason": "Medstat is a public aggregate statistics surface with affirmative attribution terms; its bulk download inventory contains supporting ATC, product-name, and population metadata rather than utilisation results.",
+      "manual_instructions": "After source-specific maintainer acceptance, export aggregate utilisation results with recorded query parameters and receipt the source-native result separately from the metadata downloads.",
+      "evidence_references": [
+        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
+      ]
+    },
+    {
+      "source_id": "no-norpd-utilisation",
+      "state": "manual_only_documented_acquisition",
+      "reason": "The historic anonymous NorPD report surface is public with attribution and frozen with data through 2020; this is distinct from restricted person-level registry access.",
+      "manual_instructions": "After source-specific maintainer acceptance, preserve only anonymous historic report outputs and parameters through 2020; do not request restricted registry records or infer current successor coverage.",
+      "evidence_references": [
+        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
+      ]
+    },
+    {
+      "source_id": "se-socialstyrelsen-utilisation",
+      "state": "manual_only_documented_acquisition",
+      "reason": "Socialstyrelsen exposes a current public aggregate statistics database and API under CC0 with source-attribution guidance; this does not include person-level medicines-register records.",
+      "manual_instructions": "After source-specific maintainer acceptance, execute bounded aggregate database or API queries, preserve every query parameter, and receipt the source-native result without acquiring person-level records.",
+      "evidence_references": [
+        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
+      ]
     }
   ]
 }

@@ -1463,7 +1463,7 @@ _BINDINGS: tuple[SourceBinding, ...] = (
         (33,),
         (CoverageFacet.UTILISATION,),
         native_identifier="NorPD product/ATC identifier",
-        blocker="credentialed/restricted Norwegian Prescription Database",
+        blocker="historic anonymous report surface frozen through 2020",
     ),
     _bind(
         "se-socialstyrelsen-utilisation",

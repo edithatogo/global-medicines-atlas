@@ -440,3 +440,12 @@ for credentialed or rights-unresolved sources.
     - [ ] Obtain the maintainer's source-specific acceptance before payload acquisition and retention
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
     - [ ] Keep public release and external publication separately gated
+- [~] Task: Acquire Nordic medicine utilisation aggregates (Prompt 33)
+    - [x] Correct the three independent public access states without treating aggregate outputs as person-level registry access
+    - [x] Lock Denmark's 1996–2025 metadata-only bulk inventory and distinguish it from interactive utilisation result exports
+    - [x] Bound Norway's historic anonymous report surface to data through 2020 without claiming current successor coverage
+    - [x] Lock Sweden's current annual and monthly aggregate query dimensions, years, measures, and cell/ATC limits
+    - [x] Record the Denmark attribution terms, historic Norway attribution requirement, and Sweden CC0/API guidance
+    - [ ] Obtain independent maintainer source-specific decisions before payload acquisition and retention
+    - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification for each approved source
+    - [ ] Keep public release and external publication separately gated

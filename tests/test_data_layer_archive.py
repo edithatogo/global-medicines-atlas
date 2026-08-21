@@ -118,8 +118,8 @@ def test_inventory_covers_every_catalog_source_exactly_once() -> None:
     inventory_ids = {row.source_id for row in inventory.sources}
     assert len(inventory.sources) == 172
     assert inventory_ids == catalog_ids
-    assert inventory.public_no_credential_count == 154
-    assert inventory.credential_restricted_count == 18
+    assert inventory.public_no_credential_count == 155
+    assert inventory.credential_restricted_count == 17
 
 
 def test_credential_sources_are_classified_without_payload_archival() -> None:
@@ -144,7 +144,6 @@ def test_credential_sources_are_classified_without_payload_archival() -> None:
         "jp-mhlw-ndb-utilisation",
         "kr-hira-reimbursement",
         "kr-mfds-nedrug",
-        "no-norpd-utilisation",
         "nz-nzhts-fhir",
         "nz-nzulm-bulk",
         "sa-sfda-drug-list",
@@ -210,8 +209,8 @@ def test_archive_includes_catalog_schema_and_governed_fixtures(
     )
     assert table.num_rows == 172
     access = table.column("access_class").to_pylist()
-    assert access.count("public_no_credential") == 154
-    assert access.count("credential_restricted") == 18
+    assert access.count("public_no_credential") == 155
+    assert access.count("credential_restricted") == 17
 
 
 def test_restricted_paths_and_oversize_files_fail_closed(
