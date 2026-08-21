@@ -9,6 +9,7 @@ from pathlib import Path
 
 from global_medicines_atlas.manual_acquisition import (
     ManualAcquisitionReceipt,
+    ManualAcquisitionRecipe,
     generate_manual_recipes,
     validate_receipt_files,
 )
@@ -19,7 +20,7 @@ from global_medicines_atlas.source_landing_factory import (
 )
 
 
-def recipes() -> tuple:
+def recipes() -> tuple[ManualAcquisitionRecipe, ...]:
     return generate_manual_recipes(
         build_source_landing_queue(load_catalog(), LandingOverrides.load())
     )
