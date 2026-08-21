@@ -171,10 +171,11 @@
         "AUS"
       ],
       "dimension": "regulatory",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M1",
+      "documentation_readiness": "documentation_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -301,10 +302,11 @@
         "CAN"
       ],
       "dimension": "regulatory",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M1",
+      "documentation_readiness": "documentation_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -1013,10 +1015,11 @@
         "GBR"
       ],
       "dimension": "regulatory",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M1",
+      "documentation_readiness": "documentation_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -1236,10 +1239,11 @@
         "GLOBAL"
       ],
       "dimension": "regulatory",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M1",
+      "documentation_readiness": "documentation_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -1642,10 +1646,11 @@
         "JPN"
       ],
       "dimension": "regulatory",
-      "maturity_level": "M0",
-      "documentation_readiness": "declared",
+      "maturity_level": "M1",
+      "documentation_readiness": "documentation_verified",
       "assignment_basis": [
-        "catalog row exists"
+        "catalog row exists",
+        "documentation qualification reference exists"
       ],
       "blocking_gaps": [
         "live source receipt",
@@ -3227,7 +3232,7 @@
       "regulatory_source_count": 4,
       "funding_or_formulary_source_count": 3,
       "highest_maturity_level": "M2",
-      "documentation_ready_source_count": 6,
+      "documentation_ready_source_count": 7,
       "stable_ready": false
     },
     {
@@ -3254,7 +3259,7 @@
       "regulatory_source_count": 3,
       "funding_or_formulary_source_count": 4,
       "highest_maturity_level": "M2",
-      "documentation_ready_source_count": 6,
+      "documentation_ready_source_count": 7,
       "stable_ready": false
     },
     {
@@ -3335,7 +3340,7 @@
       "regulatory_source_count": 2,
       "funding_or_formulary_source_count": 5,
       "highest_maturity_level": "M2",
-      "documentation_ready_source_count": 5,
+      "documentation_ready_source_count": 6,
       "stable_ready": false
     },
     {
@@ -3353,7 +3358,7 @@
       "regulatory_source_count": 4,
       "funding_or_formulary_source_count": 6,
       "highest_maturity_level": "M2",
-      "documentation_ready_source_count": 2,
+      "documentation_ready_source_count": 3,
       "stable_ready": false
     },
     {
@@ -3389,7 +3394,7 @@
       "regulatory_source_count": 3,
       "funding_or_formulary_source_count": 2,
       "highest_maturity_level": "M2",
-      "documentation_ready_source_count": 4,
+      "documentation_ready_source_count": 5,
       "stable_ready": false
     },
     {

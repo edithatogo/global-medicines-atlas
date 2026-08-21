@@ -1720,6 +1720,11 @@ def _pv_rows() -> tuple[dict[str, Any], ...]:
             domains=safety,
             entities=entities,
             fields=fields,
+            qualification=QualificationState.DOCUMENTATION_VERIFIED,
+            qualification_references=(
+                "quality/qualifications/global-pv-acquisition-authorization.json",
+                "src/global_medicines_atlas/global_pv_acquisition.py",
+            ),
         ),
         _base(
             "gb-mhra-yellow-card",
@@ -1727,8 +1732,8 @@ def _pv_rows() -> tuple[dict[str, Any], ...]:
             "Medicines and Healthcare products Regulatory Agency",
             "Yellow Card Scheme public outputs",
             SourceDimension.REGULATORY,
-            landing="https://yellowcard.mhra.gov.uk/",
-            documentation="https://yellowcard.mhra.gov.uk/",
+            landing="https://yellowcard.mhra.gov.uk/idaps",
+            documentation="https://yellowcard.mhra.gov.uk/idaps",
             evidence_limit=(
                 "Yellow Card public outputs are not unrestricted case-level "
                 "bronze and are not NICE or OpenPrescribing utilisation."
@@ -1739,6 +1744,11 @@ def _pv_rows() -> tuple[dict[str, Any], ...]:
             domains=safety,
             entities=entities,
             fields=fields,
+            qualification=QualificationState.DOCUMENTATION_VERIFIED,
+            qualification_references=(
+                "quality/qualifications/global-pv-acquisition-authorization.json",
+                "src/global_medicines_atlas/global_pv_acquisition.py",
+            ),
         ),
         _base(
             "au-tga-daen",
@@ -1746,8 +1756,8 @@ def _pv_rows() -> tuple[dict[str, Any], ...]:
             "Therapeutic Goods Administration",
             "Database of Adverse Event Notifications",
             SourceDimension.REGULATORY,
-            landing="https://www.tga.gov.au/safety/safety/safety-monitoring-daen-database-adverse-event-notifications",
-            documentation="https://www.tga.gov.au/safety/safety/safety-monitoring-daen-database-adverse-event-notifications",
+            landing="https://www.tga.gov.au/safety/adverse-events/database-adverse-event-notifications-daen",
+            documentation="https://www.tga.gov.au/safety/adverse-events/medicine-adverse-events/how-search-database-adverse-event-notifications-daen-medicines",
             evidence_limit=(
                 "DAEN search is not complete case-level bronze and is not ARTG "
                 "registration status."
@@ -1758,6 +1768,11 @@ def _pv_rows() -> tuple[dict[str, Any], ...]:
             domains=safety,
             entities=entities,
             fields=fields,
+            qualification=QualificationState.DOCUMENTATION_VERIFIED,
+            qualification_references=(
+                "quality/qualifications/global-pv-acquisition-authorization.json",
+                "src/global_medicines_atlas/global_pv_acquisition.py",
+            ),
         ),
         _base(
             "ca-canada-vigilance",
@@ -1765,8 +1780,8 @@ def _pv_rows() -> tuple[dict[str, Any], ...]:
             "Health Canada",
             "Canada Vigilance adverse reaction online database",
             SourceDimension.REGULATORY,
-            landing="https://www.canada.ca/en/health-canada/services/drugs-health-products/medeffect-canada/adverse-reaction-database.html",
-            documentation="https://www.canada.ca/en/health-canada/services/drugs-health-products/medeffect-canada/adverse-reaction-database.html",
+            landing="https://open.canada.ca/data/en/dataset/9cbaef00-b52c-4a70-9fed-d9aa8263ab74",
+            documentation="https://www.canada.ca/en/health-canada/services/drugs-health-products/medeffect-canada/adverse-reaction-database/canada-vigilance-adverse-reaction-online-database-data-structures.html",
             evidence_limit=(
                 "Canada Vigilance extracts are safety reports, not DPD "
                 "registration or causality."
@@ -1774,13 +1789,18 @@ def _pv_rows() -> tuple[dict[str, Any], ...]:
             native_identifier="Canada Vigilance adverse reaction number",
             access_mode=AccessMode.DOWNLOAD,
             interface_status=InterfaceStatus.DOCUMENTED_DOWNLOAD,
-            download_url="https://www.canada.ca/en/health-canada/services/drugs-health-products/medeffect-canada/adverse-reaction-database.html",
-            formats=("xlsx", "csv"),
+            download_url="https://open.canada.ca/data/dataset/9cbaef00-b52c-4a70-9fed-d9aa8263ab74/resource/2e736909-ef1f-4d60-bfb6-f15b3be3b1fa/download/extract_extrait.zip",
+            formats=("zip", "txt"),
             integration=IntegrationLayer.ACQUISITION,
             acquisition_profile="public-bulk",
             domains=safety,
             entities=entities,
             fields=fields,
+            qualification=QualificationState.DOCUMENTATION_VERIFIED,
+            qualification_references=(
+                "quality/qualifications/global-pv-acquisition-authorization.json",
+                "src/global_medicines_atlas/global_pv_acquisition.py",
+            ),
         ),
         _base(
             "jp-pmda-safety",
@@ -1802,5 +1822,10 @@ def _pv_rows() -> tuple[dict[str, Any], ...]:
             domains=safety,
             entities=entities,
             fields=fields,
+            qualification=QualificationState.DOCUMENTATION_VERIFIED,
+            qualification_references=(
+                "quality/qualifications/global-pv-acquisition-authorization.json",
+                "src/global_medicines_atlas/global_pv_acquisition.py",
+            ),
         ),
     )

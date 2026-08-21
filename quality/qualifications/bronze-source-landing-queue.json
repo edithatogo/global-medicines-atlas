@@ -2,12 +2,12 @@
   "catalog_reviewed_at": "2026-08-21",
   "catalog_schema_version": 5,
   "family_counts": {
-    "archive_release": 7,
+    "archive_release": 8,
     "document_collection": 27,
     "manual_reproducible_export": 7,
     "paginated_rest_api": 14,
     "regulator_search_export": 79,
-    "static_file_download": 38
+    "static_file_download": 37
   },
   "items": [
     {
@@ -229,7 +229,7 @@
         "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
         "acquisition_profile": null,
         "credentials_persisted": false,
-        "endpoint": "https://www.tga.gov.au/safety/safety/safety-monitoring-daen-database-adverse-event-notifications",
+        "endpoint": "https://www.tga.gov.au/safety/adverse-events/database-adverse-event-notifications-daen",
         "family": "regulator_search_export",
         "formats": [
           "html"
@@ -241,7 +241,8 @@
         "source_id": "au-tga-daen"
       },
       "evidence_references": [
-        "https://www.tga.gov.au/safety/safety/safety-monitoring-daen-database-adverse-event-notifications"
+        "quality/qualifications/global-pv-acquisition-authorization.json",
+        "src/global_medicines_atlas/global_pv_acquisition.py"
       ],
       "evidence_scope": "none",
       "next_action": "execute and receipt the documented public manual acquisition",
@@ -408,14 +409,14 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_instructions": "Download and receipt the archive before safely enumerating and extracting its members.",
         "acquisition_profile": "public-bulk",
         "credentials_persisted": false,
-        "endpoint": "https://www.canada.ca/en/health-canada/services/drugs-health-products/medeffect-canada/adverse-reaction-database.html",
-        "family": "static_file_download",
+        "endpoint": "https://open.canada.ca/data/dataset/9cbaef00-b52c-4a70-9fed-d9aa8263ab74/resource/2e736909-ef1f-4d60-bfb6-f15b3be3b1fa/download/extract_extrait.zip",
+        "family": "archive_release",
         "formats": [
-          "xlsx",
-          "csv"
+          "zip",
+          "txt"
         ],
         "pagination": "none",
         "preserves_source_bytes": true,
@@ -424,7 +425,8 @@
         "source_id": "ca-canada-vigilance"
       },
       "evidence_references": [
-        "https://www.canada.ca/en/health-canada/services/drugs-health-products/medeffect-canada/adverse-reaction-database.html"
+        "quality/qualifications/global-pv-acquisition-authorization.json",
+        "src/global_medicines_atlas/global_pv_acquisition.py"
       ],
       "evidence_scope": "none",
       "next_action": "record source-specific retention and transformation rights",
@@ -1430,7 +1432,7 @@
         "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
         "acquisition_profile": null,
         "credentials_persisted": false,
-        "endpoint": "https://yellowcard.mhra.gov.uk/",
+        "endpoint": "https://yellowcard.mhra.gov.uk/idaps",
         "family": "regulator_search_export",
         "formats": [
           "html"
@@ -1442,7 +1444,8 @@
         "source_id": "gb-mhra-yellow-card"
       },
       "evidence_references": [
-        "https://yellowcard.mhra.gov.uk/"
+        "quality/qualifications/global-pv-acquisition-authorization.json",
+        "src/global_medicines_atlas/global_pv_acquisition.py"
       ],
       "evidence_scope": "none",
       "next_action": "execute and receipt the documented public manual acquisition",
@@ -1766,7 +1769,8 @@
         "source_id": "global-umc-vigibase"
       },
       "evidence_references": [
-        "https://who-umc.org/vigibase/"
+        "quality/qualifications/global-pv-acquisition-authorization.json",
+        "src/global_medicines_atlas/global_pv_acquisition.py"
       ],
       "evidence_scope": "none",
       "next_action": "retain exclusion until credentials are explicitly authorised",
@@ -2357,7 +2361,8 @@
         "source_id": "jp-pmda-safety"
       },
       "evidence_references": [
-        "https://www.pmda.go.jp/english/safety/info-services/0001.html"
+        "quality/qualifications/global-pv-acquisition-authorization.json",
+        "src/global_medicines_atlas/global_pv_acquisition.py"
       ],
       "evidence_scope": "none",
       "next_action": "execute and receipt the documented public manual acquisition",

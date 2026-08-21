@@ -21,7 +21,6 @@ Silver transformations included: **no**.
 - [x] `au-pbs-historical-xml` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `au-tga-regulatory-events` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `br-cmed-prices` — `rights_blocked`; record source-specific retention and transformation rights.
-- [ ] `ca-canada-vigilance` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `ca-noc` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `ca-nova-scotia-pharmacare` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `ca-ontario-odb` — `rights_blocked`; record source-specific retention and transformation rights.
@@ -58,6 +57,7 @@ Silver transformations included: **no**.
 
 ## `archive_release`
 
+- [ ] `ca-canada-vigilance` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `ca-cihi-nhex-medicines` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `gb-trud-api` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [ ] `no-fest` — `rights_blocked`; record source-specific retention and transformation rights.

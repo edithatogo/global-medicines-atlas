@@ -1,0 +1,66 @@
+{
+  "schema_id": "global-medicines-atlas.global-pv-acquisition-authorization",
+  "schema_version": 1,
+  "sources": [
+    {
+      "source_id": "global-umc-vigibase",
+      "decision_date": null,
+      "decision_status": "pending",
+      "decision_basis": "VigiBase is subscription-restricted. No credential creation, licensed extraction, retention, or publication authority is inferred.",
+      "acquisition_authorized": false,
+      "internal_retention_authorized": false,
+      "public_release_authorized": false,
+      "external_publication_authorized": false,
+      "landing_url": "https://who-umc.org/vigibase/",
+      "rights_url": "https://who-umc.org/vigibase/"
+    },
+    {
+      "source_id": "gb-mhra-yellow-card",
+      "decision_date": null,
+      "decision_status": "pending",
+      "decision_basis": "MHRA publishes interactive Drug Analysis Profiles, but payload acquisition and retention require source-specific maintainer authority.",
+      "acquisition_authorized": false,
+      "internal_retention_authorized": false,
+      "public_release_authorized": false,
+      "external_publication_authorized": false,
+      "landing_url": "https://yellowcard.mhra.gov.uk/idaps",
+      "rights_url": "https://yellowcard.mhra.gov.uk/terms"
+    },
+    {
+      "source_id": "au-tga-daen",
+      "decision_date": null,
+      "decision_status": "pending",
+      "decision_basis": "TGA documents query-bounded XLSX and CSV exports. Acquisition and retention remain independently gated.",
+      "acquisition_authorized": false,
+      "internal_retention_authorized": false,
+      "public_release_authorized": false,
+      "external_publication_authorized": false,
+      "landing_url": "https://www.tga.gov.au/safety/adverse-events/database-adverse-event-notifications-daen",
+      "rights_url": "https://www.tga.gov.au/copyright"
+    },
+    {
+      "source_id": "ca-canada-vigilance",
+      "decision_date": null,
+      "decision_status": "pending",
+      "decision_basis": "Health Canada exposes monthly public bulk-extract metadata. The large payload was not fetched; acquisition and retention require explicit authority.",
+      "acquisition_authorized": false,
+      "internal_retention_authorized": false,
+      "public_release_authorized": false,
+      "external_publication_authorized": false,
+      "landing_url": "https://open.canada.ca/data/en/dataset/9cbaef00-b52c-4a70-9fed-d9aa8263ab74",
+      "rights_url": "https://open.canada.ca/en/open-government-licence-canada"
+    },
+    {
+      "source_id": "jp-pmda-safety",
+      "decision_date": null,
+      "decision_status": "pending",
+      "decision_basis": "PMDA publishes safety alerts and suspected ADR cases, with the case surface Japanese-only. Payload retention requires explicit authority.",
+      "acquisition_authorized": false,
+      "internal_retention_authorized": false,
+      "public_release_authorized": false,
+      "external_publication_authorized": false,
+      "landing_url": "https://www.pmda.go.jp/english/safety/info-services/0001.html",
+      "rights_url": "https://www.pmda.go.jp/english/about-pmda/0004.html"
+    }
+  ]
+}
