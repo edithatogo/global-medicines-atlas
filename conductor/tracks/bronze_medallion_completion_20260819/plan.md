@@ -494,20 +494,20 @@ for credentialed or rights-unresolved sources.
 
 ## Phase 10: Source-profile-aware Bronze admission
 
-- [~] Task: Add a versioned source-profile admission stage after generic integrity (#299)
+- [x] Task: Add a versioned source-profile admission stage after generic integrity ([#299](https://github.com/edithatogo/global-medicines-atlas/issues/299))
     - [x] Inspect admission, integrity, parser/archive safety, catalogue, adapters, and governed fixtures
     - [x] Write failing object/array/JSONL/CSV/XML/archive/document and profile-mismatch tests first
-    - [ ] Add bounded profile schema and catalogue/adapter contract
-    - [ ] Apply generic integrity first, then profile validation without rewriting landed bytes
-    - [ ] Run focused and affected admission, parser, archive, fixture, context, formatting, lint, and typing checks
-    - [ ] Record exact hosted checks, merge SHA, and preserved evidence boundary
+    - [x] Add bounded profile schema and catalogue/adapter contract
+    - [x] Apply generic integrity first, then profile validation without rewriting landed bytes
+    - [x] Run focused and affected admission, parser, archive, fixture, context, formatting, lint, and typing checks
+    - [x] Record PR [#300](https://github.com/edithatogo/global-medicines-atlas/pull/300) head `6e9752ee8dad0652b90cd40cab058ed9ab84a10b`, 37 passing hosted checks, and merged SHA `8f9cd56b0b155e29ea5ac1d66c10e3099767700d` without changing source bytes, existing receipts, acquisition IDs, or content IDs
 
 ### Phase Verification & Checkpoint
 
-- [ ] Generic integrity remains authoritative for hostile input and corruption
-- [ ] Unprofiled JSON arrays are accepted; explicit profile mismatches quarantine or warn
-- [ ] Profile limits and source-native structure do not convert index or landing into coverage
-- [ ] Required hosted checks pass at the exact pull-request head before merge
+- [x] Generic integrity remains authoritative for hostile input and corruption
+- [x] Unprofiled JSON arrays are accepted; explicit profile mismatches quarantine or warn
+- [x] Profile limits and source-native structure do not convert index or landing into coverage
+- [x] Required hosted checks pass at the exact pull-request head before merge
 - [x] Review confirms documentation-and-contract-only scope and no source, receipt, digest, or acquisition-identity mutation
 
 ## Phase 7: Deterministic B0 Source Index Layer
