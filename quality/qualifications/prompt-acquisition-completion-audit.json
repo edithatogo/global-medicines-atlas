@@ -10,11 +10,11 @@
   "live_complete_prompt_count": 6,
   "program_completion": "incomplete_live_acquisition",
   "queue_state_counts": {
-    "credentialed_and_excluded": 18,
+    "credentialed_and_excluded": 17,
     "landed_and_evidenced": 21,
-    "manual_only_documented_acquisition": 91,
+    "manual_only_documented_acquisition": 93,
     "not_yet_implemented": 0,
-    "rights_blocked": 41,
+    "rights_blocked": 40,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 1
   },
@@ -1132,13 +1132,11 @@
       ],
       "queue_states": {
         "dk-medstat-utilisation": "manual_only_documented_acquisition",
-        "no-norpd-utilisation": "credentialed_and_excluded",
-        "se-socialstyrelsen-utilisation": "rights_blocked"
+        "no-norpd-utilisation": "manual_only_documented_acquisition",
+        "se-socialstyrelsen-utilisation": "manual_only_documented_acquisition"
       },
       "queue_state_counts": {
-        "credentialed_and_excluded": 1,
-        "manual_only_documented_acquisition": 1,
-        "rights_blocked": 1
+        "manual_only_documented_acquisition": 3
       },
       "fixture_qualified_source_ids": [],
       "live_qualified_source_ids": [],
@@ -1150,14 +1148,10 @@
       "live_complete": false,
       "completion_state": "live_acquisition_incomplete",
       "blocker_categories": [
-        "source_specific_rights_decision_required",
-        "documented_manual_acquisition_required",
-        "credential_or_licence_boundary"
+        "documented_manual_acquisition_required"
       ],
       "next_actions": [
-        "retain metadata-only until credentials, licence, and access authority are approved",
-        "execute the documented reproducible acquisition after source-specific rights confirmation",
-        "obtain a maintainer-approved source-specific rights decision"
+        "execute the documented reproducible acquisition after source-specific rights confirmation"
       ]
     },
     {

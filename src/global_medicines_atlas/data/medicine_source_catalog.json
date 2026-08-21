@@ -6806,24 +6806,24 @@
       "authority": "Norwegian Institute of Public Health",
       "title": "Norwegian Prescription Database",
       "dimension": "funding",
-      "access_mode": "licensed_feed",
-      "landing_page": "https://www.norpd.no/",
+      "access_mode": "web_search",
+      "landing_page": "https://statistikk.fhi.no/lmr/default.aspx",
       "update_cadence": "source-declared",
       "rights_status": "review_required",
-      "readiness": "blocked",
-      "evidence_limit": "NorPD is credentialed/restricted; metadata-only until lawful access. Not comparable by default to DK/SE.",
-      "interface_status": "restricted",
+      "readiness": "candidate",
+      "evidence_limit": "Historic anonymous reports are frozen through 2020; do not infer successor coverage or person-level access. Not comparable by default to DK/SE.",
+      "interface_status": "interactive_only",
       "formats": [
-        "csv"
+        "html"
       ],
-      "authentication": "manual_approval",
+      "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
       "native_identifier": "NorPD product/ATC identifier",
       "last_verified_at": "2026-08-20",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.fhi.no/en/he/norpd/",
+      "documentation_url": "https://norpd.no/default.aspx",
       "discovery_status": "declaration_verified",
       "information_domains": [
         "product_identity",
@@ -6848,9 +6848,7 @@
         "names"
       ],
       "qualification_state": "declared",
-      "qualification_references": [],
-      "download_url": "https://www.norpd.no/",
-      "acquisition_profile": "account-download"
+      "qualification_references": []
     },
     {
       "source_id": "nz-medsafe-documents",

@@ -353,11 +353,11 @@ def test_faers_qualification_fails_closed_on_scope_or_evidence_drift(
 def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     audit = _audit()
     assert audit["queue_state_counts"] == {
-        "credentialed_and_excluded": 18,
+        "credentialed_and_excluded": 17,
         "landed_and_evidenced": 21,
-        "manual_only_documented_acquisition": 91,
+        "manual_only_documented_acquisition": 93,
         "not_yet_implemented": 0,
-        "rights_blocked": 41,
+        "rights_blocked": 40,
         "superseded_by_reused_source": 0,
         "temporarily_unavailable": 1,
     }
@@ -378,3 +378,13 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     assert reconciliation["completion_state"] == (
         "reconciliation_generated_but_live_program_incomplete"
     )
+
+
+def test_nordic_public_aggregate_sources_are_not_credential_or_rights_blocked() -> None:
+    prompt = next(entry for entry in _audit()["prompts"] if entry["prompt_id"] == 33)
+    assert prompt["queue_states"] == {
+        "dk-medstat-utilisation": "manual_only_documented_acquisition",
+        "no-norpd-utilisation": "manual_only_documented_acquisition",
+        "se-socialstyrelsen-utilisation": "manual_only_documented_acquisition",
+    }
+    assert prompt["live_complete"] is False
