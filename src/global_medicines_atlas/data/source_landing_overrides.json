@@ -62,8 +62,9 @@
     },
     {
       "source_id": "us-fda-drug-shortages",
-      "state": "landed_and_evidenced",
-      "reason": "The complete current openFDA export, all 129 inventoried monthly FDA list snapshots, and the metadata-only 35,494-capture delegated detail inventory were Bronze-exercised and privately archived. The maintainer approved the monthly lists as the temporal corpus; delegated detail-page completeness remains unclaimed.",
+      "state": "manual_only_documented_acquisition",
+      "reason": "The complete current openFDA export, all 129 inventoried monthly FDA list snapshots, and a metadata-only inventory of 35,494 delegated detail captures were Bronze-exercised and privately archived. No complete historical detail-page denominator was identified; the maintainer must explicitly decide whether monthly lists define the qualified temporal corpus.",
+      "manual_instructions": "Obtain the maintainer's explicit Prompt 14 scope disposition. Do not acquire delegated detail-page payloads or claim complete historical coverage under the metadata-only inventory authorization.",
       "evidence_references": [
         "quality/qualifications/fda-shortages-live-corpus-20260821.json"
       ]

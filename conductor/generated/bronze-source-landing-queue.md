@@ -7,11 +7,11 @@ Silver transformations included: **no**.
 
 ## State summary
 
-- `landed_and_evidenced`: 22
+- `landed_and_evidenced`: 21
 - `temporarily_unavailable`: 1
 - `rights_blocked`: 41
 - `credentialed_and_excluded`: 18
-- `manual_only_documented_acquisition`: 90
+- `manual_only_documented_acquisition`: 91
 - `superseded_by_reused_source`: 0
 - `not_yet_implemented`: 0
 
@@ -154,7 +154,7 @@ Silver transformations included: **no**.
 - [ ] `ug-nda-safety` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `us-cms-mdrp` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `us-cms-nadac` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
-- [x] `us-fda-drug-shortages` — `landed_and_evidenced`; verify receipt freshness on schedule.
+- [ ] `us-fda-drug-shortages` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [x] `us-fda-recalls-notices` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `us-gsrs-unii` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `za-sahpra-register` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
