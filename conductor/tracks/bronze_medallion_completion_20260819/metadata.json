@@ -36,6 +36,7 @@
     "https://github.com/edithatogo/global-medicines-atlas/issues/295",
     "https://github.com/edithatogo/global-medicines-atlas/issues/299",
     "https://github.com/edithatogo/global-medicines-atlas/issues/302"
+    ,"https://github.com/edithatogo/global-medicines-atlas/issues/308"
   ],
   "requirements": [
     "M-001",
@@ -74,5 +75,5 @@
   ],
   "track_id": "bronze_medallion_completion_20260819",
   "type": "feature",
-  "updated_at": "2026-08-22T05:18:00+10:00"
+  "updated_at": "2026-08-22T07:20:00+10:00"
 }

@@ -494,12 +494,13 @@ for credentialed or rights-unresolved sources.
 
 ## Phase 10: Reproducible Manual Acquisition Recipes and Receipts
 
-- [ ] Task: Add deterministic, rights- and reuse-gated manual acquisition contracts
+- [x] Task: Add deterministic, rights- and reuse-gated manual acquisition contracts ([#308](https://github.com/edithatogo/global-medicines-atlas/issues/308))
     - [x] Generate one versioned recipe per current manual-only queue item without duplicating the queue
     - [x] Add receipt schema, redaction, deterministic identity, file hashing, and explicit blocked/unavailable states
     - [x] Provide offline list, bounded-session initialization, and receipt-validation CLI workflow
     - [x] Require pinned discovery snapshots and permitted rights before completion
-    - [ ] Validate handoff through the ordinary B1/B2 landing path and record hosted merge evidence
+    - [x] Validate handoff through the ordinary B1/B2 landing adapter contract and record hosted merge evidence
+    - [x] Record PR [#309](https://github.com/edithatogo/global-medicines-atlas/pull/309) head `587d253fb6d04cb8d3e64078e1c9eefe919da309`, all required hosted checks green, and merged SHA `a45cb7a2ac6080789c59dd1bc1f75f46096f8191`
 
 ## Phase 10: Pinned Reuse Discovery Snapshot
 
