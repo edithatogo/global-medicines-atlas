@@ -22,7 +22,7 @@ from pydantic import AnyUrl, Field, model_validator
 
 from sources.nz.nzulm_fhir import (
     FhirResourceRecord,
-    load_upstream_fixture_records,
+    load_synthetic_fixture_records,
 )
 
 from .adapters.au_pbs import project_pbs_xml
@@ -625,7 +625,7 @@ def _build_pmda_cohort(project_root: Path) -> AdapterCohort:
 
 
 def _build_nzmt_cohort(project_root: Path) -> AdapterCohort:
-    source_root = project_root / "vendor/nzmedicines"
+    source_root = project_root / "tests/fixtures/nz"
     native = tuple(
         replace(
             item,
@@ -633,26 +633,26 @@ def _build_nzmt_cohort(project_root: Path) -> AdapterCohort:
                 _portable_fixture_bytes(source_root / item.source_path)
             ).hexdigest(),
         )
-        for item in load_upstream_fixture_records(project_root)
+        for item in load_synthetic_fixture_records(project_root)
         if item.resource_type == "Medication"
     )
     records = project_nz_fhir_records(native)
-    native_by_id = {f"nzmt:{item.resource_id}": item for item in native}
+    native_by_id = {item.resource_id: item for item in native}
     cases = tuple(
         MigrationCase(
             record=record,
             projection=_nzmt_projection(
-                record, native_by_id[record.concept.concept_id]
+                record, native_by_id[record.concept.identifiers[0].value]
             ),
         )
         for record in records
     )
     fixture_paths = {source_root / item.source_path for item in native}
     return AdapterCohort(
-        cohort_id="new-zealand-nzulm-nzmt-preserved",
+        cohort_id="new-zealand-nzmt-synthetic",
         jurisdiction="NZ",
-        source_ids=("nzmedicines-fixtures",),
-        evidence_class="preserved_upstream_fixture",
+        source_ids=("nzmt-synthetic-fixtures",),
+        evidence_class="synthetic_local_fixture",
         fixtures=tuple(
             _fixture_artifact(project_root, path)
             for path in sorted(fixture_paths)
@@ -667,7 +667,7 @@ def _build_nzmt_cohort(project_root: Path) -> AdapterCohort:
         ),
         cases=cases,
         limitations=(
-            "The preserved nzmedicines commit is a bounded fixture snapshot, not a current or complete NZULM distribution.",
+            "The first-party synthetic cohort tests FHIR structure only; it contains no NZULM distribution rows.",
             "The canonical-v1 NZ adapter intentionally emits no regulatory or funding assertions; source FHIR extensions are not promoted by this migration.",
             "Structural identifiers are record-local migration identities, not cross-record ingredient or product deduplication claims.",
             "FHIR projection qualification does not decide NZULM, NZMT, SNOMED CT, NZF, Medsafe, or Pharmac redistribution rights.",

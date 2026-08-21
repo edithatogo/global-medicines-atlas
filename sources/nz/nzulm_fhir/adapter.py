@@ -1,9 +1,4 @@
-"""Read-only adapters for preserved nzmedicines FHIR fixtures.
-
-The preserved upstream snapshot is evidence and test input. This module emits
-small provenance-bearing records without treating FHIR projections as the
-canonical medicines data model.
-"""
+"""Read-only adapters for synthetic NZ medicines FHIR fixtures."""
 
 from __future__ import annotations
 
@@ -16,22 +11,22 @@ from typing import Any, cast
 
 from global_medicines_atlas.logging import get_logger
 
-UPSTREAM_REPOSITORY = "https://github.com/edithatogo/nzmedicines"
-UPSTREAM_COMMIT = "6a8ecfae67f15d635750d11d5f446b93d76c1865"
+SYNTHETIC_FIXTURE_URI = "local://tests/fixtures/nz/nzmt_synthetic_bundle.json"
+SYNTHETIC_FIXTURE_VERSION = "gma-nzmt-synthetic-v1"
 LOGGER = get_logger("nz.fhir", component="nz-fhir-adapter", jurisdiction="NZL")
 
 
 @dataclass(frozen=True, slots=True)
 class FhirResourceRecord:
-    """A source-native FHIR fixture with immutable upstream provenance."""
+    """A FHIR fixture with explicit source provenance."""
 
     resource_type: str
     resource_id: str
     resource: Mapping[str, Any]
     source_path: str
     source_sha256: str
-    source_repository: str = UPSTREAM_REPOSITORY
-    source_commit: str = UPSTREAM_COMMIT
+    source_repository: str = SYNTHETIC_FIXTURE_URI
+    source_commit: str = SYNTHETIC_FIXTURE_VERSION
 
 
 def _sha256(path: Path) -> str:
@@ -72,7 +67,11 @@ def _resource_dicts(document: object) -> Iterator[Mapping[str, Any]]:
 
 
 def iter_fhir_resources(
-    paths: Iterable[Path], *, source_root: Path
+    paths: Iterable[Path],
+    *,
+    source_root: Path,
+    source_repository: str = SYNTHETIC_FIXTURE_URI,
+    source_version: str = SYNTHETIC_FIXTURE_VERSION,
 ) -> Iterator[FhirResourceRecord]:
     """Yield unique FHIR resources from source-native documents and bundles."""
     seen: set[tuple[str, str]] = set()
@@ -105,17 +104,15 @@ def iter_fhir_resources(
                 resource=resource,
                 source_path=source_path,
                 source_sha256=source_sha256,
+                source_repository=source_repository,
+                source_commit=source_version,
             )
 
 
-def load_upstream_fixture_records(
+def load_synthetic_fixture_records(
     project_root: Path,
 ) -> tuple[FhirResourceRecord, ...]:
-    """Load preserved upstream JSON fixtures from the immutable vendor snapshot."""
-    source_root = project_root / "vendor" / "nzmedicines"
-    paths = (
-        path
-        for path in source_root.rglob("*.json")
-        if path.name != "nzmedicines.import.json"
-    )
+    """Load the minimal first-party synthetic NZMT-shaped fixture cohort."""
+    source_root = project_root / "tests" / "fixtures" / "nz"
+    paths = (source_root / "nzmt_synthetic_bundle.json",)
     return tuple(iter_fhir_resources(paths, source_root=source_root))

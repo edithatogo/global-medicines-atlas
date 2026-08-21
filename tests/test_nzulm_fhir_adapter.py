@@ -1,4 +1,4 @@
-"""Contract tests for the preserved nzmedicines FHIR fixture adapter."""
+"""Contract tests for the synthetic NZ medicines FHIR fixture adapter."""
 
 from __future__ import annotations
 
@@ -9,29 +9,29 @@ import pytest
 
 from sources.nz.nzulm_fhir import (
     iter_fhir_resources,
-    load_upstream_fixture_records,
+    load_synthetic_fixture_records,
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_upstream_snapshot_has_expected_unique_fhir_resources() -> None:
-    records = load_upstream_fixture_records(PROJECT_ROOT)
+def test_synthetic_fixture_has_expected_unique_fhir_resources() -> None:
+    records = load_synthetic_fixture_records(PROJECT_ROOT)
 
-    assert len(records) == 51
+    assert len(records) == 4
     assert (
         len({(record.resource_type, record.resource_id) for record in records})
-        == 51
+        == 4
     )
     assert Counter(record.resource_type for record in records) == {
-        "Medication": 42,
-        "Bundle": 3,
-        "DocumentReference": 4,
-        "Substance": 2,
+        "Medication": 3,
+        "Bundle": 1,
     }
     assert all(
-        record.source_commit == "6a8ecfae67f15d635750d11d5f446b93d76c1865"
-        for record in records
+        record.source_commit == "gma-nzmt-synthetic-v1" for record in records
+    )
+    assert all(
+        record.resource_id.startswith("gma-synthetic-") for record in records
     )
     assert all(len(record.source_sha256) == 64 for record in records)
 

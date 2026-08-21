@@ -24,6 +24,7 @@ APPROVED_FILES = (
     "src/global_medicines_atlas/nz.py",
     "tests/fixtures/adapters/nz_medsafe_registry.csv",
     "tests/fixtures/adapters/nz_pharmac_schedule.xml",
+    "tests/fixtures/nz/nzmt_synthetic_bundle.json",
     "tests/test_canonical_nz_adapter.py",
     "tests/test_nzulm_fhir_adapter.py",
     "tests/test_nzulm_fhir_properties.py",
@@ -66,8 +67,7 @@ def build_manifest() -> dict[str, Any]:
         "source_family_decisions": {
             "nzmedicines_git_bundle": "local_only_not_redistributed",
             "nzmedicines_vendor_snapshot": (
-                "excluded_from_this_manifest; historical public Git exposure "
-                "requires a separate remediation decision"
+                "removed_from_current_tree; historical Git exposure disclosed"
             ),
             "nzulm_nzmt": "local_only_pending_written_licensor_clearance",
             "nzf": "linked_content_excluded; structure_only_code_is_approved",
