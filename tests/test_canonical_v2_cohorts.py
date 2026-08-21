@@ -70,8 +70,8 @@ def test_text_fixture_identity_is_checkout_eol_independent(
 def test_representative_cohorts_are_measured_without_global_overclaim() -> None:
     receipt = _receipt().receipt
 
-    assert receipt.measured_records == 46
-    assert receipt.migrated_records == 43
+    assert receipt.measured_records == 7
+    assert receipt.migrated_records == 4
     assert receipt.blocked_records == 3
     assert receipt.all_migrated_round_trips_exact
     assert receipt.complete_global_coverage is False
@@ -82,12 +82,12 @@ def test_representative_cohorts_are_measured_without_global_overclaim() -> None:
 def test_nzulm_nzmt_and_pmda_explicit_structure_migrate() -> None:
     cohorts = {item.cohort_id: item for item in _receipt().receipt.cohorts}
 
-    nzmt = cohorts["new-zealand-nzulm-nzmt-preserved"]
-    assert nzmt.measured_records == 42
-    assert nzmt.migrated_records == 42
+    nzmt = cohorts["new-zealand-nzmt-synthetic"]
+    assert nzmt.measured_records == 3
+    assert nzmt.migrated_records == 3
     assert nzmt.blocked_records == 0
-    assert len(nzmt.fixtures) == 14
-    assert nzmt.evidence_class == "preserved_upstream_fixture"
+    assert len(nzmt.fixtures) == 1
+    assert nzmt.evidence_class == "synthetic_local_fixture"
 
     pmda = cohorts["japan-pmda-representative"]
     assert pmda.measured_records == 1
@@ -142,7 +142,7 @@ def test_every_eligible_projection_validates_against_schema_v2() -> None:
             migrated = migrate_record_v1_to_v2(case.record, case.projection)
             validator.validate(migrated.model_dump(mode="json"))
 
-    assert eligible == 43
+    assert eligible == 4
 
 
 @pytest.mark.smoke
@@ -230,7 +230,7 @@ def test_blocked_record_requires_only_a_reason() -> None:
     ("mutation", "message"),
     [
         ("sources", "source identifiers"),
-        ("fixtures", "fixture artifacts"),
+        ("fixtures", "at least 1 item"),
         ("records", "record results"),
         ("measured", "measured record count"),
         ("disposition", "disposition counts"),
@@ -244,13 +244,13 @@ def test_cohort_summary_rejects_incoherent_measurements(
     cohort = next(
         item
         for item in _receipt().receipt.cohorts
-        if item.cohort_id == "new-zealand-nzulm-nzmt-preserved"
+        if item.cohort_id == "new-zealand-nzmt-synthetic"
     )
     payload = cohort.model_dump(mode="json")
     if mutation == "sources":
         payload["source_ids"] = ["z-source", "a-source"]
     elif mutation == "fixtures":
-        payload["fixtures"] = list(reversed(payload["fixtures"]))
+        payload["fixtures"] = []
     elif mutation == "records":
         payload["records"] = list(reversed(payload["records"]))
     elif mutation == "measured":
@@ -353,7 +353,7 @@ def test_projection_helpers_reject_absent_or_malformed_native_fields() -> None:
     nz_case = next(
         cohort.cases[0]
         for cohort in _cohorts()
-        if cohort.cohort_id == "new-zealand-nzulm-nzmt-preserved"
+        if cohort.cohort_id == "new-zealand-nzmt-synthetic"
     )
     no_identifier = nz_case.record.model_copy(
         update={
@@ -408,7 +408,7 @@ def test_nzmt_projection_rejects_missing_ingredient_structure(
     nz_case = next(
         cohort.cases[0]
         for cohort in _cohorts()
-        if cohort.cohort_id == "new-zealand-nzulm-nzmt-preserved"
+        if cohort.cohort_id == "new-zealand-nzmt-synthetic"
     )
     native = FhirResourceRecord(
         resource_type="Medication",

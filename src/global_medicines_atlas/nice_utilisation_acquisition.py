@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import date
-from typing import Literal
+from typing import Final, Literal
 
 from pydantic import AnyHttpUrl, Field, model_validator
 
@@ -106,3 +106,165 @@ class NICEUtilisationAuthorization(FrozenModel):
             raise PermissionError(
                 "NICE-utilisation payload acquisition decision is pending"
             )
+
+
+class NICEUtilisationArtifact(FrozenModel):
+    """One exact first-party file in the approved private corpus."""
+
+    release_label: Literal["2008", "2009", "2010-and-2011", "2012"]
+    role: Literal[
+        "report",
+        "tables",
+        "data_quality_statement",
+        "feedback_form",
+        "pre_release_access",
+        "annex",
+    ]
+    url: AnyHttpUrl
+    filename: str = Field(min_length=1)
+    source_record_eligible: bool = False
+    third_party_content_risk: Literal[
+        "declared_in_release",
+        "ancillary_governance_document",
+    ]
+    publication_authorized: Literal[False] = False
+
+    @model_validator(mode="after")
+    def exact_official_file(self) -> NICEUtilisationArtifact:
+        if self.url.host != "files.digital.nhs.uk":
+            raise ValueError(
+                "NICE-utilisation files must stay on the official host"
+            )
+        suffix = self.filename.rsplit(".", 1)[-1].casefold()
+        if suffix not in {"pdf", "xlsx", "doc"}:
+            raise ValueError(
+                "NICE-utilisation file type is outside reviewed scope"
+            )
+        if self.source_record_eligible != (self.role == "tables"):
+            raise ValueError(
+                "only the reviewed workbook is source-record eligible"
+            )
+        return self
+
+
+def _artifact(
+    release_label: Literal["2008", "2009", "2010-and-2011", "2012"],
+    role: Literal[
+        "report",
+        "tables",
+        "data_quality_statement",
+        "feedback_form",
+        "pre_release_access",
+        "annex",
+    ],
+    url: str,
+) -> NICEUtilisationArtifact:
+    filename = url.rsplit("/", 1)[-1]
+    primary = role in {"report", "tables", "annex"}
+    return NICEUtilisationArtifact(
+        release_label=release_label,
+        role=role,
+        url=AnyHttpUrl(url),
+        filename=filename,
+        source_record_eligible=role == "tables",
+        third_party_content_risk=(
+            "declared_in_release"
+            if primary
+            else "ancillary_governance_document"
+        ),
+    )
+
+
+NICE_UTILISATION_ARTIFACTS: Final = (
+    _artifact(
+        "2008",
+        "report",
+        "https://files.digital.nhs.uk/publicationimport/pub01xxx/pub01400/use-nice-app-med-nhs-exp-stat-eng-exp.pdf",
+    ),
+    _artifact(
+        "2008",
+        "pre_release_access",
+        "https://files.digital.nhs.uk/publicationimport/pub01xxx/pub01400/use-nice-app-med-nhs-exp-stat-eng-pra.pdf",
+    ),
+    _artifact(
+        "2008",
+        "annex",
+        "https://files.digital.nhs.uk/publicationimport/pub01xxx/pub01400/use-nice-app-med-nhs-exp-stat-eng-anx.pdf",
+    ),
+    _artifact(
+        "2009",
+        "report",
+        "https://files.digital.nhs.uk/publicationimport/pub01xxx/pub01470/use-nice-app-med-nhs-exp-stat-eng-09-rep.pdf",
+    ),
+    _artifact(
+        "2009",
+        "data_quality_statement",
+        "https://files.digital.nhs.uk/publicationimport/pub01xxx/pub01470/use-nice-app-med-nhs-exp-stat-eng-09-qual.pdf",
+    ),
+    _artifact(
+        "2009",
+        "pre_release_access",
+        "https://files.digital.nhs.uk/publicationimport/pub01xxx/pub01470/use-nice-app-med-nhs-exp-stat-eng-09-pra.pdf",
+    ),
+    _artifact(
+        "2010-and-2011",
+        "report",
+        "https://files.digital.nhs.uk/publicationimport/pub07xxx/pub07985/use-nice-app-med-nhs-exp-stat-eng-10-11-rep.pdf",
+    ),
+    _artifact(
+        "2010-and-2011",
+        "data_quality_statement",
+        "https://files.digital.nhs.uk/publicationimport/pub07xxx/pub07985/use-nice-app-med-nhs-exp-stat-eng-10-11-qual.pdf",
+    ),
+    _artifact(
+        "2010-and-2011",
+        "feedback_form",
+        "https://files.digital.nhs.uk/publicationimport/pub07xxx/pub07985/use-nice-app-med-nhs-exp-stat-eng-10-11-feed.doc",
+    ),
+    _artifact(
+        "2010-and-2011",
+        "pre_release_access",
+        "https://files.digital.nhs.uk/publicationimport/pub07xxx/pub07985/use-nice-app-med-nhs-exp-stat-eng-10-11-pra.pdf",
+    ),
+    _artifact(
+        "2012",
+        "report",
+        "https://files.digital.nhs.uk/publicationimport/pub13xxx/pub13413/use-nice-app-med-nhs-exp-stat-eng-12-rep.pdf",
+    ),
+    _artifact(
+        "2012",
+        "tables",
+        "https://files.digital.nhs.uk/publicationimport/pub13xxx/pub13413/use-nice-app-med-nhs-exp-stat-eng-12-tab.xlsx",
+    ),
+    _artifact(
+        "2012",
+        "data_quality_statement",
+        "https://files.digital.nhs.uk/publicationimport/pub13xxx/pub13413/use-nice-app-med-nhs-exp-stat-eng-12-qual.pdf",
+    ),
+    _artifact(
+        "2012",
+        "feedback_form",
+        "https://files.digital.nhs.uk/publicationimport/pub13xxx/pub13413/use-nice-app-med-nhs-exp-stat-eng-12-fbk.doc",
+    ),
+    _artifact(
+        "2012",
+        "pre_release_access",
+        "https://files.digital.nhs.uk/publicationimport/pub13xxx/pub13413/use-nice-app-med-nhs-exp-stat-eng-12-pra.pdf",
+    ),
+)
+
+
+def inspect_nice_utilisation_payload(filename: str, payload: bytes) -> str:
+    """Verify file extension and conservative source-format magic."""
+    suffix = filename.rsplit(".", 1)[-1].casefold()
+    valid = {
+        "pdf": payload.startswith(b"%PDF-"),
+        "xlsx": payload.startswith(b"PK\x03\x04")
+        and b"xl/workbook.xml" in payload,
+        "doc": payload.startswith(b"\xd0\xcf\x11\xe0"),
+    }
+    if suffix not in valid or not valid[suffix]:
+        raise ValueError(
+            "NICE-utilisation payload does not match declared format"
+        )
+    return suffix

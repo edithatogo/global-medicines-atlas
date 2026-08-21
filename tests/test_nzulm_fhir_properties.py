@@ -1,4 +1,4 @@
-"""Property tests for the preserved NZULM/NZMT FHIR adapter."""
+"""Property tests for the synthetic NZMT-shaped FHIR adapter."""
 
 from __future__ import annotations
 

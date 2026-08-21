@@ -23,7 +23,7 @@ from global_medicines_atlas.nz import (
 )
 from sources.nz.nzulm_fhir import (
     FhirResourceRecord,
-    load_upstream_fixture_records,
+    load_synthetic_fixture_records,
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -31,16 +31,21 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 def test_nz_projection_emits_deterministic_provenance_bearing_records() -> None:
     records = project_nz_fhir_records(
-        load_upstream_fixture_records(PROJECT_ROOT)
+        load_synthetic_fixture_records(PROJECT_ROOT)
     )
 
-    assert len(records) == 42
+    assert len(records) == 3
     assert list(records) == sorted(
         records, key=lambda row: row.concept.concept_id
     )
     assert all(record.concept.jurisdiction == "NZ" for record in records)
     assert all(
-        record.concept.identifiers[0].system == "http://nzmt.org.nz"
+        record.concept.identifiers[0].system
+        == "https://global-medicines-atlas.invalid/synthetic/nzmt"
+        for record in records
+    )
+    assert all(
+        record.concept.concept_id.startswith("nzmt-synthetic:")
         for record in records
     )
     assert all(record.provenance[0].source_sha256 for record in records)
@@ -116,7 +121,7 @@ def test_assertion_cannot_target_a_different_concept() -> None:
 
 def test_canonical_index_is_byte_deterministic(tmp_path: Path) -> None:
     records = project_nz_fhir_records(
-        load_upstream_fixture_records(PROJECT_ROOT)
+        load_synthetic_fixture_records(PROJECT_ROOT)
     )
     first = tmp_path / "first.json"
     second = tmp_path / "second.json"
@@ -125,7 +130,7 @@ def test_canonical_index_is_byte_deterministic(tmp_path: Path) -> None:
     write_canonical_index(reversed(records), second)
 
     assert first.read_bytes() == second.read_bytes()
-    assert len(json.loads(first.read_text(encoding="utf-8"))) == 42
+    assert len(json.loads(first.read_text(encoding="utf-8"))) == 3
 
 
 def test_malformed_optional_fhir_fields_fall_back_without_inference() -> None:

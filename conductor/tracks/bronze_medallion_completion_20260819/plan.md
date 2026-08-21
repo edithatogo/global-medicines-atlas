@@ -251,6 +251,7 @@ before any hot-path rewrite. Python remains orchestration.
     - [x] Inspect truncated downloads, hostile ZIP/tar, decompression bombs, path traversal, MIME mismatch, malformed XML/JSON/CSV, schema poisoning, collisions, source mutation, replays, checksum mismatch, and hostile filenames; land bytes; quarantine processing; keep forensic receipts
     - [x] Land Medsafe, PHARMAC, ARTG, PBS, DPD/NOC, MHRA/NICE, EMA/Union Register, PMDA/NHI, Drugs@FDA, and CMS Part D fixtures (`53b2671`)
     - [x] Leave NZULM bulk, NZHTS, AMT, embargoed PBS, dm+d/TRUD, EMA PMS, SPOR, and live RxNorm payloads excluded
+    - [x] Remove the rights-unresolved `vendor/nzmedicines` snapshot from the current tree and replace its executable qualification dependency with a minimal first-party synthetic FHIR bundle; retain historical inventory metadata and keep NZULM/NZMT coverage unqualified
     - [ ] Complete source-specific rights receipts and live landing evidence for the remaining 136 public/no-credential sources; a catalogue blocker is not landing completion
         - [x] Implement and exercise the Union Register JSON acquisition, source-record projection, clean-room recovery, and private archive machinery against a representative corpus; keep live acquisition disabled pending the maintainer licence decision
         - [x] Record the maintainer's internal-only Union Register licence decision, acquire the official 2026-08-17 JSON snapshot, exercise Bronze and clean-room recovery over all 6,440 source-native records, and verify the private archive checksum; public release remains prohibited
@@ -411,13 +412,13 @@ for credentialed or rights-unresolved sources.
     - [x] Reconstruct all four admitted source-record products and verify their Parquet bytes exactly
     - [x] Create and checksum-verify the 3,927,029,760-byte private archive
     - [x] Keep REMS distinct from approval and pharmacovigilance, preserve the FDA historical-status warning, and keep public redistribution/release/publication fail closed
-- [~] Task: Acquire the discontinued NHS NICE-appraised medicines utilisation series (Prompt 29)
+- [x] Task: Acquire the discontinued NHS NICE-appraised medicines utilisation series (Prompt 29)
     - [x] Resolve the official historic corpus to four releases covering 2008 through 2012
     - [x] Lock release-specific methodology, denominator, amendment, and correction boundaries
     - [x] Keep the successor Innovation Scorecard out of the historic corpus
-    - [ ] Obtain the maintainer's source-specific licensing decision before payload acquisition
-    - [ ] Exercise immutable landing, receipt, source-faithful Bronze projection, clean-room recovery, and private archive verification
-    - [ ] Keep public release and external publication separately gated
+    - [x] Obtain the maintainer's source-specific licensing decision before payload acquisition
+    - [x] Exercise immutable landing, receipt, acquisition-manifest Bronze projection, clean-room recovery, and private archive verification
+    - [x] Keep public release and external publication separately gated
 - [~] Task: Acquire the Netherlands GIP medicine utilisation corpus (Prompt 32)
     - [x] Resolve the official corpus to 28 Farmacie and Add-on CSV releases through 2025
     - [x] Bind stable source titles while treating rotating service download keys as ephemeral transport metadata

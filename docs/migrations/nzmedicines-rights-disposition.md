@@ -17,7 +17,7 @@ is **retain locally / do not redistribute**.
 | `nzmedicines` Git history and `nzmedicines-all.bundle` | Preserved snapshot, commit `6a8ecfae67f15d635750d11d5f446b93d76c1865`; bundle SHA-256 `f4414798f1b35558c69472d86d29b0b83facb2e799c9a20692b62fc889847223`; see [`nzmedicines.md`](./nzmedicines.md) | Provenance is verified; redistribution permission is not established by preservation | Preserve locally as immutable evidence | Do not redistribute the bundle or history in public artefacts | Written rights decision and approved manifest in #51 |
 | NZULM/NZMT hierarchy, relationship, pack, container, and substance inputs | Local inventory records the source family and local-only boundary; used by the NZ adapter | Source terms and redistribution rights require source-specific evidence | Retain locally; use only behind governed adapter contracts | No source payload release, public mirror, or derived release containing restricted fields | Written NZULM/NZMT decision in #51 |
 | Medsafe regulatory product, application, ingredient, package, route, and status data | Inventoried as regulatory inputs, separate from funding assertions | Authority and reuse terms are not inferred from public accessibility | Retain locally; preserve provenance and currentness metadata | No raw or derived public release until source terms and fields are approved | Source-specific review in #51 |
-| NZF monograph/PIL `DocumentReference` fixtures | `vendor/nzmedicines/document-references/`; structure-only FHIR fixtures; referenced content is not captured | Fixture provenance is known; linked NZF content rights/currentness are unresolved | Retain as deterministic adapter fixtures | Do not redistribute linked documents or treat URLs as captured evidence | NZF rights/currentness decision in #51 |
+| Historical NZF monograph/PIL `DocumentReference` fixtures | Recorded in the archived inventory; removed from the current tree | Historical provenance is known; linked NZF content rights/currentness are unresolved | Preserve only local history metadata | Do not redistribute linked documents or treat URLs as captured evidence | NZF rights/currentness decision in #51 |
 | SNOMED CT / AMT mappings and identifiers | Inventoried local mapping inputs; identifiers remain source-native | Terminology licence and access conditions apply independently | Retain locally; transform only under source terms | No terminology payload, unrestricted mapping dump, or public derived claim | Terminology-specific decision in #51 |
 | RxNorm-derived identifiers or mappings | Any local or future RxNorm-derived content is a separate terminology source | U.S. terminology terms and conditions must be verified separately | Retain only the minimum metadata needed for adapter interoperability | No RxNorm payload redistribution without verified terms | RxNorm-specific decision in #51 |
 | PHARMAC/funding, subsidy, prescribing, HML, and PS inputs | Inventoried as funding/formulary inputs and modelled separately from regulatory approval | Funding-source reuse terms and field-level restrictions are not yet evidenced | Retain locally; never infer regulatory approval from funding status | No raw funding payload or unsupported public funding assertion | Funder-specific decision in #51 |
@@ -31,9 +31,9 @@ is **retain locally / do not redistribute**.
 
 1. `global-medicines-atlas` is the canonical implementation and governance
    repository.
-2. The `nzmedicines` snapshot is retained under `vendor/nzmedicines/` for
-   adapter and fixture compatibility, with its source commit and preservation
-   evidence recorded.
+2. The `nzmedicines` snapshot was removed from the current tree after the
+   maintainer approved rights remediation. Its source commit, per-file digests,
+   and local-only bundle identity remain recorded as historical metadata.
 3. The preserved Git bundle is local evidence only and is not part of a public
    release manifest.
 4. Regulatory approval, funding/formulary status, and terminology identity are
@@ -47,9 +47,11 @@ is **retain locally / do not redistribute**.
    the exact hash-bound cohort is recorded in
    `quality/qualifications/nz-public-artifact-manifest-20260821.json`. No
    restricted source bytes or derived restricted fields were approved.
-8. The approved cohort does not cure the historical presence of
-   `vendor/nzmedicines/` in public Git history. Those paths are excluded from
-   the approved manifest and require a separate remediation decision.
+8. The adapter now uses a minimal first-party synthetic FHIR bundle with
+   invented identifiers and labels. It is structural test evidence only and
+   does not qualify NZULM/NZMT coverage.
+9. Removing the current-tree snapshot does not rewrite its historical public
+   Git presence. History rewriting remains outside this bounded remediation.
 
 ## Compatibility decision status
 

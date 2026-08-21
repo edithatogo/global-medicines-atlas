@@ -119,7 +119,7 @@ def _load_nzulm_records(root: Path) -> tuple[object, ...]:
     module = import_module("sources.nz.nzulm_fhir")
     loader = cast(
         "Callable[[Path], tuple[object, ...]]",
-        module.load_upstream_fixture_records,
+        module.load_synthetic_fixture_records,
     )
     return loader(root)
 
@@ -494,9 +494,9 @@ _PROBES = (
         "nz-nzulm-bulk",
         "nz-nzulm-bulk",
         "NZL",
-        ("vendor/nzmedicines",),
+        ("tests/fixtures/nz/nzmt_synthetic_bundle.json",),
         ("sources/nz/nzulm_fhir/adapter.py",),
-        ("sources.nz.nzulm_fhir.adapter:load_upstream_fixture_records",),
+        ("sources.nz.nzulm_fhir.adapter:load_synthetic_fixture_records",),
     ),
 )
 
