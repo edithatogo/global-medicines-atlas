@@ -8,7 +8,7 @@ from typing import Final
 from urllib.parse import parse_qs, urljoin, urlparse
 from zipfile import BadZipFile, ZipFile
 
-from pydantic import AnyHttpUrl, Field
+from pydantic import AnyHttpUrl, Field, TypeAdapter
 
 from .models import FrozenModel
 
@@ -70,7 +70,7 @@ def resolve_open_medic_release(
         raise ValueError("expected one exact official Open Medic archive link")
     return OpenMedicRelease(
         year=year,
-        archive_url=matches[0],
+        archive_url=TypeAdapter(AnyHttpUrl).validate_python(matches[0]),
         filename=f"OPEN_MEDIC_{year}.zip",
     )
 
