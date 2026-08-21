@@ -6,14 +6,14 @@
   "prompt_id": 14,
   "authorization": "quality/qualifications/fda-shortages-live-authorization.json",
   "source_ids": ["us-fda-drug-shortages"],
-  "prompt_audit_qualified_source_ids": ["us-fda-drug-shortages"],
+  "prompt_audit_qualified_source_ids": [],
   "current_bulk_export_complete": true,
   "historical_list_snapshot_inventory_complete": true,
   "historical_list_snapshot_count": 129,
   "historical_detail_capture_inventory_count": 35494,
   "historical_detail_snapshot_coverage_complete": false,
-  "historical_detail_disposition": "no_complete_source_denominator_monthly_lists_are_temporal_corpus",
-  "prompt_complete": true,
+  "historical_detail_disposition": "complete_denominator_not_identified_scope_decision_pending",
+  "prompt_complete": false,
   "internal_retention_authorized": true,
   "public_release_authorized": false,
   "external_publication_performed": false,
@@ -55,7 +55,7 @@
   "limitations": [
     "The complete current openFDA export and all 129 monthly list-page captures inventoried from June 2014 through August 2026 are privately archived.",
     "The delegated archive exposes metadata for 35,494 distinct detail-page payload captures, but no complete historical detail-page denominator was identified in the reviewed official surfaces.",
-    "The maintainer explicitly approved the 129 monthly source lists as the qualified temporal shortage-state corpus; this does not establish complete delegated detail-page coverage.",
+    "Whether the monthly source lists define the qualified temporal shortage-state corpus remains an explicit maintainer scope decision.",
     "Internet Archive payloads and FDA documentation remain internal and quarantined where Bronze integrity or rights review requires it.",
     "Public release and external publication remain separately gated."
   ]
