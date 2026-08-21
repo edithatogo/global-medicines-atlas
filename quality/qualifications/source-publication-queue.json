@@ -2,11 +2,13 @@
   "schema_id": "global-medicines-atlas.source-publication-queue",
   "schema_version": 1,
   "generated_at": "2026-08-21T00:00:00Z",
-  "publication_gate": "pending_exact_manifest_maintainer_approval",
-  "public_eligible_count": 0,
+  "publication_gate": "satisfied_exact_manifest_maintainer_approval",
+  "public_eligible_count": 25,
+  "published_count": 25,
   "candidate_count": 26,
-  "acquisition_evidenced_count": 14,
-  "acquisition_pending_count": 12,
+  "acquisition_evidenced_count": 25,
+  "acquisition_pending_count": 0,
+  "temporarily_unavailable_count": 1,
   "entries": [
     {
       "source_id": "eu-union-register",
@@ -14,107 +16,131 @@
       "candidate_packaging_shape": "source_bytes_candidate",
       "acquisition_state": "evidenced",
       "admission_state": "accepted",
-      "acquisition_evidence": "quality/qualifications/union-register-live-corpus-20260821.json",
-      "next_action": "prepare_exact_manifest_for_human_review"
+      "acquisition_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "fr-bdpm",
       "policy_family_id": "fr-etalab-open-licence-2.0",
       "candidate_packaging_shape": "source_bytes_candidate",
-      "acquisition_state": "pending",
+      "acquisition_state": "evidenced",
       "admission_state": "not_acquired",
-      "acquisition_evidence": null,
-      "next_action": "acquire_with_source_family_adapter"
+      "acquisition_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "fr-bdpm-smr-asmr",
       "policy_family_id": "fr-etalab-open-licence-2.0",
       "candidate_packaging_shape": "source_bytes_candidate",
-      "acquisition_state": "pending",
+      "acquisition_state": "evidenced",
       "admission_state": "not_acquired",
-      "acquisition_evidence": null,
-      "next_action": "acquire_with_source_family_adapter"
+      "acquisition_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "fr-open-medic",
       "policy_family_id": "fr-etalab-open-licence-2.0",
       "candidate_packaging_shape": "source_bytes_candidate",
-      "acquisition_state": "pending",
+      "acquisition_state": "temporarily_unavailable",
       "admission_state": "not_acquired",
-      "acquisition_evidence": null,
-      "next_action": "acquire_with_source_family_adapter"
+      "acquisition_evidence": "quality/qualifications/open-medic-acquisition-failure-20260821.json",
+      "publication_state": "not_published",
+      "publication_evidence": null,
+      "next_action": "retry_source_acquisition"
     },
     {
       "source_id": "gb-emit",
       "policy_family_id": "uk-open-government-licence-3.0",
       "candidate_packaging_shape": "source_bytes_candidate",
-      "acquisition_state": "pending",
+      "acquisition_state": "evidenced",
       "admission_state": "not_acquired",
-      "acquisition_evidence": null,
-      "next_action": "acquire_with_source_family_adapter"
+      "acquisition_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "gb-nhs-drug-tariff",
       "policy_family_id": "nhsbsa-ogl-3.0",
       "candidate_packaging_shape": "source_bytes_candidate",
-      "acquisition_state": "pending",
+      "acquisition_state": "evidenced",
       "admission_state": "not_acquired",
-      "acquisition_evidence": null,
-      "next_action": "acquire_with_source_family_adapter"
+      "acquisition_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "gb-nice-medicines-utilisation",
       "policy_family_id": "nhs-england-ogl-3.0",
       "candidate_packaging_shape": "source_bytes_candidate",
-      "acquisition_state": "pending",
+      "acquisition_state": "evidenced",
       "admission_state": "not_acquired",
-      "acquisition_evidence": null,
-      "next_action": "acquire_with_source_family_adapter"
+      "acquisition_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "global-rxnorm",
       "policy_family_id": "rxnorm-public-identifiers-only",
       "candidate_packaging_shape": "derived_projection_only",
-      "acquisition_state": "pending",
+      "acquisition_state": "evidenced",
       "admission_state": "not_acquired",
-      "acquisition_evidence": null,
-      "next_action": "acquire_with_source_family_adapter"
+      "acquisition_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "nl-gipdatabank",
       "policy_family_id": "nl-zorg-cc0",
       "candidate_packaging_shape": "source_bytes_candidate",
-      "acquisition_state": "pending",
+      "acquisition_state": "evidenced",
       "admission_state": "not_acquired",
-      "acquisition_evidence": null,
-      "next_action": "acquire_with_source_family_adapter"
+      "acquisition_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "nz-pharmac-hml",
       "policy_family_id": "nz-pharmac-cc-by-4.0",
       "candidate_packaging_shape": "source_bytes_candidate",
-      "acquisition_state": "pending",
+      "acquisition_state": "evidenced",
       "admission_state": "not_acquired",
-      "acquisition_evidence": null,
-      "next_action": "acquire_with_source_family_adapter"
+      "acquisition_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "nz-pharmac-schedule",
       "policy_family_id": "nz-pharmac-cc-by-4.0",
       "candidate_packaging_shape": "source_bytes_candidate",
-      "acquisition_state": "pending",
+      "acquisition_state": "evidenced",
       "admission_state": "not_acquired",
-      "acquisition_evidence": null,
-      "next_action": "acquire_with_source_family_adapter"
+      "acquisition_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "nz-pharmac-schedule-xml",
       "policy_family_id": "nz-pharmac-cc-by-4.0",
       "candidate_packaging_shape": "source_bytes_candidate",
-      "acquisition_state": "pending",
+      "acquisition_state": "evidenced",
       "admission_state": "not_acquired",
-      "acquisition_evidence": null,
-      "next_action": "acquire_with_source_family_adapter"
+      "acquisition_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "us-drugsfda",
@@ -122,8 +148,10 @@
       "candidate_packaging_shape": "source_bytes_candidate",
       "acquisition_state": "evidenced",
       "admission_state": "accepted",
-      "acquisition_evidence": "quality/qualifications/us-live-bronze-corpus-20260820.json",
-      "next_action": "prepare_exact_manifest_for_human_review"
+      "acquisition_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "us-fda-drug-shortages",
@@ -131,8 +159,10 @@
       "candidate_packaging_shape": "source_bytes_candidate",
       "acquisition_state": "evidenced",
       "admission_state": "quarantined",
-      "acquisition_evidence": "quality/qualifications/us-live-bronze-corpus-20260820.json",
-      "next_action": "prepare_exact_manifest_for_human_review"
+      "acquisition_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "us-fda-faers",
@@ -140,8 +170,10 @@
       "candidate_packaging_shape": "source_bytes_candidate",
       "acquisition_state": "evidenced",
       "admission_state": "quarantined",
-      "acquisition_evidence": "quality/qualifications/us-live-bronze-corpus-20260820.json",
-      "next_action": "prepare_exact_manifest_for_human_review"
+      "acquisition_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "us-fda-ndc-directory",
@@ -149,8 +181,10 @@
       "candidate_packaging_shape": "source_bytes_candidate",
       "acquisition_state": "evidenced",
       "admission_state": "quarantined",
-      "acquisition_evidence": "quality/qualifications/us-live-bronze-corpus-20260820.json",
-      "next_action": "prepare_exact_manifest_for_human_review"
+      "acquisition_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "us-fda-nsde",
@@ -158,8 +192,10 @@
       "candidate_packaging_shape": "source_bytes_candidate",
       "acquisition_state": "evidenced",
       "admission_state": "accepted",
-      "acquisition_evidence": "quality/qualifications/us-live-bronze-corpus-20260820.json",
-      "next_action": "prepare_exact_manifest_for_human_review"
+      "acquisition_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "us-fda-orange-book",
@@ -167,8 +203,10 @@
       "candidate_packaging_shape": "source_bytes_candidate",
       "acquisition_state": "evidenced",
       "admission_state": "accepted",
-      "acquisition_evidence": "quality/qualifications/us-live-bronze-corpus-20260820.json",
-      "next_action": "prepare_exact_manifest_for_human_review"
+      "acquisition_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "us-fda-recalls-notices",
@@ -176,8 +214,10 @@
       "candidate_packaging_shape": "source_bytes_candidate",
       "acquisition_state": "evidenced",
       "admission_state": "quarantined",
-      "acquisition_evidence": "quality/qualifications/us-live-bronze-corpus-20260820.json",
-      "next_action": "prepare_exact_manifest_for_human_review"
+      "acquisition_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "us-fda-rems",
@@ -185,8 +225,10 @@
       "candidate_packaging_shape": "source_bytes_candidate",
       "acquisition_state": "evidenced",
       "admission_state": "quarantined",
-      "acquisition_evidence": "quality/qualifications/us-live-bronze-corpus-20260820.json",
-      "next_action": "prepare_exact_manifest_for_human_review"
+      "acquisition_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "us-openfda-drugsfda",
@@ -194,8 +236,10 @@
       "candidate_packaging_shape": "source_bytes_candidate",
       "acquisition_state": "evidenced",
       "admission_state": "accepted",
-      "acquisition_evidence": "quality/qualifications/us-live-bronze-corpus-20260820.json",
-      "next_action": "prepare_exact_manifest_for_human_review"
+      "acquisition_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "us-openfda-enforcement",
@@ -203,8 +247,10 @@
       "candidate_packaging_shape": "source_bytes_candidate",
       "acquisition_state": "evidenced",
       "admission_state": "accepted",
-      "acquisition_evidence": "quality/qualifications/us-live-bronze-corpus-20260820.json",
-      "next_action": "prepare_exact_manifest_for_human_review"
+      "acquisition_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "us-openfda-faers",
@@ -212,8 +258,10 @@
       "candidate_packaging_shape": "source_bytes_candidate",
       "acquisition_state": "evidenced",
       "admission_state": "accepted",
-      "acquisition_evidence": "quality/qualifications/us-live-bronze-corpus-20260820.json",
-      "next_action": "prepare_exact_manifest_for_human_review"
+      "acquisition_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "us-openfda-ndc",
@@ -221,8 +269,10 @@
       "candidate_packaging_shape": "source_bytes_candidate",
       "acquisition_state": "evidenced",
       "admission_state": "accepted",
-      "acquisition_evidence": "quality/qualifications/us-live-bronze-corpus-20260820.json",
-      "next_action": "prepare_exact_manifest_for_human_review"
+      "acquisition_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "us-openfda-nsde",
@@ -230,17 +280,21 @@
       "candidate_packaging_shape": "source_bytes_candidate",
       "acquisition_state": "evidenced",
       "admission_state": "accepted",
-      "acquisition_evidence": "quality/qualifications/us-live-bronze-corpus-20260820.json",
-      "next_action": "prepare_exact_manifest_for_human_review"
+      "acquisition_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/fda-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "us-rxnorm-api",
       "policy_family_id": "rxnorm-public-identifiers-only",
       "candidate_packaging_shape": "derived_projection_only",
-      "acquisition_state": "pending",
+      "acquisition_state": "evidenced",
       "admission_state": "not_acquired",
-      "acquisition_evidence": null,
-      "next_action": "acquire_with_source_family_adapter"
+      "acquisition_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     }
   ]
 }

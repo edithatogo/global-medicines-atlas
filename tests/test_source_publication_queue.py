@@ -21,23 +21,38 @@ def test_queue_is_deterministic_and_separates_rights_from_acquisition() -> None:
     assert queue == build()
     assert queue["candidate_count"] == 26
     assert queue["publication_gate"] == (
-        "pending_exact_manifest_maintainer_approval"
+        "satisfied_exact_manifest_maintainer_approval"
     )
-    assert queue["public_eligible_count"] == 0
-    assert queue["acquisition_evidenced_count"] == 14
-    assert queue["acquisition_pending_count"] == 12
+    assert queue["public_eligible_count"] == 25
+    assert queue["published_count"] == 25
+    assert queue["acquisition_evidenced_count"] == 25
+    assert queue["acquisition_pending_count"] == 0
+    assert queue["temporarily_unavailable_count"] == 1
 
 
-def test_evidenced_sources_still_require_exact_manifest_review() -> None:
+def test_published_sources_bind_exact_publication_receipts() -> None:
     entries = cast("list[dict[str, Any]]", _queue()["entries"])
     evidenced = [
         entry for entry in entries if entry["acquisition_state"] == "evidenced"
     ]
-    assert len(evidenced) == 14
+    assert len(evidenced) == 25
     assert all(entry["acquisition_evidence"] for entry in evidenced)
     assert all(
-        entry["next_action"] == "prepare_exact_manifest_for_human_review"
-        for entry in evidenced
+        entry["next_action"] == "monitor_public_revision" for entry in evidenced
+    )
+    assert all(entry["publication_state"] == "published" for entry in evidenced)
+
+
+def test_open_medic_retains_failure_receipt() -> None:
+    entries = {
+        entry["source_id"]: entry
+        for entry in cast("list[dict[str, Any]]", _queue()["entries"])
+    }
+    open_medic = entries["fr-open-medic"]
+    assert open_medic["acquisition_state"] == "temporarily_unavailable"
+    assert open_medic["next_action"] == "retry_source_acquisition"
+    assert open_medic["acquisition_evidence"].endswith(
+        "open-medic-acquisition-failure-20260821.json"
     )
 
 

@@ -6,7 +6,7 @@
   - [x] Capture the exact catalogue census and source-family groupings
   - [x] Add negative tests for missing, duplicate, stale, unsupported, and contradictory decisions
   - [x] Implement deterministic rights evidence and disposition generation
-- [~] Checkpoint: Local focused validation passes; hosted review remains pending
+- [x] Checkpoint: Focused validation and the complete hosted matrix passed in PR #266
 
 ## Phase 2: FDA rights review and proposed public packages
 
@@ -21,7 +21,7 @@
 - [x] Task: Review all international sources against official terms (AC-02, AC-04)
   - [x] Capture bounded official landing-page observations and retain unavailable endpoints as explicit unresolved states
   - [x] Record policy-family assignments; 12 affirmatively reusable sources are publicly archived and Open Medic retains an explicit acquisition-failure receipt
-  - [x] Generate a fail-closed candidate acquisition and manifest-preparation queue with zero public-eligible sources
+  - [x] Generate and reconcile the acquisition/publication queue: 25 published sources and one temporary acquisition failure
 - [x] Checkpoint: Rights review is source-specific and fail-closed; unavailable bytes are not represented as archived
 
 ## Phase 4: Public Hugging Face archives
@@ -34,7 +34,13 @@
 
 ## Phase 5: Qualification and closeout
 
-- [ ] Task: Produce the maintainer decision/evidence packet and reconcile Bronze work queues (AC-01–AC-07)
-- [ ] Task: Run focused, routine, strict, and full supported validation (AC-07)
-- [ ] Task: Complete Conductor review and apply all blockers (AC-07)
-- [ ] Task: Open scoped PRs, obtain green hosted checks, merge, archive the track, and leave clean synchronized main (AC-07)
+- [x] Task: Produce the maintainer decision/evidence packet and reconcile Bronze work queues (AC-01–AC-07)
+- [x] Task: Run focused, routine, strict, and full supported validation (AC-07)
+- [x] Task: Complete Conductor review and apply all blockers (AC-07)
+- [~] Task: Open scoped PRs, obtain green hosted checks, merge, archive the track, and leave clean synchronized main (AC-07)
+
+## Review Fixes
+
+- [x] Reconcile the generated publication queue with immutable FDA and international publication receipts (`dc4691c`)
+- [x] Replace stale private-candidate wording in the reproducible FDA dataset card (`dc4691c`)
+- [x] Bind both publication receipts to their exact source-ID sets (`dc4691c`)
