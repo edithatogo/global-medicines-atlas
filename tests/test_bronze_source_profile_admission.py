@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from io import BytesIO
 from pathlib import Path
-from zipfile import ZIP_DEFLATED, ZipFile
 from typing import Any
+from zipfile import ZIP_DEFLATED, ZipFile
 
 import pytest
 from tests.test_source_receipts import source_receipt
