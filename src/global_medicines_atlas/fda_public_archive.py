@@ -1,4 +1,4 @@
-"""Build an exact-manifest public archive from the governed FDA cohort."""
+"""Build an exact-manifest publication candidate from the FDA cohort."""
 
 from __future__ import annotations
 
@@ -35,7 +35,7 @@ SENSITIVE_SOURCE_IDS: Final = frozenset({
 })
 DATASET_CARD: Final = """---
 license: other
-pretty_name: Global Medicines Atlas FDA public source snapshots
+pretty_name: Global Medicines Atlas FDA publication candidate
 language:
 - en
 tags:
@@ -44,18 +44,17 @@ tags:
 - fda
 ---
 
-# FDA public source snapshots
+# FDA publication candidate
 
-This archive preserves a bounded 2026-08-21 acquisition of 13 official FDA
-and openFDA surfaces. It contains source-native bytes plus acquisition and
-admission receipts. It is not a complete historical mirror and is not clinical
-advice.
+This private review candidate contains a bounded 2026-08-21 acquisition of 13
+official FDA and openFDA surfaces, plus acquisition and admission receipts. It
+is not approved for public release, is not a complete historical mirror, and
+is not clinical advice.
 
-United States government works are generally not eligible for domestic
-copyright protection under 17 U.S.C. 105. The archive excludes FDA marks,
-credentials, separately licensed third-party vocabularies, and projected
-records for quarantined payloads. Users must review embedded third-party
-notices and applicable law for their own reuse.
+Official FDA and openFDA policy statements are retained as candidate rights
+evidence only. The package excludes FDA marks, credentials, separately licensed
+third-party vocabularies, and projected records for quarantined payloads. An
+exact-manifest licensing conclusion and publication approval remain pending.
 
 FAERS, enforcement, and recall material is classified as public regulatory
 sensitive data. A report does not establish causation. Do not attempt
@@ -66,8 +65,8 @@ admission limitations are recorded per source.
 """
 
 
-class FdaPublicArchiveEntry(FrozenModel):
-    """One source payload admitted to the public archive."""
+class FdaPublicationCandidateEntry(FrozenModel):
+    """One source payload staged for exact-manifest review."""
 
     source_id: str
     path: str
@@ -78,25 +77,27 @@ class FdaPublicArchiveEntry(FrozenModel):
     sensitivity: str
 
 
-class FdaPublicArchiveManifest(FrozenModel):
-    """Exact public byte manifest and publication boundary."""
+class FdaPublicationCandidateManifest(FrozenModel):
+    """Exact private byte manifest proposed for publication review."""
 
     schema_id: str = "global-medicines-atlas.fda-public-archive"
     schema_version: int = 1
     source_count: int
-    entries: tuple[FdaPublicArchiveEntry, ...]
+    entries: tuple[FdaPublicationCandidateEntry, ...]
     excluded_components: tuple[str, ...]
     coverage_complete: bool = False
     clinical_inference_permitted: bool = False
 
+    publication_approved: bool = False
+
     @model_validator(mode="after")
-    def exact_source_set(self) -> FdaPublicArchiveManifest:
+    def exact_source_set(self) -> FdaPublicationCandidateManifest:
         ids = {entry.source_id for entry in self.entries}
         if ids != set(FDA_SOURCE_IDS) or self.source_count != len(
             FDA_SOURCE_IDS
         ):
             raise ValueError(
-                "FDA archive must contain every approved source once"
+                "FDA candidate must contain every proposed source once"
             )
         if len(ids) != len(self.entries):
             raise ValueError("FDA archive source IDs must be unique")
@@ -111,10 +112,10 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def build_fda_public_archive(
+def build_fda_publication_candidate(
     corpus: Path, output: Path
-) -> FdaPublicArchiveManifest:
-    """Copy only receipt-bound FDA payloads into an exact public package."""
+) -> FdaPublicationCandidateManifest:
+    """Stage receipt-bound FDA payloads for exact-manifest review."""
 
     receipts_path = corpus / "evidence/redacted-acquisition-results.json"
     receipts = json.loads(receipts_path.read_text(encoding="utf-8"))
@@ -128,7 +129,7 @@ def build_fda_public_archive(
     if output.exists():
         raise FileExistsError(output)
     (output / "data").mkdir(parents=True)
-    entries: list[FdaPublicArchiveEntry] = []
+    entries: list[FdaPublicationCandidateEntry] = []
     for source_id in sorted(FDA_SOURCE_IDS):
         candidates = tuple((corpus / "downloads").glob(f"{source_id}.*"))
         if len(candidates) != 1:
@@ -142,7 +143,7 @@ def build_fda_public_archive(
         shutil.copyfile(source, target)
         admission = receipt["admission_state"]
         entries.append(
-            FdaPublicArchiveEntry(
+            FdaPublicationCandidateEntry(
                 source_id=source_id,
                 path=target.relative_to(output).as_posix(),
                 sha256=digest,
@@ -156,7 +157,7 @@ def build_fda_public_archive(
                 ),
             )
         )
-    manifest = FdaPublicArchiveManifest(
+    manifest = FdaPublicationCandidateManifest(
         source_count=len(entries),
         entries=tuple(entries),
         excluded_components=(

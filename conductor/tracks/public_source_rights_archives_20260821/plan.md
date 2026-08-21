@@ -10,11 +10,11 @@
 
 ## Phase 2: FDA rights review and proposed public packages
 
-- [x] Task: Prepare an exact-manifest FDA publication decision with third-party exclusions (AC-03)
+- [~] Task: Prepare an exact-manifest FDA publication decision with third-party exclusions (AC-03)
   - [x] Enumerate every FDA source and bind official FDA/openFDA evidence
   - [x] Separate copyright permission from sensitivity and completeness
-  - [x] Build public packages from acquired and admitted FDA products
-- [x] Checkpoint: Published the exact 13-source package and verified all payload digests after clean restore
+  - [x] Build a private exact-manifest candidate from acquired and admitted FDA products
+- [~] Checkpoint: Candidate digests verified after clean restore; accidental public visibility was contained by making the repository private; exact-manifest licensing and publication approval remain pending
 
 ## Phase 3: International rights review
 

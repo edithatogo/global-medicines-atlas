@@ -10,7 +10,7 @@ import pytest
 
 from global_medicines_atlas.fda_public_archive import (
     FDA_SOURCE_IDS,
-    build_fda_public_archive,
+    build_fda_publication_candidate,
 )
 
 
@@ -36,10 +36,13 @@ def _corpus(root: Path) -> Path:
 
 def test_builds_exact_receipt_bound_archive(tmp_path: Path) -> None:
     output = tmp_path / "public"
-    manifest = build_fda_public_archive(_corpus(tmp_path / "corpus"), output)
+    manifest = build_fda_publication_candidate(
+        _corpus(tmp_path / "corpus"), output
+    )
     assert manifest.source_count == 13
     assert {entry.source_id for entry in manifest.entries} == FDA_SOURCE_IDS
     assert sum(entry.projection_permitted for entry in manifest.entries) == 12
+    assert manifest.publication_approved is False
     assert "re-identification" in (output / "README.md").read_text()
     assert not (
         output / "evidence/us-live-acquisition-authorization.json"
@@ -50,4 +53,4 @@ def test_rejects_digest_mismatch(tmp_path: Path) -> None:
     corpus = _corpus(tmp_path / "corpus")
     next((corpus / "downloads").iterdir()).write_bytes(b"changed")
     with pytest.raises(ValueError, match="digest mismatch"):
-        build_fda_public_archive(corpus, tmp_path / "public")
+        build_fda_publication_candidate(corpus, tmp_path / "public")

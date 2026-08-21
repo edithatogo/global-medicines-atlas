@@ -3,17 +3,19 @@
   "schema_version": 1,
   "observed_at": "2026-08-21T00:41:41Z",
   "dataset": "edithatogo/global-medicines-atlas-fda-public",
-  "public_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-fda-public",
+  "repository_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-fda-public",
   "immutable_revision": "da2e5c9faa7ea9ac84cfed328e776e83af135c3d",
   "manifest_sha256": "92ca4b2e4daa99ef6954f814358aba7c5c0a4f96d16b42953d8b8a780015281b",
   "source_count": 13,
   "accepted_projection_count": 8,
   "quarantined_raw_only_count": 5,
   "payload_digest_verification": "13_of_13_passed_after_clean_restore",
-  "repository_private": false,
+  "publication_status": "contained_private_pending_exact_manifest_approval",
+  "was_public_without_exact_manifest_approval": true,
+  "repository_private": true,
   "repository_gated": false,
-  "rights_basis": [
-    "17_USC_105_US_government_works",
+  "candidate_rights_evidence": [
+    "17_USC_105",
     "FDA_website_policy",
     "openFDA_terms"
   ],
@@ -27,6 +29,7 @@
     "bounded 2026-08-21 snapshots, not complete historical coverage",
     "FAERS, enforcement, and recall data remain public regulatory sensitive",
     "adverse-event reports do not establish causation",
-    "Hugging Face is a public archive, not WORM storage or source truth"
+    "the repository is private and not approved for public release",
+    "Hugging Face is not WORM storage or source truth"
   ]
 }
