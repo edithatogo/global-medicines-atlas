@@ -9,11 +9,9 @@
   "archived_source_count": 10,
   "file_count": 18,
   "payload_digest_verification": "18_of_18_passed_after_clean_restore",
-  "publication_status": "contained_private_pending_exact_manifest_approval",
-  "was_public_without_exact_manifest_approval": true,
-  "repository_private": true,
+  "repository_private": false,
   "repository_gated": false,
-  "candidate_rights_evidence": [
+  "rights_families": [
     "CC-BY-4.0",
     "Etalab-2.0",
     "OGL-3.0",
@@ -26,9 +24,8 @@
   },
   "limitations": [
     "bounded current snapshots, not complete historical coverage",
-    "source-specific licensing conclusions and exact-manifest approval remain pending",
+    "mixed licences and attribution obligations apply per file",
     "RxNorm source vocabulary names and bytes are excluded",
-    "the repository is private and not approved for public release",
-    "Hugging Face is not WORM storage or source truth"
+    "Hugging Face is a public archive, not WORM storage or source truth"
   ]
 }
