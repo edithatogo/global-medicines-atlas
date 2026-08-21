@@ -33,6 +33,19 @@ The pinned Conductor agent plugin is the Git submodule at
   evidentiary truth; source-faithful Parquet is the portable analytical
   representation; table/catalogue layers are rebuildable metadata over those
   artefacts. DuckDB and LanceDB are reproducible derivatives.
+- Bronze has three internal Bronze strata, not additional medallion levels:
+  **B0 Source Index** is the versioned index of agencies, datasets, APIs, and
+  source surfaces, and indexing does not imply acquisition, coverage,
+  qualification, or currency; **B1 Acquisition Metadata** is the append-only
+  acquisition, receipt, temporal, rights, reuse, retrieval, admission, and
+  provenance record; **B2 Raw Evidence** is immutable source-native bytes or a
+  rights-constrained immutable reference when bytes cannot lawfully be
+  retained. Source-faithful Parquet, archive-member manifests, OpenLineage,
+  Iceberg, DuckDB, and other query/catalogue objects are rebuildable Bronze
+  projections over B1/B2, not a fourth evidentiary source of truth. Silver
+  remains source-faithful typed or harmonised structures; Gold remains
+  cross-jurisdiction matched evidence; Platinum remains products and
+  presentation.
 - Never inspect, commit, log, or publish credentials or restricted source bytes.
 - Preserve dirty work and imported history; do not use destructive Git recovery.
 

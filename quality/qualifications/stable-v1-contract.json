@@ -784,6 +784,17 @@
         "tests/test_bronze_storage.py"
       ],
       "blocker_ids": []
+    },
+    {
+      "requirement_id": "M-103",
+      "state": "verified",
+      "evidence": [
+        "conductor/requirements.md",
+        "conductor/design.md",
+        "conductor/glossary.md",
+        "tests/test_medallion_datahouse_contract.py"
+      ],
+      "blocker_ids": []
     }
   ],
   "maturity_dimensions": [

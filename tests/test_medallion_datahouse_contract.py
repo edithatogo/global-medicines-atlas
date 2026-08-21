@@ -20,6 +20,7 @@ BRONZE_MUST = {
     "M-100",
     "M-101",
     "M-102",
+    "M-103",
 }
 BRONZE_SHOULD = {"S-011", "S-012", "S-013"}
 BRONZE_WONT = {"W-007", "W-008", "W-009"}
@@ -29,6 +30,14 @@ TRUTH = (
     "evidentiary truth; source-faithful parquet is the portable analytical "
     "representation; table/catalogue layers are rebuildable metadata over "
     "those artefacts."
+)
+STRATA_DOCUMENTS = (
+    "AGENTS.md",
+    "conductor/product.md",
+    "conductor/requirements.md",
+    "conductor/design.md",
+    "conductor/glossary.md",
+    "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
 )
 
 
@@ -108,6 +117,39 @@ def test_agents_and_tech_stack_lock_the_three_way_truth_split() -> None:
     assert "Arrow/Parquet is portable truth" not in agents
 
 
+def test_bronze_three_strata_and_authority_boundaries_are_consistent() -> None:
+    required = (
+        "B0 Source Index",
+        "B1 Acquisition Metadata",
+        "B2 Raw Evidence",
+        "internal Bronze strata, not additional medallion levels",
+        "indexing does not imply acquisition, coverage, qualification, or currency",
+        "rights-constrained immutable reference",
+        "not a fourth evidentiary source of truth",
+        "Silver remains source-faithful typed or harmonised structures",
+        "Gold remains cross-jurisdiction matched evidence",
+        "Platinum remains products and presentation",
+    )
+
+    for relative in STRATA_DOCUMENTS:
+        document = _folded(_text(relative))
+        for phrase in required:
+            assert phrase.casefold() in document, (
+                f"{relative}: missing {phrase}"
+            )
+
+    design = _text("conductor/design.md")
+    for projection in (
+        "Source-faithful Parquet",
+        "archive-member manifests",
+        "OpenLineage",
+        "Iceberg",
+        "DuckDB",
+    ):
+        assert projection in design
+    assert "B3" not in design
+
+
 def test_bronze_track_artifacts_are_complete_and_tdd_shaped() -> None:
     metadata = json.loads((TRACK / "metadata.json").read_text(encoding="utf-8"))
     spec = (TRACK / "spec.md").read_text(encoding="utf-8")
@@ -122,6 +164,7 @@ def test_bronze_track_artifacts_are_complete_and_tdd_shaped() -> None:
     assert metadata["status"] in {"new", "active", "in_progress"}
     assert metadata["github_issue"].endswith("/issues/167")
     assert set(metadata["requirements"]) >= BRONZE_MUST
+    assert metadata["github_subissues"][-1].endswith("/issues/275")
     assert "Write failing tests" in plan
     assert plan.count("Write failing tests") >= 8
     assert plan.count(failure_note) >= 8
