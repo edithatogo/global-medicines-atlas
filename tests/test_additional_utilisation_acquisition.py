@@ -66,7 +66,7 @@ def _canada(*, open_data: bool = True) -> bytes:
         if open_data
         else ""
     )
-    return ("NHEX trends data" + links).encode()
+    return ("<p>NHEX trends data</p>" + links).encode()
 
 
 def _ireland(*, report: bool = True) -> bytes:
@@ -129,6 +129,13 @@ def test_authorization_rejects_source_identity_drift() -> None:
         AdditionalUtilisationAuthorization.model_validate(raw)
 
 
+def test_approved_public_source_requires_complete_authority() -> None:
+    raw = _raw()
+    _sources(raw)[0]["external_publication_authorized"] = False
+    with pytest.raises(ValidationError, match="requires complete authority"):
+        AdditionalUtilisationAuthorization.model_validate(raw)
+
+
 def test_open_medic_inventory_is_exact() -> None:
     inventory = parse_open_medic_inventory(_open_medic())
     assert inventory.years == tuple(range(2014, 2026))
@@ -148,6 +155,15 @@ def test_open_medic_inventory_rejects_drift(
 ) -> None:
     with pytest.raises(ValueError, match=message):
         parse_open_medic_inventory(payload)
+
+
+def test_open_medic_inventory_rejects_missing_and_count_drift() -> None:
+    with pytest.raises(TypeError, match="resources missing"):
+        parse_open_medic_inventory(b'{"license":"fr-lo","resources":{}}')
+    raw = json.loads(_open_medic())
+    cast("list[object]", raw["resources"]).pop()
+    with pytest.raises(ValueError, match="resource inventory"):
+        parse_open_medic_inventory(json.dumps(raw).encode())
 
 
 def test_japan_public_surface_is_interactive_aggregate() -> None:
