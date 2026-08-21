@@ -16,4 +16,6 @@ with native phase subissues
 [#177](https://github.com/edithatogo/global-medicines-atlas/issues/177)
 (temporal identity), and
 [#275](https://github.com/edithatogo/global-medicines-atlas/issues/275)
-(B0/B1/B2 internal strata contract).
+(B0/B1/B2 internal strata contract), and
+[#281](https://github.com/edithatogo/global-medicines-atlas/issues/281)
+(deterministic B0 Source Index layer).

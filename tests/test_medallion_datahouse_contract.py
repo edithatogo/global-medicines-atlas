@@ -164,7 +164,9 @@ def test_bronze_track_artifacts_are_complete_and_tdd_shaped() -> None:
     assert metadata["status"] in {"new", "active", "in_progress"}
     assert metadata["github_issue"].endswith("/issues/167")
     assert set(metadata["requirements"]) >= BRONZE_MUST
-    assert metadata["github_subissues"][-1].endswith("/issues/275")
+    subissues = set(metadata["github_subissues"])
+    assert any(item.endswith("/issues/275") for item in subissues)
+    assert any(item.endswith("/issues/281") for item in subissues)
     assert "Write failing tests" in plan
     assert plan.count("Write failing tests") >= 8
     assert plan.count(failure_note) >= 8
