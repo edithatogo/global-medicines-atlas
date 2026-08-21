@@ -492,6 +492,13 @@ for credentialed or rights-unresolved sources.
 - [x] Context validation recognizes the glossary as required project context
 - [x] Required hosted checks pass at the exact pull-request head before merge
 
+## Phase 10: Pinned Reuse Discovery Snapshot
+
+- [ ] Task: Bind pre-acquisition reuse decisions to deterministic discovery snapshots ([#302](https://github.com/edithatogo/global-medicines-atlas/issues/302), parent #167)
+    - [ ] Record required surfaces, queries, revisions, candidate digests, availability, freshness, and snapshot ID
+    - [ ] Fail closed for stale, skipped, unavailable, or incomplete discovery when choosing `acquire-new`
+    - [ ] Provide offline refresh/reconstruction, schema, documentation, and contract tests without copying source bytes
+
 ## Phase 10: Source-profile-aware Bronze admission
 
 - [x] Task: Add a versioned source-profile admission stage after generic integrity ([#299](https://github.com/edithatogo/global-medicines-atlas/issues/299))

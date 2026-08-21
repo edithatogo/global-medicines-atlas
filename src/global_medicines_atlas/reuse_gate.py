@@ -10,11 +10,14 @@ from __future__ import annotations
 
 import tomllib
 from collections.abc import Callable, Iterable, Mapping, Sequence
+from datetime import UTC, datetime, timedelta
 from enum import StrEnum
+from hashlib import sha256
 from pathlib import Path
 from typing import Literal, cast
 
-from pydantic import Field
+import orjson
+from pydantic import AwareDatetime, Field, model_validator
 
 from .models import FrozenModel
 from .source_catalog import MedicineDataSource, load_source_catalog
@@ -67,6 +70,14 @@ class ReuseCandidateKind(StrEnum):
     RELATED = "related"
 
 
+class DiscoverySurfaceState(StrEnum):
+    """Outcome of one required discovery surface."""
+
+    SUCCESS = "success"
+    UNAVAILABLE = "unavailable"
+    INCOMPLETE = "incomplete"
+
+
 class ReuseCandidate(FrozenModel):
     """One hit from a required search surface."""
 
@@ -75,6 +86,80 @@ class ReuseCandidate(FrozenModel):
     source_id: str = Field(min_length=1)
     kind: ReuseCandidateKind
     digest: str | None = None
+    query: str | None = None
+    revision: str | None = None
+
+
+class DiscoverySurface(FrozenModel):
+    """Pinned result for one discovery surface."""
+
+    name: SurfaceName
+    state: DiscoverySurfaceState
+    query: str = Field(min_length=1)
+    candidates: tuple[ReuseCandidate, ...] = ()
+    detail: str | None = None
+
+
+class ReuseDiscoverySnapshot(FrozenModel):
+    """Content-addressed, freshness-bounded search observation."""
+
+    schema_id: Literal["global-medicines-atlas.reuse-discovery"] = (
+        "global-medicines-atlas.reuse-discovery"
+    )
+    schema_version: Literal[1] = 1
+    snapshot_id: str = Field(default="", pattern=r"^sha256:[0-9a-f]{64}$|^")
+    source_id: str = Field(min_length=1)
+    generated_at: AwareDatetime
+    freshness_seconds: int = Field(gt=0)
+    expires_at: AwareDatetime | None = None
+    tool_version: str = Field(min_length=1)
+    surfaces: tuple[DiscoverySurface, ...] = ()
+
+    @model_validator(mode="after")
+    def bind_snapshot_identity(self) -> ReuseDiscoverySnapshot:
+        names = [surface.name for surface in self.surfaces]
+        if len(names) != len(set(names)):
+            raise ValueError("discovery snapshot surfaces must be unique")
+        if set(names) != set(SEARCH_SURFACES):
+            raise ValueError(
+                "discovery snapshot must include every search surface"
+            )
+        expected_expiry = self.generated_at + timedelta(
+            seconds=self.freshness_seconds
+        )
+        if self.expires_at is None:
+            object.__setattr__(self, "expires_at", expected_expiry)  # ruff: ignore[unnecessary-dunder-call]
+        elif self.expires_at != expected_expiry:
+            raise ValueError(
+                "snapshot expiry must bind generated_at and freshness"
+            )
+        expected = self.recompute_snapshot_id()
+        if self.snapshot_id and self.snapshot_id != expected:
+            raise ValueError("snapshot_id does not bind snapshot contents")
+        object.__setattr__(self, "snapshot_id", expected)  # ruff: ignore[unnecessary-dunder-call]
+        return self
+
+    def recompute_snapshot_id(self) -> str:
+        material = self.model_dump(mode="json", exclude={"snapshot_id"})
+        return (
+            "sha256:"
+            + sha256(
+                orjson.dumps(material, option=orjson.OPT_SORT_KEYS)
+            ).hexdigest()
+        )
+
+    def is_stale(self, now: datetime | None = None) -> bool:
+        """Return true once the pinned freshness window has elapsed."""
+
+        current = now or datetime.now(UTC)
+        return current > cast("datetime", self.expires_at)
+
+    def failed_surfaces(self) -> tuple[DiscoverySurface, ...]:
+        return tuple(
+            surface
+            for surface in self.surfaces
+            if surface.state is not DiscoverySurfaceState.SUCCESS
+        )
 
 
 class ReuseGateDecision(FrozenModel):
@@ -86,6 +171,7 @@ class ReuseGateDecision(FrozenModel):
     candidates: tuple[ReuseCandidate, ...]
     rationale: str = Field(min_length=1)
     catalogue_revision: str = HF_CATALOGUE_REVISION
+    discovery_snapshot: ReuseDiscoverySnapshot | None = None
 
     @property
     def payload_candidates(self) -> tuple[ReuseCandidate, ...]:
@@ -95,6 +181,14 @@ class ReuseGateDecision(FrozenModel):
             item
             for item in self.candidates
             if item.kind is ReuseCandidateKind.PAYLOAD
+        )
+
+    @property
+    def discovery_snapshot_id(self) -> str | None:
+        return (
+            None
+            if self.discovery_snapshot is None
+            else self.discovery_snapshot.snapshot_id
         )
 
 
@@ -335,6 +429,108 @@ def search_source_registry(
     return tuple(hits)
 
 
+def _surface(
+    name: SurfaceName,
+    source_id: str,
+    candidates: tuple[ReuseCandidate, ...],
+    *,
+    available: bool,
+    detail: str | None = None,
+) -> DiscoverySurface:
+    return DiscoverySurface(
+        name=name,
+        state=DiscoverySurfaceState.SUCCESS
+        if available
+        else DiscoverySurfaceState.UNAVAILABLE,
+        query=source_id,
+        candidates=tuple(
+            candidate.model_copy(update={"query": source_id})
+            for candidate in candidates
+        ),
+        detail=detail,
+    )
+
+
+def build_discovery_snapshot(
+    source_id: str,
+    *,
+    repository_root: Path,
+    catalog: Iterable[MedicineDataSource] | None = None,
+    huggingface_index: HuggingFaceIndex | None = None,
+    github_index: GitHubIndex | None = None,
+    generated_at: datetime | None = None,
+    freshness_seconds: int = 86_400,
+    tool_version: str = "global-medicines-atlas/reuse-gate-v1",
+) -> ReuseDiscoverySnapshot:
+    """Build a deterministic snapshot; ``None`` means a surface was unavailable."""
+
+    if not source_id.strip():
+        raise ValueError("source_id is required")
+    try:
+        ecosystem = load_ecosystem_document(repository_root)
+    except FileNotFoundError:
+        ecosystem = {}
+    local = search_local_clones(
+        source_id, repository_root=repository_root, ecosystem=ecosystem
+    )
+    registry = search_source_registry(source_id, catalog=catalog)
+    github = search_github_repos(
+        source_id, ecosystem=ecosystem, github_index=github_index or {}
+    )
+    hugging_face = search_hugging_face(
+        source_id,
+        ecosystem=ecosystem,
+        huggingface_index=huggingface_index or {},
+    )
+    surfaces = (
+        _surface("local_clones", source_id, local, available=True),
+        _surface(
+            "github",
+            source_id,
+            github,
+            available=github_index is not None,
+            detail=None
+            if github_index is not None
+            else "search surface not supplied",
+        ),
+        _surface(
+            "hugging_face",
+            source_id,
+            hugging_face,
+            available=huggingface_index is not None,
+            detail=None
+            if huggingface_index is not None
+            else "search surface not supplied",
+        ),
+        _surface("source_registry", source_id, registry, available=True),
+    )
+    return ReuseDiscoverySnapshot(
+        source_id=source_id,
+        generated_at=generated_at or datetime.now(UTC),
+        freshness_seconds=freshness_seconds,
+        tool_version=tool_version,
+        surfaces=surfaces,
+    )
+
+
+def write_discovery_snapshot(
+    snapshot: ReuseDiscoverySnapshot, path: Path
+) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(
+        orjson.dumps(
+            snapshot.model_dump(mode="json"), option=orjson.OPT_SORT_KEYS
+        )
+        + b"\n"
+    )
+
+
+def read_discovery_snapshot(path: Path) -> ReuseDiscoverySnapshot:
+    return ReuseDiscoverySnapshot.model_validate(
+        orjson.loads(path.read_bytes())
+    )
+
+
 def choose_disposition(
     candidates: Sequence[ReuseCandidate],
     *,
@@ -381,6 +577,7 @@ def evaluate_reuse_gate(
     huggingface_index: HuggingFaceIndex | None = None,
     github_index: GitHubIndex | None = None,
     requested: ReuseDisposition | None = None,
+    discovery_snapshot: ReuseDiscoverySnapshot | None = None,
 ) -> ReuseGateDecision:
     """Search all required surfaces and record an explicit disposition."""
 
@@ -405,7 +602,19 @@ def evaluate_reuse_gate(
         ),
         *search_source_registry(source_id, catalog=catalog),
     )
-    searched = SEARCH_SURFACES
+    snapshot = discovery_snapshot or build_discovery_snapshot(
+        source_id,
+        repository_root=repository_root,
+        catalog=catalog,
+        # Legacy callers that do not supply indexes retain the historical
+        # empty-success fixture; refresh/explicit snapshot paths preserve
+        # unavailable versus no-candidate semantics.
+        huggingface_index={}
+        if huggingface_index is None
+        else huggingface_index,
+        github_index={} if github_index is None else github_index,
+    )
+    searched = tuple(surface.name for surface in snapshot.surfaces)
     disposition = choose_disposition(candidates, requested=requested)
     rationale = f"chose {disposition.value} after searching " + ", ".join(
         SEARCH_SURFACES
@@ -417,12 +626,15 @@ def evaluate_reuse_gate(
         candidates=candidates,
         rationale=rationale,
         catalogue_revision=HF_CATALOGUE_REVISION,
+        discovery_snapshot=snapshot,
     )
 
 
 def require_reuse_decision(
     decision: ReuseGateDecision | None,
     source_id: str,
+    *,
+    now: datetime | None = None,
 ) -> ReuseGateDecision:
     """Fail closed when acquisition skipped the reuse gate."""
 
@@ -434,6 +646,23 @@ def require_reuse_decision(
         raise ReuseGateRequiredError(
             "reuse gate source_id does not match acquisition"
         )
+    snapshot = decision.discovery_snapshot
+    if snapshot is None:
+        raise ReuseGateRequiredError("pinned discovery snapshot required")
+    if snapshot.source_id != source_id:
+        raise ReuseGateRequiredError(
+            "discovery snapshot source_id does not match acquisition"
+        )
+    if snapshot.is_stale(now):
+        raise ReuseGateRequiredError(
+            "discovery snapshot stale beyond freshness policy"
+        )
+    failed = snapshot.failed_surfaces()
+    if failed:
+        states = ", ".join(f"{item.name} {item.state.value}" for item in failed)
+        raise ReuseGateRequiredError(
+            f"discovery search unavailable or incomplete; cannot infer no candidate ({states})"
+        )
     missing = [
         surface
         for surface in SEARCH_SURFACES
@@ -443,9 +672,13 @@ def require_reuse_decision(
         raise ReuseGateRequiredError(
             "reuse gate must search " + ", ".join(SEARCH_SURFACES)
         )
-    if (
-        decision.disposition is ReuseDisposition.ACQUIRE_NEW
-        and decision.payload_candidates
+    if decision.disposition is ReuseDisposition.ACQUIRE_NEW and (
+        decision.payload_candidates
+        or any(
+            item.kind is ReuseCandidateKind.PAYLOAD
+            for surface in snapshot.surfaces
+            for item in surface.candidates
+        )
     ):
         raise AcquireNewNotLastResortError(
             "acquire-new is last resort when a payload copy already exists"
@@ -453,9 +686,29 @@ def require_reuse_decision(
     return decision
 
 
-def acquire_new_decision(source_id: str) -> ReuseGateDecision:
+def acquire_new_decision(
+    source_id: str,
+    *,
+    snapshot: ReuseDiscoverySnapshot | None = None,
+) -> ReuseGateDecision:
     """Test and last-resort decision after all surfaces were searched."""
 
+    pinned = snapshot or ReuseDiscoverySnapshot(
+        source_id=source_id,
+        generated_at=datetime(2026, 1, 1, tzinfo=UTC),
+        # Compatibility helper for governed fixtures; live refreshes use the
+        # normal one-day policy and are always explicitly pinned.
+        freshness_seconds=31_536_000,
+        tool_version="legacy-test-helper/v1",
+        surfaces=tuple(
+            DiscoverySurface(
+                name=cast("SurfaceName", name),
+                state=DiscoverySurfaceState.SUCCESS,
+                query=source_id,
+            )
+            for name in SEARCH_SURFACES
+        ),
+    )
     return ReuseGateDecision(
         source_id=source_id,
         disposition=ReuseDisposition.ACQUIRE_NEW,
@@ -463,6 +716,7 @@ def acquire_new_decision(source_id: str) -> ReuseGateDecision:
         candidates=(),
         rationale="no payload copy found; acquire-new is last resort",
         catalogue_revision=HF_CATALOGUE_REVISION,
+        discovery_snapshot=pinned,
     )
 
 

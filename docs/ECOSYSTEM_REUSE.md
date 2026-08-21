@@ -37,5 +37,17 @@ Before any acquire or download (including Drugs@FDA), search:
 
 Then choose exactly one of **reuse | link | mirror | extend | fork |
 acquire-new**. acquire-new is last resort. Acquisition without this gate
-fails. The choice is recorded on the acquisition receipt and in the
-OpenLineage projection.
+fails. Each search is pinned in a versioned discovery snapshot (schema
+`global-medicines-atlas.reuse-discovery`; see
+[`schemas/reuse-discovery-snapshot-v1.json`](../schemas/reuse-discovery-snapshot-v1.json)).
+The snapshot records query, revision, candidate digest, tool version,
+generation time, expiry, and per-surface success/unavailable/incomplete state.
+Success with no candidates means no candidate was found; unavailable or
+incomplete means the search cannot support that conclusion. A stale snapshot
+or skipped surface fails closed for `acquire-new`.
+
+Refresh with `scripts/refresh_reuse_discovery.py`, consuming JSON indexes from
+the existing authenticated `gh` or Hugging Face CLI context without writing
+credentials. The pinned JSON supports offline reconstruction and is not a copy
+of source payload bytes. The choice and snapshot ID are recorded on the
+acquisition receipt, B1 manifest, and OpenLineage projection.
