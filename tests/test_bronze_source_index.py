@@ -20,6 +20,7 @@ from global_medicines_atlas.bronze_source_index import (
 )
 from global_medicines_atlas.source_catalog import load_catalog
 from global_medicines_atlas.source_landing_factory import (
+    LandingDisposition,
     LandingOverrides,
     build_source_landing_queue,
 )
@@ -133,6 +134,63 @@ def test_b0_rejects_unstable_ids_state_collapse_and_reference_drift() -> None:
             catalog.model_copy(update={"sources": catalog.sources[:-1]}),
             queue,
         )
+
+
+@pytest.mark.unit
+def test_b0_rejects_snapshot_identity_and_count_drift() -> None:
+    index = _build()
+    payload = index.model_dump(mode="json")
+
+    mutations = (
+        (
+            {
+                "sources": [
+                    payload["sources"][1],
+                    payload["sources"][0],
+                    *payload["sources"][2:],
+                ]
+            },
+            "unique sorted",
+        ),
+        ({"source_count": index.source_count + 1}, "source_count"),
+        (
+            {
+                "discovery_state_counts": {
+                    **index.discovery_state_counts,
+                    "discovery_only": 0,
+                }
+            },
+            "discovery_state",
+        ),
+        ({"snapshot_sha256": "0" * 64}, "snapshot digest"),
+        ({"snapshot_id": f"sha256:{'0' * 64}"}, "snapshot ID"),
+    )
+    for update, message in mutations:
+        with pytest.raises(ValidationError, match=message):
+            type(index).model_validate({**payload, **update})
+
+
+@pytest.mark.unit
+def test_b0_records_reused_source_reference() -> None:
+    catalog = load_catalog()
+    queue = build_source_landing_queue(catalog, LandingOverrides.load())
+    first = queue.items[0].model_copy(
+        update={
+            "state": LandingDisposition.SUPERSEDED_BY_REUSE,
+            "evidence_references": ("https://example.test/reused-source",),
+        }
+    )
+    reused_queue = queue.model_copy(
+        update={
+            "items": (first, *queue.items[1:]),
+        }
+    )
+
+    index = build_b0_source_index(catalog, reused_queue)
+
+    assert index.sources[0].supersession_or_reuse_reference == (
+        "https://example.test/reused-source"
+    )
 
 
 @pytest.mark.unit

@@ -23,6 +23,8 @@ PUBLICATION_EVIDENCE = {
     "fda": ROOT / "quality/qualifications/fda-public-huggingface-20260821.json",
     "international": ROOT
     / "quality/qualifications/international-public-huggingface-20260821.json",
+    "open-medic": ROOT
+    / "quality/qualifications/open-medic-public-huggingface-20260821.json",
 }
 FAILURE_EVIDENCE = {
     "fr-open-medic": ROOT
