@@ -1,0 +1,40 @@
+{
+  "schema_id": "global-medicines-atlas.global-pv-rights-preflight",
+  "schema_version": 1,
+  "observed_at": "2026-08-21",
+  "payload_acquisition_performed": false,
+  "external_publication_performed": false,
+  "bronze_coverage_claimed": false,
+  "sources": [
+    {
+      "source_id": "global-umc-vigibase",
+      "surface": "subscription-restricted case database",
+      "disposition": "credentialed_and_excluded"
+    },
+    {
+      "source_id": "gb-mhra-yellow-card",
+      "surface": "interactive Drug Analysis Profiles",
+      "disposition": "manual_only_documented_acquisition"
+    },
+    {
+      "source_id": "au-tga-daen",
+      "surface": "query-bounded XLSX and summarised CSV exports",
+      "disposition": "manual_only_documented_acquisition"
+    },
+    {
+      "source_id": "ca-canada-vigilance",
+      "surface": "monthly bulk ZIP metadata; official structure says 11 files but lists 13",
+      "disposition": "authorization_pending"
+    },
+    {
+      "source_id": "jp-pmda-safety",
+      "surface": "safety alerts and Japanese-only suspected ADR cases",
+      "disposition": "manual_only_documented_acquisition"
+    }
+  ],
+  "limitations": [
+    "Public discoverability is not acquisition, retention, or publication authority.",
+    "Suspected adverse-event reports do not establish causality or incidence.",
+    "No source is promoted to Bronze by this metadata-only qualification."
+  ]
+}

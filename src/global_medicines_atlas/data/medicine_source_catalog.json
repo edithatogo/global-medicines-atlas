@@ -1160,7 +1160,7 @@
       "title": "Database of Adverse Event Notifications",
       "dimension": "regulatory",
       "access_mode": "web_search",
-      "landing_page": "https://www.tga.gov.au/safety/safety/safety-monitoring-daen-database-adverse-event-notifications",
+      "landing_page": "https://www.tga.gov.au/safety/adverse-events/database-adverse-event-notifications-daen",
       "update_cadence": "source-declared",
       "rights_status": "review_required",
       "readiness": "candidate",
@@ -1176,7 +1176,7 @@
       "last_verified_at": "2026-08-20",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.tga.gov.au/safety/safety/safety-monitoring-daen-database-adverse-event-notifications",
+      "documentation_url": "https://www.tga.gov.au/safety/adverse-events/medicine-adverse-events/how-search-database-adverse-event-notifications-daen-medicines",
       "discovery_status": "declaration_verified",
       "information_domains": [
         "product_identity",
@@ -1202,8 +1202,11 @@
         "names",
         "safety_notices"
       ],
-      "qualification_state": "declared",
-      "qualification_references": []
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "quality/qualifications/global-pv-acquisition-authorization.json",
+        "src/global_medicines_atlas/global_pv_acquisition.py"
+      ]
     },
     {
       "source_id": "au-tga-pi-cmi",
@@ -1557,15 +1560,15 @@
       "title": "Canada Vigilance adverse reaction online database",
       "dimension": "regulatory",
       "access_mode": "download",
-      "landing_page": "https://www.canada.ca/en/health-canada/services/drugs-health-products/medeffect-canada/adverse-reaction-database.html",
+      "landing_page": "https://open.canada.ca/data/en/dataset/9cbaef00-b52c-4a70-9fed-d9aa8263ab74",
       "update_cadence": "source-declared",
       "rights_status": "review_required",
       "readiness": "candidate",
       "evidence_limit": "Canada Vigilance extracts are safety reports, not DPD registration or causality.",
       "interface_status": "documented_download",
       "formats": [
-        "xlsx",
-        "csv"
+        "zip",
+        "txt"
       ],
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
@@ -1574,7 +1577,7 @@
       "last_verified_at": "2026-08-20",
       "integration_layer": "acquisition",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.canada.ca/en/health-canada/services/drugs-health-products/medeffect-canada/adverse-reaction-database.html",
+      "documentation_url": "https://www.canada.ca/en/health-canada/services/drugs-health-products/medeffect-canada/adverse-reaction-database/canada-vigilance-adverse-reaction-online-database-data-structures.html",
       "discovery_status": "declaration_verified",
       "information_domains": [
         "product_identity",
@@ -1600,9 +1603,12 @@
         "names",
         "safety_notices"
       ],
-      "qualification_state": "declared",
-      "qualification_references": [],
-      "download_url": "https://www.canada.ca/en/health-canada/services/drugs-health-products/medeffect-canada/adverse-reaction-database.html",
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "quality/qualifications/global-pv-acquisition-authorization.json",
+        "src/global_medicines_atlas/global_pv_acquisition.py"
+      ],
+      "download_url": "https://open.canada.ca/data/dataset/9cbaef00-b52c-4a70-9fed-d9aa8263ab74/resource/2e736909-ef1f-4d60-bfb6-f15b3be3b1fa/download/extract_extrait.zip",
       "acquisition_profile": "public-bulk"
     },
     {
@@ -3689,7 +3695,7 @@
       "title": "Yellow Card Scheme public outputs",
       "dimension": "regulatory",
       "access_mode": "web_search",
-      "landing_page": "https://yellowcard.mhra.gov.uk/",
+      "landing_page": "https://yellowcard.mhra.gov.uk/idaps",
       "update_cadence": "source-declared",
       "rights_status": "review_required",
       "readiness": "candidate",
@@ -3705,7 +3711,7 @@
       "last_verified_at": "2026-08-20",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://yellowcard.mhra.gov.uk/",
+      "documentation_url": "https://yellowcard.mhra.gov.uk/idaps",
       "discovery_status": "declaration_verified",
       "information_domains": [
         "product_identity",
@@ -3731,8 +3737,11 @@
         "names",
         "safety_notices"
       ],
-      "qualification_state": "declared",
-      "qualification_references": []
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "quality/qualifications/global-pv-acquisition-authorization.json",
+        "src/global_medicines_atlas/global_pv_acquisition.py"
+      ]
     },
     {
       "source_id": "gb-nhs-dmd",
@@ -4400,8 +4409,11 @@
         "names",
         "safety_notices"
       ],
-      "qualification_state": "declared",
-      "qualification_references": [],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "quality/qualifications/global-pv-acquisition-authorization.json",
+        "src/global_medicines_atlas/global_pv_acquisition.py"
+      ],
       "download_url": "https://who-umc.org/vigibase/",
       "acquisition_profile": "account-download"
     },
@@ -5611,8 +5623,11 @@
         "names",
         "safety_notices"
       ],
-      "qualification_state": "declared",
-      "qualification_references": []
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "quality/qualifications/global-pv-acquisition-authorization.json",
+        "src/global_medicines_atlas/global_pv_acquisition.py"
+      ]
     },
     {
       "source_id": "ke-national-eml",

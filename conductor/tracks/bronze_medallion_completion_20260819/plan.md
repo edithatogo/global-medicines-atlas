@@ -459,3 +459,11 @@ for credentialed or rights-unresolved sources.
     - [ ] Retry the already-authorized Open Medic payload under its bounded failure-receipt schedule
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and archive verification for each acquired source
     - [ ] Keep cross-country comparability and unapproved publication fail closed
+- [~] Task: Expand authoritative global pharmacovigilance sources (Prompt 35)
+    - [x] Preserve VigiBase as subscription-restricted and independently excluded from public-source Bronze claims
+    - [x] Qualify the current MHRA Yellow Card, TGA DAEN, Canada Vigilance, and PMDA public surfaces from official metadata
+    - [x] Preserve the Canada Vigilance documentation discrepancy: the page says 11 files while listing 13 named tables
+    - [x] Correct stale endpoints and formats without treating metadata qualification as implemented ingestion or Bronze coverage
+    - [ ] Obtain independent source-specific decisions before payload acquisition and retention
+    - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and archive verification for each acquired source
+    - [ ] Keep causality, incidence, public release, and external publication claims fail closed
