@@ -71,18 +71,12 @@ def bind_test_preservation(
     )
 
 
-def test_every_upstream_file_has_exactly_one_disposition_and_digest() -> None:
+def test_historical_upstream_inventory_is_retained_after_remediation() -> None:
     inventory = load_inventory()
     rows = [row for row in load_assets() if row["scope"] == "upstream"]
-    expected = {
-        path.relative_to(PROJECT_ROOT).as_posix()
-        for path in UPSTREAM_ROOT.rglob("*")
-        if path.is_file()
-    }
-
     assert inventory["upstream_asset_count"] == 25
-    assert len(rows) == len(expected)
-    assert {row["path"] for row in rows} == expected
+    assert len(rows) == 25
+    assert not any(path.is_file() for path in UPSTREAM_ROOT.rglob("*"))
     assert len({row["path"] for row in rows}) == len(rows)
     assert all(row["disposition"] in ALLOWED_DISPOSITIONS for row in rows)
     assert all(
@@ -143,8 +137,8 @@ def test_portable_check_succeeds_without_local_only_payloads(
     generator.main()
 
 
-def test_upstream_tree_manifest_verifies_exact_snapshot() -> None:
-    generator.verify_upstream_tree(load_inventory())
+def test_remediated_tree_verifies_history_and_current_absence() -> None:
+    generator.verify_remediated_tree(load_inventory())
 
 
 @pytest.mark.parametrize(

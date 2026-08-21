@@ -1,0 +1,167 @@
+{
+  "resourceType": "Bundle",
+  "id": "gma-synthetic-nzmt-bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Medication",
+        "id": "gma-synthetic-mp-001",
+        "code": {
+          "coding": [
+            {
+              "system": "https://global-medicines-atlas.invalid/synthetic/nzmt",
+              "code": "gma-synthetic-mp-001",
+              "display": "Synthetic medicine concept"
+            }
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://hl7.org.nz/fhir/StructureDefinition/nzf-nzmt-type",
+            "valueCodeableConcept": {
+              "coding": [{"code": "mp"}]
+            }
+          }
+        ],
+        "ingredient": [
+          {
+            "itemCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://global-medicines-atlas.invalid/synthetic/substance",
+                  "code": "gma-synthetic-substance-001",
+                  "display": "Synthetic active ingredient"
+                }
+              ]
+            },
+            "strength": {
+              "numerator": {"value": 10, "unit": "mg"},
+              "denominator": {"value": 1, "unit": "tablet"}
+            }
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Medication",
+        "id": "gma-synthetic-mpuu-001",
+        "code": {
+          "coding": [
+            {
+              "system": "https://global-medicines-atlas.invalid/synthetic/nzmt",
+              "code": "gma-synthetic-mpuu-001",
+              "display": "Synthetic medicine unit"
+            }
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://hl7.org.nz/fhir/StructureDefinition/nzf-nzmt-type",
+            "valueCodeableConcept": {
+              "coding": [{"code": "mpuu"}]
+            }
+          },
+          {
+            "url": "http://hl7.org.nz/fhir/StructureDefinition/nzf-related-medication",
+            "extension": [
+              {
+                "url": "code",
+                "valueCodeableConcept": {
+                  "coding": [{"code": "gma-synthetic-mp-001"}]
+                }
+              },
+              {
+                "url": "type",
+                "valueCodeableConcept": {"coding": [{"code": "mp"}]}
+              }
+            ]
+          }
+        ],
+        "ingredient": [
+          {
+            "itemCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://global-medicines-atlas.invalid/synthetic/substance",
+                  "code": "gma-synthetic-substance-001",
+                  "display": "Synthetic active ingredient"
+                }
+              ]
+            },
+            "strength": {
+              "numerator": {"value": 10, "unit": "mg"},
+              "denominator": {"value": 1, "unit": "tablet"}
+            }
+          }
+        ],
+        "form": {
+          "coding": [
+            {
+              "system": "https://global-medicines-atlas.invalid/synthetic/dose-form",
+              "code": "synthetic-tablet",
+              "display": "Synthetic tablet"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Medication",
+        "id": "gma-synthetic-mpp-001",
+        "code": {
+          "coding": [
+            {
+              "system": "https://global-medicines-atlas.invalid/synthetic/nzmt",
+              "code": "gma-synthetic-mpp-001",
+              "display": "Synthetic medicine pack"
+            }
+          ]
+        },
+        "extension": [
+          {
+            "url": "http://hl7.org.nz/fhir/StructureDefinition/nzf-nzmt-type",
+            "valueCodeableConcept": {
+              "coding": [{"code": "mpp"}]
+            }
+          },
+          {
+            "url": "http://hl7.org.nz/fhir/StructureDefinition/nzf-related-medication",
+            "extension": [
+              {
+                "url": "code",
+                "valueCodeableConcept": {
+                  "coding": [{"code": "gma-synthetic-mpuu-001"}]
+                }
+              },
+              {
+                "url": "type",
+                "valueCodeableConcept": {"coding": [{"code": "mpuu"}]}
+              }
+            ]
+          }
+        ],
+        "ingredient": [
+          {
+            "itemCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://global-medicines-atlas.invalid/synthetic/substance",
+                  "code": "gma-synthetic-substance-001",
+                  "display": "Synthetic active ingredient"
+                }
+              ]
+            },
+            "strength": {
+              "numerator": {"value": 10, "unit": "mg"},
+              "denominator": {"value": 1, "unit": "tablet"}
+            }
+          }
+        ],
+        "amount": {"numerator": {"value": 30, "unit": "tablet"}}
+      }
+    }
+  ]
+}

@@ -5,7 +5,7 @@
     "fixture ceasing to be synthetic/minimal",
     "addition of source-derived fields"
   ],
-  "approved_file_count": 14,
+  "approved_file_count": 15,
   "approved_files": [
     {
       "path": "docs/migrations/nzmedicines-compatibility-notice.md",
@@ -24,18 +24,18 @@
     },
     {
       "path": "docs/migrations/nzmedicines-rights-disposition.md",
-      "sha256": "aeff70d43543f6cd06eae12472745a11c5255b58d6c4e04723c934fcd4f81804",
-      "size_bytes": 8453
+      "sha256": "d0b33aee4704f859dfc6beb204e69c88312be5d6e9fbb9de5b7b831df4a2c68f",
+      "size_bytes": 8607
     },
     {
       "path": "sources/nz/nzulm_fhir/__init__.py",
-      "sha256": "2df5f4da7c8761d21a9fdbaf3927d613c128ac9b65ebb20c843c03a3487822c5",
-      "size_bytes": 269
+      "sha256": "6df19d36eb1d9435f6d0b69aa7ffe798021ce7f0b91b96f6459b4ef0a12482c0",
+      "size_bytes": 271
     },
     {
       "path": "sources/nz/nzulm_fhir/adapter.py",
-      "sha256": "f08c6990c55d9133d1fbf2b53f95e7d9281015d6d89da801ecd246971958f8e5",
-      "size_bytes": 4344
+      "sha256": "7f5650cde5d760fc85cf61817ba9eb3e2a49e6b4b59a8985476b2ee5645eef45",
+      "size_bytes": 4295
     },
     {
       "path": "src/global_medicines_atlas/adapters/nz_medsafe.py",
@@ -49,8 +49,8 @@
     },
     {
       "path": "src/global_medicines_atlas/nz.py",
-      "sha256": "62acfbab1227e8fad177a21f9338645946e1583c8c4fa38c6bc19bb476ea782a",
-      "size_bytes": 5550
+      "sha256": "008234b25b6ead0efdc12e1fc1695759d7497c54a3df8bfbac1ea961ae5a732e",
+      "size_bytes": 5932
     },
     {
       "path": "tests/fixtures/adapters/nz_medsafe_registry.csv",
@@ -63,19 +63,24 @@
       "size_bytes": 420
     },
     {
+      "path": "tests/fixtures/nz/nzmt_synthetic_bundle.json",
+      "sha256": "de37aa2e630fc3ca987a81895db222b0957fb4ea1c8354731f21ef9d5fa00490",
+      "size_bytes": 4898
+    },
+    {
       "path": "tests/test_canonical_nz_adapter.py",
-      "sha256": "b1cbc38cfda28e3b3810dd8f757a82f31a32b3550d08058486311f5df5bb50fd",
-      "size_bytes": 4952
+      "sha256": "fe98d3005d6cc51bdc89aaf50667d0bc20f16bbaed0210a22f56070a57b9406b",
+      "size_bytes": 5112
     },
     {
       "path": "tests/test_nzulm_fhir_adapter.py",
-      "sha256": "67b6c3be4747e4fb62a06525aeb14abc3b29194ac8646b96729e35e82e168859",
-      "size_bytes": 2238
+      "sha256": "c09f86e818d4f08577b8d45df9bc3eaf4332a516dcfa6a1d4655ccc7998bed75",
+      "size_bytes": 2255
     },
     {
       "path": "tests/test_nzulm_fhir_properties.py",
-      "sha256": "d4efa7914c1a09e510ddc46e46e4a3f49205acb09a1c5a6cc5e63536c66860bd",
-      "size_bytes": 2775
+      "sha256": "a18a7984910f95d5137d5b657ba518f0c7b8097047c705dadcec777b201e5037",
+      "size_bytes": 2776
     }
   ],
   "artifact_scope": "software_and_synthetic_fixture_cohort_only",
@@ -106,7 +111,7 @@
     "medsafe": "source_payloads_excluded; synthetic_fixture_approved",
     "nzf": "linked_content_excluded; structure_only_code_is_approved",
     "nzmedicines_git_bundle": "local_only_not_redistributed",
-    "nzmedicines_vendor_snapshot": "excluded_from_this_manifest; historical public Git exposure requires a separate remediation decision",
+    "nzmedicines_vendor_snapshot": "removed_from_current_tree; historical Git exposure disclosed",
     "nzulm_nzmt": "local_only_pending_written_licensor_clearance",
     "pharmac": "source_payloads_excluded; synthetic_fixture_approved",
     "rxnorm": "payloads_and_derived_mapping_dumps_excluded",

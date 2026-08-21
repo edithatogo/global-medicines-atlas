@@ -14,12 +14,12 @@ from global_medicines_atlas.source_catalog import (
     load_source_catalog,
 )
 from sources.nz.nzulm_fhir import (
-    load_upstream_fixture_records,
+    load_synthetic_fixture_records,
 )
 
 
 def main() -> None:
-    records = load_upstream_fixture_records(PROJECT_ROOT)
+    records = load_synthetic_fixture_records(PROJECT_ROOT)
     canonical = ()
     for _ in range(5_000):
         canonical = project_nz_fhir_records(records)
