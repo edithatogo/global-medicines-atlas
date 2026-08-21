@@ -1451,18 +1451,18 @@
       "transform": "permitted",
       "publish_source_bytes": "permitted",
       "sensitivity": "public",
-      "disposition": "catalogue_only",
+      "disposition": "approved_public_source",
       "attribution": "Name the producer, title, source URL, and latest update date under Licence Ouverte 2.0.",
       "field_exclusions": [
         "third-party material or personal data outside the dataset licence"
       ],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "dataset licence, resource notice, schema, or sensitivity change",
-      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",

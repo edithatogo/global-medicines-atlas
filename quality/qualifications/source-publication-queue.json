@@ -3,12 +3,12 @@
   "schema_version": 1,
   "generated_at": "2026-08-21T00:00:00Z",
   "publication_gate": "satisfied_exact_manifest_maintainer_approval",
-  "public_eligible_count": 23,
-  "published_count": 23,
+  "public_eligible_count": 24,
+  "published_count": 24,
   "candidate_count": 26,
-  "acquisition_evidenced_count": 23,
+  "acquisition_evidenced_count": 24,
   "acquisition_pending_count": 2,
-  "temporarily_unavailable_count": 1,
+  "temporarily_unavailable_count": 0,
   "entries": [
     {
       "source_id": "eu-union-register",
@@ -47,12 +47,12 @@
       "source_id": "fr-open-medic",
       "policy_family_id": "fr-etalab-open-licence-2.0",
       "candidate_packaging_shape": "source_bytes_candidate",
-      "acquisition_state": "temporarily_unavailable",
+      "acquisition_state": "evidenced",
       "admission_state": "not_acquired",
-      "acquisition_evidence": "quality/qualifications/open-medic-acquisition-failure-20260821.json",
-      "publication_state": "not_published",
-      "publication_evidence": null,
-      "next_action": "retry_source_acquisition"
+      "acquisition_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "publication_state": "published",
+      "publication_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "next_action": "monitor_public_revision"
     },
     {
       "source_id": "gb-emit",

@@ -26,11 +26,11 @@ def test_queue_is_deterministic_and_separates_rights_from_acquisition() -> None:
     assert queue["publication_gate"] == (
         "satisfied_exact_manifest_maintainer_approval"
     )
-    assert queue["public_eligible_count"] == 23
-    assert queue["published_count"] == 23
-    assert queue["acquisition_evidenced_count"] == 23
+    assert queue["public_eligible_count"] == 24
+    assert queue["published_count"] == 24
+    assert queue["acquisition_evidenced_count"] == 24
     assert queue["acquisition_pending_count"] == 2
-    assert queue["temporarily_unavailable_count"] == 1
+    assert queue["temporarily_unavailable_count"] == 0
 
 
 def test_published_sources_bind_exact_publication_receipts() -> None:
@@ -38,7 +38,7 @@ def test_published_sources_bind_exact_publication_receipts() -> None:
     evidenced = [
         entry for entry in entries if entry["acquisition_state"] == "evidenced"
     ]
-    assert len(evidenced) == 23
+    assert len(evidenced) == 24
     assert all(entry["acquisition_evidence"] for entry in evidenced)
     assert all(
         entry["next_action"] == "monitor_public_revision" for entry in evidenced
@@ -75,16 +75,17 @@ def test_approved_manifests_match_publication_receipts() -> None:
         assert receipt["repository_private"] is False
 
 
-def test_open_medic_retains_failure_receipt() -> None:
+def test_open_medic_supersedes_failure_with_publication_receipt() -> None:
     entries = {
         entry["source_id"]: entry
         for entry in cast("list[dict[str, Any]]", _queue()["entries"])
     }
     open_medic = entries["fr-open-medic"]
-    assert open_medic["acquisition_state"] == "temporarily_unavailable"
-    assert open_medic["next_action"] == "retry_source_acquisition"
+    assert open_medic["acquisition_state"] == "evidenced"
+    assert open_medic["publication_state"] == "published"
+    assert open_medic["next_action"] == "monitor_public_revision"
     assert open_medic["acquisition_evidence"].endswith(
-        "open-medic-acquisition-failure-20260821.json"
+        "international-public-huggingface-20260821.json"
     )
 
 

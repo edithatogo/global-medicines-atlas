@@ -1,16 +1,17 @@
 {
   "schema_id": "global-medicines-atlas.publication-verification",
   "schema_version": 1,
-  "observed_at": "2026-08-21T06:34:24Z",
+  "observed_at": "2026-08-21T08:22:52Z",
   "dataset": "edithatogo/global-medicines-atlas-international-permissive-20260821",
   "repository_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-international-permissive-20260821",
-  "immutable_revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
-  "manifest_sha256": "fc29fc2e7896ebcb066de3f4bc43b1cb480e78204f518a82f438a47227731148",
-  "archived_source_count": 10,
+  "immutable_revision": "87d3b54ac932018c276a1c50033ac287520cf85e",
+  "manifest_sha256": "d058b78789cd8c2d0a19467063890d32c0757add10998d307422c3ec1550df86",
+  "archived_source_count": 11,
   "source_ids": [
     "eu-union-register",
     "fr-bdpm",
     "fr-bdpm-smr-asmr",
+    "fr-open-medic",
     "gb-emit",
     "gb-nhs-drug-tariff",
     "global-rxnorm",
@@ -19,9 +20,9 @@
     "nz-pharmac-schedule-xml",
     "us-rxnorm-api"
   ],
-  "file_count": 18,
-  "byte_count": 55286431,
-  "payload_digest_verification": "18_of_18_passed_after_clean_restore",
+  "file_count": 42,
+  "byte_count": 348692254,
+  "payload_digest_verification": "42_of_42_passed_after_clean_restore",
   "repository_private": false,
   "repository_gated": false,
   "rights_families": [
@@ -31,7 +32,6 @@
     "NLM-created-RXCUI-identifiers-only"
   ],
   "pending_sources": {
-    "fr-open-medic": "upstream download-limit refusal",
     "gb-nice-medicines-utilisation": "not included in the approved exact manifest",
     "nl-gipdatabank": "not included in the approved exact manifest"
   },
