@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from datetime import date
 from pathlib import Path
 
 import pytest
@@ -144,7 +145,7 @@ def test_release_rejects_host_and_addon_shape_drift() -> None:
     common = {
         "title": "release",
         "period": "2025",
-        "version_date": "2026-06-12",
+        "version_date": date(2026, 6, 12),
     }
     with pytest.raises(ValidationError, match=r"zorgcijfersdatabank\.nl"):
         GIPRelease(
