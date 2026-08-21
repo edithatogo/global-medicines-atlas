@@ -66,3 +66,43 @@ def test_candidate_cannot_encode_publication_approval(tmp_path: Path) -> None:
             **manifest.model_dump(),
             "publication_approved": True,
         })
+
+
+def test_manifest_rejects_incomplete_or_duplicate_source_sets(
+    tmp_path: Path,
+) -> None:
+    manifest = build_fda_publication_candidate(
+        _corpus(tmp_path / "corpus"), tmp_path / "candidate"
+    )
+    raw = manifest.model_dump()
+    with pytest.raises(ValueError, match="every proposed source"):
+        FdaPublicationCandidateManifest.model_validate({
+            **raw,
+            "entries": raw["entries"][:-1],
+        })
+    with pytest.raises(ValueError, match="source IDs must be unique"):
+        FdaPublicationCandidateManifest.model_validate({
+            **raw,
+            "entries": [*raw["entries"], raw["entries"][0]],
+        })
+
+
+def test_builder_rejects_incomplete_receipts_payloads_and_existing_output(
+    tmp_path: Path,
+) -> None:
+    corpus = _corpus(tmp_path / "corpus")
+    receipts_path = corpus / "evidence/redacted-acquisition-results.json"
+    receipts = json.loads(receipts_path.read_text(encoding="utf-8"))
+    receipts_path.write_text(json.dumps(receipts[:-1]), encoding="utf-8")
+    with pytest.raises(ValueError, match="exact FDA source set"):
+        build_fda_publication_candidate(corpus, tmp_path / "candidate")
+
+    corpus = _corpus(tmp_path / "second-corpus")
+    existing = tmp_path / "existing"
+    existing.mkdir()
+    with pytest.raises(FileExistsError):
+        build_fda_publication_candidate(corpus, existing)
+
+    next((corpus / "downloads").iterdir()).unlink()
+    with pytest.raises(ValueError, match="expected one payload"):
+        build_fda_publication_candidate(corpus, tmp_path / "missing")
