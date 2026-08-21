@@ -24,11 +24,11 @@
   "payload_byte_count": 293400567,
   "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/32462833414",
   "workflow_result": "12_of_12_archives_passed_and_atomic_publication_succeeded",
-  "public_dataset": "edithatogo/global-medicines-atlas-international-permissive-20260821",
-  "public_revision": "87d3b54ac932018c276a1c50033ac287520cf85e",
-  "public_manifest_sha256": "d058b78789cd8c2d0a19467063890d32c0757add10998d307422c3ec1550df86",
+  "public_dataset": "edithatogo/global-medicines-atlas-open-medic-20260821",
+  "public_revision": "d19f7a66e35c58c557615bffa456856b485b7edc",
+  "public_manifest_sha256": "5a08e2eb4e99ec0e95f596a384df22007ca67b9df311a7af9b285f55eada0578",
   "public_files_for_source": 24,
-  "clean_restore_verification": "42_of_42_manifest_files_matched_size_and_sha256",
+  "clean_restore_verification": "24_of_24_manifest_files_matched_size_and_sha256_anonymously",
   "supersedes": "quality/qualifications/open-medic-acquisition-failure-20260821.json",
   "evidence_limit": "This receipt proves acquisition and publication of the listed annual releases; it does not claim transformed Bronze records or complete French medicines coverage."
 }

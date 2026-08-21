@@ -89,39 +89,23 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           uv run --with huggingface-hub==1.14.0 --with pydantic==2.13.4 python - <<'PY'
-          import json
           from pathlib import Path
 
           from huggingface_hub import (
               CommitOperationAdd,
-              CommitOperationDelete,
               HfApi,
-              hf_hub_download,
           )
 
           from global_medicines_atlas.international_public_archive import (
               InternationalArchiveFile,
               InternationalPublicArchiveManifest,
-              PENDING_SOURCES,
               SOURCE_RIGHTS,
-              _dataset_card,
               _sha256,
           )
 
-          repo = "edithatogo/global-medicines-atlas-international-permissive-20260821"
+          repo = "edithatogo/global-medicines-atlas-open-medic-20260821"
           root = Path("artifacts")
           api = HfApi()
-          current = json.loads(
-              Path(
-                  hf_hub_download(repo, "manifest.json", repo_type="dataset")
-              ).read_text(encoding="utf-8")
-          )
-          retained = [
-              item
-              for item in current["files"]
-              if item["source_id"] in SOURCE_RIGHTS
-              and item["source_id"] != "fr-open-medic"
-          ]
           additions = []
           for path in sorted(root.iterdir()):
               if not path.is_file():
@@ -136,18 +120,22 @@ jobs:
                   )
               )
           manifest = InternationalPublicArchiveManifest(
-              archived_source_count=len(SOURCE_RIGHTS),
-              files=tuple(
-                  InternationalArchiveFile.model_validate(item)
-                  for item in retained
-              )
-              + tuple(additions),
-              pending_sources=PENDING_SOURCES,
+              archived_source_count=1,
+              files=tuple(additions),
+              pending_sources={},
           )
           Path("manifest.json").write_text(
               manifest.model_dump_json(indent=2) + "\n", encoding="utf-8"
           )
-          Path("README.md").write_text(_dataset_card(), encoding="utf-8")
+          Path("README.md").write_text(
+              "---\nlicense: etalab-2.0\nlanguage:\n  - fr\n"
+              "pretty_name: Global Medicines Atlas - Open Medic 2014-2025\n"
+              "---\n\n# Open Medic 2014-2025\n\n"
+              "Official annual base-complete ZIP releases and acquisition "
+              "receipts for 2014 through 2025. Missing records are not "
+              "negative evidence.\n",
+              encoding="utf-8",
+          )
 
           operations = [
               CommitOperationAdd(
@@ -165,18 +153,11 @@ jobs:
               for path in sorted(root.iterdir())
               if path.is_file()
           )
-          operations.extend(
-              CommitOperationDelete(path_in_repo=sibling.rfilename)
-              for sibling in api.dataset_info(repo).siblings
-              if sibling.rfilename.startswith(
-                  ("data/gb-nice-medicines-utilisation/", "data/nl-gipdatabank/")
-              )
-          )
           result = api.create_commit(
               repo_id=repo,
               repo_type="dataset",
               operations=operations,
-              commit_message="Add verified Open Medic 2014-2025 releases",
+              commit_message="Refresh verified Open Medic 2014-2025 releases",
           )
           print(result.oid)
           PY

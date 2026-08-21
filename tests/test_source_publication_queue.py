@@ -63,6 +63,12 @@ def test_approved_manifests_match_publication_receipts() -> None:
                     / "quality/qualifications/international-public-huggingface-20260821.json"
                 ).read_text(encoding="utf-8")
             ),
+            json.loads(
+                (
+                    ROOT
+                    / "quality/qualifications/open-medic-public-huggingface-20260821.json"
+                ).read_text(encoding="utf-8")
+            ),
         )
     }
     manifests = decisions["approved_publication_manifests"]
@@ -85,7 +91,7 @@ def test_open_medic_supersedes_failure_with_publication_receipt() -> None:
     assert open_medic["publication_state"] == "published"
     assert open_medic["next_action"] == "monitor_public_revision"
     assert open_medic["acquisition_evidence"].endswith(
-        "international-public-huggingface-20260821.json"
+        "open-medic-public-huggingface-20260821.json"
     )
 
 

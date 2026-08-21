@@ -49,9 +49,9 @@
       "candidate_packaging_shape": "source_bytes_candidate",
       "acquisition_state": "evidenced",
       "admission_state": "not_acquired",
-      "acquisition_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "acquisition_evidence": "quality/qualifications/open-medic-public-huggingface-20260821.json",
       "publication_state": "published",
-      "publication_evidence": "quality/qualifications/international-public-huggingface-20260821.json",
+      "publication_evidence": "quality/qualifications/open-medic-public-huggingface-20260821.json",
       "next_action": "monitor_public_revision"
     },
     {

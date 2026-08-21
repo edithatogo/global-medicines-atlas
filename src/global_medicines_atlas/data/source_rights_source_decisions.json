@@ -26,13 +26,12 @@
     },
     {
       "repository": "edithatogo/global-medicines-atlas-international-permissive-20260821",
-      "revision": "87d3b54ac932018c276a1c50033ac287520cf85e",
-      "manifest_sha256": "d058b78789cd8c2d0a19467063890d32c0757add10998d307422c3ec1550df86",
+      "revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "manifest_sha256": "fc29fc2e7896ebcb066de3f4bc43b1cb480e78204f518a82f438a47227731148",
       "source_ids": [
         "eu-union-register",
         "fr-bdpm",
         "fr-bdpm-smr-asmr",
-        "fr-open-medic",
         "gb-emit",
         "gb-nhs-drug-tariff",
         "global-rxnorm",
@@ -45,6 +44,15 @@
         "global-rxnorm",
         "us-rxnorm-api"
       ]
+    },
+    {
+      "repository": "edithatogo/global-medicines-atlas-open-medic-20260821",
+      "revision": "d19f7a66e35c58c557615bffa456856b485b7edc",
+      "manifest_sha256": "5a08e2eb4e99ec0e95f596a384df22007ca67b9df311a7af9b285f55eada0578",
+      "source_ids": [
+        "fr-open-medic"
+      ],
+      "derived_only_source_ids": []
     }
   ],
   "policy_family_assignments": {
