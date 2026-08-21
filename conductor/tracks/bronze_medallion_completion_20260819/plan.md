@@ -418,3 +418,10 @@ for credentialed or rights-unresolved sources.
     - [ ] Obtain the maintainer's source-specific licensing decision before payload acquisition
     - [ ] Exercise immutable landing, receipt, source-faithful Bronze projection, clean-room recovery, and private archive verification
     - [ ] Keep public release and external publication separately gated
+- [~] Task: Acquire the Netherlands GIP medicine utilisation corpus (Prompt 32)
+    - [x] Resolve the official corpus to 28 Farmacie and Add-on CSV releases through 2025
+    - [x] Bind stable source titles while treating rotating service download keys as ephemeral transport metadata
+    - [x] Preserve rolling-table, annual age/sex, ATC, version, population, source, and VAT-method boundaries
+    - [ ] Obtain the maintainer's source-specific licensing decision before payload acquisition
+    - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
+    - [ ] Keep public release and external publication separately gated
