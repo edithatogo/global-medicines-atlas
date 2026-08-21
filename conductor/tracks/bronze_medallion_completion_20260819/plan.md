@@ -475,18 +475,18 @@ for credentialed or rights-unresolved sources.
 
 ## Phase 6: B0/B1/B2 Internal Bronze Strata Contract
 
-- [~] Task: Formalize the three-strata Bronze authority boundary ([#275](https://github.com/edithatogo/global-medicines-atlas/issues/275))
+- [x] Task: Formalize the three-strata Bronze authority boundary ([#275](https://github.com/edithatogo/global-medicines-atlas/issues/275))
     - [x] Inspect current `main`, active Bronze tracks and issues, and recently merged Bronze work without disturbing concurrent work
     - [x] Write failing executable contract tests for B0, B1, B2, projections, and later-medallion boundaries
     - [x] Confirm the intended failure before implementation (`AGENTS.md: missing B0 Source Index`)
     - [x] Define B0 Source Index, B1 Acquisition Metadata, and B2 Raw Evidence consistently in product, design, requirements, glossary, and track specification
     - [x] Add Mermaid diagrams that distinguish internal Bronze strata from Silver, Gold, and Platinum
     - [x] Run focused tests, context validation, formatting, linting, typing, and the full Test-Goblin profile; retain the exact-Python and local-load observations for hosted resolution
-    - [ ] Record the exact pull-request head, hosted checks, and merged SHA without changing acquisition IDs, digests, receipts, or evidence semantics
+    - [x] Record PR [#276](https://github.com/edithatogo/global-medicines-atlas/pull/276) head `97b4ecc1d86d57abc9c48175b35a84fea4f49e36`, 37 passing hosted checks, and merged SHA `3d3f419baec4da32b3db6319f996b8853ca5ab8e` without changing acquisition IDs, digests, receipts, or evidence semantics
 
 ### Phase Verification & Checkpoint
 
 - [x] Executable contract tests prove the normative phrases and authority boundaries across all required documents
 - [x] Context validation recognizes the glossary as required project context
-- [ ] Required hosted checks pass at the exact pull-request head before merge
+- [x] Required hosted checks pass at the exact pull-request head before merge
 - [x] Review confirms documentation-and-contract-only scope and no source, receipt, digest, or acquisition-identity mutation
