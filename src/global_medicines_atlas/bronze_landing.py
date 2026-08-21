@@ -147,7 +147,7 @@ class SourceRecordBatch:
     record_id_column: str
     partition_policy: IcebergPartitionPolicy | None = None
     projection_kind: Literal["source_native"] = "source_native"
-    preserves_native_columns: Literal[True] = True
+    preserves_native_columns: bool = True
 
 
 @dataclass(frozen=True, slots=True)

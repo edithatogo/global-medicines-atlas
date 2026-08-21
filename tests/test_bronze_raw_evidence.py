@@ -8,8 +8,10 @@ import io
 import json
 import tarfile
 import zipfile
+from collections.abc import Callable
 from hashlib import sha256
 from pathlib import Path
+from typing import cast
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -188,7 +190,9 @@ def test_archive_manifest_rejects_non_archive_and_tracks_tar_directories() -> (
         build_archive_member_manifest(b"plain bytes", media_hint="bin")
     output = io.BytesIO()
     with tarfile.open(fileobj=output, mode="w") as archive:
-        archive.addfile(tarfile.TarInfo("directory/"))
+        directory = tarfile.TarInfo("directory/")
+        directory.type = tarfile.DIRTYPE
+        archive.addfile(directory)
     manifest = build_archive_member_manifest(
         output.getvalue(), media_hint="tar"
     )
@@ -329,7 +333,10 @@ def test_landing_exposes_b2_manifest_and_rejects_non_native_projection(
 
 @pytest.mark.unit
 def test_archive_record_decoder_rejects_opaque_or_replacement_text() -> None:
+    decoder = cast(
+        "Callable[[bytes], str]", us_source_records.__dict__["_decode_member"]
+    )
     with pytest.raises(ValueError, match="opaque"):
-        us_source_records._decode_member(b"id\x00value")
+        decoder(b"id\x00value")
     with pytest.raises(ValueError, match="replacement"):
-        us_source_records._decode_member(b"id\n\xef\xbf\xbd")
+        decoder(b"id\n\xef\xbf\xbd")
