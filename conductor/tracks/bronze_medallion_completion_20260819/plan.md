@@ -526,7 +526,7 @@ for credentialed or rights-unresolved sources.
     - [x] Reconstruct the query manifest from authoritative receipts, acquisition events, storage receipts and admission records with legacy compatibility
     - [x] Document B1 authority boundaries and update the existing acquisition-manifest implementation
     - [x] Run focused and affected recovery tests, deterministic regeneration, context validation, formatting, linting, strict typing and full Test-Goblin
-    - [ ] Record exact pull-request head, hosted checks and merged SHA without changing existing receipt digests, acquisition IDs or content IDs
+    - [x] Record exact pull-request head, hosted checks and merged SHA without changing existing receipt digests, acquisition IDs or content IDs
 - [x] Task: Review Fixes
     - [x] Preserve idempotent admission history when the same acquisition is landed again instead of appending a redundant supersession chain
     - [x] Add a regression contract for stable admission history and byte-identical B1 Parquet on re-landing
@@ -538,4 +538,4 @@ for credentialed or rights-unresolved sources.
 - [x] Query manifest, OpenLineage and table catalogue objects remain deterministic rebuildable projections
 - [x] Repeated identical content keeps distinct acquisition identities and one manifest row per event
 - [x] Retrieval locations are redacted and the manifest never contains payload contents
-- [ ] Required hosted checks pass at the exact pull-request head before merge
+- [x] Required hosted checks pass at the exact pull-request head before merge
