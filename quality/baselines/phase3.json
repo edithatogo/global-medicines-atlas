@@ -26,10 +26,10 @@
   "performance": {
     "source": {
       "repository": "edithatogo/global-medicines-atlas",
-      "run_id": 30602190188,
-      "head_sha": "995d0beb0662a5069a9577999f769ee373c29a48",
-      "artifact_id": 8782302533,
-      "artifact_sha256": "161070c87e125654efdceeea831db718ba54a44669ba368f5c483594bb47ab9a"
+      "run_id": 32446719171,
+      "head_sha": "3bfe52f5ecc9accf22cc90ec7ad2c8ada5e4184f",
+      "artifact_id": 9434423562,
+      "artifact_sha256": "27ca11b1fd52914ee1bef47eea3b3d2e3807b8c596d85c7923492e819796bb3d"
     },
     "workload": {
       "row_count": 1000000,
@@ -38,11 +38,11 @@
       "dataset_sha256": "d803a203c4701981bf32909522eeddcf8108fddbbd48ad4c94ad3a5a2d7fbbc9"
     },
     "observations": {
-      "cold_p95_ms": 82.766539,
-      "warm_p95_ms": 66.384025,
-      "concurrent_p95_ms": 141.659297,
-      "concurrent_records_per_second": 28083477.941597,
-      "process_peak_memory_mib": 395.6015625
+      "cold_p95_ms": 94.48067299999963,
+      "warm_p95_ms": 74.22178400000234,
+      "concurrent_p95_ms": 323.9056299999987,
+      "concurrent_records_per_second": 19059901.10267123,
+      "process_peak_memory_mib": 358.3203125
     },
     "maximum_regression_ratio": 1.25
   }

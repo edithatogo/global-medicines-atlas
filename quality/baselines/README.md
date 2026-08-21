@@ -19,7 +19,10 @@ survivor report for deterministic module/operator classification and
 remediation.
 
 Performance comparisons use a 25% envelope around the reviewed GitHub-hosted
-Linux observation. Absolute latency, throughput, CPU, and memory budgets still
-apply independently. A dependency, runner, workload, or dataset-identity
-change requires a reviewed baseline replacement rather than an in-place edit
-that erases historical evidence.
+Linux observation. The observation was replaced on 2026-08-21 from run
+`32446719171`, artifact `9434423562`, after the hosted runner image and locked
+analytical dependencies changed; the workload identity remained unchanged and
+all absolute budgets passed. Absolute latency, throughput, CPU, and memory
+budgets still apply independently. A dependency, runner, workload, or
+dataset-identity change requires a reviewed baseline replacement with exact
+hosted evidence rather than an unexplained threshold relaxation.
