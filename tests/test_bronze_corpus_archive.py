@@ -59,6 +59,10 @@ def test_corpus_archive_exercises_full_governed_bronze_path(
     assert manifest.exercised_source_count == 16
     assert manifest.acquisition_count == 17
     assert manifest.accepted_admission_count == 17
+    assert manifest.b1_event_count == 17
+    assert manifest.b1_manifest_id.startswith("sha256:")
+    assert manifest.b1_json_sha256
+    assert manifest.b1_parquet_sha256
     assert manifest.unexercised_source_count == 156
     assert manifest.live_source_coverage_claimed is False
     assert manifest.external_publication_performed is False
@@ -77,6 +81,8 @@ def test_corpus_archive_exercises_full_governed_bronze_path(
         names = set(package.getnames())
     assert "corpus/evidence/fixture-landing-manifest.json" in names
     assert "corpus/evidence/clean-room-recovery-evidence.json" in names
+    assert "corpus/evidence/b1-acquisition-metadata.json" in names
+    assert "corpus/evidence/b1-acquisition-metadata.parquet" in names
     assert "corpus/evidence/bronze-source-landing-queue.json" in names
     assert any(name.startswith("corpus/bronze/payloads/") for name in names)
     assert any(name.startswith("corpus/bronze/parquet/") for name in names)

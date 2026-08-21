@@ -172,14 +172,23 @@ the decision they supersede; no admission record is overwritten.
 
 ### Separate Parquet products (Must)
 
-The acquisition manifest records source, jurisdiction, acquisition/content
-identity, temporal and rights/admission states, URI and media type, immutable
-payload location/digest, parser availability, and reuse disposition. An adapter
-may additionally emit source records with source-native fields and types plus
-durable linkage. Each product has its own actual-byte transformation receipt,
-Iceberg-ready identity, and OpenLineage event. Rebuilds reproduce only products
-whose parser identity and adapter input are available. The canonical
-medicine/product model remains Silver.
+The append-only native `SourceReceipt`, `AcquisitionEvent`, and admission-event
+history are authoritative B1 acquisition metadata. A versioned acquisition
+manifest deterministically projects exactly one query row per acquisition event
+and records source, jurisdiction, acquisition/content identity, temporal and
+rights/admission states, redacted retrieval evidence, immutable payload
+location/digest, parser availability, and reuse disposition. It references B2
+objects by digest and immutable locator and never copies payload contents.
+Existing acquisition IDs and receipt digests are preserved; older native
+records are parsed compatibly rather than rewritten.
+
+An adapter may additionally emit source records with source-native fields and
+types plus durable linkage. Each product has its own actual-byte transformation
+receipt, Iceberg-ready identity, and OpenLineage event. The query manifest,
+OpenLineage, and table catalogues are rebuildable interoperability projections,
+not authoritative B1 records. Rebuilds reproduce only products whose parser
+identity and adapter input are available. The canonical medicine/product model
+remains Silver.
 
 ### Durable payload storage and sensitivity (Must)
 

@@ -1,0 +1,552 @@
+{
+  "$defs": {
+    "B1AcquisitionMetadataRow": {
+      "additionalProperties": false,
+      "description": "Query-friendly metadata for exactly one native acquisition event.",
+      "properties": {
+        "acquisition_agent_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Acquisition Agent Version"
+        },
+        "acquisition_event_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Acquisition Event Digest",
+          "type": "string"
+        },
+        "acquisition_event_locator": {
+          "minLength": 1,
+          "title": "Acquisition Event Locator",
+          "type": "string"
+        },
+        "acquisition_id": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Acquisition Id",
+          "type": "string"
+        },
+        "acquisition_method": {
+          "minLength": 1,
+          "title": "Acquisition Method",
+          "type": "string"
+        },
+        "admission_decision_id": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Admission Decision Id",
+          "type": "string"
+        },
+        "admission_reason_codes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Admission Reason Codes",
+          "type": "array"
+        },
+        "admission_record_locators": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Admission Record Locators",
+          "type": "array"
+        },
+        "admission_reviewer_state": {
+          "minLength": 1,
+          "title": "Admission Reviewer State",
+          "type": "string"
+        },
+        "admission_state": {
+          "minLength": 1,
+          "title": "Admission State",
+          "type": "string"
+        },
+        "content_encoding": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Encoding"
+        },
+        "content_id": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Id",
+          "type": "string"
+        },
+        "data_sensitivity": {
+          "minLength": 1,
+          "title": "Data Sensitivity",
+          "type": "string"
+        },
+        "declared_byte_length": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Declared Byte Length"
+        },
+        "etag": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Etag"
+        },
+        "evidence_class": {
+          "minLength": 1,
+          "title": "Evidence Class",
+          "type": "string"
+        },
+        "final_retrieval_location": {
+          "minLength": 1,
+          "title": "Final Retrieval Location",
+          "type": "string"
+        },
+        "http_method": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Http Method"
+        },
+        "http_status": {
+          "anyOf": [
+            {
+              "maximum": 599,
+              "minimum": 100,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Http Status"
+        },
+        "jurisdiction": {
+          "maxLength": 3,
+          "minLength": 2,
+          "title": "Jurisdiction",
+          "type": "string"
+        },
+        "last_modified": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Modified"
+        },
+        "media_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Media Type"
+        },
+        "observed_byte_length": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observed Byte Length"
+        },
+        "original_retrieval_location": {
+          "minLength": 1,
+          "title": "Original Retrieval Location",
+          "type": "string"
+        },
+        "parser_available": {
+          "title": "Parser Available",
+          "type": "boolean"
+        },
+        "payload_byte_count": {
+          "minimum": 0,
+          "title": "Payload Byte Count",
+          "type": "integer"
+        },
+        "payload_location": {
+          "minLength": 1,
+          "title": "Payload Location",
+          "type": "string"
+        },
+        "payload_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Payload Sha256",
+          "type": "string"
+        },
+        "personal_data_state": {
+          "minLength": 1,
+          "title": "Personal Data State",
+          "type": "string"
+        },
+        "projection_links": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/B1ProjectionLink"
+          },
+          "title": "Projection Links",
+          "type": "array"
+        },
+        "publication_disposition": {
+          "minLength": 1,
+          "title": "Publication Disposition",
+          "type": "string"
+        },
+        "raw_evidence_locator": {
+          "minLength": 1,
+          "title": "Raw Evidence Locator",
+          "type": "string"
+        },
+        "receipt_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Receipt Digest",
+          "type": "string"
+        },
+        "redirect_chain": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Redirect Chain",
+          "type": "array"
+        },
+        "redistribution_state": {
+          "minLength": 1,
+          "title": "Redistribution State",
+          "type": "string"
+        },
+        "retention_state": {
+          "minLength": 1,
+          "title": "Retention State",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "format": "date-time",
+          "title": "Retrieved At",
+          "type": "string"
+        },
+        "reuse_discovery_snapshot_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reuse Discovery Snapshot Id"
+        },
+        "reuse_disposition": {
+          "title": "Reuse Disposition",
+          "type": "string"
+        },
+        "rights_compatibility": {
+          "enum": [
+            "policy_bound",
+            "coarse_legacy"
+          ],
+          "title": "Rights Compatibility",
+          "type": "string"
+        },
+        "rights_reference": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rights Reference"
+        },
+        "rights_review_state": {
+          "minLength": 1,
+          "title": "Rights Review State",
+          "type": "string"
+        },
+        "rights_state": {
+          "minLength": 1,
+          "title": "Rights State",
+          "type": "string"
+        },
+        "source_effective_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Effective At"
+        },
+        "source_id": {
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
+        },
+        "source_parser_identity": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Parser Identity"
+        },
+        "source_published_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Published At"
+        },
+        "source_receipt_locator": {
+          "minLength": 1,
+          "title": "Source Receipt Locator",
+          "type": "string"
+        },
+        "source_uri": {
+          "minLength": 1,
+          "title": "Source Uri",
+          "type": "string"
+        },
+        "source_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Version"
+        },
+        "transformation_state": {
+          "minLength": 1,
+          "title": "Transformation State",
+          "type": "string"
+        },
+        "valid_from": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid From"
+        },
+        "valid_to": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid To"
+        }
+      },
+      "required": [
+        "source_id",
+        "jurisdiction",
+        "acquisition_id",
+        "content_id",
+        "payload_sha256",
+        "payload_byte_count",
+        "raw_evidence_locator",
+        "payload_location",
+        "receipt_digest",
+        "acquisition_event_digest",
+        "evidence_class",
+        "retrieved_at",
+        "original_retrieval_location",
+        "final_retrieval_location",
+        "source_uri",
+        "acquisition_method",
+        "reuse_disposition",
+        "rights_state",
+        "data_sensitivity",
+        "personal_data_state",
+        "publication_disposition",
+        "retention_state",
+        "transformation_state",
+        "redistribution_state",
+        "rights_review_state",
+        "rights_compatibility",
+        "admission_state",
+        "admission_reviewer_state",
+        "admission_decision_id",
+        "source_receipt_locator",
+        "acquisition_event_locator",
+        "admission_record_locators",
+        "parser_available"
+      ],
+      "title": "B1AcquisitionMetadataRow",
+      "type": "object"
+    },
+    "B1ProjectionLink": {
+      "additionalProperties": false,
+      "description": "One non-authoritative, rebuildable B1/B2 projection location.",
+      "properties": {
+        "kind": {
+          "enum": [
+            "acquisition_manifest_parquet",
+            "openlineage",
+            "source_records_parquet",
+            "source_records_openlineage",
+            "table_catalogue"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "locator": {
+          "minLength": 1,
+          "title": "Locator",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "locator"
+      ],
+      "title": "B1ProjectionLink",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Versioned deterministic B1 query manifest over native evidence.",
+  "properties": {
+    "authoritative_native_records": {
+      "const": true,
+      "default": true,
+      "title": "Authoritative Native Records",
+      "type": "boolean"
+    },
+    "event_count": {
+      "minimum": 1,
+      "title": "Event Count",
+      "type": "integer"
+    },
+    "manifest_id": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Manifest Id",
+      "type": "string"
+    },
+    "manifest_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Manifest Sha256",
+      "type": "string"
+    },
+    "openlineage_is_authoritative": {
+      "const": false,
+      "default": false,
+      "title": "Openlineage Is Authoritative",
+      "type": "boolean"
+    },
+    "query_manifest_is_authoritative": {
+      "const": false,
+      "default": false,
+      "title": "Query Manifest Is Authoritative",
+      "type": "boolean"
+    },
+    "rows": {
+      "items": {
+        "$ref": "#/$defs/B1AcquisitionMetadataRow"
+      },
+      "minItems": 1,
+      "title": "Rows",
+      "type": "array"
+    },
+    "schema_id": {
+      "const": "global-medicines-atlas.b1-acquisition-metadata-manifest",
+      "default": "global-medicines-atlas.b1-acquisition-metadata-manifest",
+      "title": "Schema Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "table_catalogues_are_authoritative": {
+      "const": false,
+      "default": false,
+      "title": "Table Catalogues Are Authoritative",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "event_count",
+    "manifest_sha256",
+    "manifest_id",
+    "rows"
+  ],
+  "title": "B1AcquisitionMetadataManifest",
+  "type": "object"
+}
