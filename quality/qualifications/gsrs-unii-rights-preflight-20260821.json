@@ -1,0 +1,31 @@
+{
+  "schema_id": "global-medicines-atlas.gsrs-unii-rights-preflight",
+  "schema_version": 1,
+  "observed_at": "2026-08-21T00:05:02Z",
+  "source_id": "us-gsrs-unii",
+  "prompt_id": 18,
+  "licensing_evidence": {
+    "url": "https://gsrs.ncats.nih.gov/licensing",
+    "content_sha256": "c303d7dba00a75b602d138c7e7a2806ef555bd17a30e2ca1374243148c61f721",
+    "finding": "Unless otherwise noted, GSRS data is public domain and made available under CC0 1.0; software and documentation use Apache-2.0."
+  },
+  "fda_unii_evidence": {
+    "url": "https://open.fda.gov/data/unii/",
+    "content_sha256": "4bec44734c309ca00364d2a391dc81be9b60c02c3dda7eb130755748a59b4668",
+    "finding": "The official openFDA UNII page identifies FDA as provider and labels the data Public Domain and CC0."
+  },
+  "archive_inventory_evidence": {
+    "url": "https://precision.fda.gov/uniisearch/archive",
+    "content_sha256": "9e7d44082955649a2e9377d877966fba4b148cf1011ef75c07d653ba2e61ce8d",
+    "paired_release_count": 68,
+    "first_release": "2014-01-25",
+    "last_release": "2026-08-04",
+    "release_dates_sha256": "a8d4de95b9934f29f65176faba11bee8ae98197df0795f2cd5c3ee1d539fdd36",
+    "payloads_acquired": false
+  },
+  "recommended_decision": "approve_internal_acquisition_and_archival",
+  "maintainer_decision": "pending",
+  "public_release_authorized": false,
+  "external_publication_authorized": false,
+  "evidence_limit": "UNII and GSRS records are terminology and substance evidence. UNII presence does not establish regulatory approval, medicine identity, clinical equivalence, safety, efficacy, funding, or availability."
+}
