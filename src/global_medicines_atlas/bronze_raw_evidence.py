@@ -239,12 +239,7 @@ def write_raw_evidence_manifest(
 def read_raw_evidence_manifest(path: Path) -> RawEvidenceManifest:
     """Read and validate a B2 manifest without touching payload bytes."""
 
-    manifest = RawEvidenceManifest.model_validate_json(path.read_bytes())
-    if manifest.manifest_sha256 != _rows_digest(manifest.rows):
-        raise ValueError("raw evidence manifest digest mismatch")
-    if manifest.row_count != len(manifest.rows):
-        raise ValueError("raw evidence manifest row count mismatch")
-    return manifest
+    return RawEvidenceManifest.model_validate_json(path.read_bytes())
 
 
 @dataclass(frozen=True, slots=True)
@@ -299,7 +294,7 @@ def build_archive_member_manifest(
                 if info.isfile():
                     extracted_file = archive.extractfile(info)
                     if extracted_file is None:
-                        raise ValueError(
+                        raise ValueError(  # pragma: no cover - tarfile invariant
                             f"tar member cannot be read: {info.name}"
                         )
                     extracted = extracted_file.read()

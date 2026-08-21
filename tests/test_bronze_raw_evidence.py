@@ -27,6 +27,8 @@ from global_medicines_atlas.bronze_landing import (
     land_bronze_payload,
 )
 from global_medicines_atlas.bronze_raw_evidence import (
+    RawEvidenceManifest,
+    RawEvidenceRecord,
     RawEvidenceState,
     build_archive_member_manifest,
     build_document_manifest,
@@ -96,6 +98,74 @@ def test_raw_evidence_state_validation_is_fail_closed() -> None:
 
 
 @pytest.mark.unit
+@pytest.mark.parametrize(
+    ("updates", "message"),
+    [
+        ({"raw_object_locator": None}, "object and digest"),
+        (
+            {"external_reference": "https://example.invalid"},
+            "blocked/reference",
+        ),
+        (
+            {
+                "state": RawEvidenceState.EXTERNAL_REFERENCE_ONLY,
+                "external_reference": None,
+            },
+            "requires only",
+        ),
+        (
+            {
+                "state": RawEvidenceState.EXTERNAL_REFERENCE_ONLY,
+                "external_reference": "https://example.invalid",
+                "raw_object_locator": None,
+                "payload_sha256": "0" * 64,
+            },
+            "cannot claim retained",
+        ),
+        (
+            {"state": RawEvidenceState.BLOCKED, "blocked_reason": None},
+            "requires a reason",
+        ),
+        (
+            {
+                "state": RawEvidenceState.BLOCKED,
+                "blocked_reason": "pending",
+                "raw_object_locator": None,
+                "payload_sha256": "0" * 64,
+            },
+            "cannot claim retained",
+        ),
+    ],
+)
+def test_raw_evidence_model_rejects_inconsistent_states(
+    updates: dict[str, object], message: str
+) -> None:
+    record = build_raw_evidence_record(
+        _receipt(b"model-state"),
+        raw_locator="file:///tmp/model-state.bin",
+        state=RawEvidenceState.RETAINED,
+    )
+    values = record.model_dump(mode="json") | updates
+    with pytest.raises(ValueError, match=message):
+        RawEvidenceRecord.model_validate(values)
+
+
+@pytest.mark.unit
+def test_raw_evidence_canonical_json_and_manifest_count_validation() -> None:
+    record = build_raw_evidence_record(
+        _receipt(b"canonical"),
+        raw_locator="file:///tmp/canonical.bin",
+        state=RawEvidenceState.RETAINED,
+    )
+    assert json.loads(record.canonical_json())["stratum"] == "B2"
+    manifest = RawEvidenceManifest.from_rows((record,))
+    with pytest.raises(ValueError, match="row count"):
+        RawEvidenceManifest.model_validate(
+            manifest.model_dump(mode="json") | {"row_count": 2}
+        )
+
+
+@pytest.mark.unit
 def test_raw_evidence_manifest_rejects_tampering_and_conflicting_rewrites(
     tmp_path: Path,
 ) -> None:
@@ -120,6 +190,11 @@ def test_raw_evidence_manifest_rejects_tampering_and_conflicting_rewrites(
     path.write_text(json.dumps(tampered))
     with pytest.raises(ValueError, match="digest"):
         read_raw_evidence_manifest(path)
+    valid = RawEvidenceManifest.from_rows((record,))
+    with pytest.raises(ValueError, match="digest"):
+        RawEvidenceManifest.model_validate(
+            valid.model_dump(mode="json") | {"manifest_sha256": "0" * 64}
+        )
 
 
 @pytest.mark.unit
@@ -312,6 +387,12 @@ def test_landing_exposes_b2_manifest_and_rejects_non_native_projection(
             table=pa.table({"id": ["A"]}),
             parser_identity="tests.invalid.v1",
             record_id_column="id",
+            projection_kind="silver",  # type: ignore[arg-type]
+        ),
+        SourceRecordBatch(
+            table=pa.table({"id": ["A"]}),
+            parser_identity="tests.invalid.v1",
+            record_id_column="id",
             projection_kind="source_native",
             preserves_native_columns=False,
         ),
@@ -321,7 +402,7 @@ def test_landing_exposes_b2_manifest_and_rejects_non_native_projection(
             record_id_column="id",
         ),
     ):
-        with pytest.raises(ValueError, match=r"Silver|harmonise"):
+        with pytest.raises(ValueError, match=r"source-native|Silver|harmonise"):
             land_bronze_payload(
                 payload,
                 _receipt(payload),
