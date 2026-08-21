@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 import mimetypes
 import re
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from datetime import UTC, datetime
 from hashlib import sha256
 from pathlib import Path
@@ -251,4 +251,43 @@ def validate_receipt_files(
             "status": "complete",
             "retrieved_at": receipt.retrieved_at or datetime.now(UTC),
         }
+    )
+
+
+def mark_receipt(
+    receipt: ManualAcquisitionReceipt,
+    status: Literal[
+        "blocked", "temporarily_unavailable", "superseded", "complete"
+    ],
+    *,
+    deviation: str | None = None,
+) -> ManualAcquisitionReceipt:
+    """Record an explicit terminal state without mutating downloaded evidence."""
+    deviations = receipt.deviations + ((deviation,) if deviation else ())
+    return receipt.model_copy(
+        update={"status": status, "deviations": deviations}
+    )
+
+
+def handoff_to_bronze(
+    recipe: ManualAcquisitionRecipe,
+    receipt: ManualAcquisitionReceipt,
+    files_root: Path,
+    *,
+    lander: Callable[[bytes, str, str], Any],
+) -> tuple[Any, ...]:
+    """Pass validated files to the ordinary B1/B2 landing adapter."""
+    completed = validate_receipt_files(recipe, receipt, files_root)
+    if (
+        completed.status != "complete"
+        or completed.admission_state != "accepted"
+    ):
+        raise ValueError("manual receipt is not admitted for Bronze handoff")
+    return tuple(
+        lander(
+            (files_root / output.name).read_bytes(),
+            recipe.source_id,
+            output.name,
+        )
+        for output in completed.output_files
     )
