@@ -73,9 +73,71 @@ def test_unreviewed_international_sources_remain_explicitly_fail_closed() -> (
     None
 ):
     entries = _entries()
-    unresolved = [
-        entry for entry in entries if entry["disposition"] == "catalogue_only"
+    non_public = [
+        entry
+        for entry in entries
+        if entry["disposition"]
+        in {"catalogue_only", "credentialed_excluded"}
     ]
-    assert len(unresolved) == 172
-    assert all(entry["blocker"] for entry in unresolved)
-    assert all(entry["public_source_eligible"] is False for entry in unresolved)
+    assert len(non_public) == 172
+    assert all(entry["blocker"] for entry in non_public)
+    assert all(entry["public_source_eligible"] is False for entry in non_public)
+
+
+def test_permissive_international_candidates_have_official_evidence() -> None:
+    entries = {entry["source_id"]: entry for entry in _entries()}
+    expected = {
+        "eu-union-register",
+        "fr-bdpm",
+        "fr-bdpm-smr-asmr",
+        "fr-open-medic",
+        "gb-emit",
+        "gb-nhs-drug-tariff",
+        "gb-nice-medicines-utilisation",
+        "global-rxnorm",
+        "nl-gipdatabank",
+        "nz-pharmac-hml",
+        "nz-pharmac-schedule",
+        "nz-pharmac-schedule-xml",
+        "us-rxnorm-api",
+    }
+    candidates = {
+        source_id
+        for source_id, entry in entries.items()
+        if entry["policy_family_id"]
+        not in {
+            "unresolved-source-specific-terms",
+            "fda-website-public-domain",
+            "openfda-cc0",
+        }
+    }
+    assert candidates == expected
+    assert _ledger()["candidate_policy_assignment_count"] == 26
+    for source_id in expected:
+        entry = entries[source_id]
+        assert entry["evidence"]
+        assert all(item["content_sha256"] for item in entry["evidence"])
+        assert entry["disposition"] == "catalogue_only"
+        assert entry["maintainer_publication_approved"] is False
+
+
+def test_every_international_review_has_observation_or_failure_receipt() -> None:
+    entries = _entries()
+    assert sum(bool(entry["evidence"]) for entry in entries) == 154
+    unavailable = [entry for entry in entries if not entry["evidence"]]
+    assert len(unavailable) == 18
+    assert all(
+        "outcome" in entry["blocker"] or "access is" in entry["blocker"]
+        for entry in unavailable
+    )
+
+
+def test_credentialed_sources_are_excluded_independently_of_rights() -> None:
+    entries = _entries()
+    credentialed = [
+        entry
+        for entry in entries
+        if entry["disposition"] == "credentialed_excluded"
+    ]
+    assert len(credentialed) == 18
+    assert all("access is" in entry["blocker"] for entry in credentialed)

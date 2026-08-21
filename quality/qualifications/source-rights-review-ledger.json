@@ -5,14 +5,22 @@
   "catalogue_source_count": 172,
   "review_count": 172,
   "publication_gate": "pending_exact_manifest_maintainer_approval",
-  "candidate_policy_assignment_count": 13,
+  "candidate_policy_assignment_count": 26,
   "entries": [
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "ae-dha-prices",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://dha.gov.ae/en/HealthRegulationSector/DrugControl",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "4302c7cdb842e4a07934b198975850a3bcb5ec881494331c28a10889a35aabe6",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -24,7 +32,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -33,7 +41,15 @@
       "schema_version": 1,
       "source_id": "ae-ede-register",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://services.ede.gov.ae/drugdirectory?lang=en-US",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "595a99f60b882cd08f0a2cfc861a68a78f0a95e2c084b31a103cf9e45a2e25ed",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -45,7 +61,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -54,7 +70,15 @@
       "schema_version": 1,
       "source_id": "ar-anmat-vademecum",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.argentina.gob.ar/anmat",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "cfbcf1009bb594ae5a4b8960ce9648fe3d82abf02b5fc711fb1b2ac503d8b264",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -66,7 +90,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -75,19 +99,27 @@
       "schema_version": 1,
       "source_id": "au-amt-rf2",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.healthterminologies.gov.au/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "596ab3caa950c966654ff3aa8f15b30b53f06a1265a2b8b8c0de7f1ed881fc99",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is account; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -96,7 +128,15 @@
       "schema_version": 1,
       "source_id": "au-artg",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.tga.gov.au/resources/artg",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "12dbc13b050232005c3336ff04b66095a3760a14299a8eb62f877cf457626e1c",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -108,7 +148,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -117,7 +157,15 @@
       "schema_version": 1,
       "source_id": "au-pbs-api",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://data.pbs.gov.au/data-distribution/data-distribution.html",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "9ac5ae80d6cceafc45445f4621074fcea746a3424706fafa314a628bd2664c20",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -129,7 +177,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -138,19 +186,27 @@
       "schema_version": 1,
       "source_id": "au-pbs-embargo",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://data.pbs.gov.au/document/90473.html",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "69112ee5766edeb28973940031a49f685c2de3c312f312f158dc2504c1577494",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is manual_approval; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -159,7 +215,15 @@
       "schema_version": 1,
       "source_id": "au-pbs-historical-xml",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://data.pbs.gov.au/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "88f713dbcddbdff60a5fb2226802732c1c02c8f0beb7f5a4e703bf443a7372d2",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -171,7 +235,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -180,7 +244,15 @@
       "schema_version": 1,
       "source_id": "au-tga-daen",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.tga.gov.au/safety/safety/safety-monitoring-daen-database-adverse-event-notifications",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "559bc720f7944511f6f47f6d0e2cf2b83f7aabd5a1647b520e33f751e8d4c144",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -192,7 +264,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -201,7 +273,15 @@
       "schema_version": 1,
       "source_id": "au-tga-pi-cmi",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.tga.gov.au/products/regulations-all-products/about-australian-register-therapeutic-goods-artg/product-information-pi",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "2c3be42ad4e505c7d0183d15c78d699fdb82ac03d273a07a09fde0aca2b1677c",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -213,7 +293,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -222,7 +302,15 @@
       "schema_version": 1,
       "source_id": "au-tga-regulatory-events",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.tga.gov.au/resources/datasets",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "538f9ffd8a2a64d8a9c45d8b7140e717d8682ada9d7a34ed5fea990e216952e7",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -234,7 +322,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -243,7 +331,15 @@
       "schema_version": 1,
       "source_id": "bh-moh-drug-prices",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.moh.gov.bh/OtherPages/Faq?lang=en",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "4d3fe5d92fd8a06f7f66f4580482970e6578d1cc5ad8d625829dd9a5bad454d7",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -255,7 +351,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -264,7 +360,15 @@
       "schema_version": 1,
       "source_id": "br-anvisa-medicines",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://consultas.anvisa.gov.br/#/medicamentos/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "81528402984adc1d754ff2747bfda23a37fec5143c8fa35627a0b079292a891d",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -276,7 +380,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -285,7 +389,15 @@
       "schema_version": 1,
       "source_id": "br-cmed-prices",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/cmed/precos",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "eda3d93c2c997c36ff5079543e5ee04d7f7c6b3e13bb4a073eae06a278bdd924",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -297,7 +409,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -306,7 +418,15 @@
       "schema_version": 1,
       "source_id": "br-conitec-decisions",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.gov.br/conitec/pt-br",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "cd9cb5cd3cde76b8665121a383587ef5dcb96de99de165a086d4c6f03f4a2cdc",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -318,7 +438,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -339,7 +459,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official rights evidence discovery outcome is failed",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -348,7 +468,15 @@
       "schema_version": 1,
       "source_id": "ca-cda-recommendations",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.cda-amc.ca/reimbursement-reviews",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "f969f52bb250ea2c545f29219228f0e1eefc64940d9206dc7f23257b2cc84187",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -360,7 +488,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -369,19 +497,27 @@
       "schema_version": 1,
       "source_id": "ca-cihi-nhex-medicines",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.cihi.ca/en/national-health-expenditure-trends",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "e23af999a02e0694a5d82d79727a1dce9872b601cf043fc854302d145a2d68f0",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is subscription; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -402,7 +538,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official rights evidence discovery outcome is failed",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -423,7 +559,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official rights evidence discovery outcome is failed",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -432,7 +568,15 @@
       "schema_version": 1,
       "source_id": "ca-nova-scotia-pharmacare",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://open.canada.ca/data/en/dataset/e49db542-48db-8656-c4d5-f1f32516ddad",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "65935ea67909ec6a5749e3cef861565c2ed5d53431e997e47b25758fc3bd3cd2",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -444,7 +588,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -453,7 +597,15 @@
       "schema_version": 1,
       "source_id": "ca-ontario-odb",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.ontario.ca/document/ontario-drug-benefit-odb-formulary-comparative-drug-index-cdi-and-monthly-formulary-0",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "4ed56e67106a74913ba85677d103bfd06a3c30eafb5c4c0260edcd876f6c57c2",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -465,7 +617,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -474,7 +626,15 @@
       "schema_version": 1,
       "source_id": "ch-foph-sl-fhir",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://sl.bag.admin.ch/resources/current-and-archived-data",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "48c99740fc670a94654c9f4f875637a4e5e51e3c3dd91f5e1cf07ba14c7fc477",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -486,7 +646,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -495,7 +655,15 @@
       "schema_version": 1,
       "source_id": "ch-foph-specialities",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://sl.bag.admin.ch/sl",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "48c99740fc670a94654c9f4f875637a4e5e51e3c3dd91f5e1cf07ba14c7fc477",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -507,7 +675,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -516,7 +684,15 @@
       "schema_version": 1,
       "source_id": "ch-swissmedic-aips",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.swissmedic.ch/swissmedic/en/home/humanarzneimittel/authorisations/aips.html/1000",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "841137d4cc12cd676724ace965b78417b42e60caaeaf16d39f9f96899c390ea0",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -528,7 +704,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -537,7 +713,15 @@
       "schema_version": 1,
       "source_id": "ch-swissmedic-authorised",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.swissmedic.ch/swissmedic/en/home/services/listen_neu.html",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "746f426b38dde8d50c46b3e369f396e318acea2b5985cb27c117cc22acc9cd34",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -549,7 +733,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -570,7 +754,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official rights evidence discovery outcome is failed",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -579,7 +763,15 @@
       "schema_version": 1,
       "source_id": "co-invima-cum",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://mesagil.invima.gov.co/productos-vigilados/medicamentos-y-productos-biologicos/autorizacion-de-comercializacion-registros",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "941e7a5097a5f11085d6b12eae0d1699bbbfcaca99aa6bcccd150fc776589804",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -591,7 +783,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -600,7 +792,15 @@
       "schema_version": 1,
       "source_id": "co-invima-register",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.invima.gov.co/consulta-registros-sanitarios",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "832f26c4200223501a550c9a5ed0b2f30f0507a867ff2dbcbf00185f83dd9eef",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -612,7 +812,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -621,7 +821,15 @@
       "schema_version": 1,
       "source_id": "de-bfarm-amice",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.bfarm.de/DE/Arzneimittel/Arzneimittelinformationen/Arzneimittel-recherchieren/AMIce/_artikel.html",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "43e899ceebd70ae17ec7786aa64a2a880dfbc6d363759cbd49e207151a338d35",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -633,7 +841,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -642,7 +850,15 @@
       "schema_version": 1,
       "source_id": "dk-medicinpriser",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://laegemiddelstyrelsen.dk/en/reimbursement/prices/medicine-prices-for-companies",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "9d665ca69e8991ab46970dade355a944e57d0ba34273fb35ec49fb9f3f202fb2",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -654,7 +870,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -663,7 +879,15 @@
       "schema_version": 1,
       "source_id": "dk-medstat-utilisation",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://medstat.dk/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "dda500ef50ad1da40b8f627f808d449e5e78309e216f42a08102c786ea1cad07",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -675,7 +899,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -684,7 +908,15 @@
       "schema_version": 1,
       "source_id": "eg-eda-register",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.edaegypt.gov.eg/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "4cd4f808f7b4ccc478a8452c085cbbf23439b2b2a797cb5eb64a6c34cdab0484",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -696,7 +928,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -705,7 +937,15 @@
       "schema_version": 1,
       "source_id": "eg-eda-safety",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.edaegypt.gov.eg/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "4cd4f808f7b4ccc478a8452c085cbbf23439b2b2a797cb5eb64a6c34cdab0484",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -717,7 +957,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -726,7 +966,15 @@
       "schema_version": 1,
       "source_id": "eg-national-eml",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.edaegypt.gov.eg/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "4cd4f808f7b4ccc478a8452c085cbbf23439b2b2a797cb5eb64a6c34cdab0484",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -738,7 +986,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -747,7 +995,15 @@
       "schema_version": 1,
       "source_id": "eu-ema-article57",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/data-medicines-iso-idmp-standards-post-authorisation/public-data-article-57-database",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "b12e73f32318693c666a8929a8105b5f4255fe6050fa62940ffe03e25831877f",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -759,7 +1015,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -768,7 +1024,15 @@
       "schema_version": 1,
       "source_id": "eu-ema-epar-documents",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.ema.europa.eu/en/medicines",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "9efadc1d18e3148d7043eaa727778524dcfcf1a659d71a32bb1042850b7dc2b9",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -780,7 +1044,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -789,7 +1053,15 @@
       "schema_version": 1,
       "source_id": "eu-ema-json",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.ema.europa.eu/en/about-us/about-website/download-website-data-json-data-format",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "2476d18fcb4b6f2decc40b7fab67626dd86b97148c90b04037ea96215967f000",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -801,7 +1073,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -810,7 +1082,15 @@
       "schema_version": 1,
       "source_id": "eu-ema-medicines",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.ema.europa.eu/en/medicines",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "9efadc1d18e3148d7043eaa727778524dcfcf1a659d71a32bb1042850b7dc2b9",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -822,7 +1102,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -831,7 +1111,15 @@
       "schema_version": 1,
       "source_id": "eu-ema-orphan",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.ema.europa.eu/en/human-regulatory-overview/orphan-designation-overview",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "2618056176851830b4532a793cd429a942cf9b4ea4defc2c26310aa143f68a0e",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -843,7 +1131,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -852,19 +1140,27 @@
       "schema_version": 1,
       "source_id": "eu-ema-pms-fhir",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://api.pms.ema.europa.eu/public/v1/swagger",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "93613b8318538b1db45d76aeb041eb231a4daf9071110c150c3d7039a9444f85",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is account; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -873,7 +1169,15 @@
       "schema_version": 1,
       "source_id": "eu-ema-referrals",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.ema.europa.eu/en/medicines",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "9efadc1d18e3148d7043eaa727778524dcfcf1a659d71a32bb1042850b7dc2b9",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -885,7 +1189,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -894,7 +1198,15 @@
       "schema_version": 1,
       "source_id": "eu-ema-safety-communications",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/pharmacovigilance-post-authorisation/safety-communication",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "16f48d2b21a3dd740ed35b5738fe6401c0abeffdd4ecd21d489f07e3a0e55619",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -906,7 +1218,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -915,19 +1227,27 @@
       "schema_version": 1,
       "source_id": "eu-ema-xevmpd-credentialed",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/data-medicines-iso-idmp-standards-post-authorisation",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "8b6f3fe5a08ab0c524e77e73288d28ef4cf11032ced5c59cf750186f0301918c",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is account; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -936,19 +1256,27 @@
       "schema_version": 1,
       "source_id": "eu-eudravigilance-public",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.adrreports.eu/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "ec2b254d9f4e4cfc8e667f4ba1cd76687683ce6e64308505c50b21074d4f4e4f",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is account; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -957,7 +1285,15 @@
       "schema_version": 1,
       "source_id": "eu-spor-public-metadata",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://spor.ema.europa.eu/sporwi/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "9418bf9bc5d1caf652ee6f5faf6985d5bd64d278d07fdd40b57ad8e518822baf",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -969,7 +1305,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -978,19 +1314,27 @@
       "schema_version": 1,
       "source_id": "eu-spor-rms-oms",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://spor.ema.europa.eu/sporwi/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "9418bf9bc5d1caf652ee6f5faf6985d5bd64d278d07fdd40b57ad8e518822baf",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is account; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -998,20 +1342,32 @@
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "eu-union-register",
-      "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
-      "redistribute": "unknown",
-      "transform": "unknown",
-      "publish_source_bytes": "unknown",
-      "sensitivity": "unknown",
+      "policy_family_id": "eu-commission-cc-by-4.0",
+      "evidence": [
+        {
+          "official_url": "https://commission.europa.eu/legal-notice_en",
+          "observed_at": "2026-08-21T00:00:00Z",
+          "content_sha256": "14bcddc81da5de40a3c228e0a954c1eb159d2b73d59467696b72cf1ee03313b3",
+          "scope": "authority",
+          "reuse_statement": "EU-owned Commission website content is licensed under CC BY 4.0 unless otherwise indicated; identifiable-person, third-party, logo, and other intellectual-property exclusions apply."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
       "disposition": "catalogue_only",
-      "attribution": null,
-      "field_exclusions": [],
+      "attribution": "Credit the European Union, link the exact source, state retrieval date, and indicate changes.",
+      "field_exclusions": [
+        "third-party works",
+        "identifiable-person content",
+        "logos, trademarks, patents, and registered designs"
+      ],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
-      "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "review_trigger": "Commission legal notice, dataset notice, schema, or sensitivity change",
+      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1019,20 +1375,30 @@
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "fr-bdpm",
-      "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
-      "redistribute": "unknown",
-      "transform": "unknown",
-      "publish_source_bytes": "unknown",
-      "sensitivity": "unknown",
+      "policy_family_id": "fr-etalab-open-licence-2.0",
+      "evidence": [
+        {
+          "official_url": "https://raw.githubusercontent.com/etalab/licence-ouverte/master/LO.md",
+          "observed_at": "2026-08-21T00:00:00Z",
+          "content_sha256": "a1deb9d7554ad10e041dbd7440b3dec0ac0d3679f9e1655ee9d850908b015995",
+          "scope": "national_open_data",
+          "reuse_statement": "France's Open Licence 2.0 grants free reuse, adaptation, and commercial exploitation with attribution and date requirements."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
       "disposition": "catalogue_only",
-      "attribution": null,
-      "field_exclusions": [],
+      "attribution": "Name the producer, title, source URL, and latest update date under Licence Ouverte 2.0.",
+      "field_exclusions": [
+        "third-party material or personal data outside the dataset licence"
+      ],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
-      "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "review_trigger": "dataset licence, resource notice, schema, or sensitivity change",
+      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1040,20 +1406,30 @@
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "fr-bdpm-smr-asmr",
-      "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
-      "redistribute": "unknown",
-      "transform": "unknown",
-      "publish_source_bytes": "unknown",
-      "sensitivity": "unknown",
+      "policy_family_id": "fr-etalab-open-licence-2.0",
+      "evidence": [
+        {
+          "official_url": "https://raw.githubusercontent.com/etalab/licence-ouverte/master/LO.md",
+          "observed_at": "2026-08-21T00:00:00Z",
+          "content_sha256": "a1deb9d7554ad10e041dbd7440b3dec0ac0d3679f9e1655ee9d850908b015995",
+          "scope": "national_open_data",
+          "reuse_statement": "France's Open Licence 2.0 grants free reuse, adaptation, and commercial exploitation with attribution and date requirements."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
       "disposition": "catalogue_only",
-      "attribution": null,
-      "field_exclusions": [],
+      "attribution": "Name the producer, title, source URL, and latest update date under Licence Ouverte 2.0.",
+      "field_exclusions": [
+        "third-party material or personal data outside the dataset licence"
+      ],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
-      "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "review_trigger": "dataset licence, resource notice, schema, or sensitivity change",
+      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1061,20 +1437,30 @@
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "fr-open-medic",
-      "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
-      "redistribute": "unknown",
-      "transform": "unknown",
-      "publish_source_bytes": "unknown",
-      "sensitivity": "unknown",
+      "policy_family_id": "fr-etalab-open-licence-2.0",
+      "evidence": [
+        {
+          "official_url": "https://raw.githubusercontent.com/etalab/licence-ouverte/master/LO.md",
+          "observed_at": "2026-08-21T00:00:00Z",
+          "content_sha256": "a1deb9d7554ad10e041dbd7440b3dec0ac0d3679f9e1655ee9d850908b015995",
+          "scope": "national_open_data",
+          "reuse_statement": "France's Open Licence 2.0 grants free reuse, adaptation, and commercial exploitation with attribution and date requirements."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
       "disposition": "catalogue_only",
-      "attribution": null,
-      "field_exclusions": [],
+      "attribution": "Name the producer, title, source URL, and latest update date under Licence Ouverte 2.0.",
+      "field_exclusions": [
+        "third-party material or personal data outside the dataset licence"
+      ],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
-      "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "review_trigger": "dataset licence, resource notice, schema, or sensitivity change",
+      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1082,20 +1468,35 @@
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "gb-emit",
-      "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
-      "redistribute": "unknown",
-      "transform": "unknown",
-      "publish_source_bytes": "unknown",
-      "sensitivity": "unknown",
+      "policy_family_id": "uk-open-government-licence-3.0",
+      "evidence": [
+        {
+          "official_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+          "observed_at": "2026-08-21T00:00:00Z",
+          "content_sha256": "f5b2b9f2af63647cde889fa6c3508f5705925295b74912c68caa28dd37e64aa5",
+          "scope": "national_open_data",
+          "reuse_statement": "OGL 3.0 permits copying, adaptation, distribution, and commercial and non-commercial exploitation with attribution, subject to stated exemptions."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
       "disposition": "catalogue_only",
-      "attribution": null,
-      "field_exclusions": [],
+      "attribution": "Use the source-specified attribution and state that the information is licensed under the Open Government Licence v3.0.",
+      "field_exclusions": [
+        "personal data",
+        "third-party rights",
+        "departmental logos",
+        "military insignia",
+        "identity documents",
+        "patents and trademarks"
+      ],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
-      "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "review_trigger": "source notice, OGL version, schema, or sensitivity change",
+      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1104,7 +1505,15 @@
       "schema_version": 1,
       "source_id": "gb-mhra-products",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://products.mhra.gov.uk/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "f8e019066ec32e9941dc5d0134cd87807e5574d676aed5bd746dbddbaffde56c",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1116,7 +1525,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1125,7 +1534,15 @@
       "schema_version": 1,
       "source_id": "gb-mhra-yellow-card",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://yellowcard.mhra.gov.uk/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "e6e620b09dd9c19a5e2228bc005c7aed8f168c55394e0a54d4a1af074c3f0fb0",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1137,7 +1554,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1146,19 +1563,27 @@
       "schema_version": 1,
       "source_id": "gb-nhs-dmd",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/nhs-dictionary-medicines-and-devices-dmd",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "3c7cdfe4bb2ca197783d5eef0847782803e680c8d385fd35a2a005e447cf5cf8",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is subscription; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1166,20 +1591,32 @@
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "gb-nhs-drug-tariff",
-      "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
-      "redistribute": "unknown",
-      "transform": "unknown",
-      "publish_source_bytes": "unknown",
-      "sensitivity": "unknown",
+      "policy_family_id": "nhsbsa-ogl-3.0",
+      "evidence": [
+        {
+          "official_url": "https://www.nhsbsa.nhs.uk/our-policies/terms-and-conditions",
+          "observed_at": "2026-08-21T00:00:00Z",
+          "content_sha256": "3276ef8019315dccbe3047f2ae60b8b70e44d4dc50078d9aa92273ea8fd8cb39",
+          "scope": "authority",
+          "reuse_statement": "NHSBSA permits website material reuse under OGL 3.0 with its specified copyright attribution, subject to protected and third-party features."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
       "disposition": "catalogue_only",
-      "attribution": null,
-      "field_exclusions": [],
+      "attribution": "Use '[NHSBSA Title of Information], NHSBSA Copyright [year]' and the OGL 3.0 notice.",
+      "field_exclusions": [
+        "third-party content",
+        "protected presentation features",
+        "dm+d terminology or SNOMED content unless separately cleared"
+      ],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
-      "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "review_trigger": "NHSBSA terms, dataset notice, terminology dependency, schema, or sensitivity change",
+      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1187,20 +1624,32 @@
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "gb-nice-medicines-utilisation",
-      "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
-      "redistribute": "unknown",
-      "transform": "unknown",
-      "publish_source_bytes": "unknown",
-      "sensitivity": "unknown",
+      "policy_family_id": "nhs-england-ogl-3.0",
+      "evidence": [
+        {
+          "official_url": "https://www.england.nhs.uk/terms-and-conditions-2/",
+          "observed_at": "2026-08-21T00:00:00Z",
+          "content_sha256": "57fd41d2b66c3cc80322a0f219d4aed1600a53bf18ad42ce2e7de0ab8c9154c4",
+          "scope": "authority",
+          "reuse_statement": "NHS England permits reuse under OGL 3.0 except identified third-party copyright and photographs."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
       "disposition": "catalogue_only",
-      "attribution": null,
-      "field_exclusions": [],
+      "attribution": "Credit NHS England and state that the information is licensed under the Open Government Licence v3.0.",
+      "field_exclusions": [
+        "identified third-party content",
+        "photographs",
+        "personal or sensitive records"
+      ],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
-      "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "review_trigger": "NHS England terms, dataset notice, schema, or sensitivity change",
+      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1209,7 +1658,15 @@
       "schema_version": 1,
       "source_id": "gb-nice-ta",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.nice.org.uk/what-nice-does/our-guidance/about-technology-appraisal-guidance",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "f4d0cdc79a1999087f457924aba32250e0b0637cf59abcb4666f53d5919fbae6",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1221,7 +1678,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1230,7 +1687,15 @@
       "schema_version": 1,
       "source_id": "gb-openprescribing",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://openprescribing.net/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "a744a42fa769ba515de9530f1f994f7a6fdf9b8149723336499ec4fc3d8314b2",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1242,7 +1707,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1251,19 +1716,27 @@
       "schema_version": 1,
       "source_id": "gb-trud-api",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://digital.nhs.uk/developer/api-catalogue/technology-reference-update-distribution-api",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "ac1b202ca3ec058adbb59d1d316a8a349302116bed1f40d977b9c83437517988",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is api_key; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1272,7 +1745,15 @@
       "schema_version": 1,
       "source_id": "gcc-central-registration",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.ghc.sa/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "315216716ffea24ef66f1f83ed1bfe511a184c070db50a5101c86bfaf977c13e",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1284,7 +1765,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1293,7 +1774,15 @@
       "schema_version": 1,
       "source_id": "gh-fda-register",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://fdaghana.gov.gh/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "84942358fef8f092f67239a6368d9355603731f5e3001c7a209772946494b033",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1305,7 +1794,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1314,7 +1803,15 @@
       "schema_version": 1,
       "source_id": "gh-fda-safety",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://fdaghana.gov.gh/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "84942358fef8f092f67239a6368d9355603731f5e3001c7a209772946494b033",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1326,7 +1823,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1335,7 +1832,15 @@
       "schema_version": 1,
       "source_id": "gh-national-eml",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://fdaghana.gov.gh/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "84942358fef8f092f67239a6368d9355603731f5e3001c7a209772946494b033",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1347,7 +1852,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1355,20 +1860,31 @@
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "global-rxnorm",
-      "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
-      "redistribute": "unknown",
-      "transform": "unknown",
-      "publish_source_bytes": "unknown",
-      "sensitivity": "unknown",
+      "policy_family_id": "rxnorm-public-identifiers-only",
+      "evidence": [
+        {
+          "official_url": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/termsofservice.html",
+          "observed_at": "2026-08-21T00:00:00Z",
+          "content_sha256": "bc0268a0f5bd4705d8a56766a00aa509f0c55f3ca70a4c618ff4b325a49eba4e",
+          "scope": "dataset",
+          "reuse_statement": "NLM-created RXCUI identifiers are public domain and freely distributable; source vocabularies retain their own copyright and licence terms."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "prohibited",
+      "sensitivity": "public",
       "disposition": "catalogue_only",
-      "attribution": null,
-      "field_exclusions": [],
+      "attribution": "Credit the U.S. National Library of Medicine and identify the RxNorm release and retrieval date.",
+      "field_exclusions": [
+        "source vocabulary terms and content whose owners impose separate restrictions",
+        "full RxNorm source archive bytes"
+      ],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
-      "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "review_trigger": "RxNorm terms, source vocabulary composition, release, or schema change",
+      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1377,19 +1893,27 @@
       "schema_version": 1,
       "source_id": "global-umc-vigibase",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://who-umc.org/vigibase-data-access/about-vigibase/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "289a6667ccac1f0c04c55c3a4ef346051e73243e301706e03aa0aedf89791716",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is subscription; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1398,7 +1922,15 @@
       "schema_version": 1,
       "source_id": "global-who-amds-gprm",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.who.int/teams/global-hiv-hepatitis-and-stis-programmes/hiv/treatment/aids-medicines-and-diagnostics-service",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "5e05a7e93eb1fd68a308e7d16a7e979306d328bf1a6966739ad345199d8f2000",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1410,7 +1942,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1419,7 +1951,15 @@
       "schema_version": 1,
       "source_id": "global-who-availability-surveys",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "f45d2cf8ba09b0774f3a168c507d242e13e0260be8a0432305ae84de1c446b44",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1431,7 +1971,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1440,7 +1980,15 @@
       "schema_version": 1,
       "source_id": "global-who-databases",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.who.int/tools/monitoring-and-evaluation/databases",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "70ea1bde35954ec3ca3002487c4662821260c4090cd1070ef286bb48cadfc774",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1452,7 +2000,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1461,7 +2009,15 @@
       "schema_version": 1,
       "source_id": "global-who-eml",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "31a7a52878a8025153925ef0902da84f7c15fcf3745893806b6347d0733a1c20",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1473,7 +2029,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1482,7 +2038,15 @@
       "schema_version": 1,
       "source_id": "global-who-medicine-prices",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "f45d2cf8ba09b0774f3a168c507d242e13e0260be8a0432305ae84de1c446b44",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1494,7 +2058,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1503,7 +2067,15 @@
       "schema_version": 1,
       "source_id": "global-who-mi4a",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "bb1ac1f6e49527a92e5e33d030d7f39fbc2e60ed1d6b4392432fe7172f24d869",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1515,7 +2087,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1524,7 +2096,15 @@
       "schema_version": 1,
       "source_id": "global-who-national-eml-index",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists/national-essential-medicines-lists",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "5e05a7e93eb1fd68a308e7d16a7e979306d328bf1a6966739ad345199d8f2000",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1536,7 +2116,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1545,7 +2125,15 @@
       "schema_version": 1,
       "source_id": "global-who-shortage-sources",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.who.int/teams/regulation-prequalification",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "f3c72e7f0465541d088e3adfc4275ea8bf780c8784434fb0bb525f47674f9a1c",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1557,7 +2145,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1566,7 +2154,15 @@
       "schema_version": 1,
       "source_id": "global-who-wla",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.who.int/initiatives/who-listed-authority-reg-authorities",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "cd4efa7a16fd015475dac23cdf8b04c89b8bf932f91c5eec583e8c2a0dfa625c",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1578,7 +2174,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1587,7 +2183,15 @@
       "schema_version": 1,
       "source_id": "id-bpom-product",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://cekbpom.pom.go.id/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "902745a1c4d30af0c2a743fced861c00d96c40494e800748cc31d8d374aaa4c1",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1599,7 +2203,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1608,7 +2212,15 @@
       "schema_version": 1,
       "source_id": "ie-pcrs-reimbursement",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.hse.ie/website-update/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "b9e0218d17feefd7550645615cbea127ab30334b1a671a1c2eb374dd07a9a28c",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1620,7 +2232,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1629,7 +2241,15 @@
       "schema_version": 1,
       "source_id": "in-cdsco-approved-drugs",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://cdsco.gov.in/opencms/opencms/en/Approval_new/Approved-New-Drugs/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "05b4b0f04e33f5155272498e3ed919d50cb3c28df7cf8cf457923672e8ce919a",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1641,7 +2261,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1650,7 +2270,15 @@
       "schema_version": 1,
       "source_id": "in-cdsco-products",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://cdsco.gov.in/opencms/opencms/en/Home/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "003a32d4ac5ce0c94844f429f828f94f52c44dc802accf9d211f7f1f129811e3",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1662,7 +2290,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1683,7 +2311,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official rights evidence discovery outcome is failed",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1704,7 +2332,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official rights evidence discovery outcome is failed",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1725,7 +2353,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official rights evidence discovery outcome is failed",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1734,19 +2362,27 @@
       "schema_version": 1,
       "source_id": "in-pvpi-safety",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.ipc.gov.in/PvPI/pv_home.html",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "b8847fec08e5606cf410d897ad0de5ee66dd4daeb74cb176747780f130c453f6",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is account; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1755,19 +2391,27 @@
       "schema_version": 1,
       "source_id": "jp-mhlw-ndb-utilisation",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000139390.html",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "666e05a4d9349b822f71e75e4f9ed1b695278291be1f1e320074274750b8a5b4",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is manual_approval; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1776,7 +2420,15 @@
       "schema_version": 1,
       "source_id": "jp-mhlw-nhi-price",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.mhlw.go.jp/topics/2025/04/tp20250401-01.html",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "b062a517e0e338117136fab39680d98c5c63fc6a6e90c333c56cfc5cca7bdfd5",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1788,7 +2440,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1797,7 +2449,15 @@
       "schema_version": 1,
       "source_id": "jp-pmda-approvals",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.pmda.go.jp/english/review-services/reviews/approved-information/drugs/0001.html",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "c40cfa340d10f72103e906b9af10b2ddfda9b2b147458e2f23d8085719dbb0cf",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1809,7 +2469,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1818,7 +2478,15 @@
       "schema_version": 1,
       "source_id": "jp-pmda-package-inserts",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.info.pmda.go.jp/psearch/tenpulist.jsp",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "af10f1094259b6691da5a664c1b55c5f124cf4f141fc4ce1667801ed4f2a845a",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1830,7 +2498,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1839,7 +2507,15 @@
       "schema_version": 1,
       "source_id": "jp-pmda-safety",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.pmda.go.jp/english/safety/info-services/0001.html",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "2c195f623769bf405247626f3963eda8bdc50b2f6999604b481ebd5d8a01b922",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1851,7 +2527,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1872,7 +2548,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official rights evidence discovery outcome is failed",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1893,7 +2569,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official rights evidence discovery outcome is failed",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1914,7 +2590,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official rights evidence discovery outcome is failed",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1923,7 +2599,15 @@
       "schema_version": 1,
       "source_id": "kr-hira-atc",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.data.go.kr/data/15118958/fileData.do",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "7fe4a1d804518fc5982feeaabc4f5360bd40a9a46527bbddc9ed195f81770959",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1935,7 +2619,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1944,19 +2628,27 @@
       "schema_version": 1,
       "source_id": "kr-hira-reimbursement",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.hira.or.kr/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "cb327b50817e34347de386a8a0df5590b0720b386eebb0db9348631b0544ce81",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is api_key; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1965,7 +2657,15 @@
       "schema_version": 1,
       "source_id": "kr-hira-standard-code",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.data.go.kr/data/15067462/fileData.do",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "f3e33e73e52d58f12956b5e8dab85b543ae48fd6691baa505abd7694bbeba48d",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -1977,7 +2677,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -1986,19 +2686,27 @@
       "schema_version": 1,
       "source_id": "kr-mfds-nedrug",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://nedrug.mfds.go.kr/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "0e3c6edb38465ff0f9136c956e41c39e59899924062952d38b9f336b2170dcb9",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is api_key; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2019,7 +2727,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official rights evidence discovery outcome is failed",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2028,7 +2736,15 @@
       "schema_version": 1,
       "source_id": "mus-approved-drug-list",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://health.govmu.org/health/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "324676e48467171a8cdd4e8d8c117821c1f4eb8a7265378b31b2c6b6b703cc17",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2040,7 +2756,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2049,7 +2765,15 @@
       "schema_version": 1,
       "source_id": "mus-historical-eml-archive",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://health.govmu.org/health/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "324676e48467171a8cdd4e8d8c117821c1f4eb8a7265378b31b2c6b6b703cc17",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2061,7 +2785,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2070,7 +2794,15 @@
       "schema_version": 1,
       "source_id": "mus-pharmacy-board-register",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://health.govmu.org/health/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "324676e48467171a8cdd4e8d8c117821c1f4eb8a7265378b31b2c6b6b703cc17",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2082,7 +2814,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2091,7 +2823,15 @@
       "schema_version": 1,
       "source_id": "mus-pharmacy-board-safety",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://health.govmu.org/health/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "324676e48467171a8cdd4e8d8c117821c1f4eb8a7265378b31b2c6b6b703cc17",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2103,7 +2843,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2112,7 +2852,15 @@
       "schema_version": 1,
       "source_id": "mx-cofepris-register",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.gob.mx/cofepris",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "7484091d557c3f15386b7b863f1d2b46999e1d8c6561410d2ec2113c97ed6f98",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2124,7 +2872,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2145,7 +2893,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official rights evidence discovery outcome is failed",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2154,7 +2902,15 @@
       "schema_version": 1,
       "source_id": "my-npra-quest",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://quest3plus.bpfk.gov.my/front-end/product-search.php",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "0e9d6ac12f48b091c64374216f589ea66c2f0176725c128344e9672b40176756",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2166,7 +2922,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2175,7 +2931,15 @@
       "schema_version": 1,
       "source_id": "ng-nafdac-products",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://greenbook.nafdac.gov.ng/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "f10876b950fd5b5e6da47f57daa748fef5eb95508c878432fe30e846c9918fe0",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2187,7 +2951,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2196,7 +2960,15 @@
       "schema_version": 1,
       "source_id": "ng-nafdac-safety",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://nafdac.gov.ng/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "b8a98510823c05d5079923d9644d78a634d36c56dd6001161e1ce48aed93e5fb",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2208,7 +2980,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2217,7 +2989,15 @@
       "schema_version": 1,
       "source_id": "ng-nhia-medicines",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.nhia.gov.ng/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "8501cfb958bb99ff84bf3c9d9a597b4162bd9cae200120d05f823603da75b9ac",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2229,7 +3009,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2237,20 +3017,34 @@
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "nl-gipdatabank",
-      "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
-      "redistribute": "unknown",
-      "transform": "unknown",
-      "publish_source_bytes": "unknown",
-      "sensitivity": "unknown",
+      "policy_family_id": "nl-zorg-cc0",
+      "evidence": [
+        {
+          "official_url": "https://www.zorgcijfersdatabank.nl/algemeen/copyright",
+          "observed_at": "2026-08-21T00:00:00Z",
+          "content_sha256": "3c312e766fe0950d392c239be38c925c81304ff1a485049b12249b63dabc60ce",
+          "scope": "authority",
+          "reuse_statement": "Unless otherwise stated, site content is under CC0 and may be reused; patent, trademark, privacy, publicity, and third-party rights remain unaffected."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
       "disposition": "catalogue_only",
-      "attribution": null,
-      "field_exclusions": [],
+      "attribution": "Record Zorginstituut Nederland as source with URL and retrieval date despite CC0 not requiring attribution.",
+      "field_exclusions": [
+        "components with a contrary notice",
+        "personal data",
+        "patents",
+        "trademarks",
+        "third-party rights"
+      ],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
-      "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "review_trigger": "copyright page, component notice, schema, or sensitivity change",
+      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2259,7 +3053,15 @@
       "schema_version": 1,
       "source_id": "nl-medicijnkosten",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.medicijnkosten.nl/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "8226ee8727b23c792406e7ebab3b7a65fc3a5d6bc225cd02480f704465930745",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2271,7 +3073,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2280,7 +3082,15 @@
       "schema_version": 1,
       "source_id": "no-dmp-fhir",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.dmp.no/om-oss/distribusjon-av-legemiddeldata/FHIR-tjenesten/innhold-i-tjenesten",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "112e5080b474c0911c39ed00845e79096d277e004ba1e57103c1ddbbf9ce9e6a",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2292,7 +3102,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2301,7 +3111,15 @@
       "schema_version": 1,
       "source_id": "no-fest",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.dmp.no/en/about-us/distribution-of-data-on-medicinal-products/electronic-prescription-support-system-fest/downloading-fest-and-safest",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "39aea9baa6e9bf792033a6869e6d549156e44d77ad68e9b0b88673d4ca100235",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2313,7 +3131,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2322,19 +3140,27 @@
       "schema_version": 1,
       "source_id": "no-norpd-utilisation",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://statistikk.fhi.no/lmr/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "521d9f6a2784a80f472bb1e12cdcfe29712687e997fb418a5873c00b1929ca47",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is manual_approval; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2343,7 +3169,15 @@
       "schema_version": 1,
       "source_id": "nz-medsafe-documents",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.medsafe.govt.nz/DbSearch/InfoSearch",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "ed7d8b89a26cdeefa5d3ba98a6830308f27afc1a7f53de0a0f80110a83712cb1",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2355,7 +3189,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2364,7 +3198,15 @@
       "schema_version": 1,
       "source_id": "nz-medsafe-products",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.medsafe.govt.nz/DbSearch/InfoSearch",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "ed7d8b89a26cdeefa5d3ba98a6830308f27afc1a7f53de0a0f80110a83712cb1",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2376,7 +3218,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2385,19 +3227,27 @@
       "schema_version": 1,
       "source_id": "nz-nzhts-fhir",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.healthnz.govt.nz/health-professionals/guidance-standards/topic/data-and-standards/health-information-standards/nz-health-terminology-service-nzhts",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "5f3e13be792b5e8d1208169a5313ea8411c7497761f46ca7df9930dccd0f7048",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is api_key; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2406,19 +3256,27 @@
       "schema_version": 1,
       "source_id": "nz-nzulm-bulk",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://info.nzulm.org.nz/data-access",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "543d545a778be94503beeb9914d9590443df190ce4b0a0a137366ebc94360a9c",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is manual_approval; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2426,20 +3284,31 @@
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "nz-pharmac-hml",
-      "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
-      "redistribute": "unknown",
-      "transform": "unknown",
-      "publish_source_bytes": "unknown",
-      "sensitivity": "unknown",
+      "policy_family_id": "nz-pharmac-cc-by-4.0",
+      "evidence": [
+        {
+          "official_url": "https://www.pharmac.govt.nz/about-this-site/copyright",
+          "observed_at": "2026-08-21T00:00:00Z",
+          "content_sha256": "d51114a4e677d44d6bf57f9579c960d7b7230090682d105f491f88c174ee479b",
+          "scope": "authority",
+          "reuse_statement": "Nearly all Pharmac website content may be copied, distributed, and adapted under CC BY 4.0, excluding identified third-party material."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
       "disposition": "catalogue_only",
-      "attribution": null,
-      "field_exclusions": [],
+      "attribution": "Credit Pharmac, link the source, state CC BY 4.0, retrieval date, and changes.",
+      "field_exclusions": [
+        "identified third-party copyrighted material",
+        "logos and marks"
+      ],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
-      "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "review_trigger": "Pharmac copyright notice, source notice, schema, or sensitivity change",
+      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2447,20 +3316,31 @@
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "nz-pharmac-schedule",
-      "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
-      "redistribute": "unknown",
-      "transform": "unknown",
-      "publish_source_bytes": "unknown",
-      "sensitivity": "unknown",
+      "policy_family_id": "nz-pharmac-cc-by-4.0",
+      "evidence": [
+        {
+          "official_url": "https://www.pharmac.govt.nz/about-this-site/copyright",
+          "observed_at": "2026-08-21T00:00:00Z",
+          "content_sha256": "d51114a4e677d44d6bf57f9579c960d7b7230090682d105f491f88c174ee479b",
+          "scope": "authority",
+          "reuse_statement": "Nearly all Pharmac website content may be copied, distributed, and adapted under CC BY 4.0, excluding identified third-party material."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
       "disposition": "catalogue_only",
-      "attribution": null,
-      "field_exclusions": [],
+      "attribution": "Credit Pharmac, link the source, state CC BY 4.0, retrieval date, and changes.",
+      "field_exclusions": [
+        "identified third-party copyrighted material",
+        "logos and marks"
+      ],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
-      "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "review_trigger": "Pharmac copyright notice, source notice, schema, or sensitivity change",
+      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2468,20 +3348,31 @@
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "nz-pharmac-schedule-xml",
-      "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
-      "redistribute": "unknown",
-      "transform": "unknown",
-      "publish_source_bytes": "unknown",
-      "sensitivity": "unknown",
+      "policy_family_id": "nz-pharmac-cc-by-4.0",
+      "evidence": [
+        {
+          "official_url": "https://www.pharmac.govt.nz/about-this-site/copyright",
+          "observed_at": "2026-08-21T00:00:00Z",
+          "content_sha256": "d51114a4e677d44d6bf57f9579c960d7b7230090682d105f491f88c174ee479b",
+          "scope": "authority",
+          "reuse_statement": "Nearly all Pharmac website content may be copied, distributed, and adapted under CC BY 4.0, excluding identified third-party material."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
       "disposition": "catalogue_only",
-      "attribution": null,
-      "field_exclusions": [],
+      "attribution": "Credit Pharmac, link the source, state CC BY 4.0, retrieval date, and changes.",
+      "field_exclusions": [
+        "identified third-party copyrighted material",
+        "logos and marks"
+      ],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
-      "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "review_trigger": "Pharmac copyright notice, source notice, schema, or sensitivity change",
+      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2490,7 +3381,15 @@
       "schema_version": 1,
       "source_id": "om-moh-medicines",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.moh.gov.om/ar",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "20ca080744f6f12e7e991a2dc15fdfeae53f9b6e079b6cd2a726ac4b633cd726",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2502,7 +3401,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2511,7 +3410,15 @@
       "schema_version": 1,
       "source_id": "ph-fda-verification",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://verification.fda.gov.ph/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "58bf2215b395dcac74c009aa98701854e43cbe54a1cd3a95fee6a647ca9910d4",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2523,7 +3430,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2544,7 +3451,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official rights evidence discovery outcome is failed",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2565,7 +3472,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official rights evidence discovery outcome is failed",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2586,7 +3493,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official rights evidence discovery outcome is failed",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2595,7 +3502,15 @@
       "schema_version": 1,
       "source_id": "qa-moh-medicines",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.moph.gov.qa/arabic/Pages/default.aspx",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "e847ae5e12c0e1a48cd220c30152f82baeb975e53f31b84abf3cbe6039028315",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2607,7 +3522,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2616,7 +3531,15 @@
       "schema_version": 1,
       "source_id": "rw-national-eml",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://rwandafda.gov.rw/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "fb6282c3a9e4f75e0c6b591b8a57f53df8daa67ad3c853aa660ecafa594897ad",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2628,7 +3551,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2637,7 +3560,15 @@
       "schema_version": 1,
       "source_id": "rw-rwandafda-register",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://rwandafda.gov.rw/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "fb6282c3a9e4f75e0c6b591b8a57f53df8daa67ad3c853aa660ecafa594897ad",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2649,7 +3580,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2658,7 +3589,15 @@
       "schema_version": 1,
       "source_id": "rw-rwandafda-safety",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://rwandafda.gov.rw/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "fb6282c3a9e4f75e0c6b591b8a57f53df8daa67ad3c853aa660ecafa594897ad",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2670,7 +3609,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2691,7 +3630,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official rights evidence discovery outcome is failed",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2705,14 +3644,14 @@
       "transform": "unknown",
       "publish_source_bytes": "unknown",
       "sensitivity": "unknown",
-      "disposition": "catalogue_only",
+      "disposition": "credentialed_excluded",
       "attribution": null,
       "field_exclusions": [],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "source access is oauth; access and redistribution authority are not granted",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2721,7 +3660,15 @@
       "schema_version": 1,
       "source_id": "se-npl-nsl",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.lakemedelsverket.se/sv/om-webbplatsen/oppna-data",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "958ec70df47a119a5c6b3104fb2a1ca304d777cc451e18aec8d43bd506c0eef9",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2733,7 +3680,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2742,7 +3689,15 @@
       "schema_version": 1,
       "source_id": "se-socialstyrelsen-utilisation",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.socialstyrelsen.se/statistik-och-data/statistik/alla-statistikamnen/lakemedel/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "8bb1975678395f814962ecaed11eac503a90f818035bbb7a19e66e93ff6c311a",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2754,7 +3709,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2763,7 +3718,15 @@
       "schema_version": 1,
       "source_id": "se-tlv-subsidies",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.tlv.se/lakemedelsforetag/pris-och-subvention-av-lakemedel/subventionerade-lakemedel.html",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "bc1f63dea9ba0265da65ed4a11fcb7d5858aee1fcf085d8bce15aeb9fa605c8e",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2775,7 +3738,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2796,7 +3759,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official rights evidence discovery outcome is too_large",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2805,7 +3768,15 @@
       "schema_version": 1,
       "source_id": "sg-hsa-register",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.hsa.gov.sg/therapeutic-products/registration-of-therapeutic-products/register-your-therapeutic-product/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "45a0a2420969150f616e3a2534110acd6c7010a7eafd7d79ed806c2e420c5565",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2817,7 +3788,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2826,7 +3797,15 @@
       "schema_version": 1,
       "source_id": "sg-moh-drug-list",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/drug-subsidies-schemes/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "35dfdee5056b3f3447d3cb1d1374a22ec4f441e505db6d36ff8dbcf23cface0d",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2838,7 +3817,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2847,7 +3826,15 @@
       "schema_version": 1,
       "source_id": "sn-dpm-register",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.sante.gouv.sn/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "eeffa4680171fc6f76a97b449e8705416f88e8a83cab25c8227bc55da02eba42",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2859,7 +3846,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2868,7 +3855,15 @@
       "schema_version": 1,
       "source_id": "sn-dpm-safety",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.sante.gouv.sn/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "eeffa4680171fc6f76a97b449e8705416f88e8a83cab25c8227bc55da02eba42",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2880,7 +3875,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2889,7 +3884,15 @@
       "schema_version": 1,
       "source_id": "sn-national-eml",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.sante.gouv.sn/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "eeffa4680171fc6f76a97b449e8705416f88e8a83cab25c8227bc55da02eba42",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2901,7 +3904,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2910,7 +3913,15 @@
       "schema_version": 1,
       "source_id": "th-fda-search",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://pertento.fda.moph.go.th/FDA_SEARCH_DRUG/SEARCH_DRUG/FRM_SEARCH_PAGE.aspx",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "093f5f8762684cdf544c295b462142575e6500ffe14984ed47f886b209f677a6",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2922,7 +3933,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2931,7 +3942,15 @@
       "schema_version": 1,
       "source_id": "tz-national-eml",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.tmda.go.tz/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "de15e805dc1ec4602364e60bc55faceab7f506154cdca3a1afd9ed87d44492e0",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2943,7 +3962,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2952,7 +3971,15 @@
       "schema_version": 1,
       "source_id": "tz-tmda-products",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.tmda.go.tz/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "de15e805dc1ec4602364e60bc55faceab7f506154cdca3a1afd9ed87d44492e0",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2964,7 +3991,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2973,7 +4000,15 @@
       "schema_version": 1,
       "source_id": "tz-tmda-safety",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.tmda.go.tz/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "de15e805dc1ec4602364e60bc55faceab7f506154cdca3a1afd9ed87d44492e0",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -2985,7 +4020,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -2994,7 +4029,15 @@
       "schema_version": 1,
       "source_id": "ug-national-eml",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.nda.or.ug/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "c4e70845e0739f12d1c1c0b72a92548bbdae52d415e916eb30188ab82f7b12d4",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -3006,7 +4049,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -3015,7 +4058,15 @@
       "schema_version": 1,
       "source_id": "ug-nda-register",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.nda.or.ug/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "c4e70845e0739f12d1c1c0b72a92548bbdae52d415e916eb30188ab82f7b12d4",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -3027,7 +4078,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -3036,7 +4087,15 @@
       "schema_version": 1,
       "source_id": "ug-nda-safety",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.nda.or.ug/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "c4e70845e0739f12d1c1c0b72a92548bbdae52d415e916eb30188ab82f7b12d4",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -3048,7 +4107,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -3057,7 +4116,15 @@
       "schema_version": 1,
       "source_id": "us-cms-mdrp",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://data.medicaid.gov/datasets",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "24c16bedc3faf704fc84377d51dac9b072d12dde9c75bf33461d192ce9f30aeb",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -3069,7 +4136,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -3078,7 +4145,15 @@
       "schema_version": 1,
       "source_id": "us-cms-nadac",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://data.medicaid.gov/datasets",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "24c16bedc3faf704fc84377d51dac9b072d12dde9c75bf33461d192ce9f30aeb",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -3090,7 +4165,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -3099,7 +4174,15 @@
       "schema_version": 1,
       "source_id": "us-cms-partd-formulary",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://data.cms.gov/provider-summary-by-type-of-service/medicare-part-d-prescribers/quarterly-prescription-drug-plan-formulary-pharmacy-network-and-pricing-information",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "fd264fcfa5c2670c68f704698037f3e01abcb6f6e056616aab0bc5515ab93b30",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -3111,7 +4194,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -3120,7 +4203,15 @@
       "schema_version": 1,
       "source_id": "us-cms-partd-spending",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-part-d-spending-by-drug",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "fd264fcfa5c2670c68f704698037f3e01abcb6f6e056616aab0bc5515ab93b30",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -3132,7 +4223,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -3141,7 +4232,15 @@
       "schema_version": 1,
       "source_id": "us-dailymed-spl",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://dailymed.nlm.nih.gov/dailymed/spl-resources-all-drug-labels.cfm",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "46d973deccf4aa97a9eca237cb3ae2a877da4437f6270647ec9a536163fedae8",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -3153,7 +4252,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -3426,7 +4525,15 @@
       "schema_version": 1,
       "source_id": "us-gsrs-unii",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://gsrs.ncats.nih.gov/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "c303d7dba00a75b602d138c7e7a2806ef555bd17a30e2ca1374243148c61f721",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -3438,7 +4545,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -3616,20 +4723,31 @@
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "us-rxnorm-api",
-      "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
-      "redistribute": "unknown",
-      "transform": "unknown",
-      "publish_source_bytes": "unknown",
-      "sensitivity": "unknown",
+      "policy_family_id": "rxnorm-public-identifiers-only",
+      "evidence": [
+        {
+          "official_url": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/termsofservice.html",
+          "observed_at": "2026-08-21T00:00:00Z",
+          "content_sha256": "bc0268a0f5bd4705d8a56766a00aa509f0c55f3ca70a4c618ff4b325a49eba4e",
+          "scope": "dataset",
+          "reuse_statement": "NLM-created RXCUI identifiers are public domain and freely distributable; source vocabularies retain their own copyright and licence terms."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "prohibited",
+      "sensitivity": "public",
       "disposition": "catalogue_only",
-      "attribution": null,
-      "field_exclusions": [],
+      "attribution": "Credit the U.S. National Library of Medicine and identify the RxNorm release and retrieval date.",
+      "field_exclusions": [
+        "source vocabulary terms and content whose owners impose separate restrictions",
+        "full RxNorm source archive bytes"
+      ],
       "maintainer_licence_approved": false,
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
-      "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "review_trigger": "RxNorm terms, source vocabulary composition, release, or schema change",
+      "blocker": "official reuse evidence is a candidate only; maintainer licensing conclusion and exact-manifest publication approval remain pending",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -3638,7 +4756,15 @@
       "schema_version": 1,
       "source_id": "za-national-eml",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.health.gov.za/national-essential-medicine-list/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "7155d86ab4d92f254fed4111e77daa0412dac09bcb2f8e74dc349a46e403f21e",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -3650,7 +4776,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -3659,7 +4785,15 @@
       "schema_version": 1,
       "source_id": "za-sahpra-register",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://medapps.sahpra.org.za:6006/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "88885f8e86ab5f6418d20fe615d38792d3549922f2c6b9778bff7a30427befad",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -3671,7 +4805,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -3680,7 +4814,15 @@
       "schema_version": 1,
       "source_id": "za-sahpra-safety",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.sahpra.org.za/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "50371d0df3cc4edd6eebf8153b0376e41d267d26a200fbdf202d03cb1bb3fd02",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -3692,7 +4834,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -3701,7 +4843,15 @@
       "schema_version": 1,
       "source_id": "za-single-exit-price",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.health.gov.za/nhi-pee/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "d80b4e5333dc58e7a43cd424ccacce42916e8c6d296e0080d6cee3e8248c5d62",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -3713,7 +4863,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -3722,7 +4872,15 @@
       "schema_version": 1,
       "source_id": "zw-mcaz-register",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.mcaz.co.zw/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "8640d44186586ee61c4546c918e6f6830e4fe16ee889250323a35c191f150036",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -3734,7 +4892,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -3743,7 +4901,15 @@
       "schema_version": 1,
       "source_id": "zw-mcaz-safety",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.mcaz.co.zw/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "8640d44186586ee61c4546c918e6f6830e4fe16ee889250323a35c191f150036",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -3755,7 +4921,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     },
@@ -3764,7 +4930,15 @@
       "schema_version": 1,
       "source_id": "zw-national-eml",
       "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
+      "evidence": [
+        {
+          "official_url": "https://www.mcaz.co.zw/",
+          "observed_at": "2026-08-20T23:55:38Z",
+          "content_sha256": "8640d44186586ee61c4546c918e6f6830e4fe16ee889250323a35c191f150036",
+          "scope": "endpoint",
+          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+        }
+      ],
       "redistribute": "unknown",
       "transform": "unknown",
       "publish_source_bytes": "unknown",
@@ -3776,7 +4950,7 @@
       "maintainer_publication_approved": false,
       "reviewed_at": "2026-08-21T00:00:00Z",
       "review_trigger": "capture current official reuse terms",
-      "blocker": "affirmative official reuse evidence not yet recorded",
+      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
       "public_source_eligible": false,
       "public_derived_eligible": false
     }

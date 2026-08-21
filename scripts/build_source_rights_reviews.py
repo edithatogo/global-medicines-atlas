@@ -18,6 +18,9 @@ DATA = ROOT / "src/global_medicines_atlas/data"
 CATALOG = DATA / "medicine_source_catalog.json"
 FAMILIES = DATA / "source_rights_policy_families.json"
 DECISIONS = DATA / "source_rights_source_decisions.json"
+DISCOVERY = (
+    ROOT / "quality/qualifications/source-rights-discovery-20260821.json"
+)
 DEFAULT_OUTPUT = (
     ROOT / "quality/qualifications/source-rights-review-ledger.json"
 )
@@ -28,21 +31,53 @@ def _load(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def _unresolved(source_id: str) -> SourceRightsReview:
+def _unresolved(
+    source: dict[str, Any],
+    discovery: dict[str, Any],
+) -> SourceRightsReview:
+    source_id = str(source["source_id"])
+    authentication = str(source["authentication"])
+    evidence: list[dict[str, str]] = []
+    if discovery["content_sha256"] is not None:
+        evidence.append({
+            "official_url": discovery["final_url"] or discovery["source_url"],
+            "observed_at": discovery["observed_at"],
+            "content_sha256": discovery["content_sha256"],
+            "scope": "endpoint",
+            "reuse_statement": (
+                "Official landing page observed; no affirmative, "
+                "source-applicable redistribution grant was established."
+            ),
+        })
+    if authentication != "none":
+        disposition = "credentialed_excluded"
+        blocker = (
+            f"source access is {authentication}; access and redistribution "
+            "authority are not granted"
+        )
+    else:
+        disposition = "catalogue_only"
+        outcome = str(discovery["outcome"])
+        blocker = (
+            "official page observed but no affirmative source-applicable "
+            "redistribution grant was established"
+            if discovery["content_sha256"] is not None
+            else f"official rights evidence discovery outcome is {outcome}"
+        )
     return SourceRightsReview.model_validate({
         "source_id": source_id,
         "policy_family_id": "unresolved-source-specific-terms",
-        "evidence": [],
+        "evidence": evidence,
         "redistribute": "unknown",
         "transform": "unknown",
         "publish_source_bytes": "unknown",
         "sensitivity": "unknown",
-        "disposition": "catalogue_only",
+        "disposition": disposition,
         "maintainer_licence_approved": False,
         "maintainer_publication_approved": False,
         "reviewed_at": REVIEWED_AT,
         "review_trigger": "capture current official reuse terms",
-        "blocker": "affirmative official reuse evidence not yet recorded",
+        "blocker": blocker,
     })
 
 
@@ -73,6 +108,11 @@ def build() -> dict[str, Any]:
     catalog = _load(CATALOG)
     families = _load(FAMILIES)["families"]
     decision_file = _load(DECISIONS)
+    discovery_file = _load(DISCOVERY)
+    discovery_by_source = {
+        entry["source_id"]: entry["discovery"]
+        for entry in discovery_file["entries"]
+    }
     decisions = decision_file["policy_family_assignments"]
     source_ids = tuple(source["source_id"] for source in catalog["sources"])
     unknown = sorted(set(decisions) - set(source_ids))
@@ -87,10 +127,14 @@ def build() -> dict[str, Any]:
             f"{unknown_families}"
         )
     reviews = tuple(
-        _review(source_id, decisions[source_id], families[decisions[source_id]])
-        if source_id in decisions
-        else _unresolved(source_id)
-        for source_id in source_ids
+        _review(
+            source["source_id"],
+            decisions[source["source_id"]],
+            families[decisions[source["source_id"]]],
+        )
+        if source["source_id"] in decisions
+        else _unresolved(source, discovery_by_source[source["source_id"]])
+        for source in catalog["sources"]
     )
     validate_catalogue_reviews(
         source_ids,
