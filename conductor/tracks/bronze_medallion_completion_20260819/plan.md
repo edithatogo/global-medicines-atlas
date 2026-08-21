@@ -433,3 +433,10 @@ for credentialed or rights-unresolved sources.
     - [ ] Obtain the maintainer's source-specific licensing decision before payload acquisition
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
     - [ ] Keep public release and external publication separately gated
+- [~] Task: Acquire U.S. CMS Medicare Part D utilisation data (Prompt 31)
+    - [x] Resolve the official corpus to 30 quarterly formulary ZIP releases through Q2 2026 and the three-resource 2024 annual spending surface
+    - [x] Replace the generic CMS terms gap with the dataset-specific government-works licence record and formulary Agreement for Use
+    - [x] Preserve plan/population exclusions, gross-versus-net spending, preliminary-versus-final, suppression, and source-native measure boundaries
+    - [ ] Obtain the maintainer's source-specific acceptance before payload acquisition and retention
+    - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
+    - [ ] Keep public release and external publication separately gated
