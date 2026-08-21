@@ -17,10 +17,10 @@
   "index_presence_implies_coverage": false,
   "landing_disposition_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 21,
+    "landed_and_evidenced": 22,
     "manual_only_documented_acquisition": 94,
     "rights_blocked": 40,
-    "temporarily_unavailable": 2
+    "temporarily_unavailable": 1
   },
   "missing_source_is_negative_evidence": false,
   "qualification_state_counts": {
@@ -31,8 +31,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:e2882f01e7d6380ce8238cf4109b136aba9c1c588afce0c2a4a96f4e7526d50d",
-  "snapshot_sha256": "e2882f01e7d6380ce8238cf4109b136aba9c1c588afce0c2a4a96f4e7526d50d",
+  "snapshot_id": "sha256:c569db7dfd01759e0f7fdc6cffbefde62d79742a60bf0907a66410e4ade34a0f",
+  "snapshot_sha256": "c569db7dfd01759e0f7fdc6cffbefde62d79742a60bf0907a66410e4ade34a0f",
   "source_count": 172,
   "sources": [
     {
@@ -2059,7 +2059,7 @@
       "api_url": "",
       "authentication": "none",
       "authority": "Assurance Maladie",
-      "current_landing_disposition": "temporarily_unavailable",
+      "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.assurance-maladie.ameli.fr/etudes-et-donnees/open-medic-base-complete-depenses-medicaments",
       "download_url": "https://open-data-assurance-maladie.ameli.fr/medicaments/download.php?Dir_Rep=Open_MEDIC_Base_Complete&Annee=2025",
@@ -2079,12 +2079,12 @@
       ],
       "landing_page": "https://www.assurance-maladie.ameli.fr/etudes-et-donnees/open-medic-base-complete-depenses-medicaments",
       "last_reviewed_at": "2026-08-21",
-      "last_verified_at": "2026-08-20",
+      "last_verified_at": "2026-08-21",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
       "qualification_references": [],
       "qualification_state": "declared",
-      "rights_review_state": "review_required",
+      "rights_review_state": "Etalab-2.0",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "fr-open-medic",

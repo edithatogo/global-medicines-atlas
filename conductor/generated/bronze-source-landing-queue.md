@@ -7,8 +7,8 @@ Silver transformations included: **no**.
 
 ## State summary
 
-- `landed_and_evidenced`: 21
-- `temporarily_unavailable`: 2
+- `landed_and_evidenced`: 22
+- `temporarily_unavailable`: 1
 - `rights_blocked`: 40
 - `credentialed_and_excluded`: 15
 - `manual_only_documented_acquisition`: 94
@@ -58,7 +58,7 @@ Silver transformations included: **no**.
 
 - [ ] `ca-canada-vigilance` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `ca-cihi-nhex-medicines` — `rights_blocked`; record source-specific retention and transformation rights.
-- [ ] `fr-open-medic` — `temporarily_unavailable`; retry under the failure-receipt schedule.
+- [x] `fr-open-medic` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `gb-trud-api` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [ ] `no-fest` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `us-fda-faers` — `landed_and_evidenced`; verify receipt freshness on schedule.

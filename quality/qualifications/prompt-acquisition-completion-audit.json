@@ -11,12 +11,12 @@
   "program_completion": "incomplete_live_acquisition",
   "queue_state_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 21,
+    "landed_and_evidenced": 22,
     "manual_only_documented_acquisition": 94,
     "not_yet_implemented": 0,
     "rights_blocked": 40,
     "superseded_by_reused_source": 0,
-    "temporarily_unavailable": 2
+    "temporarily_unavailable": 1
   },
   "evidence_policy": "catalogue, fixture, and archive evidence do not prove live acquisition; each prompt completes only when every scoped source is live-qualified or an explicit unavailable/excluded disposition satisfies that prompt",
   "prompts": [
@@ -1167,15 +1167,15 @@
         "ie-pcrs-reimbursement"
       ],
       "queue_states": {
-        "fr-open-medic": "temporarily_unavailable",
+        "fr-open-medic": "landed_and_evidenced",
         "jp-mhlw-ndb-utilisation": "manual_only_documented_acquisition",
         "ca-cihi-nhex-medicines": "rights_blocked",
         "ie-pcrs-reimbursement": "manual_only_documented_acquisition"
       },
       "queue_state_counts": {
+        "landed_and_evidenced": 1,
         "manual_only_documented_acquisition": 2,
-        "rights_blocked": 1,
-        "temporarily_unavailable": 1
+        "rights_blocked": 1
       },
       "fixture_qualified_source_ids": [],
       "live_qualified_source_ids": [],
@@ -1190,12 +1190,12 @@
       "blocker_categories": [
         "source_specific_rights_decision_required",
         "documented_manual_acquisition_required",
-        "temporarily_unavailable"
+        "fixture_only_is_not_live"
       ],
       "next_actions": [
+        "replace governed fixture evidence with a receipt-backed live source acquisition",
         "execute the documented reproducible acquisition after source-specific rights confirmation",
-        "obtain a maintainer-approved source-specific rights decision",
-        "record a dated availability observation and retry without treating absence as negative evidence"
+        "obtain a maintainer-approved source-specific rights decision"
       ]
     },
     {

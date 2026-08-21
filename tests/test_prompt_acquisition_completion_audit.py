@@ -354,12 +354,12 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     audit = _audit()
     assert audit["queue_state_counts"] == {
         "credentialed_and_excluded": 15,
-        "landed_and_evidenced": 21,
+        "landed_and_evidenced": 22,
         "manual_only_documented_acquisition": 94,
         "not_yet_implemented": 0,
         "rights_blocked": 40,
         "superseded_by_reused_source": 0,
-        "temporarily_unavailable": 2,
+        "temporarily_unavailable": 1,
     }
     for entry in audit["prompts"]:
         if entry["live_complete"]:
@@ -400,7 +400,7 @@ def test_additional_utilisation_public_surfaces_are_not_credential_blocked() -> 
         entry for entry in _audit()["prompts"] if entry["prompt_id"] == 34
     )
     assert prompt["queue_states"] == {
-        "fr-open-medic": "temporarily_unavailable",
+        "fr-open-medic": "landed_and_evidenced",
         "jp-mhlw-ndb-utilisation": "manual_only_documented_acquisition",
         "ca-cihi-nhex-medicines": "rights_blocked",
         "ie-pcrs-reimbursement": "manual_only_documented_acquisition",
