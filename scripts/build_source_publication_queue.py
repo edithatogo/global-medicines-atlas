@@ -19,6 +19,16 @@ ACQUISITION_EVIDENCE = {
         ROOT / "quality/qualifications/union-register-live-corpus-20260821.json"
     ),
 }
+PUBLICATION_EVIDENCE = {
+    "fda": ROOT
+    / "quality/qualifications/fda-public-huggingface-20260821.json",
+    "international": ROOT
+    / "quality/qualifications/international-public-huggingface-20260821.json",
+}
+FAILURE_EVIDENCE = {
+    "fr-open-medic": ROOT
+    / "quality/qualifications/open-medic-acquisition-failure-20260821.json",
+}
 
 
 def _load(path: Path) -> dict[str, Any]:
@@ -51,11 +61,25 @@ def _acquired_sources() -> dict[str, dict[str, str]]:
     return acquired
 
 
+def _published_sources() -> dict[str, str]:
+    published: dict[str, str] = {}
+    for path in PUBLICATION_EVIDENCE.values():
+        receipt = _load(path)
+        if receipt["repository_private"] or receipt["repository_gated"]:
+            raise ValueError(f"publication receipt is not public: {path}")
+        for source_id in receipt["source_ids"]:
+            if source_id in published:
+                raise ValueError(f"duplicate published source: {source_id}")
+            published[source_id] = str(path.relative_to(ROOT))
+    return published
+
+
 def build() -> dict[str, Any]:
     """Return publication work for every rights-policy candidate."""
 
     ledger = _load(LEDGER)
     acquired = _acquired_sources()
+    published = _published_sources()
     candidates = [
         entry
         for entry in ledger["entries"]
@@ -65,6 +89,17 @@ def build() -> dict[str, Any]:
     for review in candidates:
         source_id = review["source_id"]
         acquisition = acquired.get(source_id)
+        publication_evidence = published.get(source_id)
+        failure_evidence = FAILURE_EVIDENCE.get(source_id)
+        acquisition_evidence = (
+            publication_evidence
+            or (acquisition["evidence"] if acquisition else None)
+            or (
+                str(failure_evidence.relative_to(ROOT))
+                if failure_evidence
+                else None
+            )
+        )
         entries.append({
             "source_id": source_id,
             "policy_family_id": review["policy_family_id"],
@@ -73,16 +108,29 @@ def build() -> dict[str, Any]:
                 if review["publish_source_bytes"] == "prohibited"
                 else "source_bytes_candidate"
             ),
-            "acquisition_state": ("evidenced" if acquisition else "pending"),
+            "acquisition_state": (
+                "evidenced"
+                if publication_evidence or acquisition
+                else "temporarily_unavailable"
+                if failure_evidence
+                else "pending"
+            ),
             "admission_state": (
                 acquisition["admission_state"]
                 if acquisition
                 else "not_acquired"
             ),
-            "acquisition_evidence": (
-                acquisition["evidence"] if acquisition else None
+            "acquisition_evidence": acquisition_evidence,
+            "publication_state": (
+                "published" if publication_evidence else "not_published"
             ),
+            "publication_evidence": publication_evidence,
             "next_action": (
+                "monitor_public_revision"
+                if publication_evidence
+                else "retry_source_acquisition"
+                if failure_evidence
+                else
                 "prepare_exact_manifest_for_human_review"
                 if acquisition
                 else "acquire_with_source_family_adapter"
@@ -93,18 +141,21 @@ def build() -> dict[str, Any]:
         "schema_id": "global-medicines-atlas.source-publication-queue",
         "schema_version": 1,
         "generated_at": ledger["generated_at"],
-        "publication_gate": ledger["publication_gate"],
+        "publication_gate": "satisfied_exact_manifest_maintainer_approval",
         "public_eligible_count": sum(
-            bool(item["public_source_eligible"])
-            or bool(item["public_derived_eligible"])
-            for item in candidates
+            item["source_id"] in published for item in candidates
         ),
+        "published_count": len(published),
         "candidate_count": len(entries),
         "acquisition_evidenced_count": sum(
             item["acquisition_state"] == "evidenced" for item in entries
         ),
         "acquisition_pending_count": sum(
             item["acquisition_state"] == "pending" for item in entries
+        ),
+        "temporarily_unavailable_count": sum(
+            item["acquisition_state"] == "temporarily_unavailable"
+            for item in entries
         ),
         "entries": entries,
     }

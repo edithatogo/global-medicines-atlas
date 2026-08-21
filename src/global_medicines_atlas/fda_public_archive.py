@@ -35,7 +35,7 @@ SENSITIVE_SOURCE_IDS: Final = frozenset({
 })
 DATASET_CARD: Final = """---
 license: other
-pretty_name: Global Medicines Atlas FDA publication candidate
+pretty_name: Global Medicines Atlas FDA public source archive
 language:
 - en
 tags:
@@ -44,17 +44,18 @@ tags:
 - fda
 ---
 
-# FDA publication candidate
+# FDA public source archive
 
-This private review candidate contains a bounded 2026-08-21 acquisition of 13
-official FDA and openFDA surfaces, plus acquisition and admission receipts. It
-is not approved for public release, is not a complete historical mirror, and
-is not clinical advice.
+This public archive contains a bounded 2026-08-21 acquisition of 13 official
+FDA and openFDA surfaces, plus acquisition and admission receipts. The
+repository maintainer approved the exact manifest for public release after
+source-specific rights and sensitivity review. It is not a complete historical
+mirror and is not clinical advice.
 
-Official FDA and openFDA policy statements are retained as candidate rights
-evidence only. The package excludes FDA marks, credentials, separately licensed
-third-party vocabularies, and projected records for quarantined payloads. An
-exact-manifest licensing conclusion and publication approval remain pending.
+The package excludes FDA marks, credentials, separately licensed third-party
+vocabularies, and projected records for quarantined payloads. Rights and data
+sensitivity remain separate classifications; public regulatory sensitivity
+does not imply permission for re-identification or individual decisions.
 
 FAERS, enforcement, and recall material is classified as public regulatory
 sensitive data. A report does not establish causation. Do not attempt
