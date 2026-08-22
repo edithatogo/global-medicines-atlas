@@ -10,14 +10,17 @@ any already-approved live receipts present on ``main``.
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 import pyarrow as pa
 import pytest
 from jsonschema import Draft202012Validator
 from pydantic import AnyUrl, ValidationError
 
+import global_medicines_atlas.bronze_three_strata as strata
 from global_medicines_atlas.bronze_landing import (
     SourceRecordBatch,
     project_source_records_table,
@@ -29,6 +32,7 @@ from global_medicines_atlas.bronze_raw_evidence import (
 from global_medicines_atlas.bronze_three_strata import (
     PROPERTY_IDS,
     SCHEMA_RELATIVE,
+    dump_report,
     evaluate_repository,
 )
 from global_medicines_atlas.receipts import (
@@ -226,3 +230,89 @@ def test_publication_permitted_fails_closed_under_restricted_rights() -> None:
     )
     with pytest.raises(ValueError, match="publication"):
         require_publication_permitted(restricted)
+
+
+def _corpus_facts() -> Any:
+    return strata._build_corpus_facts(ROOT)
+
+
+def test_raw_evidence_binding_detects_corpus_mismatches() -> None:
+    facts = _corpus_facts()
+    missing = strata._evaluate_raw_evidence_bound(
+        replace(facts, b2_records=(), storage_receipts=())
+    )
+    assert missing.state == "blocked"
+    assert "missing B2" in missing.notes
+
+    no_storage = strata._evaluate_raw_evidence_bound(
+        replace(facts, storage_receipts=())
+    )
+    assert no_storage.state == "blocked"
+    assert "missing storage receipt" in no_storage.notes
+
+    diverged_b2 = tuple(
+        record.model_copy(update={"content_id": "f" * 64})
+        for record in facts.b2_records
+    )
+    diverged = strata._evaluate_raw_evidence_bound(
+        replace(
+            facts,
+            b2_records=diverged_b2,
+            storage_receipts=facts.storage_receipts,
+        )
+    )
+    assert diverged.state == "blocked"
+    assert "B2 identity diverges" in diverged.notes
+
+
+def test_blocked_properties_fail_closed_in_report() -> None:
+    blocked = strata._Property(
+        property_id="evidence_classes_distinct",
+        state="blocked",
+        evidence=("authority",),
+        notes="forced blocked state for the fail-closed contract",
+    )
+
+    original_evaluator = strata._evaluate_properties
+
+    def fail_one(facts: Any, root: Path) -> list[Any]:
+        properties = original_evaluator(facts, root)
+        return [
+            blocked if row.property_id == "evidence_classes_distinct" else row
+            for row in properties
+        ]
+
+    strata._evaluate_properties = fail_one
+    try:
+        report = strata.evaluate_repository(ROOT, git_commit="fail-closed")
+    finally:
+        strata._evaluate_properties = original_evaluator
+    assert report["three_strata_qualified"] is False
+    assert report["qualification_state"] == "blocked"
+    blocker_ids = [row["blocker_id"] for row in report["blockers"]]
+    assert "three-strata-property-blocked" in blocker_ids
+    risk_ids = [row["risk_id"] for row in report["residual_risks"]]
+    assert risk_ids
+    assert risk_ids[0] == "RISK-001"
+    assert any(row["state"] == "blocked" for row in report["property_states"])
+
+
+def test_missing_property_marks_report_incomplete() -> None:
+    original_evaluator = strata._evaluate_properties
+
+    def drop_one(facts: Any, root: Path) -> list[Any]:
+        return original_evaluator(facts, root)[:-1]
+
+    strata._evaluate_properties = drop_one
+    try:
+        report = strata.evaluate_repository(ROOT, git_commit="incomplete")
+    finally:
+        strata._evaluate_properties = original_evaluator
+    assert report["report_complete"] is False
+    assert report["three_strata_qualified"] is False
+
+
+def test_dump_report_serializes_with_trailing_newline() -> None:
+    payload = dump_report({"alpha": 1})
+    assert payload.endswith("\n")
+    assert json.loads(payload) == {"alpha": 1}

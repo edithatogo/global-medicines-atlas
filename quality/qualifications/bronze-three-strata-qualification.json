@@ -2,8 +2,8 @@
   "schema_id": "global-medicines-atlas.bronze-three-strata-qualification",
   "schema_version": 1,
   "horizon": "bronze-three-strata-b0-b1-b2",
-  "generated_at": "2026-08-22T09:18:25.642287+00:00",
-  "git_commit": "f2a67d2fc399d929fd27e61db34688b5f1bbcf30",
+  "generated_at": "2026-08-22T09:55:15.516750+00:00",
+  "git_commit": "774e5a0922dc55e24ba2c4eb9ce63cc904ae2be9",
   "authorities": {
     "requirements": "conductor/requirements.md",
     "design": "conductor/design.md",
@@ -46,7 +46,7 @@
     "acquisitions_by_evidence_class": {
       "synthetic": 17
     },
-    "manifest_id": "sha256:8a1b36a4716efd015f1c6aa1ab3dfaa0d6760caca6572805a41722b26d61c7dd"
+    "manifest_id": "sha256:d2874aeac9c1c512a7699eacb5b88f47a38bf5ebf24753bd7a6f5ba1dec232cc"
   },
   "b2": {
     "raw_evidence_count": 17,
@@ -185,7 +185,7 @@
   },
   "deterministic_rebuild": {
     "rebuilt": true,
-    "b1_manifest_id": "sha256:8a1b36a4716efd015f1c6aa1ab3dfaa0d6760caca6572805a41722b26d61c7dd",
+    "b1_manifest_id": "sha256:d2874aeac9c1c512a7699eacb5b88f47a38bf5ebf24753bd7a6f5ba1dec232cc",
     "match": true,
     "notes": "query/catalogue projections were deleted and regenerated from authoritative evidence with an identical manifest identity"
   },
