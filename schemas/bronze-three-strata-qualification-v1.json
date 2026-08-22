@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Bronze three-strata qualification report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "schema_version",
+    "horizon",
+    "generated_at",
+    "git_commit",
+    "authorities",
+    "b0",
+    "b1",
+    "b2",
+    "property_states",
+    "migration_compatibility",
+    "deterministic_rebuild",
+    "residual_risks",
+    "blockers",
+    "three_strata_qualified",
+    "bronze_mature",
+    "qualification_state",
+    "report_complete"
+  ],
+  "properties": {
+    "schema_id": {
+      "type": "string",
+      "const": "global-medicines-atlas.bronze-three-strata-qualification"
+    },
+    "schema_version": {"type": "integer", "const": 1},
+    "horizon": {"type": "string"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "git_commit": {"type": "string"},
+    "authorities": {"type": "object", "additionalProperties": {"type": "string"}},
+    "b0": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_count",
+        "evidence_scope_counts",
+        "discovery_state_counts",
+        "qualification_state_counts",
+        "index_presence_implies_coverage",
+        "missing_source_is_negative_evidence"
+      ],
+      "properties": {
+        "source_count": {"type": "integer", "minimum": 1},
+        "evidence_scope_counts": {"type": "object", "additionalProperties": {"type": "integer"}},
+        "discovery_state_counts": {"type": "object", "additionalProperties": {"type": "integer"}},
+        "qualification_state_counts": {"type": "object", "additionalProperties": {"type": "integer"}},
+        "index_presence_implies_coverage": {"type": "boolean", "const": false},
+        "missing_source_is_negative_evidence": {"type": "boolean", "const": false}
+      }
+    },
+    "b1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_count", "acquisitions_by_evidence_class", "manifest_id"],
+      "properties": {
+        "event_count": {"type": "integer", "minimum": 1},
+        "acquisitions_by_evidence_class": {"type": "object", "additionalProperties": {"type": "integer"}},
+        "manifest_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "b2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw_evidence_count", "storage_receipt_count"],
+      "properties": {
+        "raw_evidence_count": {"type": "integer", "minimum": 1},
+        "storage_receipt_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "property_states": {
+      "type": "array",
+      "minItems": 13,
+      "maxItems": 13,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["property_id", "state", "evidence", "notes"],
+        "properties": {
+          "property_id": {
+            "type": "string",
+            "enum": [
+              "index_without_acquisition",
+              "acquisition_references_indexed_source",
+              "raw_evidence_bound_to_metadata_and_content",
+              "metadata_no_stored_bytes_when_external_only",
+              "payload_presence_not_admission_qualification_coverage",
+              "evidence_classes_distinct",
+              "content_identity_distinct_from_acquisition",
+              "identical_bytes_multiple_retrievals_no_collapse",
+              "projections_deleted_and_rebuilt",
+              "source_native_records_binary_safe_no_silver",
+              "source_index_counts_not_live_coverage",
+              "rights_reuse_admission_fail_closed",
+              "no_digest_change_during_migration"
+            ]
+          },
+          "state": {"type": "string", "enum": ["evidenced", "blocked"]},
+          "evidence": {"type": "array", "items": {"type": "string"}},
+          "notes": {"type": "string"}
+        }
+      }
+    },
+    "migration_compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stable",
+        "acquisition_identity_count",
+        "no_acquisition_id_changed",
+        "no_payload_digest_changed",
+        "no_receipt_digest_changed",
+        "notes"
+      ],
+      "properties": {
+        "stable": {"type": "boolean"},
+        "acquisition_identity_count": {"type": "integer", "minimum": 1},
+        "no_acquisition_id_changed": {"type": "boolean"},
+        "no_payload_digest_changed": {"type": "boolean"},
+        "no_receipt_digest_changed": {"type": "boolean"},
+        "notes": {"type": "string"}
+      }
+    },
+    "deterministic_rebuild": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rebuilt", "b1_manifest_id", "match", "notes"],
+      "properties": {
+        "rebuilt": {"type": "boolean"},
+        "b1_manifest_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "match": {"type": "boolean"},
+        "notes": {"type": "string"}
+      }
+    },
+    "residual_risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["risk_id", "description", "disposition", "blocking", "evidence"],
+        "properties": {
+          "risk_id": {"type": "string"},
+          "description": {"type": "string"},
+          "disposition": {"type": "string"},
+          "blocking": {"type": "boolean"},
+          "evidence": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["blocker_id", "description", "evidence"],
+        "properties": {
+          "blocker_id": {"type": "string"},
+          "description": {"type": "string"},
+          "evidence": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "three_strata_qualified": {"type": "boolean"},
+    "bronze_mature": {"type": "boolean", "const": false},
+    "qualification_state": {"type": "string", "enum": ["qualified", "blocked"]},
+    "report_complete": {"type": "boolean"}
+  }
+}

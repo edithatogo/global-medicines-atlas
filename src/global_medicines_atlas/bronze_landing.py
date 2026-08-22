@@ -380,7 +380,7 @@ def _iceberg_schema_fields(
     )
 
 
-def _source_records_table(
+def project_source_records_table(
     receipt: SourceReceipt,
     batch: SourceRecordBatch,
 ) -> tuple[pa.Table, str]:
@@ -664,7 +664,7 @@ def _write_analytical_outputs(
         return manifest, None
     if source_records_path is None or source_records_lineage_path is None:
         raise ValueError("source-record output paths are required")
-    projected_records = _source_records_table(bound, source_records)[0]
+    projected_records = project_source_records_table(bound, source_records)[0]
     records = _write_parquet_product(
         bound,
         projected_records,

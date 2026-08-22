@@ -197,6 +197,7 @@ flowchart TB
     B1["B1 Acquisition Metadata<br/>append-only events and receipts"]
     B2["B2 Raw Evidence<br/>immutable bytes or rights-constrained reference"]
     PROJ["Rebuildable Bronze projections<br/>Source-faithful Parquet · archive-member manifests<br/>OpenLineage · Iceberg · DuckDB · catalogues"]
+    QUAL["Three-strata qualification<br/>corpus landing · delete-and-rebuild · fail-closed gate probes<br/>three_strata_qualified independent of bronze_mature; see quality/qualifications/bronze-three-strata-qualification.json"]
     SILVER["Silver<br/>source-faithful typed or harmonised structures"]
     GOLD["Gold<br/>cross-jurisdiction matched evidence"]
     PLATINUM["Platinum<br/>products and presentation"]
@@ -205,6 +206,10 @@ flowchart TB
     B1 -->|records identity and authority| B2
     B1 --> PROJ
     B2 --> PROJ
+    QUAL -.->|proves| B0
+    QUAL -.->|proves| B1
+    QUAL -.->|proves| B2
+    QUAL -.->|deletes and rebuilds| PROJ
     B1 --> SILVER
     B2 --> SILVER
     SILVER --> GOLD

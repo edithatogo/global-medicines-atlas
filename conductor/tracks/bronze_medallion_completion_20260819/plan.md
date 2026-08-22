@@ -600,3 +600,13 @@ for credentialed or rights-unresolved sources.
 - [x] B1 contains references and metadata only; source-native records are separate rebuildable projections
 - [x] ZIP/tar, document, opaque-binary, identity, and projection-boundary tests pass
 - [x] Required hosted checks pass at the exact pull-request head before merge
+
+## Phase 10: End-to-End Three-Strata Qualification
+
+- [x] Task: Qualify the B0/B1/B2 substrate over the complete governed corpus ([#315](https://github.com/edithatogo/global-medicines-atlas/issues/315), parent #170)
+    - [x] Inspect source index, acquisition metadata, raw-evidence storage, projections, admission profiles, reuse snapshots, manual recipes, and recovery code
+    - [x] Write qualification tests first covering all thirteen required properties
+    - [x] Compose existing governed primitives: catalogue indexing, governed fixture landing, B1 reconstruction, B2 record building, delete-and-rebuild recovery
+    - [x] Add schema-validated report with exact commit, per-stratum property states, evidence-class counts, migration compatibility, deterministic rebuild, residual risks, blockers, `three_strata_qualified`, and separate `bronze_mature`
+    - [x] Keep fixture evidence distinct from live evidence; no new rights conclusions; no identity rewrites
+    - [x] Update architecture diagram, maturity model documentation, queue projection verification, and hosted merge evidence
