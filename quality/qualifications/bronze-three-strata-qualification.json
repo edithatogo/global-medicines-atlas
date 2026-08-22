@@ -1,0 +1,253 @@
+{
+  "schema_id": "global-medicines-atlas.bronze-three-strata-qualification",
+  "schema_version": 1,
+  "horizon": "bronze-three-strata-b0-b1-b2",
+  "generated_at": "2026-08-22T09:18:25.642287+00:00",
+  "git_commit": "f2a67d2fc399d929fd27e61db34688b5f1bbcf30",
+  "authorities": {
+    "requirements": "conductor/requirements.md",
+    "design": "conductor/design.md",
+    "glossary": "conductor/glossary.md",
+    "bronze_completion_spec": "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
+    "b0_source_index": "src/global_medicines_atlas/bronze_source_index.py",
+    "b1_acquisition_metadata": "src/global_medicines_atlas/bronze_acquisition_metadata.py",
+    "b2_raw_evidence": "src/global_medicines_atlas/bronze_raw_evidence.py",
+    "bronze_landing": "src/global_medicines_atlas/bronze_landing.py",
+    "bronze_admission": "src/global_medicines_atlas/bronze_admission.py",
+    "reuse_gate": "src/global_medicines_atlas/reuse_gate.py",
+    "three_strata_track": "conductor/tracks/bronze_medallion_completion_20260819/plan.md",
+    "parent_bronze_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/167",
+    "three_strata_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/275"
+  },
+  "b0": {
+    "source_count": 172,
+    "evidence_scope_counts": {
+      "governed_fixture": 14,
+      "live_receipt": 1,
+      "none": 155,
+      "parser_contract": 2
+    },
+    "discovery_state_counts": {
+      "declaration_verified": 145,
+      "discovery_only": 26,
+      "receipt_backed": 1
+    },
+    "qualification_state_counts": {
+      "declared": 92,
+      "documentation_verified": 64,
+      "fixture_verified": 15,
+      "live_verified": 1
+    },
+    "index_presence_implies_coverage": false,
+    "missing_source_is_negative_evidence": false
+  },
+  "b1": {
+    "event_count": 17,
+    "acquisitions_by_evidence_class": {
+      "synthetic": 17
+    },
+    "manifest_id": "sha256:8a1b36a4716efd015f1c6aa1ab3dfaa0d6760caca6572805a41722b26d61c7dd"
+  },
+  "b2": {
+    "raw_evidence_count": 17,
+    "storage_receipt_count": 17
+  },
+  "property_states": [
+    {
+      "property_id": "index_without_acquisition",
+      "state": "evidenced",
+      "evidence": [
+        "src/global_medicines_atlas/bronze_source_index.py",
+        "src/global_medicines_atlas/bronze_acquisition_metadata.py"
+      ],
+      "notes": "156 indexed source(s) carry no acquisition record; B0 indexing does not imply acquisition."
+    },
+    {
+      "property_id": "acquisition_references_indexed_source",
+      "state": "evidenced",
+      "evidence": [
+        "src/global_medicines_atlas/bronze_acquisition_metadata.py",
+        "src/global_medicines_atlas/bronze_source_index.py"
+      ],
+      "notes": "every B1 acquisition metadata row references a valid indexed B0 source"
+    },
+    {
+      "property_id": "raw_evidence_bound_to_metadata_and_content",
+      "state": "evidenced",
+      "evidence": [
+        "src/global_medicines_atlas/bronze_raw_evidence.py",
+        "src/global_medicines_atlas/bronze_acquisition_metadata.py",
+        "src/global_medicines_atlas/bronze_landing.py"
+      ],
+      "notes": "every B1 row binds to B2 raw evidence and a storage receipt by acquisition_id, content_id and payload digest"
+    },
+    {
+      "property_id": "metadata_no_stored_bytes_when_external_only",
+      "state": "evidenced",
+      "evidence": [
+        "src/global_medicines_atlas/bronze_raw_evidence.py",
+        "src/global_medicines_atlas/bronze_acquisition_metadata.py"
+      ],
+      "notes": "reference-only B2 evidence cannot carry retained bytes or an object locator; retention state gates stored-byte claims"
+    },
+    {
+      "property_id": "payload_presence_not_admission_qualification_coverage",
+      "state": "evidenced",
+      "evidence": [
+        "src/global_medicines_atlas/bronze_admission.py",
+        "src/global_medicines_atlas/bronze_raw_evidence.py",
+        "src/global_medicines_atlas/bronze_landing.py"
+      ],
+      "notes": "a stored, retained payload was quarantined and not admitted; payload presence does not imply admission, qualification or current coverage"
+    },
+    {
+      "property_id": "evidence_classes_distinct",
+      "state": "evidenced",
+      "evidence": [
+        "src/global_medicines_atlas/bronze_acquisition_metadata.py",
+        "src/global_medicines_atlas/bronze_raw_evidence.py"
+      ],
+      "notes": "fixture, parser-contract and live evidence classes remain distinct namespaces; the governed corpus is synthetic and never live"
+    },
+    {
+      "property_id": "content_identity_distinct_from_acquisition",
+      "state": "evidenced",
+      "evidence": [
+        "src/global_medicines_atlas/bronze_acquisition_metadata.py",
+        "src/global_medicines_atlas/bronze_landing.py"
+      ],
+      "notes": "content_id equals the payload digest but remains distinct from the retrieval-event acquisition_id across every B1 row"
+    },
+    {
+      "property_id": "identical_bytes_multiple_retrievals_no_collapse",
+      "state": "evidenced",
+      "evidence": [
+        "src/global_medicines_atlas/bronze_landing.py",
+        "src/global_medicines_atlas/bronze_storage.py"
+      ],
+      "notes": "two retrievals of identical bytes kept one payload object and two acquisition identities; history is not collapsed"
+    },
+    {
+      "property_id": "projections_deleted_and_rebuilt",
+      "state": "evidenced",
+      "evidence": [
+        "src/global_medicines_atlas/bronze_acquisition_metadata.py",
+        "src/global_medicines_atlas/bronze_landing.py",
+        "src/global_medicines_atlas/bronze_recovery.py"
+      ],
+      "notes": "all query/catalogue projections were deleted and rebuilt from authoritative B1/B2 evidence with an identical manifest identity"
+    },
+    {
+      "property_id": "source_native_records_binary_safe_no_silver",
+      "state": "evidenced",
+      "evidence": [
+        "src/global_medicines_atlas/bronze_landing.py",
+        "src/global_medicines_atlas/bronze_landing.py"
+      ],
+      "notes": "source-native record projections preserve native columns and binary payloads and reject Silver normalisation columns"
+    },
+    {
+      "property_id": "source_index_counts_not_live_coverage",
+      "state": "evidenced",
+      "evidence": [
+        "src/global_medicines_atlas/bronze_source_index.py",
+        "src/global_medicines_atlas/bronze_acquisition_metadata.py"
+      ],
+      "notes": "B0 source-index counts are reported independently of live-coverage acquisition counts; index presence never implies coverage"
+    },
+    {
+      "property_id": "rights_reuse_admission_fail_closed",
+      "state": "evidenced",
+      "evidence": [
+        "src/global_medicines_atlas/reuse_gate.py",
+        "src/global_medicines_atlas/bronze_admission.py",
+        "src/global_medicines_atlas/receipts.py"
+      ],
+      "notes": "acquisition without the reuse gate, publication under restricted rights, and downstream use of quarantined material all fail closed"
+    },
+    {
+      "property_id": "no_digest_change_during_migration",
+      "state": "evidenced",
+      "evidence": [
+        "src/global_medicines_atlas/bronze_acquisition_metadata.py",
+        "src/global_medicines_atlas/bronze_raw_evidence.py"
+      ],
+      "notes": "authoritative acquisition IDs, payload digests and receipt digests are stable across independent reconstruction; no evidence changed"
+    }
+  ],
+  "migration_compatibility": {
+    "stable": true,
+    "acquisition_identity_count": 17,
+    "no_acquisition_id_changed": true,
+    "no_payload_digest_changed": true,
+    "no_receipt_digest_changed": true,
+    "notes": "authoritative B1/B2 identities are content-addressed and deterministic; reconstruction did not change any acquisition ID, payload digest or receipt digest"
+  },
+  "deterministic_rebuild": {
+    "rebuilt": true,
+    "b1_manifest_id": "sha256:8a1b36a4716efd015f1c6aa1ab3dfaa0d6760caca6572805a41722b26d61c7dd",
+    "match": true,
+    "notes": "query/catalogue projections were deleted and regenerated from authoritative evidence with an identical manifest identity"
+  },
+  "residual_risks": [
+    {
+      "risk_id": "RISK-001",
+      "description": "Public software or dataset release remains a human gate and is not bronze evidentiary truth.",
+      "disposition": "accepted",
+      "blocking": false,
+      "evidence": [
+        "conductor/autonomy.md"
+      ]
+    },
+    {
+      "risk_id": "RISK-002",
+      "description": "Licensing conclusions remain a maintainer human gate.",
+      "disposition": "accepted",
+      "blocking": false,
+      "evidence": [
+        "docs/governance/licensing-decision.md",
+        "DATA_LICENSE.md"
+      ]
+    },
+    {
+      "risk_id": "RISK-003",
+      "description": "External dataset publication, including Hugging Face archives, remains a human gate.",
+      "disposition": "accepted",
+      "blocking": false,
+      "evidence": [
+        "docs/ECOSYSTEM_REUSE.md"
+      ]
+    },
+    {
+      "risk_id": "RISK-004",
+      "description": "Consequential clinical or policy claims remain a human gate.",
+      "disposition": "accepted",
+      "blocking": false,
+      "evidence": [
+        "conductor/product.md"
+      ]
+    },
+    {
+      "risk_id": "RISK-005",
+      "description": "Live acquisition completeness for public/credentialed sources remains incomplete; the broader Bronze completion issue stays open.",
+      "disposition": "accepted",
+      "blocking": false,
+      "evidence": [
+        "https://github.com/edithatogo/global-medicines-atlas/issues/167"
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "blocker_id": "live-acquisition-completeness-blocked",
+      "description": "Bronze live acquisition is incomplete for current-scope public and credentialed sources; the broader Bronze completion issue remains open",
+      "evidence": [
+        "https://github.com/edithatogo/global-medicines-atlas/issues/167"
+      ]
+    }
+  ],
+  "three_strata_qualified": true,
+  "bronze_mature": false,
+  "qualification_state": "qualified",
+  "report_complete": true
+}
