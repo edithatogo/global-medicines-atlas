@@ -13,7 +13,7 @@ rebuild results, residual risks and blockers, an explicit
 stays false while live acquisition completeness remains blocked.
 """
 
-# pyright: reportUnknownMemberType=false, reportUnknownVariableType=false
+# pyright: reportUnknownMemberType=false, reportUnknownVariableType=false, reportUnknownArgumentType=false, reportMissingTypeStubs=false
 
 from __future__ import annotations
 

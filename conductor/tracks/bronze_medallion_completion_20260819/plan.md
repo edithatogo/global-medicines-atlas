@@ -610,3 +610,4 @@ for credentialed or rights-unresolved sources.
     - [x] Add schema-validated report with exact commit, per-stratum property states, evidence-class counts, migration compatibility, deterministic rebuild, residual risks, blockers, `three_strata_qualified`, and separate `bronze_mature`
     - [x] Keep fixture evidence distinct from live evidence; no new rights conclusions; no identity rewrites
     - [x] Update architecture diagram, maturity model documentation, queue projection verification, and hosted merge evidence
+    - [x] Record PR [#316](https://github.com/edithatogo/global-medicines-atlas/pull/316) head `9887d51f55a9f83fee9a70d7370ad05125b2324a`, 37 passing hosted checks, and merged SHA `2341475cb0ee75c3ae78a72c9beb94fcdbe0851a`; issue #315 closed, parent #170 remains open
