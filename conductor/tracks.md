@@ -37,3 +37,6 @@ and rationale contract in that policy.
 
 - [x] **Track: Review source rights and publish reusable source archives**
   *Archived: [archive/public_source_rights_archives_20260821/index.md](./archive/public_source_rights_archives_20260821/index.md); GitHub parent [#244](https://github.com/edithatogo/global-medicines-atlas/issues/244). The 172-source rights ledger is complete; the maintainer-approved FDA, ten-source international, and separate Open Medic packages are public in fresh repositories with 55 digest-verified files, while GIP and NICE utilisation remain excluded.*
+
+- [x] **Track: Cross-repository medallion contract conformance**
+  *Archived: [archive/cross_repository_medallion_conformance_20260826/index.md](./archive/cross_repository_medallion_conformance_20260826/index.md); v1 uses byte-versioned schemas and repository-local CI tests without a shared runtime dependency.*
