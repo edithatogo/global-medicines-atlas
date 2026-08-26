@@ -64,6 +64,7 @@ def test_approved_public_contract_locks_documented_api_surface() -> None:
             "approved public OpenPrescribing",
         ),
         ({"documentation_url": "https://example.test/api"}, "official service"),
+        ({"licence_url": "https://example.test/ogl"}, "stay on the OGL"),
         ({"upstream_monthly_source_url": "https://example.test/epd"}, "NHSBSA"),
     ],
 )

@@ -226,11 +226,19 @@ def test_source_record_projection_preserves_hash_delimited_native_strings() -> (
         b"single-column\nvalue\n",
         b"jaar#jaar\n2025#2025\n",
         b"jaar#atc\n",
+        b"jaar#atc\n2025#A10#unexpected\n",
     ],
 )
 def test_source_record_projection_rejects_unusable_csv(payload: bytes) -> None:
     with pytest.raises(ValueError, match="GIP CSV"):
         gip_source_record_batch("nl-gipdatabank", payload, "csv")
+
+
+def test_source_record_projection_rejects_non_utf8_csv() -> None:
+    with pytest.raises(ValueError, match="must be UTF-8"):
+        gip_source_record_batch(
+            "nl-gipdatabank", b"jaar#atc\n2025#\xff\n", "csv"
+        )
 
 
 @pytest.mark.timeout(120)
