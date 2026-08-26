@@ -36,10 +36,17 @@ def test_builds_archive_and_keeps_failures_explicit(tmp_path: Path) -> None:
     manifest = build_international_public_archive(
         _staging(tmp_path / "staging"), output
     )
-    assert manifest.archived_source_count == 11
-    assert len(manifest.pending_sources) == 2
-    assert len({item.source_id for item in manifest.files}) == 11
-    assert "2014-2025" in (output / "README.md").read_text()
+    assert manifest.archived_source_count == 10
+    assert len(manifest.pending_sources) == 3
+    assert len({item.source_id for item in manifest.files}) == 10
+    assert manifest.pending_sources["fr-open-medic"].startswith(
+        "published separately"
+    )
+    card = (output / "README.md").read_text()
+    normalized_card = " ".join(card.split())
+    assert "ten catalogue source IDs" in normalized_card
+    assert "Open Medic is published separately" in normalized_card
+    assert "Open Medic contains" not in normalized_card
 
 
 def test_rejects_rxnorm_source_vocabulary_bytes(tmp_path: Path) -> None:

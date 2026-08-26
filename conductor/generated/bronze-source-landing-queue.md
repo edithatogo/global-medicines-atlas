@@ -7,9 +7,9 @@ Silver transformations included: **no**.
 
 ## State summary
 
-- `landed_and_evidenced`: 25
+- `landed_and_evidenced`: 29
 - `temporarily_unavailable`: 2
-- `rights_blocked`: 38
+- `rights_blocked`: 34
 - `credentialed_and_excluded`: 15
 - `manual_only_documented_acquisition`: 92
 - `superseded_by_reused_source`: 0
@@ -36,16 +36,16 @@ Silver transformations included: **no**.
 - [x] `eu-union-register` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `fr-bdpm` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `fr-bdpm-smr-asmr` — `rights_blocked`; record source-specific retention and transformation rights.
-- [ ] `gb-emit` — `rights_blocked`; record source-specific retention and transformation rights.
-- [ ] `gb-nhs-drug-tariff` — `rights_blocked`; record source-specific retention and transformation rights.
+- [x] `gb-emit` — `landed_and_evidenced`; verify receipt freshness on schedule.
+- [x] `gb-nhs-drug-tariff` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `global-who-wla` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `in-nlem` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `jp-mhlw-nhi-price` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `kr-hira-atc` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `kr-hira-standard-code` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `nl-gipdatabank` — `landed_and_evidenced`; verify receipt freshness on schedule.
-- [ ] `nz-pharmac-hml` — `rights_blocked`; record source-specific retention and transformation rights.
-- [ ] `nz-pharmac-schedule` — `rights_blocked`; record source-specific retention and transformation rights.
+- [x] `nz-pharmac-hml` — `landed_and_evidenced`; verify receipt freshness on schedule.
+- [x] `nz-pharmac-schedule` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `nz-pharmac-schedule-xml` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `se-npl-nsl` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `se-socialstyrelsen-utilisation` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
