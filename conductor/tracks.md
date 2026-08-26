@@ -8,6 +8,9 @@ and rationale contract in that policy.
 
 ---
 
+- [x] **Track: Migrate nzmedicines into the canonical atlas repository**
+  *Archived: [archive/nzmedicines_migration_20260727/index.md](./archive/nzmedicines_migration_20260727/index.md).*
+
 - [x] **Track: Establish the global country-adapter framework and first source cohort**
   *Archived: [archive/global_country_adapters_20260729/index.md](./archive/global_country_adapters_20260729/index.md); live qualification continues in GitHub issue #54.*
 - [x] **Track: Build canonical bitemporal evidence and conflict handling**

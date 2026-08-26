@@ -475,7 +475,7 @@ for credentialed or rights-unresolved sources.
     - [x] Preserve incomplete coverage, missing-not-negative-evidence, and no-external-publication boundaries
     - [x] Carry forward only existing high-value gap candidates; do not invent a new track without new authority or materially new source evidence
 
-## Phase 6: B0/B1/B2 Internal Bronze Strata Contract
+## Phase 7: B0/B1/B2 Internal Bronze Strata Contract
 
 - [x] Task: Formalize the three-strata Bronze authority boundary ([#275](https://github.com/edithatogo/global-medicines-atlas/issues/275))
     - [x] Inspect current `main`, active Bronze tracks and issues, and recently merged Bronze work without disturbing concurrent work
@@ -492,7 +492,7 @@ for credentialed or rights-unresolved sources.
 - [x] Context validation recognizes the glossary as required project context
 - [x] Required hosted checks pass at the exact pull-request head before merge
 
-## Phase 10: Reproducible Manual Acquisition Recipes and Receipts
+## Phase 8: Reproducible Manual Acquisition Recipes and Receipts
 
 - [x] Task: Add deterministic, rights- and reuse-gated manual acquisition contracts ([#308](https://github.com/edithatogo/global-medicines-atlas/issues/308))
     - [x] Generate one versioned recipe per current manual-only queue item without duplicating the queue
@@ -502,7 +502,7 @@ for credentialed or rights-unresolved sources.
     - [x] Validate handoff through the ordinary B1/B2 landing adapter contract and record hosted merge evidence
     - [x] Record PR [#309](https://github.com/edithatogo/global-medicines-atlas/pull/309) head `587d253fb6d04cb8d3e64078e1c9eefe919da309`, all required hosted checks green, and merged SHA `a45cb7a2ac6080789c59dd1bc1f75f46096f8191`
 
-## Phase 10: Pinned Reuse Discovery Snapshot
+## Phase 9: Pinned Reuse Discovery Snapshot
 
 - [x] Task: Bind pre-acquisition reuse decisions to deterministic discovery snapshots ([#302](https://github.com/edithatogo/global-medicines-atlas/issues/302), parent #167)
     - [x] Record required surfaces, queries, revisions, candidate digests, availability, freshness, and snapshot ID
@@ -535,7 +535,7 @@ for credentialed or rights-unresolved sources.
 - [x] Required hosted checks pass at the exact pull-request head before merge
 - [x] Review confirms documentation-and-contract-only scope and no source, receipt, digest, or acquisition-identity mutation
 
-## Phase 7: Deterministic B0 Source Index Layer
+## Phase 11: Deterministic B0 Source Index Layer
 
 - [x] Task: Implement the B0 Source Index projection ([#281](https://github.com/edithatogo/global-medicines-atlas/issues/281))
     - [x] Audit the canonical source catalogue, schema/model, census, coverage index, landing factory and queue, archival inventory, Hugging Face references, Conductor state, issues, and recent Bronze merges
@@ -557,7 +557,7 @@ for credentialed or rights-unresolved sources.
 - [x] Required hosted checks pass at the exact pull-request head before merge
 - [x] Review confirms no parallel registry, external publication, or mutation of B1/B2 evidence identity
 
-## Phase 8: Deterministic B1 Acquisition Metadata Layer
+## Phase 12: Deterministic B1 Acquisition Metadata Layer
 
 - [x] Task: Formalize the B1 acquisition metadata authority and query manifest ([#289](https://github.com/edithatogo/global-medicines-atlas/issues/289))
     - [x] Audit the existing `SourceReceipt`, `AcquisitionEvent`, temporal, HTTP, reuse, rights, storage, admission, recovery, Parquet and OpenLineage contracts
@@ -582,7 +582,7 @@ for credentialed or rights-unresolved sources.
 - [x] Retrieval locations are redacted and the manifest never contains payload contents
 - [x] Required hosted checks pass at the exact pull-request head before merge
 
-## Phase 9: Explicit B2 Raw Evidence and Native Projection Boundary
+## Phase 13: Explicit B2 Raw Evidence and Native Projection Boundary
 
 - [x] Task: Formalize B2 raw evidence and split source-native projections ([#295](https://github.com/edithatogo/global-medicines-atlas/issues/295))
     - [x] Inspect existing content-addressed storage, landing, recovery, archive, receipt, fixture, and Parquet contracts
@@ -601,7 +601,7 @@ for credentialed or rights-unresolved sources.
 - [x] ZIP/tar, document, opaque-binary, identity, and projection-boundary tests pass
 - [x] Required hosted checks pass at the exact pull-request head before merge
 
-## Phase 10: End-to-End Three-Strata Qualification
+## Phase 14: End-to-End Three-Strata Qualification
 
 - [x] Task: Qualify the B0/B1/B2 substrate over the complete governed corpus ([#315](https://github.com/edithatogo/global-medicines-atlas/issues/315), parent #170)
     - [x] Inspect source index, acquisition metadata, raw-evidence storage, projections, admission profiles, reuse snapshots, manual recipes, and recovery code
