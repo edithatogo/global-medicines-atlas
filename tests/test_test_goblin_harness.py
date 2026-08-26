@@ -24,6 +24,11 @@ HARNESS = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(HARNESS)
 
 
+@pytest.fixture(autouse=True)
+def _serial_harness_commands(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("TEST_GOBLIN_WORKERS", raising=False)
+
+
 def test_phase1_mutation_targets_have_bounded_test_selection() -> None:
     """Phase 1 fail-closed logic is included in authoritative mutation work."""
     document = tomllib.loads((ROOT / "pyproject.toml").read_text("utf-8"))
@@ -103,6 +108,40 @@ def test_collection_profile_uses_manifest_validation(monkeypatch) -> None:
     )
     assert "--collect-only" in commands[0]
     assert commands[0][-2:] == ["-p", "scripts.test_goblin"]
+
+
+def test_pytest_workers_are_opt_in_and_work_stealing(monkeypatch) -> None:
+    monkeypatch.delenv("TEST_GOBLIN_WORKERS", raising=False)
+    serial = HARNESS.build_pytest_command(("tests/test_smoke.py",))
+    assert "-n" not in serial
+
+    monkeypatch.setenv("TEST_GOBLIN_WORKERS", "auto")
+    parallel = HARNESS.build_pytest_command(("tests/test_smoke.py",))
+    assert parallel[3:7] == ["-n", "auto", "--dist", "worksteal"]
+
+
+def test_quick_partitions_resource_sensitive_tests(monkeypatch) -> None:
+    commands: list[list[str]] = []
+    monkeypatch.setenv("TEST_GOBLIN_WORKERS", "4")
+    monkeypatch.setattr(HARNESS, "run", commands.append)
+
+    HARNESS.quick()
+
+    assert len(commands) == 2
+    assert "-n" in commands[0]
+    assert "-n" not in commands[1]
+    for test in HARNESS.SERIAL_QUICK_TESTS:
+        assert test not in commands[0]
+        assert test in commands[1]
+
+
+@pytest.mark.parametrize("workers", ["-1", "invalid"])
+def test_pytest_workers_reject_invalid_values(
+    monkeypatch, workers: str
+) -> None:
+    monkeypatch.setenv("TEST_GOBLIN_WORKERS", workers)
+    with pytest.raises(ValueError, match="auto or a positive integer"):
+        HARNESS.build_pytest_command(("tests/test_smoke.py",))
 
 
 def test_collection_assigns_the_manifest_primary_marker() -> None:

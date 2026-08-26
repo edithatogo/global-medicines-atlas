@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from io import BytesIO
 from pathlib import Path
-from zipfile import ZIP_DEFLATED, ZipFile
+from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 import pytest
 
@@ -23,6 +23,13 @@ QUALIFICATION = (
     Path(__file__).resolve().parents[1]
     / "quality/qualifications/open-medic-parser-qualification-20260821.json"
 )
+ZIP_TIMESTAMP = (2026, 1, 1, 0, 0, 0)
+
+
+def _write_member(archive: ZipFile, name: str, payload: str | bytes) -> None:
+    member = ZipInfo(name, date_time=ZIP_TIMESTAMP)
+    member.compress_type = ZIP_DEFLATED
+    archive.writestr(member, payload)
 
 
 def _page(href: str) -> bytes:
@@ -32,7 +39,7 @@ def _page(href: str) -> bytes:
 def _archive(name: str = "OPEN_MEDIC_2025.CSV") -> bytes:
     stream = BytesIO()
     with ZipFile(stream, "w", ZIP_DEFLATED) as archive:
-        archive.writestr(name, "ATC;BOITES\nA01;1\n")
+        _write_member(archive, name, "ATC;BOITES\nA01;1\n")
     return stream.getvalue()
 
 
@@ -44,7 +51,8 @@ def _source_archive(
 ) -> bytes:
     stream = BytesIO()
     with ZipFile(stream, "w", ZIP_DEFLATED) as archive:
-        archive.writestr(
+        _write_member(
+            archive,
             name,
             (header + "\r\n" + row + "\r\n").encode("iso-8859-1"),
         )
@@ -217,8 +225,8 @@ def test_source_record_projection_rejects_invalid_archive_scope(
 def test_source_record_projection_rejects_multiple_csv_members() -> None:
     stream = BytesIO()
     with ZipFile(stream, "w", ZIP_DEFLATED) as archive:
-        archive.writestr("OPEN_MEDIC_2024.CSV", "ATC1\n")
-        archive.writestr("OPEN_MEDIC_2025.CSV", "ATC1\n")
+        _write_member(archive, "OPEN_MEDIC_2024.CSV", "ATC1\n")
+        _write_member(archive, "OPEN_MEDIC_2025.CSV", "ATC1\n")
     with pytest.raises(ValueError, match="one annual CSV"):
         open_medic_source_record_batch(
             "fr-open-medic", stream.getvalue(), "zip"
