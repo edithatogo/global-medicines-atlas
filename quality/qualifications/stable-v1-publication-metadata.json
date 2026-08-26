@@ -167,8 +167,8 @@
     },
     {
       "path": "uv.lock",
-      "sha256": "5cf353a9ff70c80e9c4462757a2a88f4211145d9cbd543aba0b3fe8183890ba5",
-      "size": 283722
+      "sha256": "6da9892ca0ac62a430e5a95c83088b11f91b97686f7075370cc94a675e8fcd81",
+      "size": 284765
     }
   ],
   "inputs": [
@@ -255,7 +255,7 @@
   },
   "qualification_id": "stable-v1-release-candidate-publication-metadata",
   "ready_for_publication": false,
-  "receipt_sha256": "6515927be704c98b4f42559a25d17ca6146d11bd4d909957b9780ded37a398e1",
+  "receipt_sha256": "43d00dbbbefb757427a839c09a07de1b3269aea55cef07516ae50d030482d170",
   "result": "metadata_qualified_external_gates_blocked",
   "schema_id": "global-medicines-atlas.stable-v1-publication-metadata",
   "schema_version": 1

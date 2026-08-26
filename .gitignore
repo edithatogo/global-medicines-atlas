@@ -19,6 +19,7 @@ coverage.xml
 .coverage.*
 htmlcov/
 scalene-profile.json
+.testmondata*
 dist/
 .edgetest/
 .pixi/

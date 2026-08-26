@@ -657,6 +657,7 @@ SERIAL_QUICK_TESTS = frozenset({
     "tests/test_test_goblin_harness.py",
     "tests/test_us_live_bronze_corpus.py",
 })
+SLOW_TESTS = SERIAL_QUICK_TESTS
 
 
 def primary_lane_for_path(path: Path) -> str:
@@ -685,6 +686,11 @@ def pytest_collection_modifyitems(
         if not existing:
             item.add_marker(expected)
             existing = {expected}
+        relative = (
+            Path(str(item.path)).resolve().relative_to(PROJECT_ROOT).as_posix()
+        )
+        if relative in SLOW_TESTS:
+            item.add_marker("slow")
         if len(existing) != 1:
             problems.append(
                 f"{item.nodeid}: expected one primary lane, "
@@ -758,7 +764,7 @@ def run(command: Sequence[str]) -> None:
         raise SystemExit(completed.returncode)
 
 
-def pytest_worker_args() -> tuple[str, ...]:
+def worker_args() -> tuple[str, ...]:
     """Return opt-in pytest-xdist arguments for local or hosted execution."""
     configured = os.environ.get("TEST_GOBLIN_WORKERS")
     if configured is None or configured in {"", "0"}:
@@ -785,7 +791,7 @@ def build_pytest_command(
         sys.executable,
         "-m",
         "pytest",
-        *(pytest_worker_args() if parallel else ()),
+        *(worker_args() if parallel else ()),
         *tests,
         "-q",
         *extra,
@@ -794,7 +800,7 @@ def build_pytest_command(
 
 def quick() -> None:
     """Run examples, properties, negative controls, and randomized ordering."""
-    if not pytest_worker_args():
+    if not worker_args():
         run(build_pytest_command(ALL_TESTS))
         return
     parallel_tests = tuple(
@@ -805,6 +811,24 @@ def quick() -> None:
     )
     run(build_pytest_command(parallel_tests))
     run(build_pytest_command(serial_tests, parallel=False))
+
+
+def fast() -> None:
+    """Run the complete manifest except explicitly resource-sensitive tests."""
+    run(
+        build_pytest_command(
+            ALL_TESTS,
+            "-p",
+            "scripts.test_goblin",
+            "-m",
+            "not slow",
+        )
+    )
+
+
+def changed() -> None:
+    """Run tests affected by changed code using the local testmon database."""
+    run(build_pytest_command(ALL_TESTS, "--testmon", parallel=False))
 
 
 def lane(name: str) -> None:
@@ -867,10 +891,8 @@ def package() -> None:
 def profile() -> None:
     """Exercise the canonical workload under Scalene and emit an HTML report."""
     command = [
-        "uv",
-        "run",
-        "--group",
-        "profiling",
+        sys.executable,
+        "-m",
         "scalene",
         "run",
         "--cpu-only",
@@ -893,6 +915,36 @@ def profile() -> None:
         command=command,
     )
     enforce_optional_receipt("performance")
+
+
+def profile_tests() -> None:
+    """Profile a representative pytest workload under Scalene."""
+    artifact = PROJECT_ROOT / "build/profiling/scalene-tests-profile.json"
+    artifact.parent.mkdir(parents=True, exist_ok=True)
+    command = [
+        sys.executable,
+        "-m",
+        "scalene",
+        "run",
+        "--cpu-only",
+        "--profile-all",
+        "--outfile",
+        artifact.as_posix(),
+        "scripts/profile_test_workload.py",
+    ]
+    started = time.perf_counter()
+    run(command)
+    elapsed_seconds = time.perf_counter() - started
+    write_quality_receipt(
+        kind="performance",
+        observations={"elapsed_seconds": elapsed_seconds},
+        output_path=PROJECT_ROOT
+        / "build"
+        / "quality-receipts"
+        / "profile-tests.json",
+        artifacts=[artifact],
+        command=command,
+    )
 
 
 def mutation() -> None:
@@ -1128,6 +1180,8 @@ def main() -> None:  # ruff: ignore[too-many-branches]
             *TEST_LANES,
             *SPECIALIZED_TEST_PROFILES,
             "quick",
+            "fast",
+            "changed",
             "contracts",
             "coverage",
             "routine",
@@ -1139,6 +1193,7 @@ def main() -> None:  # ruff: ignore[too-many-branches]
             "regeneration",
             "security",
             "profile",
+            "profile-tests",
             "full",
         ),
         default="quick",
@@ -1153,6 +1208,10 @@ def main() -> None:  # ruff: ignore[too-many-branches]
         contracts()
     elif selected_profile == "quick":
         quick()
+    elif selected_profile == "fast":
+        fast()
+    elif selected_profile == "changed":
+        changed()
     elif selected_profile == "coverage":
         coverage()
     elif selected_profile == "mutation":
@@ -1173,6 +1232,8 @@ def main() -> None:  # ruff: ignore[too-many-branches]
         package()
     elif selected_profile == "profile":
         profile()
+    elif selected_profile == "profile-tests":
+        profile_tests()
     else:
         routine()
         strict()
