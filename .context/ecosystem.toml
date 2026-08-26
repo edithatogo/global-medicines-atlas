@@ -117,3 +117,13 @@ licence = "Apache-2.0"
 authority = "medicines-catalogue-and-fixture-archival"
 disposition = "extend-in-place"
 publication_gate = "catalogue-and-governed-fixture-archival"
+
+[[hugging_face]]
+id = "global-medicines-atlas-open-medic-20260821"
+repository = "edithatogo/global-medicines-atlas-open-medic-20260821"
+url = "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-open-medic-20260821"
+snapshot = "d19f7a66e35c58c557615bffa456856b485b7edc"
+licence = "Etalab-2.0"
+authority = "approved-open-medic-source-archive"
+disposition = "consume-contract"
+publication_gate = "exact-revision-and-source-rights-receipt"

@@ -41,6 +41,9 @@ SHORTAGES_QUALIFICATION = (
 GIP_QUALIFICATION = (
     ROOT / "quality/qualifications/gip-acquisition-success-20260826.json"
 )
+OPEN_MEDIC_QUALIFICATION = (
+    ROOT / "quality/qualifications/open-medic-all-release-bronze-20260827.json"
+)
 UNION_REGISTER_QUALIFICATION = (
     ROOT / "quality/qualifications/union-register-live-corpus-20260821.json"
 )
@@ -72,6 +75,8 @@ ENFORCEMENT_SOURCE_IDS = frozenset({
 GSRS_SOURCE_IDS = frozenset({"us-gsrs-unii"})
 SHORTAGES_SOURCE_IDS = frozenset({"us-fda-drug-shortages"})
 GIP_SOURCE_IDS = frozenset({"nl-gipdatabank"})
+OPEN_MEDIC_SOURCE_IDS = frozenset({"fr-open-medic"})
+OPEN_MEDIC_EXPECTED_RELEASE_COUNT = 12
 GIP_EXPECTED_RELEASE_COUNT = 28
 SHA256_HEX_LENGTH = 64
 GIP_EXPECTED_TITLE_SET_SHA256 = (
@@ -577,6 +582,51 @@ def _qualified_gip_sources() -> set[str]:
     return qualified
 
 
+def _qualified_open_medic_sources() -> set[str]:
+    qualification = json.loads(
+        OPEN_MEDIC_QUALIFICATION.read_text(encoding="utf-8")
+    )
+    boundary = (
+        qualification["evidence_class"] == "live_public_archive_reuse",
+        qualification["rights"] == "Etalab-2.0",
+        qualification["source_live_qualified"],
+        not qualification["prompt_complete"],
+        qualification["existing_public_archive_verified"],
+        qualification["reuse_disposition"] == "link",
+        qualification["reuse_revision"] == qualification["immutable_revision"],
+        not qualification["source_bytes_committed"],
+        not qualification["external_publication_performed"],
+        not qualification["canonical_medicine_identity_claimed"],
+        not qualification["regulatory_approval_claimed"],
+        not qualification["cross_country_comparability_claimed"],
+    )
+    if not all(boundary):
+        raise ValueError("Open Medic qualification crossed its reviewed scope")
+    release_count = qualification["release_count"]
+    recovery = (
+        release_count == OPEN_MEDIC_EXPECTED_RELEASE_COUNT,
+        qualification["accepted_admission_count"] == release_count,
+        qualification["public_manifest_files_verified"] == release_count * 2,
+        qualification["payload_byte_count"] > 0,
+        qualification["source_record_count"] > 0,
+        qualification["source_record_projection_count"] == release_count,
+        qualification["recovered_acquisition_count"] == release_count,
+        qualification["recovered_source_record_projection_count"]
+        == release_count,
+        qualification["source_record_parquet_pairs_byte_identical"]
+        == release_count,
+        len(qualification["public_manifest_sha256"]) == SHA256_HEX_LENGTH,
+    )
+    if not all(recovery):
+        raise ValueError("Open Medic products lack recovery evidence")
+    qualified = set(qualification["prompt_audit_qualified_source_ids"])
+    if qualified != set(OPEN_MEDIC_SOURCE_IDS):
+        raise ValueError(
+            "Open Medic qualification exceeds reviewed source scope"
+        )
+    return qualified
+
+
 def build() -> dict[str, Any]:
     """Join locked prompt scope to queue and measured evidence."""
 
@@ -599,6 +649,7 @@ def build() -> dict[str, Any]:
         | _qualified_gsrs_sources()
         | _qualified_shortages_sources()
         | _qualified_gip_sources()
+        | _qualified_open_medic_sources()
     )
     for source_id in qualified_us_live:
         existing = measured_by_source.get(source_id, {})
