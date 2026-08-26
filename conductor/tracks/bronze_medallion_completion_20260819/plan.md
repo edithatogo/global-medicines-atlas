@@ -468,6 +468,7 @@ for credentialed or rights-unresolved sources.
     - [x] Bind the Hugging Face reuse candidate itself to immutable revision `d19f7a66e35c58c557615bffa456856b485b7edc`
     - [x] Use acquisition month for large-table Iceberg partition planning rather than applying a temporal transform to integer `source_release_year`
     - [x] Re-run focused provenance and acquisition tests, strict typing, Conductor integrity, and the accelerated broad suite
+    - [x] Confirm all 37 exact-head hosted checks and squash-merge PR #324 as `823262f`
 - [~] Task: Expand authoritative global pharmacovigilance sources (Prompt 35)
     - [x] Preserve VigiBase as subscription-restricted and independently excluded from public-source Bronze claims
     - [x] Qualify the current MHRA Yellow Card, TGA DAEN, Canada Vigilance, and PMDA public surfaces from official metadata
