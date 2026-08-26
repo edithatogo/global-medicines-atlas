@@ -6,13 +6,13 @@
   "unique_prompt_source_count": 94,
   "catalog_source_count": 172,
   "fixture_qualified_source_count": 16,
-  "live_qualified_source_count": 11,
-  "live_complete_prompt_count": 6,
+  "live_qualified_source_count": 12,
+  "live_complete_prompt_count": 7,
   "program_completion": "incomplete_live_acquisition",
   "queue_state_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 22,
-    "manual_only_documented_acquisition": 94,
+    "landed_and_evidenced": 23,
+    "manual_only_documented_acquisition": 93,
     "not_yet_implemented": 0,
     "rights_blocked": 40,
     "superseded_by_reused_source": 0,
@@ -658,24 +658,20 @@
         "us-gsrs-unii"
       ],
       "queue_states": {
-        "us-gsrs-unii": "manual_only_documented_acquisition"
+        "us-gsrs-unii": "landed_and_evidenced"
       },
       "queue_state_counts": {
-        "manual_only_documented_acquisition": 1
+        "landed_and_evidenced": 1
       },
       "fixture_qualified_source_ids": [],
-      "live_qualified_source_ids": [],
-      "sources_without_live_evidence": [
+      "live_qualified_source_ids": [
         "us-gsrs-unii"
       ],
-      "live_complete": false,
-      "completion_state": "live_acquisition_incomplete",
-      "blocker_categories": [
-        "documented_manual_acquisition_required"
-      ],
-      "next_actions": [
-        "execute the documented reproducible acquisition after source-specific rights confirmation"
-      ]
+      "sources_without_live_evidence": [],
+      "live_complete": true,
+      "completion_state": "live_acquisition_complete",
+      "blocker_categories": [],
+      "next_actions": []
     },
     {
       "prompt_id": 19,

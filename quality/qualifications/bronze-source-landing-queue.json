@@ -4252,14 +4252,16 @@
         "source_id": "us-gsrs-unii"
       },
       "evidence_references": [
-        "https://gsrs.ncats.nih.gov/"
+        "https://gsrs.ncats.nih.gov/",
+        "quality/qualifications/gsrs-unii-acquisition-authorization.json",
+        "quality/qualifications/gsrs-unii-acquisition-success-20260826.json"
       ],
       "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
-      "priority": 30,
-      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "All 68 authorized paired FDA GSRS/UNII releases were privately acquired as 136 immutable payloads, Bronze-landed, checksum verified, and stream-restored from the private archive without promoting terminology evidence to canonical medicine identity.",
       "source_id": "us-gsrs-unii",
-      "state": "manual_only_documented_acquisition"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4608,8 +4610,8 @@
   "source_count": 172,
   "state_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 22,
-    "manual_only_documented_acquisition": 94,
+    "landed_and_evidenced": 23,
+    "manual_only_documented_acquisition": 93,
     "not_yet_implemented": 0,
     "rights_blocked": 40,
     "superseded_by_reused_source": 0,

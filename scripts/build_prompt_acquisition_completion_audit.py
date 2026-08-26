@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 from collections import Counter
+from hashlib import sha256
 from pathlib import Path
 from typing import Any
 
@@ -37,6 +38,12 @@ ENFORCEMENT_QUALIFICATION = (
 UNION_REGISTER_QUALIFICATION = (
     ROOT / "quality/qualifications/union-register-live-corpus-20260821.json"
 )
+GSRS_AUTHORIZATION = (
+    ROOT / "quality/qualifications/gsrs-unii-acquisition-authorization.json"
+)
+GSRS_QUALIFICATION = (
+    ROOT / "quality/qualifications/gsrs-unii-acquisition-success-20260826.json"
+)
 DEFAULT_OUTPUT = (
     ROOT / "quality/qualifications/prompt-acquisition-completion-audit.json"
 )
@@ -56,6 +63,9 @@ ENFORCEMENT_SOURCE_IDS = frozenset({
     "us-openfda-enforcement",
     "us-fda-recalls-notices",
 })
+GSRS_SOURCE_IDS = frozenset({"us-gsrs-unii"})
+GSRS_EXPECTED_RELEASE_COUNT = 68
+GSRS_EXPECTED_PAIRED_PAYLOAD_COUNT = GSRS_EXPECTED_RELEASE_COUNT * 2
 
 NEXT_ACTIONS = {
     "credentialed_and_excluded": (
@@ -432,6 +442,42 @@ def _qualified_enforcement_sources() -> set[str]:
     return qualified
 
 
+def _qualified_gsrs_sources() -> set[str]:
+    qualification = json.loads(GSRS_QUALIFICATION.read_text(encoding="utf-8"))
+    authorization_sha256 = sha256(GSRS_AUTHORIZATION.read_bytes()).hexdigest()
+    boundary = (
+        qualification["evidence_class"] == "live_private_acquisition",
+        qualification["rights_state"] == "permitted",
+        qualification["authorization_sha256"] == authorization_sha256,
+        not qualification["public_release_authorized"],
+        not qualification["external_publication_authorized"],
+        qualification["prompt_complete"],
+    )
+    if not all(boundary):
+        raise ValueError("GSRS qualification crossed its reviewed scope")
+    recovery = (
+        qualification["release_count"] == GSRS_EXPECTED_RELEASE_COUNT,
+        qualification["paired_payload_count"]
+        == GSRS_EXPECTED_PAIRED_PAYLOAD_COUNT,
+        qualification["accepted_admission_count"]
+        == qualification["paired_payload_count"],
+        qualification["payload_byte_count"] > 0,
+        qualification["private_archive"]["stream_restore_verified"],
+        qualification["private_archive"]["restored_payload_count"]
+        == qualification["paired_payload_count"],
+        qualification["private_archive"]["restored_payload_digests_match"],
+        not qualification["private_archive"][
+            "durable_independent_replication_claimed"
+        ],
+    )
+    if not all(recovery):
+        raise ValueError("GSRS private archive lacks recovery evidence")
+    qualified = set(qualification["prompt_audit_qualified_source_ids"])
+    if qualified != set(GSRS_SOURCE_IDS):
+        raise ValueError("GSRS qualification exceeds reviewed source scope")
+    return qualified
+
+
 def build() -> dict[str, Any]:
     """Join locked prompt scope to queue and measured evidence."""
 
@@ -451,6 +497,7 @@ def build() -> dict[str, Any]:
         | _qualified_faers_record_sources()
         | _qualified_union_register_sources()
         | _qualified_enforcement_sources()
+        | _qualified_gsrs_sources()
     )
     for source_id in qualified_us_live:
         existing = measured_by_source.get(source_id, {})

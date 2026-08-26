@@ -362,12 +362,13 @@ for credentialed or rights-unresolved sources.
     - [x] Verify the public FDA archive exposes 68 paired UNII data and name releases from 2014-01-25 through 2026-08-04
     - [x] Add an executable inventory parser that rejects missing pairs, release-count drift, date drift, and non-official hosts
     - [x] Keep acquisition, retention, public release, and external publication fail closed until the maintainer records a source-specific decision
-- [~] Task: Acquire and archive the complete approved GSRS/UNII family (Prompt 18)
+- [x] Task: Acquire and archive the complete approved GSRS/UNII family (Prompt 18)
     - [x] Bind the maintainer's source-specific licensing decision to the exact authorization; private acquisition and retention approved 2026-08-22, public and external publication prohibited
-    - [ ] Acquire every authorized paired dated release without committing source bytes (live FDA transfer attempted; network transfer did not complete in bounded run)
+    - [x] Acquire every authorized paired dated release without committing source bytes; all 68 releases and 136 paired payloads completed on 2026-08-26
     - [x] Add the private acquisition, receipt, Bronze landing, and checksum-bound archive runner; execution evidence remains pending successful transfer
-    - [ ] Preserve UNII, names, synonyms, substance types, and source relationships without treating terminology evidence as canonical medicine identity or regulatory approval
-    - [ ] Keep any public release and external publication separately gated
+    - [x] Preserve UNII, names, synonyms, substance types, and source relationships in immutable source-native payloads without treating terminology evidence as canonical medicine identity or regulatory approval
+    - [x] Keep any public release and external publication separately gated
+    - Receipt: `quality/qualifications/gsrs-unii-acquisition-success-20260826.json`; 1,297,588,027 source bytes, private archive `78ebcb813f1d4c9e3231c8dad68d73d863e896962c4bec353de1c52a4717b517`, and 136/136 digest-matching stream restores
 - [x] Task: Implement complete FDA AERS/FAERS quarterly acquisition machinery (Prompt 12)
     - [x] Lock the official ASCII release inventory to 90 contiguous quarters from 2004-Q1 through 2026-Q2 under the approved internal-only U.S. cohort
     - [x] Acquire large immutable releases through atomic, bounded, retry-limited, content-range-verified downloads without following redirects

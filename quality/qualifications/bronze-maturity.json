@@ -2,8 +2,8 @@
   "schema_id": "global-medicines-atlas.bronze-maturity-qualification",
   "schema_version": 1,
   "horizon": "bronze-current-public-scope",
-  "evaluated_at": "2026-08-20T05:48:36.090534+00:00",
-  "git_commit": "53b26713d62f73caf6e73f86420239c9a20dc679",
+  "evaluated_at": "2026-08-26T08:52:28.544070+00:00",
+  "git_commit": "9159c17b95961459992b74a175bdef2acbec9e3e",
   "authorities": {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -28,7 +28,7 @@
       "blocker_ids": [
         "bronze-ingest-incomplete"
       ],
-      "notes": "136 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
+      "notes": "138 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
     },
     {
       "property_id": "immutability",
@@ -36,14 +36,17 @@
       "state": "evidenced",
       "requirement_ids": [
         "M-092",
-        "M-094"
+        "M-094",
+        "M-102"
       ],
       "evidence": [
         "src/global_medicines_atlas/bronze_landing.py",
-        "tests/test_bronze_landing.py"
+        "tests/test_bronze_landing.py",
+        "src/global_medicines_atlas/bronze_storage.py",
+        "tests/test_bronze_storage.py"
       ],
       "blocker_ids": [],
-      "notes": "Payload bytes and content-addressed receipts are evidentiary truth; Parquet is analytical only."
+      "notes": "Payload bytes and content-addressed receipts are evidentiary truth; Parquet is analytical only. Local and durable object-storage paths share an immutable contract."
     },
     {
       "property_id": "temporal_identity",
@@ -80,15 +83,17 @@
       "state": "evidenced",
       "requirement_ids": [
         "M-040",
-        "M-095"
+        "M-095",
+        "M-102"
       ],
       "evidence": [
         "src/global_medicines_atlas/receipts.py",
+        "tests/test_bronze_storage.py",
         "docs/data-sources/SOURCE_RIGHTS.md",
         "DATA_LICENSE.md"
       ],
       "blocker_ids": [],
-      "notes": "Rights states are explicit. Licensing conclusions remain a human gate and are not inferred as approved by this qualification."
+      "notes": "Rights states are explicit. Licensing conclusions remain a human gate and are not inferred as approved by this qualification. Sensitivity and publication disposition are independent and fail closed."
     },
     {
       "property_id": "reuse_discovery",
@@ -155,14 +160,17 @@
       "state": "evidenced",
       "requirement_ids": [
         "M-082",
-        "M-097"
+        "M-097",
+        "M-102"
       ],
       "evidence": [
         "src/global_medicines_atlas/bronze_recovery.py",
-        "tests/test_bronze_recovery.py"
+        "tests/test_bronze_recovery.py",
+        "src/global_medicines_atlas/bronze_storage.py",
+        "tests/test_bronze_storage.py"
       ],
       "blocker_ids": [],
-      "notes": "Bronze metadata, Parquet, and catalogue are reconstructed from immutable payloads and receipts across the required clean-room and loss scenarios. Production operation remains a separate authority gate."
+      "notes": "Bronze metadata, Parquet, and catalogue are reconstructed from immutable payloads and receipts across the required clean-room and loss scenarios. Production operation remains a separate deployment and qualification gate."
     },
     {
       "property_id": "security",
@@ -233,7 +241,7 @@
   "residual_risks": [
     {
       "risk_id": "RISK-001",
-      "description": "136 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "138 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "disposition": "unresolved",
       "blocking": true,
       "evidence": [
@@ -294,7 +302,7 @@
     {
       "blocker_id": "bronze-ingest-incomplete",
       "property_id": "completeness",
-      "description": "136 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "138 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "evidence": [
         "src/global_medicines_atlas/data/medicine_source_catalog.json",
         "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
@@ -330,10 +338,10 @@
   "report_complete": true,
   "completeness_inventory": {
     "catalog_source_count": 172,
-    "bronze_in_scope_count": 152,
+    "bronze_in_scope_count": 155,
     "fixture_only_count": 2,
-    "excluded_count": 18,
-    "in_scope_without_landing_or_blocker": 136,
+    "excluded_count": 15,
+    "in_scope_without_landing_or_blocker": 138,
     "missing_coverage_is_not_negative_evidence": true
   }
 }

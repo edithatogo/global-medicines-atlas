@@ -1,0 +1,33 @@
+{
+  "schema_id": "global-medicines-atlas.gsrs-unii-acquisition-success",
+  "schema_version": 1,
+  "observed_at": "2026-08-26T08:49:15Z",
+  "source_id": "us-gsrs-unii",
+  "evidence_class": "live_private_acquisition",
+  "rights_state": "permitted",
+  "authorization_sha256": "7e1daaf6a97987b5055953907f823f33a9190b74517018109f1473482655dae0",
+  "release_count": 68,
+  "paired_payload_count": 136,
+  "accepted_admission_count": 136,
+  "payload_byte_count": 1297588027,
+  "prompt_complete": true,
+  "prompt_audit_qualified_source_ids": [
+    "us-gsrs-unii"
+  ],
+  "public_release_authorized": false,
+  "external_publication_authorized": false,
+  "private_manifest": {
+    "location_class": "ignored_local_workspace_storage",
+    "sha256": "eef3e5e33c173bd2be482d316c10fb6a3d622c0f3bb8f0961a5f56e166836067"
+  },
+  "private_archive": {
+    "location_class": "ignored_local_workspace_storage",
+    "sha256": "78ebcb813f1d4c9e3231c8dad68d73d863e896962c4bec353de1c52a4717b517",
+    "archive_entry_count": 2401,
+    "stream_restore_verified": true,
+    "restored_payload_count": 136,
+    "restored_payload_digests_match": true,
+    "durable_independent_replication_claimed": false
+  },
+  "evidence_limit": "This proves private acquisition, immutable Bronze landing, paired-release preservation, archive integrity, and digest-matching stream restore for the exact authorized FDA GSRS/UNII inventory. It does not establish canonical medicine identity, regulatory approval, safety, efficacy, funding, availability, public release authority, external publication, or independently durable replication."
+}

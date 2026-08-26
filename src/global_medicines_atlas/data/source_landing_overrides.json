@@ -89,6 +89,15 @@
       ]
     },
     {
+      "source_id": "us-gsrs-unii",
+      "state": "landed_and_evidenced",
+      "reason": "All 68 authorized paired FDA GSRS/UNII releases were privately acquired as 136 immutable payloads, Bronze-landed, checksum verified, and stream-restored from the private archive without promoting terminology evidence to canonical medicine identity.",
+      "evidence_references": [
+        "quality/qualifications/gsrs-unii-acquisition-authorization.json",
+        "quality/qualifications/gsrs-unii-acquisition-success-20260826.json"
+      ]
+    },
+    {
       "source_id": "dk-medstat-utilisation",
       "state": "manual_only_documented_acquisition",
       "reason": "Medstat is a public aggregate statistics surface with affirmative attribution terms; its bulk download inventory contains supporting ATC, product-name, and population metadata rather than utilisation results.",
