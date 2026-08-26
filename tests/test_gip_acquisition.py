@@ -72,8 +72,10 @@ def test_inventory_locks_all_28_medicine_files() -> None:
     assert sum(item.family == "farmacie" for item in inventory.releases) == 23
     assert sum(item.family == "addon" for item in inventory.releases) == 5
     assert inventory.releases[0].version_date.isoformat() == "2026-06-12"
-    with pytest.raises(PermissionError, match="decision is pending"):
-        authorization.require_payload_authority()
+    authorization.require_payload_authority()
+    assert authorization.decision_status == "approved_public"
+    assert authorization.public_release_authorized is True
+    assert authorization.external_publication_authorized is True
 
 
 def test_inventory_ignores_unrelated_downloads_but_rejects_drift() -> None:
@@ -108,8 +110,8 @@ def test_inventory_ignores_unrelated_downloads_but_rejects_drift() -> None:
 @pytest.mark.parametrize(
     ("updates", "message"),
     [
-        ({"acquisition_authorized": True}, "pending GIP decision"),
-        ({"public_release_authorized": True}, "separately gated"),
+        ({"acquisition_authorized": False}, "approved public GIP"),
+        ({"public_release_authorized": False}, "approved public GIP"),
         (
             {"landing_url": "https://example.test/open"},
             "zorgcijfersdatabank.nl",
@@ -131,14 +133,33 @@ def test_approved_internal_scope_requires_date_and_retention() -> None:
         decision_date="2026-08-21",
         acquisition_authorized=True,
         internal_retention_authorized=True,
+        public_release_authorized=False,
+        external_publication_authorized=False,
     )
     approved.require_payload_authority()
     with pytest.raises(ValidationError, match="requires dated authority"):
         _authorization(
             decision_status="approved_internal",
+            decision_date=None,
             acquisition_authorized=True,
             internal_retention_authorized=True,
+            public_release_authorized=False,
+            external_publication_authorized=False,
         )
+
+
+def test_pending_and_public_authority_combinations_fail_closed() -> None:
+    with pytest.raises(ValidationError, match="pending GIP decision"):
+        _authorization(
+            decision_status="pending",
+            decision_date=None,
+            acquisition_authorized=False,
+            internal_retention_authorized=False,
+            public_release_authorized=True,
+            external_publication_authorized=True,
+        )
+    with pytest.raises(ValidationError, match="approved public GIP"):
+        _authorization(external_publication_authorized=False)
 
 
 def test_release_rejects_host_and_addon_shape_drift() -> None:

@@ -49,7 +49,7 @@ class GIPAuthorization(FrozenModel):
     schema_id: Literal["global-medicines-atlas.gip-acquisition-authorization"]
     schema_version: Literal[1]
     decision_date: date | None
-    decision_status: Literal["pending", "approved_internal"]
+    decision_status: Literal["pending", "approved_internal", "approved_public"]
     decision_basis: str = Field(min_length=1)
     acquisition_authorized: bool
     internal_retention_authorized: bool
@@ -66,33 +66,42 @@ class GIPAuthorization(FrozenModel):
             raise ValueError(
                 "GIP authority must stay on zorgcijfersdatabank.nl"
             )
-        if (
-            self.public_release_authorized
-            or self.external_publication_authorized
-        ):
-            raise ValueError("GIP publication must remain separately gated")
         if self.decision_status == "pending":
             if (
                 self.decision_date is not None
                 or self.acquisition_authorized
                 or self.internal_retention_authorized
+                or self.public_release_authorized
+                or self.external_publication_authorized
             ):
                 raise ValueError(
                     "pending GIP decision cannot authorize payloads"
                 )
-        elif (
-            self.decision_date is None
-            or not self.acquisition_authorized
-            or not self.internal_retention_authorized
-        ):
+        elif self.decision_status == "approved_internal" and not all((
+            self.decision_date is not None,
+            self.acquisition_authorized,
+            self.internal_retention_authorized,
+            not self.public_release_authorized,
+            not self.external_publication_authorized,
+        )):
             raise ValueError(
                 "approved GIP acquisition requires dated authority"
+            )
+        elif self.decision_status == "approved_public" and not all((
+            self.decision_date is not None,
+            self.acquisition_authorized,
+            self.internal_retention_authorized,
+            self.public_release_authorized,
+            self.external_publication_authorized,
+        )):
+            raise ValueError(
+                "approved public GIP authority requires acquisition, retention, release, and publication"
             )
         return self
 
     def require_payload_authority(self) -> None:
         """Raise unless internal acquisition and retention are approved."""
-        if self.decision_status != "approved_internal":
+        if self.decision_status not in {"approved_internal", "approved_public"}:
             raise PermissionError("GIP payload acquisition decision is pending")
 
 

@@ -425,7 +425,7 @@ for credentialed or rights-unresolved sources.
     - [x] Resolve the official corpus to 28 Farmacie and Add-on CSV releases through 2025
     - [x] Bind stable source titles while treating rotating service download keys as ephemeral transport metadata
     - [x] Preserve rolling-table, annual age/sex, ATC, version, population, source, and VAT-method boundaries
-    - [ ] Obtain the maintainer's source-specific licensing decision before payload acquisition
+    - [x] Reconcile the existing source-specific approved-public decision bound to the exact 28-release title-set hash before payload acquisition
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
     - [ ] Keep public release and external publication separately gated
     - [x] Review fixes: make direct `GIPRelease` test construction satisfy the typed `date` contract (`945b12f`, `fc11f61`); focused tests, Ruff, and BasedPyright pass
