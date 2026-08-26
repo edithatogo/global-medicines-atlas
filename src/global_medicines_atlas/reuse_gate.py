@@ -380,6 +380,11 @@ def search_hugging_face(
                 locator=url,
                 source_id=source_id,
                 kind=kind,
+                revision=(
+                    str(resource["snapshot"])
+                    if resource.get("snapshot") is not None
+                    else None
+                ),
             )
         )
     if not found_catalogue:
@@ -398,6 +403,7 @@ def search_hugging_face(
                 ),
                 source_id=source_id,
                 kind=kind,
+                revision=HF_CATALOGUE_REVISION,
             )
         )
     return tuple(hits)

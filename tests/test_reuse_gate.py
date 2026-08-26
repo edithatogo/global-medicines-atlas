@@ -98,6 +98,11 @@ def test_gate_searches_required_surfaces_and_pins_catalogue() -> None:
     assert HF_CATALOGUE_REVISION in " ".join(
         item.locator for item in decision.candidates
     )
+    assert {
+        item.revision
+        for item in decision.candidates
+        if item.surface == "hugging_face"
+    } == {HF_CATALOGUE_REVISION}
 
 
 @pytest.mark.unit

@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import json
+from hashlib import sha256
 from io import BytesIO
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 import pytest
+from scripts import qualify_open_medic_bronze as qualification_script
 
+from global_medicines_atlas.iceberg_ready import plan_iceberg_partitions
 from global_medicines_atlas.open_medic_acquisition import (
     inspect_open_medic_archive,
     open_medic_source_record_batch,
@@ -144,6 +147,18 @@ def test_source_record_projection_preserves_native_strings_and_decimal_comma() -
             "source_row_number": 1,
         }
     ]
+    assert batch.partition_policy is not None
+    assert (
+        plan_iceberg_partitions(
+            (
+                ("source_release_year", "long"),
+                ("gma_acquired_at", "timestamptz"),
+            ),
+            row_count=1_000_000,
+            policy=batch.partition_policy,
+        )[0].source_field
+        == "gma_acquired_at"
+    )
 
 
 def test_source_record_projection_supports_reviewed_label_columns() -> None:
@@ -254,3 +269,115 @@ def test_live_parser_qualification_is_bounded_and_content_bound() -> None:
     assert receipt["source_bytes_committed"] is False
     assert receipt["external_publication_performed"] is False
     assert "all 12 annual releases remain pending" in receipt["limitations"][2]
+
+
+def _public_revision(tmp_path: Path) -> tuple[Path, Path]:
+    revision = tmp_path / "public-revision"
+    source = revision / "data/fr-open-medic"
+    files: list[dict[str, object]] = []
+    for year in range(2014, 2026):
+        payload = _source_archive(name=f"OPEN_MEDIC_{year}.CSV")
+        payload_path = source / f"OPEN_MEDIC_{year}.zip"
+        payload_path.parent.mkdir(parents=True, exist_ok=True)
+        payload_path.write_bytes(payload)
+        source_receipt = {
+            "schema_id": "global-medicines-atlas.open-medic-acquisition",
+            "schema_version": 1,
+            "source_id": "fr-open-medic",
+            "year": year,
+            "resource_url": (
+                "https://open-data-assurance-maladie.ameli.fr/medicaments/"
+                "download.php?Dir_Rep=Open_MEDIC_Base_Complete&Annee="
+                f"{year}"
+            ),
+            "sha256": sha256(payload).hexdigest(),
+            "byte_count": len(payload),
+            "rights": "Etalab-2.0",
+            "admission_state": "accepted",
+        }
+        receipt_path = source / f"OPEN_MEDIC_{year}.receipt.json"
+        receipt_path.write_text(
+            json.dumps(source_receipt, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        files.extend(
+            {
+                "source_id": "fr-open-medic",
+                "path": str(path.relative_to(revision)),
+                "sha256": sha256(path.read_bytes()).hexdigest(),
+                "byte_count": path.stat().st_size,
+                "rights": "Etalab-2.0",
+            }
+            for path in (receipt_path, payload_path)
+        )
+    manifest = {
+        "schema_id": "global-medicines-atlas.international-public-archive",
+        "schema_version": 1,
+        "archived_source_count": 1,
+        "files": files,
+        "pending_sources": {},
+        "coverage_complete": False,
+        "clinical_inference_permitted": False,
+    }
+    manifest_path = revision / "manifest.json"
+    manifest_path.write_text(
+        json.dumps(manifest, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    publication = tmp_path / "publication.json"
+    publication.write_text(
+        json.dumps({
+            "dataset": qualification_script.DATASET,
+            "immutable_revision": qualification_script.REVISION,
+            "manifest_sha256": sha256(manifest_path.read_bytes()).hexdigest(),
+            "file_count": 24,
+            "rights_families": ["Etalab-2.0"],
+            "repository_private": False,
+            "repository_gated": False,
+        }),
+        encoding="utf-8",
+    )
+    return revision, publication
+
+
+@pytest.mark.timeout(120)
+def test_all_release_runner_lands_recovers_and_verifies_public_revision(
+    tmp_path: Path,
+) -> None:
+    revision, publication = _public_revision(tmp_path)
+    result = qualification_script.qualify(
+        revision,
+        tmp_path / "qualification",
+        publication_receipt_path=publication,
+    )
+
+    assert result["release_count"] == 12
+    assert result["accepted_admission_count"] == 12
+    assert result["source_record_count"] == 12
+    assert result["source_record_projection_count"] == 12
+    assert result["recovered_acquisition_count"] == 12
+    assert result["recovered_source_record_projection_count"] == 12
+    assert result["source_record_parquet_pairs_byte_identical"] == 12
+    assert result["public_manifest_files_verified"] == 24
+    assert result["existing_public_archive_verified"] is True
+    assert result["source_live_qualified"] is True
+    assert result["prompt_complete"] is False
+    assert result["prompt_audit_qualified_source_ids"] == ["fr-open-medic"]
+    assert result["reuse_disposition"] == "link"
+    assert result["reuse_revision"] == qualification_script.REVISION
+    assert result["source_bytes_committed"] is False
+    assert result["external_publication_performed"] is False
+
+
+def test_all_release_runner_rejects_public_manifest_digest_drift(
+    tmp_path: Path,
+) -> None:
+    revision, publication = _public_revision(tmp_path)
+    manifest_path = revision / "manifest.json"
+    manifest_path.write_bytes(manifest_path.read_bytes() + b" ")
+
+    with pytest.raises(ValueError, match="public manifest digest"):
+        qualification_script.qualify(
+            revision,
+            tmp_path / "qualification",
+            publication_receipt_path=publication,
+        )

@@ -6,7 +6,7 @@
   "unique_prompt_source_count": 94,
   "catalog_source_count": 172,
   "fixture_qualified_source_count": 16,
-  "live_qualified_source_count": 14,
+  "live_qualified_source_count": 15,
   "live_complete_prompt_count": 9,
   "program_completion": "incomplete_live_acquisition",
   "queue_state_counts": {
@@ -1166,9 +1166,10 @@
         "rights_blocked": 1
       },
       "fixture_qualified_source_ids": [],
-      "live_qualified_source_ids": [],
+      "live_qualified_source_ids": [
+        "fr-open-medic"
+      ],
       "sources_without_live_evidence": [
-        "fr-open-medic",
         "jp-mhlw-ndb-utilisation",
         "ca-cihi-nhex-medicines",
         "ie-pcrs-reimbursement"
@@ -1177,11 +1178,9 @@
       "completion_state": "live_acquisition_incomplete",
       "blocker_categories": [
         "source_specific_rights_decision_required",
-        "documented_manual_acquisition_required",
-        "fixture_only_is_not_live"
+        "documented_manual_acquisition_required"
       ],
       "next_actions": [
-        "replace governed fixture evidence with a receipt-backed live source acquisition",
         "execute the documented reproducible acquisition after source-specific rights confirmation",
         "obtain a maintainer-approved source-specific rights decision"
       ]

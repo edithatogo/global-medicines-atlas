@@ -39,6 +39,9 @@ SHORTAGES_QUALIFICATION = (
 GIP_QUALIFICATION = (
     ROOT / "quality/qualifications/gip-acquisition-success-20260826.json"
 )
+OPEN_MEDIC_QUALIFICATION = (
+    ROOT / "quality/qualifications/open-medic-all-release-bronze-20260827.json"
+)
 
 
 def _audit() -> dict[str, Any]:
@@ -66,7 +69,7 @@ def test_live_qualification_completes_verified_prompts() -> None:
     audit = _audit()
     measured = json.loads(MEASURED.read_text(encoding="utf-8"))["body"]
     assert measured["totals"]["live_qualified_sources"] == 1
-    assert audit["live_qualified_source_count"] == 14
+    assert audit["live_qualified_source_count"] == 15
     assert audit["live_complete_prompt_count"] == 9
     assert audit["program_completion"] == "incomplete_live_acquisition"
     complete = [entry for entry in audit["prompts"] if entry["live_complete"]]
@@ -116,6 +119,7 @@ def test_live_qualification_completes_verified_prompts() -> None:
     }
     assert live == {
         "eu-union-register",
+        "fr-open-medic",
         "us-openfda-enforcement",
         "us-openfda-faers",
         "us-openfda-ndc",
@@ -562,3 +566,45 @@ def test_additional_utilisation_public_surfaces_are_not_credential_blocked() -> 
     }
     assert "credential_or_licence_boundary" not in prompt["blocker_categories"]
     assert prompt["live_complete"] is False
+    assert prompt["live_qualified_source_ids"] == ["fr-open-medic"]
+
+
+@pytest.mark.parametrize(
+    ("mutate", "message"),
+    [
+        (
+            lambda raw: raw.update(source_live_qualified=False),
+            "reviewed scope",
+        ),
+        (
+            lambda raw: raw.update(release_count=11),
+            "recovery evidence",
+        ),
+        (
+            lambda raw: raw.update(
+                source_record_parquet_pairs_byte_identical=11
+            ),
+            "recovery evidence",
+        ),
+        (
+            lambda raw: raw["prompt_audit_qualified_source_ids"].append(
+                "ca-cihi-nhex-medicines"
+            ),
+            "exceeds reviewed source scope",
+        ),
+    ],
+)
+def test_open_medic_qualification_fails_closed_on_scope_or_evidence_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutate,
+    message: str,
+) -> None:
+    raw = json.loads(OPEN_MEDIC_QUALIFICATION.read_bytes())
+    mutate(raw)
+    unsafe = tmp_path / "unsafe-open-medic-qualification.json"
+    unsafe.write_text(json.dumps(raw), encoding="utf-8")
+    monkeypatch.setattr(audit_mod, "OPEN_MEDIC_QUALIFICATION", unsafe)
+
+    with pytest.raises(ValueError, match=message):
+        audit_mod._qualified_open_medic_sources()

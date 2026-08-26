@@ -187,10 +187,10 @@ def open_medic_source_record_batch(
         table=table,
         parser_identity=PARSER_IDENTITY,
         record_id_column="source_row_number",
-        partition_policy=IcebergPartitionPolicy(
-            recurring=True,
-            source_release_field="source_release_year",
-        ),
+        # ``source_release_year`` is a source-native integer, not a temporal
+        # Iceberg field. Large recurring products therefore use the standard
+        # acquisition-month fallback while retaining the native year column.
+        partition_policy=IcebergPartitionPolicy(recurring=True),
     )
 
 

@@ -462,8 +462,12 @@ for credentialed or rights-unresolved sources.
     - [ ] Obtain independent source-specific decisions for Japan, Canada, and Ireland before payload acquisition and retention
     - [x] Retry the already-authorized Open Medic payload under its bounded failure-receipt schedule; all 12 annual archives were acquired, checksum verified, published under the approved Etalab-2.0 decision, and anonymously restored
     - [x] Implement the source-faithful Open Medic ZIP/CSV projection and exercise the oldest 2014 and newest 2025 schemas against the immutable public revision; retain all source values as strings and add only release-year and row-number linkage fields
-    - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and archive verification for each acquired source
+    - [x] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and archive verification for each acquired source
     - [ ] Keep cross-country comparability and unapproved publication fail closed
+- [x] Task: Review Fixes for all-release Open Medic qualification (`14be890`)
+    - [x] Bind the Hugging Face reuse candidate itself to immutable revision `d19f7a66e35c58c557615bffa456856b485b7edc`
+    - [x] Use acquisition month for large-table Iceberg partition planning rather than applying a temporal transform to integer `source_release_year`
+    - [x] Re-run focused provenance and acquisition tests, strict typing, Conductor integrity, and the accelerated broad suite
 - [~] Task: Expand authoritative global pharmacovigilance sources (Prompt 35)
     - [x] Preserve VigiBase as subscription-restricted and independently excluded from public-source Bronze claims
     - [x] Qualify the current MHRA Yellow Card, TGA DAEN, Canada Vigilance, and PMDA public surfaces from official metadata
