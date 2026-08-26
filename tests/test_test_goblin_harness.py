@@ -120,6 +120,12 @@ def test_pytest_workers_are_opt_in_and_work_stealing(monkeypatch) -> None:
     assert parallel[3:7] == ["-n", "auto", "--dist", "worksteal"]
 
 
+def test_plugin_exports_only_registered_pytest_hooks() -> None:
+    assert {name for name in vars(HARNESS) if name.startswith("pytest_")} == {
+        "pytest_collection_modifyitems"
+    }
+
+
 def test_quick_partitions_resource_sensitive_tests(monkeypatch) -> None:
     commands: list[list[str]] = []
     monkeypatch.setenv("TEST_GOBLIN_WORKERS", "4")
@@ -133,6 +139,31 @@ def test_quick_partitions_resource_sensitive_tests(monkeypatch) -> None:
     for test in HARNESS.SERIAL_QUICK_TESTS:
         assert test not in commands[0]
         assert test in commands[1]
+
+
+def test_fast_profile_excludes_manifest_slow_tests(monkeypatch) -> None:
+    commands: list[list[str]] = []
+    monkeypatch.setattr(HARNESS, "run", commands.append)
+
+    HARNESS.fast()
+
+    assert commands[0][-4:] == [
+        "-p",
+        "scripts.test_goblin",
+        "-m",
+        "not slow",
+    ]
+
+
+def test_changed_profile_uses_testmon_without_xdist(monkeypatch) -> None:
+    commands: list[list[str]] = []
+    monkeypatch.setenv("TEST_GOBLIN_WORKERS", "4")
+    monkeypatch.setattr(HARNESS, "run", commands.append)
+
+    HARNESS.changed()
+
+    assert "--testmon" in commands[0]
+    assert "-n" not in commands[0]
 
 
 @pytest.mark.parametrize("workers", ["-1", "invalid"])
@@ -164,6 +195,26 @@ def test_collection_assigns_the_manifest_primary_marker() -> None:
     HARNESS.pytest_collection_modifyitems([item])
 
     assert [marker.name for marker in item.markers] == ["smoke"]
+
+
+def test_collection_marks_resource_sensitive_modules_slow() -> None:
+    class Item:
+        path = ROOT / "tests" / "test_product_performance.py"
+        nodeid = "tests/test_product_performance.py::test_example"
+
+        def __init__(self) -> None:
+            self.markers: list[SimpleNamespace] = []
+
+        def iter_markers(self):
+            return iter(self.markers)
+
+        def add_marker(self, name: str) -> None:
+            self.markers.append(SimpleNamespace(name=name))
+
+    item = Item()
+    HARNESS.pytest_collection_modifyitems([item])
+
+    assert [marker.name for marker in item.markers] == ["unit", "slow"]
 
 
 def test_collection_preserves_one_explicit_item_marker() -> None:
@@ -365,6 +416,50 @@ def test_measured_receipt_records_artifact_identity(
     assert receipt["artifacts"][0]["sha256"] == (
         "eff0c2ee96cc14abfc22d9f8d0ce1a7cfe076363a5b21fd6ba406241a73b77e2"
     )
+
+
+def test_profile_tests_profiles_a_bounded_pytest_workload(
+    tmp_path, monkeypatch
+) -> None:
+    commands: list[list[str]] = []
+    receipts: list[dict[str, object]] = []
+
+    def fake_run(command: list[str]) -> None:
+        commands.append(command)
+        artifact = Path(command[command.index("--outfile") + 1])
+        artifact.parent.mkdir(parents=True, exist_ok=True)
+        artifact.write_text("{}\n", encoding="utf-8")
+
+    monkeypatch.setattr(HARNESS, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr(HARNESS, "run", fake_run)
+    monkeypatch.setattr(
+        HARNESS,
+        "write_quality_receipt",
+        lambda **kwargs: receipts.append(kwargs),
+    )
+
+    HARNESS.profile_tests()
+
+    assert "scripts/profile_test_workload.py" in commands[0]
+    assert receipts[0]["output_path"] == (
+        tmp_path / "build/quality-receipts/profile-tests.json"
+    )
+
+
+def test_profile_test_workload_runs_representative_pytest_modules(
+    monkeypatch,
+) -> None:
+    module = load_update_script("profile_test_workload.py")
+    arguments: list[str] = []
+    monkeypatch.setattr(
+        module.pytest,
+        "main",
+        lambda selected: arguments.extend(selected) or 0,
+    )
+
+    assert module.main() == 0
+    assert "tests/test_matching_policy.py" in arguments
+    assert "tests/test_source_receipts.py" in arguments
 
 
 def test_lane_coverage_uses_unique_context(monkeypatch) -> None:

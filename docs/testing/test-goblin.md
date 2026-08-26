@@ -66,6 +66,8 @@ variable can substitute invented observations. The mutation budget remains
 ```powershell
 uv sync --python 3.14.6 --group test-goblin --locked
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py quick
+uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py fast
+uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py changed
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py contracts
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py metamorphic
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py contract
@@ -75,6 +77,7 @@ uv run --python 3.14.6 --group dev python scripts/test_goblin.py routine
 uv run --python 3.14.6 --group dev python scripts/test_goblin.py strict
 uv run --python 3.14.6 --group dev python scripts/test_goblin.py package
 uv run --python 3.14.6 --group dev python scripts/test_goblin.py profile
+uv run --python 3.14.6 --group dev python scripts/test_goblin.py profile-tests
 ```
 
 Local pytest profiles remain serial by default. Set a positive
@@ -88,6 +91,23 @@ to avoid starving performance and subprocess tests.
 ```bash
 TEST_GOBLIN_WORKERS=4 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py quick
 ```
+
+The `fast` profile excludes modules carrying the governed `slow` marker. The
+`changed` profile uses pytest-testmon's dependency map for local feedback and
+deliberately stays serial so its local database has one writer. Both are
+developer accelerators only: pull requests continue to run the complete
+authoritative lanes. Delete `.testmondata*` whenever the environment or test
+inventory changes unexpectedly; the first testmon run rebuilds it by running
+the full manifest.
+
+Coverage.py uses the lower-overhead `sys.monitoring` core by default on Python
+3.14 when the requested options are compatible. It is not forced globally
+because lane coverage uses dynamic test contexts, which require Coverage.py to
+select its compatible fallback core.
+
+The `profile` target profiles application code. The `profile-tests` target
+profiles a bounded representative pytest workload and stores its Scalene JSON
+and measured receipt beneath ignored `build/` paths.
 
 The `package` profile builds both wheel and source distribution, installs each
 into a disposable core-only Python 3.14 environment, verifies metadata and
@@ -116,11 +136,12 @@ on native Windows. The harness reports that boundary explicitly.
 | Mutation testing | mutmut |
 | Order-sensitivity detection | pytest-randomly |
 | Parallel execution | pytest-xdist |
+| Changed-code local selection | pytest-testmon |
 | Coverage and Codecov input | pytest-cov |
 | Fast typing | ty |
 | Formatting, linting, imports, modernization, and consolidated static checks | Ruff |
 | Formal strict typing | basedpyright |
-| CPU profiling | Scalene |
+| Application and test CPU profiling | Scalene |
 | Dependency maintenance | Renovate |
 
 ## Required Targets
