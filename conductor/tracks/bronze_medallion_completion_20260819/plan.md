@@ -436,6 +436,7 @@ for credentialed or rights-unresolved sources.
     - [x] Bind the maintainer's 2026-08-26 approved-public Option B decision to successfully retrieved, receipt-bound API v1 partitions under the OGL
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
     - [x] Permit public release and external publication only for successfully retrieved partitions with OGL/OpenPrescribing attribution; the bounded six-endpoint attempt returned HTTP 403 and published nothing
+    - [x] Review fixes: make Open Medic ZIP fixtures byte-deterministic and add opt-in hybrid xdist scheduling that keeps resource-sensitive tests serial (`4721359`, `59d77f4`); 137 affected tests, Ruff, ty, and BasedPyright pass
 - [~] Task: Acquire U.S. CMS Medicare Part D utilisation data (Prompt 31)
     - [x] Resolve the official corpus to 30 quarterly formulary ZIP releases through Q2 2026 and the three-resource 2024 annual spending surface
     - [x] Replace the generic CMS terms gap with the dataset-specific government-works licence record and formulary Agreement for Use
