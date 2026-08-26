@@ -512,9 +512,9 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
         "landed_and_evidenced": 25,
         "manual_only_documented_acquisition": 92,
         "not_yet_implemented": 0,
-        "rights_blocked": 39,
+        "rights_blocked": 38,
         "superseded_by_reused_source": 0,
-        "temporarily_unavailable": 1,
+        "temporarily_unavailable": 2,
     }
     for entry in audit["prompts"]:
         if entry["live_complete"]:

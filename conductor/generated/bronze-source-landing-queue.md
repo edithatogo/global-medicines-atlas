@@ -8,8 +8,8 @@ Silver transformations included: **no**.
 ## State summary
 
 - `landed_and_evidenced`: 25
-- `temporarily_unavailable`: 1
-- `rights_blocked`: 39
+- `temporarily_unavailable`: 2
+- `rights_blocked`: 38
 - `credentialed_and_excluded`: 15
 - `manual_only_documented_acquisition`: 92
 - `superseded_by_reused_source`: 0
@@ -71,7 +71,7 @@ Silver transformations included: **no**.
 - [ ] `au-pbs-api` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `ca-dpd` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `eu-ema-pms-fhir` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
-- [ ] `gb-openprescribing` — `rights_blocked`; record source-specific retention and transformation rights.
+- [ ] `gb-openprescribing` — `temporarily_unavailable`; retry under the failure-receipt schedule.
 - [ ] `global-rxnorm` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `nz-nzhts-fhir` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [ ] `us-dailymed-spl` — `rights_blocked`; record source-specific retention and transformation rights.

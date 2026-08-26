@@ -433,9 +433,9 @@ for credentialed or rights-unresolved sources.
     - [x] Resolve the six documented spending, medicine-reference, and organisation-reference API identities
     - [x] Bind the current official API documentation commit and its Open Government Licence source statement
     - [x] Select receipt-bound explicit date partitions instead of treating rolling five-year API views as static complete releases
-    - [ ] Obtain the maintainer's source-specific licensing decision before payload acquisition
+    - [x] Bind the maintainer's 2026-08-26 approved-public Option B decision to successfully retrieved, receipt-bound API v1 partitions under the OGL
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
-    - [ ] Keep public release and external publication separately gated
+    - [x] Permit public release and external publication only for successfully retrieved partitions with OGL/OpenPrescribing attribution; the bounded six-endpoint attempt returned HTTP 403 and published nothing
 - [~] Task: Acquire U.S. CMS Medicare Part D utilisation data (Prompt 31)
     - [x] Resolve the official corpus to 30 quarterly formulary ZIP releases through Q2 2026 and the three-resource 2024 annual spending surface
     - [x] Replace the generic CMS terms gap with the dataset-specific government-works licence record and formulary Agreement for Use

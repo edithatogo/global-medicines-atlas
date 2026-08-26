@@ -1584,14 +1584,16 @@
         "source_id": "gb-openprescribing"
       },
       "evidence_references": [
-        "https://openprescribing.net/api/"
+        "quality/qualifications/openprescribing-rights-preflight-20260821.json",
+        "quality/qualifications/openprescribing-acquisition-authorization.json",
+        "quality/qualifications/openprescribing-availability-20260826.json"
       ],
       "evidence_scope": "none",
-      "next_action": "record source-specific retention and transformation rights",
-      "priority": 20,
-      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "retry under the failure-receipt schedule",
+      "priority": 40,
+      "reason": "Public acquisition, retention, release, and external publication of successfully retrieved receipt-bound API v1 partitions were approved under the OGL on 2026-08-26. A bounded one-attempt probe of all six documented identities returned Cloudflare HTTP 403 challenges from the current environment; no payload or challenge bytes were retained and no publication occurred.",
       "source_id": "gb-openprescribing",
-      "state": "rights_blocked"
+      "state": "temporarily_unavailable"
     },
     {
       "adapter": {
@@ -4616,8 +4618,8 @@
     "landed_and_evidenced": 25,
     "manual_only_documented_acquisition": 92,
     "not_yet_implemented": 0,
-    "rights_blocked": 39,
+    "rights_blocked": 38,
     "superseded_by_reused_source": 0,
-    "temporarily_unavailable": 1
+    "temporarily_unavailable": 2
   }
 }

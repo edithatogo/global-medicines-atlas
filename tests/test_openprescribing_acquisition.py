@@ -6,8 +6,10 @@ import json
 from datetime import date
 from pathlib import Path
 
+import httpx
 import pytest
 from pydantic import ValidationError
+from scripts import probe_openprescribing_availability as probe_script
 
 from global_medicines_atlas.openprescribing_acquisition import (
     OpenPrescribingAuthorization,
@@ -29,7 +31,7 @@ def _authorization(**updates: object) -> OpenPrescribingAuthorization:
     return OpenPrescribingAuthorization.model_validate(raw)
 
 
-def test_pending_contract_locks_documented_api_surface() -> None:
+def test_approved_public_contract_locks_documented_api_surface() -> None:
     authorization = _authorization()
     assert [item.name for item in authorization.endpoints] == [
         "spending",
@@ -40,17 +42,27 @@ def test_pending_contract_locks_documented_api_surface() -> None:
         "org_location",
     ]
     assert authorization.archive_strategy == "receipt_bound_partitioned_queries"
-    with pytest.raises(PermissionError, match="decision is pending"):
-        authorization.require_payload_authority()
-    with pytest.raises(PermissionError, match="decision is pending"):
+    assert authorization.decision_status == "approved_public"
+    assert authorization.public_release_authorized is True
+    assert authorization.external_publication_authorized is True
+    authorization.require_payload_authority()
+    authorization.require_publication_authority()
+    with pytest.raises(ValueError, match="explicit date partition"):
         authorization.require_reproducible_partition(date_partition=None)
 
 
 @pytest.mark.parametrize(
     ("updates", "message"),
     [
-        ({"acquisition_authorized": True}, "pending OpenPrescribing decision"),
-        ({"public_release_authorized": True}, "separately gated"),
+        ({"acquisition_authorized": False}, "approved public OpenPrescribing"),
+        (
+            {"public_release_authorized": False},
+            "approved public OpenPrescribing",
+        ),
+        (
+            {"external_publication_authorized": False},
+            "approved public OpenPrescribing",
+        ),
         ({"documentation_url": "https://example.test/api"}, "official service"),
         ({"upstream_monthly_source_url": "https://example.test/epd"}, "NHSBSA"),
     ],
@@ -106,6 +118,8 @@ def test_approved_internal_capture_requires_date_and_partition() -> None:
         decision_date="2026-08-21",
         acquisition_authorized=True,
         internal_retention_authorized=True,
+        public_release_authorized=False,
+        external_publication_authorized=False,
     )
     approved.require_payload_authority()
     with pytest.raises(ValueError, match="explicit date partition"):
@@ -114,6 +128,70 @@ def test_approved_internal_capture_requires_date_and_partition() -> None:
     with pytest.raises(ValidationError, match="requires dated authority"):
         _authorization(
             decision_status="approved_internal",
+            decision_date=None,
             acquisition_authorized=True,
             internal_retention_authorized=True,
+            public_release_authorized=False,
+            external_publication_authorized=False,
         )
+
+
+def test_pending_and_internal_decisions_keep_publication_fail_closed() -> None:
+    pending = _authorization(
+        decision_status="pending",
+        decision_date=None,
+        acquisition_authorized=False,
+        internal_retention_authorized=False,
+        public_release_authorized=False,
+        external_publication_authorized=False,
+    )
+    with pytest.raises(PermissionError, match="decision is pending"):
+        pending.require_payload_authority()
+    with pytest.raises(PermissionError, match="publication is not authorized"):
+        pending.require_publication_authority()
+
+    internal = _authorization(
+        decision_status="approved_internal",
+        acquisition_authorized=True,
+        internal_retention_authorized=True,
+        public_release_authorized=False,
+        external_publication_authorized=False,
+    )
+    internal.require_payload_authority()
+    with pytest.raises(PermissionError, match="publication is not authorized"):
+        internal.require_publication_authority()
+
+
+def test_availability_probe_is_bounded_and_does_not_retain_payloads() -> None:
+    requests: list[httpx.Request] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        return httpx.Response(
+            403,
+            headers={
+                "content-type": "text/html; charset=UTF-8",
+                "server": "cloudflare",
+                "cf-mitigated": "challenge",
+            },
+            content=b"challenge bytes that must not enter the receipt",
+        )
+
+    receipt = probe_script.probe(
+        date(2026, 6, 1), transport=httpx.MockTransport(handler)
+    )
+    assert len(requests) == 6
+    assert receipt["endpoint_count"] == 6
+    assert receipt["payload_bytes_retained"] is False
+    assert receipt["payloads_acquired"] is False
+    assert receipt["external_publication_performed"] is False
+    assert receipt["challenge_bodies_retained"] is False
+    observations = receipt["observations"]
+    assert isinstance(observations, list)
+    assert all(
+        item["availability"] == "cloudflare_challenge_from_current_environment"
+        for item in observations
+    )
+    assert all("content" not in item for item in observations)
+    assert requests[0].url.params["date"] == "2026-06-01"
+    assert "date" not in requests[-1].url.params

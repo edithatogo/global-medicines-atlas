@@ -1,0 +1,80 @@
+{
+  "authorization": "quality/qualifications/openprescribing-acquisition-authorization.json",
+  "challenge_bodies_retained": false,
+  "date_partition": "2026-06-01",
+  "decision_status": "approved_public",
+  "endpoint_count": 6,
+  "external_publication_performed": false,
+  "observations": [
+    {
+      "availability": "cloudflare_challenge_from_current_environment",
+      "cf_mitigated": "challenge",
+      "content_type": "text/html; charset=UTF-8",
+      "endpoint": "spending",
+      "http_status": 403,
+      "query": {"date": "2026-06-01", "format": "json"},
+      "role": "utilisation",
+      "server": "cloudflare"
+    },
+    {
+      "availability": "cloudflare_challenge_from_current_environment",
+      "cf_mitigated": "challenge",
+      "content_type": "text/html; charset=UTF-8",
+      "endpoint": "spending_by_org",
+      "http_status": 403,
+      "query": {"date": "2026-06-01", "format": "json"},
+      "role": "utilisation",
+      "server": "cloudflare"
+    },
+    {
+      "availability": "cloudflare_challenge_from_current_environment",
+      "cf_mitigated": "challenge",
+      "content_type": "text/html; charset=UTF-8",
+      "endpoint": "bnf_code",
+      "http_status": 403,
+      "query": {"format": "json"},
+      "role": "medicine_reference",
+      "server": "cloudflare"
+    },
+    {
+      "availability": "cloudflare_challenge_from_current_environment",
+      "cf_mitigated": "challenge",
+      "content_type": "text/html; charset=UTF-8",
+      "endpoint": "org_code",
+      "http_status": 403,
+      "query": {"format": "json"},
+      "role": "organisation_reference",
+      "server": "cloudflare"
+    },
+    {
+      "availability": "cloudflare_challenge_from_current_environment",
+      "cf_mitigated": "challenge",
+      "content_type": "text/html; charset=UTF-8",
+      "endpoint": "org_details",
+      "http_status": 403,
+      "query": {"format": "json"},
+      "role": "organisation_reference",
+      "server": "cloudflare"
+    },
+    {
+      "availability": "cloudflare_challenge_from_current_environment",
+      "cf_mitigated": "challenge",
+      "content_type": "text/html; charset=UTF-8",
+      "endpoint": "org_location",
+      "http_status": 403,
+      "query": {"format": "json"},
+      "role": "organisation_reference",
+      "server": "cloudflare"
+    }
+  ],
+  "observed_at": "2026-08-26T10:28:37.219029+00:00",
+  "payload_bytes_retained": false,
+  "payloads_acquired": false,
+  "probe_policy": "one_attempt_per_documented_endpoint_no_retry",
+  "prompt_id": 30,
+  "schema_id": "global-medicines-atlas.openprescribing-availability-receipt",
+  "schema_version": 1,
+  "source_id": "gb-openprescribing",
+  "unbounded_api_crawl_performed": false,
+  "upstream_monthly_epd_substitution_performed": false
+}
