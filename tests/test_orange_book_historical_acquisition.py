@@ -53,40 +53,42 @@ def test_committed_live_qualification_is_partial_internal_evidence():
     assert qualification["coverage_complete"] is False
     assert qualification["historical_inventory_complete"] is False
     assert qualification["inventoried_release_count"] == 259
-    assert qualification["unique_acquisition_succeeded_count"] == 200
-    assert qualification["unique_acquisition_failed_count"] == 59
-    assert qualification["unique_accepted_count"] == 18
-    assert qualification["unique_quarantined_count"] == 182
-    assert qualification["unique_payload_byte_count"] == 59737593
+    assert qualification["unique_acquisition_succeeded_count"] == 201
+    assert qualification["unique_acquisition_failed_count"] == 58
+    assert qualification["unique_accepted_count"] == 151
+    assert qualification["unique_quarantined_count"] == 50
+    assert qualification["unique_payload_byte_count"] == 59894663
     assert qualification["source_record_rows"] == 73239
     assert all(
         archive["checksum_verified"]
         for archive in qualification["private_archives"]
     )
-    assert len(qualification["private_archives"]) == 6
-    assert qualification["private_archive_byte_count"] == 714455040
+    assert len(qualification["private_archives"]) == 7
+    assert qualification["private_archive_byte_count"] == 905216000
     assert qualification["private_archives"][-1] == {
-        "attempt": "sixth-full-inventory-availability-observation",
+        "attempt": "seventh-material-change-availability-observation",
         "release_count": 259,
-        "succeeded_count": 156,
-        "failed_count": 103,
-        "accepted_count": 6,
-        "quarantined_count": 150,
-        "recovered_count": 6,
+        "succeeded_count": 155,
+        "failed_count": 104,
+        "accepted_count": 139,
+        "quarantined_count": 16,
+        "recovered_count": 139,
         "source_record_projection_count": 1,
-        "archive_byte_count": 174325760,
+        "archive_byte_count": 190760960,
         "archive_sha256": (
-            "a8bf3b7ed1ec12c8fa7051559f8120d9f26d884837f2893cec8e160deddc2333"
+            "0a13d91875a8a7536a043a676a671f67aa61bbe2621fe664512b889a5ec7f808"
         ),
         "checksum_verified": True,
     }
     assert qualification["failure_scope"] == {
         "host": "wayback.archive-it.org",
         "failure_code": "http_status",
-        "failed_release_count": 59,
+        "failed_release_count": 58,
         "observed_rate_limit_status": 429,
-        "latest_full_inventory_failed_count": 103,
-        "bounded_correction_passes": 6,
+        "material_change_probe_status": 200,
+        "material_change_probe_observed_at": "2026-08-26",
+        "latest_full_inventory_failed_count": 104,
+        "bounded_correction_passes": 7,
         "retry_required": False,
         "disposition": (
             "explicitly_unavailable_without_complete_official_denominator"
