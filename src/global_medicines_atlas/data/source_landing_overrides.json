@@ -97,6 +97,17 @@
       ]
     },
     {
+      "source_id": "nl-gipdatabank",
+      "state": "landed_and_evidenced",
+      "reason": "All 28 exact approved-public GIP Farmacie and Add-on CSV releases were acquired, admitted, projected at source-native grain, reconstructed byte-for-byte, restored from the checksum-verified archive, and anonymously restored from the immutable public Hugging Face revision under the bound CC0 decision.",
+      "evidence_references": [
+        "quality/qualifications/gip-acquisition-authorization.json",
+        "quality/qualifications/gip-publication-authorization-20260821.json",
+        "quality/qualifications/gip-acquisition-success-20260826.json",
+        "quality/qualifications/gip-public-huggingface-20260826.json"
+      ]
+    },
+    {
       "source_id": "dk-medstat-utilisation",
       "state": "manual_only_documented_acquisition",
       "reason": "Medstat is a public aggregate statistics surface with affirmative attribution terms; its bulk download inventory contains supporting ATC, product-name, and population metadata rather than utilisation results.",

@@ -421,13 +421,13 @@ for credentialed or rights-unresolved sources.
     - [x] Obtain the maintainer's source-specific licensing decision before payload acquisition
     - [x] Exercise immutable landing, receipt, acquisition-manifest Bronze projection, clean-room recovery, and private archive verification
     - [x] Keep public release and external publication separately gated
-- [~] Task: Acquire the Netherlands GIP medicine utilisation corpus (Prompt 32)
+- [x] Task: Acquire the Netherlands GIP medicine utilisation corpus (Prompt 32)
     - [x] Resolve the official corpus to 28 Farmacie and Add-on CSV releases through 2025
     - [x] Bind stable source titles while treating rotating service download keys as ephemeral transport metadata
     - [x] Preserve rolling-table, annual age/sex, ATC, version, population, source, and VAT-method boundaries
     - [x] Reconcile the existing source-specific approved-public decision bound to the exact 28-release title-set hash before payload acquisition
-    - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
-    - [ ] Keep public release and external publication separately gated
+    - [x] Exercise immutable landing, receipts, 217,135-row source-faithful Bronze projection, clean-room recovery, and private archive verification across all 28 releases
+    - [x] Publish the exact approved CC0 corpus at immutable Hugging Face revision `4e6395ee5217b0fb140dd7942f67b032039e7bbf` and anonymously restore all 28 source CSV digests
     - [x] Review fixes: make direct `GIPRelease` test construction satisfy the typed `date` contract (`945b12f`, `fc11f61`); focused tests, Ruff, and BasedPyright pass
 - [~] Task: Acquire England OpenPrescribing utilisation views (Prompt 30)
     - [x] Resolve the six documented spending, medicine-reference, and organisation-reference API identities

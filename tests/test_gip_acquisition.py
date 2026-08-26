@@ -6,12 +6,15 @@ import json
 from datetime import date
 from pathlib import Path
 
+import httpx
 import pytest
 from pydantic import AnyHttpUrl, ValidationError
+from scripts import acquire_gip_public as acquisition_script
 
 from global_medicines_atlas.gip_acquisition import (
     GIPAuthorization,
     GIPRelease,
+    gip_source_record_batch,
     parse_gip_inventory,
 )
 
@@ -189,3 +192,85 @@ def test_release_rejects_host_and_addon_shape_drift() -> None:
         parse_gip_inventory(
             unexpected, authorization=_authorization(expected_release_count=28)
         )
+
+
+def test_source_record_projection_preserves_hash_delimited_native_strings() -> (
+    None
+):
+    payload = (
+        b"jaar#atclaatst#gebruikers#vergoeding\r\n"
+        b"2025 #A10AB01 #39 #270320\r\n"
+        b"2025 #A16AB02 #63 #6356792\r\n"
+    )
+    batch = gip_source_record_batch("nl-gipdatabank", payload, "csv")
+    assert batch is not None
+    assert batch.parser_identity == "nl-gip-hash-csv-utf8-v1"
+    assert batch.record_id_column == "source_row_number"
+    assert batch.table.column_names == [
+        "jaar",
+        "atclaatst",
+        "gebruikers",
+        "vergoeding",
+        "source_row_number",
+    ]
+    assert batch.table["jaar"].to_pylist() == ["2025 ", "2025 "]
+    assert batch.table["atclaatst"].to_pylist() == ["A10AB01 ", "A16AB02 "]
+    assert batch.table["source_row_number"].to_pylist() == [1, 2]
+    assert gip_source_record_batch("other", payload, "csv") is None
+    assert gip_source_record_batch("nl-gipdatabank", payload, "json") is None
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        b"single-column\nvalue\n",
+        b"jaar#jaar\n2025#2025\n",
+        b"jaar#atc\n",
+    ],
+)
+def test_source_record_projection_rejects_unusable_csv(payload: bytes) -> None:
+    with pytest.raises(ValueError, match="GIP CSV"):
+        gip_source_record_batch("nl-gipdatabank", payload, "csv")
+
+
+@pytest.mark.timeout(120)
+def test_public_runner_lands_recovers_and_archives_exact_inventory(
+    tmp_path: Path,
+) -> None:
+    payload = b"jaar#atclaatst#gebruikers\r\n2025 #A10AB01 #39\r\n"
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path == "/algemeen/open-data-gip":
+            return httpx.Response(
+                200,
+                content=_landing(),
+                headers={"content-type": "text/html"},
+            )
+        if request.url.path == "/services/file/get":
+            return httpx.Response(
+                200,
+                content=payload,
+                headers={"content-type": "text/csv;charset=UTF-8"},
+            )
+        return httpx.Response(404)
+
+    result = acquisition_script.acquire(
+        tmp_path / "output", transport=httpx.MockTransport(handler)
+    )
+
+    assert result["release_count"] == 28
+    assert result["accepted_admission_count"] == 28
+    assert result["source_record_count"] == 28
+    assert result["source_record_projection_count"] == 28
+    assert result["recovered_acquisition_count"] == 28
+    assert result["recovered_source_record_projection_count"] == 28
+    assert result["source_record_parquet_pairs_byte_identical"] == 28
+    assert result["archive_restore_verified"] is True
+    assert result["archive_restored_payload_count"] == 28
+    assert result["public_release_authorized"] is True
+    assert result["external_publication_authorized"] is True
+    assert Path(str(result["archive_path"])).is_file()
+    manifest = json.loads(
+        (tmp_path / "output/gip-public-acquisition-manifest.json").read_text()
+    )
+    assert all("key=" not in json.dumps(item) for item in manifest["files"])

@@ -6,14 +6,21 @@ import re
 from datetime import date
 from hashlib import sha256
 from html.parser import HTMLParser
+from io import BytesIO
 from typing import Literal
 from urllib.parse import urljoin
 
+import pyarrow as pa
+import pyarrow.csv as pacsv
 from pydantic import AnyHttpUrl, Field, model_validator
 
+from .bronze_landing import SourceRecordBatch
+from .iceberg_ready import IcebergPartitionPolicy
 from .models import FrozenModel
 
 SOURCE_ID = "nl-gipdatabank"
+PARSER_IDENTITY = "nl-gip-hash-csv-utf8-v1"
+MIN_CSV_COLUMNS = 2
 _HOST = "www.zorgcijfersdatabank.nl"
 _TITLE = re.compile(
     r"^GIP (?P<family>Farmacie|farmacie|Addon|addon) Zvw "
@@ -193,3 +200,49 @@ def parse_gip_inventory(
     ):
         raise ValueError("GIP medicine release inventory drifted")
     return GIPInventory(release_count=len(releases), releases=tuple(releases))
+
+
+def gip_source_record_batch(
+    source_id: str, payload: bytes, media_hint: str
+) -> SourceRecordBatch | None:
+    """Project one GIP hash-delimited CSV with source values kept as strings."""
+    if source_id != SOURCE_ID or media_hint != "csv":
+        return None
+    try:
+        lines = payload.decode("utf-8-sig").splitlines()
+    except UnicodeDecodeError as error:
+        raise ValueError("GIP CSV must be UTF-8") from error
+    if not lines or "#" not in lines[0]:
+        raise ValueError("GIP CSV must use the source-native hash delimiter")
+    columns = tuple(lines[0].split("#"))
+    if (
+        len(columns) < MIN_CSV_COLUMNS
+        or any(not column for column in columns)
+        or len(columns) != len(set(columns))
+        or "source_row_number" in columns
+    ):
+        raise ValueError("GIP CSV columns must be nonempty and unique")
+    try:
+        table = pacsv.read_csv(
+            BytesIO(payload),
+            parse_options=pacsv.ParseOptions(delimiter="#"),
+            convert_options=pacsv.ConvertOptions(
+                column_types={column: pa.string() for column in columns},
+                null_values=[],
+                strings_can_be_null=False,
+            ),
+        )
+    except (pa.ArrowInvalid, pa.ArrowNotImplementedError) as error:
+        raise ValueError("GIP CSV parsing failed") from error
+    if table.num_rows == 0:
+        raise ValueError("GIP CSV must contain source records")
+    table = table.append_column(
+        "source_row_number",
+        pa.array(range(1, table.num_rows + 1), type=pa.int64()),
+    )
+    return SourceRecordBatch(
+        table=table,
+        parser_identity=PARSER_IDENTITY,
+        record_id_column="source_row_number",
+        partition_policy=IcebergPartitionPolicy(recurring=False),
+    )

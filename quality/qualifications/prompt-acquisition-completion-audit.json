@@ -6,15 +6,15 @@
   "unique_prompt_source_count": 94,
   "catalog_source_count": 172,
   "fixture_qualified_source_count": 16,
-  "live_qualified_source_count": 13,
-  "live_complete_prompt_count": 8,
+  "live_qualified_source_count": 14,
+  "live_complete_prompt_count": 9,
   "program_completion": "incomplete_live_acquisition",
   "queue_state_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 24,
+    "landed_and_evidenced": 25,
     "manual_only_documented_acquisition": 92,
     "not_yet_implemented": 0,
-    "rights_blocked": 40,
+    "rights_blocked": 39,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 1
   },
@@ -1092,24 +1092,20 @@
         "nl-gipdatabank"
       ],
       "queue_states": {
-        "nl-gipdatabank": "rights_blocked"
+        "nl-gipdatabank": "landed_and_evidenced"
       },
       "queue_state_counts": {
-        "rights_blocked": 1
+        "landed_and_evidenced": 1
       },
       "fixture_qualified_source_ids": [],
-      "live_qualified_source_ids": [],
-      "sources_without_live_evidence": [
+      "live_qualified_source_ids": [
         "nl-gipdatabank"
       ],
-      "live_complete": false,
-      "completion_state": "live_acquisition_incomplete",
-      "blocker_categories": [
-        "source_specific_rights_decision_required"
-      ],
-      "next_actions": [
-        "obtain a maintainer-approved source-specific rights decision"
-      ]
+      "sources_without_live_evidence": [],
+      "live_complete": true,
+      "completion_state": "live_acquisition_complete",
+      "blocker_categories": [],
+      "next_actions": []
     },
     {
       "prompt_id": 33,

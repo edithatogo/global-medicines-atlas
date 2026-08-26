@@ -7,9 +7,9 @@ Silver transformations included: **no**.
 
 ## State summary
 
-- `landed_and_evidenced`: 24
+- `landed_and_evidenced`: 25
 - `temporarily_unavailable`: 1
-- `rights_blocked`: 40
+- `rights_blocked`: 39
 - `credentialed_and_excluded`: 15
 - `manual_only_documented_acquisition`: 92
 - `superseded_by_reused_source`: 0
@@ -43,7 +43,7 @@ Silver transformations included: **no**.
 - [x] `jp-mhlw-nhi-price` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `kr-hira-atc` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `kr-hira-standard-code` — `rights_blocked`; record source-specific retention and transformation rights.
-- [ ] `nl-gipdatabank` — `rights_blocked`; record source-specific retention and transformation rights.
+- [x] `nl-gipdatabank` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `nz-pharmac-hml` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `nz-pharmac-schedule` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `nz-pharmac-schedule-xml` — `landed_and_evidenced`; verify receipt freshness on schedule.

@@ -2863,14 +2863,17 @@
         "source_id": "nl-gipdatabank"
       },
       "evidence_references": [
-        "https://www.gipdatabank.nl/"
+        "quality/qualifications/gip-acquisition-authorization.json",
+        "quality/qualifications/gip-publication-authorization-20260821.json",
+        "quality/qualifications/gip-acquisition-success-20260826.json",
+        "quality/qualifications/gip-public-huggingface-20260826.json"
       ],
       "evidence_scope": "none",
-      "next_action": "record source-specific retention and transformation rights",
-      "priority": 20,
-      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "All 28 exact approved-public GIP Farmacie and Add-on CSV releases were acquired, admitted, projected at source-native grain, reconstructed byte-for-byte, restored from the checksum-verified archive, and anonymously restored from the immutable public Hugging Face revision under the bound CC0 decision.",
       "source_id": "nl-gipdatabank",
-      "state": "rights_blocked"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4610,10 +4613,10 @@
   "source_count": 172,
   "state_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 24,
+    "landed_and_evidenced": 25,
     "manual_only_documented_acquisition": 92,
     "not_yet_implemented": 0,
-    "rights_blocked": 40,
+    "rights_blocked": 39,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 1
   }

@@ -38,6 +38,9 @@ ENFORCEMENT_QUALIFICATION = (
 SHORTAGES_QUALIFICATION = (
     ROOT / "quality/qualifications/fda-shortages-live-corpus-20260821.json"
 )
+GIP_QUALIFICATION = (
+    ROOT / "quality/qualifications/gip-acquisition-success-20260826.json"
+)
 UNION_REGISTER_QUALIFICATION = (
     ROOT / "quality/qualifications/union-register-live-corpus-20260821.json"
 )
@@ -68,6 +71,12 @@ ENFORCEMENT_SOURCE_IDS = frozenset({
 })
 GSRS_SOURCE_IDS = frozenset({"us-gsrs-unii"})
 SHORTAGES_SOURCE_IDS = frozenset({"us-fda-drug-shortages"})
+GIP_SOURCE_IDS = frozenset({"nl-gipdatabank"})
+GIP_EXPECTED_RELEASE_COUNT = 28
+SHA256_HEX_LENGTH = 64
+GIP_EXPECTED_TITLE_SET_SHA256 = (
+    "94a3f7bf2ceec4115f1c396ca5b0c474c472c7b429af961c6bccaa6f80f278c6"
+)
 GSRS_EXPECTED_RELEASE_COUNT = 68
 GSRS_EXPECTED_PAIRED_PAYLOAD_COUNT = GSRS_EXPECTED_RELEASE_COUNT * 2
 
@@ -525,6 +534,49 @@ def _qualified_shortages_sources() -> set[str]:
     return qualified
 
 
+def _qualified_gip_sources() -> set[str]:
+    qualification = json.loads(GIP_QUALIFICATION.read_text(encoding="utf-8"))
+    boundary = (
+        qualification["evidence_class"] == "live_public_acquisition",
+        qualification["decision_status"] == "approved_public",
+        qualification["rights_state"] == "permitted",
+        qualification["public_release_authorized"],
+        qualification["external_publication_authorized"],
+        qualification["external_publication_performed"],
+        qualification["external_publication_receipt"]
+        == "quality/qualifications/gip-public-huggingface-20260826.json",
+        qualification["prompt_complete"],
+        qualification["expected_title_set_sha256"]
+        == GIP_EXPECTED_TITLE_SET_SHA256,
+    )
+    if not all(boundary):
+        raise ValueError("GIP qualification crossed its reviewed scope")
+    release_count = qualification["release_count"]
+    recovery = (
+        release_count == GIP_EXPECTED_RELEASE_COUNT,
+        qualification["accepted_admission_count"] == release_count,
+        qualification["payload_byte_count"] > 0,
+        qualification["source_record_count"] > 0,
+        qualification["source_record_projection_count"] == release_count,
+        qualification["recovered_acquisition_count"] == release_count,
+        qualification["recovered_source_record_projection_count"]
+        == release_count,
+        qualification["source_record_parquet_pairs_byte_identical"]
+        == release_count,
+        qualification["private_archive"]["restore_verified"],
+        qualification["private_archive"]["restored_payload_count"]
+        == release_count,
+        qualification["private_archive"]["byte_count"] > 0,
+        len(qualification["private_archive"]["sha256"]) == SHA256_HEX_LENGTH,
+    )
+    if not all(recovery):
+        raise ValueError("GIP products lack recovery evidence")
+    qualified = set(qualification["prompt_audit_qualified_source_ids"])
+    if qualified != set(GIP_SOURCE_IDS):
+        raise ValueError("GIP qualification exceeds reviewed source scope")
+    return qualified
+
+
 def build() -> dict[str, Any]:
     """Join locked prompt scope to queue and measured evidence."""
 
@@ -546,6 +598,7 @@ def build() -> dict[str, Any]:
         | _qualified_enforcement_sources()
         | _qualified_gsrs_sources()
         | _qualified_shortages_sources()
+        | _qualified_gip_sources()
     )
     for source_id in qualified_us_live:
         existing = measured_by_source.get(source_id, {})

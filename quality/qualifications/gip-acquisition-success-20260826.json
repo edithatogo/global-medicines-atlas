@@ -1,0 +1,41 @@
+{
+  "schema_id": "global-medicines-atlas.gip-live-qualification",
+  "schema_version": 1,
+  "observed_at": "2026-08-26T09:25:59.871641+00:00",
+  "evidence_class": "live_public_acquisition",
+  "prompt_id": 32,
+  "source_ids": ["nl-gipdatabank"],
+  "prompt_audit_qualified_source_ids": ["nl-gipdatabank"],
+  "acquisition_authorization": "quality/qualifications/gip-acquisition-authorization.json",
+  "publication_authorization": "quality/qualifications/gip-publication-authorization-20260821.json",
+  "decision_status": "approved_public",
+  "rights_state": "permitted",
+  "expected_title_set_sha256": "94a3f7bf2ceec4115f1c396ca5b0c474c472c7b429af961c6bccaa6f80f278c6",
+  "release_count": 28,
+  "accepted_admission_count": 28,
+  "payload_byte_count": 21172741,
+  "source_record_count": 217135,
+  "source_record_projection_count": 28,
+  "recovered_acquisition_count": 28,
+  "recovered_source_record_projection_count": 28,
+  "source_record_parquet_pairs_byte_identical": 28,
+  "private_archive": {
+    "filename": "gip-public-28-releases-20260826.tar.gz",
+    "byte_count": 23767377,
+    "sha256": "09964c320366e69a0a5675924525e1c7a5416892c9f94e1ead3f236bcffb7cc6",
+    "restore_verified": true,
+    "restored_payload_count": 28
+  },
+  "prompt_complete": true,
+  "public_release_authorized": true,
+  "external_publication_authorized": true,
+  "external_publication_performed": true,
+  "external_publication_receipt": "quality/qualifications/gip-public-huggingface-20260826.json",
+  "boundaries": [
+    "Farmacie extramural Zvw and Add-on intramural releases remain separate.",
+    "Rolling and annual age-sex tables retain their source-native shape, period, version date, and columns.",
+    "All source values remain strings in Bronze; no ATC or canonical medicine conversion is performed.",
+    "User counts are not summed across medicine categories.",
+    "Utilisation and expenditure do not establish approval, individual reimbursement entitlement, clinical appropriateness, or medicine equivalence."
+  ]
+}
