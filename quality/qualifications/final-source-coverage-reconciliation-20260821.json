@@ -1328,13 +1328,14 @@
     }
   ],
   "prompt_completion_states": {
-    "live_acquisition_complete": 7,
-    "live_acquisition_incomplete": 28,
+    "live_acquisition_complete": 8,
+    "live_acquisition_incomplete": 27,
     "reconciliation_generated_but_live_program_incomplete": 1
   },
   "live_complete_prompt_ids": [
     12,
     13,
+    14,
     15,
     17,
     18,

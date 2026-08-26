@@ -4042,7 +4042,7 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Obtain the maintainer's explicit Prompt 14 scope disposition. Do not acquire delegated detail-page payloads or claim complete historical coverage under the metadata-only inventory authorization.",
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
         "acquisition_profile": null,
         "credentials_persisted": false,
         "endpoint": "https://www.accessdata.fda.gov/scripts/drugshortages/default.cfm",
@@ -4060,11 +4060,11 @@
         "quality/qualifications/fda-shortages-live-corpus-20260821.json"
       ],
       "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
-      "priority": 30,
-      "reason": "The complete current openFDA export, all 129 inventoried monthly FDA list snapshots, and a metadata-only inventory of 35,494 delegated detail captures were Bronze-exercised and privately archived. No complete historical detail-page denominator was identified; the maintainer must explicitly decide whether monthly lists define the qualified temporal corpus.",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "The complete current openFDA export, all 129 inventoried monthly FDA list snapshots, and the metadata-only 35,494-capture delegated detail inventory were Bronze-exercised and privately archived. On 2026-08-26 the maintainer approved the monthly lists as the temporal corpus; delegated detail-page completeness remains unclaimed.",
       "source_id": "us-fda-drug-shortages",
-      "state": "manual_only_documented_acquisition"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4610,8 +4610,8 @@
   "source_count": 172,
   "state_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 23,
-    "manual_only_documented_acquisition": 93,
+    "landed_and_evidenced": 24,
+    "manual_only_documented_acquisition": 92,
     "not_yet_implemented": 0,
     "rights_blocked": 40,
     "superseded_by_reused_source": 0,

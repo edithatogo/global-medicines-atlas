@@ -35,6 +35,9 @@ FAERS_RECORD_QUALIFICATION = (
 ENFORCEMENT_QUALIFICATION = (
     ROOT / "quality/qualifications/fda-enforcement-live-corpus-20260821.json"
 )
+SHORTAGES_QUALIFICATION = (
+    ROOT / "quality/qualifications/fda-shortages-live-corpus-20260821.json"
+)
 UNION_REGISTER_QUALIFICATION = (
     ROOT / "quality/qualifications/union-register-live-corpus-20260821.json"
 )
@@ -64,6 +67,7 @@ ENFORCEMENT_SOURCE_IDS = frozenset({
     "us-fda-recalls-notices",
 })
 GSRS_SOURCE_IDS = frozenset({"us-gsrs-unii"})
+SHORTAGES_SOURCE_IDS = frozenset({"us-fda-drug-shortages"})
 GSRS_EXPECTED_RELEASE_COUNT = 68
 GSRS_EXPECTED_PAIRED_PAYLOAD_COUNT = GSRS_EXPECTED_RELEASE_COUNT * 2
 
@@ -478,6 +482,49 @@ def _qualified_gsrs_sources() -> set[str]:
     return qualified
 
 
+def _qualified_shortages_sources() -> set[str]:
+    qualification = json.loads(
+        SHORTAGES_QUALIFICATION.read_text(encoding="utf-8")
+    )
+    boundary = (
+        qualification["evidence_class"] == "live_internal_historical",
+        qualification["internal_retention_authorized"],
+        not qualification["public_release_authorized"],
+        not qualification["external_publication_performed"],
+        qualification["prompt_complete"],
+        qualification["historical_list_snapshot_inventory_complete"],
+        not qualification["historical_detail_snapshot_coverage_complete"],
+        qualification["historical_detail_disposition"]
+        == "no_complete_source_denominator_monthly_lists_are_temporal_corpus",
+        qualification["maintainer_scope_decision_date"] == "2026-08-26",
+        qualification["qualified_temporal_corpus"]
+        == "complete_current_export_and_129_monthly_lists",
+    )
+    if not all(boundary):
+        raise ValueError("shortages qualification crossed its reviewed scope")
+    recovery = (
+        qualification["current_bulk_export_complete"],
+        qualification["unique_historical_list_snapshots_archived"]
+        == qualification["historical_list_snapshot_count"],
+        qualification["historical_detail_capture_inventory_count"] > 0,
+        qualification["current_source_record_projection_count"] == 1,
+        qualification["current_recovered_source_record_projection_count"] == 1,
+        qualification["current_source_record_parquet_pairs_byte_identical"]
+        == 1,
+        qualification["current_source_record_rows"] > 0,
+        qualification["archive_checksums_verified"]
+        == qualification["bounded_archive_pass_count"],
+    )
+    if not all(recovery):
+        raise ValueError("shortages products lack recovery evidence")
+    qualified = set(qualification["prompt_audit_qualified_source_ids"])
+    if qualified != set(SHORTAGES_SOURCE_IDS):
+        raise ValueError(
+            "shortages qualification exceeds reviewed source scope"
+        )
+    return qualified
+
+
 def build() -> dict[str, Any]:
     """Join locked prompt scope to queue and measured evidence."""
 
@@ -498,6 +545,7 @@ def build() -> dict[str, Any]:
         | _qualified_union_register_sources()
         | _qualified_enforcement_sources()
         | _qualified_gsrs_sources()
+        | _qualified_shortages_sources()
     )
     for source_id in qualified_us_live:
         existing = measured_by_source.get(source_id, {})

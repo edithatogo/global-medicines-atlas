@@ -156,7 +156,9 @@ def test_authorization_is_bounded_and_internal_only() -> None:
 def test_live_qualification_preserves_detail_inventory_boundary() -> None:
     qualification = json.loads(QUALIFICATION.read_text(encoding="utf-8"))
     assert qualification["evidence_class"] == "live_internal_historical"
-    assert qualification["prompt_audit_qualified_source_ids"] == []
+    assert qualification["prompt_audit_qualified_source_ids"] == [
+        "us-fda-drug-shortages"
+    ]
     assert qualification["current_bulk_export_complete"] is True
     assert qualification["historical_list_snapshot_inventory_complete"] is True
     assert qualification["unique_historical_list_snapshots_archived"] == 129
@@ -165,9 +167,9 @@ def test_live_qualification_preserves_detail_inventory_boundary() -> None:
     )
     assert qualification["historical_detail_capture_inventory_count"] == 35_494
     assert qualification["historical_detail_disposition"] == (
-        "complete_denominator_not_identified_scope_decision_pending"
+        "no_complete_source_denominator_monthly_lists_are_temporal_corpus"
     )
-    assert qualification["prompt_complete"] is False
+    assert qualification["prompt_complete"] is True
     assert qualification["current_source_record_rows"] == 1_628
     assert (
         qualification["current_source_record_parquet_pairs_byte_identical"] == 1
@@ -350,9 +352,9 @@ def test_runner_archives_current_and_historical_surfaces(
     assert manifest.historical_detail_snapshot_coverage_complete is False
     assert manifest.historical_detail_capture_inventory_count == 2
     assert manifest.historical_detail_disposition == (
-        "complete_denominator_not_identified_scope_decision_pending"
+        "no_complete_source_denominator_monthly_lists_are_temporal_corpus"
     )
-    assert manifest.prompt_complete is False
+    assert manifest.prompt_complete is True
     assert manifest.external_publication_performed is False
     assert (output / "fda-shortages-live.private.tar").is_file()
     assert (
@@ -401,6 +403,7 @@ def test_runner_can_retry_an_exact_inventory_subset(tmp_path: Path) -> None:
     assert manifest.historical_capture_inventory_count == 2
     assert manifest.historical_capture_succeeded_count == 1
     assert manifest.surface_count == 6
+    assert manifest.prompt_complete is False
 
     with pytest.raises(ValueError, match="retry scope"):
         exercise_fda_shortages(
