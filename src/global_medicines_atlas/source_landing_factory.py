@@ -78,6 +78,7 @@ class LandingOverride(FrozenModel):
     reason: str = Field(min_length=1)
     family: LandingAdapterFamily | None = None
     state: LandingDisposition | None = None
+    evidence_scope: EvidenceScope | None = None
     failure_receipt: str | None = Field(default=None, min_length=1)
     reuse_reference: str | None = Field(default=None, min_length=1)
     manual_instructions: str | None = Field(default=None, min_length=1)
@@ -85,6 +86,13 @@ class LandingOverride(FrozenModel):
 
     @model_validator(mode="after")
     def exceptional_states_have_evidence(self) -> LandingOverride:
+        if (
+            self.evidence_scope is not None
+            and self.state is not LandingDisposition.LANDED
+        ):
+            raise ValueError(
+                "evidence scope is valid only for landed overrides"
+            )
         if (
             self.state is LandingDisposition.TEMPORARILY_UNAVAILABLE
             and self.failure_receipt is None
@@ -448,7 +456,12 @@ def build_source_landing_queue(
                 source_id=source_id,
                 state=state,
                 evidence_scope=(
-                    _evidence_scope(source)
+                    (
+                        override.evidence_scope
+                        if override is not None
+                        and override.evidence_scope is not None
+                        else _evidence_scope(source)
+                    )
                     if state is LandingDisposition.LANDED
                     else "none"
                 ),

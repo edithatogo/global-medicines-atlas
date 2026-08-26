@@ -8,18 +8,18 @@
     "receipt_backed": 1
   },
   "evidence_scope_counts": {
-    "governed_fixture": 14,
-    "live_receipt": 1,
-    "none": 155,
-    "parser_contract": 2
+    "governed_fixture": 12,
+    "live_receipt": 16,
+    "none": 143,
+    "parser_contract": 1
   },
   "generated_from": "src/global_medicines_atlas/data/medicine_source_catalog.json",
   "index_presence_implies_coverage": false,
   "landing_disposition_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 25,
+    "landed_and_evidenced": 29,
     "manual_only_documented_acquisition": 92,
-    "rights_blocked": 38,
+    "rights_blocked": 34,
     "temporarily_unavailable": 2
   },
   "missing_source_is_negative_evidence": false,
@@ -31,8 +31,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:a2e08e483a522564877b71d26f3ab312aac9902a9bcbd52fdeb909f7ecbf70ac",
-  "snapshot_sha256": "a2e08e483a522564877b71d26f3ab312aac9902a9bcbd52fdeb909f7ecbf70ac",
+  "snapshot_id": "sha256:da40e8953ef99de541235d581e19dfdf8c53d8bc40a6401bc6bab36a81606ae6",
+  "snapshot_sha256": "da40e8953ef99de541235d581e19dfdf8c53d8bc40a6401bc6bab36a81606ae6",
   "source_count": 172,
   "sources": [
     {
@@ -2063,7 +2063,7 @@
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.assurance-maladie.ameli.fr/etudes-et-donnees/open-medic-base-complete-depenses-medicaments",
       "download_url": "https://open-data-assurance-maladie.ameli.fr/medicaments/download.php?Dir_Rep=Open_MEDIC_Base_Complete&Annee=2025",
-      "evidence_scope": "parser_contract",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "zip",
         "csv"
@@ -2100,11 +2100,11 @@
       "api_url": "",
       "authentication": "none",
       "authority": "UK Department of Health and Social Care",
-      "current_landing_disposition": "rights_blocked",
+      "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.gov.uk/government/publications/drugs-and-pharmaceutical-electronic-market-information-emit",
       "download_url": "https://www.gov.uk/government/publications/drugs-and-pharmaceutical-electronic-market-information-emit",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "source_native"
       ],
@@ -2263,11 +2263,11 @@
       "api_url": "",
       "authentication": "none",
       "authority": "NHS Business Services Authority",
-      "current_landing_disposition": "rights_blocked",
+      "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/drug-tariff",
       "download_url": "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/drug-tariff",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "source_native"
       ],
@@ -4292,7 +4292,7 @@
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.gipdatabank.nl/",
       "download_url": "https://www.gipdatabank.nl/",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "xlsx",
         "csv",
@@ -4653,11 +4653,11 @@
       "api_url": "",
       "authentication": "none",
       "authority": "Pharmaceutical Management Agency",
-      "current_landing_disposition": "rights_blocked",
+      "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://schedule.pharmac.govt.nz/pub/HML/archive/",
       "download_url": "https://schedule.pharmac.govt.nz/pub/HML/archive/",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "source_native"
       ],
@@ -4693,11 +4693,11 @@
       "api_url": "",
       "authentication": "none",
       "authority": "Pharmac",
-      "current_landing_disposition": "rights_blocked",
+      "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "discovery_only",
       "documentation_url": "https://schedule.pharmac.govt.nz/",
       "download_url": "https://schedule.pharmac.govt.nz/pub/schedule/archive/",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "source_native"
       ],
@@ -4735,7 +4735,7 @@
       "discovery_state": "declaration_verified",
       "documentation_url": "https://schedule.pharmac.govt.nz/pub/Schedule/",
       "download_url": "https://schedule.pharmac.govt.nz/pub/Schedule/",
-      "evidence_scope": "governed_fixture",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "source_native"
       ],
@@ -6081,7 +6081,7 @@
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.fda.gov/drugs/drug-safety-and-availability/drug-shortages",
       "download_url": "",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "html"
       ],
@@ -6120,7 +6120,7 @@
       "discovery_state": "declaration_verified",
       "documentation_url": "https://fis.fda.gov/extensions/FPD-QDE-FAERS/FPD-QDE-FAERS.html",
       "download_url": "https://fis.fda.gov/extensions/FPD-QDE-FAERS/FPD-QDE-FAERS.html",
-      "evidence_scope": "governed_fixture",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "zip",
         "ascii",
@@ -6165,7 +6165,7 @@
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.fda.gov/drugs/drug-approvals-and-databases/national-drug-code-directory",
       "download_url": "https://www.fda.gov/drugs/drug-approvals-and-databases/national-drug-code-directory",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "zip",
         "txt"
@@ -6282,7 +6282,7 @@
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts",
       "download_url": "",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "html"
       ],
@@ -6321,7 +6321,7 @@
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.accessdata.fda.gov/scripts/cder/rems/index.cfm",
       "download_url": "",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "html",
         "pdf"
@@ -6361,7 +6361,7 @@
       "discovery_state": "declaration_verified",
       "documentation_url": "https://gsrs.ncats.nih.gov/",
       "download_url": "",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "json",
         "sdf"
@@ -6442,7 +6442,7 @@
       "discovery_state": "declaration_verified",
       "documentation_url": "https://open.fda.gov/apis/drug/enforcement/",
       "download_url": "",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "json"
       ],
@@ -6520,7 +6520,7 @@
       "discovery_state": "discovery_only",
       "documentation_url": "https://open.fda.gov/apis/drug/ndc/",
       "download_url": "https://open.fda.gov/data/downloads/",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "json"
       ],

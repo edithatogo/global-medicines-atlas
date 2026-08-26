@@ -15,7 +15,6 @@ SOURCE_RIGHTS: Final = {
     "eu-union-register": "CC-BY-4.0",
     "fr-bdpm": "Etalab-2.0",
     "fr-bdpm-smr-asmr": "Etalab-2.0",
-    "fr-open-medic": "Etalab-2.0",
     "gb-emit": "OGL-3.0",
     "gb-nhs-drug-tariff": "OGL-3.0-with-exclusions",
     "nz-pharmac-hml": "CC-BY-4.0",
@@ -25,6 +24,9 @@ SOURCE_RIGHTS: Final = {
     "us-rxnorm-api": "NLM-created-RXCUI-identifiers-only",
 }
 PENDING_SOURCES: Final = {
+    "fr-open-medic": (
+        "published separately in its approved exact-manifest repository"
+    ),
     "gb-nice-medicines-utilisation": "not included in the approved exact manifest",
     "nl-gipdatabank": "not included in the approved exact manifest",
 }
@@ -137,7 +139,7 @@ tags:
 
 # Permissive international medicine-source snapshots
 
-This mixed-licence archive contains bounded source-native snapshots for eleven
+This mixed-licence archive contains bounded source-native snapshots for ten
 catalogue source IDs. Rights and attribution are recorded per file in
 `manifest.json`; users must comply with CC BY 4.0, Etalab Open Licence 2.0,
 Open Government Licence 3.0, and source-specific exclusions.
@@ -147,8 +149,7 @@ names and bytes are excluded. The NHS Drug Tariff must not be used to imply NHS
 endorsement; separately licensed dm+d/SNOMED content is not licensed by this
 archive.
 
-Open Medic contains the official annual base-complete ZIP releases for
-2014-2025. Two candidates remain outside this exact archive: NICE utilisation
-and GIP were not included in the maintainer-approved manifest. This is not
-complete source coverage.
+Open Medic is published separately in its own approved exact-manifest
+repository. Three candidates remain outside this exact archive: Open Medic,
+NICE utilisation, and GIP. This is not complete source coverage.
 """

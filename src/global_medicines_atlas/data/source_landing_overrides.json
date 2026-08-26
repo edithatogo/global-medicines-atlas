@@ -4,6 +4,7 @@
     {
       "source_id": "fr-open-medic",
       "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
       "reason": "All 12 official Open Medic annual archives for 2014 through 2025 were acquired as immutable source bytes, checksum verified, and published under the approved Etalab-2.0 decision. The exact public revision was linked through the reuse gate; all 22,148,373 source-native rows were projected and all 12 products were rebuilt byte-for-byte. Complete French medicines coverage remains unclaimed.",
       "evidence_references": [
         "quality/qualifications/additional-utilisation-rights-preflight-20260821.json",
@@ -16,9 +17,60 @@
     {
       "source_id": "eu-union-register",
       "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
       "reason": "The official 2026-08-17 Union Register JSON snapshot was acquired under maintainer-approved internal-only CC BY 4.0 handling, projected at source-native record grain, clean-room reconstructed, and privately archived.",
       "evidence_references": [
         "quality/qualifications/union-register-live-corpus-20260821.json"
+      ]
+    },
+    {
+      "source_id": "gb-emit",
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "The exact approved public eMIT ODS snapshot was digest verified, admitted as immutable B2 raw evidence, assigned a nonsemantic document manifest, and clean-room reconstructed from the pinned public archive. Source-native row projection and complete England utilisation coverage remain unclaimed.",
+      "evidence_references": [
+        "quality/qualifications/international-public-huggingface-20260821.json",
+        "quality/qualifications/international-public-bronze-20260827.json"
+      ]
+    },
+    {
+      "source_id": "gb-nhs-drug-tariff",
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "The exact approved public NHS Drug Tariff PDF snapshot was digest verified, admitted as immutable B2 raw evidence, assigned a nonsemantic document manifest, and clean-room reconstructed. No NHS endorsement, formulary equivalence, or complete temporal coverage is inferred.",
+      "evidence_references": [
+        "quality/qualifications/international-public-huggingface-20260821.json",
+        "quality/qualifications/international-public-bronze-20260827.json"
+      ]
+    },
+    {
+      "source_id": "nz-pharmac-hml",
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "The exact approved public Hospital Medicines List PDF snapshot was digest verified, admitted as immutable B2 raw evidence, assigned a nonsemantic document manifest, and clean-room reconstructed without converting it into funding or clinical claims.",
+      "evidence_references": [
+        "quality/qualifications/international-public-huggingface-20260821.json",
+        "quality/qualifications/international-public-bronze-20260827.json"
+      ]
+    },
+    {
+      "source_id": "nz-pharmac-schedule",
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "The exact approved public Community Pharmaceutical Schedule PDF snapshot was digest verified, admitted as immutable B2 raw evidence, assigned a nonsemantic document manifest, and clean-room reconstructed without claiming current or complete funding coverage.",
+      "evidence_references": [
+        "quality/qualifications/international-public-huggingface-20260821.json",
+        "quality/qualifications/international-public-bronze-20260827.json"
+      ]
+    },
+    {
+      "source_id": "nz-pharmac-schedule-xml",
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "The exact approved public Community Pharmaceutical Schedule XML snapshot passed fail-closed XML inspection, was admitted as immutable B2 raw evidence with a nonsemantic document manifest, and was clean-room reconstructed. Silver normalization and complete funding coverage remain out of scope.",
+      "evidence_references": [
+        "quality/qualifications/international-public-huggingface-20260821.json",
+        "quality/qualifications/international-public-bronze-20260827.json"
       ]
     },
     {
@@ -35,6 +87,7 @@
     {
       "source_id": "us-fda-faers",
       "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
       "reason": "All 90 contiguous official FDA AERS/FAERS quarterly ASCII releases from 2004-Q1 through 2026-Q2 were acquired, projected without deduplication or causality inference, reconstructed, and privately archived.",
       "evidence_references": [
         "quality/qualifications/faers-live-corpus-20260821.json"
@@ -43,6 +96,7 @@
     {
       "source_id": "us-fda-ndc-directory",
       "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
       "reason": "All four current official FDA NDC bulk dataset surfaces were acquired, projected at product/package granularity, reconstructed, and privately archived.",
       "evidence_references": [
         "quality/qualifications/ndc-directory-live-corpus-20260821.json"
@@ -51,6 +105,7 @@
     {
       "source_id": "us-openfda-ndc",
       "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
       "reason": "The complete current openFDA NDC bulk partition was acquired, projected, reconstructed, and privately archived.",
       "evidence_references": [
         "quality/qualifications/ndc-directory-live-corpus-20260821.json"
@@ -59,6 +114,7 @@
     {
       "source_id": "us-openfda-enforcement",
       "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
       "reason": "The complete current openFDA drug-enforcement bulk export was acquired, projected, clean-room reconstructed, and privately archived without linking or deduplicating it against recall notices.",
       "evidence_references": [
         "quality/qualifications/fda-enforcement-live-corpus-20260821.json"
@@ -67,6 +123,7 @@
     {
       "source_id": "us-fda-recalls-notices",
       "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
       "reason": "The current FDA notice workbook and official live, archive-policy, and legacy archive-index documentation were acquired, Bronze-landed, clean-room exercised where admitted, and privately archived separately from the complete structured enforcement export.",
       "evidence_references": [
         "quality/qualifications/fda-enforcement-live-corpus-20260821.json"
@@ -75,6 +132,7 @@
     {
       "source_id": "us-fda-drug-shortages",
       "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
       "reason": "The complete current openFDA export, all 129 inventoried monthly FDA list snapshots, and the metadata-only 35,494-capture delegated detail inventory were Bronze-exercised and privately archived. On 2026-08-26 the maintainer approved the monthly lists as the temporal corpus; delegated detail-page completeness remains unclaimed.",
       "evidence_references": [
         "quality/qualifications/fda-shortages-live-corpus-20260821.json"
@@ -83,6 +141,7 @@
     {
       "source_id": "us-fda-rems",
       "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
       "reason": "All four official relational CSV surfaces, all 72 current REMS detail pages, and 827 of 829 linked FDA-hosted documents were acquired, reconstructed where admitted, and privately archived; the remaining two document links returned explicit HTTP 404 failure receipts.",
       "evidence_references": [
         "quality/qualifications/fda-rems-live-corpus-20260821.json"
@@ -91,6 +150,7 @@
     {
       "source_id": "us-gsrs-unii",
       "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
       "reason": "All 68 authorized paired FDA GSRS/UNII releases were privately acquired as 136 immutable payloads, Bronze-landed, checksum verified, and stream-restored from the private archive without promoting terminology evidence to canonical medicine identity.",
       "evidence_references": [
         "quality/qualifications/gsrs-unii-acquisition-authorization.json",
@@ -100,6 +160,7 @@
     {
       "source_id": "nl-gipdatabank",
       "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
       "reason": "All 28 exact approved-public GIP Farmacie and Add-on CSV releases were acquired, admitted, projected at source-native grain, reconstructed byte-for-byte, restored from the checksum-verified archive, and anonymously restored from the immutable public Hugging Face revision under the bound CC0 decision.",
       "evidence_references": [
         "quality/qualifications/gip-acquisition-authorization.json",

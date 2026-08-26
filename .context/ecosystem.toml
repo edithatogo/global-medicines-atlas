@@ -127,3 +127,13 @@ licence = "Etalab-2.0"
 authority = "approved-open-medic-source-archive"
 disposition = "consume-contract"
 publication_gate = "exact-revision-and-source-rights-receipt"
+
+[[hugging_face]]
+id = "global-medicines-atlas-international-permissive-20260821"
+repository = "edithatogo/global-medicines-atlas-international-permissive-20260821"
+url = "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-international-permissive-20260821"
+snapshot = "e6aa97ffe46eb32a41d7c73550fbd52811a9701b"
+licence = "mixed-per-file"
+authority = "approved-international-source-archive"
+disposition = "consume-contract"
+publication_gate = "exact-revision-and-source-rights-receipt"

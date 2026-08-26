@@ -140,6 +140,13 @@ def test_queue_states_are_fail_closed_and_evidence_scoped() -> None:
 
 @pytest.mark.unit
 def test_exception_states_require_machine_readable_evidence() -> None:
+    with pytest.raises(ValidationError, match="only for landed"):
+        LandingOverride(
+            source_id="example",
+            state=LandingDisposition.RIGHTS_BLOCKED,
+            evidence_scope="live_receipt",
+            reason="rights decision pending",
+        )
     with pytest.raises(ValidationError, match="failure receipt"):
         LandingOverride(
             source_id="example",
@@ -339,6 +346,19 @@ def test_synthetic_sources_cover_remaining_state_and_evidence_scopes() -> None:
             LandingOverrides(overrides=(override,)),
         )
         assert scoped.items[0].evidence_scope == expected_scope
+
+    explicit = LandingOverride(
+        source_id=public_file.source_id,
+        state=LandingDisposition.LANDED,
+        evidence_scope="live_receipt",
+        reason="exact public archive was receipt-bound",
+        evidence_references=("receipt:exact-public-archive",),
+    )
+    explicitly_scoped = build_source_landing_queue(
+        catalog.model_copy(update={"sources": (public_file,)}),
+        LandingOverrides(overrides=(explicit,)),
+    )
+    assert explicitly_scoped.items[0].evidence_scope == "live_receipt"
 
 
 @pytest.mark.unit

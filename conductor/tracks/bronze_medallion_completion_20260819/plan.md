@@ -469,6 +469,15 @@ for credentialed or rights-unresolved sources.
     - [x] Use acquisition month for large-table Iceberg partition planning rather than applying a temporal transform to integer `source_release_year`
     - [x] Re-run focused provenance and acquisition tests, strict typing, Conductor integrity, and the accelerated broad suite
     - [x] Confirm all 37 exact-head hosted checks and squash-merge PR #324 as `823262f`
+- [x] Task: Reconcile and qualify the split international permissive archive (`1acc10d`)
+    - [x] Restore the exact ten-source international archive contract after Open Medic moved to its separate approved repository
+    - [x] Verify the immutable public revision and land only source-native or document-safe products supported by the exact manifest
+    - [x] Exercise clean-room recovery without treating derived RxNorm identifiers as live source payloads
+    - [x] Record fail-closed qualification evidence without claiming complete international coverage or new publication
+- [x] Task: Review Fixes for split international archive qualification (`1acc10d`)
+    - [x] Make live-receipt evidence scope explicit for receipt-backed landing overrides and reject scope on non-landed states
+    - [x] Generate the committed aggregate qualification from the live runner instead of manually transcribing results
+    - [x] Preserve eight Latin-1 French delimiter payloads as quarantined B2 evidence rather than weakening UTF-8 inspection
 - [~] Task: Expand authoritative global pharmacovigilance sources (Prompt 35)
     - [x] Preserve VigiBase as subscription-restricted and independently excluded from public-source Bronze claims
     - [x] Qualify the current MHRA Yellow Card, TGA DAEN, Canada Vigilance, and PMDA public surfaces from official metadata
