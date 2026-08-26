@@ -21,6 +21,9 @@ ROOT = Path(__file__).resolve().parents[1]
 AUTHORIZATION = (
     ROOT / "quality/qualifications/gsrs-unii-acquisition-authorization.json"
 )
+SUCCESS_RECEIPT = (
+    ROOT / "quality/qualifications/gsrs-unii-acquisition-success-20260826.json"
+)
 BASE_URL = AnyHttpUrl("https://precision.fda.gov/uniisearch/")
 
 
@@ -216,3 +219,20 @@ def test_inventory_requires_all_paired_releases() -> None:
             base_url=BASE_URL,
             authorization=authorization,
         )
+
+
+def test_live_success_receipt_preserves_private_fail_closed_boundary() -> None:
+    receipt = json.loads(SUCCESS_RECEIPT.read_text(encoding="utf-8"))
+
+    assert receipt["source_id"] == "us-gsrs-unii"
+    assert receipt["release_count"] == 68
+    assert receipt["paired_payload_count"] == 136
+    assert receipt["payload_byte_count"] == 1_297_588_027
+    assert receipt["public_release_authorized"] is False
+    assert receipt["external_publication_authorized"] is False
+    assert receipt["private_archive"]["stream_restore_verified"] is True
+    assert (
+        receipt["private_archive"]["restored_payload_count"]
+        == receipt["paired_payload_count"]
+    )
+    assert receipt["private_archive"]["restored_payload_digests_match"] is True

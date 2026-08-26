@@ -21,9 +21,10 @@ from pathlib import Path
 from typing import TypedDict, cast
 
 TRACK_PATTERN = re.compile(
-    r"- \[(?P<marker>[ x~])\] \*\*Track: (?P<title>.+?)\*\*.*?"
+    r"^- \[(?P<marker>[ x~])\] \*\*Track: (?P<title>[^\n*]+)\*\*\n"
+    r"\s+\*Link: \[[^]]+\]"
     r"\((?P<link>\./tracks/[^)]+/index\.md)\)",
-    re.DOTALL,
+    re.MULTILINE,
 )
 PHASE_SECTION_PATTERN = re.compile(
     r"^## Phase (?P<phase>\d+):(?P<heading>[^\n]*)"
@@ -318,10 +319,12 @@ def _best_effort_issue_numbers(
     metadata: dict[str, object],
     plan: str,
 ) -> set[int]:
+    try:
+        plan_phases = _plan_phases(plan)
+    except ValueError:
+        plan_phases = {}
     numbers = {
-        issue
-        for issue, _section in _plan_phases(plan).values()
-        if issue is not None
+        issue for issue, _section in plan_phases.values() if issue is not None
     }
     github_issues = metadata.get("github_issues")
     github_issue_map = (
@@ -385,9 +388,11 @@ def synchronise(
         status = metadata.get("status")
         expected_marker = {
             "active": "~",
+            "in_progress": "~",
             "new": " ",
             "planned": " ",
             "complete": "x",
+            "completed": "x",
             "archived": "x",
         }.get(status if isinstance(status, str) else "")
         if expected_marker != entry.group("marker"):
@@ -435,6 +440,16 @@ def synchronise(
             continue
 
         parent_issue = issues[parent_number]
+        if entry.group("marker") == "~" and parent_issue["state"] == "closed":
+            drifts.append(
+                _drift(
+                    "issue_closed_while_track_incomplete",
+                    track_id,
+                    issue=parent_number,
+                    expected={"registry_marker": "~", "github_state": "open"},
+                    actual={"github_state": "closed"},
+                )
+            )
         required_parent_labels = {"conductor", "type:track"}
         if not required_parent_labels.issubset(parent_issue["labels"]):
             drifts.append(

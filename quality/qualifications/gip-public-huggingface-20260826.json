@@ -1,0 +1,18 @@
+{
+  "schema_id": "global-medicines-atlas.gip-publication-receipt",
+  "schema_version": 1,
+  "published_at": "2026-08-26",
+  "source_id": "nl-gipdatabank",
+  "authorization": "quality/qualifications/gip-publication-authorization-20260821.json",
+  "dataset": "edithatogo/global-medicines-atlas-gip-20260826",
+  "immutable_revision": "4e6395ee5217b0fb140dd7942f67b032039e7bbf",
+  "source_csv_file_count": 28,
+  "dataset_card_present": true,
+  "qualification_present": true,
+  "hub_sibling_count": 31,
+  "anonymous_restore_verified": true,
+  "anonymous_restored_source_csv_count": 28,
+  "anonymous_restored_source_csv_digests_match": true,
+  "publication_scope": "exact_approved_28_release_gip_title_set",
+  "clinical_or_reimbursement_claim_performed": false
+}

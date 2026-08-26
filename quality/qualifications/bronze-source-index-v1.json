@@ -17,10 +17,10 @@
   "index_presence_implies_coverage": false,
   "landing_disposition_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 22,
-    "manual_only_documented_acquisition": 94,
-    "rights_blocked": 40,
-    "temporarily_unavailable": 1
+    "landed_and_evidenced": 25,
+    "manual_only_documented_acquisition": 92,
+    "rights_blocked": 38,
+    "temporarily_unavailable": 2
   },
   "missing_source_is_negative_evidence": false,
   "qualification_state_counts": {
@@ -31,8 +31,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:95b18d08e4a2c4d13be1dd65ac34db2edbeb6848d7eed5316509a978f32d7e26",
-  "snapshot_sha256": "95b18d08e4a2c4d13be1dd65ac34db2edbeb6848d7eed5316509a978f32d7e26",
+  "snapshot_id": "sha256:a2e08e483a522564877b71d26f3ab312aac9902a9bcbd52fdeb909f7ecbf70ac",
+  "snapshot_sha256": "a2e08e483a522564877b71d26f3ab312aac9902a9bcbd52fdeb909f7ecbf70ac",
   "source_count": 172,
   "sources": [
     {
@@ -2387,7 +2387,7 @@
       "api_url": "https://openprescribing.net/api/1.0/",
       "authentication": "none",
       "authority": "Bennett Institute for Applied Data Science / NHSBSA EPD",
-      "current_landing_disposition": "rights_blocked",
+      "current_landing_disposition": "temporarily_unavailable",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://openprescribing.net/api/",
       "download_url": "https://openprescribing.net/api/",
@@ -4288,7 +4288,7 @@
       "api_url": "",
       "authentication": "none",
       "authority": "Zorginstituut Nederland",
-      "current_landing_disposition": "rights_blocked",
+      "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.gipdatabank.nl/",
       "download_url": "https://www.gipdatabank.nl/",
@@ -6077,7 +6077,7 @@
       "api_url": "",
       "authentication": "none",
       "authority": "US Food and Drug Administration",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.fda.gov/drugs/drug-safety-and-availability/drug-shortages",
       "download_url": "",
@@ -6357,7 +6357,7 @@
       "api_url": "",
       "authentication": "none",
       "authority": "US FDA and NIH NCATS",
-      "current_landing_disposition": "manual_only_documented_acquisition",
+      "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://gsrs.ncats.nih.gov/",
       "download_url": "",

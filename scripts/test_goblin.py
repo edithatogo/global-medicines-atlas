@@ -642,6 +642,21 @@ def write_quality_receipt(
 
 
 ALL_TESTS = validate_test_inventory()
+SERIAL_QUICK_TESTS = frozenset({
+    "tests/test_bronze_recovery.py",
+    "tests/test_bronze_three_strata.py",
+    "tests/test_free_tier_git_mechanics.py",
+    "tests/test_nzmedicines_history_restoration.py",
+    "tests/test_product_performance.py",
+    "tests/test_product_release.py",
+    "tests/test_product_security.py",
+    "tests/test_release_qualification.py",
+    "tests/test_stable_v1_rehearsal.py",
+    "tests/test_stable_v1_release_candidate_reproducibility.py",
+    "tests/test_stable_v1_e2e_qualification.py",
+    "tests/test_test_goblin_harness.py",
+    "tests/test_us_live_bronze_corpus.py",
+})
 
 
 def primary_lane_for_path(path: Path) -> str:
@@ -743,12 +758,34 @@ def run(command: Sequence[str]) -> None:
         raise SystemExit(completed.returncode)
 
 
-def build_pytest_command(tests: Sequence[str], *extra: str) -> list[str]:
+def pytest_worker_args() -> tuple[str, ...]:
+    """Return opt-in pytest-xdist arguments for local or hosted execution."""
+    configured = os.environ.get("TEST_GOBLIN_WORKERS")
+    if configured is None or configured in {"", "0"}:
+        return ()
+    if configured != "auto":
+        try:
+            workers = int(configured)
+        except ValueError as error:
+            raise ValueError(
+                "TEST_GOBLIN_WORKERS must be auto or a positive integer"
+            ) from error
+        if workers < 1:
+            raise ValueError(
+                "TEST_GOBLIN_WORKERS must be auto or a positive integer"
+            )
+    return ("-n", configured, "--dist", "worksteal")
+
+
+def build_pytest_command(
+    tests: Sequence[str], *extra: str, parallel: bool = True
+) -> list[str]:
     """Build a pytest command using the active Python 3.14 environment."""
     return [
         sys.executable,
         "-m",
         "pytest",
+        *(pytest_worker_args() if parallel else ()),
         *tests,
         "-q",
         *extra,
@@ -757,7 +794,17 @@ def build_pytest_command(tests: Sequence[str], *extra: str) -> list[str]:
 
 def quick() -> None:
     """Run examples, properties, negative controls, and randomized ordering."""
-    run(build_pytest_command(ALL_TESTS))
+    if not pytest_worker_args():
+        run(build_pytest_command(ALL_TESTS))
+        return
+    parallel_tests = tuple(
+        test for test in ALL_TESTS if test not in SERIAL_QUICK_TESTS
+    )
+    serial_tests = tuple(
+        test for test in ALL_TESTS if test in SERIAL_QUICK_TESTS
+    )
+    run(build_pytest_command(parallel_tests))
+    run(build_pytest_command(serial_tests, parallel=False))
 
 
 def lane(name: str) -> None:

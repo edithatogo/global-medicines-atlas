@@ -186,11 +186,11 @@ class FDAShortagesManifest(FrozenModel):
         "live_internal_historical"
     )
     external_publication_performed: Literal[False] = False
-    prompt_complete: Literal[False] = False
+    prompt_complete: bool
     historical_detail_snapshot_coverage_complete: Literal[False] = False
     historical_detail_capture_inventory_count: int
     historical_detail_disposition: Literal[
-        "complete_denominator_not_identified_scope_decision_pending"
+        "no_complete_source_denominator_monthly_lists_are_temporal_corpus"
     ]
     current_export_date: date
     current_record_count: int
@@ -692,13 +692,25 @@ def exercise_fda_shortages(  # ruff: ignore[too-many-branches,too-many-locals,to
         for item in results
         if item.surface_id.startswith("historical-list-")
     )
+    prompt_complete = (
+        len(historical) == len(captures)
+        and all(item.status == "succeeded" for item in historical)
+        and any(
+            item.surface_id == "openfda-shortages-bulk"
+            and item.status == "succeeded"
+            and item.source_records_projected
+            and item.source_record_count == record_count
+            for item in results
+        )
+    )
     manifest = FDAShortagesManifest(
         exercised_at=timestamp,
+        prompt_complete=prompt_complete,
         historical_detail_capture_inventory_count=(
             detail_capture_inventory_count
         ),
         historical_detail_disposition=(
-            "complete_denominator_not_identified_scope_decision_pending"
+            "no_complete_source_denominator_monthly_lists_are_temporal_corpus"
         ),
         current_export_date=export_date,
         current_record_count=record_count,

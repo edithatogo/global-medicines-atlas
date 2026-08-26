@@ -6,11 +6,13 @@ import json
 import re
 import tomllib
 from pathlib import Path
-from typing import TypedDict, cast
+from typing import NamedTuple, TypedDict, cast
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 CONTEXT_FILE = PROJECT_ROOT / ".context" / "project.toml"
-TRACK_PATTERN = re.compile(r"\((?P<path>\./tracks/[^)]+/index\.md)\)")
+TRACK_PATTERN = re.compile(
+    r"\((?P<path>\./(?P<location>tracks|archive)/[^)]+/index\.md)\)"
+)
 REQUIREMENT_PATTERN = re.compile(r"\*\*(?P<id>[MSCW]-\d{3}):\*\*")
 MINIMUM_RELEASES = 10
 EXECUTION_POLICY = {
@@ -30,12 +32,22 @@ class ContextReceipt(TypedDict):
     context_files: int
     manifests: int
     tracks: int
+    archived_tracks: int
+    registered_tracks: int
     autonomous_tracks: int
     requirements: int
     harness_profiles: int
     human_gates: int
     releases: int
     status: str
+
+
+class TrackIndexes(NamedTuple):
+    """Registered Conductor indexes grouped by lifecycle location."""
+
+    all: tuple[Path, ...]
+    active: tuple[Path, ...]
+    archived: tuple[Path, ...]
 
 
 def _read_context() -> dict[str, object]:
@@ -160,6 +172,32 @@ def _validate_execution_policies(track_indexes: tuple[Path, ...]) -> int:
     return len(track_indexes)
 
 
+def _registered_track_indexes(
+    tracks_text: str,
+) -> TrackIndexes:
+    """Resolve all registered track indexes by active and archive location."""
+    matches = tuple(TRACK_PATTERN.finditer(tracks_text))
+    track_indexes = tuple(
+        PROJECT_ROOT / "conductor" / match.group("path").removeprefix("./")
+        for match in matches
+    )
+    active_track_indexes = tuple(
+        path
+        for match, path in zip(matches, track_indexes, strict=True)
+        if match.group("location") == "tracks"
+    )
+    archived_track_indexes = tuple(
+        path
+        for match, path in zip(matches, track_indexes, strict=True)
+        if match.group("location") == "archive"
+    )
+    return TrackIndexes(
+        all=track_indexes,
+        active=active_track_indexes,
+        archived=archived_track_indexes,
+    )
+
+
 def validate_context() -> ContextReceipt:
     """Return a bounded receipt or raise for context drift."""
     context = _read_context()
@@ -178,13 +216,12 @@ def validate_context() -> ContextReceipt:
     tracks_text = (PROJECT_ROOT / "conductor" / "tracks.md").read_text(
         encoding="utf-8"
     )
-    track_indexes = tuple(
-        PROJECT_ROOT / "conductor" / match.group("path").removeprefix("./")
-        for match in TRACK_PATTERN.finditer(tracks_text)
-    )
-    if not track_indexes or any(not path.is_file() for path in track_indexes):
+    track_indexes = _registered_track_indexes(tracks_text)
+    if not track_indexes.active or any(
+        not path.is_file() for path in track_indexes.all
+    ):
         raise ValueError("Every registered track must resolve to an index")
-    for index in track_indexes:
+    for index in track_indexes.all:
         track_root = index.parent
         for filename in (
             "spec.md",
@@ -197,7 +234,7 @@ def validate_context() -> ContextReceipt:
                     f"{index.parent.name} missing {filename}"
                 )
 
-    release_count = _validate_maturity(track_indexes)
+    release_count = _validate_maturity(track_indexes.active)
 
     requirement_ids = REQUIREMENT_PATTERN.findall(
         (PROJECT_ROOT / "conductor" / "requirements.md").read_text(
@@ -206,8 +243,8 @@ def validate_context() -> ContextReceipt:
     )
     if not requirement_ids or len(requirement_ids) != len(set(requirement_ids)):
         raise ValueError("Requirement identifiers must exist and be unique")
-    _validate_track_requirements(track_indexes, set(requirement_ids))
-    autonomous_track_count = _validate_execution_policies(track_indexes)
+    _validate_track_requirements(track_indexes.all, set(requirement_ids))
+    autonomous_track_count = _validate_execution_policies(track_indexes.active)
 
     harness_text = (PROJECT_ROOT / "scripts" / "test_goblin.py").read_text(
         encoding="utf-8"
@@ -228,7 +265,9 @@ def validate_context() -> ContextReceipt:
         "repository": str(context["repository"]),
         "context_files": len(required_context),
         "manifests": len(required_manifests),
-        "tracks": len(track_indexes),
+        "tracks": len(track_indexes.active),
+        "archived_tracks": len(track_indexes.archived),
+        "registered_tracks": len(track_indexes.all),
         "autonomous_tracks": autonomous_track_count,
         "requirements": len(requirement_ids),
         "harness_profiles": len(profiles),

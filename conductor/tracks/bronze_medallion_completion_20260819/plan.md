@@ -267,6 +267,7 @@ before any hot-path rewrite. Python remains orchestration.
         - [x] Reconcile prompt 19 as the first live-complete acquisition prompt: the authoritative FDA NSDE comprehensive file and bounded openFDA NSDE projection are both live-qualified; keep Orange Book and other historical families incomplete
         - [x] Inventory the bounded official Orange Book history surfaces without payload retrieval and add a fail-closed maintainer authorization contract; do not equate current ZIP, current PDFs, monthly change pages, and the legacy FDA archive
         - [ ] Acquire complete historical releases for the applicable FDA source families; the bounded canaries and current snapshots do not complete prompt-level coverage
+            - Seventh bounded Orange Book pass followed a material Archive-It HTTP 429-to-200 change, privately archived and recovered 155/259 releases, and increased cumulative unique retention to 201/259; 58 exact URLs remain explicitly unavailable
 - [x] Task: Review Fixes for bounded U.S. live acquisition (`9a7dc7b`)
     - [x] Prevent bound GET/HEAD requests from gaining a chunked request body and skip compressed-wire Content-Length comparisons against decoded bytes
     - [x] Add authorization drift, fault isolation, excluded-content, private-archive, and transport regression tests; targeted branch coverage reached 93%
@@ -362,12 +363,13 @@ for credentialed or rights-unresolved sources.
     - [x] Verify the public FDA archive exposes 68 paired UNII data and name releases from 2014-01-25 through 2026-08-04
     - [x] Add an executable inventory parser that rejects missing pairs, release-count drift, date drift, and non-official hosts
     - [x] Keep acquisition, retention, public release, and external publication fail closed until the maintainer records a source-specific decision
-- [~] Task: Acquire and archive the complete approved GSRS/UNII family (Prompt 18)
+- [x] Task: Acquire and archive the complete approved GSRS/UNII family (Prompt 18)
     - [x] Bind the maintainer's source-specific licensing decision to the exact authorization; private acquisition and retention approved 2026-08-22, public and external publication prohibited
-    - [ ] Acquire every authorized paired dated release without committing source bytes (live FDA transfer attempted; network transfer did not complete in bounded run)
+    - [x] Acquire every authorized paired dated release without committing source bytes; all 68 releases and 136 paired payloads completed on 2026-08-26
     - [x] Add the private acquisition, receipt, Bronze landing, and checksum-bound archive runner; execution evidence remains pending successful transfer
-    - [ ] Preserve UNII, names, synonyms, substance types, and source relationships without treating terminology evidence as canonical medicine identity or regulatory approval
-    - [ ] Keep any public release and external publication separately gated
+    - [x] Preserve UNII, names, synonyms, substance types, and source relationships in immutable source-native payloads without treating terminology evidence as canonical medicine identity or regulatory approval
+    - [x] Keep any public release and external publication separately gated
+    - Receipt: `quality/qualifications/gsrs-unii-acquisition-success-20260826.json`; 1,297,588,027 source bytes, private archive `78ebcb813f1d4c9e3231c8dad68d73d863e896962c4bec353de1c52a4717b517`, and 136/136 digest-matching stream restores
 - [x] Task: Implement complete FDA AERS/FAERS quarterly acquisition machinery (Prompt 12)
     - [x] Lock the official ASCII release inventory to 90 contiguous quarters from 2004-Q1 through 2026-Q2 under the approved internal-only U.S. cohort
     - [x] Acquire large immutable releases through atomic, bounded, retry-limited, content-range-verified downloads without following redirects
@@ -398,12 +400,12 @@ for credentialed or rights-unresolved sources.
     - [x] Reconstruct the admitted current export and verify its source-record Parquet byte-for-byte
     - [x] Preserve current, resolved, discontinued, availability, reason, manufacturer, presentation, NDC, and source-native date fields without medicine normalization
     - [x] Keep Prompt 14, historical detail-page coverage, public release, and external publication fail closed
-- [~] Task: Complete FDA drug-shortage history with an explicit detail-archive disposition (Prompt 14)
+- [x] Task: Complete FDA drug-shortage history with an explicit detail-archive disposition (Prompt 14)
     - [x] Acquire and archive 35,494 delegated CDX metadata records describing distinct historical detail-page payload captures; do not acquire the detail payloads
-    - [x] Retain all 129 monthly source lists as a candidate temporal shortage-state corpus
+    - [x] Retain all 129 monthly source lists as the qualified temporal shortage-state corpus
     - [x] Recover three transient monthly replay failures in a bounded retry with two content-preserving replay overrides
     - [x] Record that no complete historical detail-page denominator was identified in the reviewed official surfaces; do not relabel an unbounded delegated crawl as complete source coverage
-    - [ ] Obtain the maintainer's explicit scope disposition before treating monthly lists as the qualified temporal corpus or reconciling Prompt 14
+    - [x] Bind the maintainer's explicit 2026-08-26 approval to treat the monthly lists as the qualified temporal corpus and reconcile Prompt 14
     - [x] Keep detail-page completeness, public release, and external publication unclaimed
 - [x] Task: Acquire the complete public FDA REMS family (Prompt 15)
     - [x] Acquire all four official historical relational CSV surfaces and preserve 3,112 source-native program, version, product, application, status, requirement and date records
@@ -419,21 +421,22 @@ for credentialed or rights-unresolved sources.
     - [x] Obtain the maintainer's source-specific licensing decision before payload acquisition
     - [x] Exercise immutable landing, receipt, acquisition-manifest Bronze projection, clean-room recovery, and private archive verification
     - [x] Keep public release and external publication separately gated
-- [~] Task: Acquire the Netherlands GIP medicine utilisation corpus (Prompt 32)
+- [x] Task: Acquire the Netherlands GIP medicine utilisation corpus (Prompt 32)
     - [x] Resolve the official corpus to 28 Farmacie and Add-on CSV releases through 2025
     - [x] Bind stable source titles while treating rotating service download keys as ephemeral transport metadata
     - [x] Preserve rolling-table, annual age/sex, ATC, version, population, source, and VAT-method boundaries
-    - [ ] Obtain the maintainer's source-specific licensing decision before payload acquisition
-    - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
-    - [ ] Keep public release and external publication separately gated
+    - [x] Reconcile the existing source-specific approved-public decision bound to the exact 28-release title-set hash before payload acquisition
+    - [x] Exercise immutable landing, receipts, 217,135-row source-faithful Bronze projection, clean-room recovery, and private archive verification across all 28 releases
+    - [x] Publish the exact approved CC0 corpus at immutable Hugging Face revision `4e6395ee5217b0fb140dd7942f67b032039e7bbf` and anonymously restore all 28 source CSV digests
     - [x] Review fixes: make direct `GIPRelease` test construction satisfy the typed `date` contract (`945b12f`, `fc11f61`); focused tests, Ruff, and BasedPyright pass
 - [~] Task: Acquire England OpenPrescribing utilisation views (Prompt 30)
     - [x] Resolve the six documented spending, medicine-reference, and organisation-reference API identities
     - [x] Bind the current official API documentation commit and its Open Government Licence source statement
     - [x] Select receipt-bound explicit date partitions instead of treating rolling five-year API views as static complete releases
-    - [ ] Obtain the maintainer's source-specific licensing decision before payload acquisition
+    - [x] Bind the maintainer's 2026-08-26 approved-public Option B decision to successfully retrieved, receipt-bound API v1 partitions under the OGL
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
-    - [ ] Keep public release and external publication separately gated
+    - [x] Permit public release and external publication only for successfully retrieved partitions with OGL/OpenPrescribing attribution; the bounded six-endpoint attempt returned HTTP 403 and published nothing
+    - [x] Review fixes: make Open Medic ZIP fixtures byte-deterministic and add opt-in hybrid xdist scheduling that keeps resource-sensitive tests serial (`4721359`, `59d77f4`); 137 affected tests, Ruff, ty, and BasedPyright pass
 - [~] Task: Acquire U.S. CMS Medicare Part D utilisation data (Prompt 31)
     - [x] Resolve the official corpus to 30 quarterly formulary ZIP releases through Q2 2026 and the three-resource 2024 annual spending surface
     - [x] Replace the generic CMS terms gap with the dataset-specific government-works licence record and formulary Agreement for Use
@@ -475,7 +478,7 @@ for credentialed or rights-unresolved sources.
     - [x] Preserve incomplete coverage, missing-not-negative-evidence, and no-external-publication boundaries
     - [x] Carry forward only existing high-value gap candidates; do not invent a new track without new authority or materially new source evidence
 
-## Phase 6: B0/B1/B2 Internal Bronze Strata Contract
+## Phase 7: B0/B1/B2 Internal Bronze Strata Contract
 
 - [x] Task: Formalize the three-strata Bronze authority boundary ([#275](https://github.com/edithatogo/global-medicines-atlas/issues/275))
     - [x] Inspect current `main`, active Bronze tracks and issues, and recently merged Bronze work without disturbing concurrent work
@@ -492,7 +495,7 @@ for credentialed or rights-unresolved sources.
 - [x] Context validation recognizes the glossary as required project context
 - [x] Required hosted checks pass at the exact pull-request head before merge
 
-## Phase 10: Reproducible Manual Acquisition Recipes and Receipts
+## Phase 8: Reproducible Manual Acquisition Recipes and Receipts
 
 - [x] Task: Add deterministic, rights- and reuse-gated manual acquisition contracts ([#308](https://github.com/edithatogo/global-medicines-atlas/issues/308))
     - [x] Generate one versioned recipe per current manual-only queue item without duplicating the queue
@@ -502,7 +505,7 @@ for credentialed or rights-unresolved sources.
     - [x] Validate handoff through the ordinary B1/B2 landing adapter contract and record hosted merge evidence
     - [x] Record PR [#309](https://github.com/edithatogo/global-medicines-atlas/pull/309) head `587d253fb6d04cb8d3e64078e1c9eefe919da309`, all required hosted checks green, and merged SHA `a45cb7a2ac6080789c59dd1bc1f75f46096f8191`
 
-## Phase 10: Pinned Reuse Discovery Snapshot
+## Phase 9: Pinned Reuse Discovery Snapshot
 
 - [x] Task: Bind pre-acquisition reuse decisions to deterministic discovery snapshots ([#302](https://github.com/edithatogo/global-medicines-atlas/issues/302), parent #167)
     - [x] Record required surfaces, queries, revisions, candidate digests, availability, freshness, and snapshot ID
@@ -535,7 +538,7 @@ for credentialed or rights-unresolved sources.
 - [x] Required hosted checks pass at the exact pull-request head before merge
 - [x] Review confirms documentation-and-contract-only scope and no source, receipt, digest, or acquisition-identity mutation
 
-## Phase 7: Deterministic B0 Source Index Layer
+## Phase 11: Deterministic B0 Source Index Layer
 
 - [x] Task: Implement the B0 Source Index projection ([#281](https://github.com/edithatogo/global-medicines-atlas/issues/281))
     - [x] Audit the canonical source catalogue, schema/model, census, coverage index, landing factory and queue, archival inventory, Hugging Face references, Conductor state, issues, and recent Bronze merges
@@ -557,7 +560,7 @@ for credentialed or rights-unresolved sources.
 - [x] Required hosted checks pass at the exact pull-request head before merge
 - [x] Review confirms no parallel registry, external publication, or mutation of B1/B2 evidence identity
 
-## Phase 8: Deterministic B1 Acquisition Metadata Layer
+## Phase 12: Deterministic B1 Acquisition Metadata Layer
 
 - [x] Task: Formalize the B1 acquisition metadata authority and query manifest ([#289](https://github.com/edithatogo/global-medicines-atlas/issues/289))
     - [x] Audit the existing `SourceReceipt`, `AcquisitionEvent`, temporal, HTTP, reuse, rights, storage, admission, recovery, Parquet and OpenLineage contracts
@@ -582,7 +585,7 @@ for credentialed or rights-unresolved sources.
 - [x] Retrieval locations are redacted and the manifest never contains payload contents
 - [x] Required hosted checks pass at the exact pull-request head before merge
 
-## Phase 9: Explicit B2 Raw Evidence and Native Projection Boundary
+## Phase 13: Explicit B2 Raw Evidence and Native Projection Boundary
 
 - [x] Task: Formalize B2 raw evidence and split source-native projections ([#295](https://github.com/edithatogo/global-medicines-atlas/issues/295))
     - [x] Inspect existing content-addressed storage, landing, recovery, archive, receipt, fixture, and Parquet contracts
@@ -601,7 +604,7 @@ for credentialed or rights-unresolved sources.
 - [x] ZIP/tar, document, opaque-binary, identity, and projection-boundary tests pass
 - [x] Required hosted checks pass at the exact pull-request head before merge
 
-## Phase 10: End-to-End Three-Strata Qualification
+## Phase 14: End-to-End Three-Strata Qualification
 
 - [x] Task: Qualify the B0/B1/B2 substrate over the complete governed corpus ([#315](https://github.com/edithatogo/global-medicines-atlas/issues/315), parent #170)
     - [x] Inspect source index, acquisition metadata, raw-evidence storage, projections, admission profiles, reuse snapshots, manual recipes, and recovery code

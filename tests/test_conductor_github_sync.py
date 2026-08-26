@@ -424,6 +424,62 @@ def test_invalid_metadata_is_drift_and_other_tracks_are_checked(
     ]
 
 
+@pytest.mark.unit
+def test_duplicate_plan_phases_are_reported_without_crashing(
+    tmp_path: Path,
+) -> None:
+    module = _load_module()
+    _write_track(tmp_path, metadata_shape="top-level")
+    track = tmp_path / "conductor" / "tracks" / "migration"
+    plan_path = track / "plan.md"
+    plan_path.write_text(
+        plan_path.read_text(encoding="utf-8")
+        + "\n## Phase 4: Duplicate\n\n- [ ] Task: Duplicate\n",
+        encoding="utf-8",
+    )
+
+    receipt = module.synchronise(tmp_path, {})
+
+    assert receipt["status"] == "drift"
+    assert receipt["drifts"] == [
+        {
+            "actual": {
+                "error": "ValueError",
+                "message": "Plan phase numbers must be unique",
+            },
+            "code": "track_issue_metadata_invalid",
+            "expected": "valid parent and phase issue metadata",
+            "issue": None,
+            "track_id": "migration",
+        }
+    ]
+    assert receipt["issues_checked"] == 3
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("status", ["active", "in_progress"])
+def test_active_status_dialects_match_in_progress_registry(
+    tmp_path: Path,
+    status: str,
+) -> None:
+    module = _load_module()
+    _write_track(tmp_path)
+    metadata_path = (
+        tmp_path / "conductor" / "tracks" / "migration" / "metadata.json"
+    )
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    metadata["status"] = status
+    metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+    fixture_path = _write_fixture(tmp_path, _fixture())
+
+    receipt = module.synchronise(
+        tmp_path,
+        module.load_fixture(fixture_path),
+    )
+
+    assert receipt["status"] == "in_sync"
+
+
 def _write_fixture(
     root: Path,
     fixture: dict[str, object],
@@ -466,6 +522,35 @@ def test_issue_five_closed_while_phase_incomplete_is_explicit(
     assert {(drift["code"], drift["issue"]) for drift in receipt["drifts"]} == {
         ("issue_closed_while_phase_incomplete", 5)
     }
+
+
+@pytest.mark.unit
+def test_closed_parent_while_track_in_progress_is_explicit(
+    tmp_path: Path,
+) -> None:
+    module = _load_module()
+    _write_track(tmp_path)
+    fixture = _fixture()
+    issues = cast("list[object]", fixture["issues"])
+    parent = cast("dict[str, object]", issues[0])
+    parent["state"] = "closed"
+    fixture_path = _write_fixture(tmp_path, fixture)
+
+    receipt = module.synchronise(
+        tmp_path,
+        module.load_fixture(fixture_path),
+    )
+
+    assert receipt["status"] == "drift"
+    assert receipt["drifts"] == [
+        {
+            "actual": {"github_state": "closed"},
+            "code": "issue_closed_while_track_incomplete",
+            "expected": {"github_state": "open", "registry_marker": "~"},
+            "issue": 1,
+            "track_id": "migration",
+        }
+    ]
 
 
 @pytest.mark.unit

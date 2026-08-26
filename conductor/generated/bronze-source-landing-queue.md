@@ -7,11 +7,11 @@ Silver transformations included: **no**.
 
 ## State summary
 
-- `landed_and_evidenced`: 22
-- `temporarily_unavailable`: 1
-- `rights_blocked`: 40
+- `landed_and_evidenced`: 25
+- `temporarily_unavailable`: 2
+- `rights_blocked`: 38
 - `credentialed_and_excluded`: 15
-- `manual_only_documented_acquisition`: 94
+- `manual_only_documented_acquisition`: 92
 - `superseded_by_reused_source`: 0
 - `not_yet_implemented`: 0
 
@@ -43,7 +43,7 @@ Silver transformations included: **no**.
 - [x] `jp-mhlw-nhi-price` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `kr-hira-atc` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `kr-hira-standard-code` — `rights_blocked`; record source-specific retention and transformation rights.
-- [ ] `nl-gipdatabank` — `rights_blocked`; record source-specific retention and transformation rights.
+- [x] `nl-gipdatabank` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `nz-pharmac-hml` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `nz-pharmac-schedule` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `nz-pharmac-schedule-xml` — `landed_and_evidenced`; verify receipt freshness on schedule.
@@ -71,7 +71,7 @@ Silver transformations included: **no**.
 - [ ] `au-pbs-api` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `ca-dpd` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `eu-ema-pms-fhir` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
-- [ ] `gb-openprescribing` — `rights_blocked`; record source-specific retention and transformation rights.
+- [ ] `gb-openprescribing` — `temporarily_unavailable`; retry under the failure-receipt schedule.
 - [ ] `global-rxnorm` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `nz-nzhts-fhir` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [ ] `us-dailymed-spl` — `rights_blocked`; record source-specific retention and transformation rights.
@@ -157,9 +157,9 @@ Silver transformations included: **no**.
 - [ ] `ug-nda-safety` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `us-cms-mdrp` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `us-cms-nadac` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
-- [ ] `us-fda-drug-shortages` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
+- [x] `us-fda-drug-shortages` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `us-fda-recalls-notices` — `landed_and_evidenced`; verify receipt freshness on schedule.
-- [ ] `us-gsrs-unii` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
+- [x] `us-gsrs-unii` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `za-sahpra-register` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `za-sahpra-safety` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `zw-mcaz-register` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.

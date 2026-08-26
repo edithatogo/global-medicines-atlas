@@ -6,14 +6,21 @@ import re
 from datetime import date
 from hashlib import sha256
 from html.parser import HTMLParser
+from io import BytesIO
 from typing import Literal
 from urllib.parse import urljoin
 
+import pyarrow as pa
+import pyarrow.csv as pacsv
 from pydantic import AnyHttpUrl, Field, model_validator
 
+from .bronze_landing import SourceRecordBatch
+from .iceberg_ready import IcebergPartitionPolicy
 from .models import FrozenModel
 
 SOURCE_ID = "nl-gipdatabank"
+PARSER_IDENTITY = "nl-gip-hash-csv-utf8-v1"
+MIN_CSV_COLUMNS = 2
 _HOST = "www.zorgcijfersdatabank.nl"
 _TITLE = re.compile(
     r"^GIP (?P<family>Farmacie|farmacie|Addon|addon) Zvw "
@@ -49,7 +56,7 @@ class GIPAuthorization(FrozenModel):
     schema_id: Literal["global-medicines-atlas.gip-acquisition-authorization"]
     schema_version: Literal[1]
     decision_date: date | None
-    decision_status: Literal["pending", "approved_internal"]
+    decision_status: Literal["pending", "approved_internal", "approved_public"]
     decision_basis: str = Field(min_length=1)
     acquisition_authorized: bool
     internal_retention_authorized: bool
@@ -66,33 +73,42 @@ class GIPAuthorization(FrozenModel):
             raise ValueError(
                 "GIP authority must stay on zorgcijfersdatabank.nl"
             )
-        if (
-            self.public_release_authorized
-            or self.external_publication_authorized
-        ):
-            raise ValueError("GIP publication must remain separately gated")
         if self.decision_status == "pending":
             if (
                 self.decision_date is not None
                 or self.acquisition_authorized
                 or self.internal_retention_authorized
+                or self.public_release_authorized
+                or self.external_publication_authorized
             ):
                 raise ValueError(
                     "pending GIP decision cannot authorize payloads"
                 )
-        elif (
-            self.decision_date is None
-            or not self.acquisition_authorized
-            or not self.internal_retention_authorized
-        ):
+        elif self.decision_status == "approved_internal" and not all((
+            self.decision_date is not None,
+            self.acquisition_authorized,
+            self.internal_retention_authorized,
+            not self.public_release_authorized,
+            not self.external_publication_authorized,
+        )):
             raise ValueError(
                 "approved GIP acquisition requires dated authority"
+            )
+        elif self.decision_status == "approved_public" and not all((
+            self.decision_date is not None,
+            self.acquisition_authorized,
+            self.internal_retention_authorized,
+            self.public_release_authorized,
+            self.external_publication_authorized,
+        )):
+            raise ValueError(
+                "approved public GIP authority requires acquisition, retention, release, and publication"
             )
         return self
 
     def require_payload_authority(self) -> None:
         """Raise unless internal acquisition and retention are approved."""
-        if self.decision_status != "approved_internal":
+        if self.decision_status not in {"approved_internal", "approved_public"}:
             raise PermissionError("GIP payload acquisition decision is pending")
 
 
@@ -184,3 +200,49 @@ def parse_gip_inventory(
     ):
         raise ValueError("GIP medicine release inventory drifted")
     return GIPInventory(release_count=len(releases), releases=tuple(releases))
+
+
+def gip_source_record_batch(
+    source_id: str, payload: bytes, media_hint: str
+) -> SourceRecordBatch | None:
+    """Project one GIP hash-delimited CSV with source values kept as strings."""
+    if source_id != SOURCE_ID or media_hint != "csv":
+        return None
+    try:
+        lines = payload.decode("utf-8-sig").splitlines()
+    except UnicodeDecodeError as error:
+        raise ValueError("GIP CSV must be UTF-8") from error
+    if not lines or "#" not in lines[0]:
+        raise ValueError("GIP CSV must use the source-native hash delimiter")
+    columns = tuple(lines[0].split("#"))
+    if (
+        len(columns) < MIN_CSV_COLUMNS
+        or any(not column for column in columns)
+        or len(columns) != len(set(columns))
+        or "source_row_number" in columns
+    ):
+        raise ValueError("GIP CSV columns must be nonempty and unique")
+    try:
+        table = pacsv.read_csv(
+            BytesIO(payload),
+            parse_options=pacsv.ParseOptions(delimiter="#"),
+            convert_options=pacsv.ConvertOptions(
+                column_types={column: pa.string() for column in columns},
+                null_values=[],
+                strings_can_be_null=False,
+            ),
+        )
+    except (pa.ArrowInvalid, pa.ArrowNotImplementedError) as error:
+        raise ValueError("GIP CSV parsing failed") from error
+    if table.num_rows == 0:
+        raise ValueError("GIP CSV must contain source records")
+    table = table.append_column(
+        "source_row_number",
+        pa.array(range(1, table.num_rows + 1), type=pa.int64()),
+    )
+    return SourceRecordBatch(
+        table=table,
+        parser_identity=PARSER_IDENTITY,
+        record_id_column="source_row_number",
+        partition_policy=IcebergPartitionPolicy(recurring=False),
+    )

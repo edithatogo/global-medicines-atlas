@@ -77,6 +77,18 @@ uv run --python 3.14.6 --group dev python scripts/test_goblin.py package
 uv run --python 3.14.6 --group dev python scripts/test_goblin.py profile
 ```
 
+Local pytest profiles remain serial by default. Set a positive
+`TEST_GOBLIN_WORKERS` value to use the existing pytest-xdist dependency with
+work-stealing scheduling; `auto` is also accepted. The `quick` profile keeps
+benchmark, subprocess, release-rehearsal, and other resource-sensitive modules
+serial after the parallel phase. CI behavior is unchanged unless the workflow
+explicitly sets this variable. Four workers is the recommended local default
+to avoid starving performance and subprocess tests.
+
+```bash
+TEST_GOBLIN_WORKERS=4 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py quick
+```
+
 The `package` profile builds both wheel and source distribution, installs each
 into a disposable core-only Python 3.14 environment, verifies metadata and
 dynamic version identity, exercises import/CLI/API/OpenAPI behavior, reinstalls

@@ -23,7 +23,7 @@
     {
       "source_id": "us-fda-orange-book",
       "state": "temporarily_unavailable",
-      "reason": "Internal historical acquisition was authorized and exercised; 200 of 259 exact release URLs were retained, 59 remained cumulatively unresolved after six bounded passes, and the latest full-inventory observation still failed on 103 releases.",
+      "reason": "Internal historical acquisition was authorized and exercised; 201 of 259 exact release URLs were retained, 58 remain cumulatively unresolved after seven bounded passes, and the latest material-change full-inventory observation still failed on 104 releases.",
       "failure_receipt": "quality/qualifications/orange-book-historical-corpus-20260821.json",
       "evidence_references": [
         "quality/qualifications/orange-book-historical-authorization.json",
@@ -73,9 +73,8 @@
     },
     {
       "source_id": "us-fda-drug-shortages",
-      "state": "manual_only_documented_acquisition",
-      "reason": "The complete current openFDA export, all 129 inventoried monthly FDA list snapshots, and a metadata-only inventory of 35,494 delegated detail captures were Bronze-exercised and privately archived. No complete historical detail-page denominator was identified; the maintainer must explicitly decide whether monthly lists define the qualified temporal corpus.",
-      "manual_instructions": "Obtain the maintainer's explicit Prompt 14 scope disposition. Do not acquire delegated detail-page payloads or claim complete historical coverage under the metadata-only inventory authorization.",
+      "state": "landed_and_evidenced",
+      "reason": "The complete current openFDA export, all 129 inventoried monthly FDA list snapshots, and the metadata-only 35,494-capture delegated detail inventory were Bronze-exercised and privately archived. On 2026-08-26 the maintainer approved the monthly lists as the temporal corpus; delegated detail-page completeness remains unclaimed.",
       "evidence_references": [
         "quality/qualifications/fda-shortages-live-corpus-20260821.json"
       ]
@@ -86,6 +85,36 @@
       "reason": "All four official relational CSV surfaces, all 72 current REMS detail pages, and 827 of 829 linked FDA-hosted documents were acquired, reconstructed where admitted, and privately archived; the remaining two document links returned explicit HTTP 404 failure receipts.",
       "evidence_references": [
         "quality/qualifications/fda-rems-live-corpus-20260821.json"
+      ]
+    },
+    {
+      "source_id": "us-gsrs-unii",
+      "state": "landed_and_evidenced",
+      "reason": "All 68 authorized paired FDA GSRS/UNII releases were privately acquired as 136 immutable payloads, Bronze-landed, checksum verified, and stream-restored from the private archive without promoting terminology evidence to canonical medicine identity.",
+      "evidence_references": [
+        "quality/qualifications/gsrs-unii-acquisition-authorization.json",
+        "quality/qualifications/gsrs-unii-acquisition-success-20260826.json"
+      ]
+    },
+    {
+      "source_id": "nl-gipdatabank",
+      "state": "landed_and_evidenced",
+      "reason": "All 28 exact approved-public GIP Farmacie and Add-on CSV releases were acquired, admitted, projected at source-native grain, reconstructed byte-for-byte, restored from the checksum-verified archive, and anonymously restored from the immutable public Hugging Face revision under the bound CC0 decision.",
+      "evidence_references": [
+        "quality/qualifications/gip-acquisition-authorization.json",
+        "quality/qualifications/gip-publication-authorization-20260821.json",
+        "quality/qualifications/gip-acquisition-success-20260826.json",
+        "quality/qualifications/gip-public-huggingface-20260826.json"
+      ]
+    },
+    {
+      "source_id": "gb-openprescribing",
+      "state": "temporarily_unavailable",
+      "reason": "Public acquisition, retention, release, and external publication of successfully retrieved receipt-bound API v1 partitions were approved under the OGL on 2026-08-26. A bounded one-attempt probe of all six documented identities returned Cloudflare HTTP 403 challenges from the current environment; no payload or challenge bytes were retained and no publication occurred.",
+      "failure_receipt": "quality/qualifications/openprescribing-availability-20260826.json",
+      "evidence_references": [
+        "quality/qualifications/openprescribing-rights-preflight-20260821.json",
+        "quality/qualifications/openprescribing-acquisition-authorization.json"
       ]
     },
     {

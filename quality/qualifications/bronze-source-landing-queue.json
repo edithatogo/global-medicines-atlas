@@ -1584,14 +1584,16 @@
         "source_id": "gb-openprescribing"
       },
       "evidence_references": [
-        "https://openprescribing.net/api/"
+        "quality/qualifications/openprescribing-rights-preflight-20260821.json",
+        "quality/qualifications/openprescribing-acquisition-authorization.json",
+        "quality/qualifications/openprescribing-availability-20260826.json"
       ],
       "evidence_scope": "none",
-      "next_action": "record source-specific retention and transformation rights",
-      "priority": 20,
-      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "retry under the failure-receipt schedule",
+      "priority": 40,
+      "reason": "Public acquisition, retention, release, and external publication of successfully retrieved receipt-bound API v1 partitions were approved under the OGL on 2026-08-26. A bounded one-attempt probe of all six documented identities returned Cloudflare HTTP 403 challenges from the current environment; no payload or challenge bytes were retained and no publication occurred.",
       "source_id": "gb-openprescribing",
-      "state": "rights_blocked"
+      "state": "temporarily_unavailable"
     },
     {
       "adapter": {
@@ -2863,14 +2865,17 @@
         "source_id": "nl-gipdatabank"
       },
       "evidence_references": [
-        "https://www.gipdatabank.nl/"
+        "quality/qualifications/gip-acquisition-authorization.json",
+        "quality/qualifications/gip-publication-authorization-20260821.json",
+        "quality/qualifications/gip-acquisition-success-20260826.json",
+        "quality/qualifications/gip-public-huggingface-20260826.json"
       ],
       "evidence_scope": "none",
-      "next_action": "record source-specific retention and transformation rights",
-      "priority": 20,
-      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "All 28 exact approved-public GIP Farmacie and Add-on CSV releases were acquired, admitted, projected at source-native grain, reconstructed byte-for-byte, restored from the checksum-verified archive, and anonymously restored from the immutable public Hugging Face revision under the bound CC0 decision.",
       "source_id": "nl-gipdatabank",
-      "state": "rights_blocked"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4042,7 +4047,7 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Obtain the maintainer's explicit Prompt 14 scope disposition. Do not acquire delegated detail-page payloads or claim complete historical coverage under the metadata-only inventory authorization.",
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
         "acquisition_profile": null,
         "credentials_persisted": false,
         "endpoint": "https://www.accessdata.fda.gov/scripts/drugshortages/default.cfm",
@@ -4060,11 +4065,11 @@
         "quality/qualifications/fda-shortages-live-corpus-20260821.json"
       ],
       "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
-      "priority": 30,
-      "reason": "The complete current openFDA export, all 129 inventoried monthly FDA list snapshots, and a metadata-only inventory of 35,494 delegated detail captures were Bronze-exercised and privately archived. No complete historical detail-page denominator was identified; the maintainer must explicitly decide whether monthly lists define the qualified temporal corpus.",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "The complete current openFDA export, all 129 inventoried monthly FDA list snapshots, and the metadata-only 35,494-capture delegated detail inventory were Bronze-exercised and privately archived. On 2026-08-26 the maintainer approved the monthly lists as the temporal corpus; delegated detail-page completeness remains unclaimed.",
       "source_id": "us-fda-drug-shortages",
-      "state": "manual_only_documented_acquisition"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4177,7 +4182,7 @@
       "evidence_scope": "none",
       "next_action": "retry under the failure-receipt schedule",
       "priority": 40,
-      "reason": "Internal historical acquisition was authorized and exercised; 200 of 259 exact release URLs were retained, 59 remained cumulatively unresolved after six bounded passes, and the latest full-inventory observation still failed on 103 releases.",
+      "reason": "Internal historical acquisition was authorized and exercised; 201 of 259 exact release URLs were retained, 58 remain cumulatively unresolved after seven bounded passes, and the latest material-change full-inventory observation still failed on 104 releases.",
       "source_id": "us-fda-orange-book",
       "state": "temporarily_unavailable"
     },
@@ -4252,14 +4257,16 @@
         "source_id": "us-gsrs-unii"
       },
       "evidence_references": [
-        "https://gsrs.ncats.nih.gov/"
+        "https://gsrs.ncats.nih.gov/",
+        "quality/qualifications/gsrs-unii-acquisition-authorization.json",
+        "quality/qualifications/gsrs-unii-acquisition-success-20260826.json"
       ],
       "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
-      "priority": 30,
-      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "All 68 authorized paired FDA GSRS/UNII releases were privately acquired as 136 immutable payloads, Bronze-landed, checksum verified, and stream-restored from the private archive without promoting terminology evidence to canonical medicine identity.",
       "source_id": "us-gsrs-unii",
-      "state": "manual_only_documented_acquisition"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4608,11 +4615,11 @@
   "source_count": 172,
   "state_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 22,
-    "manual_only_documented_acquisition": 94,
+    "landed_and_evidenced": 25,
+    "manual_only_documented_acquisition": 92,
     "not_yet_implemented": 0,
-    "rights_blocked": 40,
+    "rights_blocked": 38,
     "superseded_by_reused_source": 0,
-    "temporarily_unavailable": 1
+    "temporarily_unavailable": 2
   }
 }

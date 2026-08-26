@@ -1328,17 +1328,20 @@
     }
   ],
   "prompt_completion_states": {
-    "live_acquisition_complete": 6,
-    "live_acquisition_incomplete": 29,
+    "live_acquisition_complete": 9,
+    "live_acquisition_incomplete": 26,
     "reconciliation_generated_but_live_program_incomplete": 1
   },
   "live_complete_prompt_ids": [
     12,
     13,
+    14,
     15,
     17,
+    18,
     19,
-    25
+    25,
+    32
   ],
   "high_value_gap_candidates": [
     "track 1 blocked global-who-national-eml-index",
