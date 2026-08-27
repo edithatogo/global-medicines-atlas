@@ -37,6 +37,7 @@ from .bronze_landing import (
     land_bronze_payload,
     write_rebuildable_layers,
 )
+from .bronze_profiles import BronzeAdmissionProfile
 from .iceberg_ready import IcebergReadyTableSpec, iceberg_rest_create_body
 from .models import FrozenModel
 from .receipts import (
@@ -65,6 +66,17 @@ class SourceRecordFactory(Protocol):
         payload: bytes,
         media_hint: str,
     ) -> SourceRecordBatch | None: ...
+
+
+class AdmissionProfileFactory(Protocol):
+    """Recreate the source-specific admission profile from immutable bytes."""
+
+    def __call__(
+        self,
+        source_id: str,
+        payload: bytes,
+        media_hint: str,
+    ) -> BronzeAdmissionProfile | None: ...
 
 
 class BronzeRecoveryError(ValueError):
@@ -278,6 +290,7 @@ def _rebuild_one(  # ruff: ignore[too-many-locals]
     *,
     parser_generation: int,
     source_record_factory: SourceRecordFactory | None,
+    admission_profile_factory: AdmissionProfileFactory | None,
 ) -> tuple[RecoveredLandingEvidence | None, str, bool]:
     raw = receipt_path.read_bytes()
     receipt, had_extra = load_receipt_for_reconstruction(
@@ -332,6 +345,11 @@ def _rebuild_one(  # ruff: ignore[too-many-locals]
                 None
                 if source_record_factory is None
                 else source_record_factory(source_id, payload, media_hint)
+            ),
+            admission_profile=(
+                None
+                if admission_profile_factory is None
+                else admission_profile_factory(source_id, payload, media_hint)
             ),
         )
         if not isinstance(outcome, BronzeLanding):
@@ -422,6 +440,7 @@ def reconstruct_bronze(
     fail_closed_on_incomplete: bool = False,
     parser_generation: int = CURRENT_PARSER_GENERATION,
     source_record_factory: SourceRecordFactory | None = None,
+    admission_profile_factory: AdmissionProfileFactory | None = None,
 ) -> BronzeRecoveryEvidence:
     """Rebuild Parquet, lineage, and catalogue from local evidentiary truth."""
 
@@ -443,6 +462,7 @@ def reconstruct_bronze(
             receipt_path,
             parser_generation=parser_generation,
             source_record_factory=source_record_factory,
+            admission_profile_factory=admission_profile_factory,
         )
         newer_fields = newer_fields or had_extra
         referenced.add(content_id)

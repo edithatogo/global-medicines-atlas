@@ -1,5 +1,5 @@
 {
-  "accepted_admission_count": 8,
+  "accepted_admission_count": 16,
   "canonical_medicine_identity_claimed": false,
   "coverage_complete": false,
   "cross_country_comparability_claimed": false,
@@ -9,11 +9,13 @@
     "global-rxnorm",
     "us-rxnorm-api"
   ],
-  "document_manifest_count": 7,
+  "document_manifest_count": 5,
   "evidence_class": "live_public_archive_reuse",
   "external_publication_performed": false,
   "fully_accepted_source_ids": [
     "eu-union-register",
+    "fr-bdpm",
+    "fr-bdpm-smr-asmr",
     "gb-emit",
     "gb-nhs-drug-tariff",
     "nz-pharmac-hml",
@@ -22,18 +24,15 @@
   ],
   "funding_or_formulary_equivalence_claimed": false,
   "immutable_revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
-  "incomplete_quarantined_recovery_count": 8,
-  "partially_quarantined_source_ids": [
-    "fr-bdpm",
-    "fr-bdpm-smr-asmr"
-  ],
+  "incomplete_quarantined_recovery_count": 0,
+  "partially_quarantined_source_ids": [],
   "public_dataset": "edithatogo/global-medicines-atlas-international-permissive-20260821",
   "public_manifest_files_verified": 18,
   "public_manifest_sha256": "fc29fc2e7896ebcb066de3f4bc43b1cb480e78204f518a82f438a47227731148",
-  "qualified_at": "2026-08-26T21:47:41.171344+00:00",
-  "quarantine_reason": "Legacy French delimiter files that do not decode as UTF-8 remain immutable B2 raw evidence; downstream processing and source-record projection are fail closed pending a reviewed source-specific parser.",
-  "quarantined_admission_count": 8,
-  "recovered_acquisition_count": 8,
+  "qualified_at": "2026-08-27T08:12:33.921046+00:00",
+  "quarantine_reason": null,
+  "quarantined_admission_count": 0,
+  "recovered_acquisition_count": 16,
   "regulatory_approval_claimed": false,
   "reuse_disposition": "link",
   "reuse_revision": "e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
@@ -52,7 +51,7 @@
     "nz-pharmac-schedule",
     "nz-pharmac-schedule-xml"
   ],
-  "source_record_count": 6440,
-  "source_record_parquet_pairs_byte_identical": 1,
-  "source_record_projection_count": 1
+  "source_record_count": 158943,
+  "source_record_parquet_pairs_byte_identical": 11,
+  "source_record_projection_count": 11
 }

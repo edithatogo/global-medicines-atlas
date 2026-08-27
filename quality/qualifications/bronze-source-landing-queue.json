@@ -1310,14 +1310,16 @@
         "source_id": "fr-bdpm"
       },
       "evidence_references": [
-        "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement"
+        "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement",
+        "quality/qualifications/international-public-huggingface-20260821.json",
+        "quality/qualifications/international-public-bronze-20260827.json"
       ],
-      "evidence_scope": "none",
-      "next_action": "record source-specific retention and transformation rights",
-      "priority": 20,
-      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "evidence_scope": "live_receipt",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "All seven source-native BDPM tabular files in the exact approved public archive were digest verified, admitted with an explicit lossless UTF-8-or-CP1252 tabular profile, projected without semantic field inference, and clean-room reconstructed byte-for-byte. Complete French regulatory coverage remains unclaimed.",
       "source_id": "fr-bdpm",
-      "state": "rights_blocked"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -1336,14 +1338,16 @@
         "source_id": "fr-bdpm-smr-asmr"
       },
       "evidence_references": [
-        "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement"
+        "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement",
+        "quality/qualifications/international-public-huggingface-20260821.json",
+        "quality/qualifications/international-public-bronze-20260827.json"
       ],
-      "evidence_scope": "none",
-      "next_action": "record source-specific retention and transformation rights",
-      "priority": 20,
-      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "evidence_scope": "live_receipt",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "All three source-native HAS SMR/ASMR tabular files in the exact approved public archive were digest verified, admitted with an explicit lossless UTF-8-or-CP1252 tabular profile, projected without interpreting assessment text as funding equivalence, and clean-room reconstructed byte-for-byte.",
       "source_id": "fr-bdpm-smr-asmr",
-      "state": "rights_blocked"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4625,10 +4629,10 @@
   "source_count": 172,
   "state_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 29,
+    "landed_and_evidenced": 31,
     "manual_only_documented_acquisition": 92,
     "not_yet_implemented": 0,
-    "rights_blocked": 34,
+    "rights_blocked": 32,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 2
   }

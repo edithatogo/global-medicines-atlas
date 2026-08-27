@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import codecs
 import csv
 import json
 import tarfile
@@ -69,6 +70,12 @@ class BronzeAdmissionProfile(FrozenModel):
             "gzip",
         }:
             raise ValueError("archive_type must be zip, tar, or gzip")
+        try:
+            codecs.lookup(self.csv_encoding)
+        except LookupError as error:
+            raise ValueError(
+                "csv_encoding must name a registered codec"
+            ) from error
         return self
 
 

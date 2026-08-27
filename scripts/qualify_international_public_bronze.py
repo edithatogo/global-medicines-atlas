@@ -17,8 +17,14 @@ from global_medicines_atlas.bronze_landing import (
     SourceRecordBatch,
     land_bronze_payload,
 )
+from global_medicines_atlas.bronze_profiles import BronzeAdmissionProfile
 from global_medicines_atlas.bronze_raw_evidence import build_document_manifest
 from global_medicines_atlas.bronze_recovery import reconstruct_bronze
+from global_medicines_atlas.french_source_records import (
+    FRENCH_PUBLIC_SOURCE_IDS,
+    french_source_record_batch,
+    french_text_encoding,
+)
 from global_medicines_atlas.international_public_archive import SOURCE_RIGHTS
 from global_medicines_atlas.receipts import (
     AcquisitionMethod,
@@ -133,13 +139,35 @@ def _verify_public_revision(
 def _source_record_factory(
     source_id: str, payload: bytes, media_hint: str
 ) -> SourceRecordBatch | None:
+    if source_id in FRENCH_PUBLIC_SOURCE_IDS:
+        return french_source_record_batch(source_id, payload)
     return union_register_source_record_batch(source_id, payload, media_hint)
 
 
 def _landing_media_hint(path: Path) -> str:
-    """Keep legacy Latin-1 text opaque until a source schema is reviewed."""
+    """Keep source-native text bytes distinct from normalized UTF-8."""
     media_hint = path.suffix.lstrip(".") or "bin"
     return "bin" if media_hint == "txt" else media_hint
+
+
+def _admission_profile(
+    source_id: str, payload: bytes
+) -> BronzeAdmissionProfile | None:
+    if source_id not in FRENCH_PUBLIC_SOURCE_IDS:
+        return None
+    return BronzeAdmissionProfile(
+        profile_id=f"{source_id}-tabular-text-v1",
+        expected_media=("csv",),
+        csv_delimiter="\t",
+        csv_encoding=french_text_encoding(payload),
+    )
+
+
+def _recovery_admission_profile(
+    source_id: str, payload: bytes, media_hint: str
+) -> BronzeAdmissionProfile | None:
+    del media_hint
+    return _admission_profile(source_id, payload)
 
 
 def _archive_candidate(
@@ -290,6 +318,7 @@ def qualify(  # ruff: ignore[too-many-locals]
             bronze_root=bronze,
             media_hint=media_hint,
             source_records=batch,
+            admission_profile=_admission_profile(source_id, payload),
         )
         admitted = isinstance(landing, BronzeLanding)
         rows = 0 if batch is None or not admitted else batch.table.num_rows
@@ -321,6 +350,7 @@ def qualify(  # ruff: ignore[too-many-locals]
         clean_room,
         fail_closed_on_incomplete=False,
         source_record_factory=_source_record_factory,
+        admission_profile_factory=_recovery_admission_profile,
     )
     recovered_products = _source_record_pair_count(bronze, clean_room)
     if revisions != {REVISION}:
@@ -361,9 +391,10 @@ def qualify(  # ruff: ignore[too-many-locals]
         "fully_accepted_source_ids": fully_accepted,
         "partially_quarantined_source_ids": partially_quarantined,
         "quarantine_reason": (
-            "Legacy French delimiter files that do not decode as UTF-8 remain "
-            "immutable B2 raw evidence; downstream processing and source-record "
-            "projection are fail closed pending a reviewed source-specific parser."
+            None
+            if not partially_quarantined
+            else "Payloads failing generic and source-specific inspection remain "
+            "immutable B2 raw evidence and fail closed downstream."
         ),
         "accepted_admission_count": sum(
             item["admission"] == "accepted" for item in items

@@ -37,6 +37,7 @@ from .bronze_admission import (
     require_admitted_for_processing,
 )
 from .bronze_integrity import inspect_untrusted_payload
+from .bronze_profiles import BronzeAdmissionProfile
 from .bronze_raw_evidence import (
     RawEvidenceManifest,
     RawEvidenceState,
@@ -487,6 +488,7 @@ def _resolve_or_create_admission_pair(
     payload_path: Path,
     actor: str,
     decided_at: datetime,
+    profile: BronzeAdmissionProfile | None,
 ) -> tuple[BronzeAdmissionRecord, BronzeAdmissionRecord]:
     """Reuse an acquisition admission ledger or create its initial pair."""
 
@@ -518,7 +520,7 @@ def _resolve_or_create_admission_pair(
         receipt_path=receipt_path,
         receipt=receipt,
     )
-    evaluated = evaluate_bronze_payload(payload_path, receipt)
+    evaluated = evaluate_bronze_payload(payload_path, receipt, profile=profile)
     admission = persist_admission_decision(
         create_admission_decision(
             acquisition_id=evaluated.acquisition_id,
@@ -695,6 +697,7 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals,too-many-statements]
     transformation_completed_at: datetime | None = None,
     source_records: SourceRecordBatch | None = None,
     payload_store: PayloadStore | None = None,
+    admission_profile: BronzeAdmissionProfile | None = None,
 ) -> BronzeAcquisition | BronzeLanding:
     """Stage, admit, and project a payload only after acceptance."""
 
@@ -730,6 +733,11 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals,too-many-statements]
         expected_sha256=bound.payload.sha256,
         declared_length=declared_length,
         acquisition_id=temporal.acquisition_id,
+        text_encoding=(
+            "utf-8"
+            if admission_profile is None
+            else admission_profile.csv_encoding
+        ),
     )
     stored = selected_store.store(
         payload,
@@ -806,6 +814,7 @@ def land_bronze_payload(  # ruff: ignore[too-many-locals,too-many-statements]
         payload_path=payload_path,
         actor=admission_actor,
         decided_at=staged_at,
+        profile=admission_profile,
     )
     acquisition = BronzeAcquisition(
         payload_path=payload_path,
