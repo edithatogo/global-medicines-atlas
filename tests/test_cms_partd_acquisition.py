@@ -3,14 +3,16 @@
 from __future__ import annotations
 
 import json
+import zipfile
 from hashlib import sha256
 from pathlib import Path
 
 import pytest
-from pydantic import ValidationError
+from pydantic import AnyHttpUrl, ValidationError
 
 from global_medicines_atlas.cms_partd_acquisition import (
     CMSPartDAuthorization,
+    inspect_cms_partd_payload,
     parse_cms_partd_inventory,
 )
 
@@ -247,4 +249,37 @@ def test_catalog_parser_fails_closed(payload: bytes, message: str) -> None:
     with pytest.raises(ValueError, match=message):
         parse_cms_partd_inventory(
             payload, _catalog(SPENDING_URLS), authorization=authorization
+        )
+
+
+def test_streaming_payload_evidence_preserves_archive_members(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "release.zip"
+    with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr("formulary.csv", b"plan_id,ndc\nP1,0001\n")
+        archive.writestr("pricing.csv", b"plan_id,cost\nP1,1.25\n")
+    evidence = inspect_cms_partd_payload(
+        path,
+        url=AnyHttpUrl(_formulary_urls(1)[0]),
+        family="formulary",
+    )
+    assert evidence.byte_count == path.stat().st_size
+    assert evidence.sha256 == sha256(path.read_bytes()).hexdigest()
+    assert [member.path for member in evidence.archive_members] == [
+        "formulary.csv",
+        "pricing.csv",
+    ]
+
+
+@pytest.mark.parametrize("member", ["../escape.csv", "/absolute.csv", "C:/x.csv"])
+def test_streaming_payload_evidence_rejects_unsafe_members(
+    tmp_path: Path, member: str
+) -> None:
+    path = tmp_path / "unsafe.zip"
+    with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr(member, b"unsafe")
+    with pytest.raises(ValueError, match="unsafe member path"):
+        inspect_cms_partd_payload(
+            path, url=AnyHttpUrl(_formulary_urls(1)[0]), family="formulary"
         )

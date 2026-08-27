@@ -3,9 +3,11 @@
 from __future__ import annotations
 
 import json
+import zipfile
 from datetime import date
 from hashlib import sha256
 from html.parser import HTMLParser
+from pathlib import Path, PurePosixPath
 from typing import Literal, cast
 
 from pydantic import AnyHttpUrl, Field, model_validator
@@ -61,13 +63,13 @@ class CMSPartDAuthorization(FrozenModel):
                 raise ValueError(
                     "pending CMS Part D decision cannot authorize payloads"
                 )
-        elif self.decision_status == "approved_internal" and (
-            self.decision_date is None
-            or not self.acquisition_authorized
-            or not self.internal_retention_authorized
-            or self.public_release_authorized
-            or self.external_publication_authorized
-        ):
+        elif self.decision_status == "approved_internal" and not all((
+            self.decision_date is not None,
+            self.acquisition_authorized,
+            self.internal_retention_authorized,
+            not self.public_release_authorized,
+            not self.external_publication_authorized,
+        )):
             raise ValueError(
                 "approved CMS Part D acquisition requires dated authority"
             )
@@ -108,6 +110,25 @@ class CMSPartDInventory(FrozenModel):
     formulary_urls: tuple[AnyHttpUrl, ...]
     spending_resource_count: int
     spending_urls: tuple[AnyHttpUrl, ...]
+
+
+class CMSPartDArchiveMember(FrozenModel):
+    """One source-native file retained inside a formulary release ZIP."""
+
+    path: str = Field(min_length=1)
+    byte_count: int = Field(ge=0)
+    compressed_byte_count: int = Field(ge=0)
+    crc32: str = Field(pattern=r"^[0-9a-f]{8}$")
+
+
+class CMSPartDPayloadEvidence(FrozenModel):
+    """Streaming evidence for one exact CMS inventory payload."""
+
+    url: AnyHttpUrl
+    family: Literal["formulary", "spending"]
+    sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    byte_count: int = Field(gt=0)
+    archive_members: tuple[CMSPartDArchiveMember, ...] = ()
 
 
 class _JSONLD(HTMLParser):
@@ -173,6 +194,72 @@ def _digest(urls: tuple[AnyHttpUrl, ...]) -> str:
     return sha256(
         ("\n".join(str(url) for url in urls) + "\n").encode()
     ).hexdigest()
+
+
+def _path_digest(path: Path) -> tuple[str, int]:
+    digest = sha256()
+    byte_count = 0
+    with path.open("rb") as handle:
+        while chunk := handle.read(8 * 1024 * 1024):
+            digest.update(chunk)
+            byte_count += len(chunk)
+    return digest.hexdigest(), byte_count
+
+
+def _safe_member_path(name: str) -> str:
+    normalized = name.replace("\\", "/")
+    member = PurePosixPath(normalized)
+    if (
+        not normalized
+        or normalized.startswith("/")
+        or ".." in member.parts
+        or (member.parts and ":" in member.parts[0])
+    ):
+        raise ValueError("CMS Part D archive contains an unsafe member path")
+    return normalized
+
+
+def inspect_cms_partd_payload(
+    path: Path,
+    *,
+    url: AnyHttpUrl,
+    family: Literal["formulary", "spending"],
+) -> CMSPartDPayloadEvidence:
+    """Digest a payload without loading multi-gigabyte releases into memory."""
+    digest, byte_count = _path_digest(path)
+    members: list[CMSPartDArchiveMember] = []
+    if family == "formulary":
+        observed: set[str] = set()
+        with zipfile.ZipFile(path) as archive:
+            for info in archive.infolist():
+                member_path = _safe_member_path(info.filename)
+                if member_path in observed:
+                    raise ValueError(
+                        "CMS Part D archive contains duplicate member paths"
+                    )
+                observed.add(member_path)
+                if info.flag_bits & 0x1:
+                    raise ValueError(
+                        "CMS Part D archive contains an encrypted member"
+                    )
+                if not info.is_dir():
+                    members.append(
+                        CMSPartDArchiveMember(
+                            path=member_path,
+                            byte_count=info.file_size,
+                            compressed_byte_count=info.compress_size,
+                            crc32=f"{info.CRC:08x}",
+                        )
+                    )
+        if not members:
+            raise ValueError("CMS Part D formulary archive is empty")
+    return CMSPartDPayloadEvidence(
+        url=url,
+        family=family,
+        sha256=digest,
+        byte_count=byte_count,
+        archive_members=tuple(members),
+    )
 
 
 def parse_cms_partd_inventory(
