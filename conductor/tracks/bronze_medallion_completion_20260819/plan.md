@@ -487,6 +487,7 @@ for credentialed or rights-unresolved sources.
     - [x] Preserve physical source line numbers when blank tabular rows are skipped
     - [x] Reject unknown codec names before admission and treat lookup failures as fail-closed parse findings
     - [x] Assign the French parser tests to the exhaustive Test-Goblin inventory
+    - [x] Record PR [#328](https://github.com/edithatogo/global-medicines-atlas/pull/328) head `ab7682cb1262321df7e277147b4a1ce732b5f595`, 37 passing hosted checks, and merged SHA `10daa783c6acf462059c35c6e2a409f1f990ef7f`
 - [~] Task: Expand authoritative global pharmacovigilance sources (Prompt 35)
     - [x] Preserve VigiBase as subscription-restricted and independently excluded from public-source Bronze claims
     - [x] Qualify the current MHRA Yellow Card, TGA DAEN, Canada Vigilance, and PMDA public surfaces from official metadata
