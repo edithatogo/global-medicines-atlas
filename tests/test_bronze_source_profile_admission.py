@@ -269,3 +269,28 @@ def test_profile_schema_is_versioned_and_bounded() -> None:
         BronzeAdmissionProfile(profile_id="x", csv_delimiter="||")
     with pytest.raises(ValueError, match="archive_type"):
         BronzeAdmissionProfile(profile_id="x", archive_type="rar")
+    with pytest.raises(ValueError, match="registered codec"):
+        BronzeAdmissionProfile(profile_id="x", csv_encoding="not-a-codec")
+
+
+def test_cp1252_tabular_profile_does_not_weaken_generic_admission(
+    tmp_path: Path,
+) -> None:
+    payload = b"identifiant\tlibell\xe9\r\n1\tcaf\xe9\r\n"
+    generic_root = tmp_path / "generic"
+    profiled_root = tmp_path / "profiled"
+    generic_root.mkdir()
+    profiled_root.mkdir()
+    generic = _evaluate(payload, generic_root)
+    profiled = _evaluate(
+        payload,
+        profiled_root,
+        _profile(
+            expected_media=("csv",),
+            csv_delimiter="\t",
+            csv_encoding="cp1252",
+        ),
+    )
+
+    assert generic.state is BronzeAdmissionState.QUARANTINED
+    assert profiled.state is BronzeAdmissionState.ACCEPTED

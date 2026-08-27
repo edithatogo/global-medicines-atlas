@@ -404,13 +404,15 @@ def _check_xml(collector: _Collector, payload: bytes) -> None:
     collector.ok("parse", "XML parsed under fail-closed policy")
 
 
-def _check_csv(collector: _Collector, payload: bytes) -> None:
+def _check_csv(
+    collector: _Collector, payload: bytes, *, text_encoding: str = "utf-8"
+) -> None:
     if b"\x00" in payload:
         collector.fail("parse", "malformed_payload", "CSV contains NUL bytes")
         return
     try:
-        rows = list(csv.reader(StringIO(payload.decode("utf-8"))))
-    except (UnicodeDecodeError, csv.Error) as error:
+        rows = list(csv.reader(StringIO(payload.decode(text_encoding))))
+    except (LookupError, UnicodeDecodeError, csv.Error) as error:
         collector.fail(
             "parse",
             "malformed_payload",
@@ -427,6 +429,8 @@ def _check_document(
     collector: _Collector,
     payload: bytes,
     sniffed: str,
+    *,
+    text_encoding: str,
 ) -> None:
     if sniffed == "json":
         _check_json(collector, payload)
@@ -435,7 +439,7 @@ def _check_document(
         _check_xml(collector, payload)
         return
     if sniffed == "csv":
-        _check_csv(collector, payload)
+        _check_csv(collector, payload, text_encoding=text_encoding)
         return
     collector.ok("parse", "opaque bytes preserved without parser claim")
 
@@ -450,6 +454,7 @@ def inspect_untrusted_payload(
     previous_content_id: str | None = None,
     previous_acquisition_id: str | None = None,
     acquisition_id: str | None = None,
+    text_encoding: str = "utf-8",
 ) -> IntegrityInspection:
     """Inspect bytes in place; never rewrite or delete the payload."""
 
@@ -470,7 +475,12 @@ def inspect_untrusted_payload(
         acquisition_id=acquisition_id,
     )
     _check_archive(collector, payload, sniffed)
-    _check_document(collector, payload, sniffed)
+    _check_document(
+        collector,
+        payload,
+        sniffed,
+        text_encoding=text_encoding,
+    )
     return IntegrityInspection(
         content_id=content_id,
         sniffed_kind=sniffed,

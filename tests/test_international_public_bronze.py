@@ -28,9 +28,9 @@ def _archive(root: Path) -> tuple[Path, Path]:
         elif source_id == "eu-union-register":
             name = "ods_products.json"
             payload = b'{"data":[{"URI":"urn:example:1","name":"one"}]}\n'
-        elif source_id == "fr-bdpm":
+        elif source_id in {"fr-bdpm", "fr-bdpm-smr-asmr"}:
             name = "source.txt"
-            payload = b"label;value\ncaf\xe9;1\n"
+            payload = b"label\tvalue\ncaf\xe9\t1\n"
         else:
             name = "source.bin"
             payload = f"{source_id}\n".encode()
@@ -89,14 +89,14 @@ def test_qualifies_source_native_files_and_excludes_derived_rxnorm(
 
     assert result["public_manifest_files_verified"] == 10
     assert result["source_native_file_count"] == 8
-    assert result["accepted_admission_count"] == 7
-    assert result["quarantined_admission_count"] == 1
-    assert result["recovered_acquisition_count"] == 7
-    assert result["incomplete_quarantined_recovery_count"] == 1
-    assert result["partially_quarantined_source_ids"] == ["fr-bdpm"]
-    assert len(result["fully_accepted_source_ids"]) == 7
-    assert result["source_record_projection_count"] == 1
-    assert result["source_record_parquet_pairs_byte_identical"] == 1
+    assert result["accepted_admission_count"] == 8
+    assert result["quarantined_admission_count"] == 0
+    assert result["recovered_acquisition_count"] == 8
+    assert result["incomplete_quarantined_recovery_count"] == 0
+    assert result["partially_quarantined_source_ids"] == []
+    assert len(result["fully_accepted_source_ids"]) == 8
+    assert result["source_record_projection_count"] == 3
+    assert result["source_record_parquet_pairs_byte_identical"] == 3
     assert result["derived_only_source_ids"] == [
         "global-rxnorm",
         "us-rxnorm-api",
@@ -105,7 +105,8 @@ def test_qualifies_source_native_files_and_excludes_derived_rxnorm(
     assert any(
         item["path"].endswith("source.txt")
         and item["landing_media_hint"] == "bin"
-        and item["admission"] == "quarantined"
+        and item["admission"] == "accepted"
+        and item["source_record_count"] == 2
         and item["document_manifest"] is None
         for item in result["items"]
     )

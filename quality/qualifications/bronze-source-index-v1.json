@@ -9,17 +9,17 @@
   },
   "evidence_scope_counts": {
     "governed_fixture": 12,
-    "live_receipt": 16,
-    "none": 143,
+    "live_receipt": 18,
+    "none": 141,
     "parser_contract": 1
   },
   "generated_from": "src/global_medicines_atlas/data/medicine_source_catalog.json",
   "index_presence_implies_coverage": false,
   "landing_disposition_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 29,
+    "landed_and_evidenced": 31,
     "manual_only_documented_acquisition": 92,
-    "rights_blocked": 34,
+    "rights_blocked": 32,
     "temporarily_unavailable": 2
   },
   "missing_source_is_negative_evidence": false,
@@ -31,8 +31,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:da40e8953ef99de541235d581e19dfdf8c53d8bc40a6401bc6bab36a81606ae6",
-  "snapshot_sha256": "da40e8953ef99de541235d581e19dfdf8c53d8bc40a6401bc6bab36a81606ae6",
+  "snapshot_id": "sha256:5a8d2e9182e0545370a7cdcfa4b3f3c8821c7eeb1dd0b7a89c16d3a34fe09e02",
+  "snapshot_sha256": "5a8d2e9182e0545370a7cdcfa4b3f3c8821c7eeb1dd0b7a89c16d3a34fe09e02",
   "source_count": 172,
   "sources": [
     {
@@ -1979,11 +1979,11 @@
       "api_url": "",
       "authentication": "none",
       "authority": "French Ministry of Health",
-      "current_landing_disposition": "rights_blocked",
+      "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement",
       "download_url": "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "source_native"
       ],
@@ -2019,11 +2019,11 @@
       "api_url": "",
       "authentication": "none",
       "authority": "French Ministry of Health and HAS",
-      "current_landing_disposition": "rights_blocked",
+      "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement",
       "download_url": "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "source_native"
       ],

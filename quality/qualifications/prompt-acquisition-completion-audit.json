@@ -11,10 +11,10 @@
   "program_completion": "incomplete_live_acquisition",
   "queue_state_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 29,
+    "landed_and_evidenced": 31,
     "manual_only_documented_acquisition": 92,
     "not_yet_implemented": 0,
-    "rights_blocked": 34,
+    "rights_blocked": 32,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 2
   },

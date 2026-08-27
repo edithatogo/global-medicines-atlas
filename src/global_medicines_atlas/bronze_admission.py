@@ -245,6 +245,7 @@ def evaluate_bronze_payload(
         expected_sha256=receipt.payload.sha256,
         declared_length=declared_length,
         acquisition_id=temporal.acquisition_id,
+        text_encoding="utf-8" if profile is None else profile.csv_encoding,
     )
     if inspection.blocking:
         state = BronzeAdmissionState.QUARANTINED

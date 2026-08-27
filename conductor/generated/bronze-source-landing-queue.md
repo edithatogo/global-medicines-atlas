@@ -7,9 +7,9 @@ Silver transformations included: **no**.
 
 ## State summary
 
-- `landed_and_evidenced`: 29
+- `landed_and_evidenced`: 31
 - `temporarily_unavailable`: 2
-- `rights_blocked`: 34
+- `rights_blocked`: 32
 - `credentialed_and_excluded`: 15
 - `manual_only_documented_acquisition`: 92
 - `superseded_by_reused_source`: 0
@@ -34,8 +34,8 @@ Silver transformations included: **no**.
 - [ ] `eu-ema-orphan` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `eu-ema-referrals` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `eu-union-register` — `landed_and_evidenced`; verify receipt freshness on schedule.
-- [ ] `fr-bdpm` — `rights_blocked`; record source-specific retention and transformation rights.
-- [ ] `fr-bdpm-smr-asmr` — `rights_blocked`; record source-specific retention and transformation rights.
+- [x] `fr-bdpm` — `landed_and_evidenced`; verify receipt freshness on schedule.
+- [x] `fr-bdpm-smr-asmr` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `gb-emit` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `gb-nhs-drug-tariff` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `global-who-wla` — `rights_blocked`; record source-specific retention and transformation rights.
