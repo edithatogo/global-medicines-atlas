@@ -81,8 +81,8 @@ def test_inventory_binds_both_public_resource_families() -> None:
     assert (
         sum(str(url).endswith(".csv") for url in inventory.spending_urls) == 1
     )
-    with pytest.raises(PermissionError, match="decision is pending"):
-        authorization.require_payload_authority()
+    authorization.require_payload_authority()
+    authorization.require_publication_authority()
 
 
 def test_configured_spending_inventory_matches_current_official_resources() -> (
@@ -101,7 +101,7 @@ def test_configured_spending_inventory_matches_current_official_resources() -> (
     ("updates", "message"),
     [
         ({"acquisition_authorized": True}, "pending CMS Part D decision"),
-        ({"public_release_authorized": True}, "separately gated"),
+        ({"public_release_authorized": True}, "pending CMS Part D decision"),
         ({"agreement_url": "https://example.test/terms"}, "official hosts"),
         ({"license_url": "https://example.test/license"}, "licence identity"),
     ],
@@ -110,7 +110,15 @@ def test_authorization_rejects_scope_widening(
     updates: dict[str, object], message: str
 ) -> None:
     raw = json.loads(AUTHORIZATION.read_text(encoding="utf-8"))
-    raw.update(updates)
+    raw.update({
+        "decision_status": "pending",
+        "decision_date": None,
+        "acquisition_authorized": False,
+        "internal_retention_authorized": False,
+        "public_release_authorized": False,
+        "external_publication_authorized": False,
+        **updates,
+    })
     with pytest.raises(ValidationError, match=message):
         CMSPartDAuthorization.model_validate(raw)
 
@@ -121,13 +129,40 @@ def test_approved_internal_scope_requires_date_and_retention() -> None:
         decision_date="2026-08-21",
         acquisition_authorized=True,
         internal_retention_authorized=True,
+        public_release_authorized=False,
+        external_publication_authorized=False,
     )
     approved.require_payload_authority()
     with pytest.raises(ValidationError, match="requires dated authority"):
         _authorization(
             decision_status="approved_internal",
+            decision_date=None,
             acquisition_authorized=True,
             internal_retention_authorized=True,
+            public_release_authorized=False,
+            external_publication_authorized=False,
+        )
+
+
+def test_approved_public_scope_requires_every_authority() -> None:
+    approved = _authorization(
+        decision_status="approved_public",
+        decision_date="2026-08-27",
+        acquisition_authorized=True,
+        internal_retention_authorized=True,
+        public_release_authorized=True,
+        external_publication_authorized=True,
+    )
+    approved.require_payload_authority()
+    approved.require_publication_authority()
+    with pytest.raises(ValidationError, match="approved public CMS Part D"):
+        _authorization(
+            decision_status="approved_public",
+            decision_date="2026-08-27",
+            acquisition_authorized=True,
+            internal_retention_authorized=True,
+            public_release_authorized=True,
+            external_publication_authorized=False,
         )
 
 

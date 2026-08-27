@@ -441,9 +441,9 @@ for credentialed or rights-unresolved sources.
     - [x] Resolve the official corpus to 30 quarterly formulary ZIP releases through Q2 2026 and the three-resource 2024 annual spending surface
     - [x] Replace the generic CMS terms gap with the dataset-specific government-works licence record and formulary Agreement for Use
     - [x] Preserve plan/population exclusions, gross-versus-net spending, preliminary-versus-final, suppression, and source-native measure boundaries
-    - [ ] Obtain the maintainer's source-specific acceptance before payload acquisition and retention
+    - [x] Obtain the maintainer's source-specific acceptance before payload acquisition and retention; approved public for the exact inventory-bound corpus on 2026-08-27
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
-    - [ ] Keep public release and external publication separately gated
+    - [x] Keep public release and external publication separately gated; the maintainer approved attributed public release and external publication on 2026-08-27 subject to the CMS Agreement for Use and fail-closed interpretation boundaries
 - [~] Task: Acquire Nordic medicine utilisation aggregates (Prompt 33)
     - [x] Correct the three independent public access states without treating aggregate outputs as person-level registry access
     - [x] Lock Denmark's 1996–2025 metadata-only bulk inventory and distinguish it from interactive utilisation result exports
