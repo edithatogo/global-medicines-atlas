@@ -479,10 +479,14 @@ for credentialed or rights-unresolved sources.
     - [x] Generate the committed aggregate qualification from the live runner instead of manually transcribing results
     - [x] Preserve eight Latin-1 French delimiter payloads as quarantined B2 evidence rather than weakening UTF-8 inspection
     - [x] Record PR [#326](https://github.com/edithatogo/global-medicines-atlas/pull/326) head `6201559019c0d3d2611cc08987210672f854323a`, 37 passing hosted checks, and merged SHA `19d71f1573b1699101b54494fec2c681e0eec923`
-- [~] Task: Qualify the French public archive with an encoding-explicit source parser
-    - [ ] Keep generic UTF-8 inspection fail closed and require an explicit source profile before admitting CP1252 tabular text
-    - [ ] Preserve every unlabeled source field, row order, raw payload byte and acquisition identity in the source-native projection
-    - [ ] Re-run clean-room recovery and advance only the two receipt-backed French source identities
+- [x] Task: Qualify the French public archive with an encoding-explicit source parser (`8c3abd3`)
+    - [x] Keep generic UTF-8 inspection fail closed and require an explicit source profile before admitting CP1252 tabular text
+    - [x] Preserve every unlabeled source field, row order, raw payload byte and acquisition identity in the source-native projection
+    - [x] Re-run clean-room recovery and advance only the two receipt-backed French source identities
+- [x] Task: Review Fixes for French public Bronze tables (`8c3abd3`)
+    - [x] Preserve physical source line numbers when blank tabular rows are skipped
+    - [x] Reject unknown codec names before admission and treat lookup failures as fail-closed parse findings
+    - [x] Assign the French parser tests to the exhaustive Test-Goblin inventory
 - [~] Task: Expand authoritative global pharmacovigilance sources (Prompt 35)
     - [x] Preserve VigiBase as subscription-restricted and independently excluded from public-source Bronze claims
     - [x] Qualify the current MHRA Yellow Card, TGA DAEN, Canada Vigilance, and PMDA public surfaces from official metadata
