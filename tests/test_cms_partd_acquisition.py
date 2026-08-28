@@ -3,14 +3,17 @@
 from __future__ import annotations
 
 import json
+import stat
 import zipfile
 import zlib
+from collections.abc import Callable
 from hashlib import sha256
 from pathlib import Path
 
 import pytest
 from pydantic import AnyHttpUrl, ValidationError
 
+from global_medicines_atlas import cms_partd_acquisition as cms
 from global_medicines_atlas.cms_partd_acquisition import (
     CMSPartDAuthorization,
     inspect_cms_partd_payload,
@@ -358,6 +361,68 @@ def test_streaming_payload_evidence_reads_member_bytes_for_crc(
     path.write_bytes(corrupted)
 
     with pytest.raises((ValueError, zipfile.BadZipFile, zlib.error)):
+        inspect_cms_partd_payload(
+            path,
+            url=AnyHttpUrl(_formulary_urls(1)[0]),
+            family="formulary",
+        )
+
+
+@pytest.mark.parametrize(
+    ("configure", "message", "total"),
+    [
+        (lambda info: setattr(info, "flag_bits", 1), "encrypted", 0),
+        (
+            lambda info: (
+                setattr(info, "create_system", 3),
+                setattr(info, "external_attr", stat.S_IFLNK << 16),
+            ),
+            "symbolic link",
+            0,
+        ),
+        (
+            lambda info: setattr(
+                info, "file_size", cms._CMS_ZIP_MAX_MEMBER_BYTES + 1
+            ),
+            "member byte limit",
+            0,
+        ),
+        (
+            lambda _info: None,
+            "expanded byte limit",
+            cms._CMS_ZIP_MAX_EXPANDED_BYTES + 1,
+        ),
+        (
+            lambda info: (
+                setattr(info, "file_size", cms._CMS_ZIP_MAX_RATIO + 1),
+                setattr(info, "compress_size", 1),
+            ),
+            "decompression ratio",
+            0,
+        ),
+    ],
+)
+def test_streaming_payload_evidence_enforces_member_limits(
+    configure: Callable[[zipfile.ZipInfo], object], message: str, total: int
+) -> None:
+    info = zipfile.ZipInfo("member.csv")
+    configure(info)
+    with pytest.raises(ValueError, match=message):
+        cms._validate_cms_zip_info(
+            info,
+            observed=set(),
+            total_expanded_bytes=total,
+        )
+
+
+def test_streaming_payload_evidence_enforces_entry_limit(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    path = tmp_path / "release.zip"
+    with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr("member.csv", b"value")
+    monkeypatch.setattr(cms, "_CMS_ZIP_MAX_ENTRIES", 0)
+    with pytest.raises(ValueError, match="entry count limit"):
         inspect_cms_partd_payload(
             path,
             url=AnyHttpUrl(_formulary_urls(1)[0]),
