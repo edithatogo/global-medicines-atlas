@@ -83,11 +83,14 @@ def qualify(
                 "byte_count": evidence.byte_count,
                 "archive_member_count": len(evidence.archive_members),
             })
-            member_rows.extend({
-                "payload_sha256": evidence.sha256,
-                "source_url": str(url),
-                **member.model_dump(mode="json"),
-            } for member in evidence.archive_members)
+            member_rows.extend(
+                {
+                    "payload_sha256": evidence.sha256,
+                    "source_url": str(url),
+                    **member.model_dump(mode="json"),
+                }
+                for member in evidence.archive_members
+            )
     output.mkdir(parents=True, exist_ok=True)
     payload_parquet = output / "cms-partd-payload-manifest.parquet"
     member_parquet = output / "cms-partd-archive-members.parquet"
@@ -129,8 +132,12 @@ def qualify(
         "payload_count": len(payload_rows),
         "payload_byte_count": total_bytes,
         "archive_member_count": len(member_rows),
-        "payload_manifest_sha256": sha256(payload_parquet.read_bytes()).hexdigest(),
-        "archive_member_manifest_sha256": sha256(member_parquet.read_bytes()).hexdigest(),
+        "payload_manifest_sha256": sha256(
+            payload_parquet.read_bytes()
+        ).hexdigest(),
+        "archive_member_manifest_sha256": sha256(
+            member_parquet.read_bytes()
+        ).hexdigest(),
         "private_archive_sha256": archive_sha256,
         "private_archive_byte_count": archive_byte_count,
         "clean_room_recovered_payload_count": recovered_count,

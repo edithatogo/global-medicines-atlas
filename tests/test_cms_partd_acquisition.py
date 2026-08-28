@@ -274,7 +274,9 @@ def test_streaming_payload_evidence_preserves_archive_members(
     ]
 
 
-@pytest.mark.parametrize("member", ["../escape.csv", "/absolute.csv", "C:/x.csv"])
+@pytest.mark.parametrize(
+    "member", ["../escape.csv", "/absolute.csv", "C:/x.csv"]
+)
 def test_streaming_payload_evidence_rejects_unsafe_members(
     tmp_path: Path, member: str
 ) -> None:

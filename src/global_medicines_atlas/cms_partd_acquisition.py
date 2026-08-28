@@ -303,9 +303,8 @@ def recover_cms_partd_private_archive(
             for relative in expected_sha256
         }
         members = archive.getmembers()
-        if (
-            {member.name for member in members} != expected_members
-            or any(not member.isfile() for member in members)
+        if {member.name for member in members} != expected_members or any(
+            not member.isfile() for member in members
         ):
             raise ValueError("CMS Part D private archive inventory diverged")
         archive.extractall(destination, filter="data")
