@@ -1,0 +1,291 @@
+name: Acquire and publish CMS Part D corpus
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: cms-partd-publication
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  HF_DATASET: edithatogo/global-medicines-atlas-cms-partd-20260827
+
+jobs:
+  inventory:
+    name: Bind exact public inventory
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      matrix: ${{ steps.inventory.outputs.matrix }}
+    steps:
+      - name: Check out publication contracts
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+
+      - name: Resolve and validate catalogue resources
+        id: inventory
+        run: |
+          set -euo pipefail
+          mkdir -p inventory
+          curl --fail --show-error --silent --location --retry 5 \
+            'https://catalog.data.gov/dataset/quarterly-prescription-drug-plan-formulary-pharmacy-network-and-pricing-information' \
+            --output inventory/formulary.html
+          curl --fail --show-error --silent --location --retry 5 \
+            'https://catalog.data.gov/dataset/medicare-part-d-spending-by-drug' \
+            --output inventory/spending.html
+          uv run --frozen --python 3.14.6 python - <<'PY'
+          import json
+          import os
+          from hashlib import sha256
+          from pathlib import Path, PurePosixPath
+
+          from global_medicines_atlas.cms_partd_acquisition import (
+              CMSPartDAuthorization,
+              parse_cms_partd_inventory,
+          )
+
+          auth = CMSPartDAuthorization.model_validate_json(
+              Path('quality/qualifications/cms-partd-acquisition-authorization.json').read_bytes()
+          )
+          auth.require_payload_authority()
+          auth.require_publication_authority()
+          inventory = parse_cms_partd_inventory(
+              Path('inventory/formulary.html').read_bytes(),
+              Path('inventory/spending.html').read_bytes(),
+              authorization=auth,
+          )
+          include = []
+          for family, urls in (
+              ('formulary', inventory.formulary_urls),
+              ('spending', inventory.spending_urls),
+          ):
+              for raw_url in urls:
+                  url = str(raw_url)
+                  identity = sha256(url.encode()).hexdigest()
+                  basename = PurePosixPath(url.split('?', 1)[0]).name or 'data'
+                  include.append({
+                      'family': family,
+                      'url': url,
+                      'identity': identity,
+                      'filename': basename,
+                      'hub_path': f'data/{family}/{identity}/{basename}',
+                  })
+          matrix = json.dumps({'include': include}, separators=(',', ':'))
+          with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as output:
+              output.write(f'matrix={matrix}\n')
+          PY
+
+  initialize:
+    name: Initialize public Hugging Face dataset
+    needs: inventory
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Create public dataset and attribution card
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -n "${HF_TOKEN:-}"
+          python3 -m pip install --disable-pip-version-check --quiet huggingface-hub==1.14.0
+          cat > README.md <<'EOF'
+          ---
+          license: other
+          pretty_name: Global Medicines Atlas - CMS Part D public source corpus
+          ---
+
+          # CMS Part D public source corpus
+
+          Exact official public resources for the CMS Quarterly Prescription Drug Plan
+          Formulary, Pharmacy Network, and Pricing Information catalogue through Q2 2026,
+          plus the three catalogue resources for Medicare Part D Spending by Drug for the
+          2024 reporting period.
+
+          CMS is the source. The formulary resources remain subject to the CMS Agreement
+          for Use. Uses must be accurate and non-misleading, preserve source dates,
+          specification changes, suppression, and population boundaries, and must not
+          characterize these data as net prices, total United States medicine utilization,
+          or schema-equivalent across plan years.
+
+          Missing coverage is not negative evidence. The two Data API URLs are default
+          representations and are not described as complete datasets; the official CSV is
+          retained separately.
+          EOF
+          python3 - <<'PY'
+          import os
+          from huggingface_hub import HfApi
+
+          api = HfApi(token=os.environ['HF_TOKEN'])
+          repo = os.environ['HF_DATASET']
+          api.create_repo(repo, repo_type='dataset', private=False, exist_ok=True)
+          api.upload_file(
+              repo_id=repo,
+              repo_type='dataset',
+              path_or_fileobj='README.md',
+              path_in_repo='README.md',
+              commit_message='Initialize attributed CMS Part D public corpus',
+          )
+          PY
+
+  acquire_publish:
+    name: Publish ${{ matrix.family }} ${{ matrix.filename }}
+    needs: [inventory, initialize]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 30
+      matrix: ${{ fromJSON(needs.inventory.outputs.matrix) }}
+    steps:
+      - name: Check out qualification code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+
+      - name: Download and inspect exact source payload
+        env:
+          SOURCE_URL: ${{ matrix.url }}
+          SOURCE_FAMILY: ${{ matrix.family }}
+          SOURCE_IDENTITY: ${{ matrix.identity }}
+          HUB_PATH: ${{ matrix.hub_path }}
+        run: |
+          set -euo pipefail
+          mkdir -p payload receipt
+          curl --fail --show-error --silent --location --retry 20 --retry-all-errors \
+            --connect-timeout 30 --max-time 18000 \
+            "$SOURCE_URL" --output "payload/$SOURCE_IDENTITY"
+          uv run --frozen --python 3.14.6 python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          from global_medicines_atlas.cms_partd_acquisition import inspect_cms_partd_payload
+
+          path = Path('payload') / os.environ['SOURCE_IDENTITY']
+          evidence = inspect_cms_partd_payload(
+              path,
+              url=os.environ['SOURCE_URL'],
+              family=os.environ['SOURCE_FAMILY'],
+          )
+          receipt = {
+              **evidence.model_dump(mode='json'),
+              'hub_path': os.environ['HUB_PATH'],
+              'source_bytes_committed_to_git': False,
+          }
+          Path('receipt/receipt.json').write_text(
+              json.dumps(receipt, separators=(',', ':'), sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Upload verified payload directly to public Hugging Face dataset
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          SOURCE_IDENTITY: ${{ matrix.identity }}
+          HUB_PATH: ${{ matrix.hub_path }}
+        run: |
+          set -euo pipefail
+          test -n "${HF_TOKEN:-}"
+          uv run --python 3.14.6 --with huggingface-hub==1.14.0 python - <<'PY'
+          import os
+          import time
+          from pathlib import Path
+          from huggingface_hub import HfApi
+
+          api = HfApi(token=os.environ['HF_TOKEN'])
+          payload = Path('payload') / os.environ['SOURCE_IDENTITY']
+          for attempt in range(1, 7):
+              try:
+                  api.upload_file(
+                      repo_id=os.environ['HF_DATASET'],
+                      repo_type='dataset',
+                      path_or_fileobj=payload,
+                      path_in_repo=os.environ['HUB_PATH'],
+                      commit_message=f"Publish CMS Part D payload {os.environ['SOURCE_IDENTITY']}",
+                  )
+                  break
+              except Exception:
+                  if attempt == 6:
+                      raise
+                  time.sleep(attempt * 15)
+          PY
+
+      - name: Retain digest receipt only
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: cms-partd-receipt-${{ matrix.identity }}
+          path: receipt/receipt.json
+          if-no-files-found: error
+          retention-days: 7
+
+  finalize:
+    name: Publish corpus manifest
+    needs: acquire_publish
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Download digest receipts
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          pattern: cms-partd-receipt-*
+          path: receipts
+
+      - name: Build and publish exact manifest
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -n "${HF_TOKEN:-}"
+          python3 -m pip install --disable-pip-version-check --quiet huggingface-hub==1.14.0
+          python3 - <<'PY'
+          import json
+          import os
+          from datetime import UTC, datetime
+          from pathlib import Path
+          from huggingface_hub import HfApi
+
+          receipts = [
+              json.loads(path.read_text(encoding='utf-8'))
+              for path in sorted(Path('receipts').glob('**/receipt.json'))
+          ]
+          if len(receipts) != 33:
+              raise RuntimeError(f'expected 33 receipts, found {len(receipts)}')
+          manifest = {
+              'schema_id': 'global-medicines-atlas.cms-partd-public-manifest',
+              'schema_version': 1,
+              'published_at': datetime.now(UTC).isoformat(),
+              'payload_count': len(receipts),
+              'formulary_release_count': sum(r['family'] == 'formulary' for r in receipts),
+              'spending_resource_count': sum(r['family'] == 'spending' for r in receipts),
+              'agreement_for_use_applies': True,
+              'payloads': receipts,
+          }
+          Path('manifest.json').write_text(
+              json.dumps(manifest, indent=2, sort_keys=True) + '\n', encoding='utf-8'
+          )
+          api = HfApi(token=os.environ['HF_TOKEN'])
+          api.upload_file(
+              repo_id=os.environ['HF_DATASET'],
+              repo_type='dataset',
+              path_or_fileobj='manifest.json',
+              path_in_repo='manifest.json',
+              commit_message='Publish exact CMS Part D corpus manifest',
+          )
+          info = api.dataset_info(os.environ['HF_DATASET'], files_metadata=True)
+          paths = {sibling.rfilename for sibling in info.siblings}
+          expected = {'README.md', 'manifest.json', *(r['hub_path'] for r in receipts)}
+          missing = expected - paths
+          if missing:
+              raise RuntimeError(f'public dataset is missing paths: {sorted(missing)}')
+          print(info.sha)
+          PY
