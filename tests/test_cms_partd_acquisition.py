@@ -3,15 +3,23 @@
 from __future__ import annotations
 
 import json
+import stat
+import zipfile
+import zlib
+from collections.abc import Callable
 from hashlib import sha256
 from pathlib import Path
 
 import pytest
-from pydantic import ValidationError
+from pydantic import AnyHttpUrl, ValidationError
 
+from global_medicines_atlas import cms_partd_acquisition as cms
 from global_medicines_atlas.cms_partd_acquisition import (
     CMSPartDAuthorization,
+    inspect_cms_partd_payload,
     parse_cms_partd_inventory,
+    recover_cms_partd_private_archive,
+    write_cms_partd_private_archive,
 )
 
 AUTHORIZATION = (
@@ -81,8 +89,8 @@ def test_inventory_binds_both_public_resource_families() -> None:
     assert (
         sum(str(url).endswith(".csv") for url in inventory.spending_urls) == 1
     )
-    with pytest.raises(PermissionError, match="decision is pending"):
-        authorization.require_payload_authority()
+    authorization.require_payload_authority()
+    authorization.require_publication_authority()
 
 
 def test_configured_spending_inventory_matches_current_official_resources() -> (
@@ -101,7 +109,7 @@ def test_configured_spending_inventory_matches_current_official_resources() -> (
     ("updates", "message"),
     [
         ({"acquisition_authorized": True}, "pending CMS Part D decision"),
-        ({"public_release_authorized": True}, "separately gated"),
+        ({"public_release_authorized": True}, "pending CMS Part D decision"),
         ({"agreement_url": "https://example.test/terms"}, "official hosts"),
         ({"license_url": "https://example.test/license"}, "licence identity"),
     ],
@@ -110,7 +118,15 @@ def test_authorization_rejects_scope_widening(
     updates: dict[str, object], message: str
 ) -> None:
     raw = json.loads(AUTHORIZATION.read_text(encoding="utf-8"))
-    raw.update(updates)
+    raw.update({
+        "decision_status": "pending",
+        "decision_date": None,
+        "acquisition_authorized": False,
+        "internal_retention_authorized": False,
+        "public_release_authorized": False,
+        "external_publication_authorized": False,
+        **updates,
+    })
     with pytest.raises(ValidationError, match=message):
         CMSPartDAuthorization.model_validate(raw)
 
@@ -121,14 +137,58 @@ def test_approved_internal_scope_requires_date_and_retention() -> None:
         decision_date="2026-08-21",
         acquisition_authorized=True,
         internal_retention_authorized=True,
+        public_release_authorized=False,
+        external_publication_authorized=False,
     )
     approved.require_payload_authority()
+    with pytest.raises(PermissionError, match="publication is not authorized"):
+        approved.require_publication_authority()
     with pytest.raises(ValidationError, match="requires dated authority"):
         _authorization(
             decision_status="approved_internal",
+            decision_date=None,
             acquisition_authorized=True,
             internal_retention_authorized=True,
+            public_release_authorized=False,
+            external_publication_authorized=False,
         )
+
+
+def test_approved_public_scope_requires_every_authority() -> None:
+    approved = _authorization(
+        decision_status="approved_public",
+        decision_date="2026-08-27",
+        acquisition_authorized=True,
+        internal_retention_authorized=True,
+        public_release_authorized=True,
+        external_publication_authorized=True,
+    )
+    approved.require_payload_authority()
+    approved.require_publication_authority()
+    with pytest.raises(ValidationError, match="approved public CMS Part D"):
+        _authorization(
+            decision_status="approved_public",
+            decision_date="2026-08-27",
+            acquisition_authorized=True,
+            internal_retention_authorized=True,
+            public_release_authorized=True,
+            external_publication_authorized=False,
+        )
+
+
+def test_pending_scope_cannot_acquire_payloads() -> None:
+    pending = _authorization(
+        decision_status="pending",
+        decision_date=None,
+        acquisition_authorized=False,
+        internal_retention_authorized=False,
+        public_release_authorized=False,
+        external_publication_authorized=False,
+    )
+    with pytest.raises(
+        PermissionError, match="acquisition decision is pending"
+    ):
+        pending.require_payload_authority()
 
 
 @pytest.mark.parametrize(
@@ -212,4 +272,233 @@ def test_catalog_parser_fails_closed(payload: bytes, message: str) -> None:
     with pytest.raises(ValueError, match=message):
         parse_cms_partd_inventory(
             payload, _catalog(SPENDING_URLS), authorization=authorization
+        )
+
+
+def test_streaming_payload_evidence_preserves_archive_members(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "release.zip"
+    with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr("formulary.csv", b"plan_id,ndc\nP1,0001\n")
+        archive.writestr("pricing.csv", b"plan_id,cost\nP1,1.25\n")
+    evidence = inspect_cms_partd_payload(
+        path,
+        url=AnyHttpUrl(_formulary_urls(1)[0]),
+        family="formulary",
+    )
+    assert evidence.byte_count == path.stat().st_size
+    assert evidence.sha256 == sha256(path.read_bytes()).hexdigest()
+    assert [member.path for member in evidence.archive_members] == [
+        "formulary.csv",
+        "pricing.csv",
+    ]
+    assert (
+        evidence.archive_members[0].sha256
+        == sha256(b"plan_id,ndc\nP1,0001\n").hexdigest()
+    )
+
+
+@pytest.mark.parametrize(
+    "member", ["../escape.csv", "/absolute.csv", "C:/x.csv"]
+)
+def test_streaming_payload_evidence_rejects_unsafe_members(
+    tmp_path: Path, member: str
+) -> None:
+    path = tmp_path / "unsafe.zip"
+    with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr(member, b"unsafe")
+    with pytest.raises(ValueError, match="unsafe member path"):
+        inspect_cms_partd_payload(
+            path, url=AnyHttpUrl(_formulary_urls(1)[0]), family="formulary"
+        )
+
+
+def test_streaming_payload_evidence_rejects_duplicate_and_empty_archives(
+    tmp_path: Path,
+) -> None:
+    duplicate = tmp_path / "duplicate.zip"
+    with zipfile.ZipFile(duplicate, "w") as archive:
+        archive.writestr("same.csv", b"first")
+        archive.writestr("same.csv", b"second")
+    with pytest.raises(ValueError, match="duplicate member paths"):
+        inspect_cms_partd_payload(
+            duplicate,
+            url=AnyHttpUrl(_formulary_urls(1)[0]),
+            family="formulary",
+        )
+
+    empty = tmp_path / "empty.zip"
+    with zipfile.ZipFile(empty, "w"):
+        pass
+    with pytest.raises(ValueError, match="archive is empty"):
+        inspect_cms_partd_payload(
+            empty,
+            url=AnyHttpUrl(_formulary_urls(1)[0]),
+            family="formulary",
+        )
+
+
+def test_streaming_payload_evidence_reads_member_bytes_for_crc(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "corrupt.zip"
+    with zipfile.ZipFile(
+        path, "w", compression=zipfile.ZIP_DEFLATED
+    ) as archive:
+        archive.writestr("formulary.csv", b"plan_id,ndc\nP1,0001\n" * 100)
+    with zipfile.ZipFile(path) as archive:
+        info = archive.getinfo("formulary.csv")
+        offset = (
+            info.header_offset
+            + 30
+            + len(info.filename.encode())
+            + len(info.extra)
+            + max(1, info.compress_size // 2)
+        )
+    corrupted = bytearray(path.read_bytes())
+    corrupted[offset] ^= 0xFF
+    path.write_bytes(corrupted)
+
+    with pytest.raises((ValueError, zipfile.BadZipFile, zlib.error)):
+        inspect_cms_partd_payload(
+            path,
+            url=AnyHttpUrl(_formulary_urls(1)[0]),
+            family="formulary",
+        )
+
+
+@pytest.mark.parametrize(
+    ("configure", "message", "total"),
+    [
+        (lambda info: setattr(info, "flag_bits", 1), "encrypted", 0),
+        (
+            lambda info: (
+                setattr(info, "create_system", 3),
+                setattr(info, "external_attr", stat.S_IFLNK << 16),
+            ),
+            "symbolic link",
+            0,
+        ),
+        (
+            lambda info: setattr(
+                info, "file_size", cms._CMS_ZIP_MAX_MEMBER_BYTES + 1
+            ),
+            "member byte limit",
+            0,
+        ),
+        (
+            lambda _info: None,
+            "expanded byte limit",
+            cms._CMS_ZIP_MAX_EXPANDED_BYTES + 1,
+        ),
+        (
+            lambda info: (
+                setattr(info, "file_size", cms._CMS_ZIP_MAX_RATIO + 1),
+                setattr(info, "compress_size", 1),
+            ),
+            "decompression ratio",
+            0,
+        ),
+    ],
+)
+def test_streaming_payload_evidence_enforces_member_limits(
+    configure: Callable[[zipfile.ZipInfo], object], message: str, total: int
+) -> None:
+    info = zipfile.ZipInfo("member.csv")
+    configure(info)
+    with pytest.raises(ValueError, match=message):
+        cms._validate_cms_zip_info(
+            info,
+            observed=set(),
+            total_expanded_bytes=total,
+        )
+
+
+def test_streaming_payload_evidence_enforces_entry_limit(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    path = tmp_path / "release.zip"
+    with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr("member.csv", b"value")
+    monkeypatch.setattr(cms, "_CMS_ZIP_MAX_ENTRIES", 0)
+    with pytest.raises(ValueError, match="entry count limit"):
+        inspect_cms_partd_payload(
+            path,
+            url=AnyHttpUrl(_formulary_urls(1)[0]),
+            family="formulary",
+        )
+
+
+def test_private_archive_streams_and_recovers_exact_payloads(
+    tmp_path: Path,
+) -> None:
+    first = tmp_path / "first.zip"
+    second = tmp_path / "second.csv"
+    first.write_bytes(b"first")
+    second.write_bytes(b"second")
+    archive = tmp_path / "cms.private.tar"
+    digest, byte_count = write_cms_partd_private_archive(
+        (("payloads/first", first), ("payloads/second", second)), archive
+    )
+    assert digest == sha256(archive.read_bytes()).hexdigest()
+    assert byte_count == archive.stat().st_size
+    recovered = recover_cms_partd_private_archive(
+        archive,
+        tmp_path / "clean-room",
+        {
+            "payloads/first": sha256(b"first").hexdigest(),
+            "payloads/second": sha256(b"second").hexdigest(),
+        },
+    )
+    assert recovered == 2
+
+
+def test_private_archive_rejects_duplicate_or_unsafe_inputs(
+    tmp_path: Path,
+) -> None:
+    payload = tmp_path / "payload"
+    payload.write_bytes(b"payload")
+    with pytest.raises(ValueError, match="input is invalid"):
+        write_cms_partd_private_archive(
+            (("payload", payload), ("payload", payload)),
+            tmp_path / "duplicate.tar",
+        )
+    with pytest.raises(ValueError, match="unsafe member path"):
+        write_cms_partd_private_archive(
+            (("../payload", payload),), tmp_path / "unsafe.tar"
+        )
+
+    existing = tmp_path / "existing.tar"
+    existing.write_bytes(b"already present")
+    with pytest.raises(FileExistsError, match="already exists"):
+        write_cms_partd_private_archive((("payload", payload),), existing)
+
+
+def test_private_archive_recovery_fails_closed(tmp_path: Path) -> None:
+    payload = tmp_path / "payload"
+    payload.write_bytes(b"payload")
+    archive = tmp_path / "corpus.tar"
+    write_cms_partd_private_archive((("payload", payload),), archive)
+
+    occupied = tmp_path / "occupied"
+    occupied.mkdir()
+    (occupied / "existing").write_bytes(b"existing")
+    with pytest.raises(FileExistsError, match="must be empty"):
+        recover_cms_partd_private_archive(
+            archive, occupied, {"payload": sha256(b"payload").hexdigest()}
+        )
+
+    with pytest.raises(ValueError, match="inventory diverged"):
+        recover_cms_partd_private_archive(
+            archive,
+            tmp_path / "wrong-inventory",
+            {"different": sha256(b"payload").hexdigest()},
+        )
+
+    with pytest.raises(ValueError, match="digest diverged"):
+        recover_cms_partd_private_archive(
+            archive,
+            tmp_path / "wrong-digest",
+            {"payload": sha256(b"different").hexdigest()},
         )
