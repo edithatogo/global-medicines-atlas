@@ -48,7 +48,9 @@ def _load_inventory(corpus: Path) -> CMSPartDInventory:
     )
 
 
-def qualify(corpus: Path, output: Path) -> dict[str, object]:
+def qualify(
+    corpus: Path, output: Path, *, qualified_at: datetime
+) -> dict[str, object]:
     """Verify every exact payload and emit rebuildable JSON/Parquet evidence."""
     inventory = _load_inventory(corpus)
     payload_rows: list[dict[str, object]] = []
@@ -91,7 +93,7 @@ def qualify(corpus: Path, output: Path) -> dict[str, object]:
     report: dict[str, object] = {
         "schema_id": "global-medicines-atlas.cms-partd-bronze-qualification",
         "schema_version": 1,
-        "qualified_at": datetime.now(UTC).isoformat(),
+        "qualified_at": qualified_at.astimezone(UTC).isoformat(),
         "prompt_id": 31,
         "source_ids": ["us-cms-partd-formulary", "us-cms-partd-spending"],
         "decision_status": "approved_public",
@@ -122,9 +124,14 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--corpus", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--qualified-at", type=datetime.fromisoformat, required=True
+    )
     parser.add_argument("--commit", action="store_true")
     args = parser.parse_args()
-    report = qualify(args.corpus, args.output)
+    report = qualify(
+        args.corpus, args.output, qualified_at=args.qualified_at
+    )
     if args.commit:
         QUALIFICATION.write_text(
             json.dumps(report, separators=(",", ":"), sort_keys=True) + "\n",

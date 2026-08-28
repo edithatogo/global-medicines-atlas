@@ -444,6 +444,10 @@ for credentialed or rights-unresolved sources.
     - [x] Obtain the maintainer's source-specific acceptance before payload acquisition and retention; approved public for the exact inventory-bound corpus on 2026-08-27
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
     - [x] Keep public release and external publication separately gated; the maintainer approved attributed public release and external publication on 2026-08-27 subject to the CMS Agreement for Use and fail-closed interpretation boundaries
+- [~] Task: Review Fixes for CMS Part D public qualification
+    - [x] Reconcile the preflight recommendation with the maintainer's exact approved-public decision
+    - [x] Require an explicit qualification timestamp so report regeneration is deterministic
+    - [ ] Re-run qualification, clean-room recovery, archive verification, and affected validation after all exact payloads complete
 - [~] Task: Acquire Nordic medicine utilisation aggregates (Prompt 33)
     - [x] Correct the three independent public access states without treating aggregate outputs as person-level registry access
     - [x] Lock Denmark's 1996–2025 metadata-only bulk inventory and distinguish it from interactive utilisation result exports
