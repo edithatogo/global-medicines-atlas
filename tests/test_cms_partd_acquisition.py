@@ -137,6 +137,8 @@ def test_approved_internal_scope_requires_date_and_retention() -> None:
         external_publication_authorized=False,
     )
     approved.require_payload_authority()
+    with pytest.raises(PermissionError, match="publication is not authorized"):
+        approved.require_publication_authority()
     with pytest.raises(ValidationError, match="requires dated authority"):
         _authorization(
             decision_status="approved_internal",
@@ -168,6 +170,21 @@ def test_approved_public_scope_requires_every_authority() -> None:
             public_release_authorized=True,
             external_publication_authorized=False,
         )
+
+
+def test_pending_scope_cannot_acquire_payloads() -> None:
+    pending = _authorization(
+        decision_status="pending",
+        decision_date=None,
+        acquisition_authorized=False,
+        internal_retention_authorized=False,
+        public_release_authorized=False,
+        external_publication_authorized=False,
+    )
+    with pytest.raises(
+        PermissionError, match="acquisition decision is pending"
+    ):
+        pending.require_payload_authority()
 
 
 @pytest.mark.parametrize(
@@ -289,6 +306,31 @@ def test_streaming_payload_evidence_rejects_unsafe_members(
         )
 
 
+def test_streaming_payload_evidence_rejects_duplicate_and_empty_archives(
+    tmp_path: Path,
+) -> None:
+    duplicate = tmp_path / "duplicate.zip"
+    with zipfile.ZipFile(duplicate, "w") as archive:
+        archive.writestr("same.csv", b"first")
+        archive.writestr("same.csv", b"second")
+    with pytest.raises(ValueError, match="duplicate member paths"):
+        inspect_cms_partd_payload(
+            duplicate,
+            url=AnyHttpUrl(_formulary_urls(1)[0]),
+            family="formulary",
+        )
+
+    empty = tmp_path / "empty.zip"
+    with zipfile.ZipFile(empty, "w"):
+        pass
+    with pytest.raises(ValueError, match="archive is empty"):
+        inspect_cms_partd_payload(
+            empty,
+            url=AnyHttpUrl(_formulary_urls(1)[0]),
+            family="formulary",
+        )
+
+
 def test_private_archive_streams_and_recovers_exact_payloads(
     tmp_path: Path,
 ) -> None:
@@ -326,4 +368,38 @@ def test_private_archive_rejects_duplicate_or_unsafe_inputs(
     with pytest.raises(ValueError, match="unsafe member path"):
         write_cms_partd_private_archive(
             (("../payload", payload),), tmp_path / "unsafe.tar"
+        )
+
+    existing = tmp_path / "existing.tar"
+    existing.write_bytes(b"already present")
+    with pytest.raises(FileExistsError, match="already exists"):
+        write_cms_partd_private_archive((("payload", payload),), existing)
+
+
+def test_private_archive_recovery_fails_closed(tmp_path: Path) -> None:
+    payload = tmp_path / "payload"
+    payload.write_bytes(b"payload")
+    archive = tmp_path / "corpus.tar"
+    write_cms_partd_private_archive((("payload", payload),), archive)
+
+    occupied = tmp_path / "occupied"
+    occupied.mkdir()
+    (occupied / "existing").write_bytes(b"existing")
+    with pytest.raises(FileExistsError, match="must be empty"):
+        recover_cms_partd_private_archive(
+            archive, occupied, {"payload": sha256(b"payload").hexdigest()}
+        )
+
+    with pytest.raises(ValueError, match="inventory diverged"):
+        recover_cms_partd_private_archive(
+            archive,
+            tmp_path / "wrong-inventory",
+            {"different": sha256(b"payload").hexdigest()},
+        )
+
+    with pytest.raises(ValueError, match="digest diverged"):
+        recover_cms_partd_private_archive(
+            archive,
+            tmp_path / "wrong-digest",
+            {"payload": sha256(b"different").hexdigest()},
         )
