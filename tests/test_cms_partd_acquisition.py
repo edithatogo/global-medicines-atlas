@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import zipfile
+import zlib
 from hashlib import sha256
 from pathlib import Path
 
@@ -289,6 +290,10 @@ def test_streaming_payload_evidence_preserves_archive_members(
         "formulary.csv",
         "pricing.csv",
     ]
+    assert (
+        evidence.archive_members[0].sha256
+        == sha256(b"plan_id,ndc\nP1,0001\n").hexdigest()
+    )
 
 
 @pytest.mark.parametrize(
@@ -326,6 +331,35 @@ def test_streaming_payload_evidence_rejects_duplicate_and_empty_archives(
     with pytest.raises(ValueError, match="archive is empty"):
         inspect_cms_partd_payload(
             empty,
+            url=AnyHttpUrl(_formulary_urls(1)[0]),
+            family="formulary",
+        )
+
+
+def test_streaming_payload_evidence_reads_member_bytes_for_crc(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "corrupt.zip"
+    with zipfile.ZipFile(
+        path, "w", compression=zipfile.ZIP_DEFLATED
+    ) as archive:
+        archive.writestr("formulary.csv", b"plan_id,ndc\nP1,0001\n" * 100)
+    with zipfile.ZipFile(path) as archive:
+        info = archive.getinfo("formulary.csv")
+        offset = (
+            info.header_offset
+            + 30
+            + len(info.filename.encode())
+            + len(info.extra)
+            + max(1, info.compress_size // 2)
+        )
+    corrupted = bytearray(path.read_bytes())
+    corrupted[offset] ^= 0xFF
+    path.write_bytes(corrupted)
+
+    with pytest.raises((ValueError, zipfile.BadZipFile, zlib.error)):
+        inspect_cms_partd_payload(
+            path,
             url=AnyHttpUrl(_formulary_urls(1)[0]),
             family="formulary",
         )

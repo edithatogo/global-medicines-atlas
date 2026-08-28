@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import stat
 import tarfile
 import zipfile
 from datetime import date
@@ -17,6 +18,12 @@ from .models import FrozenModel
 
 _CMS_HOST = "data.cms.gov"
 _GOVERNMENT_WORKS = "https://www.usa.gov/government-works"
+_CMS_ZIP_MAX_ENTRIES = 10_000
+_CMS_ZIP_MAX_MEMBER_BYTES = 100 * 1024**3
+_CMS_ZIP_MAX_EXPANDED_BYTES = 200 * 1024**3
+_CMS_ZIP_MAX_RATIO = 200
+_ZIP_UNIX_SYSTEM = 3
+_STREAM_CHUNK_BYTES = 8 * 1024**2
 
 
 class CMSPartDAuthorization(FrozenModel):
@@ -120,6 +127,7 @@ class CMSPartDArchiveMember(FrozenModel):
     byte_count: int = Field(ge=0)
     compressed_byte_count: int = Field(ge=0)
     crc32: str = Field(pattern=r"^[0-9a-f]{8}$")
+    sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
 
 
 class CMSPartDPayloadEvidence(FrozenModel):
@@ -207,6 +215,53 @@ def _path_digest(path: Path) -> tuple[str, int]:
     return digest.hexdigest(), byte_count
 
 
+def _validate_cms_zip_info(
+    info: zipfile.ZipInfo,
+    *,
+    observed: set[str],
+    total_expanded_bytes: int,
+) -> tuple[str, int]:
+    member_path = _safe_member_path(info.filename)
+    if member_path in observed:
+        raise ValueError("CMS Part D archive contains duplicate member paths")
+    observed.add(member_path)
+    if info.flag_bits & 0x1:
+        raise ValueError("CMS Part D archive contains an encrypted member")
+    if info.create_system == _ZIP_UNIX_SYSTEM and stat.S_ISLNK(
+        info.external_attr >> 16
+    ):
+        raise ValueError("CMS Part D archive contains a symbolic link")
+    if info.file_size > _CMS_ZIP_MAX_MEMBER_BYTES:
+        raise ValueError("CMS Part D archive member byte limit exceeded")
+    total_expanded_bytes += info.file_size
+    if total_expanded_bytes > _CMS_ZIP_MAX_EXPANDED_BYTES:
+        raise ValueError("CMS Part D archive expanded byte limit exceeded")
+    if (info.file_size > 0 and info.compress_size == 0) or (
+        info.compress_size > 0
+        and info.file_size / info.compress_size > _CMS_ZIP_MAX_RATIO
+    ):
+        raise ValueError("CMS Part D archive decompression ratio exceeded")
+    return member_path, total_expanded_bytes
+
+
+def _stream_cms_zip_member(
+    archive: zipfile.ZipFile, info: zipfile.ZipInfo
+) -> str:
+    digest = sha256()
+    expanded_bytes = 0
+    with archive.open(info) as member:
+        while block := member.read(_STREAM_CHUNK_BYTES):
+            expanded_bytes += len(block)
+            if expanded_bytes > info.file_size:
+                raise ValueError(
+                    "CMS Part D archive member exceeded declared size"
+                )
+            digest.update(block)
+    if expanded_bytes != info.file_size:
+        raise ValueError("CMS Part D archive member size diverged")
+    return digest.hexdigest()
+
+
 def _safe_member_path(name: str) -> str:
     normalized = name.replace("\\", "/")
     member = PurePosixPath(normalized)
@@ -231,18 +286,19 @@ def inspect_cms_partd_payload(
     members: list[CMSPartDArchiveMember] = []
     if family == "formulary":
         observed: set[str] = set()
+        total_expanded_bytes = 0
         with zipfile.ZipFile(path) as archive:
-            for info in archive.infolist():
-                member_path = _safe_member_path(info.filename)
-                if member_path in observed:
-                    raise ValueError(
-                        "CMS Part D archive contains duplicate member paths"
-                    )
-                observed.add(member_path)
-                if info.flag_bits & 0x1:
-                    raise ValueError(
-                        "CMS Part D archive contains an encrypted member"
-                    )
+            infos = archive.infolist()
+            if len(infos) > _CMS_ZIP_MAX_ENTRIES:
+                raise ValueError(
+                    "CMS Part D archive entry count limit exceeded"
+                )
+            for info in infos:
+                member_path, total_expanded_bytes = _validate_cms_zip_info(
+                    info,
+                    observed=observed,
+                    total_expanded_bytes=total_expanded_bytes,
+                )
                 if not info.is_dir():
                     members.append(
                         CMSPartDArchiveMember(
@@ -250,6 +306,7 @@ def inspect_cms_partd_payload(
                             byte_count=info.file_size,
                             compressed_byte_count=info.compress_size,
                             crc32=f"{info.CRC:08x}",
+                            sha256=_stream_cms_zip_member(archive, info),
                         )
                     )
         if not members:

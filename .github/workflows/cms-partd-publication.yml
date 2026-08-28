@@ -88,7 +88,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - name: Create public dataset and attribution card
+      - name: Create private staging dataset and attribution card
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
@@ -124,13 +124,15 @@ jobs:
 
           api = HfApi(token=os.environ['HF_TOKEN'])
           repo = os.environ['HF_DATASET']
-          api.create_repo(repo, repo_type='dataset', private=False, exist_ok=True)
+          api.create_repo(repo, repo_type='dataset', private=True, exist_ok=True)
+          if not api.dataset_info(repo).private:
+              raise RuntimeError('CMS Part D staging dataset must remain private')
           api.upload_file(
               repo_id=repo,
               repo_type='dataset',
               path_or_fileobj='README.md',
               path_in_repo='README.md',
-              commit_message='Initialize attributed CMS Part D public corpus',
+              commit_message='Initialize private CMS Part D publication stage',
           )
           PY
 
@@ -167,20 +169,141 @@ jobs:
           uv run --frozen --python 3.14.6 python - <<'PY'
           import json
           import os
+          from datetime import UTC, datetime
+          from hashlib import sha256
           from pathlib import Path
 
+          from global_medicines_atlas.bronze_admission import (
+              BronzeAdmissionState,
+              ValidationResult,
+              create_admission_decision,
+          )
           from global_medicines_atlas.cms_partd_acquisition import inspect_cms_partd_payload
+          from global_medicines_atlas.receipts import (
+              AcquisitionMethod,
+              AcquisitionStatus,
+              DataSensitivity,
+              EvidenceClass,
+              HttpRetrievalEvidence,
+              PayloadEvidence,
+              PersonalDataState,
+              PublicationDisposition,
+              RetrievalEvidence,
+              RightsState,
+              SensitivityClassification,
+              SourceIdentity,
+              SourceReceipt,
+              TransformationEvidence,
+              acquisition_event_from_receipt,
+              require_temporal,
+          )
+          from global_medicines_atlas.reuse_gate import (
+              ReuseDisposition,
+              ReuseGateDecision,
+              SEARCH_SURFACES,
+          )
 
           path = Path('payload') / os.environ['SOURCE_IDENTITY']
+          retrieved_at = datetime.now(UTC)
           evidence = inspect_cms_partd_payload(
               path,
               url=os.environ['SOURCE_URL'],
               family=os.environ['SOURCE_FAMILY'],
           )
+          source_id = f"us-cms-partd-{os.environ['SOURCE_FAMILY']}"
+          receipt = SourceReceipt(
+              receipt_id=f"cms-partd-{os.environ['SOURCE_IDENTITY']}",
+              source=SourceIdentity(
+                  catalog_id=source_id,
+                  source_id=source_id,
+                  jurisdiction='US',
+                  authority='Centers for Medicare & Medicaid Services',
+                  dataset_title=(
+                      'Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information'
+                      if os.environ['SOURCE_FAMILY'] == 'formulary'
+                      else 'Medicare Part D Spending by Drug'
+                  ),
+                  catalog_version='inventory-bound-2026-08-27',
+              ),
+              retrieval=RetrievalEvidence(
+                  uri=os.environ['SOURCE_URL'],
+                  retrieved_at=retrieved_at,
+                  acquisition_method=AcquisitionMethod.DOWNLOAD,
+                  status=AcquisitionStatus.SUCCEEDED,
+                  http=HttpRetrievalEvidence(
+                      original_uri=os.environ['SOURCE_URL'],
+                      final_uri=os.environ['SOURCE_URL'],
+                      http_method='GET',
+                      http_status=200,
+                      observed_byte_length=evidence.byte_count,
+                      acquisition_agent_version='cms-partd-publication-v1',
+                  ),
+              ),
+              payload=PayloadEvidence(
+                  sha256=evidence.sha256,
+                  byte_count=evidence.byte_count,
+              ),
+              reuse=ReuseGateDecision(
+                  source_id=source_id,
+                  disposition=ReuseDisposition.ACQUIRE_NEW,
+                  searched_surfaces=SEARCH_SURFACES,
+                  candidates=(),
+                  rationale=(
+                      'Exact maintainer-approved inventory requires a fresh official CMS acquisition; '
+                      'no qualified payload copy was present in the governed publication index.'
+                  ),
+              ),
+              rights_state=RightsState.PERMITTED,
+              rights_reference=(
+                  'https://data.cms.gov/sites/default/files/2023-10/4eeb19e1-525b-4a4e-9766-b33ff084fc5c/AGREEMENT-FOR-USE.pdf'
+                  if os.environ['SOURCE_FAMILY'] == 'formulary'
+                  else 'https://www.usa.gov/government-works'
+              ),
+              sensitivity=SensitivityClassification(
+                  data_sensitivity=DataSensitivity.NON_SENSITIVE,
+                  personal_data=PersonalDataState.NONE,
+                  publication=PublicationDisposition.PERMITTED,
+                  reason_codes=('official_public_aggregate_cms_resource',),
+              ),
+              evidence_class=EvidenceClass.LIVE,
+              transformation=TransformationEvidence(
+                  transformation_id='cms-partd-raw-retention-v1',
+                  transformation_sha256=sha256(b'cms-partd-raw-retention-v1').hexdigest(),
+                  output_sha256=evidence.sha256,
+                  output_byte_count=evidence.byte_count,
+              ),
+          )
+          temporal = require_temporal(receipt.temporal)
+          landed = create_admission_decision(
+              acquisition_id=temporal.acquisition_id,
+              content_id=evidence.sha256,
+              state=BronzeAdmissionState.LANDED,
+              validation_results=(ValidationResult(
+                  check_id='streaming-source-validation',
+                  passed=True,
+                  message='Payload digest and bounded source-native archive validation passed',
+              ),),
+              decided_at=retrieved_at,
+          )
+          accepted = create_admission_decision(
+              acquisition_id=temporal.acquisition_id,
+              content_id=evidence.sha256,
+              state=BronzeAdmissionState.ACCEPTED,
+              validation_results=landed.validation_results,
+              decided_at=retrieved_at,
+              supersedes_decision_id=landed.decision_id,
+          )
           receipt = {
               **evidence.model_dump(mode='json'),
               'hub_path': os.environ['HUB_PATH'],
               'source_bytes_committed_to_git': False,
+              'source_receipt': receipt.model_dump(mode='json'),
+              'acquisition_event': acquisition_event_from_receipt(receipt).model_dump(mode='json'),
+              'admission_history': [
+                  landed.model_dump(mode='json'),
+                  accepted.model_dump(mode='json'),
+              ],
+              'storage_receipt': None,
           }
           Path('receipt/receipt.json').write_text(
               json.dumps(receipt, separators=(',', ':'), sort_keys=True) + '\n',
@@ -188,7 +311,7 @@ jobs:
           )
           PY
 
-      - name: Upload verified payload directly to public Hugging Face dataset
+      - name: Upload verified payload to private Hugging Face stage
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           SOURCE_IDENTITY: ${{ matrix.identity }}
@@ -199,6 +322,7 @@ jobs:
           uv run --python 3.14.6 --with huggingface-hub==1.14.0 python - <<'PY'
           import os
           import time
+          import json
           from pathlib import Path
           from huggingface_hub import HfApi
 
@@ -218,6 +342,28 @@ jobs:
                   if attempt == 6:
                       raise
                   time.sleep(attempt * 15)
+          receipt_path = Path('receipt/receipt.json')
+          receipt = json.loads(receipt_path.read_text(encoding='utf-8'))
+          receipt['storage_receipt'] = {
+              'schema_id': 'global-medicines-atlas.cms-partd-huggingface-storage',
+              'schema_version': 1,
+              'state': 'staged_private',
+              'uri': f"hf://datasets/{os.environ['HF_DATASET']}/{os.environ['HUB_PATH']}",
+              'sha256': receipt['sha256'],
+              'byte_count': receipt['byte_count'],
+              'administrative_domain': 'huggingface.co',
+          }
+          receipt_path.write_text(
+              json.dumps(receipt, separators=(',', ':'), sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
+          api.upload_file(
+              repo_id=os.environ['HF_DATASET'],
+              repo_type='dataset',
+              path_or_fileobj=receipt_path,
+              path_in_repo=f"evidence/receipts/{os.environ['SOURCE_IDENTITY']}.json",
+              commit_message=f"Record CMS Part D B1 evidence {os.environ['SOURCE_IDENTITY']}",
+          )
           PY
 
       - name: Retain digest receipt only
@@ -251,6 +397,7 @@ jobs:
           import json
           import os
           from datetime import UTC, datetime
+          from hashlib import sha256
           from pathlib import Path
           from huggingface_hub import HfApi
 
@@ -282,10 +429,30 @@ jobs:
               commit_message='Publish exact CMS Part D corpus manifest',
           )
           info = api.dataset_info(os.environ['HF_DATASET'], files_metadata=True)
+          if not info.private:
+              raise RuntimeError('CMS Part D dataset became public before finalization')
           paths = {sibling.rfilename for sibling in info.siblings}
-          expected = {'README.md', 'manifest.json', *(r['hub_path'] for r in receipts)}
+          expected = {
+              'README.md',
+              'manifest.json',
+              *(r['hub_path'] for r in receipts),
+          }
+          expected.update(
+              f"evidence/receipts/{sha256(r['url'].encode()).hexdigest()}.json"
+              for r in receipts
+          )
           missing = expected - paths
           if missing:
-              raise RuntimeError(f'public dataset is missing paths: {sorted(missing)}')
-          print(info.sha)
+              raise RuntimeError(f'staged dataset is missing paths: {sorted(missing)}')
+          api.update_repo_settings(
+              repo_id=os.environ['HF_DATASET'],
+              repo_type='dataset',
+              private=False,
+          )
+          public = HfApi().dataset_info(
+              os.environ['HF_DATASET'], files_metadata=True
+          )
+          if public.private or public.sha != info.sha:
+              raise RuntimeError('public CMS Part D revision verification failed')
+          print(public.sha)
           PY
