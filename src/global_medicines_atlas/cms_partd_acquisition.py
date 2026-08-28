@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import tarfile
 import zipfile
 from datetime import date
 from hashlib import sha256
@@ -260,6 +261,62 @@ def inspect_cms_partd_payload(
         byte_count=byte_count,
         archive_members=tuple(members),
     )
+
+
+def write_cms_partd_private_archive(
+    files: tuple[tuple[str, Path], ...], destination: Path
+) -> tuple[str, int]:
+    """Write a deterministic streaming archive without loading payloads."""
+    if destination.exists():
+        raise FileExistsError("CMS Part D private archive already exists")
+    observed: set[str] = set()
+    with tarfile.open(
+        destination, mode="w", format=tarfile.PAX_FORMAT
+    ) as archive:
+        for relative, path in sorted(files):
+            safe_relative = _safe_member_path(relative)
+            if safe_relative in observed or not path.is_file():
+                raise ValueError("CMS Part D archive input is invalid")
+            observed.add(safe_relative)
+            info = tarfile.TarInfo(f"corpus/{safe_relative}")
+            info.uid = info.gid = info.mtime = 0
+            info.uname = info.gname = ""
+            info.mode = 0o600
+            info.size = path.stat().st_size
+            with path.open("rb") as handle:
+                archive.addfile(info, handle)
+    return _path_digest(destination)
+
+
+def recover_cms_partd_private_archive(
+    archive_path: Path,
+    destination: Path,
+    expected_sha256: dict[str, str],
+) -> int:
+    """Restore the private archive and verify every expected payload digest."""
+    if destination.exists() and any(destination.iterdir()):
+        raise FileExistsError("CMS Part D recovery directory must be empty")
+    destination.mkdir(parents=True, exist_ok=True)
+    with tarfile.open(archive_path, mode="r") as archive:
+        expected_members = {
+            f"corpus/{_safe_member_path(relative)}"
+            for relative in expected_sha256
+        }
+        members = archive.getmembers()
+        if (
+            {member.name for member in members} != expected_members
+            or any(not member.isfile() for member in members)
+        ):
+            raise ValueError("CMS Part D private archive inventory diverged")
+        archive.extractall(destination, filter="data")
+    recovered = 0
+    for relative, expected in sorted(expected_sha256.items()):
+        path = destination / "corpus" / _safe_member_path(relative)
+        digest, _ = _path_digest(path)
+        if digest != expected:
+            raise ValueError("CMS Part D recovered payload digest diverged")
+        recovered += 1
+    return recovered
 
 
 def parse_cms_partd_inventory(

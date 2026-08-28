@@ -447,6 +447,7 @@ for credentialed or rights-unresolved sources.
 - [~] Task: Review Fixes for CMS Part D public qualification
     - [x] Reconcile the preflight recommendation with the maintainer's exact approved-public decision
     - [x] Require an explicit qualification timestamp so report regeneration is deterministic
+    - [x] Stream the deterministic private archive and reject unexpected clean-room members without loading multi-gigabyte payloads into memory
     - [ ] Re-run qualification, clean-room recovery, archive verification, and affected validation after all exact payloads complete
 - [~] Task: Acquire Nordic medicine utilisation aggregates (Prompt 33)
     - [x] Correct the three independent public access states without treating aggregate outputs as person-level registry access

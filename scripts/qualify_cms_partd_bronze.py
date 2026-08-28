@@ -18,6 +18,8 @@ from global_medicines_atlas.cms_partd_acquisition import (
     CMSPartDInventory,
     inspect_cms_partd_payload,
     parse_cms_partd_inventory,
+    recover_cms_partd_private_archive,
+    write_cms_partd_private_archive,
 )
 
 if TYPE_CHECKING:
@@ -49,7 +51,12 @@ def _load_inventory(corpus: Path) -> CMSPartDInventory:
 
 
 def qualify(
-    corpus: Path, output: Path, *, qualified_at: datetime
+    corpus: Path,
+    output: Path,
+    *,
+    qualified_at: datetime,
+    private_archive: Path,
+    clean_room: Path,
 ) -> dict[str, object]:
     """Verify every exact payload and emit rebuildable JSON/Parquet evidence."""
     inventory = _load_inventory(corpus)
@@ -90,6 +97,26 @@ def qualify(
     pq.write_table(  # pyright: ignore[reportUnknownMemberType]
         pa.Table.from_pylist(member_rows), member_parquet
     )
+    archive_inputs = tuple(
+        (
+            f"payloads/{sha256(str(row['url']).encode()).hexdigest()}",
+            _download_path(corpus, str(row["url"])),
+        )
+        for row in payload_rows
+    )
+    archive_sha256, archive_byte_count = write_cms_partd_private_archive(
+        archive_inputs, private_archive
+    )
+    recovered_count = recover_cms_partd_private_archive(
+        private_archive,
+        clean_room,
+        {
+            relative: str(row["sha256"])
+            for (relative, _), row in zip(
+                archive_inputs, payload_rows, strict=True
+            )
+        },
+    )
     report: dict[str, object] = {
         "schema_id": "global-medicines-atlas.cms-partd-bronze-qualification",
         "schema_version": 1,
@@ -104,6 +131,9 @@ def qualify(
         "archive_member_count": len(member_rows),
         "payload_manifest_sha256": sha256(payload_parquet.read_bytes()).hexdigest(),
         "archive_member_manifest_sha256": sha256(member_parquet.read_bytes()).hexdigest(),
+        "private_archive_sha256": archive_sha256,
+        "private_archive_byte_count": archive_byte_count,
+        "clean_room_recovered_payload_count": recovered_count,
         "source_bytes_committed": False,
         "publication_performed": False,
         "agreement_for_use_applies": True,
@@ -127,10 +157,16 @@ def main() -> None:
     parser.add_argument(
         "--qualified-at", type=datetime.fromisoformat, required=True
     )
+    parser.add_argument("--private-archive", type=Path, required=True)
+    parser.add_argument("--clean-room", type=Path, required=True)
     parser.add_argument("--commit", action="store_true")
     args = parser.parse_args()
     report = qualify(
-        args.corpus, args.output, qualified_at=args.qualified_at
+        args.corpus,
+        args.output,
+        qualified_at=args.qualified_at,
+        private_archive=args.private_archive,
+        clean_room=args.clean_room,
     )
     if args.commit:
         QUALIFICATION.write_text(

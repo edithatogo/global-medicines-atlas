@@ -14,6 +14,8 @@ from global_medicines_atlas.cms_partd_acquisition import (
     CMSPartDAuthorization,
     inspect_cms_partd_payload,
     parse_cms_partd_inventory,
+    recover_cms_partd_private_archive,
+    write_cms_partd_private_archive,
 )
 
 AUTHORIZATION = (
@@ -282,4 +284,44 @@ def test_streaming_payload_evidence_rejects_unsafe_members(
     with pytest.raises(ValueError, match="unsafe member path"):
         inspect_cms_partd_payload(
             path, url=AnyHttpUrl(_formulary_urls(1)[0]), family="formulary"
+        )
+
+
+def test_private_archive_streams_and_recovers_exact_payloads(
+    tmp_path: Path,
+) -> None:
+    first = tmp_path / "first.zip"
+    second = tmp_path / "second.csv"
+    first.write_bytes(b"first")
+    second.write_bytes(b"second")
+    archive = tmp_path / "cms.private.tar"
+    digest, byte_count = write_cms_partd_private_archive(
+        (("payloads/first", first), ("payloads/second", second)), archive
+    )
+    assert digest == sha256(archive.read_bytes()).hexdigest()
+    assert byte_count == archive.stat().st_size
+    recovered = recover_cms_partd_private_archive(
+        archive,
+        tmp_path / "clean-room",
+        {
+            "payloads/first": sha256(b"first").hexdigest(),
+            "payloads/second": sha256(b"second").hexdigest(),
+        },
+    )
+    assert recovered == 2
+
+
+def test_private_archive_rejects_duplicate_or_unsafe_inputs(
+    tmp_path: Path,
+) -> None:
+    payload = tmp_path / "payload"
+    payload.write_bytes(b"payload")
+    with pytest.raises(ValueError, match="input is invalid"):
+        write_cms_partd_private_archive(
+            (("payload", payload), ("payload", payload)),
+            tmp_path / "duplicate.tar",
+        )
+    with pytest.raises(ValueError, match="unsafe member path"):
+        write_cms_partd_private_archive(
+            (("../payload", payload),), tmp_path / "unsafe.tar"
         )
