@@ -58,9 +58,15 @@ def test_workflow_uploads_only_from_actions_and_verifies_anonymously() -> None:
         "api.create_repo("
     )
     assert "private=True, exist_ok=False" in workflow
-    assert "existing target must be the exact private non-gated retry transaction" in workflow
+    assert (
+        "existing target must be the exact private non-gated retry transaction"
+        in workflow
+    )
     assert "delete_patterns=['*']" in workflow
-    assert "published repository sibling set differs from exact manifest" in workflow
+    assert (
+        "published repository sibling set differs from exact manifest"
+        in workflow
+    )
     assert "git', 'bundle', 'create'" in workflow
     assert "git', 'bundle', 'verify'" in workflow
     assert "api.upload_folder(" in workflow
