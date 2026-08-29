@@ -1,0 +1,219 @@
+name: Project CMS Part D source records
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: cms-partd-record-projection
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  HF_DATASET: edithatogo/global-medicines-atlas-cms-partd-20260827
+  RAW_REVISION: abcff8ebd1f624c4bbb0a87d903b184388c98254
+
+jobs:
+  inventory:
+    name: Bind immutable public archive
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      matrix: ${{ steps.inventory.outputs.matrix }}
+    steps:
+      - name: Read exact anonymous manifest
+        id: inventory
+        run: |
+          set -euo pipefail
+          curl --fail --show-error --silent --location --retry 10 \
+            "https://huggingface.co/datasets/${HF_DATASET}/resolve/${RAW_REVISION}/manifest.json" \
+            --output manifest.json
+          matrix=$(jq -c '{include:[.payloads[] | {
+            identity:(.hub_path | split("/")[2]), family:.family, hub_path:.hub_path,
+            payload_sha256:.sha256
+          }]}' manifest.json)
+          test "$(jq '.include | length' <<<"$matrix")" -eq 33
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+
+  project_publish:
+    name: Project ${{ matrix.family }} ${{ matrix.identity }}
+    needs: inventory
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix: ${{ fromJSON(needs.inventory.outputs.matrix) }}
+    steps:
+      - name: Check out projection code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+
+      - name: Restore immutable source payload anonymously
+        env:
+          HUB_PATH: ${{ matrix.hub_path }}
+          PAYLOAD_SHA256: ${{ matrix.payload_sha256 }}
+        run: |
+          set -euo pipefail
+          mkdir -p work
+          encoded_path=$(python3 -c 'import os,urllib.parse; print(urllib.parse.quote(os.environ["HUB_PATH"], safe="/"))')
+          curl --fail --show-error --silent --location --retry 20 --retry-all-errors \
+            --connect-timeout 30 --max-time 18000 \
+            "https://huggingface.co/datasets/${HF_DATASET}/resolve/${RAW_REVISION}/${encoded_path}" \
+            --output work/payload
+          test "$(sha256sum work/payload | cut -d' ' -f1)" = "$PAYLOAD_SHA256"
+
+      - name: Project independent source-native tables
+        env:
+          SOURCE_FAMILY: ${{ matrix.family }}
+          SOURCE_IDENTITY: ${{ matrix.identity }}
+        run: |
+          set -euo pipefail
+          if ! command -v 7z >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install --yes p7zip-full
+          fi
+          uv run --frozen --python 3.14.6 python scripts/project_cms_partd_records.py \
+            --payload work/payload --family "$SOURCE_FAMILY" \
+            --identity "$SOURCE_IDENTITY" --output work/parquet \
+            --manifest work/source-records.json
+
+      - name: Publish derived Parquet from GitHub Actions
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          SOURCE_FAMILY: ${{ matrix.family }}
+          SOURCE_IDENTITY: ${{ matrix.identity }}
+        run: |
+          set -euo pipefail
+          test -n "${HF_TOKEN:-}"
+          uv run --python 3.14.6 --with huggingface-hub==1.14.0 python - <<'PY'
+          import os
+          import time
+          from huggingface_hub import HfApi
+
+          api = HfApi(token=os.environ['HF_TOKEN'])
+          destination = (
+              f"bronze/source-records/{os.environ['SOURCE_FAMILY']}/"
+              f"{os.environ['SOURCE_IDENTITY']}"
+          )
+          for attempt in range(1, 9):
+              try:
+                  api.upload_folder(
+                      repo_id=os.environ['HF_DATASET'], repo_type='dataset',
+                      folder_path='work/parquet', path_in_repo=f'{destination}/parquet',
+                      commit_message=f"Project CMS Part D records {os.environ['SOURCE_IDENTITY']}",
+                  )
+                  api.upload_file(
+                      repo_id=os.environ['HF_DATASET'], repo_type='dataset',
+                      path_or_fileobj='work/source-records.json',
+                      path_in_repo=f'{destination}/source-records.json',
+                      commit_message=f"Record CMS Part D projection {os.environ['SOURCE_IDENTITY']}",
+                  )
+                  break
+              except Exception:
+                  if attempt == 8:
+                      raise
+                  time.sleep(attempt * 20)
+          PY
+
+      - name: Remove runner source bytes
+        if: always()
+        run: |
+          rm -f work/payload
+          test ! -e work/payload
+
+      - name: Retain projection receipt only
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: cms-partd-records-${{ matrix.identity }}
+          path: work/source-records.json
+          if-no-files-found: error
+          retention-days: 7
+
+  finalize:
+    name: Qualify and anonymously verify source records
+    needs: project_publish
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Download projection receipts
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          pattern: cms-partd-records-*
+          path: receipts
+
+      - name: Publish and verify exact projection manifest
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check --quiet huggingface-hub==1.14.0
+          python3 - <<'PY'
+          import json
+          import os
+          from datetime import UTC, datetime
+          from hashlib import sha256
+          from pathlib import Path
+          from huggingface_hub import HfApi, hf_hub_download
+
+          shards = [json.loads(path.read_text()) for path in sorted(Path('receipts').glob('**/source-records.json'))]
+          if len(shards) != 33:
+              raise RuntimeError(f'expected 33 record shards, found {len(shards)}')
+          payload = {
+              'schema_id': 'global-medicines-atlas.cms-partd-source-record-qualification',
+              'schema_version': 1,
+              'qualified_at': datetime.now(UTC).isoformat(),
+              'raw_revision': os.environ['RAW_REVISION'],
+              'payload_count': 33,
+              'source_record_projection_count': sum(row['source_record_projection_count'] for row in shards),
+              'source_record_count': sum(row['source_record_count'] for row in shards),
+              'source_values_preserved_as_strings': True,
+              'cross_plan_year_schema_equivalence_claimed': False,
+              'runner_source_bytes_retained': False,
+              'shards': shards,
+          }
+          path = Path('source-record-qualification.json')
+          path.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n')
+          api = HfApi(token=os.environ['HF_TOKEN'])
+          result = api.upload_file(
+              repo_id=os.environ['HF_DATASET'], repo_type='dataset',
+              path_or_fileobj=path, path_in_repo='bronze/source-record-qualification.json',
+              commit_message='Qualify CMS Part D source-native records',
+          )
+          public = HfApi().dataset_info(os.environ['HF_DATASET'], files_metadata=True)
+          if public.private or public.sha != result.oid:
+              raise RuntimeError('record qualification revision is not anonymously visible')
+          siblings = {item.rfilename: item for item in public.siblings}
+          names = set(siblings)
+          expected = {'bronze/source-record-qualification.json'}
+          for shard in shards:
+              root = f"bronze/source-records/{shard['family']}/{shard['identity']}"
+              expected.add(f'{root}/source-records.json')
+              expected.update(f"{root}/parquet/{item['parquet_filename']}" for item in shard['projections'])
+          missing = expected - names
+          if missing:
+              raise RuntimeError(f'public source-record paths missing: {sorted(missing)[:10]}')
+          for shard in shards:
+              root = f"bronze/source-records/{shard['family']}/{shard['identity']}/parquet"
+              for projection in shard['projections']:
+                  sibling = siblings[f"{root}/{projection['parquet_filename']}"]
+                  lfs = sibling.lfs
+                  observed = lfs.sha256 if lfs is not None else sha256(Path(hf_hub_download(
+                      repo_id=os.environ['HF_DATASET'], repo_type='dataset', revision=public.sha,
+                      filename=sibling.rfilename, token=False,
+                  )).read_bytes()).hexdigest()
+                  if observed != projection['parquet_sha256']:
+                      raise RuntimeError('anonymous Parquet digest metadata diverged')
+          restored = Path(hf_hub_download(
+              repo_id=os.environ['HF_DATASET'], repo_type='dataset',
+              revision=public.sha, filename='bronze/source-record-qualification.json', token=False,
+          ))
+          if json.loads(restored.read_text()) != payload:
+              raise RuntimeError('anonymous qualification restore diverged')
+          print(public.sha)
+          PY
