@@ -368,6 +368,21 @@ def test_streaming_payload_evidence_reads_member_bytes_for_crc(
         )
 
 
+def test_external_zip_decoder_streams_exact_member(tmp_path: Path) -> None:
+    path = tmp_path / "external.zip"
+    payload = b"plan_id,ndc\nP1,0001\n" * 100
+    with zipfile.ZipFile(
+        path, "w", compression=zipfile.ZIP_DEFLATED
+    ) as archive:
+        archive.writestr("formulary.csv", payload)
+    with zipfile.ZipFile(path) as archive:
+        info = archive.getinfo("formulary.csv")
+    assert (
+        cms._stream_cms_zip_member_with_7z(path, info)
+        == sha256(payload).hexdigest()
+    )
+
+
 @pytest.mark.parametrize(
     ("configure", "message", "total"),
     [

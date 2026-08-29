@@ -165,6 +165,10 @@ jobs:
           HUB_PATH: ${{ matrix.hub_path }}
         run: |
           set -euo pipefail
+          if ! command -v 7z >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install --yes p7zip-full
+          fi
           mkdir -p payload receipt
           curl --fail --show-error --silent --location --retry 20 --retry-all-errors \
             --connect-timeout 30 --max-time 18000 \
