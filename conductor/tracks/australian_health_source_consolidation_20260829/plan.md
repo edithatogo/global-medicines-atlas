@@ -69,6 +69,8 @@
 - [x] Match XML structural limits to the governed PBS archive envelope, require
   the v3 schedule root, bound tag iteration, and preserve absent AMT resources
   as Parquet nulls. (`00a59eb`)
+- [x] Regenerate measured coverage after the final reviewed PBS projector
+  changed its content-bound source digest. (`108dbc4`)
 
 ## Review Fixes: MBS source-domain phase
 
