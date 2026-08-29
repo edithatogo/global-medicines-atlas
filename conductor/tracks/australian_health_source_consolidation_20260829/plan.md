@@ -46,13 +46,13 @@
 
 ## Phase 3: Replace the PBS experiment with governed v3 support (AC-04, AC-07)
 
-- [ ] Write failing tests for ZIP safety, PBS namespaces, item/product identity,
+- [x] Write failing tests for ZIP safety, PBS namespaces, item/product identity,
   restrictions, AMT references, ATC codes, effective dates, malformed XML,
-  duplicate members, traversal names, decompression limits, and drift.
-- [ ] Confirm the intended failure before implementation.
-- [ ] Extend the existing `au_pbs` adapter and catalogue/source profile rather
-  than creating a second PBS authority.
-- [ ] Implement receipt-bound download, immutable ZIP preservation, member
+  duplicate members, traversal names, decompression limits, and drift. (`796c93a`)
+- [x] Confirm the intended failure before implementation. (`796c93a`)
+- [~] Extend the existing `au_pbs` adapter and catalogue/source profile rather
+  than creating a second PBS authority. (`796c93a`)
+- [~] Implement receipt-bound download, immutable ZIP preservation, member
   manifests, source-native Parquet, and the bounded tag-inspection command.
 - [ ] Preserve the donor CLI input/output expectations through compatibility
   tests where they are useful; do not preserve its syntax error.
