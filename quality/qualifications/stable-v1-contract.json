@@ -1026,7 +1026,7 @@
   ],
   "source_maturity": {
     "catalog": "src/global_medicines_atlas/data/medicine_source_catalog.json",
-    "catalog_source_count": 172,
+    "catalog_source_count": 174,
     "matrix": "quality/qualifications/stable-v1-source-maturity.json",
     "assignment_state": "verified",
     "documentation_readiness_state": "verified"

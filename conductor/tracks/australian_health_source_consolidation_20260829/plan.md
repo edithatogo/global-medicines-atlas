@@ -65,6 +65,11 @@
 - [x] Regenerate the exhaustive Bronze landing queue after catalogue expansion
   and keep parser-only MBS sources `not_yet_implemented` until hosted public
   B1/B2 receipts and anonymous restore verification exist.
+- [x] Regenerate every stable-v1 and source-rights projection bound to the
+  expanded 174-source catalogue, retaining fail-closed rights states for both
+  newly catalogued sources.
+- [x] Bind donor inventory validation to caller-supplied pinned repository and
+  source URL identities so valid Git bytes cannot be relabelled.
 
 ## Phase 4: Replace the monthly scraper safely (AC-05, AC-06)
 

@@ -165,7 +165,19 @@ def build() -> dict[str, Any]:
             approved_derived_ids,
         )
         if source["source_id"] in decisions
-        else _unresolved(source, discovery_by_source[source["source_id"]])
+        else _unresolved(
+            source,
+            discovery_by_source.get(
+                source["source_id"],
+                {
+                    "source_url": source["landing_page"],
+                    "final_url": None,
+                    "observed_at": REVIEWED_AT,
+                    "outcome": "not_observed",
+                    "content_sha256": None,
+                },
+            ),
+        )
         for source in catalog["sources"]
     )
     validate_catalogue_reviews(

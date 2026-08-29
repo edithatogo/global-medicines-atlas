@@ -239,16 +239,27 @@ def _files(document: dict[str, object]) -> list[dict[str, object]]:
 def validate_donor_inventory(
     repository: Path,
     inventory: dict[str, object],
+    *,
+    expected_repository_name: str,
+    expected_source_url: str,
 ) -> None:
-    """Validate an inventory against every blob at its pinned commit."""
+    """Validate an inventory against a pinned identity and every Git blob."""
+    for field, expected_identity in (
+        ("repository", expected_repository_name),
+        ("source_url", expected_source_url),
+    ):
+        if inventory.get(field) != expected_identity:
+            raise DonorInventoryError(
+                f"inventory {field} differs from pinned donor identity"
+            )
     commit = inventory.get("commit")
     if not isinstance(commit, str):
         raise DonorInventoryError("inventory commit must be a string")
     expected = build_donor_inventory(
         repository,
-        repository_name=str(inventory.get("repository", "")),
+        repository_name=expected_repository_name,
         expected_commit=commit,
-        source_url=str(inventory.get("source_url", "")),
+        source_url=expected_source_url,
     )
     actual_files = _files(inventory)
     expected_files = _files(expected)

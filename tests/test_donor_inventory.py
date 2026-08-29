@@ -40,6 +40,15 @@ def _git(repository: Path, *arguments: str) -> str:
     return result.stdout.strip()
 
 
+def _validate(repository: Path, inventory: dict[str, object]) -> None:
+    validate_donor_inventory(
+        repository,
+        inventory,
+        expected_repository_name="owner/donor",
+        expected_source_url="https://example.invalid/owner/donor",
+    )
+
+
 @pytest.fixture
 def donor_repository(tmp_path: Path) -> tuple[Path, str]:
     repository = tmp_path / "donor"
@@ -101,7 +110,7 @@ def test_inventory_covers_every_blob_and_characterizes_code(
     assert inventory["total_blob_bytes"] == sum(
         item["size_bytes"] for item in inventory["files"]
     )
-    validate_donor_inventory(repository, inventory)
+    _validate(repository, inventory)
 
 
 @pytest.mark.parametrize("change", ["omit", "add", "digest", "mode", "size"])
@@ -129,7 +138,25 @@ def test_inventory_rejects_any_denominator_difference(
         inventory["files"][0]["size_bytes"] += 1
 
     with pytest.raises(DonorInventoryError):
-        validate_donor_inventory(repository, inventory)
+        _validate(repository, inventory)
+
+
+@pytest.mark.parametrize("field", ["repository", "source_url"])
+def test_inventory_rejects_untrusted_donor_labels(
+    donor_repository: tuple[Path, str],
+    field: str,
+) -> None:
+    repository, revision = donor_repository
+    inventory = build_donor_inventory(
+        repository,
+        repository_name="owner/donor",
+        expected_commit=revision,
+        source_url="https://example.invalid/owner/donor",
+    )
+    inventory[field] = "untrusted-identity"
+
+    with pytest.raises(DonorInventoryError, match="pinned donor identity"):
+        _validate(repository, inventory)
 
 
 def test_inventory_refuses_a_different_commit(
@@ -203,7 +230,7 @@ def test_inventory_rejects_malformed_file_collections(
     inventory["files"] = files
 
     with pytest.raises(DonorInventoryError, match="list of objects"):
-        validate_donor_inventory(repository, inventory)
+        _validate(repository, inventory)
 
 
 def test_inventory_rejects_non_string_commit(
@@ -219,7 +246,7 @@ def test_inventory_rejects_non_string_commit(
     inventory["commit"] = 123
 
     with pytest.raises(DonorInventoryError, match="commit must be a string"):
-        validate_donor_inventory(repository, inventory)
+        _validate(repository, inventory)
 
 
 def test_checked_in_two_repository_denominator_is_self_consistent() -> None:
