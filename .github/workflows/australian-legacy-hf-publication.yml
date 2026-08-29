@@ -88,11 +88,12 @@ jobs:
           import os
           import shutil
           import subprocess
+          import time
           from pathlib import Path
           from tempfile import TemporaryDirectory
 
           from huggingface_hub import HfApi, snapshot_download
-          from huggingface_hub.errors import RepositoryNotFoundError
+          from huggingface_hub.errors import HfHubHTTPError, RepositoryNotFoundError
 
           ROOT = Path.cwd()
           AUTH = ROOT / 'quality/qualifications/australian-health-legacy-publication-authorization.json'
@@ -225,8 +226,22 @@ jobs:
               if actual_siblings != expected_siblings:
                   raise RuntimeError('published repository sibling set differs from exact manifest')
               api.update_repo_settings(repo_id=dataset, repo_type='dataset', private=False)
-              public_info = HfApi(token=False).dataset_info(dataset, revision=private_head)
-              if public_info.private or public_info.gated:
+              public_info = None
+              for attempt in range(12):
+                  try:
+                      candidate_info = HfApi(token=False).dataset_info(
+                          dataset, revision=private_head
+                      )
+                  except (HfHubHTTPError, RepositoryNotFoundError):
+                      candidate_info = None
+                  if candidate_info is not None and not (
+                      candidate_info.private or bool(candidate_info.gated)
+                  ):
+                      public_info = candidate_info
+                      break
+                  if attempt < 11:
+                      time.sleep(5)
+              if public_info is None:
                   raise RuntimeError('dataset is not anonymously public and non-gated')
 
               restored = Path(snapshot_download(
