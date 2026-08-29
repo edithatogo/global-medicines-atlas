@@ -9,6 +9,7 @@ import subprocess  # ruff: ignore[suspicious-subprocess-import] - fixture Git
 from pathlib import Path
 
 import pytest
+from jsonschema import Draft202012Validator
 
 from global_medicines_atlas import donor_inventory
 from global_medicines_atlas.donor_inventory import (
@@ -24,6 +25,7 @@ QUALIFICATION = (
     / "qualifications"
     / "australian-health-donor-inventory.json"
 )
+SCHEMA = ROOT / "contracts" / "australian-donor-inventory.schema.json"
 
 
 def _git(repository: Path, *arguments: str) -> str:
@@ -66,6 +68,10 @@ def donor_repository(tmp_path: Path) -> tuple[Path, str]:
         "def broken(:\n    pass\n",
         encoding="utf-8",
     )
+    (repository / "src" / "fenced.py").write_text(
+        "def recoverable() -> bool:\n    return True\n```\n",
+        encoding="utf-8",
+    )
     (repository / "data").mkdir()
     (repository / "data" / "raw.xml").write_bytes(b"<root><row /></root>\n")
     (repository / "empty.ipynb").write_bytes(b"")
@@ -94,12 +100,16 @@ def test_inventory_covers_every_blob_and_characterizes_code(
     )
 
     assert inventory["commit"] == revision
-    assert inventory["tracked_blob_count"] == 7
+    assert inventory["tracked_blob_count"] == 8
     files = {item["path"]: item for item in inventory["files"]}
     assert files["src/working.py"]["functions"] == ["acquire"]
     assert files["src/working.py"]["implementation_state"] == "implemented"
     assert files["src/invalid.py"]["implementation_state"] == "invalid_syntax"
     assert files["src/invalid.py"]["parse_error"]
+    assert files["src/fenced.py"]["functions"] == ["recoverable"]
+    assert files["src/fenced.py"]["implementation_state"] == "invalid_syntax"
+    assert files["src/fenced.py"]["parse_error"]
+    assert len(files["src/working.py"]["git_object_sha1"]) == 40
     assert files["data/raw.xml"]["data_role"] == "raw_payload"
     assert files["empty.ipynb"]["implementation_state"] == "zero_byte"
     assert (
@@ -107,6 +117,15 @@ def test_inventory_covers_every_blob_and_characterizes_code(
     )
     assert files["ROADMAP.md"]["implementation_state"] == "design_intent"
     assert files["LICENSE"]["disposition"] == "preserve_provenance"
+    assert inventory["history"] == {
+        "reachable_commit_count": 1,
+        "root_commits": [revision],
+    }
+    assert inventory["code_license"] == {
+        "spdx_id": "Apache-2.0",
+        "path": "LICENSE",
+        "sha256": hashlib.sha256(b"fixture\n").hexdigest(),
+    }
     assert inventory["total_blob_bytes"] == sum(
         item["size_bytes"] for item in inventory["files"]
     )
@@ -251,6 +270,8 @@ def test_inventory_rejects_non_string_commit(
 
 def test_checked_in_two_repository_denominator_is_self_consistent() -> None:
     document = json.loads(QUALIFICATION.read_text(encoding="utf-8"))
+    schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
+    Draft202012Validator(schema).validate(document)
     denominator = document["denominator"]
     canonical = json.dumps(
         denominator,
@@ -276,6 +297,19 @@ def test_checked_in_two_repository_denominator_is_self_consistent() -> None:
             item["size_bytes"] for item in files
         )
         assert len({item["path"] for item in files}) == len(files)
+        assert all(len(item["git_object_sha1"]) == 40 for item in files)
+        assert repository["history"]["reachable_commit_count"] > 0
+        assert repository["history"]["root_commits"]
+        assert repository["code_license"]["spdx_id"] == "Apache-2.0"
+        license_digest = next(
+            item["sha256"] for item in files if item["path"] == "LICENSE"
+        )
+        assert repository["code_license"]["sha256"] == license_digest
+
+    graph_files = {item["path"]: item for item in repositories[0]["files"]}
+    fenced_parser = graph_files["scripts/parsing/parse_pbs_xml.py"]
+    assert fenced_parser["implementation_state"] == "invalid_syntax"
+    assert fenced_parser["functions"] == ["parse_pbs_xml_initial"]
 
 
 def test_checked_in_findings_bind_to_inventoried_digests() -> None:

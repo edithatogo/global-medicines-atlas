@@ -8,12 +8,18 @@
   "denominator": {
     "repositories": [
       {
+        "code_license": {
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "spdx_id": "Apache-2.0"
+        },
         "commit": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
         "files": [
           {
             "data_role": "repository_support",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "a2bd8ab529145e10e5cedd11399822fb3dd09fa4",
             "implementation_state": "supporting_artifact",
             "language": "binary-or-text",
             "mode": "100644",
@@ -25,6 +31,7 @@
             "data_role": "documentation_or_design",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "89e742366a518462094bb784bc8ef6479be2db1c",
             "implementation_state": "supporting_artifact",
             "language": "markdown",
             "mode": "100644",
@@ -36,6 +43,7 @@
             "data_role": "documentation_or_design",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "c55272c928fe459317876ca1c6cb791f57c92156",
             "implementation_state": "supporting_artifact",
             "language": "markdown",
             "mode": "100644",
@@ -47,6 +55,7 @@
             "data_role": "repository_support",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
             "implementation_state": "supporting_artifact",
             "language": "binary-or-text",
             "mode": "100644",
@@ -58,6 +67,7 @@
             "data_role": "documentation_or_design",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "2879f6231f6f2649ab90ca9a2a2a19259a106b73",
             "implementation_state": "supporting_artifact",
             "language": "markdown",
             "mode": "100644",
@@ -69,6 +79,7 @@
             "data_role": "documentation_or_design",
             "disposition": "map_to_successor_capability",
             "functions": [],
+            "git_object_sha1": "b1eb9a8ee88489ffe4d069ed1777e7084497066a",
             "implementation_state": "design_intent",
             "language": "markdown",
             "mode": "100644",
@@ -80,6 +91,7 @@
             "data_role": "documentation_or_design",
             "disposition": "map_to_successor_capability",
             "functions": [],
+            "git_object_sha1": "f4d4b64abfaa236e4104a47a2f140834d9634a66",
             "implementation_state": "design_intent",
             "language": "markdown",
             "mode": "100644",
@@ -91,6 +103,7 @@
             "data_role": "repository_support",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "a7a5cb494b78988243247d224ab841676329ac41",
             "implementation_state": "supporting_artifact",
             "language": "binary-or-text",
             "mode": "100644",
@@ -102,6 +115,7 @@
             "data_role": "raw_payload",
             "disposition": "retain_exact_in_public_hf",
             "functions": [],
+            "git_object_sha1": "33b9ac313ff4a0f55168ae47556626fb0610a0bb",
             "implementation_state": "data_artifact",
             "language": "xml",
             "mode": "100644",
@@ -116,6 +130,7 @@
               "download_file",
               "get_filename_from_url"
             ],
+            "git_object_sha1": "4ccb5b8ece3900827765bc23fccbc78212dff2ef",
             "implementation_state": "implemented",
             "language": "python",
             "mode": "100644",
@@ -130,6 +145,7 @@
               "download_and_unzip_pbs",
               "get_filename_from_url"
             ],
+            "git_object_sha1": "8a995ca2474fe71d285c052898c5c2111504b800",
             "implementation_state": "implemented",
             "language": "python",
             "mode": "100644",
@@ -143,6 +159,7 @@
             "functions": [
               "parse_mbs_xml_initial"
             ],
+            "git_object_sha1": "b9d4aef063cc2f1183f30583c928877db593d863",
             "implementation_state": "implemented",
             "language": "python",
             "mode": "100644",
@@ -153,7 +170,10 @@
           {
             "data_role": "source_code",
             "disposition": "replace_and_preserve_legacy",
-            "functions": [],
+            "functions": [
+              "parse_pbs_xml_initial"
+            ],
+            "git_object_sha1": "237b532f834a99b4cdbc20c85385a43db590cac4",
             "implementation_state": "invalid_syntax",
             "language": "python",
             "mode": "100644",
@@ -168,6 +188,7 @@
             "functions": [
               "get_first_pharmaceutical_item_xml"
             ],
+            "git_object_sha1": "4b6d63f9a77888478caa1d213af1128f135078da",
             "implementation_state": "implemented",
             "language": "python",
             "mode": "100644",
@@ -179,6 +200,7 @@
             "data_role": "documentation_or_design",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "d0aaa9bb40faf539f4d14eafa8e0542a921ae067",
             "implementation_state": "supporting_artifact",
             "language": "markdown",
             "mode": "100644",
@@ -190,6 +212,7 @@
             "data_role": "raw_payload",
             "disposition": "retain_legacy_evidence",
             "functions": [],
+            "git_object_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "implementation_state": "zero_byte",
             "language": "xml",
             "mode": "100644",
@@ -198,6 +221,12 @@
             "size_bytes": 0
           }
         ],
+        "history": {
+          "reachable_commit_count": 6,
+          "root_commits": [
+            "e958d7dd9cc13464da04fd821edd9e66744903bd"
+          ]
+        },
         "repository": "edithatogo/aus_mbs_pbs_graph",
         "schema_version": "1.0",
         "source_url": "https://github.com/edithatogo/aus_mbs_pbs_graph",
@@ -206,12 +235,18 @@
         "tree": "97140a83877cc8d85ed168b797217c7764f67cec"
       },
       {
+        "code_license": {
+          "path": "LICENSE",
+          "sha256": "1b08c34fd4904bf72b922f034101323e8819d4d75e72b6a8873dae05946b2bd0",
+          "spdx_id": "Apache-2.0"
+        },
         "commit": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
         "files": [
           {
             "data_role": "repository_support",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "f21cce3d4424d6e8cb0ba8c6f049dda41b97f237",
             "implementation_state": "supporting_artifact",
             "language": "binary-or-text",
             "mode": "100644",
@@ -223,6 +258,7 @@
             "data_role": "repository_support",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "b38df29f46e14033477513e27b6b7a689b75ed51",
             "implementation_state": "supporting_artifact",
             "language": "yaml",
             "mode": "100644",
@@ -234,6 +270,7 @@
             "data_role": "documentation_or_design",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "d3bf483f2826600253f93f5496659809df07c4b8",
             "implementation_state": "supporting_artifact",
             "language": "markdown",
             "mode": "100644",
@@ -245,6 +282,7 @@
             "data_role": "workflow",
             "disposition": "adapt_or_replace_with_tests",
             "functions": [],
+            "git_object_sha1": "6bc00960faaefd159adac31e5a0c16947493b8bd",
             "implementation_state": "workflow",
             "language": "yaml",
             "mode": "100644",
@@ -256,6 +294,7 @@
             "data_role": "workflow",
             "disposition": "adapt_or_replace_with_tests",
             "functions": [],
+            "git_object_sha1": "8c4a451a118eb87efb04a094d0d6e5c0e4622263",
             "implementation_state": "workflow",
             "language": "yaml",
             "mode": "100644",
@@ -267,6 +306,7 @@
             "data_role": "repository_support",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "32bc4935340435ec0a2379f1af53b18d591af29d",
             "implementation_state": "supporting_artifact",
             "language": "binary-or-text",
             "mode": "100644",
@@ -278,6 +318,7 @@
             "data_role": "repository_support",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "ee2edd4c08fb5c2c80f3b8ece46a66e7eeb4ffe4",
             "implementation_state": "supporting_artifact",
             "language": "yaml",
             "mode": "100644",
@@ -289,6 +330,7 @@
             "data_role": "documentation_or_design",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "baef707956fd64fc8307485e6a10ae1001674437",
             "implementation_state": "supporting_artifact",
             "language": "markdown",
             "mode": "100644",
@@ -300,6 +342,7 @@
             "data_role": "documentation_or_design",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "501a7d8bcfcff799902fff5adf0aa1eaa223ac5d",
             "implementation_state": "supporting_artifact",
             "language": "markdown",
             "mode": "100644",
@@ -311,6 +354,7 @@
             "data_role": "documentation_or_design",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "e66de71c96ce52819b6c5fc087dbd4713718c007",
             "implementation_state": "supporting_artifact",
             "language": "markdown",
             "mode": "100644",
@@ -322,6 +366,7 @@
             "data_role": "repository_support",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "d431f41563e0f3be96fa1e2e5f28266b578c57e1",
             "implementation_state": "supporting_artifact",
             "language": "binary-or-text",
             "mode": "100644",
@@ -333,6 +378,7 @@
             "data_role": "documentation_or_design",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "31adba7b45e228e21f4f19049eb280accf83952f",
             "implementation_state": "supporting_artifact",
             "language": "markdown",
             "mode": "100644",
@@ -344,6 +390,7 @@
             "data_role": "documentation_or_design",
             "disposition": "map_to_successor_capability",
             "functions": [],
+            "git_object_sha1": "3883dba7e8a68141e30b6c290f639fe12a0ce366",
             "implementation_state": "design_intent",
             "language": "markdown",
             "mode": "100644",
@@ -355,6 +402,7 @@
             "data_role": "documentation_or_design",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "29cc9da80ade17a6154d69f913c8aacebefb95aa",
             "implementation_state": "supporting_artifact",
             "language": "markdown",
             "mode": "100644",
@@ -366,6 +414,7 @@
             "data_role": "repository_support",
             "disposition": "retain_legacy_evidence",
             "functions": [],
+            "git_object_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "implementation_state": "zero_byte",
             "language": "binary-or-text",
             "mode": "100644",
@@ -377,6 +426,7 @@
             "data_role": "repository_support",
             "disposition": "retain_legacy_evidence",
             "functions": [],
+            "git_object_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "implementation_state": "zero_byte",
             "language": "binary-or-text",
             "mode": "100644",
@@ -388,6 +438,7 @@
             "data_role": "raw_payload",
             "disposition": "retain_exact_in_public_hf",
             "functions": [],
+            "git_object_sha1": "a9d302b8a278f9e65659a1f5da09ded21723a239",
             "implementation_state": "data_artifact",
             "language": "excel-workbook",
             "mode": "100755",
@@ -399,6 +450,7 @@
             "data_role": "documentation_or_design",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "bbdfb76c2814adbb77e8d8c82cff3aba2bd16571",
             "implementation_state": "supporting_artifact",
             "language": "markdown",
             "mode": "100644",
@@ -410,6 +462,7 @@
             "data_role": "documentation_or_design",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "b6c4c24035ddd901c26f02abe87bc05832682a2e",
             "implementation_state": "supporting_artifact",
             "language": "markdown",
             "mode": "100644",
@@ -421,6 +474,7 @@
             "data_role": "repository_support",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "162504bb88dac877050032eb684a3fd8b1e74219",
             "implementation_state": "supporting_artifact",
             "language": "binary-or-text",
             "mode": "100644",
@@ -432,6 +486,7 @@
             "data_role": "legacy_notebook",
             "disposition": "retain_legacy_evidence",
             "functions": [],
+            "git_object_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "implementation_state": "zero_byte",
             "language": "jupyter-notebook",
             "mode": "100755",
@@ -443,6 +498,7 @@
             "data_role": "legacy_notebook",
             "disposition": "retain_legacy_evidence",
             "functions": [],
+            "git_object_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "implementation_state": "zero_byte",
             "language": "jupyter-notebook",
             "mode": "100755",
@@ -454,6 +510,7 @@
             "data_role": "legacy_notebook",
             "disposition": "retain_legacy_evidence",
             "functions": [],
+            "git_object_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "implementation_state": "zero_byte",
             "language": "jupyter-notebook",
             "mode": "100755",
@@ -465,6 +522,7 @@
             "data_role": "legacy_notebook",
             "disposition": "retain_legacy_evidence",
             "functions": [],
+            "git_object_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "implementation_state": "zero_byte",
             "language": "jupyter-notebook",
             "mode": "100644",
@@ -476,6 +534,7 @@
             "data_role": "legacy_notebook",
             "disposition": "retain_legacy_evidence",
             "functions": [],
+            "git_object_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "implementation_state": "zero_byte",
             "language": "jupyter-notebook",
             "mode": "100755",
@@ -487,6 +546,7 @@
             "data_role": "legacy_notebook",
             "disposition": "retain_legacy_evidence",
             "functions": [],
+            "git_object_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "implementation_state": "zero_byte",
             "language": "jupyter-notebook",
             "mode": "100644",
@@ -498,6 +558,7 @@
             "data_role": "legacy_notebook",
             "disposition": "retain_legacy_evidence",
             "functions": [],
+            "git_object_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "implementation_state": "zero_byte",
             "language": "jupyter-notebook",
             "mode": "100755",
@@ -509,6 +570,7 @@
             "data_role": "repository_support",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "4343e2778b3b677aa3c55d3c68918f50f2d25ded",
             "implementation_state": "supporting_artifact",
             "language": "binary-or-text",
             "mode": "100644",
@@ -520,6 +582,7 @@
             "data_role": "source_code",
             "disposition": "retain_legacy_evidence",
             "functions": [],
+            "git_object_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "implementation_state": "zero_byte",
             "language": "python",
             "mode": "100644",
@@ -533,6 +596,7 @@
             "functions": [
               "main"
             ],
+            "git_object_sha1": "df0f1725a2cc46aafa6d2565e5faacd848baae72",
             "implementation_state": "implemented",
             "language": "python",
             "mode": "100644",
@@ -548,6 +612,7 @@
               "process_html_file",
               "process_mbs_xml"
             ],
+            "git_object_sha1": "e1b976984ca3994981b4d50d014cfefab5e912b9",
             "implementation_state": "implemented",
             "language": "python",
             "mode": "100644",
@@ -563,6 +628,7 @@
               "scrape_items",
               "scrape_participants"
             ],
+            "git_object_sha1": "7b79ff9db33e0398fe503ceccfed6afc03a1aa0e",
             "implementation_state": "implemented",
             "language": "python",
             "mode": "100644",
@@ -574,6 +640,7 @@
             "data_role": "source_code",
             "disposition": "retain_legacy_evidence",
             "functions": [],
+            "git_object_sha1": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
             "implementation_state": "zero_byte",
             "language": "python",
             "mode": "100644",
@@ -585,6 +652,7 @@
             "data_role": "repository_support",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "8218ec343ec01ff8ccfde21fe3ac74a8867a3f86",
             "implementation_state": "supporting_artifact",
             "language": "binary-or-text",
             "mode": "100644",
@@ -596,6 +664,7 @@
             "data_role": "raw_payload",
             "disposition": "retain_exact_in_public_hf",
             "functions": [],
+            "git_object_sha1": "3fa349d44e66745933bb4fd0d281686524289a66",
             "implementation_state": "data_artifact",
             "language": "xml",
             "mode": "100644",
@@ -607,6 +676,7 @@
             "data_role": "repository_support",
             "disposition": "preserve_provenance",
             "functions": [],
+            "git_object_sha1": "cf23d67e8373f55bb387c891f952c4f0513471b9",
             "implementation_state": "supporting_artifact",
             "language": "binary-or-text",
             "mode": "100644",
@@ -622,6 +692,7 @@
               "test_combine_and_save_data",
               "test_process_mbs_xml"
             ],
+            "git_object_sha1": "e3a5c704fb4788b0f6a54df9d30eb449322fd4cf",
             "implementation_state": "implemented",
             "language": "python",
             "mode": "100644",
@@ -633,6 +704,7 @@
             "data_role": "documentation_or_design",
             "disposition": "map_to_successor_capability",
             "functions": [],
+            "git_object_sha1": "bebe1b47ee6ba0aa920e25d1e6ed0ceb6707b9ee",
             "implementation_state": "design_intent",
             "language": "markdown",
             "mode": "100644",
@@ -641,6 +713,12 @@
             "size_bytes": 1494
           }
         ],
+        "history": {
+          "reachable_commit_count": 12,
+          "root_commits": [
+            "b1598a6c228bd4030ae43ea15774a63fbaa24fb8"
+          ]
+        },
         "repository": "edithatogo/aus-health-data-scraper",
         "schema_version": "1.0",
         "source_url": "https://github.com/edithatogo/aus-health-data-scraper",
@@ -652,7 +730,7 @@
     "total_blob_bytes": 8389043,
     "tracked_blob_count": 54
   },
-  "denominator_sha256": "474e0242907e6f6dc4a09d8094b44120279325df9fc89231d7a993b2a102fac4",
+  "denominator_sha256": "3ee5b08f8c5b62df29ea3ddb46d51879bfe8654952a96fc3e88aa624daccd5ec",
   "findings": [
     {
       "evidence": [
