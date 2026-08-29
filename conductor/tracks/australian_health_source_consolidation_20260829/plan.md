@@ -62,6 +62,9 @@
 - [x] Assign every new donor test module to the governed routine unit lane and
   rerun the routine harness with the compatible local Python fallback.
   (`85b6a51`)
+- [x] Regenerate the exhaustive Bronze landing queue after catalogue expansion
+  and keep parser-only MBS sources `not_yet_implemented` until hosted public
+  B1/B2 receipts and anonymous restore verification exist.
 
 ## Phase 4: Replace the monthly scraper safely (AC-05, AC-06)
 

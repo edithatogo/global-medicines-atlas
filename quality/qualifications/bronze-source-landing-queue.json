@@ -1,5 +1,5 @@
 {
-  "catalog_reviewed_at": "2026-08-21",
+  "catalog_reviewed_at": "2026-08-29",
   "catalog_schema_version": 5,
   "family_counts": {
     "archive_release": 9,
@@ -7,7 +7,7 @@
     "manual_reproducible_export": 7,
     "paginated_rest_api": 14,
     "regulator_search_export": 79,
-    "static_file_download": 36
+    "static_file_download": 38
   },
   "items": [
     {
@@ -141,6 +141,61 @@
       "reason": "catalogue implementation claim has committed qualification evidence",
       "source_id": "au-artg",
       "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/0b61e1e80b332754ca258c9e0000c7d8/$FILE/MBS-XML-20250701%20Version%203.XML",
+        "family": "static_file_download",
+        "formats": [
+          "xml"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "au-mbs"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/adapters/au_mbs.py",
+        "tests/test_au_mbs_source.py",
+        "tests/fixtures/adapters/au_mbs.xml"
+      ],
+      "evidence_scope": "none",
+      "next_action": "configure and test the static_file_download adapter",
+      "priority": 10,
+      "reason": "The bounded parser and exact streamed qualification pass, but the source payload does not yet have a hosted public B1/B2 landing and anonymous restore receipt. Parser evidence must not be reported as landed raw coverage.",
+      "source_id": "au-mbs",
+      "state": "not_yet_implemented"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Download the public source file, preserve the response bytes, and issue a content-addressed receipt.",
+        "acquisition_profile": "public-bulk",
+        "credentials_persisted": false,
+        "endpoint": "https://github.com/edithatogo/aus-health-data-scraper/raw/931da0b9b6ae3e3cec0743568abb71a50d62b7cf/data/source/MBS%20-%202024.07%20-%20Group%20P7%20(Genetics).xlsx",
+        "family": "static_file_download",
+        "formats": [
+          "xlsx"
+        ],
+        "pagination": "none",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "au-mbs-p7-legacy-workbook"
+      },
+      "evidence_references": [
+        "src/global_medicines_atlas/adapters/au_mbs_workbook.py",
+        "tests/test_au_mbs_workbook.py"
+      ],
+      "evidence_scope": "none",
+      "next_action": "configure and test the static_file_download adapter",
+      "priority": 10,
+      "reason": "The bounded workbook projection and exact streamed qualification pass, but the workbook does not yet have a hosted public B1/B2 landing and anonymous restore receipt. Parser evidence must not be reported as landed raw coverage.",
+      "source_id": "au-mbs-p7-legacy-workbook",
+      "state": "not_yet_implemented"
     },
     {
       "adapter": {
@@ -4626,12 +4681,12 @@
   "schema_id": "global-medicines-atlas.bronze-source-landing-queue",
   "schema_version": 1,
   "silver_transformations_included": false,
-  "source_count": 172,
+  "source_count": 174,
   "state_counts": {
     "credentialed_and_excluded": 15,
     "landed_and_evidenced": 31,
     "manual_only_documented_acquisition": 92,
-    "not_yet_implemented": 0,
+    "not_yet_implemented": 2,
     "rights_blocked": 32,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 2
