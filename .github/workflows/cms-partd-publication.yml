@@ -43,6 +43,7 @@ jobs:
           uv run --frozen --python 3.14.6 python - <<'PY'
           import json
           import os
+          import time
           from hashlib import sha256
           from pathlib import Path, PurePosixPath
 
@@ -86,7 +87,7 @@ jobs:
     name: Initialize public Hugging Face dataset
     needs: inventory
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 75
     steps:
       - name: Create public dataset and attribution card
         env:
@@ -147,15 +148,22 @@ jobs:
               sorted(path for path in paths if path.startswith('bronze/shards/'))
           )
           if stale_markers:
-              api.create_commit(
-                  repo_id=repo,
-                  repo_type='dataset',
-                  operations=[
-                      CommitOperationDelete(path_in_repo=path)
-                      for path in stale_markers
-                  ],
-                  commit_message='Invalidate stale CMS Part D completion markers',
-              )
+              for attempt in range(1, 13):
+                  try:
+                      api.create_commit(
+                          repo_id=repo,
+                          repo_type='dataset',
+                          operations=[
+                              CommitOperationDelete(path_in_repo=path)
+                              for path in stale_markers
+                          ],
+                          commit_message='Invalidate stale CMS Part D completion markers',
+                      )
+                      break
+                  except Exception as error:
+                      if attempt == 12 or '429 Too Many Requests' not in str(error):
+                          raise
+                      time.sleep(300)
           api.upload_file(
               repo_id=repo,
               repo_type='dataset',
