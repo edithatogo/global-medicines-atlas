@@ -114,6 +114,32 @@ def test_deflate64_member_uses_bounded_7zip_fallback(
     archive.close()
 
 
+def test_deflate64_member_fails_closed_without_7zip(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    archive_path = tmp_path / "archive.zip"
+    archive_path.write_bytes(_zip({"member.zip": b"abc"}))
+    with zipfile.ZipFile(archive_path) as archive:
+        info = archive.getinfo("member.zip")
+        monkeypatch.setattr(  # pyright: ignore[reportUnknownArgumentType]
+            archive,
+            "open",
+            lambda _info: (_ for _ in ()).throw(NotImplementedError()),  # pyright: ignore[reportUnknownLambdaType, reportUnknownArgumentType]
+        )
+        monkeypatch.setattr(  # pyright: ignore[reportUnknownArgumentType]
+            records.shutil,
+            "which",
+            lambda _name: None,  # pyright: ignore[reportUnknownLambdaType, reportUnknownArgumentType]
+        )
+        with (
+            pytest.raises(ValueError, match="requires 7-Zip"),
+            records._open_member(  # pyright: ignore[reportPrivateUsage]
+                archive, info, archive_path=archive_path
+            ),
+        ):
+            pass
+
+
 def test_spending_payload_preserves_leading_zeroes_and_empty_strings(
     tmp_path: Path,
 ) -> None:
@@ -149,7 +175,15 @@ def test_spending_data_api_json_preserves_strings_and_nulls(
 
 @pytest.mark.parametrize(
     "payload",
-    [b"[]", b"{}", b"[1]", b'[{"A":"x","B":1}]'],
+    [
+        b"[",
+        b"[]",
+        b"{}",
+        b"[1]",
+        b'[{"A":"x"}]',
+        b'[{"A":"x","gma_source_row_number":"1"}]',
+        b'[{"A":"x","B":1}]',
+    ],
 )
 def test_spending_data_api_json_fails_closed_on_drift(
     tmp_path: Path, payload: bytes
@@ -183,6 +217,27 @@ def test_projection_fails_closed_on_schema_drift(
             source,
             family="spending",
             identity="c" * 64,
+            output=tmp_path / "out",
+        )
+
+
+@pytest.mark.parametrize(
+    ("members", "message"),
+    [
+        ({"../unsafe.zip": _zip({"table.csv": b"A,B\n1,2\n"})}, "unsafe"),
+        ({"documentation.txt": b"not tabular"}, "no nested tabular"),
+    ],
+)
+def test_formulary_projection_rejects_unsafe_or_empty_archives(
+    tmp_path: Path, members: dict[str, bytes], message: str
+) -> None:
+    source = tmp_path / "source.zip"
+    source.write_bytes(_zip(members))
+    with pytest.raises(ValueError, match=message):
+        project_cms_partd_payload(
+            source,
+            family="formulary",
+            identity="0" * 64,
             output=tmp_path / "out",
         )
 
