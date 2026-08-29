@@ -73,6 +73,8 @@
 - [x] Regenerate downstream B0, archive, monitoring, prompt reconciliation, and
   academic-protocol projections after the catalogue denominator changed from
   172 to 174 sources.
+- [x] Regenerate the strictly offline preregistration rehearsal bundle after
+  its embedded academic protocol changed; retain its unsubmitted state.
 
 ## Phase 4: Replace the monthly scraper safely (AC-05, AC-06)
 
