@@ -268,6 +268,48 @@ def test_inventory_rejects_non_string_commit(
         _validate(repository, inventory)
 
 
+def test_python_characterization_fails_closed_on_unrecoverable_sources() -> (
+    None
+):
+    functions, error = donor_inventory._python_characterization(b"\xff")
+    assert functions == []
+    assert error is not None
+    assert error.startswith("UnicodeDecodeError")
+
+    functions, error = donor_inventory._python_characterization(
+        b"def still_broken(:\n```\n"
+    )
+    assert functions == []
+    assert error is not None
+    assert error.startswith("SyntaxError")
+
+
+def test_inventory_rejects_history_or_license_drift(
+    donor_repository: tuple[Path, str],
+) -> None:
+    repository, revision = donor_repository
+    inventory = build_donor_inventory(
+        repository,
+        repository_name="owner/donor",
+        expected_commit=revision,
+        source_url="https://example.invalid/owner/donor",
+    )
+
+    inventory["history"] = {"reachable_commit_count": 2, "root_commits": []}
+    with pytest.raises(DonorInventoryError, match="history differs"):
+        _validate(repository, inventory)
+
+    inventory = build_donor_inventory(
+        repository,
+        repository_name="owner/donor",
+        expected_commit=revision,
+        source_url="https://example.invalid/owner/donor",
+    )
+    inventory["code_license"] = {"spdx_id": "unknown"}
+    with pytest.raises(DonorInventoryError, match="code_license differs"):
+        _validate(repository, inventory)
+
+
 def test_checked_in_two_repository_denominator_is_self_consistent() -> None:
     document = json.loads(QUALIFICATION.read_text(encoding="utf-8"))
     schema = json.loads(SCHEMA.read_text(encoding="utf-8"))

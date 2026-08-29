@@ -108,12 +108,13 @@ def _data_role(path: str) -> str:
 def _python_characterization(content: bytes) -> tuple[list[str], str | None]:
     parse_error: str | None = None
     try:
-        tree = ast.parse(content)
+        source = content.decode("utf-8")
     except UnicodeDecodeError as error:
         return [], f"{type(error).__name__}: {error}"
+    try:
+        tree = ast.parse(source)
     except SyntaxError as error:
         parse_error = f"{type(error).__name__}: {error}"
-        source = content.decode("utf-8")
         if not source.rstrip().endswith("```"):
             return [], parse_error
         try:
