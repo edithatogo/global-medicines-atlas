@@ -4,9 +4,9 @@
   "generated_at": "2026-08-29",
   "decision_id": "conductor/decisions/0008-source-derived-dataset-licensing-batch.md",
   "source_count": 174,
-  "batch_recommendation": "catalogue_only_for_all_unresolved_sources",
-  "public_derived_release": "source_specific_receipt_required",
-  "internal_acquisition": "conditional_and_non_public",
+  "batch_recommendation": "source_specific_ledger_controls_publication",
+  "public_derived_release": "exact_approved_manifests_only",
+  "internal_acquisition": "approved_or_conditional_by_source_review",
   "entries": [
     {
       "source_id": "ae-dha-prices",
@@ -29,7 +29,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ae-ede-register",
@@ -52,7 +53,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ar-anmat-vademecum",
@@ -75,7 +77,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "au-amt-rf2",
@@ -85,7 +88,7 @@
       "authority": "Australian Digital Health Agency",
       "dimension": "terminology",
       "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
+      "recommended_disposition": "credentialed_excluded",
       "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
       "public_derived_release": "not_approved",
       "approved_surfaces": [
@@ -98,7 +101,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "au-artg",
@@ -121,7 +125,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "au-mbs",
@@ -131,20 +136,17 @@
       "authority": "Australian Government Department of Health",
       "dimension": "service_benefit",
       "catalogue_rights_status": "maintainer_redistribution_authorized",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required"
+      "required_evidence": [],
+      "blocker": null,
+      "rights_policy_family_id": "au-maintainer-exact-redistribution-permission-20260829"
     },
     {
       "source_id": "au-mbs-p7-legacy-workbook",
@@ -154,20 +156,17 @@
       "authority": "Edith Atogo (legacy derived workbook)",
       "dimension": "service_benefit",
       "catalogue_rights_status": "maintainer_redistribution_authorized",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required"
+      "required_evidence": [],
+      "blocker": null,
+      "rights_policy_family_id": "au-maintainer-exact-redistribution-permission-20260829"
     },
     {
       "source_id": "au-pbs-api",
@@ -190,7 +189,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "au-pbs-embargo",
@@ -200,7 +200,7 @@
       "authority": "Australian Department of Health",
       "dimension": "funding",
       "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
+      "recommended_disposition": "credentialed_excluded",
       "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
       "public_derived_release": "not_approved",
       "approved_surfaces": [
@@ -213,7 +213,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "au-pbs-historical-xml",
@@ -236,7 +237,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "au-tga-daen",
@@ -259,7 +261,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "au-tga-pi-cmi",
@@ -282,7 +285,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "au-tga-regulatory-events",
@@ -305,7 +309,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "bh-moh-drug-prices",
@@ -328,7 +333,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "br-anvisa-medicines",
@@ -351,7 +357,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "br-cmed-prices",
@@ -374,7 +381,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "br-conitec-decisions",
@@ -397,7 +405,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ca-canada-vigilance",
@@ -420,7 +429,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ca-cda-recommendations",
@@ -443,7 +453,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ca-cihi-nhex-medicines",
@@ -466,7 +477,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ca-dpd",
@@ -489,7 +501,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ca-noc",
@@ -512,7 +525,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ca-nova-scotia-pharmacare",
@@ -535,7 +549,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ca-ontario-odb",
@@ -558,7 +573,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ch-foph-sl-fhir",
@@ -581,7 +597,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ch-foph-specialities",
@@ -604,7 +621,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ch-swissmedic-aips",
@@ -627,7 +645,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ch-swissmedic-authorised",
@@ -650,7 +669,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "cl-isp-register",
@@ -673,7 +693,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "co-invima-cum",
@@ -696,7 +717,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "co-invima-register",
@@ -719,7 +741,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "de-bfarm-amice",
@@ -742,7 +765,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "dk-medicinpriser",
@@ -765,7 +789,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "dk-medstat-utilisation",
@@ -788,7 +813,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "eg-eda-register",
@@ -811,7 +837,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "eg-eda-safety",
@@ -834,7 +861,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "eg-national-eml",
@@ -857,7 +885,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "eu-ema-article57",
@@ -880,7 +909,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "eu-ema-epar-documents",
@@ -903,7 +933,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "eu-ema-json",
@@ -926,7 +957,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "eu-ema-medicines",
@@ -949,7 +981,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "eu-ema-orphan",
@@ -972,7 +1005,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "eu-ema-pms-fhir",
@@ -982,7 +1016,7 @@
       "authority": "European Medicines Agency",
       "dimension": "regulatory",
       "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
+      "recommended_disposition": "credentialed_excluded",
       "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
       "public_derived_release": "not_approved",
       "approved_surfaces": [
@@ -995,7 +1029,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "eu-ema-referrals",
@@ -1018,7 +1053,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "eu-ema-safety-communications",
@@ -1041,7 +1077,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "eu-ema-xevmpd-credentialed",
@@ -1051,7 +1088,7 @@
       "authority": "European Medicines Agency",
       "dimension": "regulatory",
       "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
+      "recommended_disposition": "credentialed_excluded",
       "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
       "public_derived_release": "not_approved",
       "approved_surfaces": [
@@ -1064,7 +1101,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "eu-eudravigilance-public",
@@ -1074,7 +1112,7 @@
       "authority": "European Medicines Agency",
       "dimension": "regulatory",
       "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
+      "recommended_disposition": "credentialed_excluded",
       "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
       "public_derived_release": "not_approved",
       "approved_surfaces": [
@@ -1087,7 +1125,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "eu-spor-public-metadata",
@@ -1110,7 +1149,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "eu-spor-rms-oms",
@@ -1120,7 +1160,7 @@
       "authority": "European Medicines Agency",
       "dimension": "terminology",
       "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
+      "recommended_disposition": "credentialed_excluded",
       "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
       "public_derived_release": "not_approved",
       "approved_surfaces": [
@@ -1133,7 +1173,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "eu-union-register",
@@ -1156,7 +1197,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "eu-commission-cc-by-4.0"
     },
     {
       "source_id": "fr-bdpm",
@@ -1179,7 +1221,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "fr-etalab-open-licence-2.0"
     },
     {
       "source_id": "fr-bdpm-smr-asmr",
@@ -1202,7 +1245,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "fr-etalab-open-licence-2.0"
     },
     {
       "source_id": "fr-open-medic",
@@ -1225,7 +1269,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "fr-etalab-open-licence-2.0"
     },
     {
       "source_id": "gb-emit",
@@ -1248,7 +1293,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "uk-open-government-licence-3.0"
     },
     {
       "source_id": "gb-mhra-products",
@@ -1271,7 +1317,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "gb-mhra-yellow-card",
@@ -1294,7 +1341,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "gb-nhs-dmd",
@@ -1304,7 +1352,7 @@
       "authority": "NHS Business Services Authority",
       "dimension": "terminology",
       "catalogue_rights_status": "registration_and_licence_review_required",
-      "recommended_disposition": "catalogue_only",
+      "recommended_disposition": "credentialed_excluded",
       "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
       "public_derived_release": "not_approved",
       "approved_surfaces": [
@@ -1317,7 +1365,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "gb-nhs-drug-tariff",
@@ -1340,7 +1389,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "nhsbsa-ogl-3.0"
     },
     {
       "source_id": "gb-nice-medicines-utilisation",
@@ -1363,7 +1413,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "nhs-england-ogl-3.0"
     },
     {
       "source_id": "gb-nice-ta",
@@ -1386,7 +1437,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "gb-openprescribing",
@@ -1409,7 +1461,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "gb-trud-api",
@@ -1419,7 +1472,7 @@
       "authority": "NHS England",
       "dimension": "terminology",
       "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
+      "recommended_disposition": "credentialed_excluded",
       "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
       "public_derived_release": "not_approved",
       "approved_surfaces": [
@@ -1432,7 +1485,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "gcc-central-registration",
@@ -1455,7 +1509,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "gh-fda-register",
@@ -1478,7 +1533,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "gh-fda-safety",
@@ -1501,7 +1557,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "gh-national-eml",
@@ -1524,7 +1581,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "global-rxnorm",
@@ -1548,7 +1606,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "rxnorm-public-identifiers-only"
     },
     {
       "source_id": "global-umc-vigibase",
@@ -1558,7 +1617,7 @@
       "authority": "Uppsala Monitoring Centre",
       "dimension": "regulatory",
       "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
+      "recommended_disposition": "credentialed_excluded",
       "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
       "public_derived_release": "not_approved",
       "approved_surfaces": [
@@ -1571,7 +1630,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "global-who-amds-gprm",
@@ -1594,7 +1654,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "global-who-availability-surveys",
@@ -1617,7 +1678,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "global-who-databases",
@@ -1640,7 +1702,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "global-who-eml",
@@ -1663,7 +1726,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "global-who-medicine-prices",
@@ -1686,7 +1750,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "global-who-mi4a",
@@ -1709,7 +1774,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "global-who-national-eml-index",
@@ -1732,7 +1798,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "global-who-shortage-sources",
@@ -1755,7 +1822,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "global-who-wla",
@@ -1778,7 +1846,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "id-bpom-product",
@@ -1801,7 +1870,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ie-pcrs-reimbursement",
@@ -1824,7 +1894,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "in-cdsco-approved-drugs",
@@ -1847,7 +1918,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "in-cdsco-products",
@@ -1870,7 +1942,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "in-nlem",
@@ -1893,7 +1966,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "in-nppa-ceiling-prices",
@@ -1916,7 +1990,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "in-procurement-availability",
@@ -1939,7 +2014,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "in-pvpi-safety",
@@ -1949,7 +2025,7 @@
       "authority": "Pharmacovigilance Programme of India",
       "dimension": "regulatory",
       "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
+      "recommended_disposition": "credentialed_excluded",
       "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
       "public_derived_release": "not_approved",
       "approved_surfaces": [
@@ -1962,7 +2038,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "jp-mhlw-ndb-utilisation",
@@ -1985,7 +2062,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "jp-mhlw-nhi-price",
@@ -2008,7 +2086,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "jp-pmda-approvals",
@@ -2031,7 +2110,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "jp-pmda-package-inserts",
@@ -2054,7 +2134,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "jp-pmda-safety",
@@ -2077,7 +2158,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ke-national-eml",
@@ -2100,7 +2182,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ke-ppb-register",
@@ -2123,7 +2206,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ke-ppb-safety",
@@ -2146,7 +2230,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "kr-hira-atc",
@@ -2169,7 +2254,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "kr-hira-reimbursement",
@@ -2179,7 +2265,7 @@
       "authority": "Health Insurance Review and Assessment Service",
       "dimension": "funding",
       "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
+      "recommended_disposition": "credentialed_excluded",
       "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
       "public_derived_release": "not_approved",
       "approved_surfaces": [
@@ -2192,7 +2278,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "kr-hira-standard-code",
@@ -2215,7 +2302,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "kr-mfds-nedrug",
@@ -2225,7 +2313,7 @@
       "authority": "Ministry of Food and Drug Safety",
       "dimension": "regulatory",
       "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
+      "recommended_disposition": "credentialed_excluded",
       "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
       "public_derived_release": "not_approved",
       "approved_surfaces": [
@@ -2238,7 +2326,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "kw-moh-medicines",
@@ -2261,7 +2350,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "mus-approved-drug-list",
@@ -2284,7 +2374,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "mus-historical-eml-archive",
@@ -2307,7 +2398,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "mus-pharmacy-board-register",
@@ -2330,7 +2422,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "mus-pharmacy-board-safety",
@@ -2353,7 +2446,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "mx-cofepris-register",
@@ -2376,7 +2470,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "mx-csg-compendium",
@@ -2399,7 +2494,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "my-npra-quest",
@@ -2422,7 +2518,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ng-nafdac-products",
@@ -2445,7 +2542,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ng-nafdac-safety",
@@ -2468,7 +2566,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ng-nhia-medicines",
@@ -2491,7 +2590,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "nl-gipdatabank",
@@ -2514,7 +2614,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "nl-zorg-cc0"
     },
     {
       "source_id": "nl-medicijnkosten",
@@ -2537,7 +2638,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "no-dmp-fhir",
@@ -2560,7 +2662,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "no-fest",
@@ -2583,7 +2686,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "no-norpd-utilisation",
@@ -2606,7 +2710,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "nz-medsafe-documents",
@@ -2629,7 +2734,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "nz-medsafe-products",
@@ -2652,7 +2758,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "nz-nzhts-fhir",
@@ -2662,7 +2769,7 @@
       "authority": "Health New Zealand",
       "dimension": "terminology",
       "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
+      "recommended_disposition": "credentialed_excluded",
       "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
       "public_derived_release": "not_approved",
       "approved_surfaces": [
@@ -2675,7 +2782,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "nz-nzulm-bulk",
@@ -2685,7 +2793,7 @@
       "authority": "New Zealand Medicines Formulary LP",
       "dimension": "terminology",
       "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
+      "recommended_disposition": "credentialed_excluded",
       "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
       "public_derived_release": "not_approved",
       "approved_surfaces": [
@@ -2698,7 +2806,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "nz-pharmac-hml",
@@ -2721,7 +2830,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "nz-pharmac-cc-by-4.0"
     },
     {
       "source_id": "nz-pharmac-schedule",
@@ -2744,7 +2854,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "nz-pharmac-cc-by-4.0"
     },
     {
       "source_id": "nz-pharmac-schedule-xml",
@@ -2767,7 +2878,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "nz-pharmac-cc-by-4.0"
     },
     {
       "source_id": "om-moh-medicines",
@@ -2790,7 +2902,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ph-fda-verification",
@@ -2813,7 +2926,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "pk-drap-register",
@@ -2836,7 +2950,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "pk-drap-safety",
@@ -2859,7 +2974,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "pk-neml",
@@ -2882,7 +2998,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "qa-moh-medicines",
@@ -2905,7 +3022,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "rw-national-eml",
@@ -2928,7 +3046,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "rw-rwandafda-register",
@@ -2951,7 +3070,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "rw-rwandafda-safety",
@@ -2974,7 +3094,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "sa-chi-formulary",
@@ -2997,7 +3118,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "sa-sfda-drug-list",
@@ -3007,7 +3129,7 @@
       "authority": "Saudi Food and Drug Authority",
       "dimension": "regulatory",
       "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
+      "recommended_disposition": "credentialed_excluded",
       "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
       "public_derived_release": "not_approved",
       "approved_surfaces": [
@@ -3020,7 +3142,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "se-npl-nsl",
@@ -3043,7 +3166,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "se-socialstyrelsen-utilisation",
@@ -3066,7 +3190,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "se-tlv-subsidies",
@@ -3089,7 +3214,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "sg-hsa-approval-deltas",
@@ -3112,7 +3238,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "sg-hsa-register",
@@ -3135,7 +3262,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "sg-moh-drug-list",
@@ -3158,7 +3286,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "sn-dpm-register",
@@ -3181,7 +3310,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "sn-dpm-safety",
@@ -3204,7 +3334,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "sn-national-eml",
@@ -3227,7 +3358,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "th-fda-search",
@@ -3250,7 +3382,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "tz-national-eml",
@@ -3273,7 +3406,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "tz-tmda-products",
@@ -3296,7 +3430,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "tz-tmda-safety",
@@ -3319,7 +3454,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ug-national-eml",
@@ -3342,7 +3478,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ug-nda-register",
@@ -3365,7 +3502,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "ug-nda-safety",
@@ -3388,7 +3526,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "us-cms-mdrp",
@@ -3411,7 +3550,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "us-cms-nadac",
@@ -3434,7 +3574,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "us-cms-partd-formulary",
@@ -3457,7 +3598,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "us-cms-partd-spending",
@@ -3480,7 +3622,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "us-dailymed-spl",
@@ -3503,7 +3646,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "us-drugsfda",
@@ -3526,7 +3670,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "fda-website-public-domain"
     },
     {
       "source_id": "us-fda-drug-shortages",
@@ -3549,7 +3694,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "fda-website-public-domain"
     },
     {
       "source_id": "us-fda-faers",
@@ -3572,7 +3718,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "fda-website-public-domain"
     },
     {
       "source_id": "us-fda-ndc-directory",
@@ -3595,7 +3742,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "fda-website-public-domain"
     },
     {
       "source_id": "us-fda-nsde",
@@ -3618,7 +3766,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "fda-website-public-domain"
     },
     {
       "source_id": "us-fda-orange-book",
@@ -3641,7 +3790,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "fda-website-public-domain"
     },
     {
       "source_id": "us-fda-recalls-notices",
@@ -3664,7 +3814,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "fda-website-public-domain"
     },
     {
       "source_id": "us-fda-rems",
@@ -3687,7 +3838,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "fda-website-public-domain"
     },
     {
       "source_id": "us-gsrs-unii",
@@ -3710,7 +3862,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "us-openfda-drugsfda",
@@ -3733,7 +3886,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "openfda-cc0"
     },
     {
       "source_id": "us-openfda-enforcement",
@@ -3756,7 +3910,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "openfda-cc0"
     },
     {
       "source_id": "us-openfda-faers",
@@ -3779,7 +3934,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "openfda-cc0"
     },
     {
       "source_id": "us-openfda-ndc",
@@ -3802,7 +3958,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "openfda-cc0"
     },
     {
       "source_id": "us-openfda-nsde",
@@ -3825,7 +3982,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "openfda-cc0"
     },
     {
       "source_id": "us-rxnorm-api",
@@ -3848,7 +4006,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "rxnorm-public-identifiers-only"
     },
     {
       "source_id": "za-national-eml",
@@ -3871,7 +4030,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "za-sahpra-register",
@@ -3894,7 +4054,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "za-sahpra-safety",
@@ -3917,7 +4078,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "za-single-exit-price",
@@ -3940,7 +4102,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "zw-mcaz-register",
@@ -3963,7 +4126,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "zw-mcaz-safety",
@@ -3986,7 +4150,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     },
     {
       "source_id": "zw-national-eml",
@@ -4009,7 +4174,8 @@
         "retrieval_and_schema_receipt",
         "withdrawal_and_correction_route"
       ],
-      "blocker": "source-specific rights receipt required"
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
     }
   ]
 }

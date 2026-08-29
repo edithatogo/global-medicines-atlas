@@ -161,14 +161,15 @@
       "evidence_references": [
         "src/global_medicines_atlas/adapters/au_mbs.py",
         "tests/test_au_mbs_source.py",
-        "tests/fixtures/adapters/au_mbs.xml"
+        "tests/fixtures/adapters/au_mbs.xml",
+        "quality/qualifications/australian-mbs-public-huggingface-20260829.json"
       ],
-      "evidence_scope": "none",
-      "next_action": "configure and test the static_file_download adapter",
-      "priority": 10,
-      "reason": "The bounded parser and exact streamed qualification pass, but the source payload does not yet have a hosted public B1/B2 landing and anonymous restore receipt. Parser evidence must not be reported as landed raw coverage.",
+      "evidence_scope": "live_receipt",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "The exact July 2025 MBS XML is publicly retained as immutable B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. This is service-benefit evidence, not medicine regulatory or PBS funding evidence.",
       "source_id": "au-mbs",
-      "state": "not_yet_implemented"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -188,14 +189,15 @@
       },
       "evidence_references": [
         "src/global_medicines_atlas/adapters/au_mbs_workbook.py",
-        "tests/test_au_mbs_workbook.py"
+        "tests/test_au_mbs_workbook.py",
+        "quality/qualifications/australian-mbs-public-huggingface-20260829.json"
       ],
-      "evidence_scope": "none",
-      "next_action": "configure and test the static_file_download adapter",
-      "priority": 10,
-      "reason": "The bounded workbook projection and exact streamed qualification pass, but the workbook does not yet have a hosted public B1/B2 landing and anonymous restore receipt. Parser evidence must not be reported as landed raw coverage.",
+      "evidence_scope": "live_receipt",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "The exact July 2024 P7 workbook is publicly retained as immutable legacy B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. Its legacy schema era remains explicit for comparison and does not imply current coverage.",
       "source_id": "au-mbs-p7-legacy-workbook",
-      "state": "not_yet_implemented"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4684,9 +4686,9 @@
   "source_count": 174,
   "state_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 31,
+    "landed_and_evidenced": 33,
     "manual_only_documented_acquisition": 92,
-    "not_yet_implemented": 2,
+    "not_yet_implemented": 0,
     "rights_blocked": 32,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 2
