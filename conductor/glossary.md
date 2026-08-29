@@ -41,3 +41,19 @@ time, and evidence dimension. Missing coverage is not negative evidence.
 **Projection** is a deterministically rebuildable representation over B1/B2.
 It may improve portability, lineage, cataloguing, recovery, or query access,
 but it does not supersede the acquisition history or raw-evidence identity.
+
+**Health-service-benefit assertion** is an MBS-native statement about a
+service item, group, fee, benefit, participant measure, restriction, or time.
+It is independent of medicine regulatory, funding, formulary, terminology,
+utilization, and clinical assertions.
+
+**Public data plane** is the set of public Hugging Face dataset repositories
+that durably hold publication-approved raw and derived objects at pinned
+revisions. The content-addressed payload and receipt remain evidentiary truth;
+the Hub catalogue and a local cache do not.
+
+**Federation contract v4** is the additive distribution identity that binds a
+repository authority and medallion object to its public dataset, immutable
+revision, path, digest, visibility and anonymous verification, collection,
+replica, schema era, comparison cohort, and cache lifecycle. It does not alter
+the v1 layer/promotion, v2 field-lineage, or v3 backfill/replay vocabularies.

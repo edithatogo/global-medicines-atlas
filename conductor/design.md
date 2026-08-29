@@ -763,3 +763,109 @@ workflows, cryptographic batch or Merkle attestations, and Delta/Hudi
 comparisons remain non-blocking experiments. Graph, vector, OMOP, semantic
 normalization, and Rust terminology capabilities consume Bronze or Silver
 outputs later and are not Bronze qualification evidence.
+
+## Australian benefits federation
+
+Decision 0009 extends the datahouse without adding another medallion level.
+GMA is the code, schema, provenance, and orchestration control plane. Public
+Hugging Face datasets are the durable data plane for every publication-approved
+raw and derived object. The identity is the tuple
+`authority + source_id + layer/stratum + dataset + revision + path + sha256`;
+neither a mutable branch nor a workstation directory is sufficient.
+
+```mermaid
+flowchart LR
+    U1["aus_mbs_pbs_graph\nlegacy code and MBS 2025 bytes"]
+    U2["aus-health-data-scraper\nlegacy workflow and P7 workbook"]
+    GMA["Global Medicines Atlas\ncanonical control plane"]
+    MBS["Public HF MBS source archive\nB2 raw plus B1 receipts"]
+    PBS["Public HF PBS source archive\nB2 raw plus B1 receipts"]
+    DER["Public HF Australian benefits\nSilver Gold Platinum"]
+    RA["reimbursement-atlas\nfederated HEOR consumer"]
+
+    U1 -->|"inventory, adapt, preserve"| GMA
+    U2 -->|"inventory, adapt, preserve"| GMA
+    GMA -->|"hosted publication only"| MBS
+    GMA -->|"hosted publication only"| PBS
+    MBS --> DER
+    PBS --> DER
+    DER --> RA
+    DER --> GMA
+```
+
+### Donor completeness rule
+
+Every tracked donor file and implemented function receives one disposition:
+`adopt`, `adapt`, `replace-with-equivalent`, `retain-legacy`, `supersede`, or
+`exclude-with-reason`. Exclusion is exceptional and does not delete the donor
+artifact: exact code/history is retained in the archived donor repository and
+its inventory. Empty notebooks and the zero-byte temporary XML are historical
+placeholders, not data coverage. The invalid PBS parser and dead HTML endpoints
+are regression inputs; their intended behavior is reimplemented behind current
+admission, receipt, retry, and source-health controls.
+
+### Bronze and public distribution
+
+- B0 adds donor authority, legacy/current classification, intended Hub dataset
+  and collection, schema era, comparison cohort, and transition state.
+- B1 adds owner authorization scope, hosted publication run, public visibility,
+  immutable revision, anonymous verification, replica state, and cache cleanup.
+- B2 is the exact MBS/PBS source-native object at its pinned public Hub path
+  when redistribution is approved. Metadata-only substitution is not allowed
+  for an object that the exact manifest requires to contain bytes.
+- Source-faithful Parquet, member manifests, and catalogue projections remain
+  rebuildable and do not become a fourth Bronze stratum.
+
+Local acquisition and parsing may materialize bounded temporary files. The
+workflow deletes them only after GitHub Actions has uploaded the exact manifest
+to a public dataset and a token-free clean-room download reproduces every
+digest. A second dataset in the same Hub account is a compatibility copy, not
+geographically and administratively independent replication.
+
+### Silver service and medicine tables
+
+MBS Silver tables preserve service items, groups/subgroups, fee and benefit
+amounts, descriptions/notes, participant measures, dates, and workbook-derived
+legacy annotations. PBS Silver tables preserve schedules, pharmaceutical item
+codes, products, restrictions, pricing, AMT references, ATC codes, namespaces,
+and effective dates. Historical schemas are typed separately and related by
+explicit schema-evolution mappings; columns are not discarded merely because
+they do not exist in the newest release.
+
+### Gold evidence graph
+
+Gold represents MBS services, PBS items/products, medicines, AMT/ATC concepts,
+conditions, restrictions, and source documents as typed nodes. Every edge has
+method, confidence, evidence, source revision, valid time, review state, and
+rights. Official identifiers, deterministic rules, lexical/NLP candidates,
+and human-reviewed mappings are separate edge classes. A candidate shared-
+condition path does not prove therapeutic equivalence, indication, funding,
+approval, utilization, eligibility, or clinical appropriateness.
+
+### Platinum federation
+
+The API, CLI, atlas, and exports read pinned public manifests and Parquet
+remotely with projection/predicate pushdown where supported. Responses surface
+source revision, schema era, legacy/current state, coverage denominator,
+freshness, confidence, and cache status. Reimbursement-atlas and other
+maintainer repositories consume these stable contracts rather than maintaining
+another mutable copy of the same raw source authority.
+
+### Federation/distribution contract v4
+
+Version 4 is additive to medallion v1-v3 and binds:
+
+1. repository and dataset authority;
+2. layer, Bronze stratum, source and acquisition identity;
+3. public Hub repository, immutable revision and object path;
+4. content digest, byte count, visibility and anonymous restore receipt;
+5. rights/authorization reference, collection and independent replica state;
+6. schema era, legacy/current comparison cohort and temporal identity;
+7. cache scope, expiry and verified cleanup; and
+8. cross-repository lineage and compatibility consumers.
+
+Frontier work evaluates remote DuckDB/Polars, Iceberg REST, Merkle manifests,
+RO-Crate, Croissant, OpenLineage, Xet-aware chunk reuse, streaming Arrow,
+DataFusion, and optional Neo4j/Cypher exports. Each remains a preview until a
+bounded benchmark, fallback, threat model, rights check, and rollback receipt
+support promotion.
