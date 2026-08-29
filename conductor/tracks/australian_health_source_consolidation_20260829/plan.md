@@ -50,7 +50,7 @@
   restrictions, AMT references, ATC codes, effective dates, malformed XML,
   duplicate members, traversal names, decompression limits, and drift. (`796c93a`)
 - [x] Confirm the intended failure before implementation. (`796c93a`)
-- [~] Extend the existing `au_pbs` adapter and catalogue/source profile rather
+- [x] Extend the existing `au_pbs` adapter and catalogue/source profile rather
   than creating a second PBS authority. (`796c93a`)
 - [~] Implement receipt-bound download, immutable ZIP preservation, member
   manifests, source-native Parquet, and the bounded tag-inspection command.
