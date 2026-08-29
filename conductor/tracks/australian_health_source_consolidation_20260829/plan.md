@@ -119,7 +119,8 @@
 - [ ] Map Neo4j, SNOMED CT-AU, AMT, ATC hierarchy, NLP/NER, temporal graph,
   Spark, and Airflow commitments to existing GMA capabilities or successor
   tasks; label each as implemented, preview, rejected, or separately gated.
-- [ ] Verify public raw/data receipts from the Hugging Face data-plane track.
+- [x] Verify the exact donor XML, legacy workbook, and both complete Git-history
+  receipts from the public Hugging Face data-plane track. (`4d1dae4`)
 - [ ] Publish compatibility and successor notices in both donor repositories,
   link exact GMA/Hugging Face destinations, and run downstream canaries.
 - [ ] Prepare non-destructive GitHub archive commands and a rollback checklist;

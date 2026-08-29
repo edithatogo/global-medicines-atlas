@@ -5,7 +5,7 @@
   "catalogue_source_count": 174,
   "review_count": 174,
   "publication_gate": "satisfied_for_exact_approved_manifests",
-  "candidate_policy_assignment_count": 26,
+  "candidate_policy_assignment_count": 28,
   "entries": [
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -156,43 +156,65 @@
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "au-mbs",
-      "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
-      "redistribute": "unknown",
-      "transform": "unknown",
-      "publish_source_bytes": "unknown",
-      "sensitivity": "unknown",
-      "disposition": "catalogue_only",
-      "attribution": null,
-      "field_exclusions": [],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
-      "reviewed_at": "2026-08-21T00:00:00Z",
-      "review_trigger": "capture current official reuse terms",
-      "blocker": "official rights evidence discovery outcome is not_observed",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "policy_family_id": "au-maintainer-exact-redistribution-permission-20260829",
+      "evidence": [
+        {
+          "official_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/blob/4d1dae488ac43522f20e8320a8b2a56bf9138341/publication-authorization.json",
+          "observed_at": "2026-08-29T08:57:21Z",
+          "content_sha256": "fdda663c78437edc010bc5f2f606c3d716d6b4e0bfc31d27daf910303a7a16da",
+          "scope": "dataset",
+          "reuse_statement": "The sole maintainer explicitly asserted permission to redistribute the two exact source payloads and authorized their public, non-gated publication; this is an exact-manifest permission record, not a general licence conclusion."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
+      "disposition": "approved_public_source",
+      "attribution": "Preserve source authority, donor provenance, exact source date, retrieval identity, and the included donor licence notices; do not apply a donor software licence to government source payloads.",
+      "field_exclusions": [
+        "claims that MBS service-benefit evidence proves medicine regulation, PBS funding, formulary status, terminology equivalence, or clinical effect",
+        "reuse beyond the exact content-addressed payloads without a new source-specific permission or licence review"
+      ],
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
+      "reviewed_at": "2026-08-29T08:57:21Z",
+      "review_trigger": "payload digest, source terms, permission scope, attribution, schema era, sensitivity, or withdrawal request changes",
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "au-mbs-p7-legacy-workbook",
-      "policy_family_id": "unresolved-source-specific-terms",
-      "evidence": [],
-      "redistribute": "unknown",
-      "transform": "unknown",
-      "publish_source_bytes": "unknown",
-      "sensitivity": "unknown",
-      "disposition": "catalogue_only",
-      "attribution": null,
-      "field_exclusions": [],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
-      "reviewed_at": "2026-08-21T00:00:00Z",
-      "review_trigger": "capture current official reuse terms",
-      "blocker": "official rights evidence discovery outcome is not_observed",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "policy_family_id": "au-maintainer-exact-redistribution-permission-20260829",
+      "evidence": [
+        {
+          "official_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/blob/4d1dae488ac43522f20e8320a8b2a56bf9138341/publication-authorization.json",
+          "observed_at": "2026-08-29T08:57:21Z",
+          "content_sha256": "fdda663c78437edc010bc5f2f606c3d716d6b4e0bfc31d27daf910303a7a16da",
+          "scope": "dataset",
+          "reuse_statement": "The sole maintainer explicitly asserted permission to redistribute the two exact source payloads and authorized their public, non-gated publication; this is an exact-manifest permission record, not a general licence conclusion."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
+      "disposition": "approved_public_source",
+      "attribution": "Preserve source authority, donor provenance, exact source date, retrieval identity, and the included donor licence notices; do not apply a donor software licence to government source payloads.",
+      "field_exclusions": [
+        "claims that MBS service-benefit evidence proves medicine regulation, PBS funding, formulary status, terminology equivalence, or clinical effect",
+        "reuse beyond the exact content-addressed payloads without a new source-specific permission or licence review"
+      ],
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
+      "reviewed_at": "2026-08-29T08:57:21Z",
+      "review_trigger": "payload digest, source terms, permission scope, attribution, schema era, sensitivity, or withdrawal request changes",
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",

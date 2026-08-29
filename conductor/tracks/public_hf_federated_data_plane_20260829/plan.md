@@ -32,7 +32,8 @@
   cross-repository conformance canaries.
 - [x] Approve the stable `edithatogo/australian-mbs-source-archive` name and
   implement its create-private, publish, and anonymous-verification transaction
-  entirely in GitHub Actions. Hosted dispatch remains pending.
+  entirely in GitHub Actions. The exact revision is public, non-gated, and
+  anonymously digest verified. (`4d1dae4`, run `33244323861`)
 - [ ] Create the continuing PBS source and Australian benefits medallion
   datasets from GitHub Actions once their non-empty manifests exist.
 - [ ] Require source-specific data cards, Croissant, citations, provenance,
@@ -50,8 +51,7 @@
 - [x] Confirm the intended failure before implementation.
 - [x] Implement hosted publication of the July 2025 MBS XML and July 2024 P7
   workbook as separate exact B2 objects with provenance, authorization, and
-  manifest material. Hosted dispatch and durable B1 success receipt remain
-  pending.
+  manifest material. (`4d1dae4`, run `33244323861`)
 - [ ] Publish continuing MBS/PBS exact source manifests only after acquisition,
   admission, authorization, and source-version gates pass.
 - [x] Retain the two donor Git ancestry bundles, source bytes, licences, and
@@ -59,10 +59,12 @@
 - [ ] Retain continuing archive/container bytes as well as member manifests;
   never replace
   an XML/ZIP/XLSX raw object with Parquet.
-- [ ] Remove temporary local source bytes only after token-free clean-room
-  verification succeeds and its cleanup receipt is durable.
-- [ ] Phase Verification & Checkpoint: every approved non-empty raw object is
-  public and no durable workstation-only copy is required.
+- [x] Remove the hosted temporary source-byte workspace only after token-free
+  clean-room verification succeeds and its cleanup receipt is durable. (run
+  `33244323861`)
+- [x] Phase Verification & Checkpoint: every approved donor raw object and both
+  complete histories are public, non-gated, and token-free digest verified;
+  no durable workstation-only copy is required. (`4d1dae4`)
 
 ## Phase 4: Publish derived medallion products (AC-04, AC-06)
 

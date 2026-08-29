@@ -7,19 +7,19 @@ Silver transformations included: **no**.
 
 ## State summary
 
-- `landed_and_evidenced`: 31
+- `landed_and_evidenced`: 33
 - `temporarily_unavailable`: 2
 - `rights_blocked`: 32
 - `credentialed_and_excluded`: 15
 - `manual_only_documented_acquisition`: 92
 - `superseded_by_reused_source`: 0
-- `not_yet_implemented`: 2
+- `not_yet_implemented`: 0
 
 ## `static_file_download`
 
 - [ ] `ae-dha-prices` — `rights_blocked`; record source-specific retention and transformation rights.
-- [ ] `au-mbs` — `not_yet_implemented`; configure and test the static_file_download adapter.
-- [ ] `au-mbs-p7-legacy-workbook` — `not_yet_implemented`; configure and test the static_file_download adapter.
+- [x] `au-mbs` — `landed_and_evidenced`; verify receipt freshness on schedule.
+- [x] `au-mbs-p7-legacy-workbook` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `au-pbs-historical-xml` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `au-tga-regulatory-events` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `br-cmed-prices` — `rights_blocked`; record source-specific retention and transformation rights.

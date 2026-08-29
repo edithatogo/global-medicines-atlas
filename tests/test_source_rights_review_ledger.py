@@ -76,7 +76,7 @@ def test_non_approved_sources_remain_explicitly_fail_closed() -> None:
         for entry in entries
         if entry["disposition"] in {"catalogue_only", "credentialed_excluded"}
     ]
-    assert len(non_public) == 150
+    assert len(non_public) == 148
     assert all(entry["blocker"] for entry in non_public)
     assert all(entry["public_source_eligible"] is False for entry in non_public)
 
@@ -84,6 +84,8 @@ def test_non_approved_sources_remain_explicitly_fail_closed() -> None:
 def test_permissive_international_candidates_have_official_evidence() -> None:
     entries = {entry["source_id"]: entry for entry in _entries()}
     expected = {
+        "au-mbs",
+        "au-mbs-p7-legacy-workbook",
         "eu-union-register",
         "fr-bdpm",
         "fr-bdpm-smr-asmr",
@@ -109,7 +111,7 @@ def test_permissive_international_candidates_have_official_evidence() -> None:
         }
     }
     assert candidates == expected
-    assert _ledger()["candidate_policy_assignment_count"] == 26
+    assert _ledger()["candidate_policy_assignment_count"] == 28
     approved = expected - {
         "gb-nice-medicines-utilisation",
         "nl-gipdatabank",
@@ -133,9 +135,9 @@ def test_every_international_review_has_observation_or_failure_receipt() -> (
     None
 ):
     entries = _entries()
-    assert sum(bool(entry["evidence"]) for entry in entries) == 154
+    assert sum(bool(entry["evidence"]) for entry in entries) == 156
     unavailable = [entry for entry in entries if not entry["evidence"]]
-    assert len(unavailable) == 20
+    assert len(unavailable) == 18
     assert all(
         "outcome" in entry["blocker"] or "access is" in entry["blocker"]
         for entry in unavailable

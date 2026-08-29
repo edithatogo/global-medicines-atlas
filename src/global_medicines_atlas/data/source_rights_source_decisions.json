@@ -53,9 +53,21 @@
         "fr-open-medic"
       ],
       "derived_only_source_ids": []
+    },
+    {
+      "repository": "edithatogo/australian-mbs-source-archive",
+      "revision": "4d1dae488ac43522f20e8320a8b2a56bf9138341",
+      "manifest_sha256": "392b3a40b0883d7c8ed68a803534a01a4c5d3b70d518c4cf9181ca2240d00201",
+      "source_ids": [
+        "au-mbs",
+        "au-mbs-p7-legacy-workbook"
+      ],
+      "derived_only_source_ids": []
     }
   ],
   "policy_family_assignments": {
+    "au-mbs": "au-maintainer-exact-redistribution-permission-20260829",
+    "au-mbs-p7-legacy-workbook": "au-maintainer-exact-redistribution-permission-20260829",
     "us-drugsfda": "fda-website-public-domain",
     "us-fda-drug-shortages": "fda-website-public-domain",
     "us-fda-faers": "fda-website-public-domain",

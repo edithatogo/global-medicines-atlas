@@ -1,0 +1,41 @@
+{
+  "anonymous_clean_room_restore": true,
+  "anonymous_digest_match_count": 9,
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "donor_commits": {
+    "edithatogo/aus-health-data-scraper": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+    "edithatogo/aus_mbs_pbs_graph": "64e764cebeb3826f98ce672cbb4affc65d06a92f"
+  },
+  "durable_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5461420439",
+  "gated": false,
+  "immutable_revision": "4d1dae488ac43522f20e8320a8b2a56bf9138341",
+  "manifest_file_count": 9,
+  "manifest_sha256": "392b3a40b0883d7c8ed68a803534a01a4c5d3b70d518c4cf9181ca2240d00201",
+  "publication_performed_by_github_actions": true,
+  "public": true,
+  "repository_gated": false,
+  "repository_private": false,
+  "raw_payloads": [
+    {
+      "bytes": 8194522,
+      "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+      "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+      "source_id": "au-mbs"
+    },
+    {
+      "bytes": 87727,
+      "path": "raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx",
+      "sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+      "source_id": "au-mbs-p7-legacy-workbook"
+    }
+  ],
+  "source_ids": [
+    "au-mbs",
+    "au-mbs-p7-legacy-workbook"
+  ],
+  "recorded_at": "2026-08-29T08:57:21Z",
+  "schema_id": "global-medicines-atlas.australian-mbs-public-huggingface-qualification",
+  "schema_version": 1,
+  "workflow_commit": "bf92039ce001b941af8e0dc7abced6207b1af8c0",
+  "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/33244323861"
+}
