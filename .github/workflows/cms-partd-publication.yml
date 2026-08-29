@@ -143,6 +143,9 @@ jobs:
               }
               & paths
           )
+          stale_markers.extend(
+              sorted(path for path in paths if path.startswith('bronze/shards/'))
+          )
           if stale_markers:
               api.create_commit(
                   repo_id=repo,
@@ -409,6 +412,12 @@ jobs:
                   and public_receipt['hub_path'] == receipt['hub_path']
                   and public_receipt['storage_receipt']['state'] == 'public'
               )
+              if already_published:
+                  receipt = public_receipt
+                  receipt_path.write_text(
+                      json.dumps(receipt, separators=(',', ':'), sort_keys=True) + '\n',
+                      encoding='utf-8',
+                  )
           except Exception:
               already_published = False
           if not already_published:

@@ -127,6 +127,8 @@ def test_cms_publication_is_hosted_public_and_anonymously_verified() -> None:
     assert "max(r['qualified_at'] for r in shard_reports)" in workflow
     assert "already_published" in workflow
     assert "public_receipt['sha256'] == receipt['sha256']" in workflow
+    assert "receipt = public_receipt" in workflow
+    assert "path.startswith('bronze/shards/')" in workflow
     assert "bronze/shards/{os.environ['SOURCE_IDENTITY']}" not in workflow
 
 
