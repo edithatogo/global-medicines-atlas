@@ -59,6 +59,9 @@
 - [x] Exercise exact-qualification, hostile-shape, archive-relationship, Git
   failure, and malformed-inventory branches above the 91% coverage floor.
   (`dd28a80`)
+- [x] Assign every new donor test module to the governed routine unit lane and
+  rerun the routine harness with the compatible local Python fallback.
+  (`7f299b0`)
 
 ## Phase 4: Replace the monthly scraper safely (AC-05, AC-06)
 
