@@ -52,3 +52,6 @@ and rationale contract in that policy.
 
 - [ ] **Track: Implement Australian benefits Silver and Gold**
   *Link: [tracks/australian_benefits_silver_gold_20260829/index.md](./tracks/australian_benefits_silver_gold_20260829/index.md); source-faithful MBS/PBS tables, historical/current comparisons, and reviewable temporal evidence graphs.*
+
+- [ ] **Track: Deliver federated medicines Platinum products**
+  *Link: [tracks/federated_medicines_platinum_20260829/index.md](./tracks/federated_medicines_platinum_20260829/index.md); remote-first API, CLI, atlas, exports, provenance, coverage, and cross-repository compatibility.*

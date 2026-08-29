@@ -1,0 +1,34 @@
+{
+  "created_at": "2026-08-29T05:38:00Z",
+  "description": "Deliver remote-first federated CLI, API, atlas, comparison and research products over pinned public medallion data.",
+  "evidence_schema": "1.0",
+  "execution_policy": {
+    "decision_protocol": "options_recommendation_rationale",
+    "failure_recovery": "bounded_self_correction",
+    "interaction": "decision_gates_only",
+    "max_identical_failures": 3,
+    "merge_policy": "required_checks_then_merge",
+    "mode": "autonomous",
+    "phase_checkpoints": "automatic_evidence_gated"
+  },
+  "external_gates": [
+    "maintainer approval of public release or version promotion",
+    "maintainer approval of consequential clinical or policy interpretation"
+  ],
+  "github_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/342",
+  "github_issue_drafts": [
+    ".github/generated-issues/federated-medicines-platinum-parent.md"
+  ],
+  "github_subissues": [],
+  "requirements": [
+    "M-002", "M-003", "M-005", "M-031", "M-035", "M-073", "M-074",
+    "M-076", "M-084", "M-090", "M-092", "M-103", "M-107", "M-111",
+    "M-112", "S-005", "S-006", "S-014", "C-002", "C-003", "C-011",
+    "W-001", "W-002", "W-004", "W-005", "W-011"
+  ],
+  "status": "new",
+  "target_versions": ["1.0.0"],
+  "track_id": "federated_medicines_platinum_20260829",
+  "type": "feature",
+  "updated_at": "2026-08-29T05:38:00Z"
+}
