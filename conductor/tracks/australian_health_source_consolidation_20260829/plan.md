@@ -21,8 +21,8 @@
   - [x] Validate the canonical qualification with a committed JSON Schema.
   - [x] Exercise undecodable Python, unrecoverable fenced syntax, history and
     licence drift; focused inventory coverage reaches 99%.
-- [~] Phase Verification & Checkpoint: inventory denominator and regression
-  failures are receipt-bound and independently reproducible.
+- [x] Phase Verification & Checkpoint: inventory denominator and regression
+  failures are receipt-bound and independently reproducible. (`deed5e4`, PR #350)
 
 ## Phase 2: Add the independent MBS source domain (AC-02, AC-03, AC-07)
 
