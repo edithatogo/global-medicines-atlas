@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/contracts/australian-donor-inventory.schema.json",
+  "title": "Australian donor inventory qualification",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "qualification", "denominator", "denominator_sha256", "findings", "coverage_policy"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "qualification": {"const": "australian-health-donor-inventory"},
+    "denominator_sha256": {"$ref": "#/$defs/sha256"},
+    "denominator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repositories", "tracked_blob_count", "total_blob_bytes"],
+      "properties": {
+        "repositories": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"$ref": "#/$defs/repository"}},
+        "tracked_blob_count": {"type": "integer", "minimum": 1},
+        "total_blob_bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "findings": {"type": "array", "items": {"type": "object"}},
+    "coverage_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["all_legacy_data_included", "zero_byte_artifacts_are_coverage", "raw_payload_destination", "repository_is_durable_raw_storage"],
+      "properties": {
+        "all_legacy_data_included": {"const": true},
+        "zero_byte_artifacts_are_coverage": {"const": false},
+        "raw_payload_destination": {"const": "public_hugging_face_dataset"},
+        "repository_is_durable_raw_storage": {"const": false}
+      }
+    }
+  },
+  "$defs": {
+    "sha1": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "history": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reachable_commit_count", "root_commits"],
+      "properties": {
+        "reachable_commit_count": {"type": "integer", "minimum": 1},
+        "root_commits": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/sha1"}}
+      }
+    },
+    "license": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["spdx_id", "path", "sha256"],
+      "properties": {
+        "spdx_id": {"const": "Apache-2.0"},
+        "path": {"const": "LICENSE"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "mode", "git_object_sha1", "size_bytes", "sha256", "language", "data_role", "implementation_state", "disposition", "functions"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "mode": {"type": "string", "pattern": "^[0-7]{6}$"},
+        "git_object_sha1": {"$ref": "#/$defs/sha1"},
+        "size_bytes": {"type": "integer", "minimum": 0},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "language": {"type": "string", "minLength": 1},
+        "data_role": {"type": "string", "minLength": 1},
+        "implementation_state": {"type": "string", "minLength": 1},
+        "disposition": {"type": "string", "minLength": 1},
+        "functions": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "parse_error": {"type": "string", "minLength": 1}
+      }
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "repository", "source_url", "commit", "tree", "tracked_blob_count", "total_blob_bytes", "history", "code_license", "files"],
+      "properties": {
+        "schema_version": {"const": "1.0"},
+        "repository": {"type": "string", "minLength": 1},
+        "source_url": {"type": "string", "format": "uri"},
+        "commit": {"$ref": "#/$defs/sha1"},
+        "tree": {"$ref": "#/$defs/sha1"},
+        "tracked_blob_count": {"type": "integer", "minimum": 1},
+        "total_blob_bytes": {"type": "integer", "minimum": 1},
+        "history": {"$ref": "#/$defs/history"},
+        "code_license": {"$ref": "#/$defs/license"},
+        "files": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/file"}}
+      }
+    }
+  }
+}

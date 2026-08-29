@@ -41,19 +41,22 @@ def _resolved_commit(repository: Path, revision: str) -> str:
     return resolved.decode("ascii").strip()
 
 
-def _tree_entries(repository: Path, commit: str) -> list[tuple[str, str, int]]:
+def _tree_entries(
+    repository: Path, commit: str
+) -> list[tuple[str, str, str, int]]:
     raw = _git(repository, "ls-tree", "-r", "-z", "-l", commit)
-    entries: list[tuple[str, str, int]] = []
+    entries: list[tuple[str, str, str, int]] = []
     for record in raw.split(b"\0"):
         if not record:
             continue
         metadata, encoded_path = record.split(b"\t", maxsplit=1)
-        mode, object_type, _object_id, encoded_size = metadata.split(maxsplit=3)
+        mode, object_type, object_id, encoded_size = metadata.split(maxsplit=3)
         if object_type != b"blob":
             continue
         entries.append((
             encoded_path.decode("utf-8", errors="surrogateescape"),
             mode.decode("ascii"),
+            object_id.decode("ascii"),
             int(encoded_size),
         ))
     return sorted(entries)
@@ -103,16 +106,27 @@ def _data_role(path: str) -> str:
 
 
 def _python_characterization(content: bytes) -> tuple[list[str], str | None]:
+    parse_error: str | None = None
     try:
-        tree = ast.parse(content)
-    except (SyntaxError, UnicodeDecodeError) as error:
+        source = content.decode("utf-8")
+    except UnicodeDecodeError as error:
         return [], f"{type(error).__name__}: {error}"
+    try:
+        tree = ast.parse(source)
+    except SyntaxError as error:
+        parse_error = f"{type(error).__name__}: {error}"
+        if not source.rstrip().endswith("```"):
+            return [], parse_error
+        try:
+            tree = ast.parse(source.rstrip()[:-3].rstrip() + "\n")
+        except SyntaxError:
+            return [], parse_error
     functions = {
         node.name
         for node in ast.walk(tree)
         if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef)
     }
-    return sorted(functions), None
+    return sorted(functions), parse_error
 
 
 def _implementation_state(
@@ -179,7 +193,9 @@ def build_donor_inventory(
         )
 
     files: list[dict[str, object]] = []
-    for path, mode, expected_size in _tree_entries(repository, commit):
+    for path, mode, object_id, expected_size in _tree_entries(
+        repository, commit
+    ):
         content = _blob(repository, commit, path)
         if len(content) != expected_size:
             raise DonorInventoryError(
@@ -198,6 +214,7 @@ def build_donor_inventory(
         entry: dict[str, object] = {
             "path": path,
             "mode": mode,
+            "git_object_sha1": object_id,
             "size_bytes": len(content),
             "sha256": hashlib.sha256(content).hexdigest(),
             "language": _language(path),
@@ -210,6 +227,14 @@ def build_donor_inventory(
             entry["parse_error"] = parse_error
         files.append(entry)
 
+    roots = sorted(
+        value
+        for value in _git(repository, "rev-list", "--max-parents=0", commit)
+        .decode("ascii")
+        .splitlines()
+        if value
+    )
+    license_entry = next(item for item in files if item["path"] == "LICENSE")
     return {
         "schema_version": "1.0",
         "repository": repository_name,
@@ -222,6 +247,17 @@ def build_donor_inventory(
         "total_blob_bytes": sum(
             cast("int", item["size_bytes"]) for item in files
         ),
+        "history": {
+            "reachable_commit_count": int(
+                _git(repository, "rev-list", "--count", commit)
+            ),
+            "root_commits": roots,
+        },
+        "code_license": {
+            "spdx_id": "Apache-2.0",
+            "path": "LICENSE",
+            "sha256": license_entry["sha256"],
+        },
         "files": files,
     }
 
@@ -273,6 +309,8 @@ def validate_donor_inventory(
         "tree",
         "tracked_blob_count",
         "total_blob_bytes",
+        "history",
+        "code_license",
     ):
         if inventory.get(field) != expected.get(field):
             raise DonorInventoryError(

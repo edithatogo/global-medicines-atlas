@@ -11,9 +11,17 @@
 - [x] Characterize the invalid PBS parser, guessed MBS tag, processor path/type
   bug, zero-byte artifacts, and green-with-no-data scheduled workflow.
   (`7b830ea`)
-- [ ] Preserve complete donor Git histories and Apache-2.0 code provenance
-  without modifying the dirty local donor checkout.
-- [ ] Phase Verification & Checkpoint: inventory denominator and regression
+- [x] Preserve complete donor Git histories and Apache-2.0 code provenance
+  without modifying the dirty local donor checkout. (`c85c049`)
+- [x] Review Fixes for concurrent donor inventory integration (`c85c049`, `0b9fe16`)
+  - [x] Extend the canonical inventory merged by PR #349 instead of retaining
+    a second inventory module, generator, manifest, or test authority.
+  - [x] Bind Git object identities, reachable history roots/counts, Apache-2.0
+    licence digests, and the invalid fenced parser's declarations.
+  - [x] Validate the canonical qualification with a committed JSON Schema.
+  - [x] Exercise undecodable Python, unrecoverable fenced syntax, history and
+    licence drift; focused inventory coverage reaches 99%.
+- [~] Phase Verification & Checkpoint: inventory denominator and regression
   failures are receipt-bound and independently reproducible.
 
 ## Phase 2: Add the independent MBS source domain (AC-02, AC-03, AC-07)
