@@ -100,10 +100,22 @@ authoritative lanes. Delete `.testmondata*` whenever the environment or test
 inventory changes unexpectedly; the first testmon run rebuilds it by running
 the full manifest.
 
-Coverage.py uses the lower-overhead `sys.monitoring` core by default on Python
-3.14 when the requested options are compatible. It is not forced globally
-because lane coverage uses dynamic test contexts, which require Coverage.py to
-select its compatible fallback core.
+Hosted coverage explicitly selects Coverage.py's `sys.monitoring` core on
+Python 3.14. The bounded smoke lane verified that current dynamic test contexts,
+branch coverage, xdist collection, and XML output remain compatible. Aggregate
+coverage remains serial: a measured two-worker experiment ran slower and caused
+resource contention in the product-performance gate.
+
+The stable release consumer reproduction runs its two independent clean-clone
+contracts with two pytest-xdist workers. Required check names, exact Python
+3.14.6 toolchain enforcement, LF/CRLF policy, receipt comparison, and wheel and
+sdist consumption remain unchanged.
+
+Gremlin subprocess isolation remains serial at the harness boundary. Two
+measured frontier experiments were rejected: ten-mutant batches exceeded the
+existing hosted critical path, and explicit four-worker execution projected a
+substantially longer run. Neither result weakened or replaced the required
+gremlins check.
 
 The `profile` target profiles application code. The `profile-tests` target
 profiles a bounded representative pytest workload and stores its Scalene JSON

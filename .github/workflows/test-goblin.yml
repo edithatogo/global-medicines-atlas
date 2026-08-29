@@ -192,6 +192,7 @@ jobs:
         run: uv sync --python 3.14.6 --group test-goblin --locked
       - name: Run ${{ matrix.lane }} tests
         env:
+          COVERAGE_CORE: sysmon
           TEST_GOBLIN_COVERAGE: "1"
           TEST_GOBLIN_LANE: ${{ matrix.lane }}
         run: uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py "$TEST_GOBLIN_LANE"
@@ -220,14 +221,33 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
+      - name: Classify heavyweight CI scope
+        id: scope
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.sha }}
+        run: >-
+          python scripts/classify_ci_changes.py
+          --event "$EVENT_NAME"
+          --base "$BASE_SHA"
+          --head "$HEAD_SHA" >> "$GITHUB_OUTPUT"
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           version: "0.11.29"
           enable-cache: true
       - name: Synchronize Python 3.14 development environment
+        if: >-
+          (matrix.profile != 'mutation' && matrix.profile != 'gremlins') ||
+          steps.scope.outputs.heavy == 'true'
         run: uv sync --python 3.14.6 --group dev --locked
       - name: Run Test-Goblin ${{ matrix.profile }} profile
+        if: >-
+          (matrix.profile != 'mutation' && matrix.profile != 'gremlins') ||
+          steps.scope.outputs.heavy == 'true'
         env:
+          COVERAGE_CORE: sysmon
           TEST_GOBLIN_PROFILE: ${{ matrix.profile }}
           GMA_OPENAPI_BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
@@ -247,7 +267,8 @@ jobs:
       - name: Upload durable quality receipts
         if: >-
           always() &&
-          (matrix.profile == 'mutation' || matrix.profile == 'profile')
+          (matrix.profile == 'profile' ||
+          (matrix.profile == 'mutation' && steps.scope.outputs.heavy == 'true'))
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: quality-receipt-${{ matrix.profile }}
@@ -255,7 +276,9 @@ jobs:
           if-no-files-found: error
           retention-days: 30
       - name: Upload authoritative Mutmut statistics
-        if: always() && matrix.profile == 'mutation'
+        if: >-
+          always() && matrix.profile == 'mutation' &&
+          steps.scope.outputs.heavy == 'true'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: mutmut-authoritative-statistics
@@ -263,7 +286,9 @@ jobs:
           if-no-files-found: error
           retention-days: 30
       - name: Upload mutation survivor review report
-        if: always() && matrix.profile == 'mutation'
+        if: >-
+          always() && matrix.profile == 'mutation' &&
+          steps.scope.outputs.heavy == 'true'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: mutmut-survivor-review
@@ -297,15 +322,31 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
+          fetch-depth: 0
+      - name: Classify heavyweight CI scope
+        id: scope
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.sha }}
+        run: >-
+          python scripts/classify_ci_changes.py
+          --event "$EVENT_NAME"
+          --base "$BASE_SHA"
+          --head "$HEAD_SHA" >> "$GITHUB_OUTPUT"
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        if: steps.scope.outputs.heavy == 'true'
         with:
           version: "0.11.29"
           enable-cache: true
       - name: Reproduce candidate from detached LF and CRLF-policy worktrees
+        if: steps.scope.outputs.heavy == 'true'
         run: >-
-          uv run --python 3.14.6 pytest -q
+          uv run --python 3.14.6 pytest -q -n 2 --dist worksteal
           tests/test_stable_v1_release_candidate_reproducibility.py
       - name: Qualify clean wheel and source-distribution consumers
+        if: steps.scope.outputs.heavy == 'true'
         env:
           OUTPUT_PATH: build/quality-receipts/consumer-${{ matrix.platform }}.json
         shell: bash
@@ -314,6 +355,7 @@ jobs:
           scripts/qualify_clean_consumer.py
           --output "$OUTPUT_PATH"
       - name: Upload consumer qualification receipt
+        if: steps.scope.outputs.heavy == 'true'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: consumer-compatibility-${{ matrix.platform }}
