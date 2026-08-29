@@ -6,7 +6,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
-from pydantic import AnyUrl
+from pydantic import AnyUrl, ValidationError
 
 from global_medicines_atlas.adapters.au_mbs import (
     LEGACY_MBS_SHA256,
@@ -137,3 +137,14 @@ def test_exact_legacy_qualification_rejects_fixture_bytes() -> None:
     assert _receipt(payload).payload.sha256 != LEGACY_MBS_SHA256
     with pytest.raises(ValueError, match="exact July 2025 MBS payload"):
         qualify_legacy_mbs_xml(payload, _receipt(payload))
+
+
+def test_mbs_batch_source_identity_cannot_be_overridden() -> None:
+    payload = FIXTURE.read_bytes()
+    batch = parse_mbs_source_xml(payload, _receipt(payload))
+
+    with pytest.raises(ValidationError):
+        MbsSourceBatch.model_validate({
+            **batch.model_dump(),
+            "source_id": "au-pbs",
+        })

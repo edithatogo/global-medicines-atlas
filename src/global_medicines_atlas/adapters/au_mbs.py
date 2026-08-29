@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections import Counter
+from typing import Literal
 from xml.etree import (  # ruff: ignore[suspicious-xml-etree-import]
     ElementTree as ET,
 )
@@ -105,7 +106,7 @@ class MbsSourceRecord(FrozenModel):
 class MbsSourceBatch(FrozenModel):
     """Receipt-bound collection of source-faithful MBS records."""
 
-    source_id: str = SOURCE_ID
+    source_id: Literal["au-mbs"] = SOURCE_ID
     schema_era: str = Field(min_length=1)
     observed_fields: tuple[str, ...] = Field(min_length=1)
     missing_native_fields: tuple[str, ...]

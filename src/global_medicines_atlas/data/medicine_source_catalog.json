@@ -989,7 +989,7 @@
       "dimension": "service_benefit",
       "access_mode": "download",
       "landing_page": "https://www.mbsonline.gov.au/",
-      "download_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/downloads",
+      "download_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/0b61e1e80b332754ca258c9e0000c7d8/$FILE/MBS-XML-20250701%20Version%203.XML",
       "update_cadence": "source-declared",
       "rights_status": "maintainer_redistribution_authorized",
       "readiness": "implemented",

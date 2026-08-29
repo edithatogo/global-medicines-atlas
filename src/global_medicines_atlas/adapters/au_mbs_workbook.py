@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from io import BytesIO
 from pathlib import PurePosixPath
+from typing import Literal
 from xml.etree import (  # ruff: ignore[suspicious-xml-etree-import]
     ElementTree as ET,
 )
@@ -81,7 +82,7 @@ class MbsWorkbookSheet(FrozenModel):
 class MbsWorkbookBatch(FrozenModel):
     """Source-native workbook projection with receipt-bound provenance."""
 
-    source_id: str = SOURCE_ID
+    source_id: Literal["au-mbs-p7-legacy-workbook"] = SOURCE_ID
     schema_era: str = Field(min_length=1)
     sheets: tuple[MbsWorkbookSheet, ...] = Field(min_length=1)
     provenance: Provenance

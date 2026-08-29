@@ -7,7 +7,7 @@ from io import BytesIO
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import pytest
-from pydantic import AnyUrl
+from pydantic import AnyUrl, ValidationError
 
 from global_medicines_atlas.adapters.au_mbs_workbook import (
     LEGACY_P7_SHA256,
@@ -134,3 +134,14 @@ def test_exact_legacy_workbook_qualification_rejects_fixture() -> None:
     assert _receipt(payload).payload.sha256 != LEGACY_P7_SHA256
     with pytest.raises(ValueError, match="exact July 2024 P7 workbook"):
         qualify_legacy_p7_workbook(payload, _receipt(payload))
+
+
+def test_workbook_batch_source_identity_cannot_be_overridden() -> None:
+    payload = _xlsx()
+    batch = parse_mbs_workbook(payload, _receipt(payload))
+
+    with pytest.raises(ValidationError):
+        MbsWorkbookBatch.model_validate({
+            **batch.model_dump(),
+            "source_id": "au-mbs",
+        })
