@@ -13,6 +13,7 @@ import httpx
 import pyarrow.parquet as pq
 import pytest
 from pydantic import ValidationError
+from scripts import archive_data_layer as archive_script
 
 from global_medicines_atlas import data_layer_archive as archive_mod
 from global_medicines_atlas.data_layer_archive import (
@@ -848,6 +849,7 @@ def test_archive_workflow_is_sha_pinned_and_covers_four_authorities() -> None:
     assert "persist-credentials: false" in workflow
     assert "permissions:" in workflow
     assert "contents: read" in workflow
+    assert "GITHUB_ACTIONS" in workflow or "github.event_name" in workflow
     assert HUGGINGFACE_HUB_PIN in workflow
     publish_at = workflow.index("Publish to Hugging Face")
     assert "--upload" in workflow[publish_at:]
@@ -855,3 +857,16 @@ def test_archive_workflow_is_sha_pinned_and_covers_four_authorities() -> None:
     assert "--upload" not in package_block
     assert "vendor/nzmedicines" not in workflow
     assert "nz-nzulm-bulk" not in workflow or "skip" in workflow.casefold()
+
+
+def test_data_layer_cli_rejects_local_dataset_upload(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    with pytest.raises(PermissionError, match="must run in GitHub Actions"):
+        archive_script.main([
+            "--output-dir",
+            str(tmp_path),
+            "--skip-build",
+            "--upload",
+        ])

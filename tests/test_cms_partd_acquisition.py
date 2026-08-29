@@ -8,7 +8,9 @@ import zipfile
 import zlib
 from collections.abc import Callable
 from hashlib import sha256
+from io import BytesIO
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from pydantic import AnyHttpUrl, ValidationError
@@ -25,6 +27,10 @@ from global_medicines_atlas.cms_partd_acquisition import (
 AUTHORIZATION = (
     Path(__file__).resolve().parents[1]
     / "quality/qualifications/cms-partd-acquisition-authorization.json"
+)
+WORKFLOW = (
+    Path(__file__).resolve().parents[1]
+    / ".github/workflows/cms-partd-publication.yml"
 )
 SPENDING_URLS = (
     "https://data.cms.gov/data-api/v1/dataset/7e0b4365-fd63-4a29-8f5e-e0ac9f66a81b/data",
@@ -91,6 +97,21 @@ def test_inventory_binds_both_public_resource_families() -> None:
     )
     authorization.require_payload_authority()
     authorization.require_publication_authority()
+
+
+def test_cms_publication_is_hosted_public_and_anonymously_verified() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    assert "workflow_dispatch:" in workflow
+    assert "private=False" in workflow
+    assert "CommitOperationDelete" in workflow
+    assert "Invalidate stale CMS Part D completion markers" in workflow
+    assert "'state': 'public'" in workflow
+    assert "'state': 'staged_private'" not in workflow
+    assert "needs: [inventory, finalize]" in workflow
+    assert "Restore anonymously and verify digest" in workflow
+    assert "public-verification.json" in workflow
+    assert "anonymous_digest_match" in workflow
+    assert "HfApi().dataset_info" in workflow
 
 
 def test_configured_spending_inventory_matches_current_official_resources() -> (
@@ -366,6 +387,105 @@ def test_streaming_payload_evidence_reads_member_bytes_for_crc(
             url=AnyHttpUrl(_formulary_urls(1)[0]),
             family="formulary",
         )
+
+
+def test_external_zip_decoder_streams_exact_member(tmp_path: Path) -> None:
+    path = tmp_path / "external.zip"
+    payload = b"plan_id,ndc\nP1,0001\n" * 100
+    with zipfile.ZipFile(
+        path, "w", compression=zipfile.ZIP_DEFLATED
+    ) as archive:
+        archive.writestr("formulary.csv", payload)
+    with zipfile.ZipFile(path) as archive:
+        info = archive.getinfo("formulary.csv")
+    assert (
+        cms._stream_cms_zip_member_with_7z(path, info)
+        == sha256(payload).hexdigest()
+    )
+
+
+def test_unsupported_zip_decoder_requires_archive_path() -> None:
+    archive = SimpleNamespace(
+        filename=None,
+        open=lambda _info: (_ for _ in ()).throw(NotImplementedError),
+    )
+    with pytest.raises(ValueError, match="requires an archive path"):
+        cms._stream_cms_zip_member(archive, SimpleNamespace())
+
+
+def test_unsupported_zip_decoder_delegates_to_7z(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    path = tmp_path / "deflate64.zip"
+    archive = SimpleNamespace(
+        filename=str(path),
+        open=lambda _info: (_ for _ in ()).throw(NotImplementedError),
+    )
+    info = SimpleNamespace(filename="formulary.csv")
+    monkeypatch.setattr(
+        cms,
+        "_stream_cms_zip_member_with_7z",
+        lambda archive_path, member_info: (
+            "delegated"
+            if (archive_path, member_info) == (path, info)
+            else "unexpected"
+        ),
+    )
+    assert cms._stream_cms_zip_member(archive, info) == "delegated"
+
+
+def test_external_zip_decoder_requires_7z(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(cms.shutil, "which", lambda _name: None)
+    with pytest.raises(ValueError, match="requires 7-Zip"):
+        cms._stream_cms_zip_member_with_7z(
+            tmp_path / "archive.zip",
+            SimpleNamespace(filename="formulary.csv", file_size=0),
+        )
+
+
+@pytest.mark.parametrize(
+    ("stdout", "returncode", "stderr", "file_size", "message", "killed"),
+    [
+        (None, 0, b"", 0, "stdout pipe", False),
+        (BytesIO(b"too long"), 0, b"", 2, "exceeded declared size", True),
+        (BytesIO(b"short"), 2, b"decoder failed", 5, "decoder failed", False),
+        (BytesIO(b"short"), 0, b"", 6, "size diverged", False),
+    ],
+)
+def test_external_zip_decoder_fails_closed(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    stdout: BytesIO | None,
+    returncode: int,
+    stderr: bytes,
+    file_size: int,
+    message: str,
+    *,
+    killed: bool,
+) -> None:
+    process = SimpleNamespace(
+        stdout=stdout,
+        returncode=returncode,
+        killed=False,
+        communicate=lambda: (b"", stderr),
+    )
+
+    def kill() -> None:
+        process.killed = True
+
+    process.kill = kill
+    monkeypatch.setattr(cms.shutil, "which", lambda _name: "/usr/bin/7z")
+    monkeypatch.setattr(
+        cms.subprocess, "Popen", lambda *_args, **_kwargs: process
+    )
+    with pytest.raises((RuntimeError, ValueError), match=message):
+        cms._stream_cms_zip_member_with_7z(
+            tmp_path / "archive.zip",
+            SimpleNamespace(filename="formulary.csv", file_size=file_size),
+        )
+    assert process.killed is killed
 
 
 @pytest.mark.parametrize(

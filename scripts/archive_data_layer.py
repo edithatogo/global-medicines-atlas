@@ -81,6 +81,10 @@ def _existing_relative_paths(directory: Path) -> tuple[str, ...]:
 
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    if args.upload and os.environ.get("GITHUB_ACTIONS") != "true":
+        raise PermissionError(
+            "dataset archive uploads must run in GitHub Actions"
+        )
     recorded_at = args.recorded_at or datetime.now(UTC)
     target = PublicationTarget(
         destination=PublicationDestination.HUGGING_FACE,

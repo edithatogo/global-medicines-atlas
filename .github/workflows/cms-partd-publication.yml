@@ -88,7 +88,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - name: Create private staging dataset and attribution card
+      - name: Create public dataset and attribution card
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
@@ -117,22 +117,41 @@ jobs:
           Missing coverage is not negative evidence. The two Data API URLs are default
           representations and are not described as complete datasets; the official CSV is
           retained separately.
+
+          Publication is incremental. Until `manifest.json` lists all 33 payloads and
+          `public-verification.json` records anonymous digest verification, the visible
+          repository is an incomplete acquisition in progress.
           EOF
           python3 - <<'PY'
           import os
-          from huggingface_hub import HfApi
+          from huggingface_hub import CommitOperationDelete, HfApi
 
           api = HfApi(token=os.environ['HF_TOKEN'])
           repo = os.environ['HF_DATASET']
-          api.create_repo(repo, repo_type='dataset', private=True, exist_ok=True)
-          if not api.dataset_info(repo).private:
-              raise RuntimeError('CMS Part D staging dataset must remain private')
+          api.create_repo(repo, repo_type='dataset', private=False, exist_ok=True)
+          info = api.dataset_info(repo)
+          if info.private:
+              raise RuntimeError('CMS Part D dataset must be public from initialization')
+          paths = {item.rfilename for item in info.siblings}
+          stale_markers = sorted(
+              {'manifest.json', 'public-verification.json'} & paths
+          )
+          if stale_markers:
+              api.create_commit(
+                  repo_id=repo,
+                  repo_type='dataset',
+                  operations=[
+                      CommitOperationDelete(path_in_repo=path)
+                      for path in stale_markers
+                  ],
+                  commit_message='Invalidate stale CMS Part D completion markers',
+              )
           api.upload_file(
               repo_id=repo,
               repo_type='dataset',
               path_or_fileobj='README.md',
               path_in_repo='README.md',
-              commit_message='Initialize private CMS Part D publication stage',
+              commit_message='Initialize public CMS Part D publication',
           )
           PY
 
@@ -162,6 +181,10 @@ jobs:
           HUB_PATH: ${{ matrix.hub_path }}
         run: |
           set -euo pipefail
+          if ! command -v 7z >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install --yes p7zip-full
+          fi
           mkdir -p payload receipt
           curl --fail --show-error --silent --location --retry 20 --retry-all-errors \
             --connect-timeout 30 --max-time 18000 \
@@ -311,7 +334,7 @@ jobs:
           )
           PY
 
-      - name: Upload verified payload to private Hugging Face stage
+      - name: Upload verified payload to public Hugging Face dataset
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           SOURCE_IDENTITY: ${{ matrix.identity }}
@@ -347,7 +370,7 @@ jobs:
           receipt['storage_receipt'] = {
               'schema_id': 'global-medicines-atlas.cms-partd-huggingface-storage',
               'schema_version': 1,
-              'state': 'staged_private',
+              'state': 'public',
               'uri': f"hf://datasets/{os.environ['HF_DATASET']}/{os.environ['HUB_PATH']}",
               'sha256': receipt['sha256'],
               'byte_count': receipt['byte_count'],
@@ -429,8 +452,8 @@ jobs:
               commit_message='Publish exact CMS Part D corpus manifest',
           )
           info = api.dataset_info(os.environ['HF_DATASET'], files_metadata=True)
-          if not info.private:
-              raise RuntimeError('CMS Part D dataset became public before finalization')
+          if info.private:
+              raise RuntimeError('CMS Part D dataset is unexpectedly private')
           paths = {sibling.rfilename for sibling in info.siblings}
           expected = {
               'README.md',
@@ -443,16 +466,117 @@ jobs:
           )
           missing = expected - paths
           if missing:
-              raise RuntimeError(f'staged dataset is missing paths: {sorted(missing)}')
-          api.update_repo_settings(
-              repo_id=os.environ['HF_DATASET'],
-              repo_type='dataset',
-              private=False,
-          )
+              raise RuntimeError(f'public dataset is missing paths: {sorted(missing)}')
           public = HfApi().dataset_info(
               os.environ['HF_DATASET'], files_metadata=True
           )
           if public.private or public.sha != info.sha:
               raise RuntimeError('public CMS Part D revision verification failed')
+          print(public.sha)
+          PY
+
+  verify_public:
+    name: Verify public ${{ matrix.family }} ${{ matrix.filename }}
+    needs: [inventory, finalize]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 30
+      matrix: ${{ fromJSON(needs.inventory.outputs.matrix) }}
+    steps:
+      - name: Restore anonymously and verify digest
+        env:
+          SOURCE_IDENTITY: ${{ matrix.identity }}
+          HUB_PATH: ${{ matrix.hub_path }}
+        run: |
+          set -euo pipefail
+          mkdir -p verification
+          encoded_path=$(python3 - <<'PY'
+          import os
+          from urllib.parse import quote
+          print(quote(os.environ['HUB_PATH'], safe='/'))
+          PY
+          )
+          curl --fail --show-error --silent --location --retry 20 --retry-all-errors \
+            --connect-timeout 30 --max-time 18000 \
+            "https://huggingface.co/datasets/${HF_DATASET}/resolve/main/${encoded_path}" \
+            --output payload
+          observed=$(sha256sum payload | cut -d' ' -f1)
+          if [[ "$observed" != "$SOURCE_IDENTITY" ]]; then
+            echo "Anonymous Hugging Face digest mismatch" >&2
+            exit 1
+          fi
+          bytes=$(stat --format=%s payload)
+          jq -n \
+            --arg hub_path "$HUB_PATH" \
+            --arg sha256 "$observed" \
+            --argjson byte_count "$bytes" \
+            '{hub_path:$hub_path,sha256:$sha256,byte_count:$byte_count,anonymous_restore:true}' \
+            > "verification/${SOURCE_IDENTITY}.json"
+
+      - name: Retain anonymous verification receipt only
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: cms-partd-public-verification-${{ matrix.identity }}
+          path: verification/${{ matrix.identity }}.json
+          if-no-files-found: error
+          retention-days: 7
+
+  complete:
+    name: Record complete public verification
+    needs: verify_public
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Download anonymous verification receipts
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          pattern: cms-partd-public-verification-*
+          path: verification
+
+      - name: Publish public verification receipt
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -n "${HF_TOKEN:-}"
+          python3 -m pip install --disable-pip-version-check --quiet huggingface-hub==1.14.0
+          python3 - <<'PY'
+          import json
+          import os
+          from datetime import UTC, datetime
+          from pathlib import Path
+          from huggingface_hub import HfApi
+
+          receipts = [
+              json.loads(path.read_text(encoding='utf-8'))
+              for path in sorted(Path('verification').glob('**/*.json'))
+          ]
+          if len(receipts) != 33 or any(not row['anonymous_restore'] for row in receipts):
+              raise RuntimeError(f'expected 33 anonymous verification receipts, found {len(receipts)}')
+          payload = {
+              'schema_id': 'global-medicines-atlas.cms-partd-public-verification',
+              'schema_version': 1,
+              'verified_at': datetime.now(UTC).isoformat(),
+              'payload_count': len(receipts),
+              'anonymous_digest_match': True,
+              'payloads': receipts,
+          }
+          path = Path('public-verification.json')
+          path.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          api = HfApi(token=os.environ['HF_TOKEN'])
+          result = api.upload_file(
+              repo_id=os.environ['HF_DATASET'],
+              repo_type='dataset',
+              path_or_fileobj=path,
+              path_in_repo=path.name,
+              commit_message='Record anonymous CMS Part D corpus verification',
+          )
+          public = HfApi().dataset_info(os.environ['HF_DATASET'], files_metadata=True)
+          if public.private or public.sha != result.oid:
+              raise RuntimeError('completed public CMS Part D revision is not anonymously visible')
+          if path.name not in {item.rfilename for item in public.siblings}:
+              raise RuntimeError('public verification receipt is not anonymously visible')
           print(public.sha)
           PY

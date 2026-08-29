@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import shutil
 import stat
+import subprocess  # ruff: ignore[suspicious-subprocess-import] - argv-only
 import tarfile
 import zipfile
 from datetime import date
@@ -247,9 +249,18 @@ def _validate_cms_zip_info(
 def _stream_cms_zip_member(
     archive: zipfile.ZipFile, info: zipfile.ZipInfo
 ) -> str:
+    try:
+        member = archive.open(info)
+    except NotImplementedError:
+        filename = archive.filename
+        if filename is None:
+            raise ValueError(
+                "CMS Part D Deflate64 validation requires an archive path"
+            ) from None
+        return _stream_cms_zip_member_with_7z(Path(filename), info)
     digest = sha256()
     expanded_bytes = 0
-    with archive.open(info) as member:
+    with member:
         while block := member.read(_STREAM_CHUNK_BYTES):
             expanded_bytes += len(block)
             if expanded_bytes > info.file_size:
@@ -257,6 +268,43 @@ def _stream_cms_zip_member(
                     "CMS Part D archive member exceeded declared size"
                 )
             digest.update(block)
+    if expanded_bytes != info.file_size:
+        raise ValueError("CMS Part D archive member size diverged")
+    return digest.hexdigest()
+
+
+def _stream_cms_zip_member_with_7z(
+    archive_path: Path, info: zipfile.ZipInfo
+) -> str:
+    executable = shutil.which("7z") or shutil.which("7zz")
+    if executable is None:
+        raise ValueError("CMS Part D Deflate64 validation requires 7-Zip")
+    process = subprocess.Popen(  # ruff: ignore[subprocess-without-shell-equals-true] - argv-only
+        [
+            executable,
+            "x",
+            "-so",
+            "-bd",
+            str(archive_path),
+            f"-i!{info.filename}",
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    if process.stdout is None:
+        raise RuntimeError("7-Zip stdout pipe was not created")
+    digest = sha256()
+    expanded_bytes = 0
+    while block := process.stdout.read(_STREAM_CHUNK_BYTES):
+        expanded_bytes += len(block)
+        if expanded_bytes > info.file_size:
+            process.kill()
+            raise ValueError("CMS Part D archive member exceeded declared size")
+        digest.update(block)
+    _, errors = process.communicate()
+    if process.returncode != 0:
+        detail = errors.decode("utf-8", errors="replace").strip()
+        raise ValueError(f"CMS Part D 7-Zip member validation failed: {detail}")
     if expanded_bytes != info.file_size:
         raise ValueError("CMS Part D archive member size diverged")
     return digest.hexdigest()
