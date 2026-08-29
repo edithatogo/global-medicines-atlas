@@ -442,13 +442,15 @@ for credentialed or rights-unresolved sources.
     - [x] Replace the generic CMS terms gap with the dataset-specific government-works licence record and formulary Agreement for Use
     - [x] Preserve plan/population exclusions, gross-versus-net spending, preliminary-versus-final, suppression, and source-native measure boundaries
     - [x] Obtain the maintainer's source-specific acceptance before payload acquisition and retention; approved public for the exact inventory-bound corpus on 2026-08-27
-    - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
+    - [ ] Exercise immutable landing, receipts, source-faithful Bronze record projection, clean-room recovery, and anonymous public archive verification
+        - [x] Publish and anonymously verify all 33 exact payloads, receipts, and consolidated payload/archive-member manifest Parquet through GitHub Actions at revision `abcff8ebd1f624c4bbb0a87d903b184388c98254`
+        - [ ] Produce and verify source-native formulary and spending record Parquet, then reconcile the receipt-backed landing overrides and canonical completion audit
     - [x] Keep public release and external publication separately gated; the maintainer approved attributed public release and external publication on 2026-08-27 subject to the CMS Agreement for Use and fail-closed interpretation boundaries
-- [~] Task: Review Fixes for CMS Part D public qualification
+- [x] Task: Review Fixes for CMS Part D public qualification
     - [x] Reconcile the preflight recommendation with the maintainer's exact approved-public decision
     - [x] Require an explicit qualification timestamp so report regeneration is deterministic
-    - [x] Stream the deterministic private archive and reject unexpected clean-room members without loading multi-gigabyte payloads into memory
-    - [ ] Re-run qualification, clean-room recovery, archive verification, and affected validation after all exact payloads complete
+    - [x] Stream the deterministic temporary runner archive and reject unexpected clean-room members without loading multi-gigabyte payloads into memory; retain no runner bytes after publication
+    - [x] Re-run qualification, clean-room recovery, anonymous public archive verification, and affected validation after all 33 exact payloads completed in hosted run `33233368217`
 - [~] Task: Acquire Nordic medicine utilisation aggregates (Prompt 33)
     - [x] Correct the three independent public access states without treating aggregate outputs as person-level registry access
     - [x] Lock Denmark's 1996–2025 metadata-only bulk inventory and distinguish it from interactive utilisation result exports
