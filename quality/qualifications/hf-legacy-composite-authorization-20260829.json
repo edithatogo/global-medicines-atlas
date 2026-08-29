@@ -1,0 +1,40 @@
+{
+  "schema_id": "global-medicines-atlas.hf-legacy-composite-authorization",
+  "schema_version": 1,
+  "recorded_at": "2026-08-29T05:38:00Z",
+  "decision_record": "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md",
+  "authorization_source": "maintainer directive in the 2026-08-29 Australian repository consolidation task",
+  "maintainer_asserted_redistribution_permission": true,
+  "external_publication_authorized": true,
+  "operation": "make-existing-exact-revision-public-no-upload",
+  "candidate": {
+    "dataset": "edithatogo/global-medicines-atlas-international-open",
+    "revision": "654f71c84cdb17b4032396bcbc961bef8757fb19",
+    "manifest_sha256": "d058b78789cd8c2d0a19467063890d32c0757add10998d307422c3ec1550df86",
+    "payload_file_count": 42,
+    "source_count": 11
+  },
+  "public_baseline": {
+    "dataset": "edithatogo/global-medicines-atlas-international-permissive-20260821",
+    "revision": "87d3b54ac932018c276a1c50033ac287520cf85e",
+    "manifest_sha256": "d058b78789cd8c2d0a19467063890d32c0757add10998d307422c3ec1550df86"
+  },
+  "required_controls": [
+    "github-actions-only",
+    "exact-revision-and-manifest",
+    "no-upload-or-content-mutation",
+    "candidate-and-baseline-readme-and-manifest-byte-equality",
+    "candidate-sibling-set-matches-manifest",
+    "public-and-non-gated",
+    "anonymous-clean-room-restore",
+    "all-payload-sha256-and-byte-counts-match",
+    "restore-private-on-post-visibility-verification-failure"
+  ],
+  "excluded_private_surfaces": [
+    "edithatogo/hpo-licensed-ontology-archive",
+    "edithatogo/rareburden-commons-source-archive",
+    "edithatogo/gfjd-explorer",
+    "empty reserved collections"
+  ],
+  "scope_note": "This exact visibility authorization does not authorize publication of other private repositories, restricted terminology bytes, or a different candidate revision or manifest."
+}

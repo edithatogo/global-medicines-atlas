@@ -1,0 +1,243 @@
+name: Publicize exact legacy Hugging Face composite
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_revision:
+        description: Exact authorized legacy composite revision
+        required: true
+        type: string
+        default: 654f71c84cdb17b4032396bcbc961bef8757fb19
+
+concurrency:
+  group: hf-legacy-composite-visibility
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publicize-and-verify:
+    name: Publicize exact revision and restore anonymously
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Check out exact authorization contract
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Verify, publicize, and clean-room restore
+        env:
+          AUTHORIZATION_PATH: quality/qualifications/hf-legacy-composite-authorization-20260829.json
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          REQUESTED_REVISION: ${{ inputs.exact_revision }}
+        run: |
+          set -euo pipefail
+          test -n "${HF_TOKEN:-}"
+          python3 -m pip install --disable-pip-version-check --quiet huggingface-hub==1.14.0
+          python3 - <<'PY'
+          from __future__ import annotations
+
+          import json
+          import os
+          import time
+          from hashlib import sha256
+          from pathlib import Path
+          from tempfile import TemporaryDirectory
+
+          from huggingface_hub import HfApi, hf_hub_download, snapshot_download
+
+
+          def digest(path: Path) -> str:
+              value = sha256()
+              with path.open('rb') as stream:
+                  for block in iter(lambda: stream.read(1024 * 1024), b''):
+                      value.update(block)
+              return value.hexdigest()
+
+
+          authorization = json.loads(
+              Path(os.environ['AUTHORIZATION_PATH']).read_text(encoding='utf-8')
+          )
+          if (
+              not authorization['external_publication_authorized']
+              or not authorization['maintainer_asserted_redistribution_permission']
+              or authorization['operation']
+              != 'make-existing-exact-revision-public-no-upload'
+          ):
+              raise RuntimeError('exact visibility authorization is not satisfied')
+
+          candidate = authorization['candidate']
+          baseline = authorization['public_baseline']
+          if os.environ['REQUESTED_REVISION'] != candidate['revision']:
+              raise RuntimeError('requested revision differs from exact authorization')
+
+          token = os.environ['HF_TOKEN']
+          private_api = HfApi(token=token)
+          private_info = private_api.dataset_info(
+              candidate['dataset'], revision=candidate['revision']
+          )
+          if private_info.sha != candidate['revision']:
+              raise RuntimeError('candidate revision resolution drifted')
+
+          changed_visibility = False
+          with TemporaryDirectory(prefix='gma-hf-visibility-') as temporary:
+              root = Path(temporary)
+              candidate_manifest = Path(
+                  hf_hub_download(
+                      candidate['dataset'],
+                      'manifest.json',
+                      repo_type='dataset',
+                      revision=candidate['revision'],
+                      token=token,
+                      local_dir=root / 'candidate-contract',
+                  )
+              )
+              candidate_readme = Path(
+                  hf_hub_download(
+                      candidate['dataset'],
+                      'README.md',
+                      repo_type='dataset',
+                      revision=candidate['revision'],
+                      token=token,
+                      local_dir=root / 'candidate-contract',
+                  )
+              )
+              baseline_manifest = Path(
+                  hf_hub_download(
+                      baseline['dataset'],
+                      'manifest.json',
+                      repo_type='dataset',
+                      revision=baseline['revision'],
+                      token=False,
+                      local_dir=root / 'baseline-contract',
+                  )
+              )
+              baseline_readme = Path(
+                  hf_hub_download(
+                      baseline['dataset'],
+                      'README.md',
+                      repo_type='dataset',
+                      revision=baseline['revision'],
+                      token=False,
+                      local_dir=root / 'baseline-contract',
+                  )
+              )
+              if digest(candidate_manifest) != candidate['manifest_sha256']:
+                  raise RuntimeError('candidate manifest digest drifted')
+              if digest(baseline_manifest) != baseline['manifest_sha256']:
+                  raise RuntimeError('public baseline manifest digest drifted')
+              if candidate_manifest.read_bytes() != baseline_manifest.read_bytes():
+                  raise RuntimeError('candidate and public manifests differ')
+              if candidate_readme.read_bytes() != baseline_readme.read_bytes():
+                  raise RuntimeError('candidate and public dataset cards differ')
+
+              manifest = json.loads(candidate_manifest.read_text(encoding='utf-8'))
+              files = manifest.get('files')
+              if (
+                  manifest.get('archived_source_count') != candidate['source_count']
+                  or not isinstance(files, list)
+                  or len(files) != candidate['payload_file_count']
+              ):
+                  raise RuntimeError('candidate manifest denominator drifted')
+              paths = {entry['path'] for entry in files}
+              if len(paths) != len(files):
+                  raise RuntimeError('candidate manifest has duplicate paths')
+              siblings = {item.rfilename for item in private_info.siblings}
+              expected_siblings = paths | {'.gitattributes', 'README.md', 'manifest.json'}
+              if siblings != expected_siblings:
+                  raise RuntimeError('candidate repository sibling set drifted')
+              for entry in files:
+                  if (
+                      len(entry.get('sha256', '')) != 64
+                      or not isinstance(entry.get('byte_count'), int)
+                      or entry['byte_count'] <= 0
+                  ):
+                      raise RuntimeError('candidate manifest has invalid payload evidence')
+
+              try:
+                  if private_info.private:
+                      private_api.update_repo_settings(
+                          candidate['dataset'], repo_type='dataset', private=False
+                      )
+                      changed_visibility = True
+
+                  public_info = None
+                  for _attempt in range(12):
+                      try:
+                          observed = HfApi(token=False).dataset_info(
+                              candidate['dataset'], revision=candidate['revision']
+                          )
+                          if not observed.private and not observed.gated:
+                              public_info = observed
+                              break
+                      except Exception:
+                          pass
+                      time.sleep(5)
+                  if public_info is None or public_info.sha != candidate['revision']:
+                      raise RuntimeError('candidate did not become anonymously public')
+
+                  restore = Path(
+                      snapshot_download(
+                          candidate['dataset'],
+                          repo_type='dataset',
+                          revision=candidate['revision'],
+                          token=False,
+                          local_dir=root / 'anonymous-restore',
+                          allow_patterns=['data/**', 'manifest.json', 'README.md'],
+                      )
+                  )
+                  for entry in files:
+                      restored = restore / entry['path']
+                      if (
+                          not restored.is_file()
+                          or restored.stat().st_size != entry['byte_count']
+                          or digest(restored) != entry['sha256']
+                      ):
+                          raise RuntimeError(
+                              f"anonymous restore mismatch: {entry['path']}"
+                          )
+              except Exception:
+                  if changed_visibility:
+                      private_api.update_repo_settings(
+                          candidate['dataset'], repo_type='dataset', private=True
+                      )
+                  raise
+
+              receipt = {
+                  'schema_id': 'global-medicines-atlas.hf-legacy-composite-visibility',
+                  'schema_version': 1,
+                  'dataset': candidate['dataset'],
+                  'immutable_revision': candidate['revision'],
+                  'manifest_sha256': candidate['manifest_sha256'],
+                  'payload_file_count': len(files),
+                  'payload_byte_count': sum(item['byte_count'] for item in files),
+                  'source_count': candidate['source_count'],
+                  'public_baseline': baseline,
+                  'repository_private': False,
+                  'repository_gated': False,
+                  'visibility_changed': changed_visibility,
+                  'content_uploaded_or_mutated': False,
+                  'publication_performed_by_github_actions': True,
+                  'anonymous_clean_room_restore': True,
+                  'anonymous_digest_match_count': len(files),
+                  'workflow_run': (
+                      f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/"
+                      f"runs/{os.environ['GITHUB_RUN_ID']}"
+                  ),
+                  'workflow_commit': os.environ['GITHUB_SHA'],
+              }
+              Path('hf-legacy-composite-visibility-receipt.json').write_text(
+                  json.dumps(receipt, indent=2, sort_keys=True) + '\n',
+                  encoding='utf-8',
+              )
+          PY
+
+      - name: Upload public visibility receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: hf-legacy-composite-visibility-receipt
+          path: hf-legacy-composite-visibility-receipt.json
+          if-no-files-found: error
+          retention-days: 90
