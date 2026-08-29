@@ -26,9 +26,9 @@
     "M-096", "M-102", "M-103", "M-107", "M-108", "M-112", "S-004",
     "S-011", "S-016", "C-011", "C-012", "C-013", "C-015", "W-003"
   ],
-  "status": "new",
+  "status": "in_progress",
   "target_versions": ["1.0.0"],
   "track_id": "public_hf_federated_data_plane_20260829",
   "type": "architecture",
-  "updated_at": "2026-08-29T05:38:00Z"
+  "updated_at": "2026-08-29T06:39:55Z"
 }
