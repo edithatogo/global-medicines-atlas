@@ -2,7 +2,7 @@
 
 ## Phase 1: Freeze the donor denominator (AC-01, AC-06)
 
-- [ ] Write failing tests for a complete two-repository inventory and ensure an
+- [~] Write failing tests for a complete two-repository inventory and ensure an
   omitted tracked file, function, workflow, or data artifact fails.
 - [ ] Confirm the intended failure before implementation.
 - [ ] Generate the machine-readable inventory from the two pinned commits,
