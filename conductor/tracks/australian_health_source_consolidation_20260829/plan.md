@@ -2,14 +2,15 @@
 
 ## Phase 1: Freeze the donor denominator (AC-01, AC-06)
 
-- [~] Write failing tests for a complete two-repository inventory and ensure an
-  omitted tracked file, function, workflow, or data artifact fails.
-- [ ] Confirm the intended failure before implementation.
-- [ ] Generate the machine-readable inventory from the two pinned commits,
+- [x] Write failing tests for a complete two-repository inventory and ensure an
+  omitted tracked file, function, workflow, or data artifact fails. (`d9d1e62`)
+- [x] Confirm the intended failure before implementation. (`d9d1e62`)
+- [x] Generate the machine-readable inventory from the two pinned commits,
   including paths, modes, sizes, digests, languages, functions, data roles,
-  implementation state, and disposition.
-- [ ] Characterize the invalid PBS parser, guessed MBS tag, processor path/type
+  implementation state, and disposition. (`d9d1e62`)
+- [x] Characterize the invalid PBS parser, guessed MBS tag, processor path/type
   bug, zero-byte artifacts, and green-with-no-data scheduled workflow.
+  (`d9d1e62`)
 - [ ] Preserve complete donor Git histories and Apache-2.0 code provenance
   without modifying the dirty local donor checkout.
 - [ ] Phase Verification & Checkpoint: inventory denominator and regression
