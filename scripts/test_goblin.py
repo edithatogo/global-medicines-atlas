@@ -77,6 +77,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_country_adapter_registry.py",
         "tests/test_au_mbs_source.py",
         "tests/test_au_mbs_workbook.py",
+        "tests/test_australian_legacy_hf_publication.py",
         "tests/test_donor_inventory.py",
         "tests/test_context_validation.py",
         "tests/test_medallion_datahouse_contract.py",
