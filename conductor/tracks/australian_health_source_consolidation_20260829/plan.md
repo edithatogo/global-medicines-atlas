@@ -64,6 +64,8 @@
 - [x] Reject duplicate PBS item identities, keep restriction text/date pairs
   aligned, and label projected element digests without implying byte-exact
   native XML slicing. (`d9b583e`)
+- [x] Regenerate the stable-v1 measured-coverage receipt after the concurrent
+  hosted donor-binding correction changed its content-bound inputs. (`52ebf78`)
 
 ## Review Fixes: MBS source-domain phase
 
