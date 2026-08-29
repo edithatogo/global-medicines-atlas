@@ -56,6 +56,9 @@
 - [x] Bind source-batch identities as literals and bind the catalogue download
   surface to the exact versioned July 2025 XML rather than a generic page.
   (`0e99c12`)
+- [x] Exercise exact-qualification, hostile-shape, archive-relationship, Git
+  failure, and malformed-inventory branches above the 91% coverage floor.
+  (`dd28a80`)
 
 ## Phase 4: Replace the monthly scraper safely (AC-05, AC-06)
 
