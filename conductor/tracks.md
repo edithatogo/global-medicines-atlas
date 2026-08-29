@@ -43,3 +43,6 @@ and rationale contract in that policy.
 
 - [x] **Track: Cross-repository medallion contract conformance**
   *Archived: [archive/cross_repository_medallion_conformance_20260826/index.md](./archive/cross_repository_medallion_conformance_20260826/index.md); v1 uses byte-versioned schemas and repository-local CI tests without a shared runtime dependency.*
+
+- [ ] **Track: Consolidate all Australian MBS/PBS donor functionality and data**
+  *Link: [tracks/australian_health_source_consolidation_20260829/index.md](./tracks/australian_health_source_consolidation_20260829/index.md); exact donor behavior/data inventory, independent MBS domain, PBS v3/AMT/ATC compatibility, legacy retention, and archive readiness.*
