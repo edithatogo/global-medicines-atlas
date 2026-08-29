@@ -503,7 +503,7 @@ jobs:
           qualification = {
               'schema_id': 'global-medicines-atlas.cms-partd-bronze-qualification',
               'schema_version': 1,
-              'qualified_at': datetime.now(UTC).isoformat(),
+              'qualified_at': max(r['qualified_at'] for r in shard_reports),
               'prompt_id': 31,
               'source_ids': ['us-cms-partd-formulary', 'us-cms-partd-spending'],
               'decision_status': 'approved_public',

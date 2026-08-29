@@ -125,6 +125,7 @@ def test_cms_publication_is_hosted_public_and_anonymously_verified() -> None:
     assert "Qualify hosted Bronze shard" in workflow
     assert "bronze/shards/{os.environ['SOURCE_IDENTITY']}" in workflow
     assert "Publish corpus Bronze qualification" in workflow
+    assert "max(r['qualified_at'] for r in shard_reports)" in workflow
 
 
 def test_cms_shard_qualification_projects_and_recovers(tmp_path: Path) -> None:
