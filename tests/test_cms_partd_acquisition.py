@@ -129,6 +129,9 @@ def test_cms_publication_is_hosted_public_and_anonymously_verified() -> None:
     assert "public_receipt['sha256'] == receipt['sha256']" in workflow
     assert "receipt = public_receipt" in workflow
     assert "path.startswith('bronze/shards/')" in workflow
+    assert "'429 Too Many Requests'" in workflow
+    assert "time.sleep(300)" in workflow
+    assert "timeout-minutes: 75" in workflow
     assert "bronze/shards/{os.environ['SOURCE_IDENTITY']}" not in workflow
 
 
