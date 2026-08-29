@@ -103,6 +103,10 @@ def test_cms_publication_is_hosted_public_and_anonymously_verified() -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
     assert "workflow_dispatch:" in workflow
     assert "private=False" in workflow
+    assert "CommitOperationDelete" in workflow
+    assert "Invalidate stale CMS Part D completion markers" in workflow
+    assert "'state': 'public'" in workflow
+    assert "'state': 'staged_private'" not in workflow
     assert "needs: [inventory, finalize]" in workflow
     assert "Restore anonymously and verify digest" in workflow
     assert "public-verification.json" in workflow

@@ -124,13 +124,28 @@ jobs:
           EOF
           python3 - <<'PY'
           import os
-          from huggingface_hub import HfApi
+          from huggingface_hub import CommitOperationDelete, HfApi
 
           api = HfApi(token=os.environ['HF_TOKEN'])
           repo = os.environ['HF_DATASET']
           api.create_repo(repo, repo_type='dataset', private=False, exist_ok=True)
-          if api.dataset_info(repo).private:
+          info = api.dataset_info(repo)
+          if info.private:
               raise RuntimeError('CMS Part D dataset must be public from initialization')
+          paths = {item.rfilename for item in info.siblings}
+          stale_markers = sorted(
+              {'manifest.json', 'public-verification.json'} & paths
+          )
+          if stale_markers:
+              api.create_commit(
+                  repo_id=repo,
+                  repo_type='dataset',
+                  operations=[
+                      CommitOperationDelete(path_in_repo=path)
+                      for path in stale_markers
+                  ],
+                  commit_message='Invalidate stale CMS Part D completion markers',
+              )
           api.upload_file(
               repo_id=repo,
               repo_type='dataset',
@@ -355,7 +370,7 @@ jobs:
           receipt['storage_receipt'] = {
               'schema_id': 'global-medicines-atlas.cms-partd-huggingface-storage',
               'schema_version': 1,
-              'state': 'staged_private',
+              'state': 'public',
               'uri': f"hf://datasets/{os.environ['HF_DATASET']}/{os.environ['HUB_PATH']}",
               'sha256': receipt['sha256'],
               'byte_count': receipt['byte_count'],
