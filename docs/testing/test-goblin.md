@@ -80,6 +80,7 @@ uv sync --python 3.14.6 --group test-goblin --locked
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py quick
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py fast
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py changed
+uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py picked
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py contracts
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py metamorphic
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py contract
@@ -106,11 +107,20 @@ TEST_GOBLIN_WORKERS=4 uv run --python 3.14.6 --group test-goblin python scripts/
 
 The `fast` profile excludes modules carrying the governed `slow` marker. The
 `changed` profile uses pytest-testmon's dependency map for local feedback and
-deliberately stays serial so its local database has one writer. Both are
-developer accelerators only: pull requests continue to run the complete
-authoritative lanes. Delete `.testmondata*` whenever the environment or test
-inventory changes unexpectedly; the first testmon run rebuilds it by running
-the full manifest.
+deliberately stays serial so its local database has one writer. The `picked`
+profile uses pytest-picked for a stateless selection based on unstaged Git
+changes. To compare the current branch with an explicit parent, run:
+
+```bash
+TEST_GOBLIN_PICKED_MODE=branch TEST_GOBLIN_PICKED_PARENT=origin/main \
+  uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py picked
+```
+
+These are developer accelerators only: pull requests continue to run the
+complete authoritative lanes. Delete `.testmondata*` whenever the environment
+or test inventory changes unexpectedly; the first testmon run rebuilds it by
+running the full manifest. Prefer `picked` for a fast stateless approximation
+and `changed` when testmon's accumulated dependency map is available.
 
 Hosted coverage explicitly selects Coverage.py's `sys.monitoring` core on
 Python 3.14. The bounded smoke lane verified that current dynamic test contexts,
@@ -160,7 +170,8 @@ on native Windows. The harness reports that boundary explicitly.
 | Mutation testing | mutmut |
 | Order-sensitivity detection | pytest-randomly |
 | Parallel execution | pytest-xdist |
-| Changed-code local selection | pytest-testmon |
+| Dependency-aware local selection | pytest-testmon |
+| Git-diff local selection | pytest-picked |
 | Coverage and Codecov input | pytest-cov |
 | Fast typing | ty |
 | Formatting, linting, imports, modernization, and consolidated static checks | Ruff |

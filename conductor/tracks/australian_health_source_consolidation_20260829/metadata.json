@@ -27,9 +27,9 @@
     "M-105", "M-106", "M-107", "M-108", "M-113", "S-014", "S-015",
     "W-003", "W-010", "W-011"
   ],
-  "status": "new",
+  "status": "in_progress",
   "target_versions": ["1.0.0"],
   "track_id": "australian_health_source_consolidation_20260829",
   "type": "feature",
-  "updated_at": "2026-08-29T05:38:00Z"
+  "updated_at": "2026-08-29T06:51:37Z"
 }

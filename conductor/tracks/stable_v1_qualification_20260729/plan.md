@@ -223,6 +223,11 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   - [x] Persist the content-validated gremlins cache across eligible hosted runs without sharing mutable execution state
   - [x] Add a non-blocking CPython 3.14 free-threaded canary for deterministic core contracts
 
+- [x] Task: Add optional local changed-test selection without weakening full CI
+  - Pytest-testmon retains its serial dependency-history profile. Pytest-picked
+    adds a stateless unstaged or explicit-parent Git-diff profile. Both remain
+    local feedback tools and are excluded from authoritative hosted selection.
+
 - [x] Task: Add independently executable metamorphic, consumer/provider
   contract and deterministic-simulation lanes to Test-Goblin ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
   - The specialized profiles pass independently and are assigned to the
