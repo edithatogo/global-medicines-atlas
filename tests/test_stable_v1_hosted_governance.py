@@ -221,6 +221,12 @@ def test_required_checks_match_harness_and_exact_hosted_protection() -> None:
         PULL_REQUEST_ONLY_MANDATORY_CHECKS
     )
 
+    workflow = (ROOT / ".github/workflows/test-goblin.yml").read_text(
+        encoding="utf-8"
+    )
+    assert "COVERAGE_CORE: sysmon" in workflow
+    assert "pytest -q -n 2 --dist worksteal" in workflow
+
 
 def test_current_receipt_reports_all_hosted_controls_verified() -> None:
     receipt = qualify_hosted_governance(_snapshot())
