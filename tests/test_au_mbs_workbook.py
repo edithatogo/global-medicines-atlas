@@ -9,6 +9,7 @@ from zipfile import ZIP_DEFLATED, ZipFile
 import pytest
 from pydantic import AnyUrl, ValidationError
 
+from global_medicines_atlas.adapters import au_mbs_workbook
 from global_medicines_atlas.adapters.au_mbs_workbook import (
     LEGACY_P7_SHA256,
     MbsWorkbookBatch,
@@ -145,3 +146,37 @@ def test_workbook_batch_source_identity_cannot_be_overridden() -> None:
             **batch.model_dump(),
             "source_id": "au-mbs",
         })
+
+
+def test_exact_workbook_qualification_accepts_bound_sheet_denominator(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = _xlsx()
+    receipt = _receipt(payload)
+    monkeypatch.setattr(au_mbs_workbook, "LEGACY_P7_BYTES", len(payload))
+    monkeypatch.setattr(
+        au_mbs_workbook,
+        "LEGACY_P7_SHA256",
+        receipt.payload.sha256,
+    )
+    monkeypatch.setattr(
+        au_mbs_workbook,
+        "LEGACY_P7_SHEETS",
+        (("Sheet1", "A1:C2"),),
+    )
+
+    batch = qualify_legacy_p7_workbook(payload, receipt)
+
+    assert batch.sheet_count == 1
+
+
+@pytest.mark.parametrize(
+    "target",
+    ["", "worksheets\\sheet1.xml", "theme/theme1.xml"],
+)
+def test_workbook_projection_rejects_invalid_nonworksheet_targets(
+    target: str,
+) -> None:
+    payload = _xlsx(target=target)
+    with pytest.raises(ValueError, match="relationship target"):
+        parse_mbs_workbook(payload, _receipt(payload))

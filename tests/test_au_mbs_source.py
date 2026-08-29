@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 from pydantic import AnyUrl, ValidationError
 
+from global_medicines_atlas.adapters import au_mbs
 from global_medicines_atlas.adapters.au_mbs import (
     LEGACY_MBS_SHA256,
     MBS_NATIVE_FIELDS,
@@ -148,3 +149,48 @@ def test_mbs_batch_source_identity_cannot_be_overridden() -> None:
             **batch.model_dump(),
             "source_id": "au-pbs",
         })
+
+
+def test_exact_legacy_qualification_accepts_the_complete_denominator(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fields = "".join(
+        f"<{name}>{'1' if name == 'ItemNum' else ''}</{name}>"
+        for name in MBS_NATIVE_FIELDS
+    )
+    payload = f"<MBS_XML><Data>{fields}</Data></MBS_XML>".encode()
+    receipt = _receipt(payload)
+    monkeypatch.setattr(au_mbs, "LEGACY_MBS_BYTES", len(payload))
+    monkeypatch.setattr(au_mbs, "LEGACY_MBS_SHA256", receipt.payload.sha256)
+    monkeypatch.setattr(au_mbs, "LEGACY_MBS_RECORDS", 1)
+    monkeypatch.setattr(au_mbs, "LEGACY_FIELD_COUNT_DISTRIBUTION", {40: 1})
+
+    batch = qualify_legacy_mbs_xml(payload, receipt)
+
+    assert batch.record_count == 1
+    assert batch.observed_fields == MBS_NATIVE_FIELDS
+
+
+@pytest.mark.parametrize(
+    ("payload", "message"),
+    [
+        (
+            b"<MBS_XML><Data><ItemNum><Nested /></ItemNum></Data></MBS_XML>",
+            "must not be nested",
+        ),
+        (
+            b"<MBS_XML><Data><Description>x</Description></Data></MBS_XML>",
+            "missing required identity",
+        ),
+        (
+            b"<MBS_XML><Data><ItemNum>1</ItemNum></Data><Meta /></MBS_XML>",
+            "unexpected non-Data",
+        ),
+    ],
+)
+def test_source_parser_rejects_nested_missing_identity_and_root_metadata(
+    payload: bytes,
+    message: str,
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        parse_mbs_source_xml(payload, _receipt(payload))

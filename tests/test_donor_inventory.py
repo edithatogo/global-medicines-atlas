@@ -10,6 +10,7 @@ from pathlib import Path
 
 import pytest
 
+from global_medicines_atlas import donor_inventory
 from global_medicines_atlas.donor_inventory import (
     DonorInventoryError,
     build_donor_inventory,
@@ -59,6 +60,13 @@ def donor_repository(tmp_path: Path) -> tuple[Path, str]:
     (repository / "data").mkdir()
     (repository / "data" / "raw.xml").write_bytes(b"<root><row /></root>\n")
     (repository / "empty.ipynb").write_bytes(b"")
+    (repository / ".github" / "workflows").mkdir(parents=True)
+    (repository / ".github" / "workflows" / "ci.yml").write_text(
+        "name: CI\n",
+        encoding="utf-8",
+    )
+    (repository / "ROADMAP.md").write_text("# Future\n", encoding="utf-8")
+    (repository / "LICENSE").write_text("fixture\n", encoding="utf-8")
     _git(repository, "add", ".")
     _git(repository, "commit", "-m", "fixture")
     return repository, _git(repository, "rev-parse", "HEAD")
@@ -77,7 +85,7 @@ def test_inventory_covers_every_blob_and_characterizes_code(
     )
 
     assert inventory["commit"] == revision
-    assert inventory["tracked_blob_count"] == 4
+    assert inventory["tracked_blob_count"] == 7
     files = {item["path"]: item for item in inventory["files"]}
     assert files["src/working.py"]["functions"] == ["acquire"]
     assert files["src/working.py"]["implementation_state"] == "implemented"
@@ -85,6 +93,11 @@ def test_inventory_covers_every_blob_and_characterizes_code(
     assert files["src/invalid.py"]["parse_error"]
     assert files["data/raw.xml"]["data_role"] == "raw_payload"
     assert files["empty.ipynb"]["implementation_state"] == "zero_byte"
+    assert (
+        files[".github/workflows/ci.yml"]["implementation_state"] == "workflow"
+    )
+    assert files["ROADMAP.md"]["implementation_state"] == "design_intent"
+    assert files["LICENSE"]["disposition"] == "preserve_provenance"
     assert inventory["total_blob_bytes"] == sum(
         item["size_bytes"] for item in inventory["files"]
     )
@@ -131,6 +144,82 @@ def test_inventory_refuses_a_different_commit(
             expected_commit="0" * 40,
             source_url="https://example.invalid/owner/donor",
         )
+
+
+def test_inventory_refuses_head_different_from_pinned_commit(
+    donor_repository: tuple[Path, str],
+) -> None:
+    repository, revision = donor_repository
+    (repository / "later.txt").write_text("later\n", encoding="utf-8")
+    _git(repository, "add", "later.txt")
+    _git(repository, "commit", "-m", "later")
+
+    with pytest.raises(DonorInventoryError, match="does not equal expected"):
+        build_donor_inventory(
+            repository,
+            repository_name="owner/donor",
+            expected_commit=revision,
+            source_url="https://example.invalid/owner/donor",
+        )
+
+
+def test_inventory_reports_missing_git_and_blob_size_drift(
+    donor_repository: tuple[Path, str],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    repository, revision = donor_repository
+    monkeypatch.setattr(donor_inventory.shutil, "which", lambda _name: None)
+    with pytest.raises(DonorInventoryError, match="unavailable"):
+        build_donor_inventory(
+            repository,
+            repository_name="owner/donor",
+            expected_commit=revision,
+            source_url="https://example.invalid/owner/donor",
+        )
+
+    monkeypatch.undo()
+    monkeypatch.setattr(donor_inventory, "_blob", lambda *_args: b"drift")
+    with pytest.raises(DonorInventoryError, match="Git reported"):
+        build_donor_inventory(
+            repository,
+            repository_name="owner/donor",
+            expected_commit=revision,
+            source_url="https://example.invalid/owner/donor",
+        )
+
+
+@pytest.mark.parametrize("files", [None, ["not-an-object"]])
+def test_inventory_rejects_malformed_file_collections(
+    donor_repository: tuple[Path, str],
+    files: object,
+) -> None:
+    repository, revision = donor_repository
+    inventory = build_donor_inventory(
+        repository,
+        repository_name="owner/donor",
+        expected_commit=revision,
+        source_url="https://example.invalid/owner/donor",
+    )
+    inventory["files"] = files
+
+    with pytest.raises(DonorInventoryError, match="list of objects"):
+        validate_donor_inventory(repository, inventory)
+
+
+def test_inventory_rejects_non_string_commit(
+    donor_repository: tuple[Path, str],
+) -> None:
+    repository, revision = donor_repository
+    inventory = build_donor_inventory(
+        repository,
+        repository_name="owner/donor",
+        expected_commit=revision,
+        source_url="https://example.invalid/owner/donor",
+    )
+    inventory["commit"] = 123
+
+    with pytest.raises(DonorInventoryError, match="commit must be a string"):
+        validate_donor_inventory(repository, inventory)
 
 
 def test_checked_in_two_repository_denominator_is_self_consistent() -> None:
