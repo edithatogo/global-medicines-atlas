@@ -75,6 +75,9 @@ def test_workflow_uploads_only_from_actions_and_verifies_anonymously() -> None:
     assert "api.upload_folder(" in workflow
     assert "repo_type='dataset', private=False" in workflow
     assert "HfApi(token=False).dataset_info" in workflow
+    assert "for attempt in range(12):" in workflow
+    assert "time.sleep(5)" in workflow
+    assert "except (HfHubHTTPError, RepositoryNotFoundError):" in workflow
     assert "snapshot_download(" in workflow
     assert "token=False" in workflow
     assert "anonymous restore digest mismatch" in workflow
