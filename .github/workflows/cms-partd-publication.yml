@@ -118,8 +118,9 @@ jobs:
           representations and are not described as complete datasets; the official CSV is
           retained separately.
 
-          Publication is incremental. Until `manifest.json` is present and lists all 33
-          payloads, the visible repository is an incomplete acquisition in progress.
+          Publication is incremental. Until `manifest.json` lists all 33 payloads and
+          `public-verification.json` records anonymous digest verification, the visible
+          repository is an incomplete acquisition in progress.
           EOF
           python3 - <<'PY'
           import os
@@ -456,5 +457,111 @@ jobs:
           )
           if public.private or public.sha != info.sha:
               raise RuntimeError('public CMS Part D revision verification failed')
+          print(public.sha)
+          PY
+
+  verify_public:
+    name: Verify public ${{ matrix.family }} ${{ matrix.filename }}
+    needs: [inventory, finalize]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 30
+      matrix: ${{ fromJSON(needs.inventory.outputs.matrix) }}
+    steps:
+      - name: Restore anonymously and verify digest
+        env:
+          SOURCE_IDENTITY: ${{ matrix.identity }}
+          HUB_PATH: ${{ matrix.hub_path }}
+        run: |
+          set -euo pipefail
+          mkdir -p verification
+          encoded_path=$(python3 - <<'PY'
+          import os
+          from urllib.parse import quote
+          print(quote(os.environ['HUB_PATH'], safe='/'))
+          PY
+          )
+          curl --fail --show-error --silent --location --retry 20 --retry-all-errors \
+            --connect-timeout 30 --max-time 18000 \
+            "https://huggingface.co/datasets/${HF_DATASET}/resolve/main/${encoded_path}" \
+            --output payload
+          observed=$(sha256sum payload | cut -d' ' -f1)
+          if [[ "$observed" != "$SOURCE_IDENTITY" ]]; then
+            echo "Anonymous Hugging Face digest mismatch" >&2
+            exit 1
+          fi
+          bytes=$(stat --format=%s payload)
+          jq -n \
+            --arg hub_path "$HUB_PATH" \
+            --arg sha256 "$observed" \
+            --argjson byte_count "$bytes" \
+            '{hub_path:$hub_path,sha256:$sha256,byte_count:$byte_count,anonymous_restore:true}' \
+            > "verification/${SOURCE_IDENTITY}.json"
+
+      - name: Retain anonymous verification receipt only
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: cms-partd-public-verification-${{ matrix.identity }}
+          path: verification/${{ matrix.identity }}.json
+          if-no-files-found: error
+          retention-days: 7
+
+  complete:
+    name: Record complete public verification
+    needs: verify_public
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Download anonymous verification receipts
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          pattern: cms-partd-public-verification-*
+          path: verification
+
+      - name: Publish public verification receipt
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -n "${HF_TOKEN:-}"
+          python3 -m pip install --disable-pip-version-check --quiet huggingface-hub==1.14.0
+          python3 - <<'PY'
+          import json
+          import os
+          from datetime import UTC, datetime
+          from pathlib import Path
+          from huggingface_hub import HfApi
+
+          receipts = [
+              json.loads(path.read_text(encoding='utf-8'))
+              for path in sorted(Path('verification').glob('**/*.json'))
+          ]
+          if len(receipts) != 33 or any(not row['anonymous_restore'] for row in receipts):
+              raise RuntimeError(f'expected 33 anonymous verification receipts, found {len(receipts)}')
+          payload = {
+              'schema_id': 'global-medicines-atlas.cms-partd-public-verification',
+              'schema_version': 1,
+              'verified_at': datetime.now(UTC).isoformat(),
+              'payload_count': len(receipts),
+              'anonymous_digest_match': True,
+              'payloads': receipts,
+          }
+          path = Path('public-verification.json')
+          path.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          api = HfApi(token=os.environ['HF_TOKEN'])
+          result = api.upload_file(
+              repo_id=os.environ['HF_DATASET'],
+              repo_type='dataset',
+              path_or_fileobj=path,
+              path_in_repo=path.name,
+              commit_message='Record anonymous CMS Part D corpus verification',
+          )
+          public = HfApi().dataset_info(os.environ['HF_DATASET'], files_metadata=True)
+          if public.private or public.sha != result.oid:
+              raise RuntimeError('completed public CMS Part D revision is not anonymously visible')
+          if path.name not in {item.rfilename for item in public.siblings}:
+              raise RuntimeError('public verification receipt is not anonymously visible')
           print(public.sha)
           PY

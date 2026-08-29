@@ -28,6 +28,10 @@ AUTHORIZATION = (
     Path(__file__).resolve().parents[1]
     / "quality/qualifications/cms-partd-acquisition-authorization.json"
 )
+WORKFLOW = (
+    Path(__file__).resolve().parents[1]
+    / ".github/workflows/cms-partd-publication.yml"
+)
 SPENDING_URLS = (
     "https://data.cms.gov/data-api/v1/dataset/7e0b4365-fd63-4a29-8f5e-e0ac9f66a81b/data",
     "https://data.cms.gov/data-api/v1/dataset/da5ff50b-e5da-42de-b68b-6cfac1f64f35/data",
@@ -93,6 +97,17 @@ def test_inventory_binds_both_public_resource_families() -> None:
     )
     authorization.require_payload_authority()
     authorization.require_publication_authority()
+
+
+def test_cms_publication_is_hosted_public_and_anonymously_verified() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    assert "workflow_dispatch:" in workflow
+    assert "private=False" in workflow
+    assert "needs: [inventory, finalize]" in workflow
+    assert "Restore anonymously and verify digest" in workflow
+    assert "public-verification.json" in workflow
+    assert "anonymous_digest_match" in workflow
+    assert "HfApi().dataset_info" in workflow
 
 
 def test_configured_spending_inventory_matches_current_official_resources() -> (

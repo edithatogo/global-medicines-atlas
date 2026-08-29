@@ -47,6 +47,10 @@ The pinned Conductor agent plugin is the Git submodule at
   cross-jurisdiction matched evidence; Platinum remains products and
   presentation.
 - Never inspect, commit, log, or publish credentials or restricted source bytes.
+- Publish dataset archives only from GitHub Actions directly to a public
+  Hugging Face dataset. Local tooling may prepare and validate an archive, but
+  it must fail closed on local upload attempts. Remove temporary local source
+  bytes only after the hosted workflow records anonymous digest verification.
 - Preserve dirty work and imported history; do not use destructive Git recovery.
 
 ## Human gates

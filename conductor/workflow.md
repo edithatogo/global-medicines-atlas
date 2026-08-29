@@ -11,6 +11,10 @@
 7. Search the maintainer-owned ecosystem before creating a new capability.
 8. Frontier dependency adoption requires compatibility evidence; legacy compatibility must remain isolated and temporary.
 9. Tracks execute autonomously under `conductor/autonomy.md`; routine work and evidence-backed checkpoints do not require maintainer confirmation.
+10. Dataset archive publication runs in GitHub Actions and targets a public
+    Hugging Face dataset directly. Developer machines may prepare and validate
+    inputs but are not publication origins; hosted anonymous digest
+    verification precedes removal of temporary local bytes.
 
 ## Autonomous Execution
 
