@@ -134,7 +134,14 @@ jobs:
               raise RuntimeError('CMS Part D dataset must be public from initialization')
           paths = {item.rfilename for item in info.siblings}
           stale_markers = sorted(
-              {'manifest.json', 'public-verification.json'} & paths
+              {
+                  'manifest.json',
+                  'public-verification.json',
+                  'bronze/qualification.json',
+                  'bronze/cms-partd-payload-manifest.parquet',
+                  'bronze/cms-partd-archive-members.parquet',
+              }
+              & paths
           )
           if stale_markers:
               api.create_commit(
@@ -334,6 +341,28 @@ jobs:
           )
           PY
 
+      - name: Qualify hosted Bronze shard
+        env:
+          SOURCE_URL: ${{ matrix.url }}
+          SOURCE_FAMILY: ${{ matrix.family }}
+          SOURCE_IDENTITY: ${{ matrix.identity }}
+          HUB_PATH: ${{ matrix.hub_path }}
+        run: |
+          set -euo pipefail
+          expected=$(jq -r '.sha256' receipt/receipt.json)
+          qualified_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          uv run --frozen --python 3.14.6 python scripts/qualify_cms_partd_shard.py \
+            --payload "payload/$SOURCE_IDENTITY" \
+            --url "$SOURCE_URL" \
+            --family "$SOURCE_FAMILY" \
+            --identity "$SOURCE_IDENTITY" \
+            --hub-path "$HUB_PATH" \
+            --expected-sha256 "$expected" \
+            --output bronze \
+            --qualified-at "$qualified_at"
+          test ! -e bronze/private-archive.tar
+          test ! -e bronze/clean-room
+
       - name: Upload verified payload to public Hugging Face dataset
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -387,13 +416,29 @@ jobs:
               path_in_repo=f"evidence/receipts/{os.environ['SOURCE_IDENTITY']}.json",
               commit_message=f"Record CMS Part D B1 evidence {os.environ['SOURCE_IDENTITY']}",
           )
+          for name in (
+              'qualification.json',
+              'payload-manifest.parquet',
+              'archive-members.parquet',
+          ):
+              api.upload_file(
+                  repo_id=os.environ['HF_DATASET'],
+                  repo_type='dataset',
+                  path_or_fileobj=Path('bronze') / name,
+                  path_in_repo=f"bronze/shards/{os.environ['SOURCE_IDENTITY']}/{name}",
+                  commit_message=f"Publish CMS Part D Bronze shard {os.environ['SOURCE_IDENTITY']}",
+              )
           PY
 
       - name: Retain digest receipt only
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: cms-partd-receipt-${{ matrix.identity }}
-          path: receipt/receipt.json
+          path: |
+            receipt/receipt.json
+            bronze/qualification.json
+            bronze/payload-manifest.parquet
+            bronze/archive-members.parquet
           if-no-files-found: error
           retention-days: 7
 
@@ -415,7 +460,8 @@ jobs:
         run: |
           set -euo pipefail
           test -n "${HF_TOKEN:-}"
-          python3 -m pip install --disable-pip-version-check --quiet huggingface-hub==1.14.0
+          python3 -m pip install --disable-pip-version-check --quiet \
+            huggingface-hub==1.14.0 pyarrow==25.0.0
           python3 - <<'PY'
           import json
           import os
@@ -423,6 +469,8 @@ jobs:
           from hashlib import sha256
           from pathlib import Path
           from huggingface_hub import HfApi
+          import pyarrow as pa
+          import pyarrow.parquet as pq
 
           receipts = [
               json.loads(path.read_text(encoding='utf-8'))
@@ -430,6 +478,58 @@ jobs:
           ]
           if len(receipts) != 33:
               raise RuntimeError(f'expected 33 receipts, found {len(receipts)}')
+          shard_reports = [
+              json.loads(path.read_text(encoding='utf-8'))
+              for path in sorted(Path('receipts').glob('**/bronze/qualification.json'))
+          ]
+          if len(shard_reports) != 33:
+              raise RuntimeError(f'expected 33 Bronze shards, found {len(shard_reports)}')
+          if any(row['clean_room_recovered_payload_count'] != 1 for row in shard_reports):
+              raise RuntimeError('CMS Part D clean-room recovery is incomplete')
+          bronze_dir = Path('bronze')
+          bronze_dir.mkdir()
+          payload_tables = [
+              pq.read_table(path)
+              for path in sorted(Path('receipts').glob('**/bronze/payload-manifest.parquet'))
+          ]
+          member_tables = [
+              pq.read_table(path)
+              for path in sorted(Path('receipts').glob('**/bronze/archive-members.parquet'))
+          ]
+          payload_manifest = bronze_dir / 'cms-partd-payload-manifest.parquet'
+          member_manifest = bronze_dir / 'cms-partd-archive-members.parquet'
+          pq.write_table(pa.concat_tables(payload_tables), payload_manifest)
+          pq.write_table(pa.concat_tables(member_tables), member_manifest)
+          qualification = {
+              'schema_id': 'global-medicines-atlas.cms-partd-bronze-qualification',
+              'schema_version': 1,
+              'qualified_at': max(r['qualified_at'] for r in shard_reports),
+              'prompt_id': 31,
+              'source_ids': ['us-cms-partd-formulary', 'us-cms-partd-spending'],
+              'decision_status': 'approved_public',
+              'payload_count': len(shard_reports),
+              'formulary_release_count': sum(r['family'] == 'formulary' for r in shard_reports),
+              'spending_resource_count': sum(r['family'] == 'spending' for r in shard_reports),
+              'payload_byte_count': sum(r['byte_count'] for r in shard_reports),
+              'archive_member_count': sum(r['archive_member_count'] for r in shard_reports),
+              'payload_manifest_sha256': sha256(payload_manifest.read_bytes()).hexdigest(),
+              'archive_member_manifest_sha256': sha256(member_manifest.read_bytes()).hexdigest(),
+              'private_archive_shard_count': len(shard_reports),
+              'clean_room_recovered_payload_count': sum(r['clean_room_recovered_payload_count'] for r in shard_reports),
+              'source_bytes_committed': False,
+              'source_bytes_retained_on_runners': False,
+              'publication_performed_by_github_actions': True,
+              'agreement_for_use_applies': True,
+              'accurate_and_non_misleading_use_required': True,
+              'total_us_utilisation_claimed': False,
+              'net_price_claimed': False,
+              'cross_plan_year_schema_equivalence_claimed': False,
+              'payloads': sorted(shard_reports, key=lambda row: row['identity']),
+          }
+          qualification_path = bronze_dir / 'qualification.json'
+          qualification_path.write_text(
+              json.dumps(qualification, indent=2, sort_keys=True) + '\n', encoding='utf-8'
+          )
           manifest = {
               'schema_id': 'global-medicines-atlas.cms-partd-public-manifest',
               'schema_version': 1,
@@ -451,6 +551,14 @@ jobs:
               path_in_repo='manifest.json',
               commit_message='Publish exact CMS Part D corpus manifest',
           )
+          for path in (payload_manifest, member_manifest, qualification_path):
+              api.upload_file(
+                  repo_id=os.environ['HF_DATASET'],
+                  repo_type='dataset',
+                  path_or_fileobj=path,
+                  path_in_repo=f'bronze/{path.name}',
+                  commit_message='Publish corpus Bronze qualification',
+              )
           info = api.dataset_info(os.environ['HF_DATASET'], files_metadata=True)
           if info.private:
               raise RuntimeError('CMS Part D dataset is unexpectedly private')
@@ -458,6 +566,9 @@ jobs:
           expected = {
               'README.md',
               'manifest.json',
+              'bronze/qualification.json',
+              'bronze/cms-partd-payload-manifest.parquet',
+              'bronze/cms-partd-archive-members.parquet',
               *(r['hub_path'] for r in receipts),
           }
           expected.update(
