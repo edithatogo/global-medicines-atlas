@@ -123,9 +123,13 @@ def test_cms_publication_is_hosted_public_and_anonymously_verified() -> None:
     assert "max-parallel: 8" in workflow
     assert "max-parallel: 16" in workflow
     assert "Qualify hosted Bronze shard" in workflow
-    assert "bronze/shards/{os.environ['SOURCE_IDENTITY']}" in workflow
-    assert "Publish corpus Bronze qualification" in workflow
+    assert "CommitOperationAdd" in workflow
     assert "max(r['qualified_at'] for r in shard_reports)" in workflow
+    assert "already_published" in workflow
+    assert "public_receipt['sha256'] == receipt['sha256']" in workflow
+    assert "receipt = public_receipt" in workflow
+    assert "path.startswith('bronze/shards/')" in workflow
+    assert "bronze/shards/{os.environ['SOURCE_IDENTITY']}" not in workflow
 
 
 def test_cms_shard_qualification_projects_and_recovers(tmp_path: Path) -> None:

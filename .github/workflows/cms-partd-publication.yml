@@ -143,6 +143,9 @@ jobs:
               }
               & paths
           )
+          stale_markers.extend(
+              sorted(path for path in paths if path.startswith('bronze/shards/'))
+          )
           if stale_markers:
               api.create_commit(
                   repo_id=repo,
@@ -376,24 +379,10 @@ jobs:
           import time
           import json
           from pathlib import Path
-          from huggingface_hub import HfApi
+          from huggingface_hub import HfApi, hf_hub_download
 
           api = HfApi(token=os.environ['HF_TOKEN'])
           payload = Path('payload') / os.environ['SOURCE_IDENTITY']
-          for attempt in range(1, 7):
-              try:
-                  api.upload_file(
-                      repo_id=os.environ['HF_DATASET'],
-                      repo_type='dataset',
-                      path_or_fileobj=payload,
-                      path_in_repo=os.environ['HUB_PATH'],
-                      commit_message=f"Publish CMS Part D payload {os.environ['SOURCE_IDENTITY']}",
-                  )
-                  break
-              except Exception:
-                  if attempt == 6:
-                      raise
-                  time.sleep(attempt * 15)
           receipt_path = Path('receipt/receipt.json')
           receipt = json.loads(receipt_path.read_text(encoding='utf-8'))
           receipt['storage_receipt'] = {
@@ -409,25 +398,50 @@ jobs:
               json.dumps(receipt, separators=(',', ':'), sort_keys=True) + '\n',
               encoding='utf-8',
           )
-          api.upload_file(
-              repo_id=os.environ['HF_DATASET'],
-              repo_type='dataset',
-              path_or_fileobj=receipt_path,
-              path_in_repo=f"evidence/receipts/{os.environ['SOURCE_IDENTITY']}.json",
-              commit_message=f"Record CMS Part D B1 evidence {os.environ['SOURCE_IDENTITY']}",
-          )
-          for name in (
-              'qualification.json',
-              'payload-manifest.parquet',
-              'archive-members.parquet',
-          ):
-              api.upload_file(
+          receipt_repo_path = f"evidence/receipts/{os.environ['SOURCE_IDENTITY']}.json"
+          already_published = False
+          try:
+              public_receipt = json.loads(Path(hf_hub_download(
                   repo_id=os.environ['HF_DATASET'],
                   repo_type='dataset',
-                  path_or_fileobj=Path('bronze') / name,
-                  path_in_repo=f"bronze/shards/{os.environ['SOURCE_IDENTITY']}/{name}",
-                  commit_message=f"Publish CMS Part D Bronze shard {os.environ['SOURCE_IDENTITY']}",
+                  filename=receipt_repo_path,
+                  token=False,
+              )).read_text(encoding='utf-8'))
+              already_published = (
+                  public_receipt['sha256'] == receipt['sha256']
+                  and public_receipt['hub_path'] == receipt['hub_path']
+                  and public_receipt['storage_receipt']['state'] == 'public'
               )
+              if already_published:
+                  receipt = public_receipt
+                  receipt_path.write_text(
+                      json.dumps(receipt, separators=(',', ':'), sort_keys=True) + '\n',
+                      encoding='utf-8',
+                  )
+          except Exception:
+              already_published = False
+          if not already_published:
+              for attempt in range(1, 7):
+                  try:
+                      api.upload_file(
+                          repo_id=os.environ['HF_DATASET'],
+                          repo_type='dataset',
+                          path_or_fileobj=payload,
+                          path_in_repo=os.environ['HUB_PATH'],
+                          commit_message=f"Publish CMS Part D payload {os.environ['SOURCE_IDENTITY']}",
+                      )
+                      api.upload_file(
+                          repo_id=os.environ['HF_DATASET'],
+                          repo_type='dataset',
+                          path_or_fileobj=receipt_path,
+                          path_in_repo=receipt_repo_path,
+                          commit_message=f"Record CMS Part D B1 evidence {os.environ['SOURCE_IDENTITY']}",
+                      )
+                      break
+                  except Exception:
+                      if attempt == 6:
+                          raise
+                      time.sleep(attempt * 15)
           PY
 
       - name: Retain digest receipt only
@@ -468,7 +482,7 @@ jobs:
           from datetime import UTC, datetime
           from hashlib import sha256
           from pathlib import Path
-          from huggingface_hub import HfApi
+          from huggingface_hub import CommitOperationAdd, HfApi
           import pyarrow as pa
           import pyarrow.parquet as pq
 
@@ -544,21 +558,22 @@ jobs:
               json.dumps(manifest, indent=2, sort_keys=True) + '\n', encoding='utf-8'
           )
           api = HfApi(token=os.environ['HF_TOKEN'])
-          api.upload_file(
+          api.create_commit(
               repo_id=os.environ['HF_DATASET'],
               repo_type='dataset',
-              path_or_fileobj='manifest.json',
-              path_in_repo='manifest.json',
+              operations=[
+                  CommitOperationAdd(
+                      path_in_repo='manifest.json', path_or_fileobj='manifest.json'
+                  ),
+                  *(
+                      CommitOperationAdd(
+                          path_in_repo=f'bronze/{path.name}', path_or_fileobj=path
+                      )
+                      for path in (payload_manifest, member_manifest, qualification_path)
+                  ),
+              ],
               commit_message='Publish exact CMS Part D corpus manifest',
           )
-          for path in (payload_manifest, member_manifest, qualification_path):
-              api.upload_file(
-                  repo_id=os.environ['HF_DATASET'],
-                  repo_type='dataset',
-                  path_or_fileobj=path,
-                  path_in_repo=f'bronze/{path.name}',
-                  commit_message='Publish corpus Bronze qualification',
-              )
           info = api.dataset_info(os.environ['HF_DATASET'], files_metadata=True)
           if info.private:
               raise RuntimeError('CMS Part D dataset is unexpectedly private')
