@@ -115,6 +115,8 @@ def test_cms_publication_is_hosted_public_and_anonymously_verified() -> None:
     assert "public-verification.json" in workflow
     assert "anonymous_digest_match" in workflow
     assert "HfApi().dataset_info" in workflow
+    assert "max-parallel: 8" in workflow
+    assert "max-parallel: 16" in workflow
 
 
 def test_configured_spending_inventory_matches_current_official_resources() -> (
