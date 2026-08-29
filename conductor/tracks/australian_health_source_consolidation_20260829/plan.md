@@ -51,6 +51,12 @@
 - [ ] Phase Verification & Checkpoint: donor intended behavior is covered by a
   valid, safe, typed implementation.
 
+## Review Fixes: MBS source-domain phase
+
+- [x] Bind source-batch identities as literals and bind the catalogue download
+  surface to the exact versioned July 2025 XML rather than a generic page.
+  (`0e99c12`)
+
 ## Phase 4: Replace the monthly scraper safely (AC-05, AC-06)
 
 - [ ] Write failing tests for month ranges, historical URL generation,
