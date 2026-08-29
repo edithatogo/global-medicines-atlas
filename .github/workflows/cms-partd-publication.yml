@@ -162,7 +162,7 @@ jobs:
     timeout-minutes: 350
     strategy:
       fail-fast: false
-      max-parallel: 30
+      max-parallel: 8
       matrix: ${{ fromJSON(needs.inventory.outputs.matrix) }}
     steps:
       - name: Check out qualification code
@@ -482,7 +482,7 @@ jobs:
     timeout-minutes: 350
     strategy:
       fail-fast: false
-      max-parallel: 30
+      max-parallel: 16
       matrix: ${{ fromJSON(needs.inventory.outputs.matrix) }}
     steps:
       - name: Restore anonymously and verify digest
