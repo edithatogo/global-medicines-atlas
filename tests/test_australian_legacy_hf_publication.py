@@ -29,11 +29,15 @@ def test_authorization_binds_every_nonempty_donor_payload() -> None:
         "edithatogo/aus_mbs_pbs_graph",
         "edithatogo/aus-health-data-scraper",
     }
-    payloads = donors["edithatogo/aus_mbs_pbs_graph"]["payloads"]
-    assert {item["git_path"] for item in payloads} == {
+    graph_payloads = donors["edithatogo/aus_mbs_pbs_graph"]["payloads"]
+    scraper_payloads = donors["edithatogo/aus-health-data-scraper"]["payloads"]
+    assert {item["git_path"] for item in graph_payloads} == {
         "scripts/parsing/MBS-XML-20250701 Version 3.XML",
+    }
+    assert {item["git_path"] for item in scraper_payloads} == {
         "data/source/MBS - 2024.07 - Group P7 (Genetics).xlsx",
     }
+    payloads = graph_payloads + scraper_payloads
     assert {(item["bytes"], item["sha256"]) for item in payloads} == {
         (
             8_194_522,
@@ -44,7 +48,6 @@ def test_authorization_binds_every_nonempty_donor_payload() -> None:
             "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
         ),
     }
-    assert donors["edithatogo/aus-health-data-scraper"]["payloads"] == []
 
 
 def test_workflow_uploads_only_from_actions_and_verifies_anonymously() -> None:

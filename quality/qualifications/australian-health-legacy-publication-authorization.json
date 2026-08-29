@@ -17,7 +17,13 @@
           "archive_path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
           "bytes": 8194522,
           "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
-        },
+        }
+      ]
+    },
+    {
+      "repository": "edithatogo/aus-health-data-scraper",
+      "commit": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "payloads": [
         {
           "git_path": "data/source/MBS - 2024.07 - Group P7 (Genetics).xlsx",
           "archive_path": "raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx",
@@ -25,11 +31,6 @@
           "sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
         }
       ]
-    },
-    {
-      "repository": "edithatogo/aus-health-data-scraper",
-      "commit": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
-      "payloads": []
     }
   ],
   "required_contents": [
