@@ -109,6 +109,9 @@ def test_cms_publication_is_hosted_public_and_anonymously_verified() -> None:
     assert "'state': 'staged_private'" not in workflow
     assert "needs: [inventory, finalize]" in workflow
     assert "Restore anonymously and verify digest" in workflow
+    assert "--output receipt.json" in workflow
+    assert "expected=$(jq -r '.sha256' receipt.json)" in workflow
+    assert '"$observed" != "$expected"' in workflow
     assert "public-verification.json" in workflow
     assert "anonymous_digest_match" in workflow
     assert "HfApi().dataset_info" in workflow

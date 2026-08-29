@@ -502,8 +502,16 @@ jobs:
             --connect-timeout 30 --max-time 18000 \
             "https://huggingface.co/datasets/${HF_DATASET}/resolve/main/${encoded_path}" \
             --output payload
+          curl --fail --show-error --silent --location --retry 10 --retry-all-errors \
+            "https://huggingface.co/datasets/${HF_DATASET}/resolve/main/evidence/receipts/${SOURCE_IDENTITY}.json" \
+            --output receipt.json
+          expected=$(jq -r '.sha256' receipt.json)
+          if [[ ! "$expected" =~ ^[0-9a-f]{64}$ ]]; then
+            echo "Public receipt does not contain a valid payload digest" >&2
+            exit 1
+          fi
           observed=$(sha256sum payload | cut -d' ' -f1)
-          if [[ "$observed" != "$SOURCE_IDENTITY" ]]; then
+          if [[ "$observed" != "$expected" ]]; then
             echo "Anonymous Hugging Face digest mismatch" >&2
             exit 1
           fi
