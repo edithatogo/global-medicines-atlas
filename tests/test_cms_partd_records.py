@@ -155,6 +155,18 @@ def test_spending_payload_preserves_leading_zeroes_and_empty_strings(
     assert table["Flag"].to_pylist() == [""]
 
 
+def test_spending_projection_flushes_streaming_batches(tmp_path: Path) -> None:
+    payload = tmp_path / "spending.csv"
+    payload.write_text(
+        "A,B\n" + "".join(f"{number},value\n" for number in range(50_001)),
+        encoding="utf-8",
+    )
+    (projection,) = project_cms_partd_payload(
+        payload, family="spending", identity="1" * 64, output=tmp_path / "out"
+    )
+    assert projection.row_count == 50_001
+
+
 def test_spending_data_api_json_preserves_strings_and_nulls(
     tmp_path: Path,
 ) -> None:
@@ -202,6 +214,8 @@ def test_spending_data_api_json_fails_closed_on_drift(
 @pytest.mark.parametrize(
     ("payload", "message"),
     [
+        (b"", "empty"),
+        (b"A\n1\n", "no supported delimiter"),
         (b"A,A\n1,2\n", "headers"),
         (b"A,B\n1\n", "row width"),
         (b"A,B\n", "no source records"),
