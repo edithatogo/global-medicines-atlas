@@ -1,0 +1,269 @@
+"""Source-faithful, streaming CMS Part D record projections."""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import io
+import json
+import re
+import shutil
+import tempfile
+import zipfile
+from collections.abc import Iterator
+from dataclasses import dataclass
+from hashlib import sha256
+from operator import itemgetter
+from pathlib import Path, PurePosixPath
+from typing import IO, Literal
+
+import pyarrow as pa
+import pyarrow.parquet as pq
+
+_TABULAR_SUFFIXES = {".csv", ".txt"}
+_RESERVED = {
+    "gma_payload_identity",
+    "gma_outer_member_path",
+    "gma_inner_member_path",
+    "gma_source_row_number",
+}
+_SAFE_NAME = re.compile(r"[^A-Za-z0-9._-]+")
+_MIN_COLUMNS = 2
+
+
+def _file_sha256(path: Path) -> str:
+    digest = sha256()
+    with path.open("rb") as stream:
+        while block := stream.read(1024 * 1024):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+@dataclass(frozen=True)
+class CMSPartDProjection:
+    """One projected source-native table and its durable evidence."""
+
+    outer_member_path: str
+    inner_member_path: str | None
+    parquet_path: Path
+    row_count: int
+    column_count: int
+    parquet_sha256: str
+
+
+def _safe_member(path: str) -> str:
+    member = PurePosixPath(path)
+    if member.is_absolute() or ".." in member.parts or not member.name:
+        raise ValueError("CMS Part D archive member path is unsafe")
+    return member.as_posix()
+
+
+def _delimiter(header: str) -> str:
+    counts = {
+        candidate: header.count(candidate) for candidate in ("\t", ",", "|")
+    }
+    delimiter, count = max(counts.items(), key=itemgetter(1))
+    if count == 0:
+        raise ValueError("CMS Part D table has no supported delimiter")
+    return delimiter
+
+
+def _project_stream(
+    stream: IO[bytes],
+    *,
+    payload_identity: str,
+    outer_member_path: str,
+    inner_member_path: str | None,
+    output: Path,
+    batch_rows: int = 50_000,
+) -> CMSPartDProjection:
+    text = io.TextIOWrapper(stream, encoding="utf-8-sig", newline="")
+    first = text.readline()
+    if not first:
+        raise ValueError("CMS Part D table is empty")
+    delimiter = _delimiter(first)
+    rows = csv.reader([first], delimiter=delimiter, strict=True)
+    columns = next(rows)
+    if (
+        len(columns) < _MIN_COLUMNS
+        or any(not column.strip() for column in columns)
+        or len(columns) != len(set(columns))
+        or _RESERVED.intersection(columns)
+    ):
+        raise ValueError("CMS Part D table headers must be nonempty and unique")
+
+    metadata_columns = [
+        "gma_payload_identity",
+        "gma_outer_member_path",
+        "gma_inner_member_path",
+        "gma_source_row_number",
+    ]
+    schema = pa.schema(
+        [(column, pa.string()) for column in columns]
+        + [(column, pa.string()) for column in metadata_columns[:3]]
+        + [(metadata_columns[3], pa.int64())]
+    )
+    output.parent.mkdir(parents=True, exist_ok=True)
+    writer = pq.ParquetWriter(output, schema, compression="zstd")
+    reader = csv.reader(text, delimiter=delimiter, strict=True)
+    batch: list[dict[str, object]] = []
+    count = 0
+    try:
+        for count, values in enumerate(reader, start=1):
+            if len(values) != len(columns):
+                raise ValueError(
+                    "CMS Part D source row width differs from its header"
+                )
+            row: dict[str, object] = dict(zip(columns, values, strict=True))
+            row.update({
+                "gma_payload_identity": payload_identity,
+                "gma_outer_member_path": outer_member_path,
+                "gma_inner_member_path": inner_member_path or "",
+                "gma_source_row_number": count,
+            })
+            batch.append(row)
+            if len(batch) >= batch_rows:
+                writer.write_table(pa.Table.from_pylist(batch, schema=schema))
+                batch.clear()
+        if batch:
+            writer.write_table(pa.Table.from_pylist(batch, schema=schema))
+    finally:
+        writer.close()
+    if count == 0:
+        output.unlink(missing_ok=True)
+        raise ValueError("CMS Part D table contains no source records")
+    return CMSPartDProjection(
+        outer_member_path=outer_member_path,
+        inner_member_path=inner_member_path,
+        parquet_path=output,
+        row_count=count,
+        column_count=len(columns),
+        parquet_sha256=_file_sha256(output),
+    )
+
+
+def _projection_path(output: Path, outer: str, inner: str | None) -> Path:
+    locator = f"{outer}!{inner or ''}"
+    label = _SAFE_NAME.sub("-", PurePosixPath(inner or outer).stem).strip("-")
+    return (
+        output
+        / f"{label[:80]}-{sha256(locator.encode()).hexdigest()[:16]}.parquet"
+    )
+
+
+def project_cms_partd_payload(
+    payload: Path,
+    *,
+    family: Literal["formulary", "spending"],
+    identity: str,
+    output: Path,
+) -> tuple[CMSPartDProjection, ...]:
+    """Stream every eligible table to independent source-faithful Parquet."""
+    projections: list[CMSPartDProjection] = []
+    if family == "spending":
+        with payload.open("rb") as stream:
+            projections.append(
+                _project_stream(
+                    stream,
+                    payload_identity=identity,
+                    outer_member_path=payload.name,
+                    inner_member_path=None,
+                    output=_projection_path(output, payload.name, None),
+                )
+            )
+        return tuple(projections)
+
+    with zipfile.ZipFile(payload) as outer_archive:
+        for outer_info in outer_archive.infolist():
+            outer_path = _safe_member(outer_info.filename)
+            if (
+                outer_info.is_dir()
+                or PurePosixPath(outer_path).suffix.lower() != ".zip"
+            ):
+                continue
+            with tempfile.SpooledTemporaryFile(
+                max_size=64 * 1024 * 1024
+            ) as inner_file:
+                with outer_archive.open(outer_info) as raw_inner:
+                    shutil.copyfileobj(
+                        raw_inner, inner_file, length=1024 * 1024
+                    )
+                inner_file.seek(0)
+                inner_archive = zipfile.ZipFile(inner_file)
+                for inner_info in inner_archive.infolist():
+                    inner_path = _safe_member(inner_info.filename)
+                    if (
+                        inner_info.is_dir()
+                        or PurePosixPath(inner_path).suffix.lower()
+                        not in _TABULAR_SUFFIXES
+                    ):
+                        continue
+                    with inner_archive.open(inner_info) as stream:
+                        projections.append(
+                            _project_stream(
+                                stream,
+                                payload_identity=identity,
+                                outer_member_path=outer_path,
+                                inner_member_path=inner_path,
+                                output=_projection_path(
+                                    output, outer_path, inner_path
+                                ),
+                            )
+                        )
+                inner_archive.close()
+    if not projections:
+        raise ValueError(
+            "CMS Part D formulary archive has no nested tabular records"
+        )
+    return tuple(projections)
+
+
+def projection_manifest_rows(
+    projections: tuple[CMSPartDProjection, ...],
+) -> Iterator[dict[str, object]]:
+    """Yield stable manifest rows without exposing runner-local paths."""
+    for projection in projections:
+        yield {
+            "outer_member_path": projection.outer_member_path,
+            "inner_member_path": projection.inner_member_path or "",
+            "parquet_filename": projection.parquet_path.name,
+            "row_count": projection.row_count,
+            "column_count": projection.column_count,
+            "parquet_sha256": projection.parquet_sha256,
+            "parquet_byte_count": projection.parquet_path.stat().st_size,
+        }
+
+
+def projection_cli() -> None:
+    """Run the hosted projection CLI without providing publication capability."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--payload", type=Path, required=True)
+    parser.add_argument(
+        "--family", choices=("formulary", "spending"), required=True
+    )
+    parser.add_argument("--identity", required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--manifest", type=Path, required=True)
+    args = parser.parse_args()
+    projections = project_cms_partd_payload(
+        args.payload,
+        family=args.family,
+        identity=args.identity,
+        output=args.output,
+    )
+    payload = {
+        "schema_id": "global-medicines-atlas.cms-partd-source-record-shard",
+        "schema_version": 1,
+        "identity": args.identity,
+        "family": args.family,
+        "source_record_projection_count": len(projections),
+        "source_record_count": sum(item.row_count for item in projections),
+        "projections": list(projection_manifest_rows(projections)),
+        "source_values_preserved_as_strings": True,
+        "cross_plan_year_schema_equivalence_claimed": False,
+    }
+    args.manifest.parent.mkdir(parents=True, exist_ok=True)
+    args.manifest.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    print(json.dumps(payload, sort_keys=True))  # ruff: ignore[print]

@@ -444,6 +444,7 @@ for credentialed or rights-unresolved sources.
     - [x] Obtain the maintainer's source-specific acceptance before payload acquisition and retention; approved public for the exact inventory-bound corpus on 2026-08-27
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze record projection, clean-room recovery, and anonymous public archive verification
         - [x] Publish and anonymously verify all 33 exact payloads, receipts, and consolidated payload/archive-member manifest Parquet through GitHub Actions at revision `abcff8ebd1f624c4bbb0a87d903b184388c98254`
+        - [x] Implement a resumable GitHub Actions projection path over that immutable public revision, with streaming source-string preservation, independent table Parquet, anonymous digest verification, and runner-byte removal
         - [ ] Produce and verify source-native formulary and spending record Parquet, then reconcile the receipt-backed landing overrides and canonical completion audit
     - [x] Keep public release and external publication separately gated; the maintainer approved attributed public release and external publication on 2026-08-27 subject to the CMS Agreement for Use and fail-closed interpretation boundaries
 - [x] Task: Review Fixes for CMS Part D public qualification
