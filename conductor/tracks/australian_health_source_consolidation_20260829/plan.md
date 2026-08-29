@@ -46,18 +46,31 @@
 
 ## Phase 3: Replace the PBS experiment with governed v3 support (AC-04, AC-07)
 
-- [ ] Write failing tests for ZIP safety, PBS namespaces, item/product identity,
+- [x] Write failing tests for ZIP safety, PBS namespaces, item/product identity,
   restrictions, AMT references, ATC codes, effective dates, malformed XML,
-  duplicate members, traversal names, decompression limits, and drift.
-- [ ] Confirm the intended failure before implementation.
-- [ ] Extend the existing `au_pbs` adapter and catalogue/source profile rather
-  than creating a second PBS authority.
-- [ ] Implement receipt-bound download, immutable ZIP preservation, member
+  duplicate members, traversal names, decompression limits, and drift. (`796c93a`)
+- [x] Confirm the intended failure before implementation. (`796c93a`)
+- [~] Extend the existing `au_pbs` adapter and catalogue/source profile rather
+  than creating a second PBS authority. (`796c93a`)
+- [~] Implement receipt-bound download, immutable ZIP preservation, member
   manifests, source-native Parquet, and the bounded tag-inspection command.
 - [ ] Preserve the donor CLI input/output expectations through compatibility
   tests where they are useful; do not preserve its syntax error.
 - [ ] Phase Verification & Checkpoint: donor intended behavior is covered by a
   valid, safe, typed implementation.
+
+## Review Fixes: PBS v3 archive and record contracts
+
+- [x] Reject duplicate PBS item identities, keep restriction text/date pairs
+  aligned, and label projected element digests without implying byte-exact
+  native XML slicing. (`d9b583e`)
+- [x] Regenerate the stable-v1 measured-coverage receipt after the concurrent
+  hosted donor-binding correction changed its content-bound inputs. (`52ebf78`)
+- [x] Match XML structural limits to the governed PBS archive envelope, require
+  the v3 schedule root, bound tag iteration, and preserve absent AMT resources
+  as Parquet nulls. (`00a59eb`)
+- [x] Regenerate measured coverage after the final reviewed PBS projector
+  changed its content-bound source digest. (`108dbc4`)
 
 ## Review Fixes: MBS source-domain phase
 
