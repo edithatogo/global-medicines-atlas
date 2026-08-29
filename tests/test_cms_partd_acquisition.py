@@ -7,13 +7,17 @@ import stat
 import zipfile
 import zlib
 from collections.abc import Callable
+from datetime import UTC, datetime
 from hashlib import sha256
 from io import BytesIO
 from pathlib import Path
 from types import SimpleNamespace
 
+import pyarrow as pa
+import pyarrow.parquet as pq
 import pytest
 from pydantic import AnyHttpUrl, ValidationError
+from scripts.qualify_cms_partd_shard import qualify_shard
 
 from global_medicines_atlas import cms_partd_acquisition as cms
 from global_medicines_atlas.cms_partd_acquisition import (
@@ -105,6 +109,7 @@ def test_cms_publication_is_hosted_public_and_anonymously_verified() -> None:
     assert "private=False" in workflow
     assert "CommitOperationDelete" in workflow
     assert "Invalidate stale CMS Part D completion markers" in workflow
+    assert "'bronze/qualification.json'" in workflow
     assert "'state': 'public'" in workflow
     assert "'state': 'staged_private'" not in workflow
     assert "needs: [inventory, finalize]" in workflow
@@ -117,6 +122,58 @@ def test_cms_publication_is_hosted_public_and_anonymously_verified() -> None:
     assert "HfApi().dataset_info" in workflow
     assert "max-parallel: 8" in workflow
     assert "max-parallel: 16" in workflow
+    assert "Qualify hosted Bronze shard" in workflow
+    assert "bronze/shards/{os.environ['SOURCE_IDENTITY']}" in workflow
+    assert "Publish corpus Bronze qualification" in workflow
+
+
+def test_cms_shard_qualification_projects_and_recovers(tmp_path: Path) -> None:
+    payload = tmp_path / "release.zip"
+    with zipfile.ZipFile(payload, "w") as archive:
+        archive.writestr("formulary.csv", b"plan_id,ndc\nP1,0001\n")
+    url = AnyHttpUrl(_formulary_urls(1)[0])
+    identity = sha256(str(url).encode()).hexdigest()
+    output = tmp_path / "qualified"
+    report = qualify_shard(
+        payload,
+        url=url,
+        family="formulary",
+        identity=identity,
+        hub_path=f"data/formulary/{identity}/release.zip",
+        expected_sha256=sha256(payload.read_bytes()).hexdigest(),
+        output=output,
+        qualified_at=datetime(2026, 8, 29, tzinfo=UTC),
+    )
+    assert report["clean_room_recovered_payload_count"] == 1
+    assert report["archive_member_count"] == 1
+    assert (output / "payload-manifest.parquet").is_file()
+    assert (output / "archive-members.parquet").is_file()
+    assert (output / "qualification.json").is_file()
+    assert not report["source_bytes_retained_on_runner"]
+
+
+def test_cms_spending_shard_emits_typed_empty_member_manifest(
+    tmp_path: Path,
+) -> None:
+    payload = tmp_path / "spending.csv"
+    payload.write_bytes(b"Brnd_Name,Tot_Spndng_2024\nExample,1.25\n")
+    url = AnyHttpUrl(SPENDING_URLS[-1])
+    identity = sha256(str(url).encode()).hexdigest()
+    output = tmp_path / "qualified"
+    report = qualify_shard(
+        payload,
+        url=url,
+        family="spending",
+        identity=identity,
+        hub_path=f"data/spending/{identity}/spending.csv",
+        expected_sha256=sha256(payload.read_bytes()).hexdigest(),
+        output=output,
+        qualified_at=datetime(2026, 8, 29, tzinfo=UTC),
+    )
+    assert report["archive_member_count"] == 0
+    members = pq.read_table(output / "archive-members.parquet")
+    assert members.num_rows == 0
+    assert members.schema.field("byte_count").type == pa.int64()
 
 
 def test_configured_spending_inventory_matches_current_official_resources() -> (
