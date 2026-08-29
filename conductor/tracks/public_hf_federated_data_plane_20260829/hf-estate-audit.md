@@ -13,9 +13,9 @@ Authenticated CLI enumeration found:
 Visibility is not a rights conclusion. The dispositions below use exact
 manifests and the scope of Decision 0009.
 
-| Private surface | Revision/state | Disposition | Rationale |
+| Surface at audit time | Revision/state | Disposition | Rationale |
 |---|---|---|---|
-| `edithatogo/global-medicines-atlas-international-open` | dataset revision `654f71c84cdb17b4032396bcbc961bef8757fb19`; 42 payload files | Publicize through exact hosted workflow as a legacy composite | Its README and manifest are byte-identical to current public `global-medicines-atlas-international-permissive-20260821`; all payloads are already present in public GMA archives |
+| `edithatogo/global-medicines-atlas-international-open` | dataset revision `654f71c84cdb17b4032396bcbc961bef8757fb19`; 42 payload files | Publicized through exact hosted workflow as a legacy composite on 2026-08-29 | Its README and manifest are byte-identical to current public `global-medicines-atlas-international-permissive-20260821`; all payloads are already present in public GMA archives |
 | `edithatogo/hpo-licensed-ontology-archive` | dataset revision `720aa679d8a8fcf051ca95672400e874c4490a71`; about 88.7 GB | Keep private | Mixed licensed terminology/source archive includes material outside the Australian authorization scope; public exposure is not appropriate |
 | `edithatogo/rareburden-commons-source-archive` | dataset revision `ddf35f48f21dce831e346559b41549bd6188662d`; about 138 MB | Keep private | Unrelated rare-burden source archive with unresolved/restricted source roles |
 | `edithatogo/gfjd-explorer` | private Space | Keep private in this track | Unrelated application; no GMA publication rationale was established |
@@ -46,8 +46,13 @@ The 42-entry manifest comprises the ten-source international permissive cohort
 plus twelve Open Medic ZIP/receipt pairs. A separate public Open Medic dataset
 also exists at revision `d19f7a66e35c58c557615bffa456856b485b7edc`.
 Making the candidate public therefore preserves a legacy composite identity; it
-does not publish a new content cohort. Hosted token-free digest verification is
-still required before the visibility outcome is recorded complete.
+does not publish a new content cohort. Hosted run
+[`33238912245`](https://github.com/edithatogo/global-medicines-atlas/actions/runs/33238912245)
+completed the exact visibility transaction and verified all 42 payloads
+anonymously. A separate token-free check then resolved the same revision as
+public and non-gated with 45 expected siblings and the authorized manifest
+digest. The durable JSON receipt is recorded on issue
+[#340](https://github.com/edithatogo/global-medicines-atlas/issues/340).
 
 ## Collection improvements
 

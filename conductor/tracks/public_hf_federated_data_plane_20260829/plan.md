@@ -7,19 +7,19 @@
 - [ ] Confirm the intended failure before implementation.
 - [ ] Generate a public-safe estate registry snapshot without credentials or
   restricted contents.
-- [ ] Add an exact-revision GitHub Actions workflow for the legacy composite;
+- [x] Add an exact-revision GitHub Actions workflow for the legacy composite;
   require the default head to equal the authorized revision, verify its
   manifest and sibling set against the public baseline, and persist a rollback
   intent on issue #340 before any visibility change.
-- [ ] Make the exact legacy composite public in the hosted workflow, download
+- [x] Make the exact legacy composite public in the hosted workflow, download
   every manifest object anonymously, verify all 42 SHA-256 digests, and persist
   the receipt durably on issue #340 as well as a bounded Actions artifact.
-- [ ] Restore privacy from a separate cleanup job after failed or cancelled
+- [x] Restore privacy from a separate cleanup job after failed or cancelled
   dispatches, and run an hourly watchdog that contains public visibility when
   no trusted exact success receipt exists or the dataset head has drifted.
-- [ ] Keep licensed ontology, rare-burden, unrelated Space, and empty collection
+- [x] Keep licensed ontology, rare-burden, unrelated Space, and empty collection
   states unchanged and record why.
-- [ ] Phase Verification & Checkpoint: one eligible legacy dataset is public and
+- [x] Phase Verification & Checkpoint: one eligible legacy dataset is public and
   anonymously recoverable; no other private state was broadened.
 
 ## Phase 2: Contract v4 and public dataset topology (AC-03, AC-04, AC-09)
