@@ -262,7 +262,7 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
-      issues: write
+      issues: write # Required to record failed-transaction privacy containment.
     steps:
       - name: Restore exact newly-created dataset to private
         env:
