@@ -52,7 +52,7 @@ class PbsV3Record:
     atc_codes: tuple[str, ...]
     restrictions: tuple[str, ...]
     restriction_effective_dates: tuple[str | None, ...]
-    native_xml_sha256: str
+    projected_item_sha256: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -75,7 +75,7 @@ PBS_V3_SOURCE_SCHEMA = pa.schema([
     pa.field("atc_codes", pa.list_(pa.string()), nullable=False),
     pa.field("restrictions", pa.list_(pa.string()), nullable=False),
     pa.field("restriction_effective_dates", pa.list_(pa.string())),
-    pa.field("native_xml_sha256", pa.string(), nullable=False),
+    pa.field("projected_item_sha256", pa.string(), nullable=False),
 ])
 
 
@@ -116,6 +116,9 @@ def parse_pbs_v3_archive(payload: bytes) -> PbsV3Archive:
     )
     if not records:
         raise ValueError("PBS schedule contains no pharmaceutical items")
+    item_codes = [record.item_code for record in records]
+    if len(item_codes) != len(set(item_codes)):
+        raise ValueError("PBS schedule contains duplicate item identity")
     return PbsV3Archive(
         archive_sha256=hashlib.sha256(payload).hexdigest(),
         member=ExtractedMember(
@@ -160,7 +163,7 @@ def pbs_v3_source_parquet(records: tuple[PbsV3Record, ...]) -> bytes:
             "restriction_effective_dates": list(
                 record.restriction_effective_dates
             ),
-            "native_xml_sha256": record.native_xml_sha256,
+            "projected_item_sha256": record.projected_item_sha256,
         }
         for record in records
     ]
@@ -205,22 +208,21 @@ def _pbs_v3_record(item: ET.Element) -> PbsV3Record:
         if code.get("type") == "ATC" and (value := (code.text or "").strip())
     )
     restriction_nodes = tuple(item.iter(f"{{{PBS_V3_NAMESPACE}}}restriction"))
-    restrictions = tuple(
-        value
+    restriction_rows = tuple(
+        (value, node.get("effective-date"))
         for node in restriction_nodes
         if (value := " ".join("".join(node.itertext()).split()))
-    )
-    restriction_dates = tuple(
-        node.get("effective-date") for node in restriction_nodes
     )
     return PbsV3Record(
         item_code=item_code,
         product_name=name,
         amt_references=tuple(amt_references),
         atc_codes=atc_codes,
-        restrictions=restrictions,
-        restriction_effective_dates=restriction_dates,
-        native_xml_sha256=hashlib.sha256(
+        restrictions=tuple(value for value, _ in restriction_rows),
+        restriction_effective_dates=tuple(
+            effective_date for _, effective_date in restriction_rows
+        ),
+        projected_item_sha256=hashlib.sha256(
             ET.tostring(item, encoding="utf-8")
         ).hexdigest(),
     )

@@ -86,7 +86,9 @@ def test_source_parquet_is_deterministic_and_source_faithful() -> None:
     assert row["item_code"] == "1234A"
     assert row["amt_codes"] == ["123456"]
     assert row["atc_codes"] == ["A01AA01"]
-    assert row["native_xml_sha256"] == result.records[0].native_xml_sha256
+    assert row["projected_item_sha256"] == (
+        result.records[0].projected_item_sha256
+    )
 
 
 @pytest.mark.parametrize(
@@ -136,6 +138,22 @@ def test_parse_pbs_v3_archive_rejects_missing_item_identity() -> None:
 def test_parse_pbs_v3_archive_rejects_empty_schedule() -> None:
     payload = f'<pbs:schedule xmlns:pbs="{PBS_V3_NAMESPACE}" />'.encode()
     with pytest.raises(ValueError, match="no pharmaceutical items"):
+        parse_pbs_v3_archive(_zip([("sch-a.xml", payload)]))
+
+
+def test_parse_pbs_v3_archive_rejects_duplicate_item_identity() -> None:
+    item = (
+        _xml()
+        .split(b"<pbs:pharmaceutical-item", 1)[1]
+        .split(b"</pbs:pharmaceutical-item>", 1)[0]
+    )
+    payload = _xml().replace(
+        b"</pbs:schedule>",
+        b"<pbs:pharmaceutical-item"
+        + item
+        + b"</pbs:pharmaceutical-item></pbs:schedule>",
+    )
+    with pytest.raises(ValueError, match="duplicate item identity"):
         parse_pbs_v3_archive(_zip([("sch-a.xml", payload)]))
 
 
