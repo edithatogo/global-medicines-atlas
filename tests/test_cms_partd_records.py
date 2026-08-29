@@ -11,6 +11,7 @@ from pathlib import Path
 import pyarrow.parquet as pq
 import pytest
 
+from global_medicines_atlas import cms_partd_records as records
 from global_medicines_atlas.cms_partd_records import (
     project_cms_partd_payload,
     projection_cli,
@@ -73,6 +74,46 @@ def test_nested_formulary_tables_are_separate_and_source_faithful(
     assert tables["pricing.csv"]["PRICE"].to_pylist() == ["10.00"]
 
 
+def test_deflate64_member_uses_bounded_7zip_fallback(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    archive_path = tmp_path / "archive.zip"
+    archive_path.write_bytes(_zip({"member.zip": b"abc"}))
+    archive = zipfile.ZipFile(archive_path)
+    info = archive.getinfo("member.zip")
+    monkeypatch.setattr(  # pyright: ignore[reportUnknownArgumentType]
+        archive,
+        "open",
+        lambda _info: (_ for _ in ()).throw(NotImplementedError()),  # pyright: ignore[reportUnknownLambdaType, reportUnknownArgumentType]
+    )
+    monkeypatch.setattr(  # pyright: ignore[reportUnknownArgumentType]
+        records.shutil,
+        "which",
+        lambda _name: "/usr/bin/7z",  # pyright: ignore[reportUnknownLambdaType, reportUnknownArgumentType]
+    )
+
+    class Process:
+        stdout = BytesIO(b"abc")
+        returncode = 0
+
+        def communicate(self) -> tuple[bytes, bytes]:
+            return b"", b""
+
+        def kill(self) -> None:
+            raise AssertionError("bounded fallback unexpectedly killed")
+
+    monkeypatch.setattr(  # pyright: ignore[reportUnknownArgumentType]
+        records.subprocess,
+        "Popen",
+        lambda *_args, **_kwargs: Process(),  # pyright: ignore[reportUnknownLambdaType, reportUnknownArgumentType]
+    )
+    with records._open_member(  # pyright: ignore[reportPrivateUsage]
+        archive, info, archive_path=archive_path
+    ) as member:
+        assert member.read() == b"abc"
+    archive.close()
+
+
 def test_spending_payload_preserves_leading_zeroes_and_empty_strings(
     tmp_path: Path,
 ) -> None:
@@ -86,6 +127,42 @@ def test_spending_payload_preserves_leading_zeroes_and_empty_strings(
     )
     assert table["Tot_Clms"].to_pylist() == ["0007"]
     assert table["Flag"].to_pylist() == [""]
+
+
+def test_spending_data_api_json_preserves_strings_and_nulls(
+    tmp_path: Path,
+) -> None:
+    payload = tmp_path / "data"
+    payload.write_text(
+        '[{"Brnd_Name":"Medicine","Tot_Clms":"0007","Flag":null}]',
+        encoding="utf-8",
+    )
+    (projection,) = project_cms_partd_payload(
+        payload, family="spending", identity="e" * 64, output=tmp_path / "out"
+    )
+    table = pq.read_table(  # pyright: ignore[reportUnknownMemberType]
+        projection.parquet_path
+    )
+    assert table["Tot_Clms"].to_pylist() == ["0007"]
+    assert table["Flag"].to_pylist() == [None]
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [b"[]", b"{}", b"[1]", b'[{"A":"x","B":1}]'],
+)
+def test_spending_data_api_json_fails_closed_on_drift(
+    tmp_path: Path, payload: bytes
+) -> None:
+    source = tmp_path / "data"
+    source.write_bytes(payload)
+    with pytest.raises(ValueError, match="CMS Part D spending JSON"):
+        project_cms_partd_payload(
+            source,
+            family="spending",
+            identity="f" * 64,
+            output=tmp_path / "out",
+        )
 
 
 @pytest.mark.parametrize(

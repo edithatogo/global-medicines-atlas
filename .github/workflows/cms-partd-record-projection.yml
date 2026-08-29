@@ -74,6 +74,10 @@ jobs:
           SOURCE_IDENTITY: ${{ matrix.identity }}
         run: |
           set -euo pipefail
+          if ! command -v 7z >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install --yes p7zip-full
+          fi
           uv run --frozen --python 3.14.6 python scripts/project_cms_partd_records.py \
             --payload work/payload --family "$SOURCE_FAMILY" \
             --identity "$SOURCE_IDENTITY" --output work/parquet \
