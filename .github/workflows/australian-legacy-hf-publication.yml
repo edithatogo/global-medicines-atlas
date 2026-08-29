@@ -1,0 +1,307 @@
+name: Publish Australian legacy raw archive
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_contract_commit:
+        description: Exact merged GMA commit containing the authorization
+        required: true
+        type: string
+
+concurrency:
+  group: australian-legacy-hf-publication
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  publish:
+    name: Publish exact raw payloads and donor histories
+    runs-on: ubuntu-24.04
+    environment: australian-hf-publication
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      issues: write # Durable intent and anonymous verification receipt on issue 340.
+    outputs:
+      dataset_created: ${{ steps.publish.outputs.dataset_created }}
+    steps:
+      - name: Check out exact publication contract
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Install the repository Python runtime
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+
+      - name: Record durable intent before dataset creation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          default_branch=$(gh api "repos/${GITHUB_REPOSITORY}" --jq .default_branch)
+          default_head=$(gh api "repos/${GITHUB_REPOSITORY}/commits/${default_branch}" --jq .sha)
+          test "${GITHUB_REF}" = "refs/heads/${default_branch}"
+          test "${GITHUB_SHA}" = "${default_head}"
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          authorization = json.loads(Path(
+              'quality/qualifications/australian-health-legacy-publication-authorization.json'
+          ).read_text(encoding='utf-8'))
+          intent = {
+              'schema_id': 'global-medicines-atlas.australian-legacy-hf-publication-intent',
+              'schema_version': 1,
+              'dataset': authorization['dataset'],
+              'workflow_commit': os.environ['GITHUB_SHA'],
+              'workflow_run': (
+                  f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/"
+                  f"runs/{os.environ['GITHUB_RUN_ID']}"
+              ),
+              'rollback': 'make exact newly-created dataset private on failure',
+          }
+          Path('publication-intent.json').write_text(
+              json.dumps(intent, indent=2, sort_keys=True) + '\n', encoding='utf-8'
+          )
+          PY
+          gh issue comment 340 --repo "${GITHUB_REPOSITORY}" \
+            --body-file publication-intent.json
+
+      - name: Build, publish, and anonymously restore exact archive
+        id: publish
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test -n "${HF_TOKEN:-}"
+          echo 'dataset_created=false' >> "${GITHUB_OUTPUT}"
+          uv run --python 3.14.6 --with huggingface-hub==1.14.0 python - <<'PY'
+          from __future__ import annotations
+
+          import hashlib
+          import json
+          import os
+          import shutil
+          import subprocess
+          from pathlib import Path
+          from tempfile import TemporaryDirectory
+
+          from huggingface_hub import HfApi, snapshot_download
+          from huggingface_hub.errors import RepositoryNotFoundError
+
+          ROOT = Path.cwd()
+          AUTH = ROOT / 'quality/qualifications/australian-health-legacy-publication-authorization.json'
+
+
+          def digest(path: Path) -> str:
+              value = hashlib.sha256()
+              with path.open('rb') as stream:
+                  for block in iter(lambda: stream.read(1024 * 1024), b''):
+                      value.update(block)
+              return value.hexdigest()
+
+
+          def run(*args: str, cwd: Path | None = None, stdout=None) -> None:
+              subprocess.run(args, cwd=cwd, check=True, stdout=stdout)
+
+
+          authorization = json.loads(AUTH.read_text(encoding='utf-8'))
+          if not (
+              authorization['external_publication_authorized']
+              and authorization['maintainer_asserted_redistribution_permission']
+              and authorization['visibility'] == 'public'
+              and authorization['gated'] is False
+          ):
+              raise RuntimeError('exact public raw authorization is not satisfied')
+
+          api = HfApi(token=os.environ['HF_TOKEN'])
+          dataset = authorization['dataset']
+          existing_info = None
+          try:
+              existing_info = api.dataset_info(dataset)
+          except RepositoryNotFoundError:
+              pass
+          if existing_info is not None and (
+              not existing_info.private or bool(existing_info.gated)
+          ):
+              raise RuntimeError('existing target must be the exact private non-gated retry transaction')
+
+          with TemporaryDirectory(prefix='gma-australian-legacy-') as temporary:
+              workspace = Path(temporary)
+              archive = workspace / 'archive'
+              archive.mkdir()
+              manifest_entries: list[dict[str, object]] = []
+
+              for donor in authorization['donors']:
+                  name = donor['repository'].split('/', 1)[1]
+                  clone = workspace / name
+                  run('git', 'clone', '--quiet', '--no-checkout',
+                      f"https://github.com/{donor['repository']}.git", str(clone))
+                  run('git', 'cat-file', '-e', f"{donor['commit']}^{{commit}}", cwd=clone)
+                  run('git', 'update-ref', 'refs/archive/pinned', donor['commit'], cwd=clone)
+
+                  history = archive / 'history' / f'{name}-{donor["commit"]}.bundle'
+                  history.parent.mkdir(parents=True, exist_ok=True)
+                  run('git', 'bundle', 'create', str(history), 'refs/archive/pinned', cwd=clone)
+                  run('git', 'bundle', 'verify', str(history), cwd=clone)
+
+                  licence = archive / 'provenance' / 'licenses' / f'{name}-LICENSE'
+                  licence.parent.mkdir(parents=True, exist_ok=True)
+                  with licence.open('wb') as output:
+                      run('git', 'show', f"{donor['commit']}:LICENSE", cwd=clone, stdout=output)
+
+                  for payload in donor['payloads']:
+                      destination = archive / payload['archive_path']
+                      destination.parent.mkdir(parents=True, exist_ok=True)
+                      with destination.open('wb') as output:
+                          run('git', 'show', f"{donor['commit']}:{payload['git_path']}",
+                              cwd=clone, stdout=output)
+                      if destination.stat().st_size != payload['bytes']:
+                          raise RuntimeError(f"payload byte count mismatch: {payload['archive_path']}")
+                      if digest(destination) != payload['sha256']:
+                          raise RuntimeError(f"payload digest mismatch: {payload['archive_path']}")
+
+              inventory = archive / 'provenance' / 'australian-health-donor-inventory.json'
+              inventory.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copyfile(
+                  ROOT / 'quality/qualifications/australian-health-donor-inventory.json',
+                  inventory,
+              )
+              shutil.copyfile(AUTH, archive / 'publication-authorization.json')
+              (archive / 'README.md').write_text(
+                  '---\nlicense: other\npretty_name: Australian MBS source archive\n'
+                  '---\n\n# Australian MBS source archive\n\n'
+                  'Public, content-addressed preservation of the exact legacy MBS XML, '
+                  'P7 workbook, and complete Git ancestry through the pinned donor commits. '
+                  'The donor code licences and publication authorization are included; no '
+                  'single software licence is asserted over government source payloads. '
+                  'MBS service-benefit evidence is not medicine regulatory or PBS funding evidence.\n',
+                  encoding='utf-8',
+              )
+
+              for path in sorted(archive.rglob('*')):
+                  if path.is_file():
+                      manifest_entries.append({
+                          'path': path.relative_to(archive).as_posix(),
+                          'bytes': path.stat().st_size,
+                          'sha256': digest(path),
+                      })
+              manifest = {
+                  'schema_id': 'global-medicines-atlas.australian-health-legacy-manifest',
+                  'schema_version': 1,
+                  'dataset': dataset,
+                  'donor_commits': {
+                      donor['repository']: donor['commit'] for donor in authorization['donors']
+                  },
+                  'files': manifest_entries,
+              }
+              (archive / 'manifest.json').write_text(
+                  json.dumps(manifest, indent=2, sort_keys=True) + '\n', encoding='utf-8'
+              )
+
+              if existing_info is None:
+                  api.create_repo(dataset, repo_type='dataset', private=True, exist_ok=False)
+              with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as output:
+                  output.write('dataset_created=true\n')
+              api.upload_folder(
+                  repo_id=dataset,
+                  repo_type='dataset',
+                  folder_path=archive,
+                  commit_message='Publish exact Australian legacy raw archive',
+                  delete_patterns=['*'],
+              )
+              private_head = api.dataset_info(dataset).sha
+              expected_siblings = {
+                  str(entry['path']) for entry in manifest_entries
+              } | {'manifest.json', '.gitattributes'}
+              actual_siblings = {
+                  sibling.rfilename for sibling in api.dataset_info(dataset).siblings
+              }
+              if actual_siblings != expected_siblings:
+                  raise RuntimeError('published repository sibling set differs from exact manifest')
+              api.update_repo_settings(repo_id=dataset, repo_type='dataset', private=False)
+              public_info = HfApi(token=False).dataset_info(dataset, revision=private_head)
+              if public_info.private or public_info.gated:
+                  raise RuntimeError('dataset is not anonymously public and non-gated')
+
+              restored = Path(snapshot_download(
+                  dataset, repo_type='dataset', revision=private_head,
+                  token=False, local_dir=workspace / 'anonymous-restore',
+              ))
+              for entry in manifest_entries:
+                  candidate = restored / str(entry['path'])
+                  if not candidate.is_file() or candidate.stat().st_size != entry['bytes']:
+                      raise RuntimeError(f"anonymous restore size mismatch: {entry['path']}")
+                  if digest(candidate) != entry['sha256']:
+                      raise RuntimeError(f"anonymous restore digest mismatch: {entry['path']}")
+
+              receipt = {
+                  'schema_id': 'global-medicines-atlas.australian-health-legacy-publication-receipt',
+                  'schema_version': 1,
+                  'dataset': dataset,
+                  'revision': private_head,
+                  'public': True,
+                  'gated': False,
+                  'manifest_file_count': len(manifest_entries),
+                  'anonymous_digest_match_count': len(manifest_entries),
+                  'publication_performed_by_github_actions': True,
+                  'workflow_commit': os.environ['GITHUB_SHA'],
+                  'workflow_run': (
+                      f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/"
+                      f"runs/{os.environ['GITHUB_RUN_ID']}"
+                  ),
+              }
+              receipt_path = ROOT / 'australian-legacy-publication-receipt.json'
+              receipt_path.write_text(
+                  json.dumps(receipt, indent=2, sort_keys=True) + '\n', encoding='utf-8'
+              )
+          PY
+          gh issue comment 340 --repo "${GITHUB_REPOSITORY}" \
+            --body-file australian-legacy-publication-receipt.json
+
+      - name: Upload bounded publication receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: australian-legacy-publication-receipt
+          path: australian-legacy-publication-receipt.json
+          if-no-files-found: error
+          retention-days: 30
+
+  contain-failed-publication:
+    name: Contain failed dataset transaction
+    needs: publish
+    if: ${{ always() && needs.publish.result != 'success' && needs.publish.outputs.dataset_created == 'true' }}
+    runs-on: ubuntu-24.04
+    environment: australian-hf-publication
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write # Required to record failed-transaction privacy containment.
+    steps:
+      - name: Restore exact newly-created dataset to private
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          HF_DATASET: edithatogo/australian-mbs-source-archive
+        run: |
+          set -euo pipefail
+          test -n "${HF_TOKEN:-}"
+          python3 -m pip install --disable-pip-version-check --quiet huggingface-hub==1.14.0
+          python3 - <<'PY'
+          import os
+          from huggingface_hub import HfApi
+
+          api = HfApi(token=os.environ['HF_TOKEN'])
+          api.update_repo_settings(
+              repo_id=os.environ['HF_DATASET'], repo_type='dataset', private=True
+          )
+          if not api.dataset_info(os.environ['HF_DATASET']).private:
+              raise RuntimeError('failed transaction was not restored to private')
+          PY
+          gh issue comment 340 --repo "${GITHUB_REPOSITORY}" \
+            --body "Australian legacy publication run ${GITHUB_RUN_ID} failed; the exact newly-created dataset was restored to private."

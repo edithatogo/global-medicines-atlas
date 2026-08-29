@@ -1,0 +1,58 @@
+{
+  "schema_id": "global-medicines-atlas.australian-health-legacy-publication-authorization",
+  "schema_version": 1,
+  "authorized_at": "2026-08-29",
+  "external_publication_authorized": true,
+  "maintainer_asserted_redistribution_permission": true,
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "visibility": "public",
+  "gated": false,
+  "donors": [
+    {
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "commit": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "payloads": [
+        {
+          "git_path": "scripts/parsing/MBS-XML-20250701 Version 3.XML",
+          "archive_path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+          "bytes": 8194522,
+          "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+        },
+        {
+          "git_path": "data/source/MBS - 2024.07 - Group P7 (Genetics).xlsx",
+          "archive_path": "raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx",
+          "bytes": 87727,
+          "sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
+        }
+      ]
+    },
+    {
+      "repository": "edithatogo/aus-health-data-scraper",
+      "commit": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "payloads": []
+    }
+  ],
+  "required_contents": [
+    "all authorized non-empty raw payloads",
+    "complete Git ancestry through each pinned donor commit",
+    "donor licence texts",
+    "machine-readable donor inventory",
+    "content-addressed manifest and data card"
+  ],
+  "required_controls": [
+    "github-actions-only-upload",
+    "protected-default-branch-deployment-environment",
+    "default-branch-head-equals-exact-authorized-commit",
+    "durable-issue-intent-before-dataset-creation",
+    "create-private-then-publicize",
+    "anonymous-all-object-digest-verification",
+    "failed-transaction-privacy-containment",
+    "exact-private-transaction-retry",
+    "no-workstation-raw-retention"
+  ],
+  "publication_does_not_authorize": [
+    "donor repository archival",
+    "medicine-level claims from MBS service data",
+    "restricted terminology redistribution"
+  ]
+}

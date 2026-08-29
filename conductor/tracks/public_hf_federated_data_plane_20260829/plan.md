@@ -30,8 +30,11 @@
 - [ ] Confirm the intended failure before implementation.
 - [ ] Commit immutable v4 schema, valid/invalid fixtures, documentation, and
   cross-repository conformance canaries.
-- [ ] Approve stable names and create public MBS source, PBS source, and
-  Australian benefits medallion datasets from GitHub Actions.
+- [x] Approve the stable `edithatogo/australian-mbs-source-archive` name and
+  implement its create-private, publish, and anonymous-verification transaction
+  entirely in GitHub Actions. Hosted dispatch remains pending.
+- [ ] Create the continuing PBS source and Australian benefits medallion
+  datasets from GitHub Actions once their non-empty manifests exist.
 - [ ] Require source-specific data cards, Croissant, citations, provenance,
   coverage, rights/permission, withdrawal/correction, and version histories.
 - [ ] Phase Verification & Checkpoint: datasets exist publicly but contain only
@@ -39,15 +42,22 @@
 
 ## Phase 3: Publish the donor and continuing raw corpus (AC-03, AC-06)
 
-- [ ] Write failing hosted-workflow tests for exact donor digests, duplicate or
+- [x] Write failing hosted-workflow tests for exact donor digests, duplicate or
   missing files, path traversal, private/gated output, local upload attempts,
-  partial uploads, anonymous digest mismatch, and premature cleanup.
-- [ ] Confirm the intended failure before implementation.
-- [ ] Publish the July 2025 MBS XML and July 2024 P7 workbook as separate exact
-  B2 objects with B1 receipts and legacy/current labels.
+  partial uploads, anonymous digest mismatch, and premature cleanup. The first
+  slice covers exact payloads, Actions-only transport, public/non-gated state,
+  anonymous digests, and privacy containment; archive hardening remains open.
+- [x] Confirm the intended failure before implementation.
+- [x] Implement hosted publication of the July 2025 MBS XML and July 2024 P7
+  workbook as separate exact B2 objects with provenance, authorization, and
+  manifest material. Hosted dispatch and durable B1 success receipt remain
+  pending.
 - [ ] Publish continuing MBS/PBS exact source manifests only after acquisition,
   admission, authorization, and source-version gates pass.
-- [ ] Retain archive/container bytes as well as member manifests; never replace
+- [x] Retain the two donor Git ancestry bundles, source bytes, licences, and
+  donor inventory; never replace the XML/XLSX raw objects with Parquet.
+- [ ] Retain continuing archive/container bytes as well as member manifests;
+  never replace
   an XML/ZIP/XLSX raw object with Parquet.
 - [ ] Remove temporary local source bytes only after token-free clean-room
   verification succeeds and its cleanup receipt is durable.
