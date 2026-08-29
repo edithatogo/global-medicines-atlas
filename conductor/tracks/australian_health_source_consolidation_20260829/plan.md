@@ -3,14 +3,14 @@
 ## Phase 1: Freeze the donor denominator (AC-01, AC-06)
 
 - [x] Write failing tests for a complete two-repository inventory and ensure an
-  omitted tracked file, function, workflow, or data artifact fails. (`d9d1e62`)
-- [x] Confirm the intended failure before implementation. (`d9d1e62`)
+  omitted tracked file, function, workflow, or data artifact fails. (`7b830ea`)
+- [x] Confirm the intended failure before implementation. (`7b830ea`)
 - [x] Generate the machine-readable inventory from the two pinned commits,
   including paths, modes, sizes, digests, languages, functions, data roles,
-  implementation state, and disposition. (`d9d1e62`)
+  implementation state, and disposition. (`7b830ea`)
 - [x] Characterize the invalid PBS parser, guessed MBS tag, processor path/type
   bug, zero-byte artifacts, and green-with-no-data scheduled workflow.
-  (`d9d1e62`)
+  (`7b830ea`)
 - [ ] Preserve complete donor Git histories and Apache-2.0 code provenance
   without modifying the dirty local donor checkout.
 - [ ] Phase Verification & Checkpoint: inventory denominator and regression
@@ -20,21 +20,21 @@
 
 - [x] Write failing parser, admission, temporal, coverage, and semantic-boundary
   tests for `MBS_XML/Data`, all 40 native fields across the variable 34-to-37
-  fields per record, and all 5,989 records. (`bc9cd9f`)
-- [x] Confirm the intended failure before implementation. (`bc9cd9f`)
+  fields per record, and all 5,989 records. (`4871201`)
+- [x] Confirm the intended failure before implementation. (`4871201`)
 - [x] Add `au-mbs` source catalogue entries, source profiles, receipts, adapter
   registration, source-health checks, and versioned acquisition surfaces.
-  (`bc9cd9f`)
+  (`4871201`)
 - [x] Implement bounded source-faithful MBS XML parsing without Silver
-  harmonisation in Bronze. (`bc9cd9f`)
+  harmonisation in Bronze. (`4871201`)
 - [x] Add a source-native workbook admission/profile and deterministic
   projection for all four P7 workbook sheets while retaining formula/error and
-  schema-era information. (`bc9cd9f`)
+  schema-era information. (`4871201`)
 - [x] Prove that MBS outputs cannot satisfy medicine regulatory, PBS funding,
   formulary, terminology, utilization, or clinical assertion contracts.
-  (`bc9cd9f`)
+  (`4871201`)
 - [x] Phase Verification & Checkpoint: exact raw digests, record counts, fields,
-  dates, and independent-domain semantics pass. (`bc9cd9f`)
+  dates, and independent-domain semantics pass. (`4871201`)
 
 ## Phase 3: Replace the PBS experiment with governed v3 support (AC-04, AC-07)
 
@@ -55,13 +55,13 @@
 
 - [x] Bind source-batch identities as literals and bind the catalogue download
   surface to the exact versioned July 2025 XML rather than a generic page.
-  (`0e99c12`)
+  (`dc6001a`)
 - [x] Exercise exact-qualification, hostile-shape, archive-relationship, Git
   failure, and malformed-inventory branches above the 91% coverage floor.
-  (`dd28a80`)
+  (`da37c55`)
 - [x] Assign every new donor test module to the governed routine unit lane and
   rerun the routine harness with the compatible local Python fallback.
-  (`7f299b0`)
+  (`85b6a51`)
 
 ## Phase 4: Replace the monthly scraper safely (AC-05, AC-06)
 
