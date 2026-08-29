@@ -33,6 +33,13 @@ def test_authorization_is_exact_and_excludes_other_private_surfaces() -> None:
         "payload_file_count": 42,
         "source_count": 11,
     }
+    assert {
+        "default-head-equals-exact-authorized-revision",
+        "durable-public-issue-intent-before-visibility-mutation",
+        "durable-public-issue-success-or-rollback-receipt",
+        "out-of-process-failure-cleanup",
+        "scheduled-orphaned-public-visibility-watchdog",
+    }.issubset(set(authorization["required_controls"]))
     assert (
         "edithatogo/hpo-licensed-ontology-archive"
         in authorization["excluded_private_surfaces"]
@@ -47,11 +54,15 @@ def test_workflow_changes_only_visibility_and_verifies_every_payload() -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
 
     assert "workflow_dispatch:" in workflow
+    assert "schedule:" in workflow
+    assert "permissions: {}" in workflow
+    assert "issues: write" in workflow
     assert "REQUESTED_REVISION" in workflow
     assert "requested revision differs from exact authorization" in workflow
     assert "candidate and public manifests differ" in workflow
     assert "candidate and public dataset cards differ" in workflow
     assert "candidate repository sibling set drifted" in workflow
+    assert "candidate default head differs from authorization" in workflow
     assert "update_repo_settings(" in workflow
     assert "repo_type='dataset', private=False" in workflow
     assert "HfApi(token=False).dataset_info" in workflow
@@ -59,10 +70,22 @@ def test_workflow_changes_only_visibility_and_verifies_every_payload() -> None:
     assert "token=False" in workflow
     assert "anonymous restore mismatch" in workflow
     assert "repo_type='dataset', private=True" in workflow
+    assert "rollback_intent = bool(private_info.private)" in workflow
+    assert workflow.index("rollback_intent = bool(private_info.private)") < (
+        workflow.index("repo_type='dataset', private=False")
+    )
+    assert "needs.publicize-and-verify.result != 'success'" in workflow
+    assert "failed transaction was not restored to private" in workflow
+    assert "orphaned public visibility was not contained" in workflow
     assert "content_uploaded_or_mutated': False" in workflow
     assert "publication_performed_by_github_actions': True" in workflow
     assert "anonymous_digest_match_count': len(files)" in workflow
     assert "hf-legacy-composite-visibility-receipt.json" in workflow
+    assert "durable_receipt_issue" in workflow
+    assert "gh issue comment 340" in workflow
+    assert "github-actions[bot]" in workflow
+    assert "durable_success_receipt_found" in workflow
+    assert "head_matches_authorization" in workflow
 
     prohibited_uploads = ("upload_file(", "upload_folder(", "create_commit(")
     assert all(operation not in workflow for operation in prohibited_uploads)

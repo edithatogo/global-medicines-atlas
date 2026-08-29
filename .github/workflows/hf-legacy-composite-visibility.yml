@@ -8,24 +8,64 @@ on:
         required: true
         type: string
         default: 654f71c84cdb17b4032396bcbc961bef8757fb19
+  schedule:
+    - cron: "17 * * * *"
 
 concurrency:
   group: hf-legacy-composite-visibility
   cancel-in-progress: false
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   publicize-and-verify:
     name: Publicize exact revision and restore anonymously
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 45
+    permissions:
+      contents: read
+      issues: write # Required to persist the intent and success receipt on issue 340.
     steps:
       - name: Check out exact authorization contract
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           persist-credentials: false
+
+      - name: Record durable rollback intent before visibility mutation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TRANSACTION_DATASET: edithatogo/global-medicines-atlas-international-open
+          TRANSACTION_REVISION: 654f71c84cdb17b4032396bcbc961bef8757fb19
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          intent = {
+              'schema_id': (
+                  'global-medicines-atlas.hf-legacy-composite-visibility-intent'
+              ),
+              'schema_version': 1,
+              'dataset': os.environ['TRANSACTION_DATASET'],
+              'immutable_revision': os.environ['TRANSACTION_REVISION'],
+              'rollback_required_until_durable_success_receipt': True,
+              'workflow_run': (
+                  f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/"
+                  f"runs/{os.environ['GITHUB_RUN_ID']}"
+              ),
+              'workflow_commit': os.environ['GITHUB_SHA'],
+          }
+          Path('hf-legacy-composite-visibility-intent.json').write_text(
+              json.dumps(intent, indent=2, sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
+          PY
+          gh issue comment 340 \
+            --repo "${GITHUB_REPOSITORY}" \
+            --body-file hf-legacy-composite-visibility-intent.json
 
       - name: Verify, publicize, and clean-room restore
         env:
@@ -75,13 +115,11 @@ jobs:
 
           token = os.environ['HF_TOKEN']
           private_api = HfApi(token=token)
-          private_info = private_api.dataset_info(
-              candidate['dataset'], revision=candidate['revision']
-          )
+          private_info = private_api.dataset_info(candidate['dataset'])
           if private_info.sha != candidate['revision']:
-              raise RuntimeError('candidate revision resolution drifted')
+              raise RuntimeError('candidate default head differs from authorization')
 
-          changed_visibility = False
+          rollback_intent = bool(private_info.private)
           with TemporaryDirectory(prefix='gma-hf-visibility-') as temporary:
               root = Path(temporary)
               candidate_manifest = Path(
@@ -157,17 +195,16 @@ jobs:
                       raise RuntimeError('candidate manifest has invalid payload evidence')
 
               try:
-                  if private_info.private:
+                  if rollback_intent:
                       private_api.update_repo_settings(
                           candidate['dataset'], repo_type='dataset', private=False
                       )
-                      changed_visibility = True
 
                   public_info = None
                   for _attempt in range(12):
                       try:
                           observed = HfApi(token=False).dataset_info(
-                              candidate['dataset'], revision=candidate['revision']
+                              candidate['dataset']
                           )
                           if not observed.private and not observed.gated:
                               public_info = observed
@@ -199,7 +236,7 @@ jobs:
                               f"anonymous restore mismatch: {entry['path']}"
                           )
               except Exception:
-                  if changed_visibility:
+                  if rollback_intent:
                       private_api.update_repo_settings(
                           candidate['dataset'], repo_type='dataset', private=True
                       )
@@ -217,7 +254,7 @@ jobs:
                   'public_baseline': baseline,
                   'repository_private': False,
                   'repository_gated': False,
-                  'visibility_changed': changed_visibility,
+                  'visibility_changed': rollback_intent,
                   'content_uploaded_or_mutated': False,
                   'publication_performed_by_github_actions': True,
                   'anonymous_clean_room_restore': True,
@@ -227,6 +264,10 @@ jobs:
                       f"runs/{os.environ['GITHUB_RUN_ID']}"
                   ),
                   'workflow_commit': os.environ['GITHUB_SHA'],
+                  'durable_receipt_issue': (
+                      f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/"
+                      'issues/340'
+                  ),
               }
               Path('hf-legacy-composite-visibility-receipt.json').write_text(
                   json.dumps(receipt, indent=2, sort_keys=True) + '\n',
@@ -241,3 +282,199 @@ jobs:
           path: hf-legacy-composite-visibility-receipt.json
           if-no-files-found: error
           retention-days: 90
+
+      - name: Persist successful receipt on the public track issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh issue comment 340 \
+            --repo "${GITHUB_REPOSITORY}" \
+            --body-file hf-legacy-composite-visibility-receipt.json
+
+  rollback-on-non-success:
+    name: Reconcile failed or cancelled visibility transaction
+    needs: publicize-and-verify
+    if: >-
+      ${{ always() && github.event_name == 'workflow_dispatch' &&
+          needs.publicize-and-verify.result != 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      issues: write # Required to persist the rollback receipt on issue 340.
+    steps:
+      - name: Restore private visibility and record reconciliation
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TRANSACTION_DATASET: edithatogo/global-medicines-atlas-international-open
+          TRANSACTION_REVISION: 654f71c84cdb17b4032396bcbc961bef8757fb19
+        run: |
+          set -euo pipefail
+          test -n "${HF_TOKEN:-}"
+          python3 -m pip install --disable-pip-version-check --quiet huggingface-hub==1.14.0
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          from huggingface_hub import HfApi
+
+          api = HfApi(token=os.environ['HF_TOKEN'])
+          dataset = os.environ['TRANSACTION_DATASET']
+          revision = os.environ['TRANSACTION_REVISION']
+          before = api.dataset_info(dataset, revision=revision)
+          observed_public = not bool(before.private)
+          if observed_public:
+              api.update_repo_settings(dataset, repo_type='dataset', private=True)
+          after = api.dataset_info(dataset, revision=revision)
+          if not after.private:
+              raise RuntimeError('failed transaction was not restored to private')
+          receipt = {
+              'schema_id': (
+                  'global-medicines-atlas.hf-legacy-composite-visibility-rollback'
+              ),
+              'schema_version': 1,
+              'dataset': dataset,
+              'immutable_revision': revision,
+              'observed_public_before_reconciliation': observed_public,
+              'repository_private_after_reconciliation': True,
+              'trigger': 'failed-or-cancelled-dispatch',
+              'workflow_run': (
+                  f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/"
+                  f"runs/{os.environ['GITHUB_RUN_ID']}"
+              ),
+              'workflow_commit': os.environ['GITHUB_SHA'],
+          }
+          Path('hf-legacy-composite-visibility-rollback.json').write_text(
+              json.dumps(receipt, indent=2, sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Persist rollback receipt on the public track issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh issue comment 340 \
+            --repo "${GITHUB_REPOSITORY}" \
+            --body-file hf-legacy-composite-visibility-rollback.json
+
+  reconcile-orphaned-public-visibility:
+    name: Reconcile public visibility without a durable success receipt
+    if: ${{ github.event_name == 'schedule' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      issues: write # Required to read and persist watchdog receipts on issue 340.
+    steps:
+      - name: Check durable receipts and fail closed
+        id: reconcile
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          TRANSACTION_DATASET: edithatogo/global-medicines-atlas-international-open
+          TRANSACTION_REVISION: 654f71c84cdb17b4032396bcbc961bef8757fb19
+        run: |
+          set -euo pipefail
+          test -n "${HF_TOKEN:-}"
+          python3 -m pip install --disable-pip-version-check --quiet huggingface-hub==1.14.0
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+
+          from huggingface_hub import HfApi
+
+          dataset = os.environ['TRANSACTION_DATASET']
+          revision = os.environ['TRANSACTION_REVISION']
+          repository = os.environ['GITHUB_REPOSITORY']
+          headers = {
+              'Accept': 'application/vnd.github+json',
+              'Authorization': f"Bearer {os.environ['GH_TOKEN']}",
+              'X-GitHub-Api-Version': '2022-11-28',
+          }
+          comments = []
+          page = 1
+          while True:
+              request = Request(
+                  f"https://api.github.com/repos/{repository}/issues/340/"
+                  f"comments?per_page=100&page={page}",
+                  headers=headers,
+              )
+              with urlopen(request, timeout=30) as response:
+                  batch = json.load(response)
+              comments.extend(batch)
+              if len(batch) < 100:
+                  break
+              page += 1
+
+          durable_success = False
+          for comment in comments:
+              if comment.get('user', {}).get('login') != 'github-actions[bot]':
+                  continue
+              try:
+                  receipt = json.loads(comment.get('body', ''))
+              except (TypeError, json.JSONDecodeError):
+                  continue
+              if (
+                  receipt.get('schema_id')
+                  == 'global-medicines-atlas.hf-legacy-composite-visibility'
+                  and receipt.get('dataset') == dataset
+                  and receipt.get('immutable_revision') == revision
+                  and receipt.get('repository_private') is False
+                  and receipt.get('repository_gated') is False
+                  and receipt.get('anonymous_clean_room_restore') is True
+                  and receipt.get('anonymous_digest_match_count') == 42
+              ):
+                  durable_success = True
+                  break
+
+          api = HfApi(token=os.environ['HF_TOKEN'])
+          info = api.dataset_info(dataset)
+          changed = False
+          head_matches_authorization = info.sha == revision
+          if (
+              (not durable_success or not head_matches_authorization)
+              and not info.private
+          ):
+              api.update_repo_settings(dataset, repo_type='dataset', private=True)
+              changed = True
+              confirmed = api.dataset_info(dataset, revision=revision)
+              if not confirmed.private:
+                  raise RuntimeError('orphaned public visibility was not contained')
+
+          result = {
+              'schema_id': (
+                  'global-medicines-atlas.hf-legacy-composite-visibility-watchdog'
+              ),
+              'schema_version': 1,
+              'dataset': dataset,
+              'immutable_revision': revision,
+              'durable_success_receipt_found': durable_success,
+              'head_matches_authorization': head_matches_authorization,
+              'orphaned_public_visibility_contained': changed,
+              'workflow_run': (
+                  f"https://github.com/{repository}/actions/"
+                  f"runs/{os.environ['GITHUB_RUN_ID']}"
+              ),
+              'workflow_commit': os.environ['GITHUB_SHA'],
+          }
+          Path('hf-legacy-composite-visibility-watchdog.json').write_text(
+              json.dumps(result, indent=2, sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
+          with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as output:
+              output.write(f"changed={'true' if changed else 'false'}\n")
+          PY
+
+      - name: Persist watchdog containment receipt
+        if: ${{ steps.reconcile.outputs.changed == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh issue comment 340 \
+            --repo "${GITHUB_REPOSITORY}" \
+            --body-file hf-legacy-composite-visibility-watchdog.json
