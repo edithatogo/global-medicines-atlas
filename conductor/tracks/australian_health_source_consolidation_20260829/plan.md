@@ -59,6 +59,12 @@
 - [ ] Phase Verification & Checkpoint: donor intended behavior is covered by a
   valid, safe, typed implementation.
 
+## Review Fixes: PBS v3 archive and record contracts
+
+- [x] Reject duplicate PBS item identities, keep restriction text/date pairs
+  aligned, and label projected element digests without implying byte-exact
+  native XML slicing. (`d9b583e`)
+
 ## Review Fixes: MBS source-domain phase
 
 - [x] Bind source-batch identities as literals and bind the catalogue download
