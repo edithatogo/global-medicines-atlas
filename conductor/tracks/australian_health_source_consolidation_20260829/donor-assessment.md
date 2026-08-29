@@ -31,7 +31,7 @@ and does not modify or rely on that dirty checkout.
 
 | Donor/path | Bytes and digest | Observed structure | Required disposition |
 |---|---|---|---|
-| `aus_mbs_pbs_graph/scripts/parsing/MBS-XML-20250701 Version 3.XML` | 8,194,522 bytes; SHA-256 `db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556` | Root `MBS_XML`; 5,989 `Data` records; 35 source fields per observed record | B2 exact public MBS archive, legacy/current comparison cohort, source-faithful Bronze projection |
+| `aus_mbs_pbs_graph/scripts/parsing/MBS-XML-20250701 Version 3.XML` | 8,194,522 bytes; SHA-256 `db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556` | Root `MBS_XML`; 5,989 `Data` records; 40 distinct native fields, with 34–37 fields in individual records | B2 exact public MBS archive, legacy/current comparison cohort, source-faithful Bronze projection |
 | `aus_mbs_pbs_graph/temp_mbs_download.xml` | zero bytes | Empty placeholder | Retain path/state in donor inventory; never count as payload or coverage |
 | `aus-health-data-scraper/data/source/MBS - 2024.07 - Group P7 (Genetics).xlsx` | 87,727 bytes; SHA-256 `2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8` | Four sheets: `Sheet1` A1:AV161, `Sheet2` A1:B161, `Sheet1 (2)` A1:AV183, `Sheet3` A1:A21; includes fees/benefits, dates, descriptions, annotations, and formulas/errors | B2 exact public MBS legacy archive plus typed schema-era projection; retain every sheet |
 | seven tracked `legacy_scripts/*.ipynb` files | zero bytes each | Empty historical notebook placeholders | Retain names and zero-byte digests/history; do not call them analyses |

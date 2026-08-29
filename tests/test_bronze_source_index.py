@@ -51,7 +51,7 @@ def test_b0_index_is_exhaustive_unique_and_referentially_integral() -> None:
     catalog_by_id = {source.source_id: source for source in catalog.sources}
     queue_by_id = {item.source_id: item for item in queue.items}
 
-    assert index.source_count == len(catalog.sources) == 172
+    assert index.source_count == len(catalog.sources) == 174
     assert len(index_ids) == len(set(index_ids))
     assert set(index_ids) == catalog_ids
     assert all(source.jurisdictions for source in index.sources)

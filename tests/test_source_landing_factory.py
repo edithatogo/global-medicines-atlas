@@ -107,7 +107,7 @@ def test_every_catalog_source_resolves_to_exactly_one_state() -> None:
     catalog = load_catalog()
     queue = build_source_landing_queue(catalog, LandingOverrides())
 
-    assert queue.source_count == len(catalog.sources) == 172
+    assert queue.source_count == len(catalog.sources) == 174
     assert len(queue.items) == queue.source_count
     assert len({item.source_id for item in queue.items}) == queue.source_count
     assert sum(queue.state_counts.values()) == queue.source_count
@@ -396,7 +396,7 @@ def test_build_script_writes_all_generated_outputs(
     queue = json.loads(json_path.read_text(encoding="utf-8"))
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
 
-    assert queue["source_count"] == 172
+    assert queue["source_count"] == 174
     Draft202012Validator.check_schema(schema)
     Draft202012Validator(schema).validate(  # pyright: ignore[reportUnknownMemberType]
         queue
@@ -406,4 +406,4 @@ def test_build_script_writes_all_generated_outputs(
             build_source_landing_queue(load_catalog(), LandingOverrides.load())
         )
     )
-    assert "generated 172 source work items" in capsys.readouterr().out
+    assert "generated 174 source work items" in capsys.readouterr().out

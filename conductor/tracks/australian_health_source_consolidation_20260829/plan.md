@@ -2,14 +2,15 @@
 
 ## Phase 1: Freeze the donor denominator (AC-01, AC-06)
 
-- [ ] Write failing tests for a complete two-repository inventory and ensure an
-  omitted tracked file, function, workflow, or data artifact fails.
-- [ ] Confirm the intended failure before implementation.
-- [ ] Generate the machine-readable inventory from the two pinned commits,
+- [x] Write failing tests for a complete two-repository inventory and ensure an
+  omitted tracked file, function, workflow, or data artifact fails. (`7b830ea`)
+- [x] Confirm the intended failure before implementation. (`7b830ea`)
+- [x] Generate the machine-readable inventory from the two pinned commits,
   including paths, modes, sizes, digests, languages, functions, data roles,
-  implementation state, and disposition.
-- [ ] Characterize the invalid PBS parser, guessed MBS tag, processor path/type
+  implementation state, and disposition. (`7b830ea`)
+- [x] Characterize the invalid PBS parser, guessed MBS tag, processor path/type
   bug, zero-byte artifacts, and green-with-no-data scheduled workflow.
+  (`7b830ea`)
 - [ ] Preserve complete donor Git histories and Apache-2.0 code provenance
   without modifying the dirty local donor checkout.
 - [ ] Phase Verification & Checkpoint: inventory denominator and regression
@@ -17,20 +18,23 @@
 
 ## Phase 2: Add the independent MBS source domain (AC-02, AC-03, AC-07)
 
-- [ ] Write failing parser, admission, temporal, coverage, and semantic-boundary
-  tests for `MBS_XML/Data`, all 35 native fields, and all 5,989 records.
-- [ ] Confirm the intended failure before implementation.
-- [ ] Add `au-mbs` source catalogue entries, source profiles, receipts, adapter
+- [x] Write failing parser, admission, temporal, coverage, and semantic-boundary
+  tests for `MBS_XML/Data`, all 40 native fields across the variable 34-to-37
+  fields per record, and all 5,989 records. (`4871201`)
+- [x] Confirm the intended failure before implementation. (`4871201`)
+- [x] Add `au-mbs` source catalogue entries, source profiles, receipts, adapter
   registration, source-health checks, and versioned acquisition surfaces.
-- [ ] Implement bounded source-faithful MBS XML parsing without Silver
-  harmonisation in Bronze.
-- [ ] Add a source-native workbook admission/profile and deterministic
+  (`4871201`)
+- [x] Implement bounded source-faithful MBS XML parsing without Silver
+  harmonisation in Bronze. (`4871201`)
+- [x] Add a source-native workbook admission/profile and deterministic
   projection for all four P7 workbook sheets while retaining formula/error and
-  schema-era information.
-- [ ] Prove that MBS outputs cannot satisfy medicine regulatory, PBS funding,
+  schema-era information. (`4871201`)
+- [x] Prove that MBS outputs cannot satisfy medicine regulatory, PBS funding,
   formulary, terminology, utilization, or clinical assertion contracts.
-- [ ] Phase Verification & Checkpoint: exact raw digests, record counts, fields,
-  dates, and independent-domain semantics pass.
+  (`4871201`)
+- [x] Phase Verification & Checkpoint: exact raw digests, record counts, fields,
+  dates, and independent-domain semantics pass. (`4871201`)
 
 ## Phase 3: Replace the PBS experiment with governed v3 support (AC-04, AC-07)
 
@@ -46,6 +50,31 @@
   tests where they are useful; do not preserve its syntax error.
 - [ ] Phase Verification & Checkpoint: donor intended behavior is covered by a
   valid, safe, typed implementation.
+
+## Review Fixes: MBS source-domain phase
+
+- [x] Bind source-batch identities as literals and bind the catalogue download
+  surface to the exact versioned July 2025 XML rather than a generic page.
+  (`dc6001a`)
+- [x] Exercise exact-qualification, hostile-shape, archive-relationship, Git
+  failure, and malformed-inventory branches above the 91% coverage floor.
+  (`da37c55`)
+- [x] Assign every new donor test module to the governed routine unit lane and
+  rerun the routine harness with the compatible local Python fallback.
+  (`85b6a51`)
+- [x] Regenerate the exhaustive Bronze landing queue after catalogue expansion
+  and keep parser-only MBS sources `not_yet_implemented` until hosted public
+  B1/B2 receipts and anonymous restore verification exist.
+- [x] Regenerate every stable-v1 and source-rights projection bound to the
+  expanded 174-source catalogue, retaining fail-closed rights states for both
+  newly catalogued sources.
+- [x] Bind donor inventory validation to caller-supplied pinned repository and
+  source URL identities so valid Git bytes cannot be relabelled.
+- [x] Regenerate downstream B0, archive, monitoring, prompt reconciliation, and
+  academic-protocol projections after the catalogue denominator changed from
+  172 to 174 sources.
+- [x] Regenerate the strictly offline preregistration rehearsal bundle after
+  its embedded academic protocol changed; retain its unsubmitted state.
 
 ## Phase 4: Replace the monthly scraper safely (AC-05, AC-06)
 

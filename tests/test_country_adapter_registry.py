@@ -112,6 +112,23 @@ def test_builtin_sources_do_not_conflate_regulation_and_funding() -> None:
     assert [source.source_id for source in funding] == ["nz-pharmac"]
 
 
+def test_australian_mbs_is_an_independent_service_benefit_source() -> None:
+    registry = builtin_registry()
+    sources = registry.get("AUS").sources
+    mbs = next(source for source in sources if source.source_id == "au-mbs")
+    declarations = {
+        declaration.source_id: declaration
+        for declaration in builtin_source_capabilities()
+    }
+
+    assert mbs.dimension == SourceDimension.SERVICE_BENEFIT
+    assert Capability.SOURCE_PARSER in declarations["au-mbs"].capabilities
+    assert (
+        Capability.CANONICAL_PROJECTION
+        not in declarations["au-mbs"].capabilities
+    )
+
+
 def test_every_implementation_maps_to_exactly_one_catalog_source() -> None:
     catalog_ids = {source.source_id for source in load_source_catalog()}
     declarations = builtin_source_capabilities()

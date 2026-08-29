@@ -53,9 +53,9 @@ def test_corpus_archive_exercises_full_governed_bronze_path(
         exercised_at=EXERCISED_AT,
     )
 
-    assert manifest.catalog_source_count == 172
-    assert manifest.landing_queue_source_count == 172
-    assert sum(manifest.queue_state_counts.values()) == 172
+    assert manifest.catalog_source_count == 174
+    assert manifest.landing_queue_source_count == 174
+    assert sum(manifest.queue_state_counts.values()) == 174
     assert manifest.exercised_source_count == 16
     assert manifest.acquisition_count == 17
     assert manifest.accepted_admission_count == 17
@@ -63,7 +63,7 @@ def test_corpus_archive_exercises_full_governed_bronze_path(
     assert manifest.b1_manifest_id.startswith("sha256:")
     assert manifest.b1_json_sha256
     assert manifest.b1_parquet_sha256
-    assert manifest.unexercised_source_count == 156
+    assert manifest.unexercised_source_count == 158
     assert manifest.live_source_coverage_claimed is False
     assert manifest.external_publication_performed is False
     assert "clean-room-rebuild" in manifest.recovery_scenarios
@@ -173,4 +173,4 @@ def test_archive_boundaries_fail_closed(
     evidence.mkdir(parents=True)
     with pytest.raises(ValueError, match="must be exhaustive"):
         archive_mod._load_corpus_inventory(ROOT, evidence.parent)
-    assert queue.source_count == 172
+    assert queue.source_count == 174

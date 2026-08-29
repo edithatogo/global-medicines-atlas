@@ -1,10 +1,10 @@
 {
   "schema_id": "global-medicines-atlas.prompt-acquisition-completion-audit",
   "schema_version": 1,
-  "generated_at": "2026-08-21",
+  "generated_at": "2026-08-29",
   "prompt_count": 36,
   "unique_prompt_source_count": 94,
-  "catalog_source_count": 172,
+  "catalog_source_count": 174,
   "fixture_qualified_source_count": 16,
   "live_qualified_source_count": 15,
   "live_complete_prompt_count": 9,
@@ -13,7 +13,7 @@
     "credentialed_and_excluded": 15,
     "landed_and_evidenced": 31,
     "manual_only_documented_acquisition": 92,
-    "not_yet_implemented": 0,
+    "not_yet_implemented": 2,
     "rights_blocked": 32,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 2

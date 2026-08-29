@@ -12,7 +12,13 @@
   "$defs": {
     "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "dimension": {
-      "enum": ["regulatory", "funding", "formulary", "terminology"]
+      "enum": [
+        "regulatory",
+        "funding",
+        "formulary",
+        "terminology",
+        "service_benefit"
+      ]
     },
     "maturity": {"enum": ["catalogue", "fixture", "live"]},
     "artifact": {

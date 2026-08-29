@@ -23,10 +23,10 @@ def _entries() -> list[dict[str, Any]]:
 def test_ledger_is_deterministic_and_covers_all_sources() -> None:
     ledger = _ledger()
     assert ledger == build()
-    assert ledger["catalogue_source_count"] == 172
-    assert ledger["review_count"] == 172
+    assert ledger["catalogue_source_count"] == 174
+    assert ledger["review_count"] == 174
     entries = _entries()
-    assert len({entry["source_id"] for entry in entries}) == 172
+    assert len({entry["source_id"] for entry in entries}) == 174
 
 
 def test_fda_sources_bind_exact_manifest_approval() -> None:
@@ -76,7 +76,7 @@ def test_non_approved_sources_remain_explicitly_fail_closed() -> None:
         for entry in entries
         if entry["disposition"] in {"catalogue_only", "credentialed_excluded"}
     ]
-    assert len(non_public) == 148
+    assert len(non_public) == 150
     assert all(entry["blocker"] for entry in non_public)
     assert all(entry["public_source_eligible"] is False for entry in non_public)
 
@@ -135,7 +135,7 @@ def test_every_international_review_has_observation_or_failure_receipt() -> (
     entries = _entries()
     assert sum(bool(entry["evidence"]) for entry in entries) == 154
     unavailable = [entry for entry in entries if not entry["evidence"]]
-    assert len(unavailable) == 18
+    assert len(unavailable) == 20
     assert all(
         "outcome" in entry["blocker"] or "access is" in entry["blocker"]
         for entry in unavailable

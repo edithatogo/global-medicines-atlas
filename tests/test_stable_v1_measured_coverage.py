@@ -101,7 +101,7 @@ def test_receipt_measures_complete_catalog_and_local_evidence(
 
     assert totals.catalog_jurisdictions == 45
     assert totals.represented_jurisdictions == 46
-    assert totals.catalog_sources == 172
+    assert totals.catalog_sources == 174
     assert totals.fixture_qualified_sources == 16
     assert totals.live_qualified_sources == 1
     assert totals.catalog_dimensions.model_dump() == {

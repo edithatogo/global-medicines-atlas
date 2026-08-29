@@ -86,6 +86,8 @@ class InformationDomain(StrEnum):
     PRICING = "pricing"
     REIMBURSEMENT_CRITERIA = "reimbursement_criteria"
     HTA_DECISION = "hta_decision"
+    SERVICE_BENEFIT = "service_benefit"
+    PARTICIPATION_STATISTICS = "participation_statistics"
 
 
 class RecordEntity(StrEnum):
@@ -100,6 +102,8 @@ class RecordEntity(StrEnum):
     DOCUMENT = "document"
     PRICE = "price"
     DECISION = "decision"
+    SERVICE_ITEM = "service_item"
+    PROVIDER_STATISTIC = "provider_statistic"
 
 
 class StatusSemantics(StrEnum):
@@ -115,6 +119,7 @@ class StatusSemantics(StrEnum):
     DOCUMENT_ONLY = "document_only"
     MIXED = "mixed"
     NONE = "none"
+    BENEFIT_SCHEDULE = "benefit_schedule"
 
 
 class GeographicScope(StrEnum):
@@ -179,6 +184,10 @@ class AvailableField(StrEnum):
     DOCUMENTS = "documents"
     SAFETY_NOTICES = "safety_notices"
     TERMINOLOGY_RELATIONSHIPS = "terminology_relationships"
+    DESCRIPTIONS = "descriptions"
+    BENEFIT_AMOUNTS = "benefit_amounts"
+    SERVICE_GROUPS = "service_groups"
+    PARTICIPANT_COUNTS = "participant_counts"
 
 
 class MonitoringSchedule(FrozenModel):
@@ -325,6 +334,14 @@ class MedicineDataSource(FrozenModel):
                 ),
                 (StatusSemantics.TERMINOLOGY_ONLY,),
             ),
+            SourceDimension.SERVICE_BENEFIT: (
+                (
+                    InformationDomain.SERVICE_BENEFIT,
+                    InformationDomain.PRICING,
+                ),
+                (RecordEntity.SERVICE_ITEM, RecordEntity.PRICE),
+                (StatusSemantics.BENEFIT_SCHEDULE,),
+            ),
         }
         domains, entities, semantics = semantic_defaults[dimension]
         payload.setdefault("information_domains", domains)
@@ -447,6 +464,7 @@ class MedicineDataSource(FrozenModel):
             SourceDimension.FUNDING: InformationDomain.FUNDING_STATUS,
             SourceDimension.FORMULARY: InformationDomain.FORMULARY_STATUS,
             SourceDimension.TERMINOLOGY: InformationDomain.TERMINOLOGY,
+            SourceDimension.SERVICE_BENEFIT: InformationDomain.SERVICE_BENEFIT,
         }[self.dimension]
         if required_domain not in domains:
             raise ValueError(
@@ -483,6 +501,10 @@ class MedicineDataSource(FrozenModel):
                 {RecordEntity.TERMINOLOGY_CONCEPT},
                 {StatusSemantics.TERMINOLOGY_ONLY, StatusSemantics.MIXED},
             ),
+            InformationDomain.SERVICE_BENEFIT: (
+                {RecordEntity.SERVICE_ITEM},
+                {StatusSemantics.BENEFIT_SCHEDULE, StatusSemantics.MIXED},
+            ),
         }
         for domain, (
             required_entities,
@@ -514,6 +536,18 @@ class MedicineDataSource(FrozenModel):
             AvailableField.TERMINOLOGY_RELATIONSHIPS: (
                 InformationDomain.TERMINOLOGY,
                 RecordEntity.TERMINOLOGY_CONCEPT,
+            ),
+            AvailableField.BENEFIT_AMOUNTS: (
+                InformationDomain.SERVICE_BENEFIT,
+                RecordEntity.SERVICE_ITEM,
+            ),
+            AvailableField.SERVICE_GROUPS: (
+                InformationDomain.SERVICE_BENEFIT,
+                RecordEntity.SERVICE_ITEM,
+            ),
+            AvailableField.PARTICIPANT_COUNTS: (
+                InformationDomain.PARTICIPATION_STATISTICS,
+                RecordEntity.PROVIDER_STATISTIC,
             ),
         }
         for field, (domain, entity) in field_contracts.items():
