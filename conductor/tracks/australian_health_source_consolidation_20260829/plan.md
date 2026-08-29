@@ -18,21 +18,23 @@
 
 ## Phase 2: Add the independent MBS source domain (AC-02, AC-03, AC-07)
 
-- [~] Write failing parser, admission, temporal, coverage, and semantic-boundary
+- [x] Write failing parser, admission, temporal, coverage, and semantic-boundary
   tests for `MBS_XML/Data`, all 40 native fields across the variable 34-to-37
-  fields per record, and all 5,989 records.
-- [ ] Confirm the intended failure before implementation.
-- [ ] Add `au-mbs` source catalogue entries, source profiles, receipts, adapter
+  fields per record, and all 5,989 records. (`bc9cd9f`)
+- [x] Confirm the intended failure before implementation. (`bc9cd9f`)
+- [x] Add `au-mbs` source catalogue entries, source profiles, receipts, adapter
   registration, source-health checks, and versioned acquisition surfaces.
-- [ ] Implement bounded source-faithful MBS XML parsing without Silver
-  harmonisation in Bronze.
-- [ ] Add a source-native workbook admission/profile and deterministic
+  (`bc9cd9f`)
+- [x] Implement bounded source-faithful MBS XML parsing without Silver
+  harmonisation in Bronze. (`bc9cd9f`)
+- [x] Add a source-native workbook admission/profile and deterministic
   projection for all four P7 workbook sheets while retaining formula/error and
-  schema-era information.
-- [ ] Prove that MBS outputs cannot satisfy medicine regulatory, PBS funding,
+  schema-era information. (`bc9cd9f`)
+- [x] Prove that MBS outputs cannot satisfy medicine regulatory, PBS funding,
   formulary, terminology, utilization, or clinical assertion contracts.
-- [ ] Phase Verification & Checkpoint: exact raw digests, record counts, fields,
-  dates, and independent-domain semantics pass.
+  (`bc9cd9f`)
+- [x] Phase Verification & Checkpoint: exact raw digests, record counts, fields,
+  dates, and independent-domain semantics pass. (`bc9cd9f`)
 
 ## Phase 3: Replace the PBS experiment with governed v3 support (AC-04, AC-07)
 
