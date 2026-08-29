@@ -17,6 +17,7 @@ class SourceDimension(StrEnum):
     FUNDING = "funding"
     FORMULARY = "formulary"
     TERMINOLOGY = "terminology"
+    SERVICE_BENEFIT = "service_benefit"
 
 
 class Capability(StrEnum):
@@ -238,6 +239,24 @@ def builtin_registry() -> AdapterRegistry:
                     "https://www.pbs.gov.au/pbs/home",
                     "Australian Pharmaceutical Benefits Scheme listings.",
                 ),
+                _source(
+                    "au-mbs",
+                    "AUS",
+                    "Australian Government Department of Health",
+                    SourceDimension.SERVICE_BENEFIT,
+                    "https://www.mbsonline.gov.au/",
+                    "Medicare services, fees and benefit schedule evidence; "
+                    "not medicine, regulatory or PBS funding evidence.",
+                ),
+                _source(
+                    "au-mbs-p7-legacy-workbook",
+                    "AUS",
+                    "Edith Atogo (legacy derived workbook)",
+                    SourceDimension.SERVICE_BENEFIT,
+                    "https://github.com/edithatogo/aus-health-data-scraper",
+                    "Historical P7 comparison evidence with source-native "
+                    "formulas and annotations; not current MBS coverage.",
+                ),
             ),
         ),
         DeclarativeCountryAdapter(
@@ -347,6 +366,7 @@ def builtin_source_capabilities() -> SourceCapabilityRegistry:
         Capability.SOURCE_PARSER,
         Capability.CANONICAL_PROJECTION,
     })
+    source_parser = frozenset({Capability.SOURCE_PARSER})
     acquisition_source = frozenset({
         Capability.ACQUISITION,
         Capability.SOURCE_PARSER,
@@ -361,6 +381,16 @@ def builtin_source_capabilities() -> SourceCapabilityRegistry:
             source_id="au-artg",
             capabilities=fixture_projected,
             implementations=("adapters.au_artg:project_artg_csv",),
+        ),
+        SourceCapabilityDeclaration(
+            source_id="au-mbs",
+            capabilities=source_parser,
+            implementations=("adapters.au_mbs:parse_mbs_source_xml",),
+        ),
+        SourceCapabilityDeclaration(
+            source_id="au-mbs-p7-legacy-workbook",
+            capabilities=source_parser,
+            implementations=("adapters.au_mbs_workbook:parse_mbs_workbook",),
         ),
         SourceCapabilityDeclaration(
             source_id="au-pbs-historical-xml",

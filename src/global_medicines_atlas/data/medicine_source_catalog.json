@@ -1,6 +1,6 @@
 {
   "schema_version": 5,
-  "reviewed_at": "2026-08-21",
+  "reviewed_at": "2026-08-29",
   "monitoring_contract": {
     "source_health": "weekly",
     "schema_drift": "monthly"
@@ -978,6 +978,155 @@
         "tests/fixtures/adapters/au_artg.csv"
       ],
       "discovery_status": "declaration_verified"
+    },
+    {
+      "source_id": "au-mbs",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "authority": "Australian Government Department of Health",
+      "title": "Medicare Benefits Schedule XML releases",
+      "dimension": "service_benefit",
+      "access_mode": "download",
+      "landing_page": "https://www.mbsonline.gov.au/",
+      "download_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/downloads",
+      "update_cadence": "source-declared",
+      "rights_status": "maintainer_redistribution_authorized",
+      "readiness": "implemented",
+      "discovery_status": "declaration_verified",
+      "implemented_ingestion": true,
+      "evidence_limit": "MBS service, fee and benefit evidence is not a medicine, ARTG regulatory, PBS funding, formulary, terminology, utilization, or clinical assertion.",
+      "interface_status": "documented_download",
+      "formats": [
+        "xml"
+      ],
+      "authentication": "none",
+      "product_grain": "Medicare service item and schedule benefit",
+      "historical_scope": "versioned current and historical schedule snapshots",
+      "native_identifier": "MBS ItemNum plus SubItemNum and effective dates",
+      "last_verified_at": "2026-08-29",
+      "integration_layer": "parser",
+      "acquisition_profile": "public-bulk",
+      "bronze_admission_profile": {
+        "profile_id": "au-mbs-xml-v3",
+        "expected_media": [
+          "xml"
+        ],
+        "xml_root": "MBS_XML",
+        "max_size_bytes": 9000000,
+        "mismatch_action": "quarantine"
+      },
+      "documentation_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-202507",
+      "information_domains": [
+        "service_benefit",
+        "pricing"
+      ],
+      "record_entities": [
+        "service_item",
+        "price"
+      ],
+      "status_semantics": [
+        "benefit_schedule"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "status_dates",
+        "prices",
+        "descriptions",
+        "benefit_amounts",
+        "service_groups"
+      ],
+      "qualification_state": "fixture_verified",
+      "qualification_references": [
+        "src/global_medicines_atlas/adapters/au_mbs.py",
+        "tests/test_au_mbs_source.py",
+        "tests/fixtures/adapters/au_mbs.xml"
+      ]
+    },
+    {
+      "source_id": "au-mbs-p7-legacy-workbook",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "authority": "Edith Atogo (legacy derived workbook)",
+      "title": "July 2024 MBS Group P7 genetics workbook",
+      "dimension": "service_benefit",
+      "access_mode": "download",
+      "landing_page": "https://github.com/edithatogo/aus-health-data-scraper/blob/931da0b9b6ae3e3cec0743568abb71a50d62b7cf/data/source/MBS%20-%202024.07%20-%20Group%20P7%20(Genetics).xlsx",
+      "download_url": "https://github.com/edithatogo/aus-health-data-scraper/raw/931da0b9b6ae3e3cec0743568abb71a50d62b7cf/data/source/MBS%20-%202024.07%20-%20Group%20P7%20(Genetics).xlsx",
+      "update_cadence": "frozen legacy snapshot",
+      "rights_status": "maintainer_redistribution_authorized",
+      "readiness": "implemented",
+      "discovery_status": "declaration_verified",
+      "implemented_ingestion": true,
+      "evidence_limit": "Historical derived P7 workbook evidence with formulas and annotations; it is not official current MBS coverage and is not medicine, ARTG, PBS, terminology, utilization, or clinical evidence.",
+      "interface_status": "documented_download",
+      "formats": [
+        "xlsx"
+      ],
+      "authentication": "none",
+      "product_grain": "legacy MBS P7 service rows, annotations and workbook cells",
+      "historical_scope": "July 2024 legacy comparison snapshot",
+      "native_identifier": "sheet name and XLSX cell coordinate, with MBS item numbers where present",
+      "last_verified_at": "2026-08-29",
+      "integration_layer": "parser",
+      "acquisition_profile": "public-bulk",
+      "bronze_admission_profile": {
+        "profile_id": "au-mbs-p7-xlsx-v1",
+        "expected_media": [
+          "zip"
+        ],
+        "archive_type": "zip",
+        "archive_member_patterns": [
+          "[Content_Types].xml",
+          "_rels/*",
+          "docProps/*",
+          "xl/*",
+          "xl/**/*"
+        ],
+        "max_size_bytes": 1000000,
+        "max_member_count": 256,
+        "max_expansion_ratio": 250,
+        "max_nesting": 8,
+        "mismatch_action": "quarantine"
+      },
+      "documentation_url": "https://github.com/edithatogo/aus-health-data-scraper/blob/931da0b9b6ae3e3cec0743568abb71a50d62b7cf/README.md",
+      "information_domains": [
+        "service_benefit",
+        "pricing"
+      ],
+      "record_entities": [
+        "service_item",
+        "price"
+      ],
+      "status_semantics": [
+        "benefit_schedule"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "general",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "status_dates",
+        "prices",
+        "descriptions",
+        "benefit_amounts",
+        "service_groups"
+      ],
+      "qualification_state": "fixture_verified",
+      "qualification_references": [
+        "src/global_medicines_atlas/adapters/au_mbs_workbook.py",
+        "tests/test_au_mbs_workbook.py"
+      ]
     },
     {
       "source_id": "au-pbs-api",

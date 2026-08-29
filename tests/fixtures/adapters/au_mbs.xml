@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MBS_XML>
+  <Data>
+    <ItemNum>123</ItemNum>
+    <SubItemNum>00</SubItemNum>
+    <ItemStartDate>2025-07-01</ItemStartDate>
+    <Group>P7</Group>
+    <ScheduleFee>42.50</ScheduleFee>
+    <Description>Example genetics service</Description>
+  </Data>
+  <Data>
+    <ItemNum>124</ItemNum>
+    <SubItemNum />
+    <ItemStartDate>2025-07-01</ItemStartDate>
+    <Group>P7</Group>
+    <Benefit75>31.90</Benefit75>
+    <Description>Second example service</Description>
+  </Data>
+</MBS_XML>
