@@ -1,0 +1,44 @@
+name: Python free-threaded canary
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/python-free-threaded-canary.yml"
+      - "pyproject.toml"
+      - "src/**"
+      - "tests/test_matching_normalization.py"
+  schedule:
+    - cron: "17 3 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: python-free-threaded-canary
+  cancel-in-progress: true
+
+jobs:
+  canary:
+    name: CPython 3.14t / advisory smoke
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.29"
+          enable-cache: true
+      - name: Run deterministic core smoke tests without the GIL
+        env:
+          PYTHON_GIL: "0"
+          PYTHONPATH: src
+        run: >-
+          uv run --python 3.14t --no-project
+          --with pytest==9.1.0 --with pytest-timeout==2.4.0
+          --with pydantic==2.12.5
+          pytest -q
+          tests/test_matching_normalization.py

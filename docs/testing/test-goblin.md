@@ -61,6 +61,18 @@ Missing, malformed, empty or non-numeric exports fail the lane; no environment
 variable can substitute invented observations. The mutation budget remains
 `contract_only` until calibration is formally promoted.
 
+The hosted gremlins lane persists `.gremlins_cache` with a source- and
+lock-content key. Pytest-gremlins still validates changed content and executes
+in its isolated subprocess mode; the cache only avoids repeating unchanged
+mutants across eligible hosted runs. Worker and batch experiments remain
+rejected because they caused contention and increased wall time.
+
+An advisory weekly/manual CPython 3.14 free-threaded canary runs deterministic
+normalization tests with `PYTHON_GIL=0`. It uses an isolated minimal core
+environment because the optional LanceDB semantic backend does not yet publish
+CPython 3.14t distributions. The canary is explicitly non-blocking and does
+not replace the supported Python 3.14 lane.
+
 ## Local Commands
 
 ```powershell

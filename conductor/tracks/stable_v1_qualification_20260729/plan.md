@@ -218,8 +218,10 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   - [x] Retain the existing isolated gremlin executor after batch size 10 and explicit four-worker modes both exceeded the existing hosted critical path
   - [x] Use the Python 3.14 sysmon coverage core; reject two-worker aggregate coverage after it ran slower and caused performance-budget contention
   - [x] Keep required check names stable while skipping mutation, gremlins, and consumer bodies only for provably documentation/Conductor-only pull requests; uncertain and non-PR events run the full suite
-  - [ ] Parallelize independent consumer-reproduction tests without changing required check names
-  - [ ] Measure hosted critical-path improvement and retain full exact-main verification
+  - [x] Parallelize independent consumer-reproduction tests without changing required check names
+  - [x] Measure hosted critical-path improvement and retain full exact-main verification
+  - [~] Persist the content-validated gremlins cache across eligible hosted runs without sharing mutable execution state
+  - [~] Add a non-blocking CPython 3.14 free-threaded canary for deterministic core contracts
 
 - [x] Task: Add independently executable metamorphic, consumer/provider
   contract and deterministic-simulation lanes to Test-Goblin ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
