@@ -433,6 +433,7 @@ dev = [
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "pytest-gremlins" },
+    { name = "pytest-picked" },
     { name = "pytest-playwright" },
     { name = "pytest-randomly" },
     { name = "pytest-testmon" },
@@ -476,6 +477,7 @@ test-goblin = [
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "pytest-gremlins" },
+    { name = "pytest-picked" },
     { name = "pytest-playwright" },
     { name = "pytest-randomly" },
     { name = "pytest-testmon" },
@@ -526,6 +528,7 @@ dev = [
     { name = "pytest", marker = "python_full_version == '3.14.*'", specifier = ">=9.1" },
     { name = "pytest-cov", marker = "python_full_version == '3.14.*'", specifier = ">=7.0" },
     { name = "pytest-gremlins", marker = "python_full_version == '3.14.*'", specifier = ">=1.8.0b8" },
+    { name = "pytest-picked", marker = "python_full_version == '3.14.*'", specifier = ">=0.5.1" },
     { name = "pytest-playwright", marker = "python_full_version == '3.14.*'", specifier = ">=0.7" },
     { name = "pytest-randomly", marker = "python_full_version == '3.14.*'", specifier = ">=4.0" },
     { name = "pytest-testmon", marker = "python_full_version == '3.14.*'", specifier = ">=2.2" },
@@ -565,6 +568,7 @@ test-goblin = [
     { name = "pytest", marker = "python_full_version == '3.14.*'", specifier = ">=9.1" },
     { name = "pytest-cov", marker = "python_full_version == '3.14.*'", specifier = ">=7.0" },
     { name = "pytest-gremlins", marker = "python_full_version == '3.14.*'", specifier = ">=1.8.0b8" },
+    { name = "pytest-picked", marker = "python_full_version == '3.14.*'", specifier = ">=0.5.1" },
     { name = "pytest-playwright", marker = "python_full_version == '3.14.*'", specifier = ">=0.7" },
     { name = "pytest-randomly", marker = "python_full_version == '3.14.*'", specifier = ">=4.0" },
     { name = "pytest-testmon", marker = "python_full_version == '3.14.*'", specifier = ">=2.2" },
@@ -1603,6 +1607,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/3b/b6/74470cd5b97eb0cf5f3d7e2ef7feb2d6136b5cbe2df6e070299c5faf5e7c/pytest_gremlins-1.9.0.tar.gz", hash = "sha256:12966b4d24146b46d58aa1dc8a6d0881918863ca4454a44d109b295f22d27c24", size = 4013393, upload-time = "2026-07-01T12:55:33.149Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f6/f7/f582cd587ebdfad6e7f6426ca3220b051d7adb41c824576851732843777a/pytest_gremlins-1.9.0-py3-none-any.whl", hash = "sha256:26997e1e6ac0cbdef70c68ddadbbd2bf93c7d41e143d9f2d84ec318b7d552b67", size = 118421, upload-time = "2026-07-01T12:55:31.708Z" },
+]
+
+[[package]]
+name = "pytest-picked"
+version = "0.5.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ba/e4/51a54dd6638fd4a7c45bb20a737235fd92cbb4d24b5ff681d64ace5d02e9/pytest_picked-0.5.1.tar.gz", hash = "sha256:6634c4356a560a5dc3dba35471865e6eb06bbd356b56b69c540593e9d5620ded", size = 8401, upload-time = "2024-11-06T23:19:52.538Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c6/81/450c017746caab376c4b6700439de9f1cc7d8e1f22dec3c1eb235cd9ad3e/pytest_picked-0.5.1-py3-none-any.whl", hash = "sha256:af65c4763b51dc095ae4bc5073a962406902422ad9629c26d8b01122b677d998", size = 6608, upload-time = "2024-11-06T23:19:51.284Z" },
 ]
 
 [[package]]

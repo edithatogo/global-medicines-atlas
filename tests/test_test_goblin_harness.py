@@ -166,6 +166,38 @@ def test_changed_profile_uses_testmon_without_xdist(monkeypatch) -> None:
     assert "-n" not in commands[0]
 
 
+def test_picked_profile_selects_unstaged_changes_without_xdist(
+    monkeypatch,
+) -> None:
+    commands: list[list[str]] = []
+    monkeypatch.setenv("TEST_GOBLIN_WORKERS", "4")
+    monkeypatch.setattr(HARNESS, "run", commands.append)
+
+    HARNESS.picked()
+
+    assert "--picked=only" in commands[0]
+    assert "--mode=unstaged" in commands[0]
+    assert "-n" not in commands[0]
+
+
+def test_picked_profile_supports_an_explicit_parent_branch(monkeypatch) -> None:
+    commands: list[list[str]] = []
+    monkeypatch.setenv("TEST_GOBLIN_PICKED_MODE", "branch")
+    monkeypatch.setenv("TEST_GOBLIN_PICKED_PARENT", "origin/main")
+    monkeypatch.setattr(HARNESS, "run", commands.append)
+
+    HARNESS.picked()
+
+    assert "--mode=branch" in commands[0]
+    assert "--parent-branch=origin/main" in commands[0]
+
+
+def test_picked_profile_rejects_invalid_configuration(monkeypatch) -> None:
+    monkeypatch.setenv("TEST_GOBLIN_PICKED_MODE", "unknown")
+    with pytest.raises(ValueError, match="unstaged or branch"):
+        HARNESS.picked()
+
+
 @pytest.mark.parametrize("workers", ["-1", "invalid"])
 def test_pytest_workers_reject_invalid_values(
     monkeypatch, workers: str

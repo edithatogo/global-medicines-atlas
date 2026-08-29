@@ -835,6 +835,20 @@ def changed() -> None:
     run(build_pytest_command(ALL_TESTS, "--testmon", parallel=False))
 
 
+def picked() -> None:
+    """Run tests whose files or adjacent implementation changed in Git."""
+    mode = os.environ.get("TEST_GOBLIN_PICKED_MODE", "unstaged")
+    if mode not in {"unstaged", "branch"}:
+        raise ValueError("TEST_GOBLIN_PICKED_MODE must be unstaged or branch")
+    extra = ["--picked=only", f"--mode={mode}"]
+    parent = os.environ.get("TEST_GOBLIN_PICKED_PARENT")
+    if parent:
+        if mode != "branch":
+            raise ValueError("TEST_GOBLIN_PICKED_PARENT requires branch mode")
+        extra.append(f"--parent-branch={parent}")
+    run(build_pytest_command(ALL_TESTS, *extra, parallel=False))
+
+
 def lane(name: str) -> None:
     """Run one explicit test architecture lane."""
     extra: tuple[str, ...] = ()
@@ -1186,6 +1200,7 @@ def main() -> None:  # ruff: ignore[too-many-branches]
             "quick",
             "fast",
             "changed",
+            "picked",
             "contracts",
             "coverage",
             "routine",
@@ -1216,6 +1231,8 @@ def main() -> None:  # ruff: ignore[too-many-branches]
         fast()
     elif selected_profile == "changed":
         changed()
+    elif selected_profile == "picked":
+        picked()
     elif selected_profile == "coverage":
         coverage()
     elif selected_profile == "mutation":
