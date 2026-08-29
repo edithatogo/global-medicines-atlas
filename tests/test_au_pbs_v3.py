@@ -91,6 +91,19 @@ def test_source_parquet_is_deterministic_and_source_faithful() -> None:
     )
 
 
+def test_source_parquet_preserves_missing_amt_resource_as_null() -> None:
+    payload = _xml().replace(
+        b' rdf:resource="http://snomed.info/id/123456"', b""
+    )
+    result = parse_pbs_v3_archive(_zip([("sch-a.xml", payload)]))
+
+    row = pq.read_table(  # pyright: ignore[reportUnknownMemberType]
+        BytesIO(pbs_v3_source_parquet(result.records))
+    ).to_pylist()[0]
+
+    assert row["amt_resources"] == [None]
+
+
 @pytest.mark.parametrize(
     ("entries", "message"),
     [
@@ -124,6 +137,12 @@ def test_parse_pbs_v3_archive_rejects_namespace_drift() -> None:
         parse_pbs_v3_archive(archive)
 
 
+def test_parse_pbs_v3_archive_rejects_root_drift() -> None:
+    payload = _xml().replace(b"pbs:schedule", b"pbs:document")
+    with pytest.raises(ValueError, match="root drift"):
+        parse_pbs_v3_archive(_zip([("sch-a.xml", payload)]))
+
+
 def test_parse_pbs_v3_archive_rejects_missing_namespace() -> None:
     with pytest.raises(ValueError, match="namespace drift: missing"):
         parse_pbs_v3_archive(_zip([("sch-a.xml", b"<schedule />")]))
@@ -155,6 +174,24 @@ def test_parse_pbs_v3_archive_rejects_duplicate_item_identity() -> None:
     )
     with pytest.raises(ValueError, match="duplicate item identity"):
         parse_pbs_v3_archive(_zip([("sch-a.xml", payload)]))
+
+
+def test_pbs_policy_accepts_representative_large_element_count() -> None:
+    metadata = b"".join(
+        f'<pbs:metadata id="{index}"/>'.encode() for index in range(100_001)
+    )
+    payload = _xml().replace(
+        b"<pbs:pharmaceutical-item",
+        metadata + b"<pbs:pharmaceutical-item",
+    )
+
+    result = parse_pbs_v3_archive(_zip([("sch-large.xml", payload)]))
+
+    assert len(result.records) == 1
+    assert inspect_pbs_v3_tags(result.xml_payload, max_tags=2) == (
+        f"{{{PBS_V3_NAMESPACE}}}schedule",
+        f"{{{PBS_V3_NAMESPACE}}}metadata",
+    )
 
 
 def test_parse_pbs_v3_archive_rejects_decompression_bomb() -> None:

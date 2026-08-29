@@ -6,6 +6,7 @@ import fnmatch
 import hashlib
 from dataclasses import dataclass
 from io import BytesIO
+from itertools import islice
 from xml.etree import (  # ruff: ignore[suspicious-xml-etree-import]
     ElementTree as ET,
 )
@@ -40,6 +41,12 @@ PBS_ARCHIVE_POLICY = ArchivePolicy(
     max_total_uncompressed_bytes=768 * 1024 * 1024,
     max_decompression_ratio=200,
 )
+PBS_XML_POLICY = ParserPolicy(
+    max_bytes=PBS_ARCHIVE_POLICY.max_entry_uncompressed_bytes,
+    max_xml_depth=128,
+    max_xml_elements=5_000_000,
+    max_xml_text_bytes=384 * 1024 * 1024,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -71,7 +78,11 @@ PBS_V3_SOURCE_SCHEMA = pa.schema([
     pa.field("item_code", pa.string(), nullable=False),
     pa.field("product_name", pa.string(), nullable=False),
     pa.field("amt_codes", pa.list_(pa.string()), nullable=False),
-    pa.field("amt_resources", pa.list_(pa.string()), nullable=False),
+    pa.field(
+        "amt_resources",
+        pa.list_(pa.field("item", pa.string(), nullable=True)),
+        nullable=False,
+    ),
     pa.field("atc_codes", pa.list_(pa.string()), nullable=False),
     pa.field("restrictions", pa.list_(pa.string()), nullable=False),
     pa.field("restriction_effective_dates", pa.list_(pa.string())),
@@ -99,17 +110,14 @@ def parse_pbs_v3_archive(payload: bytes) -> PbsV3Archive:
         xml_payload = archive.read(info)
 
     try:
-        root = parse_xml(
-            xml_payload,
-            policy=ParserPolicy(
-                max_bytes=PBS_ARCHIVE_POLICY.max_entry_uncompressed_bytes
-            ),
-        )
+        root = parse_xml(xml_payload, policy=PBS_XML_POLICY)
     except ValueError as error:
         raise ValueError("schedule member is not valid PBS XML") from error
     namespace = _namespace(root.tag)
     if namespace != PBS_V3_NAMESPACE:
         raise ValueError(f"PBS namespace drift: {namespace or 'missing'}")
+    if root.tag != f"{{{PBS_V3_NAMESPACE}}}schedule":
+        raise ValueError(f"PBS root drift: {root.tag}")
     records = tuple(
         _pbs_v3_record(item)
         for item in root.iter(f"{{{PBS_V3_NAMESPACE}}}pharmaceutical-item")
@@ -139,13 +147,8 @@ def inspect_pbs_v3_tags(
     """Return a bounded preorder tag sample from admitted PBS XML."""
     if max_tags < 1:
         raise ValueError("max_tags must be positive")
-    root = parse_xml(
-        payload,
-        policy=ParserPolicy(
-            max_bytes=PBS_ARCHIVE_POLICY.max_entry_uncompressed_bytes
-        ),
-    )
-    return tuple(element.tag for element in list(root.iter())[:max_tags])
+    root = parse_xml(payload, policy=PBS_XML_POLICY)
+    return tuple(element.tag for element in islice(root.iter(), max_tags))
 
 
 def pbs_v3_source_parquet(records: tuple[PbsV3Record, ...]) -> bytes:
@@ -156,7 +159,7 @@ def pbs_v3_source_parquet(records: tuple[PbsV3Record, ...]) -> bytes:
             "product_name": record.product_name,
             "amt_codes": [code for code, _ in record.amt_references],
             "amt_resources": [
-                resource or "" for _, resource in record.amt_references
+                resource for _, resource in record.amt_references
             ],
             "atc_codes": list(record.atc_codes),
             "restrictions": list(record.restrictions),
