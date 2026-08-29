@@ -117,9 +117,9 @@ def test_inventory_covers_every_catalog_source_exactly_once() -> None:
     inventory = inventory_data_layer(ROOT)
     catalog_ids = {source.source_id for source in load_source_catalog()}
     inventory_ids = {row.source_id for row in inventory.sources}
-    assert len(inventory.sources) == 172
+    assert len(inventory.sources) == 174
     assert inventory_ids == catalog_ids
-    assert inventory.public_no_credential_count == 157
+    assert inventory.public_no_credential_count == 159
     assert inventory.credential_restricted_count == 15
 
 
@@ -206,9 +206,9 @@ def test_archive_includes_catalog_schema_and_governed_fixtures(
     table = pq.read_table(
         tmp_path / "archive" / "inventory" / "source-inventory.parquet"
     )
-    assert table.num_rows == 172
+    assert table.num_rows == 174
     access = table.column("access_class").to_pylist()
-    assert access.count("public_no_credential") == 157
+    assert access.count("public_no_credential") == 159
     assert access.count("credential_restricted") == 15
 
 

@@ -70,6 +70,9 @@
   newly catalogued sources.
 - [x] Bind donor inventory validation to caller-supplied pinned repository and
   source URL identities so valid Git bytes cannot be relabelled.
+- [x] Regenerate downstream B0, archive, monitoring, prompt reconciliation, and
+  academic-protocol projections after the catalogue denominator changed from
+  172 to 174 sources.
 
 ## Phase 4: Replace the monthly scraper safely (AC-05, AC-06)
 

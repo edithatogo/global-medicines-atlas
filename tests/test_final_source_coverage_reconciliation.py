@@ -30,7 +30,7 @@ def test_checked_in_reconciliation_is_reproducible_and_fail_closed() -> None:
     expected = json.loads(OUTPUT.read_text(encoding="utf-8"))
     actual = _module().build_reconciliation()
     assert actual == expected
-    assert actual["catalog_source_count"] == 172
+    assert actual["catalog_source_count"] == 174
     assert len(actual["jurisdiction_matrix"]) == 46
     assert actual["coverage_complete"] is False
     assert actual["missing_coverage_is_negative_evidence"] is False
