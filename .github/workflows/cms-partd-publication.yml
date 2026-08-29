@@ -43,7 +43,6 @@ jobs:
           uv run --frozen --python 3.14.6 python - <<'PY'
           import json
           import os
-          import time
           from hashlib import sha256
           from pathlib import Path, PurePosixPath
 
@@ -125,6 +124,7 @@ jobs:
           EOF
           python3 - <<'PY'
           import os
+          import time
           from huggingface_hub import CommitOperationDelete, HfApi
 
           api = HfApi(token=os.environ['HF_TOKEN'])
