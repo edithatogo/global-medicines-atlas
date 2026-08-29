@@ -41,10 +41,13 @@
   ],
   "required_controls": [
     "github-actions-only-upload",
+    "protected-default-branch-deployment-environment",
+    "default-branch-head-equals-exact-authorized-commit",
     "durable-issue-intent-before-dataset-creation",
     "create-private-then-publicize",
     "anonymous-all-object-digest-verification",
     "failed-transaction-privacy-containment",
+    "exact-private-transaction-retry",
     "no-workstation-raw-retention"
   ],
   "publication_does_not_authorize": [

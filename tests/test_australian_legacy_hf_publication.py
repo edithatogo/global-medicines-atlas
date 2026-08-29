@@ -50,11 +50,17 @@ def test_authorization_binds_every_nonempty_donor_payload() -> None:
 def test_workflow_uploads_only_from_actions_and_verifies_anonymously() -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
     assert "workflow_dispatch:" in workflow
+    assert workflow.count("environment: australian-hf-publication") == 2
     assert 'test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"' in workflow
+    assert 'test "${GITHUB_REF}" = "refs/heads/${default_branch}"' in workflow
+    assert 'test "${GITHUB_SHA}" = "${default_head}"' in workflow
     assert workflow.index("gh issue comment 340") < workflow.index(
         "api.create_repo("
     )
     assert "private=True, exist_ok=False" in workflow
+    assert "existing target must be the exact private non-gated retry transaction" in workflow
+    assert "delete_patterns=['*']" in workflow
+    assert "published repository sibling set differs from exact manifest" in workflow
     assert "git', 'bundle', 'create'" in workflow
     assert "git', 'bundle', 'verify'" in workflow
     assert "api.upload_folder(" in workflow

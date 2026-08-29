@@ -18,6 +18,7 @@ jobs:
   publish:
     name: Publish exact raw payloads and donor histories
     runs-on: ubuntu-24.04
+    environment: australian-hf-publication
     timeout-minutes: 45
     permissions:
       contents: read
@@ -40,6 +41,10 @@ jobs:
         run: |
           set -euo pipefail
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          default_branch=$(gh api "repos/${GITHUB_REPOSITORY}" --jq .default_branch)
+          default_head=$(gh api "repos/${GITHUB_REPOSITORY}/commits/${default_branch}" --jq .sha)
+          test "${GITHUB_REF}" = "refs/heads/${default_branch}"
+          test "${GITHUB_SHA}" = "${default_head}"
           python3 - <<'PY'
           import json
           import os
@@ -116,12 +121,15 @@ jobs:
 
           api = HfApi(token=os.environ['HF_TOKEN'])
           dataset = authorization['dataset']
+          existing_info = None
           try:
-              api.dataset_info(dataset)
+              existing_info = api.dataset_info(dataset)
           except RepositoryNotFoundError:
               pass
-          else:
-              raise RuntimeError('target dataset already exists; exact create-only transaction refused')
+          if existing_info is not None and (
+              not existing_info.private or bool(existing_info.gated)
+          ):
+              raise RuntimeError('existing target must be the exact private non-gated retry transaction')
 
           with TemporaryDirectory(prefix='gma-australian-legacy-') as temporary:
               workspace = Path(temporary)
@@ -196,7 +204,8 @@ jobs:
                   json.dumps(manifest, indent=2, sort_keys=True) + '\n', encoding='utf-8'
               )
 
-              api.create_repo(dataset, repo_type='dataset', private=True, exist_ok=False)
+              if existing_info is None:
+                  api.create_repo(dataset, repo_type='dataset', private=True, exist_ok=False)
               with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as output:
                   output.write('dataset_created=true\n')
               api.upload_folder(
@@ -204,8 +213,17 @@ jobs:
                   repo_type='dataset',
                   folder_path=archive,
                   commit_message='Publish exact Australian legacy raw archive',
+                  delete_patterns=['*'],
               )
               private_head = api.dataset_info(dataset).sha
+              expected_siblings = {
+                  str(entry['path']) for entry in manifest_entries
+              } | {'manifest.json', '.gitattributes'}
+              actual_siblings = {
+                  sibling.rfilename for sibling in api.dataset_info(dataset).siblings
+              }
+              if actual_siblings != expected_siblings:
+                  raise RuntimeError('published repository sibling set differs from exact manifest')
               api.update_repo_settings(repo_id=dataset, repo_type='dataset', private=False)
               public_info = HfApi(token=False).dataset_info(dataset, revision=private_head)
               if public_info.private or public_info.gated:
@@ -259,6 +277,7 @@ jobs:
     needs: publish
     if: ${{ always() && needs.publish.result != 'success' && needs.publish.outputs.dataset_created == 'true' }}
     runs-on: ubuntu-24.04
+    environment: australian-hf-publication
     timeout-minutes: 10
     permissions:
       contents: read
