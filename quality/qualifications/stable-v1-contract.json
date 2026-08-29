@@ -806,6 +806,117 @@
         "tests/test_bronze_source_profile_admission.py"
       ],
       "blocker_ids": []
+    },
+    {
+      "requirement_id": "M-105",
+      "state": "blocked",
+      "evidence": [
+        "conductor/requirements.md",
+        "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md",
+        "conductor/tracks/australian_health_source_consolidation_20260829/donor-assessment.md",
+        "conductor/tracks/australian_health_source_consolidation_20260829/plan.md"
+      ],
+      "blocker_ids": [
+        "stable-v1-australian-health-federation"
+      ]
+    },
+    {
+      "requirement_id": "M-106",
+      "state": "blocked",
+      "evidence": [
+        "conductor/requirements.md",
+        "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md",
+        "conductor/tracks/australian_health_source_consolidation_20260829/spec.md"
+      ],
+      "blocker_ids": [
+        "stable-v1-australian-health-federation"
+      ]
+    },
+    {
+      "requirement_id": "M-107",
+      "state": "blocked",
+      "evidence": [
+        "conductor/requirements.md",
+        "conductor/tracks/australian_health_source_consolidation_20260829/spec.md",
+        "conductor/tracks/public_hf_federated_data_plane_20260829/spec.md"
+      ],
+      "blocker_ids": [
+        "stable-v1-australian-health-federation"
+      ]
+    },
+    {
+      "requirement_id": "M-108",
+      "state": "blocked",
+      "evidence": [
+        "conductor/requirements.md",
+        "conductor/tracks/public_hf_federated_data_plane_20260829/hf-estate-audit.md",
+        "conductor/tracks/public_hf_federated_data_plane_20260829/plan.md",
+        "quality/qualifications/hf-legacy-composite-authorization-20260829.json"
+      ],
+      "blocker_ids": [
+        "stable-v1-australian-health-federation"
+      ]
+    },
+    {
+      "requirement_id": "M-109",
+      "state": "blocked",
+      "evidence": [
+        "conductor/requirements.md",
+        "conductor/tracks/australian_benefits_silver_gold_20260829/spec.md",
+        "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md"
+      ],
+      "blocker_ids": [
+        "stable-v1-australian-health-federation"
+      ]
+    },
+    {
+      "requirement_id": "M-110",
+      "state": "blocked",
+      "evidence": [
+        "conductor/requirements.md",
+        "conductor/tracks/australian_benefits_silver_gold_20260829/spec.md",
+        "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md"
+      ],
+      "blocker_ids": [
+        "stable-v1-australian-health-federation"
+      ]
+    },
+    {
+      "requirement_id": "M-111",
+      "state": "blocked",
+      "evidence": [
+        "conductor/requirements.md",
+        "conductor/tracks/federated_medicines_platinum_20260829/spec.md",
+        "conductor/tracks/federated_medicines_platinum_20260829/plan.md"
+      ],
+      "blocker_ids": [
+        "stable-v1-australian-health-federation"
+      ]
+    },
+    {
+      "requirement_id": "M-112",
+      "state": "blocked",
+      "evidence": [
+        "conductor/requirements.md",
+        "conductor/design.md",
+        "conductor/tracks/public_hf_federated_data_plane_20260829/spec.md",
+        "conductor/tracks/federated_medallion_frontier_experiments_20260829/spec.md"
+      ],
+      "blocker_ids": [
+        "stable-v1-australian-health-federation"
+      ]
+    },
+    {
+      "requirement_id": "M-113",
+      "state": "blocked",
+      "evidence": [
+        "conductor/requirements.md",
+        "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md",
+        "conductor/tracks/australian_health_source_consolidation_20260829/plan.md"
+      ],
+      "blocker_ids": [
+        "stable-v1-australian-health-federation"
+      ]
     }
   ],
   "maturity_dimensions": [
@@ -1124,6 +1235,18 @@
       ]
     },
     {
+      "gate_id": "stable-v1-australian-health-federation",
+      "description": "Complete donor parity, public raw and derived Australian data publication, Silver and Gold contracts, federated Platinum products, and archive-readiness evidence.",
+      "state": "blocked",
+      "evidence": [
+        "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md",
+        "conductor/tracks/australian_health_source_consolidation_20260829/plan.md",
+        "conductor/tracks/public_hf_federated_data_plane_20260829/plan.md",
+        "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md",
+        "conductor/tracks/federated_medicines_platinum_20260829/plan.md"
+      ]
+    },
+    {
       "gate_id": "stable-v1-release-approval",
       "description": "Obtain explicit approval for final stable v1 promotion; the existing v1.0.0rc1 authority is prerelease-only.",
       "state": "blocked",
@@ -1171,6 +1294,7 @@
   "qualification_state": "blocked",
   "unresolved_gate_ids": [
     "renovate-output-verification",
+    "stable-v1-australian-health-federation",
     "stable-v1-bronze-current-scope",
     "stable-v1-maturity-m5",
     "stable-v1-release-approval"

@@ -23,6 +23,18 @@ QUALITY_CLOSURE = "quality/qualifications/quality-hardening-closure.json"
 PRODUCTION_DR = (
     "quality/qualifications/stable-v1-production-dr-authority-blocker.json"
 )
+AUSTRALIAN_HEALTH_GATE = "stable-v1-australian-health-federation"
+AUSTRALIAN_HEALTH_REQUIREMENTS = {
+    "M-105",
+    "M-106",
+    "M-107",
+    "M-108",
+    "M-109",
+    "M-110",
+    "M-111",
+    "M-112",
+    "M-113",
+}
 
 TECHNICAL_GATE_EVIDENCE = {
     "stable-v1-canonical-schema-v2": [
@@ -93,6 +105,9 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
             requirement["evidence"] = _append_unique(
                 requirement["evidence"], [BRONZE_PLAN, BRONZE_MATURITY]
             )
+        elif requirement_id in AUSTRALIAN_HEALTH_REQUIREMENTS:
+            requirement["state"] = "blocked"
+            requirement["blocker_ids"] = [AUSTRALIAN_HEALTH_GATE]
         else:
             requirement["state"] = "verified"
             requirement["blocker_ids"] = []

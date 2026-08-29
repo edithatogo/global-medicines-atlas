@@ -211,6 +211,7 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
     assert set(projection["unresolved_gate_ids"]) == unresolved
     assert unresolved == {
         "renovate-output-verification",
+        "stable-v1-australian-health-federation",
         "stable-v1-bronze-current-scope",
         "stable-v1-maturity-m5",
         "stable-v1-release-approval",
@@ -239,7 +240,19 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
         for requirement_id, item in requirements.items()
         if item["state"] != "verified"
     }
-    assert blocked_requirements == {"M-046", "M-095"}
+    assert blocked_requirements == {
+        "M-046",
+        "M-095",
+        "M-105",
+        "M-106",
+        "M-107",
+        "M-108",
+        "M-109",
+        "M-110",
+        "M-111",
+        "M-112",
+        "M-113",
+    }
 
     invalid = copy.deepcopy(projection)
     invalid["qualification_state"] = "qualified"
