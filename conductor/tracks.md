@@ -49,3 +49,6 @@ and rationale contract in that policy.
 
 - [ ] **Track: Establish the public Hugging Face federated data plane**
   *Link: [tracks/public_hf_federated_data_plane_20260829/index.md](./tracks/public_hf_federated_data_plane_20260829/index.md); hosted-only public raw/derived storage, medallion federation v4, anonymous restoration, collection and estate alignment, and transient local caches.*
+
+- [ ] **Track: Implement Australian benefits Silver and Gold**
+  *Link: [tracks/australian_benefits_silver_gold_20260829/index.md](./tracks/australian_benefits_silver_gold_20260829/index.md); source-faithful MBS/PBS tables, historical/current comparisons, and reviewable temporal evidence graphs.*
