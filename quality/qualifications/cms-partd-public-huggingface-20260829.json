@@ -1,0 +1,27 @@
+{
+  "schema_id": "global-medicines-atlas.cms-partd-public-huggingface",
+  "schema_version": 1,
+  "observed_at": "2026-08-29T01:17:18Z",
+  "dataset": "edithatogo/global-medicines-atlas-cms-partd-20260827",
+  "public_url": "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-cms-partd-20260827",
+  "immutable_revision": "3be94ff8076f3e9eaa9cf9395cbd14c114cedc94",
+  "github_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/33225434670",
+  "github_head_sha": "0614ab8c131072d09d17d7dcedf56ab20dfc415c",
+  "payload_count": 33,
+  "formulary_release_count": 30,
+  "spending_resource_count": 3,
+  "manifest_sha256": "07152324ce16cbfc9d8004c7a3ad43d20bfde4c9cd0172110caa9c08cd9a8c1c",
+  "public_verification_sha256": "66408e22bb3f54b745e32f31cb3a21df08139b42caaa35473ed2a5bae01277f5",
+  "anonymous_digest_match": true,
+  "dataset_public_from_initialization": true,
+  "source_bytes_committed_to_git": false,
+  "local_acquisition_removed_after_verification": true,
+  "bronze_projection_qualified": false,
+  "private_archive_qualified": false,
+  "boundaries": [
+    "The formulary resources remain subject to the CMS Agreement for Use.",
+    "The archive preserves official source bytes and evidence receipts; it does not establish source-faithful Parquet qualification.",
+    "CMS Part D spending is gross rather than net and does not represent total United States medicine utilisation.",
+    "Missing coverage is not negative evidence."
+  ]
+}
