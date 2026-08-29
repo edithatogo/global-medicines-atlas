@@ -66,6 +66,9 @@
   native XML slicing. (`d9b583e`)
 - [x] Regenerate the stable-v1 measured-coverage receipt after the concurrent
   hosted donor-binding correction changed its content-bound inputs. (`52ebf78`)
+- [x] Match XML structural limits to the governed PBS archive envelope, require
+  the v3 schedule root, bound tag iteration, and preserve absent AMT resources
+  as Parquet nulls. (`00a59eb`)
 
 ## Review Fixes: MBS source-domain phase
 
