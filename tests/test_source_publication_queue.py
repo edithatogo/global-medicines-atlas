@@ -22,13 +22,13 @@ def _queue() -> dict[str, Any]:
 def test_queue_is_deterministic_and_separates_rights_from_acquisition() -> None:
     queue = _queue()
     assert queue == build()
-    assert queue["candidate_count"] == 26
+    assert queue["candidate_count"] == 28
     assert queue["publication_gate"] == (
         "satisfied_exact_manifest_maintainer_approval"
     )
-    assert queue["public_eligible_count"] == 24
-    assert queue["published_count"] == 24
-    assert queue["acquisition_evidenced_count"] == 24
+    assert queue["public_eligible_count"] == 26
+    assert queue["published_count"] == 26
+    assert queue["acquisition_evidenced_count"] == 26
     assert queue["acquisition_pending_count"] == 2
     assert queue["temporarily_unavailable_count"] == 0
 
@@ -38,7 +38,7 @@ def test_published_sources_bind_exact_publication_receipts() -> None:
     evidenced = [
         entry for entry in entries if entry["acquisition_state"] == "evidenced"
     ]
-    assert len(evidenced) == 24
+    assert len(evidenced) == 26
     assert all(entry["acquisition_evidence"] for entry in evidenced)
     assert all(
         entry["next_action"] == "monitor_public_revision" for entry in evidenced
@@ -55,6 +55,12 @@ def test_approved_manifests_match_publication_receipts() -> None:
                 (
                     ROOT
                     / "quality/qualifications/fda-public-huggingface-20260821.json"
+                ).read_text(encoding="utf-8")
+            ),
+            json.loads(
+                (
+                    ROOT
+                    / "quality/qualifications/australian-mbs-public-huggingface-20260829.json"
                 ).read_text(encoding="utf-8")
             ),
             json.loads(

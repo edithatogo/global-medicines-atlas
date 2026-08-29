@@ -3,13 +3,21 @@
   "overrides": [
     {
       "source_id": "au-mbs",
-      "state": "not_yet_implemented",
-      "reason": "The bounded parser and exact streamed qualification pass, but the source payload does not yet have a hosted public B1/B2 landing and anonymous restore receipt. Parser evidence must not be reported as landed raw coverage."
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "The exact July 2025 MBS XML is publicly retained as immutable B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. This is service-benefit evidence, not medicine regulatory or PBS funding evidence.",
+      "evidence_references": [
+        "quality/qualifications/australian-mbs-public-huggingface-20260829.json"
+      ]
     },
     {
       "source_id": "au-mbs-p7-legacy-workbook",
-      "state": "not_yet_implemented",
-      "reason": "The bounded workbook projection and exact streamed qualification pass, but the workbook does not yet have a hosted public B1/B2 landing and anonymous restore receipt. Parser evidence must not be reported as landed raw coverage."
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "The exact July 2024 P7 workbook is publicly retained as immutable legacy B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. Its legacy schema era remains explicit for comparison and does not imply current coverage.",
+      "evidence_references": [
+        "quality/qualifications/australian-mbs-public-huggingface-20260829.json"
+      ]
     },
     {
       "source_id": "fr-open-medic",

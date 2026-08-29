@@ -25,6 +25,8 @@ PUBLICATION_EVIDENCE = {
     / "quality/qualifications/international-public-huggingface-20260821.json",
     "open-medic": ROOT
     / "quality/qualifications/open-medic-public-huggingface-20260821.json",
+    "australian-mbs": ROOT
+    / "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
 }
 FAILURE_EVIDENCE = {
     "fr-open-medic": ROOT

@@ -90,6 +90,10 @@ def _review(
 ) -> SourceRightsReview:
     approved = source_id in approved_source_ids
     derived_only = source_id in approved_derived_ids
+    reviewed_at = max(
+        [REVIEWED_AT]
+        + [str(item["observed_at"]) for item in family["evidence"]]
+    )
     return SourceRightsReview.model_validate({
         "source_id": source_id,
         "policy_family_id": family_id,
@@ -103,7 +107,7 @@ def _review(
         ),
         "maintainer_licence_approved": approved,
         "maintainer_publication_approved": approved,
-        "reviewed_at": REVIEWED_AT,
+        "reviewed_at": reviewed_at,
         "blocker": None
         if approved
         else (
@@ -183,7 +187,7 @@ def build() -> dict[str, Any]:
     validate_catalogue_reviews(
         source_ids,
         reviews,
-        as_of=datetime(2026, 8, 21, tzinfo=UTC),
+        as_of=datetime(2026, 8, 30, tzinfo=UTC),
     )
     entries = [
         review.model_dump(mode="json")

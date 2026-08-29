@@ -17,20 +17,31 @@ def test_every_catalogue_source_has_a_fail_closed_disposition() -> None:
     assert matrix == built
     assert matrix["source_count"] == 174
     assert len(matrix["entries"]) == 174
-    assert {
+    dispositions = {
         entry["recommended_disposition"] for entry in matrix["entries"]
-    } == {"catalogue_only"}
-    assert {entry["public_derived_release"] for entry in matrix["entries"]} == {
-        "not_approved"
     }
-
-
-def test_public_surfaces_are_not_approved_by_batch_policy() -> None:
-    matrix = json.loads(MATRIX.read_text(encoding="utf-8"))
-    assert (
-        matrix["public_derived_release"] == "source_specific_receipt_required"
-    )
-    assert all(
-        entry["approved_surfaces"] == ["repository_metadata"]
+    assert dispositions == {
+        "approved_public_source",
+        "catalogue_only",
+        "credentialed_excluded",
+    }
+    approved = [
+        entry
         for entry in matrix["entries"]
-    )
+        if entry["public_derived_release"] == "approved_for_exact_manifest"
+    ]
+    assert len(approved) == 2
+
+
+def test_public_surfaces_require_source_specific_ledger_approval() -> None:
+    matrix = json.loads(MATRIX.read_text(encoding="utf-8"))
+    assert matrix["public_derived_release"] == "exact_approved_manifests_only"
+    entries = {entry["source_id"]: entry for entry in matrix["entries"]}
+    for source_id in ("au-mbs", "au-mbs-p7-legacy-workbook"):
+        assert entries[source_id]["approved_surfaces"] == [
+            "repository_metadata",
+            "source_bytes",
+            "derived_products",
+        ]
+        assert entries[source_id]["required_evidence"] == []
+        assert entries[source_id]["blocker"] is None
