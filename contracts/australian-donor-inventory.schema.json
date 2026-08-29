@@ -1,0 +1,308 @@
+{
+  "$defs": {
+    "DonorFile": {
+      "properties": {
+        "byte_count": {
+          "minimum": 0,
+          "title": "Byte Count",
+          "type": "integer"
+        },
+        "disposition": {
+          "enum": [
+            "adopt",
+            "adapt",
+            "replace-with-equivalent",
+            "retain-legacy",
+            "supersede",
+            "exclude-with-reason",
+            "unclassified"
+          ],
+          "title": "Disposition",
+          "type": "string"
+        },
+        "disposition_reason": {
+          "title": "Disposition Reason",
+          "type": "string"
+        },
+        "git_object": {
+          "title": "Git Object",
+          "type": "string"
+        },
+        "implementation_state": {
+          "title": "Implementation State",
+          "type": "string"
+        },
+        "language": {
+          "title": "Language",
+          "type": "string"
+        },
+        "mode": {
+          "title": "Mode",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "repository": {
+          "title": "Repository",
+          "type": "string"
+        },
+        "revision": {
+          "title": "Revision",
+          "type": "string"
+        },
+        "roles": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Roles",
+          "type": "array"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "repository",
+        "revision",
+        "path",
+        "mode",
+        "git_object",
+        "byte_count",
+        "sha256",
+        "language",
+        "roles",
+        "implementation_state",
+        "disposition",
+        "disposition_reason"
+      ],
+      "title": "DonorFile",
+      "type": "object"
+    },
+    "DonorFunction": {
+      "properties": {
+        "disposition": {
+          "enum": [
+            "adopt",
+            "adapt",
+            "replace-with-equivalent",
+            "retain-legacy",
+            "supersede",
+            "exclude-with-reason",
+            "unclassified"
+          ],
+          "title": "Disposition",
+          "type": "string"
+        },
+        "is_async": {
+          "title": "Is Async",
+          "type": "boolean"
+        },
+        "line": {
+          "minimum": 1,
+          "title": "Line",
+          "type": "integer"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "qualified_name": {
+          "title": "Qualified Name",
+          "type": "string"
+        },
+        "repository": {
+          "title": "Repository",
+          "type": "string"
+        }
+      },
+      "required": [
+        "repository",
+        "path",
+        "qualified_name",
+        "line",
+        "is_async",
+        "disposition"
+      ],
+      "title": "DonorFunction",
+      "type": "object"
+    },
+    "DonorSnapshot": {
+      "properties": {
+        "code_license": {
+          "const": "Apache-2.0",
+          "default": "Apache-2.0",
+          "title": "Code License",
+          "type": "string"
+        },
+        "license_path": {
+          "title": "License Path",
+          "type": "string"
+        },
+        "license_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "License Sha256",
+          "type": "string"
+        },
+        "reachable_commit_count": {
+          "minimum": 1,
+          "title": "Reachable Commit Count",
+          "type": "integer"
+        },
+        "repository": {
+          "title": "Repository",
+          "type": "string"
+        },
+        "revision": {
+          "title": "Revision",
+          "type": "string"
+        },
+        "root_commits": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Root Commits",
+          "type": "array"
+        }
+      },
+      "required": [
+        "repository",
+        "revision",
+        "reachable_commit_count",
+        "root_commits",
+        "license_path",
+        "license_sha256"
+      ],
+      "title": "DonorSnapshot",
+      "type": "object"
+    },
+    "DonorWorkflow": {
+      "properties": {
+        "disposition": {
+          "enum": [
+            "adopt",
+            "adapt",
+            "replace-with-equivalent",
+            "retain-legacy",
+            "supersede",
+            "exclude-with-reason",
+            "unclassified"
+          ],
+          "title": "Disposition",
+          "type": "string"
+        },
+        "job": {
+          "title": "Job",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "repository": {
+          "title": "Repository",
+          "type": "string"
+        }
+      },
+      "required": [
+        "repository",
+        "path",
+        "job",
+        "disposition"
+      ],
+      "title": "DonorWorkflow",
+      "type": "object"
+    },
+    "RoadmapCapability": {
+      "properties": {
+        "capability": {
+          "title": "Capability",
+          "type": "string"
+        },
+        "disposition": {
+          "const": "retain-legacy",
+          "default": "retain-legacy",
+          "title": "Disposition",
+          "type": "string"
+        },
+        "implementation_state": {
+          "const": "roadmap-only",
+          "default": "roadmap-only",
+          "title": "Implementation State",
+          "type": "string"
+        },
+        "successor_track": {
+          "title": "Successor Track",
+          "type": "string"
+        }
+      },
+      "required": [
+        "capability",
+        "successor_track"
+      ],
+      "title": "RoadmapCapability",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "denominator_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Denominator Sha256",
+      "type": "string"
+    },
+    "files": {
+      "items": {
+        "$ref": "#/$defs/DonorFile"
+      },
+      "title": "Files",
+      "type": "array"
+    },
+    "functions": {
+      "items": {
+        "$ref": "#/$defs/DonorFunction"
+      },
+      "title": "Functions",
+      "type": "array"
+    },
+    "repositories": {
+      "items": {
+        "$ref": "#/$defs/DonorSnapshot"
+      },
+      "title": "Repositories",
+      "type": "array"
+    },
+    "roadmap_capabilities": {
+      "items": {
+        "$ref": "#/$defs/RoadmapCapability"
+      },
+      "title": "Roadmap Capabilities",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "workflows": {
+      "items": {
+        "$ref": "#/$defs/DonorWorkflow"
+      },
+      "title": "Workflows",
+      "type": "array"
+    }
+  },
+  "required": [
+    "repositories",
+    "files",
+    "functions",
+    "workflows",
+    "roadmap_capabilities",
+    "denominator_sha256"
+  ],
+  "title": "AustralianDonorInventory",
+  "type": "object"
+}

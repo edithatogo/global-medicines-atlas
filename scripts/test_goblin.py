@@ -210,6 +210,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
     ),
     "integration": (
         "tests/test_nz_asset_inventory.py",
+        "tests/test_australian_donor_inventory.py",
         "tests/test_nz_consolidation.py",
         "tests/test_nz_fixture_indexes.py",
         "tests/test_nzmedicines_history_restoration.py",
@@ -1163,6 +1164,7 @@ def regeneration() -> None:
     """Verify deterministic qualification and release-evidence regeneration."""
     tests = (
         "tests/test_nz_asset_inventory.py",
+        "tests/test_australian_donor_inventory.py",
         "tests/test_nz_consolidation.py",
         "tests/test_nz_fixture_indexes.py",
         "tests/test_nzmedicines_history_restoration.py",

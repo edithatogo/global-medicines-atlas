@@ -1,0 +1,1162 @@
+{
+  "denominator_sha256": "45e18c877e168734eec4e937f574089d11b25c60283d7484b34d4f069a5a70ba",
+  "files": [
+    {
+      "byte_count": 350,
+      "disposition": "supersede",
+      "disposition_reason": "The canonical repository provides the maintained equivalent.",
+      "git_object": "f21cce3d4424d6e8cb0ba8c6f049dda41b97f237",
+      "implementation_state": "repository-metadata",
+      "language": "Other",
+      "mode": "100644",
+      "path": ".editorconfig",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "tracked_file"
+      ],
+      "sha256": "40e574ec9f38ff42df38309307e0303afcda0db459eac27ff773ce021365ab46"
+    },
+    {
+      "byte_count": 106,
+      "disposition": "supersede",
+      "disposition_reason": "The canonical repository provides the maintained equivalent.",
+      "git_object": "b38df29f46e14033477513e27b6b7a689b75ed51",
+      "implementation_state": "repository-metadata",
+      "language": "YAML",
+      "mode": "100644",
+      "path": ".github/dependabot.yml",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "tracked_file"
+      ],
+      "sha256": "9f5fef3066d7b13bf2a3c7723569f1fb8d579123134862ea3f6d920d6166c2fc"
+    },
+    {
+      "byte_count": 1384,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve repository and design provenance.",
+      "git_object": "d3bf483f2826600253f93f5496659809df07c4b8",
+      "implementation_state": "documentation",
+      "language": "Markdown",
+      "mode": "100644",
+      "path": ".github/pull_request_template.md",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "documentation",
+        "tracked_file"
+      ],
+      "sha256": "aee7417c9dae9b9f3013b08d30048e234b91b33acf4b226c2c0d24888dfb5088"
+    },
+    {
+      "byte_count": 574,
+      "disposition": "replace-with-equivalent",
+      "disposition_reason": "Retain intent while replacing green-with-no-data automation.",
+      "git_object": "6bc00960faaefd159adac31e5a0c16947493b8bd",
+      "implementation_state": "workflow",
+      "language": "YAML",
+      "mode": "100644",
+      "path": ".github/workflows/ci.yml",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "tracked_file",
+        "workflow"
+      ],
+      "sha256": "1e8dd834374491678bad46ded454e8da949da59bcc82561152810823559affd9"
+    },
+    {
+      "byte_count": 1608,
+      "disposition": "replace-with-equivalent",
+      "disposition_reason": "Retain intent while replacing green-with-no-data automation.",
+      "git_object": "8c4a451a118eb87efb04a094d0d6e5c0e4622263",
+      "implementation_state": "workflow",
+      "language": "YAML",
+      "mode": "100644",
+      "path": ".github/workflows/monthly_run.yml",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "tracked_file",
+        "workflow"
+      ],
+      "sha256": "0503c7e3595edb0ba9996ec5d7ec283db9b6a228d875cc62eeae9a2087f12d83"
+    },
+    {
+      "byte_count": 445,
+      "disposition": "supersede",
+      "disposition_reason": "The canonical repository provides the maintained equivalent.",
+      "git_object": "32bc4935340435ec0a2379f1af53b18d591af29d",
+      "implementation_state": "repository-metadata",
+      "language": "Other",
+      "mode": "100644",
+      "path": ".gitignore",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "tracked_file"
+      ],
+      "sha256": "2b3346d29291e8e580e4e4b14f6880aa516d08703cf0880f154c44dac2ffae2e"
+    },
+    {
+      "byte_count": 365,
+      "disposition": "supersede",
+      "disposition_reason": "The canonical repository provides the maintained equivalent.",
+      "git_object": "ee2edd4c08fb5c2c80f3b8ece46a66e7eeb4ffe4",
+      "implementation_state": "repository-metadata",
+      "language": "YAML",
+      "mode": "100644",
+      "path": ".pre-commit-config.yaml",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "tracked_file"
+      ],
+      "sha256": "b493aaf3ecd523528d428824f1f4b53422aa320dbea735c95b2e180bd44bcfe6"
+    },
+    {
+      "byte_count": 331,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve repository and design provenance.",
+      "git_object": "baef707956fd64fc8307485e6a10ae1001674437",
+      "implementation_state": "documentation",
+      "language": "Markdown",
+      "mode": "100644",
+      "path": "CHANGELOG.md",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "documentation",
+        "tracked_file"
+      ],
+      "sha256": "593081f674af04883aa45ac8cbddb8d6274f635730bcbcbc588bfb29aec13d8d"
+    },
+    {
+      "byte_count": 1000,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve repository and design provenance.",
+      "git_object": "501a7d8bcfcff799902fff5adf0aa1eaa223ac5d",
+      "implementation_state": "documentation",
+      "language": "Markdown",
+      "mode": "100644",
+      "path": "CONTRIBUTING.md",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "documentation",
+        "tracked_file"
+      ],
+      "sha256": "c040be2f16ab30978749693501a2107ede0b2e04a1aa7bcf61d544a2b46fa2e9"
+    },
+    {
+      "byte_count": 192,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve repository and design provenance.",
+      "git_object": "e66de71c96ce52819b6c5fc087dbd4713718c007",
+      "implementation_state": "documentation",
+      "language": "Markdown",
+      "mode": "100644",
+      "path": "EXPLAINER.md",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "documentation",
+        "tracked_file"
+      ],
+      "sha256": "beef64f6cacfce88880b6dc07fc7bceffc1fdae65dab2438a54c6f9f68b65944"
+    },
+    {
+      "byte_count": 11316,
+      "disposition": "supersede",
+      "disposition_reason": "The canonical repository provides the maintained equivalent.",
+      "git_object": "d431f41563e0f3be96fa1e2e5f28266b578c57e1",
+      "implementation_state": "repository-metadata",
+      "language": "Other",
+      "mode": "100644",
+      "path": "LICENSE",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "tracked_file"
+      ],
+      "sha256": "1b08c34fd4904bf72b922f034101323e8819d4d75e72b6a8873dae05946b2bd0"
+    },
+    {
+      "byte_count": 2586,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve repository and design provenance.",
+      "git_object": "31adba7b45e228e21f4f19049eb280accf83952f",
+      "implementation_state": "documentation",
+      "language": "Markdown",
+      "mode": "100644",
+      "path": "README.md",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "documentation",
+        "tracked_file"
+      ],
+      "sha256": "a125ff591623c000c00258d6c1f76f183917e30049d1d9836ab79e0da10a7b63"
+    },
+    {
+      "byte_count": 1433,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve design intent and route it to explicit successor tracks.",
+      "git_object": "3883dba7e8a68141e30b6c290f639fe12a0ce366",
+      "implementation_state": "roadmap",
+      "language": "Markdown",
+      "mode": "100644",
+      "path": "ROADMAP.md",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "documentation",
+        "roadmap",
+        "tracked_file"
+      ],
+      "sha256": "cebcfe2dacb7ff24ac68433744b13dd05350f364c4b1ec98a961e133585eba4f"
+    },
+    {
+      "byte_count": 370,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve repository and design provenance.",
+      "git_object": "29cc9da80ade17a6154d69f913c8aacebefb95aa",
+      "implementation_state": "documentation",
+      "language": "Markdown",
+      "mode": "100644",
+      "path": "agents.md",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "documentation",
+        "tracked_file"
+      ],
+      "sha256": "07b92fe7b50c9782c242b2ec87b4732f5805e1c14ef3ac2f513a18aee8baa96b"
+    },
+    {
+      "byte_count": 0,
+      "disposition": "supersede",
+      "disposition_reason": "The canonical repository provides the maintained equivalent.",
+      "git_object": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "implementation_state": "repository-metadata",
+      "language": "Other",
+      "mode": "100644",
+      "path": "data/processed/.gitkeep",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "tracked_file"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "byte_count": 0,
+      "disposition": "supersede",
+      "disposition_reason": "The canonical repository provides the maintained equivalent.",
+      "git_object": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "implementation_state": "repository-metadata",
+      "language": "Other",
+      "mode": "100644",
+      "path": "data/raw/.gitkeep",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "tracked_file"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "byte_count": 87727,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve exact source bytes and provenance for governed replay.",
+      "git_object": "a9d302b8a278f9e65659a1f5da09ded21723a239",
+      "implementation_state": "source-data",
+      "language": "Excel workbook",
+      "mode": "100755",
+      "path": "data/source/MBS - 2024.07 - Group P7 (Genetics).xlsx",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "data_object",
+        "tracked_file"
+      ],
+      "sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
+    },
+    {
+      "byte_count": 3903,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve repository and design provenance.",
+      "git_object": "bbdfb76c2814adbb77e8d8c82cff3aba2bd16571",
+      "implementation_state": "documentation",
+      "language": "Markdown",
+      "mode": "100644",
+      "path": "gemini.md",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "documentation",
+        "tracked_file"
+      ],
+      "sha256": "958b2814e5e3c876a5b951655fbf7603daeca537c6f507e49a794f7e7b153705"
+    },
+    {
+      "byte_count": 364,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve repository and design provenance.",
+      "git_object": "b6c4c24035ddd901c26f02abe87bc05832682a2e",
+      "implementation_state": "documentation",
+      "language": "Markdown",
+      "mode": "100644",
+      "path": "jules.md",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "documentation",
+        "tracked_file"
+      ],
+      "sha256": "24067c185a934130ac7e199c21c6430ccba4d26e5c62ea36176213094fbd8a57"
+    },
+    {
+      "byte_count": 369,
+      "disposition": "supersede",
+      "disposition_reason": "The canonical repository provides the maintained equivalent.",
+      "git_object": "162504bb88dac877050032eb684a3fd8b1e74219",
+      "implementation_state": "repository-metadata",
+      "language": "Other",
+      "mode": "100644",
+      "path": "justfile",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "tracked_file"
+      ],
+      "sha256": "8323c974115c9c6c8bd308ed15d4dcd7a99475e91ae3e2e4cab50d365840da6c"
+    },
+    {
+      "byte_count": 0,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve the exact empty historical path without a data claim.",
+      "git_object": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "implementation_state": "empty-placeholder",
+      "language": "Jupyter Notebook",
+      "mode": "100755",
+      "path": "legacy_scripts/Rename - Medicare Services - v4, 20241110.ipynb",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "legacy_placeholder",
+        "tracked_file"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "byte_count": 0,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve the exact empty historical path without a data claim.",
+      "git_object": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "implementation_state": "empty-placeholder",
+      "language": "Jupyter Notebook",
+      "mode": "100755",
+      "path": "legacy_scripts/Rename - Medicare Services Data - v2, 20240225.ipynb",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "legacy_placeholder",
+        "tracked_file"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "byte_count": 0,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve the exact empty historical path without a data claim.",
+      "git_object": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "implementation_state": "empty-placeholder",
+      "language": "Jupyter Notebook",
+      "mode": "100755",
+      "path": "legacy_scripts/Rename - Medicare Services Data - v3, 20240831.ipynb",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "legacy_placeholder",
+        "tracked_file"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "byte_count": 0,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve the exact empty historical path without a data claim.",
+      "git_object": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "implementation_state": "empty-placeholder",
+      "language": "Jupyter Notebook",
+      "mode": "100644",
+      "path": "legacy_scripts/Scrape (Medicare Registrants) - v1, 20250627.ipynb",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "legacy_placeholder",
+        "tracked_file"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "byte_count": 0,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve the exact empty historical path without a data claim.",
+      "git_object": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "implementation_state": "empty-placeholder",
+      "language": "Jupyter Notebook",
+      "mode": "100755",
+      "path": "legacy_scripts/Scrape - v1, 20250412.ipynb",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "legacy_placeholder",
+        "tracked_file"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "byte_count": 0,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve the exact empty historical path without a data claim.",
+      "git_object": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "implementation_state": "empty-placeholder",
+      "language": "Jupyter Notebook",
+      "mode": "100644",
+      "path": "legacy_scripts/Scrape - v2, 20250622.ipynb",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "legacy_placeholder",
+        "tracked_file"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "byte_count": 0,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve the exact empty historical path without a data claim.",
+      "git_object": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "implementation_state": "empty-placeholder",
+      "language": "Jupyter Notebook",
+      "mode": "100755",
+      "path": "legacy_scripts/Scrape MBS Items - v1, 20241102.ipynb",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "legacy_placeholder",
+        "tracked_file"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "byte_count": 27,
+      "disposition": "supersede",
+      "disposition_reason": "The canonical repository provides the maintained equivalent.",
+      "git_object": "4343e2778b3b677aa3c55d3c68918f50f2d25ded",
+      "implementation_state": "repository-metadata",
+      "language": "Other",
+      "mode": "100644",
+      "path": "requirements.txt",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "tracked_file"
+      ],
+      "sha256": "dc4080d8818a72b3cc46229199acf2d11af1695354212da05976364fa197c4d9"
+    },
+    {
+      "byte_count": 0,
+      "disposition": "adapt",
+      "disposition_reason": "Retain useful behavior behind GMA typing, safety, and provenance controls.",
+      "git_object": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "implementation_state": "implemented-code",
+      "language": "Python",
+      "mode": "100644",
+      "path": "src/__init__.py",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "code",
+        "tracked_file"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "byte_count": 1767,
+      "disposition": "replace-with-equivalent",
+      "disposition_reason": "Preserve behavior through typed contracts without the path/type defect.",
+      "git_object": "df0f1725a2cc46aafa6d2565e5faacd848baae72",
+      "implementation_state": "partially-defective-code",
+      "language": "Python",
+      "mode": "100644",
+      "path": "src/main.py",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "code",
+        "tracked_file"
+      ],
+      "sha256": "552ac6b2aab2f7c60af634b61d887290d736c668987b69827a1194d947bf2851"
+    },
+    {
+      "byte_count": 4394,
+      "disposition": "replace-with-equivalent",
+      "disposition_reason": "Preserve behavior through typed contracts without the path/type defect.",
+      "git_object": "e1b976984ca3994981b4d50d014cfefab5e912b9",
+      "implementation_state": "partially-defective-code",
+      "language": "Python",
+      "mode": "100644",
+      "path": "src/processor.py",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "code",
+        "tracked_file"
+      ],
+      "sha256": "942f7fd9440a48c97497f37ad66724682ec6576e26eb647d4067f63c4e4f45b1"
+    },
+    {
+      "byte_count": 3125,
+      "disposition": "adapt",
+      "disposition_reason": "Retain useful behavior behind GMA typing, safety, and provenance controls.",
+      "git_object": "7b79ff9db33e0398fe503ceccfed6afc03a1aa0e",
+      "implementation_state": "implemented-code",
+      "language": "Python",
+      "mode": "100644",
+      "path": "src/scraper.py",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "code",
+        "tracked_file"
+      ],
+      "sha256": "66b495e89c04af7653778f1b603405b9c57022fa54a7684e6eb06066d2a2f0d8"
+    },
+    {
+      "byte_count": 0,
+      "disposition": "adapt",
+      "disposition_reason": "Retain useful behavior behind GMA typing, safety, and provenance controls.",
+      "git_object": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "implementation_state": "implemented-code",
+      "language": "Python",
+      "mode": "100644",
+      "path": "tests/__init__.py",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "code",
+        "tracked_file"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "byte_count": 651,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve exact source bytes and provenance for governed replay.",
+      "git_object": "8218ec343ec01ff8ccfde21fe3ac74a8867a3f86",
+      "implementation_state": "source-data",
+      "language": "HTML",
+      "mode": "100644",
+      "path": "tests/fixtures/sample_item.html",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "data_object",
+        "fixture",
+        "tracked_file"
+      ],
+      "sha256": "a01de22c13c6eeb2cb124d39e03fba6ffc0d43dc7e4719e8655a1277f2d752e1"
+    },
+    {
+      "byte_count": 1612,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve exact source bytes and provenance for governed replay.",
+      "git_object": "3fa349d44e66745933bb4fd0d281686524289a66",
+      "implementation_state": "source-data",
+      "language": "XML",
+      "mode": "100644",
+      "path": "tests/fixtures/sample_mbs.xml",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "data_object",
+        "fixture",
+        "tracked_file"
+      ],
+      "sha256": "f3c85753724cd97e920be1b317a6eaa617311e94f072b70bbf6ba5eec158cbc6"
+    },
+    {
+      "byte_count": 576,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve exact source bytes and provenance for governed replay.",
+      "git_object": "cf23d67e8373f55bb387c891f952c4f0513471b9",
+      "implementation_state": "source-data",
+      "language": "HTML",
+      "mode": "100644",
+      "path": "tests/fixtures/sample_participant.html",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "data_object",
+        "fixture",
+        "tracked_file"
+      ],
+      "sha256": "50814c656404fae345fe0bbed7024f8f7c63eff737355ff48b6a1465b5adc587"
+    },
+    {
+      "byte_count": 2274,
+      "disposition": "replace-with-equivalent",
+      "disposition_reason": "Preserve behavior through typed contracts without the path/type defect.",
+      "git_object": "e3a5c704fb4788b0f6a54df9d30eb449322fd4cf",
+      "implementation_state": "partially-defective-code",
+      "language": "Python",
+      "mode": "100644",
+      "path": "tests/test_processor.py",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "code",
+        "tracked_file"
+      ],
+      "sha256": "bfb803c47867207205d390f8eecbb77743d9a004f29ece91f156a265fd589b81"
+    },
+    {
+      "byte_count": 1494,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve design intent and route it to explicit successor tracks.",
+      "git_object": "bebe1b47ee6ba0aa920e25d1e6ed0ceb6707b9ee",
+      "implementation_state": "roadmap",
+      "language": "Markdown",
+      "mode": "100644",
+      "path": "todo.md",
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "roles": [
+        "documentation",
+        "roadmap",
+        "tracked_file"
+      ],
+      "sha256": "0435d5bf03351e922c6fba8f48a30cddcaeefcdbdc9c63c539ea5a37435c0709"
+    },
+    {
+      "byte_count": 205,
+      "disposition": "supersede",
+      "disposition_reason": "The canonical repository provides the maintained equivalent.",
+      "git_object": "a2bd8ab529145e10e5cedd11399822fb3dd09fa4",
+      "implementation_state": "repository-metadata",
+      "language": "Other",
+      "mode": "100644",
+      "path": ".gitignore",
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "revision": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "roles": [
+        "tracked_file"
+      ],
+      "sha256": "c9f4a94a4a305618120fb29367365a7fb22b7eed77c33206677853b5a00e4ae2"
+    },
+    {
+      "byte_count": 6737,
+      "disposition": "supersede",
+      "disposition_reason": "The canonical repository provides the maintained equivalent.",
+      "git_object": "89e742366a518462094bb784bc8ef6479be2db1c",
+      "implementation_state": "repository-metadata",
+      "language": "Markdown",
+      "mode": "100644",
+      "path": "AGENTS.MD",
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "revision": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "roles": [
+        "tracked_file"
+      ],
+      "sha256": "2308321e3e464bde0f50a8e47e8f15851348a9643e4cc178499b1f4466f0e176"
+    },
+    {
+      "byte_count": 1021,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve repository and design provenance.",
+      "git_object": "c55272c928fe459317876ca1c6cb791f57c92156",
+      "implementation_state": "documentation",
+      "language": "Markdown",
+      "mode": "100644",
+      "path": "CHANGELOG.md",
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "revision": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "roles": [
+        "documentation",
+        "tracked_file"
+      ],
+      "sha256": "26575913595b582e6ad159b69cdf77eb69045f109180a362c2ec796fd10aa3ab"
+    },
+    {
+      "byte_count": 11357,
+      "disposition": "supersede",
+      "disposition_reason": "The canonical repository provides the maintained equivalent.",
+      "git_object": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+      "implementation_state": "repository-metadata",
+      "language": "Other",
+      "mode": "100644",
+      "path": "LICENSE",
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "revision": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "roles": [
+        "tracked_file"
+      ],
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "byte_count": 5639,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve repository and design provenance.",
+      "git_object": "2879f6231f6f2649ab90ca9a2a2a19259a106b73",
+      "implementation_state": "documentation",
+      "language": "Markdown",
+      "mode": "100644",
+      "path": "README.md",
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "revision": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "roles": [
+        "documentation",
+        "tracked_file"
+      ],
+      "sha256": "885ae3f0e8da14de45d5fec6a5a9ee32391c91082f2588300c74acdfdc1be7d5"
+    },
+    {
+      "byte_count": 5414,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve design intent and route it to explicit successor tracks.",
+      "git_object": "b1eb9a8ee88489ffe4d069ed1777e7084497066a",
+      "implementation_state": "roadmap",
+      "language": "Markdown",
+      "mode": "100644",
+      "path": "ROADMAP.md",
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "revision": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "roles": [
+        "documentation",
+        "roadmap",
+        "tracked_file"
+      ],
+      "sha256": "7fddb38f6da7e4d0b6eb07eb48913d3b416379c1d7fa6f706d395353200d6d01"
+    },
+    {
+      "byte_count": 5034,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve design intent and route it to explicit successor tracks.",
+      "git_object": "f4d4b64abfaa236e4104a47a2f140834d9634a66",
+      "implementation_state": "roadmap",
+      "language": "Markdown",
+      "mode": "100644",
+      "path": "TODO.md",
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "revision": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "roles": [
+        "documentation",
+        "roadmap",
+        "tracked_file"
+      ],
+      "sha256": "7fcc924e860f978939012498438203430e2471ecae8ec55513c5d7c2f98149ad"
+    },
+    {
+      "byte_count": 41,
+      "disposition": "supersede",
+      "disposition_reason": "The canonical repository provides the maintained equivalent.",
+      "git_object": "a7a5cb494b78988243247d224ab841676329ac41",
+      "implementation_state": "repository-metadata",
+      "language": "Other",
+      "mode": "100644",
+      "path": "requirements.txt",
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "revision": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "roles": [
+        "tracked_file"
+      ],
+      "sha256": "f41e46e47fdd4ba45a3793a69110d509b259ef16faf5137d0ed59a7ee58196ad"
+    },
+    {
+      "byte_count": 8194522,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve exact source bytes and provenance for governed replay.",
+      "git_object": "33b9ac313ff4a0f55168ae47556626fb0610a0bb",
+      "implementation_state": "source-data",
+      "language": "XML",
+      "mode": "100644",
+      "path": "scripts/parsing/MBS-XML-20250701 Version 3.XML",
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "revision": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "roles": [
+        "data_object",
+        "tracked_file"
+      ],
+      "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+    },
+    {
+      "byte_count": 4189,
+      "disposition": "adapt",
+      "disposition_reason": "Retain useful behavior behind GMA typing, safety, and provenance controls.",
+      "git_object": "4ccb5b8ece3900827765bc23fccbc78212dff2ef",
+      "implementation_state": "implemented-code",
+      "language": "Python",
+      "mode": "100644",
+      "path": "scripts/parsing/download_mbs.py",
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "revision": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "roles": [
+        "code",
+        "tracked_file"
+      ],
+      "sha256": "b60bc567b94959a17ab9e6684703dfcb5839ea5a2c3b5810247b7e6ea9c43b4b"
+    },
+    {
+      "byte_count": 4607,
+      "disposition": "adapt",
+      "disposition_reason": "Retain useful behavior behind GMA typing, safety, and provenance controls.",
+      "git_object": "8a995ca2474fe71d285c052898c5c2111504b800",
+      "implementation_state": "implemented-code",
+      "language": "Python",
+      "mode": "100644",
+      "path": "scripts/parsing/download_pbs.py",
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "revision": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "roles": [
+        "code",
+        "tracked_file"
+      ],
+      "sha256": "eae546675786e4669ec00a7389c8445fe45f6ed2d22ad73f08d829b4bd590eb2"
+    },
+    {
+      "byte_count": 5789,
+      "disposition": "replace-with-equivalent",
+      "disposition_reason": "The parser assumes the wrong repeated MBS element.",
+      "git_object": "b9d4aef063cc2f1183f30583c928877db593d863",
+      "implementation_state": "defective-code",
+      "language": "Python",
+      "mode": "100644",
+      "path": "scripts/parsing/parse_mbs_xml.py",
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "revision": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "roles": [
+        "code",
+        "tracked_file"
+      ],
+      "sha256": "ded32b40a7d4861470e38a86491b4f80a3549cb56349afc03af658874e90d138"
+    },
+    {
+      "byte_count": 6574,
+      "disposition": "replace-with-equivalent",
+      "disposition_reason": "The donor Python is syntactically invalid and must not be promoted.",
+      "git_object": "237b532f834a99b4cdbc20c85385a43db590cac4",
+      "implementation_state": "defective-code",
+      "language": "Python",
+      "mode": "100644",
+      "path": "scripts/parsing/parse_pbs_xml.py",
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "revision": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "roles": [
+        "code",
+        "tracked_file"
+      ],
+      "sha256": "33b15be85249d75eac05ca006b1e60a20f0e53c870150b0b453025a519f83c81"
+    },
+    {
+      "byte_count": 3849,
+      "disposition": "adapt",
+      "disposition_reason": "Retain useful behavior behind GMA typing, safety, and provenance controls.",
+      "git_object": "4b6d63f9a77888478caa1d213af1128f135078da",
+      "implementation_state": "implemented-code",
+      "language": "Python",
+      "mode": "100644",
+      "path": "scripts/utils/identify_pbs_tags.py",
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "revision": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "roles": [
+        "code",
+        "tracked_file"
+      ],
+      "sha256": "7de0c760ae7f39734d4c894e9d31b55f3ca231898b2d0762b7704f29602e56c9"
+    },
+    {
+      "byte_count": 3722,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve repository and design provenance.",
+      "git_object": "d0aaa9bb40faf539f4d14eafa8e0542a921ae067",
+      "implementation_state": "documentation",
+      "language": "Markdown",
+      "mode": "100644",
+      "path": "session_log.md",
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "revision": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "roles": [
+        "documentation",
+        "tracked_file"
+      ],
+      "sha256": "1ab6fb2034d902ecd17d009245526120926e35c8e3893e3f96edfeb473712d2d"
+    },
+    {
+      "byte_count": 0,
+      "disposition": "retain-legacy",
+      "disposition_reason": "Preserve the exact empty historical path without a data claim.",
+      "git_object": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "implementation_state": "empty-placeholder",
+      "language": "XML",
+      "mode": "100644",
+      "path": "temp_mbs_download.xml",
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "revision": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "roles": [
+        "legacy_placeholder",
+        "tracked_file"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "functions": [
+    {
+      "disposition": "replace-with-equivalent",
+      "is_async": false,
+      "line": 12,
+      "path": "src/main.py",
+      "qualified_name": "main",
+      "repository": "edithatogo/aus-health-data-scraper"
+    },
+    {
+      "disposition": "replace-with-equivalent",
+      "is_async": false,
+      "line": 7,
+      "path": "src/processor.py",
+      "qualified_name": "process_mbs_xml",
+      "repository": "edithatogo/aus-health-data-scraper"
+    },
+    {
+      "disposition": "replace-with-equivalent",
+      "is_async": false,
+      "line": 31,
+      "path": "src/processor.py",
+      "qualified_name": "combine_and_save_data",
+      "repository": "edithatogo/aus-health-data-scraper"
+    },
+    {
+      "disposition": "replace-with-equivalent",
+      "is_async": false,
+      "line": 81,
+      "path": "src/processor.py",
+      "qualified_name": "process_html_file",
+      "repository": "edithatogo/aus-health-data-scraper"
+    },
+    {
+      "disposition": "adapt",
+      "is_async": false,
+      "line": 10,
+      "path": "src/scraper.py",
+      "qualified_name": "month_range",
+      "repository": "edithatogo/aus-health-data-scraper"
+    },
+    {
+      "disposition": "adapt",
+      "is_async": true,
+      "line": 35,
+      "path": "src/scraper.py",
+      "qualified_name": "scrape_items",
+      "repository": "edithatogo/aus-health-data-scraper"
+    },
+    {
+      "disposition": "adapt",
+      "is_async": true,
+      "line": 60,
+      "path": "src/scraper.py",
+      "qualified_name": "scrape_participants",
+      "repository": "edithatogo/aus-health-data-scraper"
+    },
+    {
+      "disposition": "replace-with-equivalent",
+      "is_async": false,
+      "line": 8,
+      "path": "tests/test_processor.py",
+      "qualified_name": "temp_data_dirs",
+      "repository": "edithatogo/aus-health-data-scraper"
+    },
+    {
+      "disposition": "replace-with-equivalent",
+      "is_async": false,
+      "line": 21,
+      "path": "tests/test_processor.py",
+      "qualified_name": "test_combine_and_save_data",
+      "repository": "edithatogo/aus-health-data-scraper"
+    },
+    {
+      "disposition": "replace-with-equivalent",
+      "is_async": false,
+      "line": 50,
+      "path": "tests/test_processor.py",
+      "qualified_name": "test_process_mbs_xml",
+      "repository": "edithatogo/aus-health-data-scraper"
+    },
+    {
+      "disposition": "adapt",
+      "is_async": false,
+      "line": 11,
+      "path": "scripts/parsing/download_mbs.py",
+      "qualified_name": "get_filename_from_url",
+      "repository": "edithatogo/aus_mbs_pbs_graph"
+    },
+    {
+      "disposition": "adapt",
+      "is_async": false,
+      "line": 20,
+      "path": "scripts/parsing/download_mbs.py",
+      "qualified_name": "download_file",
+      "repository": "edithatogo/aus_mbs_pbs_graph"
+    },
+    {
+      "disposition": "adapt",
+      "is_async": false,
+      "line": 12,
+      "path": "scripts/parsing/download_pbs.py",
+      "qualified_name": "get_filename_from_url",
+      "repository": "edithatogo/aus_mbs_pbs_graph"
+    },
+    {
+      "disposition": "adapt",
+      "is_async": false,
+      "line": 18,
+      "path": "scripts/parsing/download_pbs.py",
+      "qualified_name": "download_and_unzip_pbs",
+      "repository": "edithatogo/aus_mbs_pbs_graph"
+    },
+    {
+      "disposition": "replace-with-equivalent",
+      "is_async": false,
+      "line": 9,
+      "path": "scripts/parsing/parse_mbs_xml.py",
+      "qualified_name": "parse_mbs_xml_initial",
+      "repository": "edithatogo/aus_mbs_pbs_graph"
+    },
+    {
+      "disposition": "replace-with-equivalent",
+      "is_async": false,
+      "line": 24,
+      "path": "scripts/parsing/parse_pbs_xml.py",
+      "qualified_name": "parse_pbs_xml_initial",
+      "repository": "edithatogo/aus_mbs_pbs_graph"
+    },
+    {
+      "disposition": "adapt",
+      "is_async": false,
+      "line": 12,
+      "path": "scripts/utils/identify_pbs_tags.py",
+      "qualified_name": "get_first_pharmaceutical_item_xml",
+      "repository": "edithatogo/aus_mbs_pbs_graph"
+    }
+  ],
+  "repositories": [
+    {
+      "code_license": "Apache-2.0",
+      "license_path": "LICENSE",
+      "license_sha256": "1b08c34fd4904bf72b922f034101323e8819d4d75e72b6a8873dae05946b2bd0",
+      "reachable_commit_count": 12,
+      "repository": "edithatogo/aus-health-data-scraper",
+      "revision": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+      "root_commits": [
+        "b1598a6c228bd4030ae43ea15774a63fbaa24fb8"
+      ]
+    },
+    {
+      "code_license": "Apache-2.0",
+      "license_path": "LICENSE",
+      "license_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "reachable_commit_count": 6,
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "revision": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+      "root_commits": [
+        "e958d7dd9cc13464da04fd821edd9e66744903bd"
+      ]
+    }
+  ],
+  "roadmap_capabilities": [
+    {
+      "capability": "Neo4j schema, loading, and Cypher service",
+      "disposition": "retain-legacy",
+      "implementation_state": "roadmap-only",
+      "successor_track": "federated_medallion_frontier_experiments_20260829"
+    },
+    {
+      "capability": "SNOMED CT-AU RF2 acquisition and graph loading",
+      "disposition": "retain-legacy",
+      "implementation_state": "roadmap-only",
+      "successor_track": "australian_benefits_silver_gold_20260829"
+    },
+    {
+      "capability": "complete AMT and ATC hierarchy acquisition",
+      "disposition": "retain-legacy",
+      "implementation_state": "roadmap-only",
+      "successor_track": "australian_benefits_silver_gold_20260829"
+    },
+    {
+      "capability": "official AMT and SNOMED mapping ingestion",
+      "disposition": "retain-legacy",
+      "implementation_state": "roadmap-only",
+      "successor_track": "australian_benefits_silver_gold_20260829"
+    },
+    {
+      "capability": "NLP and NER over MBS and PBS text",
+      "disposition": "retain-legacy",
+      "implementation_state": "roadmap-only",
+      "successor_track": "federated_medallion_frontier_experiments_20260829"
+    },
+    {
+      "capability": "temporal MBS and PBS evidence graph",
+      "disposition": "retain-legacy",
+      "implementation_state": "roadmap-only",
+      "successor_track": "australian_benefits_silver_gold_20260829"
+    },
+    {
+      "capability": "Spark distributed processing",
+      "disposition": "retain-legacy",
+      "implementation_state": "roadmap-only",
+      "successor_track": "federated_medallion_frontier_experiments_20260829"
+    },
+    {
+      "capability": "Airflow orchestration",
+      "disposition": "retain-legacy",
+      "implementation_state": "roadmap-only",
+      "successor_track": "federated_medallion_frontier_experiments_20260829"
+    },
+    {
+      "capability": "production application programming interface",
+      "disposition": "retain-legacy",
+      "implementation_state": "roadmap-only",
+      "successor_track": "federated_medicines_platinum_20260829"
+    },
+    {
+      "capability": "production user interface",
+      "disposition": "retain-legacy",
+      "implementation_state": "roadmap-only",
+      "successor_track": "federated_medicines_platinum_20260829"
+    }
+  ],
+  "schema_version": "1.0",
+  "workflows": [
+    {
+      "disposition": "replace-with-equivalent",
+      "job": "build",
+      "path": ".github/workflows/ci.yml",
+      "repository": "edithatogo/aus-health-data-scraper"
+    },
+    {
+      "disposition": "replace-with-equivalent",
+      "job": "build-and-commit",
+      "path": ".github/workflows/monthly_run.yml",
+      "repository": "edithatogo/aus-health-data-scraper"
+    },
+    {
+      "disposition": "replace-with-equivalent",
+      "job": "test",
+      "path": ".github/workflows/monthly_run.yml",
+      "repository": "edithatogo/aus-health-data-scraper"
+    }
+  ]
+}
