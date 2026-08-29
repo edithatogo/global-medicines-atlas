@@ -752,10 +752,10 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/df/b2/87e62e8c3e2f4b3
 
 [[packages]]
 name = "pip"
-version = "26.1.2"
+version = "26.2.1"
 index = "https://pypi.org/simple"
-sdist = { url = "https://files.pythonhosted.org/packages/01/91/47e7d486260f618783899587af63ccf7980fb60245c3e63dd4571c6b57ad/pip-26.1.2.tar.gz", upload-time = 2026-05-31T17:33:58Z, size = 1840799, hashes = { sha256 = "f49cd134c61cf2fd75e0ce2676db03e4054504a5a4986d00f8299ae632dc4605" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/5d/95/6b5cb3461ea5673ba0995989746db58eb18b91b54dbf331e72f569540946/pip-26.1.2-py3-none-any.whl", upload-time = 2026-05-31T17:33:56Z, size = 1813144, hashes = { sha256 = "382ff9f685ee3bc25864f820aa50505825f10f5458ffff07e30a6d96e5715cab" } }]
+sdist = { url = "https://files.pythonhosted.org/packages/ae/15/4500e320e6b101ec3b719ae85b697d9940b6cda672bc555bd6016fc60c6f/pip-26.2.1.tar.gz", upload-time = 2026-08-04T22:51:14Z, size = 1848877, hashes = { sha256 = "f6ad667e89a1fe78046c8f13232b247200f5258d7828f3f7883d660878e0813f" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/f3/6e/1736e5b4ae2b778ef2f81c47d797de9f891d4d8acb047a24ca37a60294dd/pip-26.2.1-py3-none-any.whl", upload-time = 2026-08-04T22:51:12Z, size = 1816632, hashes = { sha256 = "71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e" } }]
 
 [[packages]]
 name = "pip-api"
@@ -1049,6 +1049,13 @@ sdist = { url = "https://files.pythonhosted.org/packages/3b/b6/74470cd5b97eb0cf5
 wheels = [{ url = "https://files.pythonhosted.org/packages/f6/f7/f582cd587ebdfad6e7f6426ca3220b051d7adb41c824576851732843777a/pytest_gremlins-1.9.0-py3-none-any.whl", upload-time = 2026-07-01T12:55:31Z, size = 118421, hashes = { sha256 = "26997e1e6ac0cbdef70c68ddadbbd2bf93c7d41e143d9f2d84ec318b7d552b67" } }]
 
 [[packages]]
+name = "pytest-picked"
+version = "0.5.1"
+index = "https://pypi.org/simple"
+sdist = { url = "https://files.pythonhosted.org/packages/ba/e4/51a54dd6638fd4a7c45bb20a737235fd92cbb4d24b5ff681d64ace5d02e9/pytest_picked-0.5.1.tar.gz", upload-time = 2024-11-06T23:19:52Z, size = 8401, hashes = { sha256 = "6634c4356a560a5dc3dba35471865e6eb06bbd356b56b69c540593e9d5620ded" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/c6/81/450c017746caab376c4b6700439de9f1cc7d8e1f22dec3c1eb235cd9ad3e/pytest_picked-0.5.1-py3-none-any.whl", upload-time = 2024-11-06T23:19:51Z, size = 6608, hashes = { sha256 = "af65c4763b51dc095ae4bc5073a962406902422ad9629c26d8b01122b677d998" } }]
+
+[[packages]]
 name = "pytest-playwright"
 version = "0.8.0"
 index = "https://pypi.org/simple"
@@ -1061,6 +1068,13 @@ version = "4.1.0"
 index = "https://pypi.org/simple"
 sdist = { url = "https://files.pythonhosted.org/packages/27/b3/36192dacc0f470ac2cc516f73e01739c9a48a8224f76beada4f85e1c8a89/pytest_randomly-4.1.0.tar.gz", upload-time = 2026-04-20T13:01:51Z, size = 14302, hashes = { sha256 = "47f1d9746c3bc3efabd53ae1ebfb8bb385cf3d4df4b505b6d58d9c97a3dfe70f" } }
 wheels = [{ url = "https://files.pythonhosted.org/packages/9a/db/2df9a1fca597a273f957a559c20c2d95d629928384507b2afa43ba6909d1/pytest_randomly-4.1.0-py3-none-any.whl", upload-time = 2026-04-20T13:01:50Z, size = 8353, hashes = { sha256 = "f55e89e53367b090c0c053697d7f9d77595543d0e0516c93978b50c0f6b252f9" } }]
+
+[[packages]]
+name = "pytest-testmon"
+version = "2.2.0"
+index = "https://pypi.org/simple"
+sdist = { url = "https://files.pythonhosted.org/packages/4d/1d/3e4230cc67cd6205bbe03c3527500c0ccaf7f0c78b436537eac71590ee4a/pytest_testmon-2.2.0.tar.gz", upload-time = 2025-12-01T07:30:24Z, size = 23108, hashes = { sha256 = "01f488e955ed0e0049777bee598bf1f647dd524e06f544c31a24e68f8d775a51" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/61/55/ebb3c2f59fb089f08d00f764830d35780fc4e4c41dffcadafa3264682b65/pytest_testmon-2.2.0-py3-none-any.whl", upload-time = 2025-12-01T07:30:23Z, size = 25199, hashes = { sha256 = "2604ca44a54d61a2e830d9ce828b41a837075e4ebc1f81b148add8e90d34815b" } }]
 
 [[packages]]
 name = "pytest-timeout"
