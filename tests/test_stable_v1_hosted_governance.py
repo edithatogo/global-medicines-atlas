@@ -226,6 +226,27 @@ def test_required_checks_match_harness_and_exact_hosted_protection() -> None:
     )
     assert "COVERAGE_CORE: sysmon" in workflow
     assert "pytest -q -n 2 --dist worksteal" in workflow
+    assert "Restore content-validated gremlins cache" in workflow
+    assert "actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9" in workflow
+    assert "'scripts/test_goblin.py', 'src/**/*.py', 'tests/**/*'" in workflow
+
+
+def test_free_threaded_canary_is_advisory_and_sha_pinned() -> None:
+    workflow = (
+        ROOT / ".github/workflows/python-free-threaded-canary.yml"
+    ).read_text(encoding="utf-8")
+    assert "CPython 3.14t / advisory smoke" in workflow
+    assert "continue-on-error: true" in workflow
+    assert "uv run --python 3.14t" in workflow
+    assert "--no-project" in workflow
+    assert 'PYTHON_GIL: "0"' in workflow
+    assert (
+        "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803" in workflow
+    )
+    assert (
+        "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b"
+        in workflow
+    )
 
 
 def test_current_receipt_reports_all_hosted_controls_verified() -> None:

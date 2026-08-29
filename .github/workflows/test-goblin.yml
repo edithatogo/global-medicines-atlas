@@ -242,6 +242,16 @@ jobs:
           (matrix.profile != 'mutation' && matrix.profile != 'gremlins') ||
           steps.scope.outputs.heavy == 'true'
         run: uv sync --python 3.14.6 --group dev --locked
+      - name: Restore content-validated gremlins cache
+        if: >-
+          matrix.profile == 'gremlins' &&
+          steps.scope.outputs.heavy == 'true'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .gremlins_cache
+          key: gremlins-${{ runner.os }}-py314-${{ hashFiles('uv.lock', 'pyproject.toml', 'scripts/test_goblin.py', 'src/**/*.py', 'tests/**/*') }}
+          restore-keys: |
+            gremlins-${{ runner.os }}-py314-
       - name: Run Test-Goblin ${{ matrix.profile }} profile
         if: >-
           (matrix.profile != 'mutation' && matrix.profile != 'gremlins') ||
