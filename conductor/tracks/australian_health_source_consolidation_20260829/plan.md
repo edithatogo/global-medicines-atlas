@@ -19,7 +19,8 @@
 ## Phase 2: Add the independent MBS source domain (AC-02, AC-03, AC-07)
 
 - [ ] Write failing parser, admission, temporal, coverage, and semantic-boundary
-  tests for `MBS_XML/Data`, all 35 native fields, and all 5,989 records.
+  tests for `MBS_XML/Data`, all 40 native fields across the variable 34-to-37
+  fields per record, and all 5,989 records.
 - [ ] Confirm the intended failure before implementation.
 - [ ] Add `au-mbs` source catalogue entries, source profiles, receipts, adapter
   registration, source-health checks, and versioned acquisition surfaces.

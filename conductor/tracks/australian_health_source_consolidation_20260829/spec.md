@@ -91,8 +91,9 @@ Behavioral parity, byte fixity, or an explicit legacy-only receipt is required.
   item.
 - **AC-02:** The 8,194,522-byte July 2025 MBS XML with SHA-256
   `db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556`
-  lands byte-for-byte, parses all 5,989 `Data` records, and preserves 35 native
-  fields without the donor's guessed `MBSItem` tag.
+  lands byte-for-byte, parses all 5,989 `Data` records, and preserves the union
+  of 40 native fields plus the observed 34-to-37 fields-per-record variability
+  without the donor's guessed `MBSItem` tag.
 - **AC-03:** The 87,727-byte P7 workbook with SHA-256
   `2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8`
   is retained as raw legacy evidence; all four sheets, dimensions, formulas,
