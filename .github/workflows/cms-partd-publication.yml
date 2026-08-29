@@ -88,7 +88,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - name: Create private staging dataset and attribution card
+      - name: Create public dataset and attribution card
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
@@ -117,6 +117,9 @@ jobs:
           Missing coverage is not negative evidence. The two Data API URLs are default
           representations and are not described as complete datasets; the official CSV is
           retained separately.
+
+          Publication is incremental. Until `manifest.json` is present and lists all 33
+          payloads, the visible repository is an incomplete acquisition in progress.
           EOF
           python3 - <<'PY'
           import os
@@ -124,15 +127,15 @@ jobs:
 
           api = HfApi(token=os.environ['HF_TOKEN'])
           repo = os.environ['HF_DATASET']
-          api.create_repo(repo, repo_type='dataset', private=True, exist_ok=True)
-          if not api.dataset_info(repo).private:
-              raise RuntimeError('CMS Part D staging dataset must remain private')
+          api.create_repo(repo, repo_type='dataset', private=False, exist_ok=True)
+          if api.dataset_info(repo).private:
+              raise RuntimeError('CMS Part D dataset must be public from initialization')
           api.upload_file(
               repo_id=repo,
               repo_type='dataset',
               path_or_fileobj='README.md',
               path_in_repo='README.md',
-              commit_message='Initialize private CMS Part D publication stage',
+              commit_message='Initialize public CMS Part D publication',
           )
           PY
 
@@ -311,7 +314,7 @@ jobs:
           )
           PY
 
-      - name: Upload verified payload to private Hugging Face stage
+      - name: Upload verified payload to public Hugging Face dataset
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           SOURCE_IDENTITY: ${{ matrix.identity }}
@@ -429,8 +432,8 @@ jobs:
               commit_message='Publish exact CMS Part D corpus manifest',
           )
           info = api.dataset_info(os.environ['HF_DATASET'], files_metadata=True)
-          if not info.private:
-              raise RuntimeError('CMS Part D dataset became public before finalization')
+          if info.private:
+              raise RuntimeError('CMS Part D dataset is unexpectedly private')
           paths = {sibling.rfilename for sibling in info.siblings}
           expected = {
               'README.md',
@@ -443,12 +446,7 @@ jobs:
           )
           missing = expected - paths
           if missing:
-              raise RuntimeError(f'staged dataset is missing paths: {sorted(missing)}')
-          api.update_repo_settings(
-              repo_id=os.environ['HF_DATASET'],
-              repo_type='dataset',
-              private=False,
-          )
+              raise RuntimeError(f'public dataset is missing paths: {sorted(missing)}')
           public = HfApi().dataset_info(
               os.environ['HF_DATASET'], files_metadata=True
           )
