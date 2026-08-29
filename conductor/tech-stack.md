@@ -84,6 +84,24 @@ NZULM/NZMT is a first-class initial source family, not merely a project name.
 - Use JSON/JSONL for manifests, events, review queues, and compact interoperable records.
 - Use CSV only for reviewed interchange, human inspection, or source-native compatibility.
 
+### Public Hugging Face data plane
+
+- Store every publication-approved raw payload and derived dataset in a public,
+  source-specific Hugging Face dataset through GitHub Actions.
+- Bind `repository`, immutable `revision`, `path`, byte count, SHA-256,
+  anonymous-verification receipt, rights basis, schema era, collection, and
+  cache lifecycle in the medallion federation contract.
+- Use `hf://` or immutable HTTPS identities for remote Parquet access where
+  clients support them. Downloaded data is a bounded cache, not a durable local
+  authority.
+- Keep source-native raw objects separate from Silver, Gold, and Platinum
+  products even when one Hub collection presents them together.
+- Use public collection membership as discovery metadata only. It does not
+  replace content receipts, confer rights, or prove coverage.
+- Retain a geographically and administratively independent public recovery
+  copy when the durability policy requires one; a second dataset in the same
+  Hugging Face account is not independent replication.
+
 ### DuckDB
 
 DuckDB is the primary embedded analytical engine.

@@ -43,3 +43,18 @@ and rationale contract in that policy.
 
 - [x] **Track: Cross-repository medallion contract conformance**
   *Archived: [archive/cross_repository_medallion_conformance_20260826/index.md](./archive/cross_repository_medallion_conformance_20260826/index.md); v1 uses byte-versioned schemas and repository-local CI tests without a shared runtime dependency.*
+
+- [ ] **Track: Consolidate all Australian MBS/PBS donor functionality and data**
+  *Link: [tracks/australian_health_source_consolidation_20260829/index.md](./tracks/australian_health_source_consolidation_20260829/index.md); exact donor behavior/data inventory, independent MBS domain, PBS v3/AMT/ATC compatibility, legacy retention, and archive readiness.*
+
+- [ ] **Track: Establish the public Hugging Face federated data plane**
+  *Link: [tracks/public_hf_federated_data_plane_20260829/index.md](./tracks/public_hf_federated_data_plane_20260829/index.md); hosted-only public raw/derived storage, medallion federation v4, anonymous restoration, collection and estate alignment, and transient local caches.*
+
+- [ ] **Track: Implement Australian benefits Silver and Gold**
+  *Link: [tracks/australian_benefits_silver_gold_20260829/index.md](./tracks/australian_benefits_silver_gold_20260829/index.md); source-faithful MBS/PBS tables, historical/current comparisons, and reviewable temporal evidence graphs.*
+
+- [ ] **Track: Deliver federated medicines Platinum products**
+  *Link: [tracks/federated_medicines_platinum_20260829/index.md](./tracks/federated_medicines_platinum_20260829/index.md); remote-first API, CLI, atlas, exports, provenance, coverage, and cross-repository compatibility.*
+
+- [ ] **Track: Evaluate federated medallion frontier capabilities**
+  *Link: [tracks/federated_medallion_frontier_experiments_20260829/index.md](./tracks/federated_medallion_frontier_experiments_20260829/index.md); measured remote-query, Xet, Iceberg, attestation, graph, semantic, and streaming previews with no implicit promotion.*

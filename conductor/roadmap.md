@@ -57,10 +57,12 @@ repository evolves toward a bleeding-edge medallion datahouse:
 
 | Horizon | Product outcome | Conductor track |
 |---|---|---|
-| Bronze (current scope) | Payload-and-receipt evidentiary truth, reuse gate, temporal identity, source-faithful Parquet, Iceberg-ready identities, OpenLineage projection, Hugging Face as archive boundary | `bronze_medallion_completion_20260819` |
-| Silver (later) | Source-faithful normalized tables; dimensions remain independent | not opened |
-| Gold (later) | Reviewable cross-jurisdiction evidence | not opened |
-| Platinum (later) | Comparison products over gold | not opened |
+| Bronze (current scope) | Payload-and-receipt evidentiary truth, reuse gate, temporal identity, source-faithful Parquet, Iceberg-ready identities, OpenLineage projection, Hugging Face as archive boundary and mandatory durable public data plane for approved objects | `bronze_medallion_completion_20260819`, `public_hf_federated_data_plane_20260829` |
+| Australian source consolidation | Complete donor behavior/data disposition, MBS independent-domain acquisition, PBS v3/AMT/ATC compatibility, legacy/current retention and archive readiness | `australian_health_source_consolidation_20260829` |
+| Silver | Source-faithful typed MBS and PBS tables; schemas, identifiers and dimensions remain distinguishable | `australian_benefits_silver_gold_20260829` |
+| Gold | Reviewable Australian service/medicine evidence graph with confidence, evidence, time and negative controls | `australian_benefits_silver_gold_20260829` |
+| Platinum | Federated API, CLI, atlas and historical comparison products over pinned public Hugging Face revisions | `federated_medicines_platinum_20260829` |
+| Preview/frontier | Federation v4, remote query, Iceberg REST, Merkle, RO-Crate/Croissant/OpenLineage and optional graph exports | `federated_medallion_frontier_experiments_20260829` |
 
 Bronze completion does not claim global coverage, does not ingest credentialed
 or restricted payloads, and does not implement later layers. Hugging Face
@@ -68,6 +70,12 @@ archival of public data is an output boundary consumed by this horizon. The
 immutable source payload and its content-addressed receipt are evidentiary
 truth; source-faithful Parquet is the portable analytical representation;
 table/catalogue layers are rebuildable metadata over those artefacts.
+
+The Australian successor tracks deliberately incorporate all donor data,
+including legacy and superseded snapshots. “Incorporated” may mean promoted to
+a governed production path, retained byte-for-byte as legacy comparison
+evidence, or replaced by a behaviorally equivalent implementation when the
+donor code is broken or source-drifted. No artifact disappears silently.
 
 ### Non-blocking datahouse experiments
 

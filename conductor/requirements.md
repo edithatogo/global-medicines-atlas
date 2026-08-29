@@ -218,7 +218,12 @@
   credential, admission, or receipt gates. The factory configures acquisition
   only and must not introduce Silver transformations.
 - **M-096:** Treat Hugging Face as a bronze archive and output boundary, never
-  as the source of truth or as an ingest origin for medicine payloads.
+  as the source of truth or as the original upstream ingest origin for medicine
+  payloads. For material approved for public redistribution, Hugging Face is
+  also the mandatory durable public data plane: evidentiary truth remains the
+  content-addressed payload and receipt rather than a workstation path or Hub
+  catalogue record, and a pinned public Hub revision may be used for restore
+  only after anonymous digest verification.
 - **M-097:** Provide bleeding-edge bronze mechanics for in-scope public sources
   and governed fixtures: modern public ingest, content-addressed receipts,
   payload preservation, source-faithful Parquet, explicit licence and rights,
@@ -312,6 +317,66 @@
   quarantine downstream processing or record a warning according to the
   profile, while preserving landed bytes, receipts, identities, and reviewer
   states.
+
+### Australian benefits consolidation and public federation
+
+- **M-105:** Consolidate every implemented behavior, tracked data artifact,
+  fixture, workflow, and material design commitment from
+  `edithatogo/aus_mbs_pbs_graph` at commit
+  `64e764cebeb3826f98ce672cbb4affc65d06a92f` and
+  `edithatogo/aus-health-data-scraper` at commit
+  `931da0b9b6ae3e3cec0743568abb71a50d62b7cf`. Give every donor artifact an
+  explicit `adopt | adapt | replace-with-equivalent | retain-legacy |
+  supersede | exclude-with-reason` disposition, preserve the donor commit and
+  licence, and prove behavioral or byte-level parity before either donor
+  repository is archived.
+- **M-106:** Add Australian Medicare Benefits Schedule service-benefit evidence
+  as an independent domain. MBS services, groups, fees, benefits, participant
+  counts, and temporal states must never be represented as medicines or
+  silently collapsed into PBS funding, formulary, regulatory, availability,
+  terminology, or clinical assertions.
+- **M-107:** Retain every lawful current and historical MBS/PBS snapshot,
+  including legacy, superseded, schema-era, empty-placeholder, and failed-source
+  artifacts where their preservation is analytically or evidentially useful.
+  Label source version, schema era, validity, retrieval, completeness, and
+  legacy status so old-versus-new analysis cannot be mistaken for current
+  coverage.
+- **M-108:** Store every publication-approved Australian source payload and
+  derived dataset durably in a public Hugging Face dataset at an immutable
+  revision, with exact path, byte count, SHA-256, source receipt, rights basis,
+  data card, collection membership, and anonymous clean-room verification.
+  Publication and visibility changes run only in GitHub Actions. Local files
+  are bounded transient materializations and must be removed after hosted
+  anonymous digest verification; no durable dataset may exist only in Git, on
+  a maintainer workstation, or in an unverified cache.
+- **M-109:** Implement source-specific Silver contracts for MBS service/item,
+  group, fee, benefit, participant, and source-note tables and for PBS
+  schedule, pharmaceutical item, restriction, pricing, AMT-reference, and ATC
+  tables. Preserve every source-native identifier and column; distinguish
+  historical schemas rather than forcing them into one lossy table.
+- **M-110:** Implement Gold Australian evidence graphs with typed nodes and
+  edges, temporal validity, mapping method, confidence, supporting source
+  spans or identifiers, review status, rights, and negative controls. Official
+  identifiers, deterministic mappings, lexical/NLP candidates, and reviewed
+  links remain distinguishable. An MBS-to-PBS edge is evidence about a
+  relationship, never proof of therapeutic equivalence, indication, funding,
+  approval, or clinical appropriateness.
+- **M-111:** Provide Platinum API, CLI, atlas, and export products that query
+  pinned public Hugging Face Parquet and manifests without requiring a durable
+  local data lake. Products expose provenance, coverage, freshness, schema era,
+  historical comparisons, confidence, and upstream dataset revision for every
+  result.
+- **M-112:** Publish medallion federation/distribution contract v4. The contract
+  binds repository authority, source identity, medallion layer and Bronze
+  stratum, Hugging Face dataset/revision/path, content digest, public visibility,
+  anonymous verification, collection, replica and cache lifecycle, schema era,
+  comparison cohort, and cross-repository lineage without changing the v1-v3
+  vocabularies.
+- **M-113:** Archive `aus_mbs_pbs_graph` and `aus-health-data-scraper` only after
+  exact donor inventories, public raw-data receipts, replacement tests,
+  compatibility notices, discoverable successor links, independent restore,
+  and maintainer archival approval all pass. Archival must preserve Git history
+  and must not delete or rewrite the donor repositories.
 ## Should Have
 
 - **S-001:** Evaluate Apache DataFusion for measured Rust-native query or streaming requirements without displacing DuckDB prematurely.
@@ -344,6 +409,17 @@
   identity, not repeated physical partitions; mutable rights, admission, and
   review state must never be partition keys. Python 3.14 core
   must not require Iceberg.
+- **S-014:** Provide explicit historical-versus-current MBS/PBS comparison
+  views, including schema drift, item/fee/restriction changes, added and ceased
+  records, and coverage denominators.
+- **S-015:** Replace the donor monthly job with catalogue-driven, source-health-
+  aware acquisition that fails closed on 404s, schema drift, missing payloads,
+  or empty output and never reports a green workflow as successful data
+  acquisition without a non-empty receipt-bound artifact.
+- **S-016:** Maintain Australian source archives and derived products in the
+  public `Policy AUS` and `Health Economics and Outcomes Research` Hugging Face
+  collections, with the public dataset-estate registry as the machine-readable
+  cross-collection index.
 
 ## Could Have
 
@@ -363,6 +439,21 @@
   Bronze completion.
 - **C-010:** Compare Delta Lake and Hudi only if future high-update source
   workloads establish a transactional requirement.
+- **C-011:** Evaluate remote DuckDB and Polars scans over pinned `hf://` or HTTPS
+  Parquet with projection and predicate pushdown, bounded caching, resumable
+  reads, and reproducible offline fallbacks.
+- **C-012:** Evaluate Iceberg REST metadata over public Hugging Face objects,
+  including Iceberg v3 compatibility, without moving evidentiary authority into
+  the catalogue.
+- **C-013:** Add cryptographic batch/Merkle manifests, RO-Crate, Croissant, and
+  OpenLineage federation receipts as additive interoperability projections over
+  per-object SHA-256 evidence.
+- **C-014:** Provide optional property-graph and Neo4j/Cypher exports from Gold
+  after graph semantics and rights pass; no graph database is mandatory or
+  authoritative.
+- **C-015:** Evaluate Xet-aware chunk reuse, content-defined deduplication,
+  DataFusion, streaming Arrow, and federated query benchmarks only in isolated
+  preview lanes with explicit promotion and rollback criteria.
 
 ## Won't Have in the Initial Increment
 
@@ -379,3 +470,10 @@
 - **W-009:** Make graph, vector, OMOP, cross-source semantic normalization, or
   Rust terminology work a Bronze completion gate; those capabilities consume
   Bronze or Silver outputs later.
+- **W-010:** Promote donor scripts known to be syntactically invalid,
+  source-drifted, unbounded, or provenance-free into the production path. Their
+  exact bytes and behavior remain preserved as legacy evidence while governed
+  replacements implement the intended capability.
+- **W-011:** Infer medicine approval, funding, formulary inclusion, indication,
+  therapeutic equivalence, utilization, or patient eligibility from the
+  presence or absence of an MBS service or a candidate MBS-PBS graph edge.

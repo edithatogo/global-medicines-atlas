@@ -29,6 +29,26 @@ disposition = "consume-contract"
 local_boundary = "sources"
 
 [[github]]
+id = "aus-mbs-pbs-graph"
+repository = "edithatogo/aus_mbs_pbs_graph"
+url = "https://github.com/edithatogo/aus_mbs_pbs_graph"
+snapshot = "64e764cebeb3826f98ce672cbb4affc65d06a92f"
+licence = "Apache-2.0-code-mixed-data"
+authority = "legacy-australian-mbs-pbs-parser-and-graph-intent"
+disposition = "migrate-all-and-archive-after-parity"
+local_boundary = "src/global_medicines_atlas/adapters"
+
+[[github]]
+id = "aus-health-data-scraper"
+repository = "edithatogo/aus-health-data-scraper"
+url = "https://github.com/edithatogo/aus-health-data-scraper"
+snapshot = "931da0b9b6ae3e3cec0743568abb71a50d62b7cf"
+licence = "Apache-2.0-code-mixed-data"
+authority = "legacy-australian-mbs-html-xml-workflow-and-p7-data"
+disposition = "migrate-all-and-archive-after-parity"
+local_boundary = "src/global_medicines_atlas/adapters"
+
+[[github]]
 id = "riopa-infrastructure"
 repository = "edithatogo/riopa-infrastructure"
 url = "https://github.com/edithatogo/riopa-infrastructure"
@@ -137,3 +157,13 @@ licence = "mixed-per-file"
 authority = "approved-international-source-archive"
 disposition = "consume-contract"
 publication_gate = "exact-revision-and-source-rights-receipt"
+
+[[hugging_face]]
+id = "global-medicines-atlas-international-open"
+repository = "edithatogo/global-medicines-atlas-international-open"
+url = "https://huggingface.co/datasets/edithatogo/global-medicines-atlas-international-open"
+snapshot = "654f71c84cdb17b4032396bcbc961bef8757fb19"
+licence = "mixed-per-file"
+authority = "legacy-composite-compatibility-archive"
+disposition = "publicize-after-hosted-exact-manifest-verification"
+publication_gate = "manifest-d058b787-and-anonymous-clean-room-restore"

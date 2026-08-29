@@ -4,7 +4,7 @@
 
 Create a global, evidence-based medallion datahouse for comparing medicines across national regulatory approval systems and public funding, reimbursement, and formulary systems.
 
-The datahouse lands immutable source payloads and content-addressed receipts first, then derives source-faithful Parquet and later silver, gold, and platinum layers without collapsing regulatory, funding, formulary, or terminology meanings. Current delivery completes bronze for in-scope public and no-credential sources; later layers remain planned, not implied complete.
+The datahouse lands immutable source payloads and content-addressed receipts first, then derives source-faithful Parquet and later silver, gold, and platinum layers without collapsing regulatory, funding, formulary, terminology, or health-service-benefit meanings. Current delivery completes bronze for in-scope public and no-credential sources; the Australian consolidation opens explicit Silver, Gold, Platinum, and experimental successor tracks rather than implying those layers are already complete.
 
 The platform will begin with available data from New Zealand, Australia, and the United States, then expand systematically across jurisdictions. New Zealand Universal List of Medicines and New Zealand Medicines Terminology (NZULM/NZMT) product structures are a named first-class source family. The platform will preserve source provenance, effective dates, terminology mappings, and the distinction between regulatory approval and funding status.
 
@@ -14,7 +14,23 @@ Operate a provenance-first medicines datahouse that makes regulatory approval an
 
 ## Product Purpose
 
-Give researchers, policymakers, clinicians, and analysts a reproducible, layer-explicit evidence platform: the immutable source payload and its content-addressed receipt are evidentiary truth; source-faithful Parquet is the portable analytical representation; table/catalogue layers are rebuildable metadata over those artefacts. Hugging Face archives reviewed public bronze outputs; it is not the source of truth.
+Give researchers, policymakers, clinicians, and analysts a reproducible, layer-explicit evidence platform: the immutable source payload and its content-addressed receipt are evidentiary truth; source-faithful Parquet is the portable analytical representation; table/catalogue layers are rebuildable metadata over those artefacts. Hugging Face archives reviewed public bronze outputs; it is not the source of truth. For publication-approved data, Hugging Face is nevertheless the mandatory durable public data plane: truth is bound to bytes and receipts at a pinned revision, not to a workstation path or mutable platform catalogue entry.
+
+## Australian Health-Benefit Boundary
+
+The atlas also preserves Australian Medicare Benefits Schedule evidence needed
+to study relationships between medicines, funded services, diagnostics, and
+policy over time. MBS service items, groups, fees, benefits, and participant
+statistics form an independent health-service-benefit domain. They may be
+linked to PBS medicines only through typed, evidence-bearing Gold edges; an
+MBS record is never a medicine record and never supplies a regulatory,
+funding, formulary, indication, utilization, or clinical conclusion by itself.
+
+The canonical code and governance live in this repository. Publication-
+approved raw payloads and derived datasets live durably in public, source-
+specific Hugging Face datasets and are consumed by pinned revision and digest.
+Developer-machine copies are transient caches or bounded build inputs, not a
+durable data lake.
 
 ## Bronze Internal Strata
 
@@ -83,6 +99,10 @@ Researchers, policymakers, clinicians, and analysts lack a unified way to determ
 8. Support reproducible exports, analytical queries, reports, and visual comparisons.
 9. Monitor sources and refresh data according to documented schedules.
 10. Expand through a repeatable jurisdiction-onboarding framework.
+11. Preserve Australian MBS service-benefit evidence as a separate domain and
+    support reviewable MBS-PBS relationship analysis.
+12. Query public, revision-pinned Hugging Face data without requiring a durable
+    local copy, while retaining independent restore and fixity evidence.
 
 ## Geographic Strategy
 
@@ -103,6 +123,8 @@ Expansion will prioritize jurisdictions according to:
 - Regulatory approval and public funding are separate dimensions.
 - Ingredient-level and product-level conclusions must remain distinguishable.
 - Historical status must not be overwritten by current status.
+- Legacy and superseded snapshots remain queryable and visibly labelled so
+  historical comparisons do not masquerade as current coverage.
 - Primary official sources take precedence over secondary aggregators.
 - Every comparison must be traceable to source evidence.
 - Missing data means unknown or not yet covered, not unapproved or unfunded.
@@ -112,6 +134,13 @@ Expansion will prioritize jurisdictions according to:
 ## Initial Scope
 
 - Audit and consolidate existing project datasets and code.
+- Consolidate the complete implemented and data-bearing scope of
+  `aus_mbs_pbs_graph` and `aus-health-data-scraper`, while preserving exact
+  legacy artifacts and replacing broken or source-drifted execution paths with
+  governed equivalents.
+- Publish the authorized MBS/PBS raw payloads and derived layers to public,
+  source-specific Hugging Face datasets through hosted workflows, then remove
+  durable workstation-only copies after anonymous digest verification.
 - Inventory and ingest the available NZULM/NZMT, Medsafe, New Zealand Formulary, and PHARMAC-related artifacts under explicit source and licensing contracts.
 - Establish a canonical cross-jurisdictional medicine data model.
 - Implement reliable matching for the initial jurisdictions.
@@ -127,6 +156,9 @@ Expansion will prioritize jurisdictions according to:
 - Unsupported assumptions that absent records indicate non-approval or non-funding.
 - Immediate complete coverage of every country.
 - Redistribution of source data where licensing does not permit it.
+- Treating MBS service-benefit evidence or a candidate MBS-PBS relationship as
+  individual clinical advice, therapeutic equivalence, or proof of medicine
+  approval, funding, indication, or eligibility.
 
 ## Success Criteria
 

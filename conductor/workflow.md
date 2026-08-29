@@ -15,6 +15,9 @@
     Hugging Face dataset directly. Developer machines may prepare and validate
     inputs but are not publication origins; hosted anonymous digest
     verification precedes removal of temporary local bytes.
+11. Publication-approved datasets are durable on the public Hugging Face data
+    plane at pinned revisions. Repository and workstation data directories are
+    transient build/cache surfaces; they may not become the only durable copy.
 
 ## Autonomous Execution
 

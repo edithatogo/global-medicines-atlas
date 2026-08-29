@@ -18,6 +18,8 @@ ALLOWED_DISPOSITIONS = {
     "extend-in-place",
     "integrated",
     "interoperate",
+    "migrate-all-and-archive-after-parity",
+    "publicize-after-hosted-exact-manifest-verification",
 }
 
 

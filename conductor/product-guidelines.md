@@ -15,9 +15,14 @@ These guidelines define how the Global Medicines Registration and Funding Compar
 
 ## Core Communication Principles
 
-### Separate Regulatory and Funding Status
+### Separate Regulatory, Funding, and Service-Benefit Status
 
 Never treat regulatory approval, market registration, public funding, reimbursement, formulary inclusion, procurement, and commercial availability as interchangeable.
+
+MBS service items, fees, benefits, and participant measures are an additional
+independent dimension. Never present an MBS item or an MBS-PBS candidate edge
+as a medicine, indication, utilization event, funding decision, or clinical
+relationship unless the specific assertion has its own evidence and review.
 
 Every displayed status must identify:
 
@@ -81,6 +86,8 @@ Do not hide uncertainty to simplify a comparison.
 - Allow users to inspect the evidence behind every conclusion.
 - Provide filters for jurisdiction, ingredient, product, indication, status type, and time.
 - Distinguish current snapshots from historical comparisons.
+- Allow explicit legacy-versus-current and schema-era comparisons without
+  silently harmonising away source differences.
 
 ### Coverage
 
@@ -113,6 +120,9 @@ Every report should state:
 - Record transformation and matching methods.
 - Version datasets and derived outputs.
 - Retain historical observations where legally and technically feasible.
+- Store publication-approved source bytes and derived datasets in public
+  Hugging Face repositories at pinned revisions; local materializations are
+  transient and must never be the only durable copy.
 - Document source licensing and permitted redistribution.
 - Make automated and manually reviewed records distinguishable.
 - Use reproducible quality checks for ingestion, normalization, matching, and export.

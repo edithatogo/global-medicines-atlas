@@ -1,0 +1,34 @@
+{
+  "created_at": "2026-08-29T05:38:00Z",
+  "description": "Implement source-faithful Australian MBS/PBS Silver tables and reviewable temporal Gold evidence graphs.",
+  "evidence_schema": "1.0",
+  "execution_policy": {
+    "decision_protocol": "options_recommendation_rationale",
+    "failure_recovery": "bounded_self_correction",
+    "interaction": "decision_gates_only",
+    "max_identical_failures": 3,
+    "merge_policy": "required_checks_then_merge",
+    "mode": "autonomous",
+    "phase_checkpoints": "automatic_evidence_gated"
+  },
+  "external_gates": [
+    "source-specific rights basis for public terminology identifiers or mappings",
+    "maintainer approval of consequential clinical or policy interpretations"
+  ],
+  "github_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/341",
+  "github_issue_drafts": [
+    ".github/generated-issues/australian-benefits-silver-gold-parent.md"
+  ],
+  "github_subissues": [],
+  "requirements": [
+    "M-001", "M-002", "M-003", "M-004", "M-030", "M-031", "M-032",
+    "M-035", "M-071", "M-072", "M-090", "M-092", "M-093", "M-103",
+    "M-106", "M-107", "M-109", "M-110", "M-112", "S-006", "S-007",
+    "S-014", "C-014", "W-001", "W-002", "W-003", "W-011"
+  ],
+  "status": "new",
+  "target_versions": ["1.0.0"],
+  "track_id": "australian_benefits_silver_gold_20260829",
+  "type": "feature",
+  "updated_at": "2026-08-29T05:38:00Z"
+}

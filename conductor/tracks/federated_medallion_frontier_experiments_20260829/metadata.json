@@ -1,0 +1,37 @@
+{
+  "created_at": "2026-08-29T05:38:00Z",
+  "description": "Evaluate remote query, Hugging Face object mechanics, Iceberg, attestation, graph and semantic frontier capabilities without production promotion.",
+  "evidence_schema": "1.0",
+  "execution_policy": {
+    "decision_protocol": "options_recommendation_rationale",
+    "failure_recovery": "bounded_self_correction",
+    "interaction": "decision_gates_only",
+    "max_identical_failures": 3,
+    "merge_policy": "required_checks_then_merge",
+    "mode": "autonomous",
+    "phase_checkpoints": "automatic_evidence_gated"
+  },
+  "external_gates": [
+    "credentials or paid external services",
+    "deployment of an external catalogue or graph service",
+    "technology promotion to a required production dependency",
+    "public release of experiment products beyond approved datasets"
+  ],
+  "github_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/343",
+  "github_issue_drafts": [
+    ".github/generated-issues/federated-medallion-frontier-parent.md"
+  ],
+  "github_subissues": [],
+  "requirements": [
+    "M-031", "M-032", "M-033", "M-040", "M-041", "M-045", "M-060",
+    "M-092", "M-094", "M-100", "M-101", "M-102", "M-112", "S-001",
+    "S-002", "S-003", "S-013", "C-001", "C-005", "C-007", "C-008",
+    "C-009", "C-010", "C-011", "C-012", "C-013", "C-014", "C-015",
+    "W-003", "W-005"
+  ],
+  "status": "new",
+  "target_versions": ["1.0.0"],
+  "track_id": "federated_medallion_frontier_experiments_20260829",
+  "type": "experiment",
+  "updated_at": "2026-08-29T05:38:00Z"
+}
