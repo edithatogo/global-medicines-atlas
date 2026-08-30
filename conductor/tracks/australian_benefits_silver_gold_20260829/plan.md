@@ -214,17 +214,28 @@
   Implemented `8a8650a`; 105 focused/context tests pass, new module 100%
   branch coverage; Ruff, ty and BasedPyright pass. PR #386 merged `f3aaf16`
   after 38 checks passed on `caa99f2`; local full limitations remain recorded.
-- [~] Build bounded element-level item/presentation/reference candidate rows
+- [x] Build bounded element-level item/presentation/reference candidate rows
   with parent and item occurrence lineage, explicit native text/tail/ID states
   and all original field slots, including unknowns. Synthetic-only scope;
   date/price conversion and domain-wide completeness remain pending.
   Implemented `a4bc2fe`; 115 focused/context passes, 98.70% new-module
-  coverage; Ruff, ty and BasedPyright pass. Full/hosted review pending.
+  coverage; Ruff, ty and BasedPyright pass. PR #387 merged `d84c887` after
+  all 38 checks passed on `739ceef`; frozen local full: 3,151 passed,
+  two interpreter-pin failures, one skipped (96.67% coverage).
 
 - [x] Entity review fix: reuse the nested Arrow schema once per input rather
   than reconstructing it for every source element. (`a5766dc`; regression
   red at 10 constructions instead of one; 116 focused/context passes,
-  98.78% coverage, static checks pass. Fresh hosted recheck pending.)
+  98.78% coverage, static checks pass. Fresh hosted recheck passed in #387.)
+
+- [~] Annotate entity rows with fixture-supported literal item identifiers,
+  AMT reference text/RDF resource attributes and exact type=ATC references.
+  Preserve unknowns, duplicate occurrences and missing/empty distinctions;
+  bounded source-local diagnostics must not imply vocabulary resolution,
+  medicine equivalence or funding/regulatory assertions. Synthetic-only;
+  real-corpus qualification and date/price contracts remain pending.
+  Implemented `ae319f2`; 138 focused/context/ecosystem tests pass, 99.37%
+  module coverage; Ruff, ty and BasedPyright pass. Full/hosted gates pending.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
