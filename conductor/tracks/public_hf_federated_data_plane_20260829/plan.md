@@ -93,8 +93,10 @@
 - [ ] Confirm the intended failure before implementation.
 - [ ] Publish source-faithful Parquet, typed tables, graph edge/node tables,
   products, coverage, lineage, and promotions with v4 identities.
-- [ ] Implement remote-first readers with bounded cache and offline behavior;
+- [~] Implement remote-first readers with bounded cache and offline behavior;
   verify local cache eviction cannot change content identity.
+  Runtime transport/cache slice in progress; only independently admitted v4
+  documents may be consumed. No live source acquisition or publication planned.
 - [ ] Phase Verification & Checkpoint: exact remote revisions reproduce all
   products and local storage is demonstrably transient.
 
