@@ -17,6 +17,15 @@ read locally. The correction has not been dispatched. Any retry requires
 reconciliation of its exact merged main commit and the unchanged read-only
 scope below.
 
+The corrected [run 33336369595](https://github.com/edithatogo/global-medicines-atlas/actions/runs/33336369595)
+at `3ca5b6e003796cbff04d9207362d860b638983da` completed the manifest stage but
+failed at `receipt-read` with category `transport`; its
+[durable receipt](https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5471361027)
+does not identify the transport subclass. A subsequent metadata-only check
+passed manifest and B1 digest/size/model validation. That observation supports
+bounded transport recovery, not a conclusion about the original exception's
+subclass or a corpus qualification claim.
+
 ## Existing authority and immutable inputs
 
 The existing public dataset is `edithatogo/australian-pbs-source-archive` at
@@ -57,6 +66,23 @@ canonical encoding of the exact original resolve path and its value is empty
 (bare key or explicit `=`). Named query keys remain `download` and
 `etag`, without duplicates. Mutable/unrelated paths, traversal, double encoding
 and unknown query keys remain rejected. No host or revision was added.
+
+One retry budget is shared across the entire run. Only HTTPX connection/read
+errors and remote-protocol errors may consume it; timeout exceptions, HTTP
+status rejection, decoding/local-protocol errors, policy/redirect failures and
+digest/size failures are not retried. A one-second backoff requires time left
+in the original 300-second deadline, checked both before and after waiting.
+The failed response is closed and its partial bytes discarded; the full read
+restarts at the original pinned URL through the same redirect and DNS guards.
+Each attempt retains the original byte/hop limits; the one extra attempt is
+the only additional request-chain allowance, not an unbounded retry loop.
+
+`transport_retry` records the fixed stage/category of the initial transient
+failure that consumed the run-wide recovery budget, on success or failure.
+It records backoff initiation, not proof that a second read completed (the
+deadline may expire during backoff). No retry is represented as `null`.
+Transport failure categories now distinguish connection, read, remote/local
+protocol and decoding failures without exception text or connection details.
 
 The 313 MB XML is processed with the existing finite ZIP/XML, entity, reference
 index and batch limits. Parsing uses trees and multiple passes; this is not a

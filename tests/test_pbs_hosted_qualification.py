@@ -159,7 +159,7 @@ def test_nonpublic_or_mutable_identity_rejected(synthetic, key, value) -> None:
     ],
 )
 def test_bad_retrieval_rejected(synthetic, case) -> None:
-    responses, _, transport = synthetic
+    responses, calls, transport = synthetic
     url = hosted.file_url(hosted.ARCHIVE)
     if case == "digest":
         responses[url] = b"x" * hosted.ARCHIVE.byte_count
@@ -196,6 +196,8 @@ def test_bad_retrieval_rejected(synthetic, case) -> None:
         hosted.run_hosted_qualification(SHA, transport=transport)
     assert caught.value.stage == "archive-read"
     assert caught.value.category == categories[case]
+    assert caught.value.retry_event is None
+    assert calls.count(url) == 1
 
 
 def test_allowed_cdn_redirect_is_anonymous(synthetic) -> None:
@@ -383,7 +385,7 @@ def test_context_failure_has_safe_diagnostics(synthetic, monkeypatch) -> None:
 @pytest.mark.parametrize(
     ("error", "category"),
     [
-        (httpx.ConnectError("secret-url"), "transport"),
+        (httpx.ConnectError("secret-url"), "transport-connect"),
         (httpx.ReadTimeout("secret-url"), "timeout"),
         (ValueError("secret-value"), "validation"),
         (KeyError("secret-field"), "structure"),
@@ -587,3 +589,208 @@ def test_cache_redirect_remains_exact(synthetic, case) -> None:
         hosted.QualificationError, match="receipt-read/redirect"
     ):
         hosted.run_hosted_qualification(SHA, transport=transport)
+
+
+@pytest.mark.parametrize(
+    ("error_type", "expected_category"),
+    [
+        (httpx.ConnectError, "transport-connect"),
+        (httpx.ReadError, "transport-read"),
+        (httpx.RemoteProtocolError, "transport-remote-protocol"),
+    ],
+)
+def test_one_transient_receipt_retry_is_recorded(
+    synthetic, monkeypatch, error_type, expected_category
+) -> None:
+    _, _, delegate = synthetic
+    attempts = 0
+    sleeps = []
+    monkeypatch.setattr(
+        hosted,
+        "time",
+        SimpleNamespace(monotonic=time.monotonic, sleep=sleeps.append),
+    )
+
+    def handler(request):
+        nonlocal attempts
+        if str(request.url) == hosted.file_url(hosted.RECEIPT):
+            attempts += 1
+            if attempts == 1:
+                raise error_type("secret-source-url")
+        return delegate.handle_request(request)
+
+    report = hosted.run_hosted_qualification(
+        SHA, transport=httpx.MockTransport(handler)
+    )
+    assert report["status"] == "passed"
+    assert attempts == 2
+    assert sleeps == [1]
+    assert report["transport_retry"]["stage"] == "receipt-read"
+    assert report["transport_retry"]["category"] == expected_category
+    assert "secret" not in json.dumps(report)
+
+
+def test_retry_budget_is_global_and_failure_retains_first_event(
+    synthetic, monkeypatch
+) -> None:
+    _, _, delegate = synthetic
+    counts = {}
+    monkeypatch.setattr(
+        hosted,
+        "time",
+        SimpleNamespace(monotonic=time.monotonic, sleep=lambda _seconds: None),
+    )
+
+    def handler(request):
+        url = str(request.url)
+        counts[url] = counts.get(url, 0) + 1
+        if (
+            url
+            in {
+                hosted.file_url(hosted.MANIFEST),
+                hosted.file_url(hosted.RECEIPT),
+            }
+            and counts[url] == 1
+        ):
+            raise httpx.ReadError("secret-response")
+        return delegate.handle_request(request)
+
+    with pytest.raises(hosted.QualificationError) as caught:
+        hosted.run_hosted_qualification(
+            SHA, transport=httpx.MockTransport(handler)
+        )
+    report = hosted.failure_report(caught.value)
+    assert report["failure_stage"] == "receipt-read"
+    assert report["failure_category"] == "transport-read"
+    assert report["transport_retry"] == {
+        "stage": "manifest-read",
+        "category": "transport-read",
+    }
+    assert counts[hosted.file_url(hosted.RECEIPT)] == 1
+    assert "secret" not in json.dumps(report)
+
+
+@pytest.mark.parametrize(
+    ("error_type", "category"),
+    [
+        (httpx.ConnectTimeout, "timeout"),
+        (httpx.ReadTimeout, "timeout"),
+        (httpx.WriteTimeout, "timeout"),
+        (httpx.PoolTimeout, "timeout"),
+        (httpx.DecodingError, "transport-decoding"),
+        (httpx.LocalProtocolError, "transport-local-protocol"),
+        (httpx.WriteError, "transport"),
+    ],
+)
+def test_nontransient_transport_failures_are_not_retried(
+    synthetic, error_type, category
+) -> None:
+    _, _, delegate = synthetic
+    attempts = 0
+
+    def handler(request):
+        nonlocal attempts
+        if str(request.url) == hosted.file_url(hosted.RECEIPT):
+            attempts += 1
+            raise error_type("secret")
+        return delegate.handle_request(request)
+
+    with pytest.raises(hosted.QualificationError) as caught:
+        hosted.run_hosted_qualification(
+            SHA, transport=httpx.MockTransport(handler)
+        )
+    assert attempts == 1
+    report = hosted.failure_report(caught.value)
+    assert report["failure_category"] == category
+    assert report["transport_retry"] is None
+
+
+def test_partial_response_closed_discarded_and_restart_guarded(
+    synthetic, monkeypatch
+) -> None:
+    responses, _, delegate = synthetic
+    url = hosted.file_url(hosted.MANIFEST)
+    manifest = json.loads(responses[url])
+    manifest["synthetic_padding"] = "x" * 70_000
+    payload = json.dumps(manifest).encode()
+    responses[url] = payload
+    monkeypatch.setattr(
+        hosted,
+        "MANIFEST",
+        hosted.PinnedFile(
+            "manifest.json", hashlib.sha256(payload).hexdigest(), len(payload)
+        ),
+    )
+    target = "https://us.aws.cdn.hf.co/fixture?signature=synthetic"
+    responses[target] = responses[url]
+    responses[url] = httpx.Response(302, headers={"Location": target})
+    calls = []
+    monkeypatch.setattr(
+        hosted,
+        "time",
+        SimpleNamespace(monotonic=time.monotonic, sleep=lambda _seconds: None),
+    )
+
+    class Partial(httpx.SyncByteStream):
+        closed = False
+
+        def __iter__(self):
+            yield b"x" * (64 * 1024)
+            raise httpx.ReadError("secret-stream-error")
+
+        def close(self):
+            self.closed = True
+
+    partial = Partial()
+
+    def handler(request):
+        calls.append(str(request.url))
+        if str(request.url) == target and calls.count(target) == 1:
+            return httpx.Response(200, stream=partial)
+        if str(request.url) == url and calls.count(url) == 2:
+            assert partial.closed
+        return delegate.handle_request(request)
+
+    report = hosted.run_hosted_qualification(
+        SHA, transport=httpx.MockTransport(handler)
+    )
+    assert report["status"] == "passed"
+    assert calls.count(url) == calls.count(target) == 2
+    assert report["transport_retry"] == {
+        "stage": "manifest-read",
+        "category": "transport-read",
+    }
+
+
+@pytest.mark.parametrize("oversleep", [False, True])
+def test_retry_never_resets_deadline(monkeypatch, oversleep) -> None:
+    clock = 299.5 if not oversleep else 298
+    calls = 0
+    sleeps = []
+
+    def fail():
+        nonlocal calls
+        calls += 1
+        raise httpx.ReadError("secret")
+
+    def sleep(seconds):
+        nonlocal clock
+        sleeps.append(seconds)
+        clock = 301
+
+    monkeypatch.setattr(
+        hosted, "time", SimpleNamespace(monotonic=lambda: clock, sleep=sleep)
+    )
+    budget = hosted._RetryBudget()
+    with pytest.raises(hosted.QualificationError, match="receipt-read/timeout"):
+        hosted._fetch("receipt-read", budget, 300, fail)
+    assert calls == 1
+    assert sleeps == ([1] if oversleep else [])
+
+
+def test_retry_record_is_allowlisted() -> None:
+    error = hosted.QualificationError("receipt-read", "transport-read")
+    error.retry_event = ("secret-stage", "secret-category")
+    report = hosted.failure_report(error)
+    assert report["transport_retry"] is None
+    assert "secret" not in json.dumps(report)
