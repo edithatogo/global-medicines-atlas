@@ -9,6 +9,33 @@ value/state consistency; Python additionally checks cross-record denominators.
 
 ## Reuse and scope
 
+### Typed scalar prerequisite
+
+`mbs_typed_values.convert_mbs_value` reuses the existing 40-field mapping.
+It retains native text and presence state alongside a conversion outcome.
+Identifiers, codes and descriptions stay strings, including leading zeros
+and empty text. Numeric/date blanks, missing fields, nulls, invalid values,
+and successful conversions remain distinct. Derived-fee expressions and
+spreadsheet error strings are never evaluated.
+
+Amounts use exact Python Decimal values with explicit AUD currency;
+percentages retain their source magnitude (85 is not silently changed to
+0.85). The strict decimal grammar accepts signed ASCII digits and an optional
+fraction, not exponents, separators, currency symbols or surrounding spaces.
+No quantization or rounding occurs, even under a low-precision Decimal context.
+Arrow precision/scale admission remains a separate pending step.
+
+Dates require an explicit format profile. The only implemented profile is
+strict YYYY-MM-DD (`iso`), tested with synthetic data. Without a profile,
+nonblank dates remain `unsupported_format`; no locale or production schema-era
+format is guessed. Callers still need era-specific evidence and exact B1/v4
+lineage before producing qualified Silver tables. Scalar result objects are
+internal conversion outputs, not independently validated interchange receipts.
+No real payload acquisition, publication, promotion or dependency change is
+part of this prerequisite.
+
+### Existing components
+
 The implementation reuses the existing MBS native XML/workbook models, PBS
 namespace and bounded parser policy, shared receipt-to-provenance validation,
 Pydantic frozen models and existing test tooling. No dependency was added.
