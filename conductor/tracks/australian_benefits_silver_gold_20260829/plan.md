@@ -259,9 +259,12 @@
   Implemented `4cb2922`; 216 focused/context/ecosystem passes, 100% new-module
   coverage; Ruff, ty and BasedPyright pass. Full/hosted gates pending.
 
-- [~] Member bridge review fixes: reject a declared ZIP member size that
+- [x] Member bridge review fixes: reject a declared ZIP member size that
   differs from bytes read, and regenerate the adapter-content-bound measured
   coverage receipt without changing coverage/qualification claims.
+  (`d416b57`; intended size-mismatch regression failure, then 242 focused
+  passes; 100% bridge coverage and static checks pass. Receipt diff only
+  adapter digest/size and outer receipt digest. Fresh hosted checks pending.)
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
