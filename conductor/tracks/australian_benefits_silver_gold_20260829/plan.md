@@ -85,6 +85,10 @@
 - [~] Qualify the exact legacy workbook header/style/epoch denominator in
   hosted execution and add source-specific harmonised annotation mappings.
   Cell-storage typing is not a substitute for domain/currency/date mapping.
+  Storage run `33305281887` passed against the exact public workbook: 13,742
+  cells, four formulas, two errors; 36 unrepresentable decimals retained
+  natively. Header/style metadata now grounds strict per-column mappings;
+  mapping execution and semantic value harmonisation remain pending.
   An Actions-only pinned public workbook profiler is implemented in `ab26f90`
   (own unpublished `209e08d` rebased onto the same-tree PR #376 merge).
   All 114 focused tests pass; qualifier statement/branch coverage is 100%.
@@ -94,6 +98,16 @@
   subsequent domain mappings remain pending.
 
 ## Workbook portability review fixes
+
+- [x] Record real-source storage qualification with complete sheet/cell,
+  formula/error, conversion, header and native format denominators.
+  Run `33305281887`; durable issue #341 receipt `5468037256`.
+- [~] Bind all native cells to the observed four-sheet header profile and
+  source row/column lineage without inventing meaning for unlabelled cells.
+  (`7f9733b`; 88 focused passes, new module 100% branch coverage; full and
+  hosted gates pending.)
+- [ ] Run the extended hosted qualifier after merge to count actual header
+  mappings, then continue source-specific date/currency/value harmonisation.
 
 - [x] Preserve sheet identity when combining batches and round-tripping
   Parquet, including an explicit empty-sheet manifest and property presence.
@@ -110,7 +124,10 @@
 
 - [x] Correct the hosted qualifier job-name policy finding without weakening
   security lint. (`7e049cd`; actionlint and zizmor 1.28.0 pedantic pass.)
-- [~] Recheck PR #378 exact-head hosted gates before real-workbook dispatch.
+- [x] Recheck PR #378 exact-head hosted gates before real-workbook dispatch.
+  Merged as `11a8c4f` with 38 passing checks on `ceed3e1`; no review threads.
+  Read-only pinned workbook run `33305281887` passed. Metadata receipt and
+  exact summary digest retained; no dataset publication or semantic promotion.
 
 - [~] Write failing golden, property, malformed-input, schema-drift,
   determinism, decimal/currency, date, formula-error, duplicate, and lineage
