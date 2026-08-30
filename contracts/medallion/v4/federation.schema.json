@@ -1,0 +1,130 @@
+{
+  "$id": "https://edithatogo.github.io/contracts/medallion/v4/federation.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Immutable public dataset federation v4",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "evidence_kind", "authority", "source", "location", "publication", "verification", "rights", "discovery", "lineage", "recovery", "cache", "consumers"],
+  "properties": {
+    "version": {"const": "4.0.0"},
+    "evidence_kind": {"enum": ["synthetic", "live"]},
+    "authority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["producer_repository", "contract_repository", "contract_commit", "schema_sha256"],
+      "properties": {
+        "producer_repository": {"$ref": "#/$defs/repository"},
+        "contract_repository": {"$ref": "#/$defs/repository"},
+        "contract_commit": {"$ref": "#/$defs/revision"},
+        "schema_sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_id", "acquisition_id", "layer", "bronze_stratum", "representation", "schema_era", "comparison_cohort", "effective_date", "retrieved_at"],
+      "properties": {
+        "source_id": {"$ref": "#/$defs/text"}, "acquisition_id": {"$ref": "#/$defs/text"},
+        "layer": {"enum": ["bronze", "silver", "gold", "platinum"]},
+        "bronze_stratum": {"enum": ["B0", "B1", "B2", null]},
+        "representation": {"enum": ["index", "metadata", "raw", "projection"]},
+        "schema_era": {"$ref": "#/$defs/text"},
+        "comparison_cohort": {"enum": ["legacy", "current", "synthetic"]},
+        "effective_date": {"type": ["string", "null"], "format": "date"},
+        "retrieved_at": {"$ref": "#/$defs/time"}
+      }
+    },
+    "location": {
+      "type": "object", "additionalProperties": false,
+      "required": ["dataset", "revision", "path", "bytes", "sha256", "private", "gated", "xet_hash", "lfs_oid"],
+      "properties": {
+        "dataset": {"$ref": "#/$defs/repository"}, "revision": {"$ref": "#/$defs/revision"},
+        "path": {"$ref": "#/$defs/path"}, "bytes": {"type": "integer", "minimum": 0},
+        "sha256": {"$ref": "#/$defs/digest"}, "private": {"const": false}, "gated": {"const": false},
+        "xet_hash": {"anyOf": [{"$ref": "#/$defs/digest"}, {"type": "null"}]},
+        "lfs_oid": {"anyOf": [{"$ref": "#/$defs/digest"}, {"type": "null"}]}
+      }
+    },
+    "publication": {
+      "type": "object", "additionalProperties": false,
+      "required": ["origin", "workflow", "run", "commit", "receipt"],
+      "properties": {
+        "origin": {"const": "github_actions"}, "workflow": {"type": "string", "pattern": "^\\.github/workflows/[A-Za-z0-9_-]+\\.ya?ml$(?![\\s\\S])"},
+        "run": {"type": "string", "pattern": "^https://github\\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/actions/runs/[0-9]+$(?![\\s\\S])"},
+        "commit": {"$ref": "#/$defs/revision"}, "receipt": {"$ref": "#/$defs/receipt"}
+      }
+    },
+    "verification": {
+      "type": "object", "additionalProperties": false,
+      "required": ["dataset", "revision", "path", "sha256", "bytes", "anonymous", "clean_room", "status", "verified_at", "receipt"],
+      "properties": {
+        "dataset": {"$ref": "#/$defs/repository"}, "revision": {"$ref": "#/$defs/revision"},
+        "path": {"$ref": "#/$defs/path"}, "sha256": {"$ref": "#/$defs/digest"}, "bytes": {"type": "integer", "minimum": 0},
+        "anonymous": {"const": true}, "clean_room": {"const": true}, "status": {"const": "passed"},
+        "verified_at": {"$ref": "#/$defs/time"}, "receipt": {"$ref": "#/$defs/receipt"}
+      }
+    },
+    "rights": {
+      "type": "object", "additionalProperties": false,
+      "required": ["authorization", "subject_sha256", "dataset", "path", "basis", "sensitivity", "publication"],
+      "properties": {
+        "authorization": {"$ref": "#/$defs/receipt"}, "subject_sha256": {"$ref": "#/$defs/digest"},
+        "dataset": {"$ref": "#/$defs/repository"}, "path": {"$ref": "#/$defs/path"},
+        "basis": {"$ref": "#/$defs/text"}, "sensitivity": {"const": "non_sensitive"}, "publication": {"const": "approved_exact_scope"}
+      }
+    },
+    "discovery": {
+      "type": "object", "additionalProperties": false,
+      "required": ["collections", "estate_entry"],
+      "properties": {
+        "collections": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^https://huggingface\\.co/collections/[A-Za-z0-9_./-]+$(?![\\s\\S])"}},
+        "estate_entry": {"$ref": "#/$defs/receipt"}
+      }
+    },
+    "lineage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["inputs", "v1_conformance", "v2_field_lineage", "v3_replay", "promotion_receipt"],
+      "properties": {
+        "inputs": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/receipt"}},
+        "v1_conformance": {"$ref": "#/$defs/receipt"}, "v2_field_lineage": {"$ref": "#/$defs/receipt"},
+        "v3_replay": {"$ref": "#/$defs/receipt"}, "promotion_receipt": {"$ref": "#/$defs/nullableReceipt"}
+      }
+    },
+    "recovery": {
+      "type": "object", "additionalProperties": false,
+      "required": ["role", "independent", "administrative_domain", "primary_administrative_domain", "region", "primary_region", "rpo_seconds", "rto_seconds", "checksum_inventory", "restore_receipt", "authorization_receipt"],
+      "properties": {
+        "role": {"enum": ["primary", "compatibility_replica", "independent_replica"]}, "independent": {"type": "boolean"},
+        "administrative_domain": {"$ref": "#/$defs/text"}, "primary_administrative_domain": {"$ref": "#/$defs/text"},
+        "region": {"$ref": "#/$defs/text"}, "primary_region": {"$ref": "#/$defs/text"},
+        "rpo_seconds": {"type": ["integer", "null"], "minimum": 0}, "rto_seconds": {"type": ["integer", "null"], "minimum": 0},
+        "checksum_inventory": {"$ref": "#/$defs/receipt"}, "restore_receipt": {"$ref": "#/$defs/nullableReceipt"},
+        "authorization_receipt": {"$ref": "#/$defs/nullableReceipt"}
+      }
+    },
+    "cache": {
+      "type": "object", "additionalProperties": false,
+      "required": ["origin", "state", "max_bytes", "created_at", "expires_at", "cleanup_receipt", "offline_behavior"],
+      "properties": {
+        "origin": {"enum": ["github_actions", "bounded_reader"]}, "state": {"enum": ["transient", "removed"]},
+        "max_bytes": {"type": "integer", "minimum": 1}, "created_at": {"$ref": "#/$defs/time"}, "expires_at": {"$ref": "#/$defs/time"},
+        "cleanup_receipt": {"$ref": "#/$defs/nullableReceipt"}, "offline_behavior": {"enum": ["fail_closed", "verified_exact_digest_only"]}
+      }
+    },
+    "consumers": {"type": "array", "uniqueItems": true, "items": {
+      "type": "object", "additionalProperties": false, "required": ["repository", "commit", "canary"],
+      "properties": {"repository": {"$ref": "#/$defs/repository"}, "commit": {"$ref": "#/$defs/revision"}, "canary": {"$ref": "#/$defs/receipt"}}
+    }}
+  },
+  "$defs": {
+    "text": {"type": "string", "minLength": 1, "maxLength": 2048, "pattern": "^\\S(?:[\\s\\S]*\\S)?$(?![\\s\\S])"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$(?![\\s\\S])"},
+    "revision": {"type": "string", "pattern": "^[0-9a-f]{40}$(?![\\s\\S])"},
+    "repository": {"type": "string", "pattern": "^[A-Za-z0-9_-]+/[A-Za-z0-9_.-]+$(?![\\s\\S])"},
+    "path": {"type": "string", "maxLength": 1024, "pattern": "^[A-Za-z0-9_-][A-Za-z0-9_.-]*(/[A-Za-z0-9_-][A-Za-z0-9_.-]*)*$(?![\\s\\S])"},
+    "time": {"type": "string", "format": "date-time", "pattern": "Z$(?![\\s\\S])"},
+    "receipt": {
+      "type": "object", "additionalProperties": false, "required": ["url", "sha256"],
+      "properties": {"url": {"type": "string", "format": "uri", "pattern": "^https://[^@?#\\s]+(?:#[A-Za-z0-9_-]+)?$(?![\\s\\S])"}, "sha256": {"$ref": "#/$defs/digest"}}
+    },
+    "nullableReceipt": {"anyOf": [{"$ref": "#/$defs/receipt"}, {"type": "null"}]}
+  }
+}
