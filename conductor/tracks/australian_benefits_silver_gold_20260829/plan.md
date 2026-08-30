@@ -368,6 +368,10 @@
   all resulting receipts. Timeouts, policy, integrity and decoding failures
   remain terminal. Metadata-only B1/manifest recheck passed; the original
   transport subclass is unknown. Test, review and merge before hosted retry.
+  Implemented `2ce70fa`; four intended red failures followed by 300 combined
+  focused/context/ecosystem passes and 78 final harness passes, 98.81% changed
+  coverage. Static/security checks pass; pre-freeze agent review strengthened
+  exact subtype assertions. Frozen full and final hosted gates pending.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
