@@ -131,6 +131,18 @@
 
 ## Phase 5: Collections, estate registry, and recovery (AC-05, AC-07)
 
+### Distribution review correction
+
+- [x] Preserve Bronze stratum in the producer-to-contract identity comparison.
+  (`ac31ecb`; P1 regression accepted substituted B1/B2 before correction;
+  124 focused federation tests passed, new module 100% branch coverage.)
+- [~] Requalify the corrected distribution inventory through exact-head hosted
+  checks. Prior local full run: 3052 passed, 3 failed, 1 skipped, 96.60%; two
+  pinned Python mismatch failures and a product-runner failure whose isolated
+  rerun passed. No full exact-corrected-head pass is claimed.
+
+### Discovery and recovery
+
 - [ ] Write failing reconciliation tests for collection visibility, item
   membership, notes, revisions, estate-registry identity, and stale entries.
 - [ ] Confirm the intended failure before implementation.
