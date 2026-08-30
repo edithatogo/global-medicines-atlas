@@ -134,21 +134,27 @@
   the separate donor `mbs/item` profile and locks serialized table shape.
   Live scheduling, complex HTML spans and durable admission receipts remain pending.
 - [x] Confirm the intended failure before implementation. (`7230721`, PR #364)
-- [~] Reuse GMA HTTP destination, admission, receipt, source-health, and
+- [x] Reuse GMA HTTP destination, admission, receipt, source-health, and
   catalogue-driven scheduling controls.
   Typed HTML admission now uses the shared content-addressed Bronze decision
   and append-only store; live-only usable-table health uses shared escalation.
-  Hosted runner and catalogue-driven scheduling integration remain pending.
-  The approved August 2026 release pipeline is now implemented and fixture
-  tested; its exact-head hosted run and anonymous receipt remain pending.
-- [ ] Keep old endpoint behavior as a compatibility probe and source-drift
+  Hosted runner uses the catalogue and a separately approved exact-release
+  override. PR #367 (`435527a`) passed 38 hosted checks; run `33296983154`
+  acquired and anonymously verified the approved August release.
+- [x] Keep old endpoint behavior as a compatibility probe and source-drift
   fixture; use current official MBS releases for production acquisition.
+  (`7230721`, `435527a`; historical endpoints remain synthetic probes.)
 - [x] Replace heterogeneous `pandas.concat` output with source/table identities
   and explicit schema contracts. (`7230721`, PR #364; typed HTML and native P7)
-- [ ] Require artifact and receipt evidence before a scheduled run reports data
+- [x] Require artifact and receipt evidence before a scheduled run reports data
   acquisition success.
-- [ ] Phase Verification & Checkpoint: the August 2026 no-data run fails closed
+  (`435527a`; public receipt issue #340 comment `5467154799`, 6,046 records.)
+- [x] Phase Verification & Checkpoint: the August 2026 no-data run fails closed
   and a valid fixture run emits deterministic, typed products.
+  111 focused tests passed; live run `33296983154` separately verified eight
+  objects at HF revision `75f9f20a36ddb829dfe0ca88660664570782be02`, preserved
+  all 11 prior paths and removed hosted temporary bytes after verification.
+  This does not establish live historical participant-count coverage.
 
 ## Phase 5: Preserve design intent and prepare archival (AC-01, AC-08, AC-09)
 
@@ -165,16 +171,27 @@
 - [x] Prepare non-destructive GitHub archive commands and a rollback checklist;
   stop at the compatibility-archive gate for the exact two repositories.
   (`4c1fae7`; commands documented only, no archive approval or execution)
-- [ ] Phase Verification & Checkpoint: no donor scope is unaccounted for and no
+- [x] Phase Verification & Checkpoint: no donor scope is unaccounted for and no
   archive action has occurred without the final human gate.
+  Exact donor denominator and all eight roadmap commitments are mapped;
+  implemented behavior and future successor tasks remain distinct. Donor
+  notices are merged; final GitHub archive approval remains pending.
 
 ## Phase 6: Integrated qualification (AC-10)
 
-- [ ] Run focused tests, Ruff, `ty`, BasedPyright, provenance, rights,
+- [x] Run focused tests, Ruff, `ty`, BasedPyright, provenance, rights,
   deterministic regeneration, security, coverage, and compatibility lanes.
-- [ ] Run `uv run python scripts/test_goblin.py full` where platform support
+  PR #367 head `184a9b4`: 111 focused tests, local type/style/security passed;
+  all 38 hosted checks passed, including mutation, Mojo and regeneration.
+- [x] Run `uv run python scripts/test_goblin.py full` where platform support
   permits; record Linux-authoritative Mojo/mutmut evidence separately.
-- [ ] Run Conductor review, fix findings, open a scoped pull request, wait for
+  Local: 2,793 passed, three failed, one skipped, 96.42% coverage. Two failures
+  require exact Python 3.14.6 rather than local 3.14.7; one exceeds the unchanged
+  query latency budget. Later local lanes did not execute after failure.
+  Required exact-head hosted lanes passed; no local-all-green claim.
+- [~] Run Conductor review, fix findings, open a scoped pull request, wait for
   required hosted checks, merge, and reconcile evidence.
+  Three PR #367 review findings fixed and resolved; implementation merged.
+  Final publication/checkpoint reconciliation is under review.
 - [ ] Keep archive tasks pending until the exact parity/publication package and
   maintainer approval are recorded.
