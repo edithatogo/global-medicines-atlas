@@ -1,0 +1,66 @@
+{
+  "workflow_commit": "72e0b76073963edcb72176030c7dd54f34e37408",
+  "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/33318355531",
+  "retrieved_at": "2026-08-30T14:59:26+00:00",
+  "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+  "source_receipt_sha256": "3a2c22839ad42ae9c297772be4b5e36d95cc162d4fc6ba99aee786ca4f022b71",
+  "date_encoding_profile_version": 1,
+  "date_encoding_counts": {
+    "header": 22,
+    "missing_value": 2240,
+    "two_two_four_dot": 1280
+  },
+  "date_encodings_by_field": {
+    "BenefitStartDate": {
+      "header": 2,
+      "two_two_four_dot": 320
+    },
+    "DerivedFeeStartDate": {
+      "header": 2,
+      "missing_value": 320
+    },
+    "DescriptionStartDate": {
+      "header": 2,
+      "two_two_four_dot": 320
+    },
+    "EMSNChangeDate": {
+      "header": 2,
+      "missing_value": 320
+    },
+    "EMSNEndDate": {
+      "header": 2,
+      "missing_value": 320
+    },
+    "EMSNStartDate": {
+      "header": 2,
+      "missing_value": 320
+    },
+    "FeeStartDate": {
+      "header": 2,
+      "two_two_four_dot": 320
+    },
+    "ItemEndDate": {
+      "header": 2,
+      "missing_value": 320
+    },
+    "ItemStartDate": {
+      "header": 2,
+      "two_two_four_dot": 320
+    },
+    "QFEEndDate": {
+      "header": 2,
+      "missing_value": 320
+    },
+    "QFEStartDate": {
+      "header": 2,
+      "missing_value": 320
+    }
+  },
+  "date_profile": null,
+  "semantic_promotion": false,
+  "durable_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5469433690",
+  "artifact_id": 9734146879,
+  "artifact_sha256": "b8c82017a7717ea1ad314db92ffb5ef3cad77fde2e9abcb229daeaf32a7b226f",
+  "qualification_summary_sha256": "73b7fd0f13a0f0bacd0e2d5fe69720f70ae7836a1fc532afd7f12d20ae5ff7d0",
+  "interpretation": "lexical_shape_only_not_calendar_or_order"
+}
