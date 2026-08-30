@@ -228,14 +228,25 @@
   red at 10 constructions instead of one; 116 focused/context passes,
   98.78% coverage, static checks pass. Fresh hosted recheck passed in #387.)
 
-- [~] Annotate entity rows with fixture-supported literal item identifiers,
+- [x] Annotate entity rows with fixture-supported literal item identifiers,
   AMT reference text/RDF resource attributes and exact type=ATC references.
   Preserve unknowns, duplicate occurrences and missing/empty distinctions;
   bounded source-local diagnostics must not imply vocabulary resolution,
   medicine equivalence or funding/regulatory assertions. Synthetic-only;
   real-corpus qualification and date/price contracts remain pending.
   Implemented `ae319f2`; 138 focused/context/ecosystem tests pass, 99.37%
-  module coverage; Ruff, ty and BasedPyright pass. Full/hosted gates pending.
+  module coverage; Ruff, ty and BasedPyright pass. PR #388 merged `b6d4f4f`
+  after all 38 checks passed on `59e0ea1`. Frozen local full: 3,172 passed,
+  two interpreter-pin failures, one skipped, 96.69% coverage; performance pass.
+
+- [~] Add fixture-supported date-slot candidates with an explicit opt-in
+  calendar-date profile, native values/states, exact field and occurrence
+  lineage, and duplicate/repeated element preservation. Keep unsupported
+  formats and invalid dates visible; no source-era qualification, precedence,
+  status, interval, timezone, price or entitlement inference.
+  Implemented `c83b367`; 160 combined focused/context/ecosystem passes,
+  final 23 date tests pass; 99.09% module coverage. Ruff, ty and BasedPyright
+  pass; full and hosted qualification pending.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,

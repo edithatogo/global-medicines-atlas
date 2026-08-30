@@ -394,3 +394,45 @@ parse is an explicit throughput trade-off awaiting real-corpus qualification.
 Overflow fails without truncation; discard partial output after any error.
 Synthetic-only coverage does not qualify full schedules, source dates/prices,
 funding/regulatory status, medicine equivalence, public derivatives or v4.
+
+## PBS opt-in date candidates
+
+`iter_pbs_date_batches` adds date-slot candidates to complete native entity
+rows, independently joinable to reference candidates by `entity_id`. The
+existing adapter identifies unqualified `effective-date` on the PBS root or
+schedule document element, PBS root/info/DCTERMS valid text, and effective-date
+on mapped PBS restriction elements. Exact expanded names and supported
+ancestry are required; foreign attributes and unknown wrappers stay unmapped.
+The adapter's fallback/first-value selection is deliberately not copied.
+Every observed element survives, including repeated dates or duplicate item
+IDs. Absent elements are not invented; an existing supported element missing
+its date attribute reports missing_field with no fabricated source field ID.
+
+The adapter/native inventory and fixtures establish locations, not a complete
+official date grammar. No dates are converted by default. Selecting
+`pbs-iso-date-candidate-v1` explicitly requests ASCII `YYYY-MM-DD` calendar
+conversion to Arrow date32, with years 0001–9999 and valid month/day values.
+This named candidate profile does not qualify a PBS source era or real corpus.
+The stdlib calendar parser, PyArrow, native entities and receipt metadata are
+reused; the MBS-specific field registry/DMY profile is not imposed on PBS.
+
+`date_native_value`, `date_native_state` and `date_source_field_id` retain
+literal spelling, presence and original slot identity. Conversion status is
+unmapped, missing_field, null, empty_value, blank_value, profile_not_selected,
+unsupported_format, invalid_date or converted. Whitespace-padded dates,
+alternate formats, timestamps and offsets remain unsupported, without
+trimming or timezone assumptions. Typed null never erases the native value.
+
+`date_occurrence_index` is the element's native same-expanded-name sibling
+position, and state is first_occurrence or repeated_occurrence (not_applicable
+for unmapped elements). First means positional first, not unique, preferred,
+or authoritative; repeated dates are not assumed erroneous. Parent/entity
+identities distinguish positions under different parents. No duplicate is
+collapsed and no schedule/restriction precedence, validity interval, current
+listing, price, funding entitlement or clinical assertion is derived.
+
+The inherited bounded parser/entity buffers remain; an additional 8 MiB
+compact UTF-8 JSON row budget encodes typed dates as ISO strings. Output is
+limited to 1–4,096 rows per batch. This is not constant-memory parsing or an
+exact resident-memory cap; discard partial output after an error. Synthetic
+and property tests are not real-corpus, publication or v4 qualification.
