@@ -36,6 +36,7 @@ def candidate(layer: str = "silver") -> tuple[ProducedObject, dict[str, Any]]:
         acquisition_id="synthetic-acquisition",
         layer=layer,
         path="raw/synthetic.xml",
+        bronze_stratum="B2" if layer == "bronze" else None,
         sha256="d" * 64,
         byte_count=11,
         evidence_kind="synthetic",
@@ -188,3 +189,10 @@ def test_output_order_and_duplicate_remote_location() -> None:
         doc2[group]["path"] = second.path
     bindings = reconcile([second, first], [doc1, doc2])
     assert [binding.object for binding in bindings] == [second, first]
+
+
+def test_bronze_stratum_cannot_be_substituted() -> None:
+    obj, document = candidate("bronze")
+    document["source"]["bronze_stratum"] = "B1"
+    with pytest.raises(ValueError, match="mismatched"):
+        reconcile([obj], [document])

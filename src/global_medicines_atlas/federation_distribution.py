@@ -27,6 +27,7 @@ class ProducedObject:
     source_id: str
     acquisition_id: str
     layer: str
+    bronze_stratum: str | None
     path: str
     sha256: str
     byte_count: int
@@ -97,6 +98,7 @@ def reconcile_distribution(
             source_id=source["source_id"],
             acquisition_id=source["acquisition_id"],
             layer=source["layer"],
+            bronze_stratum=source["bronze_stratum"],
             path=location["path"],
             sha256=location["sha256"],
             byte_count=location["bytes"],

@@ -7,7 +7,9 @@ reader's schema pin and metadata byte ceiling. No dependency versions change.
 
 Supply `ProducedObject` entries from the producing job, not by reading the
 contracts being checked. Each entry binds producer, source, acquisition, layer,
-portable target path, digest, byte count and synthetic/live evidence kind.
+Bronze stratum, portable target path, digest, byte count and synthetic/live
+evidence kind. B1 and B2 projection provenance cannot be substituted; later
+layers require a null stratum through the existing v4 semantic checks.
 Supply the separately governed layer-to-dataset topology as `destinations`.
 The function performs no source reads, network requests or publication.
 
