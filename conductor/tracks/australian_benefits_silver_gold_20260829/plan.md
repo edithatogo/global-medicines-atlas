@@ -239,14 +239,23 @@
   after all 38 checks passed on `59e0ea1`. Frozen local full: 3,172 passed,
   two interpreter-pin failures, one skipped, 96.69% coverage; performance pass.
 
-- [~] Add fixture-supported date-slot candidates with an explicit opt-in
+- [x] Add fixture-supported date-slot candidates with an explicit opt-in
   calendar-date profile, native values/states, exact field and occurrence
   lineage, and duplicate/repeated element preservation. Keep unsupported
   formats and invalid dates visible; no source-era qualification, precedence,
   status, interval, timezone, price or entitlement inference.
   Implemented `c83b367`; 160 combined focused/context/ecosystem passes,
   final 23 date tests pass; 99.09% module coverage. Ruff, ty and BasedPyright
-  pass; full and hosted qualification pending.
+  pass. PR #389 merged `77d52c4` after 38 checks passed on `d82e350`.
+  Frozen local full: 3,194 passed, three failed, one skipped, 96.70% coverage;
+  two interpreter-pin failures and product latency failure (one isolated
+  rerun passed). No all-green local-full or real-corpus qualification claim.
+
+- [~] Bind historical PBS archive B1/B2 to its exact XML member with source
+  identity unchanged, required parent receipt digest, archive/member byte
+  evidence, native member path and explicit extraction relationship.
+  Revalidate all inputs; preserve ordinary adapter/source checks. Candidate
+  identity only, not source aliasing, admission or automatic date selection.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,

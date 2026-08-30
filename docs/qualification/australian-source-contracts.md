@@ -436,3 +436,39 @@ compact UTF-8 JSON row budget encodes typed dates as ISO strings. Output is
 limited to 1–4,096 rows per batch. This is not constant-memory parsing or an
 exact resident-memory cap; discard partial output after an error. Synthetic
 and property tests are not real-corpus, publication or v4 qualification.
+
+## Historical PBS archive/member identity prerequisite
+
+`PbsXmlMemberBinding` is a deterministic, candidate-only provenance record,
+not a new acquisition receipt or admitted Silver table. It retains the full
+original `au-pbs-historical-xml` source identity, parent B1 receipt digest,
+archive B2 digest/byte count, exact member path, member digest/byte count and
+the explicit `zip-member-extraction` relationship. The parent receipt remains
+the location for retrieval, rights and temporal evidence; its URI/document is
+not copied into this binding. No source alias or rights grant is invented.
+
+`build_pbs_xml_member_binding` revalidates the parent SourceReceipt (including
+successful retrieval), requires the historical source/AUS jurisdiction and
+matches exact archive bytes. `read_pbs_v3_member`, shared with the existing
+archive adapter, applies the unchanged PBS ZIP policy: bounded archive and
+uncompressed sizes, entry count, ratio and path depth, safe portable paths,
+no duplicate entries, encryption or symlinks, and exactly one SCH-*.xml member.
+The bridge validates the member with the existing bounded XML parser and PBS
+root/namespace contract. Binding member paths are additionally limited to
+4,096 characters. Bytes are read in memory; no network or filesystem writes.
+The parser retains a bounded tree, not constant-memory streaming.
+
+`validate_pbs_xml_member_binding` requires the binding, parent receipt, archive
+bytes and separately supplied member bytes. It rebuilds the binding and
+compares every field plus the member digest/size. Missing lineage, altered
+parents, wrong sources, mismatched bytes, unsafe or ambiguous members fail
+closed. Deserializing the model or knowing its digest is not byte verification.
+Duplicate item IDs do not defeat byte identity; the selected-record adapter's
+duplicate-item rejection is unchanged and remains a separate qualification.
+
+The historical source is never relabelled `au-pbs`. Existing native/Silver
+APIs still require their original source contract and reject the archive
+receipt. A subsequent explicit source/member-aware table contract is needed
+to consume this historical binding; callers must not fabricate an aliased
+SourceReceipt. This prerequisite neither selects a date profile nor proves
+corpus completeness, production admission, publication or federation v4.
