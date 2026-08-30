@@ -2,7 +2,7 @@
 
 ## Phase 1: Freeze source denominators and semantics (AC-01, AC-03)
 
-- [ ] Write failing schema-coverage tests against every MBS XML field, workbook
+- [~] Write failing schema-coverage tests against every MBS XML field, workbook
   sheet/column/formula state, and PBS v3 source element in the approved fixtures.
 - [ ] Confirm the intended failure before implementation.
 - [ ] Define versioned MBS service-benefit and PBS funding/formulary semantic
