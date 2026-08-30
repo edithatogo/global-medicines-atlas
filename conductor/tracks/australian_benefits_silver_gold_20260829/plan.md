@@ -251,20 +251,27 @@
   two interpreter-pin failures and product latency failure (one isolated
   rerun passed). No all-green local-full or real-corpus qualification claim.
 
-- [~] Bind historical PBS archive B1/B2 to its exact XML member with source
+- [x] Bind historical PBS archive B1/B2 to its exact XML member with source
   identity unchanged, required parent receipt digest, archive/member byte
   evidence, native member path and explicit extraction relationship.
   Revalidate all inputs; preserve ordinary adapter/source checks. Candidate
   identity only, not source aliasing, admission or automatic date selection.
   Implemented `4cb2922`; 216 focused/context/ecosystem passes, 100% new-module
-  coverage; Ruff, ty and BasedPyright pass. Full/hosted gates pending.
+  coverage; Ruff, ty and BasedPyright pass. PR #390 merged `2cd028f` after
+  38 checks passed on `f4debba`; frozen-full limitations remain recorded.
 
 - [x] Member bridge review fixes: reject a declared ZIP member size that
   differs from bytes read, and regenerate the adapter-content-bound measured
   coverage receipt without changing coverage/qualification claims.
   (`d416b57`; intended size-mismatch regression failure, then 242 focused
   passes; 100% bridge coverage and static checks pass. Receipt diff only
-  adapter digest/size and outer receipt digest. Fresh hosted checks pending.)
+  adapter digest/size and outer receipt digest. Fresh hosted checks passed
+  in #390; original full-run failures remain in evidence.)
+
+- [~] Add a separate historical-member native/Silver entry point requiring
+  exact parent B1, archive B2 and validated member binding before output.
+  Preserve historical source identity, unknown/native slots and occurrence
+  lineage without broadening ordinary source acceptance or selecting dates.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,

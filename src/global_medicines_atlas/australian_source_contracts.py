@@ -11,18 +11,14 @@ import re
 from collections import Counter
 from collections.abc import Iterable, Iterator
 from typing import Literal
-from xml.etree import (  # ruff: ignore[suspicious-xml-etree-import]
-    ElementTree as ET,
-)
 
 from pydantic import ConfigDict, Field, model_validator
 
 from .adapters._receipt import provenance_from_receipt
 from .adapters.au_mbs import MBS_NATIVE_FIELDS, MbsSourceBatch
 from .adapters.au_mbs_workbook import MbsWorkbookBatch
-from .adapters.au_pbs import PBS_V3_NAMESPACE, PBS_XML_POLICY
 from .models import FrozenModel, Provenance
-from .parser_safety import parse_xml
+from .pbs_xml_slots import iter_pbs_xml_slots
 from .receipts import SourceReceipt
 
 SourceId = Literal["au-mbs", "au-mbs-p7-legacy-workbook", "au-pbs"]
@@ -397,41 +393,6 @@ def workbook_native_fields(
                 )
 
 
-def _xml_fields(
-    element: ET.Element,
-    binding: SourceFieldBinding,
-    record_id: str,
-    schema_path: str,
-) -> Iterator[NativeFieldOccurrence]:
-    for name, value in (("text", element.text), ("tail", element.tail)):
-        yield _field(
-            binding,
-            record_id,
-            f"{record_id}/{name}",
-            f"{schema_path}/{name}",
-            value,
-        )
-    for name, value in sorted(element.attrib.items()):
-        slot = f"attributes/{_pointer(name)}"
-        yield _field(
-            binding,
-            record_id,
-            f"{record_id}/{slot}",
-            f"{schema_path}/{slot}",
-            value,
-        )
-    counts: Counter[str] = Counter()
-    for child in element:
-        counts[child.tag] += 1
-        name = _pointer(child.tag)
-        yield from _xml_fields(
-            child,
-            binding,
-            f"{record_id}/{name}/{counts[child.tag]}",
-            f"{schema_path}/{name}",
-        )
-
-
 def pbs_native_fields(
     payload: bytes, receipt: SourceReceipt
 ) -> Iterator[NativeFieldOccurrence]:
@@ -448,14 +409,10 @@ def pbs_native_fields(
         transformation="australian-native-field-inventory-v1",
     )
     binding = _binding(provenance, receipt.source.catalog_version)
-    root = parse_xml(payload, policy=PBS_XML_POLICY)
-    if root.tag not in {
-        f"{{{PBS_V3_NAMESPACE}}}root",
-        f"{{{PBS_V3_NAMESPACE}}}schedule",
-    }:
-        raise ValueError("PBS namespace/root does not match source contract")
-    path = f"/{_pointer(root.tag)}"
-    yield from _xml_fields(root, binding, f"{path}/1", path)
+    for slot in iter_pbs_xml_slots(payload):
+        yield _field(
+            binding, slot.record_id, slot.path, slot.schema_path, slot.value
+        )
 
 
 def summarize_native_fields(

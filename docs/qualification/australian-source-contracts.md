@@ -468,7 +468,42 @@ duplicate-item rejection is unchanged and remains a separate qualification.
 
 The historical source is never relabelled `au-pbs`. Existing native/Silver
 APIs still require their original source contract and reject the archive
-receipt. A subsequent explicit source/member-aware table contract is needed
-to consume this historical binding; callers must not fabricate an aliased
+receipt. Consumption requires the separate source/member-aware entry point
+below; callers must not fabricate an aliased
 SourceReceipt. This prerequisite neither selects a date profile nor proves
 corpus completeness, production admission, publication or federation v4.
+
+## Separate historical-member native Silver route
+
+`iter_pbs_historical_silver_batches` is an explicit candidate entry point for
+the original `au-pbs-historical-xml` source. It requires archive bytes, member
+bytes, the original parent SourceReceipt and PbsXmlMemberBinding, then fully
+revalidates the parent and binding against all bytes before yielding anything.
+Missing or mismatched lineage fails closed. It does not create or relabel a
+SourceReceipt, expand `SourceFieldBinding.SourceId`, or weaken ordinary
+`pbs_native_fields`/`iter_pbs_silver_batches` source validation.
+
+The ordinary and historical paths share `iter_pbs_xml_slots`, a source-unbound
+bounded XML walker. It emits no source/provenance assertion by itself. The
+ordinary route still attaches its validated au-pbs receipt; the historical
+route attaches only the validated historical source/member evidence. Exact
+native paths, expanded names, text, tails, attributes, nulls, unknown fields,
+duplicate IDs and ordered occurrence addresses are preserved by both routes.
+
+The separate historical Arrow schema reuses the native-slot column layout.
+`source_id` stays au-pbs-historical-xml; `source_sha256` and source-field IDs
+identify the XML member. `receipt_sha256` refers to parent archive B1, not an
+invented XML acquisition. Each row adds `archive_sha256`, `member_path` and
+`member_binding_sha256`. Canonical binding metadata retains the full original
+source identity, archive/member sizes and digests, parent receipt digest and
+extraction relationship. Retrieval metadata uses the existing credential-safe
+redaction helper; full parent receipt documents are not embedded.
+
+The profile is `pbs-historical-member-native-v1`, qualification candidate,
+with conversion none. Rows are bounded to 1–4,096 and 8 MiB of compact UTF-8
+JSON encodings. Validation and projection parse separately using existing
+finite ZIP/XML limits; this is not constant-memory parsing, a total resident
+memory cap or real-corpus qualification. Discard partial output after errors.
+Domain/entity/reference/date historical integration, corpus qualification and
+public derivatives remain pending; this native route infers no source dates,
+current status, funding entitlement, clinical claim or production admission.
