@@ -25,10 +25,17 @@ fraction, not exponents, separators, currency symbols or surrounding spaces.
 No quantization or rounding occurs, even under a low-precision Decimal context.
 Arrow precision/scale admission remains a separate pending step.
 
-Dates require an explicit format profile. The only implemented profile is
-strict YYYY-MM-DD (`iso`), tested with synthetic data. Without a profile,
-nonblank dates remain `unsupported_format`; no locale or production schema-era
-format is guessed. Callers still need era-specific evidence and exact B1/v4
+Dates require an explicit format profile: strict YYYY-MM-DD (`iso`) or
+DD.MM.YYYY (`mbs-dmy`). The latter follows the
+[official MBS XML field specification](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/FAQ-XML_Help),
+last updated 4 March 2022 and checked 30 August 2026. The implementation
+rejects impossible dates, mixed separators, non-padded fields and surrounding
+whitespace; it does not infer locale. Scalar conversion v2 and Arrow metadata
+record the profile/version. Synthetic tests cover every mapped date field,
+leap years and ambiguous day/month values. Without a profile, nonblank dates
+remain `unsupported_format`. Real-corpus qualification is still required;
+format documentation alone does not prove every archived value conforms.
+Callers still need era-specific evidence and exact B1/v4
 lineage before producing qualified Silver tables. Scalar result objects are
 internal conversion outputs, not independently validated interchange receipts.
 No real payload acquisition, publication, promotion or dependency change is
@@ -70,7 +77,7 @@ full-corpus throughput and memory profiling remain pending. The fixed-format
 Parquet round trip is deterministic within the locked runtime. Cross-version
 byte equality is not claimed.
 
-Real-source date-format profiles, all four workbook annotation tables, PBS
+Real-source date-profile qualification, all four workbook annotation tables, PBS
 typed tables, comparison events, public v4 qualification and promotion remain
 unfinished. The module does not acquire or publish any source bytes.
 

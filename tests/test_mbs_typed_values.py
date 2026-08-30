@@ -104,6 +104,50 @@ def test_dates_require_an_explicit_format_and_never_guess() -> None:
     )
 
 
+@pytest.mark.parametrize(
+    ("native", "expected"),
+    [
+        ("30.08.2026", date(2026, 8, 30)),
+        ("04.05.2026", date(2026, 5, 4)),
+        ("29.02.2024", date(2024, 2, 29)),
+    ],
+)
+def test_official_mbs_dotted_date_profile(native: str, expected: date) -> None:
+    result = convert_mbs_value(
+        "ItemStartDate", native, "value", date_format="mbs-dmy"
+    )
+    assert result.typed_value == expected
+    assert result.native_value == native
+    assert result.conversion_version == "mbs-scalar-v2"
+    assert (
+        convert_mbs_value("ItemStartDate", native, "value").status
+        == "unsupported_format"
+    )
+
+
+@pytest.mark.parametrize(
+    "native",
+    [
+        "29.02.2026",
+        "1.08.2026",
+        "2026-08-30",
+        "30/08/2026",
+        " 30.08.2026",
+        "30.08.2026 ",
+        "30.08.0000",
+    ],
+)
+def test_official_date_profile_rejects_invalid_or_other_formats(
+    native: str,
+) -> None:
+    assert (
+        convert_mbs_value(
+            "ItemEndDate", native, "value", date_format="mbs-dmy"
+        ).status
+        == "invalid"
+    )
+
+
 def test_derived_fees_and_text_are_not_evaluated() -> None:
     for value in ("", "  ", "#VALUE!", "85% of item 00123"):
         result = convert_mbs_value("DerivedFee", value, "value")

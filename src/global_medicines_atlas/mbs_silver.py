@@ -21,7 +21,11 @@ from .australian_source_contracts import (
     mbs_field_contracts,
 )
 from .bronze_acquisition_metadata import redact_retrieval_location
-from .mbs_typed_values import convert_mbs_value
+from .mbs_typed_values import (
+    CONVERSION_VERSION,
+    DATE_FORMATS,
+    convert_mbs_value,
+)
 from .receipts import SourceReceipt
 
 _TABLES = frozenset(field.target_table for field in mbs_field_contracts())
@@ -80,7 +84,7 @@ def mbs_silver_schema(table: TargetTable) -> pa.Schema:
             "absence_interpretation": "unknown",
             "mapping_status": "source_native",
             "qualification": "candidate",
-            "conversion_version": "mbs-scalar-v1",
+            "conversion_version": CONVERSION_VERSION,
             "decimal_type": "decimal128(38,9)",
         },
     )
@@ -162,7 +166,7 @@ def iter_mbs_silver_batches(
         or not 1 <= rows_per_batch <= MAX_BATCH_ROWS
     ):
         raise ValueError("MBS Silver batch size must be between 1 and 4096")
-    if date_format not in {None, "iso"}:
+    if date_format is not None and date_format not in DATE_FORMATS:
         raise ValueError("unsupported date format profile")
     schema = mbs_silver_schema(table)
     receipt = SourceReceipt.model_validate(receipt.model_dump())

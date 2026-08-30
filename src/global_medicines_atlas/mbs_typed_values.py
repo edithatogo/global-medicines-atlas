@@ -23,6 +23,9 @@ TypedValue = str | Decimal | date | None
 _FIELDS = {field.native_name: field for field in mbs_field_contracts()}
 _DECIMAL = re.compile(r"[+-]?[0-9]+(?:\.[0-9]+)?\Z")
 _ISO_DATE = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}\Z")
+_MBS_DMY_DATE = re.compile(r"[0-9]{2}\.[0-9]{2}\.[0-9]{4}\Z")
+DATE_FORMATS = frozenset({"iso", "mbs-dmy"})
+CONVERSION_VERSION: Literal["mbs-scalar-v2"] = "mbs-scalar-v2"
 
 
 @dataclass(frozen=True)
@@ -36,7 +39,7 @@ class MbsTypedValue:
     status: ConversionStatus
     currency: Literal["AUD"] | None
     date_format: str | None
-    conversion_version: Literal["mbs-scalar-v1"] = "mbs-scalar-v1"
+    conversion_version: Literal["mbs-scalar-v2"] = CONVERSION_VERSION
 
 
 def convert_mbs_value(
@@ -53,8 +56,9 @@ def convert_mbs_value(
         value: Unmodified native text, or None for missing/null fields.
         state: Explicit native presence state, independent of conversion.
         date_format: None leaves dates unconverted; 'iso' explicitly selects
-            the strict YYYY-MM-DD profile. Callers must bind this choice to
-            their source era; this function makes no production-era claim.
+            strict YYYY-MM-DD; 'mbs-dmy' selects the officially documented
+            DD.MM.YYYY XML profile. Callers must bind the explicit choice to
+            their source era; parsing is not real-corpus qualification.
 
     Returns:
         An immutable result. Decimal precision is unlimited here; Arrow
@@ -66,7 +70,7 @@ def convert_mbs_value(
     """
     if native_name not in _FIELDS:
         raise ValueError("unknown MBS native field")
-    if date_format not in {None, "iso"}:
+    if date_format is not None and date_format not in DATE_FORMATS:
         raise ValueError("unsupported date format profile")
     if (
         state not in {"missing_field", "null", "value"}
@@ -107,17 +111,27 @@ def _convert_present(
     elif not value.strip():
         status = "blank"
     elif value_type == "source_date":
-        if date_format is None:
-            status = "unsupported_format"
-        elif not _ISO_DATE.fullmatch(value):
-            status = "invalid"
-        else:
-            try:
-                typed, status = date.fromisoformat(value), "converted"
-            except ValueError:
-                status = "invalid"
+        typed, status = _convert_date(value, date_format)
     elif _DECIMAL.fullmatch(value):
         typed, status = Decimal(value), "converted"
     else:
         status = "invalid"
     return typed, status
+
+
+def _convert_date(
+    value: str,
+    date_format: str | None,
+) -> tuple[date | None, ConversionStatus]:
+    if date_format is None:
+        return None, "unsupported_format"
+    pattern = _ISO_DATE if date_format == "iso" else _MBS_DMY_DATE
+    if not pattern.fullmatch(value):
+        return None, "invalid"
+    try:
+        if date_format == "iso":
+            return date.fromisoformat(value), "converted"
+        day, month, year = value.split(".")
+        return date(int(year), int(month), int(day)), "converted"
+    except ValueError:
+        return None, "invalid"

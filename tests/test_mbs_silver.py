@@ -250,6 +250,34 @@ def test_dates_require_explicit_profile_and_keep_invalid_source() -> None:
     assert with_profile["ItemEndDate"]["conversion_status"] == "invalid"
 
 
+def test_official_date_profile_is_bound_in_all_table_metadata() -> None:
+    fields = "".join(
+        f"<{field.native_name}>30.08.2026</{field.native_name}>"
+        for field in mbs_field_contracts()
+        if field.value_type == "source_date"
+    )
+    payload = _xml(fields)
+    for table in TABLES:
+        batch = next(
+            iter_mbs_silver_batches(
+                payload, _receipt(payload), table=table, date_format="mbs-dmy"
+            )
+        )
+        assert batch.schema.metadata is not None
+        assert batch.schema.metadata[b"date_format"] == b"mbs-dmy"
+        assert batch.schema.metadata[b"conversion_version"] == b"mbs-scalar-v2"
+        row = batch.to_pylist()[0]
+        for field in mbs_field_contracts():
+            if (
+                field.target_table == table
+                and field.value_type == "source_date"
+            ):
+                assert row[field.native_name]["typed_value"] == date(
+                    2026, 8, 30
+                )
+                assert row[field.native_name]["native_value"] == "30.08.2026"
+
+
 def test_parquet_round_trip_and_chunking_do_not_change_values() -> None:
     payload = _xml("<ScheduleFee>42.5</ScheduleFee>", 5)
     receipt = _receipt(payload)
