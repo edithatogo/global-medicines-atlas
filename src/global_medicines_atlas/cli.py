@@ -13,6 +13,7 @@ from typing import Annotated, Any, NoReturn, cast
 import typer
 from pydantic import ValidationError
 
+from . import pbs_cli
 from .comparison_validity import abstaining_status_comparison_validity
 from .product_contracts import (
     API_VERSION,
@@ -58,6 +59,9 @@ app.add_typer(
     jurisdiction_app, name="jurisdiction", help="Inspect jurisdictions."
 )
 app.add_typer(source_app, name="source", help="Inspect governed sources.")
+source_app.add_typer(
+    pbs_cli.app, name="pbs", help="Inspect digest-bound PBS archives."
+)
 _CURSOR_ENV = "GMA_CURSOR_" + "SECRET"
 _MINIMUM_CURSOR_KEY_BYTES = 16
 _ROW_COLLECTIONS = frozenset({

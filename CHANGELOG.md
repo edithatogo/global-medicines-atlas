@@ -5,6 +5,12 @@ the project uses Semantic Versioning once stable release qualification begins.
 
 ## Unreleased
 
+### Added
+
+- Offline, digest-bound PBS v3 item and first-item XML inspection commands,
+  with donor-compatible labels and bounded diagnostic output. This additive
+  CLI surface does not acquire or publish source data.
+
 ## [1.0.0rc1] - 2026-08-01
 
 This release candidate packages the independently reviewed global comparison
