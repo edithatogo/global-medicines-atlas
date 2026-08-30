@@ -199,11 +199,14 @@ def _cell(
     display_value = raw_value
     if cell_type == "s" and raw_value is not None:
         try:
-            display_value = shared_strings[int(raw_value)]
-        except (IndexError, ValueError) as error:
+            string_index = int(raw_value)
+        except ValueError as error:
             raise ValueError(
                 "workbook shared-string index is invalid"
             ) from error
+        if not 0 <= string_index < len(shared_strings):
+            raise ValueError("workbook shared-string index is invalid")
+        display_value = shared_strings[string_index]
     elif cell_type == "inlineStr" and inline_node is not None:
         display_value = "".join(
             node.text or "" for node in cell.iter(f"{{{_MAIN}}}t")

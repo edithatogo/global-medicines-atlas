@@ -34,6 +34,13 @@ from global_medicines_atlas.receipts import (
 SHA = "b" * 64
 
 
+@pytest.mark.parametrize("index", ["-1", "1.0", "999999"])
+def test_shared_string_indices_must_be_nonnegative_in_range(index: str) -> None:
+    payload = _xlsx(extra_cell=f'<c r="D2" t="s"><v>{index}</v></c>')
+    with pytest.raises(ValueError, match="shared-string index"):
+        parse_mbs_workbook(payload, _receipt(payload))
+
+
 def test_workbook_native_presence_distinguishes_absent_and_empty_nodes() -> (
     None
 ):
