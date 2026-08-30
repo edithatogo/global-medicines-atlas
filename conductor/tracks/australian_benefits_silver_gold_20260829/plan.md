@@ -208,11 +208,23 @@
   Implemented `39f3b20`; 118 focused/context tests pass, new module 100%
   branch coverage; Ruff, ty and BasedPyright pass. PR #385 merged `b7663bc`
   after 38 checks passed on `70e88be`; full local limitations are recorded.
-- [~] Map fixture-established PBS structural families to candidate table
+- [x] Map fixture-established PBS structural families to candidate table
   destinations with native item-occurrence lineage. Preserve unknown fields;
   price/date conversion and full domain harmonisation remain pending.
   Implemented `8a8650a`; 105 focused/context tests pass, new module 100%
-  branch coverage; Ruff, ty and BasedPyright pass. Full/hosted review pending.
+  branch coverage; Ruff, ty and BasedPyright pass. PR #386 merged `f3aaf16`
+  after 38 checks passed on `caa99f2`; local full limitations remain recorded.
+- [~] Build bounded element-level item/presentation/reference candidate rows
+  with parent and item occurrence lineage, explicit native text/tail/ID states
+  and all original field slots, including unknowns. Synthetic-only scope;
+  date/price conversion and domain-wide completeness remain pending.
+  Implemented `a4bc2fe`; 115 focused/context passes, 98.70% new-module
+  coverage; Ruff, ty and BasedPyright pass. Full/hosted review pending.
+
+- [x] Entity review fix: reuse the nested Arrow schema once per input rather
+  than reconstructing it for every source element. (`a5766dc`; regression
+  red at 10 constructions instead of one; 116 focused/context passes,
+  98.78% coverage, static checks pass. Fresh hosted recheck pending.)
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
