@@ -13,7 +13,8 @@ key with an empty value. This is a client redirect compatibility defect, not
 evidence of an upstream defect or successful corpus qualification. The corrected
 metadata-only recheck passed public-state, manifest and original B1 digest/size
 and identity validation using the same DNS-pinned transport. No ZIP/XML was
-read locally. The correction has not been dispatched. Any retry requires
+read locally. The transport-recovery version below has not been dispatched.
+Any retry requires
 reconciliation of its exact merged main commit and the unchanged read-only
 scope below.
 
