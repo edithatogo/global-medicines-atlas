@@ -1,5 +1,6 @@
 """Synthetic archive/member lineage, without acquisition or admission."""
 
+import struct
 from dataclasses import replace
 
 import pytest
@@ -205,3 +206,13 @@ def test_wrong_jurisdiction_and_failed_parent_rejected() -> None:
     )
     with pytest.raises(ValueError, match="succeeded"):
         bridge.build_pbs_xml_member_binding(archive, failed)
+
+
+def test_declared_member_size_mismatch_rejected() -> None:
+    xml = _xml()
+    archive = bytearray(_zip([(PATH, xml)]))
+    directory = archive.index(b"PK\x01\x02")
+    struct.pack_into("<I", archive, directory + 24, len(xml) + 1)
+    payload = bytes(archive)
+    with pytest.raises(ValueError, match="size"):
+        bridge.build_pbs_xml_member_binding(payload, _receipt(payload, SOURCE))

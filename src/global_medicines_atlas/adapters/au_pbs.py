@@ -116,6 +116,8 @@ def read_pbs_v3_member(payload: bytes) -> tuple[ExtractedMember, bytes]:
             )
         info = matches[0]
         xml_payload = archive.read(info)
+        if len(xml_payload) != info.file_size:
+            raise ValueError("PBS member size does not match ZIP directory")
     return (
         ExtractedMember(
             path=info.filename,
