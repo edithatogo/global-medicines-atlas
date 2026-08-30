@@ -57,6 +57,10 @@
   (`771ca39`; HF revision `31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7`)
 - [~] Preserve the donor CLI input/output expectations through compatibility
   tests where they are useful; do not preserve its syntax error.
+  Implementation: `02beedc`; 56 focused tests pass with 100% new-module branch
+  coverage. Hosted checks and full-harness reconciliation remain pending.
+  See `docs/AU_PBS_CLI_COMPATIBILITY.md` for the explicit URL-to-hosted-workflow
+  migration, bounded first-item XML, native labels and `--max_items` alias.
 - [ ] Phase Verification & Checkpoint: donor intended behavior is covered by a
   valid, safe, typed implementation.
 
