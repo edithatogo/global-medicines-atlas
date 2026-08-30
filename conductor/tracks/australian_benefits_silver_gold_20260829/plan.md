@@ -135,9 +135,13 @@
 - [x] Keep native OOXML date storage distinct from ordinary date-shaped text.
   (`43ea70c`; P2 regression failed before correction, then 33 focused tests
   passed with 100% changed-module branch coverage; static checks pass.)
-- [~] Requalify the corrected date-encoding observer on its exact hosted head;
+- [x] Requalify the corrected date-encoding observer on its exact hosted head;
   only then collect new observations through Actions, without selecting a
   date convention or repeating a completed qualifier version.
+  PR #382 merged `72e0b76` after 39 passing checks on `ba18a8d` and resolved
+  review. Run `33318355531` passed: 1,280 populated dates have two-two-four
+  dotted text shape, 2,240 are missing and 22 are headers. The durable report
+  and exact artifact identity are recorded; day/month order remains unqualified.
 
 - [~] Reuse existing scalar contracts and numeric storage conversion for
   source-native identifiers, money, dates, annotation text and formula caches.
