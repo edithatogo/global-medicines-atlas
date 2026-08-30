@@ -36,6 +36,42 @@ part of this prerequisite.
 
 ### Existing components
 
+### MBS XML Arrow candidates
+
+`mbs_silver.iter_mbs_silver_batches` parses exact receipt-matched XML and emits
+one selected service, hierarchy, description, fee, benefit or cap table in
+source order. The six versioned schemas cover all 40 native XML fields.
+Each field is a non-null struct containing native text, native presence state,
+conversion status and a typed value. Its schema metadata records the original
+XML path and explicit currency/type. All fields are emitted even when absent.
+Repeated native item identifiers are retained as distinct source ordinals.
+
+Every batch embeds the canonical source receipt, schema era, date-profile
+choice and source-record denominator. Each row binds its native record ID and
+ordinal to B2 payload SHA-256 and B1 receipt SHA-256. Input bytes are checked
+against the receipt before any output. Public v4 object locations and anonymous
+verification remain the data-plane integration boundary; these candidates do
+not constitute publication or promotion receipts.
+
+Numeric columns use Arrow decimal128(38,9), compatible with the existing
+columnar stack. Exact values outside its scale/precision become
+`unrepresentable` with a null typed value and unchanged native text. No rounding,
+percentage rescaling or error-string evaluation is performed. Tests include
+low Decimal contexts and trailing-zero scale reduction without numeric loss.
+
+The source parser is bounded to 9 MB and materializes the native XML batch;
+the Arrow output buffer is limited to 1–4,096 rows. This is not an unbounded
+streaming XML parser. Repeated calls for separate tables reparse the source;
+full-corpus throughput and memory profiling remain pending. The fixed-format
+Parquet round trip is deterministic within the locked runtime. Cross-version
+byte equality is not claimed.
+
+Real-source date-format profiles, all four workbook annotation tables, PBS
+typed tables, comparison events, public v4 qualification and promotion remain
+unfinished. The module does not acquire or publish any source bytes.
+
+### Reused parser foundations
+
 The implementation reuses the existing MBS native XML/workbook models, PBS
 namespace and bounded parser policy, shared receipt-to-provenance validation,
 Pydantic frozen models and existing test tooling. No dependency was added.
