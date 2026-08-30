@@ -244,6 +244,9 @@
   lineage, and duplicate/repeated element preservation. Keep unsupported
   formats and invalid dates visible; no source-era qualification, precedence,
   status, interval, timezone, price or entitlement inference.
+  Implemented `c83b367`; 160 combined focused/context/ecosystem passes,
+  final 23 date tests pass; 99.09% module coverage. Ruff, ty and BasedPyright
+  pass; full and hosted qualification pending.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
