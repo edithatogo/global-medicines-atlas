@@ -19,6 +19,7 @@ from global_medicines_atlas.adapters.au_mbs import qualify_legacy_mbs_xml
 from global_medicines_atlas.adapters.au_mbs_workbook import (
     qualify_legacy_p7_workbook,
 )
+from global_medicines_atlas.mbs_workbook_domain import profile_workbook_domain
 from global_medicines_atlas.mbs_workbook_qualification import (
     PUBLIC_WORKBOOK_URI,
     acquire_hosted_workbook,
@@ -162,6 +163,9 @@ def main() -> None:
         }
     if arguments.public_hf_workbook:
         summary["storage_qualification"] = qualify_workbook_cells(
+            payload, receipt
+        )
+        summary["header_mapping_profile"] = profile_workbook_domain(
             payload, receipt
         )
         summary["workflow_commit"] = os.environ["GITHUB_SHA"]
