@@ -293,14 +293,26 @@
   96.73% coverage. Two local interpreter-pin failures and PERF388.551ms >250ms;
   one isolated rerun passed. Original local-full failure remains recorded.
 
-- [~] Reuse shared reference/date candidate transforms behind explicit
+- [x] Reuse shared reference/date candidate transforms behind explicit
   historical wrappers requiring validated original inputs for every pass.
   Preserve all lineage and reject cross-pass identity drift; retain bounded
   literal/ambiguous/unresolved diagnostics and default-unselected dates.
   No factory admission bypass, ordinary-source broadening or real-era claim.
   Implemented `e31bf74`; intended missing-module failure followed by 259
   focused/context/ecosystem passes, 99.33% changed-module coverage and
-  Ruff/ty/BasedPyright passes. Frozen full and hosted checks pending.
+  Ruff/ty/BasedPyright passes. PR #393 merged `bcd366f` after 38 checks passed
+  on `86e0171`. Frozen full: 3,292 passed, three failed, one skipped, 96.73%
+  coverage; two local interpreter pins and PERF302.979ms >250ms. Single
+  isolated rerun passed; original local-full failure remains recorded.
+
+- [~] Add a synthetic-tested historical structural/storage qualification
+  report over independent ordered XML-slot digests and complete denominators
+  for all five projections, with top-level/nested occurrence lineage and
+  metadata-aware per-batch Parquet parity. Emit counters/IDs, not raw text;
+  keep dates unselected and real-corpus/source-era qualification separate.
+  Implemented `55f0df1`; intended missing-module and occurrence-corruption
+  failures followed by 272 focused/context/ecosystem passes, 100% qualifier
+  branch coverage and static passes. Frozen full and hosted checks pending.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,

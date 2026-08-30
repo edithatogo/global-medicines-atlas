@@ -556,3 +556,23 @@ repeated occurrences, missing/null/blank/invalid states and exact field lineage
 are preserved. Shared finite parsing/entity and 8 MiB encoded output limits
 apply; these are not total resident-memory guarantees. No real-source date
 qualification, temporal status, admission, acquisition or publication follows.
+
+### Historical structural/storage qualification report
+
+`qualify_pbs_historical_projections` validates the original four historical
+inputs and independently walks the XML slots to establish ordered native
+field digests and field/element denominators. It checks all five native,
+domain, entity, reference and date projections against those denominators,
+top-level/nested source and occurrence lineage, binding metadata and per-batch
+metadata-aware Parquet round trips. Missing, reordered or altered slots,
+changed entity/parent IDs and metadata loss fail without returning a report.
+
+The report contains fixed counters and evidence digests, not native source
+text or raw payloads. Counts of unmapped, duplicate, ambiguous, unresolved and
+date-profile-unselected rows are observational, not semantic qualification.
+Dates remain unselected. Qualification is `structural_storage_candidate_only`;
+domain semantics, source-era validity, coverage and public delivery are not
+asserted. Existing finite parser, index, entity and batch bounds apply, with
+additional per-batch in-memory Parquet buffers; no total resident-memory limit
+is claimed. This function performs no download, filesystem write, workflow
+dispatch or publication. Real-corpus execution remains a separate step.
