@@ -5,8 +5,10 @@
 - [~] Write failing tests for complete estate enumeration, exact revision and
   manifest allowlists, public/non-gated state, and anonymous restoration.
 - [ ] Confirm the intended failure before implementation.
-- [ ] Generate a public-safe estate registry snapshot without credentials or
-  restricted contents.
+- [x] Generate a public-safe estate registry snapshot without credentials or
+  restricted contents. (`310791c` and subsequent permission-evidence hardening;
+  93 entries from stable owner-filtered scans, six private identities redacted;
+  local metadata observation only, not publication of the registry dataset.)
 - [x] Add an exact-revision GitHub Actions workflow for the legacy composite;
   require the default head to equal the authorized revision, verify its
   manifest and sibling set against the public baseline, and persist a rollback

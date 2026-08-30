@@ -22,6 +22,7 @@ COLLECTION_LIMIT = 100
 REPOSITORY_LIMIT = 1001
 _IDENTITY = re.compile(r"[A-Za-z0-9_-]+/[A-Za-z0-9_.-]+")
 _REVISION = re.compile(r"[0-9a-f]{40}")
+VISIBILITY_MAX_AGE_SECONDS = 3600
 
 
 def _digest(value: object) -> str:
@@ -82,8 +83,30 @@ class EnumerationReceipt(FrozenModel):
         return self
 
 
+class OwnerVisibilityEvidence(FrozenModel):
+    """Minimal observed read grants; no token identity or value is permitted."""
+
+    owner: str
+    scope_owner: str
+    scope_kind: Literal["user"]
+    endpoint: Literal["https://huggingface.co/api/whoami-v2"]
+    observed_at: AwareDatetime
+    permissions: tuple[
+        Literal["repo.content.read", "repo.access.read", "collection.read"], ...
+    ]
+
+    @model_validator(mode="after")
+    def validate_read_grants(self) -> Self:
+        required = {"repo.content.read", "repo.access.read", "collection.read"}
+        if self.owner != self.scope_owner or set(self.permissions) != required:
+            raise ValueError(
+                "owner-wide repository and collection read grants required"
+            )
+        return self
+
+
 class EstateSnapshot(FrozenModel):
-    """A reproducible visible-estate inventory, never an all-account attestation."""
+    """A stable inventory with separately recorded credential-scope evidence."""
 
     schema_version: Literal["hf-estate-v1"] = "hf-estate-v1"
     owner: str = Field(pattern=r"^[A-Za-z0-9_-]+$")
@@ -91,12 +114,30 @@ class EstateSnapshot(FrozenModel):
     enumeration_scope: Literal["authenticated_visible_owner_metadata"] = (
         "authenticated_visible_owner_metadata"
     )
-    credential_visibility_attested: Literal[False] = False
+    credential_visibility_attested: StrictBool = False
+    visibility_evidence: OwnerVisibilityEvidence | None = None
     entries: tuple[EstateEntry, ...]
     enumerations: tuple[EnumerationReceipt, ...]
 
     @model_validator(mode="after")
     def validate_denominator(self) -> Self:
+        if self.credential_visibility_attested != (
+            self.visibility_evidence is not None
+        ):
+            raise ValueError(
+                "visibility claim requires explicit permission observation"
+            )
+        if self.visibility_evidence is not None:
+            age = (
+                self.observed_at - self.visibility_evidence.observed_at
+            ).total_seconds()
+            if (
+                self.visibility_evidence.owner != self.owner
+                or not 0 <= age <= VISIBILITY_MAX_AGE_SECONDS
+            ):
+                raise ValueError(
+                    "visibility evidence owner or observation window mismatch"
+                )
         if len(self.enumerations) != len(KINDS) or {
             item.kind for item in self.enumerations
         } != set(KINDS):
@@ -227,6 +268,7 @@ def build_estate_snapshot(
     observed_at: datetime,
     authenticated_owner: str | None,
     limit: int = REPOSITORY_LIMIT,
+    visibility_evidence: OwnerVisibilityEvidence | None = None,
 ) -> EstateSnapshot:
     """Require two complete consistent metadata scans and a matching identity.
 
@@ -269,4 +311,6 @@ def build_estate_snapshot(
         observed_at=observed_at,
         entries=tuple(entries),
         enumerations=tuple(receipts),
+        visibility_evidence=visibility_evidence,
+        credential_visibility_attested=visibility_evidence is not None,
     )

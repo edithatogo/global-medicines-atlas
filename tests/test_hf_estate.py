@@ -7,7 +7,7 @@ import json
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import pytest
 from jsonschema import Draft202012Validator
@@ -18,6 +18,7 @@ from global_medicines_atlas.hf_estate import (
     EnumerationReceipt,
     EstateEntry,
     EstateSnapshot,
+    OwnerVisibilityEvidence,
     build_estate_snapshot,
 )
 
@@ -266,7 +267,7 @@ def test_snapshot_rejects_receipt_and_identity_tampering() -> None:
 def test_scope_labels_do_not_authorize_publication(
     identity: str, scope: str
 ) -> None:
-    payload = {kind: [] for kind in listings()}
+    payload: dict[str, list[dict[str, Any]]] = {kind: [] for kind in listings()}
     payload["dataset"] = [
         {"id": identity, "private": False, "gated": False, "sha": "a" * 40}
     ]
@@ -352,7 +353,11 @@ def test_cli_uses_explicit_caps_and_minimal_fields(
     assert all("--limit" in call and "--format" in call for call in calls)
     assert calls[-1][-1] == "100"
     assert all("--token" not in call for call in calls)
-    monkeypatch.setattr(cli, "metadata_command", lambda _command: b"{}")
+
+    def malformed(_command: list[str]) -> bytes:
+        return b"{}"
+
+    monkeypatch.setattr(cli, "metadata_command", malformed)
     with pytest.raises(ValueError, match="JSON object array"):
         cli.observe("owner")
 
@@ -364,16 +369,23 @@ def test_cli_writes_only_redacted_snapshot(
     monkeypatch.setattr(
         sys, "argv", ["observe", "--owner", "owner", "--output", str(target)]
     )
-    monkeypatch.setattr(
-        cli, "metadata_command", lambda _command: b"user=owner orgs=\n"
-    )
-    monkeypatch.setattr(cli, "observe", lambda _owner: listings())
+
+    def identity(_command: list[str]) -> bytes:
+        return b"user=owner orgs=\n"
+
+    def scan(_owner: str) -> dict[str, list[dict[str, Any]]]:
+        return listings()
+
+    monkeypatch.setattr(cli, "metadata_command", identity)
+    monkeypatch.setattr(cli, "observe", scan)
     assert cli.main() == 0
     assert "private-data" not in target.read_text()
     EstateSnapshot.model_validate(json.loads(target.read_text()))
-    monkeypatch.setattr(
-        cli, "metadata_command", lambda _command: b"Not logged in\n"
-    )
+
+    def unauthenticated(_command: list[str]) -> bytes:
+        return b"Not logged in\n"
+
+    monkeypatch.setattr(cli, "metadata_command", unauthenticated)
     with pytest.raises(ValueError, match="authenticated owner"):
         cli.main()
 
@@ -402,10 +414,116 @@ def test_committed_snapshot_and_generated_schema_are_consistent() -> None:
     document = json.loads(
         (root / "quality/qualifications/hf-estate-20260830.json").read_text()
     )
-    Draft202012Validator(schema).validate(document)
+    # jsonschema's overload includes an untyped optional legacy schema argument.
+    validator = cast("Any", Draft202012Validator(schema))
+    assert not list(validator.iter_errors(document))
     result = EstateSnapshot.model_validate(document)
     assert all(
         row.identity.startswith("private:")
         for row in result.entries
         if row.private
     )
+
+
+def test_owner_visibility_requires_complete_current_observation() -> None:
+    evidence = OwnerVisibilityEvidence(
+        owner="owner",
+        scope_owner="owner",
+        scope_kind="user",
+        endpoint="https://huggingface.co/api/whoami-v2",
+        observed_at=NOW,
+        permissions=(
+            "repo.content.read",
+            "repo.access.read",
+            "collection.read",
+        ),
+    )
+    result = build_estate_snapshot(
+        "owner",
+        listings(),
+        listings(),
+        observed_at=NOW,
+        authenticated_owner="owner",
+        visibility_evidence=evidence,
+    )
+    assert result.credential_visibility_attested
+    for updates in (
+        {"permissions": ["repo.content.read"]},
+        {"scope_owner": "another"},
+    ):
+        invalid = evidence.model_dump(mode="json") | updates
+        with pytest.raises(ValidationError, match="owner-wide"):
+            OwnerVisibilityEvidence.model_validate(invalid)
+    for updates in (
+        {"owner": "another", "scope_owner": "another"},
+        {"observed_at": "2025-01-01T00:00:00Z"},
+    ):
+        invalid_evidence = OwnerVisibilityEvidence.model_validate(
+            evidence.model_dump(mode="json") | updates
+        )
+        with pytest.raises(ValueError, match="observation window"):
+            build_estate_snapshot(
+                "owner",
+                listings(),
+                listings(),
+                observed_at=NOW,
+                authenticated_owner="owner",
+                visibility_evidence=invalid_evidence,
+            )
+    document = snapshot().model_dump(mode="json")
+    document["credential_visibility_attested"] = True
+    with pytest.raises(ValidationError, match="visibility claim"):
+        EstateSnapshot.model_validate(document)
+
+
+def test_cli_binds_safe_visibility_evidence(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    evidence_file = tmp_path / "permission.json"
+    evidence = OwnerVisibilityEvidence(
+        owner="owner",
+        scope_owner="owner",
+        scope_kind="user",
+        endpoint="https://huggingface.co/api/whoami-v2",
+        observed_at=datetime.now(UTC),
+        permissions=(
+            "repo.content.read",
+            "repo.access.read",
+            "collection.read",
+        ),
+    )
+    evidence_file.write_text(evidence.model_dump_json())
+    target = tmp_path / "estate.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "observe",
+            "--owner",
+            "owner",
+            "--output",
+            str(target),
+            "--visibility-evidence",
+            str(evidence_file),
+        ],
+    )
+
+    def identity(_command: list[str]) -> bytes:
+        return b"user=owner\n"
+
+    def scan(_owner: str) -> dict[str, list[dict[str, Any]]]:
+        return listings()
+
+    monkeypatch.setattr(cli, "metadata_command", identity)
+    monkeypatch.setattr(cli, "observe", scan)
+    assert cli.main() == 0
+    assert EstateSnapshot.model_validate_json(
+        target.read_bytes()
+    ).credential_visibility_attested
+    evidence_file.write_text('{"unexpected_secret": "must-not-escape"}')
+    with pytest.raises(ValueError, match="no raw diagnostic") as error:
+        cli.main()
+    assert "must-not-escape" not in str(error.value)
+    monkeypatch.setattr(cli, "MAX_OUTPUT_BYTES", 1)
+    with pytest.raises(ValueError, match="byte bound"):
+        cli.main()

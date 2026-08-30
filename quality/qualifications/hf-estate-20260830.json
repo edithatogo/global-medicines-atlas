@@ -1,9 +1,21 @@
 {
   "schema_version": "hf-estate-v1",
   "owner": "edithatogo",
-  "observed_at": "2026-08-30T07:14:44.457996Z",
+  "observed_at": "2026-08-30T07:26:23.808025Z",
   "enumeration_scope": "authenticated_visible_owner_metadata",
-  "credential_visibility_attested": false,
+  "credential_visibility_attested": true,
+  "visibility_evidence": {
+    "owner": "edithatogo",
+    "scope_owner": "edithatogo",
+    "scope_kind": "user",
+    "endpoint": "https://huggingface.co/api/whoami-v2",
+    "observed_at": "2026-08-30T07:24:18.518055Z",
+    "permissions": [
+      "collection.read",
+      "repo.access.read",
+      "repo.content.read"
+    ]
+  },
   "entries": [
     {
       "kind": "model",
@@ -305,8 +317,8 @@
       "identity_sha256": "4005e6240ed41846387102f80f74df83745517a37843e849daa31389d9ff729d",
       "private": true,
       "gated": false,
-      "revision": "f4f9160a93439ff4b52b7cfde2af2bee3dfe5734",
-      "metadata_sha256": "1fe1c8fddf6703ed33007960421a1089dca939a5b804caccd6d473b8e69c13c7",
+      "revision": "06190b9546c81f537bf6e969a7ca22e7b64f0a88",
+      "metadata_sha256": "2b7d7eb30c39dec3c979982675f3335ac23728ee37ab6fd4ea6678d66d74402f",
       "collection_item_count": null,
       "scope": "unassessed",
       "rights_state": "not_assessed",
@@ -977,8 +989,8 @@
       "identity_sha256": "e0546216f439255470ff5782150bdf01e0948dfa8a23bf5e92e90e29bc215981",
       "private": false,
       "gated": false,
-      "revision": "fcfc655cb5df91c0f319368d9b75d14e85415568",
-      "metadata_sha256": "ad8eefabbc5191628978559707fc8827ca9c338a4d7b0204686983e6302081b7",
+      "revision": "dd37463037ce0c1df52a06ffb1566a160d329f9c",
+      "metadata_sha256": "1303fe55eac762a140f38d66b4b716c657bac7c19da13a192cbd55850e7e9517",
       "collection_item_count": null,
       "scope": "unassessed",
       "rights_state": "not_assessed",
@@ -1320,7 +1332,7 @@
       "kind": "dataset",
       "count": 73,
       "limit": 1001,
-      "entries_sha256": "11bf3163d9d43147a369c66c0952782325110a76021bddcb0fdeee9382963267",
+      "entries_sha256": "bd3a72eeeb4988e40b66e9e802a422090931aae8df9430da5726697407bc194c",
       "repeated_scan_equal": true
     },
     {

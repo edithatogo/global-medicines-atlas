@@ -164,10 +164,61 @@
       ],
       "title": "EstateEntry",
       "type": "object"
+    },
+    "OwnerVisibilityEvidence": {
+      "additionalProperties": false,
+      "description": "Minimal observed read grants; no token identity or value is permitted.",
+      "properties": {
+        "owner": {
+          "title": "Owner",
+          "type": "string"
+        },
+        "scope_owner": {
+          "title": "Scope Owner",
+          "type": "string"
+        },
+        "scope_kind": {
+          "const": "user",
+          "title": "Scope Kind",
+          "type": "string"
+        },
+        "endpoint": {
+          "const": "https://huggingface.co/api/whoami-v2",
+          "title": "Endpoint",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "permissions": {
+          "items": {
+            "enum": [
+              "repo.content.read",
+              "repo.access.read",
+              "collection.read"
+            ],
+            "type": "string"
+          },
+          "title": "Permissions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "owner",
+        "scope_owner",
+        "scope_kind",
+        "endpoint",
+        "observed_at",
+        "permissions"
+      ],
+      "title": "OwnerVisibilityEvidence",
+      "type": "object"
     }
   },
   "additionalProperties": false,
-  "description": "A reproducible visible-estate inventory, never an all-account attestation.",
+  "description": "A stable inventory with separately recorded credential-scope evidence.",
   "properties": {
     "schema_version": {
       "const": "hf-estate-v1",
@@ -192,10 +243,20 @@
       "type": "string"
     },
     "credential_visibility_attested": {
-      "const": false,
       "default": false,
       "title": "Credential Visibility Attested",
       "type": "boolean"
+    },
+    "visibility_evidence": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/OwnerVisibilityEvidence"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "entries": {
       "items": {

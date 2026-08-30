@@ -61,11 +61,29 @@ unassessed. Private surfaces retain `retain_private`; public surfaces receive
 
 ## Remaining qualification boundaries
 
-Two stable listings prove the authenticated-visible denominator, not that a
-fine-grained credential exposes every resource owned by the account. The
-snapshot therefore keeps `credential_visibility_attested: false`. Whole-account
-completeness remains unproven until visibility scope is independently attested;
-no credential expansion is performed here. This limitation remains in AC-01.
+Two stable listings alone do not prove that a fine-grained credential exposes
+every resource owned by the account. Without additional evidence the snapshot
+keeps `credential_visibility_attested: false`.
+
+For the dated inventory, an actual owner-scoped permission observation from
+the official identity API records `repo.content.read`, `repo.access.read` and
+`collection.read` in `hf-estate-visibility-20260830.json`. The scan includes this
+minimal observation and sets the visibility flag true only when the owner,
+user-level scope and all three read grants agree, and the permission observation
+is no more than one hour old at scan completion. The existing credential was
+not created, broadened or changed. Token values, token names and token IDs are
+never included. Fine-grained access can otherwise restrict resources, as the
+[Hub permission documentation](https://huggingface.co/docs/hub/security-tokens)
+explains.
+
+Supply a freshly observed, independently checked minimal record using
+`--visibility-evidence PATH`. The dated record is not reusable indefinitely.
+The input is evidence, not a self-issued permission grant: schema consistency
+does not authenticate an arbitrary hand-written record. Operators must obtain
+it from the official identity API in the same CLI credential context and verify
+the user-scoped owner/read grants. Missing, stale, future, incomplete or
+other-owner evidence cannot establish account-wide coverage. The default
+metadata-only observer makes no credential-scope claim.
 
 The snapshot does not change Hub visibility, populate collections, update the
 public estate-registry dataset, emit live v4 publication receipts, perform

@@ -18,6 +18,7 @@ from global_medicines_atlas.hf_estate import (
     COLLECTION_LIMIT,
     KINDS,
     REPOSITORY_LIMIT,
+    OwnerVisibilityEvidence,
     build_estate_snapshot,
 )
 
@@ -117,6 +118,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--owner", required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--visibility-evidence", type=Path)
     args = parser.parse_args()
     identity = metadata_command(["hf", "auth", "whoami"]).decode().split()
     account = next(
@@ -129,6 +131,18 @@ def main() -> int:
     )
     if account != args.owner:
         raise ValueError("matching authenticated owner required")
+    visibility = None
+    if args.visibility_evidence is not None:
+        with args.visibility_evidence.open("rb") as evidence_file:
+            content = evidence_file.read(MAX_OUTPUT_BYTES + 1)
+        if len(content) > MAX_OUTPUT_BYTES:
+            raise ValueError("visibility evidence exceeded byte bound")
+        try:
+            visibility = OwnerVisibilityEvidence.model_validate_json(content)
+        except ValueError:
+            raise ValueError(
+                "invalid visibility evidence; no raw diagnostic retained"
+            ) from None
     first = observe(args.owner)
     second = observe(args.owner)
     snapshot = build_estate_snapshot(
@@ -137,6 +151,7 @@ def main() -> int:
         second,
         observed_at=datetime.now(UTC),
         authenticated_owner=account,
+        visibility_evidence=visibility,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
