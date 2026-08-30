@@ -22,6 +22,10 @@ jobs:
     runs-on: ubuntu-24.04
     environment: australian-hf-publication
     timeout-minutes: 20
+    env:
+      HF_HOME: ${{ github.workspace }}/build/mbs-hf-home
+      HF_XET_CACHE: ${{ github.workspace }}/build/mbs-hf-home/xet
+      HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
     permissions:
       contents: read
       issues: write # Durable public intent and all-object verification receipts.
@@ -130,8 +134,9 @@ jobs:
           receipt = json.loads(path.read_text())
           if receipt['anonymous_digest_verification'] != 'passed':
               raise RuntimeError('cleanup requires anonymous verification')
-          for target in (Path('build/mbs-release'), Path('build/mbs-restore')):
-              shutil.rmtree(target)
+          for target in (Path('build/mbs-release'), Path('build/mbs-restore'), Path('build/mbs-hf-home')):
+              if target.exists():
+                  shutil.rmtree(target)
           receipt['temporary_source_bytes_removed'] = True
           path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + '\n')
           PY

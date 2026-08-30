@@ -13,6 +13,9 @@ def test_hosted_mbs_workflow_preserves_archive_and_verifies_before_cleanup() -> 
     document = yaml.safe_load(text)
     job = document["jobs"]["release"]
     assert job["environment"] == "australian-hf-publication"
+    assert job["env"]["HF_HOME"] == "${{ github.workspace }}/build/mbs-hf-home"
+    assert job["env"]["HF_XET_CACHE"].endswith("build/mbs-hf-home/xet")
+    assert "Path('build/mbs-hf-home')" in text
     assert document["permissions"] == {}
     assert "cron:" in text
     assert "require_mbs_hosted_authority(contract)" in text
