@@ -107,9 +107,16 @@ def iter_pbs_domain_batches(
     adapter fixture contract, remain unmapped. Bounded parsing/batching and safe
     B1/B2 metadata are inherited from the native candidate layer.
     """
-    for batch in iter_pbs_silver_batches(
-        payload, receipt, rows_per_batch=rows_per_batch
-    ):
+    yield from _domain_batches(
+        iter_pbs_silver_batches(payload, receipt, rows_per_batch=rows_per_batch)
+    )
+
+
+def _domain_batches(
+    batches: Iterator[pa.RecordBatch],
+) -> Iterator[pa.RecordBatch]:
+    """Map an internally validated native stream without changing its lineage."""
+    for batch in batches:
         schema = batch.schema
         for field in _ADDITIONS:
             schema = schema.append(field)  # pyright: ignore[reportUnknownMemberType]
