@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   qualify:
+    name: Verify exact public workbook storage and provenance
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
