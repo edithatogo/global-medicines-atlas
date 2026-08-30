@@ -338,7 +338,7 @@
   before correction, then 304 focused/context/ecosystem tests passed; Ruff
   pass. Production harness unchanged; fresh hosted gates passed in #395.)
 
-- [~] Diagnose the failed hosted qualifier with fixed allowlisted stage and
+- [x] Diagnose the failed hosted qualifier with fixed allowlisted stage and
   error-category receipts, without exception text, source values or signed
   URLs. Preserve all context/network/integrity limits, add synthetic redaction
   and stage regressions, and reconcile the reviewed merged correction before
@@ -357,7 +357,29 @@
   pins and product/rehearsal/monitoring/preregistration failures retained.
   Single isolated product rerun also failed PERF835.390ms >250ms; local
   performance remains unqualified. Hosted coverage passed 3,371 tests with
-  one skip, but final-head checks remain required. Retry coordinated separately.
+  one skip. PR #396 merged `3ca5b6e` after all 38 final-head checks passed on
+  `29fd88c`; exact merged/reviewed trees verified. Corrected run `33336369595`
+  failed later at receipt-read/transport, not the original redirect guard.
+
+- [~] Add fixed transport subclass diagnostics and one shared run-wide retry
+  for connection/read/remote-protocol failures only. Preserve original deadline,
+  per-attempt byte/hop and exact source guards; close/discard partial responses,
+  restart from the pinned URL and retain the initial failure's fixed codes in
+  all resulting receipts. Timeouts, policy, integrity and decoding failures
+  remain terminal. Metadata-only B1/manifest recheck passed; the original
+  transport subclass is unknown. Test, review and merge before hosted retry.
+  Implemented `2ce70fa`; four intended red failures followed by 300 combined
+  focused/context/ecosystem passes and 78 final harness passes, 98.81% changed
+  coverage. Static/security checks pass; pre-freeze agent review strengthened
+  exact subtype assertions. Frozen full `4c73c76`: 3,379 passed, seven failed,
+  one skipped, 93.75%; two interpreter pins, product latency, three rehearsal
+  timeouts and a worker SIGSEGV in unchanged product CLI. Isolated crash/context
+  checks passed; isolated product latency still failed at 822.028ms >250ms.
+  Local limitations retained. Final-head hosted gates pending.
+
+- [x] Review documentation correction: distinguish the earlier dispatched
+  redirect fix from the pending transport-recovery version. (`30d9a08`;
+  context validation passes; no production change after frozen full.)
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,

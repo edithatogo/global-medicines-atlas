@@ -7,7 +7,7 @@ import json
 import os
 import re
 import time
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
@@ -52,6 +52,11 @@ FAILURE_CATEGORIES = frozenset({
     "validation",
     "structure",
     "transport",
+    "transport-connect",
+    "transport-read",
+    "transport-remote-protocol",
+    "transport-decoding",
+    "transport-local-protocol",
     "timeout",
     "destination-policy",
     "redirect",
@@ -68,6 +73,7 @@ class QualificationError(ValueError):
     """Carry only fixed, allowlisted diagnostic codes across the CLI boundary."""
 
     def __init__(self, stage: str, category: str) -> None:
+        self.retry_event: tuple[str, str] | None = None
         self.stage = stage if stage in FAILURE_STAGES else "unavailable"
         self.category = (
             category if category in FAILURE_CATEGORIES else "unexpected"
@@ -83,6 +89,63 @@ class _RejectionError(ValueError):
         super().__init__(category)
 
 
+def _transport_category(error: httpx.HTTPError) -> str:
+    for kind, category in (
+        (httpx.ConnectError, "transport-connect"),
+        (httpx.ReadError, "transport-read"),
+        (httpx.RemoteProtocolError, "transport-remote-protocol"),
+        (httpx.DecodingError, "transport-decoding"),
+        (httpx.LocalProtocolError, "transport-local-protocol"),
+    ):
+        if isinstance(error, kind):
+            return category
+    return "transport"
+
+
+@dataclass
+class _RetryBudget:
+    event: tuple[str, str] | None = None
+
+
+def _retry_record(event: tuple[str, str] | None) -> dict[str, str] | None:
+    if event is None:
+        return None
+    stage, category = event
+    if stage not in FAILURE_STAGES or category not in {
+        "transport-connect",
+        "transport-read",
+        "transport-remote-protocol",
+    }:
+        return None
+    return {"stage": stage, "category": category}
+
+
+def _fetch[T](
+    stage: str,
+    budget: _RetryBudget,
+    deadline: float,
+    operation: Callable[[], T],
+) -> T:
+    """Allow one run-wide transient retry; restart the entire guarded read."""
+    with _at(stage):
+        try:
+            return operation()
+        except (
+            httpx.ConnectError,
+            httpx.ReadError,
+            httpx.RemoteProtocolError,
+        ) as error:
+            if budget.event is not None:
+                raise
+            if time.monotonic() + 1 >= deadline:
+                raise _RejectionError("timeout") from None
+            budget.event = (stage, _transport_category(error))
+            time.sleep(1)
+            if time.monotonic() >= deadline:
+                raise _RejectionError("timeout") from None
+            return operation()
+
+
 @contextmanager
 def _at(stage: str) -> Generator[None]:
     """Classify failures by type/control, never by exception text or fields."""
@@ -96,7 +159,7 @@ def _at(stage: str) -> Generator[None]:
         elif isinstance(error, (httpx.TimeoutException, TimeoutError)):
             category = "timeout"
         elif isinstance(error, httpx.HTTPError):
-            category = "transport"
+            category = _transport_category(error)
         elif isinstance(error, DestinationPolicyError):
             category = "destination-policy"
         elif isinstance(error, (LookupError, TypeError)):
@@ -281,6 +344,20 @@ def run_hosted_qualification(
     Return bounded aggregate metadata only, not bytes, sample text or signed URLs.
     This does not publish datasets, select dates or establish semantic admission.
     """
+    retry = _RetryBudget()
+    try:
+        return _run(exact_commit, transport=transport, retry=retry)
+    except QualificationError as error:
+        error.retry_event = retry.event
+        raise
+
+
+def _run(
+    exact_commit: str,
+    *,
+    transport: httpx.BaseTransport | None,
+    retry: _RetryBudget,
+) -> dict[str, Any]:
     with _at("context"):
         context = _context(exact_commit)
     started_at = datetime.now(UTC).isoformat()
@@ -297,16 +374,30 @@ def run_hosted_qualification(
             headers={"Accept-Encoding": "identity"},
         ) as client,
     ):
-        with _at("public-before"):
-            _public(client, deadline)
-        with _at("manifest-read"):
-            manifest = json.loads(_file(client, MANIFEST, deadline))
-        with _at("receipt-read"):
-            receipt_bytes = _file(client, RECEIPT, deadline)
-        with _at("archive-read"):
-            archive = _file(client, ARCHIVE, deadline)
-        with _at("public-after"):
-            _public(client, deadline)
+        _fetch(
+            "public-before", retry, deadline, lambda: _public(client, deadline)
+        )
+        manifest = _fetch(
+            "manifest-read",
+            retry,
+            deadline,
+            lambda: json.loads(_file(client, MANIFEST, deadline)),
+        )
+        receipt_bytes = _fetch(
+            "receipt-read",
+            retry,
+            deadline,
+            lambda: _file(client, RECEIPT, deadline),
+        )
+        archive = _fetch(
+            "archive-read",
+            retry,
+            deadline,
+            lambda: _file(client, ARCHIVE, deadline),
+        )
+        _fetch(
+            "public-after", retry, deadline, lambda: _public(client, deadline)
+        )
     with _at("manifest-validation"):
         for name, pin in (
             ("archive", ARCHIVE),
@@ -348,6 +439,7 @@ def run_hosted_qualification(
     report = {
         "schema_version": 1,
         "status": "passed",
+        "transport_retry": _retry_record(retry.event),
         **context,
         "dataset": DATASET,
         "revision": REVISION,
@@ -402,5 +494,8 @@ def failure_report(error: Exception | None = None) -> dict[str, Any]:
         "reason": "qualification-did-not-complete",
         "failure_stage": failure.stage,
         "failure_category": failure.category,
+        "transport_retry": _retry_record(error.retry_event)
+        if isinstance(error, QualificationError)
+        else None,
         "publication_performed": False,
     }
