@@ -55,7 +55,7 @@
 - [x] Implement receipt-bound download, immutable ZIP preservation, member
   manifests, source-native Parquet, and the bounded tag-inspection command.
   (`771ca39`; HF revision `31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7`)
-- [ ] Preserve the donor CLI input/output expectations through compatibility
+- [~] Preserve the donor CLI input/output expectations through compatibility
   tests where they are useful; do not preserve its syntax error.
 - [ ] Phase Verification & Checkpoint: donor intended behavior is covered by a
   valid, safe, typed implementation.
