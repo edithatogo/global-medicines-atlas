@@ -16,6 +16,7 @@ from global_medicines_atlas.mbs_compatibility import (
     rehearse_probes,
 )
 from global_medicines_atlas.mbs_tables import (
+    MbsHtmlTable,
     TableContract,
     mbs_html_table_parquet,
     parse_mbs_html_tables,
@@ -154,3 +155,11 @@ def test_inline_elements_and_entities_are_text_not_schema(
         payload, _receipt(tmp_path, payload), CONTRACTS
     )
     assert tables[0].rows[0][0] == "00104 & x"
+
+
+def test_serialized_tables_cannot_bypass_row_contract(tmp_path: Path) -> None:
+    table = parse_mbs_html_tables(HTML, _receipt(tmp_path, HTML), CONTRACTS)[0]
+    document = table.model_dump()
+    document["rows"] = (("truncated",),)
+    with pytest.raises(ValueError, match="match schema width"):
+        MbsHtmlTable.model_validate(document)

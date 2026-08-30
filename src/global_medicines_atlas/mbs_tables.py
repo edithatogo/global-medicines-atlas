@@ -40,14 +40,30 @@ class MbsHtmlTable(FrozenModel):
     """Separate source-native table, never a medicine or merged CSV."""
 
     source_id: Literal["au-mbs"] = "au-mbs"
-    table_id: str
+    table_id: str = Field(min_length=1)
     table_ordinal: int = Field(ge=0)
     schema_era: Literal["historical-simple-html-v1"] = (
         "historical-simple-html-v1"
     )
-    columns: tuple[str, ...]
-    rows: tuple[tuple[str | None, ...], ...]
+    columns: tuple[str, ...] = Field(min_length=1, max_length=MAX_COLUMNS)
+    rows: tuple[tuple[str | None, ...], ...] = Field(
+        min_length=1, max_length=MAX_ROWS
+    )
     provenance: Provenance
+
+    @model_validator(mode="after")
+    def validate_table_shape(self) -> MbsHtmlTable:
+        """Keep serialized table consumers behind the same schema boundary."""
+        TableContract(table_id=self.table_id, columns=self.columns)
+        if any(
+            len(row) != len(self.columns)
+            or not any(value is not None for value in row)
+            for row in self.rows
+        ):
+            raise ValueError(
+                "table rows must be nonempty and match schema width"
+            )
+        return self
 
 
 class _Tables(HTMLParser):

@@ -15,10 +15,13 @@ from pathlib import Path
 from typing import Literal
 
 import httpx
-from pydantic import HttpUrl
+from pydantic import Field, HttpUrl
 
 from .acquisition import AcquisitionPolicy, Receipt, acquire_source
-from .adapters.au_mbs import MbsSourceBatch, MbsSourceRecord
+from .adapters._receipt import provenance_from_receipt
+from .adapters.au_mbs import MbsNativeField, MbsSourceBatch, MbsSourceRecord
+from .models import FrozenModel, Provenance
+from .parser_safety import ParserPolicy, parse_xml
 from .receipts import EvidenceClass, SourceReceipt
 from .reuse_gate import ReuseGateDecision
 from .source_catalog import load_source_catalog
@@ -43,7 +46,69 @@ PROBE_POLICY = AcquisitionPolicy(
 )
 
 
-def select_p7_records(batch: MbsSourceBatch) -> tuple[MbsSourceRecord, ...]:
+class LegacyMbsBatch(FrozenModel):
+    """Donor fixture-era items, explicitly distinct from official MBS Data."""
+
+    source_id: Literal["au-mbs"] = "au-mbs"
+    schema_era: Literal["donor-fixture-mbs-item-v1"] = (
+        "donor-fixture-mbs-item-v1"
+    )
+    records: tuple[MbsSourceRecord, ...] = Field(min_length=1)
+    provenance: Provenance
+
+
+def parse_legacy_mbs_items(
+    payload: bytes, receipt: SourceReceipt
+) -> LegacyMbsBatch:
+    """Retain the donor's mbs/item schema without relabelling its fields."""
+    provenance = provenance_from_receipt(
+        receipt,
+        payload,
+        source_id="au-mbs",
+        jurisdiction="AUS",
+        transformation="donor-fixture-mbs-item-v1",
+    )
+    root = parse_xml(
+        payload,
+        policy=ParserPolicy(
+            max_bytes=2 * 1024 * 1024, max_xml_depth=8, max_xml_elements=300000
+        ),
+    )
+    if (
+        root.tag != "mbs"
+        or not len(root)
+        or any(item.tag != "item" for item in root)
+    ):
+        raise ValueError("legacy MBS profile requires mbs/item records")
+    records: list[MbsSourceRecord] = []
+    for ordinal, item in enumerate(root):
+        if any(len(child) or child.attrib for child in item):
+            raise ValueError(
+                "legacy MBS fields must be scalar without attributes"
+            )
+        fields = tuple(
+            MbsNativeField(name=child.tag, value=child.text or None)
+            for child in item
+        )
+        item_number = next(
+            (field.value for field in fields if field.name == "ItemNum"), None
+        )
+        if item_number is None or not item_number.strip():
+            raise ValueError("legacy MBS item requires ItemNum")
+        records.append(
+            MbsSourceRecord(
+                source_record_id=f"au-mbs:legacy:{ordinal}:{item_number}",
+                source_ordinal=ordinal,
+                fields=fields,
+                provenance=provenance,
+            )
+        )
+    return LegacyMbsBatch(records=tuple(records), provenance=provenance)
+
+
+def select_p7_records(
+    batch: MbsSourceBatch | LegacyMbsBatch,
+) -> tuple[MbsSourceRecord, ...]:
     """Retain donor P7 selection over the admitted native MBS source batch."""
     return tuple(
         record for record in batch.records if record.value("Group") == "P7"

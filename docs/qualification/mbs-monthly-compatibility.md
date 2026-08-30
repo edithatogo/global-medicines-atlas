@@ -33,17 +33,36 @@ counts targets with no nonempty response. These are transport observations,
 not table-admission or coverage results. `data_acquired` is always false and
 `qualification_status` remains `table_admission_pending` in this rehearsal.
 
+## Table and P7 qualification
+
+`mbs_tables.parse_mbs_html_tables` validates each simple HTML table against an
+explicit source-ordered `TableContract`. It keeps independent table IDs,
+column names, nullable string cells, source ordinals and receipt provenance;
+it never concatenates heterogeneous schemas. The deterministic per-table
+Parquet projection retains these identities in its metadata. Maintenance pages,
+empty tables, malformed nesting, schema drift and unbounded layouts fail closed.
+The simple-HTML profile deliberately rejects rowspan/colspan layouts greater
+than one; their raw bytes remain available for a separately tested profile.
+
+`select_p7_records` preserves exact P7 filtering over the existing admitted
+MBS `Data` batch. `parse_legacy_mbs_items` separately supports the donor fixture
+`mbs/item` schema, retaining fields such as `FeeAmount` without renaming them
+to official-release fields. Its explicit `donor-fixture-mbs-item-v1` schema era
+prevents promotion of that fixture shape as an official current MBS release.
+
+Rehearsal receipt IDs bind the target, retry ordinal and original receipt ID;
+all attempts, including failures, are explicitly synthetic. Fixed-clock replay
+therefore retains distinct attempts without misrepresenting live evidence.
+
 ## Remaining Phase 4 work
 
 This is a regression foundation, not completion of the monthly scraper:
 
-1. Admit each HTML table against a typed source/table schema, retaining
-   heterogeneous tables separately and rejecting maintenance/error pages.
-2. Preserve P7 selection and legacy XML profile behavior without bypassing
-   the existing source-faithful MBS parser.
-3. Generate deterministic projections and durable admission/source-health
+1. Bind the typed table/P7 projectors to acquisition outcomes and durable
+   admission decisions; qualify additional HTML layout profiles as observed.
+2. Generate durable admission/source-health
    receipts; distinguish transport failures from table/empty-output failures.
-4. Connect supported official releases and catalogue-driven scheduling to the
+3. Connect supported official releases and catalogue-driven scheduling to the
    hosted public Hugging Face publication path. Require anonymous archive
    verification before reporting an acquired update or removing temporary
    source bytes. No live scheduler is enabled by this change.
