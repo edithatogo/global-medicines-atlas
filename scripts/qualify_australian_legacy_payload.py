@@ -170,7 +170,7 @@ def main() -> None:
             payload, receipt
         )
         summary["domain_value_profile"] = profile_workbook_values(
-            payload, receipt, date_format="mbs-dmy"
+            payload, receipt
         )
         summary["workflow_commit"] = os.environ["GITHUB_SHA"]
         summary["workflow_run"] = (

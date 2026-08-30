@@ -251,7 +251,10 @@ missing value nodes and explicit nulls remain distinct.
 
 Dates require an explicit text profile; numeric Excel serials remain
 unsupported rather than guessed from styles or an epoch. The extended hosted
-workflow will report per-field outcomes using `mbs-dmy` after this code merges.
+workflow leaves the date profile unselected and reports per-field outcomes
+after this code merges. The documented XML `mbs-dmy` profile is not a
+workbook-era qualification; dates stay native text with `unsupported_format`
+until an independently evidenced workbook profile is available.
 That real-source value qualification remains pending; the completed header
 run does not establish value conversion, Silver promotion or a public v4
 derivative.

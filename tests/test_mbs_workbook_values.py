@@ -1,18 +1,22 @@
 """Domain types supplement native workbook evidence without guessing."""
 
+import json
 from datetime import date
 from decimal import Decimal
 from io import BytesIO
+from types import SimpleNamespace
 from zipfile import ZipFile
 
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
+from scripts import qualify_australian_legacy_payload as cli
 from test_mbs_workbook_domain import fixture
 from test_mbs_workbook_silver import (
     _receipt,  # ruff: ignore[import-private-name] -- shared synthetic receipt
 )
 
+from global_medicines_atlas.adapters.au_mbs_workbook import parse_mbs_workbook
 from global_medicines_atlas.mbs_workbook_values import (
     iter_workbook_value_batches,
     profile_workbook_values,
@@ -148,3 +152,38 @@ def test_conversion_profile_has_complete_denominators() -> None:
     assert result["by_field"]["ItemNum"]["preserved"] == 3
     assert result["source_error_cells"] == 2
     assert result["semantic_promotion"] is False
+
+
+def test_hosted_workbook_qualifier_does_not_select_xml_date_profile(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    payload = payload_with(
+        '<c r="C2" t="inlineStr"><is><t>01.07.2024</t></is></c>'
+    )
+    monkeypatch.setattr(
+        cli,
+        "_arguments",
+        lambda: SimpleNamespace(
+            kind="p7-workbook",
+            public_hf_workbook=True,
+            source_uri=cli.PUBLIC_WORKBOOK_URI,
+            retrieved_at="2026-08-30T00:00:00Z",
+        ),
+    )
+    monkeypatch.setattr(cli, "acquire_hosted_workbook", lambda _client: payload)
+    monkeypatch.setattr(
+        cli, "_receipt", lambda *_args, **_kwargs: _receipt(payload)
+    )
+    monkeypatch.setattr(cli, "qualify_legacy_p7_workbook", parse_mbs_workbook)
+    monkeypatch.setenv("GITHUB_SHA", "a" * 40)
+    monkeypatch.setenv("GITHUB_RUN_ID", "1")
+    cli.main()
+    report = json.loads(capsys.readouterr().out)
+    assert report["domain_value_profile"]["date_profile"] is None
+    assert (
+        report["domain_value_profile"]["by_field"]["ItemStartDate"][
+            "unsupported_format"
+        ]
+        == 1
+    )
