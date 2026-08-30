@@ -8,6 +8,7 @@ Only synthetic test transports are exercised locally during qualification.
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import math
 import os
@@ -366,12 +367,13 @@ class FederatedReader:
                     self._verify(output, document["location"])
                     if not offline:
                         self._retain(key, output, document)
-                yield VerifiedRead(
-                    output,
-                    origin,
-                    key,
-                    document["location"]["sha256"],
-                    document["location"]["bytes"],
-                )
+                with io.BufferedReader(output) as readonly:
+                    yield VerifiedRead(
+                        readonly,
+                        origin,
+                        key,
+                        document["location"]["sha256"],
+                        document["location"]["bytes"],
+                    )
         finally:
             self._slots.release()

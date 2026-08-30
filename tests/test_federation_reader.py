@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -411,6 +412,15 @@ def test_malformed_hub_metadata_is_not_public_evidence() -> None:
         client.open(raw),
     ):
         pytest.fail("malformed metadata")
+
+
+def test_verified_result_does_not_offer_mutation_or_unbounded_writes() -> None:
+    raw = document()
+    with reader(Hub(), raw) as client, client.open(raw) as result:
+        assert not result.stream.writable()
+        with pytest.raises(io.UnsupportedOperation, match="write"):
+            result.stream.write(b"unverified growth")
+        assert result.stream.read() == PAYLOAD
 
 
 def test_live_raw_source_reads_remain_actions_only(
