@@ -9,7 +9,7 @@ a medallion layer or turn MBS service-benefit evidence into medicine evidence.
 ## Portable conformance
 
 Consumers vendor `federation.schema.json` unchanged and pin its SHA-256:
-`f6c8db40091819245cb62ebd83bca1cf54ca34d6dfbfb02685c8560b34c86407`.
+`ac28485a70e0853266e4c140f9a07cd557eb27816b0b408b9bf2927a4cffacec`.
 Validate using JSON Schema Draft 2020-12 **with format validation enabled**,
 then call `global_medicines_atlas.federation.validate_federation_semantics`.
 The semantic function expects schema-validated input; it is not a parser or
@@ -56,10 +56,14 @@ size and timeout policy. This module performs no I/O or automatic promotion.
 A primary can honestly retain null RPO/RTO and pending independent restoration.
 A compatibility duplicate cannot claim independence. An independent replica
 declaration needs distinct administrative domains and observed geographic
-regions, authorization, and a restore receipt; these assertions still require
+regions, non-null RPO/RTO targets, authorization, and a restore receipt; these assertions still require
 external verification. Same-account HF copies are compatibility, not independent
 durability. Non-HF publication and independent-target provisioning are separate
 gates and are not implemented by this schema.
+
+Mandatory text cannot be blank or padded. Replica domain and region identities
+are compared case-insensitively after trimming; formatting does not establish
+independence. B0 is exclusively an index, never a rebuildable projection.
 
 Caches have a finite byte budget, creation/expiry, origin, offline policy, and
 cleanup state. Removed caches require a cleanup receipt; transient caches cannot

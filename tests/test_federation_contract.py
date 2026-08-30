@@ -34,7 +34,7 @@ def test_schema_digest_is_pinned() -> None:
     assert hashlib.sha256(
         (CONTRACT / "federation.schema.json").read_bytes()
     ).hexdigest() == (
-        "f6c8db40091819245cb62ebd83bca1cf54ca34d6dfbfb02685c8560b34c86407"
+        "ac28485a70e0853266e4c140f9a07cd557eb27816b0b408b9bf2927a4cffacec"
     )
 
 
@@ -158,7 +158,7 @@ def test_bronze_representation_mapping(
 
 def test_raw_cannot_be_an_index_or_later_layer() -> None:
     document = load("fixtures/valid.json")
-    document["source"]["bronze_stratum"] = "B0"
+    document["source"]["bronze_stratum"] = "B1"
     with pytest.raises(ValueError, match="raw evidence"):
         validate_federation_semantics(document)
 
@@ -201,12 +201,55 @@ def test_independent_recovery_requires_all_evidence() -> None:
         administrative_domain="independent-operator",
         region="replica-region",
         primary_region="primary-region",
+        rpo_seconds=0,
+        rto_seconds=60,
         restore_receipt=document["verification"]["receipt"],
         authorization_receipt=document["rights"]["authorization"],
     )
     validate_federation_semantics(document)
-    for field in ("restore_receipt", "authorization_receipt"):
+    for field in (
+        "restore_receipt",
+        "authorization_receipt",
+        "rpo_seconds",
+        "rto_seconds",
+    ):
         candidate = copy.deepcopy(document)
         candidate["recovery"][field] = None
         with pytest.raises(ValueError, match="independent replica"):
             validate_federation_semantics(candidate)
+
+
+def test_b0_cannot_claim_projection() -> None:
+    document = load("fixtures/valid.json")
+    document["source"].update(bronze_stratum="B0", representation="projection")
+    document["lineage"]["inputs"] = [document["verification"]["receipt"]]
+    with pytest.raises(ValueError, match="B0"):
+        validate_federation_semantics(document)
+
+
+@pytest.mark.parametrize("value", [" ", "\t\n", " trailing", "trailing "])
+def test_required_text_cannot_be_blank_or_padded(value: str) -> None:
+    document = load("fixtures/valid.json")
+    document["rights"]["basis"] = value
+    assert not Draft202012Validator(load("federation.schema.json")).is_valid(
+        document
+    )
+
+
+@pytest.mark.parametrize("padding", [" ", "", "\t"])
+def test_replica_identity_comparison_is_canonical(padding: str) -> None:
+    document = load("fixtures/valid.json")
+    recovery = document["recovery"]
+    recovery.update(
+        role="independent_replica",
+        independent=True,
+        administrative_domain="HUGGINGFACE:EXAMPLE" + padding,
+        region="US-EAST-1" + padding,
+        primary_region="us-east-1",
+        rpo_seconds=0,
+        rto_seconds=60,
+        restore_receipt=document["verification"]["receipt"],
+        authorization_receipt=document["rights"]["authorization"],
+    )
+    with pytest.raises(ValueError, match="independent replica"):
+        validate_federation_semantics(document)

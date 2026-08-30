@@ -115,7 +115,7 @@
     }}
   },
   "$defs": {
-    "text": {"type": "string", "minLength": 1, "maxLength": 2048},
+    "text": {"type": "string", "minLength": 1, "maxLength": 2048, "pattern": "^\\S(?:[\\s\\S]*\\S)?$(?![\\s\\S])"},
     "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$(?![\\s\\S])"},
     "revision": {"type": "string", "pattern": "^[0-9a-f]{40}$(?![\\s\\S])"},
     "repository": {"type": "string", "pattern": "^[A-Za-z0-9_-]+/[A-Za-z0-9_.-]+$(?![\\s\\S])"},

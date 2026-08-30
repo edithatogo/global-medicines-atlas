@@ -37,6 +37,8 @@ def validate_federation_semantics(document: dict[str, Any]) -> None:
 def _validate_layers(document: dict[str, Any]) -> None:
     source = document["source"]
     is_bronze = source["layer"] == "bronze"
+    if source["bronze_stratum"] == "B0" and source["representation"] != "index":
+        raise ValueError("B0 requires index representation")
     if is_bronze != (source["bronze_stratum"] is not None):
         raise ValueError("Bronze stratum must exist only for Bronze")
     if source["representation"] == "raw" and (
@@ -87,14 +89,24 @@ def _validate_lifecycle(document: dict[str, Any]) -> None:
 
 def _validate_recovery(recovery: dict[str, Any]) -> None:
     incomplete = (
-        recovery["administrative_domain"]
-        == recovery["primary_administrative_domain"]
-        or recovery["region"] == recovery["primary_region"]
+        recovery["administrative_domain"].strip().casefold()
+        == recovery["primary_administrative_domain"].strip().casefold()
+        or recovery["region"].strip().casefold()
+        == recovery["primary_region"].strip().casefold()
         or recovery["restore_receipt"] is None
         or recovery["authorization_receipt"] is None
-        or "unverified" in {recovery["region"], recovery["primary_region"]}
+        or "unverified"
+        in {
+            recovery["region"].strip().casefold(),
+            recovery["primary_region"].strip().casefold(),
+        }
     )
-    if recovery["role"] == "independent_replica" and incomplete:
+    missing_targets = (
+        recovery["rpo_seconds"] is None or recovery["rto_seconds"] is None
+    )
+    if recovery["role"] == "independent_replica" and (
+        incomplete or missing_targets
+    ):
         raise ValueError(
             "independent replica requires distinct domains and restore evidence"
         )

@@ -5,7 +5,7 @@
     "producer_repository": "example/producer",
     "contract_repository": "edithatogo/global-medicines-atlas",
     "contract_commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-    "schema_sha256": "f6c8db40091819245cb62ebd83bca1cf54ca34d6dfbfb02685c8560b34c86407"
+    "schema_sha256": "ac28485a70e0853266e4c140f9a07cd557eb27816b0b408b9bf2927a4cffacec"
   },
   "source": {
     "source_id": "synthetic-mbs",
