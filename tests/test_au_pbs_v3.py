@@ -111,6 +111,47 @@ def test_pbs_cli_rejects_oversize_xml_output(
     assert "exceeds 1 MiB" in capsys.readouterr().err
 
 
+@pytest.mark.parametrize(
+    ("constant", "message"),
+    [
+        ("MAX_ARCHIVE_BYTES", "archive byte limit"),
+        ("MAX_OUTPUT_BYTES", "JSON exceeds 4 MiB"),
+    ],
+)
+def test_pbs_cli_bounds_input_and_complete_output(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    constant: str,
+    message: str,
+) -> None:
+    path = tmp_path / "source.zip"
+    path.write_bytes(_zip([("sch-test.xml", _xml())]))
+    monkeypatch.setattr(pbs_inspector, constant, 1)
+    monkeypatch.setattr("sys.argv", ["inspect_pbs_v3", str(path)])
+    with pytest.raises(SystemExit) as error:
+        pbs_inspector.main()
+    assert error.value.code == 2
+    captured = capsys.readouterr()
+    assert message in captured.err
+    assert not captured.out
+
+
+@pytest.mark.parametrize("limit", ["0", "4097"])
+def test_pbs_cli_bounds_tag_sample(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    limit: str,
+) -> None:
+    monkeypatch.setattr(
+        "sys.argv", ["inspect_pbs_v3", "absent.zip", "--max-tags", limit]
+    )
+    with pytest.raises(SystemExit) as error:
+        pbs_inspector.main()
+    assert error.value.code == 2
+    assert "between 1 and 4096" in capsys.readouterr().err
+
+
 def _xml(*, namespace: str = PBS_V3_NAMESPACE) -> bytes:
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <pbs:schedule xmlns:pbs="{namespace}"

@@ -14,6 +14,9 @@ uv run python scripts/inspect_pbs_v3.py fixture.zip --max_items 5 --first-item-x
 ```
 
 `--max-items` is the preferred spelling; both spellings accept 1–1000 items.
+`--max-tags` accepts 1–4096. Input reads stop at the archive byte limit plus
+one byte, and complete JSON output is capped at 4 MiB before anything is
+printed. Exceeding a bound exits unsuccessfully without partial stdout.
 JSON retains the full archive record count and digests, with a bounded `items`
 sample containing item code, product name, AMT references, ATC codes and
 restrictions. `first_item_xml_projection` is optional normalized XML (at most
