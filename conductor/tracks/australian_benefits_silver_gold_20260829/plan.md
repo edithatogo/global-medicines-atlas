@@ -201,6 +201,13 @@
 
 ## Phase 3: Implement PBS Silver (AC-01, AC-02, AC-03)
 
+- [~] Add bounded Arrow native-field candidates over the existing PBS
+  inventory, preserving ordered element/text/tail/attribute identities and
+  exact B1/B2 bindings. Synthetic qualification only; domain tables,
+  typed value harmonisation and real-corpus qualification remain pending.
+  Implemented `39f3b20`; 118 focused/context tests pass, new module 100%
+  branch coverage; Ruff, ty and BasedPyright pass. Full/hosted review pending.
+
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
   and source-native identity.
