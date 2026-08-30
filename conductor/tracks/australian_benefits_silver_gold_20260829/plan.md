@@ -317,7 +317,7 @@
   96.74% coverage. Two local interpreter pins and PERF794.238ms >250ms;
   single isolated rerun passed. Original full failure remains recorded.
 
-- [~] Prepare an Actions-only pinned public historical PBS qualifier harness,
+- [x] Prepare an Actions-only pinned public historical PBS qualifier harness,
   anonymously restoring original B1 and ZIP, extracting the exact member,
   checking all five projections and durably posting bounded aggregate receipts
   to issue #341. Preserve source identity, deny local/mutable/private/unsafe
@@ -327,12 +327,37 @@
   Implemented `ce41c25`; 304 focused/context/ecosystem passes, 98% combined
   harness/CLI coverage; Ruff/ty/BasedPyright/actionlint/zizmor pass. Public
   metadata and original B1 validation pass; no source ZIP/XML downloaded.
-  Frozen full and exact-head hosted checks pending; dispatch withheld.
+  PR #395 merged `a65469c` after all 38 checks passed on `5ffefd6`.
+  Frozen full: 3,337 passed, three failed, one skipped, 96.75%; two local
+  interpreter pins and PERF452.868ms >250ms, isolated rerun passed. Original
+  failure retained. Authorized run `33334961106` failed with only a generic
+  receipt; actual corpus qualification remains unobserved.
 
-- [~] Hosted qualifier review fix: isolate the synthetic deadline clock from
+- [x] Hosted qualifier review fix: isolate the synthetic deadline clock from
   process-wide test-runner time. (`9d782bb`; clock-identity regression failed
   before correction, then 304 focused/context/ecosystem tests passed; Ruff
-  pass. Production harness unchanged; fresh exact-head hosted gates pending.)
+  pass. Production harness unchanged; fresh hosted gates passed in #395.)
+
+- [~] Diagnose the failed hosted qualifier with fixed allowlisted stage and
+  error-category receipts, without exception text, source values or signed
+  URLs. Preserve all context/network/integrity limits, add synthetic redaction
+  and stage regressions, and reconcile the reviewed merged correction before
+  one coordinated retry. Metadata-only reproduction identified exact Hub cache
+  redirects rejected by the client: encoded nested suffix and encoded
+  original-path query with an empty value. Support only their exact pinned
+  forms (bare key or empty assignment), with mutable,
+  unrelated, traversal, double-encoding and unknown/duplicate-query negatives.
+  This client defect is not a source defect or corpus qualification result.
+  Implemented `dc0c65a`; 63 harness tests pass, 98.62% changed-module coverage.
+  Final affected run: 286 pass and one unchanged date-property timing failure;
+  isolated date rerun also timed out. Earlier affected run passed 284 tests.
+  Ruff/ty/BasedPyright/actionlint/zizmor pass; live metadata-only public state,
+  manifest and original B1 digest/identity recheck passed. Frozen full at
+  `d2ec48b`: 3,362 passed, nine failed, one skipped, 96.76%; exact interpreter
+  pins and product/rehearsal/monitoring/preregistration failures retained.
+  Single isolated product rerun also failed PERF835.390ms >250ms; local
+  performance remains unqualified. Hosted coverage passed 3,371 tests with
+  one skip, but final-head checks remain required. Retry coordinated separately.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
