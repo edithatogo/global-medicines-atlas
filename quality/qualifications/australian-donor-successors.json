@@ -16,19 +16,19 @@
     {
       "id": "snomed-ct-au", "status": "separately_gated", "implemented_in_donor": false,
       "successor_plan": "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md",
-      "successor_task": "isolate lexical, ontology-assisted, embedding, and NLP candidates.",
+      "successor_task": "Acquire and load SNOMED CT-AU RF2 into a rights-constrained terminology",
       "reason": "Official terminology acquisition and mappings require exact rights and access approval; references never imply permission to publish RF2 bytes."
     },
     {
       "id": "amt", "status": "separately_gated", "implemented_in_donor": false,
       "successor_plan": "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md",
-      "successor_task": "Keep PBS funding/formulary, ARTG regulatory, AMT terminology, and ATC",
+      "successor_task": "Acquire complete AMT hierarchy and official AMT/SNOMED mappings only",
       "reason": "PBS-native AMT references already parse; complete terminology hierarchy and official mapping ingestion do not. Restricted bytes remain separately gated."
     },
     {
       "id": "atc-hierarchy", "status": "separately_gated", "implemented_in_donor": false,
       "successor_plan": "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md",
-      "successor_task": "classification assertions independent in storage, lineage, and coverage.",
+      "successor_task": "Acquire complete ATC hierarchy only after source-specific rights and",
       "reason": "Extracted PBS ATC codes are not a complete hierarchy; full hierarchy acquisition requires source-specific rights and denominator evidence."
     },
     {

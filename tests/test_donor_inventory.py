@@ -49,6 +49,10 @@ def test_donor_successor_map_covers_every_roadmap_commitment() -> None:
     }
     assert len(rows) == 8
     for row in rows:
+        if row["id"] in {"snomed-ct-au", "amt", "atc-hierarchy"}:
+            assert row["status"] == "separately_gated"
+            assert row["successor_task"].startswith("Acquire ")
+    for row in rows:
         assert row["status"] in {"preview", "rejected", "separately_gated"}
         assert row["implemented_in_donor"] is False
         assert row["reason"]

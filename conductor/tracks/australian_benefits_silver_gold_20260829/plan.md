@@ -43,6 +43,17 @@
 
 ## Phase 4: Implement Gold graph contracts (AC-04, AC-05)
 
+- [ ] Acquire and load SNOMED CT-AU RF2 into a rights-constrained terminology
+  projection only after exact source/version/access/reuse approval; preserve
+  native concepts, descriptions and relationships with receipts and tests.
+  Keep restricted bytes out of public products; absence of approval is blocked,
+  not completed. This preserves the donor's unimplemented acquisition intent.
+- [ ] Acquire complete AMT hierarchy and official AMT/SNOMED mappings only
+  after exact source/version/access/reuse approval; test native identifiers,
+  relationship coverage and versioned lineage separately from PBS references.
+- [ ] Acquire complete ATC hierarchy only after source-specific rights and
+  denominator approval; preserve versioned parent/child evidence separately
+  from the ATC codes already extracted from PBS records.
 - [ ] Write failing JSON/Arrow schema, semantic, property, negative-control,
   confidence, review-state, temporal, contradiction, and rights tests for nodes
   and edges.
