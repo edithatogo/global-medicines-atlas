@@ -134,7 +134,16 @@ class FederatedReader:
     def cached_bytes(self) -> int:
         """Return the current cache occupancy, excluding active result files."""
         with self._lock:
+            self._purge_expired()
             return sum(item.size for item in self._cache.values())
+
+    def _purge_expired(self) -> None:
+        now = self._clock()
+        expired = [
+            key for key, item in self._cache.items() if item.expires_at <= now
+        ]
+        for key in expired:
+            self._cache.pop(key).owner.close()
 
     def _evict(self) -> None:
         for item in self._cache.values():
@@ -351,6 +360,7 @@ class FederatedReader:
                 with self._lock:
                     if self._closed:
                         raise ValueError("reader is closed")
+                    self._purge_expired()
                     key, document = self._document(raw)
                     origin: Literal["remote", "verified_cache"] = "remote"
                     if offline:

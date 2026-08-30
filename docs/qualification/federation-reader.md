@@ -64,7 +64,9 @@ the configured HTTP timeout; deadline checks also stop further redirects and
 body consumption. This is not a hard real-time process termination guarantee.
 
 The cache uses exact document identities, LRU eviction, and the admitted cache
-expiry. Expired entries cannot be reused. `offline=True` performs no network
+expiry. Every open and occupancy inspection closes and removes expired entries;
+idle readers should still be explicitly closed, since no background janitor
+thread is started. Expired entries cannot be reused. `offline=True` performs no network
 I/O, requires `verified_exact_digest_only`, and rechecks byte count and digest
 before returning anything. `fail_closed`, cache miss, expiry and corruption
 fail explicitly. Offline success does not claim current remote visibility;

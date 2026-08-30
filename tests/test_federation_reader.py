@@ -381,12 +381,15 @@ def test_expired_cache_and_corruption_do_not_escape() -> None:
         with client.open(raw):
             pass
         key = hashlib.sha256(raw).hexdigest()
+        expired_stream = client._cache[key].stream
         client._cache[key].expires_at = NOW
         with (
             pytest.raises(ValueError, match="offline"),
             client.open(raw, offline=True),
         ):
             pytest.fail("expired")
+        assert expired_stream.closed
+        assert client.cached_bytes == 0
         with client.open(raw):
             pass
         client._cache[key].stream.seek(0)
