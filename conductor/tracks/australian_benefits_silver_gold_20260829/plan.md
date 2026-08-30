@@ -352,8 +352,12 @@
   Final affected run: 286 pass and one unchanged date-property timing failure;
   isolated date rerun also timed out. Earlier affected run passed 284 tests.
   Ruff/ty/BasedPyright/actionlint/zizmor pass; live metadata-only public state,
-  manifest and original B1 digest/identity recheck passed. Frozen full and
-  exact-head hosted validation pending; retry remains coordinated separately.
+  manifest and original B1 digest/identity recheck passed. Frozen full at
+  `d2ec48b`: 3,362 passed, nine failed, one skipped, 96.76%; exact interpreter
+  pins and product/rehearsal/monitoring/preregistration failures retained.
+  Single isolated product rerun also failed PERF835.390ms >250ms; local
+  performance remains unqualified. Hosted coverage passed 3,371 tests with
+  one skip, but final-head checks remain required. Retry coordinated separately.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
