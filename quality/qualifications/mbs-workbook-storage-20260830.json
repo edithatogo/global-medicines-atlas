@@ -1,0 +1,660 @@
+{
+  "sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+  "bytes": 87727,
+  "workflow_commit": "11a8c4f9b97e542b631c7f9a676792168266ef87",
+  "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/33305281887",
+  "retrieved_at": "2026-08-30T09:58:12+00:00",
+  "storage_qualification": {
+    "bytes": 87727,
+    "cells": 13742,
+    "domain_mapping_qualified": false,
+    "format_evidence": {
+      "cell_formats": [
+        {
+          "attributes": {
+            "borderId": "0",
+            "fillId": "0",
+            "fontId": "0",
+            "numFmtId": "0",
+            "xfId": "0"
+          },
+          "style_index": 0
+        },
+        {
+          "attributes": {
+            "applyBorder": "1",
+            "applyFill": "1",
+            "applyFont": "1",
+            "borderId": "1",
+            "fillId": "2",
+            "fontId": "1",
+            "numFmtId": "0",
+            "xfId": "0"
+          },
+          "style_index": 1
+        },
+        {
+          "attributes": {
+            "applyBorder": "1",
+            "applyFill": "1",
+            "applyFont": "1",
+            "borderId": "2",
+            "fillId": "2",
+            "fontId": "1",
+            "numFmtId": "0",
+            "xfId": "0"
+          },
+          "style_index": 2
+        },
+        {
+          "attributes": {
+            "applyBorder": "1",
+            "applyFill": "1",
+            "applyFont": "1",
+            "borderId": "3",
+            "fillId": "2",
+            "fontId": "1",
+            "numFmtId": "0",
+            "xfId": "0"
+          },
+          "style_index": 3
+        },
+        {
+          "attributes": {
+            "applyBorder": "1",
+            "applyFill": "1",
+            "borderId": "1",
+            "fillId": "3",
+            "fontId": "0",
+            "numFmtId": "0",
+            "xfId": "0"
+          },
+          "style_index": 4
+        },
+        {
+          "attributes": {
+            "applyBorder": "1",
+            "applyFill": "1",
+            "applyNumberFormat": "1",
+            "borderId": "2",
+            "fillId": "3",
+            "fontId": "0",
+            "numFmtId": "49",
+            "xfId": "0"
+          },
+          "style_index": 5
+        },
+        {
+          "attributes": {
+            "applyBorder": "1",
+            "applyFill": "1",
+            "borderId": "2",
+            "fillId": "3",
+            "fontId": "0",
+            "numFmtId": "0",
+            "xfId": "0"
+          },
+          "style_index": 6
+        },
+        {
+          "attributes": {
+            "applyBorder": "1",
+            "applyFill": "1",
+            "applyNumberFormat": "1",
+            "borderId": "3",
+            "fillId": "3",
+            "fontId": "0",
+            "numFmtId": "49",
+            "xfId": "0"
+          },
+          "style_index": 7
+        },
+        {
+          "attributes": {
+            "applyBorder": "1",
+            "borderId": "1",
+            "fillId": "0",
+            "fontId": "0",
+            "numFmtId": "0",
+            "xfId": "0"
+          },
+          "style_index": 8
+        },
+        {
+          "attributes": {
+            "applyBorder": "1",
+            "applyNumberFormat": "1",
+            "borderId": "2",
+            "fillId": "0",
+            "fontId": "0",
+            "numFmtId": "49",
+            "xfId": "0"
+          },
+          "style_index": 9
+        },
+        {
+          "attributes": {
+            "applyBorder": "1",
+            "borderId": "2",
+            "fillId": "0",
+            "fontId": "0",
+            "numFmtId": "0",
+            "xfId": "0"
+          },
+          "style_index": 10
+        },
+        {
+          "attributes": {
+            "applyBorder": "1",
+            "applyNumberFormat": "1",
+            "borderId": "3",
+            "fillId": "0",
+            "fontId": "0",
+            "numFmtId": "49",
+            "xfId": "0"
+          },
+          "style_index": 11
+        },
+        {
+          "attributes": {
+            "applyFill": "1",
+            "applyFont": "1",
+            "borderId": "0",
+            "fillId": "2",
+            "fontId": "1",
+            "numFmtId": "0",
+            "xfId": "0"
+          },
+          "style_index": 12
+        }
+      ],
+      "interpretation": "native_attributes_only",
+      "number_formats": [],
+      "styles_present": true,
+      "workbook_properties": {}
+    },
+    "parquet_roundtrip_verified": true,
+    "publication_performed": false,
+    "qualification": "storage_candidate_only",
+    "schema_version": 1,
+    "sheet_count": 4,
+    "sheets": [
+      {
+        "cells": 6689,
+        "conversion_statuses": {
+          "converted": 782,
+          "error": 1,
+          "missing_value": 3040,
+          "preserved": 2848,
+          "unrepresentable": 18
+        },
+        "dimension": "A1:AV161",
+        "error_cells": 1,
+        "formula_cells": 2,
+        "header_candidates": [
+          {
+            "coordinate": "A1",
+            "display_value": "ItemNum"
+          },
+          {
+            "coordinate": "B1",
+            "display_value": "SubItemNum"
+          },
+          {
+            "coordinate": "C1",
+            "display_value": "ItemStartDate"
+          },
+          {
+            "coordinate": "D1",
+            "display_value": "ItemEndDate"
+          },
+          {
+            "coordinate": "E1",
+            "display_value": "Category"
+          },
+          {
+            "coordinate": "F1",
+            "display_value": "Group"
+          },
+          {
+            "coordinate": "G1",
+            "display_value": "SubGroup"
+          },
+          {
+            "coordinate": "H1",
+            "display_value": "SubHeading"
+          },
+          {
+            "coordinate": "I1",
+            "display_value": "ItemType"
+          },
+          {
+            "coordinate": "J1",
+            "display_value": "FeeType"
+          },
+          {
+            "coordinate": "K1",
+            "display_value": "ProviderType"
+          },
+          {
+            "coordinate": "L1",
+            "display_value": "NewItem"
+          },
+          {
+            "coordinate": "M1",
+            "display_value": "ItemChange"
+          },
+          {
+            "coordinate": "N1",
+            "display_value": "AnaesChange"
+          },
+          {
+            "coordinate": "O1",
+            "display_value": "DescriptorChange"
+          },
+          {
+            "coordinate": "P1",
+            "display_value": "FeeChange"
+          },
+          {
+            "coordinate": "Q1",
+            "display_value": "EMSNChange"
+          },
+          {
+            "coordinate": "R1",
+            "display_value": "EMSNCap"
+          },
+          {
+            "coordinate": "S1",
+            "display_value": "BenefitType"
+          },
+          {
+            "coordinate": "T1",
+            "display_value": "BenefitStartDate"
+          },
+          {
+            "coordinate": "U1",
+            "display_value": "FeeStartDate"
+          },
+          {
+            "coordinate": "V1",
+            "display_value": "ScheduleFee"
+          },
+          {
+            "coordinate": "W1",
+            "display_value": "Benefit100"
+          },
+          {
+            "coordinate": "X1",
+            "display_value": "BasicUnits"
+          },
+          {
+            "coordinate": "Y1",
+            "display_value": "EMSNStartDate"
+          },
+          {
+            "coordinate": "Z1",
+            "display_value": "EMSNEndDate"
+          },
+          {
+            "coordinate": "AA1",
+            "display_value": "EMSNFixedCapAmount"
+          },
+          {
+            "coordinate": "AB1",
+            "display_value": "EMSNMaximumCap"
+          },
+          {
+            "coordinate": "AC1",
+            "display_value": "EMSNPercentageCap"
+          },
+          {
+            "coordinate": "AD1",
+            "display_value": "EMSNDescription"
+          },
+          {
+            "coordinate": "AE1",
+            "display_value": "EMSNChangeDate"
+          },
+          {
+            "coordinate": "AF1",
+            "display_value": "DescriptionStartDate"
+          },
+          {
+            "coordinate": "AG1",
+            "display_value": "Description"
+          },
+          {
+            "coordinate": "AH1",
+            "display_value": "QFEStartDate"
+          },
+          {
+            "coordinate": "AI1",
+            "display_value": "QFEEndDate"
+          },
+          {
+            "coordinate": "AJ1",
+            "display_value": "DerivedFeeStartDate"
+          },
+          {
+            "coordinate": "AK1",
+            "display_value": "DerivedFee"
+          },
+          {
+            "coordinate": "AL1",
+            "display_value": "Benefit75"
+          },
+          {
+            "coordinate": "AM1",
+            "display_value": "Benefit85"
+          },
+          {
+            "coordinate": "AN1",
+            "display_value": "Anaes"
+          },
+          {
+            "coordinate": "AO1",
+            "display_value": "Element"
+          },
+          {
+            "coordinate": "AP1",
+            "display_value": "Class"
+          },
+          {
+            "coordinate": "AQ1",
+            "display_value": "Technology"
+          },
+          {
+            "coordinate": "AR1",
+            "display_value": "Disease"
+          },
+          {
+            "coordinate": "AS1",
+            "display_value": "Tissue"
+          },
+          {
+            "coordinate": "AT1",
+            "display_value": "Exome"
+          },
+          {
+            "coordinate": "AU1",
+            "display_value": "Prenatal"
+          }
+        ],
+        "name": "Sheet1",
+        "path": "xl/worksheets/sheet1.xml",
+        "storage_types": {
+          "e": 1,
+          "implicit_numeric": 3840,
+          "s": 2847,
+          "str": 1
+        }
+      },
+      {
+        "cells": 322,
+        "conversion_statuses": {
+          "converted": 160,
+          "preserved": 162
+        },
+        "dimension": "A1:B161",
+        "error_cells": 0,
+        "formula_cells": 0,
+        "header_candidates": [
+          {
+            "coordinate": "A1",
+            "display_value": "ItemNum"
+          },
+          {
+            "coordinate": "B1",
+            "display_value": "Description"
+          }
+        ],
+        "name": "Sheet2",
+        "path": "xl/worksheets/sheet2.xml",
+        "storage_types": {
+          "implicit_numeric": 160,
+          "s": 162
+        }
+      },
+      {
+        "cells": 6710,
+        "conversion_statuses": {
+          "converted": 802,
+          "error": 1,
+          "missing_value": 3040,
+          "preserved": 2849,
+          "unrepresentable": 18
+        },
+        "dimension": "A1:AV183",
+        "error_cells": 1,
+        "formula_cells": 2,
+        "header_candidates": [
+          {
+            "coordinate": "A1",
+            "display_value": "ItemNum"
+          },
+          {
+            "coordinate": "B1",
+            "display_value": "SubItemNum"
+          },
+          {
+            "coordinate": "C1",
+            "display_value": "ItemStartDate"
+          },
+          {
+            "coordinate": "D1",
+            "display_value": "ItemEndDate"
+          },
+          {
+            "coordinate": "E1",
+            "display_value": "Category"
+          },
+          {
+            "coordinate": "F1",
+            "display_value": "Group"
+          },
+          {
+            "coordinate": "G1",
+            "display_value": "SubGroup"
+          },
+          {
+            "coordinate": "H1",
+            "display_value": "SubHeading"
+          },
+          {
+            "coordinate": "I1",
+            "display_value": "ItemType"
+          },
+          {
+            "coordinate": "J1",
+            "display_value": "FeeType"
+          },
+          {
+            "coordinate": "K1",
+            "display_value": "ProviderType"
+          },
+          {
+            "coordinate": "L1",
+            "display_value": "NewItem"
+          },
+          {
+            "coordinate": "M1",
+            "display_value": "ItemChange"
+          },
+          {
+            "coordinate": "N1",
+            "display_value": "AnaesChange"
+          },
+          {
+            "coordinate": "O1",
+            "display_value": "DescriptorChange"
+          },
+          {
+            "coordinate": "P1",
+            "display_value": "FeeChange"
+          },
+          {
+            "coordinate": "Q1",
+            "display_value": "EMSNChange"
+          },
+          {
+            "coordinate": "R1",
+            "display_value": "EMSNCap"
+          },
+          {
+            "coordinate": "S1",
+            "display_value": "BenefitType"
+          },
+          {
+            "coordinate": "T1",
+            "display_value": "BenefitStartDate"
+          },
+          {
+            "coordinate": "U1",
+            "display_value": "FeeStartDate"
+          },
+          {
+            "coordinate": "V1",
+            "display_value": "ScheduleFee"
+          },
+          {
+            "coordinate": "W1",
+            "display_value": "Benefit100"
+          },
+          {
+            "coordinate": "X1",
+            "display_value": "BasicUnits"
+          },
+          {
+            "coordinate": "Y1",
+            "display_value": "EMSNStartDate"
+          },
+          {
+            "coordinate": "Z1",
+            "display_value": "EMSNEndDate"
+          },
+          {
+            "coordinate": "AA1",
+            "display_value": "EMSNFixedCapAmount"
+          },
+          {
+            "coordinate": "AB1",
+            "display_value": "EMSNMaximumCap"
+          },
+          {
+            "coordinate": "AC1",
+            "display_value": "EMSNPercentageCap"
+          },
+          {
+            "coordinate": "AD1",
+            "display_value": "EMSNDescription"
+          },
+          {
+            "coordinate": "AE1",
+            "display_value": "EMSNChangeDate"
+          },
+          {
+            "coordinate": "AF1",
+            "display_value": "DescriptionStartDate"
+          },
+          {
+            "coordinate": "AG1",
+            "display_value": "Description"
+          },
+          {
+            "coordinate": "AH1",
+            "display_value": "QFEStartDate"
+          },
+          {
+            "coordinate": "AI1",
+            "display_value": "QFEEndDate"
+          },
+          {
+            "coordinate": "AJ1",
+            "display_value": "DerivedFeeStartDate"
+          },
+          {
+            "coordinate": "AK1",
+            "display_value": "DerivedFee"
+          },
+          {
+            "coordinate": "AL1",
+            "display_value": "Benefit75"
+          },
+          {
+            "coordinate": "AM1",
+            "display_value": "Benefit85"
+          },
+          {
+            "coordinate": "AN1",
+            "display_value": "Anaes"
+          },
+          {
+            "coordinate": "AO1",
+            "display_value": "Element"
+          },
+          {
+            "coordinate": "AP1",
+            "display_value": "Class"
+          },
+          {
+            "coordinate": "AQ1",
+            "display_value": "Technology"
+          },
+          {
+            "coordinate": "AR1",
+            "display_value": "Disease"
+          },
+          {
+            "coordinate": "AS1",
+            "display_value": "Tissue"
+          },
+          {
+            "coordinate": "AT1",
+            "display_value": "Exome"
+          },
+          {
+            "coordinate": "AU1",
+            "display_value": "Prenatal"
+          }
+        ],
+        "name": "Sheet1 (2)",
+        "path": "xl/worksheets/sheet3.xml",
+        "storage_types": {
+          "e": 1,
+          "implicit_numeric": 3860,
+          "s": 2848,
+          "str": 1
+        }
+      },
+      {
+        "cells": 21,
+        "conversion_statuses": {
+          "converted": 20,
+          "preserved": 1
+        },
+        "dimension": "A1:A21",
+        "error_cells": 0,
+        "formula_cells": 0,
+        "header_candidates": [
+          {
+            "coordinate": "A1",
+            "display_value": "Declining List"
+          }
+        ],
+        "name": "Sheet3",
+        "path": "xl/worksheets/sheet4.xml",
+        "storage_types": {
+          "implicit_numeric": 20,
+          "s": 1
+        }
+      }
+    ],
+    "source_receipt_sha256": "ba18c36737f9244b204c9d604dce9853e855ee9e9d6f6fd375618c052fdf0d52",
+    "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
+  },
+  "summary_sha256": "eaae9d1bc30c4174d6b6212a4bea931ccab26a66851de1a223079e56af7c93fe",
+  "artifact_id": 9730262076,
+  "artifact_sha256": "205841d52bd6da2d8c1f330a492db69a6ac3fa6581eaba218dc2a6f2c96c2599",
+  "scope": "Hosted storage qualification; retained header and format metadata only. Not semantic promotion or derivative publication."
+}

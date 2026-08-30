@@ -201,3 +201,29 @@ bounded qualification artifact with its code commit and run URL. Record the
 observed result in Conductor before using it to define domain mappings.
 Synthetic tests exercise the same profiler and mock the network; they do not
 prove that the real workbook has passed the hosted run.
+
+### Observed storage result and header-mapping candidates
+
+[Hosted run 33305281887](https://github.com/edithatogo/global-medicines-atlas/actions/runs/33305281887)
+qualified the exact public workbook on 2026-08-30: 13,742 cells in four sheets,
+four formula cells and two error cells. All cells survived metadata-aware
+Parquet round trips. Thirty-six numeric values were unrepresentable at the
+chosen decimal scale and remain preserved as native values, without rounding.
+The workbook property element is empty; 13 cell formats reference only native
+format IDs 0 and 49, with no custom number formats. No date epoch was inferred.
+The metadata-only receipt is `quality/qualifications/mbs-workbook-storage-20260830.json`;
+the [durable receipt](https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5468037256)
+records the raw and report identities.
+
+`mbs_workbook_domain.iter_workbook_domain_batches` binds all cells to these
+observed headers, retaining native row IDs and header coordinates. It reuses
+the 40 existing MBS field destinations, adds seven legacy annotation fields,
+and preserves the separate description and Declining List sheets. Unlabelled
+cells, including the AV formula/error column, remain explicitly unmapped.
+The exact four-sheet layout and header profile must match before any output.
+
+These are header-based column mappings, not validated clinical annotations,
+current-status assertions, flag-to-boolean conversions, or date/currency
+harmonisation. Declining-list membership is only a source annotation, never
+cessation evidence. The next hosted run also counts these mappings; synthetic
+tests and the earlier storage run do not prove that new mapping execution.
