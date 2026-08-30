@@ -88,14 +88,15 @@
   Storage run `33305281887` passed against the exact public workbook: 13,742
   cells, four formulas, two errors; 36 unrepresentable decimals retained
   natively. Header/style metadata now grounds strict per-column mappings;
-  mapping execution and semantic value harmonisation remain pending.
+  mapping execution passed in run `33307737257`; full semantic value
+  harmonisation remains pending.
   An Actions-only pinned public workbook profiler is implemented in `ab26f90`
   (own unpublished `209e08d` rebased onto the same-tree PR #376 merge).
   All 114 focused tests pass; qualifier statement/branch coverage is 100%.
   Synthetic
   qualification checks all-sheet cell denominators, Parquet preservation,
-  native headers/formats, and local-download rejection. Hosted execution and
-  subsequent domain mappings remain pending.
+  native headers/formats, and local-download rejection. Hosted storage and
+  domain-mapping execution passed in runs `33305281887` and `33307737257`.
 
 ## Workbook portability review fixes
 
@@ -110,7 +111,8 @@
 - [~] Run the extended hosted qualifier after merge to count actual header
   mappings, then continue source-specific date/currency/value harmonisation.
   Header mapping run passed; value candidates and their per-field outcome
-  profiler are now implemented. Value-level real-source execution is pending.
+  profiler are now implemented. Value-level real-source execution passed in
+  run `33310284274`, with unsupported values explicitly retained.
 
 ## Workbook value harmonisation
 
@@ -131,7 +133,8 @@
   no workbook date conversion profile is selected by this prerequisite.
   (`10b36b0`; 10 intended missing-output regression failures preceded the
   implementation, 32 focused tests pass with 100% changed-module coverage.
-  Hosted observation and independently qualified format selection are pending.)
+  Hosted observation passed in run `33318355531`; independently qualified
+  format selection remains pending.)
 - [x] Keep native OOXML date storage distinct from ordinary date-shaped text.
   (`43ea70c`; P2 regression failed before correction, then 33 focused tests
   passed with 100% changed-module branch coverage; static checks pass.)
