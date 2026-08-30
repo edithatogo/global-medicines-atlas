@@ -114,6 +114,13 @@
 
 ## Workbook value harmonisation
 
+- [x] Review correction: leave the hosted workbook date profile unselected;
+  the XML date profile does not independently qualify the workbook era.
+  (`3df81f6`; 134 focused/context tests pass; Ruff, ty, BasedPyright pass.)
+- [ ] Independently qualify the workbook-era date format before selecting a
+  conversion profile. Preserve all native dates and unsupported outcomes in
+  the meantime; date functionality remains in scope.
+
 - [~] Reuse existing scalar contracts and numeric storage conversion for
   source-native identifiers, money, dates, annotation text and formula caches.
   Preserve errors, missing/null states, unsupported serial dates and precision
