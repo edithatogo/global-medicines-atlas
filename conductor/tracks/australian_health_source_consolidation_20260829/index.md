@@ -5,6 +5,7 @@
 - [Donor assessment](donor-assessment.md)
 - [Metadata](metadata.json)
 - [Evidence](evidence.jsonl)
+- [Acceptance and remaining-gate review](review.md)
 
 GitHub parent: [#339](https://github.com/edithatogo/global-medicines-atlas/issues/339).
 
