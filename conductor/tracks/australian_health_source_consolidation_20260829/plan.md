@@ -66,6 +66,10 @@
   publication to a private-first exact-commit transaction with anonymous
   digest verification, durable issue receipts, cleanup, and privacy
   containment. (`ffb9614`)
+- [x] Apply the maintainer's public-from-outset policy to the exact PBS
+  destination while retaining exact-commit binding, atomic exact-sibling
+  replacement, anonymous verification, durable receipts, and verified cleanup.
+  (`458bbcd`)
 - [x] Reject duplicate PBS item identities, keep restriction text/date pairs
   aligned, and label projected element digests without implying byte-exact
   native XML slicing. (`d9b583e`)
