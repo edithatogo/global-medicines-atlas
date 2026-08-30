@@ -23,6 +23,18 @@
 
 ## Phase 2: Implement MBS Silver (AC-01, AC-02, AC-06)
 
+### Source-contract review fixes
+
+- [x] Express domain and value-state constraints in portable JSON schemas;
+  preserve OOXML property presence rather than guessing absent/null states.
+  (`10c5a8a`; 57 focused tests, 100% native-contract module coverage.)
+- [~] Verify the review fixes against exact-head hosted checks before merge.
+  Prior head passed 38 checks. Full local run: 2,888 passed, three failed,
+  one skipped, 96.49% coverage; exact interpreter and unchanged timeout
+  constraints remain documented, not weakened.
+
+### Typed implementation
+
 - [ ] Write failing golden, property, malformed-input, schema-drift,
   determinism, decimal/currency, date, formula-error, duplicate, and lineage
   tests for each MBS table.
