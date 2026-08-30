@@ -49,6 +49,16 @@
 
 ## Phase 3: Publish the donor and continuing raw corpus (AC-03, AC-06)
 
+## Review Fixes: v4 federation foundation
+
+- [x] Reject B0 projections, blank or padded mandatory text, null independent
+  replica RPO/RTO, and case/whitespace aliases of the same recovery domain.
+  (`7ac4ada`; nine intended regression failures before correction)
+- [~] Requalify the corrected contract through focused tests and exact-head
+  hosted checks; retain partial local full-suite evidence separately.
+
+## Phase 3 continued: donor and continuing raw corpus
+
 - [x] Write failing hosted-workflow tests for exact donor digests, duplicate or
   missing files, path traversal, private/gated output, local upload attempts,
   partial uploads, anonymous digest mismatch, and premature cleanup. The first
