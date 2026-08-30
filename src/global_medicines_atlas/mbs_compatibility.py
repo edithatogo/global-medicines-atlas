@@ -81,11 +81,25 @@ def parse_legacy_mbs_items(
     ):
         raise ValueError("legacy MBS profile requires mbs/item records")
     records: list[MbsSourceRecord] = []
+    if root.attrib or (root.text or "").strip():
+        raise ValueError(
+            "legacy MBS root contains unsupported attributes or text"
+        )
     for ordinal, item in enumerate(root):
+        if (
+            item.attrib
+            or (item.text or "").strip()
+            or (item.tail or "").strip()
+        ):
+            raise ValueError(
+                "legacy MBS item contains unsupported attributes or text"
+            )
         if any(len(child) or child.attrib for child in item):
             raise ValueError(
                 "legacy MBS fields must be scalar without attributes"
             )
+        if any((child.tail or "").strip() for child in item):
+            raise ValueError("legacy MBS fields contain unsupported mixed text")
         fields = tuple(
             MbsNativeField(name=child.tag, value=child.text or None)
             for child in item

@@ -103,6 +103,24 @@ def test_legacy_profile_rejects_ambiguous_or_wrong_shapes(
         parse_legacy_mbs_items(payload, _receipt(payload))
 
 
+@pytest.mark.parametrize(
+    "payload",
+    [
+        b'<mbs version="2"><item><ItemNum>1</ItemNum></item></mbs>',
+        b'<mbs><item status="withdrawn"><ItemNum>1</ItemNum></item></mbs>',
+        b"<mbs>root text<item><ItemNum>1</ItemNum></item></mbs>",
+        b"<mbs><item>item text<ItemNum>1</ItemNum></item></mbs>",
+        b"<mbs><item><ItemNum>1</ItemNum>field tail</item></mbs>",
+        b"<mbs><item><ItemNum>1</ItemNum></item>item tail</mbs>",
+    ],
+)
+def test_legacy_profile_rejects_unrepresented_source_content(
+    payload: bytes,
+) -> None:
+    with pytest.raises(ValueError, match="unsupported"):
+        parse_legacy_mbs_items(payload, _receipt(payload))
+
+
 def test_mbs_native_denominator_contains_all_40_observed_fields() -> None:
     assert len(MBS_NATIVE_FIELDS) == 40
     assert len(set(MBS_NATIVE_FIELDS)) == 40
