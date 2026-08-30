@@ -1,6 +1,53 @@
 {
   "additionalProperties": false,
   "description": "Prevent native table identity from silently becoming another claim.",
+  "oneOf": [
+    {
+      "properties": {
+        "source_id": {
+          "enum": [
+            "au-mbs",
+            "au-mbs-p7-legacy-workbook"
+          ]
+        },
+        "subject_kind": {
+          "const": "service"
+        },
+        "dimension": {
+          "const": "service_benefit"
+        }
+      }
+    },
+    {
+      "properties": {
+        "source_id": {
+          "const": "au-pbs"
+        },
+        "subject_kind": {
+          "const": "pbs_item"
+        },
+        "dimension": {
+          "enum": [
+            "funding",
+            "formulary"
+          ]
+        }
+      }
+    },
+    {
+      "properties": {
+        "source_id": {
+          "const": "au-pbs"
+        },
+        "subject_kind": {
+          "const": "terminology_reference"
+        },
+        "dimension": {
+          "const": "terminology"
+        }
+      }
+    }
+  ],
   "properties": {
     "schema_version": {
       "const": "1.0",

@@ -15,7 +15,7 @@ from xml.etree import (  # ruff: ignore[suspicious-xml-etree-import]
     ElementTree as ET,
 )
 
-from pydantic import Field, model_validator
+from pydantic import ConfigDict, Field, model_validator
 
 from .adapters._receipt import provenance_from_receipt
 from .adapters.au_mbs import MBS_NATIVE_FIELDS, MbsSourceBatch
@@ -48,6 +48,36 @@ TargetTable = Literal[
 
 class AustralianTableContract(FrozenModel):
     """Prevent native table identity from silently becoming another claim."""
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "oneOf": [
+                {
+                    "properties": {
+                        "source_id": {
+                            "enum": ["au-mbs", "au-mbs-p7-legacy-workbook"]
+                        },
+                        "subject_kind": {"const": "service"},
+                        "dimension": {"const": "service_benefit"},
+                    }
+                },
+                {
+                    "properties": {
+                        "source_id": {"const": "au-pbs"},
+                        "subject_kind": {"const": "pbs_item"},
+                        "dimension": {"enum": ["funding", "formulary"]},
+                    }
+                },
+                {
+                    "properties": {
+                        "source_id": {"const": "au-pbs"},
+                        "subject_kind": {"const": "terminology_reference"},
+                        "dimension": {"const": "terminology"},
+                    }
+                },
+            ],
+        }
+    )
 
     schema_version: Literal["1.0"] = "1.0"
     source_id: SourceId
@@ -159,6 +189,14 @@ class SourceFieldBinding(FrozenModel):
 
 class NativeFieldOccurrence(SourceFieldBinding):
     """A value/state and address within one source-native record."""
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "if": {"properties": {"state": {"const": "value"}}},
+            "then": {"properties": {"value": {"type": "string"}}},
+            "else": {"properties": {"value": {"type": "null"}}},
+        }
+    )
 
     record_id: str = Field(min_length=1)
     path: str = Field(min_length=1)
@@ -305,6 +343,10 @@ def workbook_native_fields(
     binding = _binding(batch.provenance, batch.schema_era)
     paths: set[str] = set()
     for sheet in batch.sheets:
+        if sheet.present_properties is None:
+            raise ValueError(
+                "workbook property presence is unknown; reparse raw workbook"
+            )
         if sheet.path in paths:
             raise ValueError("duplicate workbook sheet path")
         paths.add(sheet.path)
@@ -316,8 +358,19 @@ def workbook_native_fields(
             ("dimension", sheet.dimension),
         ):
             path = f"{prefix}/{name}"
-            yield _field(binding, sheet.path, path, path, value)
+            yield _field(
+                binding,
+                sheet.path,
+                path,
+                path,
+                value,
+                present=name in sheet.present_properties,
+            )
         for cell in sheet.cells:
+            if cell.present_properties is None:
+                raise ValueError(
+                    "workbook property presence is unknown; reparse raw workbook"
+                )
             match = re.fullmatch(r"([A-Z]+)[1-9][0-9]*", cell.coordinate)
             if match is None:
                 raise ValueError("invalid workbook cell coordinate")
@@ -340,6 +393,7 @@ def workbook_native_fields(
                     f"{prefix}/cells/{cell.coordinate}/{name}",
                     f"{prefix}/columns/{match.group(1)}/{name}",
                     value,
+                    present=name in cell.present_properties,
                 )
 
 

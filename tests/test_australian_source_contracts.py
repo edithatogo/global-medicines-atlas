@@ -5,11 +5,13 @@ from __future__ import annotations
 import json
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Protocol, cast
 
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
-from pydantic import AnyUrl, ValidationError
+from jsonschema import Draft202012Validator
+from pydantic import AnyUrl, BaseModel, ValidationError
 
 from global_medicines_atlas import australian_source_contracts as contracts
 from global_medicines_atlas.adapters.au_mbs import (
@@ -77,6 +79,19 @@ def _receipt(payload: bytes, source_id: str = "au-mbs") -> SourceReceipt:
     )
 
 
+class _SchemaChecker(Protocol):
+    """Typed boundary for jsonschema's dynamically generated validator."""
+
+    def is_valid(self, instance: object) -> bool: ...
+
+
+def _schema_accepts(model: type[BaseModel], document: object) -> bool:
+    validator = cast(
+        "_SchemaChecker", Draft202012Validator(model.model_json_schema())
+    )
+    return validator.is_valid(document)
+
+
 def test_every_mbs_field_has_one_explicit_semantic_and_type_contract() -> None:
     fields = mbs_field_contracts()
     assert tuple(field.native_name for field in fields) == MBS_NATIVE_FIELDS
@@ -138,20 +153,48 @@ def _workbook() -> MbsWorkbookBatch:
                 path=f"xl/worksheets/sheet{i}.xml",
                 relationship_id=f"rId{i}",
                 dimension="A1:D1",
+                present_properties=(
+                    "name",
+                    "relationship_id",
+                    "path",
+                    "dimension",
+                ),
                 cells=(
                     MbsWorkbookCell(
-                        coordinate="A1", raw_value="001", display_value="001"
+                        coordinate="A1",
+                        raw_value="001",
+                        display_value="001",
+                        present_properties=(
+                            "coordinate",
+                            "raw_value",
+                            "display_value",
+                        ),
                     ),
                     MbsWorkbookCell(
                         coordinate="B1",
                         formula="1+1",
                         raw_value="2",
                         style_index=3,
+                        present_properties=(
+                            "coordinate",
+                            "formula",
+                            "raw_value",
+                            "style_index",
+                        ),
                     ),
                     MbsWorkbookCell(
-                        coordinate="C1", cell_type="e", raw_value="#N/A"
+                        coordinate="C1",
+                        cell_type="e",
+                        raw_value="#N/A",
+                        present_properties=(
+                            "coordinate",
+                            "cell_type",
+                            "raw_value",
+                        ),
                     ),
-                    MbsWorkbookCell(coordinate="D1"),
+                    MbsWorkbookCell(
+                        coordinate="D1", present_properties=("coordinate",)
+                    ),
                 ),
             )
             for i in range(1, 5)
@@ -238,6 +281,9 @@ def test_table_contract_allows_only_source_appropriate_dimensions(
     assert contract.schema_version == "1.0"
     assert contract.absence_interpretation == "unknown"
     assert contract.mapping_status == "source_native"
+    assert _schema_accepts(
+        AustralianTableContract, contract.model_dump(mode="json")
+    )
     assert (
         AustralianTableContract.model_validate_json(contract.model_dump_json())
         == contract
@@ -271,6 +317,7 @@ def test_semantic_coercions_and_implicit_promotion_are_rejected(
     }
     with pytest.raises(ValidationError):
         AustralianTableContract.model_validate(values)
+    assert not _schema_accepts(AustralianTableContract, values)
 
 
 def test_occurrences_reject_fabricated_value_state_and_duplicate_identity() -> (
@@ -365,7 +412,13 @@ def test_workbook_inventory_rejects_unbound_or_ambiguous_sources(
         )
     elif change == "coordinate":
         sheet = batch.sheets[0].model_copy(
-            update={"cells": (MbsWorkbookCell(coordinate="invalid"),)}
+            update={
+                "cells": (
+                    MbsWorkbookCell(
+                        coordinate="invalid", present_properties=("coordinate",)
+                    ),
+                )
+            }
         )
         batch = batch.model_copy(update={"sheets": (sheet,)})
     else:
@@ -414,6 +467,7 @@ def test_native_value_json_roundtrip_and_content_bound_coverage(
         field.model_dump_json()
     )
     assert restored == field
+    assert _schema_accepts(NativeFieldOccurrence, field.model_dump(mode="json"))
     before = summarize_native_fields([field])
     assert before == summarize_native_fields([restored])
     changed = field.model_copy(
@@ -473,3 +527,68 @@ def test_versioned_json_schemas_and_mbs_field_registry_match_runtime() -> None:
     assert json.loads((root / "mbs-fields.json").read_text()) == [
         field.model_dump(mode="json") for field in mbs_field_contracts()
     ]
+
+
+def test_portable_schema_rejects_cross_domain_table() -> None:
+    document = {
+        "source_id": "au-mbs",
+        "subject_kind": "pbs_item",
+        "dimension": "funding",
+    }
+    assert not _schema_accepts(AustralianTableContract, document)
+
+
+def test_portable_schema_rejects_contradictory_native_state() -> None:
+    field = next(workbook_native_fields(_workbook()))
+    document = field.model_dump(mode="json")
+    document["state"] = "null"
+    assert not _schema_accepts(NativeFieldOccurrence, document)
+
+
+@pytest.mark.parametrize("level", ["sheet", "cell"])
+def test_old_workbook_projections_require_reparse_for_presence(
+    level: str,
+) -> None:
+    batch = _workbook()
+    sheet = batch.sheets[0]
+    if level == "sheet":
+        sheet = sheet.model_copy(update={"present_properties": None})
+    else:
+        cell = sheet.cells[0].model_copy(update={"present_properties": None})
+        sheet = sheet.model_copy(update={"cells": (cell,)})
+    batch = batch.model_copy(update={"sheets": (sheet,)})
+    with pytest.raises(ValueError, match="presence is unknown; reparse"):
+        tuple(workbook_native_fields(batch))
+
+
+@pytest.mark.parametrize(
+    "properties", [(), ("coordinate", "coordinate"), ("coordinate",)]
+)
+def test_cell_presence_cannot_hide_a_value(properties: tuple[str, ...]) -> None:
+    with pytest.raises(
+        ValueError, match=r"property presence|property has a value"
+    ):
+        MbsWorkbookCell.model_validate({
+            "coordinate": "A1",
+            "raw_value": "1",
+            "present_properties": properties,
+        })
+
+
+@pytest.mark.parametrize(
+    "properties",
+    [
+        (),
+        ("name", "relationship_id", "path", "path"),
+        ("name", "relationship_id", "path"),
+    ],
+)
+def test_sheet_presence_cannot_hide_dimension(
+    properties: tuple[str, ...],
+) -> None:
+    values = _workbook().sheets[0].model_dump()
+    values["present_properties"] = properties
+    with pytest.raises(
+        ValueError, match=r"property presence|dimension has a value"
+    ):
+        MbsWorkbookSheet.model_validate(values)

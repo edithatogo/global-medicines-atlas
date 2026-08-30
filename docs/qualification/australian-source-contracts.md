@@ -4,6 +4,8 @@ This is the structural foundation for Australian Silver/Gold, not a claim
 that Silver tables, Gold edges or a public release have been completed.
 Contracts live in `contracts/australian-source/v1`; the Python semantic
 validators in `australian_source_contracts.py` supplement the JSON schemas.
+The portable schemas enforce source/subject/dimension combinations and native
+value/state consistency; Python additionally checks cross-record denominators.
 
 ## Reuse and scope
 
@@ -27,6 +29,10 @@ be integrated when these products have actual hosted receipts.
   value. No formula is evaluated and no error is converted into zero or an
   absent record. Cells keep worksheet path and coordinate identity; per-column
   coverage stays separate for each sheet. Missing cells are not manufactured.
+  The `au-mbs-p7-xlsx-v2` parser records explicit property-presence metadata:
+  an absent formula/value/style differs from an empty XML node. Older cached
+  workbook projections without this metadata must be reparsed from immutable
+  B2 before the new inventory can assign presence states. Raw bytes are unchanged.
 - PBS: every XML element's text and tail, every attribute and expanded QName,
   with sibling-indexed native addresses. Unknown elements are retained rather
   than dropped by the existing selected-item projection. Expanded names retain

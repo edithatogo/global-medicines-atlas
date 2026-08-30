@@ -16,6 +16,9 @@ from global_medicines_atlas.adapters.au_mbs_workbook import (
     parse_mbs_workbook,
     qualify_legacy_p7_workbook,
 )
+from global_medicines_atlas.australian_source_contracts import (
+    workbook_native_fields,
+)
 from global_medicines_atlas.receipts import (
     AcquisitionMethod,
     AcquisitionStatus,
@@ -31,7 +34,41 @@ from global_medicines_atlas.receipts import (
 SHA = "b" * 64
 
 
-def _xlsx(*, target: str = "worksheets/sheet1.xml") -> bytes:
+def test_workbook_native_presence_distinguishes_absent_and_empty_nodes() -> (
+    None
+):
+    payload = _xlsx(
+        extra_cell='<c r="D2"><f/><v/></c><c r="E2" t="inlineStr"/><c r="F2" t="inlineStr"><is/></c>',
+        include_dimension=False,
+    )
+    batch = parse_mbs_workbook(payload, _receipt(payload))
+    fields = {
+        (field.record_id.split("#")[-1], field.path.rsplit("/", 1)[-1]): field
+        for field in workbook_native_fields(batch)
+    }
+    assert fields["B1", "formula"].state == "missing_field"
+    assert fields["B1", "cell_type"].state == "missing_field"
+    assert fields["B1", "style_index"].state == "missing_field"
+    assert fields["D2", "formula"].state == "null"
+    assert fields["D2", "raw_value"].state == "null"
+    assert fields["D2", "display_value"].state == "null"
+    assert fields["E2", "raw_value"].state == "missing_field"
+    assert fields["E2", "display_value"].state == "missing_field"
+    assert (
+        fields["F2", "display_value"].state,
+        fields["F2", "display_value"].value,
+    ) == ("value", "")
+    assert (
+        fields["xl/worksheets/sheet1.xml", "dimension"].state == "missing_field"
+    )
+
+
+def _xlsx(
+    *,
+    target: str = "worksheets/sheet1.xml",
+    extra_cell: str = "",
+    include_dimension: bool = True,
+) -> bytes:
     stream = BytesIO()
     with ZipFile(stream, "w", compression=ZIP_DEFLATED) as archive:
         archive.writestr(
@@ -57,12 +94,13 @@ def _xlsx(*, target: str = "worksheets/sheet1.xml") -> bytes:
               <si><t>ItemNum</t></si><si><t>123</t></si>
             </sst>""",
         )
+        dimension = '<dimension ref="A1:C2" />' if include_dimension else ""
         archive.writestr(
             "xl/worksheets/sheet1.xml",
-            """<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-              <dimension ref="A1:C2" /><sheetData>
+            f"""<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+              {dimension}<sheetData>
                 <row r="1"><c r="A1" t="s"><v>0</v></c><c r="B1"><v>1</v></c></row>
-                <row r="2"><c r="A2" t="s"><v>1</v></c><c r="B2"><f>B1*2</f><v>2</v></c><c r="C2" t="e"><v>#N/A</v></c></row>
+                <row r="2"><c r="A2" t="s"><v>1</v></c><c r="B2"><f>B1*2</f><v>2</v></c><c r="C2" t="e"><v>#N/A</v></c>{extra_cell}</row>
               </sheetData>
             </worksheet>""",
         )

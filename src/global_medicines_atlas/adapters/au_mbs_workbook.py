@@ -58,6 +58,39 @@ class MbsWorkbookCell(FrozenModel):
     formula: str | None = None
     raw_value: str | None = None
     display_value: str | None = None
+    present_properties: (
+        tuple[
+            Literal[
+                "coordinate",
+                "cell_type",
+                "style_index",
+                "formula",
+                "raw_value",
+                "display_value",
+            ],
+            ...,
+        ]
+        | None
+    ) = None
+
+    @model_validator(mode="after")
+    def presence_matches_properties(self) -> MbsWorkbookCell:
+        if self.present_properties is not None:
+            names = self.present_properties
+            if len(names) != len(set(names)) or "coordinate" not in names:
+                raise ValueError("invalid workbook cell property presence")
+            for name in (
+                "cell_type",
+                "style_index",
+                "formula",
+                "raw_value",
+                "display_value",
+            ):
+                if name not in names and getattr(self, name) is not None:
+                    raise ValueError(
+                        "absent workbook cell property has a value"
+                    )
+        return self
 
 
 class MbsWorkbookSheet(FrozenModel):
@@ -68,9 +101,23 @@ class MbsWorkbookSheet(FrozenModel):
     path: str = Field(min_length=1)
     dimension: str | None = None
     cells: tuple[MbsWorkbookCell, ...]
+    present_properties: (
+        tuple[Literal["name", "relationship_id", "path", "dimension"], ...]
+        | None
+    ) = None
 
     @model_validator(mode="after")
     def coordinates_are_unique(self) -> MbsWorkbookSheet:
+        if self.present_properties is not None:
+            names = self.present_properties
+            if len(names) != len(set(names)) or not {
+                "name",
+                "relationship_id",
+                "path",
+            }.issubset(names):
+                raise ValueError("invalid workbook sheet property presence")
+            if "dimension" not in names and self.dimension is not None:
+                raise ValueError("absent workbook dimension has a value")
         coordinates = tuple(cell.coordinate for cell in self.cells)
         if len(coordinates) != len(set(coordinates)):
             raise ValueError(
@@ -147,6 +194,7 @@ def _cell(
         raise ValueError("workbook cell style index is invalid") from error
     formula_node = cell.find(f"{{{_MAIN}}}f")
     value_node = cell.find(f"{{{_MAIN}}}v")
+    inline_node = cell.find(f"{{{_MAIN}}}is")
     raw_value = value_node.text if value_node is not None else None
     display_value = raw_value
     if cell_type == "s" and raw_value is not None:
@@ -156,7 +204,7 @@ def _cell(
             raise ValueError(
                 "workbook shared-string index is invalid"
             ) from error
-    elif cell_type == "inlineStr":
+    elif cell_type == "inlineStr" and inline_node is not None:
         display_value = "".join(
             node.text or "" for node in cell.iter(f"{{{_MAIN}}}t")
         )
@@ -167,6 +215,19 @@ def _cell(
         formula=formula_node.text if formula_node is not None else None,
         raw_value=raw_value,
         display_value=display_value,
+        present_properties=(
+            "coordinate",
+            *(("cell_type",) if "t" in cell.attrib else ()),
+            *(("style_index",) if "s" in cell.attrib else ()),
+            *(("formula",) if formula_node is not None else ()),
+            *(("raw_value",) if value_node is not None else ()),
+            *(
+                ("display_value",)
+                if value_node is not None
+                or (cell_type == "inlineStr" and inline_node is not None)
+                else ()
+            ),
+        ),
     )
 
 
@@ -194,6 +255,16 @@ def _sheet(
             else None
         ),
         cells=cells,
+        present_properties=(
+            "name",
+            "relationship_id",
+            "path",
+            *(
+                ("dimension",)
+                if dimension_node is not None and "ref" in dimension_node.attrib
+                else ()
+            ),
+        ),
     )
 
 
@@ -207,7 +278,7 @@ def parse_mbs_workbook(
         payload,
         source_id=SOURCE_ID,
         jurisdiction="AUS",
-        transformation="au-mbs-p7-xlsx-v1",
+        transformation="au-mbs-p7-xlsx-v2",
     )
     inspect_zip(payload, _ARCHIVE_POLICY)
     with ZipFile(BytesIO(payload)) as archive:
