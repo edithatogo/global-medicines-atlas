@@ -61,6 +61,11 @@
 
 ## Review Fixes: PBS v3 archive and record contracts
 
+- [x] Accept the observed official `pbs:root`/Dublin Core validity shape,
+  derive archive paths from the validated effective date, and bind hosted
+  publication to a private-first exact-commit transaction with anonymous
+  digest verification, durable issue receipts, cleanup, and privacy
+  containment. (`ffb9614`)
 - [x] Reject duplicate PBS item identities, keep restriction text/date pairs
   aligned, and label projected element digests without implying byte-exact
   native XML slicing. (`d9b583e`)
