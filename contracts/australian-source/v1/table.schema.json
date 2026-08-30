@@ -1,0 +1,59 @@
+{
+  "additionalProperties": false,
+  "description": "Prevent native table identity from silently becoming another claim.",
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_id": {
+      "enum": [
+        "au-mbs",
+        "au-mbs-p7-legacy-workbook",
+        "au-pbs"
+      ],
+      "title": "Source Id",
+      "type": "string"
+    },
+    "subject_kind": {
+      "enum": [
+        "service",
+        "pbs_item",
+        "terminology_reference"
+      ],
+      "title": "Subject Kind",
+      "type": "string"
+    },
+    "dimension": {
+      "enum": [
+        "service_benefit",
+        "funding",
+        "formulary",
+        "terminology"
+      ],
+      "title": "Dimension",
+      "type": "string"
+    },
+    "mapping_status": {
+      "const": "source_native",
+      "default": "source_native",
+      "title": "Mapping Status",
+      "type": "string"
+    },
+    "absence_interpretation": {
+      "const": "unknown",
+      "default": "unknown",
+      "title": "Absence Interpretation",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_id",
+    "subject_kind",
+    "dimension"
+  ],
+  "title": "AustralianTableContract",
+  "type": "object"
+}

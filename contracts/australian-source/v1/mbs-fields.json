@@ -1,0 +1,202 @@
+[
+  {
+    "native_name": "Anaes",
+    "target_table": "services",
+    "value_type": "source_code"
+  },
+  {
+    "native_name": "AnaesChange",
+    "target_table": "services",
+    "value_type": "source_code"
+  },
+  {
+    "native_name": "BasicUnits",
+    "target_table": "services",
+    "value_type": "decimal"
+  },
+  {
+    "native_name": "Benefit100",
+    "target_table": "benefits",
+    "value_type": "aud_decimal"
+  },
+  {
+    "native_name": "Benefit75",
+    "target_table": "benefits",
+    "value_type": "aud_decimal"
+  },
+  {
+    "native_name": "Benefit85",
+    "target_table": "benefits",
+    "value_type": "aud_decimal"
+  },
+  {
+    "native_name": "BenefitStartDate",
+    "target_table": "benefits",
+    "value_type": "source_date"
+  },
+  {
+    "native_name": "BenefitType",
+    "target_table": "benefits",
+    "value_type": "source_code"
+  },
+  {
+    "native_name": "Category",
+    "target_table": "hierarchy",
+    "value_type": "source_code"
+  },
+  {
+    "native_name": "DerivedFee",
+    "target_table": "fees",
+    "value_type": "source_text"
+  },
+  {
+    "native_name": "DerivedFeeStartDate",
+    "target_table": "fees",
+    "value_type": "source_date"
+  },
+  {
+    "native_name": "Description",
+    "target_table": "descriptions",
+    "value_type": "source_text"
+  },
+  {
+    "native_name": "DescriptionStartDate",
+    "target_table": "descriptions",
+    "value_type": "source_date"
+  },
+  {
+    "native_name": "DescriptorChange",
+    "target_table": "descriptions",
+    "value_type": "source_code"
+  },
+  {
+    "native_name": "EMSNCap",
+    "target_table": "caps",
+    "value_type": "source_code"
+  },
+  {
+    "native_name": "EMSNChange",
+    "target_table": "caps",
+    "value_type": "source_code"
+  },
+  {
+    "native_name": "EMSNChangeDate",
+    "target_table": "caps",
+    "value_type": "source_date"
+  },
+  {
+    "native_name": "EMSNDescription",
+    "target_table": "caps",
+    "value_type": "source_text"
+  },
+  {
+    "native_name": "EMSNEndDate",
+    "target_table": "caps",
+    "value_type": "source_date"
+  },
+  {
+    "native_name": "EMSNFixedCapAmount",
+    "target_table": "caps",
+    "value_type": "aud_decimal"
+  },
+  {
+    "native_name": "EMSNMaximumCap",
+    "target_table": "caps",
+    "value_type": "aud_decimal"
+  },
+  {
+    "native_name": "EMSNPercentageCap",
+    "target_table": "caps",
+    "value_type": "percentage"
+  },
+  {
+    "native_name": "EMSNStartDate",
+    "target_table": "caps",
+    "value_type": "source_date"
+  },
+  {
+    "native_name": "FeeChange",
+    "target_table": "fees",
+    "value_type": "source_code"
+  },
+  {
+    "native_name": "FeeStartDate",
+    "target_table": "fees",
+    "value_type": "source_date"
+  },
+  {
+    "native_name": "FeeType",
+    "target_table": "fees",
+    "value_type": "source_code"
+  },
+  {
+    "native_name": "Group",
+    "target_table": "hierarchy",
+    "value_type": "source_code"
+  },
+  {
+    "native_name": "ItemChange",
+    "target_table": "services",
+    "value_type": "source_code"
+  },
+  {
+    "native_name": "ItemEndDate",
+    "target_table": "services",
+    "value_type": "source_date"
+  },
+  {
+    "native_name": "ItemNum",
+    "target_table": "services",
+    "value_type": "identifier"
+  },
+  {
+    "native_name": "ItemStartDate",
+    "target_table": "services",
+    "value_type": "source_date"
+  },
+  {
+    "native_name": "ItemType",
+    "target_table": "services",
+    "value_type": "source_code"
+  },
+  {
+    "native_name": "NewItem",
+    "target_table": "services",
+    "value_type": "source_code"
+  },
+  {
+    "native_name": "ProviderType",
+    "target_table": "services",
+    "value_type": "source_code"
+  },
+  {
+    "native_name": "QFEEndDate",
+    "target_table": "services",
+    "value_type": "source_date"
+  },
+  {
+    "native_name": "QFEStartDate",
+    "target_table": "services",
+    "value_type": "source_date"
+  },
+  {
+    "native_name": "ScheduleFee",
+    "target_table": "fees",
+    "value_type": "aud_decimal"
+  },
+  {
+    "native_name": "SubGroup",
+    "target_table": "hierarchy",
+    "value_type": "source_code"
+  },
+  {
+    "native_name": "SubHeading",
+    "target_table": "hierarchy",
+    "value_type": "source_code"
+  },
+  {
+    "native_name": "SubItemNum",
+    "target_table": "services",
+    "value_type": "identifier"
+  }
+]
