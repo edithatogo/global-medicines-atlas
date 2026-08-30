@@ -356,3 +356,41 @@ flushing, explicit rejection, duplicate/blank/missing IDs, empty elements,
 mixed content and metadata-aware Parquet/native-field reconstruction.
 Real-corpus qualification, domain-wide value harmonisation and public
 derivative publication remain pending.
+
+## PBS literal identifier/reference diagnostics
+
+`iter_pbs_reference_batches` retains all entity columns and native slots and
+adds the `pbs-adapter-literal-references-v1` profile. Only the existing
+adapter fixtures establish contracts: item `xml:id` in the two supported
+layouts; PBS drug-references-list/mp-reference/code text and the exact RDF
+`resource` attribute; classification/code text with unqualified `type="ATC"`.
+Other paths, namespaces and classification types remain explicitly unmapped.
+
+`reference_value` and `reference_resource` preserve source spelling, including
+whitespace and leading zeros. Their state columns distinguish absent, null,
+value and not-applicable slots. `occurrence_count` counts identical nonempty
+literal (kind, value, resource) tuples in one payload; missing/empty values
+are not indexed and report zero. `distinct_resource_count` counts distinct
+nonempty literal resource targets for that kind/value. No URI normalisation
+occurs, and fragment references are not resolved against XML IDs.
+
+`diagnostic` is unmapped, missing_value, empty_value, unique_source_literal,
+duplicate_source_literal, missing_target, empty_target,
+ambiguous_source_targets or unresolved. Item uniqueness means only literal
+uniqueness among supported item occurrences in this payload, not global
+identity or XML schema validity. Repeated references remain unresolved even
+when their literals match; conflicting resource strings are source-local
+diagnostics, not proof of distinct or equivalent terminology concepts.
+Missing/empty value or target diagnostics take precedence over ambiguity;
+the independent counts remain available. No vocabulary content is loaded.
+
+Two entity passes allow forward-duplicate detection without retaining all
+output rows. The index allows 100,000 distinct tuples and 16 MiB of compact
+UTF-8 JSON tuple encodings; counters and target totals are updated once per
+occurrence. The output buffer permits 1–4,096 rows and 8 MiB of compact JSON
+row encodings. The inherited bounded XML tree and entity budgets still apply.
+These are encoded-size budgets, not exact resident-memory bounds; the second
+parse is an explicit throughput trade-off awaiting real-corpus qualification.
+Overflow fails without truncation; discard partial output after any error.
+Synthetic-only coverage does not qualify full schedules, source dates/prices,
+funding/regulatory status, medicine equivalence, public derivatives or v4.
