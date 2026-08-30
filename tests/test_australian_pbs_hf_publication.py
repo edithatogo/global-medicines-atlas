@@ -1,0 +1,44 @@
+"""Hosted-only Australian PBS source-archive publication contract."""
+
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+WORKFLOW = PROJECT_ROOT / ".github/workflows/australian-pbs-hf-publication.yml"
+
+
+def test_pbs_publication_is_exact_actions_only_and_private_first() -> None:
+    text = WORKFLOW.read_text()
+
+    assert "exact_contract_commit:" in text
+    assert 'test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"' in text
+    assert 'test "${GITHUB_SHA}" = "${default_head}"' in text
+    assert "environment: australian-pbs-publication" in text
+    assert (
+        "https://www.pbs.gov.au/publication/schedule/2026/04/2026-04-01-XML-V3.zip?variant=3"
+        in text
+    )
+    assert "edithatogo/australian-pbs-source-archive" in text
+    assert "private=True" in text
+    assert "create_repo(repo_id=dataset, repo_type='dataset', private=False" not in text
+    assert "update_repo_settings(repo_id=dataset, repo_type='dataset', private=False)" in text
+    assert "delete_patterns=['*']" in text
+    assert "token=False" in text
+    assert "decision-0009" in text
+    assert "scripts/qualify_pbs_v3_archive.py" in text
+
+
+def test_pbs_publication_verifies_before_cleanup() -> None:
+    text = WORKFLOW.read_text()
+
+    verify = text.index("Verify exact public revision anonymously")
+    cleanup = text.index("Remove hosted temporary source bytes")
+    receipt = text.index("Retain hosted qualification and cleanup receipt")
+    assert verify < cleanup < receipt
+    assert "rm -rf work/source.zip work/stage" in text[cleanup:receipt]
+    assert "temporary_source_bytes_removed'] = True" in text[cleanup:receipt]
+    assert "if: always()" not in text[cleanup:]
+    assert "anonymous digest mismatch" in text[verify:cleanup]
+    containment = text.index("contain-failed-publication:")
+    assert "always() && needs.publish.result != 'success'" in text[containment:]
+    assert "private=True" in text[containment:]
+    assert "gh issue comment 340" in text
