@@ -34,8 +34,6 @@ internal conversion outputs, not independently validated interchange receipts.
 No real payload acquisition, publication, promotion or dependency change is
 part of this prerequisite.
 
-### Existing components
-
 ### MBS XML Arrow candidates
 
 `mbs_silver.iter_mbs_silver_batches` parses exact receipt-matched XML and emits

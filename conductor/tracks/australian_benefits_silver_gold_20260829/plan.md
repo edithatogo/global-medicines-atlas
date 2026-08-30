@@ -35,23 +35,37 @@
 
 ## Typed scalar prerequisite
 
-- [~] Test and implement loss-aware conversion for the existing 40-field MBS
+- [x] Test and implement loss-aware conversion for the existing 40-field MBS
   contract: retain native text/state, string identifiers, exact AUD decimals,
   source-magnitude percentages, and explicit date-format selection.
   Implemented in `196e2a6`; 108 focused tests pass, scalar branch coverage
-  100%, Ruff/ty/BasedPyright pass. Full and hosted validation remain pending.
-- [ ] Bind conversion to versioned Arrow tables and exact B1/v4 lineage;
+  100%, Ruff/ty/BasedPyright pass. PR #373 merged as `c9102e3` after all 38
+  exact-head hosted checks passed. Local full diagnostic: 2,923 passed,
+  four failed, one skipped; not an exact-tree certification because main was
+  integrated during that run. Runtime and local timing failures are recorded.
+- [~] Bind conversion to versioned Arrow tables and exact B1/v4 lineage;
   reject unrepresentable decimal precision without rounding. Scalar tests do
   not establish real-source era qualification or publication readiness.
+  Six XML Arrow table candidates now retain all 40 native fields, exact B1
+  receipts and B2 digests. Public v4 location verification, workbook/PBS
+  tables and real-source date-era qualification remain pending.
 
 ## Phase 2: Implement MBS Silver (AC-01, AC-02, AC-06)
 
-- [ ] Write failing golden, property, malformed-input, schema-drift,
+- [~] Write failing golden, property, malformed-input, schema-drift,
   determinism, decimal/currency, date, formula-error, duplicate, and lineage
   tests for each MBS table.
-- [ ] Confirm the intended failure before implementation.
-- [ ] Implement streaming source-faithful MBS service, hierarchy, description,
+  XML candidate tests cover every field, all six destinations, exact decimal
+  overflow/scale rejection, explicit dates, duplicate item occurrences,
+  receipt mismatch, bounded batching and deterministic Parquet round trips.
+  Legacy annotations, temporal changes and publication tests remain pending.
+- [~] Confirm the intended failure before implementation.
+  Missing `mbs_silver` module observed for the XML table slice.
+- [~] Implement streaming source-faithful MBS service, hierarchy, description,
   fee/benefit, participant, and legacy annotation tables.
+  XML candidates use the existing 9 MB bounded parser and at most 4,096 rows
+  per Arrow batch; this is bounded parsing plus batch output, not unbounded
+  input streaming or complete real-corpus qualification.
 - [ ] Add explicit schema-era mappings and historical/current change events
   without overwriting source values.
 - [ ] Emit field-level lineage, coverage denominators, quality findings, and
