@@ -13,9 +13,11 @@ legacy workbook adapters, governed PBS v3 archive/parser/inspection path,
 historical request contracts, separate HTML table projections, legacy XML
 profile and P7 filter are implemented. Exact legacy MBS payloads and donor
 histories, plus the qualified PBS archive, have separate public HF receipts.
-Monthly current-release acquisition and its hosted scheduler are not yet
-complete; graph, Silver/Gold and frontier commitments retain their own tracks
-and maturity gates. Incorporating every donor capability does not mean
+PR #367 (`435527a`) adds the hosted scheduler for the explicitly approved
+August 2026 release. Run `33296983154` published 6,046 records with anonymous
+all-object verification and cleanup; future release discovery/publication
+is not implicitly authorized. Graph, Silver/Gold and frontier commitments
+retain their own tracks and maturity gates. Incorporating every donor capability does not mean
 adopting every donor dependency or treating roadmap-only ideas as working code.
 
 ## Bottom line

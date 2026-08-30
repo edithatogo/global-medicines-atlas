@@ -84,9 +84,16 @@ its own bounded temporary staging/restore/cache directories. Quarantine blocks
 raw publication; transport-failure metadata can be archived without a data-update
 claim. Neither case reports a successfully acquired release.
 
-Implementation and fixture validation do not establish a successful hosted
-publication. Until an exact run and immutable HF receipt are appended to the
-track ledger, this pipeline is prepared, not externally completed.
+The approved August release was published by [hosted run 33296983154](https://github.com/edithatogo/global-medicines-atlas/actions/runs/33296983154)
+from merged commit `435527a630d055056985372aba1620bcf7340da4`.
+The [durable anonymous-verification and cleanup receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5467154799)
+records 6,046 admitted records, eight verified objects and all 11 legacy paths
+preserved at public HF revision `75f9f20a36ddb829dfe0ca88660664570782be02`.
+Its source-native P7 projection contains 165 records. Raw XML is 8,293,331 bytes,
+SHA-256 `c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565`.
+The immutable staging manifest deliberately retains `data_acquired=false`:
+only the later hosted all-object verification receipt asserts acquisition.
+No raw current-release payload was downloaded to the workstation.
 
 ## HTML admission and health
 
@@ -106,10 +113,10 @@ establishes rights, current coverage, or anonymous public archive verification.
 
 ## Remaining integrated verification
 
-The runner still requires observed hosted execution:
+The enumerated release has observed hosted execution. Remaining boundaries:
 
-1. Merge the exact approved pipeline and dispatch it from the protected main
-   branch; preserve its public receipt and reconcile the Phase 4 checkpoint.
+1. Monthly scheduling revalidates this same approved release; it does not
+   discover or authorize a future release automatically.
 2. Qualify additional HTML layout profiles only as observed. Historical
    item/participant endpoints remain compatibility fixtures, not evidence of
    live participant-count coverage.
