@@ -15,6 +15,7 @@ from scripts.qualify_pbs_v3_archive import qualify
 
 from global_medicines_atlas.adapters.au_pbs import (
     PBS_V3_NAMESPACE,
+    PBS_XML_POLICY,
     inspect_pbs_v3_tags,
     parse_pbs_v3_archive,
     pbs_v3_source_parquet,
@@ -341,6 +342,12 @@ def test_pbs_policy_accepts_representative_large_element_count() -> None:
         f"{{{PBS_V3_NAMESPACE}}}schedule",
         f"{{{PBS_V3_NAMESPACE}}}metadata",
     )
+
+
+def test_pbs_policy_retains_finite_official_schedule_envelope() -> None:
+    assert PBS_XML_POLICY.max_xml_elements == 50_000_000
+    assert PBS_XML_POLICY.max_bytes == 512 * 1024 * 1024
+    assert PBS_XML_POLICY.max_xml_text_bytes == 384 * 1024 * 1024
 
 
 def test_parse_pbs_v3_archive_rejects_decompression_bomb() -> None:

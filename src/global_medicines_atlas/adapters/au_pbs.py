@@ -45,7 +45,10 @@ PBS_ARCHIVE_POLICY = ArchivePolicy(
 PBS_XML_POLICY = ParserPolicy(
     max_bytes=PBS_ARCHIVE_POLICY.max_entry_uncompressed_bytes,
     max_xml_depth=128,
-    max_xml_elements=5_000_000,
+    # The official April 2026 v3 schedule exceeds twenty million structural
+    # elements. Keep a source-specific finite ceiling within the bounded
+    # 512 MiB member envelope rather than weakening the shared parser policy.
+    max_xml_elements=50_000_000,
     max_xml_text_bytes=384 * 1024 * 1024,
 )
 
