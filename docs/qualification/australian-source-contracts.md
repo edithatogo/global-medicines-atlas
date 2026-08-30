@@ -276,3 +276,29 @@ The same Actions-only qualifier will collect these additional observations
 after the implementation merges; previous completed versions need not rerun.
 Observation is a prerequisite, not independent workbook-era date qualification
 or semantic promotion. No dataset upload or dependency change is introduced.
+
+## PBS native-field Arrow prerequisite
+
+`iter_pbs_silver_batches` exposes the existing receipt-bound PBS native-field
+inventory as a versioned Arrow candidate table. Each row retains the complete
+native occurrence contract, an ordered ordinal, a B2-digest-plus-field-path
+identity, and the B1 receipt digest. Credential-safe receipt metadata is shared
+with the MBS candidates. All batches use identical schema metadata.
+
+This is a typed structural prerequisite, not domain-harmonised Silver or a
+new evidentiary source of truth. Expanded XML names preserve namespace URIs,
+while original prefixes, comments, entity spelling and other lexical details
+remain in B2 bytes. Text and tail whitespace, empty attributes, duplicate
+native IDs and unknown fields are retained. Missing elements do not create
+invented rows; empty parsed text/tail slots remain null. The receipt must bind
+the XML member itself, not its containing ZIP.
+
+The inherited PBS parser uses finite byte/depth/element/text limits and keeps
+the XML tree in memory. Only the additional row buffer is capped at 4,096
+rows; this is not constant-memory streaming or real-schedule qualification.
+Synthetic tests cover complete native-slot parity, identity/prefix invariance,
+malformed envelopes, receipt mismatch, redacted metadata and deterministic
+Parquet round trips across batch sizes. No dates, prices, funding status,
+ARTG regulatory status or AMT/ATC relationships are inferred. PBS domain
+tables, harmonised values, large-corpus qualification, v4 integration and
+public derivatives remain pending. No dependency or acquisition change.
