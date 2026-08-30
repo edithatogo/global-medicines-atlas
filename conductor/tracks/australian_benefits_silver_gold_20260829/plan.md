@@ -268,13 +268,27 @@
   adapter digest/size and outer receipt digest. Fresh hosted checks passed
   in #390; original full-run failures remain in evidence.)
 
-- [~] Add a separate historical-member native/Silver entry point requiring
+- [x] Add a separate historical-member native/Silver entry point requiring
   exact parent B1, archive B2 and validated member binding before output.
   Preserve historical source identity, unknown/native slots and occurrence
   lineage without broadening ordinary source acceptance or selecting dates.
   Implemented `22d20b6`; 233 combined focused/context/ecosystem passes,
   final 18 historical tests pass; 98.94% combined new-module coverage.
-  Ruff, ty, BasedPyright and measured-receipt check pass; full/hosted pending.
+  Ruff, ty, BasedPyright and measured-receipt check pass. PR #391 merged
+  `f1da9c2` after all 38 checks passed on `62dad1d`. Frozen full: 3,240 passed,
+  three failed, one skipped, 96.72% coverage. Two local interpreter-pin
+  failures and performance 332.240ms >250ms; isolated rerun also failed at
+  266.143ms. Local performance remains unqualified despite hosted success.
+
+- [~] Extend historical native candidates through shared bounded domain and
+  entity transforms, preserving parent/archive/member binding in rows and
+  metadata without broadening ordinary source acceptance. Unknown namespaces,
+  empty/mixed-text elements and duplicate identities must survive unchanged.
+  Historical reference/date projections and real-corpus qualification remain
+  pending; no automatic date profile, admission or publication.
+  Implemented `4ae27b5`; intended missing-module failure followed by 230
+  focused/context/ecosystem passes and 99.37% changed-module coverage.
+  Ruff, ty and BasedPyright pass; frozen full and hosted checks pending.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
