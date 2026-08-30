@@ -329,6 +329,11 @@
   metadata and original B1 validation pass; no source ZIP/XML downloaded.
   Frozen full and exact-head hosted checks pending; dispatch withheld.
 
+- [~] Hosted qualifier review fix: isolate the synthetic deadline clock from
+  process-wide test-runner time. (`9d782bb`; clock-identity regression failed
+  before correction, then 304 focused/context/ecosystem tests passed; Ruff
+  pass. Production harness unchanged; fresh exact-head hosted gates pending.)
+
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
   and source-native identity.
