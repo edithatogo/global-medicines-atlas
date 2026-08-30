@@ -108,6 +108,10 @@
 
 ## Phase 2: Implement MBS Silver (AC-01, AC-02, AC-06)
 
+- [x] Correct the hosted qualifier job-name policy finding without weakening
+  security lint. (`7e049cd`; actionlint and zizmor 1.28.0 pedantic pass.)
+- [~] Recheck PR #378 exact-head hosted gates before real-workbook dispatch.
+
 - [~] Write failing golden, property, malformed-input, schema-drift,
   determinism, decimal/currency, date, formula-error, duplicate, and lineage
   tests for each MBS table.
