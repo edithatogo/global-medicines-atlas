@@ -117,6 +117,9 @@
 
 - [x] Close expired cache spools on open and occupancy inspection. (`9f2b929`;
   automated P2 review; regression failed first, then 91 tests and 100% coverage.)
+- [x] Declare format plugins in the CI test group as well as the optional runtime
+  extra. (`66561b2`; exact unit-job failure reproduced in isolated test group;
+  corrected locked isolated reader/contract/receipt/matrix suite: 130 passed.)
 
 ## Phase 5: Collections, estate registry, and recovery (AC-05, AC-07)
 

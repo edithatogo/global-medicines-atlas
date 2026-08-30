@@ -47,6 +47,10 @@ completion or a second-maintainer approval.
   file; all expired entries now close on open/occupancy inspection. 91 tests,
   reader100% branch coverage, Ruff and strict typing pass. Idle-reader close
   remains explicit; no background timer or hard-real-time cleanup is claimed.
+- CI environment correction (`66561b2`): unit CI installs test-goblin without
+  optional runtime extras. Required format plugins are now explicit in that
+  test group too. The locked isolated test-goblin environment passes all130
+  reader/contract/receipt/matrix tests; no package versions changed.
 - Remaining: hosted exact-head qualification; production
   v4 receipt/admission integration, product consumers and public derived output.
   No existing MBS/PBS receipt was relabelled v4 and no source was reacquired.
