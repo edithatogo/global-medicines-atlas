@@ -504,6 +504,30 @@ with conversion none. Rows are bounded to 1–4,096 and 8 MiB of compact UTF-8
 JSON encodings. Validation and projection parse separately using existing
 finite ZIP/XML limits; this is not constant-memory parsing, a total resident
 memory cap or real-corpus qualification. Discard partial output after errors.
-Domain/entity/reference/date historical integration, corpus qualification and
+Reference/date historical integration, corpus qualification and
 public derivatives remain pending; this native route infers no source dates,
 current status, funding entitlement, clinical claim or production admission.
+
+### Historical structural projections
+
+`iter_pbs_historical_domain_batches` and `iter_pbs_historical_entity_batches`
+require the same four historical inputs and complete native validation before
+output. They reuse private native-to-domain and domain-to-entity transforms;
+there is no public unvalidated batch-admission API or ordinary source alias.
+Existing ordinary PBS function signatures and source guards are unchanged.
+
+Domain rows retain all native slots and binding columns while adding the
+existing fixture-supported structural mapping profile. Entity rows preserve
+every domain row in `native_fields`, plus parent/member/archive/binding/source
+identity columns at the top level. Safe metadata, canonical member binding,
+candidate qualification and conversion-none survive both transforms and
+metadata-aware Parquet round trips. Duplicate native identifiers, empty
+elements, mixed text/tails and unknown namespaces remain separate occurrences.
+
+Both routes inherit finite ZIP/XML parsing and native batch limits. Domain
+annotation adds a bounded number of path-sized strings; entity grouping uses
+the existing 4,096-field/1 MiB encoded per-element and 8 MiB encoded output
+batch limits. These are not total resident-memory guarantees. Oversized
+records fail without truncation; discard partial outputs after any error.
+This is synthetic structural qualification, not complete PBS domain coverage,
+historical reference/date conversion, real-corpus admission or public delivery.

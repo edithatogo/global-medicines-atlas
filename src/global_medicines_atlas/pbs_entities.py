@@ -16,6 +16,15 @@ from .receipts import SourceReceipt
 MAX_ELEMENT_FIELDS = 4096
 MAX_ELEMENT_BYTES = 1024 * 1024
 MAX_BATCH_BYTES = 8 * 1024 * 1024
+_HISTORICAL_LINEAGE = (
+    "source_id",
+    "source_sha256",
+    "schema_era",
+    "receipt_sha256",
+    "member_binding_sha256",
+    "archive_sha256",
+    "member_path",
+)
 
 
 def _encoded_size(value: object) -> int:
@@ -41,6 +50,11 @@ def _schema(native: pa.Schema) -> pa.Schema:
             ("tail_state", False),
         )
     ]
+    if "member_binding_sha256" in native.names:
+        fields.extend(
+            pa.field(name, pa.string(), nullable=False)
+            for name in _HISTORICAL_LINEAGE
+        )
     fields.append(
         pa.field(
             "native_fields",
@@ -69,7 +83,13 @@ def _row(fields: list[dict[str, Any]]) -> dict[str, Any]:
         "~", "~0"
     ).replace("/", "~1")
     xml_id = slots.get(xml_id_key)
+    lineage = (
+        {name: first[name] for name in _HISTORICAL_LINEAGE}
+        if "member_binding_sha256" in first
+        else {}
+    )
     return {
+        **lineage,
         "entity_id": f"{first['source_sha256']}:{record_id}",
         "parent_entity_id": f"{first['source_sha256']}:{parent}"
         if parent
@@ -90,21 +110,19 @@ def _row(fields: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def _native_rows(
-    payload: bytes, receipt: SourceReceipt, batch_size: int
+    batches: Iterator[pa.RecordBatch],
 ) -> Iterator[tuple[pa.Schema, dict[str, Any]]]:
-    for batch in iter_pbs_domain_batches(
-        payload, receipt, rows_per_batch=batch_size
-    ):
+    for batch in batches:
         for row in batch.to_pylist():
             yield batch.schema, row
 
 
 def _entities(
-    payload: bytes, receipt: SourceReceipt, batch_size: int
+    batches: Iterator[pa.RecordBatch],
 ) -> Iterator[tuple[pa.Schema, dict[str, Any]]]:
     entity_schema: pa.Schema | None = None
     for _, group in groupby(
-        _native_rows(payload, receipt, batch_size),
+        _native_rows(batches),
         key=lambda pair: pair[1]["record_id"],
     ):
         schema, first = next(group)
@@ -134,10 +152,22 @@ def iter_pbs_entity_batches(
     claimed as a bound on total Python/Arrow resident memory. Oversized entities
     raise without truncation; callers must discard partial outputs after errors.
     """
+    yield from _entity_batches(
+        iter_pbs_domain_batches(
+            payload, receipt, rows_per_batch=rows_per_batch
+        ),
+        rows_per_batch,
+    )
+
+
+def _entity_batches(
+    batches: Iterator[pa.RecordBatch], rows_per_batch: int
+) -> Iterator[pa.RecordBatch]:
+    """Group only an internally validated domain stream using shared bounds."""
     rows: list[dict[str, Any]] = []
     size = 0
     schema: pa.Schema | None = None
-    for schema, entity in _entities(payload, receipt, rows_per_batch):
+    for schema, entity in _entities(batches):
         entity_size = _encoded_size(entity)
         if entity_size > MAX_BATCH_BYTES:
             raise ValueError("PBS entity exceeds batch byte limit")
