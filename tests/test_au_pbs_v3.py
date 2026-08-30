@@ -6,10 +6,12 @@ import json
 from datetime import UTC, datetime
 from io import BytesIO
 from pathlib import Path
+from typing import cast
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import pyarrow.parquet as pq
 import pytest
+from scripts import inspect_pbs_v3 as pbs_inspector
 from scripts import qualify_pbs_v3_archive as pbs_qualifier
 from scripts.qualify_pbs_v3_archive import qualify
 
@@ -28,6 +30,126 @@ HTTP_METADATA: dict[str, object] = {
     "url_effective": "https://www.pbs.gov.au/example.zip",
     "content_type": "application/zip",
 }
+
+
+@pytest.mark.parametrize("option", ["--max-items", "--max_items"])
+def test_pbs_cli_preserves_bounded_donor_item_views(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    option: str,
+) -> None:
+    path = tmp_path / "source.zip"
+    xml = _xml().replace(
+        b"</pbs:schedule>",
+        b'<pbs:pharmaceutical-item xml:id="5678B"><pbs:block-container>'
+        b"<dbk:para>Second item</dbk:para></pbs:block-container>"
+        b"</pbs:pharmaceutical-item></pbs:schedule>",
+    )
+    path.write_bytes(_zip([("sch-test.xml", xml)]))
+    monkeypatch.setattr(
+        "sys.argv",
+        ["inspect_pbs_v3", str(path), option, "1", "--first-item-xml"],
+    )
+
+    assert pbs_inspector.main() == 0
+    result = json.loads(capsys.readouterr().out)
+    assert result["record_count"] == 2
+    assert len(result["items"]) == 1
+    assert result["items"][0]["item_code"] == "1234A"
+    assert result["items"][0]["amt_references"] == [
+        ["123456", "http://snomed.info/id/123456"]
+    ]
+    assert result["items"][0]["atc_codes"] == ["A01AA01"]
+    assert "pharmaceutical-item" in result["first_item_xml_projection"]
+    assert "5678B" not in result["first_item_xml_projection"]
+
+
+@pytest.mark.parametrize("limit", ["0", "-1", "1001"])
+def test_pbs_cli_rejects_unbounded_item_sample(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    limit: str,
+) -> None:
+    monkeypatch.setattr(
+        "sys.argv", ["inspect_pbs_v3", "absent.zip", "--max-items", limit]
+    )
+    with pytest.raises(SystemExit) as error:
+        pbs_inspector.main()
+    assert error.value.code == 2
+    assert "between 1 and 1000" in capsys.readouterr().err
+
+
+def test_pbs_cli_default_omits_xml_projection(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    path = tmp_path / "source.zip"
+    path.write_bytes(_zip([("sch-test.xml", _xml())]))
+    monkeypatch.setattr("sys.argv", ["inspect_pbs_v3", str(path)])
+    assert pbs_inspector.main() == 0
+    result = json.loads(capsys.readouterr().out)
+    assert result["first_item_xml_projection"] is None
+    assert len(result["items"]) == 1
+
+
+def test_pbs_cli_rejects_oversize_xml_output(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    path = tmp_path / "source.zip"
+    path.write_bytes(_zip([("sch-test.xml", _xml())]))
+    monkeypatch.setattr(pbs_inspector, "MAX_XML_OUTPUT_BYTES", 1)
+    monkeypatch.setattr(
+        "sys.argv", ["inspect_pbs_v3", str(path), "--first-item-xml"]
+    )
+    with pytest.raises(SystemExit) as error:
+        pbs_inspector.main()
+    assert error.value.code == 2
+    assert "exceeds 1 MiB" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(
+    ("constant", "message"),
+    [
+        ("MAX_ARCHIVE_BYTES", "archive byte limit"),
+        ("MAX_OUTPUT_BYTES", "JSON exceeds 4 MiB"),
+    ],
+)
+def test_pbs_cli_bounds_input_and_complete_output(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    constant: str,
+    message: str,
+) -> None:
+    path = tmp_path / "source.zip"
+    path.write_bytes(_zip([("sch-test.xml", _xml())]))
+    monkeypatch.setattr(pbs_inspector, constant, 1)
+    monkeypatch.setattr("sys.argv", ["inspect_pbs_v3", str(path)])
+    with pytest.raises(SystemExit) as error:
+        pbs_inspector.main()
+    assert error.value.code == 2
+    captured = capsys.readouterr()
+    assert message in captured.err
+    assert not captured.out
+
+
+@pytest.mark.parametrize("limit", ["0", "4097"])
+def test_pbs_cli_bounds_tag_sample(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    limit: str,
+) -> None:
+    monkeypatch.setattr(
+        "sys.argv", ["inspect_pbs_v3", "absent.zip", "--max-tags", limit]
+    )
+    with pytest.raises(SystemExit) as error:
+        pbs_inspector.main()
+    assert error.value.code == 2
+    assert "between 1 and 4096" in capsys.readouterr().err
 
 
 def _xml(*, namespace: str = PBS_V3_NAMESPACE) -> bytes:
@@ -125,8 +247,7 @@ def test_hosted_qualification_binds_raw_member_and_projection(
     assert (tmp_path / "stage/raw/2026-04-01/2026-04-01-XML-V3.zip").exists()
     assert (tmp_path / "stage/bronze/2026-04-01/pbs-v3-source.parquet").exists()
     assert (tmp_path / "stage/bronze/2026-04-01/sch-2026-04-01-r1.xml").exists()
-    admission = manifest["admission"]
-    assert isinstance(admission, dict)
+    admission = cast("dict[str, object]", manifest["admission"])
     assert admission["state"] == "accepted"
     assert (tmp_path / "stage/bronze/2026-04-01/source-receipt.json").exists()
     assert (tmp_path / "stage/bronze/2026-04-01/admission.json").exists()
