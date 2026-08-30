@@ -58,8 +58,8 @@
 - [x] Preserve the donor CLI input/output expectations through compatibility
   tests where they are useful; do not preserve its syntax error.
   (`3f4e99a`, `0eaf89e`, `0ead5e2`)
-- [~] Phase Verification & Checkpoint: donor intended behavior is covered by a
-  valid, safe, typed implementation.
+- [x] Phase Verification & Checkpoint: donor intended behavior is covered by a
+  valid, safe, typed implementation. (`a51a411`, PR #362; 37 hosted checks passed)
 
 ## Review Fixes: PBS v3 archive and record contracts
 
@@ -128,6 +128,11 @@
   six-404 regression, serial rate limits, timeout retries and empty transport
   outcomes. 59 focused tests pass; HTML/P7/admission and live scheduling remain
   pending. `docs/qualification/mbs-monthly-compatibility.md` defines that boundary.
+  Extension `1e5c3ec` adds separate typed simple-HTML tables, deterministic
+  per-table Parquet and native P7 selection; 57 focused tests pass with 100%
+  reported coverage for the two new modules. `1349c93` additionally retains
+  the separate donor `mbs/item` profile and locks serialized table shape.
+  Live scheduling, complex HTML spans and durable admission receipts remain pending.
 - [ ] Confirm the intended failure before implementation.
 - [ ] Reuse GMA HTTP destination, admission, receipt, source-health, and
   catalogue-driven scheduling controls.
