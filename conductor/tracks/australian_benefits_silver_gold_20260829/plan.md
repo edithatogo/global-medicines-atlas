@@ -132,6 +132,12 @@
   (`10b36b0`; 10 intended missing-output regression failures preceded the
   implementation, 32 focused tests pass with 100% changed-module coverage.
   Hosted observation and independently qualified format selection are pending.)
+- [x] Keep native OOXML date storage distinct from ordinary date-shaped text.
+  (`43ea70c`; P2 regression failed before correction, then 33 focused tests
+  passed with 100% changed-module branch coverage; static checks pass.)
+- [~] Requalify the corrected date-encoding observer on its exact hosted head;
+  only then collect new observations through Actions, without selecting a
+  date convention or repeating a completed qualifier version.
 
 - [~] Reuse existing scalar contracts and numeric storage conversion for
   source-native identifiers, money, dates, annotation text and formula caches.
