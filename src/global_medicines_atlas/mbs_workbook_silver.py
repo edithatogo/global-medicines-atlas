@@ -33,6 +33,10 @@ WORKBOOK_CELL_SCHEMA = pa.schema(
         pa.field("source_path", pa.string(), nullable=False),
         pa.field("source_sha256", pa.string(), nullable=False),
         pa.field("receipt_sha256", pa.string(), nullable=False),
+        pa.field("sheet_name", pa.string(), nullable=False),
+        pa.field("sheet_path", pa.string(), nullable=False),
+        pa.field("sheet_relationship_id", pa.string(), nullable=False),
+        pa.field("sheet_dimension", pa.string()),
         pa.field("coordinate", pa.string(), nullable=False),
         pa.field("row_index", pa.int32(), nullable=False),
         pa.field("column_index", pa.int32(), nullable=False),
@@ -41,7 +45,11 @@ WORKBOOK_CELL_SCHEMA = pa.schema(
         pa.field("formula", pa.string()),
         pa.field("raw_value", pa.string()),
         pa.field("display_value", pa.string()),
-        pa.field("present_properties", pa.list_(pa.string()), nullable=False),
+        pa.field(
+            "present_properties",
+            pa.list_(pa.field("element", pa.string())),
+            nullable=False,
+        ),
         pa.field("formula_state", pa.string(), nullable=False),
         pa.field("value_origin", pa.string(), nullable=False),
         pa.field("value_kind", pa.string(), nullable=False),
@@ -53,7 +61,7 @@ WORKBOOK_CELL_SCHEMA = pa.schema(
     ],
     metadata={
         "schema_name": "global-medicines-atlas.mbs-workbook-silver.cells",
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "source_id": "au-mbs-p7-legacy-workbook",
         "subject_kind": "service",
         "dimension": "service_benefit",
@@ -185,6 +193,8 @@ def iter_workbook_silver_batches(
 
     The existing bounded ZIP/XML parser validates source bytes first. No
     formula, number format, currency or Excel date epoch is interpreted.
+    Every batch has identical workbook-wide metadata, including a sheet
+    manifest retaining empty sheets when callers concatenate all batches.
     """
     if (
         type(rows_per_batch) is not int
@@ -194,27 +204,40 @@ def iter_workbook_silver_batches(
     receipt = SourceReceipt.model_validate(receipt.model_dump())
     workbook = parse_mbs_workbook(payload, receipt)
     receipt_sha256 = receipt.digest()
+    metadata = dict(WORKBOOK_CELL_SCHEMA.metadata or {})
+    metadata.update(receipt_projection_metadata(receipt))
+    metadata.update({
+        b"schema_era": workbook.schema_era.encode(),
+        b"sheet_count": str(workbook.sheet_count).encode(),
+        b"workbook_sheets": json.dumps(
+            [
+                {
+                    "name": sheet.name,
+                    "path": sheet.path,
+                    "relationship_id": sheet.relationship_id,
+                    "dimension": sheet.dimension,
+                    "present_properties": sheet.present_properties,
+                    "cell_count": len(sheet.cells),
+                }
+                for sheet in workbook.sheets
+            ],
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode(),
+    })
+    schema = WORKBOOK_CELL_SCHEMA.with_metadata(metadata)  # pyright: ignore[reportUnknownMemberType]
     for sheet in workbook.sheets:
-        metadata = dict(WORKBOOK_CELL_SCHEMA.metadata or {})
-        metadata.update(receipt_projection_metadata(receipt))
-        metadata.update({
-            b"schema_era": workbook.schema_era.encode(),
-            b"sheet_name": sheet.name.encode(),
-            b"sheet_path": sheet.path.encode(),
-            b"sheet_relationship_id": sheet.relationship_id.encode(),
-            b"sheet_dimension": json.dumps(sheet.dimension).encode(),
-            b"sheet_present_properties": json.dumps(
-                sheet.present_properties
-            ).encode(),
-            b"sheet_count": str(workbook.sheet_count).encode(),
-            b"sheet_cell_count": str(len(sheet.cells)).encode(),
-        })
-        schema = WORKBOOK_CELL_SCHEMA.with_metadata(metadata)  # pyright: ignore[reportUnknownMemberType]
         rows: list[dict[str, Any]] = []
         for cell in sheet.cells:
-            rows.append(
-                _row(cell, sheet.path, receipt.payload.sha256, receipt_sha256)
-            )
+            rows.append({
+                **_row(
+                    cell, sheet.path, receipt.payload.sha256, receipt_sha256
+                ),
+                "sheet_name": sheet.name,
+                "sheet_path": sheet.path,
+                "sheet_relationship_id": sheet.relationship_id,
+                "sheet_dimension": sheet.dimension,
+            })
             if len(rows) == rows_per_batch:
                 yield pa.RecordBatch.from_pylist(rows, schema=schema)
                 rows = []

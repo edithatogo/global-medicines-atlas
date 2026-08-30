@@ -1,5 +1,6 @@
 """All-sheet workbook typing uses synthetic source-native cells only."""
 
+import json
 from datetime import UTC, datetime
 from decimal import Decimal, InvalidOperation, localcontext
 from io import BytesIO
@@ -7,6 +8,7 @@ from xml.sax.saxutils import escape
 from zipfile import ZipFile, ZipInfo
 
 import pyarrow as pa
+import pyarrow.parquet as pq
 import pytest
 from hypothesis import given
 from hypothesis import strategies as st
@@ -115,7 +117,10 @@ def test_all_sheets_including_empty_are_retained_with_safe_lineage() -> None:
     paths: set[bytes] = set()
     for batch in batches:
         assert batch.schema.metadata is not None
-        paths.add(batch.schema.metadata[b"sheet_path"])
+        paths.update(
+            sheet["path"].encode()
+            for sheet in json.loads(batch.schema.metadata[b"workbook_sheets"])
+        )
         assert b"synthetic-token" not in b" ".join(
             batch.schema.metadata.values()
         )
@@ -207,6 +212,31 @@ def test_batches_do_not_change_cell_values() -> None:
         row for batch in many for row in batch.to_pylist()
     ]
     assert pa.Table.from_batches(many[:1]).num_rows == 10
+
+
+def test_combined_parquet_preserves_every_sheet_and_empty_sheet() -> None:
+    payload = _payload()
+    batches = list(iter_workbook_silver_batches(payload, _receipt(payload)))
+    table = pa.Table.from_batches(batches)
+    rows = table.to_pylist()
+    assert {row["sheet_name"] for row in rows} == {"Sheet1", "Sheet2", "Sheet3"}
+    assert table.schema.metadata is not None
+    manifest = json.loads(table.schema.metadata[b"workbook_sheets"])
+    assert [sheet["name"] for sheet in manifest] == [
+        "Sheet1",
+        "Sheet2",
+        "Sheet3",
+        "Sheet4",
+    ]
+    assert manifest[-1]["cell_count"] == 0
+    assert all(
+        batch.schema.equals(table.schema, check_metadata=True)
+        for batch in batches
+    )
+    output = BytesIO()
+    pq.write_table(table, output)
+    restored = pq.read_table(BytesIO(output.getvalue()))
+    assert restored.equals(table, check_metadata=True)
 
 
 def test_extreme_exponents_remain_native_without_conversion_failure() -> None:
