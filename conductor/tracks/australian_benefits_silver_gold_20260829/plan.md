@@ -272,6 +272,9 @@
   exact parent B1, archive B2 and validated member binding before output.
   Preserve historical source identity, unknown/native slots and occurrence
   lineage without broadening ordinary source acceptance or selecting dates.
+  Implemented `22d20b6`; 233 combined focused/context/ecosystem passes,
+  final 18 historical tests pass; 98.94% combined new-module coverage.
+  Ruff, ty, BasedPyright and measured-receipt check pass; full/hosted pending.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
