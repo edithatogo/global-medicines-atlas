@@ -88,9 +88,15 @@
 
 ## Phase 4: Publish derived medallion products (AC-04, AC-06)
 
-- [ ] Write failing tests that map every produced Bronze/Silver/Gold/Platinum
+- [x] Write failing tests that map every produced Bronze/Silver/Gold/Platinum
   object to one public destination and reject mutable/unpinned references.
-- [ ] Confirm the intended failure before implementation.
+  (`620aaf7`; synthetic caller-owned denominator, 32 cases, all four layers.)
+- [x] Confirm the intended failure before implementation. (`620aaf7`;
+  test collection failed because the distribution module did not exist.)
+- [~] Qualify offline distribution-inventory reconciliation and integrate the
+  complete producer denominator. (`620aaf7`; 123 focused federation tests pass,
+  new module 100% coverage; full harness and hosted qualification pending.
+  Receipt admission and live producer integration remain open.)
 - [ ] Publish source-faithful Parquet, typed tables, graph edge/node tables,
   products, coverage, lineage, and promotions with v4 identities.
 - [~] Implement remote-first readers with bounded cache and offline behavior;
@@ -98,8 +104,9 @@
   Runtime transport/cache slice in progress; only independently admitted v4
   documents may be consumed. No live source acquisition or publication planned.
   `2ed6d8d` (rebased from `78abde9`): 89 focused tests pass, reader 100% branch coverage; optional
-  installed-consumer import passes. Exact-head hosted qualification and live
-  admission/receipt integration remain pending.
+  installed-consumer import passes. Exact-head hosted qualification passed in
+  PR #375 (`5d4f382`, reviewed `96ac770`, all 38 checks passed).
+  Live admission/receipt integration remains pending.
 - [ ] Phase Verification & Checkpoint: exact remote revisions reproduce all
   products and local storage is demonstrably transient.
 
@@ -108,8 +115,9 @@
 - [x] Reject writes through verified result streams without breaking seek/read
   or active-result lifetime. (`2787188`; intended writable-stream regression
   failed first, then 90 focused tests passed with reader 100% branch coverage.)
-- [~] Qualify the corrected reader through exact-head hosted checks and retain
-  local full-harness limitations separately.
+- [x] Qualify the corrected reader through exact-head hosted checks and retain
+  local full-harness limitations separately. (`5d4f382`, PR #375; reviewed
+  `96ac770`, all 38 checks passed; exact reviewed/merge trees match.)
 - [x] Require installed date/date-time/URI validators and bind generated lock
   receipts to the optional-extra change. (`637ab07`; isolated missing-format
   observation and guard regression failed first; 91 reader/contract tests and
