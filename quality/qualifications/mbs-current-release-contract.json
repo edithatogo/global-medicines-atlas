@@ -1,0 +1,9 @@
+{
+  "source_id": "au-mbs",
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "effective_date": "2026-08-01",
+  "source_page": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260801",
+  "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/81efb2067580a870ca258e28007f588c/$FILE/MBS-XML-20260801.XML",
+  "publication_authorized": true,
+  "authorization_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330"
+}

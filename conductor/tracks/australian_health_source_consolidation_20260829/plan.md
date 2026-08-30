@@ -139,10 +139,12 @@
   Typed HTML admission now uses the shared content-addressed Bronze decision
   and append-only store; live-only usable-table health uses shared escalation.
   Hosted runner and catalogue-driven scheduling integration remain pending.
+  The approved August 2026 release pipeline is now implemented and fixture
+  tested; its exact-head hosted run and anonymous receipt remain pending.
 - [ ] Keep old endpoint behavior as a compatibility probe and source-drift
   fixture; use current official MBS releases for production acquisition.
-- [ ] Replace heterogeneous `pandas.concat` output with source/table identities
-  and explicit schema contracts.
+- [x] Replace heterogeneous `pandas.concat` output with source/table identities
+  and explicit schema contracts. (`7230721`, PR #364; typed HTML and native P7)
 - [ ] Require artifact and receipt evidence before a scheduled run reports data
   acquisition success.
 - [ ] Phase Verification & Checkpoint: the August 2026 no-data run fails closed
@@ -156,8 +158,10 @@
   (`4c1fae7`; omission-sensitive successor map and existing plan references)
 - [x] Verify the exact donor XML, legacy workbook, and both complete Git-history
   receipts from the public Hugging Face data-plane track. (`4d1dae4`)
-- [ ] Publish compatibility and successor notices in both donor repositories,
+- [x] Publish compatibility and successor notices in both donor repositories,
   link exact GMA/Hugging Face destinations, and run downstream canaries.
+  (graph PR #5 `3993e5e`; scraper PR #4 `009e805`; canonical mapping PR #366
+  `4806b7f`; anonymous revision canaries recorded by the coordinating task)
 - [x] Prepare non-destructive GitHub archive commands and a rollback checklist;
   stop at the compatibility-archive gate for the exact two repositories.
   (`4c1fae7`; commands documented only, no archive approval or execution)
