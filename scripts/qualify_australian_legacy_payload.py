@@ -25,6 +25,7 @@ from global_medicines_atlas.mbs_workbook_qualification import (
     acquire_hosted_workbook,
     qualify_workbook_cells,
 )
+from global_medicines_atlas.mbs_workbook_values import profile_workbook_values
 from global_medicines_atlas.receipts import (
     AcquisitionMethod,
     AcquisitionStatus,
@@ -167,6 +168,9 @@ def main() -> None:
         )
         summary["header_mapping_profile"] = profile_workbook_domain(
             payload, receipt
+        )
+        summary["domain_value_profile"] = profile_workbook_values(
+            payload, receipt, date_format="mbs-dmy"
         )
         summary["workflow_commit"] = os.environ["GITHUB_SHA"]
         summary["workflow_run"] = (

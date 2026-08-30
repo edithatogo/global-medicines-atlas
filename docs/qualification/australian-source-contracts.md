@@ -227,3 +227,31 @@ current-status assertions, flag-to-boolean conversions, or date/currency
 harmonisation. Declining-list membership is only a source annotation, never
 cessation evidence. The next hosted run also counts these mappings; synthetic
 tests and the earlier storage run do not prove that new mapping execution.
+
+The [extended run 33307737257](https://github.com/edithatogo/global-medicines-atlas/actions/runs/33307737257)
+subsequently accounted for all 13,742 cells: 97 headers, 13,641 header-bound
+cells and four unlabelled cells. The metadata-only receipt is
+`quality/qualifications/mbs-workbook-header-mapping-20260830.json`. This
+qualifies header binding, not semantic value interpretation or publication.
+
+### Workbook domain-value candidates
+
+`mbs_workbook_values.iter_workbook_value_batches` adds domain text, date,
+decimal, currency, value-state and conversion-status columns alongside the
+native cell and header lineage. It reuses the existing MBS scalar contracts.
+Identifiers and source codes retain lexical strings; legacy annotations are
+literal text, including blank or boolean-encoded flags, not clinical claims.
+Formula caches retain `value_origin=formula_cache`; no formula is evaluated.
+
+Known numeric OOXML cells reuse the bounded exact storage converter, including
+scientific notation. Text-encoded amounts use the existing strict MBS scalar
+grammar. AUD applies only to monetary field contracts; unrepresentable scale
+or precision is reported without rounding. Errors, unsupported storage types,
+missing value nodes and explicit nulls remain distinct.
+
+Dates require an explicit text profile; numeric Excel serials remain
+unsupported rather than guessed from styles or an epoch. The extended hosted
+workflow will report per-field outcomes using `mbs-dmy` after this code merges.
+That real-source value qualification remains pending; the completed header
+run does not establish value conversion, Silver promotion or a public v4
+derivative.
