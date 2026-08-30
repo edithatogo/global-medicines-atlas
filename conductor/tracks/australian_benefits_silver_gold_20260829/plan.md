@@ -80,9 +80,15 @@
   String-index guard implemented in `18d304e`; 60 focused tests passed.
   Cell candidates in `79a11ee`; 148 combined focused tests pass, static
   checks pass; full and hosted qualification remain pending.
-- [ ] Qualify the exact legacy workbook header/style/epoch denominator in
+- [~] Qualify the exact legacy workbook header/style/epoch denominator in
   hosted execution and add source-specific harmonised annotation mappings.
   Cell-storage typing is not a substitute for domain/currency/date mapping.
+  An Actions-only pinned public workbook profiler is implemented in `209e08d`.
+  All 114 focused tests pass; qualifier statement/branch coverage is 100%.
+  Synthetic
+  qualification checks all-sheet cell denominators, Parquet preservation,
+  native headers/formats, and local-download rejection. Hosted execution and
+  subsequent domain mappings remain pending.
 
 ## Workbook portability review fixes
 
