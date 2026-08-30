@@ -1,5 +1,23 @@
 # Pinned donor assessment and completeness baseline
 
+## Reading this historical baseline
+
+The comparison below records the pre-consolidation state assessed on
+2026-08-29. Its references to "current GMA" and "does not yet do" describe
+that baseline, not the current implementation. Keep this baseline for
+legacy/new comparisons; use `plan.md` and append-only `evidence.jsonl` for
+present completion claims.
+
+By merged PR #364 (`7230721`), the independent official MBS XML and four-sheet
+legacy workbook adapters, governed PBS v3 archive/parser/inspection path,
+historical request contracts, separate HTML table projections, legacy XML
+profile and P7 filter are implemented. Exact legacy MBS payloads and donor
+histories, plus the qualified PBS archive, have separate public HF receipts.
+Monthly current-release acquisition and its hosted scheduler are not yet
+complete; graph, Silver/Gold and frontier commitments retain their own tracks
+and maturity gates. Incorporating every donor capability does not mean
+adopting every donor dependency or treating roadmap-only ideas as working code.
+
 ## Bottom line
 
 Both repositories are related to GMA, but they are not equivalent to each
