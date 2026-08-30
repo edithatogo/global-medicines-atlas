@@ -118,13 +118,26 @@
   in the workbook value qualification record and append-only ledger.
   Review correction for PR #381; 11 focused/context tests pass. No rerun or
   source acquisition was needed.
+  PR #381 merged `75b9b04` after 37 passing checks on `9c21326`, with the
+  review resolved and exact reviewed/merged trees verified.
 
 - [x] Review correction: leave the hosted workbook date profile unselected;
   the XML date profile does not independently qualify the workbook era.
   (`3df81f6`; 134 focused/context tests pass; Ruff, ty, BasedPyright pass.)
-- [ ] Independently qualify the workbook-era date format before selecting a
+- [~] Independently qualify the workbook-era date format before selecting a
   conversion profile. Preserve all native dates and unsupported outcomes in
   the meantime; date functionality remains in scope.
+  First observe storage and lexical-shape counts without interpreting dates;
+  no workbook date conversion profile is selected by this prerequisite.
+  (`10b36b0`; 10 intended missing-output regression failures preceded the
+  implementation, 32 focused tests pass with 100% changed-module coverage.
+  Hosted observation and independently qualified format selection are pending.)
+- [x] Keep native OOXML date storage distinct from ordinary date-shaped text.
+  (`43ea70c`; P2 regression failed before correction, then 33 focused tests
+  passed with 100% changed-module branch coverage; static checks pass.)
+- [~] Requalify the corrected date-encoding observer on its exact hosted head;
+  only then collect new observations through Actions, without selecting a
+  date convention or repeating a completed qualifier version.
 
 - [~] Reuse existing scalar contracts and numeric storage conversion for
   source-native identifiers, money, dates, annotation text and formula caches.

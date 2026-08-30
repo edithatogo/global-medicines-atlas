@@ -258,3 +258,21 @@ until an independently evidenced workbook profile is available.
 That real-source value qualification remains pending; the completed header
 run does not establish value conversion, Silver promotion or a public v4
 derivative.
+# Workbook date-encoding observation
+
+The existing hosted value profiler additionally reports versioned aggregate
+date-encoding counts and per-field denominators. These distinguish native
+headers, absent/null values, empty text, errors, numeric storage, native OOXML
+date storage (`t="d"`, kept distinct from ordinary text), unsupported
+storage, and three exact ASCII text shapes. The shape names describe character
+widths and separators, not day/month order or calendar validity. For example,
+`99.99.0000` has a two-two-four dot shape but is not certified as a date.
+
+No trimming, Unicode digit coercion, Excel epoch interpretation or conversion
+profile selection is performed. Only aggregate categories are added to the
+metadata report; no date samples or raw source cells are emitted. Existing
+native cells, unsupported conversion outcomes and source digest remain intact.
+The same Actions-only qualifier will collect these additional observations
+after the implementation merges; previous completed versions need not rerun.
+Observation is a prerequisite, not independent workbook-era date qualification
+or semantic promotion. No dataset upload or dependency change is introduced.
