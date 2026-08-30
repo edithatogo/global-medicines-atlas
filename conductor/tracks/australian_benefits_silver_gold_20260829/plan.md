@@ -21,9 +21,7 @@
 - [ ] Phase Verification & Checkpoint: field and semantic denominators are
   complete and fail closed.
 
-## Phase 2: Implement MBS Silver (AC-01, AC-02, AC-06)
-
-### Source-contract review fixes
+## Source-contract review fixes
 
 - [x] Express domain and value-state constraints in portable JSON schemas;
   preserve OOXML property presence rather than guessing absent/null states.
@@ -33,7 +31,7 @@
   one skipped, 96.49% coverage; exact interpreter and unchanged timeout
   constraints remain documented, not weakened.
 
-### Typed implementation
+## Phase 2: Implement MBS Silver (AC-01, AC-02, AC-06)
 
 - [ ] Write failing golden, property, malformed-input, schema-drift,
   determinism, decimal/currency, date, formula-error, duplicate, and lineage
