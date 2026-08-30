@@ -1,0 +1,37 @@
+{
+  "sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+  "bytes": 87727,
+  "workflow_commit": "cccdc63ed3e31cc12053729d4c00b168e7c86611",
+  "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/33307737257",
+  "retrieved_at": "2026-08-30T10:58:11+00:00",
+  "header_mapping_profile": {
+    "cells": 13742,
+    "mapping_profile": "mbs-p7-2024-07-headers-v1",
+    "mapping_statuses": {
+      "header": 97,
+      "source_explicit_header": 13641,
+      "unlabelled": 4
+    },
+    "mapping_targets": {
+      "benefits": 1600,
+      "caps": 2880,
+      "descriptions": 1120,
+      "fees": 1920,
+      "hierarchy": 1280,
+      "legacy_annotations": 500,
+      "services": 4341,
+      "source_headers": 97,
+      "unmapped": 4
+    },
+    "semantic_promotion": false,
+    "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
+  },
+  "storage": {
+    "cells": 13742,
+    "sheet_count": 4,
+    "parquet_roundtrip_verified": true
+  },
+  "summary_sha256": "ee7f9c882e5a93d11e389b6af8afe4c751528a06cc3aa4a8c43241ea3cd3a40f",
+  "artifact_id": 9731010771,
+  "artifact_sha256": "1e5312bc269030e34f5abeca82bee9f69c49a0ddfd1fdd5a36f2f529a581d829"
+}

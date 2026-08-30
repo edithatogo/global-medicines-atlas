@@ -102,12 +102,32 @@
 - [x] Record real-source storage qualification with complete sheet/cell,
   formula/error, conversion, header and native format denominators.
   Run `33305281887`; durable issue #341 receipt `5468037256`.
-- [~] Bind all native cells to the observed four-sheet header profile and
+- [x] Bind all native cells to the observed four-sheet header profile and
   source row/column lineage without inventing meaning for unlabelled cells.
-  (`7f9733b`; 88 focused passes, new module 100% branch coverage; full and
-  hosted gates pending.)
-- [ ] Run the extended hosted qualifier after merge to count actual header
+  (`7f9733b`; 88 focused passes, new module 100% branch coverage; PR #379
+  merged `cccdc63` after 38 passing checks; run `33307737257` accounted for
+  all 13,742 cells including 97 headers and four unlabelled cells.)
+- [~] Run the extended hosted qualifier after merge to count actual header
   mappings, then continue source-specific date/currency/value harmonisation.
+  Header mapping run passed; value candidates and their per-field outcome
+  profiler are now implemented. Value-level real-source execution is pending.
+
+## Workbook value harmonisation
+
+- [x] Review correction: leave the hosted workbook date profile unselected;
+  the XML date profile does not independently qualify the workbook era.
+  (`3df81f6`; 134 focused/context tests pass; Ruff, ty, BasedPyright pass.)
+- [ ] Independently qualify the workbook-era date format before selecting a
+  conversion profile. Preserve all native dates and unsupported outcomes in
+  the meantime; date functionality remains in scope.
+
+- [~] Reuse existing scalar contracts and numeric storage conversion for
+  source-native identifiers, money, dates, annotation text and formula caches.
+  Preserve errors, missing/null states, unsupported serial dates and precision
+  loss. New value module has 100% branch coverage; 132 focused tests pass.
+- [ ] Complete full/hosted review, then run the extended qualifier at the
+  merged commit and examine per-field value conversion outcomes before
+  treating the actual source era as qualified.
 
 - [x] Preserve sheet identity when combining batches and round-tripping
   Parquet, including an explicit empty-sheet manifest and property presence.
