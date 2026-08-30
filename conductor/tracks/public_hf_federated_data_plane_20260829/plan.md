@@ -24,12 +24,18 @@
 
 ## Phase 2: Contract v4 and public dataset topology (AC-03, AC-04, AC-09)
 
-- [ ] Write failing JSON Schema and semantic tests for all mandatory v4
+- [x] Write failing JSON Schema and semantic tests for all mandatory v4
   authority, location, digest, visibility, verification, rights, collection,
-  replica, schema-era, comparison, lineage, and cache fields.
-- [ ] Confirm the intended failure before implementation.
-- [ ] Commit immutable v4 schema, valid/invalid fixtures, documentation, and
+  replica, schema-era, comparison, lineage, and cache fields. (`6055379`)
+- [x] Confirm the intended failure before implementation. (`6055379`;
+  missing module, then three trailing-newline identity regressions)
+- [~] Commit immutable v4 schema, valid/invalid fixtures, documentation, and
   cross-repository conformance canaries.
+  Schema, offline semantic validation and portable canary fixtures implemented
+  in `6055379`; 54 focused tests pass with 100% semantic-module branch coverage.
+  Downstream adoption and live receipt emission are not yet qualified.
+  This independent Phase 2 contract slice does not close the remaining Phase 1
+  complete-estate inventory tasks.
 - [x] Approve the stable `edithatogo/australian-mbs-source-archive` name and
   implement its create-private, publish, and anonymous-verification transaction
   entirely in GitHub Actions. The exact revision is public, non-gated, and
@@ -40,6 +46,14 @@
   coverage, rights/permission, withdrawal/correction, and version histories.
 - [ ] Phase Verification & Checkpoint: datasets exist publicly but contain only
   exact approved manifests; empty repositories are not claimed as data.
+
+## Review Fixes: v4 federation foundation
+
+- [x] Reject B0 projections, blank or padded mandatory text, null independent
+  replica RPO/RTO, and case/whitespace aliases of the same recovery domain.
+  (`7ac4ada`; nine intended regression failures before correction)
+- [~] Requalify the corrected contract through focused tests and exact-head
+  hosted checks; retain partial local full-suite evidence separately.
 
 ## Phase 3: Publish the donor and continuing raw corpus (AC-03, AC-06)
 
@@ -54,6 +68,9 @@
   manifest material. (`4d1dae4`, run `33244323861`)
 - [ ] Publish continuing MBS/PBS exact source manifests only after acquisition,
   admission, authorization, and source-version gates pass.
+  Exact August 2026 MBS release is now public at `75f9f20a36ddb829dfe0ca88660664570782be02`
+  (run `33296983154`), alongside the previously verified April 2026 PBS archive.
+  This does not authorize future unenumerated releases or complete v4 emission.
 - [x] Retain the two donor Git ancestry bundles, source bytes, licences, and
   donor inventory; never replace the XML/XLSX raw objects with Parquet.
 - [ ] Retain continuing archive/container bytes as well as member manifests;

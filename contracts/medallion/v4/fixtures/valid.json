@@ -1,0 +1,121 @@
+{
+  "version": "4.0.0",
+  "evidence_kind": "synthetic",
+  "authority": {
+    "producer_repository": "example/producer",
+    "contract_repository": "edithatogo/global-medicines-atlas",
+    "contract_commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "schema_sha256": "ac28485a70e0853266e4c140f9a07cd557eb27816b0b408b9bf2927a4cffacec"
+  },
+  "source": {
+    "source_id": "synthetic-mbs",
+    "acquisition_id": "synthetic-acquisition",
+    "layer": "bronze",
+    "bronze_stratum": "B2",
+    "representation": "raw",
+    "schema_era": "synthetic-v1",
+    "comparison_cohort": "synthetic",
+    "effective_date": "2026-08-01",
+    "retrieved_at": "2026-08-30T00:00:00Z"
+  },
+  "location": {
+    "dataset": "example/synthetic-mbs",
+    "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "path": "raw/synthetic.xml",
+    "bytes": 11,
+    "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "private": false,
+    "gated": false,
+    "xet_hash": null,
+    "lfs_oid": null
+  },
+  "publication": {
+    "origin": "github_actions",
+    "workflow": ".github/workflows/synthetic.yml",
+    "run": "https://github.com/example/producer/actions/runs/1",
+    "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "receipt": {
+      "url": "https://example.org/receipts/synthetic.json",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  },
+  "verification": {
+    "dataset": "example/synthetic-mbs",
+    "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "path": "raw/synthetic.xml",
+    "bytes": 11,
+    "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "anonymous": true,
+    "clean_room": true,
+    "status": "passed",
+    "verified_at": "2026-08-30T00:05:00Z",
+    "receipt": {
+      "url": "https://example.org/receipts/synthetic.json",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  },
+  "rights": {
+    "authorization": {
+      "url": "https://example.org/receipts/synthetic.json",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "subject_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "dataset": "example/synthetic-mbs",
+    "path": "raw/synthetic.xml",
+    "basis": "Synthetic fixture only; grants no real publication authority",
+    "sensitivity": "non_sensitive",
+    "publication": "approved_exact_scope"
+  },
+  "discovery": {
+    "collections": [],
+    "estate_entry": {
+      "url": "https://example.org/receipts/synthetic.json",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  },
+  "lineage": {
+    "inputs": [],
+    "v1_conformance": {
+      "url": "https://example.org/receipts/synthetic.json",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "v2_field_lineage": {
+      "url": "https://example.org/receipts/synthetic.json",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "v3_replay": {
+      "url": "https://example.org/receipts/synthetic.json",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "promotion_receipt": null
+  },
+  "recovery": {
+    "role": "primary",
+    "independent": false,
+    "administrative_domain": "huggingface:example",
+    "primary_administrative_domain": "huggingface:example",
+    "region": "unverified",
+    "primary_region": "unverified",
+    "rpo_seconds": null,
+    "rto_seconds": null,
+    "checksum_inventory": {
+      "url": "https://example.org/receipts/synthetic.json",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "restore_receipt": null,
+    "authorization_receipt": null
+  },
+  "cache": {
+    "origin": "github_actions",
+    "state": "removed",
+    "max_bytes": 1024,
+    "created_at": "2026-08-30T00:00:00Z",
+    "expires_at": "2026-08-31T00:00:00Z",
+    "cleanup_receipt": {
+      "url": "https://example.org/receipts/synthetic.json",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "offline_behavior": "fail_closed"
+  },
+  "consumers": []
+}
