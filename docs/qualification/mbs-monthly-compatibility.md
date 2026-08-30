@@ -67,8 +67,10 @@ and all legacy objects remain intact.
 The hosted workflow `.github/workflows/australian-mbs-release.yml` can run by
 exact-head dispatch and monthly revalidation of this enumerated contract. It
 does not silently discover or authorize future releases. Transport failures
-produce B1 attempts; nonconforming/empty successful responses remain B2 raw
-evidence with quarantined admission. Accepted releases produce deterministic
+produce B1 attempts; nonconforming/empty successful responses remain quarantined
+in hosted staging and do not inherit the exact XML publication permission.
+Only qualified official MBS XML receives the independent non-sensitive/public
+classification. Accepted releases produce deterministic
 native-field Parquet and a separate P7 projection, with no heterogeneous CSV
 concatenation or medicine-domain assertion.
 
@@ -78,8 +80,9 @@ local use, synthetic or mismatched receipts, missing rights, altered bytes,
 unmanifested files, path/symlink escapes and differing pre-existing objects.
 Explicitly anonymous reads verify every staged object and the exact new
 revision. The workflow records that receipt on issue #340 before deleting
-its own bounded temporary staging/restore directories. A quarantine or failed
-acquisition remains a failed data update even after raw evidence is public.
+its own bounded temporary staging/restore/cache directories. Quarantine blocks
+raw publication; transport-failure metadata can be archived without a data-update
+claim. Neither case reports a successfully acquired release.
 
 Implementation and fixture validation do not establish a successful hosted
 publication. Until an exact run and immutable HF receipt are appended to the

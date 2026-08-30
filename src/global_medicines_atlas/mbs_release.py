@@ -27,8 +27,12 @@ from .bronze_admission import (
 from .mbs_compatibility import select_p7_records
 from .models import FrozenModel
 from .receipts import (
+    DataSensitivity,
     EvidenceClass,
+    PersonalDataState,
+    PublicationDisposition,
     RightsState,
+    SensitivityClassification,
     SourceReceipt,
     require_temporal,
     temporal_identity_from_source,
@@ -184,13 +188,28 @@ def _object(
 
 
 def _release_receipt(
-    receipt: SourceReceipt, contract: MbsReleaseContract
+    receipt: SourceReceipt,
+    contract: MbsReleaseContract,
+    *,
+    qualified: bool = False,
 ) -> SourceReceipt:
     value = receipt.model_dump()
     value["source"]["catalog_version"] = str(contract.effective_date)
-    if receipt.evidence_class is EvidenceClass.LIVE:
+    value["rights_state"] = RightsState.UNKNOWN
+    value["rights_reference"] = None
+    value["sensitivity"] = None
+    if receipt.evidence_class is EvidenceClass.LIVE and qualified:
         value["rights_state"] = RightsState.PERMITTED
         value["rights_reference"] = str(contract.authorization_reference)
+        value["sensitivity"] = SensitivityClassification(
+            data_sensitivity=DataSensitivity.NON_SENSITIVE,
+            personal_data=PersonalDataState.NONE,
+            publication=PublicationDisposition.PERMITTED,
+            reason_codes=(
+                "qualified_official_mbs_schedule",
+                "exact_release_approval",
+            ),
+        )
     # The version participates in the acquisition identity.
     value["temporal"] = temporal_identity_from_source(
         retrieved_at=receipt.retrieval.retrieved_at,
@@ -199,7 +218,13 @@ def _release_receipt(
         source_version=str(contract.effective_date),
         original_uri=str(contract.source_url),
     )
-    return SourceReceipt.model_validate(value)
+    value["receipt_id"] = "mbs-release-normalization-v1"
+    normalized = SourceReceipt.model_validate(value)
+    return normalized.model_copy(
+        update={
+            "receipt_id": f"mbs-release:{sha256(normalized.canonical_json()).hexdigest()}"
+        }
+    )
 
 
 def _acquire_attempts(
@@ -313,26 +338,21 @@ def stage_mbs_release(  # ruff: ignore[too-many-locals]
         raw_target = stage / raw_path
         raw_target.parent.mkdir(parents=True, exist_ok=True)
         (stage / "source.xml").rename(raw_target)
-        objects.extend([
+        objects.append(
             MbsArchiveObject(
                 path=raw_path,
                 sha256=receipt.payload.sha256,
                 bytes=len(payload),
                 role="raw",
             ),
-            _object(
-                stage,
-                f"{prefix}/source-receipt.json",
-                receipt.canonical_json(),
-                "source_receipt",
-            ),
-        ])
+        )
         try:
             batch = parse_mbs_source_xml(payload, receipt)
         except ValueError:
             batch = None
         state = "accepted" if batch is not None else "quarantined"
         if batch is not None:
+            receipt = _release_receipt(receipt, contract, qualified=True)
             record_count = batch.record_count
             p7_count = len(select_p7_records(batch))
             objects.extend([
@@ -349,6 +369,14 @@ def stage_mbs_release(  # ruff: ignore[too-many-locals]
                     "p7_parquet",
                 ),
             ])
+        objects.append(
+            _object(
+                stage,
+                f"{prefix}/source-receipt.json",
+                receipt.canonical_json(),
+                "source_receipt",
+            )
+        )
         temporal = require_temporal(receipt.temporal)
         decision = create_admission_decision(
             acquisition_id=temporal.acquisition_id,

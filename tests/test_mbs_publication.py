@@ -20,8 +20,12 @@ from global_medicines_atlas.mbs_release import (
     stage_mbs_release,
 )
 from global_medicines_atlas.receipts import (
+    DataSensitivity,
     EvidenceClass,
+    PersonalDataState,
+    PublicationDisposition,
     RightsState,
+    SensitivityClassification,
     SourceReceipt,
 )
 from global_medicines_atlas.reuse_gate import acquire_new_decision
@@ -93,6 +97,12 @@ def live_stage(
                     "rights_state": RightsState.PERMITTED,
                     "rights_reference": AnyUrl(
                         contract.authorization_reference
+                    ),
+                    "sensitivity": SensitivityClassification(
+                        data_sensitivity=DataSensitivity.NON_SENSITIVE,
+                        personal_data=PersonalDataState.NONE,
+                        publication=PublicationDisposition.PERMITTED,
+                        reason_codes=("synthetic_policy_fixture",),
                     ),
                 }
             )
@@ -213,3 +223,57 @@ def test_existing_identical_object_is_reused(
         live_stage, live_stage.manifest.contract, public=hub, writer=hub
     )
     assert receipt["legacy_paths_preserved"] == 2
+
+
+def test_quarantined_raw_does_not_inherit_file_authorization(
+    live_stage: MbsReleaseStage,
+) -> None:
+    manifest = live_stage.manifest.model_copy(
+        update={
+            "admission_state": "quarantined",
+            "record_count": 0,
+            "p7_record_count": 0,
+        }
+    )
+    (live_stage.path / live_stage.manifest_path).write_text(
+        manifest.model_dump_json(indent=2) + "\n"
+    )
+    stage = MbsReleaseStage(live_stage.path, live_stage.manifest_path, manifest)
+    hub = FakeHub()
+    with pytest.raises(ValueError, match="quarantined"):
+        publish_mbs_stage(stage, manifest.contract, public=hub, writer=hub)
+    assert hub.calls == 0
+
+
+@pytest.mark.parametrize("classification", [None, SensitivityClassification()])
+def test_missing_sensitivity_blocks_upload(
+    live_stage: MbsReleaseStage,
+    classification: SensitivityClassification | None,
+) -> None:
+    objects: list[MbsArchiveObject] = []
+    for item in live_stage.manifest.objects:
+        updated = item
+        if item.role == "source_receipt":
+            path = live_stage.path / item.path
+            source = SourceReceipt.model_validate_json(
+                path.read_bytes()
+            ).model_copy(update={"sensitivity": classification})
+            path.write_bytes(source.canonical_json())
+            updated = item.model_copy(
+                update={
+                    "sha256": sha256(path.read_bytes()).hexdigest(),
+                    "bytes": path.stat().st_size,
+                }
+            )
+        objects.append(updated)
+    manifest = live_stage.manifest.model_copy(
+        update={"objects": tuple(objects)}
+    )
+    (live_stage.path / live_stage.manifest_path).write_text(
+        manifest.model_dump_json(indent=2) + "\n"
+    )
+    stage = MbsReleaseStage(live_stage.path, live_stage.manifest_path, manifest)
+    hub = FakeHub()
+    with pytest.raises(ValueError, match="sensitivity"):
+        publish_mbs_stage(stage, manifest.contract, public=hub, writer=hub)
+    assert hub.calls == 0

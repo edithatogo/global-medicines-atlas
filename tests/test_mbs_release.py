@@ -113,8 +113,9 @@ def test_unknown_release_surface_and_unapproved_hosted_run_fail_closed(
         )
 
 
+@pytest.mark.parametrize("payload", [PAYLOAD, b"<html>Maintenance</html>"])
 def test_live_policy_with_stubbed_acquisition_and_deterministic_parquet(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, payload: bytes
 ) -> None:
     contract = MbsReleaseContract.model_validate_json(CONTRACT.read_bytes())
     fixture = stage_mbs_release(
@@ -124,7 +125,7 @@ def test_live_policy_with_stubbed_acquisition_and_deterministic_parquet(
         clock=lambda: NOW,
         transport=httpx.MockTransport(
             lambda _: httpx.Response(
-                200, content=PAYLOAD, headers={"content-type": "text/xml"}
+                200, content=payload, headers={"content-type": "text/xml"}
             )
         ),
     )
@@ -136,8 +137,9 @@ def test_live_policy_with_stubbed_acquisition_and_deterministic_parquet(
     receipt = SourceReceipt.model_validate_json(
         (fixture.path / receipt_object.path).read_bytes()
     )
-    batch = parse_mbs_source_xml(PAYLOAD, receipt)
-    assert mbs_source_parquet(batch) == mbs_source_parquet(batch)
+    if payload == PAYLOAD:
+        batch = parse_mbs_source_xml(payload, receipt)
+        assert mbs_source_parquet(batch) == mbs_source_parquet(batch)
     for name, value in {
         "GITHUB_ACTIONS": "true",
         "GITHUB_REPOSITORY": "edithatogo/global-medicines-atlas",
@@ -152,7 +154,7 @@ def test_live_policy_with_stubbed_acquisition_and_deterministic_parquet(
         repository_root: Path,
         **_kwargs: object,
     ) -> SourceReceipt:
-        (repository_root / destination).write_bytes(PAYLOAD)
+        (repository_root / destination).write_bytes(payload)
         return receipt.model_copy(update={"evidence_class": EvidenceClass.LIVE})
 
     monkeypatch.setattr(
@@ -164,7 +166,11 @@ def test_live_policy_with_stubbed_acquisition_and_deterministic_parquet(
         reuse_decision=acquire_new_decision("au-mbs"),
         clock=lambda: NOW,
     )
-    assert live.manifest.record_count == live.manifest.p7_record_count == 1
+    assert (
+        live.manifest.record_count
+        == live.manifest.p7_record_count
+        == (1 if payload == PAYLOAD else 0)
+    )
     assert live.manifest.data_acquired is False
     assert any(item.role == "source_health" for item in live.manifest.objects)
     assert not (live.path / "source.xml").exists()
@@ -174,6 +180,16 @@ def test_live_policy_with_stubbed_acquisition_and_deterministic_parquet(
     source = SourceReceipt.model_validate_json(
         (live.path / saved.path).read_bytes()
     )
-    assert source.rights_state.value == "permitted"
+    assert source.rights_state.value == (
+        "permitted" if payload == PAYLOAD else "unknown"
+    )
+    assert (source.sensitivity is not None) == (payload == PAYLOAD)
+    attempt = next(
+        item for item in live.manifest.objects if item.role == "attempt"
+    )
+    attempted = SourceReceipt.model_validate_json(
+        (live.path / attempt.path).read_bytes()
+    )
+    assert attempted.receipt_id != source.receipt_id
     assert source.temporal is not None
     assert source.temporal.source_version == "2026-08-01"

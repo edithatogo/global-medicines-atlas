@@ -13,7 +13,12 @@ from .mbs_release import (
     MbsReleaseStage,
     require_mbs_hosted_authority,
 )
-from .receipts import EvidenceClass, RightsState, SourceReceipt
+from .receipts import (
+    EvidenceClass,
+    RightsState,
+    SourceReceipt,
+    require_publication_permitted,
+)
 
 
 @dataclass(frozen=True)
@@ -44,6 +49,10 @@ def _validated_stage(
     contract: MbsReleaseContract,
 ) -> tuple[dict[str, Path], dict[str, str]]:
     require_mbs_hosted_authority(contract)
+    if stage.manifest.admission_state == "quarantined":
+        raise ValueError(
+            "quarantined raw response is outside qualified-file publication permission"
+        )
     if (
         stage.manifest.contract != contract
         or stage.manifest.evidence_class is not EvidenceClass.LIVE
@@ -84,6 +93,7 @@ def _validated_stage(
             receipt = SourceReceipt.model_validate_json(
                 files[item.path].read_bytes()
             )
+            require_publication_permitted(receipt)
             if (
                 receipt.evidence_class is not EvidenceClass.LIVE
                 or receipt.source.source_id != contract.source_id
