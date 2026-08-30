@@ -47,7 +47,7 @@ configuration; production callers use the default binding transport.
 ## Bounded transient storage
 
 Use `with FederatedReader(...) as reader` and `with reader.open(document) as
-result`. The returned stream is readable and seekable only inside its context.
+result`. The returned stream is read-only and seekable only inside its context.
 Payloads stream through 64 KiB chunks into private temporary files rather than
 being loaded wholesale into memory. No durable path or source corpus is
 created. Cache files are separate from caller-owned result streams, so eviction

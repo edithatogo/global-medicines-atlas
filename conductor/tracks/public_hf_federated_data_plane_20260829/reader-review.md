@@ -1,6 +1,6 @@
 # Runtime reader self-review
 
-Scope: `d121004..78abde9`, Phase 4 transport/cache slice, not whole-track
+Scope: `c9102e3..2787188`, Phase 4 transport/cache slice, not whole-track
 completion or a second-maintainer approval.
 
 - Correctness: schema-pinned validation and existing v4 semantics precede all
@@ -25,6 +25,14 @@ completion or a second-maintainer approval.
   platform guidance is not applicable. 89 focused tests passed with 100% reader
   branch coverage. Isolated locked consumer installed the federation extra and
   imported the runtime without test groups.
+- Result-stream correction (`2787188`): the writable temporary-file API allowed
+  caller mutation after verification. A regression failed before a read-only
+  buffered view was introduced. 90 focused tests pass, reader 100% branch
+  coverage and strict typing pass. The earlier functional commit `78abde9`
+  was rebased as `2ed6d8d`; prior ledger observations retain their original IDs.
+- Local full Test-Goblin is running on 3.14.5 across the result-stream review
+  correction; static/context and wheel/sdist clean-consumer probes passed.
+  It is not an exact-final-head whole-harness claim.
 - Remaining: full Test-Goblin and hosted exact-head qualification; production
   v4 receipt/admission integration, product consumers and public derived output.
   No existing MBS/PBS receipt was relabelled v4 and no source was reacquired.

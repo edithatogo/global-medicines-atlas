@@ -97,11 +97,19 @@
   verify local cache eviction cannot change content identity.
   Runtime transport/cache slice in progress; only independently admitted v4
   documents may be consumed. No live source acquisition or publication planned.
-  `78abde9`: 89 focused tests pass, reader 100% branch coverage; optional
+  `2ed6d8d` (rebased from `78abde9`): 89 focused tests pass, reader 100% branch coverage; optional
   installed-consumer import passes. Exact-head hosted qualification and live
   admission/receipt integration remain pending.
 - [ ] Phase Verification & Checkpoint: exact remote revisions reproduce all
   products and local storage is demonstrably transient.
+
+## Review fixes: runtime reader
+
+- [x] Reject writes through verified result streams without breaking seek/read
+  or active-result lifetime. (`2787188`; intended writable-stream regression
+  failed first, then 90 focused tests passed with reader 100% branch coverage.)
+- [~] Qualify the corrected reader through exact-head hosted checks and retain
+  local full-harness limitations separately.
 
 ## Phase 5: Collections, estate registry, and recovery (AC-05, AC-07)
 
