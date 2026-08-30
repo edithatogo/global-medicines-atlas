@@ -412,6 +412,9 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+federation = [
+    { name = "jsonschema" },
+]
 iceberg = [
     { name = "pyiceberg" },
 ]
@@ -499,6 +502,7 @@ requires-dist = [
     { name = "fastapi", specifier = ">=0.116" },
     { name = "httpx", specifier = ">=0.28" },
     { name = "jinja2", specifier = ">=3.1" },
+    { name = "jsonschema", marker = "extra == 'federation'", specifier = ">=4.25" },
     { name = "lancedb", marker = "extra == 'semantic'", specifier = ">=0.27" },
     { name = "orjson", specifier = ">=3.11" },
     { name = "polars", extras = ["pyarrow"], specifier = ">=1.35" },
@@ -512,7 +516,7 @@ requires-dist = [
     { name = "typer", specifier = ">=0.16" },
     { name = "tzdata", marker = "sys_platform == 'win32'", specifier = ">=2026.2" },
 ]
-provides-extras = ["iceberg", "semantic"]
+provides-extras = ["federation", "iceberg", "semantic"]
 
 [package.metadata.requires-dev]
 dev = [
