@@ -15,7 +15,7 @@ from global_medicines_atlas.mbs_compatibility import (
     month_range,
     rehearse_probes,
 )
-from global_medicines_atlas.receipts import FailureReceipt
+from global_medicines_atlas.receipts import EvidenceClass, FailureReceipt
 from global_medicines_atlas.reuse_gate import acquire_new_decision
 
 NOW = datetime(2026, 8, 30, tzinfo=UTC)
@@ -78,6 +78,11 @@ def test_six_404s_are_failed_data_not_success(tmp_path: Path) -> None:
     assert not results.data_acquired
     assert results.failed_count == 6
     assert len(results.attempts) == 6
+    assert len({attempt.receipt_id for attempt in results.attempts}) == 6
+    assert all(
+        attempt.evidence_class is EvidenceClass.SYNTHETIC
+        for attempt in results.attempts
+    )
     assert all(
         isinstance(attempt, FailureReceipt) for attempt in results.attempts
     )
@@ -104,6 +109,7 @@ def test_timeout_retries_are_bounded_and_receipted(tmp_path: Path) -> None:
         sleep=lambda _: None,
     )
     assert len(result.attempts) == 3
+    assert len({attempt.receipt_id for attempt in result.attempts}) == 3
     assert result.failed_count == 1
     assert result.empty_count == 0
     assert not result.data_acquired

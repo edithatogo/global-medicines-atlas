@@ -16,6 +16,7 @@ from global_medicines_atlas.adapters.au_mbs import (
     parse_mbs_source_xml,
     qualify_legacy_mbs_xml,
 )
+from global_medicines_atlas.mbs_compatibility import select_p7_records
 from global_medicines_atlas.models import CanonicalMedicineRecord
 from global_medicines_atlas.receipts import (
     AcquisitionMethod,
@@ -61,6 +62,15 @@ def _receipt(payload: bytes, *, source_id: str = "au-mbs") -> SourceReceipt:
             output_byte_count=payload_evidence.byte_count,
         ),
     )
+
+
+def test_p7_selection_preserves_native_records() -> None:
+    payload = FIXTURE.read_bytes().replace(
+        b"<Group>P7</Group>", b"<Group>P1</Group>", 1
+    )
+    batch = parse_mbs_source_xml(payload, _receipt(payload))
+    assert select_p7_records(batch) == (batch.records[1],)
+    assert select_p7_records(batch)[0].value("Benefit75") == "31.90"
 
 
 def test_mbs_native_denominator_contains_all_40_observed_fields() -> None:

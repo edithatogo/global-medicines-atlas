@@ -10,6 +10,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import date, datetime
+from hashlib import sha256
 from pathlib import Path
 from typing import Literal
 
@@ -17,6 +18,7 @@ import httpx
 from pydantic import HttpUrl
 
 from .acquisition import AcquisitionPolicy, Receipt, acquire_source
+from .adapters.au_mbs import MbsSourceBatch, MbsSourceRecord
 from .receipts import EvidenceClass, SourceReceipt
 from .reuse_gate import ReuseGateDecision
 from .source_catalog import load_source_catalog
@@ -39,6 +41,13 @@ PROBE_POLICY = AcquisitionPolicy(
     allowed_hosts=("www.mbsonline.gov.au",),
     allowed_content_types=("text/html", "application/xhtml+xml"),
 )
+
+
+def select_p7_records(batch: MbsSourceBatch) -> tuple[MbsSourceRecord, ...]:
+    """Retain donor P7 selection over the admitted native MBS source batch."""
+    return tuple(
+        record for record in batch.records if record.value("Group") == "P7"
+    )
 
 
 def _month_index(value: object) -> int:
@@ -161,7 +170,7 @@ def rehearse_probes(
         historical_source = source.model_copy(
             update={"download_url": HttpUrl(target.url)}
         )
-        for _ in range(MAX_ATTEMPTS):
+        for attempt_index in range(MAX_ATTEMPTS):
             if attempts:
                 sleep(MIN_INTERVAL_SECONDS)
             receipt = acquire_source(
@@ -175,6 +184,15 @@ def rehearse_probes(
                 evidence_class=EvidenceClass.SYNTHETIC,
                 clock=clock,
                 reuse_decision=reuse_decision,
+            )
+            identity = sha256(
+                f"{target.url}:{attempt_index}:{receipt.receipt_id}".encode()
+            ).hexdigest()
+            receipt = receipt.model_copy(
+                update={
+                    "receipt_id": f"mbs-rehearsal:{identity}",
+                    "evidence_class": EvidenceClass.SYNTHETIC,
+                }
             )
             attempts.append(receipt)
             if isinstance(receipt, SourceReceipt):
