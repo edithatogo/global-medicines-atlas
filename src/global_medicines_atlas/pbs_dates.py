@@ -146,14 +146,27 @@ def iter_pbs_date_batches(
     output budget (dates encoded as ISO strings), not a resident-memory cap.
     Discard partial outputs after an iterator error.
     """
+    yield from _date_batches(
+        iter_pbs_entity_batches(
+            payload, receipt, rows_per_batch=rows_per_batch
+        ),
+        date_profile,
+        rows_per_batch,
+    )
+
+
+def _date_batches(
+    batches: Iterator[pa.RecordBatch],
+    date_profile: str | None,
+    rows_per_batch: int,
+) -> Iterator[pa.RecordBatch]:
+    """Annotate an internally validated entity stream without admission."""
     if date_profile is not None and date_profile != CANDIDATE_PROFILE:
         raise ValueError("unsupported PBS candidate date profile")
     rows: list[dict[str, Any]] = []
     size = 0
     schema: pa.Schema | None = None
-    for batch in iter_pbs_entity_batches(
-        payload, receipt, rows_per_batch=rows_per_batch
-    ):
+    for batch in batches:
         if schema is None:
             schema = _schema(batch.schema, date_profile)
         for entity in batch.to_pylist():
