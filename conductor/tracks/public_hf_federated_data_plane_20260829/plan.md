@@ -24,7 +24,7 @@
 
 ## Phase 2: Contract v4 and public dataset topology (AC-03, AC-04, AC-09)
 
-- [ ] Write failing JSON Schema and semantic tests for all mandatory v4
+- [~] Write failing JSON Schema and semantic tests for all mandatory v4
   authority, location, digest, visibility, verification, rights, collection,
   replica, schema-era, comparison, lineage, and cache fields.
 - [ ] Confirm the intended failure before implementation.
