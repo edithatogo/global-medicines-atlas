@@ -20,6 +20,7 @@ from .australian_source_contracts import (
     ValueType,
     mbs_field_contracts,
 )
+from .bronze_acquisition_metadata import redact_retrieval_location
 from .mbs_typed_values import convert_mbs_value
 from .receipts import SourceReceipt
 
@@ -150,8 +151,9 @@ def iter_mbs_silver_batches(
 ) -> Iterator[pa.RecordBatch]:
     """Parse receipt-matched XML and yield bounded, source-ordered batches.
 
-    Every batch embeds the canonical B1 receipt and source era; its rows bind
-    native identity to receipt/B2 digests. Publication and public v4 location
+    Every batch binds B1 by digest and exposes only selected, redacted
+    provenance; its rows bind native identity to receipt/B2 digests.
+    Publication and public v4 location
     verification remain separate. A date profile is explicit transformation
     input, not a claim that a real source era uses that format.
     """
@@ -167,7 +169,14 @@ def iter_mbs_silver_batches(
     batch = parse_mbs_source_xml(payload, receipt)
     metadata = dict(schema.metadata or {})
     metadata.update({
-        b"source_receipt": receipt.canonical_json(),
+        b"source_receipt_sha256": receipt.digest().encode(),
+        b"source_receipt_locator": f"sha256:{receipt.digest()}".encode(),
+        b"source_uri": redact_retrieval_location(
+            str(receipt.retrieval.uri)
+        ).encode(),
+        b"retrieved_at": receipt.retrieval.retrieved_at.isoformat().encode(),
+        b"rights_state": receipt.rights_state.value.encode(),
+        b"evidence_class": receipt.evidence_class.value.encode(),
         b"schema_era": batch.schema_era.encode(),
         b"date_format": (date_format or "unspecified").encode(),
         b"source_record_count": str(batch.record_count).encode(),

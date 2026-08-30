@@ -44,10 +44,16 @@ conversion status and a typed value. Its schema metadata records the original
 XML path and explicit currency/type. All fields are emitted even when absent.
 Repeated native item identifiers are retained as distinct source ordinals.
 
-Every batch embeds the canonical source receipt, schema era, date-profile
-choice and source-record denominator. Each row binds its native record ID and
-ordinal to B2 payload SHA-256 and B1 receipt SHA-256. Input bytes are checked
-against the receipt before any output. Public v4 object locations and anonymous
+Every batch retains the exact source-receipt digest/content-addressed locator,
+schema era, date-profile choice and source-record denominator. Embedded
+provenance is restricted to a redacted retrieval URI, retrieval time and
+rights/evidence enums. It deliberately excludes complete receipt bytes, HTTP
+redirect/final locations, rights-reference URLs and arbitrary receipt metadata
+that could contain credentials. URI redaction reuses the B1 projection helper.
+Each row binds its native record ID and ordinal to B2 payload SHA-256 and B1
+receipt SHA-256. The original receipt digest is not recomputed from a redacted
+projection. Input bytes are checked against the receipt before any output.
+Public v4 object locations and anonymous
 verification remain the data-plane integration boundary; these candidates do
 not constitute publication or promotion receipts.
 

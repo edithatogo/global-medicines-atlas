@@ -24,6 +24,7 @@ from global_medicines_atlas.receipts import (
     AcquisitionMethod,
     AcquisitionStatus,
     EvidenceClass,
+    HttpRetrievalEvidence,
     PayloadEvidence,
     RetrievalEvidence,
     RightsState,
@@ -187,7 +188,15 @@ def test_receipt_and_raw_identity_follow_every_batch() -> None:
     assert all(row["source_sha256"] == receipt.payload.sha256 for row in rows)
     assert all(row["receipt_sha256"] == receipt.digest() for row in rows)
     assert table.schema.metadata is not None
-    assert table.schema.metadata[b"source_receipt"] == receipt.canonical_json()
+    assert (
+        table.schema.metadata[b"source_receipt_sha256"]
+        == receipt.digest().encode()
+    )
+    assert (
+        table.schema.metadata[b"source_receipt_locator"]
+        == f"sha256:{receipt.digest()}".encode()
+    )
+    assert b"source_receipt" not in table.schema.metadata
     assert table.schema.metadata[b"schema_era"] == b"synthetic-iso-v1"
 
 
@@ -275,6 +284,57 @@ def test_reject_mismatched_source_bytes_before_output() -> None:
                 _xml(), _receipt(_xml(count=2)), table="fees"
             )
         )
+
+
+def test_receipt_credentials_never_enter_arrow_or_parquet_metadata() -> None:
+    payload = _xml()
+    receipt = _receipt(payload)
+    uri = "https://synthetic-user:synthetic-password@fixtures.invalid/mbs?token=synthetic-token&year=2026#synthetic-fragment"
+    receipt = receipt.model_copy(
+        update={
+            "retrieval": receipt.retrieval.model_copy(
+                update={
+                    "uri": AnyUrl(uri),
+                    "http": HttpRetrievalEvidence(
+                        original_uri=AnyUrl(uri),
+                        final_uri=AnyUrl(
+                            "https://fixtures.invalid/final?signature=synthetic-signature"
+                        ),
+                        redirect_history=(
+                            AnyUrl(
+                                "https://fixtures.invalid/hop?api_key=synthetic-key"
+                            ),
+                        ),
+                    ),
+                }
+            ),
+            "rights_reference": AnyUrl(
+                "https://fixtures.invalid/rights?token=synthetic-rights"
+            ),
+        }
+    )
+    batch = next(iter_mbs_silver_batches(payload, receipt, table="services"))
+    assert batch.schema.metadata is not None
+    metadata = b"\n".join(batch.schema.metadata.values())
+    for value in (
+        b"synthetic-user",
+        b"synthetic-password",
+        b"synthetic-token",
+        b"synthetic-fragment",
+        b"synthetic-signature",
+        b"synthetic-key",
+        b"synthetic-rights",
+    ):
+        assert value not in metadata
+    assert b"source_receipt" not in batch.schema.metadata
+    assert (
+        batch.schema.metadata[b"source_uri"]
+        == b"https://fixtures.invalid/mbs?token=REDACTED&year=2026"
+    )
+    assert batch.to_pylist()[0]["receipt_sha256"] == receipt.digest()
+    output = BytesIO()
+    pq.write_table(pa.Table.from_batches([batch]), output)  # pyright: ignore[reportUnknownMemberType]
+    assert b"synthetic-password" not in output.getvalue()
 
 
 @pytest.mark.parametrize("size", [0, -1, 4097, True])
