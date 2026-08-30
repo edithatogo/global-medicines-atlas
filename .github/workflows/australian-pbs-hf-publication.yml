@@ -28,8 +28,6 @@ jobs:
     permissions:
       contents: read
       issues: write
-    outputs:
-      dataset_touched: ${{ steps.publish.outputs.dataset_touched }}
     steps:
       - name: Check out governed acquisition code
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -70,7 +68,7 @@ jobs:
             --source-url "$SOURCE_URL" --dataset "$HF_DATASET" \
             > work/qualification-summary.json
 
-      - name: Publish private-first
+      - name: Publish to a public dataset from the outset
         id: publish
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -78,7 +76,6 @@ jobs:
         run: |
           set -euo pipefail
           test -n "${HF_TOKEN:-}"
-          echo 'dataset_touched=false' >> "${GITHUB_OUTPUT}"
           uv run --python 3.14.6 --with huggingface-hub==1.14.0 python - <<'PY'
           import os
           from pathlib import Path
@@ -91,12 +88,10 @@ jobs:
               before = api.dataset_info(dataset)
           except RepositoryNotFoundError:
               before = None
-          if before is not None and (not before.private or bool(before.gated)):
-              raise RuntimeError('existing target must be a private non-gated retry')
+          if before is not None and (before.private or bool(before.gated)):
+              raise RuntimeError('existing target must be public and non-gated')
           if before is None:
-              api.create_repo(repo_id=dataset, repo_type='dataset', private=True)
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
-              output.write('dataset_touched=true\n')
+              api.create_repo(repo_id=dataset, repo_type='dataset', private=False)
           result = api.upload_folder(
               repo_id=dataset, repo_type='dataset',
               folder_path='work/stage',
@@ -110,7 +105,6 @@ jobs:
           actual = {item.rfilename for item in api.dataset_info(dataset).siblings}
           if actual != expected:
               raise RuntimeError('published sibling set differs from exact stage')
-          api.update_repo_settings(repo_id=dataset, repo_type='dataset', private=False)
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write(f'revision={result.oid}\n')
           PY
@@ -185,30 +179,3 @@ jobs:
           path: work/hosted-receipt.json
           if-no-files-found: error
           retention-days: 30
-
-  contain-failed-publication:
-    needs: publish
-    if: ${{ always() && needs.publish.result != 'success' && needs.publish.outputs.dataset_touched == 'true' }}
-    runs-on: ubuntu-24.04
-    environment: australian-pbs-publication
-    permissions:
-      issues: write
-    steps:
-      - name: Restore touched dataset to private
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          test -n "${HF_TOKEN:-}"
-          python3 -m pip install --quiet huggingface-hub==1.14.0
-          python3 - <<'PY'
-          import os
-          from huggingface_hub import HfApi
-          api = HfApi(token=os.environ['HF_TOKEN'])
-          api.update_repo_settings(repo_id=os.environ['HF_DATASET'], repo_type='dataset', private=True)
-          if not api.dataset_info(os.environ['HF_DATASET']).private:
-              raise RuntimeError('failed PBS transaction was not restored to private')
-          PY
-          gh issue comment 340 --repo "${GITHUB_REPOSITORY}" \
-            --body "PBS publication run ${GITHUB_RUN_ID} failed; the touched dataset was restored to private."

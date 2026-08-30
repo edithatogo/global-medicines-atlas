@@ -6,7 +6,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = PROJECT_ROOT / ".github/workflows/australian-pbs-hf-publication.yml"
 
 
-def test_pbs_publication_is_exact_actions_only_and_private_first() -> None:
+def test_pbs_publication_is_exact_actions_only_and_public_from_outset() -> None:
     text = WORKFLOW.read_text()
 
     assert "exact_contract_commit:" in text
@@ -18,9 +18,11 @@ def test_pbs_publication_is_exact_actions_only_and_private_first() -> None:
         in text
     )
     assert "edithatogo/australian-pbs-source-archive" in text
-    assert "private=True" in text
-    assert "create_repo(repo_id=dataset, repo_type='dataset', private=False" not in text
-    assert "update_repo_settings(repo_id=dataset, repo_type='dataset', private=False)" in text
+    assert (
+        "create_repo(repo_id=dataset, repo_type='dataset', private=False"
+        in text
+    )
+    assert "private=True" not in text
     assert "delete_patterns=['*']" in text
     assert "token=False" in text
     assert "decision-0009" in text
@@ -38,7 +40,4 @@ def test_pbs_publication_verifies_before_cleanup() -> None:
     assert "temporary_source_bytes_removed'] = True" in text[cleanup:receipt]
     assert "if: always()" not in text[cleanup:]
     assert "anonymous digest mismatch" in text[verify:cleanup]
-    containment = text.index("contain-failed-publication:")
-    assert "always() && needs.publish.result != 'success'" in text[containment:]
-    assert "private=True" in text[containment:]
     assert "gh issue comment 340" in text
