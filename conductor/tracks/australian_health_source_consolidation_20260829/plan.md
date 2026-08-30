@@ -70,6 +70,9 @@
   destination while retaining exact-commit binding, atomic exact-sibling
   replacement, anonymous verification, durable receipts, and verified cleanup.
   (`458bbcd`)
+- [x] Regenerate the content-bound stable-v1 measured-coverage receipt after
+  the official PBS root-shape correction changed the adapter digest.
+  (`28c5e33`)
 - [x] Reject duplicate PBS item identities, keep restriction text/date pairs
   aligned, and label projected element digests without implying byte-exact
   native XML slicing. (`d9b583e`)
