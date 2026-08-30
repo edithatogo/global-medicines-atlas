@@ -302,3 +302,28 @@ Parquet round trips across batch sizes. No dates, prices, funding status,
 ARTG regulatory status or AMT/ATC relationships are inferred. PBS domain
 tables, harmonised values, large-corpus qualification, v4 integration and
 public derivatives remain pending. No dependency or acquisition change.
+
+## PBS structural destination candidates
+
+`iter_pbs_domain_batches` adds `mapping_target`, `mapping_status` and
+`item_occurrence_id` to every native slot without changing or removing it.
+Profile `pbs-adapter-structural-v1` covers the two root/item layouts exercised
+by the existing PBS v3 adapter fixtures. Exact expanded names and ancestry
+identify schedule metadata, item occurrences, block-container/DocBook
+presentation text, restrictions, drug/mp/code reference structures, and
+classification structures. A foreign namespace with a matching local name,
+an unrecognised wrapper, or an unknown field does not inherit a known mapping.
+
+Item lineage uses the B2 digest and occurrence path, not a supposedly unique
+native item code. Duplicate IDs remain separate. The original ID attributes,
+classification type attributes, text/tails, dates and reference strings remain
+queryable in the native columns. `classifications` does not label every code
+ATC; `amt_references` describes the adapter-established mp-reference structure,
+not acquired terminology content or an authoritative crosswalk.
+
+These structural destinations are candidate table partitions, not funding,
+regulatory, clinical or current-status assertions. Price fields remain
+unmapped until a source-specific field contract is established; native prices
+are not dropped. Date/currency conversion, fuller presentation/price schemas,
+real-corpus qualification and public v4 derivatives remain pending. No source
+data was acquired or published for this synthetic-only slice.
