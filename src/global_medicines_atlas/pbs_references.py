@@ -65,10 +65,17 @@ def _contract(row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _index(payload: bytes, receipt: SourceReceipt, size: int) -> ReferenceIndex:
+def _index(
+    batches: Iterator[pa.RecordBatch],
+) -> tuple[ReferenceIndex, pa.Schema | None]:
     index: ReferenceIndex = {}
+    identity: pa.Schema | None = None
     entries = encoded_bytes = 0
-    for batch in iter_pbs_entity_batches(payload, receipt, rows_per_batch=size):
+    for batch in batches:
+        if identity is None:
+            identity = batch.schema
+        elif not batch.schema.equals(identity, check_metadata=True):
+            raise ValueError("PBS reference input identity changed")
         for row in batch.to_pylist():
             contract = _contract(row)
             value = contract["reference_value"]
@@ -91,7 +98,7 @@ def _index(payload: bytes, receipt: SourceReceipt, size: int) -> ReferenceIndex:
                     targets += 1
             counts[resource] += 1
             index[key] = (counts, targets)
-    return index
+    return index, identity
 
 
 def _diagnostics(
@@ -167,13 +174,32 @@ def iter_pbs_reference_batches(
     equivalence or status assertion occurs. Unknown entities remain unmapped.
     Consumers must discard partial output after any validation/budget error.
     """
-    index = _index(payload, receipt, rows_per_batch)
+    yield from _reference_batches(
+        iter_pbs_entity_batches(
+            payload, receipt, rows_per_batch=rows_per_batch
+        ),
+        iter_pbs_entity_batches(
+            payload, receipt, rows_per_batch=rows_per_batch
+        ),
+        rows_per_batch,
+    )
+
+
+def _reference_batches(
+    index_batches: Iterator[pa.RecordBatch],
+    output_batches: Iterator[pa.RecordBatch],
+    rows_per_batch: int,
+) -> Iterator[pa.RecordBatch]:
+    """Annotate two trusted same-input streams; reject schema/identity drift."""
+    index, identity = _index(index_batches)
     rows: list[dict[str, Any]] = []
     size = 0
     schema: pa.Schema | None = None
-    for batch in iter_pbs_entity_batches(
-        payload, receipt, rows_per_batch=rows_per_batch
-    ):
+    for batch in output_batches:
+        if identity is None or not batch.schema.equals(
+            identity, check_metadata=True
+        ):
+            raise ValueError("PBS reference cross-pass identity changed")
         if schema is None:
             schema = _schema(batch.schema)
         for entity in batch.to_pylist():

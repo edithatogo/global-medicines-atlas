@@ -504,8 +504,8 @@ with conversion none. Rows are bounded to 1–4,096 and 8 MiB of compact UTF-8
 JSON encodings. Validation and projection parse separately using existing
 finite ZIP/XML limits; this is not constant-memory parsing, a total resident
 memory cap or real-corpus qualification. Discard partial output after errors.
-Reference/date historical integration, corpus qualification and
-public derivatives remain pending; this native route infers no source dates,
+Corpus qualification and public derivatives remain pending;
+this native route infers no source dates,
 current status, funding entitlement, clinical claim or production admission.
 
 ### Historical structural projections
@@ -530,4 +530,29 @@ the existing 4,096-field/1 MiB encoded per-element and 8 MiB encoded output
 batch limits. These are not total resident-memory guarantees. Oversized
 records fail without truncation; discard partial outputs after any error.
 This is synthetic structural qualification, not complete PBS domain coverage,
-historical reference/date conversion, real-corpus admission or public delivery.
+real-source date qualification, real-corpus admission or public delivery.
+
+### Historical reference and date annotations
+
+`iter_pbs_historical_reference_batches` and
+`iter_pbs_historical_date_batches` require the original archive/member bytes,
+parent receipt and member binding. Their internal shared transforms preserve
+all historical entity columns, nested native fields and safe binding metadata.
+Neither accepts a caller-supplied stream or entity factory; ordinary PBS source
+guards and public signatures are unchanged.
+
+References construct both entity passes internally from the same four inputs,
+revalidating each pass. Schema and full identity metadata must remain identical
+within the index pass and across the output pass. The existing 100,000-entry /
+16 MiB encoded index and 8 MiB encoded output limits remain in force. Literal
+identifiers and ambiguous/unresolved diagnostics do not imply URI resolution,
+terminology validation, equivalence or funding assertions. Partial output must
+be discarded after errors, including identity drift in later batches.
+
+Dates default to `date_profile=None`: no conversion is selected. The explicit
+`pbs-iso-date-candidate-v1` profile remains a synthetic calendar-date candidate,
+with `source_date_era_qualification=not-established`. Unknown/native values,
+repeated occurrences, missing/null/blank/invalid states and exact field lineage
+are preserved. Shared finite parsing/entity and 8 MiB encoded output limits
+apply; these are not total resident-memory guarantees. No real-source date
+qualification, temporal status, admission, acquisition or publication follows.

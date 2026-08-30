@@ -280,7 +280,7 @@
   failures and performance 332.240ms >250ms; isolated rerun also failed at
   266.143ms. Local performance remains unqualified despite hosted success.
 
-- [~] Extend historical native candidates through shared bounded domain and
+- [x] Extend historical native candidates through shared bounded domain and
   entity transforms, preserving parent/archive/member binding in rows and
   metadata without broadening ordinary source acceptance. Unknown namespaces,
   empty/mixed-text elements and duplicate identities must survive unchanged.
@@ -288,7 +288,19 @@
   pending; no automatic date profile, admission or publication.
   Implemented `4ae27b5`; intended missing-module failure followed by 230
   focused/context/ecosystem passes and 99.37% changed-module coverage.
-  Ruff, ty and BasedPyright pass; frozen full and hosted checks pending.
+  Ruff, ty and BasedPyright pass. PR #392 merged `3bb5c71` after all 38 checks
+  passed on `4aba9ee`; frozen full: 3,263 passed, three failed, one skipped,
+  96.73% coverage. Two local interpreter-pin failures and PERF388.551ms >250ms;
+  one isolated rerun passed. Original local-full failure remains recorded.
+
+- [~] Reuse shared reference/date candidate transforms behind explicit
+  historical wrappers requiring validated original inputs for every pass.
+  Preserve all lineage and reject cross-pass identity drift; retain bounded
+  literal/ambiguous/unresolved diagnostics and default-unselected dates.
+  No factory admission bypass, ordinary-source broadening or real-era claim.
+  Implemented `e31bf74`; intended missing-module failure followed by 259
+  focused/context/ecosystem passes, 99.33% changed-module coverage and
+  Ruff/ty/BasedPyright passes. Frozen full and hosted checks pending.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
