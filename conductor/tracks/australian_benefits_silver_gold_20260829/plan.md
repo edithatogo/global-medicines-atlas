@@ -125,9 +125,13 @@
   source-native identifiers, money, dates, annotation text and formula caches.
   Preserve errors, missing/null states, unsupported serial dates and precision
   loss. New value module has 100% branch coverage; 132 focused tests pass.
-- [ ] Complete full/hosted review, then run the extended qualifier at the
+- [x] Complete full/hosted review, then run the extended qualifier at the
   merged commit and examine per-field value conversion outcomes before
   treating the actual source era as qualified.
+  PR #380 merged `08b518d` after 38 exact-head passing checks and resolved
+  review. Run `33310284274` passed: all 13,742 cells accounted for, 924
+  converted, 36 unrepresentable decimals and 1,280 unqualified dates retained.
+  No date-era qualification, semantic promotion or publication is inferred.
 
 - [x] Preserve sheet identity when combining batches and round-tripping
   Parquet, including an explicit empty-sheet manifest and property presence.
