@@ -75,6 +75,42 @@ def test_dates_need_explicit_profile_and_serials_are_never_guessed() -> None:
     assert rows["D2"]["domain_date"] is None
 
 
+@pytest.mark.parametrize(
+    ("cell", "encoding"),
+    [
+        ('t="inlineStr"><is><t>01.07.2024</t></is>', "two_two_four_dot"),
+        ('t="inlineStr"><is><t>2024-07-01</t></is>', "four_two_two_hyphen"),
+        ('t="inlineStr"><is><t>01/07/2024</t></is>', "two_two_four_slash"),
+        ('t="inlineStr"><is><t>99.99.0000</t></is>', "two_two_four_dot"),
+        ('t="inlineStr"><is><t> 01.07.2024</t></is>', "other_text"),
+        (
+            't="inlineStr"><is><t>\u0661\u0662.\u0660\u0667.\u0662\u0660\u0662\u0664</t></is>',
+            "other_text",
+        ),
+        ('t="n"><v>45000</v>', "numeric_storage_uninterpreted"),
+        ('t="b"><v>1</v>', "unsupported_storage"),
+        ('t="e"><v>#VALUE!</v>', "source_error"),
+        ('t="inlineStr"><is><t></t></is>', "empty_text"),
+        ('t="str">', "missing_value"),
+    ],
+)
+def test_date_encoding_observation_does_not_select_profile(
+    cell: str, encoding: str
+) -> None:
+    payload = payload_with(f'<c r="C2" {cell}</c>')
+    report = profile_workbook_values(payload, _receipt(payload))
+    assert report["date_encoding_counts"][encoding] == 1
+    assert report["date_profile"] is None
+    assert report["semantic_promotion"] is False
+    assert rows_for(payload)["C2"]["domain_date"] is None
+    assert "01.07.2024" not in json.dumps(report)
+    assert report == profile_workbook_values(payload, _receipt(payload))
+    assert sum(report["date_encoding_counts"].values()) == sum(
+        sum(counts.values())
+        for counts in report["date_encodings_by_field"].values()
+    )
+
+
 def test_errors_boolean_storage_and_precision_loss_are_explicit() -> None:
     payload = payload_with(
         '<c r="W2" t="e"><v>#VALUE!</v></c><c r="X2" t="b"><v>1</v></c><c r="AL2" t="inlineStr"><is><t>1.0000000001</t></is></c>'

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections import Counter, defaultdict
 from collections.abc import Iterator
 from datetime import date
@@ -161,6 +162,8 @@ def profile_workbook_values(
     statuses: Counter[str] = Counter()
     by_field: defaultdict[str, Counter[str]] = defaultdict(Counter)
     source_errors = 0
+    date_encodings: Counter[str] = Counter()
+    date_fields: defaultdict[str, Counter[str]] = defaultdict(Counter)
     for batch in iter_workbook_value_batches(
         payload, receipt, date_format=date_format
     ):
@@ -169,6 +172,11 @@ def profile_workbook_values(
             statuses[status] += 1
             by_field[row["mapping_field"] or "(unmapped)"][status] += 1
             source_errors += row["error_code"] is not None
+            field = _FIELDS.get(row["mapping_field"])
+            if field is not None and field.value_type == "source_date":
+                encoding = _date_encoding(row)
+                date_encodings[encoding] += 1
+                date_fields[field.native_name][encoding] += 1
     return {
         "schema_version": 1,
         "conversion_version": CONVERSION_VERSION,
@@ -181,5 +189,41 @@ def profile_workbook_values(
             for key, value in sorted(by_field.items())
         },
         "source_error_cells": source_errors,
+        "date_encoding_profile_version": 1,
+        "date_encoding_interpretation": "lexical_shape_only_not_calendar_or_order",
+        "date_encoding_counts": dict(sorted(date_encodings.items())),
+        "date_encodings_by_field": {
+            key: dict(sorted(value.items()))
+            for key, value in sorted(date_fields.items())
+        },
         "semantic_promotion": False,
     }
+
+
+def _date_encoding(row: dict[str, Any]) -> str:
+    """Observe native storage/text shapes without choosing a date convention."""
+    if row["row_kind"] == "header":
+        return "header"
+    if row["cell_type"] == "e":
+        return "source_error"
+    value = row["display_value"]
+    if value is None:
+        return row["domain_value_state"]
+    if row["cell_type"] in {None, "n"}:
+        return "numeric_storage_uninterpreted"
+    if row["cell_type"] not in _TEXT_STORAGE:
+        return "unsupported_storage"
+    return _text_date_shape(value)
+
+
+def _text_date_shape(value: str) -> str:
+    if not value:
+        return "empty_text"
+    for pattern, label in (
+        (r"[0-9]{2}\.[0-9]{2}\.[0-9]{4}", "two_two_four_dot"),
+        (r"[0-9]{2}/[0-9]{2}/[0-9]{4}", "two_two_four_slash"),
+        (r"[0-9]{4}-[0-9]{2}-[0-9]{2}", "four_two_two_hyphen"),
+    ):
+        if re.fullmatch(pattern, value):
+            return label
+    return "other_text"
