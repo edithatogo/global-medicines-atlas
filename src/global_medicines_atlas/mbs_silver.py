@@ -14,13 +14,13 @@ from typing import Any
 import pyarrow as pa
 
 from .adapters.au_mbs import MbsSourceRecord, parse_mbs_source_xml
+from .australian_silver_metadata import receipt_projection_metadata
 from .australian_source_contracts import (
     MbsFieldContract,
     TargetTable,
     ValueType,
     mbs_field_contracts,
 )
-from .bronze_acquisition_metadata import redact_retrieval_location
 from .mbs_typed_values import (
     CONVERSION_VERSION,
     DATE_FORMATS,
@@ -173,14 +173,7 @@ def iter_mbs_silver_batches(
     batch = parse_mbs_source_xml(payload, receipt)
     metadata = dict(schema.metadata or {})
     metadata.update({
-        b"source_receipt_sha256": receipt.digest().encode(),
-        b"source_receipt_locator": f"sha256:{receipt.digest()}".encode(),
-        b"source_uri": redact_retrieval_location(
-            str(receipt.retrieval.uri)
-        ).encode(),
-        b"retrieved_at": receipt.retrieval.retrieved_at.isoformat().encode(),
-        b"rights_state": receipt.rights_state.value.encode(),
-        b"evidence_class": receipt.evidence_class.value.encode(),
+        **receipt_projection_metadata(receipt),
         b"schema_era": batch.schema_era.encode(),
         b"date_format": (date_format or "unspecified").encode(),
         b"source_record_count": str(batch.record_count).encode(),
