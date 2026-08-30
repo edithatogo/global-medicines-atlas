@@ -8,7 +8,11 @@ from pathlib import Path
 import httpx
 import pytest
 
-from global_medicines_atlas.bronze_admission import persist_admission_decision
+from global_medicines_atlas.bronze_admission import (
+    BronzeAdmissionState,
+    create_admission_decision,
+    persist_admission_decision,
+)
 from global_medicines_atlas.mbs_admission import (
     MbsTableAdmission,
     admit_mbs_html_tables,
@@ -166,6 +170,39 @@ def test_rehearsal_cannot_enter_live_health_history(tmp_path: Path) -> None:
     )
     with pytest.raises(ValueError, match="live acquisition"):
         mbs_admission_health(outcome)
+
+
+@pytest.mark.parametrize(
+    "state",
+    [
+        BronzeAdmissionState.LANDED,
+        BronzeAdmissionState.REJECTED_FROM_PROCESSING,
+        BronzeAdmissionState.QUARANTINED,
+    ],
+)
+def test_unevaluated_or_unrelated_rejection_is_not_table_quarantine(
+    tmp_path: Path, state: BronzeAdmissionState
+) -> None:
+    payload = b"<html>Maintenance</html>"
+    outcome = admit_mbs_html_tables(
+        payload,
+        _receipt(tmp_path, payload),
+        (TableContract(table_id="items", columns=("Item",)),),
+        decided_at=NOW,
+    )
+    decision = create_admission_decision(
+        acquisition_id=outcome.decision.acquisition_id,
+        content_id=outcome.decision.content_id,
+        state=state,
+        reason_codes=("unrelated_reason",),
+        validation_results=outcome.decision.validation_results,
+        actor=outcome.decision.actor,
+        decided_at=NOW,
+    )
+    with pytest.raises(ValueError, match="MBS admission"):
+        MbsTableAdmission(
+            source_receipt=outcome.source_receipt, decision=decision
+        )
 
 
 @pytest.mark.parametrize("accepted", [True, False])

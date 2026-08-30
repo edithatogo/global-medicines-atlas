@@ -61,7 +61,17 @@ class MbsTableAdmission(FrozenModel):
             raise ValueError(
                 "MBS decision must bind its source acquisition and bytes"
             )
+        if self.decision.state not in {
+            BronzeAdmissionState.ACCEPTED,
+            BronzeAdmissionState.QUARANTINED,
+        }:
+            raise ValueError("MBS admission must be accepted or quarantined")
         accepted = self.decision.state is BronzeAdmissionState.ACCEPTED
+        expected_reasons = () if accepted else ("mbs_table_profile_mismatch",)
+        if self.decision.reason_codes != expected_reasons:
+            raise ValueError(
+                "MBS admission reason must match table qualification"
+            )
         if accepted != bool(self.tables):
             raise ValueError(
                 "only accepted MBS decisions may expose nonempty tables"
