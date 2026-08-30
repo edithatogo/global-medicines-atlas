@@ -88,6 +88,9 @@
   retrieval attempts append-only. (`5d91648`)
 - [x] Replace the impossible private rollback promise with the approved,
   truthful public-from-outset failure policy. (`5d91648`)
+- [x] Reconcile the official April 2026 schedule exceeding the former finite
+  structural ceiling while retaining the bounded PBS archive envelope and
+  regenerating its content-bound coverage receipt. (`4c65dc3`)
 
 ## Review Fixes: MBS source-domain phase
 
