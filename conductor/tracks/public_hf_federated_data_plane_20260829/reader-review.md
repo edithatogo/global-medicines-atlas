@@ -30,9 +30,18 @@ completion or a second-maintainer approval.
   buffered view was introduced. 90 focused tests pass, reader 100% branch
   coverage and strict typing pass. The earlier functional commit `78abde9`
   was rebased as `2ed6d8d`; prior ledger observations retain their original IDs.
-- Local full Test-Goblin is running on 3.14.5 across the result-stream review
-  correction; static/context and wheel/sdist clean-consumer probes passed.
-  It is not an exact-final-head whole-harness claim.
+- Installed-consumer correction (`637ab07`): bare jsonschema silently skipped
+  date-time validation without its optional format plugins. The federation
+  extra now includes already-locked `format-nongpl`, and startup fails if a
+  required format checker is missing. Isolated locked consumer rejects invalid
+  timestamps; 91 focused tests pass with reader 100% branch coverage.
+- Local full Test-Goblin terminated on 3.14.5 after 2,986 passed, five failed,
+  one skipped and 96.56% coverage. Two optional-extra lock-digest receipt
+  mismatches were repaired (39 focused receipt/matrix tests pass); two release
+  tests require 3.14.6 and product PERF-QUERY measured 471.581ms against250ms.
+  No threshold was weakened. Static/context and wheel/sdist clean-consumer
+  probes passed. The run crossed review corrections and is not an exact-final-
+  head whole-harness claim; no duplicate full run was started.
 - Remaining: full Test-Goblin and hosted exact-head qualification; production
   v4 receipt/admission integration, product consumers and public derived output.
   No existing MBS/PBS receipt was relabelled v4 and no source was reacquired.

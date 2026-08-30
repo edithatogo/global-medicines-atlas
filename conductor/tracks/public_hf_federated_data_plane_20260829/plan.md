@@ -110,6 +110,10 @@
   failed first, then 90 focused tests passed with reader 100% branch coverage.)
 - [~] Qualify the corrected reader through exact-head hosted checks and retain
   local full-harness limitations separately.
+- [x] Require installed date/date-time/URI validators and bind generated lock
+  receipts to the optional-extra change. (`637ab07`; isolated missing-format
+  observation and guard regression failed first; 91 reader/contract tests and
+  39 receipt/matrix tests pass, reader 100% branch coverage.)
 
 ## Phase 5: Collections, estate registry, and recovery (AC-05, AC-07)
 
