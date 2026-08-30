@@ -428,7 +428,7 @@ dev = [
     { name = "beautifulsoup4" },
     { name = "edgetest" },
     { name = "hypothesis" },
-    { name = "jsonschema" },
+    { name = "jsonschema", extra = ["format-nongpl"] },
     { name = "lancedb" },
     { name = "mutmut" },
     { name = "packaging" },
@@ -461,7 +461,7 @@ security = [
 ]
 test = [
     { name = "beautifulsoup4" },
-    { name = "jsonschema" },
+    { name = "jsonschema", extra = ["format-nongpl"] },
     { name = "lancedb" },
     { name = "packaging" },
     { name = "pytest" },
@@ -473,7 +473,7 @@ test = [
 test-goblin = [
     { name = "beautifulsoup4" },
     { name = "hypothesis" },
-    { name = "jsonschema" },
+    { name = "jsonschema", extra = ["format-nongpl"] },
     { name = "lancedb" },
     { name = "mutmut" },
     { name = "packaging" },
@@ -524,7 +524,7 @@ dev = [
     { name = "beautifulsoup4", marker = "python_full_version == '3.14.*'", specifier = ">=4.13" },
     { name = "edgetest", marker = "python_full_version == '3.14.*'", specifier = ">=2026.5.1" },
     { name = "hypothesis", marker = "python_full_version == '3.14.*'", specifier = ">=6.151" },
-    { name = "jsonschema", marker = "python_full_version == '3.14.*'", specifier = ">=4.25" },
+    { name = "jsonschema", extras = ["format-nongpl"], marker = "python_full_version == '3.14.*'", specifier = ">=4.25" },
     { name = "lancedb", marker = "python_full_version == '3.14.*'", specifier = ">=0.27" },
     { name = "mutmut", marker = "python_full_version == '3.14.*'", specifier = ">=3.5" },
     { name = "packaging", marker = "python_full_version == '3.14.*'", specifier = ">=26" },
@@ -553,7 +553,7 @@ security = [
 ]
 test = [
     { name = "beautifulsoup4", marker = "python_full_version == '3.14.*'", specifier = ">=4.13" },
-    { name = "jsonschema", marker = "python_full_version == '3.14.*'", specifier = ">=4.25" },
+    { name = "jsonschema", extras = ["format-nongpl"], marker = "python_full_version == '3.14.*'", specifier = ">=4.25" },
     { name = "lancedb", marker = "python_full_version == '3.14.*'", specifier = ">=0.27" },
     { name = "packaging", marker = "python_full_version == '3.14.*'", specifier = ">=26" },
     { name = "pytest", marker = "python_full_version == '3.14.*'", specifier = ">=9.1" },
@@ -565,7 +565,7 @@ test = [
 test-goblin = [
     { name = "beautifulsoup4", marker = "python_full_version == '3.14.*'", specifier = ">=4.13" },
     { name = "hypothesis", marker = "python_full_version == '3.14.*'", specifier = ">=6.151" },
-    { name = "jsonschema", marker = "python_full_version == '3.14.*'", specifier = ">=4.25" },
+    { name = "jsonschema", extras = ["format-nongpl"], marker = "python_full_version == '3.14.*'", specifier = ">=4.25" },
     { name = "lancedb", marker = "python_full_version == '3.14.*'", specifier = ">=0.27" },
     { name = "mutmut", marker = "python_full_version == '3.14.*'", specifier = ">=3.5" },
     { name = "packaging", marker = "python_full_version == '3.14.*'", specifier = ">=26" },
