@@ -348,6 +348,12 @@
   forms (bare key or empty assignment), with mutable,
   unrelated, traversal, double-encoding and unknown/duplicate-query negatives.
   This client defect is not a source defect or corpus qualification result.
+  Implemented `dc0c65a`; 63 harness tests pass, 98.62% changed-module coverage.
+  Final affected run: 286 pass and one unchanged date-property timing failure;
+  isolated date rerun also timed out. Earlier affected run passed 284 tests.
+  Ruff/ty/BasedPyright/actionlint/zizmor pass; live metadata-only public state,
+  manifest and original B1 digest/identity recheck passed. Frozen full and
+  exact-head hosted validation pending; retry remains coordinated separately.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
