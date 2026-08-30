@@ -6,7 +6,7 @@
   manifest allowlists, public/non-gated state, and anonymous restoration.
 - [ ] Confirm the intended failure before implementation.
 - [x] Generate a public-safe estate registry snapshot without credentials or
-  restricted contents. (`310791c` and subsequent permission-evidence hardening;
+  restricted contents. (`f5d10ed`, permission hardening `31f2458`;
   93 entries from stable owner-filtered scans, six private identities redacted;
   local metadata observation only, not publication of the registry dataset.)
 - [x] Add an exact-revision GitHub Actions workflow for the legacy composite;
