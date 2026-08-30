@@ -93,10 +93,33 @@
 - [ ] Confirm the intended failure before implementation.
 - [ ] Publish source-faithful Parquet, typed tables, graph edge/node tables,
   products, coverage, lineage, and promotions with v4 identities.
-- [ ] Implement remote-first readers with bounded cache and offline behavior;
+- [~] Implement remote-first readers with bounded cache and offline behavior;
   verify local cache eviction cannot change content identity.
+  Runtime transport/cache slice in progress; only independently admitted v4
+  documents may be consumed. No live source acquisition or publication planned.
+  `2ed6d8d` (rebased from `78abde9`): 89 focused tests pass, reader 100% branch coverage; optional
+  installed-consumer import passes. Exact-head hosted qualification and live
+  admission/receipt integration remain pending.
 - [ ] Phase Verification & Checkpoint: exact remote revisions reproduce all
   products and local storage is demonstrably transient.
+
+## Review fixes: runtime reader
+
+- [x] Reject writes through verified result streams without breaking seek/read
+  or active-result lifetime. (`2787188`; intended writable-stream regression
+  failed first, then 90 focused tests passed with reader 100% branch coverage.)
+- [~] Qualify the corrected reader through exact-head hosted checks and retain
+  local full-harness limitations separately.
+- [x] Require installed date/date-time/URI validators and bind generated lock
+  receipts to the optional-extra change. (`637ab07`; isolated missing-format
+  observation and guard regression failed first; 91 reader/contract tests and
+  39 receipt/matrix tests pass, reader 100% branch coverage.)
+
+- [x] Close expired cache spools on open and occupancy inspection. (`9f2b929`;
+  automated P2 review; regression failed first, then 91 tests and 100% coverage.)
+- [x] Declare format plugins in the CI test group as well as the optional runtime
+  extra. (`66561b2`; exact unit-job failure reproduced in isolated test group;
+  corrected locked isolated reader/contract/receipt/matrix suite: 130 passed.)
 
 ## Phase 5: Collections, estate registry, and recovery (AC-05, AC-07)
 

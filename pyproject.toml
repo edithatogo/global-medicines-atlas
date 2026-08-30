@@ -34,6 +34,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+federation = [
+  "jsonschema[format-nongpl]>=4.25",
+]
 semantic = [
   "lancedb>=0.27",
 ]
@@ -47,7 +50,7 @@ global-medicines-atlas = "global_medicines_atlas.cli:app"
 [dependency-groups]
 test = [
   "beautifulsoup4>=4.13",
-  "jsonschema>=4.25",
+  "jsonschema[format-nongpl]>=4.25",
   "packaging>=26",
   "pyyaml>=6.0.3",
   "pytest-playwright>=0.7",
