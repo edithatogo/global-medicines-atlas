@@ -25,8 +25,8 @@ def main(argv: list[str] | None = None) -> int:
     if not args.failure_only:
         try:
             report = run_hosted_qualification(args.exact_commit)
-        except Exception:  # Never log signed URLs or source-bearing exceptions.
-            report = failure_report()
+        except Exception as error:  # Never log source-bearing exception text.
+            report = failure_report(error)
     payload = json.dumps(report, sort_keys=True, separators=(",", ":")).encode()
     if len(payload) > MAX_REPORT_BYTES:
         report = failure_report()

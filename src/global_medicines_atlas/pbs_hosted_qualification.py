@@ -7,15 +7,21 @@ import json
 import os
 import re
 import time
+from collections.abc import Generator
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from http import HTTPStatus
 from typing import Any, cast
-from urllib.parse import urljoin, urlsplit
+from urllib.parse import quote, urljoin, urlsplit
 
 import httpx
 
-from .acquisition import AcquisitionPolicy, BoundIPAddressTransport
+from .acquisition import (
+    AcquisitionPolicy,
+    BoundIPAddressTransport,
+    DestinationPolicyError,
+)
 from .adapters.au_pbs import read_pbs_v3_member
 from .pbs_historical_qualification import qualify_pbs_historical_projections
 from .pbs_member_identity import build_pbs_xml_member_binding
@@ -26,6 +32,80 @@ REVISION = "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
 INFO_URL = f"https://huggingface.co/api/datasets/{DATASET}/revision/{REVISION}"
 HOSTS = ("huggingface.co", "us.aws.cdn.hf.co")
 MAX_REPORT_BYTES = 48_000
+FAILURE_STAGES = frozenset({
+    "context",
+    "transport-setup",
+    "public-before",
+    "manifest-read",
+    "receipt-read",
+    "archive-read",
+    "public-after",
+    "manifest-validation",
+    "receipt-validation",
+    "member-extraction",
+    "member-binding",
+    "projection-qualification",
+    "report",
+    "unavailable",
+})
+FAILURE_CATEGORIES = frozenset({
+    "validation",
+    "structure",
+    "transport",
+    "timeout",
+    "destination-policy",
+    "redirect",
+    "http-status",
+    "encoding",
+    "byte-limit",
+    "pin-mismatch",
+    "unexpected",
+    "unavailable",
+})
+
+
+class QualificationError(ValueError):
+    """Carry only fixed, allowlisted diagnostic codes across the CLI boundary."""
+
+    def __init__(self, stage: str, category: str) -> None:
+        self.stage = stage if stage in FAILURE_STAGES else "unavailable"
+        self.category = (
+            category if category in FAILURE_CATEGORIES else "unexpected"
+        )
+        super().__init__(
+            f"PBS qualification failed: {self.stage}/{self.category}"
+        )
+
+
+class _RejectionError(ValueError):
+    def __init__(self, category: str) -> None:
+        self.category = category
+        super().__init__(category)
+
+
+@contextmanager
+def _at(stage: str) -> Generator[None]:
+    """Classify failures by type/control, never by exception text or fields."""
+    try:
+        yield
+    except QualificationError:
+        raise
+    except Exception as error:
+        if isinstance(error, _RejectionError):
+            category = error.category
+        elif isinstance(error, (httpx.TimeoutException, TimeoutError)):
+            category = "timeout"
+        elif isinstance(error, httpx.HTTPError):
+            category = "transport"
+        elif isinstance(error, DestinationPolicyError):
+            category = "destination-policy"
+        elif isinstance(error, (LookupError, TypeError)):
+            category = "structure"
+        elif isinstance(error, ValueError):
+            category = "validation"
+        else:
+            category = "unexpected"
+        raise QualificationError(stage, category) from None
 
 
 @dataclass(frozen=True)
@@ -101,21 +181,35 @@ def _safe_url(url: str, initial: str) -> None:
         or parsed.port not in {None, 443}
         or parsed.fragment
     ):
-        raise ValueError("unapproved anonymous PBS destination")
+        raise _RejectionError("destination-policy")
     if parsed.hostname == "huggingface.co":
         initial_path = urlsplit(initial).path
-        cache_path = initial_path.replace(
-            f"/datasets/{DATASET}/resolve/{REVISION}/",
-            f"/api/resolve-cache/datasets/{DATASET}/{REVISION}/",
-        )
-        if parsed.path not in {initial_path, cache_path} or (
-            parsed.query
-            and any(
-                part.split("=", 1)[0] not in {"download", "etag"}
-                for part in parsed.query.split("&")
-            )
-        ):
-            raise ValueError("mutable or unrelated PBS redirect")
+        resolve_prefix = f"/datasets/{DATASET}/resolve/{REVISION}/"
+        cache_prefix = f"/api/resolve-cache/datasets/{DATASET}/{REVISION}/"
+        cache_paths: set[str] = set()
+        if initial_path.startswith(resolve_prefix):
+            suffix = initial_path.removeprefix(resolve_prefix)
+            cache_paths = {
+                cache_prefix + suffix,
+                cache_prefix + quote(suffix, safe=""),
+            }
+        if parsed.path not in {initial_path, *cache_paths}:
+            raise _RejectionError("redirect")
+        seen: set[str] = set()
+        for part in parsed.query.split("&") if parsed.query else ():
+            key, separator, value = part.partition("=")
+            if key == quote(initial_path, safe=""):
+                # Hub GET redirects carry the exact original path as an empty
+                # encoded query key. Do not drop it with parse_qs or
+                # admit arbitrary decoding, mutable paths or unrelated keys.
+                if parsed.path not in cache_paths or value:
+                    raise _RejectionError("redirect")
+                key = "original-path"
+            elif not separator or key not in {"download", "etag"}:
+                raise _RejectionError("redirect")
+            if key in seen:
+                raise _RejectionError("redirect")
+            seen.add(key)
 
 
 def _read(client: httpx.Client, url: str, limit: int, deadline: float) -> bytes:
@@ -123,31 +217,31 @@ def _read(client: httpx.Client, url: str, limit: int, deadline: float) -> bytes:
     for _ in range(4):
         _safe_url(url, initial)
         if time.monotonic() > deadline:
-            raise ValueError("PBS retrieval deadline exceeded")
+            raise _RejectionError("timeout")
         client.cookies.clear()
         with client.stream("GET", url) as response:
             if response.is_redirect:
                 location = response.headers.get("location")
                 if location is None:
-                    raise ValueError("PBS redirect missing location")
+                    raise _RejectionError("redirect")
                 url = urljoin(url, location)
                 continue
             if response.status_code != HTTPStatus.OK:
-                raise ValueError("anonymous PBS retrieval failed")
+                raise _RejectionError("http-status")
             if (
                 response.headers.get("content-encoding", "identity")
                 != "identity"
             ):
-                raise ValueError("PBS content encoding must be identity")
+                raise _RejectionError("encoding")
             data = bytearray()
             for chunk in response.iter_bytes(64 * 1024):
                 if len(data) + len(chunk) > limit:
-                    raise ValueError("PBS retrieval exceeds byte limit")
+                    raise _RejectionError("byte-limit")
                 if time.monotonic() > deadline:
-                    raise ValueError("PBS retrieval deadline exceeded")
+                    raise _RejectionError("timeout")
                 data.extend(chunk)
             return bytes(data)
-    raise ValueError("PBS redirect limit exceeded")
+    raise _RejectionError("redirect")
 
 
 def _file(client: httpx.Client, pin: PinnedFile, deadline: float) -> bytes:
@@ -156,7 +250,7 @@ def _file(client: httpx.Client, pin: PinnedFile, deadline: float) -> bytes:
         len(data) != pin.byte_count
         or hashlib.sha256(data).hexdigest() != pin.sha256
     ):
-        raise ValueError("PBS pinned file digest/size mismatch")
+        raise _RejectionError("pin-mismatch")
     return data
 
 
@@ -187,58 +281,70 @@ def run_hosted_qualification(
     Return bounded aggregate metadata only, not bytes, sample text or signed URLs.
     This does not publish datasets, select dates or establish semantic admission.
     """
-    context = _context(exact_commit)
+    with _at("context"):
+        context = _context(exact_commit)
     started_at = datetime.now(UTC).isoformat()
     deadline = time.monotonic() + 300
-    policy = AcquisitionPolicy(allowed_hosts=HOSTS, timeout_seconds=30)
-    with httpx.Client(
-        transport=transport or BoundIPAddressTransport(policy=policy),
-        trust_env=False,
-        follow_redirects=False,
-        timeout=30,
-        headers={"Accept-Encoding": "identity"},
-    ) as client:
-        try:
+    with _at("transport-setup"):
+        policy = AcquisitionPolicy(allowed_hosts=HOSTS, timeout_seconds=30)
+    with (
+        _at("transport-setup"),
+        httpx.Client(
+            transport=transport or BoundIPAddressTransport(policy=policy),
+            trust_env=False,
+            follow_redirects=False,
+            timeout=30,
+            headers={"Accept-Encoding": "identity"},
+        ) as client,
+    ):
+        with _at("public-before"):
             _public(client, deadline)
+        with _at("manifest-read"):
             manifest = json.loads(_file(client, MANIFEST, deadline))
+        with _at("receipt-read"):
             receipt_bytes = _file(client, RECEIPT, deadline)
+        with _at("archive-read"):
             archive = _file(client, ARCHIVE, deadline)
+        with _at("public-after"):
             _public(client, deadline)
-        except httpx.HTTPError:
-            raise ValueError("anonymous PBS transport failed") from None
-    for name, pin in (
-        ("archive", ARCHIVE),
-        ("member", MEMBER),
-        ("source_receipt", RECEIPT),
-    ):
-        entry = manifest[name]
-        if (
-            entry["path"] != pin.path
-            or entry["sha256"] != pin.sha256
-            or (
-                name != "source_receipt"
-                and entry["size_bytes"] != pin.byte_count
-            )
+    with _at("manifest-validation"):
+        for name, pin in (
+            ("archive", ARCHIVE),
+            ("member", MEMBER),
+            ("source_receipt", RECEIPT),
         ):
-            raise ValueError("PBS manifest pin mismatch")
-    if (
-        manifest["source_id"] != "au-pbs-historical-xml"
-        or manifest["destination_dataset"] != DATASET
-        or manifest["member"]["source_path"] != MEMBER_SOURCE_PATH
-    ):
-        raise ValueError("PBS manifest source identity mismatch")
-    parent = SourceReceipt.model_validate_json(receipt_bytes)
-    member, xml = read_pbs_v3_member(archive)
-    if (
-        member.path != MEMBER_SOURCE_PATH
-        or member.sha256 != MEMBER.sha256
-        or member.size_bytes != MEMBER.byte_count
-    ):
-        raise ValueError("PBS extracted member pin mismatch")
-    binding = build_pbs_xml_member_binding(archive, parent)
-    qualification = qualify_pbs_historical_projections(
-        archive, xml, parent, binding
-    )
+            entry = manifest[name]
+            if (
+                entry["path"] != pin.path
+                or entry["sha256"] != pin.sha256
+                or (
+                    name != "source_receipt"
+                    and entry["size_bytes"] != pin.byte_count
+                )
+            ):
+                raise _RejectionError("pin-mismatch")
+        if (
+            manifest["source_id"] != "au-pbs-historical-xml"
+            or manifest["destination_dataset"] != DATASET
+            or manifest["member"]["source_path"] != MEMBER_SOURCE_PATH
+        ):
+            raise _RejectionError("pin-mismatch")
+    with _at("receipt-validation"):
+        parent = SourceReceipt.model_validate_json(receipt_bytes)
+    with _at("member-extraction"):
+        member, xml = read_pbs_v3_member(archive)
+        if (
+            member.path != MEMBER_SOURCE_PATH
+            or member.sha256 != MEMBER.sha256
+            or member.size_bytes != MEMBER.byte_count
+        ):
+            raise _RejectionError("pin-mismatch")
+    with _at("member-binding"):
+        binding = build_pbs_xml_member_binding(archive, parent)
+    with _at("projection-qualification"):
+        qualification = qualify_pbs_historical_projections(
+            archive, xml, parent, binding
+        )
     report = {
         "schema_version": 1,
         "status": "passed",
@@ -267,12 +373,13 @@ def run_hosted_qualification(
         },
         "source_publication_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5466488482",
     }
-    if len(json.dumps(report, sort_keys=True).encode()) > MAX_REPORT_BYTES:
-        raise ValueError("PBS aggregate report exceeds byte limit")
+    with _at("report"):
+        if len(json.dumps(report, sort_keys=True).encode()) > MAX_REPORT_BYTES:
+            raise _RejectionError("byte-limit")
     return report
 
 
-def failure_report() -> dict[str, Any]:
+def failure_report(error: Exception | None = None) -> dict[str, Any]:
     """Return a bounded failure receipt without exception text or unsafe env."""
     context = {}
     for name, key, pattern in (
@@ -282,6 +389,10 @@ def failure_report() -> dict[str, Any]:
     ):
         value = os.environ.get(key, "")
         context[name] = value if re.fullmatch(pattern, value) else "unavailable"
+    # Revalidate codes at the serialization boundary, including tampered objects.
+    failure = QualificationError("unavailable", "unavailable")
+    if isinstance(error, QualificationError):
+        failure = QualificationError(error.stage, error.category)
     return {
         "schema_version": 1,
         "status": "failed",
@@ -289,5 +400,7 @@ def failure_report() -> dict[str, Any]:
         "dataset": DATASET,
         "revision": REVISION,
         "reason": "qualification-did-not-complete",
+        "failure_stage": failure.stage,
+        "failure_category": failure.category,
         "publication_performed": False,
     }

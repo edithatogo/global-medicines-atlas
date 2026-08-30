@@ -5,6 +5,7 @@ import json
 import time
 from pathlib import Path
 from types import SimpleNamespace
+from urllib.parse import quote
 
 import httpx
 import pytest
@@ -122,7 +123,7 @@ def test_local_or_wrong_context_rejected_before_http(
 ) -> None:
     _, calls, transport = synthetic
     monkeypatch.setenv(key, value)
-    with pytest.raises(ValueError, match="Actions"):
+    with pytest.raises(ValueError, match="context/validation"):
         hosted.run_hosted_qualification(SHA, transport=transport)
     assert calls == []
 
@@ -141,7 +142,7 @@ def test_nonpublic_or_mutable_identity_rejected(synthetic, key, value) -> None:
     info = json.loads(responses[hosted.INFO_URL])
     info[key] = value
     responses[hosted.INFO_URL] = json.dumps(info).encode()
-    with pytest.raises(ValueError, match="public revision"):
+    with pytest.raises(ValueError, match="public-before/validation"):
         hosted.run_hosted_qualification(SHA, transport=transport)
 
 
@@ -182,8 +183,19 @@ def test_bad_retrieval_rejected(synthetic, case) -> None:
         responses[url] = httpx.Response(
             302, headers={"Location": url.replace(hosted.REVISION, "main")}
         )
-    with pytest.raises(ValueError, match=r"PBS|anonymous"):
+    categories = {
+        "digest": "pin-mismatch",
+        "oversize": "byte-limit",
+        "http": "http-status",
+        "encoding": "encoding",
+        "redirect": "destination-policy",
+        "credentials": "destination-policy",
+        "mutable": "redirect",
+    }
+    with pytest.raises(hosted.QualificationError) as caught:
         hosted.run_hosted_qualification(SHA, transport=transport)
+    assert caught.value.stage == "archive-read"
+    assert caught.value.category == categories[case]
 
 
 def test_allowed_cdn_redirect_is_anonymous(synthetic) -> None:
@@ -239,7 +251,7 @@ def test_deadline_rejected_before_http(synthetic, monkeypatch) -> None:
         hosted, "time", SimpleNamespace(monotonic=lambda: next(moments))
     )
     assert time.monotonic is original_clock
-    with pytest.raises(ValueError, match="deadline"):
+    with pytest.raises(ValueError, match="public-before/timeout"):
         hosted.run_hosted_qualification(SHA, transport=transport)
     assert not calls
 
@@ -247,7 +259,7 @@ def test_deadline_rejected_before_http(synthetic, monkeypatch) -> None:
 def test_non_object_metadata(synthetic) -> None:
     responses, _, transport = synthetic
     responses[hosted.INFO_URL] = b"[]"
-    with pytest.raises(TypeError, match="public revision"):
+    with pytest.raises(ValueError, match="public-before/structure"):
         hosted.run_hosted_qualification(SHA, transport=transport)
 
 
@@ -257,9 +269,7 @@ def test_http_errors_do_not_expose_urls(synthetic) -> None:
     def fail(request):
         raise httpx.ConnectError("synthetic-secret-url", request=request)
 
-    with pytest.raises(
-        ValueError, match="anonymous PBS transport failed"
-    ) as error:
+    with pytest.raises(ValueError, match="public-before/transport") as error:
         hosted.run_hosted_qualification(
             SHA, transport=httpx.MockTransport(fail)
         )
@@ -289,14 +299,18 @@ def test_revalidated_manifest_and_member_pins(
             "manifest.json", hashlib.sha256(data).hexdigest(), len(data)
         ),
     )
-    with pytest.raises(ValueError, match=r"manifest|member"):
+    with pytest.raises(hosted.QualificationError) as caught:
         hosted.run_hosted_qualification(SHA, transport=transport)
+    assert caught.value.stage == (
+        "member-extraction" if case == "member" else "manifest-validation"
+    )
+    assert caught.value.category == "pin-mismatch"
 
 
 def test_aggregate_report_bound(synthetic, monkeypatch) -> None:
     _, _, transport = synthetic
     monkeypatch.setattr(hosted, "MAX_REPORT_BYTES", 1)
-    with pytest.raises(ValueError, match="report exceeds"):
+    with pytest.raises(ValueError, match="report/byte-limit"):
         hosted.run_hosted_qualification(SHA, transport=transport)
 
 
@@ -354,3 +368,222 @@ def test_workflow_has_durable_receipt_and_no_dataset_write() -> None:
     assert "HF_TOKEN" not in workflow
     assert "upload_folder" not in workflow
     assert "exact_commit" in workflow
+
+
+def test_context_failure_has_safe_diagnostics(synthetic, monkeypatch) -> None:
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/not-main")
+    with pytest.raises(hosted.QualificationError) as caught:
+        hosted.run_hosted_qualification(SHA, transport=synthetic[2])
+    report = hosted.failure_report(caught.value)
+    assert report["failure_stage"] == "context"
+    assert report["failure_category"] == "validation"
+    assert not synthetic[1]
+
+
+@pytest.mark.parametrize(
+    ("error", "category"),
+    [
+        (httpx.ConnectError("secret-url"), "transport"),
+        (httpx.ReadTimeout("secret-url"), "timeout"),
+        (ValueError("secret-value"), "validation"),
+        (KeyError("secret-field"), "structure"),
+        (TypeError("secret-type"), "structure"),
+        (RuntimeError("secret-runtime"), "unexpected"),
+    ],
+)
+def test_stage_category_and_cli_redaction(
+    synthetic, monkeypatch, tmp_path, error, category
+) -> None:
+    def fail(*_args):
+        raise error
+
+    monkeypatch.setattr(hosted, "_public", fail)
+    monkeypatch.setattr(
+        cli,
+        "run_hosted_qualification",
+        lambda commit: hosted.run_hosted_qualification(
+            commit, transport=synthetic[2]
+        ),
+    )
+    output = tmp_path / "diagnostic.json"
+    assert cli.main(["--exact-commit", SHA, "--output", str(output)]) == 1
+    raw = output.read_text()
+    assert "secret" not in raw
+    report = json.loads(raw)["report"]
+    assert report["failure_stage"] == "public-before"
+    assert report["failure_category"] == category
+
+
+@pytest.mark.parametrize(
+    ("target", "stage"),
+    [
+        ("AcquisitionPolicy", "transport-setup"),
+        ("read_pbs_v3_member", "member-extraction"),
+        ("build_pbs_xml_member_binding", "member-binding"),
+        ("qualify_pbs_historical_projections", "projection-qualification"),
+    ],
+)
+def test_processing_stage_is_retained(
+    synthetic, monkeypatch, target, stage
+) -> None:
+    def fail(*_args, **_kwargs):
+        raise ValueError("synthetic-source-secret")
+
+    monkeypatch.setattr(hosted, target, fail)
+    with pytest.raises(hosted.QualificationError) as caught:
+        hosted.run_hosted_qualification(SHA, transport=synthetic[2])
+    assert hosted.failure_report(caught.value)["failure_stage"] == stage
+    assert "secret" not in str(caught.value)
+
+
+@pytest.mark.parametrize(
+    ("pin_name", "stage"),
+    [
+        ("MANIFEST", "manifest-read"),
+        ("RECEIPT", "receipt-read"),
+        ("ARCHIVE", "archive-read"),
+    ],
+)
+def test_file_failure_stage(synthetic, pin_name, stage) -> None:
+    responses, _, transport = synthetic
+    responses[hosted.file_url(getattr(hosted, pin_name))] = b""
+    with pytest.raises(hosted.QualificationError) as caught:
+        hosted.run_hosted_qualification(SHA, transport=transport)
+    report = hosted.failure_report(caught.value)
+    assert report["failure_stage"] == stage
+    assert report["failure_category"] == "pin-mismatch"
+
+
+def test_second_public_check_has_distinct_stage(synthetic, monkeypatch) -> None:
+    count = 0
+    original = hosted._public
+
+    def check(*args):
+        nonlocal count
+        count += 1
+        if count == 2:
+            raise ValueError("secret")
+        return original(*args)
+
+    monkeypatch.setattr(hosted, "_public", check)
+    with pytest.raises(hosted.QualificationError) as caught:
+        hosted.run_hosted_qualification(SHA, transport=synthetic[2])
+    assert caught.value.stage == "public-after"
+
+
+def test_receipt_validation_stage(synthetic, monkeypatch) -> None:
+    def fail(_data):
+        raise ValueError("secret-receipt")
+
+    monkeypatch.setattr(
+        hosted, "SourceReceipt", SimpleNamespace(model_validate_json=fail)
+    )
+    with pytest.raises(hosted.QualificationError) as caught:
+        hosted.run_hosted_qualification(SHA, transport=synthetic[2])
+    assert caught.value.stage == "receipt-validation"
+
+
+def test_failure_codes_revalidated_and_unknown_errors_not_inspected() -> None:
+    error = hosted.QualificationError("secret-stage", "secret-category")
+    assert "secret" not in str(error)
+    error.stage = "secret-mutated-stage"
+    error.category = "secret-mutated-category"
+    report = hosted.failure_report(error)
+    assert report["failure_stage"] == "unavailable"
+    assert report["failure_category"] == "unexpected"
+    assert "secret" not in json.dumps(report)
+
+    class SensitiveError(Exception):
+        def __str__(self) -> str:
+            raise AssertionError("Do not inspect exception text")
+
+    report = hosted.failure_report(SensitiveError())
+    assert report["failure_stage"] == "unavailable"
+    assert report["failure_category"] == "unavailable"
+
+
+def test_dns_policy_failure_category(synthetic) -> None:
+    assert not synthetic[1]
+
+    def fail(_request):
+        raise hosted.DestinationPolicyError("secret-code", "secret-dns-detail")
+
+    with pytest.raises(hosted.QualificationError) as caught:
+        hosted.run_hosted_qualification(
+            SHA, transport=httpx.MockTransport(fail)
+        )
+    assert caught.value.category == "destination-policy"
+    assert caught.value.stage == "public-before"
+
+
+@pytest.mark.parametrize("pin_name", ["MANIFEST", "RECEIPT"])
+@pytest.mark.parametrize("empty_assignment", [False, True])
+def test_observed_hub_cache_redirect(
+    synthetic, pin_name, empty_assignment
+) -> None:
+    responses, _, transport = synthetic
+    pin = getattr(hosted, pin_name)
+    url = hosted.file_url(pin)
+    original_path = url.split("huggingface.co", 1)[1]
+    target = (
+        f"https://huggingface.co/api/resolve-cache/datasets/{hosted.DATASET}/"
+        f"{hosted.REVISION}/{quote(pin.path, safe='')}"
+        f"?{quote(original_path, safe='')}{'=' if empty_assignment else ''}&etag=synthetic"
+    )
+    responses[target] = responses[url]
+    responses[url] = httpx.Response(302, headers={"Location": target})
+    assert (
+        hosted.run_hosted_qualification(SHA, transport=transport)["status"]
+        == "passed"
+    )
+
+
+@pytest.mark.parametrize(
+    "case",
+    [
+        "unrelated",
+        "mutable",
+        "double-path",
+        "double-query",
+        "traversal",
+        "unknown",
+        "duplicate",
+        "bare-on-initial",
+        "nonempty-original",
+    ],
+)
+def test_cache_redirect_remains_exact(synthetic, case) -> None:
+    responses, _, transport = synthetic
+    pin = hosted.RECEIPT
+    url = hosted.file_url(pin)
+    original_path = url.split("huggingface.co", 1)[1]
+    path = (
+        f"/api/resolve-cache/datasets/{hosted.DATASET}/{hosted.REVISION}/"
+        f"{quote(pin.path, safe='')}"
+    )
+    query = quote(original_path, safe="")
+    if case == "unrelated":
+        query = quote(original_path + "/other", safe="")
+    elif case == "mutable":
+        path = path.replace(hosted.REVISION, "main")
+    elif case == "double-path":
+        path = path.replace("%2F", "%252F")
+    elif case == "double-query":
+        query = quote(query, safe="")
+    elif case == "traversal":
+        path = path.replace(quote(pin.path, safe=""), "%2E%2E%2Fother")
+    elif case == "unknown":
+        query += "&token=secret"
+    elif case == "duplicate":
+        query += "&" + query
+    elif case == "nonempty-original":
+        query += "=other"
+    else:
+        path = original_path
+    responses[url] = httpx.Response(
+        302, headers={"Location": f"https://huggingface.co{path}?{query}"}
+    )
+    with pytest.raises(
+        hosted.QualificationError, match="receipt-read/redirect"
+    ):
+        hosted.run_hosted_qualification(SHA, transport=transport)

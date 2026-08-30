@@ -2,9 +2,20 @@
 
 The prepared `pbs-historical-qualification.yml` workflow performs read-only
 structural/storage qualification, not acquisition from a new source, dataset
-publication, date-era qualification or semantic promotion. It has not been
-dispatched by this implementation task. Dispatch requires reconciliation of
-the exact merged main commit and the read-only scope below.
+publication, date-era qualification or semantic promotion. The first authorized
+[run 33334961106](https://github.com/edithatogo/global-medicines-atlas/actions/runs/33334961106)
+at `a65469cf40c92ad895b82cee915133749cb2d6ca` failed. Its
+[durable failure receipt](https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5471203363)
+did not identify the failure stage. A metadata-only probe subsequently
+reproduced rejection of the Hub GET cache redirect for both manifest and B1:
+the response used an encoded nested path and an encoded original-path query
+key with an empty value. This is a client redirect compatibility defect, not
+evidence of an upstream defect or successful corpus qualification. The corrected
+metadata-only recheck passed public-state, manifest and original B1 digest/size
+and identity validation using the same DNS-pinned transport. No ZIP/XML was
+read locally. The correction has not been dispatched. Any retry requires
+reconciliation of its exact merged main commit and the unchanged read-only
+scope below.
 
 ## Existing authority and immutable inputs
 
@@ -39,6 +50,13 @@ cookies cleared, identity content encoding required, bounded byte counts and a
 300-second retrieval deadline. Existing DNS-pinned transport rejects unsafe IP
 destinations. Redirects allow only exact pinned Hub/cache paths and the observed
 `us.aws.cdn.hf.co` delivery host; signed delivery URLs are never logged.
+Hub cache redirects may use exactly the original pinned file suffix or its
+single canonical percent-encoded form. An original-path query component is
+admitted only once, only on that cache path, and only when its key equals the
+canonical encoding of the exact original resolve path and its value is empty
+(bare key or explicit `=`). Named query keys remain `download` and
+`etag`, without duplicates. Mutable/unrelated paths, traversal, double encoding
+and unknown query keys remain rejected. No host or revision was added.
 
 The 313 MB XML is processed with the existing finite ZIP/XML, entity, reference
 index and batch limits. Parsing uses trees and multiple passes; this is not a
@@ -54,6 +72,18 @@ publication-receipt link. A canonical compact-JSON SHA-256 binds the report in
 its envelope. Errors emit a fixed failure receipt without exception text,
 sample source values, credentials or signed URLs. No raw source files or
 Parquet products are written to disk by the qualifier.
+
+Failure receipts additionally contain allowlisted `failure_stage` and
+`failure_category` codes. Stages distinguish context and transport setup,
+public-state checks before/after retrieval, manifest/B1/ZIP reads, manifest/B1
+validation, member extraction/binding, projection qualification and report
+serialization. Categories distinguish validation/structure, transport/timeout,
+destination policy/redirect, HTTP status, encoding, byte limits, pin mismatch
+and unexpected errors. They are selected from exception types or explicit
+control failures, never exception text, HTTP bodies, headers or source values.
+Unknown errors and the workflow's failure-only fallback retain `unavailable`
+codes instead of guessing a stage. Codes are checked again when the receipt
+is serialized. Failure diagnostics do not bypass any original guard or limit.
 
 An `always()` step posts the complete bounded receipt to issue #341, creating
 a fixed failure receipt if the qualification step left none. Posting failure
