@@ -189,9 +189,11 @@
   require exact Python 3.14.6 rather than local 3.14.7; one exceeds the unchanged
   query latency budget. Later local lanes did not execute after failure.
   Required exact-head hosted lanes passed; no local-all-green claim.
-- [~] Run Conductor review, fix findings, open a scoped pull request, wait for
+- [x] Run Conductor review, fix findings, open a scoped pull request, wait for
   required hosted checks, merge, and reconcile evidence.
   Three PR #367 review findings fixed and resolved; implementation merged.
-  Final publication/checkpoint reconciliation is under review.
+  Publication/checkpoint reconciliation merged as PR #368 (`c1f51f6`),
+  reviewed head `6aafcdd`; required checks passed. Its recording-time review
+  finding was corrected before merge. See `review.md` for the AC audit.
 - [ ] Keep archive tasks pending until the exact parity/publication package and
   maintainer approval are recorded.
