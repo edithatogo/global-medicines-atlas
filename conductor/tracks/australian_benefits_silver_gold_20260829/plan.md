@@ -84,6 +84,17 @@
   hosted execution and add source-specific harmonised annotation mappings.
   Cell-storage typing is not a substitute for domain/currency/date mapping.
 
+## Workbook portability review fixes
+
+- [x] Preserve sheet identity when combining batches and round-tripping
+  Parquet, including an explicit empty-sheet manifest and property presence.
+  (`dd5e02a`; intended regression failure followed by 149 focused passes;
+  Ruff, ty and BasedPyright pass.)
+- [~] Recheck exact-head hosted gates after integration with PR #375.
+  Previous-head full: 3,006 passed, three failed, one skipped, 96.56% coverage;
+  two interpreter-pin failures and a product-runner failure that passed one
+  bounded isolated rerun. This is not an all-green local-full claim.
+
 ## Phase 2: Implement MBS Silver (AC-01, AC-02, AC-06)
 
 - [~] Write failing golden, property, malformed-input, schema-drift,
