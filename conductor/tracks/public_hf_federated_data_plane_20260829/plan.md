@@ -136,8 +136,9 @@
 - [x] Preserve Bronze stratum in the producer-to-contract identity comparison.
   (`ac31ecb`; P1 regression accepted substituted B1/B2 before correction;
   124 focused federation tests passed, new module 100% branch coverage.)
-- [~] Requalify the corrected distribution inventory through exact-head hosted
-  checks. Prior local full run: 3052 passed, 3 failed, 1 skipped, 96.60%; two
+- [x] Requalify the corrected distribution inventory through exact-head hosted
+  checks. PR #377 merged as `eaac37c` after all 38 checks passed on `63afa0b`.
+  Prior local full run: 3052 passed, 3 failed, 1 skipped, 96.60%; two
   pinned Python mismatch failures and a product-runner failure whose isolated
   rerun passed. No full exact-corrected-head pass is claimed.
 
