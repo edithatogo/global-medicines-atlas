@@ -2,7 +2,9 @@
 
 import hashlib
 import json
+import time
 from pathlib import Path
+from types import SimpleNamespace
 
 import httpx
 import pytest
@@ -232,7 +234,11 @@ def test_redirect_contracts(synthetic, case) -> None:
 def test_deadline_rejected_before_http(synthetic, monkeypatch) -> None:
     _, calls, transport = synthetic
     moments = iter([0, 301])
-    monkeypatch.setattr(hosted.time, "monotonic", lambda: next(moments))
+    original_clock = time.monotonic
+    monkeypatch.setattr(
+        hosted, "time", SimpleNamespace(monotonic=lambda: next(moments))
+    )
+    assert time.monotonic is original_clock
     with pytest.raises(ValueError, match="deadline"):
         hosted.run_hosted_qualification(SHA, transport=transport)
     assert not calls
