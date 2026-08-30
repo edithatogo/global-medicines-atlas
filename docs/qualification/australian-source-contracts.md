@@ -327,3 +327,32 @@ unmapped until a source-specific field contract is established; native prices
 are not dropped. Date/currency conversion, fuller presentation/price schemas,
 real-corpus qualification and public v4 derivatives remain pending. No source
 data was acquired or published for this synthetic-only slice.
+
+## PBS native entity rows
+
+`iter_pbs_entity_batches` groups consecutive native slots into one row per
+XML element occurrence, including empty and unmapped elements. Each row
+exposes the expanded name, native text/tail and states, literal `xml:id` and
+its missing/value state, structural destination, parent entity ID and item
+occurrence ID. Parent links preserve mixed-content structure without joining
+or normalising descendant text. These are source tree links, not clinical or
+terminology relationships.
+
+The complete original mapped rows remain nested in `native_fields`; flattening
+them in order reproduces the input inventory, including all attributes,
+unknown fields, native prices/dates, B1/B2 identities and field addresses.
+Duplicate `xml:id` values do not merge occurrences; absent IDs and explicit
+empty IDs stay distinct. Reference code text/resources remain native, not
+validated vocabulary or funding assertions.
+
+Additional grouping is limited to 4,096 native fields and 1 MiB of compact
+UTF-8 JSON field representations per element. Output batches are limited to
+the requested 1–4,096 rows and 8 MiB of compact JSON entity representations.
+These are encoded-payload budgets, not exact Python/Arrow resident-memory
+limits; the inherited XML parser still holds a bounded source tree. Oversized
+elements fail without truncation. Consumers must discard partial output if an
+iterator raises. Synthetic tests cover cross-batch grouping, byte-budget
+flushing, explicit rejection, duplicate/blank/missing IDs, empty elements,
+mixed content and metadata-aware Parquet/native-field reconstruction.
+Real-corpus qualification, domain-wide value harmonisation and public
+derivative publication remain pending.
