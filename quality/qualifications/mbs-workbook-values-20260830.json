@@ -1,4 +1,7 @@
 {
+  "durable_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5468551344",
+  "artifact_id": 9731765993,
+  "artifact_sha256": "d13b26712334385c9263b4423e371de3d5fab255a9298a3daaaf52a7df520f8a",
   "workflow_commit": "08b518df81610a17864a0e6db35c6a7107afc427",
   "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/33310284274",
   "retrieved_at": "2026-08-30T11:59:30+00:00",

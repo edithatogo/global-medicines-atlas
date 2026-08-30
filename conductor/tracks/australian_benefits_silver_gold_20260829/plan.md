@@ -114,6 +114,11 @@
 
 ## Workbook value harmonisation
 
+- [x] Retain the durable issue receipt URL and exact hosted artifact ID/digest
+  in the workbook value qualification record and append-only ledger.
+  Review correction for PR #381; 11 focused/context tests pass. No rerun or
+  source acquisition was needed.
+
 - [x] Review correction: leave the hosted workbook date profile unselected;
   the XML date profile does not independently qualify the workbook era.
   (`3df81f6`; 134 focused/context tests pass; Ruff, ty, BasedPyright pass.)
