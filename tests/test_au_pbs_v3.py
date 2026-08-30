@@ -127,9 +127,7 @@ def test_hosted_qualification_binds_raw_member_and_projection(
     admission = manifest["admission"]
     assert isinstance(admission, dict)
     assert admission["state"] == "accepted"
-    assert (
-        tmp_path / "stage/bronze/2026-04-01/source-receipt.json"
-    ).exists()
+    assert (tmp_path / "stage/bronze/2026-04-01/source-receipt.json").exists()
     assert (tmp_path / "stage/bronze/2026-04-01/admission.json").exists()
 
 
