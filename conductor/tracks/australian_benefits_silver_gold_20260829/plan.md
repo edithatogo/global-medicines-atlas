@@ -64,8 +64,36 @@
   hosted CI. No raw receipt or credential publication occurred.
   (`ddb62f6`; synthetic regression red then 104 focused tests passed,
   100% module branch coverage, Ruff/ty/BasedPyright passed.)
-- [~] Recheck exact-head hosted gates after the privacy fix, then merge only
+- [x] Recheck exact-head hosted gates after the privacy fix, then merge only
   after the coordinated data-plane reader merge hold is released.
+  PR #374 merged `8a5a790` after all 38 checks passed on `1d2b6af` and the
+  privacy review was resolved. Final local full: 2,981 passed, four failed,
+  one skipped, 96.54%; runtime/product/rehearsal limitations remain recorded.
+
+## Legacy workbook cell prerequisite
+
+- [~] Preserve every sheet/cell in typed storage-level Arrow candidates,
+  including empty sheets, raw/display values, presence, formula caches,
+  error codes, exact decimals, boolean values and field addresses.
+- [~] Reject negative shared-string references and test extreme decimal
+  exponents without losing native values or relying on Decimal trap settings.
+  String-index guard implemented in `18d304e`; 60 focused tests passed.
+  Cell candidates in `79a11ee`; 148 combined focused tests pass, static
+  checks pass; full and hosted qualification remain pending.
+- [ ] Qualify the exact legacy workbook header/style/epoch denominator in
+  hosted execution and add source-specific harmonised annotation mappings.
+  Cell-storage typing is not a substitute for domain/currency/date mapping.
+
+## Workbook portability review fixes
+
+- [x] Preserve sheet identity when combining batches and round-tripping
+  Parquet, including an explicit empty-sheet manifest and property presence.
+  (`dd5e02a`; intended regression failure followed by 149 focused passes;
+  Ruff, ty and BasedPyright pass.)
+- [~] Recheck exact-head hosted gates after integration with PR #375.
+  Previous-head full: 3,006 passed, three failed, one skipped, 96.56% coverage;
+  two interpreter-pin failures and a product-runner failure that passed one
+  bounded isolated rerun. This is not an all-green local-full claim.
 
 ## Phase 2: Implement MBS Silver (AC-01, AC-02, AC-06)
 

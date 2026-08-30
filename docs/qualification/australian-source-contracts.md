@@ -81,7 +81,36 @@ Real-source date-profile qualification, all four workbook annotation tables, PBS
 typed tables, comparison events, public v4 qualification and promotion remain
 unfinished. The module does not acquire or publish any source bytes.
 
-### Reused parser foundations
+### Legacy workbook cell candidates
+
+`mbs_workbook_silver.iter_workbook_silver_batches` preserves every sheet and
+cell from the bounded native XLSX parser. Empty sheets yield an empty,
+schema-bearing batch, so absence of cells does not erase sheet identity.
+Sheet names, paths, relationship IDs, dimensions and property presence remain
+in metadata; cells retain their native properties, presence list, coordinates,
+row/column addresses and exact source/receipt digests. Receipt metadata uses
+the same credential-safe helper as the XML tables.
+
+The storage-type interpretation follows the
+[Open XML cell types](https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.spreadsheet.cellvalues?view=openxml-3.0.1):
+shared/inline strings stay strings, numeric values use exact decimal128(38,9),
+booleans require 0/1, errors retain their codes, and date-tagged text remains
+text. Formula text and cached results are both preserved, marked as cache
+evidence, and never evaluated. Unknown types, missing values, empty nodes,
+invalid numerics and unrepresentable precision/exponents remain distinguishable.
+Extreme exponents are bounded before Arrow conversion; Decimal context traps
+cannot admit a non-finite result. Negative/out-of-range shared-string indices
+are rejected instead of using Python negative indexing.
+
+These are cell-storage types, not an inferred domain mapping. Style-indexed
+numeric serials are not silently interpreted as dates, currencies or amounts.
+Legacy element/class/technology/disease/tissue and other annotations survive
+as native cells, but an exact header/style/epoch profile and hosted real-source
+qualification are still needed for harmonised annotation tables. Bounded
+synthetic four-sheet tests do not prove the full archived workbook denominator.
+No raw source acquisition, formula execution or public publication occurs here.
+
+### Parser reuse
 
 The implementation reuses the existing MBS native XML/workbook models, PBS
 namespace and bounded parser policy, shared receipt-to-provenance validation,
