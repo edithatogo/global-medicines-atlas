@@ -221,6 +221,11 @@
   Implemented `a4bc2fe`; 115 focused/context passes, 98.70% new-module
   coverage; Ruff, ty and BasedPyright pass. Full/hosted review pending.
 
+- [x] Entity review fix: reuse the nested Arrow schema once per input rather
+  than reconstructing it for every source element. (`a5766dc`; regression
+  red at 10 constructions instead of one; 116 focused/context passes,
+  98.78% coverage, static checks pass. Fresh hosted recheck pending.)
+
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
   and source-native identity.
