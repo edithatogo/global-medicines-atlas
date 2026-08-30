@@ -121,7 +121,7 @@
 
 ## Phase 4: Replace the monthly scraper safely (AC-05, AC-06)
 
-- [~] Write failing tests for month ranges, historical URL generation,
+- [x] Write failing tests for month ranges, historical URL generation,
   item/participant naming, timeouts, retries, rate limits, 404s, empty output,
   mixed HTML tables, XML P7 filtering, and deterministic projections.
   Partial foundation: `79e16b3` covers bounded historical months/URLs/names,
@@ -133,9 +133,12 @@
   reported coverage for the two new modules. `1349c93` additionally retains
   the separate donor `mbs/item` profile and locks serialized table shape.
   Live scheduling, complex HTML spans and durable admission receipts remain pending.
-- [ ] Confirm the intended failure before implementation.
-- [ ] Reuse GMA HTTP destination, admission, receipt, source-health, and
+- [x] Confirm the intended failure before implementation. (`7230721`, PR #364)
+- [~] Reuse GMA HTTP destination, admission, receipt, source-health, and
   catalogue-driven scheduling controls.
+  Typed HTML admission now uses the shared content-addressed Bronze decision
+  and append-only store; live-only usable-table health uses shared escalation.
+  Hosted runner and catalogue-driven scheduling integration remain pending.
 - [ ] Keep old endpoint behavior as a compatibility probe and source-drift
   fixture; use current official MBS releases for production acquisition.
 - [ ] Replace heterogeneous `pandas.concat` output with source/table identities

@@ -56,12 +56,26 @@ therefore retains distinct attempts without misrepresenting live evidence.
 
 ## Remaining Phase 4 work
 
+`mbs_admission.admit_mbs_html_tables` now binds each table contract, source
+digest, acquisition event and decision clock to the existing Bronze admission
+record. Profile failures are quarantined with no typed projections; mismatched
+source bytes are rejected before any decision. Decisions use the shared
+append-only `persist_admission_decision` store. Serialized outcomes reject
+cross-source joins and cannot set `public_data_ready` to true.
+
+`mbs_admission_health` uses the shared source-health receipt and escalation
+contract for live-class acquisitions only. Its observation is at retrieval
+time, leaves freshness unknown, and records table-profile failures separately
+from successful usable-table processing. Synthetic rehearsals cannot enter
+live health history. Neither technical acceptance nor health availability
+establishes rights, current coverage, or anonymous public archive verification.
+
 This is a regression foundation, not completion of the monthly scraper:
 
-1. Bind the typed table/P7 projectors to acquisition outcomes and durable
-   admission decisions; qualify additional HTML layout profiles as observed.
-2. Generate durable admission/source-health
-   receipts; distinguish transport failures from table/empty-output failures.
+1. Connect these admission/health primitives to the hosted production runner
+   and P7 projections; qualify additional HTML layout profiles as observed.
+2. Persist admission/source-health receipts from that runner alongside B1/B2;
+   primitive fixture tests alone do not prove a hosted acquisition.
 3. Connect supported official releases and catalogue-driven scheduling to the
    hosted public Hugging Face publication path. Require anonymous archive
    verification before reporting an acquired update or removing temporary
