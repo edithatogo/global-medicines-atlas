@@ -371,7 +371,15 @@
   Implemented `2ce70fa`; four intended red failures followed by 300 combined
   focused/context/ecosystem passes and 78 final harness passes, 98.81% changed
   coverage. Static/security checks pass; pre-freeze agent review strengthened
-  exact subtype assertions. Frozen full and final hosted gates pending.
+  exact subtype assertions. Frozen full `4c73c76`: 3,379 passed, seven failed,
+  one skipped, 93.75%; two interpreter pins, product latency, three rehearsal
+  timeouts and a worker SIGSEGV in unchanged product CLI. Isolated crash/context
+  checks passed; isolated product latency still failed at 822.028ms >250ms.
+  Local limitations retained. Final-head hosted gates pending.
+
+- [x] Review documentation correction: distinguish the earlier dispatched
+  redirect fix from the pending transport-recovery version. (`30d9a08`;
+  context validation passes; no production change after frozen full.)
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
