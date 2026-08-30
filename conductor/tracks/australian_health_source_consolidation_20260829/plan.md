@@ -150,15 +150,17 @@
 
 ## Phase 5: Preserve design intent and prepare archival (AC-01, AC-08, AC-09)
 
-- [ ] Map Neo4j, SNOMED CT-AU, AMT, ATC hierarchy, NLP/NER, temporal graph,
+- [x] Map Neo4j, SNOMED CT-AU, AMT, ATC hierarchy, NLP/NER, temporal graph,
   Spark, and Airflow commitments to existing GMA capabilities or successor
   tasks; label each as implemented, preview, rejected, or separately gated.
+  (`4c1fae7`; omission-sensitive successor map and existing plan references)
 - [x] Verify the exact donor XML, legacy workbook, and both complete Git-history
   receipts from the public Hugging Face data-plane track. (`4d1dae4`)
 - [ ] Publish compatibility and successor notices in both donor repositories,
   link exact GMA/Hugging Face destinations, and run downstream canaries.
-- [ ] Prepare non-destructive GitHub archive commands and a rollback checklist;
+- [x] Prepare non-destructive GitHub archive commands and a rollback checklist;
   stop at the compatibility-archive gate for the exact two repositories.
+  (`4c1fae7`; commands documented only, no archive approval or execution)
 - [ ] Phase Verification & Checkpoint: no donor scope is unaccounted for and no
   archive action has occurred without the final human gate.
 

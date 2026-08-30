@@ -28,6 +28,41 @@ QUALIFICATION = (
 SCHEMA = ROOT / "contracts" / "australian-donor-inventory.schema.json"
 
 
+def test_donor_successor_map_covers_every_roadmap_commitment() -> None:
+    path = ROOT / "quality/qualifications/australian-donor-successors.json"
+    document = json.loads(path.read_text(encoding="utf-8"))
+    inventory = json.loads(QUALIFICATION.read_text(encoding="utf-8"))
+    assert document["donors"] == {
+        item["repository"]: item["commit"]
+        for item in inventory["denominator"]["repositories"]
+    }
+    rows = document["capabilities"]
+    assert {row["id"] for row in rows} == {
+        "neo4j",
+        "snomed-ct-au",
+        "amt",
+        "atc-hierarchy",
+        "nlp-ner",
+        "temporal-graph",
+        "spark",
+        "airflow",
+    }
+    assert len(rows) == 8
+    for row in rows:
+        if row["id"] in {"snomed-ct-au", "amt", "atc-hierarchy"}:
+            assert row["status"] == "separately_gated"
+            assert row["successor_task"].startswith("Acquire ")
+    for row in rows:
+        assert row["status"] in {"preview", "rejected", "separately_gated"}
+        assert row["implemented_in_donor"] is False
+        assert row["reason"]
+        target = (ROOT / row["successor_plan"]).resolve()
+        assert target.is_relative_to(ROOT)
+        assert target.is_file()
+        assert row["successor_task"] in target.read_text(encoding="utf-8")
+    assert document["archive_authorized"] is False
+
+
 def _git(repository: Path, *arguments: str) -> str:
     executable = shutil.which("git")
     if executable is None:
