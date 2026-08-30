@@ -209,8 +209,13 @@ def _date_encoding(row: dict[str, Any]) -> str:
     value = row["display_value"]
     if value is None:
         return row["domain_value_state"]
-    if row["cell_type"] in {None, "n"}:
-        return "numeric_storage_uninterpreted"
+    storage_categories = {
+        None: "numeric_storage_uninterpreted",
+        "n": "numeric_storage_uninterpreted",
+        "d": "native_date_storage_uninterpreted",
+    }
+    if row["cell_type"] in storage_categories:
+        return storage_categories[row["cell_type"]]
     if row["cell_type"] not in _TEXT_STORAGE:
         return "unsupported_storage"
     return _text_date_shape(value)

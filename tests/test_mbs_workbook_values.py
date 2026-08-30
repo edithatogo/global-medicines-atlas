@@ -88,6 +88,7 @@ def test_dates_need_explicit_profile_and_serials_are_never_guessed() -> None:
             "other_text",
         ),
         ('t="n"><v>45000</v>', "numeric_storage_uninterpreted"),
+        ('t="d"><v>2024-07-01</v>', "native_date_storage_uninterpreted"),
         ('t="b"><v>1</v>', "unsupported_storage"),
         ('t="e"><v>#VALUE!</v>', "source_error"),
         ('t="inlineStr"><is><t></t></is>', "empty_text"),

@@ -262,7 +262,8 @@ derivative.
 
 The existing hosted value profiler additionally reports versioned aggregate
 date-encoding counts and per-field denominators. These distinguish native
-headers, absent/null values, empty text, errors, numeric storage, unsupported
+headers, absent/null values, empty text, errors, numeric storage, native OOXML
+date storage (`t="d"`, kept distinct from ordinary text), unsupported
 storage, and three exact ASCII text shapes. The shape names describe character
 widths and separators, not day/month order or calendar validity. For example,
 `99.99.0000` has a two-two-four dot shape but is not certified as a date.
