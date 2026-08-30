@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "donors": {
+    "edithatogo/aus_mbs_pbs_graph": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+    "edithatogo/aus-health-data-scraper": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf"
+  },
+  "archive_authorized": false,
+  "status_interpretation": "Preview means retained design only, not implemented or production qualified. Rejected means no current dependency adoption; historical intent is retained.",
+  "capabilities": [
+    {
+      "id": "neo4j", "status": "preview", "implemented_in_donor": false,
+      "successor_plan": "conductor/tracks/federated_medallion_frontier_experiments_20260829/plan.md",
+      "successor_task": "Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections",
+      "reason": "Optional projections over portable Gold tables; no mandatory graph service or automatic promotion."
+    },
+    {
+      "id": "snomed-ct-au", "status": "separately_gated", "implemented_in_donor": false,
+      "successor_plan": "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md",
+      "successor_task": "isolate lexical, ontology-assisted, embedding, and NLP candidates.",
+      "reason": "Official terminology acquisition and mappings require exact rights and access approval; references never imply permission to publish RF2 bytes."
+    },
+    {
+      "id": "amt", "status": "separately_gated", "implemented_in_donor": false,
+      "successor_plan": "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md",
+      "successor_task": "Keep PBS funding/formulary, ARTG regulatory, AMT terminology, and ATC",
+      "reason": "PBS-native AMT references already parse; complete terminology hierarchy and official mapping ingestion do not. Restricted bytes remain separately gated."
+    },
+    {
+      "id": "atc-hierarchy", "status": "separately_gated", "implemented_in_donor": false,
+      "successor_plan": "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md",
+      "successor_task": "classification assertions independent in storage, lineage, and coverage.",
+      "reason": "Extracted PBS ATC codes are not a complete hierarchy; full hierarchy acquisition requires source-specific rights and denominator evidence."
+    },
+    {
+      "id": "nlp-ner", "status": "preview", "implemented_in_donor": false,
+      "successor_plan": "conductor/tracks/federated_medallion_frontier_experiments_20260829/plan.md",
+      "successor_task": "Benchmark lexical, ontology-assisted, LanceDB embedding/NLP",
+      "reason": "Candidate extraction only; calibration and adjudication precede any Gold promotion or clinical/policy claim."
+    },
+    {
+      "id": "temporal-graph", "status": "preview", "implemented_in_donor": false,
+      "successor_plan": "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md",
+      "successor_task": "Generate stable node/edge tables for MBS, PBS, medicines, restrictions,",
+      "reason": "Source-faithful temporal identity exists; Australian cross-domain graph and reviewed MBS-PBS edges remain successor work."
+    },
+    {
+      "id": "spark", "status": "rejected", "implemented_in_donor": false,
+      "successor_plan": "conductor/tracks/federated_medallion_frontier_experiments_20260829/plan.md",
+      "successor_task": "operational burden, fallback, rollback, and withdrawal behavior.",
+      "reason": "No demonstrated requirement justifies a distributed Spark dependency. Reconsider only through a measured frontier workload and separate adoption decision."
+    },
+    {
+      "id": "airflow", "status": "rejected", "implemented_in_donor": false,
+      "successor_plan": "conductor/tracks/australian_health_source_consolidation_20260829/plan.md",
+      "successor_task": "catalogue-driven scheduling controls.",
+      "reason": "Reuse governed GitHub Actions and catalogue scheduling. No demonstrated requirement for another orchestration service; hosted execution still needs evidence."
+    }
+  ]
+}
