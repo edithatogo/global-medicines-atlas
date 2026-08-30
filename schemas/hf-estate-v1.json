@@ -1,0 +1,284 @@
+{
+  "$defs": {
+    "EnumerationReceipt": {
+      "additionalProperties": false,
+      "description": "Both stable scans must exhaust below the explicit result cap.",
+      "properties": {
+        "kind": {
+          "enum": [
+            "model",
+            "dataset",
+            "space",
+            "collection"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "count": {
+          "minimum": 0,
+          "title": "Count",
+          "type": "integer"
+        },
+        "limit": {
+          "maximum": 1001,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "entries_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Entries Sha256",
+          "type": "string"
+        },
+        "repeated_scan_equal": {
+          "const": true,
+          "default": true,
+          "title": "Repeated Scan Equal",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "count",
+        "limit",
+        "entries_sha256"
+      ],
+      "title": "EnumerationReceipt",
+      "type": "object"
+    },
+    "EstateEntry": {
+      "additionalProperties": false,
+      "description": "Allowlisted metadata; unknown rights stay explicitly unassessed.",
+      "properties": {
+        "kind": {
+          "enum": [
+            "model",
+            "dataset",
+            "space",
+            "collection"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "identity": {
+          "title": "Identity",
+          "type": "string"
+        },
+        "identity_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Identity Sha256",
+          "type": "string"
+        },
+        "private": {
+          "title": "Private",
+          "type": "boolean"
+        },
+        "gated": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "enum": [
+                "auto",
+                "manual"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Gated"
+        },
+        "revision": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{40}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Revision"
+        },
+        "metadata_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Metadata Sha256",
+          "type": "string"
+        },
+        "collection_item_count": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Collection Item Count"
+        },
+        "scope": {
+          "enum": [
+            "australian_source_archive",
+            "gma_related",
+            "unassessed"
+          ],
+          "title": "Scope",
+          "type": "string"
+        },
+        "rights_state": {
+          "const": "not_assessed",
+          "default": "not_assessed",
+          "title": "Rights State",
+          "type": "string"
+        },
+        "publication_state": {
+          "const": "not_assessed",
+          "default": "not_assessed",
+          "title": "Publication State",
+          "type": "string"
+        },
+        "disposition": {
+          "enum": [
+            "retain_private",
+            "review_required"
+          ],
+          "title": "Disposition",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "identity",
+        "identity_sha256",
+        "private",
+        "gated",
+        "revision",
+        "metadata_sha256",
+        "collection_item_count",
+        "scope",
+        "disposition"
+      ],
+      "title": "EstateEntry",
+      "type": "object"
+    },
+    "OwnerVisibilityEvidence": {
+      "additionalProperties": false,
+      "description": "Minimal observed read grants; no token identity or value is permitted.",
+      "properties": {
+        "owner": {
+          "title": "Owner",
+          "type": "string"
+        },
+        "scope_owner": {
+          "title": "Scope Owner",
+          "type": "string"
+        },
+        "scope_kind": {
+          "const": "user",
+          "title": "Scope Kind",
+          "type": "string"
+        },
+        "endpoint": {
+          "const": "https://huggingface.co/api/whoami-v2",
+          "title": "Endpoint",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "permissions": {
+          "items": {
+            "enum": [
+              "repo.content.read",
+              "repo.access.read",
+              "collection.read"
+            ],
+            "type": "string"
+          },
+          "title": "Permissions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "owner",
+        "scope_owner",
+        "scope_kind",
+        "endpoint",
+        "observed_at",
+        "permissions"
+      ],
+      "title": "OwnerVisibilityEvidence",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "A stable inventory with separately recorded credential-scope evidence.",
+  "properties": {
+    "schema_version": {
+      "const": "hf-estate-v1",
+      "default": "hf-estate-v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "owner": {
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Owner",
+      "type": "string"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "title": "Observed At",
+      "type": "string"
+    },
+    "enumeration_scope": {
+      "const": "authenticated_visible_owner_metadata",
+      "default": "authenticated_visible_owner_metadata",
+      "title": "Enumeration Scope",
+      "type": "string"
+    },
+    "credential_visibility_attested": {
+      "default": false,
+      "title": "Credential Visibility Attested",
+      "type": "boolean"
+    },
+    "visibility_evidence": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/OwnerVisibilityEvidence"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "entries": {
+      "items": {
+        "$ref": "#/$defs/EstateEntry"
+      },
+      "title": "Entries",
+      "type": "array"
+    },
+    "enumerations": {
+      "items": {
+        "$ref": "#/$defs/EnumerationReceipt"
+      },
+      "title": "Enumerations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "owner",
+    "observed_at",
+    "entries",
+    "enumerations"
+  ],
+  "title": "EstateSnapshot",
+  "type": "object"
+}

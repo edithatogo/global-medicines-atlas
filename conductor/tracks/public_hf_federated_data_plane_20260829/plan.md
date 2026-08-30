@@ -2,11 +2,13 @@
 
 ## Phase 1: Freeze and remediate the current estate (AC-01, AC-02, AC-08)
 
-- [ ] Write failing tests for complete estate enumeration, exact revision and
+- [~] Write failing tests for complete estate enumeration, exact revision and
   manifest allowlists, public/non-gated state, and anonymous restoration.
 - [ ] Confirm the intended failure before implementation.
-- [ ] Generate a public-safe estate registry snapshot without credentials or
-  restricted contents.
+- [x] Generate a public-safe estate registry snapshot without credentials or
+  restricted contents. (`f5d10ed`, permission hardening `31f2458`;
+  93 entries from stable owner-filtered scans, six private identities redacted;
+  local metadata observation only, not publication of the registry dataset.)
 - [x] Add an exact-revision GitHub Actions workflow for the legacy composite;
   require the default head to equal the authorized revision, verify its
   manifest and sibling set against the public baseline, and persist a rollback
@@ -52,8 +54,9 @@
 - [x] Reject B0 projections, blank or padded mandatory text, null independent
   replica RPO/RTO, and case/whitespace aliases of the same recovery domain.
   (`7ac4ada`; nine intended regression failures before correction)
-- [~] Requalify the corrected contract through focused tests and exact-head
+- [x] Requalify the corrected contract through focused tests and exact-head
   hosted checks; retain partial local full-suite evidence separately.
+  (`0e2a818`, PR #369; reviewed `648d32b`, all 38 checks passed; 62 focused tests)
 
 ## Phase 3: Publish the donor and continuing raw corpus (AC-03, AC-06)
 

@@ -1,0 +1,12 @@
+{
+  "owner": "edithatogo",
+  "scope_owner": "edithatogo",
+  "scope_kind": "user",
+  "endpoint": "https://huggingface.co/api/whoami-v2",
+  "observed_at": "2026-08-30T07:24:18.518055+00:00",
+  "permissions": [
+    "collection.read",
+    "repo.access.read",
+    "repo.content.read"
+  ]
+}
