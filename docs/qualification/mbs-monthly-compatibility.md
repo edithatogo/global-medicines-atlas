@@ -54,7 +54,38 @@ Rehearsal receipt IDs bind the target, retry ordinal and original receipt ID;
 all attempts, including failures, are explicitly synthetic. Fixed-clock replay
 therefore retains distinct attempts without misrepresenting live evidence.
 
-## Remaining Phase 4 work
+## Hosted enumerated-release pipeline
+
+`mbs_release.stage_mbs_release` reuses the catalogue identity, destination
+policy, bounded HTTP acquisition, pinned reuse decision and Bronze admission
+contracts. The separately approved 1 August 2026 official XML release is bound
+to its exact source URL and approval receipt in
+`quality/qualifications/mbs-current-release-contract.json`. This approval does
+not authorize other release files. The original catalogue's July 2025 surface
+and all legacy objects remain intact.
+
+The hosted workflow `.github/workflows/australian-mbs-release.yml` can run by
+exact-head dispatch and monthly revalidation of this enumerated contract. It
+does not silently discover or authorize future releases. Transport failures
+produce B1 attempts; nonconforming/empty successful responses remain B2 raw
+evidence with quarantined admission. Accepted releases produce deterministic
+native-field Parquet and a separate P7 projection, with no heterogeneous CSV
+concatenation or medicine-domain assertion.
+
+`mbs_publication.publish_mbs_stage` only appends to the existing public,
+non-gated MBS dataset using a compare-and-swap parent revision. It rejects
+local use, synthetic or mismatched receipts, missing rights, altered bytes,
+unmanifested files, path/symlink escapes and differing pre-existing objects.
+Explicitly anonymous reads verify every staged object and the exact new
+revision. The workflow records that receipt on issue #340 before deleting
+its own bounded temporary staging/restore directories. A quarantine or failed
+acquisition remains a failed data update even after raw evidence is public.
+
+Implementation and fixture validation do not establish a successful hosted
+publication. Until an exact run and immutable HF receipt are appended to the
+track ledger, this pipeline is prepared, not externally completed.
+
+## HTML admission and health
 
 `mbs_admission.admit_mbs_html_tables` now binds each table contract, source
 digest, acquisition event and decision clock to the existing Bronze admission
@@ -70,16 +101,17 @@ from successful usable-table processing. Synthetic rehearsals cannot enter
 live health history. Neither technical acceptance nor health availability
 establishes rights, current coverage, or anonymous public archive verification.
 
-This is a regression foundation, not completion of the monthly scraper:
+## Remaining integrated verification
 
-1. Connect these admission/health primitives to the hosted production runner
-   and P7 projections; qualify additional HTML layout profiles as observed.
-2. Persist admission/source-health receipts from that runner alongside B1/B2;
-   primitive fixture tests alone do not prove a hosted acquisition.
-3. Connect supported official releases and catalogue-driven scheduling to the
-   hosted public Hugging Face publication path. Require anonymous archive
-   verification before reporting an acquired update or removing temporary
-   source bytes. No live scheduler is enabled by this change.
+The runner still requires observed hosted execution:
 
-No local upload, repository archive, rights conclusion, clinical inference,
+1. Merge the exact approved pipeline and dispatch it from the protected main
+   branch; preserve its public receipt and reconcile the Phase 4 checkpoint.
+2. Qualify additional HTML layout profiles only as observed. Historical
+   item/participant endpoints remain compatibility fixtures, not evidence of
+   live participant-count coverage.
+3. New release files require their own explicit source/file/destination
+   authorization before the monthly contract advances.
+
+No local upload, repository archive, general licence conclusion, clinical inference,
 or medicine-domain projection is introduced.

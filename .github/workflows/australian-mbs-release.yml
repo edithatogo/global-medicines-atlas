@@ -1,0 +1,153 @@
+name: Governed MBS release acquisition
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_contract_commit:
+        description: Exact reviewed main commit containing release authorization
+        required: true
+        type: string
+  schedule:
+    - cron: "17 17 2 * *" # Revalidate the explicitly enumerated release monthly.
+
+permissions: {}
+
+concurrency:
+  group: australian-legacy-hf-publication
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Acquire exact release, append and anonymously verify
+    runs-on: ubuntu-24.04
+    environment: australian-hf-publication
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      issues: write # Durable public intent and all-object verification receipts.
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Bind main head and exact release authorization
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_COMMIT: ${{ inputs.exact_contract_commit || github.sha }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main
+          test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
+          test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
+          uv run --locked --python 3.14.6 python - <<'PY'
+          from pathlib import Path
+          from global_medicines_atlas.mbs_release import MbsReleaseContract, require_mbs_hosted_authority
+          contract = MbsReleaseContract.model_validate_json(Path('quality/qualifications/mbs-current-release-contract.json').read_bytes())
+          require_mbs_hosted_authority(contract)
+          PY
+          gh issue comment 340 --body "MBS hosted release intent: exact_commit=$GITHUB_SHA; run=https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID; contract=quality/qualifications/mbs-current-release-contract.json; append-only existing public dataset; preserve legacy objects; failure policy=retain published revision and report failure."
+      - name: Acquire, append and verify using anonymous reads
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.14.6 --with huggingface-hub==1.14.0 python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+          from huggingface_hub import CommitOperationAdd, HfApi, hf_hub_download
+          from global_medicines_atlas.mbs_publication import PublicArchiveState, publish_mbs_stage
+          from global_medicines_atlas.mbs_release import MbsReleaseContract, stage_mbs_release
+          from global_medicines_atlas.reuse_gate import evaluate_reuse_gate, ReuseDisposition, ReuseCandidate, ReuseCandidateKind, ReuseDiscoverySnapshot
+
+          root = Path.cwd()
+          if not os.environ.get('HF_TOKEN'):
+              raise RuntimeError('protected HF_TOKEN is unavailable; no acquisition attempted')
+          contract = MbsReleaseContract.model_validate_json(Path('quality/qualifications/mbs-current-release-contract.json').read_bytes())
+          public = HfApi(token=False)
+          info = public.dataset_info(contract.dataset, files_metadata=True)
+          if info.private or info.gated:
+              raise RuntimeError('existing MBS destination must be anonymously public')
+          github_index = {}
+          for donor, commit in (
+              ('edithatogo/aus_mbs_pbs_graph', '64e764cebeb3826f98ce672cbb4affc65d06a92f'),
+              ('edithatogo/aus-health-data-scraper', '931da0b9b6ae3e3cec0743568abb71a50d62b7cf'),
+          ):
+              result = subprocess.run(['gh', 'api', f'repos/{donor}/git/trees/{commit}?recursive=1'], check=True, capture_output=True)
+              tree = json.loads(result.stdout)
+              if tree.get('truncated') or not tree.get('tree'):
+                  raise RuntimeError('donor discovery tree is incomplete')
+              github_index[donor] = ['au-mbs'] if any('mbs' in item['path'].lower() for item in tree['tree']) else []
+          reuse = evaluate_reuse_gate('au-mbs', repository_root=root, github_index=github_index,
+              huggingface_index={contract.dataset: [item.rfilename for item in info.siblings]}, requested=ReuseDisposition.EXTEND)
+          candidate = ReuseCandidate(surface='hugging_face', source_id='au-mbs', kind=ReuseCandidateKind.PAYLOAD,
+              locator=f'https://huggingface.co/datasets/{contract.dataset}/tree/{info.sha}')
+          previous = reuse.discovery_snapshot
+          if previous is None:
+              raise RuntimeError('discovery snapshot is required')
+          snapshot = ReuseDiscoverySnapshot(source_id='au-mbs', generated_at=previous.generated_at,
+              freshness_seconds=previous.freshness_seconds, tool_version='mbs-hosted-discovery-v1',
+              surfaces=tuple(surface.model_copy(update={'candidates': (*surface.candidates, candidate)})
+                  if surface.name == 'hugging_face' else surface for surface in previous.surfaces))
+          reuse = reuse.model_copy(update={'discovery_snapshot': snapshot, 'candidates': (*reuse.candidates, candidate),
+              'rationale': f'Extend existing public MBS archive at {info.sha} with the enumerated release; donor trees checked at their pinned commits.'})
+          stage = stage_mbs_release(contract, root, reuse_decision=reuse)
+
+          class AnonymousReader:
+              def state(self, revision=None):
+                  state = public.dataset_info(contract.dataset, revision=revision)
+                  return PublicArchiveState(state.sha, frozenset(item.rfilename for item in state.siblings), state.private, bool(state.gated))
+              def read(self, revision, path):
+                  restored = hf_hub_download(repo_id=contract.dataset, repo_type='dataset', revision=revision,
+                      filename=path, token=False, cache_dir=root / 'build/mbs-restore')
+                  return Path(restored).read_bytes()
+
+          class AppendOnlyWriter:
+              def append(self, files, *, parent_revision):
+                  result = HfApi(token=os.environ['HF_TOKEN']).create_commit(repo_id=contract.dataset, repo_type='dataset',
+                      parent_commit=parent_revision, commit_message=f'Archive enumerated MBS release {contract.effective_date}',
+                      operations=[CommitOperationAdd(path_in_repo=name, path_or_fileobj=str(path)) for name, path in sorted(files.items())])
+                  return result.oid
+
+          receipt = publish_mbs_stage(stage, contract, public=AnonymousReader(), writer=AppendOnlyWriter())
+          receipt.update(workflow_commit=os.environ['GITHUB_SHA'], workflow_run=f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}")
+          Path('build/mbs-hosted-receipt.json').write_text(json.dumps(receipt, indent=2, sort_keys=True) + '\n')
+          PY
+          # Record anonymous digest verification durably before any source-byte cleanup.
+          gh issue comment 340 --body-file build/mbs-hosted-receipt.json
+      - name: Remove verified hosted temporary materializations
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.14.6 python - <<'PY'
+          import json
+          import shutil
+          from pathlib import Path
+          path = Path('build/mbs-hosted-receipt.json')
+          receipt = json.loads(path.read_text())
+          if receipt['anonymous_digest_verification'] != 'passed':
+              raise RuntimeError('cleanup requires anonymous verification')
+          for target in (Path('build/mbs-release'), Path('build/mbs-restore')):
+              shutil.rmtree(target)
+          receipt['temporary_source_bytes_removed'] = True
+          path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + '\n')
+          PY
+          gh issue comment 340 --body-file build/mbs-hosted-receipt.json
+      - name: Require usable admitted data for a successful update
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          receipt = json.loads(Path('build/mbs-hosted-receipt.json').read_text())
+          if not receipt['data_acquired']:
+              raise SystemExit('Raw evidence retained publicly, but no usable release was acquired')
+          PY
+      - name: Record fail-honest run outcome
+        if: failure() || cancelled()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment 340 --body "MBS release run did not complete: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID at $GITHUB_SHA. No acquired-update claim; any published revision is retained. Consult exact verification receipts; no privacy rollback is promised."
