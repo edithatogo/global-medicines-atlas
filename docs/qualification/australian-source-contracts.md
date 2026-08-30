@@ -180,3 +180,24 @@ profiling, typed Arrow/Parquet tables, exact B1/v4 lineage integration,
 historical comparison and hosted publication remain explicit successor tasks.
 These synthetic denominators do not substitute for running the new inventory
 against each approved public source revision in GitHub Actions.
+## Hosted legacy workbook storage qualification
+
+The `Qualify archived MBS workbook storage` workflow reads the already-public
+July 2024 workbook anonymously at the immutable revision recorded in
+`australian-mbs-public-huggingface-20260829.json`. It requires an exact merged
+main commit, validates the 87,727-byte payload and its SHA-256 before parsing,
+and never writes raw bytes to the workstation or uploads a new dataset.
+
+The summary contains per-sheet cell, formula, error and conversion counts;
+native first-two-row header candidates; workbook properties (including an
+explicit date1904 attribute when present); and native number-format and cell
+format attributes. Absence of an attribute remains absence, not an inferred
+epoch. Each batch must survive a metadata-aware Parquet round trip and match
+the native cell denominator. The workbook-wide manifest retains empty sheets.
+
+These are storage-qualification results, not approval of header meanings,
+dates, currencies, source coverage or Gold relationships. The workflow emits a
+bounded qualification artifact with its code commit and run URL. Record the
+observed result in Conductor before using it to define domain mappings.
+Synthetic tests exercise the same profiler and mock the network; they do not
+prove that the real workbook has passed the hosted run.

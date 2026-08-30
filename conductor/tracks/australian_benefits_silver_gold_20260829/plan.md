@@ -72,17 +72,26 @@
 
 ## Legacy workbook cell prerequisite
 
-- [~] Preserve every sheet/cell in typed storage-level Arrow candidates,
+- [x] Preserve every sheet/cell in typed storage-level Arrow candidates,
   including empty sheets, raw/display values, presence, formula caches,
   error codes, exact decimals, boolean values and field addresses.
-- [~] Reject negative shared-string references and test extreme decimal
+- [x] Reject negative shared-string references and test extreme decimal
   exponents without losing native values or relying on Decimal trap settings.
   String-index guard implemented in `18d304e`; 60 focused tests passed.
   Cell candidates in `79a11ee`; 148 combined focused tests pass, static
-  checks pass; full and hosted qualification remain pending.
-- [ ] Qualify the exact legacy workbook header/style/epoch denominator in
+  checks pass. PR #376 merged as `30062b2` after all 38 hosted checks passed
+  on `4041086`, including the subsequent portability fix. Real-source
+  qualification remains pending.
+- [~] Qualify the exact legacy workbook header/style/epoch denominator in
   hosted execution and add source-specific harmonised annotation mappings.
   Cell-storage typing is not a substitute for domain/currency/date mapping.
+  An Actions-only pinned public workbook profiler is implemented in `ab26f90`
+  (own unpublished `209e08d` rebased onto the same-tree PR #376 merge).
+  All 114 focused tests pass; qualifier statement/branch coverage is 100%.
+  Synthetic
+  qualification checks all-sheet cell denominators, Parquet preservation,
+  native headers/formats, and local-download rejection. Hosted execution and
+  subsequent domain mappings remain pending.
 
 ## Workbook portability review fixes
 
@@ -90,12 +99,18 @@
   Parquet, including an explicit empty-sheet manifest and property presence.
   (`dd5e02a`; intended regression failure followed by 149 focused passes;
   Ruff, ty and BasedPyright pass.)
-- [~] Recheck exact-head hosted gates after integration with PR #375.
+- [x] Recheck exact-head hosted gates after integration with PR #375.
+  PR #376 merged as `30062b2` on 2026-08-30T08:49:37Z with all 38 checks
+  passing on `4041086` and the P1 portability review resolved.
   Previous-head full: 3,006 passed, three failed, one skipped, 96.56% coverage;
   two interpreter-pin failures and a product-runner failure that passed one
   bounded isolated rerun. This is not an all-green local-full claim.
 
 ## Phase 2: Implement MBS Silver (AC-01, AC-02, AC-06)
+
+- [x] Correct the hosted qualifier job-name policy finding without weakening
+  security lint. (`7e049cd`; actionlint and zizmor 1.28.0 pedantic pass.)
+- [~] Recheck PR #378 exact-head hosted gates before real-workbook dispatch.
 
 - [~] Write failing golden, property, malformed-input, schema-drift,
   determinism, decimal/currency, date, formula-error, duplicate, and lineage

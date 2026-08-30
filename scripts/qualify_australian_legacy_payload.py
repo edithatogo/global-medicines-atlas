@@ -6,16 +6,23 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import sys
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
+import httpx
 from pydantic import AnyUrl
 
 from global_medicines_atlas.adapters.au_mbs import qualify_legacy_mbs_xml
 from global_medicines_atlas.adapters.au_mbs_workbook import (
     qualify_legacy_p7_workbook,
+)
+from global_medicines_atlas.mbs_workbook_qualification import (
+    PUBLIC_WORKBOOK_URI,
+    acquire_hosted_workbook,
+    qualify_workbook_cells,
 )
 from global_medicines_atlas.receipts import (
     AcquisitionMethod,
@@ -42,6 +49,7 @@ def _arguments() -> argparse.Namespace:
     )
     parser.add_argument("--source-uri", required=True)
     parser.add_argument("--retrieved-at", required=True)
+    parser.add_argument("--public-hf-workbook", action="store_true")
     return parser.parse_args()
 
 
@@ -97,7 +105,18 @@ def main() -> None:
     retrieved_at = datetime.fromisoformat(arguments.retrieved_at)
     if retrieved_at.tzinfo is None:
         raise ValueError("--retrieved-at must include a timezone")
-    payload = sys.stdin.buffer.read()
+    if arguments.public_hf_workbook:
+        if (
+            arguments.kind != "p7-workbook"
+            or arguments.source_uri != PUBLIC_WORKBOOK_URI
+        ):
+            raise ValueError("hosted workbook requires its exact public URI")
+        with httpx.Client(
+            follow_redirects=True, timeout=60, trust_env=False
+        ) as client:
+            payload = acquire_hosted_workbook(client)
+    else:
+        payload = sys.stdin.buffer.read()
     receipt = _receipt(
         payload,
         kind=arguments.kind,
@@ -141,6 +160,16 @@ def main() -> None:
                 for sheet in workbook.sheets
             ],
         }
+    if arguments.public_hf_workbook:
+        summary["storage_qualification"] = qualify_workbook_cells(
+            payload, receipt
+        )
+        summary["workflow_commit"] = os.environ["GITHUB_SHA"]
+        summary["workflow_run"] = (
+            "https://github.com/edithatogo/global-medicines-atlas/actions/runs/"
+            + os.environ["GITHUB_RUN_ID"]
+        )
+        summary["retrieved_at"] = retrieved_at.isoformat()
     print(json.dumps(summary, sort_keys=True, separators=(",", ":")))
 
 

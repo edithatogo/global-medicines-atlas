@@ -1,0 +1,47 @@
+name: Qualify archived MBS workbook storage
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_commit:
+        description: Exact merged main commit to qualify
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: mbs-workbook-storage-qualification
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    name: Verify exact public workbook storage and provenance
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Qualify exact public workbook anonymously
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.14.6 python scripts/qualify_australian_legacy_payload.py \
+            --kind p7-workbook --public-hf-workbook \
+            --source-uri 'https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/4d1dae488ac43522f20e8320a8b2a56bf9138341/raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx' \
+            --retrieved-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            > workbook-storage-qualification.json
+      - name: Retain qualification summary, never raw source bytes
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: workbook-storage-qualification
+          path: workbook-storage-qualification.json
+          if-no-files-found: error
+          retention-days: 30
