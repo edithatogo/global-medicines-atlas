@@ -1,0 +1,94 @@
+{
+  "$defs": {
+    "NativeFieldCount": {
+      "additionalProperties": false,
+      "description": "Denominator for one native schema path, including missing/null slots.",
+      "properties": {
+        "schema_path": {
+          "title": "Schema Path",
+          "type": "string"
+        },
+        "missing_count": {
+          "minimum": 0,
+          "title": "Missing Count",
+          "type": "integer"
+        },
+        "null_count": {
+          "minimum": 0,
+          "title": "Null Count",
+          "type": "integer"
+        },
+        "value_count": {
+          "minimum": 0,
+          "title": "Value Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema_path",
+        "missing_count",
+        "null_count",
+        "value_count"
+      ],
+      "title": "NativeFieldCount",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Content-bound structural coverage; not evidence of current coverage.",
+  "properties": {
+    "source_id": {
+      "enum": [
+        "au-mbs",
+        "au-mbs-p7-legacy-workbook",
+        "au-pbs"
+      ],
+      "title": "Source Id",
+      "type": "string"
+    },
+    "source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Source Sha256",
+      "type": "string"
+    },
+    "schema_era": {
+      "minLength": 1,
+      "title": "Schema Era",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "record_count": {
+      "minimum": 1,
+      "title": "Record Count",
+      "type": "integer"
+    },
+    "fields": {
+      "items": {
+        "$ref": "#/$defs/NativeFieldCount"
+      },
+      "minItems": 1,
+      "title": "Fields",
+      "type": "array"
+    },
+    "denominator_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Denominator Sha256",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_id",
+    "source_sha256",
+    "schema_era",
+    "record_count",
+    "fields",
+    "denominator_sha256"
+  ],
+  "title": "NativeFieldCoverage",
+  "type": "object"
+}

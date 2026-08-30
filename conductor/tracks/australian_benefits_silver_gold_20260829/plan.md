@@ -2,16 +2,34 @@
 
 ## Phase 1: Freeze source denominators and semantics (AC-01, AC-03)
 
-- [ ] Write failing schema-coverage tests against every MBS XML field, workbook
+- [x] Write failing schema-coverage tests against every MBS XML field, workbook
   sheet/column/formula state, and PBS v3 source element in the approved fixtures.
-- [ ] Confirm the intended failure before implementation.
-- [ ] Define versioned MBS service-benefit and PBS funding/formulary semantic
+  (`70cdbec`; 38 synthetic contract tests, 100% module branch coverage.)
+- [x] Confirm the intended failure before implementation.
+  (Missing `australian_source_contracts` module before implementation.)
+- [~] Define versioned MBS service-benefit and PBS funding/formulary semantic
   contracts, native row identities, schema eras, currency/time/null rules, and
   prohibited cross-dimension coercions.
-- [ ] Add negative tests for MBS-as-medicine, PBS-as-regulatory,
+  Native JSON contracts, all 40 MBS field destinations/types, full workbook
+  cell-property and PBS element/attribute/text inventories now exist.
+  Typed Arrow schemas, currency/date conversion and B1/v4 lineage integration
+  remain pending; structural coverage is not promoted Silver or public data.
+- [~] Add negative tests for MBS-as-medicine, PBS-as-regulatory,
   terminology-as-funding, candidate-as-reviewed, and absence-as-negative status.
+  Source-table contracts reject these coercions; later typed/graph APIs still
+  require their own negative controls. No candidate promotion API is added.
 - [ ] Phase Verification & Checkpoint: field and semantic denominators are
   complete and fail closed.
+
+## Source-contract review fixes
+
+- [x] Express domain and value-state constraints in portable JSON schemas;
+  preserve OOXML property presence rather than guessing absent/null states.
+  (`10c5a8a`; 57 focused tests, 100% native-contract module coverage.)
+- [~] Verify the review fixes against exact-head hosted checks before merge.
+  Prior head passed 38 checks. Full local run: 2,888 passed, three failed,
+  one skipped, 96.49% coverage; exact interpreter and unchanged timeout
+  constraints remain documented, not weakened.
 
 ## Phase 2: Implement MBS Silver (AC-01, AC-02, AC-06)
 

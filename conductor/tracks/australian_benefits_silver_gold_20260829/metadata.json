@@ -26,9 +26,9 @@
     "M-106", "M-107", "M-109", "M-110", "M-112", "S-006", "S-007",
     "S-014", "C-014", "W-001", "W-002", "W-003", "W-011"
   ],
-  "status": "new",
+  "status": "in_progress",
   "target_versions": ["1.0.0"],
   "track_id": "australian_benefits_silver_gold_20260829",
   "type": "feature",
-  "updated_at": "2026-08-29T05:38:00Z"
+  "updated_at": "2026-08-30T07:27:28Z"
 }

@@ -1,0 +1,93 @@
+{
+  "additionalProperties": false,
+  "description": "A value/state and address within one source-native record.",
+  "else": {
+    "properties": {
+      "value": {
+        "type": "null"
+      }
+    }
+  },
+  "if": {
+    "properties": {
+      "state": {
+        "const": "value"
+      }
+    }
+  },
+  "properties": {
+    "source_id": {
+      "enum": [
+        "au-mbs",
+        "au-mbs-p7-legacy-workbook",
+        "au-pbs"
+      ],
+      "title": "Source Id",
+      "type": "string"
+    },
+    "source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Source Sha256",
+      "type": "string"
+    },
+    "schema_era": {
+      "minLength": 1,
+      "title": "Schema Era",
+      "type": "string"
+    },
+    "record_id": {
+      "minLength": 1,
+      "title": "Record Id",
+      "type": "string"
+    },
+    "path": {
+      "minLength": 1,
+      "title": "Path",
+      "type": "string"
+    },
+    "schema_path": {
+      "minLength": 1,
+      "title": "Schema Path",
+      "type": "string"
+    },
+    "value": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Value"
+    },
+    "state": {
+      "enum": [
+        "missing_field",
+        "null",
+        "value"
+      ],
+      "title": "State",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_id",
+    "source_sha256",
+    "schema_era",
+    "record_id",
+    "path",
+    "schema_path",
+    "value",
+    "state"
+  ],
+  "then": {
+    "properties": {
+      "value": {
+        "type": "string"
+      }
+    }
+  },
+  "title": "NativeFieldOccurrence",
+  "type": "object"
+}
