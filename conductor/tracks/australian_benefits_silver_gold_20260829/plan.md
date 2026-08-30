@@ -234,6 +234,8 @@
   bounded source-local diagnostics must not imply vocabulary resolution,
   medicine equivalence or funding/regulatory assertions. Synthetic-only;
   real-corpus qualification and date/price contracts remain pending.
+  Implemented `ae319f2`; 138 focused/context/ecosystem tests pass, 99.37%
+  module coverage; Ruff, ty and BasedPyright pass. Full/hosted gates pending.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
