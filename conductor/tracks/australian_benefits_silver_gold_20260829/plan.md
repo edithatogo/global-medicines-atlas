@@ -256,6 +256,8 @@
   evidence, native member path and explicit extraction relationship.
   Revalidate all inputs; preserve ordinary adapter/source checks. Candidate
   identity only, not source aliasing, admission or automatic date selection.
+  Implemented `4cb2922`; 216 focused/context/ecosystem passes, 100% new-module
+  coverage; Ruff, ty and BasedPyright pass. Full/hosted gates pending.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
