@@ -94,8 +94,12 @@ PBS_V3_SOURCE_SCHEMA = pa.schema([
 ])
 
 
-def parse_pbs_v3_archive(payload: bytes) -> PbsV3Archive:
-    """Validate a PBS ZIP and parse its single v3 schedule member."""
+def read_pbs_v3_member(payload: bytes) -> tuple[ExtractedMember, bytes]:
+    """Read the single schedule member under existing ZIP safety bounds.
+
+    This byte-level operation does not parse item records, admit the archive,
+    establish source identity or write extracted bytes to the filesystem.
+    """
     inspect_zip(payload, PBS_ARCHIVE_POLICY)
     with ZipFile(BytesIO(payload)) as archive:
         matches = [
@@ -112,6 +116,21 @@ def parse_pbs_v3_archive(payload: bytes) -> PbsV3Archive:
             )
         info = matches[0]
         xml_payload = archive.read(info)
+        if len(xml_payload) != info.file_size:
+            raise ValueError("PBS member size does not match ZIP directory")
+    return (
+        ExtractedMember(
+            path=info.filename,
+            sha256=hashlib.sha256(xml_payload).hexdigest(),
+            size_bytes=len(xml_payload),
+        ),
+        xml_payload,
+    )
+
+
+def parse_pbs_v3_archive(payload: bytes) -> PbsV3Archive:
+    """Validate a PBS ZIP and parse its single v3 schedule member."""
+    member, xml_payload = read_pbs_v3_member(payload)
 
     try:
         root = parse_xml(xml_payload, policy=PBS_XML_POLICY)
@@ -137,11 +156,7 @@ def parse_pbs_v3_archive(payload: bytes) -> PbsV3Archive:
         raise ValueError("PBS schedule contains duplicate item identity")
     return PbsV3Archive(
         archive_sha256=hashlib.sha256(payload).hexdigest(),
-        member=ExtractedMember(
-            path=info.filename,
-            sha256=hashlib.sha256(xml_payload).hexdigest(),
-            size_bytes=len(xml_payload),
-        ),
+        member=member,
         namespace_uri=namespace,
         effective_date=_publication_date(root),
         records=records,
