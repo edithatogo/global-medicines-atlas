@@ -33,6 +33,7 @@ MAX_FIXTURE_BYTES = 1_000_000
 PBS_V3_NAMESPACE = "http://schema.pbs.gov.au/"
 DOCBOOK_NAMESPACE = "http://docbook.org/ns/docbook"
 RDF_NAMESPACE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+DCTERMS_NAMESPACE = "http://purl.org/dc/terms/"
 XML_NAMESPACE = "http://www.w3.org/XML/1998/namespace"
 PBS_ARCHIVE_POLICY = ArchivePolicy(
     max_archive_bytes=256 * 1024 * 1024,
@@ -116,7 +117,11 @@ def parse_pbs_v3_archive(payload: bytes) -> PbsV3Archive:
     namespace = _namespace(root.tag)
     if namespace != PBS_V3_NAMESPACE:
         raise ValueError(f"PBS namespace drift: {namespace or 'missing'}")
-    if root.tag != f"{{{PBS_V3_NAMESPACE}}}schedule":
+    allowed_roots = {
+        f"{{{PBS_V3_NAMESPACE}}}root",
+        f"{{{PBS_V3_NAMESPACE}}}schedule",
+    }
+    if root.tag not in allowed_roots:
         raise ValueError(f"PBS root drift: {root.tag}")
     records = tuple(
         _pbs_v3_record(item)
@@ -135,7 +140,7 @@ def parse_pbs_v3_archive(payload: bytes) -> PbsV3Archive:
             size_bytes=len(xml_payload),
         ),
         namespace_uri=namespace,
-        effective_date=root.get("effective-date"),
+        effective_date=_publication_date(root),
         records=records,
         xml_payload=xml_payload,
     )
@@ -185,6 +190,15 @@ def _namespace(tag: str) -> str:
     if not tag.startswith("{") or "}" not in tag:
         return ""
     return tag[1:].split("}", 1)[0]
+
+
+def _publication_date(root: ET.Element) -> str | None:
+    declared = root.get("effective-date")
+    if declared:
+        return declared
+    return root.findtext(
+        f"./{{{PBS_V3_NAMESPACE}}}info/{{{DCTERMS_NAMESPACE}}}valid"
+    )
 
 
 def _pbs_v3_record(item: ET.Element) -> PbsV3Record:

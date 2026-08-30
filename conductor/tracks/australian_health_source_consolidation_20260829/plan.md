@@ -61,6 +61,18 @@
 
 ## Review Fixes: PBS v3 archive and record contracts
 
+- [x] Accept the observed official `pbs:root`/Dublin Core validity shape,
+  derive archive paths from the validated effective date, and bind hosted
+  publication to a private-first exact-commit transaction with anonymous
+  digest verification, durable issue receipts, cleanup, and privacy
+  containment. (`ffb9614`)
+- [x] Apply the maintainer's public-from-outset policy to the exact PBS
+  destination while retaining exact-commit binding, atomic exact-sibling
+  replacement, anonymous verification, durable receipts, and verified cleanup.
+  (`458bbcd`)
+- [x] Regenerate the content-bound stable-v1 measured-coverage receipt after
+  the official PBS root-shape correction changed the adapter digest.
+  (`28c5e33`)
 - [x] Reject duplicate PBS item identities, keep restriction text/date pairs
   aligned, and label projected element digests without implying byte-exact
   native XML slicing. (`d9b583e`)
@@ -71,6 +83,11 @@
   as Parquet nulls. (`00a59eb`)
 - [x] Regenerate measured coverage after the final reviewed PBS projector
   changed its content-bound source digest. (`108dbc4`)
+- [x] Bind hosted PBS publication to structured B1 retrieval, rights, reuse,
+  sensitivity, transformation, and admission evidence; record failed hosted
+  retrieval attempts append-only. (`5d91648`)
+- [x] Replace the impossible private rollback promise with the approved,
+  truthful public-from-outset failure policy. (`5d91648`)
 
 ## Review Fixes: MBS source-domain phase
 

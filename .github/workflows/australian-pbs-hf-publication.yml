@@ -1,0 +1,225 @@
+name: Publish Australian PBS source archive
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_contract_commit:
+        description: Exact main commit containing the reviewed PBS contract
+        required: true
+        type: string
+
+concurrency:
+  group: australian-pbs-source-archive
+  cancel-in-progress: false
+
+permissions: {}
+
+env:
+  HF_DATASET: edithatogo/australian-pbs-source-archive
+  SOURCE_URL: https://www.pbs.gov.au/publication/schedule/2026/04/2026-04-01-XML-V3.zip?variant=3
+  AUTHORIZATION_ID: decision-0009
+
+jobs:
+  publish:
+    name: Acquire, publish, and anonymously verify
+    runs-on: ubuntu-24.04
+    environment: australian-pbs-publication
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      issues: write # Persist exact publication intent and verification receipts.
+    steps:
+      - name: Check out governed acquisition code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ inputs.exact_contract_commit }}
+          persist-credentials: false
+
+      - name: Bind dispatch to exact default-branch contract
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          default_branch=$(gh api "repos/${GITHUB_REPOSITORY}" --jq .default_branch)
+          default_head=$(gh api "repos/${GITHUB_REPOSITORY}/commits/${default_branch}" --jq .sha)
+          test "${GITHUB_SHA}" = "${default_head}"
+          gh issue comment 340 --repo "${GITHUB_REPOSITORY}" \
+            --body "PBS publication intent: dataset=${HF_DATASET}; authorization=${AUTHORIZATION_ID}; exact_commit=${GITHUB_SHA}; run=https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}; visibility=public-from-outset; failure_policy=retain-public-revision-and-record-failure"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+
+      - name: Acquire exact final public PBS XML v3 archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p work
+          date -u +%Y-%m-%dT%H:%M:%SZ > work/retrieved-at.txt
+          set +e
+          curl --fail --show-error --silent --location --retry 10 --retry-all-errors \
+            --connect-timeout 30 --max-time 1800 "$SOURCE_URL" \
+            --output work/source.zip --write-out '%{json}' \
+            > work/http-metadata.json
+          curl_exit=$?
+          set -e
+          python3 - "$curl_exit" <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          import sys
+
+          metadata_path = Path('work/http-metadata.json')
+          try:
+              http = json.loads(metadata_path.read_text())
+          except (json.JSONDecodeError, OSError):
+              http = {}
+          receipt = {
+              'schema_id': 'global-medicines-atlas.hosted-retrieval-attempt',
+              'schema_version': 1,
+              'source_id': 'au-pbs-historical-xml',
+              'source_url': os.environ['SOURCE_URL'],
+              'retrieved_at': Path('work/retrieved-at.txt').read_text().strip(),
+              'curl_exit_code': int(sys.argv[1]),
+              'http_status': http.get('http_code'),
+              'final_url': http.get('url_effective'),
+              'observed_byte_length': http.get('size_download'),
+              'status': 'succeeded' if int(sys.argv[1]) == 0 else 'failed',
+          }
+          Path('work/retrieval-attempt.json').write_text(
+              json.dumps(receipt, indent=2, sort_keys=True) + '\n'
+          )
+          PY
+          gh issue comment 340 --repo "${GITHUB_REPOSITORY}" \
+            --body-file work/retrieval-attempt.json
+          test "$curl_exit" -eq 0
+          test -s work/source.zip
+
+      - name: Admit and project immutable Bronze products
+        run: |
+          set -euo pipefail
+          uv run --frozen --python 3.14.6 python scripts/qualify_pbs_v3_archive.py \
+            --archive work/source.zip --output work/stage \
+            --source-url "$SOURCE_URL" --dataset "$HF_DATASET" \
+            --retrieved-at "$(cat work/retrieved-at.txt)" \
+            --http-metadata work/http-metadata.json \
+            > work/qualification-summary.json
+
+      - name: Publish to a public dataset from the outset
+        id: publish
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test -n "${HF_TOKEN:-}"
+          uv run --python 3.14.6 --with huggingface-hub==1.14.0 python - <<'PY'
+          import os
+          from pathlib import Path
+          from huggingface_hub import HfApi
+          from huggingface_hub.errors import RepositoryNotFoundError
+
+          api = HfApi(token=os.environ['HF_TOKEN'])
+          dataset = os.environ['HF_DATASET']
+          try:
+              before = api.dataset_info(dataset)
+          except RepositoryNotFoundError:
+              before = None
+          if before is not None and (before.private or bool(before.gated)):
+              raise RuntimeError('existing target must be public and non-gated')
+          if before is None:
+              api.create_repo(repo_id=dataset, repo_type='dataset', private=False)
+          result = api.upload_folder(
+              repo_id=dataset, repo_type='dataset',
+              folder_path='work/stage',
+              commit_message='Archive final public PBS XML v3 schedule',
+              delete_patterns=['*'],
+          )
+          expected = {
+              path.relative_to('work/stage').as_posix()
+              for path in Path('work/stage').rglob('*') if path.is_file()
+          } | {'.gitattributes'}
+          actual = {item.rfilename for item in api.dataset_info(dataset).siblings}
+          if actual != expected:
+              raise RuntimeError('published sibling set differs from exact stage')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f'revision={result.oid}\n')
+          PY
+
+      - name: Verify exact public revision anonymously
+        env:
+          REVISION: ${{ steps.publish.outputs.revision }}
+        run: |
+          set -euo pipefail
+          uv run --python 3.14.6 --with huggingface-hub==1.14.0 python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          from huggingface_hub import HfApi, hf_hub_download
+
+          manifest = json.loads(Path('work/stage/manifest.json').read_text())
+          public = HfApi().dataset_info(
+              os.environ['HF_DATASET'], revision=os.environ['REVISION']
+          )
+          if public.private or public.gated or public.sha != os.environ['REVISION']:
+              raise RuntimeError('exact PBS revision is not anonymously public')
+          expected = [
+              manifest['archive'], manifest['member'], manifest['source_parquet'],
+              manifest['source_receipt'], manifest['admission'],
+          ]
+          expected.append({
+              'path': 'manifest.json',
+              'sha256': hashlib.sha256(Path('work/stage/manifest.json').read_bytes()).hexdigest(),
+          })
+          for item in expected:
+              restored = Path(hf_hub_download(
+                  repo_id=os.environ['HF_DATASET'], repo_type='dataset',
+                  revision=os.environ['REVISION'], filename=item['path'], token=False,
+              ))
+              if hashlib.sha256(restored.read_bytes()).hexdigest() != item['sha256']:
+                  raise RuntimeError(f"anonymous digest mismatch: {item['path']}")
+          receipt = {
+              'dataset': os.environ['HF_DATASET'],
+              'revision': os.environ['REVISION'],
+              'authorization_id': os.environ['AUTHORIZATION_ID'],
+              'anonymous_digest_verification': 'passed',
+              'source_archive_sha256': manifest['archive']['sha256'],
+              'source_member_sha256': manifest['member']['sha256'],
+              'temporary_source_bytes_removed': False,
+          }
+          Path('work/hosted-receipt.json').write_text(
+              json.dumps(receipt, indent=2, sort_keys=True) + '\n'
+          )
+          PY
+      - name: Remove hosted temporary source bytes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf work/source.zip work/stage work/qualification-summary.json \
+            work/http-metadata.json work/retrieved-at.txt \
+            work/retrieval-attempt.json
+          test ! -e work/source.zip
+          test ! -e work/stage
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('work/hosted-receipt.json')
+          receipt = json.loads(path.read_text())
+          receipt['temporary_source_bytes_removed'] = True
+          path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + '\n')
+          PY
+          gh issue comment 340 --repo "${GITHUB_REPOSITORY}" \
+            --body-file work/hosted-receipt.json
+
+      - name: Retain hosted qualification and cleanup receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: australian-pbs-source-archive-receipt
+          path: work/hosted-receipt.json
+          if-no-files-found: error
+          retention-days: 30
