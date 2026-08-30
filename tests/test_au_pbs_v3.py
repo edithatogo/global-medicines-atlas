@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from datetime import UTC, datetime
 from io import BytesIO
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
@@ -19,6 +20,13 @@ from global_medicines_atlas.adapters.au_pbs import (
     pbs_v3_source_parquet,
 )
 from global_medicines_atlas.archive_safety import ArchiveSafetyError
+
+RETRIEVED_AT = datetime(2026, 8, 30, 3, 0, tzinfo=UTC)
+HTTP_METADATA: dict[str, object] = {
+    "http_code": 200,
+    "url_effective": "https://www.pbs.gov.au/example.zip",
+    "content_type": "application/zip",
+}
 
 
 def _xml(*, namespace: str = PBS_V3_NAMESPACE) -> bytes:
@@ -105,6 +113,8 @@ def test_hosted_qualification_binds_raw_member_and_projection(
         tmp_path / "stage",
         source_url="https://www.pbs.gov.au/example.zip",
         dataset="edithatogo/australian-pbs-source-archive",
+        retrieved_at=RETRIEVED_AT,
+        http_metadata=HTTP_METADATA,
     )
 
     assert manifest["source_effective_date"] == "2026-04-01"
@@ -114,6 +124,13 @@ def test_hosted_qualification_binds_raw_member_and_projection(
     assert (tmp_path / "stage/raw/2026-04-01/2026-04-01-XML-V3.zip").exists()
     assert (tmp_path / "stage/bronze/2026-04-01/pbs-v3-source.parquet").exists()
     assert (tmp_path / "stage/bronze/2026-04-01/sch-2026-04-01-r1.xml").exists()
+    admission = manifest["admission"]
+    assert isinstance(admission, dict)
+    assert admission["state"] == "accepted"
+    assert (
+        tmp_path / "stage/bronze/2026-04-01/source-receipt.json"
+    ).exists()
+    assert (tmp_path / "stage/bronze/2026-04-01/admission.json").exists()
 
 
 def test_hosted_qualification_rejects_non_calendar_effective_date(
@@ -132,6 +149,8 @@ def test_hosted_qualification_rejects_non_calendar_effective_date(
             tmp_path / "stage",
             source_url="https://www.pbs.gov.au/example.zip",
             dataset="edithatogo/australian-pbs-source-archive",
+            retrieved_at=RETRIEVED_AT,
+            http_metadata=HTTP_METADATA,
         )
 
 
@@ -154,6 +173,8 @@ def test_hosted_qualification_rejects_missing_effective_date(
             tmp_path / "stage",
             source_url="https://www.pbs.gov.au/example.zip",
             dataset="edithatogo/australian-pbs-source-archive",
+            retrieved_at=RETRIEVED_AT,
+            http_metadata=HTTP_METADATA,
         )
 
 
@@ -166,6 +187,8 @@ def test_hosted_qualification_command(
     archive_path.write_bytes(
         _zip([("sch-2026-04-01-r1.xml", _production_xml())])
     )
+    metadata_path = tmp_path / "http.json"
+    metadata_path.write_text(json.dumps(HTTP_METADATA))
     monkeypatch.setattr(
         "sys.argv",
         [
@@ -178,6 +201,10 @@ def test_hosted_qualification_command(
             "https://www.pbs.gov.au/example.zip",
             "--dataset",
             "edithatogo/australian-pbs-source-archive",
+            "--retrieved-at",
+            RETRIEVED_AT.isoformat(),
+            "--http-metadata",
+            str(metadata_path),
         ],
     )
 

@@ -27,6 +27,15 @@ def test_pbs_publication_is_exact_actions_only_and_public_from_outset() -> None:
     assert "token=False" in text
     assert "decision-0009" in text
     assert "scripts/qualify_pbs_v3_archive.py" in text
+    assert "--http-metadata work/http-metadata.json" in text
+    assert "--retrieved-at" in text
+    assert "global-medicines-atlas.hosted-retrieval-attempt" in text
+    assert "'status': 'succeeded'" in text
+    assert "--body-file work/retrieval-attempt.json" in text
+    assert "manifest['source_receipt']" in text
+    assert "manifest['admission']" in text
+    assert "rollback=restore-private-on-failure" not in text
+    assert "visibility=public-from-outset" in text
 
 
 def test_pbs_publication_verifies_before_cleanup() -> None:
