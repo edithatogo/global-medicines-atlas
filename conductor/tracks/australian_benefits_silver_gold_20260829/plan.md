@@ -12,8 +12,9 @@
   prohibited cross-dimension coercions.
   Native JSON contracts, all 40 MBS field destinations/types, full workbook
   cell-property and PBS element/attribute/text inventories now exist.
-  Typed Arrow schemas, currency/date conversion and B1/v4 lineage integration
-  remain pending; structural coverage is not promoted Silver or public data.
+  Loss-aware scalar conversion is being implemented; typed Arrow schemas and
+  B1/v4 lineage integration remain pending. Structural coverage is not
+  promoted Silver or public data.
 - [~] Add negative tests for MBS-as-medicine, PBS-as-regulatory,
   terminology-as-funding, candidate-as-reviewed, and absence-as-negative status.
   Source-table contracts reject these coercions; later typed/graph APIs still
@@ -26,10 +27,22 @@
 - [x] Express domain and value-state constraints in portable JSON schemas;
   preserve OOXML property presence rather than guessing absent/null states.
   (`10c5a8a`; 57 focused tests, 100% native-contract module coverage.)
-- [~] Verify the review fixes against exact-head hosted checks before merge.
-  Prior head passed 38 checks. Full local run: 2,888 passed, three failed,
+- [x] Verify the review fixes against exact-head hosted checks before merge.
+  PR #371 merged as `3dbf53f` after all 38 exact-head checks passed.
+  Full local run: 2,888 passed, three failed,
   one skipped, 96.49% coverage; exact interpreter and unchanged timeout
   constraints remain documented, not weakened.
+
+## Typed scalar prerequisite
+
+- [~] Test and implement loss-aware conversion for the existing 40-field MBS
+  contract: retain native text/state, string identifiers, exact AUD decimals,
+  source-magnitude percentages, and explicit date-format selection.
+  Implemented in `196e2a6`; 108 focused tests pass, scalar branch coverage
+  100%, Ruff/ty/BasedPyright pass. Full and hosted validation remain pending.
+- [ ] Bind conversion to versioned Arrow tables and exact B1/v4 lineage;
+  reject unrepresentable decimal precision without rounding. Scalar tests do
+  not establish real-source era qualification or publication readiness.
 
 ## Phase 2: Implement MBS Silver (AC-01, AC-02, AC-06)
 
