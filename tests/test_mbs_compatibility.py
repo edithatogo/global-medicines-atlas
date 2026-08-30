@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import fields
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -9,6 +10,7 @@ import httpx
 import pytest
 
 from global_medicines_atlas.mbs_compatibility import (
+    ProbeRehearsal,
     historical_targets,
     month_range,
     rehearse_probes,
@@ -17,6 +19,12 @@ from global_medicines_atlas.receipts import FailureReceipt
 from global_medicines_atlas.reuse_gate import acquire_new_decision
 
 NOW = datetime(2026, 8, 30, tzinfo=UTC)
+
+
+def test_rehearsal_cannot_accept_a_success_claim() -> None:
+    locked = {field.name: field.init for field in fields(ProbeRehearsal)}
+    assert locked["data_acquired"] is False
+    assert locked["qualification_status"] is False
 
 
 def test_month_range_is_inclusive_across_years() -> None:

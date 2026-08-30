@@ -8,7 +8,7 @@ successful transport alone never qualifies a table or reports acquired data.
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, datetime
 from pathlib import Path
 from typing import Literal
@@ -122,9 +122,9 @@ class ProbeRehearsal:
     downloaded_count: int
     failed_count: int
     empty_count: int
-    data_acquired: Literal[False] = False
-    qualification_status: Literal["table_admission_pending"] = (
-        "table_admission_pending"
+    data_acquired: Literal[False] = field(default=False, init=False)
+    qualification_status: Literal["table_admission_pending"] = field(
+        default="table_admission_pending", init=False
     )
 
 
