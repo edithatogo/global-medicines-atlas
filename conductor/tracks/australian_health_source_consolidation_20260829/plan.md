@@ -120,9 +120,13 @@
 
 ## Phase 4: Replace the monthly scraper safely (AC-05, AC-06)
 
-- [ ] Write failing tests for month ranges, historical URL generation,
+- [~] Write failing tests for month ranges, historical URL generation,
   item/participant naming, timeouts, retries, rate limits, 404s, empty output,
   mixed HTML tables, XML P7 filtering, and deterministic projections.
+  Partial foundation: `79e16b3` covers bounded historical months/URLs/names,
+  six-404 regression, serial rate limits, timeout retries and empty transport
+  outcomes. 59 focused tests pass; HTML/P7/admission and live scheduling remain
+  pending. `docs/qualification/mbs-monthly-compatibility.md` defines that boundary.
 - [ ] Confirm the intended failure before implementation.
 - [ ] Reuse GMA HTTP destination, admission, receipt, source-health, and
   catalogue-driven scheduling controls.
