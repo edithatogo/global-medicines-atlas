@@ -104,8 +104,13 @@ class FederatedReader:
             for pin in admitted_contracts
         ):
             raise ValueError("invalid admitted contract digest")
+        formats = FormatChecker()
+        if not {"date", "date-time", "uri"} <= formats.checkers.keys():
+            raise ValueError(
+                "required federation format validators are missing"
+            )
         self._validator = Draft202012Validator(
-            json.loads(schema), format_checker=FormatChecker()
+            json.loads(schema), format_checker=formats
         )
         self._admitted = frozenset(admitted_contracts)
         self._max_object = max_object_bytes

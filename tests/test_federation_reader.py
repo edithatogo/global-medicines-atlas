@@ -11,6 +11,7 @@ from typing import Any
 
 import httpx
 import pytest
+from jsonschema import FormatChecker
 
 from global_medicines_atlas import federation_reader as runtime
 from global_medicines_atlas.federation_reader import FederatedReader
@@ -421,6 +422,17 @@ def test_verified_result_does_not_offer_mutation_or_unbounded_writes() -> None:
         with pytest.raises(io.UnsupportedOperation, match="write"):
             result.stream.write(b"unverified growth")
         assert result.stream.read() == PAYLOAD
+
+
+def test_missing_format_plugins_fail_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def incomplete() -> FormatChecker:
+        return FormatChecker(formats=["date"])
+
+    monkeypatch.setattr(runtime, "FormatChecker", incomplete)
+    with pytest.raises(ValueError, match="format"):
+        reader(Hub())
 
 
 def test_live_raw_source_reads_remain_actions_only(

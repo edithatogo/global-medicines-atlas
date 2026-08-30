@@ -1,7 +1,9 @@
 # Federated immutable-object reader
 
 Install the opt-in `global-medicines-atlas[federation]` extra. This reuses the
-already-locked JSON Schema library without adding it to the default runtime.
+already-locked JSON Schema library and its `format-nongpl` validators without
+adding them to the default runtime. Startup refuses a validator installation
+missing date, date-time or URI checks; bare jsonschema may silently skip these.
 The core Python/Mojo fallback and v1-v4 schema bytes are unchanged.
 
 `FederatedReader` implements the transport/cache part of the v4 consumer

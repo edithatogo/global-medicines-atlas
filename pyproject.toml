@@ -35,7 +35,7 @@ dependencies = [
 
 [project.optional-dependencies]
 federation = [
-  "jsonschema>=4.25",
+  "jsonschema[format-nongpl]>=4.25",
 ]
 semantic = [
   "lancedb>=0.27",
