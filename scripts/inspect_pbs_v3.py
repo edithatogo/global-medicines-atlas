@@ -43,6 +43,8 @@ def main() -> int:
     if len(payload) > MAX_ARCHIVE_BYTES:
         parser.error("archive exceeds the PBS archive byte limit")
     result = parse_pbs_v3_archive(payload)
+    # Finish tag sampling before retaining the optional first-item tree.
+    tags = inspect_pbs_v3_tags(result.xml_payload, max_tags=arguments.max_tags)
     first_item_xml = None
     if arguments.first_item_xml:
         root = parse_xml(result.xml_payload, policy=PBS_XML_POLICY)
@@ -65,9 +67,7 @@ def main() -> int:
                 asdict(item) for item in result.records[: arguments.max_items]
             ],
             "first_item_xml_projection": first_item_xml,
-            "tags": inspect_pbs_v3_tags(
-                result.xml_payload, max_tags=arguments.max_tags
-            ),
+            "tags": tags,
         },
         sort_keys=True,
     )
