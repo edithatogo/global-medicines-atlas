@@ -102,11 +102,15 @@ def _native_rows(
 def _entities(
     payload: bytes, receipt: SourceReceipt, batch_size: int
 ) -> Iterator[tuple[pa.Schema, dict[str, Any]]]:
+    entity_schema: pa.Schema | None = None
     for _, group in groupby(
         _native_rows(payload, receipt, batch_size),
         key=lambda pair: pair[1]["record_id"],
     ):
         schema, first = next(group)
+        if entity_schema is None:
+            # A single receipt-bound input has identical native batch metadata.
+            entity_schema = _schema(schema)
         fields: list[dict[str, Any]] = []
         size = 0
         for _, field in chain(((schema, first),), group):
@@ -114,7 +118,7 @@ def _entities(
             if len(fields) >= MAX_ELEMENT_FIELDS or size > MAX_ELEMENT_BYTES:
                 raise ValueError("PBS entity element exceeds field/byte limit")
             fields.append(field)
-        yield _schema(schema), _row(fields)
+        yield entity_schema, _row(fields)
 
 
 def iter_pbs_entity_batches(

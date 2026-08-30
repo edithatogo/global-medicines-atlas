@@ -110,3 +110,19 @@ def test_entity_larger_than_batch_budget_fails(
 def test_invalid_batch_size_rejected(size: int) -> None:
     with pytest.raises(ValueError, match="batch size"):
         table(size=size)
+
+
+def test_schema_is_constructed_once_per_input(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = pbs_entities._schema
+    calls: list[pa.Schema] = []
+
+    def counted(native: pa.Schema) -> pa.Schema:
+        calls.append(native)
+        return original(native)
+
+    monkeypatch.setattr(pbs_entities, "_schema", counted)
+    result = table(size=1)
+    assert result.num_rows > 1
+    assert len(calls) == 1
