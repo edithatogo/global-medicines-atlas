@@ -129,7 +129,7 @@
   the meantime; date functionality remains in scope.
   First observe storage and lexical-shape counts without interpreting dates;
   no workbook date conversion profile is selected by this prerequisite.
-  (`10b36b0`; 11 intended missing-output regression failures preceded the
+  (`10b36b0`; 10 intended missing-output regression failures preceded the
   implementation, 32 focused tests pass with 100% changed-module coverage.
   Hosted observation and independently qualified format selection are pending.)
 
