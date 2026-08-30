@@ -47,8 +47,19 @@
   reject unrepresentable decimal precision without rounding. Scalar tests do
   not establish real-source era qualification or publication readiness.
   Six XML Arrow table candidates now retain all 40 native fields, exact B1
-  receipts and B2 digests. Public v4 location verification, workbook/PBS
+  receipt digests and B2 digests. Public v4 location verification, workbook/PBS
   tables and real-source date-era qualification remain pending.
+
+## Arrow review fixes
+
+- [x] Remove raw receipt metadata from Arrow/Parquet; retain the exact digest
+  and selected redacted provenance. Add synthetic userinfo, query credential,
+  redirect, fragment and rights-reference regression tests before rechecking
+  hosted CI. No raw receipt or credential publication occurred.
+  (`ddb62f6`; synthetic regression red then 104 focused tests passed,
+  100% module branch coverage, Ruff/ty/BasedPyright passed.)
+- [~] Recheck exact-head hosted gates after the privacy fix, then merge only
+  after the coordinated data-plane reader merge hold is released.
 
 ## Phase 2: Implement MBS Silver (AC-01, AC-02, AC-06)
 
