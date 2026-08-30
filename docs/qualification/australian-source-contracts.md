@@ -25,16 +25,63 @@ fraction, not exponents, separators, currency symbols or surrounding spaces.
 No quantization or rounding occurs, even under a low-precision Decimal context.
 Arrow precision/scale admission remains a separate pending step.
 
-Dates require an explicit format profile. The only implemented profile is
-strict YYYY-MM-DD (`iso`), tested with synthetic data. Without a profile,
-nonblank dates remain `unsupported_format`; no locale or production schema-era
-format is guessed. Callers still need era-specific evidence and exact B1/v4
+Dates require an explicit format profile: strict YYYY-MM-DD (`iso`) or
+DD.MM.YYYY (`mbs-dmy`). The latter follows the
+[official MBS XML field specification](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/FAQ-XML_Help),
+last updated 4 March 2022 and checked 30 August 2026. The implementation
+rejects impossible dates, mixed separators, non-padded fields and surrounding
+whitespace; it does not infer locale. Scalar conversion v2 and Arrow metadata
+record the profile/version. Synthetic tests cover every mapped date field,
+leap years and ambiguous day/month values. Without a profile, nonblank dates
+remain `unsupported_format`. Real-corpus qualification is still required;
+format documentation alone does not prove every archived value conforms.
+Callers still need era-specific evidence and exact B1/v4
 lineage before producing qualified Silver tables. Scalar result objects are
 internal conversion outputs, not independently validated interchange receipts.
 No real payload acquisition, publication, promotion or dependency change is
 part of this prerequisite.
 
-### Existing components
+### MBS XML Arrow candidates
+
+`mbs_silver.iter_mbs_silver_batches` parses exact receipt-matched XML and emits
+one selected service, hierarchy, description, fee, benefit or cap table in
+source order. The six versioned schemas cover all 40 native XML fields.
+Each field is a non-null struct containing native text, native presence state,
+conversion status and a typed value. Its schema metadata records the original
+XML path and explicit currency/type. All fields are emitted even when absent.
+Repeated native item identifiers are retained as distinct source ordinals.
+
+Every batch retains the exact source-receipt digest/content-addressed locator,
+schema era, date-profile choice and source-record denominator. Embedded
+provenance is restricted to a redacted retrieval URI, retrieval time and
+rights/evidence enums. It deliberately excludes complete receipt bytes, HTTP
+redirect/final locations, rights-reference URLs and arbitrary receipt metadata
+that could contain credentials. URI redaction reuses the B1 projection helper.
+Each row binds its native record ID and ordinal to B2 payload SHA-256 and B1
+receipt SHA-256. The original receipt digest is not recomputed from a redacted
+projection. Input bytes are checked against the receipt before any output.
+Public v4 object locations and anonymous
+verification remain the data-plane integration boundary; these candidates do
+not constitute publication or promotion receipts.
+
+Numeric columns use Arrow decimal128(38,9), compatible with the existing
+columnar stack. Exact values outside its scale/precision become
+`unrepresentable` with a null typed value and unchanged native text. No rounding,
+percentage rescaling or error-string evaluation is performed. Tests include
+low Decimal contexts and trailing-zero scale reduction without numeric loss.
+
+The source parser is bounded to 9 MB and materializes the native XML batch;
+the Arrow output buffer is limited to 1–4,096 rows. This is not an unbounded
+streaming XML parser. Repeated calls for separate tables reparse the source;
+full-corpus throughput and memory profiling remain pending. The fixed-format
+Parquet round trip is deterministic within the locked runtime. Cross-version
+byte equality is not claimed.
+
+Real-source date-profile qualification, all four workbook annotation tables, PBS
+typed tables, comparison events, public v4 qualification and promotion remain
+unfinished. The module does not acquire or publish any source bytes.
+
+### Reused parser foundations
 
 The implementation reuses the existing MBS native XML/workbook models, PBS
 namespace and bounded parser policy, shared receipt-to-provenance validation,
