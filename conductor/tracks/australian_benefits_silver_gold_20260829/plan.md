@@ -305,14 +305,34 @@
   coverage; two local interpreter pins and PERF302.979ms >250ms. Single
   isolated rerun passed; original local-full failure remains recorded.
 
-- [~] Add a synthetic-tested historical structural/storage qualification
+- [x] Add a synthetic-tested historical structural/storage qualification
   report over independent ordered XML-slot digests and complete denominators
   for all five projections, with top-level/nested occurrence lineage and
   metadata-aware per-batch Parquet parity. Emit counters/IDs, not raw text;
   keep dates unselected and real-corpus/source-era qualification separate.
   Implemented `55f0df1`; intended missing-module and occurrence-corruption
   failures followed by 272 focused/context/ecosystem passes, 100% qualifier
-  branch coverage and static passes. Frozen full and hosted checks pending.
+  branch coverage and static passes. PR #394 merged `af2db13` after 38 checks
+  passed on `70867aa`; frozen full: 3,305 passed, three failed, one skipped,
+  96.74% coverage. Two local interpreter pins and PERF794.238ms >250ms;
+  single isolated rerun passed. Original full failure remains recorded.
+
+- [~] Prepare an Actions-only pinned public historical PBS qualifier harness,
+  anonymously restoring original B1 and ZIP, extracting the exact member,
+  checking all five projections and durably posting bounded aggregate receipts
+  to issue #341. Preserve source identity, deny local/mutable/private/unsafe
+  retrieval and keep dates unselected. Implementation does not authorize or
+  dispatch a run; reconcile exact commit, existing public inputs and read-only
+  authority first. See `docs/qualification/pbs-public-qualification.md`.
+  Implemented `ce41c25`; 304 focused/context/ecosystem passes, 98% combined
+  harness/CLI coverage; Ruff/ty/BasedPyright/actionlint/zizmor pass. Public
+  metadata and original B1 validation pass; no source ZIP/XML downloaded.
+  Frozen full and exact-head hosted checks pending; dispatch withheld.
+
+- [~] Hosted qualifier review fix: isolate the synthetic deadline clock from
+  process-wide test-runner time. (`9d782bb`; clock-identity regression failed
+  before correction, then 304 focused/context/ecosystem tests passed; Ruff
+  pass. Production harness unchanged; fresh exact-head hosted gates pending.)
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
