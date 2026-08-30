@@ -49,6 +49,12 @@
   Six XML Arrow table candidates now retain all 40 native fields, exact B1
   receipt digests and B2 digests. Public v4 location verification, workbook/PBS
   tables and real-source date-era qualification remain pending.
+- [~] Add the documented MBS DD.MM.YYYY profile alongside explicit ISO input;
+  retain source text, reject calendar/format errors and bind conversion v2 to
+  Arrow metadata. Official XML specification checked 2026-08-30; real-corpus
+  hosted qualification remains pending rather than inferred from fixtures.
+  (`1619e2b`; 10 intended failing cases followed by 150 combined focused
+  passes, both changed modules at 100% branch coverage; hosted recheck pending.)
 
 ## Arrow review fixes
 
