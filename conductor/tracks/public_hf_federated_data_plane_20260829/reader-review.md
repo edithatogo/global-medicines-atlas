@@ -42,6 +42,11 @@ completion or a second-maintainer approval.
   No threshold was weakened. Static/context and wheel/sdist clean-consumer
   probes passed. The run crossed review corrections and is not an exact-final-
   head whole-harness claim; no duplicate full run was started.
-- Remaining: full Test-Goblin and hosted exact-head qualification; production
+- Expiry cleanup correction (`9f2b929`): automated P2 review found expired
+  spools stayed open after offline rejection. The red test observed the open
+  file; all expired entries now close on open/occupancy inspection. 91 tests,
+  reader100% branch coverage, Ruff and strict typing pass. Idle-reader close
+  remains explicit; no background timer or hard-real-time cleanup is claimed.
+- Remaining: hosted exact-head qualification; production
   v4 receipt/admission integration, product consumers and public derived output.
   No existing MBS/PBS receipt was relabelled v4 and no source was reacquired.

@@ -115,6 +115,9 @@
   observation and guard regression failed first; 91 reader/contract tests and
   39 receipt/matrix tests pass, reader 100% branch coverage.)
 
+- [x] Close expired cache spools on open and occupancy inspection. (`9f2b929`;
+  automated P2 review; regression failed first, then 91 tests and 100% coverage.)
+
 ## Phase 5: Collections, estate registry, and recovery (AC-05, AC-07)
 
 - [ ] Write failing reconciliation tests for collection visibility, item
