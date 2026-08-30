@@ -81,8 +81,6 @@ Real-source date-profile qualification, all four workbook annotation tables, PBS
 typed tables, comparison events, public v4 qualification and promotion remain
 unfinished. The module does not acquire or publish any source bytes.
 
-### Reused parser foundations
-
 ### Legacy workbook cell candidates
 
 `mbs_workbook_silver.iter_workbook_silver_batches` preserves every sheet and

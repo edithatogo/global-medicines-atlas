@@ -77,7 +77,9 @@
   error codes, exact decimals, boolean values and field addresses.
 - [~] Reject negative shared-string references and test extreme decimal
   exponents without losing native values or relying on Decimal trap settings.
-  String-index guard implemented in `adf37c1`; 60 focused tests passed.
+  String-index guard implemented in `18d304e`; 60 focused tests passed.
+  Cell candidates in `79a11ee`; 148 combined focused tests pass, static
+  checks pass; full and hosted qualification remain pending.
 - [ ] Qualify the exact legacy workbook header/style/epoch denominator in
   hosted execution and add source-specific harmonised annotation mappings.
   Cell-storage typing is not a substitute for domain/currency/date mapping.
