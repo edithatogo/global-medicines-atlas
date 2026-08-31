@@ -512,6 +512,13 @@
   checks passed; reviewed and merged trees match. No real-source promotion.
 - [ ] Bind independently qualified producer snapshots and portable Parquet
   representations before real-source comparison/publication claims.
+- [~] Add a bounded offline Arrow projection of validated native comparisons:
+  one envelope retains both snapshots, lineage, denominators, outcomes and
+  abstention reasons even with no differences; bounded difference batches
+  preserve literal field states and occurrences. Canonical versioned digests
+  link the tables without becoming source-verification receipts. Verify
+  deterministic Parquet round-trips and copied-model rejection. Reuse PyArrow;
+  no new matching stack, data acquisition, publication or Gold promotion.
 - [x] Implement the receipt-bound MBS XML comparison-cohort producer
   (`e3bfca5`, agent original `defb755`). Parse the whole bounded source before
   selecting literal item/subitem keys; retain every selected duplicate and
@@ -555,6 +562,13 @@
   publishing these optional outputs. Federation v4 does not accept the native
   comparison `historical` cohort; reject rather than silently mapping it to
   `legacy` or `current` until a compatible versioned contract exists.
+- [~] Implement the offline read-side prerequisite for already-decoded MBS
+  batches: bounded flat declaration JSON with duplicate-key rejection, exact
+  caller-supplied receipt/profile/schema/metadata and every row's B1/B2 lineage.
+  Reject oversized inputs before row materialization; validate empty batches
+  without claiming coverage. Return only immutable declared metadata, without
+  mutating values, inferring dates or granting qualification/admission. Reuse
+  existing Pydantic/PyArrow contracts; federation v4 evolution stays separate.
 - [x] Add allowlisted PBS transport cause codes (`11a065a`, original
   `1b26737`) with eight-object explicit-cause traversal, cycle protection and
   separate first-retry/terminal fields. No exception text, IP, hostname,
