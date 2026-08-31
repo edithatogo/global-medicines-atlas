@@ -393,6 +393,10 @@
   batch/row prefixes, elapsed time and retry-budget consumption; verify
   interrupted writes preserve the previous digest-bound receipt. No dispatch,
   timeout increase, raw local data, HF writes or corpus-promotion claim.
+  Implemented `34e36c9`; 102 focused tests pass with 99.00% coverage.
+  Broader tests: 310 passes, two unchanged Hypothesis timing failures retained.
+  Ruff, ty, BasedPyright, actionlint and offline pedantic zizmor pass.
+  Frozen full and final-head hosted checks pending.
 - [ ] Optimize measured redundant projection/serialization work with exact
   output, lineage, bound and call-count regression tests; preserve independent
   denominator and per-batch Parquet verification. Review/merge before deciding
