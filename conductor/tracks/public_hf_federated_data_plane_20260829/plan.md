@@ -92,6 +92,18 @@
 
 ## Phase 4: Publish derived medallion products (AC-04, AC-06)
 
+- [~] Implement an offline v4 referenced-receipt byte-closure checker. Validate
+  the existing contract, enumerate every named receipt role, require exact
+  caller-supplied bytes and SHA-256 agreement, and bound count and byte sizes.
+  Reject missing/extra/conflicting references; allow one exact object to serve
+  multiple explicit roles. Return immutable role/digest inventory only: this
+  is neither independent authority nor admission, publication or qualification.
+  Test hostile copied inputs, metadata-only output, role coverage and no I/O.
+- [ ] Add independently trusted typed admission adapters after byte closure;
+  validate subject/layer/lineage and authorization rather than treating
+  self-consistent or digest-matched receipts as authority. Existing public
+  archives must not be retroactively labelled v4-admitted.
+
 - [x] Write failing tests that map every produced Bronze/Silver/Gold/Platinum
   object to one public destination and reject mutable/unpinned references.
   (`620aaf7`; synthetic caller-owned denominator, 32 cases, all four layers.)

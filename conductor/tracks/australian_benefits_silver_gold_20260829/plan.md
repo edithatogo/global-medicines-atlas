@@ -540,12 +540,27 @@
   catalog labels; do not reinterpret them or rewrite published Parquet/receipts
   silently. Require compatibility tests and explicit schema/profile evidence
   before real cross-release qualification or profile migration.
+- [~] Add an opt-in, versioned MBS schema-profile declaration wrapper around
+  existing Silver batches. Bind exact source revision and B1/B2 identities;
+  retain every default native value and legacy metadata key unchanged. New
+  namespaced metadata is explicitly declared, never qualified, and cannot
+  select a date profile. Test all tables, duplicate/batch boundaries, copied
+  model rejection and Parquet round-trip/default-output compatibility.
+- [ ] Define a versioned federation profile-declaration consumer before
+  publishing these optional outputs. Federation v4 does not accept the native
+  comparison `historical` cohort; reject rather than silently mapping it to
+  `legacy` or `current` until a compatible versioned contract exists.
 - [~] Add allowlisted PBS transport cause codes (`11a065a`, original
   `1b26737`) with eight-object explicit-cause traversal, cycle protection and
   separate first-retry/terminal fields. No exception text, IP, hostname,
   credentials, retry-policy or request-count changes. 163 affected tests and
   15 reciprocal review tests passed. Existing hosted failure remains unknown;
   a bounded metadata-only hosted diagnostic is the next acquisition unblocker.
+- [~] Implement a separate exact-main Actions PBS public-metadata diagnostic:
+  one fixed public revision metadata request, existing bounded retry/transport
+  guards, no manifest/receipt/archive/member retrieval and no projection. Emit
+  explicitly scoped success/failure/interruption receipts with
+  `corpus_qualified=false`; independently review before one hosted observation.
 - [~] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
