@@ -444,15 +444,18 @@
   merge, preserving run33337502925 and55-minute limit. No timeout-recovery
   claim or repeated automatic dispatch.
 
-- [~] Reconcile the reviewed checkpoint/optimization run and retain its exact
+- [x] Reconcile the reviewed checkpoint/optimization run and retain its exact
   failure before further diagnostics. Run `33379551308` at `6550c15` failed
   `public-before/transport-connect` after consuming its one retry; no source
   file or projection was reached. Receipt: issue #341 comment `5476646551`.
   A local same-guarded metadata-only check passed; original Actions cause is
   unknown. Correct separately reproduced loss of OS DNS preference without
   extra attempts or policy relaxation (`8a701ac`; 184 focused passes, static
-  checks pass, agent review found no blocker). Integrated gates pending.
-  No further dispatch, timeout change, local raw PBS file or publication.
+  checks pass, automated review found no blocker). Delivered in PR #401,
+  merged `2543720` with 38 successful checks. Later metadata recovery and
+  the separately observed instrumented corpus run are recorded in Phase 5.
+  This checkpoint did not change the timeout, acquire local raw PBS files or
+  publish data; it did not establish the original transport failure cause.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
@@ -512,6 +515,19 @@
   checks passed; reviewed and merged trees match. No real-source promotion.
 - [ ] Bind independently qualified producer snapshots and portable Parquet
   representations before real-source comparison/publication claims.
+- [x] Add a bounded offline Arrow projection of validated native comparisons:
+  one envelope retains both snapshots, lineage, denominators, outcomes and
+  abstention reasons even with no differences; bounded difference batches
+  preserve literal field states and occurrences. Canonical versioned digests
+  link the tables without becoming source-verification receipts. Verify
+  deterministic Parquet round-trips and copied-model rejection. Reuse PyArrow;
+  no new matching stack, data acquisition, publication or Gold promotion.
+  Implemented agent `b745c42`, warning-disclosure fix `fd0f360`; integrated
+  `e1298b2` and `04e6b4e`. The warning regression failed before correction.
+  Root post-fix integration passes 221 tests with both new modules at 100%
+  coverage; automated reciprocal verification passes 20 projection tests and
+  an independently computed digest/correspondence probe. No maintainer approval
+  or qualified real-source comparison is implied; full/hosted checks follow.
 - [x] Implement the receipt-bound MBS XML comparison-cohort producer
   (`e3bfca5`, agent original `defb755`). Parse the whole bounded source before
   selecting literal item/subitem keys; retain every selected duplicate and
@@ -555,6 +571,18 @@
   publishing these optional outputs. Federation v4 does not accept the native
   comparison `historical` cohort; reject rather than silently mapping it to
   `legacy` or `current` until a compatible versioned contract exists.
+- [x] Implement the offline read-side prerequisite for already-decoded MBS
+  batches: bounded flat declaration JSON with duplicate-key rejection, exact
+  caller-supplied receipt/profile/schema/metadata and every row's B1/B2 lineage.
+  Reject oversized inputs before row materialization; validate empty batches
+  without claiming coverage. Return only immutable declared metadata, without
+  mutating values, inferring dates or granting qualification/admission. Reuse
+  existing Pydantic/PyArrow contracts; federation v4 evolution stays separate.
+  Implemented agent `ff8ce70`, integrated `18e8576`. Initial missing-module
+  red, 93 affected agent tests and two automated 39-test verification runs pass;
+  the integrated 221-test check covers both new modules at 100%. Limits are
+  40 KiB declaration, 4,096 rows, 16 MiB batch and 256 KiB/64 metadata entries.
+  Decoding, authenticity, source completeness and admission remain separate.
 - [x] Add allowlisted PBS transport cause codes (`11a065a`, original
   `1b26737`) with eight-object explicit-cause traversal, cycle protection and
   separate first-retry/terminal fields. No exception text, IP, hostname,
@@ -574,11 +602,34 @@
   `b9ec3878abd1ab62d1c8b28cfd158fd4d00cc086c3b47cb444d47faee6737b9a`.
   It explicitly records no source-file reads, publication or corpus
   qualification; earlier connection failure cause remains unproven.
-- [~] Observe one instrumented full PBS qualification after metadata recovery:
+- [x] Observe one instrumented full PBS qualification after metadata recovery:
   Actions run `33393205281`, exact `44a603d`, existing pinned public archive
   only. Preserve bounded progress/failure receipts and the 55-minute deadline;
   no public dataset writes or local raw downloads. Do not label a processed
   prefix as qualification or redispatch without new evidence.
+  The run timed out at 55 minutes on 2026-08-31. Durable issue #341 receipt
+  `5479193015` has verified SHA-256
+  `c08f79325d0cac2c16f2e1c30c9f9bac0c559f9a62c32a20cbaaed3382592d44`.
+  Last checkpoint: projection qualification, entities, 6,448 batches and
+  6,602,752 rows, elapsed 3,307,398 ms. Status is incomplete, not qualified.
+  Generic failure-stage `unavailable` does not erase that observed progress;
+  earlier projection counts/digests were not durably retained in this receipt.
+- [x] Profile the observed entity-projection path with bounded synthetic
+  fixtures before optimizing extraction, Parquet round-trip or row accounting.
+  Preserve exact rows, ordered digests, lineage and all five final projection
+  validations. A prefix cannot be resumed or treated as independently complete;
+  no unchanged redispatch or budget increase. Other projection phases must not
+  be guessed as the blocker. No real source bytes are downloaded locally.
+  One instrumented 100/1,000-item synthetic command passed native-denominator,
+  ordered-digest and Parquet equality checks. The 1,000-item case produced
+  3,001 entity rows in 1.418274 s: iterator 0.910293 s, Parquet 0.111921 s,
+  residual accounting 0.396060 s. Profiling overhead is included; this is not
+  a throughput benchmark or prediction that the 55-minute corpus limit fits.
+- [ ] Test a columnar lineage precheck and selective native-field materialization
+  for entity qualification, preserving every nested identity/parent/occurrence,
+  independent ordered native digest and Parquet equality. The possible saving
+  is bounded by accounting work in that observation; iterator work still
+  dominates and requires separate evidence before changing the producer.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
@@ -603,7 +654,7 @@
 
 ## Phase 6: Integrated qualification (AC-08)
 
-- [~] Profile the persistent local `PERF-QUERY` failure by separating connection
+- [x] Profile the persistent local `PERF-QUERY` failure by separating connection
   lifecycle, cohort-validity SQL, page SQL and conclusion construction. Static
   audit finds repeated keys/assertion/coverage queries for overlapping cohort
   and page pairs, but does not establish the timing cause. Consider bounded
@@ -623,8 +674,20 @@
   regression observed the original duplicate reads; 81 focused query/product
   contract tests pass, including traversal, exhausted pages and fresh reads.
   Automated subagent verification found no blockers; this is not a second
-  accountable reviewer or maintainer approval. Full validation and hosted
-  delivery remain pending; this is not a performance qualification.
+  accountable reviewer or maintainer approval. Full at `d6cf860` passed
+  coverage, including the unchanged 250 ms fixture criterion, then failed the
+  local mutation-score baseline (83.511111% versus 83.688889%). No changed
+  query file is a mutation target; five suspicious outcomes are not evidence
+  of a query regression. Preserve that failed full result and the separate
+  authoritative Linux checks. Delivered in PR #405: wording-corrected head
+  `f3a9c6e`, merged `02654f5`, 38 successful checks and identical trees.
+  The P1 automated-verification versus reviewer-authority wording is corrected.
+  A fixture pass is not full-corpus performance qualification.
+  Subsequent medallion full at `e4987a6` passed 3,799 tests (one optional
+  pyiceberg skip), 96.48% coverage and the fixture performance check, then
+  failed the same local mutation-score gate: 1,880 killed, 363 survived,
+  two untested and five suspicious of 2,250. Later local lanes were not
+  reached; no baseline changes or whole-run retries.
 - [ ] Run focused, property, metamorphic, mutation, performance, coverage,
   Ruff, `ty`, BasedPyright, security, rights, provenance, regeneration, and full
   Test-Goblin lanes where supported.
