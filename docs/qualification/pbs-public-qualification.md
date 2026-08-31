@@ -207,6 +207,36 @@ PYTHONPATH=.:src:tests uv run --locked --group test --group profiling python -m 
 ```
 
 No raw public PBS payload is involved. The actual corpus remains unqualified.
-Next, measure the remaining nested-row serialization costs and test any
-compatible optimization against exact encoded byte budgets before deciding
-whether another pinned hosted run is justified. The 55-minute limit remains.
+The 55-minute limit remains unchanged.
+
+### Reusing exact native-field size measurements
+
+Entity accumulation already measures every native field with compact UTF-8
+JSON. The enclosing entity now reuses those lengths instead of serializing
+the nested fields a second time: encode the metadata with an empty array,
+then add each field length and the `N - 1` separating commas. Groups are
+nonempty; the empty array already accounts for both brackets. Encoder options,
+element and batch budgets, output rows, schemas and lineage are unchanged.
+This is encoded-byte accounting, not a bound on Python/Arrow resident memory.
+
+Regression tests verify exact ordinary/historical boundary acceptance and
+one-byte-over rejection, randomized Unicode/null parity with full JSON,
+one encoding per native field, and existing batch/Parquet round trips.
+`tests/profile_pbs_entity_size.py` compares both accounting paths on synthetic
+100/1,000-item archives after source-bound construction. Parsing and Arrow
+conversion are outside these timings; both paths include initial field sizing.
+It emits five alternating paired wall/CPU samples and checks every entity's
+exact byte count. Shared-host wall timings are noisy, not a corpus SLA.
+Local CPython 3.14.7 process-CPU medians were 0.012648/0.124881 seconds for
+double encoding versus 0.008459/0.082438 for reuse (301/3,001 entities).
+Wall medians were 0.091567/1.122450 versus 0.021989/0.954579 seconds; wide
+sample variation reinforces using call-count and byte parity as regression
+gates, not a fixed speedup promise. No runtime dependency was added.
+
+```sh
+PYTHONPATH=.:src:tests uv run --locked --group test python tests/profile_pbs_entity_size.py
+```
+
+Next: reconcile measured improvements and final-head checks before deciding
+whether a checkpoint-enabled pinned hosted qualification is justified. Neither
+optimization qualifies the real corpus or authorizes new payload publication.

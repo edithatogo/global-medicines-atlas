@@ -421,9 +421,17 @@
   `3d9c587`: 3,401 passed, three failed, one skipped, 96.78% coverage;
   release-reproducibility checks on local3.14.7 and product-runner failure
   retained. One isolated product rerun failed at 453.201ms >250ms. All 38
-  hosted checks passed on that head; final evidence-head gates pending.
-  No production change after freeze. Next investigate nested serialization cost without
-  changing exact byte-budget accounting; do not infer timeout recovery.
+  hosted checks passed on that head. PR #399 merged `73b34d3` after all 38
+  final-head (`c512841`) checks passed, with no unresolved review threads and
+  exact reviewed/merged tree equality. Closure: issue #341 comment `5473889681`.
+  No production change after freeze.
+  Second bounded slice: reuse already-measured native-field JSON byte counts
+  when measuring enclosing entities; retain the same encoder, exact limits,
+  historical lineage and output. Four intended red tests confirmed duplicate
+  encoding and missing size propagation. Unicode/null property, exact-limit
+  acceptance/rejection, call-count and existing Parquet tests guard parity.
+  Measure isolated synthetic encoding with paired wall/CPU samples, then run
+  one frozen full and exact-head hosted gates. Do not infer timeout recovery.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,

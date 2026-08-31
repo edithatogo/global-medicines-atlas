@@ -119,7 +119,7 @@ def _native_rows(
 
 def _entities(
     batches: Iterator[pa.RecordBatch],
-) -> Iterator[tuple[pa.Schema, dict[str, Any]]]:
+) -> Iterator[tuple[pa.Schema, dict[str, Any], int]]:
     entity_schema: pa.Schema | None = None
     for _, group in groupby(
         _native_rows(batches),
@@ -136,7 +136,16 @@ def _entities(
             if len(fields) >= MAX_ELEMENT_FIELDS or size > MAX_ELEMENT_BYTES:
                 raise ValueError("PBS entity element exceeds field/byte limit")
             fields.append(field)
-        yield entity_schema, _row(fields)
+        entity = _row(fields)
+        # The empty array already contributes brackets. Insert the previously
+        # measured fields and their commas without encoding native fields twice.
+        entity_size = (
+            _encoded_size({**entity, "native_fields": []})
+            + size
+            + len(fields)
+            - 1
+        )
+        yield entity_schema, entity, entity_size
 
 
 def iter_pbs_entity_batches(
@@ -167,8 +176,7 @@ def _entity_batches(
     rows: list[dict[str, Any]] = []
     size = 0
     schema: pa.Schema | None = None
-    for schema, entity in _entities(batches):
-        entity_size = _encoded_size(entity)
+    for schema, entity, entity_size in _entities(batches):
         if entity_size > MAX_BATCH_BYTES:
             raise ValueError("PBS entity exceeds batch byte limit")
         if rows and (
