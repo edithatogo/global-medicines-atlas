@@ -23,7 +23,6 @@ from .product_contracts import (
     AsOfClocks,
     ComparisonQuery,
     ComparisonResponse,
-    ComparisonValidity,
     ConceptDetail,
     ConceptIdentifier,
     ConceptName,
@@ -584,9 +583,10 @@ class ReadOnlyQueryService:
         jurisdictions = sorted(query.jurisdictions)
         dimensions = sorted(dimension.value for dimension in query.dimensions)
         with self._connection() as connection:
-            validity = self._comparison_validity(
+            cohort = self._comparison_cohort(
                 connection, query, jurisdictions, dimensions
             )
+            validity = abstaining_status_comparison_validity(tuple(cohort))
             candidate_keys = self._comparison_page_keys(
                 connection,
                 query,
@@ -594,19 +594,15 @@ class ReadOnlyQueryService:
                 dimensions,
                 after,
             )
-            page_keys = candidate_keys[: query.limit]
-            pairs = [(key[0], key[1]) for key in page_keys]
-            assertion_rows = self._comparison_assertions(
-                connection, query, jurisdictions, dimensions, pairs
-            )
-            coverage_rows = self._comparison_coverage(
-                connection, query, jurisdictions, dimensions, pairs
-            )
+            page_keys = set(candidate_keys[: query.limit])
 
-        conclusions = self._build_conclusions(
-            query, assertion_rows, coverage_rows
-        )
-        conclusions.sort(key=self._conclusion_key)
+        # Reuse the bounded cohort within this request only. Keep the page-key
+        # SQL so query-plan evidence describes the actual paginated operation.
+        conclusions = [
+            conclusion
+            for conclusion in cohort
+            if self._conclusion_key(conclusion) in page_keys
+        ]
         has_more = len(candidate_keys) > query.limit
         next_cursor = (
             self._encode_cursor(fingerprint, candidate_keys[query.limit - 1])
@@ -621,14 +617,14 @@ class ReadOnlyQueryService:
             validity=validity,
         )
 
-    def _comparison_validity(
+    def _comparison_cohort(
         self,
         connection: duckdb.DuckDBPyConnection,
         query: ComparisonQuery,
         jurisdictions: list[str],
         dimensions: list[str],
-    ) -> tuple[ComparisonValidity, ...]:
-        """Return page-invariant validity for the bounded query cohort."""
+    ) -> list[ProductConclusion]:
+        """Build the bounded cohort once for page-invariant validity and rows."""
         cohort_limit = len(jurisdictions) * len(dimensions)
         cohort_query = query.model_copy(
             update={"cursor": None, "limit": cohort_limit}
@@ -651,7 +647,7 @@ class ReadOnlyQueryService:
             cohort_query, assertion_rows, coverage_rows
         )
         conclusions.sort(key=self._conclusion_key)
-        return abstaining_status_comparison_validity(tuple(conclusions))
+        return conclusions
 
     def coverage(self, query: CoverageQuery) -> CoverageResponse:
         """Return explicit coverage observations without invented denominators."""

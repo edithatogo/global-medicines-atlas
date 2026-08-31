@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import hashlib
+from contextlib import ExitStack
 from datetime import UTC, datetime
 from pathlib import Path
+from unittest.mock import patch
 
 import duckdb
 import pytest
@@ -508,6 +511,110 @@ def test_comparison_provenance_is_bounded_but_conflict_uses_all_rows(
     assert conclusion.uncertainty.reason is not None
     assert "32 of 101" in conclusion.uncertainty.reason
     assert "paginated evidence endpoint" in conclusion.uncertainty.reason
+
+
+def test_comparisons_reuse_request_cohort(
+    service: ReadOnlyQueryService,
+) -> None:
+    methods = (
+        "_comparison_page_keys",
+        "_comparison_assertions",
+        "_comparison_coverage",
+        "_build_conclusions",
+    )
+    with ExitStack() as stack:
+        spies = [
+            stack.enter_context(
+                patch.object(service, name, wraps=getattr(service, name))
+            )
+            for name in methods
+        ]
+        first = service.comparisons(_comparison(limit=1))
+        assert [spy.call_count for spy in spies] == [2, 1, 1, 1]
+        assert first.metadata.page.next_cursor is not None
+        second = service.comparisons(
+            _comparison(limit=1, cursor=first.metadata.page.next_cursor)
+        )
+        assert [spy.call_count for spy in spies] == [4, 2, 2, 2]
+    assert first.validity == second.validity
+    assert service._conclusion_key(first.conclusions[0]) != (
+        service._conclusion_key(second.conclusions[0])
+    )
+
+
+def test_comparison_plan_describes_executed_page_statement(
+    service: ReadOnlyQueryService,
+) -> None:
+    first = service.comparisons(_comparison(limit=1))
+    query = _comparison(limit=1, cursor=first.metadata.page.next_cursor)
+    statements: list[tuple[str, list[object]]] = []
+    original = service._comparison_page_statement
+
+    def record(
+        query: ComparisonQuery,
+        jurisdictions: list[str],
+        dimensions: list[str],
+        after: tuple[str, ...] | None,
+    ) -> tuple[str, list[object]]:
+        statement = original(query, jurisdictions, dimensions, after)
+        statements.append(statement)
+        return statement
+
+    with patch.object(
+        service, "_comparison_page_statement", side_effect=record
+    ):
+        service.comparisons(query)
+        receipt = service.query_plan_evidence(query)
+    assert len(statements) == 3
+    assert statements[1] == statements[2]
+    sql, parameters = statements[1]
+    assert receipt.sql_sha256 == hashlib.sha256(sql.encode()).hexdigest()
+    assert receipt.parameter_count == len(parameters)
+    assert receipt.requested_limit == 1
+    assert receipt.fetch_limit == 2
+    assert receipt.keyset_applied is True
+
+
+@pytest.mark.parametrize("limit", [1, 2, 50])
+def test_comparison_traversal_matches_whole_cohort(
+    service: ReadOnlyQueryService, limit: int
+) -> None:
+    whole = service.comparisons(_comparison())
+    page = service.comparisons(_comparison(limit=limit))
+    conclusions = list(page.conclusions)
+    while page.metadata.page.next_cursor is not None:
+        page = service.comparisons(
+            _comparison(limit=limit, cursor=page.metadata.page.next_cursor)
+        )
+        assert page.validity == whole.validity
+        conclusions.extend(page.conclusions)
+    assert tuple(conclusions) == whole.conclusions
+    query = _comparison(limit=limit)
+    fingerprint = service._fingerprint(
+        "comparisons", query, exclude_cursor=True
+    )
+    exhausted_cursor = service._encode_cursor(
+        fingerprint, service._conclusion_key(whole.conclusions[-1])
+    )
+    exhausted = service.comparisons(
+        _comparison(limit=limit, cursor=exhausted_cursor)
+    )
+    assert exhausted.conclusions == ()
+    assert exhausted.validity == whole.validity
+    assert exhausted.metadata.page.next_cursor is None
+
+
+def test_comparison_cohort_is_not_cached_between_requests(
+    tmp_path: Path,
+) -> None:
+    database = _database(tmp_path / "atlas.duckdb")
+    service = ReadOnlyQueryService(database, cursor_secret=SECRET)
+    first = service.comparisons(_comparison())
+    with duckdb.connect(str(database)) as connection:
+        connection.execute("DELETE FROM temporal_assertions")
+    second = service.comparisons(_comparison())
+    assert second.conclusions != first.conclusions
+    assert all(item.jurisdiction != "NZ" for item in second.conclusions)
 
 
 def test_query_plan_receipt_proves_keyset_and_limit_pushdown(
