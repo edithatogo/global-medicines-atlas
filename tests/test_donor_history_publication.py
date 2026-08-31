@@ -282,3 +282,50 @@ def test_object_metadata_rejects_unsafe_values(field, value):
 def test_durable_receipt_requires_exact_safe_issue_identity(url):
     with pytest.raises(ValidationError):
         DurableHistoryReceipt(issue_comment=url, verification_sha256="f" * 64)
+
+
+@pytest.mark.parametrize("field", ["private", "gated"])
+def test_visibility_flags_reject_integer_zero(field):
+    raw = plan()
+    raw["before"][field] = 0
+    with pytest.raises(ValidationError, match="boolean"):
+        HistoryAppendPlan.model_validate(raw)
+
+
+@pytest.mark.parametrize("field", ["baseline_is_ancestor", "clean_restore"])
+def test_restore_flags_reject_integer_one(field):
+    raw = verified()
+    raw["restored"][0][field] = 1
+    with pytest.raises(ValidationError, match="boolean"):
+        HistoryVerification.model_validate(raw)
+
+
+def test_direct_model_revalidates_copied_private_state():
+    good = HistoryAppendPlan.model_validate(plan())
+    raw = good.model_dump()
+    raw["before"] = good.before.model_copy(update={"private": True})
+    with pytest.raises(ValidationError):
+        HistoryAppendPlan.model_validate(raw)
+
+
+def test_foreign_observation_is_immutable_after_direct_validation():
+    good = HistoryAppendPlan.model_validate(plan())
+    raw = good.model_dump()
+    fields = list(good.extensions[0].observation.files)
+    raw["extensions"][0]["observation"] = good.extensions[
+        0
+    ].observation.model_copy(update={"files": fields})
+    checked = HistoryAppendPlan.model_validate(raw)
+    fields.clear()
+    assert isinstance(checked.extensions[0].observation.files, tuple)
+    assert checked.extensions[0].observation.files
+
+
+def test_direct_model_rejects_constructed_unsafe_object():
+    good = HistoryAppendPlan.model_validate(plan())
+    raw = good.model_dump()
+    raw["extensions"][0]["bundle"] = good.extensions[0].bundle.model_copy(
+        update={"byte_count": -1}
+    )
+    with pytest.raises(ValidationError):
+        HistoryAppendPlan.model_validate(raw)

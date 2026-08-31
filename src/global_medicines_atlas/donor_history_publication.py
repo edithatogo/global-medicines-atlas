@@ -11,7 +11,13 @@ from __future__ import annotations
 import hashlib
 from typing import Annotated, Literal, Self
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    field_validator,
+    model_validator,
+)
 
 from .donor_delta import ChangedFile, DeltaObservation
 
@@ -36,7 +42,15 @@ MAX_METADATA_PATH_LENGTH = 1024
 
 
 class _Metadata(BaseModel):
-    model_config = ConfigDict(frozen=True, extra="forbid")
+    model_config = ConfigDict(
+        frozen=True, extra="forbid", revalidate_instances="always"
+    )
+
+
+def _boolean(value: object) -> bool:
+    if type(value) is not bool:
+        raise ValueError("evidence flag must be an exact boolean")
+    return value
 
 
 class HistoryObject(_Metadata):
@@ -61,6 +75,8 @@ class HistoryArchiveState(_Metadata):
     private: Literal[False]
     gated: Literal[False]
     objects: tuple[HistoryObject, ...] = Field(min_length=1, max_length=10000)
+
+    _strict_flags = field_validator("private", "gated", mode="before")(_boolean)
 
     @model_validator(mode="after")
     def unique_paths(self) -> Self:
@@ -93,6 +109,14 @@ class HistoryExtension(_Metadata):
     delta_sha256: Digest
     bundle: HistoryObject
     manifest: HistoryObject
+
+    @field_validator("observation", mode="before")
+    @classmethod
+    def normalize_observation(cls, value: object) -> object:
+        """Reconstruct imported models rather than retaining mutable copies."""
+        if isinstance(value, DeltaObservation):
+            return value.model_dump(warnings=False)
+        return value
 
     @model_validator(mode="after")
     def exact_paths(self) -> Self:
@@ -154,6 +178,10 @@ class RestoredHistory(_Metadata):
     prerequisites: tuple[GitId, ...] = Field(min_length=1, max_length=1)
     baseline_is_ancestor: Literal[True]
     clean_restore: Literal[True]
+
+    _strict_flags = field_validator(
+        "baseline_is_ancestor", "clean_restore", mode="before"
+    )(_boolean)
 
 
 def validate_append_plan(
