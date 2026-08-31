@@ -382,7 +382,7 @@
   redirect fix from the pending transport-recovery version. (`30d9a08`;
   context validation passes; no production change after frozen full.)
 
-- [~] Diagnose the 55-minute timeout from run `33337502925` and retain
+- [x] Diagnose the 55-minute timeout from run `33337502925` and retain
   timeout-surviving, fixed aggregate progress without raw payload logging.
   Transport recovery merged as #397 (`f7550d5`) after all 38 checks passed
   on `3592864`; closure is issue #341 comment `5471468401`. The subsequent
@@ -400,12 +400,30 @@
   coverage. Failures: two local interpreter-pin mismatches, product runner
   25-second timeout, monitoring script 30-second timeout. One isolated product
   rerun failed at 936.516ms >250ms; no thresholds relaxed. All 38 hosted checks
-  passed on that head with no review threads. Final evidence-head checks and
-  merge pending; no production change after the frozen run.
-- [ ] Optimize measured redundant projection/serialization work with exact
+  passed on that head with no review threads. PR #398 subsequently merged
+  `e7124b7` after all 38 checks passed on final head `e537cda`; reviewed and
+  merged trees match. Closure: issue #341 comment `5473211434`. Checkpoint
+  implementation is complete; the real-corpus timeout stage remains unknown.
+- [~] Optimize measured redundant projection/serialization work with exact
   output, lineage, bound and call-count regression tests; preserve independent
   denominator and per-batch Parquet verification. Review/merge before deciding
   whether another pinned hosted qualification run is warranted.
+  First bounded slice: preserve native Arrow buffers and slice offsets while
+  materializing only record ID and source digest for the unchanged three
+  domain annotations. Seven regression tests failed on the old algorithm;
+  ordinary/historical, empty/sliced inputs now match its exact values/schema/
+  metadata. Profile the synthetic isolated transform, not corpus throughput.
+  No validation pass, independent denominator, Parquet check or limit removed.
+  Implemented `faa7888`; 320 affected/context/ecosystem tests passed and
+  changed-module coverage is 100%. Ruff, ty and BasedPyright pass. The
+  reproducible fixture-only paired profiler verifies exact metadata parity;
+  Scalene observation recorded separately from unprofiled timing. Frozen full
+  `3d9c587`: 3,401 passed, three failed, one skipped, 96.78% coverage;
+  release-reproducibility checks on local3.14.7 and product-runner failure
+  retained. One isolated product rerun failed at 453.201ms >250ms. All 38
+  hosted checks passed on that head; final evidence-head gates pending.
+  No production change after freeze. Next investigate nested serialization cost without
+  changing exact byte-budget accounting; do not infer timeout recovery.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,

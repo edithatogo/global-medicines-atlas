@@ -5,15 +5,25 @@ from io import BytesIO
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
+from profile_pbs_domain import row_reference
 from test_au_pbs_v3 import (
     _production_xml,  # ruff: ignore[import-private-name] -- synthetic fixture
     _xml,  # ruff: ignore[import-private-name] -- synthetic fixture
+    _zip,  # ruff: ignore[import-private-name] -- synthetic fixture
 )
 from test_australian_source_contracts import (
     _receipt,  # ruff: ignore[import-private-name] -- synthetic receipt
 )
+from test_pbs_historical_silver import PATH, SOURCE
 
+from global_medicines_atlas import pbs_domain as domain
 from global_medicines_atlas.pbs_domain import iter_pbs_domain_batches
+from global_medicines_atlas.pbs_historical_silver import (
+    iter_pbs_historical_silver_batches,
+)
+from global_medicines_atlas.pbs_member_identity import (
+    build_pbs_xml_member_binding,
+)
 from global_medicines_atlas.pbs_silver import iter_pbs_silver_batches
 
 
@@ -154,3 +164,66 @@ def test_mapping_is_identical_across_batch_sizes() -> None:
         for size in (1, 3, 4096)
     ]
     assert all(table.equals(tables[0], check_metadata=True) for table in tables)
+
+
+@pytest.mark.parametrize("historical", [False, True])
+@pytest.mark.parametrize(("offset", "length"), [(0, 0), (0, 1), (1, 11)])
+def test_mapping_reuses_native_buffers_and_matches_row_reference(
+    historical, offset, length
+):
+    payload = _production_xml()
+    if historical:
+        archive = _zip([(PATH, payload)])
+        parent = _receipt(archive, SOURCE)
+        binding = build_pbs_xml_member_binding(archive, parent)
+        native = next(
+            iter_pbs_historical_silver_batches(
+                archive, payload, parent, binding
+            )
+        )
+    else:
+        native = next(
+            iter_pbs_silver_batches(payload, _receipt(payload, "au-pbs"))
+        )
+    native = native.slice(offset, length)
+    mapped = next(domain._domain_batches(iter([native])))
+    expected = row_reference(native)
+    assert mapped.equals(expected, check_metadata=True)
+    for index in range(native.num_columns):
+        before, after = native.column(index), mapped.column(index)
+        assert before.offset == after.offset
+        assert [
+            buffer.address if buffer is not None else None
+            for buffer in before.buffers()
+        ] == [
+            buffer.address if buffer is not None else None
+            for buffer in after.buffers()
+        ]
+    assert mapped.schema.names == [
+        *native.schema.names,
+        "mapping_target",
+        "mapping_status",
+        "item_occurrence_id",
+    ]
+    assert mapped.schema.metadata == {
+        **native.schema.metadata,
+        b"schema_name": b"global-medicines-atlas.pbs-silver.domain-fields",
+        b"mapping_profile": b"pbs-adapter-structural-v1",
+    }
+
+
+def test_mapping_materializes_only_required_columns(monkeypatch):
+    payload = _production_xml()
+    native = next(iter_pbs_silver_batches(payload, _receipt(payload, "au-pbs")))
+    original = domain._mapping
+    calls = 0
+
+    def checked(row):
+        nonlocal calls
+        calls += 1
+        assert set(row) == {"record_id", "source_sha256"}
+        return original(row)
+
+    monkeypatch.setattr(domain, "_mapping", checked)
+    mapped = next(domain._domain_batches(iter([native])))
+    assert calls == mapped.num_rows == native.num_rows

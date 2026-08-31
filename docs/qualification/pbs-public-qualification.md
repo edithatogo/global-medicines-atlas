@@ -173,3 +173,40 @@ proven redundant work without removing independent lineage, parser limits,
 reference index bounds, native digest checks or Parquet roundtrips. No cache of
 unvalidated caller inputs or increase to the hosted limit is authorized by this
 diagnosis. New dependencies are unnecessary for these measurements.
+
+### Native-buffer-preserving domain annotations
+
+The shared domain transform now decodes only `record_id` and `source_sha256`
+for its unchanged mapping function. It constructs three new annotation arrays
+and retains every original Arrow array, including null buffers, slice offsets
+and historical lineage. It does not cache mappings across rows or inputs, skip
+source validation, remove reference passes, or relax a parser/index/batch limit.
+Ordinary and historical empty, one-row and nonzero-offset batches match the
+former row-materializing algorithm exactly, including schema metadata. Tests
+also assert buffer-address equality and one two-column mapping call per row.
+A sliced array can retain its parent allocation; this is not a new bound on
+total resident memory or a promise to compact slices.
+
+The fixture-only `tests/profile_pbs_domain.py` retains the former algorithm as
+a measurement/parity oracle, not a second production route. It constructs
+100/1,000 synthetic pharmaceutical items (702/7,002 native rows; 1/7 batches)
+and measures five alternating paired samples after validating exact parity.
+On local CPython 3.14.7, unprofiled median seconds were 0.007576/0.189243 for
+the row reference and 0.002714/0.034720 for native-buffer reuse. A separate
+Scalene CPU-profiled run measured 0.013332/0.201196 versus 0.004721/0.088144.
+These shared-host microbenchmarks vary materially with load and profiler
+overhead; they are not a corpus throughput budget or proof of timeout recovery.
+The deterministic regression gate is eliminated native-buffer reconstruction
+with exact contract parity, not a fragile wall-clock threshold.
+
+Reproduce the bounded fixture experiment from the repository root:
+
+```sh
+PYTHONPATH=.:src:tests uv run --locked --group test python tests/profile_pbs_domain.py
+PYTHONPATH=.:src:tests uv run --locked --group test --group profiling python -m scalene run --cpu-only --profile-all --outfile /tmp/pbs-domain-profile.json tests/profile_pbs_domain.py
+```
+
+No raw public PBS payload is involved. The actual corpus remains unqualified.
+Next, measure the remaining nested-row serialization costs and test any
+compatible optimization against exact encoded byte budgets before deciding
+whether another pinned hosted run is justified. The 55-minute limit remains.
