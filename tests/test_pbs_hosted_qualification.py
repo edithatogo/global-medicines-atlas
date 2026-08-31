@@ -317,7 +317,7 @@ def test_aggregate_report_bound(synthetic, monkeypatch) -> None:
 
 
 def test_cli_failure_receipt_excludes_error_text(tmp_path, monkeypatch) -> None:
-    def fail(_commit):
+    def fail(_commit, **_kwargs):
         raise ValueError("synthetic-sensitive-source-text")
 
     monkeypatch.setattr(cli, "run_hosted_qualification", fail)
@@ -348,8 +348,8 @@ def test_cli_success_and_size_bound(synthetic, tmp_path, monkeypatch) -> None:
     monkeypatch.setattr(
         cli,
         "run_hosted_qualification",
-        lambda commit: hosted.run_hosted_qualification(
-            commit, transport=transport
+        lambda commit, **kwargs: hosted.run_hosted_qualification(
+            commit, transport=transport, **kwargs
         ),
     )
     output = tmp_path / "receipt.json"
@@ -370,6 +370,104 @@ def test_workflow_has_durable_receipt_and_no_dataset_write() -> None:
     assert "HF_TOKEN" not in workflow
     assert "upload_folder" not in workflow
     assert "exact_commit" in workflow
+
+
+def test_checkpoint_survives_interruption(synthetic, monkeypatch, tmp_path):
+    def interrupted(*_args, **_kwargs):
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(hosted, "build_pbs_xml_member_binding", interrupted)
+    monkeypatch.setattr(
+        cli,
+        "run_hosted_qualification",
+        lambda commit, **kwargs: hosted.run_hosted_qualification(
+            commit, transport=synthetic[2], **kwargs
+        ),
+    )
+    output = tmp_path / "receipt.json"
+    with pytest.raises(KeyboardInterrupt):
+        cli.main(["--exact-commit", SHA, "--output", str(output)])
+    envelope = json.loads(output.read_text())
+    report = envelope["report"]
+    assert report["status"] == "incomplete"
+    assert report["progress"]["stage"] == "member-binding"
+    assert report["progress"]["phase"] == "unavailable"
+    assert report["transport_retry"] is None
+    assert not report["publication_performed"]
+    assert (
+        envelope["report_sha256"]
+        == hashlib.sha256(
+            json.dumps(report, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+    )
+    assert not output.with_suffix(".json.tmp").exists()
+
+
+def test_progress_is_fixed_aggregate_only(synthetic):
+    checkpoints = []
+    report = hosted.run_hosted_qualification(
+        SHA, transport=synthetic[2], progress=checkpoints.append
+    )
+    assert report["status"] == "passed"
+    assert checkpoints
+    assert all(event["status"] == "incomplete" for event in checkpoints)
+    assert {event["progress"]["phase"] for event in checkpoints} >= {
+        "denominator",
+        "native",
+        "domain",
+        "entities",
+        "references",
+        "dates",
+    }
+    assert all(
+        set(event["progress"])
+        == {"stage", "phase", "batches", "rows", "elapsed_ms"}
+        for event in checkpoints
+    )
+    assert "001.2300" not in json.dumps(checkpoints)
+
+
+@pytest.mark.parametrize("bad", ["secret-source", -1, True, 2**63])
+def test_invalid_progress_cannot_be_serialized(bad):
+    records = []
+    budget = hosted._RetryBudget(progress=records.append)
+    with pytest.raises(ValueError, match="invalid aggregate"):
+        budget.checkpoint("projection-qualification", "native", 0, bad)
+    assert not records
+
+
+@pytest.mark.parametrize(
+    ("stage", "phase"),
+    [
+        ("secret-source", "native"),
+        ("projection-qualification", "secret-source"),
+    ],
+)
+def test_unknown_progress_codes_cannot_be_serialized(stage, phase):
+    records = []
+    budget = hosted._RetryBudget(progress=records.append)
+    with pytest.raises(ValueError, match="invalid aggregate"):
+        budget.checkpoint(stage, phase)
+    assert not records
+
+
+def test_atomic_checkpoint_keeps_previous_receipt_on_replace_failure(
+    tmp_path, monkeypatch
+):
+    output = tmp_path / "receipt.json"
+    initial = hosted.failure_report()
+    initial["status"] = "incomplete"
+    cli._write(output, initial)
+    before = output.read_bytes()
+
+    def interrupt(*_args):
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(Path, "replace", interrupt)
+    with pytest.raises(KeyboardInterrupt):
+        cli._write(output, hosted.failure_report())
+    assert output.read_bytes() == before
+    assert json.loads(before)["report"]["status"] == "incomplete"
 
 
 def test_context_failure_has_safe_diagnostics(synthetic, monkeypatch) -> None:
@@ -403,8 +501,8 @@ def test_stage_category_and_cli_redaction(
     monkeypatch.setattr(
         cli,
         "run_hosted_qualification",
-        lambda commit: hosted.run_hosted_qualification(
-            commit, transport=synthetic[2]
+        lambda commit, **kwargs: hosted.run_hosted_qualification(
+            commit, transport=synthetic[2], **kwargs
         ),
     )
     output = tmp_path / "diagnostic.json"
@@ -619,9 +717,17 @@ def test_one_transient_receipt_retry_is_recorded(
                 raise error_type("secret-source-url")
         return delegate.handle_request(request)
 
+    checkpoints = []
     report = hosted.run_hosted_qualification(
-        SHA, transport=httpx.MockTransport(handler)
+        SHA, transport=httpx.MockTransport(handler), progress=checkpoints.append
     )
+    retries = [event for event in checkpoints if event["transport_retry"]]
+    assert retries
+    assert retries[0]["progress"]["stage"] == "receipt-read"
+    assert retries[0]["transport_retry"] == {
+        "stage": "receipt-read",
+        "category": expected_category,
+    }
     assert report["status"] == "passed"
     assert attempts == 2
     assert sleeps == [1]

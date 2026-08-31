@@ -13,8 +13,7 @@ key with an empty value. This is a client redirect compatibility defect, not
 evidence of an upstream defect or successful corpus qualification. The corrected
 metadata-only recheck passed public-state, manifest and original B1 digest/size
 and identity validation using the same DNS-pinned transport. No ZIP/XML was
-read locally. The transport-recovery version below has not been dispatched.
-Any retry requires
+read locally. Any further retry requires
 reconciliation of its exact merged main commit and the unchanged read-only
 scope below.
 
@@ -26,6 +25,15 @@ does not identify the transport subclass. A subsequent metadata-only check
 passed manifest and B1 digest/size/model validation. That observation supports
 bounded transport recovery, not a conclusion about the original exception's
 subclass or a corpus qualification claim.
+
+The transport-recovery [run 33337502925](https://github.com/edithatogo/global-medicines-atlas/actions/runs/33337502925)
+at `f7550d5f84b6a831cd99c3b6882c0d33c4b0c939` timed out after the unchanged
+55-minute qualification limit. Its [fallback receipt](https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5471752828)
+has digest `65de9385f5b3414976aeb7c14e14ac6b02a2cf31957b81bf42e93b10f712cd21`.
+It supplies no last-stage evidence: `transport_retry=null` in that fallback does
+not establish whether recovery was attempted. No corpus qualification resulted.
+The checkpoint correction below is synthetic-tested; no further dispatch or
+timeout increase is implied.
 
 ## Existing authority and immutable inputs
 
@@ -81,7 +89,8 @@ the only additional request-chain allowance, not an unbounded retry loop.
 `transport_retry` records the fixed stage/category of the initial transient
 failure that consumed the run-wide recovery budget, on success or failure.
 It records backoff initiation, not proof that a second read completed (the
-deadline may expire during backoff). No retry is represented as `null`.
+deadline may expire during backoff). An observed unused budget is `null`;
+in a generic failure-only fallback, `null` instead means unavailable evidence.
 Transport failure categories now distinguish connection, read, remote/local
 protocol and decoding failures without exception text or connection details.
 
@@ -92,6 +101,27 @@ timeout. Corpus-limit/runtime failure is evidence, not permission to weaken
 bounds or infer coverage. Date conversion remains unselected.
 
 ## Durable aggregate receipt
+
+Before each stage and projection phase, and after each verified projection
+batch, the CLI atomically replaces the same bounded JSON receipt with an
+`incomplete` checkpoint. The denominator walk also checkpoints every 65,536
+fields and at its end. Only fixed stage/phase codes, completed batch/row
+counters and elapsed monotonic milliseconds are included. For the denominator,
+`rows` counts native fields and `batches` is zero. Counters reset per phase;
+they are processed-prefix diagnostics, not qualified corpus denominators.
+The reference phase includes its index-building pass before its first emitted
+output batch; a zero-batch checkpoint cannot distinguish substeps inside it.
+Parsing/binding stages likewise remain coarse-grained.
+
+Retry-budget consumption is checkpointed before backoff. Ordinary failure
+receipts retain the latest progress; a process killed at the step timeout
+leaves the last atomically completed checkpoint for the existing `always()`
+issue/artifact steps. An interruption between writing the temporary file and
+replacement preserves the previous receipt. Only the final completed report
+can say `passed`. Checkpoints do not resume computation, assert completion of
+the active stage, survive loss of the runner itself, or guarantee issue posting
+if GitHub is unavailable. Temporary receipt files contain metadata only and
+are not included in the artifact.
 
 The CLI emits only bounded aggregate counts, digests, pinned object identities,
 UTC observation times, exact workflow commit/run identity and the original
@@ -121,3 +151,25 @@ Raw bytes remain durable in the existing public HF revision, not in the repo
 or developer workstation. A successful report qualifies only the observed
 structural/storage transformations; public Silver delivery, complete domain
 semantics and independently justified date profiles remain separate.
+
+## Synthetic scalability diagnosis
+
+A local CPython 3.14.7 cProfile run used synthetic schedule XML with 100 and
+1,000 repeated `<item><code>i</code><name>Synthetic i</name></item>` elements,
+the existing test ZIP/receipt builders and unchanged five-projection qualifier.
+The member sizes were 5,335 and 54,835 bytes; the field denominators were 602
+and 6,002. Profiled elapsed times were 8.554 and 43.675 seconds on a shared
+workstation; these are not stable benchmarks or extrapolated corpus throughput.
+At 1,000 items, 114,038 JSON `dumps` calls accumulated 10.921 seconds and
+the entity-building route accumulated 17.808 seconds (overlapping cumulative
+times must not be added). Arrow/Python row conversion and repeated nested
+serialization are useful optimization targets. Receipt hashing was not the
+dominant measured cost. This synthetic shape is not the real corpus, and does
+not explain its timeout stage without progress evidence.
+
+Next: profile the individual conversion/encoding passes at fixed synthetic
+denominators, add exact-output and call-count regression tests, and optimize
+proven redundant work without removing independent lineage, parser limits,
+reference index bounds, native digest checks or Parquet roundtrips. No cache of
+unvalidated caller inputs or increase to the hosted limit is authorized by this
+diagnosis. New dependencies are unnecessary for these measurements.

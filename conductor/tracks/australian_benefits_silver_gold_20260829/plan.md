@@ -361,7 +361,7 @@
   `29fd88c`; exact merged/reviewed trees verified. Corrected run `33336369595`
   failed later at receipt-read/transport, not the original redirect guard.
 
-- [~] Add fixed transport subclass diagnostics and one shared run-wide retry
+- [x] Add fixed transport subclass diagnostics and one shared run-wide retry
   for connection/read/remote-protocol failures only. Preserve original deadline,
   per-attempt byte/hop and exact source guards; close/discard partial responses,
   restart from the pinned URL and retain the initial failure's fixed codes in
@@ -375,11 +375,37 @@
   one skipped, 93.75%; two interpreter pins, product latency, three rehearsal
   timeouts and a worker SIGSEGV in unchanged product CLI. Isolated crash/context
   checks passed; isolated product latency still failed at 822.028ms >250ms.
-  Local limitations retained. Final-head hosted gates pending.
+  Local limitations retained. All 38 final-head hosted gates subsequently
+  passed on `3592864`; #397 merged as `f7550d5` with exact tree agreement.
 
 - [x] Review documentation correction: distinguish the earlier dispatched
   redirect fix from the pending transport-recovery version. (`30d9a08`;
   context validation passes; no production change after frozen full.)
+
+- [~] Diagnose the 55-minute timeout from run `33337502925` and retain
+  timeout-surviving, fixed aggregate progress without raw payload logging.
+  Transport recovery merged as #397 (`f7550d5`) after all 38 checks passed
+  on `3592864`; closure is issue #341 comment `5471468401`. The subsequent
+  run failed at the unchanged timeout; fallback comment `5471752828` has no
+  stage or retry evidence. Synthetic profiling identifies row conversion and
+  JSON encoding as material costs, not proof of the real timeout stage.
+  Add atomic incomplete checkpoints for stages, projection phases, processed
+  batch/row prefixes, elapsed time and retry-budget consumption; verify
+  interrupted writes preserve the previous digest-bound receipt. No dispatch,
+  timeout increase, raw local data, HF writes or corpus-promotion claim.
+  Implemented `34e36c9`; 102 focused tests pass with 99.00% coverage.
+  Broader tests: 310 passes, two unchanged Hypothesis timing failures retained.
+  Ruff, ty, BasedPyright, actionlint and offline pedantic zizmor pass.
+  Frozen full `a4b59b5`: 3,393 passed, four failed, one skipped, 96.78%
+  coverage. Failures: two local interpreter-pin mismatches, product runner
+  25-second timeout, monitoring script 30-second timeout. One isolated product
+  rerun failed at 936.516ms >250ms; no thresholds relaxed. All 38 hosted checks
+  passed on that head with no review threads. Final evidence-head checks and
+  merge pending; no production change after the frozen run.
+- [ ] Optimize measured redundant projection/serialization work with exact
+  output, lineage, bound and call-count regression tests; preserve independent
+  denominator and per-batch Parquet verification. Review/merge before deciding
+  whether another pinned hosted qualification run is warranted.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,

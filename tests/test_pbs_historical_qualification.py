@@ -15,6 +15,7 @@ from global_medicines_atlas import pbs_historical_qualification as qualifier
 from global_medicines_atlas.pbs_member_identity import (
     build_pbs_xml_member_binding,
 )
+from global_medicines_atlas.pbs_xml_slots import PbsXmlSlot
 
 
 def test_all_projections_have_exact_denominators_and_parquet_parity() -> None:
@@ -51,6 +52,44 @@ def test_all_projections_have_exact_denominators_and_parquet_parity() -> None:
         )
         == report
     )
+
+
+def test_progress_is_aggregate_and_does_not_change_qualification() -> None:
+    archive = _zip([(PATH, XML)])
+    parent = _receipt(archive, SOURCE)
+    binding = build_pbs_xml_member_binding(archive, parent)
+    events = []
+    report = qualifier.qualify_pbs_historical_projections(
+        archive,
+        XML,
+        parent,
+        binding,
+        rows_per_batch=1,
+        progress=lambda *event: events.append(event),
+    )
+    assert events[0] == ("binding-validation", 0, 0)
+    assert events[1] == ("denominator", 0, 0)
+    for name, projection in report["projections"].items():
+        phase = [event for event in events if event[0] == name]
+        assert phase[0] == (name, 0, 0)
+        assert phase[-1][1:] == (projection["rows"], projection["rows"])
+    assert report == qualifier.qualify_pbs_historical_projections(
+        archive, XML, parent, binding
+    )
+
+
+def test_denominator_reports_only_bounded_intervals(monkeypatch):
+    slot = PbsXmlSlot("/item/1", "/item/1/text", "/item/text", "secret")
+    monkeypatch.setattr(
+        qualifier, "iter_pbs_xml_slots", lambda _payload: iter([slot] * 65537)
+    )
+    events = []
+    report = qualifier._denominator(
+        b"synthetic", lambda *event: events.append(event)
+    )
+    assert events == [("denominator", 0, 65536), ("denominator", 0, 65537)]
+    assert report["native_fields"] == 65537
+    assert "secret" not in json.dumps(events)
 
 
 @pytest.mark.parametrize("case", ["archive", "member", "binding"])
