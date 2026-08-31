@@ -28,6 +28,14 @@ independent human approval, clinical assessment, or blanket publication grant.
 
 ## Remaining boundary and next route
 
+The 2026-08-31 metadata-only donor refresh found post-baseline changes at graph
+`3993e5e` (two documentation paths) and scraper `009e805` (eight paths, including
+executable code and tests). The original review remains a pinned-baseline
+checkpoint, not current-head preservation proof. The metadata delta contract
+and disposition inventory are being added; exact hosted preservation receipts
+for both later heads remain prerequisites to archival. Scraper async caller
+responsiveness is retained as a legacy interface, not claimed as GMA API parity.
+
 The final donor GitHub archival decision is outstanding. Track status remains
 `in_progress`; no donor archival or whole-programme completion is claimed.
 The next safe implementation route is the dependent public data-plane contract

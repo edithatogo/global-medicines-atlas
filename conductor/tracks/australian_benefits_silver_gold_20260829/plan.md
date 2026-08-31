@@ -437,10 +437,22 @@
   coverage. Two failures require Python3.14.6 rather than local3.14.7;
   product PERF-QUERY1218.492ms >250ms. One isolated product rerun failed
   at756.788ms. Static/context/ecosystem and clean package checks pass.
-  No production changes after freeze; final-head hosted gates pending.
+  No production changes after freeze. PR #400 merged `6550c15` after all 38
+  checks passed on final head `8586603`; reviewed/merged trees match.
+  Durable closeout: issue #341 comment `5474092117`.
   Next reconcile one checkpoint-enabled pinned hosted qualification after
   merge, preserving run33337502925 and55-minute limit. No timeout-recovery
   claim or repeated automatic dispatch.
+
+- [~] Reconcile the reviewed checkpoint/optimization run and retain its exact
+  failure before further diagnostics. Run `33379551308` at `6550c15` failed
+  `public-before/transport-connect` after consuming its one retry; no source
+  file or projection was reached. Receipt: issue #341 comment `5476646551`.
+  A local same-guarded metadata-only check passed; original Actions cause is
+  unknown. Correct separately reproduced loss of OS DNS preference without
+  extra attempts or policy relaxation (`8a701ac`; 184 focused passes, static
+  checks pass, agent review found no blocker). Integrated gates pending.
+  No further dispatch, timeout change, local raw PBS file or publication.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
@@ -480,6 +492,23 @@
   candidate class can masquerade as an authoritative link.
 
 ## Phase 5: Historical comparisons and publication (AC-06, AC-07)
+
+### Bounded native comparison prerequisite
+
+- [~] Add a source-independent native snapshot comparison candidate contract
+  with exact declared B1/B2 lineage, source/profile/dimension separation,
+  row/field denominators, explicit incomplete/ambiguous abstention and bounded
+  allocation. Preserve literal values, occurrences and both snapshots; presence
+  differences are not additions, cessations, entitlement or current status.
+  JSON/semantic contract only; Arrow and real producer integration follow.
+  Reject copied/constructed mutable nested models and fabricated outputs.
+  Implemented `972f619`, review fixes `7740be3` (agent originals `4f7c9b1`,
+  `b22f24a`). Initial missing-module red; 22 review regressions failed before
+  correction. Agent final 165 focused/compatibility passes, new module 100%
+  coverage; reviewer independently reproduced and closed the mutable-input
+  finding. Agent review is not independent maintainer approval.
+- [ ] Bind independently qualified producer snapshots and portable Parquet
+  representations before real-source comparison/publication claims.
 
 - [ ] Write failing tests for additions, cessations, renumbering, fee/benefit/
   restriction changes, schema-era drift, source failures, missing periods, and
