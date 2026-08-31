@@ -92,7 +92,7 @@
 
 ## Phase 4: Publish derived medallion products (AC-04, AC-06)
 
-- [~] Implement an offline v4 referenced-receipt byte-closure checker. Validate
+- [x] Implement an offline v4 referenced-receipt byte-closure checker. Validate
   the existing contract, enumerate every named receipt role, require exact
   caller-supplied bytes and SHA-256 agreement, and bound count and byte sizes.
   Reject missing/extra/conflicting references; allow one exact object to serve
@@ -102,7 +102,13 @@
   Implemented `84c844a` (agent `294b506`): 22 new and 156 broader tests pass,
   full module coverage; duplicate JSON-key regression failed before repair.
   Root integrated all three evidence slices: 414 tests pass, 100% statement
-  and branch coverage for the three affected modules. Full/hosted follow.
+  and branch coverage for the three affected modules before the review fix.
+  Review correction `6bb351b` (agent `3e797a2`) adds structural bounds before
+  schema uniqueness validation: 256 container entries/references, 8,192 nodes,
+  depth 32. Four oversized/malformed-reference regressions failed before repair;
+  210 integrated tests and 28 independent review tests pass, 99.08% closure
+  coverage. PR #403 merged as `44a603d` after all 38 hosted checks passed;
+  reviewed/merged trees match. Actual admission remains separately pending.
 - [ ] Add independently trusted typed admission adapters after byte closure;
   validate subject/layer/lineage and authorization rather than treating
   self-consistent or digest-matched receipts as authority. Existing public
