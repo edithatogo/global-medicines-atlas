@@ -414,6 +414,12 @@
   ordinary/historical, empty/sliced inputs now match its exact values/schema/
   metadata. Profile the synthetic isolated transform, not corpus throughput.
   No validation pass, independent denominator, Parquet check or limit removed.
+  Implemented `faa7888`; 320 affected/context/ecosystem tests passed and
+  changed-module coverage is 100%. Ruff, ty and BasedPyright pass. The
+  reproducible fixture-only paired profiler verifies exact metadata parity;
+  Scalene observation recorded separately from unprofiled timing. Frozen full
+  and hosted checks pending. Next investigate nested serialization cost without
+  changing exact byte-budget accounting; do not infer timeout recovery.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
