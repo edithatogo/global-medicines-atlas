@@ -352,3 +352,18 @@ def test_constructed_difference_field_is_revalidated():
     payload["differences"] = (bad_difference,)
     with pytest.raises(ValidationError, match="state and value"):
         NativeComparison.model_validate(payload)
+
+
+def test_explicit_scope_cannot_compare_with_other_or_whole_source():
+    whole = snapshot()
+    scoped = snapshot(scope_id="synthetic-cohort:a")
+    assert whole.scope_id == "whole_source"
+    assert compare_native_snapshots(whole, scoped).reasons == (
+        "incompatible_profile",
+    )
+    assert (
+        compare_native_snapshots(
+            scoped, snapshot(scope_id="synthetic-cohort:b")
+        ).outcome
+        == "abstained"
+    )
