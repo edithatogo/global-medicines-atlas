@@ -1,6 +1,8 @@
 """Portable candidate projections retain native uncertainty and lineage."""
 # ruff: file-ignore[compare-to-empty-string]
 
+import warnings
+
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
@@ -178,7 +180,10 @@ def test_default_batch_boundary_and_input_copy_isolation():
     supplied = result.model_copy(
         update={"left": result.left.model_copy(update={"rows": mutable_rows})}
     )
-    envelope, batches = project_native_comparison(supplied)
+    with warnings.catch_warnings(record=True) as captured:
+        warnings.simplefilter("always")
+        envelope, batches = project_native_comparison(supplied)
+    assert not captured
     mutable_rows.clear()
     assert [batch.num_rows for batch in batches] == [1024, 1]
     assert envelope.to_pylist()[0]["left"]["actual_rows"] == 1025

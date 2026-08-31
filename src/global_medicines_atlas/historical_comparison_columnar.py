@@ -140,7 +140,7 @@ def project_native_comparison(
         or not 1 <= rows_per_batch <= MAX_BATCH_ROWS
     ):
         raise ValueError("rows_per_batch must be an integer from 1 to 1024")
-    value = NativeComparison.model_validate(value.model_dump())
+    value = NativeComparison.model_validate(value.model_dump(warnings=False))
     digest = _digest(value)
     envelope = pa.Table.from_pylist(
         [
