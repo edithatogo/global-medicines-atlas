@@ -99,6 +99,10 @@
   multiple explicit roles. Return immutable role/digest inventory only: this
   is neither independent authority nor admission, publication or qualification.
   Test hostile copied inputs, metadata-only output, role coverage and no I/O.
+  Implemented `84c844a` (agent `294b506`): 22 new and 156 broader tests pass,
+  full module coverage; duplicate JSON-key regression failed before repair.
+  Root integrated all three evidence slices: 414 tests pass, 100% statement
+  and branch coverage for the three affected modules. Full/hosted follow.
 - [ ] Add independently trusted typed admission adapters after byte closure;
   validate subject/layer/lineage and authorization rather than treating
   self-consistent or digest-matched receipts as authority. Existing public

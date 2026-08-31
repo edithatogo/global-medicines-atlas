@@ -546,6 +546,8 @@
   namespaced metadata is explicitly declared, never qualified, and cannot
   select a date profile. Test all tables, duplicate/batch boundaries, copied
   model rejection and Parquet round-trip/default-output compatibility.
+  Implemented `f24b166` (agent `9187132`): 33 focused and 246 broader tests
+  passed; independent automated review passed 19 selected regressions.
 - [ ] Define a versioned federation profile-declaration consumer before
   publishing these optional outputs. Federation v4 does not accept the native
   comparison `historical` cohort; reject rather than silently mapping it to
@@ -561,6 +563,9 @@
   guards, no manifest/receipt/archive/member retrieval and no projection. Emit
   explicitly scoped success/failure/interruption receipts with
   `corpus_qualified=false`; independently review before one hosted observation.
+  Implemented `11c3c15` (agent `83885d0`): 175 affected tests passed. An exact
+  metadata URL hook rejects archive/CDN redirects before transport; generic
+  corpus success cannot become metadata verification. No hosted run yet.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
@@ -585,6 +590,13 @@
 
 ## Phase 6: Integrated qualification (AC-08)
 
+- [ ] Profile the persistent local `PERF-QUERY` failure by separating connection
+  lifecycle, cohort-validity SQL, page SQL and conclusion construction. Static
+  audit finds repeated keys/assertion/coverage queries for overlapping cohort
+  and page pairs, but does not establish the timing cause. Consider bounded
+  request-local result reuse only after profiling and parity tests for paging,
+  coverage, absent states and validity; do not relax the 250 ms threshold or
+  treat green Linux checks as a local performance qualification.
 - [ ] Run focused, property, metamorphic, mutation, performance, coverage,
   Ruff, `ty`, BasedPyright, security, rights, provenance, regeneration, and full
   Test-Goblin lanes where supported.
