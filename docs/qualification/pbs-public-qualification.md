@@ -37,6 +37,33 @@ timeout increase is implied.
 
 ## Existing authority and immutable inputs
 
+### Bounded metadata-only diagnostic
+
+`pbs-public-metadata-diagnostic.yml` is a manual, exact-main-commit diagnostic
+for the unresolved `public-before` transport failure. It invokes the existing
+CLI with `--metadata-only`, requests only the fixed immutable revision metadata
+endpoint, and stops before any manifest, B1 file, ZIP, XML, extraction or
+projection. A request hook rejects every redirect away from that exact endpoint,
+including otherwise approved source CDN paths. No new dependency, credential,
+dataset upload, timeout increase or automatic recurring dispatch is introduced.
+
+The same DNS-bound client, anonymous visibility checks, 1 MiB metadata cap,
+30-second HTTP timeout, 300-second deadline and one shared transient retry
+budget apply. The dedicated step is bounded to six minutes and its job to ten.
+One successful metadata request reports `status=metadata_verified`, never corpus
+qualification. All success, failure, incomplete, oversized-report fallback and
+failure-only receipts carry `operation=pbs-public-metadata-diagnostic`,
+`corpus_qualified=false`, `source_files_read=false` and
+`publication_performed=false`. Only bounded aggregate receipts go to issue341
+and the 30-day Actions artifact. Interruption retains the last atomic scoped
+checkpoint; missing output produces a scoped failure-only receipt.
+
+Preparation is not execution. After reviewed merge and exact-head reconciliation,
+one coordinated hosted metadata diagnostic may identify a fixed transport cause;
+it must not automatically continue to raw acquisition or repeat the full qualifier.
+Existing failed runs remain evidence, and successful connectivity alone does not
+establish source qualification, date interpretation or publication readiness.
+
 The checkpoint-enabled [run 33379551308](https://github.com/edithatogo/global-medicines-atlas/actions/runs/33379551308)
 at reviewed merge `6550c15d426d91f68ee0765902a09fb7bea8f606` failed at
 `public-before/transport-connect` after consuming its one allowed retry.

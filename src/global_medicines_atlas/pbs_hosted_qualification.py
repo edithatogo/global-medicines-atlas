@@ -491,6 +491,104 @@ def run_hosted_qualification(
         raise
 
 
+def metadata_probe_report(report: dict[str, Any]) -> dict[str, Any]:
+    """Scope aggregate diagnostics without carrying corpus qualification data."""
+    allowed = (
+        "schema_version",
+        "workflow_commit",
+        "run_id",
+        "run_attempt",
+        "failure_stage",
+        "failure_category",
+        "transport_retry",
+        "transport_diagnostics",
+        "progress",
+    )
+    status = report.get("status")
+    if type(status) is not str or status not in {
+        "metadata_verified",
+        "failed",
+        "incomplete",
+    }:
+        status = "failed"
+    return {
+        **{key: report[key] for key in allowed if key in report},
+        "status": status,
+        "operation": "pbs-public-metadata-diagnostic",
+        "dataset": DATASET,
+        "revision": REVISION,
+        "reason": "metadata-only-no-corpus-qualification",
+        "corpus_qualified": False,
+        "source_files_read": False,
+        "publication_performed": False,
+    }
+
+
+def _metadata_request(request: httpx.Request) -> None:
+    """Keep every diagnostic hop on the one immutable metadata endpoint."""
+    if request.method != "GET" or str(request.url) != INFO_URL:
+        raise _RejectionError("destination-policy")
+
+
+def run_hosted_metadata_probe(
+    exact_commit: str,
+    *,
+    transport: httpx.BaseTransport | None = None,
+    progress: Callable[[dict[str, Any]], None] | None = None,
+) -> dict[str, Any]:
+    """Check only pinned public Hub metadata in exact main Actions context.
+
+    Reuse the qualifier's transport, visibility, deadline and retry policy,
+    then stop before any manifest, B1, ZIP, XML or projection access. Progress
+    is explicitly metadata-only; successful connectivity is not qualification.
+    """
+
+    def checkpoint(report: dict[str, Any]) -> None:
+        if progress is not None:
+            progress(metadata_probe_report(report))
+
+    retry = _RetryBudget(progress=checkpoint)
+    deadline = time.monotonic() + 300
+    try:
+        with _at("context", progress=retry.checkpoint):
+            context = _context(exact_commit)
+        with (
+            _at("transport-setup", progress=retry.checkpoint),
+            httpx.Client(
+                transport=transport
+                or BoundIPAddressTransport(
+                    policy=AcquisitionPolicy(
+                        allowed_hosts=HOSTS, timeout_seconds=30
+                    )
+                ),
+                trust_env=False,
+                follow_redirects=False,
+                timeout=30,
+                headers={"Accept-Encoding": "identity"},
+                event_hooks={"request": [_metadata_request]},
+            ) as client,
+        ):
+            _fetch(
+                "public-before",
+                retry,
+                deadline,
+                lambda: _public(client, deadline),
+            )
+    except QualificationError as error:
+        error.retry_event = retry.event
+        error.retry_detail = retry.retry_detail
+        raise
+    return metadata_probe_report({
+        "schema_version": 1,
+        "status": "metadata_verified",
+        **context,
+        "transport_retry": _retry_record(retry.event),
+        "transport_diagnostics": _diagnostics(
+            retry.event, retry.retry_detail, None
+        ),
+    })
+
+
 def _run(
     exact_commit: str,
     *,

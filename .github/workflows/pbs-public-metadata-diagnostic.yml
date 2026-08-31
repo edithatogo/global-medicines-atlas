@@ -1,0 +1,61 @@
+name: Diagnose pinned PBS public metadata transport
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_commit:
+        description: Exact reviewed merged main commit containing the diagnostic
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: pbs-public-metadata-diagnostic
+  cancel-in-progress: false
+
+jobs:
+  diagnose:
+    name: Check only pinned public metadata without source acquisition
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write # Fixed aggregate diagnostic receipt on issue 341 only.
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Inspect only the fixed public PBS metadata endpoint anonymously
+        timeout-minutes: 6
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.14.6 python scripts/qualify_historical_pbs_public.py \
+            --exact-commit "$REQUESTED_COMMIT" --metadata-only \
+            --output pbs-metadata-diagnostic-receipt.json
+      - name: Persist metadata-only diagnostic without claiming qualification
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          if ! test -s pbs-metadata-diagnostic-receipt.json; then
+            uv run --locked --python 3.14.6 python scripts/qualify_historical_pbs_public.py \
+              --exact-commit "$REQUESTED_COMMIT" --metadata-only --failure-only \
+              --output pbs-metadata-diagnostic-receipt.json
+          fi
+          gh issue comment 341 --repo "$GITHUB_REPOSITORY" \
+            --body-file pbs-metadata-diagnostic-receipt.json
+      - name: Retain only the bounded diagnostic receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-public-metadata-diagnostic-receipt
+          path: pbs-metadata-diagnostic-receipt.json
+          if-no-files-found: error
+          retention-days: 30
