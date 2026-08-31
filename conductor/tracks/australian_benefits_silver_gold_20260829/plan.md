@@ -396,7 +396,12 @@
   Implemented `34e36c9`; 102 focused tests pass with 99.00% coverage.
   Broader tests: 310 passes, two unchanged Hypothesis timing failures retained.
   Ruff, ty, BasedPyright, actionlint and offline pedantic zizmor pass.
-  Frozen full and final-head hosted checks pending.
+  Frozen full `a4b59b5`: 3,393 passed, four failed, one skipped, 96.78%
+  coverage. Failures: two local interpreter-pin mismatches, product runner
+  25-second timeout, monitoring script 30-second timeout. One isolated product
+  rerun failed at 936.516ms >250ms; no thresholds relaxed. All 38 hosted checks
+  passed on that head with no review threads. Final evidence-head checks and
+  merge pending; no production change after the frozen run.
 - [ ] Optimize measured redundant projection/serialization work with exact
   output, lineage, bound and call-count regression tests; preserve independent
   denominator and per-batch Parquet verification. Review/merge before deciding
