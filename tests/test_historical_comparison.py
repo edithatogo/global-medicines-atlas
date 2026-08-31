@@ -277,3 +277,78 @@ def test_json_schema_forbids_native_and_status_coercion():
     schema.validate(payload)
     payload["differences"][0]["kind"] = "ceased"
     assert not schema.is_valid(payload)
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "source_id",
+        "table",
+        "schema_era",
+        "identity_profile",
+        "source_revision",
+        "source_path",
+    ],
+)
+@pytest.mark.parametrize("value", [" ", " padded", "padded "])
+def test_profile_metadata_cannot_be_blank_or_padded(field, value):
+    with pytest.raises(ValidationError):
+        snapshot(**{field: value})
+
+
+def test_unknown_blank_identity_cannot_match():
+    with pytest.raises(ValidationError):
+        row(identity=" \t")
+    assert row(identity=" 001").native_id == " 001"
+
+
+def test_aggregate_fields_bound(monkeypatch):
+    monkeypatch.setattr(comparison, "MAX_SNAPSHOT_FIELDS", 1)
+    assert len(snapshot(rows=(row(),)).rows) == 1
+    with pytest.raises(ValidationError, match="aggregate field"):
+        snapshot(rows=(row(), row(identity="x", occurrence="2")))
+
+
+def test_differences_bound_checked_before_output_allocation(monkeypatch):
+    left = snapshot(rows=(row(),))
+    right = snapshot(rows=(row(identity="other"),))
+    monkeypatch.setattr(comparison, "MAX_DIFFERENCES", 2)
+    assert len(compare_native_snapshots(left, right).differences) == 2
+    monkeypatch.setattr(comparison, "MAX_DIFFERENCES", 1)
+
+    def forbid_allocation(**_kwargs):
+        pytest.fail("difference allocated before output bound check")
+
+    monkeypatch.setattr(comparison, "NativeDifference", forbid_allocation)
+    with pytest.raises(ValueError, match="difference limit"):
+        compare_native_snapshots(left, right)
+
+
+def test_mutable_nested_model_inputs_are_normalized():
+    original_row = row()
+    mutable_row = original_row.model_copy(
+        update={"fields": list(original_row.fields)}
+    )
+    original = snapshot(rows=(original_row,))
+    mutable = original.model_copy(update={"rows": [mutable_row]})
+    payload = compare_native_snapshots(original, original).model_dump()
+    payload["left"] = mutable
+    result = NativeComparison.model_validate(payload)
+    assert isinstance(result.left.rows, tuple)
+    assert isinstance(result.left.rows[0].fields, tuple)
+    mutable.rows.clear()
+    assert len(result.left.rows) == 1
+    assert len(result.differences) == 1
+
+
+def test_constructed_difference_field_is_revalidated():
+    original = snapshot(rows=(row(),))
+    result = compare_native_snapshots(original, original)
+    bad_field = result.differences[0].left.model_copy(update={"state": "null"})
+    bad_difference = result.differences[0].model_copy(
+        update={"left": bad_field}
+    )
+    payload = result.model_dump()
+    payload["differences"] = (bad_difference,)
+    with pytest.raises(ValidationError, match="state and value"):
+        NativeComparison.model_validate(payload)

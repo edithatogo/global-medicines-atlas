@@ -9,13 +9,21 @@ from __future__ import annotations
 
 from typing import Annotated, Literal
 
-from pydantic import AwareDatetime, ConfigDict, Field, model_validator
+from pydantic import (
+    AfterValidator,
+    AwareDatetime,
+    ConfigDict,
+    Field,
+    model_validator,
+)
 
 from .models import FrozenModel
 
 MAX_ROWS = 4096
 MAX_FIELDS = 256
 MAX_NATIVE_BYTES = 8 * 1024 * 1024
+MAX_SNAPSHOT_FIELDS = 65536
+MAX_DIFFERENCES = 65536
 Name = Annotated[str, Field(min_length=1, max_length=4096)]
 Digest = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
 Reason = Literal[
@@ -23,10 +31,27 @@ Reason = Literal[
 ]
 
 
+def _profile_name(value: str) -> str:
+    if not value.strip() or value != value.strip():
+        raise ValueError("profile identity must be nonblank and unpadded")
+    return value
+
+
+def _native_identity(value: str) -> str:
+    if not value.strip():
+        raise ValueError("native identity cannot be blank")
+    return value
+
+
+ProfileName = Annotated[Name, AfterValidator(_profile_name)]
+NativeIdentity = Annotated[Name, AfterValidator(_native_identity)]
+
+
 class NativeField(FrozenModel):
     """A literal field; omitted, null and empty are different observations."""
 
     model_config = ConfigDict(
+        revalidate_instances="always",
         json_schema_extra={
             "oneOf": [
                 {
@@ -43,7 +68,7 @@ class NativeField(FrozenModel):
                     }
                 },
             ]
-        }
+        },
     )
     name: Name
     state: Literal["missing", "null", "value"]
@@ -59,7 +84,8 @@ class NativeField(FrozenModel):
 class NativeRow(FrozenModel):
     """One source occurrence with its uncoerced native identity and fields."""
 
-    native_id: Name
+    model_config = ConfigDict(revalidate_instances="always")
+    native_id: NativeIdentity
     occurrence_id: Name
     fields: tuple[NativeField, ...] = Field(max_length=MAX_FIELDS)
 
@@ -73,15 +99,16 @@ class NativeRow(FrozenModel):
 class NativeSnapshot(FrozenModel):
     """Bounded source-native input with explicit declared completeness."""
 
-    source_id: Name
-    table: Name
+    model_config = ConfigDict(revalidate_instances="always")
+    source_id: ProfileName
+    table: ProfileName
     dimension: Literal[
         "service_benefit", "funding", "formulary", "terminology", "regulatory"
     ]
-    schema_era: Name
-    identity_profile: Name
-    source_revision: Name
-    source_path: Name
+    schema_era: ProfileName
+    identity_profile: ProfileName
+    source_revision: ProfileName
+    source_path: ProfileName
     b1_sha256: Digest
     b2_sha256: Digest
     observed_at: AwareDatetime
@@ -94,6 +121,8 @@ class NativeSnapshot(FrozenModel):
     def unique_occurrences_and_bounded_bytes(self) -> NativeSnapshot:
         if len({row.occurrence_id for row in self.rows}) != len(self.rows):
             raise ValueError("duplicate occurrence identity")
+        if sum(len(row.fields) for row in self.rows) > MAX_SNAPSHOT_FIELDS:
+            raise ValueError("snapshot aggregate field limit exceeded")
         size = 0
         for row in self.rows:
             size += len(row.native_id.encode()) + len(
@@ -110,7 +139,8 @@ class NativeSnapshot(FrozenModel):
 class NativeDifference(FrozenModel):
     """Literal observation difference, never addition or cessation status."""
 
-    native_id: Name
+    model_config = ConfigDict(revalidate_instances="always")
+    native_id: NativeIdentity
     field_name: Name | None
     kind: Literal[
         "field_changed", "unchanged", "present_only_left", "present_only_right"
@@ -153,6 +183,19 @@ def _differences(
     output: list[NativeDifference] = []
     left_rows = {row.native_id: row for row in left.rows}
     right_rows = {row.native_id: row for row in right.rows}
+    count = 0
+    for identity in left_rows.keys() | right_rows.keys():
+        before, after = left_rows.get(identity), right_rows.get(identity)
+        count += (
+            1
+            if before is None or after is None
+            else len(
+                {field.name for field in before.fields}
+                | {field.name for field in after.fields}
+            )
+        )
+        if count > MAX_DIFFERENCES:
+            raise ValueError("comparison difference limit exceeded")
     for identity in sorted(left_rows.keys() | right_rows.keys()):
         before, after = left_rows.get(identity), right_rows.get(identity)
         if before is None or after is None:
@@ -191,6 +234,7 @@ def _differences(
 class NativeComparison(FrozenModel):
     """Revalidated candidate result retaining both full input denominators."""
 
+    model_config = ConfigDict(revalidate_instances="always")
     schema_id: Literal["global-medicines-atlas.native-comparison"] = (
         "global-medicines-atlas.native-comparison"
     )
@@ -203,7 +247,9 @@ class NativeComparison(FrozenModel):
     right: NativeSnapshot
     outcome: Literal["compared", "abstained"]
     reasons: tuple[Reason, ...]
-    differences: tuple[NativeDifference, ...]
+    differences: tuple[NativeDifference, ...] = Field(
+        max_length=MAX_DIFFERENCES
+    )
 
     @model_validator(mode="after")
     def result_matches_inputs(self) -> NativeComparison:
