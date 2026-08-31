@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
-from typing import Any
+from typing import Any, cast
 
 import pyarrow as pa
 
@@ -126,5 +126,27 @@ def _domain_batches(
             b"mapping_profile": b"pbs-adapter-structural-v1",
         })
         schema = schema.with_metadata(metadata)  # pyright: ignore[reportUnknownMemberType]
-        rows = [{**row, **_mapping(row)} for row in batch.to_pylist()]
-        yield pa.RecordBatch.from_pylist(rows, schema=schema)
+        # Mapping reads only identity columns. Keep every original Arrow buffer
+        # (including offsets/nulls and historical lineage) rather than decoding
+        # and reconstructing all native fields for these three annotations.
+        mappings = [
+            _mapping({"record_id": record_id, "source_sha256": source_sha256})
+            for record_id, source_sha256 in zip(
+                cast("pa.StringArray", batch.column("record_id")).to_pylist(),
+                cast(
+                    "pa.StringArray", batch.column("source_sha256")
+                ).to_pylist(),
+                strict=True,
+            )
+        ]
+        additions = [
+            pa.array([row[field.name] for row in mappings], type=field.type)
+            for field in _ADDITIONS
+        ]
+        native_columns = [
+            cast("pa.Array[Any]", batch.column(index))
+            for index in range(batch.num_columns)
+        ]
+        yield pa.RecordBatch.from_arrays(  # pyright: ignore[reportUnknownMemberType]
+            [*native_columns, *additions], schema=schema
+        )
