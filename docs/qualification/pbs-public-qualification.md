@@ -37,6 +37,21 @@ timeout increase is implied.
 
 ## Existing authority and immutable inputs
 
+The checkpoint-enabled [run 33379551308](https://github.com/edithatogo/global-medicines-atlas/actions/runs/33379551308)
+at reviewed merge `6550c15d426d91f68ee0765902a09fb7bea8f606` failed at
+`public-before/transport-connect` after consuming its one allowed retry.
+Its [durable receipt](https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5476646551)
+has digest `0056ce489cad1bbcf0d97357de0cc3a894b223a8b36fd63bd43bd61dc10bc2d8`.
+No source-file read or corpus projection was reached. A same-guarded local
+metadata-only check passed afterward; that does not establish the cause of the
+Actions connection error. No repeated dispatch or timeout increase followed.
+
+Investigation separately reproduced loss of OS DNS address preference because
+the system resolver deduplicated through an unordered set. Order-preserving
+deduplication retains every address for private-network checks and still makes
+one IP-bound connection attempt. It is a deterministic resolver correction,
+not a demonstrated explanation or recovery of either hosted failure.
+
 The existing public dataset is `edithatogo/australian-pbs-source-archive` at
 revision `31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7`. Anonymous metadata inspection
 confirmed `private=false` and `gated=false`; the harness checks both again before

@@ -41,6 +41,7 @@ HOSTS = (
     "cdn-lfs-us-1.hf.co",
     "cdn-lfs-eu-1.hf.co",
     "cas-bridge.xethub.hf.co",
+    "us.aws.cdn.hf.co",
 )
 CHUNK_BYTES = 64 * 1024
 METADATA_BYTES = 1024 * 1024

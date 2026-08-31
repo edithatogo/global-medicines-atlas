@@ -51,6 +51,15 @@ runs from GitHub Actions to public Hugging Face, never from developer machines.
 
 ## Canary and archival checklist
 
+The metadata-only refresh on 2026-08-31 observed graph head `3993e5e` and
+scraper head `009e805`. The graph delta is two documentation paths; the scraper
+delta is eight paths including code, workflow and tests. Its commit message is
+not an executable-change denominator. GMA already bounds requests and rejects
+unsupported parsing; the donor's new `asyncio.to_thread` calling behavior is
+legacy compatibility, not demonstrated GMA async API parity. No raw-data paths
+changed, but neither later commit is covered by the original history bundles.
+Both need exact hosted preservation receipts before the final archive gate.
+
 Before claiming successor-notice completion, record both published notice
 URLs/commits, verify their canonical and immutable archive links, and run:
 

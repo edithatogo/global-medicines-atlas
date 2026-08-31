@@ -149,16 +149,18 @@ def _download_surface(
 
 
 def _system_resolver(hostname: str) -> tuple[str, ...]:
-    """Resolve all addresses used for destination policy enforcement."""
+    """Retain OS address preference while deduplicating every DNS answer."""
 
-    return tuple({
-        str(item[4][0])
-        for item in socket.getaddrinfo(
-            hostname,
-            None,
-            type=socket.SOCK_STREAM,
+    return tuple(
+        dict.fromkeys(
+            str(item[4][0])
+            for item in socket.getaddrinfo(
+                hostname,
+                None,
+                type=socket.SOCK_STREAM,
+            )
         )
-    })
+    )
 
 
 def _network_is_private(value: str) -> bool:

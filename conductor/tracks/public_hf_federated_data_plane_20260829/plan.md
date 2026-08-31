@@ -42,8 +42,12 @@
   implement its create-private, publish, and anonymous-verification transaction
   entirely in GitHub Actions. The exact revision is public, non-gated, and
   anonymously digest verified. (`4d1dae4`, run `33244323861`)
-- [ ] Create the continuing PBS source and Australian benefits medallion
-  datasets from GitHub Actions once their non-empty manifests exist.
+- [x] Create the exact approved PBS source dataset from GitHub Actions.
+  Run `33290449753`, public revision `31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7`;
+  issue #340 receipt `5466488482` verifies ZIP/XML digests and hosted cleanup.
+  Anonymous metadata recheck on 2026-08-31 confirms public/non-gated identity.
+- [ ] Create the Australian benefits medallion dataset from GitHub Actions
+  once its non-empty, independently admitted producer manifest exists.
 - [ ] Require source-specific data cards, Croissant, citations, provenance,
   coverage, rights/permission, withdrawal/correction, and version histories.
 - [ ] Phase Verification & Checkpoint: datasets exist publicly but contain only
@@ -111,6 +115,13 @@
   products and local storage is demonstrably transient.
 
 ## Review fixes: runtime reader
+
+- [~] Admit the exact observed `us.aws.cdn.hf.co` delivery host, with signed
+  redirect/no-auth/no-cookie canaries, hostile lookalike negatives and the
+  same DNS-bound destination policy. `96fcb40` (agent original `4534d21`):
+  two intended red regressions; 134 federation tests pass, reader coverage
+  100%; 39 source-acquisition safety tests pass. Integrated gates pending.
+  This does not admit caller-supplied v4 receipts or publish derived data.
 
 - [x] Reject writes through verified result streams without breaking seek/read
   or active-result lifetime. (`2787188`; intended writable-stream regression

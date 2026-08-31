@@ -1,0 +1,146 @@
+{
+  "scope": "Metadata-only path/blob observation; no raw content inspection, new history preservation, publication or archival authority. no_data_delta classifies paths, not embedded contents.",
+  "observed_at": "2026-08-31",
+  "comparison_urls": [
+    "https://github.com/edithatogo/aus_mbs_pbs_graph/compare/64e764cebeb3826f98ce672cbb4affc65d06a92f...3993e5e331eb2d3d9e9d354d80e52c684ad26a1e",
+    "https://github.com/edithatogo/aus-health-data-scraper/compare/931da0b9b6ae3e3cec0743568abb71a50d62b7cf...009e80544588a956c8922aaab052ee08947e2b30"
+  ],
+  "current_head_history_preserved": false,
+  "archive_authorized": false,
+  "reviews": [
+    {
+      "observation": {
+        "repository": "edithatogo/aus_mbs_pbs_graph",
+        "baseline": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+        "head": "3993e5e331eb2d3d9e9d354d80e52c684ad26a1e",
+        "ancestry": "ahead",
+        "files": [
+          {
+            "blob": "9d9fd230fb9eb3d178f56d86cb0fd55259322b80",
+            "path": "README.md",
+            "status": "modified"
+          },
+          {
+            "blob": "7836ca20ec41e835d52118e1ecbca8ed463ff4fc",
+            "path": "SUCCESSOR.md",
+            "status": "added"
+          }
+        ]
+      },
+      "dispositions": [
+        {
+          "path": "README.md",
+          "disposition": "documentation-only",
+          "reason": "Published successor notice; baseline history only.",
+          "evidence": "https://github.com/edithatogo/aus_mbs_pbs_graph/blob/3993e5e331eb2d3d9e9d354d80e52c684ad26a1e/README.md"
+        },
+        {
+          "path": "SUCCESSOR.md",
+          "disposition": "documentation-only",
+          "reason": "Published successor notice; baseline history only.",
+          "evidence": "https://github.com/edithatogo/aus_mbs_pbs_graph/blob/3993e5e331eb2d3d9e9d354d80e52c684ad26a1e/SUCCESSOR.md"
+        }
+      ]
+    },
+    {
+      "observation": {
+        "repository": "edithatogo/aus-health-data-scraper",
+        "baseline": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+        "head": "009e80544588a956c8922aaab052ee08947e2b30",
+        "ancestry": "ahead",
+        "files": [
+          {
+            "blob": "6791c2a6c65e0cc2a04f7b2d6f1973291e1ce875",
+            "path": ".github/workflows/ci.yml",
+            "status": "modified"
+          },
+          {
+            "blob": "0abbc7ca2e8b3fff572e43e60f57631348e33a47",
+            "path": "README.md",
+            "status": "modified"
+          },
+          {
+            "blob": "7836ca20ec41e835d52118e1ecbca8ed463ff4fc",
+            "path": "SUCCESSOR.md",
+            "status": "added"
+          },
+          {
+            "blob": "8941cf6865282672a2a2df16f06ebe6690abc90d",
+            "path": "src/main.py",
+            "status": "modified"
+          },
+          {
+            "blob": "e7cae9b5585a825a197b6c9b850d918a71cfb105",
+            "path": "src/processor.py",
+            "status": "modified"
+          },
+          {
+            "blob": "af8b4bdb067523fe8c7a940a9630800c3adbffa5",
+            "path": "src/scraper.py",
+            "status": "modified"
+          },
+          {
+            "blob": "d016d0d1484aa1fe3adc6a8cf85965bc111d06d7",
+            "path": "tests/test_processor.py",
+            "status": "modified"
+          },
+          {
+            "blob": "5ccfdad1337be621803d402b3ca23d115c31c807",
+            "path": "tests/test_scraper.py",
+            "status": "added"
+          }
+        ]
+      },
+      "dispositions": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "disposition": "supersede",
+          "reason": "GMA governed tests and CI supersede donor support changes; exact donor history remains pending.",
+          "evidence": ".github/workflows/test-goblin.yml; scripts/test_goblin.py; tests/test_mbs_compatibility.py"
+        },
+        {
+          "path": "README.md",
+          "disposition": "documentation-only",
+          "reason": "Published successor notice; baseline history only.",
+          "evidence": "https://github.com/edithatogo/aus-health-data-scraper/blob/009e80544588a956c8922aaab052ee08947e2b30/README.md"
+        },
+        {
+          "path": "SUCCESSOR.md",
+          "disposition": "documentation-only",
+          "reason": "Published successor notice; baseline history only.",
+          "evidence": "https://github.com/edithatogo/aus-health-data-scraper/blob/009e80544588a956c8922aaab052ee08947e2b30/SUCCESSOR.md"
+        },
+        {
+          "path": "src/main.py",
+          "disposition": "supersede",
+          "reason": "GMA governed tests and CI supersede donor support changes; exact donor history remains pending.",
+          "evidence": "tests/test_mbs_compatibility.py"
+        },
+        {
+          "path": "src/processor.py",
+          "disposition": "supersede",
+          "reason": "GMA typed table parser fails closed rather than swallowing unexpected errors.",
+          "evidence": "src/global_medicines_atlas/mbs_tables.py"
+        },
+        {
+          "path": "src/scraper.py",
+          "disposition": "retain-legacy",
+          "reason": "Timeout and filename intent retained by GMA. Async caller responsiveness remains legacy behavior, not proven GMA API parity.",
+          "evidence": "tests/test_mbs_compatibility.py"
+        },
+        {
+          "path": "tests/test_processor.py",
+          "disposition": "supersede",
+          "reason": "GMA governed tests and CI supersede donor support changes; exact donor history remains pending.",
+          "evidence": "tests/test_mbs_compatibility.py"
+        },
+        {
+          "path": "tests/test_scraper.py",
+          "disposition": "supersede",
+          "reason": "GMA governed tests and CI supersede donor support changes; exact donor history remains pending.",
+          "evidence": "tests/test_mbs_compatibility.py"
+        }
+      ]
+    }
+  ]
+}

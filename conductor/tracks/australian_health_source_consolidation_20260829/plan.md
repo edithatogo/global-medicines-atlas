@@ -177,6 +177,22 @@
   implemented behavior and future successor tasks remain distinct. Donor
   notices are merged; final GitHub archive approval remains pending.
 
+## Post-baseline donor drift follow-up (AC-01, AC-06, AC-09)
+
+- [~] Reconcile complete changed-path/blob inventories against independently
+  observed current donor heads without overwriting the frozen baseline.
+  Graph `3993e5e` changes two documentation files; scraper `009e805` changes
+  eight files, including code, workflow and tests despite its commit title.
+  Timeout and parsing improvements have GMA equivalents; literal async API
+  compatibility remains explicitly legacy-only, not proven parity.
+  Implemented `b8938b7` (agent original `9d19e64`): missing-module red,
+  malformed-path and copied-model corrections, then 58 focused/inventory
+  passes and 100% new-module coverage. Integrated validation remains pending.
+- [ ] Preserve both later donor heads through exact hosted history receipts
+  before archival; the existing baseline bundles do not contain these commits.
+  No raw-data paths changed in the observed deltas. This is not evidence of
+  later history preservation or authorization to archive either repository.
+
 ## Phase 6: Integrated qualification (AC-10)
 
 - [x] Run focused tests, Ruff, `ty`, BasedPyright, provenance, rights,

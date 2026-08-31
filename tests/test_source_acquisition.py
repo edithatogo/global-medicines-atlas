@@ -3,6 +3,7 @@ from __future__ import annotations
 import gzip
 from collections.abc import Callable
 from datetime import UTC, datetime
+from itertools import permutations
 from pathlib import Path
 
 import httpx
@@ -727,6 +728,53 @@ def test_mixed_public_private_dns_answer_is_rejected() -> None:
             "https://example.test/data",
             AcquisitionPolicy(allowed_hosts=("example.test",)),
             resolver=lambda _: ("93.184.216.34", "10.0.0.2"),
+            require_host_allowlist=True,
+        )
+
+
+@pytest.mark.parametrize(
+    "order",
+    list(
+        permutations((
+            "93.184.216.34",
+            "2606:4700:4700::1111",
+            "1.1.1.1",
+        ))
+    ),
+)
+def test_system_resolver_preserves_os_preference_and_deduplicates(
+    monkeypatch: pytest.MonkeyPatch,
+    order: tuple[str, ...],
+) -> None:
+    def answers(hostname, port, **kwargs):
+        assert hostname == "example.test"
+        assert port is None
+        assert kwargs == {"type": acquisition_module.socket.SOCK_STREAM}
+        return [
+            (None, None, None, None, (address, 0))
+            for address in (*order, order[0])
+        ]
+
+    monkeypatch.setattr(acquisition_module.socket, "getaddrinfo", answers)
+    assert acquisition_module._system_resolver("example.test") == order
+
+
+def test_system_resolver_order_does_not_hide_private_answers(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        acquisition_module.socket,
+        "getaddrinfo",
+        lambda *_args, **_kwargs: [
+            (None, None, None, None, (address, 0))
+            for address in ("93.184.216.34", "10.0.0.2")
+        ],
+    )
+    with pytest.raises(DestinationPolicyError, match="non-public"):
+        validate_remote_destination(
+            "https://example.test/data",
+            AcquisitionPolicy(allowed_hosts=("example.test",)),
+            resolver=None,
             require_host_allowlist=True,
         )
 
