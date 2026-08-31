@@ -524,6 +524,22 @@
   tests and 14 independent automated review tests passed. Coverage corrected
   for the ellipsis exclusion is 97% producer and 100% comparator. Real-source
   execution, Parquet products and promotion remain pending.
+- [~] Correct PR #402 review P1: separate a stable caller-declared comparison
+  `schema_era` from the exact `expected_source_revision` checked against
+  receipt `catalog_version`. Monthly release dates must not force different
+  comparison eras. Implemented `4a88b7f` (agent `7fe0388`); same-era monthly
+  comparison failed before the fix, then 118 focused and 213 broader agent
+  tests passed. Root integrated 168 tests pass, corrected 98.45% combined
+  coverage. Different declared eras still abstain; revision mismatch rejects
+  before parsing. The existing receipt, parser and public metadata are not
+  relabelled, and a declared profile is not independent schema qualification.
+- [ ] Version the broader MBS metadata separation: preserve source release
+  revision and immutable B1/B2 identities while adding independently qualified
+  schema/profile identities to native bindings, Silver and federated products.
+  Existing parser/Bronze/Silver `schema_era` values still carry historical
+  catalog labels; do not reinterpret them or rewrite published Parquet/receipts
+  silently. Require compatibility tests and explicit schema/profile evidence
+  before real cross-release qualification or profile migration.
 - [~] Add allowlisted PBS transport cause codes (`11a065a`, original
   `1b26737`) with eight-object explicit-cause traversal, cycle protection and
   separate first-retry/terminal fields. No exception text, IP, hostname,

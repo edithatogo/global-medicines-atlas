@@ -122,3 +122,27 @@ passed. Later full-suite lanes were not reached; Linux CI remains authoritative
 for those lanes. The unchanged performance failure was not repeatedly rerun.
 The merged PR #401 base was joined without changing the frozen tree
 (`56573a6d4ca381e77248ce376b077a79abe31979`). Final hosted checks follow.
+
+### Review correction: release revision is not schema era
+
+Automatic PR review identified that monthly effective dates in receipt
+`catalog_version` were being used as comparison schema eras. That forced
+otherwise comparable monthly releases to abstain. The producer now requires
+two explicit inputs: `expected_source_revision`, matched exactly to the
+receipt, and `schema_era`, an independent caller-declared comparison profile.
+Same-era releases can compare across months; different eras still abstain.
+No date stripping, schema inference or independent qualification is implied.
+
+The original receipt, parser batch and existing public Bronze/Silver metadata
+remain unchanged; B1/B2 digests still bind evidence. Broader versioned profile
+separation is tracked separately, not applied retrospectively to public data.
+The primary regression failed before correction; 168 integrated tests passed
+afterward, with 98.45% combined coverage. The prior frozen full run is retained
+as pre-correction evidence, not claimed as a final-head full pass. Exact final-
+head hosted checks are required. The earlier 0% Codecov patch report arose
+before the aggregate upload; all 38 checks on `faa02e8` subsequently passed
+without a threshold change.
+
+Independent automated review of `7fe0388` passed 14 selected regressions and
+an additional unchanged-receipt/B1/B2 identity probe. No blocking findings
+remained; this is technical review, not human publication approval.
