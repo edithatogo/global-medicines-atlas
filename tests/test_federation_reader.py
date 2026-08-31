@@ -270,6 +270,11 @@ def test_cache_lru_identity_and_open_result_bounds() -> None:
         "https://user@huggingface.co/file",
         "https://huggingface.co:444/file",
         "https://huggingface.co/file#fragment",
+        "http://us.aws.cdn.hf.co/file",
+        "https://us.aws.cdn.hf.co.evil.invalid/file",
+        "https://user@us.aws.cdn.hf.co/file",
+        "https://us.aws.cdn.hf.co:444/file",
+        "https://us.aws.cdn.hf.co/file#fragment",
     ],
 )
 def test_redirect_destination_rejected_before_contact(url: str) -> None:
@@ -293,8 +298,19 @@ def test_redirect_destination_rejected_before_contact(url: str) -> None:
     assert len(calls) == 1
 
 
+@pytest.mark.parametrize(
+    "host",
+    [
+        "cdn-lfs.huggingface.co",
+        "cdn-lfs-us-1.hf.co",
+        "cdn-lfs-eu-1.hf.co",
+        "cas-bridge.xethub.hf.co",
+        "us.aws.cdn.hf.co",
+    ],
+)
 def test_allowed_redirect_never_replays_cookies_or_environment_credentials(
     monkeypatch: pytest.MonkeyPatch,
+    host: str,
 ) -> None:
     hub = Hub()
     raw = document()
@@ -307,7 +323,7 @@ def test_allowed_redirect_never_replays_cookies_or_environment_credentials(
             return httpx.Response(
                 302,
                 headers={
-                    "location": "https://cas-bridge.xethub.hf.co/payload?signature=synthetic",
+                    "location": f"https://{host}/payload?signature=synthetic",
                     "set-cookie": "secret=synthetic; Domain=.hf.co; Secure",
                 },
             )
@@ -323,6 +339,31 @@ def test_allowed_redirect_never_replays_cookies_or_environment_credentials(
         client.open(raw) as result,
     ):
         assert result.stream.read() == PAYLOAD
+
+
+def test_delivery_host_reaches_dns_bound_transport_policy(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    hub = Hub()
+    raw = document()
+    policies = []
+
+    def transport(*, policy: runtime.AcquisitionPolicy) -> httpx.BaseTransport:
+        assert "us.aws.cdn.hf.co" in policy.allowed_hosts
+        policies.append(policy)
+        return httpx.MockTransport(hub.handle)
+
+    monkeypatch.setattr(runtime, "BoundIPAddressTransport", transport)
+    with (
+        FederatedReader(
+            schema=SCHEMA,
+            admitted_contracts=frozenset({hashlib.sha256(raw).hexdigest()}),
+            clock=lambda: NOW,
+        ) as client,
+        client.open(raw) as result,
+    ):
+        assert result.stream.read() == PAYLOAD
+    assert len(policies) == 2
 
 
 @pytest.mark.parametrize("mode", ["loop", "no-location", "encoded", "timeout"])
