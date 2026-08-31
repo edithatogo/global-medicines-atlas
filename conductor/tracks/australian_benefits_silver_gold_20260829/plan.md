@@ -512,13 +512,19 @@
   checks passed; reviewed and merged trees match. No real-source promotion.
 - [ ] Bind independently qualified producer snapshots and portable Parquet
   representations before real-source comparison/publication claims.
-- [~] Add a bounded offline Arrow projection of validated native comparisons:
+- [x] Add a bounded offline Arrow projection of validated native comparisons:
   one envelope retains both snapshots, lineage, denominators, outcomes and
   abstention reasons even with no differences; bounded difference batches
   preserve literal field states and occurrences. Canonical versioned digests
   link the tables without becoming source-verification receipts. Verify
   deterministic Parquet round-trips and copied-model rejection. Reuse PyArrow;
   no new matching stack, data acquisition, publication or Gold promotion.
+  Implemented agent `b745c42`, warning-disclosure fix `fd0f360`; integrated
+  `e1298b2` and `04e6b4e`. The warning regression failed before correction.
+  Root post-fix integration passes 221 tests with both new modules at 100%
+  coverage; automated reciprocal verification passes 20 projection tests and
+  an independently computed digest/correspondence probe. No maintainer approval
+  or qualified real-source comparison is implied; full/hosted checks follow.
 - [x] Implement the receipt-bound MBS XML comparison-cohort producer
   (`e3bfca5`, agent original `defb755`). Parse the whole bounded source before
   selecting literal item/subitem keys; retain every selected duplicate and
@@ -562,13 +568,18 @@
   publishing these optional outputs. Federation v4 does not accept the native
   comparison `historical` cohort; reject rather than silently mapping it to
   `legacy` or `current` until a compatible versioned contract exists.
-- [~] Implement the offline read-side prerequisite for already-decoded MBS
+- [x] Implement the offline read-side prerequisite for already-decoded MBS
   batches: bounded flat declaration JSON with duplicate-key rejection, exact
   caller-supplied receipt/profile/schema/metadata and every row's B1/B2 lineage.
   Reject oversized inputs before row materialization; validate empty batches
   without claiming coverage. Return only immutable declared metadata, without
   mutating values, inferring dates or granting qualification/admission. Reuse
   existing Pydantic/PyArrow contracts; federation v4 evolution stays separate.
+  Implemented agent `ff8ce70`, integrated `18e8576`. Initial missing-module
+  red, 93 affected agent tests and two automated 39-test verification runs pass;
+  the integrated 221-test check covers both new modules at 100%. Limits are
+  40 KiB declaration, 4,096 rows, 16 MiB batch and 256 KiB/64 metadata entries.
+  Decoding, authenticity, source completeness and admission remain separate.
 - [x] Add allowlisted PBS transport cause codes (`11a065a`, original
   `1b26737`) with eight-object explicit-cause traversal, cycle protection and
   separate first-retry/terminal fields. No exception text, IP, hostname,
@@ -617,7 +628,7 @@
 
 ## Phase 6: Integrated qualification (AC-08)
 
-- [~] Profile the persistent local `PERF-QUERY` failure by separating connection
+- [x] Profile the persistent local `PERF-QUERY` failure by separating connection
   lifecycle, cohort-validity SQL, page SQL and conclusion construction. Static
   audit finds repeated keys/assertion/coverage queries for overlapping cohort
   and page pairs, but does not establish the timing cause. Consider bounded
@@ -637,8 +648,13 @@
   regression observed the original duplicate reads; 81 focused query/product
   contract tests pass, including traversal, exhausted pages and fresh reads.
   Automated subagent verification found no blockers; this is not a second
-  accountable reviewer or maintainer approval. Full validation and hosted
-  delivery remain pending; this is not a performance qualification.
+  accountable reviewer or maintainer approval. Full at `d6cf860` passed
+  coverage, including the unchanged 250 ms fixture criterion, then failed the
+  local mutation-score baseline (83.511111% versus 83.688889%). No changed
+  query file is a mutation target; five suspicious outcomes are not evidence
+  of a query regression. Preserve that failed full result and the separate
+  authoritative Linux checks. Hosted delivery remains pending; a fixture pass
+  is not full-corpus performance qualification.
 - [ ] Run focused, property, metamorphic, mutation, performance, coverage,
   Ruff, `ty`, BasedPyright, security, rights, provenance, regeneration, and full
   Test-Goblin lanes where supported.
