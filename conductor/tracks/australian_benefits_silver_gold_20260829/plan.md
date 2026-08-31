@@ -622,7 +622,8 @@
   change, threshold relaxation or query-plan receipt change. Red call-count
   regression observed the original duplicate reads; 81 focused query/product
   contract tests pass, including traversal, exhausted pages and fresh reads.
-  Independent semantic review found no blockers. Full validation and hosted
+  Automated subagent verification found no blockers; this is not a second
+  accountable reviewer or maintainer approval. Full validation and hosted
   delivery remain pending; this is not a performance qualification.
 - [ ] Run focused, property, metamorphic, mutation, performance, coverage,
   Ruff, `ty`, BasedPyright, security, rights, provenance, regeneration, and full
