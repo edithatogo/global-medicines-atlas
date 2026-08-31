@@ -614,12 +614,22 @@
   6,602,752 rows, elapsed 3,307,398 ms. Status is incomplete, not qualified.
   Generic failure-stage `unavailable` does not erase that observed progress;
   earlier projection counts/digests were not durably retained in this receipt.
-- [~] Profile the observed entity-projection path with bounded synthetic
+- [x] Profile the observed entity-projection path with bounded synthetic
   fixtures before optimizing extraction, Parquet round-trip or row accounting.
   Preserve exact rows, ordered digests, lineage and all five final projection
   validations. A prefix cannot be resumed or treated as independently complete;
   no unchanged redispatch or budget increase. Other projection phases must not
   be guessed as the blocker. No real source bytes are downloaded locally.
+  One instrumented 100/1,000-item synthetic command passed native-denominator,
+  ordered-digest and Parquet equality checks. The 1,000-item case produced
+  3,001 entity rows in 1.418274 s: iterator 0.910293 s, Parquet 0.111921 s,
+  residual accounting 0.396060 s. Profiling overhead is included; this is not
+  a throughput benchmark or prediction that the 55-minute corpus limit fits.
+- [ ] Test a columnar lineage precheck and selective native-field materialization
+  for entity qualification, preserving every nested identity/parent/occurrence,
+  independent ordered native digest and Parquet equality. The possible saving
+  is bounded by accounting work in that observation; iterator work still
+  dominates and requires separate evidence before changing the producer.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
