@@ -616,6 +616,15 @@
   open/close 61.136 ms, conclusion construction 0.475 ms. Inclusive helper
   timing overlaps these costs. This supports request-local reuse but is not
   a p95 result or proof that reuse alone meets the 250 ms budget.
+  Implemented a four-query request-local reuse slice: retain both cohort and
+  keyset page SQL, build cohort assertions/coverage/conclusions once, and select
+  page conclusions from that sorted cohort. No cross-request cache, dependency
+  change, threshold relaxation or query-plan receipt change. Red call-count
+  regression observed the original duplicate reads; 81 focused query/product
+  contract tests pass, including traversal, exhausted pages and fresh reads.
+  Automated subagent verification found no blockers; this is not a second
+  accountable reviewer or maintainer approval. Full validation and hosted
+  delivery remain pending; this is not a performance qualification.
 - [ ] Run focused, property, metamorphic, mutation, performance, coverage,
   Ruff, `ty`, BasedPyright, security, rights, provenance, regeneration, and full
   Test-Goblin lanes where supported.
