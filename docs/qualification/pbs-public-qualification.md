@@ -103,6 +103,21 @@ the only additional request-chain allowance, not an unbounded retry loop.
 
 `transport_retry` records the fixed stage/category of the initial transient
 failure that consumed the run-wide recovery budget, on success or failure.
+The additive `transport_diagnostics` object separately records `retry_cause`
+and `terminal_cause`. The former is null without a consumed retry; the latter
+is null in successful and incomplete receipts. Available diagnostic codes are
+`dns`, `tls-certificate`, `tls`, `connection-refused`, `network-unreachable`
+and `unknown`. At most eight explicitly chained exception objects are examined,
+with cycle detection, using only exception types and fixed integer errno
+buckets. Exception messages, implicit context, request URLs, IP addresses,
+certificate details and credentials are never included. Unrecognised or
+discarded causes remain `unknown`, including an unavailable failure receipt.
+
+These observations do not change failure categories, retry eligibility,
+connection attempts or deadlines. In particular, a direct resolver DNS error
+retains the existing `unexpected` category and is not newly retried. Synthetic
+tests qualify diagnostic behavior only; these new codes do not retrospectively
+establish the cause of an earlier hosted failure or prove its recovery.
 It records backoff initiation, not proof that a second read completed (the
 deadline may expire during backoff). An observed unused budget is `null`;
 in a generic failure-only fallback, `null` instead means unavailable evidence.
