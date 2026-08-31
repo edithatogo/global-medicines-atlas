@@ -107,6 +107,7 @@ class NativeSnapshot(FrozenModel):
     ]
     schema_era: ProfileName
     identity_profile: ProfileName
+    scope_id: ProfileName = "whole_source"
     source_revision: ProfileName
     source_path: ProfileName
     b1_sha256: Digest
@@ -159,6 +160,7 @@ def _reasons(left: NativeSnapshot, right: NativeSnapshot) -> tuple[Reason, ...]:
         "dimension",
         "schema_era",
         "identity_profile",
+        "scope_id",
     )
     if any(getattr(left, key) != getattr(right, key) for key in profile) or (
         (left.cohort == "synthetic") != (right.cohort == "synthetic")

@@ -208,7 +208,6 @@ skip_covered = false
 exclude_also = [
   "if TYPE_CHECKING:",
   "@overload",
-  "\\.\\.\\.",
 ]
 
 [tool.coverage.xml]

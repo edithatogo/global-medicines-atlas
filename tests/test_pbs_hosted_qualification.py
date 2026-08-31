@@ -1,7 +1,10 @@
 """Synthetic hosted-only retrieval guards for the pinned public PBS corpus."""
 
+import errno
 import hashlib
 import json
+import socket
+import ssl
 import time
 from pathlib import Path
 from types import SimpleNamespace
@@ -20,6 +23,97 @@ from test_pbs_silver import XML
 from global_medicines_atlas import pbs_hosted_qualification as hosted
 
 SHA = "a" * 40
+
+
+@pytest.mark.parametrize(
+    ("cause", "expected"),
+    [
+        (socket.gaierror(-2, "sensitive DNS"), "dns"),
+        (
+            ssl.SSLCertVerificationError(1, "sensitive certificate"),
+            "tls-certificate",
+        ),
+        (ssl.SSLError(1, "sensitive TLS"), "tls"),
+        (OSError(errno.ECONNREFUSED, "sensitive IP"), "connection-refused"),
+        (OSError(errno.ENETUNREACH, "sensitive IP"), "network-unreachable"),
+        (OSError(errno.EHOSTUNREACH, "sensitive IP"), "network-unreachable"),
+        (OSError(errno.EPERM, "sensitive path"), "unknown"),
+        (ValueError("SSL certificate verify failed"), "unknown"),
+    ],
+)
+def test_transport_detail_uses_only_typed_explicit_causes(cause, expected):
+    wrapper = httpx.ConnectError("sensitive signed URL")
+    middle = RuntimeError("sensitive middleware")
+    wrapper.__cause__ = middle
+    middle.__cause__ = cause
+    assert hosted._transport_detail(wrapper) == expected
+    with (
+        pytest.raises(hosted.QualificationError) as caught,
+        hosted._at("public-before"),
+    ):
+        raise wrapper
+    report = hosted.failure_report(caught.value)
+    assert report["failure_category"] == "transport-connect"
+    assert report["transport_diagnostics"] == {
+        "retry_cause": None,
+        "terminal_cause": expected,
+    }
+    assert "sensitive" not in json.dumps(report)
+
+
+def test_transport_detail_ignores_context_and_bounds_cause_traversal():
+    error = httpx.ConnectError("hidden")
+    error.__context__ = ssl.SSLError("hidden")
+    assert hosted._transport_detail(error) == "unknown"
+    error.__cause__ = error
+    assert hosted._transport_detail(error) == "unknown"
+    error.__cause__ = None
+    current = error
+    for _ in range(7):
+        current.__cause__ = RuntimeError("hidden")
+        current = current.__cause__
+    current.__cause__ = ssl.SSLError("hidden")
+    assert hosted._transport_detail(error) == "unknown"
+    current.__cause__ = None
+    error.__cause__.__cause__ = ssl.SSLError("hidden")
+    assert hosted._transport_detail(error) == "tls"
+
+
+def test_transport_detail_does_not_render_exception_messages():
+    class NeverRender(ssl.SSLError):
+        def __str__(self):
+            raise AssertionError("exception text inspected")
+
+        def __repr__(self):
+            raise AssertionError("exception representation inspected")
+
+    assert hosted._transport_detail(NeverRender()) == "tls"
+
+
+def test_transport_detail_eighth_object_is_included_but_ninth_is_not():
+    root = httpx.ConnectError("hidden")
+    current = root
+    for _ in range(6):
+        current.__cause__ = RuntimeError("hidden")
+        current = current.__cause__
+    current.__cause__ = ssl.SSLCertVerificationError("hidden")
+    assert hosted._transport_detail(root) == "tls-certificate"
+    wrapper = httpx.ConnectError("hidden")
+    wrapper.__cause__ = root
+    assert hosted._transport_detail(wrapper) == "unknown"
+
+
+def test_transport_detail_serialization_revalidates_tampered_codes():
+    error = hosted.QualificationError("public-before", "transport-connect")
+    error.transport_detail = "sensitive URL"
+    error.retry_event = ("public-before", "transport-connect")
+    error.retry_detail = ["sensitive URL"]
+    report = hosted.failure_report(error)
+    assert report["transport_diagnostics"] == {
+        "retry_cause": "unknown",
+        "terminal_cause": "unknown",
+    }
+    assert "sensitive" not in json.dumps(report)
 
 
 @pytest.fixture
@@ -93,6 +187,82 @@ def synthetic(monkeypatch: pytest.MonkeyPatch):
         return httpx.Response(200, content=value)
 
     return responses, calls, httpx.MockTransport(handler)
+
+
+@pytest.mark.parametrize("recover", [False, True])
+def test_retry_and_terminal_transport_causes_stay_separate(
+    monkeypatch, synthetic, recover
+):
+    _, _, transport = synthetic
+    original = hosted._public
+    calls = 0
+    checkpoints = []
+    monkeypatch.setattr(hosted.time, "sleep", lambda _seconds: None)
+
+    def public(client, deadline):
+        nonlocal calls
+        calls += 1
+        if calls == 1:
+            raise httpx.ConnectError("sensitive first") from ssl.SSLError(
+                "sensitive TLS"
+            )
+        if not recover:
+            raise httpx.ConnectError("sensitive second") from OSError(
+                errno.ENETUNREACH, "sensitive IP"
+            )
+        return original(client, deadline)
+
+    monkeypatch.setattr(hosted, "_public", public)
+    if recover:
+        report = hosted.run_hosted_qualification(
+            SHA, transport=transport, progress=checkpoints.append
+        )
+        assert calls == 3  # Retried public-before plus normal public-after.
+    else:
+        with pytest.raises(hosted.QualificationError) as caught:
+            hosted.run_hosted_qualification(
+                SHA, transport=transport, progress=checkpoints.append
+            )
+        report = hosted.failure_report(caught.value)
+        assert calls == 2
+        assert report["failure_category"] == "transport-connect"
+    assert report["transport_retry"] == {
+        "stage": "public-before",
+        "category": "transport-connect",
+    }
+    assert report["transport_diagnostics"] == {
+        "retry_cause": "tls",
+        "terminal_cause": None if recover else "network-unreachable",
+    }
+    assert checkpoints[-1]["transport_diagnostics"] == {
+        "retry_cause": "tls",
+        "terminal_cause": None,
+    }
+    assert "sensitive" not in json.dumps([report, checkpoints])
+
+
+def test_direct_dns_failure_gets_detail_without_new_retry(
+    monkeypatch, synthetic
+):
+    _, _, transport = synthetic
+    calls = 0
+
+    def public(_client, _deadline):
+        nonlocal calls
+        calls += 1
+        raise socket.gaierror(-2, "sensitive DNS")
+
+    monkeypatch.setattr(hosted, "_public", public)
+    with pytest.raises(hosted.QualificationError) as caught:
+        hosted.run_hosted_qualification(SHA, transport=transport)
+    report = hosted.failure_report(caught.value)
+    assert calls == 1
+    assert report["failure_category"] == "unexpected"
+    assert report["transport_retry"] is None
+    assert report["transport_diagnostics"] == {
+        "retry_cause": None,
+        "terminal_cause": "dns",
+    }
 
 
 def test_pinned_public_inputs_and_aggregate_report(synthetic) -> None:

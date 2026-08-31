@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import errno
 import hashlib
 import json
 import os
 import re
+import socket
+import ssl
 import time
 from collections.abc import Callable, Generator
 from contextlib import contextmanager
@@ -67,13 +70,84 @@ FAILURE_CATEGORIES = frozenset({
     "unexpected",
     "unavailable",
 })
+TRANSPORT_DETAILS = frozenset({
+    "dns",
+    "tls-certificate",
+    "tls",
+    "connection-refused",
+    "network-unreachable",
+    "unknown",
+})
+
+
+def _detail_code(value: object) -> str:
+    return (
+        value
+        if type(value) is str and value in TRANSPORT_DETAILS
+        else "unknown"
+    )
+
+
+def _native_transport_detail(error: BaseException) -> str:
+    for kind, detail in (
+        (socket.gaierror, "dns"),
+        (ssl.SSLCertVerificationError, "tls-certificate"),
+        (ssl.SSLError, "tls"),
+    ):
+        if isinstance(error, kind):
+            return detail
+    if isinstance(error, OSError) and type(error.errno) is int:
+        if error.errno == errno.ECONNREFUSED:
+            return "connection-refused"
+        if error.errno in {errno.ENETUNREACH, errno.EHOSTUNREACH}:
+            return "network-unreachable"
+    return "unknown"
+
+
+def _transport_detail(error: BaseException) -> str:
+    """Inspect at most eight explicit causes; never messages or request data.
+
+    Fixed type/errno buckets are observations, not retry or recovery decisions.
+    Missing, cyclic, truncated and unrecognised causes remain unknown. Implicit
+    exception context can be unrelated and is deliberately not consulted.
+    """
+    current: BaseException | None = error
+    seen: set[int] = set()
+    for _ in range(8):
+        if current is None or id(current) in seen:
+            break
+        seen.add(id(current))
+        detail = _native_transport_detail(current)
+        if detail != "unknown":
+            return detail
+        current = current.__cause__
+    return "unknown"
+
+
+def _diagnostics(
+    event: tuple[str, str] | None,
+    retry_detail: object,
+    terminal_detail: object,
+) -> dict[str, str | None]:
+    return {
+        "retry_cause": _detail_code(retry_detail)
+        if _retry_record(event) is not None
+        else None,
+        "terminal_cause": None
+        if terminal_detail is None
+        else _detail_code(terminal_detail),
+    }
 
 
 class QualificationError(ValueError):
     """Carry only fixed, allowlisted diagnostic codes across the CLI boundary."""
 
-    def __init__(self, stage: str, category: str) -> None:
+    def __init__(
+        self, stage: str, category: str, *, transport_detail: str = "unknown"
+    ) -> None:
         self.retry_event: tuple[str, str] | None = None
+        self.retry_detail = "unknown"
+        self.transport_detail = _detail_code(transport_detail)
         self.stage = stage if stage in FAILURE_STAGES else "unavailable"
         self.category = (
             category if category in FAILURE_CATEGORIES else "unexpected"
@@ -107,6 +181,7 @@ class _RetryBudget:
     event: tuple[str, str] | None = None
     progress: Callable[[dict[str, Any]], None] | None = None
     started: float = field(default_factory=time.monotonic)
+    retry_detail: str = "unknown"
 
     def checkpoint(
         self,
@@ -140,6 +215,9 @@ class _RetryBudget:
         report.update({
             "status": "incomplete",
             "transport_retry": _retry_record(self.event),
+            "transport_diagnostics": _diagnostics(
+                self.event, self.retry_detail, None
+            ),
             "progress": {
                 "stage": stage,
                 "phase": phase,
@@ -187,6 +265,7 @@ def _fetch[T](
             if time.monotonic() + 1 >= deadline:
                 raise _RejectionError("timeout") from None
             budget.event = (stage, _transport_category(error))
+            budget.retry_detail = _transport_detail(error)
             budget.checkpoint(stage)
             time.sleep(1)
             if time.monotonic() >= deadline:
@@ -198,7 +277,7 @@ def _fetch[T](
 def _at(
     stage: str, *, progress: Callable[[str], None] | None = None
 ) -> Generator[None]:
-    """Classify failures by type/control, never by exception text or fields."""
+    """Classify failures by type/control, never by text or request data."""
     try:
         if progress is not None:
             progress(stage)
@@ -220,7 +299,9 @@ def _at(
             category = "validation"
         else:
             category = "unexpected"
-        raise QualificationError(stage, category) from None
+        raise QualificationError(
+            stage, category, transport_detail=_transport_detail(error)
+        ) from None
 
 
 @dataclass(frozen=True)
@@ -406,6 +487,7 @@ def run_hosted_qualification(
         return _run(exact_commit, transport=transport, retry=retry)
     except QualificationError as error:
         error.retry_event = retry.event
+        error.retry_detail = retry.retry_detail
         raise
 
 
@@ -503,6 +585,9 @@ def _run(
         "schema_version": 1,
         "status": "passed",
         "transport_retry": _retry_record(retry.event),
+        "transport_diagnostics": _diagnostics(
+            retry.event, retry.retry_detail, None
+        ),
         **context,
         "dataset": DATASET,
         "revision": REVISION,
@@ -547,7 +632,9 @@ def failure_report(error: Exception | None = None) -> dict[str, Any]:
     # Revalidate codes at the serialization boundary, including tampered objects.
     failure = QualificationError("unavailable", "unavailable")
     if isinstance(error, QualificationError):
-        failure = QualificationError(error.stage, error.category)
+        failure = QualificationError(
+            error.stage, error.category, transport_detail=error.transport_detail
+        )
     return {
         "schema_version": 1,
         "status": "failed",
@@ -557,6 +644,15 @@ def failure_report(error: Exception | None = None) -> dict[str, Any]:
         "reason": "qualification-did-not-complete",
         "failure_stage": failure.stage,
         "failure_category": failure.category,
+        "transport_diagnostics": _diagnostics(
+            error.retry_event
+            if isinstance(error, QualificationError)
+            else None,
+            error.retry_detail
+            if isinstance(error, QualificationError)
+            else None,
+            failure.transport_detail,
+        ),
         "transport_retry": _retry_record(error.retry_event)
         if isinstance(error, QualificationError)
         else None,

@@ -116,11 +116,12 @@
 
 ## Review fixes: runtime reader
 
-- [~] Admit the exact observed `us.aws.cdn.hf.co` delivery host, with signed
+- [x] Admit the exact observed `us.aws.cdn.hf.co` delivery host, with signed
   redirect/no-auth/no-cookie canaries, hostile lookalike negatives and the
   same DNS-bound destination policy. `96fcb40` (agent original `4534d21`):
   two intended red regressions; 134 federation tests pass, reader coverage
-  100%; 39 source-acquisition safety tests pass. Integrated gates pending.
+  100%; 39 source-acquisition safety tests pass. PR #401 delivered at reviewed
+  `f0799c4`, merged `2543720`, 38 successful checks and matching trees.
   This does not admit caller-supplied v4 receipts or publish derived data.
 
 - [x] Reject writes through verified result streams without breaking seek/read
@@ -167,6 +168,13 @@
   and both primary and independent restore evidence are observable.
 
 ## Phase 6: Integrated qualification (AC-09)
+
+- [~] Prepare append-only donor-history preservation as a separate public
+  archive transaction: exact heads, CAS, unchanged previous sibling objects,
+  baseline/delta reconstruction and durable anonymous verification before
+  cleanup. The pure contract is implemented; hosted transport and exact newer-
+  history authorization remain pending. Do not infer publication from model
+  validation or reuse the initial private-target replace-all publisher.
 
 - [ ] Run focused tests, schema validation, Ruff, `ty`, BasedPyright, security,
   provenance, rights, deterministic regeneration, and full Test-Goblin where
