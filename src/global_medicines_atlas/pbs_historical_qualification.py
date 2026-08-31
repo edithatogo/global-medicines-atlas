@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from io import BytesIO
 from typing import Any
 
@@ -44,7 +44,19 @@ def _encoded(values: list[Any]) -> bytes:
     )
 
 
-def _denominator(payload: bytes) -> dict[str, Any]:
+def _checkpoint(
+    progress: Callable[[str, int, int], None] | None,
+    phase: str,
+    batches: int,
+    rows: int,
+) -> None:
+    if progress is not None:
+        progress(phase, batches, rows)
+
+
+def _denominator(
+    payload: bytes, progress: Callable[[str, int, int], None] | None = None
+) -> dict[str, Any]:
     digest = hashlib.sha256()
     fields = elements = 0
     for ordinal, slot in enumerate(iter_pbs_xml_slots(payload)):
@@ -60,6 +72,10 @@ def _denominator(payload: bytes) -> dict[str, Any]:
         )
         fields += 1
         elements += slot.path == slot.record_id + "/text"
+        if progress is not None and fields % 65536 == 0:
+            progress("denominator", 0, fields)
+    if progress is not None:
+        progress("denominator", 0, fields)
     return {
         "native_fields": fields,
         "elements": elements,
@@ -73,6 +89,8 @@ def _projection(
     denominator: dict[str, Any],
     *,
     nested: bool,
+    progress: Callable[[str, int, int], None] | None = None,
+    phase: str = "unavailable",
 ) -> dict[str, Any]:
     expected = {
         "source_id": binding.source.source_id,
@@ -104,7 +122,7 @@ def _projection(
         0,
     )
     digest = hashlib.sha256()
-    for batch in batches:
+    for batch_number, batch in enumerate(batches, 1):
         metadata = batch.schema.metadata or {}
         if any(
             metadata.get(key) != value
@@ -168,6 +186,7 @@ def _projection(
                     raise ValueError("historical native field lineage changed")
                 digest.update(_encoded([field[key] for key in _NATIVE_KEYS]))
                 counts["native_fields"] += 1
+        _checkpoint(progress, phase, batch_number, counts["rows"])
     if (
         counts["native_fields"] != denominator["native_fields"]
         or counts["rows"]
@@ -190,6 +209,7 @@ def qualify_pbs_historical_projections(
     binding: PbsXmlMemberBinding,
     *,
     rows_per_batch: int = 1024,
+    progress: Callable[[str, int, int], None] | None = None,
 ) -> dict[str, Any]:
     """Account for every XML slot in five candidate projections and Parquet.
 
@@ -202,11 +222,17 @@ def qualify_pbs_historical_projections(
     in-memory per-batch Parquet buffers add memory, not a total resident cap.
     No date profile, semantic/source-era qualification, acquisition, filesystem
     output, network call, admission or publication occurs. Errors yield no report.
+    An optional callback receives phase codes and processed batch/row counters,
+    never source text. Its partial checkpoints are not qualification reports.
     """
+    if progress is not None:
+        progress("binding-validation", 0, 0)
     binding = validate_pbs_xml_member_binding(
         binding, archive_payload, member_payload, parent
     )
-    denominator = _denominator(member_payload)
+    if progress is not None:
+        progress("denominator", 0, 0)
+    denominator = _denominator(member_payload, progress)
     routes = (
         ("native", iter_pbs_historical_silver_batches, False),
         ("domain", iter_pbs_historical_domain_batches, False),
@@ -214,8 +240,11 @@ def qualify_pbs_historical_projections(
         ("references", iter_pbs_historical_reference_batches, True),
         ("dates", iter_pbs_historical_date_batches, True),
     )
-    projections = {
-        name: _projection(
+    projections = {}
+    for name, route, nested in routes:
+        if progress is not None:
+            progress(name, 0, 0)
+        projections[name] = _projection(
             route(
                 archive_payload,
                 member_payload,
@@ -226,9 +255,9 @@ def qualify_pbs_historical_projections(
             binding,
             denominator,
             nested=nested,
+            progress=progress,
+            phase=name,
         )
-        for name, route, nested in routes
-    }
     return {
         "schema_version": 1,
         "qualification": "structural_storage_candidate_only",

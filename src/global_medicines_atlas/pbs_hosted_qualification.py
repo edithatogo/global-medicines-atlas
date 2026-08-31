@@ -9,7 +9,7 @@ import re
 import time
 from collections.abc import Callable, Generator
 from contextlib import contextmanager
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from http import HTTPStatus
 from typing import Any, cast
@@ -105,6 +105,53 @@ def _transport_category(error: httpx.HTTPError) -> str:
 @dataclass
 class _RetryBudget:
     event: tuple[str, str] | None = None
+    progress: Callable[[dict[str, Any]], None] | None = None
+    started: float = field(default_factory=time.monotonic)
+
+    def checkpoint(
+        self,
+        stage: str,
+        phase: str = "unavailable",
+        batches: int = 0,
+        rows: int = 0,
+    ) -> None:
+        if self.progress is None:
+            return
+        if (
+            stage not in FAILURE_STAGES
+            or phase
+            not in {
+                "unavailable",
+                "binding-validation",
+                "denominator",
+                "native",
+                "domain",
+                "entities",
+                "references",
+                "dates",
+            }
+            or any(
+                type(value) is not int or not 0 <= value < 2**63
+                for value in (batches, rows)
+            )
+        ):
+            raise ValueError("invalid aggregate progress")
+        report = failure_report()
+        report.update({
+            "status": "incomplete",
+            "transport_retry": _retry_record(self.event),
+            "progress": {
+                "stage": stage,
+                "phase": phase,
+                "batches": batches,
+                "rows": rows,
+                "elapsed_ms": min(
+                    2**63 - 1,
+                    max(0, int((time.monotonic() - self.started) * 1000)),
+                ),
+            },
+        })
+        self.progress(report)
 
 
 def _retry_record(event: tuple[str, str] | None) -> dict[str, str] | None:
@@ -127,7 +174,7 @@ def _fetch[T](
     operation: Callable[[], T],
 ) -> T:
     """Allow one run-wide transient retry; restart the entire guarded read."""
-    with _at(stage):
+    with _at(stage, progress=budget.checkpoint):
         try:
             return operation()
         except (
@@ -140,6 +187,7 @@ def _fetch[T](
             if time.monotonic() + 1 >= deadline:
                 raise _RejectionError("timeout") from None
             budget.event = (stage, _transport_category(error))
+            budget.checkpoint(stage)
             time.sleep(1)
             if time.monotonic() >= deadline:
                 raise _RejectionError("timeout") from None
@@ -147,9 +195,13 @@ def _fetch[T](
 
 
 @contextmanager
-def _at(stage: str) -> Generator[None]:
+def _at(
+    stage: str, *, progress: Callable[[str], None] | None = None
+) -> Generator[None]:
     """Classify failures by type/control, never by exception text or fields."""
     try:
+        if progress is not None:
+            progress(stage)
         yield
     except QualificationError:
         raise
@@ -332,7 +384,10 @@ def _public(client: httpx.Client, deadline: float) -> None:
 
 
 def run_hosted_qualification(
-    exact_commit: str, *, transport: httpx.BaseTransport | None = None
+    exact_commit: str,
+    *,
+    transport: httpx.BaseTransport | None = None,
+    progress: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
     """Fetch only pinned metadata and ZIP anonymously on exact main Actions.
 
@@ -343,8 +398,10 @@ def run_hosted_qualification(
     hook is for synthetic tests; it cannot bypass context/URL/digest validation.
     Return bounded aggregate metadata only, not bytes, sample text or signed URLs.
     This does not publish datasets, select dates or establish semantic admission.
+    Optional progress receives incomplete aggregate receipts for an external
+    sink; this hook does not bypass source validation or qualify partial work.
     """
-    retry = _RetryBudget()
+    retry = _RetryBudget(progress=progress)
     try:
         return _run(exact_commit, transport=transport, retry=retry)
     except QualificationError as error:
@@ -358,14 +415,14 @@ def _run(
     transport: httpx.BaseTransport | None,
     retry: _RetryBudget,
 ) -> dict[str, Any]:
-    with _at("context"):
+    with _at("context", progress=retry.checkpoint):
         context = _context(exact_commit)
     started_at = datetime.now(UTC).isoformat()
     deadline = time.monotonic() + 300
-    with _at("transport-setup"):
+    with _at("transport-setup", progress=retry.checkpoint):
         policy = AcquisitionPolicy(allowed_hosts=HOSTS, timeout_seconds=30)
     with (
-        _at("transport-setup"),
+        _at("transport-setup", progress=retry.checkpoint),
         httpx.Client(
             transport=transport or BoundIPAddressTransport(policy=policy),
             trust_env=False,
@@ -398,7 +455,7 @@ def _run(
         _fetch(
             "public-after", retry, deadline, lambda: _public(client, deadline)
         )
-    with _at("manifest-validation"):
+    with _at("manifest-validation", progress=retry.checkpoint):
         for name, pin in (
             ("archive", ARCHIVE),
             ("member", MEMBER),
@@ -420,9 +477,9 @@ def _run(
             or manifest["member"]["source_path"] != MEMBER_SOURCE_PATH
         ):
             raise _RejectionError("pin-mismatch")
-    with _at("receipt-validation"):
+    with _at("receipt-validation", progress=retry.checkpoint):
         parent = SourceReceipt.model_validate_json(receipt_bytes)
-    with _at("member-extraction"):
+    with _at("member-extraction", progress=retry.checkpoint):
         member, xml = read_pbs_v3_member(archive)
         if (
             member.path != MEMBER_SOURCE_PATH
@@ -430,11 +487,17 @@ def _run(
             or member.size_bytes != MEMBER.byte_count
         ):
             raise _RejectionError("pin-mismatch")
-    with _at("member-binding"):
+    with _at("member-binding", progress=retry.checkpoint):
         binding = build_pbs_xml_member_binding(archive, parent)
-    with _at("projection-qualification"):
+    with _at("projection-qualification", progress=retry.checkpoint):
         qualification = qualify_pbs_historical_projections(
-            archive, xml, parent, binding
+            archive,
+            xml,
+            parent,
+            binding,
+            progress=lambda phase, batches, rows: retry.checkpoint(
+                "projection-qualification", phase, batches, rows
+            ),
         )
     report = {
         "schema_version": 1,
@@ -465,7 +528,7 @@ def _run(
         },
         "source_publication_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5466488482",
     }
-    with _at("report"):
+    with _at("report", progress=retry.checkpoint):
         if len(json.dumps(report, sort_keys=True).encode()) > MAX_REPORT_BYTES:
             raise _RejectionError("byte-limit")
     return report
