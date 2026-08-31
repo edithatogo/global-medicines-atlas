@@ -512,7 +512,7 @@
   checks passed; reviewed and merged trees match. No real-source promotion.
 - [ ] Bind independently qualified producer snapshots and portable Parquet
   representations before real-source comparison/publication claims.
-- [~] Implement the receipt-bound MBS XML comparison-cohort producer
+- [x] Implement the receipt-bound MBS XML comparison-cohort producer
   (`e3bfca5`, agent original `defb755`). Parse the whole bounded source before
   selecting literal item/subitem keys; retain every selected duplicate and
   ordinal, selected/omitted/full denominators and a canonical scope manifest.
@@ -524,7 +524,7 @@
   tests and 14 independent automated review tests passed. Coverage corrected
   for the ellipsis exclusion is 97% producer and 100% comparator. Real-source
   execution, Parquet products and promotion remain pending.
-- [~] Correct PR #402 review P1: separate a stable caller-declared comparison
+- [x] Correct PR #402 review P1: separate a stable caller-declared comparison
   `schema_era` from the exact `expected_source_revision` checked against
   receipt `catalog_version`. Monthly release dates must not force different
   comparison eras. Implemented `4a88b7f` (agent `7fe0388`); same-era monthly
@@ -550,7 +550,7 @@
   publishing these optional outputs. Federation v4 does not accept the native
   comparison `historical` cohort; reject rather than silently mapping it to
   `legacy` or `current` until a compatible versioned contract exists.
-- [~] Add allowlisted PBS transport cause codes (`11a065a`, original
+- [x] Add allowlisted PBS transport cause codes (`11a065a`, original
   `1b26737`) with eight-object explicit-cause traversal, cycle protection and
   separate first-retry/terminal fields. No exception text, IP, hostname,
   credentials, retry-policy or request-count changes. 163 affected tests and
@@ -561,11 +561,14 @@
   guards, no manifest/receipt/archive/member retrieval and no projection. Emit
   explicitly scoped success/failure/interruption receipts with
   `corpus_qualified=false`; independently review before one hosted observation.
-- [~] Correct the unanchored coverage ellipsis exclusion, which could suppress
+- [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
   signatures failed before correction; recompute coverage without that blind
   spot. Previously recorded percentages remain historical configured results.
+  PR #402 merged as `e75ef68`; reviewed `98a350d`, all 38 hosted checks
+  succeeded, review threads resolved and reviewed/merged trees identical.
+  This closes the four code tasks above, not real-source qualification.
 
 - [ ] Write failing tests for additions, cessations, renumbering, fee/benefit/
   restriction changes, schema-era drift, source failures, missing periods, and
