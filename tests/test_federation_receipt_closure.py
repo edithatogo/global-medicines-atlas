@@ -282,3 +282,71 @@ def test_input_bounds_precede_contract_parse_and_payload_hash(
     monkeypatch.setattr(closure.hashlib, "sha256", forbidden)
     with pytest.raises(ValueError, match=r"byte|count"):
         verify_receipt_closure(raw, supplied, schema=SCHEMA)
+
+
+@pytest.mark.parametrize("shape", ["receipt", "malformed", "consumer", "split"])
+def test_reference_preflight_precedes_schema_unique_items(shape, monkeypatch):
+    document = fixture()
+    count = 128 if shape == "split" else 257
+    refs = [
+        {"url": f"https://example.org/{index}", "sha256": "a" * 64}
+        for index in range(count)
+    ]
+    if shape == "malformed":
+        refs = [{**ref, "extra": "not-allowed"} for ref in refs]
+    if shape in {"consumer", "split"}:
+        document["consumers"] = [
+            {
+                "repository": f"example/consumer-{index}",
+                "commit": "a" * 40,
+                "canary": ref,
+            }
+            for index, ref in enumerate(refs)
+        ]
+    if shape != "consumer":
+        document["lineage"]["inputs"] = refs
+
+    class ForbiddenValidator:
+        def __init__(self, *_args, **_kwargs):
+            pass
+
+        def validate(self, _document):
+            pytest.fail("schema uniqueItems reached before reference preflight")
+
+    monkeypatch.setattr(closure, "Draft202012Validator", ForbiddenValidator)
+    with pytest.raises(ValueError, match=r"reference|container"):
+        check(document)
+
+
+def test_structural_preflight_has_exact_node_depth_and_container_bounds(
+    monkeypatch,
+):
+    monkeypatch.setattr(closure, "MAX_STRUCTURE_NODES", 2)
+    closure._preflight([0])
+    with pytest.raises(ValueError, match="node/depth"):
+        closure._preflight([0, 1])
+    monkeypatch.setattr(closure, "MAX_STRUCTURE_NODES", 8192)
+    monkeypatch.setattr(closure, "MAX_STRUCTURE_DEPTH", 2)
+    closure._preflight([[0]])
+    with pytest.raises(ValueError, match="node/depth"):
+        closure._preflight([[["synthetic-private-marker"]]])
+    monkeypatch.setattr(closure, "MAX_REFERENCES", 2)
+    closure._preflight({"a": 0, "b": 0})
+    with pytest.raises(ValueError, match="container"):
+        closure._preflight({"a": 0, "b": 0, "c": 0})
+
+
+def test_preflight_does_not_replace_schema_or_leak_invalid_values():
+    document = fixture()
+    document["lineage"]["inputs"] = [
+        {
+            "url": URL,
+            "sha256": "a" * 64,
+            "extra": "synthetic-private-marker",
+        }
+    ]
+    with pytest.raises(
+        ValueError, match="invalid federation contract"
+    ) as error:
+        check(document)
+    assert "synthetic-private-marker" not in str(error.value)

@@ -21,6 +21,8 @@ from .models import FrozenModel
 MAX_REFERENCES = 256
 MAX_RECEIPT_BYTES = METADATA_BYTES
 MAX_TOTAL_BYTES = 8 * METADATA_BYTES
+MAX_STRUCTURE_NODES = 8192
+MAX_STRUCTURE_DEPTH = 32
 Digest = Annotated[
     str, Field(pattern=r"^[0-9a-f]{64}$", min_length=64, max_length=64)
 ]
@@ -95,6 +97,37 @@ def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     return result
 
 
+def _preflight(document: object) -> None:
+    """Bound untrusted structure before schema uniqueness comparisons.
+
+    Count reference-shaped objects even when malformed; full schema validation
+    follows this rejection-only pass. Never parse URLs or emit document values.
+    """
+    pending: list[tuple[object, int]] = [(document, 0)]
+    nodes = references = 0
+    while pending:
+        value, depth = pending.pop()
+        nodes += 1
+        if nodes > MAX_STRUCTURE_NODES or depth > MAX_STRUCTURE_DEPTH:
+            raise ValueError("contract structural node/depth limit exceeded")
+        if isinstance(value, dict):
+            node = cast("dict[str, object]", value)
+            if len(node) > MAX_REFERENCES:
+                raise ValueError("contract container count limit exceeded")
+            if "url" in node and "sha256" in node:
+                references += 1
+                if references > MAX_REFERENCES:
+                    raise ValueError("receipt reference count limit exceeded")
+            pending.extend((child, depth + 1) for child in node.values())
+        elif isinstance(value, list):
+            items = cast("list[object]", value)
+            if len(items) > MAX_REFERENCES:
+                raise ValueError(
+                    "receipt reference/container count limit exceeded"
+                )
+            pending.extend((child, depth + 1) for child in items)
+
+
 def _document(raw: bytes, schema: bytes) -> dict[str, Any]:
     if type(raw) is not bytes or len(raw) > METADATA_BYTES:
         raise ValueError("contract byte limit or type rejected")
@@ -111,6 +144,10 @@ def _document(raw: bytes, schema: bytes) -> dict[str, Any]:
         document: dict[str, Any] = json.loads(
             raw, object_pairs_hook=_unique_object
         )
+    except ValueError, TypeError, RecursionError:
+        raise ValueError("invalid federation contract") from None
+    _preflight(document)
+    try:
         validator = cast(
             "Any",
             Draft202012Validator(json.loads(schema), format_checker=formats),
