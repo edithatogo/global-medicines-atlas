@@ -418,7 +418,11 @@
   changed-module coverage is 100%. Ruff, ty and BasedPyright pass. The
   reproducible fixture-only paired profiler verifies exact metadata parity;
   Scalene observation recorded separately from unprofiled timing. Frozen full
-  and hosted checks pending. Next investigate nested serialization cost without
+  `3d9c587`: 3,401 passed, three failed, one skipped, 96.78% coverage;
+  release-reproducibility checks on local3.14.7 and product-runner failure
+  retained. One isolated product rerun failed at 453.201ms >250ms. All 38
+  hosted checks passed on that head; final evidence-head gates pending.
+  No production change after freeze. Next investigate nested serialization cost without
   changing exact byte-budget accounting; do not infer timeout recovery.
 
 - [ ] Write failing tests for schedules, items, presentations, restrictions,
