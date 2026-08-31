@@ -2,8 +2,9 @@
 
 No acquisition, date interpretation, Gold promotion or publication occurs here.
 Completeness describes only an explicit native-key selection within the parsed
-payload, not the MBS programme or all history. XML era remains receipt-declared,
-not independently qualified by this transform. Tests use synthetic source bytes.
+payload, not the MBS programme or all history. Comparison XML schema era is an
+explicit caller declaration, separate from the receipt's source release label;
+neither is independently qualified here. Tests use synthetic source bytes.
 """
 
 from __future__ import annotations
@@ -85,8 +86,9 @@ class MbsComparisonCohort(FrozenModel):
     """Manifest-bound selection with full parsed and omitted denominators.
 
     Construction checks internal consistency, not source bytes. Only the
-    producer binds supplied bytes to B1/B2. Catalog version is a declared era
-    label, not an immutable content revision or a qualification receipt.
+    producer binds supplied bytes to B1/B2. Catalog version is a declared source
+    release label, not an XML schema era, immutable content revision or
+    qualification receipt.
     """
 
     model_config = ConfigDict(revalidate_instances="always")
@@ -284,14 +286,17 @@ def build_mbs_comparison_cohort(
     *,
     table: TargetTable,
     selected_native_keys: tuple[MbsNativeKey, ...],
-    expected_schema_era: str,
+    schema_era: str,
+    expected_source_revision: str,
     cohort: Cohort | None = None,
 ) -> MbsComparisonCohort:
     """Fully scan receipt-matched XML, then select all requested occurrences.
 
     LIVE evidence requires an explicit non-synthetic cohort label. Neither that
-    label nor receipt-declared era establishes real-source qualification or
-    publication authority. No retrieval or file writes are performed.
+    label nor the caller-declared schema era establishes real-source
+    qualification or publication authority. The source revision must match the
+    receipt's catalog version exactly. No date stripping or schema inference,
+    retrieval or file writes are performed.
     """
     keys = _selection(selected_native_keys)
     names = tuple(
@@ -309,19 +314,21 @@ def build_mbs_comparison_cohort(
             "comparison producer requires successful synthetic or live evidence"
         )
     cohort = _cohort(receipt.evidence_class, cohort)
+    if not schema_era.strip() or schema_era != schema_era.strip():
+        raise ValueError("comparison schema era must be nonblank and unpadded")
     if (
-        not expected_schema_era.strip()
-        or expected_schema_era != expected_schema_era.strip()
-        or expected_schema_era != receipt.source.catalog_version
+        not expected_source_revision.strip()
+        or expected_source_revision != expected_source_revision.strip()
+        or expected_source_revision != receipt.source.catalog_version
     ):
-        raise ValueError("receipt schema era mismatch")
+        raise ValueError("receipt source revision mismatch")
     batch = parse_mbs_source_xml(payload, receipt)
     rows, ordinals = _rows(batch.records, keys, names)
     snapshot = NativeSnapshot(
         source_id=batch.source_id,
         table=table,
         dimension="service_benefit",
-        schema_era=batch.schema_era,
+        schema_era=schema_era,
         identity_profile=IDENTITY_PROFILE,
         scope_id=_scope(keys),
         source_revision=receipt.source.catalog_version,

@@ -44,8 +44,9 @@ def build(payload, keys=None, **changes):
         _receipt(payload),
         selected_native_keys=(key(),) if keys is None else keys,
         table=changes.pop("table", "fees"),
-        expected_schema_era=changes.pop(
-            "expected_schema_era", "synthetic-iso-v1"
+        schema_era=changes.pop("schema_era", "synthetic-mbs-xml-v1"),
+        expected_source_revision=changes.pop(
+            "expected_source_revision", "synthetic-iso-v1"
         ),
         **changes,
     )
@@ -66,6 +67,81 @@ def test_scope_manifest_is_order_independent_and_identity_is_literal():
     assert first.snapshot.b2_sha256 == sha256(payload).hexdigest()
     assert first.snapshot.dimension == "service_benefit"
     assert first.snapshot.scope_id.startswith("mbs-native-keys-v1:")
+
+
+def test_different_monthly_revisions_with_same_declared_schema_compare():
+    # Both payloads are constructed fixtures; LIVE exercises metadata only.
+    snapshots = []
+    for revision, fee in (("2026-01", "1.00"), ("2026-02", "2.00")):
+        payload = xml(data(extra=f"<ScheduleFee>{fee}</ScheduleFee>"))
+        receipt = _receipt(payload)
+        receipt = receipt.model_copy(
+            update={
+                "source": receipt.source.model_copy(
+                    update={"catalog_version": revision}
+                ),
+                "evidence_class": EvidenceClass.LIVE,
+            }
+        )
+        snapshots.append(
+            build_mbs_comparison_cohort(
+                payload,
+                receipt,
+                table="fees",
+                selected_native_keys=(key(),),
+                schema_era="mbs-xml-fields-v1",
+                expected_source_revision=revision,
+                cohort="historical",
+            ).snapshot
+        )
+    result = compare_native_snapshots(*snapshots)
+    assert result.outcome == "compared"
+    assert result.left.source_revision == "2026-01"
+    assert result.right.source_revision == "2026-02"
+    assert (
+        result.left.schema_era == result.right.schema_era == "mbs-xml-fields-v1"
+    )
+    assert result.left.b1_sha256 != result.right.b1_sha256
+    assert result.left.b2_sha256 != result.right.b2_sha256
+    assert any(event.kind == "field_changed" for event in result.differences)
+
+
+def test_different_declared_schema_eras_abstain_without_revision_inference():
+    payload = xml(data())
+    left = build(payload, schema_era="mbs-xml-v1")
+    right = build(payload, schema_era="mbs-xml-v2")
+    result = compare_native_snapshots(left.snapshot, right.snapshot)
+    assert result.outcome == "abstained"
+    assert result.reasons == ("incompatible_profile",)
+    assert result.left.source_revision == result.right.source_revision
+
+
+@pytest.mark.parametrize("name", ["schema_era", "expected_source_revision"])
+@pytest.mark.parametrize("value", ["", " ", " padded", "padded "])
+def test_schema_era_and_revision_declarations_are_not_silently_normalized(
+    name, value
+):
+    with pytest.raises(ValueError, match=r"schema era|source revision"):
+        build(xml(data()), **{name: value})
+
+
+def test_source_revision_mismatch_rejects_before_parsing(monkeypatch):
+    def forbid_parse(*_args):
+        pytest.fail("source parsed before revision mismatch rejected")
+
+    monkeypatch.setattr(producer, "parse_mbs_source_xml", forbid_parse)
+    with pytest.raises(ValueError, match="source revision"):
+        build(xml(data()), expected_source_revision="wrong-revision")
+
+
+def test_same_revision_label_does_not_replace_content_identity():
+    left = build(xml(data(extra="<ScheduleFee>1.00</ScheduleFee>")))
+    right = build(xml(data(extra="<ScheduleFee>2.00</ScheduleFee>")))
+    result = compare_native_snapshots(left.snapshot, right.snapshot)
+    assert result.outcome == "compared"
+    assert result.left.source_revision == result.right.source_revision
+    assert result.left.b1_sha256 != result.right.b1_sha256
+    assert result.left.b2_sha256 != result.right.b2_sha256
 
 
 def test_all_duplicate_occurrences_survive_then_comparison_abstains():
@@ -128,16 +204,17 @@ def test_table_fields_follow_existing_native_contracts(table):
     )
 
 
-def test_rejects_receipt_source_and_era_mismatch():
+def test_rejects_receipt_source_and_revision_mismatch():
     payload = xml(data())
-    with pytest.raises(ValueError, match="schema era"):
-        build(payload, expected_schema_era="other-era")
+    with pytest.raises(ValueError, match="source revision"):
+        build(payload, expected_source_revision="other-revision")
     with pytest.raises(ValueError, match="source bytes"):
         build_mbs_comparison_cohort(
             payload + b" ",
             _receipt(payload),
             table="fees",
-            expected_schema_era="synthetic-iso-v1",
+            schema_era="synthetic-mbs-xml-v1",
+            expected_source_revision="synthetic-iso-v1",
             selected_native_keys=(key(),),
         )
     receipt = _receipt(payload)
@@ -153,7 +230,8 @@ def test_rejects_receipt_source_and_era_mismatch():
             payload,
             receipt,
             table="fees",
-            expected_schema_era="synthetic-iso-v1",
+            schema_era="synthetic-mbs-xml-v1",
+            expected_source_revision="synthetic-iso-v1",
             selected_native_keys=(key(),),
         )
 
@@ -183,7 +261,8 @@ def test_live_classification_requires_explicit_non_synthetic_cohort(cohort):
         payload,
         receipt,
         table="fees",
-        expected_schema_era="synthetic-iso-v1",
+        schema_era="synthetic-mbs-xml-v1",
+        expected_source_revision="synthetic-iso-v1",
         selected_native_keys=(key(),),
         cohort=cohort,
     )
@@ -194,7 +273,8 @@ def test_live_classification_requires_explicit_non_synthetic_cohort(cohort):
             payload,
             receipt,
             table="fees",
-            expected_schema_era="synthetic-iso-v1",
+            schema_era="synthetic-mbs-xml-v1",
+            expected_source_revision="synthetic-iso-v1",
             selected_native_keys=(key(),),
         )
 
@@ -287,7 +367,8 @@ def test_unsupported_classifications_are_rejected(evidence_class):
             receipt,
             table="fees",
             selected_native_keys=(key(),),
-            expected_schema_era="synthetic-iso-v1",
+            schema_era="synthetic-mbs-xml-v1",
+            expected_source_revision="synthetic-iso-v1",
         )
 
 
