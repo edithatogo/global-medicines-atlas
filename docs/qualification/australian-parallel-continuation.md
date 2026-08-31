@@ -146,3 +146,37 @@ without a threshold change.
 Independent automated review of `7fe0388` passed 14 selected regressions and
 an additional unchanged-receipt/B1/B2 identity probe. No blocking findings
 remained; this is technical review, not human publication approval.
+
+### Evidence-closure delivery
+
+PR #402 merged as `e75ef68` after all 38 final-head checks passed. The next
+parallel batch, PR #403, merged as `44a603d`, with the same 38 successful checks
+and exact reviewed/merged tree agreement. It adds a metadata-only PBS Actions
+probe, an offline federation receipt-byte closure checker, and opt-in declared
+MBS schema-profile metadata. None grants qualification or publication authority.
+
+The combined focused suite passed 414 tests. Review then reproduced oversized
+reference arrays reaching schema validation before their limit; the correction
+adds rejection-only structural preflight. After correction, 210 integrated
+federation/harness/context tests and 28 independent review tests passed, with
+99.08% closure coverage. MBS and PBS independent reviews passed 19 and 27 tests.
+
+The full run on frozen `39a61f192efe291e73951b5ec47c5164b5dbb4cd` recorded
+3,733 passes, one optional `pyiceberg` skip and one existing local product
+performance failure: 1,149.071 ms p95 versus the unchanged 250 ms budget.
+Coverage was 96.47%; the coverage phase took 645.45 seconds. Strict checks,
+clean wheel/sdist consumers and both release reproduction tests passed. Later
+local full lanes were not reached; hosted checks passed. No repeated full or
+product retry was used to replace the observed failure. The profiling follow-up
+is recorded separately from dataset qualification and publication work.
+
+Full evidence is retained in the [PR #403 validation comment](https://github.com/edithatogo/global-medicines-atlas/pull/403#issuecomment-5478397193).
+
+The [single metadata-only Actions run](https://github.com/edithatogo/global-medicines-atlas/actions/runs/33392287024)
+succeeded on merged `44a603d`, without a retry. Its [durable receipt](https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5478488604)
+was independently hash-checked and explicitly records `source_files_read=false`,
+`publication_performed=false` and `corpus_qualified=false`. Current connectivity
+is verified; the cause of the earlier failure is not retrospectively proven.
+One [instrumented corpus qualification](https://github.com/edithatogo/global-medicines-atlas/actions/runs/33393205281)
+was then dispatched against the same exact main commit. Its result is pending;
+the existing 55-minute limit and no-publication boundary remain unchanged.

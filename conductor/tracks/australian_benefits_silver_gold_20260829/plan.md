@@ -540,7 +540,7 @@
   catalog labels; do not reinterpret them or rewrite published Parquet/receipts
   silently. Require compatibility tests and explicit schema/profile evidence
   before real cross-release qualification or profile migration.
-- [~] Add an opt-in, versioned MBS schema-profile declaration wrapper around
+- [x] Add an opt-in, versioned MBS schema-profile declaration wrapper around
   existing Silver batches. Bind exact source revision and B1/B2 identities;
   retain every default native value and legacy metadata key unchanged. New
   namespaced metadata is explicitly declared, never qualified, and cannot
@@ -548,6 +548,9 @@
   model rejection and Parquet round-trip/default-output compatibility.
   Implemented `f24b166` (agent `9187132`): 33 focused and 246 broader tests
   passed; independent automated review passed 19 selected regressions.
+  Delivered in PR #403 (`44a603d`), reviewed `39a61f1`; all 38 hosted checks
+  passed and the reviewed/merged trees match. This is an opt-in declaration,
+  not independent schema qualification or a rewrite of published artifacts.
 - [ ] Define a versioned federation profile-declaration consumer before
   publishing these optional outputs. Federation v4 does not accept the native
   comparison `historical` cohort; reject rather than silently mapping it to
@@ -558,14 +561,24 @@
   credentials, retry-policy or request-count changes. 163 affected tests and
   15 reciprocal review tests passed. Existing hosted failure remains unknown;
   a bounded metadata-only hosted diagnostic is the next acquisition unblocker.
-- [~] Implement a separate exact-main Actions PBS public-metadata diagnostic:
+- [x] Implement a separate exact-main Actions PBS public-metadata diagnostic:
   one fixed public revision metadata request, existing bounded retry/transport
   guards, no manifest/receipt/archive/member retrieval and no projection. Emit
   explicitly scoped success/failure/interruption receipts with
   `corpus_qualified=false`; independently review before one hosted observation.
   Implemented `11c3c15` (agent `83885d0`): 175 affected tests passed. An exact
   metadata URL hook rejects archive/CDN redirects before transport; generic
-  corpus success cannot become metadata verification. No hosted run yet.
+  corpus success cannot become metadata verification. PR #403 merged as
+  `44a603d`; run `33392287024` succeeded on that exact head without retry.
+  Durable issue #341 receipt `5478488604` has verified SHA-256
+  `b9ec3878abd1ab62d1c8b28cfd158fd4d00cc086c3b47cb444d47faee6737b9a`.
+  It explicitly records no source-file reads, publication or corpus
+  qualification; earlier connection failure cause remains unproven.
+- [~] Observe one instrumented full PBS qualification after metadata recovery:
+  Actions run `33393205281`, exact `44a603d`, existing pinned public archive
+  only. Preserve bounded progress/failure receipts and the 55-minute deadline;
+  no public dataset writes or local raw downloads. Do not label a processed
+  prefix as qualification or redispatch without new evidence.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
@@ -590,13 +603,19 @@
 
 ## Phase 6: Integrated qualification (AC-08)
 
-- [ ] Profile the persistent local `PERF-QUERY` failure by separating connection
+- [~] Profile the persistent local `PERF-QUERY` failure by separating connection
   lifecycle, cohort-validity SQL, page SQL and conclusion construction. Static
   audit finds repeated keys/assertion/coverage queries for overlapping cohort
   and page pairs, but does not establish the timing cause. Consider bounded
   request-local result reuse only after profiling and parity tests for paging,
   coverage, absent states and validity; do not relax the 250 ms threshold or
   treat green Linux checks as a local performance qualification.
+  One synthetic profiling observation at `44a603d` (Python 3.14.6, DuckDB
+  1.5.5, macOS arm64) measured 569.402 ms total: two assertion SQL fetches
+  441.023 ms, key fetches 50.168 ms, coverage fetches 9.827 ms, connection
+  open/close 61.136 ms, conclusion construction 0.475 ms. Inclusive helper
+  timing overlaps these costs. This supports request-local reuse but is not
+  a p95 result or proof that reuse alone meets the 250 ms budget.
 - [ ] Run focused, property, metamorphic, mutation, performance, coverage,
   Ruff, `ty`, BasedPyright, security, rights, provenance, regeneration, and full
   Test-Goblin lanes where supported.
