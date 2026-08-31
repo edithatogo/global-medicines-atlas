@@ -76,3 +76,40 @@ one unchanged serial rerun; the product runner still exceeded its query budget
 full-suite lanes were not reached. All 38 hosted checks at that head passed.
 Automated integration review found no blockers; final-head checks are required
 after the documentation/evidence refinements.
+
+## Follow-up: scoped comparisons and append-only history
+
+The next implementation adds a pure MBS XML cohort producer. It parses the
+whole receipt-matched source before selecting every occurrence of explicit
+literal item/subitem keys. Full, selected and omitted counts remain separate;
+a selection-manifest digest binds the comparison scope. This allows bounded
+cohorts from the 5,989-row legacy source without truncating it or pretending a
+single batch is complete. Duplicate identities cause comparison abstention.
+LIVE receipts require an explicit historical/current/legacy label; this is not
+independent source qualification. All test inputs are constructed synthetic
+bytes; no real corpus was acquired or compared in this implementation.
+
+The history append contract binds exactly the two later donor heads, existing
+baseline bundles, new head-addressed bundles/manifests, a public destination,
+CAS and unchanged prior objects. It checks supplied anonymous and Git-restore
+observations and a durable-receipt digest before reporting cleanup consistency.
+These are pure consistency checks, not authenticated evidence or permission.
+The hosted append implementation and exact authorization extension remain
+pending. The old initial publisher's replace-all and privacy rollback behavior
+must not be used against this already-public archive.
+
+PBS diagnostics now expose only fixed cause codes and separately retain first
+retry and terminal details. Explicit cause traversal is bounded and cycle-safe;
+exception messages, addresses and credential-bearing attributes are not read.
+No requests, retries or timeout limits are added. The failed hosted connection
+has not been diagnosed retrospectively or repaired by this observation code.
+
+Coverage review found that the repository's unanchored ellipsis exclusion could
+hide whole functions containing variadic tuple annotations. Removing that
+redundant pattern retains the pinned library's exact stub exclusion and the
+91% threshold. Three signature regressions failed before the fix. Reanalysis
+of the prior full-run data gives 96.24% overall and still 100% for its three
+target modules; the old recorded 96.79% is the historical configured result.
+The follow-up focused suite passes 342 tests, with corrected coverage of 100%
+for history append and native comparison, 97% for the MBS producer and 99% for
+hosted PBS qualification (99.16% combined). Full and hosted checks follow.

@@ -11,6 +11,7 @@ import tomllib
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
 
+import coverage
 import jsonschema
 import pytest
 
@@ -22,6 +23,25 @@ assert SPEC is not None
 assert SPEC.loader is not None
 HARNESS = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(HARNESS)
+
+
+@pytest.mark.parametrize(
+    "signature",
+    [
+        "def values() -> tuple[str, ...]:",
+        "    values: tuple[str, ...],",
+        "def preserve(values: tuple[str, ...]) -> bool:",
+    ],
+)
+def test_coverage_keeps_variadic_tuple_function_bodies(signature: str) -> None:
+    """Type-hint ellipses must not suppress executable function coverage."""
+    patterns = coverage.Coverage(
+        config_file=str(ROOT / "pyproject.toml")
+    ).get_exclude_list()
+    assert not any(re.search(pattern, signature) for pattern in patterns)
+    assert any(
+        re.search(pattern, "def stub() -> None: ...") for pattern in patterns
+    )
 
 
 @pytest.fixture(autouse=True)

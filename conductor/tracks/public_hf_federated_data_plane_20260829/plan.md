@@ -168,6 +168,13 @@
 
 ## Phase 6: Integrated qualification (AC-09)
 
+- [~] Prepare append-only donor-history preservation as a separate public
+  archive transaction: exact heads, CAS, unchanged previous sibling objects,
+  baseline/delta reconstruction and durable anonymous verification before
+  cleanup. The pure contract is implemented; hosted transport and exact newer-
+  history authorization remain pending. Do not infer publication from model
+  validation or reuse the initial private-target replace-all publisher.
+
 - [ ] Run focused tests, schema validation, Ruff, `ty`, BasedPyright, security,
   provenance, rights, deterministic regeneration, and full Test-Goblin where
   supported.

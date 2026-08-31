@@ -510,6 +510,29 @@
   finding. Agent review is not independent maintainer approval.
 - [ ] Bind independently qualified producer snapshots and portable Parquet
   representations before real-source comparison/publication claims.
+- [~] Implement the receipt-bound MBS XML comparison-cohort producer
+  (`e3bfca5`, agent original `defb755`). Parse the whole bounded source before
+  selecting literal item/subitem keys; retain every selected duplicate and
+  ordinal, selected/omitted/full denominators and a canonical scope manifest.
+  Different scopes abstain. The 4,096-row candidate limit must not truncate the
+  5,989-row legacy corpus; completeness describes only an explicit selection.
+  Strict table/ordinal/derivable-key lineage and immutable nested validation
+  are enforced. LIVE receipts require an explicit real cohort label, not a
+  qualification claim; all tests use constructed source bytes. 106 focused
+  tests and 14 independent automated review tests passed. Coverage corrected
+  for the ellipsis exclusion is 97% producer and 100% comparator. Real-source
+  execution, Parquet products and promotion remain pending.
+- [~] Add allowlisted PBS transport cause codes (`11a065a`, original
+  `1b26737`) with eight-object explicit-cause traversal, cycle protection and
+  separate first-retry/terminal fields. No exception text, IP, hostname,
+  credentials, retry-policy or request-count changes. 163 affected tests and
+  15 reciprocal review tests passed. Existing hosted failure remains unknown;
+  a bounded metadata-only hosted diagnostic is the next acquisition unblocker.
+- [~] Correct the unanchored coverage ellipsis exclusion, which could suppress
+  functions containing variadic tuple type hints. Preserve the pinned coverage
+  library's exact stub exclusion and the 91% threshold. Three regression
+  signatures failed before correction; recompute coverage without that blind
+  spot. Previously recorded percentages remain historical configured results.
 
 - [ ] Write failing tests for additions, cessations, renumbering, fee/benefit/
   restriction changes, schema-era drift, source failures, missing periods, and
