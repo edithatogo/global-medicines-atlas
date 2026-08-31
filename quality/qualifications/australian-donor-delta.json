@@ -96,7 +96,7 @@
           "path": ".github/workflows/ci.yml",
           "disposition": "supersede",
           "reason": "GMA governed tests and CI supersede donor support changes; exact donor history remains pending.",
-          "evidence": "tests/test_mbs_compatibility.py"
+          "evidence": ".github/workflows/test-goblin.yml; scripts/test_goblin.py; tests/test_mbs_compatibility.py"
         },
         {
           "path": "README.md",

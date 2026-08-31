@@ -501,7 +501,8 @@
   allocation. Preserve literal values, occurrences and both snapshots; presence
   differences are not additions, cessations, entitlement or current status.
   JSON/semantic contract only; Arrow and real producer integration follow.
-  Reject copied/constructed mutable nested models and fabricated outputs.
+  Revalidate copied/constructed nested models into immutable values; reject
+  invalid inputs and fabricated outputs.
   Implemented `972f619`, review fixes `7740be3` (agent originals `4f7c9b1`,
   `b22f24a`). Initial missing-module red; 22 review regressions failed before
   correction. Agent final 165 focused/compatibility passes, new module 100%

@@ -42,8 +42,9 @@ profile are prerequisites; incomplete or duplicate-identity snapshots abstain.
 The result retains both inputs and is revalidated against recomputed differences.
 No copied mutable input may invalidate a previously accepted result.
 
-Outcomes are `field_changed`, `unchanged`, `present_only_left` and
+Difference kinds are `field_changed`, `unchanged`, `present_only_left` and
 `present_only_right`, not source additions/cessations or clinical assertions.
+Comparison outcomes are `compared` or `abstained`.
 Declared completeness and digests are not independent source verification.
 Bounds are 4,096 rows, 256 fields per row, 65,536 fields per snapshot, 8 MiB
 native text and 65,536 differences checked before result allocation. These are
@@ -66,3 +67,12 @@ failure (256.22 ms against 200 ms; internal replay 0.53 ms). Its single isolated
 rerun passed unchanged. All three comparison/delta/reader modules have 100%
 statement and branch coverage. Ruff, ty and BasedPyright passed. The frozen
 full suite and exact-head hosted checks remain the delivery gates.
+
+At frozen head `39eeebb`, the full suite recorded 3,515 passes, nine failures,
+one optional Iceberg skip and 96.79% coverage. Both clean-clone release
+reproduction tests passed on the corrected runtime. Eight failures passed on
+one unchanged serial rerun; the product runner still exceeded its query budget
+(577.556 ms p95 versus 250 ms). Local performance remains unqualified; later
+full-suite lanes were not reached. All 38 hosted checks at that head passed.
+Automated integration review found no blockers; final-head checks are required
+after the documentation/evidence refinements.
