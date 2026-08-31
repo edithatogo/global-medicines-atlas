@@ -113,3 +113,12 @@ target modules; the old recorded 96.79% is the historical configured result.
 The follow-up focused suite passes 342 tests, with corrected coverage of 100%
 for history append and native comparison, 97% for the MBS producer and 99% for
 hosted PBS qualification (99.16% combined). Full and hosted checks follow.
+
+The follow-up full run at `8b735b3` recorded 3,633 passes, one optional
+Iceberg skip and one existing product performance failure (948.142 ms p95
+versus 250 ms), with 96.42% coverage under the corrected exclusions. Routine,
+strict typing, clean package consumers and both release-reproduction tests
+passed. Later full-suite lanes were not reached; Linux CI remains authoritative
+for those lanes. The unchanged performance failure was not repeatedly rerun.
+The merged PR #401 base was joined without changing the frozen tree
+(`56573a6d4ca381e77248ce376b077a79abe31979`). Final hosted checks follow.

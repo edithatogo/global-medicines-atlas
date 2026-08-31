@@ -179,7 +179,7 @@
 
 ## Post-baseline donor drift follow-up (AC-01, AC-06, AC-09)
 
-- [~] Reconcile complete changed-path/blob inventories against independently
+- [x] Reconcile complete changed-path/blob inventories against independently
   observed current donor heads without overwriting the frozen baseline.
   Graph `3993e5e` changes two documentation files; scraper `009e805` changes
   eight files, including code, workflow and tests despite its commit title.
@@ -187,7 +187,8 @@
   compatibility remains explicitly legacy-only, not proven parity.
   Implemented `b8938b7` (agent original `9d19e64`): missing-module red,
   malformed-path and copied-model corrections, then 58 focused/inventory
-  passes and 100% new-module coverage. Integrated validation remains pending.
+  passes and 100% new-module coverage. Delivered in PR #401 at reviewed
+  `f0799c4`, merged `2543720`, 38 successful checks and matching trees.
 - [ ] Preserve both later donor heads through exact hosted history receipts
   before archival; the existing baseline bundles do not contain these commits.
   No raw-data paths changed in the observed deltas. This is not evidence of
@@ -204,6 +205,8 @@
 - [ ] Add the hosted append transaction and obtain exact authorization for the
   two newer histories before dispatch. Do not reuse the old replace-all,
   private-target legacy publisher or its dataset-wide privacy rollback.
+  Recover an already-completed append from its authenticated durable receipt;
+  do not force an empty new commit or overwrite identical head-addressed paths.
 
 ## Phase 6: Integrated qualification (AC-10)
 

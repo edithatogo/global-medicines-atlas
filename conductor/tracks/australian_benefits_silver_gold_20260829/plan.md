@@ -495,7 +495,7 @@
 
 ### Bounded native comparison prerequisite
 
-- [~] Add a source-independent native snapshot comparison candidate contract
+- [x] Add a source-independent native snapshot comparison candidate contract
   with exact declared B1/B2 lineage, source/profile/dimension separation,
   row/field denominators, explicit incomplete/ambiguous abstention and bounded
   allocation. Preserve literal values, occurrences and both snapshots; presence
@@ -508,6 +508,8 @@
   correction. Agent final 165 focused/compatibility passes, new module 100%
   coverage; reviewer independently reproduced and closed the mutable-input
   finding. Agent review is not independent maintainer approval.
+  Delivered in PR #401: reviewed `f0799c4`, merged `2543720`, all 38
+  checks passed; reviewed and merged trees match. No real-source promotion.
 - [ ] Bind independently qualified producer snapshots and portable Parquet
   representations before real-source comparison/publication claims.
 - [~] Implement the receipt-bound MBS XML comparison-cohort producer

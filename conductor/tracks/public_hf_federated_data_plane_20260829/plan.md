@@ -116,11 +116,12 @@
 
 ## Review fixes: runtime reader
 
-- [~] Admit the exact observed `us.aws.cdn.hf.co` delivery host, with signed
+- [x] Admit the exact observed `us.aws.cdn.hf.co` delivery host, with signed
   redirect/no-auth/no-cookie canaries, hostile lookalike negatives and the
   same DNS-bound destination policy. `96fcb40` (agent original `4534d21`):
   two intended red regressions; 134 federation tests pass, reader coverage
-  100%; 39 source-acquisition safety tests pass. Integrated gates pending.
+  100%; 39 source-acquisition safety tests pass. PR #401 delivered at reviewed
+  `f0799c4`, merged `2543720`, 38 successful checks and matching trees.
   This does not admit caller-supplied v4 receipts or publish derived data.
 
 - [x] Reject writes through verified result streams without breaking seek/read
