@@ -158,7 +158,9 @@ def test_registry_identity_revision_and_visibility_are_bound(
 
 
 @pytest.mark.parametrize("mode", ["missing", "stale", "revision", "membership"])
-def test_registry_is_exact_for_the_scoped_dataset_denominator(mode: str) -> None:
+def test_registry_is_exact_for_the_scoped_dataset_denominator(
+    mode: str,
+) -> None:
     entries = list(registry().entries)
     if mode == "missing":
         entries.pop()
@@ -245,6 +247,4 @@ def test_structural_metadata_bounds_fail_before_reconciliation() -> None:
             )
         )
     with pytest.raises(ValueError, match="note"):
-        reconcile(
-            expected=(replace(expectation(), note="x" * 4097),)
-        )
+        reconcile(expected=(replace(expectation(), note="x" * 4097),))

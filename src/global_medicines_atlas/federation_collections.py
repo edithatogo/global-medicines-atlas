@@ -185,7 +185,9 @@ def _unique_collections[
     return result
 
 
-def _unique_items(items: tuple[CollectionItem, ...]) -> dict[str, CollectionItem]:
+def _unique_items(
+    items: tuple[CollectionItem, ...],
+) -> dict[str, CollectionItem]:
     if len(items) > COLLECTION_ITEM_LIMIT:
         raise ValueError("collection member limit exceeded")
     result: dict[str, CollectionItem] = {}
