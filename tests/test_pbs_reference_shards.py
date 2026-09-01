@@ -1,7 +1,9 @@
 """Transient partition contract for hosted PBS reference qualification."""
 
 import json
+from collections.abc import Iterator
 from pathlib import Path
+from typing import Any
 
 import pyarrow as pa
 import pytest
@@ -13,6 +15,7 @@ from test_pbs_historical_silver import PATH, SOURCE
 from test_pbs_silver import XML
 
 from global_medicines_atlas import pbs_reference_shards as shards
+from global_medicines_atlas import pbs_references
 from global_medicines_atlas.pbs_historical_projections import (
     iter_pbs_historical_entity_batches,
 )
@@ -30,10 +33,13 @@ from global_medicines_atlas.pbs_reference_shards import (
     prepare_reference_entity_material,
     prepare_reference_index,
     prepare_reference_partition,
+    prepare_reference_partition_group,
     prepare_reference_shards,
     qualify_reference_shard,
+    validate_reference_partition_group,
 )
 from global_medicines_atlas.pbs_references import (
+    _index,  # ruff: ignore[import-private-name]  # pyright: ignore[reportPrivateUsage]
     _reference_batches,  # ruff: ignore[import-private-name]  # pyright: ignore[reportPrivateUsage]
 )
 
@@ -115,6 +121,82 @@ def test_prepared_reference_shards_reassemble_full_ordered_projection(
     assert prepared.equals(full, check_metadata=True)
 
 
+def test_global_index_preparation_streams_once_with_deterministic_parity(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    binding, denominator, batches = inputs()
+    baseline, _, rows = _index(batches())
+    expected = shards._index_payload(baseline)  # pyright: ignore[reportPrivateUsage]
+    monkeypatch.setattr(
+        shards,
+        "TemporaryFile",
+        lambda: pytest.fail("global index preparation must not create a spool"),
+    )
+    output = tmp_path / "reference-index.json"
+    receipt = prepare_reference_index(
+        iter(batches()), binding, denominator, output
+    )
+    checkpoint = receipt["preparation"]
+    assert output.read_bytes() == expected
+    assert checkpoint["row_count"] == rows == denominator["elements"]
+    assert checkpoint["batch_count"] > 1
+    assert checkpoint["entry_count"] >= 0
+    assert 0 <= checkpoint["encoded_bytes"] <= pbs_references.MAX_INDEX_BYTES
+    assert len(checkpoint["schema_sha256"]) == 64
+
+
+def test_global_index_budget_failure_leaves_no_partial_artifact(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    binding, denominator, batches = inputs()
+    output = tmp_path / "reference-index.json"
+    monkeypatch.setattr(pbs_references, "MAX_INDEX_ENTRIES", 0)
+
+    def candidate(_batch: pa.RecordBatch) -> Iterator[dict[str, Any]]:
+        yield {
+            "contract_kind": "item_xml_id",
+            "reference_value": "bounded-candidate",
+            "reference_value_state": "value",
+            "reference_resource": None,
+            "reference_resource_state": "not_applicable",
+        }
+
+    monkeypatch.setattr(
+        pbs_references,
+        "_columnar_contracts",
+        candidate,
+    )
+    with pytest.raises(ValueError, match="entry/byte limit"):
+        prepare_reference_index(batches(), binding, denominator, output)
+    assert not output.exists()
+
+
+def test_global_index_rejects_denominator_tamper_before_artifact(
+    tmp_path: Path,
+) -> None:
+    binding, denominator, batches = inputs()
+    output = tmp_path / "reference-index.json"
+    changed = {**denominator, "native_digest": "0" * 64}
+    with pytest.raises(ValueError, match="denominator changed"):
+        prepare_reference_index(batches(), binding, changed, output)
+    assert not output.exists()
+
+
+def test_global_index_rejects_entity_schema_drift(tmp_path: Path) -> None:
+    binding, denominator, batches = inputs()
+    values = list(batches())
+    changed = values[1].append_column(
+        "unexpected", pa.array([1] * values[1].num_rows)
+    )
+    with pytest.raises(ValueError, match="entity schema changed"):
+        prepare_reference_index(
+            iter([values[0], changed]),
+            binding,
+            denominator,
+            tmp_path / "reference-index.json",
+        )
+
+
 def test_disaggregated_preparation_reassembles_existing_worker_contract(
     tmp_path: Path,
 ) -> None:
@@ -158,6 +240,235 @@ def test_disaggregated_preparation_reassembles_existing_worker_contract(
         )
         == denominator["native_fields"]
     )
+
+
+def test_partition_group_scans_once_and_emits_only_assigned_contiguous_window(
+    tmp_path: Path,
+) -> None:
+    binding, denominator, batches = inputs()
+    scans = 0
+
+    def counted():
+        nonlocal scans
+        scans += 1
+        yield from batches()
+
+    receipt = prepare_reference_partition_group(
+        counted(),
+        binding,
+        denominator,
+        tmp_path,
+        group_index=1,
+        group_count=2,
+        shard_count=4,
+    )
+    loaded_binding, loaded_denominator, partitions = (
+        validate_reference_partition_group(tmp_path, receipt)
+    )
+    assert scans == 1
+    assert loaded_binding == binding
+    assert loaded_denominator == denominator
+    assert receipt["group"] == {
+        "index": 1,
+        "count": 2,
+        "start_partition": 2,
+        "stop_partition": 4,
+    }
+    assert [partition["index"] for partition in partitions] == [2, 3]
+    assert sorted(path.name for path in tmp_path.glob("*.arrow")) == [
+        "reference-02.arrow",
+        "reference-03.arrow",
+    ]
+    assert (
+        sum(
+            partition["expected_projection"]["rows"] for partition in partitions
+        )
+        == partitions[-1]["stop_row"] - partitions[0]["start_row"]
+    )
+
+
+@pytest.mark.parametrize("mutation", ["drop", "reorder", "receipt", "bytes"])
+def test_partition_group_rejects_drop_reorder_and_tamper(
+    tmp_path: Path, mutation: str
+) -> None:
+    binding, denominator, batches = inputs()
+    receipt = prepare_reference_partition_group(
+        batches(),
+        binding,
+        denominator,
+        tmp_path,
+        group_index=0,
+        group_count=2,
+        shard_count=4,
+    )
+    if mutation == "drop":
+        receipt["partitions"].pop()
+        _resign(receipt)
+    elif mutation == "reorder":
+        receipt["partitions"].reverse()
+        _resign(receipt)
+    elif mutation == "receipt":
+        receipt["group"]["stop_partition"] = 3
+    else:
+        with (tmp_path / "reference-00.arrow").open("ab") as stream:
+            stream.write(b"tampered")
+    with pytest.raises((TypeError, ValueError), match=r"group|digest"):
+        validate_reference_partition_group(tmp_path, receipt)
+
+
+@pytest.mark.parametrize(
+    ("group_index", "group_count", "shard_count"),
+    [(-1, 2, 4), (2, 2, 4), (0, 3, 4), (True, 2, 4), (0, True, 4)],
+)
+def test_partition_group_rejects_invalid_or_uneven_coverage(
+    tmp_path: Path,
+    group_index: int,
+    group_count: int,
+    shard_count: int,
+) -> None:
+    binding, denominator, batches = inputs()
+    with pytest.raises(ValueError, match="group preparation"):
+        prepare_reference_partition_group(
+            batches(),
+            binding,
+            denominator,
+            tmp_path,
+            group_index=group_index,
+            group_count=group_count,
+            shard_count=shard_count,
+        )
+
+
+def test_partition_group_rejects_existing_output(tmp_path: Path) -> None:
+    binding, denominator, batches = inputs()
+    (tmp_path / "reference-00.arrow").write_bytes(b"occupied")
+    with pytest.raises(ValueError, match="output already exists"):
+        prepare_reference_partition_group(
+            batches(),
+            binding,
+            denominator,
+            tmp_path,
+            group_index=0,
+            group_count=2,
+            shard_count=4,
+        )
+
+
+def test_partition_group_rejects_schema_and_writer_initialization_drift(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    binding, denominator, batches = inputs()
+    values = list(batches())
+    changed = values[1].append_column(
+        "unexpected", pa.array([1] * values[1].num_rows)
+    )
+    with pytest.raises(ValueError, match="entity schema changed"):
+        prepare_reference_partition_group(
+            iter([values[0], changed]),
+            binding,
+            denominator,
+            tmp_path / "schema",
+            group_index=0,
+            group_count=2,
+            shard_count=4,
+        )
+
+    monkeypatch.setattr(pa.ipc, "new_stream", lambda *_: None)
+    with pytest.raises(RuntimeError, match="was not initialized"):
+        prepare_reference_partition_group(
+            batches(),
+            binding,
+            denominator,
+            tmp_path / "writer",
+            group_index=0,
+            group_count=2,
+            shard_count=4,
+        )
+
+
+def test_partition_group_rejects_denominator_and_written_projection_drift(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    binding, denominator, batches = inputs()
+    with pytest.raises(ValueError, match="denominator changed"):
+        prepare_reference_partition_group(
+            batches(),
+            binding,
+            {**denominator, "native_digest": "0" * 64},
+            tmp_path / "denominator",
+            group_index=0,
+            group_count=2,
+            shard_count=4,
+        )
+
+    original = shards._projection  # pyright: ignore[reportPrivateUsage]
+
+    def changed(*args: Any, **kwargs: Any) -> dict[str, Any]:
+        report = original(*args, **kwargs)
+        report["native_digest"] = "9" * 64
+        return report
+
+    monkeypatch.setattr(shards, "_projection", changed)
+    with pytest.raises(ValueError, match="changed after preparation"):
+        prepare_reference_partition_group(
+            batches(),
+            binding,
+            denominator,
+            tmp_path / "projection",
+            group_index=0,
+            group_count=2,
+            shard_count=4,
+        )
+
+
+@pytest.mark.parametrize("mutation", ["container", "binding", "partition"])
+def test_partition_group_validation_rejects_structural_receipt_drift(
+    tmp_path: Path, mutation: str
+) -> None:
+    binding, denominator, batches = inputs()
+    receipt = prepare_reference_partition_group(
+        batches(),
+        binding,
+        denominator,
+        tmp_path,
+        group_index=0,
+        group_count=2,
+        shard_count=4,
+    )
+    if mutation == "container":
+        receipt["group"] = []
+    elif mutation == "binding":
+        receipt["binding_sha256"] = "0" * 64
+    else:
+        receipt["partitions"][0] = []
+    _resign(receipt)
+    with pytest.raises((TypeError, ValueError), match=r"receipt|binding"):
+        validate_reference_partition_group(tmp_path, receipt)
+
+
+def test_partition_group_validation_rejects_projection_drift(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    binding, denominator, batches = inputs()
+    receipt = prepare_reference_partition_group(
+        batches(),
+        binding,
+        denominator,
+        tmp_path,
+        group_index=0,
+        group_count=2,
+        shard_count=4,
+    )
+    original = shards._projection  # pyright: ignore[reportPrivateUsage]
+
+    def changed(*args: Any, **kwargs: Any) -> dict[str, Any]:
+        report = original(*args, **kwargs)
+        report["native_digest"] = "8" * 64
+        return report
+
+    monkeypatch.setattr(shards, "_projection", changed)
+    with pytest.raises(ValueError, match="projection changed"):
+        validate_reference_partition_group(tmp_path, receipt)
 
 
 def test_entity_material_is_reusable_by_index_and_partition_nodes(

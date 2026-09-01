@@ -12,6 +12,7 @@ import shutil
 import socket
 import ssl
 import sys
+import tempfile
 import time
 from collections.abc import Callable, Generator
 from contextlib import contextmanager
@@ -46,6 +47,7 @@ from .pbs_reference_shards import (
     prepare_reference_entity_material,
     prepare_reference_index,
     prepare_reference_partition,
+    prepare_reference_partition_group,
     prepare_reference_shards,
 )
 from .receipts import SourceReceipt
@@ -208,6 +210,7 @@ class QualificationError(ValueError):
         *,
         transport_detail: str = "unknown",
         failure_type: str = "qualification-error",
+        resource_code: str = "unavailable",
     ) -> None:
         self.retry_event: tuple[str, str] | None = None
         self.retry_detail = "unknown"
@@ -218,6 +221,11 @@ class QualificationError(ValueError):
         )
         self.failure_type = (
             failure_type if failure_type in FAILURE_TYPES else "unexpected"
+        )
+        self.resource_code = (
+            resource_code
+            if resource_code in {"enospc", "unavailable"}
+            else "unavailable"
         )
         super().__init__(
             f"PBS qualification failed: {self.stage}/{self.category}"
@@ -295,6 +303,10 @@ class _RetryBudget:
                     max(0, int((time.monotonic() - self.started) * 1000)),
                 ),
                 "free_space_bytes": shutil.disk_usage(".").free,
+                "workspace_free_space_bytes": shutil.disk_usage(".").free,
+                "temp_free_space_bytes": shutil.disk_usage(
+                    tempfile.gettempdir()
+                ).free,
                 "max_rss_bytes": int(
                     resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
                 )
@@ -380,6 +392,11 @@ def _at(
             category,
             transport_detail=_transport_detail(error),
             failure_type=_failure_type(error),
+            resource_code=(
+                "enospc"
+                if isinstance(error, OSError) and error.errno == errno.ENOSPC
+                else "unavailable"
+            ),
         ) from None
 
 
@@ -667,6 +684,7 @@ def run_hosted_reference_node(
                 denominator,
                 output / "reference-index.json",
             )
+        node = {**node, "workflow_commit": inputs.context["workflow_commit"]}
         node_kind = "index"
     else:
         with _at("entity-partition-preparation", progress=retry.checkpoint):
@@ -686,6 +704,47 @@ def run_hosted_reference_node(
         "dataset": DATASET,
         "revision": REVISION,
         "node_kind": node_kind,
+        "node": node,
+        "publication_performed": False,
+        "evidence_truth": False,
+    }
+
+
+def run_hosted_reference_group(
+    exact_commit: str,
+    output: Path,
+    *,
+    shard_count: int,
+    group_index: int,
+    group_count: int,
+    transport: httpx.BaseTransport | None = None,
+    progress: Callable[[dict[str, Any]], None] | None = None,
+) -> dict[str, Any]:
+    """Prepare one independently retryable contiguous reference group."""
+    retry = _RetryBudget(progress=progress)
+    inputs = _verified_inputs(exact_commit, transport=transport, retry=retry)
+    with _at("denominator", progress=retry.checkpoint):
+        denominator = _denominator(inputs.xml)
+    output.mkdir(parents=True, exist_ok=False)
+    with _at("entity-partition-preparation", progress=retry.checkpoint):
+        node = prepare_reference_partition_group(
+            iter_pbs_historical_entity_batches(
+                inputs.archive, inputs.xml, inputs.parent, inputs.binding
+            ),
+            inputs.binding,
+            denominator,
+            output,
+            group_index=group_index,
+            group_count=group_count,
+            shard_count=shard_count,
+        )
+    return {
+        "schema_version": 1,
+        "status": "prepared",
+        **inputs.context,
+        "dataset": DATASET,
+        "revision": REVISION,
+        "node_kind": "partition-group",
         "node": node,
         "publication_performed": False,
         "evidence_truth": False,
@@ -1113,6 +1172,7 @@ def failure_report(error: Exception | None = None) -> dict[str, Any]:
             error.category,
             transport_detail=error.transport_detail,
             failure_type=error.failure_type,
+            resource_code=error.resource_code,
         )
     return {
         "schema_version": 1,
@@ -1124,6 +1184,7 @@ def failure_report(error: Exception | None = None) -> dict[str, Any]:
         "failure_stage": failure.stage,
         "failure_category": failure.category,
         "failure_type": failure.failure_type,
+        "resource_code": failure.resource_code,
         "transport_diagnostics": _diagnostics(
             error.retry_event
             if isinstance(error, QualificationError)

@@ -734,6 +734,45 @@
   diagnostic allocation equals the largest bounded output batch. Broader
   affected validation: 267 passed; Ruff, format, source BasedPyright, native
   context and diff checks passed. Hosted exact-head revalidation remains.
+  The first merged sharded workflow (`9d3a984`, run `33526575517`) failed in
+  monolithic preparation after 30m15s, before reference shards could start.
+  The diagnostic split (`cbf81a8`, run `33537778788`) then proved the native,
+  domain, entities and dates jobs succeed independently, while the entity
+  material job failed with fixed `resource/disk-full` evidence. Its design
+  wrote a complete reusable entity stream plus all 16 partitions in one job,
+  amplifying local disk even though no raw source bytes were retained.
+  The next candidate removes that shared spool entirely: one job streams the
+  bounded global literal index directly, and four independently retryable jobs
+  each re-read the exact pinned public source and retain only one contiguous
+  quarter (four of 16 final partitions). Phase jobs run first at maximum four;
+  index plus group preparation then runs at one plus three, so every active
+  wave has true concurrency at most four. Assembly accepts only digest-valid,
+  identical successful retries, rejects divergent successes, and requires the
+  index plus exact groups 0..3 and partitions 0..15. Hard links avoid a second
+  local copy during assembly. Checkpoints now distinguish workspace and temp
+  free space and retain an allowlisted `enospc` code without exception text.
+  No raw artifact, timeout increase, dispatch or publication is included.
+  Review fix: preparation still waits for the phase wave to finish, but runs
+  under `always()` even when an independent phase fails; a phase failure can no
+  longer suppress all preparation diagnostics. Exact aggregate coverage still
+  fails closed unless every required phase, index, group and reference passes.
+  Hosted Codecov then measured 85.61644% patch coverage at `25ee9b9`, with ten
+  uncovered changed lines and eleven partial branches confined to the new
+  partition-group contracts. Focused negative tests now exercise index/group
+  schema drift, pre-existing outputs, uninitialized writers, denominator and
+  written-projection drift, malformed containers/partitions, binding drift and
+  validation-time projection drift. The affected module reaches 96% branch
+  coverage locally and all ten hosted annotations are executed; no exclusion,
+  threshold or coverage configuration changed.
+  Exact-head review found the outer hosted index report carried the workflow
+  commit while its inner deterministic node receipt did not. Assembly read the
+  inner receipt and could therefore write a null commit that every downstream
+  prepared worker correctly rejects. The hosted index now binds the exact
+  commit into the inner node before its wrapper digest is written. Assembly
+  requires the inner/outer commit plus every node's commit, dataset and revision
+  to agree, and writes that identity into the manifest. A full synthetic hosted
+  index plus two groups now passes real assembly and downstream prepared-shard
+  qualification; a missing inner commit fails closed.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression

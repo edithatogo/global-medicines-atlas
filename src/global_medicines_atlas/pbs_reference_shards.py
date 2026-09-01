@@ -21,6 +21,7 @@ from .pbs_references import (
     ReferenceIndex,
     _annotated_batches,  # pyright: ignore[reportPrivateUsage]
     _index,  # pyright: ignore[reportPrivateUsage]
+    _prepare_index,  # pyright: ignore[reportPrivateUsage]
     _schema,  # pyright: ignore[reportPrivateUsage]
 )
 
@@ -32,10 +33,15 @@ def _encoded(value: object) -> bytes:
 
 
 def _digest(path: Path) -> dict[str, Any]:
-    payload = path.read_bytes()
+    digest = hashlib.sha256()
+    byte_count = 0
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+            byte_count += len(chunk)
     return {
-        "sha256": hashlib.sha256(payload).hexdigest(),
-        "byte_count": len(payload),
+        "sha256": digest.hexdigest(),
+        "byte_count": byte_count,
     }
 
 
@@ -317,7 +323,14 @@ def prepare_reference_index(
     denominator: dict[str, Any],
     output: Path,
 ) -> dict[str, Any]:
-    """Build only the global reference index as one retryable DAG node."""
+    """Build the global reference index directly from one entity batch pass.
+
+    The iterator is consumed once. Complete entity batches are neither retained
+    nor written to a temporary Arrow spool; only bounded accounting state and
+    the bounded global reference index survive between batches. The output is
+    written only after full lineage, denominator, schema and index-budget checks
+    pass, so a failed preparation cannot expose a partial index artifact.
+    """
     total = denominator.get("elements")
     if type(total) is not int or total < 1:
         raise ValueError("invalid PBS reference index preparation")
@@ -325,41 +338,34 @@ def prepare_reference_index(
     counts = _counter()
     digest = hashlib.sha256()
     schema: pa.Schema | None = None
-    with TemporaryFile() as spool:
-        writer: pa.RecordBatchStreamWriter | None = None
-        try:
-            for batch in batches:
-                if schema is None:
-                    schema = batch.schema
-                    writer = pa.ipc.new_stream(spool, schema)
-                elif not batch.schema.equals(schema, check_metadata=True):
-                    raise ValueError(
-                        "PBS reference index entity schema changed"
-                    )
-                if writer is None:
-                    raise RuntimeError(
-                        "PBS reference index spool was not initialized"
-                    )
-                writer.write_batch(batch)  # pyright: ignore[reportUnknownMemberType]
-                _account_nested_batch(batch, _lineage(binding), counts, digest)
-        finally:
-            if writer is not None:
-                writer.close()
-        if (
-            schema is None
-            or counts["rows"] != total
-            or counts["native_fields"] != denominator.get("native_fields")
-            or digest.hexdigest() != denominator.get("native_digest")
-        ):
-            raise ValueError("PBS reference index denominator changed")
-        spool.seek(0)
-        index, identity, indexed_rows = _index(iter(pa.ipc.open_stream(spool)))
-        if (
-            identity is None
-            or not identity.equals(schema, check_metadata=True)
-            or indexed_rows != total
-        ):
-            raise ValueError("PBS reference index denominator changed")
+    batch_count = 0
+
+    def accounted() -> Iterator[pa.RecordBatch]:
+        nonlocal schema, batch_count
+        for batch in batches:
+            if schema is None:
+                schema = batch.schema
+            elif not batch.schema.equals(schema, check_metadata=True):
+                raise ValueError("PBS reference index entity schema changed")
+            _account_nested_batch(batch, _lineage(binding), counts, digest)
+            batch_count += 1
+            yield batch
+
+    index, identity, checkpoint = _prepare_index(accounted())
+    invalid = (
+        schema is None,
+        identity is None,
+        schema is not None
+        and identity is not None
+        and not identity.equals(schema, check_metadata=True),
+        checkpoint.batch_count != batch_count,
+        checkpoint.row_count != total,
+        counts["rows"] != total,
+        counts["native_fields"] != denominator.get("native_fields"),
+        digest.hexdigest() != denominator.get("native_digest"),
+    )
+    if any(invalid):
+        raise ValueError("PBS reference index denominator changed")
     output.write_bytes(_index_payload(index))
     return {
         "schema_version": 1,
@@ -370,6 +376,7 @@ def prepare_reference_index(
             key: denominator[key]
             for key in ("native_fields", "elements", "native_digest")
         },
+        "preparation": checkpoint.model_dump(mode="json"),
         "index": {"path": output.name, **_digest(output)},
         "publication_performed": False,
         "evidence_truth": False,
@@ -481,6 +488,263 @@ def prepare_reference_partition(  # ruff: ignore[too-many-locals]
         "publication_performed": False,
         "evidence_truth": False,
     }
+
+
+def prepare_reference_partition_group(  # ruff: ignore[too-many-locals,too-many-branches,too-many-statements]
+    batches: Iterator[pa.RecordBatch],
+    binding: PbsXmlMemberBinding,
+    denominator: dict[str, Any],
+    output: Path,
+    *,
+    group_index: int,
+    group_count: int = 4,
+    shard_count: int = 16,
+) -> dict[str, Any]:
+    """Prepare one contiguous partition group with exactly one source scan.
+
+    Only the assigned final partition windows are written. The complete input
+    is still source-order accounted against the receipt-bound denominator, and
+    every emitted Arrow stream is independently reread before its digest-bound
+    receipt is returned. Memory is limited to one input batch plus Arrow writer
+    buffers and fixed per-partition counters; output and digest verification are
+    streamed from disk.
+    """
+    total = denominator.get("elements")
+    if (
+        type(total) is not int  # ruff: ignore[too-many-boolean-expressions]
+        or total < 1
+        or type(shard_count) is not int
+        or not 1 <= shard_count <= min(MAX_REFERENCE_SHARDS, total)
+        or type(group_count) is not int
+        or not 1 <= group_count <= shard_count
+        or shard_count % group_count != 0
+        or type(group_index) is not int
+        or not 0 <= group_index < group_count
+    ):
+        raise ValueError("invalid PBS reference partition group preparation")
+
+    output.mkdir(parents=True, exist_ok=True)
+    partitions_per_group = shard_count // group_count
+    start_partition = group_index * partitions_per_group
+    stop_partition = start_partition + partitions_per_group
+    indices = range(start_partition, stop_partition)
+    paths = [output / f"reference-{index:02d}.arrow" for index in indices]
+    if any(path.exists() for path in paths):
+        raise ValueError("PBS reference partition group output already exists")
+
+    complete_counts, complete_digest = _counter(), hashlib.sha256()
+    selected_counts = [_counter() for _ in paths]
+    selected_digests = [hashlib.sha256() for _ in paths]
+    lineage = _lineage(binding)
+    observed = 0
+    schema: pa.Schema | None = None
+    writers: list[pa.RecordBatchStreamWriter | None] = [None for _ in paths]
+    try:
+        for batch in batches:
+            if schema is None:
+                schema = batch.schema
+                writers = [
+                    pa.ipc.new_stream(str(path), schema) for path in paths
+                ]
+            elif not batch.schema.equals(schema, check_metadata=True):
+                raise ValueError(
+                    "PBS reference partition group entity schema changed"
+                )
+            _account_nested_batch(
+                batch, lineage, complete_counts, complete_digest
+            )
+            batch_start, batch_stop = observed, observed + batch.num_rows
+            for position, shard_index in enumerate(indices):
+                start = total * shard_index // shard_count
+                stop = total * (shard_index + 1) // shard_count
+                selected_start = max(start, batch_start)
+                selected_stop = min(stop, batch_stop)
+                if selected_start >= selected_stop:
+                    continue
+                writer = writers[position]
+                if writer is None:
+                    raise RuntimeError(
+                        "PBS reference partition group was not initialized"
+                    )
+                selected = batch.slice(
+                    selected_start - batch_start,
+                    selected_stop - selected_start,
+                )
+                _account_nested_batch(
+                    selected,
+                    lineage,
+                    selected_counts[position],
+                    selected_digests[position],
+                )
+                writer.write_batch(selected)  # pyright: ignore[reportUnknownMemberType]
+            observed = batch_stop
+    finally:
+        for writer in writers:
+            if writer is not None:
+                writer.close()
+
+    if (
+        schema is None
+        or observed != total
+        or complete_counts["native_fields"] != denominator.get("native_fields")
+        or complete_digest.hexdigest() != denominator.get("native_digest")
+    ):
+        raise ValueError("PBS reference partition group denominator changed")
+
+    partitions: list[dict[str, Any]] = []
+    for position, (shard_index, path) in enumerate(
+        zip(indices, paths, strict=True)
+    ):
+        start = total * shard_index // shard_count
+        stop = total * (shard_index + 1) // shard_count
+        projection = _projection(
+            iter(pa.ipc.open_stream(pa.memory_map(str(path), "r"))),
+            binding,
+            denominator,
+            nested=True,
+            phase="reference-preparation",
+            row_window=(start, stop),
+        )
+        expected = {
+            "rows": selected_counts[position]["rows"],
+            "native_fields": selected_counts[position]["native_fields"],
+            "native_digest": selected_digests[position].hexdigest(),
+        }
+        if any(projection[key] != expected[key] for key in expected):
+            raise ValueError(
+                "PBS reference partition group changed after preparation"
+            )
+        partitions.append({
+            "index": shard_index,
+            "count": shard_count,
+            "start_row": start,
+            "stop_row": stop,
+            "path": path.name,
+            **_digest(path),
+            "expected_projection": expected,
+        })
+
+    contract: dict[str, Any] = {
+        "schema_version": 1,
+        "purpose": "transient-reference-partition-group",
+        "binding_sha256": binding.digest(),
+        "binding": binding.model_dump(mode="json"),
+        "denominator": {
+            key: denominator[key]
+            for key in ("native_fields", "elements", "native_digest")
+        },
+        "group": {
+            "index": group_index,
+            "count": group_count,
+            "start_partition": start_partition,
+            "stop_partition": stop_partition,
+        },
+        "partitions": partitions,
+        "publication_performed": False,
+        "evidence_truth": False,
+    }
+    return {
+        **contract,
+        "contract_sha256": hashlib.sha256(_encoded(contract)).hexdigest(),
+    }
+
+
+def validate_reference_partition_group(  # ruff: ignore[too-many-locals]
+    directory: Path, receipt: dict[str, Any]
+) -> tuple[PbsXmlMemberBinding, dict[str, Any], list[dict[str, Any]]]:
+    """Independently validate one complete, ordered partition-group receipt."""
+    contract = {
+        key: value for key, value in receipt.items() if key != "contract_sha256"
+    }
+    if (
+        receipt.get("schema_version") != 1
+        or receipt.get("purpose") != "transient-reference-partition-group"
+        or receipt.get("publication_performed") is not False
+        or receipt.get("evidence_truth") is not False
+        or receipt.get("contract_sha256")
+        != hashlib.sha256(_encoded(contract)).hexdigest()
+    ):
+        raise ValueError("PBS reference partition group receipt changed")
+    group = receipt.get("group")
+    denominator = receipt.get("denominator")
+    raw_partitions = receipt.get("partitions")
+    if (
+        not isinstance(group, dict)
+        or not isinstance(denominator, dict)
+        or not isinstance(raw_partitions, list)
+    ):
+        raise TypeError("PBS reference partition group receipt is invalid")
+    group = cast("dict[str, Any]", group)
+    denominator = cast("dict[str, Any]", denominator)
+    raw_partitions = cast("list[object]", raw_partitions)
+    binding = PbsXmlMemberBinding.model_validate(receipt.get("binding"))
+    if binding.digest() != receipt.get("binding_sha256"):
+        raise ValueError("PBS reference partition group binding changed")
+
+    group_index = group.get("index")
+    group_count = group.get("count")
+    start_partition = group.get("start_partition")
+    stop_partition = group.get("stop_partition")
+    if (
+        type(group_index) is not int  # ruff: ignore[too-many-boolean-expressions]
+        or type(group_count) is not int
+        or type(start_partition) is not int
+        or type(stop_partition) is not int
+        or group_count < 1
+        or not 0 <= group_index < group_count
+        or start_partition < 0
+        or stop_partition <= start_partition
+        or len(raw_partitions) != stop_partition - start_partition
+    ):
+        raise ValueError("PBS reference partition group coverage changed")
+
+    total = denominator.get("elements")
+    partitions: list[dict[str, Any]] = []
+    for expected_index, raw_partition in zip(
+        range(start_partition, stop_partition), raw_partitions, strict=True
+    ):
+        if not isinstance(raw_partition, dict):
+            raise TypeError("PBS reference partition group receipt is invalid")
+        partition = cast("dict[str, Any]", raw_partition)
+        shard_count = partition.get("count")
+        expected = partition.get("expected_projection")
+        if (
+            type(total) is not int  # ruff: ignore[too-many-boolean-expressions]
+            or type(shard_count) is not int
+            or shard_count < stop_partition
+            or shard_count % group_count != 0
+            or partition.get("index") != expected_index
+            or start_partition != group_index * (shard_count // group_count)
+            or stop_partition
+            != (group_index + 1) * (shard_count // group_count)
+            or partition.get("start_row")
+            != total * expected_index // shard_count
+            or partition.get("stop_row")
+            != total * (expected_index + 1) // shard_count
+            or not isinstance(expected, dict)
+        ):
+            raise ValueError("PBS reference partition group coverage changed")
+        expected = cast("dict[str, Any]", expected)
+        path = directory / str(partition.get("path"))
+        if path.parent != directory or _digest(path) != {
+            key: partition.get(key) for key in ("sha256", "byte_count")
+        }:
+            raise ValueError("PBS reference partition group digest changed")
+        projection = _projection(
+            iter(pa.ipc.open_stream(pa.memory_map(str(path), "r"))),
+            binding,
+            denominator,
+            nested=True,
+            phase="reference-preparation",
+            row_window=(partition["start_row"], partition["stop_row"]),
+        )
+        if any(
+            projection.get(key) != expected.get(key)
+            for key in ("rows", "native_fields", "native_digest")
+        ):
+            raise ValueError("PBS reference partition group projection changed")
+        partitions.append(partition)
+    return binding, denominator, partitions
 
 
 def assemble_reference_manifest(

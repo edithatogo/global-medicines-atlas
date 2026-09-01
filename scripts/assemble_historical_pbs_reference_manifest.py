@@ -5,6 +5,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
+import re
 from pathlib import Path
 from typing import Any, cast
 
@@ -15,6 +17,7 @@ from global_medicines_atlas.pbs_hosted_qualification import (
 from global_medicines_atlas.pbs_member_identity import PbsXmlMemberBinding
 from global_medicines_atlas.pbs_reference_shards import (
     assemble_reference_manifest,
+    validate_reference_partition_group,
 )
 
 
@@ -36,7 +39,7 @@ def _node(path: Path) -> tuple[dict[str, Any], dict[str, Any] | None]:
     return report, cast("dict[str, Any]", report["node"])
 
 
-def _latest_nodes(
+def _latest_nodes(  # ruff: ignore[too-many-branches]
     directory: Path,
 ) -> dict[str, tuple[Path, dict[str, Any], dict[str, Any]]]:
     selected: dict[str, tuple[Path, dict[str, Any], dict[str, Any]]] = {}
@@ -46,6 +49,46 @@ def _latest_nodes(
         if node is None:
             continue
         kind = node.get("node_kind", report.get("node_kind"))
+        if kind == "partition-group":
+            attempt = report.get("run_attempt")
+            if not isinstance(attempt, str) or not attempt.isdigit():
+                raise ValueError("PBS reference node attempt is invalid")
+            material = path.parent / "node"
+            if not material.is_dir():
+                material = path.parent
+            _, _, partitions = validate_reference_partition_group(
+                material, node
+            )
+            group = cast("dict[str, Any]", node["group"])
+            group_key = f"group:{group['index']}"
+            if group_key in canonical and node != canonical[group_key]:
+                raise ValueError(
+                    "PBS reference node successful attempts conflict"
+                )
+            canonical[group_key] = node
+            for partition in partitions:
+                key = f"partition:{partition['index']}"
+                synthetic = {
+                    "node_kind": "partition",
+                    "schema_version": 1,
+                    "purpose": "transient-reference-entity-partition",
+                    "binding_sha256": node.get("binding_sha256"),
+                    "denominator": node.get("denominator"),
+                    "partition": partition,
+                    "publication_performed": False,
+                    "evidence_truth": False,
+                }
+                previous = selected.get(key)
+                if key in canonical and synthetic != canonical[key]:
+                    raise ValueError(
+                        "PBS reference node successful attempts conflict"
+                    )
+                canonical[key] = synthetic
+                if previous is None or int(attempt) > int(
+                    previous[1]["run_attempt"]
+                ):
+                    selected[key] = path, report, synthetic
+            continue
         if (
             kind == "index"
             or node.get("purpose") == "transient-reference-global-index"
@@ -79,6 +122,32 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _hosted_identity(
+    selected: dict[str, tuple[Path, dict[str, Any], dict[str, Any]]],
+    index_report: dict[str, Any],
+    index_receipt: dict[str, Any],
+) -> tuple[str, str, str]:
+    workflow_commit = index_report.get("workflow_commit")
+    dataset = index_report.get("dataset")
+    revision = index_report.get("revision")
+    if (
+        not isinstance(workflow_commit, str)
+        or re.fullmatch(r"[0-9a-f]{40}", workflow_commit) is None
+        or index_receipt.get("workflow_commit") != workflow_commit
+        or not isinstance(dataset, str)
+        or not isinstance(revision, str)
+    ):
+        raise ValueError("PBS reference node hosted identity changed")
+    if any(
+        report.get("workflow_commit") != workflow_commit
+        or report.get("dataset") != dataset
+        or report.get("revision") != revision
+        for _, report, _ in selected.values()
+    ):
+        raise ValueError("PBS reference node hosted identity changed")
+    return workflow_commit, dataset, revision
+
+
 def _run(args: argparse.Namespace) -> dict[str, Any]:
     selected = _latest_nodes(args.input)
     if set(selected) != {
@@ -87,6 +156,7 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
     }:
         raise ValueError("PBS reference node coverage is incomplete")
     index_path, index_report, index_receipt = selected["index"]
+    hosted_identity = _hosted_identity(selected, index_report, index_receipt)
     binding = PbsXmlMemberBinding.model_validate(index_receipt.get("binding"))
     denominator = cast("dict[str, Any]", index_receipt["denominator"])
     partition_receipts = [
@@ -96,11 +166,16 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
     args.output.mkdir(parents=True, exist_ok=False)
     index_record = cast("dict[str, Any]", index_receipt["index"])
     index_source = index_path.parent / str(index_record["path"])
-    (args.output / index_source.name).write_bytes(index_source.read_bytes())
+    if not index_source.exists():
+        index_source = index_path.parent / "node" / str(index_record["path"])
+    os.link(index_source, args.output / index_source.name)
     for index, receipt in enumerate(partition_receipts):
         record = cast("dict[str, Any]", receipt["partition"])
-        source = selected[f"partition:{index}"][0].parent / str(record["path"])
-        (args.output / source.name).write_bytes(source.read_bytes())
+        receipt_path = selected[f"partition:{index}"][0]
+        source = receipt_path.parent / str(record["path"])
+        if not source.exists():
+            source = receipt_path.parent / "node" / str(record["path"])
+        os.link(source, args.output / source.name)
     manifest = assemble_reference_manifest(
         args.output,
         binding,
@@ -109,7 +184,9 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
         partition_receipts,
     )
     manifest.update({
-        "workflow_commit": index_receipt.get("workflow_commit"),
+        "workflow_commit": hosted_identity[0],
+        "dataset": hosted_identity[1],
+        "revision": hosted_identity[2],
         "preparation_run_id": index_report.get("run_id"),
         "preparation_run_attempt": index_report.get("run_attempt"),
     })

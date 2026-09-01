@@ -12,6 +12,7 @@ from urllib.parse import quote
 
 import httpx
 import pytest
+from scripts import assemble_historical_pbs_reference_manifest as assemble_nodes
 from scripts import prepare_historical_pbs_qualification as prepare_cli
 from scripts import qualify_historical_pbs_public as cli
 from test_au_pbs_v3 import _zip  # ruff: ignore[import-private-name]
@@ -562,7 +563,7 @@ def test_workflow_has_durable_receipt_and_no_dataset_write() -> None:
     assert "needs: prepare" in reference_block
     assert "needs: [prepare, qualify]" not in reference_block
     assert (
-        "pbs-reference-global-${{ needs.prepare.outputs.artifact_suffix }}"
+        "pbs-reference-complete-${{ needs.prepare.outputs.artifact_suffix }}"
         in workflow
     )
     assert "prepared/phase-input" not in workflow
@@ -633,6 +634,93 @@ def test_reference_preparation_node_is_independent_and_derived_only(
     assert report["publication_performed"] is False
     assert not list(output.rglob("*.zip"))
     assert not list(output.rglob("*.xml"))
+
+
+def test_reference_group_is_independent_and_emits_only_assigned_quarter(
+    tmp_path: Path, synthetic
+) -> None:
+    output = tmp_path / "group"
+    report = hosted.run_hosted_reference_group(
+        SHA,
+        output,
+        shard_count=4,
+        group_index=2,
+        group_count=4,
+        transport=synthetic[2],
+    )
+
+    assert report["status"] == "prepared"
+    assert report["node_kind"] == "partition-group"
+    assert report["node"]["group"] == {
+        "index": 2,
+        "count": 4,
+        "start_partition": 2,
+        "stop_partition": 3,
+    }
+    assert [path.name for path in output.glob("*.arrow")] == [
+        "reference-02.arrow"
+    ]
+    assert not list(output.rglob("*.zip"))
+    assert not list(output.rglob("*.xml"))
+
+
+def test_hosted_nodes_assemble_with_exact_commit_for_downstream_qualification(
+    tmp_path: Path, synthetic, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    nodes = tmp_path / "nodes"
+
+    def write_receipt(directory: Path, name: str, report: dict) -> None:
+        payload = json.dumps(
+            report, sort_keys=True, separators=(",", ":")
+        ).encode()
+        directory.mkdir(parents=True, exist_ok=True)
+        (directory / name).write_text(
+            json.dumps({
+                "report": report,
+                "report_sha256": hashlib.sha256(payload).hexdigest(),
+            }),
+            encoding="utf-8",
+        )
+
+    index_directory = nodes / "index"
+    index = hosted.run_hosted_reference_node(
+        SHA,
+        index_directory / "node",
+        shard_count=2,
+        transport=synthetic[2],
+    )
+    assert index["node"]["workflow_commit"] == SHA
+    write_receipt(index_directory, "reference-index-receipt.json", index)
+    for group_index in range(2):
+        group_directory = nodes / f"group-{group_index}"
+        group = hosted.run_hosted_reference_group(
+            SHA,
+            group_directory / "node",
+            shard_count=2,
+            group_index=group_index,
+            group_count=2,
+            transport=synthetic[2],
+        )
+        write_receipt(
+            group_directory,
+            f"reference-group-{group_index}-receipt.json",
+            group,
+        )
+
+    output = tmp_path / "assembled"
+    assembled = assemble_nodes._run(  # pyright: ignore[reportPrivateUsage]
+        SimpleNamespace(input=nodes, output=output, reference_shards=2)
+    )
+    manifest = json.loads(
+        (output / "reference-manifest.json").read_text(encoding="utf-8")
+    )
+    assert assembled["workflow_commit"] == SHA
+    assert manifest["workflow_commit"] == SHA
+    for name in ("ARCHIVE", "MANIFEST", "MEMBER", "RECEIPT"):
+        monkeypatch.setattr(prepared, name, getattr(hosted, name))
+    report = prepared.qualify_prepared_reference(output, SHA, 0)
+    assert report["status"] == "passed"
+    assert report["workflow_commit"] == SHA
 
 
 def test_reference_nodes_reuse_one_digest_bound_entity_material(
@@ -785,6 +873,7 @@ def test_preparation_classifies_disk_exhaustion_without_message() -> None:
     report = hosted.failure_report(caught.value)
     assert report["failure_category"] == "resource"
     assert report["failure_type"] == "disk-full"
+    assert report["resource_code"] == "enospc"
     assert "sensitive" not in json.dumps(report)
 
 
@@ -911,6 +1000,8 @@ def test_progress_is_fixed_aggregate_only(synthetic):
             "rows",
             "elapsed_ms",
             "free_space_bytes",
+            "workspace_free_space_bytes",
+            "temp_free_space_bytes",
             "max_rss_bytes",
         }
         for event in checkpoints
