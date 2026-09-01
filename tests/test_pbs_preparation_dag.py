@@ -98,6 +98,9 @@ def test_workflow_disaggregates_preparation_without_raw_artifacts() -> None:
     ).read_text(encoding="utf-8")
     assert "prepare-reference-index:" in workflow
     assert "prepare-reference-partitions:" in workflow
+    assert workflow.count("--entity-material") == 1
+    assert workflow.count("pattern: pbs-reference-entities-") == 2
+    assert "--input material --output node" in workflow
     assert "max-parallel: 4" in workflow
     assert "prepare_historical_pbs_reference_node.py" in workflow
     assert "assemble_historical_pbs_reference_manifest.py" in workflow

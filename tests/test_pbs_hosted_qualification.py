@@ -635,6 +635,31 @@ def test_reference_preparation_node_is_independent_and_derived_only(
     assert not list(output.rglob("*.xml"))
 
 
+def test_reference_nodes_reuse_one_digest_bound_entity_material(
+    tmp_path: Path, synthetic
+) -> None:
+    material_directory = tmp_path / "material"
+    material_report = hosted.run_hosted_entity_material(
+        SHA, material_directory, transport=synthetic[2]
+    )
+    calls_after_material = len(synthetic[1])
+
+    node = hosted.run_prepared_reference_node(
+        SHA,
+        material_directory,
+        material_report["node"],
+        tmp_path / "index",
+        shard_count=2,
+        preparation_run_id=material_report["run_id"],
+        preparation_run_attempt=material_report["run_attempt"],
+    )
+
+    assert node["node_kind"] == "index"
+    assert len(synthetic[1]) == calls_after_material
+    assert not list(material_directory.rglob("*.zip"))
+    assert not list(material_directory.rglob("*.xml"))
+
+
 def test_preparation_reports_bounded_stage_checkpoints(
     tmp_path: Path, synthetic
 ) -> None:

@@ -15,8 +15,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  prepare-reference-index:
-    name: Prepare transient PBS global reference index
+  prepare-reference-entities:
+    name: Prepare verified transient PBS entity material
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 65
@@ -27,6 +27,44 @@ jobs:
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Verify exact public source and materialize derived entities once
+        timeout-minutes: 55
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          uv run --locked --python 3.14.6 python scripts/prepare_historical_pbs_reference_node.py \
+            --exact-commit "$REQUESTED_COMMIT" --reference-shards 16 --entity-material \
+            --output node --receipt reference-entities-receipt.json
+          cp node/reference-entities.arrow .
+      - name: Retain derived entity material and bounded receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-entities-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            reference-entities.arrow
+            reference-entities-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
+  prepare-reference-index:
+    name: Prepare transient PBS global reference index
+    needs: prepare-reference-entities
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          pattern: pbs-reference-entities-${{ github.run_id }}-*
+          path: material
+          merge-multiple: true
       - name: Prepare digest-bound global index
         timeout-minutes: 55
         env:
@@ -34,7 +72,7 @@ jobs:
         run: |
           uv run --locked --python 3.14.6 python scripts/prepare_historical_pbs_reference_node.py \
             --exact-commit "$REQUESTED_COMMIT" --reference-shards 16 \
-            --output node --receipt reference-index-receipt.json
+            --input material --output node --receipt reference-index-receipt.json
           cp node/reference-index.json .
       - name: Retain derived index node and bounded receipt
         if: always()
@@ -49,6 +87,7 @@ jobs:
 
   prepare-reference-partitions:
     name: Prepare transient PBS reference partition / ${{ matrix.key }}
+    needs: prepare-reference-entities
     if: github.ref == 'refs/heads/main'
     strategy:
       fail-fast: false
@@ -80,6 +119,11 @@ jobs:
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          pattern: pbs-reference-entities-${{ github.run_id }}-*
+          path: material
+          merge-multiple: true
       - name: Prepare one digest-bound entity partition
         timeout-minutes: 55
         env:
@@ -89,7 +133,7 @@ jobs:
         run: |
           uv run --locked --python 3.14.6 python scripts/prepare_historical_pbs_reference_node.py \
             --exact-commit "$REQUESTED_COMMIT" --reference-shards 16 --shard-index "$SHARD" \
-            --output node --receipt "reference-$KEY-receipt.json"
+            --input material --output node --receipt "reference-$KEY-receipt.json"
           cp "node/reference-$KEY.arrow" .
       - name: Retain one derived partition node and bounded receipt
         if: always()

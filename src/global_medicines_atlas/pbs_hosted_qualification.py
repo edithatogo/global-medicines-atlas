@@ -40,6 +40,8 @@ from .pbs_member_identity import (
     build_pbs_xml_member_binding,
 )
 from .pbs_reference_shards import (
+    load_reference_entity_material,
+    prepare_reference_entity_material,
     prepare_reference_index,
     prepare_reference_partition,
     prepare_reference_shards,
@@ -675,17 +677,102 @@ def run_hosted_reference_node(
                 shard_count=shard_count,
             )
         node_kind = "partition"
+    return {
+        "schema_version": 1,
+        "status": "prepared",
+        **inputs.context,
+        "dataset": DATASET,
+        "revision": REVISION,
+        "node_kind": node_kind,
+        "node": node,
+        "publication_performed": False,
+        "evidence_truth": False,
+    }
+
+
+def run_hosted_entity_material(
+    exact_commit: str,
+    output: Path,
+    *,
+    transport: httpx.BaseTransport | None = None,
+    progress: Callable[[dict[str, Any]], None] | None = None,
+) -> dict[str, Any]:
+    """Verify the public source once and emit only derived entity material."""
+    retry = _RetryBudget(progress=progress)
+    inputs = _verified_inputs(exact_commit, transport=transport, retry=retry)
+    with _at("denominator", progress=retry.checkpoint):
+        denominator = _denominator(inputs.xml)
+    output.mkdir(parents=True, exist_ok=False)
+    with _at("entity-partition-preparation", progress=retry.checkpoint):
+        node = prepare_reference_entity_material(
+            iter_pbs_historical_entity_batches(
+                inputs.archive, inputs.xml, inputs.parent, inputs.binding
+            ),
+            inputs.binding,
+            denominator,
+            output / "reference-entities.arrow",
+        )
+    return {
+        "schema_version": 1,
+        "status": "prepared",
+        **inputs.context,
+        "dataset": DATASET,
+        "revision": REVISION,
+        "node_kind": "entities",
+        "node": node,
+        "publication_performed": False,
+        "evidence_truth": False,
+    }
+
+
+def run_prepared_reference_node(
+    exact_commit: str,
+    input_directory: Path,
+    material_receipt: dict[str, Any],
+    output: Path,
+    *,
+    shard_count: int,
+    shard_index: int | None = None,
+    preparation_run_id: str,
+    preparation_run_attempt: str,
+) -> dict[str, Any]:
+    """Build an index or partition from one verified derived entity stream."""
+    context = _context(exact_commit)
+    if (
+        re.fullmatch(r"[1-9][0-9]*", preparation_run_id) is None
+        or re.fullmatch(r"[1-9][0-9]*", preparation_run_attempt) is None
+    ):
+        raise ValueError("PBS entity material context is invalid")
+    reader, binding, denominator = load_reference_entity_material(
+        input_directory, material_receipt
+    )
+    output.mkdir(parents=True, exist_ok=False)
+    if shard_index is None:
+        node = prepare_reference_index(
+            iter(reader), binding, denominator, output / "reference-index.json"
+        )
+        node_kind = "index"
+    else:
+        node = prepare_reference_partition(
+            iter(reader),
+            binding,
+            denominator,
+            output / f"reference-{shard_index:02d}.arrow",
+            shard_index=shard_index,
+            shard_count=shard_count,
+        )
+        node_kind = "partition"
     node.update({
-        "workflow_commit": inputs.context["workflow_commit"],
-        "preparation_run_id": inputs.context["run_id"],
-        "preparation_run_attempt": inputs.context["run_attempt"],
+        "workflow_commit": context["workflow_commit"],
+        "preparation_run_id": preparation_run_id,
+        "preparation_run_attempt": preparation_run_attempt,
         "dataset": DATASET,
         "revision": REVISION,
     })
     return {
         "schema_version": 1,
         "status": "prepared",
-        **inputs.context,
+        **context,
         "dataset": DATASET,
         "revision": REVISION,
         "node_kind": node_kind,
