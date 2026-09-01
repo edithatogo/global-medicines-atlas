@@ -2,22 +2,27 @@
 
 ## Phase 1: Product and remote-query contracts (AC-01, AC-02, AC-03)
 
-- [~] Write failing contract tests for v4 resolution, immutable revision/path,
+- [x] Write failing contract tests for v4 resolution, immutable revision/path,
   manifest verification, remote scan, bounded cache, offline state, result
   metadata, and semantic-dimension separation.
   The first storage-neutral slice covers independently admitted exact contract
   and distribution bindings, immutable location/digest metadata, semantic
   dimension and entity-granularity separation, anonymous verified reads,
   explicit offline cache use, eviction, online failure, and byte/time/cache
-  budgets. Full query-result evidence envelopes and scan-engine contracts remain
-  pending. (`99b623c`; 18 focused and 162 affected tests pass.)
+  budgets. DuckDB and Polars now share bounded projection, scalar-filter,
+  deterministic-limit, result-digest, exact-evidence-envelope, and semantic
+  non-overclaim contracts. (`99b623c`, `57d961b`; the new module and resolver
+  pass 47 focused tests with 100% statement and branch coverage.)
 - [x] Confirm the intended failure before implementation. (`99b623c`;
   collection failed with `ModuleNotFoundError` before the resolver existed.)
-- [~] Implement a storage-neutral dataset resolver and remote DuckDB/Polars
+- [x] Implement a storage-neutral dataset resolver and remote DuckDB/Polars
   query adapter with explicit capabilities and deterministic fallbacks.
   Exact logical resolution and bounded verified byte reads are implemented in
-  `99b623c`; DuckDB/Polars projection and predicate-pushdown adapters remain
-  pending and no storage engine has been promoted.
+  `99b623c`; `57d961b` adds explicit DuckDB and Polars adapters over the
+  context-owned verified stream. Both push projection, scalar predicates and
+  the deterministic row limit into their Parquet scan while enforcing column,
+  filter, row, result-byte and time budgets. DuckDB's named file is transient
+  and removed on context exit; no storage engine is promoted as authority.
 - [~] Add cache receipts, byte/time budgets, expiry/eviction, content
   verification, and stale/unavailable states.
   - [x] Add transient exact-contract cache receipts with last verified origin/time,
@@ -42,6 +47,12 @@
   exact-digest offline use, configured cache capacity can retain the object,
   the contract cache budget permits it, and expiry is still future. (`7cc1693`;
   hosted P2 review correction; 26 focused tests pass.)
+
+### Query-adapter review fixes
+
+- [x] Register the Platinum query contract suite in the governed unit lane so
+  inventory validation and every full Test-Goblin execution include it.
+  (`25cf0d0`; the routine harness passes.)
 
 ## Phase 2: CLI and API (AC-01, AC-02, AC-04)
 

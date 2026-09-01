@@ -96,6 +96,10 @@ class ResolvedResource:
     source_id: str
     acquisition_id: str
     layer: str
+    schema_era: str
+    comparison_cohort: Literal["legacy", "current", "synthetic"]
+    effective_date: str | None
+    retrieved_at: str
     cache_expires_at: datetime
     capabilities: tuple[Capability, ...]
 
@@ -339,6 +343,10 @@ def _resolve_resource(
         source_id=obj.source_id,
         acquisition_id=obj.acquisition_id,
         layer=obj.layer,
+        schema_era=document["source"]["schema_era"],
+        comparison_cohort=document["source"]["comparison_cohort"],
+        effective_date=document["source"]["effective_date"],
+        retrieved_at=document["source"]["retrieved_at"],
         cache_expires_at=expires_at,
         capabilities=capabilities,
     )
