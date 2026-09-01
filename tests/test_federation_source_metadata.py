@@ -159,6 +159,28 @@ def test_requires_safe_content_addressed_receipt(receipt: str) -> None:
 
 
 @pytest.mark.parametrize(
+    ("fixture", "url"),
+    [
+        (
+            "valid-mbs.json",
+            "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-202607",
+        ),
+        (
+            "valid-pbs.json",
+            "https://www.pbs.gov.au/browse/downloads-impersonation",
+        ),
+    ],
+)
+def test_binds_source_url_to_exact_profile_release(
+    fixture: str, url: str
+) -> None:
+    document = _fixture(fixture)
+    document["source"]["source_url"] = url
+    with pytest.raises(SourceMetadataError, match="wrong source URL surface"):
+        validate_source_metadata(document)
+
+
+@pytest.mark.parametrize(
     ("field", "url"),
     [
         ("authority_url", "https://user:secret@www.health.gov.au/"),

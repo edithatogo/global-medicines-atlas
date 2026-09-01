@@ -49,7 +49,8 @@
     "coverage scope outside the source profile",
     "provenance receipt profile or format mismatch",
     "withdrawal policy outside the approved contract",
-    "unsafe or non-content-addressed provenance receipt reference"
+    "unsafe or non-content-addressed provenance receipt reference",
+    "source URL release-boundary or impersonation alias"
   ],
   "external_actions": {
     "credentials_used": false,

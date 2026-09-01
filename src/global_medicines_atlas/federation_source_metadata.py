@@ -327,9 +327,10 @@ class SourceMetadataDocument(_Model):
             raise ValueError("source profile uses the wrong source host")
         if str(self.source.authority_url) != profile["authority_url"]:
             raise ValueError("source profile uses the wrong authority URL")
-        if not str(self.source.source_url).startswith(
-            profile["source_url_prefix"]
-        ):
+        expected_source_url = profile["source_url_prefix"]
+        if self.source.source_id == "au-mbs":
+            expected_source_url += self.source.source_version.replace("-", "")
+        if str(self.source.source_url) != expected_source_url:
             raise ValueError("source profile uses the wrong source URL surface")
         if any(
             citation.source_url.host not in source_hosts
