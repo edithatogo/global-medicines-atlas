@@ -47,7 +47,7 @@ and rationale contract in that policy.
 - [~] **Track: Consolidate all Australian MBS/PBS donor functionality and data**
   *Link: [tracks/australian_health_source_consolidation_20260829/index.md](./tracks/australian_health_source_consolidation_20260829/index.md); exact donor behavior/data inventory, independent MBS domain, PBS v3/AMT/ATC compatibility, legacy retention, and archive readiness.*
 
-- [ ] **Track: Establish the public Hugging Face federated data plane**
+- [~] **Track: Establish the public Hugging Face federated data plane**
   *Link: [tracks/public_hf_federated_data_plane_20260829/index.md](./tracks/public_hf_federated_data_plane_20260829/index.md); hosted-only public raw/derived storage, medallion federation v4, anonymous restoration, collection and estate alignment, and transient local caches.*
 
 - [~] **Track: Implement Australian benefits Silver and Gold**
