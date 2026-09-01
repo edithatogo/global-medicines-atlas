@@ -192,8 +192,14 @@
   XML candidates use the existing 9 MB bounded parser and at most 4,096 rows
   per Arrow batch; this is bounded parsing plus batch output, not unbounded
   input streaming or complete real-corpus qualification.
-- [ ] Add explicit schema-era mappings and historical/current change events
+- [~] Add explicit schema-era mappings and historical/current change events
   without overwriting source values.
+  XML candidate mappings now require complete exact field coverage for a
+  selected Silver table and bind distinct caller-declared eras by digest.
+  Deterministic observed-change reports retain both complete native cohorts,
+  exact values and receipt identities; presence on only one side remains
+  `unknown`, never inferred addition or cessation. Legacy-workbook-to-XML
+  mappings and independently qualified real-source execution remain pending.
 - [~] Emit field-level lineage, coverage denominators, quality findings, and
   promotion candidates.
   Aggregate candidate qualification now binds all six XML Silver tables, the
