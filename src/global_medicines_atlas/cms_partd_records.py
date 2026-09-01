@@ -404,14 +404,14 @@ def _raw_projection_inventory(
         hub_path = raw.get("hub_path")
         family = raw.get("family")
         digest = raw.get("sha256")
-        valid_fields = (
+        invalid_fields = (
             not isinstance(hub_path, str)
             or not isinstance(family, str)
             or family not in {"formulary", "spending"}
             or not isinstance(digest, str)
             or _SHA256.fullmatch(digest) is None
         )
-        if valid_fields:
+        if invalid_fields:
             raise ValueError("CMS Part D raw payload identity is invalid")
         hub_path = _string(hub_path)
         family = _string(family)
@@ -434,9 +434,7 @@ def _positive_int(value: object) -> bool:
 
 
 def _string(value: object) -> str:
-    if not isinstance(value, str):
-        raise TypeError("CMS Part D evidence field must be a string")
-    return value
+    return cast("str", value)
 
 
 def _qualified_projection_rows(projections: object) -> int:
@@ -502,8 +500,6 @@ def _qualified_shard(
     calculated_rows = _qualified_projection_rows(projections)
     projection_count = shard.get("source_record_projection_count")
     record_count = shard.get("source_record_count")
-    if not isinstance(projections, list):
-        raise TypeError("CMS Part D projection shard products must be a list")
     projection_list = cast("list[object]", projections)
     if (
         projection_count != len(projection_list)
@@ -536,8 +532,6 @@ def qualify_cms_partd_projections(
         raise ValueError("CMS Part D projection shards do not match raw count")
     observed: set[str] = set()
     normalized = [_qualified_shard(row, expected, observed) for row in shards]
-    if observed != set(expected):
-        raise ValueError("CMS Part D projection identities are incomplete")
     normalized.sort(key=lambda item: cast("str", item["identity"]))
     return {
         "schema_id": "global-medicines-atlas.cms-partd-source-record-qualification",

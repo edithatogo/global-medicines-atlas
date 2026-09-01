@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import sys
 import zipfile
+from copy import deepcopy
 from io import BytesIO
 from pathlib import Path
 from typing import cast
@@ -369,6 +370,156 @@ def test_qualification_rejects_inventory_or_projection_drift(
         assert isinstance(projections, list)
         projections[0]["parquet_filename"] = "../table.parquet"
     with pytest.raises(ValueError, match="CMS Part D"):
+        qualify_cms_partd_projections(
+            raw,
+            shards,
+            qualified_at="2026-09-01T00:00:00Z",
+            raw_revision="raw-revision",
+        )
+
+
+@pytest.mark.parametrize(
+    "raw_manifest",
+    [None, {}, {"payloads": {}}, {"payloads": []}],
+)
+def test_qualification_rejects_malformed_raw_inventory(raw_manifest: object):
+    _, shards = _qualification_inputs()
+    with pytest.raises((TypeError, ValueError), match="CMS Part D"):
+        qualify_cms_partd_projections(
+            raw_manifest,
+            shards,
+            qualified_at="2026-09-01T00:00:00Z",
+            raw_revision="raw-revision",
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("hub_path", None),
+        ("family", None),
+        ("family", "unknown"),
+        ("sha256", None),
+        ("sha256", "not-a-digest"),
+    ],
+)
+def test_qualification_rejects_invalid_raw_payload_fields(field, value):
+    raw, shards = _qualification_inputs()
+    raw["payloads"][0][field] = value
+    with pytest.raises(ValueError, match="identity is invalid"):
+        qualify_cms_partd_projections(
+            raw,
+            shards,
+            qualified_at="2026-09-01T00:00:00Z",
+            raw_revision="raw-revision",
+        )
+
+
+@pytest.mark.parametrize(
+    "path", ["short/path", "data/family/not-a-digest/file"]
+)
+def test_qualification_rejects_invalid_raw_payload_paths(path: str):
+    raw, shards = _qualification_inputs()
+    raw["payloads"][0]["hub_path"] = path
+    with pytest.raises(ValueError, match="path is invalid"):
+        qualify_cms_partd_projections(
+            raw,
+            shards,
+            qualified_at="2026-09-01T00:00:00Z",
+            raw_revision="raw-revision",
+        )
+
+
+def test_qualification_rejects_nonobject_and_duplicate_raw_payloads():
+    raw, shards = _qualification_inputs()
+    nonobject = deepcopy(raw)
+    nonobject["payloads"][0] = None
+    with pytest.raises(TypeError, match="entries must be objects"):
+        qualify_cms_partd_projections(
+            nonobject,
+            shards,
+            qualified_at="2026-09-01T00:00:00Z",
+            raw_revision="raw-revision",
+        )
+    duplicate = deepcopy(raw)
+    duplicate["payloads"][-1]["hub_path"] = duplicate["payloads"][0]["hub_path"]
+    with pytest.raises(ValueError, match="identities must be unique"):
+        qualify_cms_partd_projections(
+            duplicate,
+            shards,
+            qualified_at="2026-09-01T00:00:00Z",
+            raw_revision="raw-revision",
+        )
+
+
+@pytest.mark.parametrize("shards", [None, [], [None] * 33])
+def test_qualification_rejects_invalid_shard_containers(shards: object):
+    raw, _ = _qualification_inputs()
+    with pytest.raises((TypeError, ValueError), match="CMS Part D"):
+        qualify_cms_partd_projections(
+            raw,
+            shards,
+            qualified_at="2026-09-01T00:00:00Z",
+            raw_revision="raw-revision",
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("projections", []),
+        ("projections", [None]),
+        ("schema_id", "wrong-schema"),
+        ("schema_version", 2),
+        ("source_values_preserved_as_strings", False),
+        ("cross_plan_year_schema_equivalence_claimed", True),
+        ("source_record_projection_count", 2),
+        ("source_record_count", 0),
+    ],
+)
+def test_qualification_rejects_invalid_shard_contract(field, value):
+    raw, shards = _qualification_inputs()
+    shards[0][field] = value
+    with pytest.raises((TypeError, ValueError), match="CMS Part D"):
+        qualify_cms_partd_projections(
+            raw,
+            shards,
+            qualified_at="2026-09-01T00:00:00Z",
+            raw_revision="raw-revision",
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("parquet_filename", None),
+        ("row_count", False),
+        ("row_count", 0),
+        ("parquet_byte_count", False),
+        ("parquet_byte_count", 0),
+        ("parquet_sha256", None),
+        ("parquet_sha256", "not-a-digest"),
+    ],
+)
+def test_qualification_rejects_invalid_projection_evidence(field, value):
+    raw, shards = _qualification_inputs()
+    shards[0]["projections"][0][field] = value
+    with pytest.raises(ValueError, match="projection evidence is invalid"):
+        qualify_cms_partd_projections(
+            raw,
+            shards,
+            qualified_at="2026-09-01T00:00:00Z",
+            raw_revision="raw-revision",
+        )
+
+
+def test_qualification_rejects_duplicate_projection_filename():
+    raw, shards = _qualification_inputs()
+    projection = deepcopy(shards[0]["projections"][0])
+    shards[0]["projections"].append(projection)
+    shards[0]["source_record_projection_count"] = 2
+    shards[0]["source_record_count"] = 2
+    with pytest.raises(ValueError, match="projection evidence is invalid"):
         qualify_cms_partd_projections(
             raw,
             shards,
