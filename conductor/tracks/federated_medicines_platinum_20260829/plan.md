@@ -34,6 +34,14 @@
 
 - [x] Apply repository formatting to the resolver contract tests before hosted
   qualification. (`5cfe996`; format check and 18 focused tests pass.)
+- [x] Bind product semantic dimension and entity granularity to an independently
+  admitted, byte-digested, exact-key semantic manifest rather than trusting
+  caller labels. Reject unadmitted, duplicate-key, extra-field, aliased, or
+  contract-mismatched manifests. (`e132b09`; hosted P1 review correction.)
+- [x] Advertise offline-cache capability only when the v4 contract permits
+  exact-digest offline use, configured cache capacity can retain the object,
+  the contract cache budget permits it, and expiry is still future. (`e132b09`;
+  hosted P2 review correction; 26 focused tests pass.)
 
 ## Phase 2: CLI and API (AC-01, AC-02, AC-04)
 
