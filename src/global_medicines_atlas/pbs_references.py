@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 from collections import Counter
 from collections.abc import Iterator
 from itertools import pairwise
@@ -10,6 +11,7 @@ from typing import Any, cast
 import orjson
 import pyarrow as pa
 import pyarrow.compute as pc
+from pydantic import BaseModel, ConfigDict
 
 from .adapters.au_pbs import PBS_V3_NAMESPACE, RDF_NAMESPACE
 from .pbs_entities import iter_pbs_entity_batches
@@ -20,6 +22,18 @@ MAX_INDEX_BYTES = 16 * 1024 * 1024
 MAX_BATCH_BYTES = 8 * 1024 * 1024
 _PBS = f"{{{PBS_V3_NAMESPACE}}}"
 type ReferenceIndex = dict[tuple[str, str], tuple[Counter[str | None], int]]
+
+
+class ReferenceIndexCheckpoint(BaseModel):
+    """Bounded counters for one complete streaming index preparation."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    batch_count: int
+    row_count: int
+    entry_count: int
+    encoded_bytes: int
+    schema_sha256: str
 
 
 def _size(value: object) -> int:
@@ -67,17 +81,26 @@ def _contract(  # pyright: ignore[reportUnusedFunction] -- retained parity oracl
     }
 
 
-def _index(
+def _prepare_index(
     batches: Iterator[pa.RecordBatch],
-) -> tuple[ReferenceIndex, pa.Schema | None, int]:
+) -> tuple[ReferenceIndex, pa.Schema | None, ReferenceIndexCheckpoint]:
+    """Build the complete global index in one ordered, bounded batch pass.
+
+    Only candidate reference columns and the bounded index are materialised;
+    complete entity rows and Arrow batches are not retained. Schema identity is
+    checked before every batch is admitted. The checkpoint is emitted only
+    after the input iterator is exhausted, so callers cannot mistake a partial
+    index for a complete global index.
+    """
     index: ReferenceIndex = {}
     identity: pa.Schema | None = None
-    entries = encoded_bytes = total_rows = 0
+    entries = encoded_bytes = total_rows = batch_count = 0
     for batch in batches:
         if identity is None:
             identity = batch.schema
         elif not batch.schema.equals(identity, check_metadata=True):
             raise ValueError("PBS reference input identity changed")
+        batch_count += 1
         total_rows += batch.num_rows
         for contract in _columnar_contracts(batch):
             value = contract["reference_value"]
@@ -100,7 +123,30 @@ def _index(
                     targets += 1
             counts[resource] += 1
             index[key] = (counts, targets)
-    return index, identity, total_rows
+    schema_sha256 = (
+        hashlib.sha256(identity.serialize().to_pybytes()).hexdigest()
+        if identity is not None
+        else hashlib.sha256(b"").hexdigest()
+    )
+    return (
+        index,
+        identity,
+        ReferenceIndexCheckpoint(
+            batch_count=batch_count,
+            row_count=total_rows,
+            entry_count=entries,
+            encoded_bytes=encoded_bytes,
+            schema_sha256=schema_sha256,
+        ),
+    )
+
+
+def _index(
+    batches: Iterator[pa.RecordBatch],
+) -> tuple[ReferenceIndex, pa.Schema | None, int]:
+    """Compatibility wrapper for callers that only need the row denominator."""
+    index, identity, checkpoint = _prepare_index(batches)
+    return index, identity, checkpoint.row_count
 
 
 def _columnar_contracts(batch: pa.RecordBatch) -> Iterator[dict[str, Any]]:

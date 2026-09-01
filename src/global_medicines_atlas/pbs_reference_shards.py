@@ -21,6 +21,7 @@ from .pbs_references import (
     ReferenceIndex,
     _annotated_batches,  # pyright: ignore[reportPrivateUsage]
     _index,  # pyright: ignore[reportPrivateUsage]
+    _prepare_index,  # pyright: ignore[reportPrivateUsage]
     _schema,  # pyright: ignore[reportPrivateUsage]
 )
 
@@ -317,7 +318,14 @@ def prepare_reference_index(
     denominator: dict[str, Any],
     output: Path,
 ) -> dict[str, Any]:
-    """Build only the global reference index as one retryable DAG node."""
+    """Build the global reference index directly from one entity batch pass.
+
+    The iterator is consumed once. Complete entity batches are neither retained
+    nor written to a temporary Arrow spool; only bounded accounting state and
+    the bounded global reference index survive between batches. The output is
+    written only after full lineage, denominator, schema and index-budget checks
+    pass, so a failed preparation cannot expose a partial index artifact.
+    """
     total = denominator.get("elements")
     if type(total) is not int or total < 1:
         raise ValueError("invalid PBS reference index preparation")
@@ -325,41 +333,34 @@ def prepare_reference_index(
     counts = _counter()
     digest = hashlib.sha256()
     schema: pa.Schema | None = None
-    with TemporaryFile() as spool:
-        writer: pa.RecordBatchStreamWriter | None = None
-        try:
-            for batch in batches:
-                if schema is None:
-                    schema = batch.schema
-                    writer = pa.ipc.new_stream(spool, schema)
-                elif not batch.schema.equals(schema, check_metadata=True):
-                    raise ValueError(
-                        "PBS reference index entity schema changed"
-                    )
-                if writer is None:
-                    raise RuntimeError(
-                        "PBS reference index spool was not initialized"
-                    )
-                writer.write_batch(batch)  # pyright: ignore[reportUnknownMemberType]
-                _account_nested_batch(batch, _lineage(binding), counts, digest)
-        finally:
-            if writer is not None:
-                writer.close()
-        if (
-            schema is None
-            or counts["rows"] != total
-            or counts["native_fields"] != denominator.get("native_fields")
-            or digest.hexdigest() != denominator.get("native_digest")
-        ):
-            raise ValueError("PBS reference index denominator changed")
-        spool.seek(0)
-        index, identity, indexed_rows = _index(iter(pa.ipc.open_stream(spool)))
-        if (
-            identity is None
-            or not identity.equals(schema, check_metadata=True)
-            or indexed_rows != total
-        ):
-            raise ValueError("PBS reference index denominator changed")
+    batch_count = 0
+
+    def accounted() -> Iterator[pa.RecordBatch]:
+        nonlocal schema, batch_count
+        for batch in batches:
+            if schema is None:
+                schema = batch.schema
+            elif not batch.schema.equals(schema, check_metadata=True):
+                raise ValueError("PBS reference index entity schema changed")
+            _account_nested_batch(batch, _lineage(binding), counts, digest)
+            batch_count += 1
+            yield batch
+
+    index, identity, checkpoint = _prepare_index(accounted())
+    invalid = (
+        schema is None,
+        identity is None,
+        schema is not None
+        and identity is not None
+        and not identity.equals(schema, check_metadata=True),
+        checkpoint.batch_count != batch_count,
+        checkpoint.row_count != total,
+        counts["rows"] != total,
+        counts["native_fields"] != denominator.get("native_fields"),
+        digest.hexdigest() != denominator.get("native_digest"),
+    )
+    if any(invalid):
+        raise ValueError("PBS reference index denominator changed")
     output.write_bytes(_index_payload(index))
     return {
         "schema_version": 1,
@@ -370,6 +371,7 @@ def prepare_reference_index(
             key: denominator[key]
             for key in ("native_fields", "elements", "native_digest")
         },
+        "preparation": checkpoint.model_dump(mode="json"),
         "index": {"path": output.name, **_digest(output)},
         "publication_performed": False,
         "evidence_truth": False,

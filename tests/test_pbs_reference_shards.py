@@ -1,7 +1,9 @@
 """Transient partition contract for hosted PBS reference qualification."""
 
 import json
+from collections.abc import Iterator
 from pathlib import Path
+from typing import Any
 
 import pyarrow as pa
 import pytest
@@ -13,6 +15,7 @@ from test_pbs_historical_silver import PATH, SOURCE
 from test_pbs_silver import XML
 
 from global_medicines_atlas import pbs_reference_shards as shards
+from global_medicines_atlas import pbs_references
 from global_medicines_atlas.pbs_historical_projections import (
     iter_pbs_historical_entity_batches,
 )
@@ -34,6 +37,7 @@ from global_medicines_atlas.pbs_reference_shards import (
     qualify_reference_shard,
 )
 from global_medicines_atlas.pbs_references import (
+    _index,  # ruff: ignore[import-private-name]  # pyright: ignore[reportPrivateUsage]
     _reference_batches,  # ruff: ignore[import-private-name]  # pyright: ignore[reportPrivateUsage]
 )
 
@@ -113,6 +117,67 @@ def test_prepared_reference_shards_reassemble_full_ordered_projection(
         )
     )
     assert prepared.equals(full, check_metadata=True)
+
+
+def test_global_index_preparation_streams_once_with_deterministic_parity(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    binding, denominator, batches = inputs()
+    baseline, _, rows = _index(batches())
+    expected = shards._index_payload(baseline)  # pyright: ignore[reportPrivateUsage]
+    monkeypatch.setattr(
+        shards,
+        "TemporaryFile",
+        lambda: pytest.fail("global index preparation must not create a spool"),
+    )
+    output = tmp_path / "reference-index.json"
+    receipt = prepare_reference_index(
+        iter(batches()), binding, denominator, output
+    )
+    checkpoint = receipt["preparation"]
+    assert output.read_bytes() == expected
+    assert checkpoint["row_count"] == rows == denominator["elements"]
+    assert checkpoint["batch_count"] > 1
+    assert checkpoint["entry_count"] >= 0
+    assert 0 <= checkpoint["encoded_bytes"] <= pbs_references.MAX_INDEX_BYTES
+    assert len(checkpoint["schema_sha256"]) == 64
+
+
+def test_global_index_budget_failure_leaves_no_partial_artifact(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    binding, denominator, batches = inputs()
+    output = tmp_path / "reference-index.json"
+    monkeypatch.setattr(pbs_references, "MAX_INDEX_ENTRIES", 0)
+
+    def candidate(_batch: pa.RecordBatch) -> Iterator[dict[str, Any]]:
+        yield {
+            "contract_kind": "item_xml_id",
+            "reference_value": "bounded-candidate",
+            "reference_value_state": "value",
+            "reference_resource": None,
+            "reference_resource_state": "not_applicable",
+        }
+
+    monkeypatch.setattr(
+        pbs_references,
+        "_columnar_contracts",
+        candidate,
+    )
+    with pytest.raises(ValueError, match="entry/byte limit"):
+        prepare_reference_index(batches(), binding, denominator, output)
+    assert not output.exists()
+
+
+def test_global_index_rejects_denominator_tamper_before_artifact(
+    tmp_path: Path,
+) -> None:
+    binding, denominator, batches = inputs()
+    output = tmp_path / "reference-index.json"
+    changed = {**denominator, "native_digest": "0" * 64}
+    with pytest.raises(ValueError, match="denominator changed"):
+        prepare_reference_index(batches(), binding, changed, output)
+    assert not output.exists()
 
 
 def test_disaggregated_preparation_reassembles_existing_worker_contract(
