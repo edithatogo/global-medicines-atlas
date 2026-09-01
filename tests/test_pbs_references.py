@@ -108,6 +108,26 @@ def test_reference_output_reuses_columnar_contracts(
     assert any(row["contract_kind"] == "amt_reference" for row in rows)
 
 
+@pytest.mark.parametrize("case", ["missing-index", "changed-schema"])
+def test_reference_output_rejects_cross_pass_identity(case: str) -> None:
+    payload = _production_xml()
+    batches = list(
+        iter_pbs_entity_batches(payload, _receipt(payload, "au-pbs"))
+    )
+    index = iter(()) if case == "missing-index" else iter(batches)
+    output = (
+        iter(batches)
+        if case == "missing-index"
+        else iter([batches[0].replace_schema_metadata({})])
+    )
+    with pytest.raises(ValueError, match="cross-pass identity"):
+        list(
+            pbs_references._reference_batches(  # pyright: ignore[reportPrivateUsage]
+                index, output, 1024
+            )
+        )
+
+
 def test_forward_duplicates_conflicts_and_literal_identity() -> None:
     payload = _xml()
     item = payload[

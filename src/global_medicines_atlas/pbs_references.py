@@ -278,14 +278,13 @@ def _reference_batches(
     size = 0
     schema: pa.Schema | None = None
 
-    def assembled() -> pa.RecordBatch:
-        if schema is None or not pieces:
-            raise ValueError("PBS reference output assembly is empty")
-        table = pa.Table.from_batches(pieces, schema=schema).combine_chunks()
-        batches = table.to_batches()
-        if len(batches) != 1:
-            raise ValueError("PBS reference output assembly changed chunks")
-        return batches[0]
+    def assembled(
+        output_schema: pa.Schema, output_pieces: list[pa.RecordBatch]
+    ) -> pa.RecordBatch:
+        table = pa.Table.from_batches(
+            output_pieces, schema=output_schema
+        ).combine_chunks()
+        return table.to_batches()[0]
 
     for batch in output_batches:
         if identity is None or not batch.schema.equals(
@@ -298,8 +297,6 @@ def _reference_batches(
             _diagnostics(contract, index)
             for contract in _columnar_contracts(batch)
         ]
-        if len(diagnostics) != batch.num_rows:
-            raise ValueError("PBS reference output contract count changed")
         diagnostic_names = tuple(schema.names[len(batch.schema.names) :])
         output = pa.RecordBatch.from_arrays(  # pyright: ignore[reportUnknownMemberType]
             [
@@ -326,7 +323,7 @@ def _reference_batches(
             ):
                 if position > start:
                     pieces.append(output.slice(start, position - start))
-                yield assembled()
+                yield assembled(schema, pieces)
                 pieces, rows, size = [], 0, 0
                 start = position
             rows += 1
@@ -334,4 +331,4 @@ def _reference_batches(
         if start < batch.num_rows:
             pieces.append(output.slice(start))
     if pieces:
-        yield assembled()
+        yield assembled(cast("pa.Schema", schema), pieces)
