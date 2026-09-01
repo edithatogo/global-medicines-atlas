@@ -51,6 +51,16 @@ def test_partial_public_identity_fails(field: str) -> None:
         FrontierExperimentMatrix.model_validate(raw)
 
 
+def test_anonymous_verification_requires_exact_identity() -> None:
+    raw = document()
+    raw["experiments"][0]["public_object"] = {
+        "dataset": "edithatogo/australian-pbs-source-archive",
+        "anonymously_verified": True,
+    }
+    with pytest.raises(ValidationError, match="requires exact identity"):
+        FrontierExperimentMatrix.model_validate(raw)
+
+
 def test_unmet_or_unverified_prerequisites_block_start() -> None:
     raw = document()
     row = raw["experiments"][0]
@@ -111,6 +121,12 @@ def test_matrix_rejects_unimported_or_changed_evidence(tmp_path: Path) -> None:
         verify_imported_evidence(matrix, tmp_path)
 
 
+def test_imported_evidence_requires_every_file(tmp_path: Path) -> None:
+    matrix = FrontierExperimentMatrix.model_validate(document())
+    with pytest.raises(FileNotFoundError):
+        verify_imported_evidence(matrix, tmp_path)
+
+
 def test_profiles_require_ordered_unique_bounds() -> None:
     raw = document()
     raw["workloads"][1] = copy.deepcopy(raw["workloads"][0])
@@ -140,6 +156,11 @@ def test_matrix_requires_exact_experiment_family_denominator() -> None:
     raw = document()
     raw["experiments"][0]["experiment_id"] = "invented_experiment"
     with pytest.raises(ValidationError, match="unknown frontier experiment"):
+        FrontierExperimentMatrix.model_validate(raw)
+
+    raw = document()
+    raw["experiments"][0] = copy.deepcopy(raw["experiments"][1])
+    with pytest.raises(ValidationError, match="family denominator"):
         FrontierExperimentMatrix.model_validate(raw)
 
 
