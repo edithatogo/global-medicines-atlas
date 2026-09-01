@@ -246,6 +246,7 @@ def test_binds_pbs_version_and_effective_date_to_release() -> None:
         ("retrieval", "does not match acquisition evidence"),
         ("history", "non-canonical source version"),
         ("future-history", "cannot include a future release"),
+        ("unobserved-history", "requires observed release evidence"),
         ("citation", "absent from version history"),
     ],
 )
@@ -271,6 +272,13 @@ def test_binds_all_release_identities(mutation: str, message: str) -> None:
             "revision": "f" * 40,
             "source_version": "2026-05",
             "effective_from": "2026-05-01",
+            "status": "superseded",
+        })
+    elif mutation == "unobserved-history":
+        document["version_history"].append({
+            "revision": "f" * 40,
+            "source_version": "1900-01",
+            "effective_from": "1900-01-01",
             "status": "superseded",
         })
     else:

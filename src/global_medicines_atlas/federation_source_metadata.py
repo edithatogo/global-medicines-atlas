@@ -284,6 +284,10 @@ def _validate_history_entries(
             )
         if item.effective_from > latest_effective_from:
             raise ValueError("version history cannot include a future release")
+        if item.status != "current":
+            raise ValueError(
+                "non-current version history requires observed release evidence"
+            )
 
 
 class SourceMetadataDocument(_Model):

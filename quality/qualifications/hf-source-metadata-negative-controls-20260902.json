@@ -62,7 +62,8 @@
     "retrieval timestamp outside acquisition evidence",
     "malformed historical source version",
     "future historical release",
-    "citation revision absent from version history"
+    "citation revision absent from version history",
+    "unobserved non-current release history"
   ],
   "external_actions": {
     "credentials_used": false,
