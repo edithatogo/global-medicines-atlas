@@ -6,6 +6,7 @@ credential, publication, collection, or visibility operation.
 
 from __future__ import annotations
 
+import re
 from datetime import date
 from pathlib import PurePosixPath
 from typing import Annotated, Any, Literal, Self
@@ -30,6 +31,10 @@ def _reject_padded(value: Any) -> Any:
     if isinstance(value, str) and value != value.strip():
         raise ValueError("exact metadata identity must not be padded")
     return value
+
+
+def _contains_control(value: str) -> bool:
+    return any(not character.isprintable() for character in value)
 
 
 NonBlank = Annotated[
@@ -171,6 +176,7 @@ class PayloadBinding(_Model):
             or path.is_absolute()
             or ".." in path.parts
             or "\\" in decoded
+            or _contains_control(decoded)
         )
         if noncanonical or unsafe:
             raise ValueError("payload path must be safe and relative")
@@ -216,6 +222,7 @@ class Provenance(_Model):
             or path.is_absolute()
             or ".." in path.parts
             or "\\" in decoded
+            or _contains_control(decoded)
         )
         if noncanonical or unsafe:
             raise ValueError(
@@ -308,7 +315,24 @@ class SourceMetadataDocument(_Model):
             )
         if len(self.coverage.exclusions) != len(set(self.coverage.exclusions)):
             raise ValueError("coverage exclusions must be unique")
+        if self.coverage.exclusions:
+            raise ValueError(
+                "coverage exclusions are not approved for this source profile"
+            )
 
+        expected_formats = {
+            ".xml": "application/xml",
+            ".zip": "application/zip",
+        }
+        if any(
+            expected_formats.get(PurePosixPath(item.path).suffix.lower())
+            != item.encoding_format
+            for item in self.croissant.distributions
+        ):
+            raise ValueError("Croissant distribution media type mismatch")
+
+        if any(citation.dataset != self.dataset for citation in self.citations):
+            raise ValueError("citation uses the wrong source dataset")
         if not any(
             citation.dataset == self.dataset
             and citation.revision == self.revision
@@ -329,7 +353,18 @@ class SourceMetadataDocument(_Model):
             raise ValueError("source profile uses the wrong authority URL")
         expected_source_url = profile["source_url_prefix"]
         if self.source.source_id == "au-mbs":
-            expected_source_url += self.source.source_version.replace("-", "")
+            if (
+                re.fullmatch(
+                    r"\d{4}-(?:0[1-9]|1[0-2])", self.source.source_version
+                )
+                is None
+            ):
+                raise ValueError(
+                    "source version must use canonical YYYY-MM format"
+                )
+            expected_source_url += (
+                self.source.source_version[:4] + self.source.source_version[5:]
+            )
         if str(self.source.source_url) != expected_source_url:
             raise ValueError("source profile uses the wrong source URL surface")
         if any(

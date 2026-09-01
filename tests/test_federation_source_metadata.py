@@ -181,6 +181,42 @@ def test_binds_source_url_to_exact_profile_release(
 
 
 @pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("coverage-exclusion", "exclusions are not approved"),
+        ("payload-control", "payload path must be safe"),
+        ("receipt-control", "receipt path must be safe"),
+        ("source-version-alias", "canonical YYYY-MM"),
+        ("media-type", "media type mismatch"),
+        ("cross-source-citation", "wrong source dataset"),
+    ],
+)
+def test_rejects_hostile_metadata_aliases(mutation: str, message: str) -> None:
+    document = _fixture("valid-mbs.json")
+    if mutation == "coverage-exclusion":
+        document["coverage"]["exclusions"] = ["Absence proves non-approval."]
+    elif mutation == "payload-control":
+        document["provenance"]["payloads"][0]["path"] = "raw/file\x00.xml"
+    elif mutation == "receipt-control":
+        document["provenance"]["receipt"] = "receipts/mbs-foo\x00.json"
+    elif mutation == "source-version-alias":
+        document["source"]["source_version"] = "2026--08"
+        document["data_card"]["version"] = "2026--08"
+        document["croissant"]["version"] = "2026--08"
+        document["version_history"][0]["source_version"] = "2026--08"
+    elif mutation == "media-type":
+        document["croissant"]["distributions"][0]["encoding_format"] = (
+            "application/zip"
+        )
+    else:
+        citation = deepcopy(document["citations"][0])
+        citation["dataset"] = "edithatogo/australian-pbs-source-archive"
+        document["citations"].append(citation)
+    with pytest.raises(SourceMetadataError, match=message):
+        validate_source_metadata(document)
+
+
+@pytest.mark.parametrize(
     ("field", "url"),
     [
         ("authority_url", "https://user:secret@www.health.gov.au/"),

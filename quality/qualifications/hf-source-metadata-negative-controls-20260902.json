@@ -50,7 +50,12 @@
     "provenance receipt profile or format mismatch",
     "withdrawal policy outside the approved contract",
     "unsafe or non-content-addressed provenance receipt reference",
-    "source URL release-boundary or impersonation alias"
+    "source URL release-boundary or impersonation alias",
+    "unapproved coverage exclusion claim",
+    "payload or receipt path containing control characters",
+    "non-canonical source version alias",
+    "payload media-type mismatch",
+    "cross-source citation dataset"
   ],
   "external_actions": {
     "credentials_used": false,
