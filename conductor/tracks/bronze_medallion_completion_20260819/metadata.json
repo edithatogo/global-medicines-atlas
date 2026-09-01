@@ -14,6 +14,38 @@
     "source-by-source rights review before any source-derived archive payload",
     "maintainer approval of external dataset publication"
   ],
+  "gates": [
+    {
+      "id": "bronze-current-public-scope",
+      "kind": "dependent-evidence",
+      "status": "blocked"
+    },
+    {
+      "id": "openprescribing-source-access",
+      "kind": "external-source-access",
+      "status": "blocked"
+    },
+    {
+      "id": "cms-partd-record-projection",
+      "kind": "hosted-execution",
+      "status": "pending"
+    },
+    {
+      "id": "nordic-source-decisions",
+      "kind": "human-licensing",
+      "status": "blocked"
+    },
+    {
+      "id": "additional-utilisation-source-decisions",
+      "kind": "human-licensing",
+      "status": "blocked"
+    },
+    {
+      "id": "pharmacovigilance-source-decisions",
+      "kind": "human-licensing",
+      "status": "blocked"
+    }
+  ],
   "github_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/167",
   "github_issue_drafts": [
     ".github/generated-issues/bronze-medallion-parent.md",
@@ -76,5 +108,5 @@
   ],
   "track_id": "bronze_medallion_completion_20260819",
   "type": "feature",
-  "updated_at": "2026-09-01T12:59:32Z"
+  "updated_at": "2026-09-01T19:37:26Z"
 }

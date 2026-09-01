@@ -164,10 +164,32 @@ def test_bronze_track_artifacts_are_complete_and_tdd_shaped() -> None:
     assert metadata["status"] in {"new", "active", "in_progress"}
     assert metadata["github_issue"].endswith("/issues/167")
     assert set(metadata["requirements"]) >= BRONZE_MUST
+    gates = {gate["id"]: gate for gate in metadata["gates"]}
+    assert gates["bronze-current-public-scope"]["status"] == "blocked"
+    assert gates["openprescribing-source-access"] == {
+        "id": "openprescribing-source-access",
+        "kind": "external-source-access",
+        "status": "blocked",
+    }
+    assert gates["cms-partd-record-projection"] == {
+        "id": "cms-partd-record-projection",
+        "kind": "hosted-execution",
+        "status": "pending",
+    }
+    human_gates = {
+        "nordic-source-decisions",
+        "additional-utilisation-source-decisions",
+        "pharmacovigilance-source-decisions",
+    }
+    assert all(
+        gates[gate_id]["kind"] == "human-licensing" for gate_id in human_gates
+    )
+    assert all(gates[gate_id]["status"] == "blocked" for gate_id in human_gates)
     subissues = set(metadata["github_subissues"])
     assert any(item.endswith("/issues/275") for item in subissues)
     assert any(item.endswith("/issues/281") for item in subissues)
     assert "Write failing tests" in plan
+    assert plan.count("- [~] Task:") == 6
     assert plan.count("Write failing tests") >= 8
     assert plan.count(failure_note) >= 8
     assert "Phase Verification & Checkpoint" in plan

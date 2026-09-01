@@ -449,6 +449,9 @@ for credentialed or rights-unresolved sources.
         - [x] Review fix: name the raw-field invalidity predicate explicitly and cover every new qualifier statement plus branch without weakening fail-closed validation
         - [x] Deliver the exact-inventory qualifier through PR #415; updated head `ecc3763` passed all 38 protected checks and auto-merged as `26c68f6`
         - [ ] Produce and verify source-native formulary and spending record Parquet, then reconcile the receipt-backed landing overrides and canonical completion audit
+          - As of 2026-09-01T19:37:26Z, the hosted projection workflow has no
+            observed runs. Configuration and a merged qualifier are readiness
+            evidence, not execution or publication evidence.
     - [x] Keep public release and external publication separately gated; the maintainer approved attributed public release and external publication on 2026-08-27 subject to the CMS Agreement for Use and fail-closed interpretation boundaries
 - [x] Task: Review Fixes for CMS Part D public qualification
     - [x] Reconcile the preflight recommendation with the maintainer's exact approved-public decision
