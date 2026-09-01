@@ -52,6 +52,15 @@
     coverage; 239 affected tests and the routine harness pass.)
 - [ ] Phase Verification & Checkpoint: an empty machine can run bounded fixture
   queries from pinned public revisions with no durable local lake.
+  - [x] Verify one exact, anonymously readable, 24,367-byte MBS Bronze
+    projection at immutable revision `75f9f20` with a five-row bounded
+    structural query. The public-safe receipt binds the object, metadata,
+    schema, row denominator and sample digest without retaining source rows.
+    Transport verification is independent of product admission, so the
+    receipt records `transport_verified=true`, `product_admitted=false` and
+    `checkpoint_complete=false`. The checkpoint remains open until an
+    independently admitted v4 product contract and semantic manifest bind a
+    published Australian benefits medallion dataset.
 
 ### Resolver review fixes
 
