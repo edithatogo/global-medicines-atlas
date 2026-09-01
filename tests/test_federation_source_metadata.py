@@ -121,7 +121,7 @@ def test_rejects_remaining_structural_aliases() -> None:
     changed["provenance"]["payloads"].append(
         deepcopy(changed["provenance"]["payloads"][0])
     )
-    cases.append((changed, "payload bindings must be unique"))
+    cases.append((changed, "payload paths must be unique"))
 
     changed = deepcopy(base)
     changed["coverage"]["exclusions"] = ["none", "none"]
@@ -141,6 +141,53 @@ def test_rejects_remaining_structural_aliases() -> None:
     for document, message in cases:
         with pytest.raises(SourceMetadataError, match=message):
             validate_source_metadata(document)
+
+
+@pytest.mark.parametrize(
+    ("field", "url"),
+    [
+        ("authority_url", "https://user:secret@www.health.gov.au/"),
+        ("source_url", "https://user@www.mbsonline.gov.au/"),
+    ],
+)
+def test_rejects_url_userinfo(field: str, url: str) -> None:
+    document = _fixture("valid-mbs.json")
+    document["source"][field] = url
+    with pytest.raises(SourceMetadataError, match="must not contain userinfo"):
+        validate_source_metadata(document)
+
+
+def test_rejects_cross_source_hosts_and_ambiguous_paths() -> None:
+    document = _fixture("valid-mbs.json")
+    document["source"]["authority_url"] = "https://example.test/authority"
+    with pytest.raises(SourceMetadataError, match="wrong authority host"):
+        validate_source_metadata(document)
+
+    document = _fixture("valid-mbs.json")
+    document["source"]["source_url"] = "https://www.pbs.gov.au/browse/downloads"
+    with pytest.raises(SourceMetadataError, match="wrong source host"):
+        validate_source_metadata(document)
+
+    document = _fixture("valid-mbs.json")
+    document["citations"][0]["source_url"] = "https://example.test/mbs"
+    with pytest.raises(
+        SourceMetadataError, match="outside the approved source"
+    ):
+        validate_source_metadata(document)
+
+    document = _fixture("valid-mbs.json")
+    second = deepcopy(document["provenance"]["payloads"][0])
+    second["sha256"] = "e" * 64
+    document["provenance"]["payloads"].append(second)
+    document["croissant"]["distributions"].append({
+        **second,
+        "encoding_format": "application/xml",
+    })
+    document["coverage"]["payload_paths"].append(second["path"])
+    with pytest.raises(
+        SourceMetadataError, match="payload paths must be unique"
+    ):
+        validate_source_metadata(document)
 
 
 @pytest.mark.parametrize(

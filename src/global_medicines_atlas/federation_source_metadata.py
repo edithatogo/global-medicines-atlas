@@ -12,6 +12,7 @@ from typing import Annotated, Any, Literal, Self
 from urllib.parse import unquote
 
 from pydantic import (
+    AfterValidator,
     AnyHttpUrl,
     AwareDatetime,
     BaseModel,
@@ -32,10 +33,14 @@ _PROFILES = {
     "au-mbs": (
         "edithatogo/australian-mbs-source-archive",
         "Australian Medicare Benefits Schedule source archive",
+        "www.health.gov.au",
+        frozenset({"www.mbsonline.gov.au"}),
     ),
     "au-pbs": (
         "edithatogo/australian-pbs-source-archive",
         "Australian Pharmaceutical Benefits Scheme source archive",
+        "www.health.gov.au",
+        frozenset({"www.pbs.gov.au"}),
     ),
 }
 
@@ -53,11 +58,20 @@ class _Model(BaseModel):
     )
 
 
+def _public_url_without_userinfo(value: AnyHttpUrl) -> AnyHttpUrl:
+    if value.username is not None or value.password is not None:
+        raise ValueError("public metadata URL must not contain userinfo")
+    return value
+
+
+PublicUrl = Annotated[AnyHttpUrl, AfterValidator(_public_url_without_userinfo)]
+
+
 class SourceIdentity(_Model):
     source_id: Literal["au-mbs", "au-pbs"]
     authority: NonBlank
-    authority_url: AnyHttpUrl
-    source_url: AnyHttpUrl
+    authority_url: PublicUrl
+    source_url: PublicUrl
     source_version: NonBlank
     effective_from: date
     retrieved_at: AwareDatetime
@@ -101,7 +115,7 @@ class Croissant(_Model):
 class Citation(_Model):
     dataset: NonBlank
     revision: Revision
-    source_url: AnyHttpUrl
+    source_url: PublicUrl
     accessed_at: date
 
 
@@ -118,13 +132,13 @@ class Coverage(_Model):
 
 class Rights(_Model):
     permission_state: Literal["approved"]
-    permission_reference: AnyHttpUrl
+    permission_reference: PublicUrl
     attribution: NonBlank
     reviewed_at: date
 
 
 class Maintenance(_Model):
-    correction_url: AnyHttpUrl
+    correction_url: PublicUrl
     withdrawal_policy: NonBlank
 
 
@@ -155,7 +169,9 @@ class SourceMetadataDocument(_Model):
 
     @model_validator(mode="after")
     def metadata_is_source_specific_and_closed(self) -> Self:
-        expected_dataset, expected_title = _PROFILES[self.source.source_id]
+        expected_dataset, expected_title, authority_host, source_hosts = (
+            _PROFILES[self.source.source_id]
+        )
         if self.dataset != expected_dataset:
             raise ValueError("source profile uses the wrong approved dataset")
         if self.data_card.title != expected_title:
@@ -164,6 +180,17 @@ class SourceMetadataDocument(_Model):
             raise ValueError(
                 "Croissant name requires the source-specific title"
             )
+        if self.source.authority_url.host != authority_host:
+            raise ValueError("source profile uses the wrong authority host")
+        if self.source.source_url.host not in source_hosts:
+            raise ValueError("source profile uses the wrong source host")
+        if any(
+            citation.source_url.host not in source_hosts
+            for citation in self.citations
+        ):
+            raise ValueError(
+                "citation uses a host outside the approved source profile"
+            )
 
         provenance = tuple(
             (item.path, item.sha256) for item in self.provenance.payloads
@@ -171,14 +198,14 @@ class SourceMetadataDocument(_Model):
         distributions = tuple(
             (item.path, item.sha256) for item in self.croissant.distributions
         )
-        if len(provenance) != len(set(provenance)):
-            raise ValueError("provenance payload bindings must be unique")
+        provenance_paths = tuple(path for path, _ in provenance)
+        if len(provenance_paths) != len(set(provenance_paths)):
+            raise ValueError("provenance payload paths must be unique")
         if distributions != provenance:
             raise ValueError(
                 "Croissant distribution mismatch with provenance payloads"
             )
-        payload_paths = tuple(path for path, _ in provenance)
-        if self.coverage.payload_paths != payload_paths:
+        if self.coverage.payload_paths != provenance_paths:
             raise ValueError(
                 "coverage payload denominator must equal provenance payloads"
             )
