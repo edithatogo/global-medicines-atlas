@@ -193,7 +193,7 @@
   before archival; the existing baseline bundles do not contain these commits.
   No raw-data paths changed in the observed deltas. This is not evidence of
   later history preservation or authorization to archive either repository.
-- [~] Prepare a separate append-only history contract for those exact heads.
+- [x] Prepare a separate append-only history contract for those exact heads.
   Implemented `9ca7eca` and review fix `2ebf0c2`: public target, baseline
   prerequisites, head-addressed bundle/manifest metadata, CAS, unchanged prior
   objects, anonymous digest and clean Git restoration bindings. Retain all
@@ -201,7 +201,10 @@
   Pure metadata consistency checks do not authenticate observations or authorize
   publication, cleanup or archive. Seven review regressions failed first;
   84 focused history/delta tests pass, corrected coverage 148 statements and
-  46 branches, all covered. Integrated full/hosted verification pending.
+  46 branches, all covered. The checked-in execution authority envelope is
+  exact-head bound and deliberately inert (`publication_authorized=false`);
+  it rejects local and non-main execution. Protected hosted checks remain the
+  PR delivery gate.
 - [ ] Add the hosted append transaction and obtain exact authorization for the
   two newer histories before dispatch. Do not reuse the old replace-all,
   private-target legacy publisher or its dataset-wide privacy rollback.
