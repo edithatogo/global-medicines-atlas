@@ -521,14 +521,22 @@
 - [ ] Acquire complete ATC hierarchy only after source-specific rights and
   denominator approval; preserve versioned parent/child evidence separately
   from the ATC codes already extracted from PBS records.
-- [ ] Write failing JSON/Arrow schema, semantic, property, negative-control,
+- [~] Write failing JSON/Arrow schema, semantic, property, negative-control,
   confidence, review-state, temporal, contradiction, and rights tests for nodes
-  and edges.
-- [ ] Confirm the intended failure before implementation.
-- [ ] Generate stable node/edge tables for MBS, PBS, medicines, restrictions,
+  and edges. MBS service/benefit synthetic-candidate schema, evidence,
+  determinism, tamper, no-inference, Arrow and Parquet tests now pass; the
+  remaining source families and real-source controls remain pending.
+- [~] Confirm the intended failure before implementation.
+  The MBS Gold graph module was absent before this bounded implementation.
+- [~] Generate stable node/edge tables for MBS, PBS, medicines, restrictions,
   source documents, organizations, and terminology references.
-- [ ] Implement official/source-explicit and deterministic mappings first;
+  MBS now emits source-record-scoped service and benefit evidence nodes plus
+  only same-record explicit edges from synthetic Silver candidates. PBS,
+  medicines, restrictions, documents, organizations and terminology remain.
+- [~] Implement official/source-explicit and deterministic mappings first;
   isolate lexical, ontology-assisted, embedding, and NLP candidates.
+  The first MBS projection is deterministic and source-explicit; no lexical,
+  ontology, embedding, NLP, terminology or admission path is present.
 - [ ] Add adjudication queues, calibrated thresholds, conflict/supersession, and
   review receipts before any candidate promotion.
 - [ ] Phase Verification & Checkpoint: every edge is evidence-bearing and no
