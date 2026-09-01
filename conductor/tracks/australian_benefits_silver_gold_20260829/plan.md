@@ -201,6 +201,12 @@
   conversion-quality counts, B1/B2 identities and explicit candidate-only
   blockers (`e6abca6`). Field-addressed lineage output, real-source execution and public
   v4 identity verification remain pending; no promotion is inferred.
+
+## Aggregate qualification review fixes
+
+- [x] Register the new qualification module in the governed unit lane so every
+  primary Test-Goblin profile collects an explicitly assigned test module.
+  (`59f5aa9`; 50 harness/qualification tests, Ruff and BasedPyright pass.)
 - [ ] Phase Verification & Checkpoint: every MBS source field is preserved or
   explicitly mapped with deterministic output evidence.
 
