@@ -56,5 +56,5 @@ and rationale contract in that policy.
 - [ ] **Track: Deliver federated medicines Platinum products**
   *Link: [tracks/federated_medicines_platinum_20260829/index.md](./tracks/federated_medicines_platinum_20260829/index.md); remote-first API, CLI, atlas, exports, provenance, coverage, and cross-repository compatibility.*
 
-- [ ] **Track: Evaluate federated medallion frontier capabilities**
+- [~] **Track: Evaluate federated medallion frontier capabilities**
   *Link: [tracks/federated_medallion_frontier_experiments_20260829/index.md](./tracks/federated_medallion_frontier_experiments_20260829/index.md); measured remote-query, Xet, Iceberg, attestation, graph, semantic, and streaming previews with no implicit promotion.*
