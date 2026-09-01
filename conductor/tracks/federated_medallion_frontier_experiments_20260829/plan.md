@@ -17,6 +17,12 @@
   decision/fixture identities, starts no experiment, adopts no dependency, and
   makes no technology-promotion claim. Exact public objects remain absent until
   revision, path, SHA-256 and anonymous verification evidence are all present.
+- [x] Repair independent Phase 1 review findings at `b23eab8`: every experiment
+  now requires explicit baseline, threshold, and rights/sensitivity inputs;
+  every family has an exact prerequisite-key denominator; the matrix requires
+  the exact six approved families; and rows, source bytes, requests, and memory
+  all increase strictly across workload profiles. The 64 focused matrix and
+  harness tests pass with Ruff and BasedPyright clean.
 
 ## Phase 2: Remote query, streaming, and Xet mechanics (AC-02, AC-06)
 
