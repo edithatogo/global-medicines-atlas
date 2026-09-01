@@ -26,6 +26,22 @@ from global_medicines_atlas import pbs_hosted_qualification as hosted
 from global_medicines_atlas import pbs_prepared_qualification as prepared
 
 SHA = "a" * 40
+WORKFLOW = Path(".github/workflows/pbs-historical-qualification.yml")
+
+
+def test_hosted_workflow_runs_independent_expensive_lanes_concurrently() -> (
+    None
+):
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    index_job = workflow.split("  prepare-reference-index:", 1)[1].split(
+        "\n  prepare:", 1
+    )[0]
+    group_job = workflow.split("  prepare-reference-groups:", 1)[1]
+
+    assert "needs: qualify" not in index_job
+    assert "needs: qualify" not in group_job
+    assert "fail-fast: false" in group_job
+    assert "max-parallel: 4" in group_job
 
 
 @pytest.mark.parametrize(
