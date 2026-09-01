@@ -663,12 +663,24 @@
   receipt records `references`, zero output batches/rows and 2,302,255 ms at
   the last checkpoint, proving the entity projection completed but the blocking
   reference index had not yielded output. No timeout increase or duplicate run.
-- [~] Replace reference-index full entity-row materialization with selective
+- [x] Replace reference-index full entity-row materialization with selective
   Arrow columns and flattened native attribute fields. Preserve item/AMT/ATC
   literal contracts, source order, missing/empty states, duplicate occurrence
   counts, distinct resource counts, ambiguity diagnostics, identity checks and
   exact index entry/byte limits. Re-run the exact merged-main qualifier only
   after focused parity, full validation, review and hosted checks pass.
+  PR #408 merged as `757dc41`; all protected hosted checks passed. Exact run
+  `33502075161` then reached reference output: 120 batches and 163,700 rows at
+  3,307,650 ms before the unchanged 55-minute timeout. Receipt:
+  issue #341 comment `5493802123`. This is incomplete progress, not a
+  qualification result.
+- [~] Replace reference-output nested-row reconstruction with Arrow batch
+  reuse and exact columnar diagnostics. Retain governed JSON encoded-byte
+  limits using byte-equivalent `orjson`, exact output flush boundaries,
+  item/AMT/ATC diagnostics, lineage, metadata-aware Parquet equality and native
+  digests. One 1,000-item synthetic output-only comparison produced 10,001 rows
+  and six equal batches: baseline CPU 0.741650 s, candidate 0.657760 s. This
+  bounded observation is not a corpus forecast; hosted validation remains.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
