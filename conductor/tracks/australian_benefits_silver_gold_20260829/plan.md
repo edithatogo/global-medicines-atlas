@@ -207,8 +207,10 @@
 - [x] Register the new qualification module in the governed unit lane so every
   primary Test-Goblin profile collects an explicitly assigned test module.
   Format the new module and tests with the repository-pinned formatter after
-  the first exact-head routine lane exposed the missing format gate.
-  (`59f5aa9`, `4a326ee`; 119 affected tests, Ruff and BasedPyright pass.)
+  the first exact-head routine lane exposed the missing format gate; exercise
+  every serialized evidence-drift gate and the no-quality blocker branch.
+  (`59f5aa9`, `4a326ee`, `07a53f3`; changed module 97% branch coverage,
+  Ruff and BasedPyright pass.)
 - [ ] Phase Verification & Checkpoint: every MBS source field is preserved or
   explicitly mapped with deterministic output evidence.
 
