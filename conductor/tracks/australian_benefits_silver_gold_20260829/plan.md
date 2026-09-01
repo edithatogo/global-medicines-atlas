@@ -582,10 +582,16 @@
   Delivered in PR #403 (`44a603d`), reviewed `39a61f1`; all 38 hosted checks
   passed and the reviewed/merged trees match. This is an opt-in declaration,
   not independent schema qualification or a rewrite of published artifacts.
-- [ ] Define a versioned federation profile-declaration consumer before
+- [x] Define a versioned federation profile-declaration consumer before
   publishing these optional outputs. Federation v4 does not accept the native
   comparison `historical` cohort; reject rather than silently mapping it to
   `legacy` or `current` until a compatible versioned contract exists.
+  The v1 read-side binding retains v4 `schema_era` as the source release,
+  carries the declared comparison profile and exact B1/B2 identities in a
+  separate immutable sidecar, and content-binds the already validated v4
+  document. It accepts only the existing v4 cohorts and grants no admission,
+  qualification, rights or publication authority. Synthetic contract,
+  identity, immutable-model, bounds and non-mapping tests pass.
 - [x] Implement the offline read-side prerequisite for already-decoded MBS
   batches: bounded flat declaration JSON with duplicate-key rejection, exact
   caller-supplied receipt/profile/schema/metadata and every row's B1/B2 lineage.
