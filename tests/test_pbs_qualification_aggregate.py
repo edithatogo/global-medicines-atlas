@@ -346,6 +346,63 @@ def test_reference_receipts_reject_manifest_or_expected_digest_drift(
 
 
 @pytest.mark.parametrize(
+    "mutation",
+    [
+        "public-type",
+        "public-keys",
+        "later-public-type",
+        "duplicate-phase",
+        "missing-phase",
+        "missing-expected",
+        "window-rows",
+        "window-fields-type",
+        "window-fields-total",
+    ],
+)
+def test_aggregate_rejects_additional_identity_and_window_drift(
+    mutation: str,
+) -> None:
+    reports = deepcopy(complete())
+    if mutation == "public-type":
+        reports[0]["public_objects"] = None
+    elif mutation == "public-keys":
+        cast("dict[str, object]", reports[0]["public_objects"]).pop("member")
+    elif mutation == "later-public-type":
+        reports[1]["public_objects"] = None
+    elif mutation == "duplicate-phase":
+        reports[1] = deepcopy(reports[0])
+    elif mutation == "missing-phase":
+        reports[1] = deepcopy(reports[-1])
+    else:
+        qualification = cast("dict[str, object]", reports[-1]["qualification"])
+        projection = cast(
+            "dict[str, dict[str, object]]", qualification["projections"]
+        )["references"]
+        if mutation == "missing-expected":
+            qualification["expected_reference_projection"] = None
+        elif mutation == "window-rows":
+            projection["rows"] = 2
+            cast(
+                "dict[str, object]",
+                qualification["expected_reference_projection"],
+            )["rows"] = 2
+        elif mutation == "window-fields-type":
+            projection["native_fields"] = True
+            cast(
+                "dict[str, object]",
+                qualification["expected_reference_projection"],
+            )["native_fields"] = True
+        else:
+            projection["native_fields"] = 4
+            cast(
+                "dict[str, object]",
+                qualification["expected_reference_projection"],
+            )["native_fields"] = 4
+    with pytest.raises(ValueError, match="incomplete or inconsistent"):
+        aggregate_shards(reports)
+
+
+@pytest.mark.parametrize(
     "reports",
     [None, [], [None] * 8],
 )

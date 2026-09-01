@@ -604,6 +604,32 @@ def test_preparation_fetches_once_and_writes_bounded_transient_workers(
     assert reference_report["qualification"]["reference_window"]["index"] == 0
 
 
+def test_prepared_worker_rejects_invalid_context_and_manifest(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    path = tmp_path / "manifest.json"
+    path.write_text("[]")
+    with pytest.raises(TypeError, match="manifest"):
+        prepared._read_manifest(  # pyright: ignore[reportPrivateUsage]
+            path, "expected"
+        )
+    path.write_text(json.dumps({"schema_version": 1}))
+    with pytest.raises(ValueError, match="manifest"):
+        prepared._read_manifest(  # pyright: ignore[reportPrivateUsage]
+            path, "expected"
+        )
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/not-main")
+    with pytest.raises(ValueError, match="context"):
+        prepared._context(  # pyright: ignore[reportPrivateUsage]
+            SHA,
+            {
+                "workflow_commit": SHA,
+                "preparation_run_id": "123",
+                "preparation_run_attempt": "1",
+            },
+        )
+
+
 def test_checkpoint_survives_interruption(synthetic, monkeypatch, tmp_path):
     def interrupted(*_args, **_kwargs):
         raise KeyboardInterrupt
