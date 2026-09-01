@@ -156,9 +156,7 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
     }:
         raise ValueError("PBS reference node coverage is incomplete")
     index_path, index_report, index_receipt = selected["index"]
-    hosted_identity = _hosted_identity(
-        selected, index_report, index_receipt
-    )
+    hosted_identity = _hosted_identity(selected, index_report, index_receipt)
     binding = PbsXmlMemberBinding.model_validate(index_receipt.get("binding"))
     denominator = cast("dict[str, Any]", index_receipt["denominator"])
     partition_receipts = [
