@@ -45,8 +45,11 @@
     envelope and inner receipt digests; expiry, explicit eviction, entry/byte
     eviction, malformed claims, interrupted replacement, and restart readback
     fail closed. The store accepts only receipt types and never source or query
-    result payload bytes. (`591c011`; 28 focused tests pass with 100% statement
-    and branch coverage; 230 affected tests and the routine harness pass.)
+    result payload bytes. Exact canonical inner bytes survive non-ASCII values;
+    a bounded root-wide lock serializes multi-instance transactions; and
+    unsupported directory sync remains best-effort without bypassing budgets.
+    (`b9b5ffe`, `86a56aa`; 37 focused tests pass with 100% statement and branch
+    coverage; 239 affected tests and the routine harness pass.)
 - [ ] Phase Verification & Checkpoint: an empty machine can run bounded fixture
   queries from pinned public revisions with no durable local lake.
 
