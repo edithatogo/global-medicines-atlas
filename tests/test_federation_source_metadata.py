@@ -234,8 +234,50 @@ def test_binds_pbs_version_and_effective_date_to_release() -> None:
     document["source"]["effective_from"] = "1990-01-01"
     document["version_history"][0]["effective_from"] = "1990-01-01"
     with pytest.raises(
-        SourceMetadataError, match="does not match the source release"
+        SourceMetadataError, match="date does not match its source version"
     ):
+        validate_source_metadata(document)
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("wrong-release", "does not match the approved release"),
+        ("retrieval", "does not match acquisition evidence"),
+        ("history", "non-canonical source version"),
+        ("future-history", "cannot include a future release"),
+        ("citation", "absent from version history"),
+    ],
+)
+def test_binds_all_release_identities(mutation: str, message: str) -> None:
+    document = _fixture("valid-pbs.json")
+    if mutation == "wrong-release":
+        document["source"]["source_version"] = "1990-01"
+        document["data_card"]["version"] = "1990-01"
+        document["croissant"]["version"] = "1990-01"
+        document["version_history"][0]["source_version"] = "1990-01"
+    elif mutation == "retrieval":
+        document["source"]["retrieved_at"] = "2099-01-01T00:00:00Z"
+        document["data_card"]["created_at"] = "2099-01-01T00:00:00Z"
+    elif mutation == "history":
+        document["version_history"].append({
+            "revision": "f" * 40,
+            "source_version": "not-a-version",
+            "effective_from": "2099-01-01",
+            "status": "superseded",
+        })
+    elif mutation == "future-history":
+        document["version_history"].append({
+            "revision": "f" * 40,
+            "source_version": "2026-05",
+            "effective_from": "2026-05-01",
+            "status": "superseded",
+        })
+    else:
+        citation = deepcopy(document["citations"][0])
+        citation["revision"] = "f" * 40
+        document["citations"].append(citation)
+    with pytest.raises(SourceMetadataError, match=message):
         validate_source_metadata(document)
 
 

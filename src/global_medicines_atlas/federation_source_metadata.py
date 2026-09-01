@@ -94,6 +94,8 @@ _PROFILE_DETAILS = {
         "coverage_scope": "August 2026 MBS release payloads",
         "receipt_prefix": "receipts/mbs-",
         "effective_from": "2026-08-01",
+        "source_version": "2026-08",
+        "retrieved_at": "2026-08-30T05:40:00Z",
     },
     "au-pbs": {
         "authority_url": "https://www.health.gov.au/",
@@ -102,6 +104,8 @@ _PROFILE_DETAILS = {
         "coverage_scope": "April 2026 PBS release payloads",
         "receipt_prefix": "receipts/pbs-",
         "effective_from": "2026-04-01",
+        "source_version": "2026-04",
+        "retrieved_at": "2026-08-30T02:40:00Z",
     },
 }
 
@@ -258,6 +262,30 @@ class VersionHistoryEntry(_Model):
     status: Literal["current", "superseded", "withdrawn"]
 
 
+def _validate_history_entries(
+    entries: tuple[VersionHistoryEntry, ...],
+    citations: tuple[Citation, ...],
+    latest_effective_from: date,
+) -> None:
+    revisions = {item.revision for item in entries}
+    if any(citation.revision not in revisions for citation in citations):
+        raise ValueError("citation revision is absent from version history")
+    for item in entries:
+        if (
+            re.fullmatch(r"\d{4}-(?:0[1-9]|1[0-2])", item.source_version)
+            is None
+        ):
+            raise ValueError(
+                "version history uses a non-canonical source version"
+            )
+        if item.effective_from.isoformat() != f"{item.source_version}-01":
+            raise ValueError(
+                "version history date does not match its source version"
+            )
+        if item.effective_from > latest_effective_from:
+            raise ValueError("version history cannot include a future release")
+
+
 class SourceMetadataDocument(_Model):
     schema_version: Literal[1]
     dataset: ExactNonBlank
@@ -359,6 +387,10 @@ class SourceMetadataDocument(_Model):
             is None
         ):
             raise ValueError("source version must use canonical YYYY-MM format")
+        if self.source.source_version != profile["source_version"]:
+            raise ValueError(
+                "source version does not match the approved release"
+            )
         if self.source.source_id == "au-mbs":
             expected_source_url += (
                 self.source.source_version[:4] + self.source.source_version[5:]
@@ -433,12 +465,18 @@ class SourceMetadataDocument(_Model):
         revisions = tuple(item.revision for item in self.version_history)
         if len(revisions) != len(set(revisions)):
             raise ValueError("version history revisions must be unique")
+        _validate_history_entries(
+            self.version_history, self.citations, self.source.effective_from
+        )
 
         profile = _PROFILE_DETAILS[self.source.source_id]
-        if self.source.effective_from != date.fromisoformat(
-            profile["effective_from"]
+        if (
+            self.source.retrieved_at.isoformat().replace("+00:00", "Z")
+            != profile["retrieved_at"]
         ):
-            raise ValueError("effective date does not match the source release")
+            raise ValueError(
+                "retrieval timestamp does not match acquisition evidence"
+            )
         if self.coverage.scope != profile["coverage_scope"]:
             raise ValueError("coverage scope does not match the source profile")
         if not self.provenance.receipt.startswith(profile["receipt_prefix"]):

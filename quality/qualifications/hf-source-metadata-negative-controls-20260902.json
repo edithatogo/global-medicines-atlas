@@ -57,7 +57,12 @@
     "payload media-type mismatch",
     "cross-source citation dataset",
     "non-canonical PBS source version",
-    "effective date outside the source release"
+    "effective date outside the source release",
+    "canonical source version outside the approved release",
+    "retrieval timestamp outside acquisition evidence",
+    "malformed historical source version",
+    "future historical release",
+    "citation revision absent from version history"
   ],
   "external_actions": {
     "credentials_used": false,
