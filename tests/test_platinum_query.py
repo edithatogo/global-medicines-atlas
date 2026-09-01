@@ -432,9 +432,10 @@ def test_query_state_distinguishes_offline_miss_eviction_and_expiry() -> None:
             missing.receipt_sha256
             == hashlib.sha256(missing.canonical_bytes).hexdigest()
         )
-        assert missing.query_sha256 == hashlib.sha256(
-            missing.canonical_query
-        ).hexdigest()
+        assert (
+            missing.query_sha256
+            == hashlib.sha256(missing.canonical_query).hexdigest()
+        )
 
         available = service.query_state(
             "au.mbs.service-items",

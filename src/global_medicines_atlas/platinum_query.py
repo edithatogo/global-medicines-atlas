@@ -369,7 +369,7 @@ class PlatinumQueryService:
             read = stack.enter_context(
                 self._resolver.open(resource_id, offline=offline)
             )
-        except (TypeError, ValueError):
+        except TypeError, ValueError:
             stack.close()
             return QueryUnavailable(
                 status="unavailable",
