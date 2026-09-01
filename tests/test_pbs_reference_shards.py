@@ -26,6 +26,7 @@ from global_medicines_atlas.pbs_reference_shards import (
     _read_index,  # ruff: ignore[import-private-name]  # pyright: ignore[reportPrivateUsage]
     assemble_reference_manifest,
     load_reference_entity_material,
+    load_reference_entity_partition,
     prepare_reference_entity_material,
     prepare_reference_index,
     prepare_reference_partition,
@@ -192,6 +193,70 @@ def test_entity_material_is_reusable_by_index_and_partition_nodes(
     assert receipt["evidence_truth"] is False
     assert receipt["publication_performed"] is False
     assert manifest["denominator"] == denominator
+
+
+def test_entity_material_writes_independently_bound_partitions_once(
+    tmp_path: Path,
+) -> None:
+    binding, denominator, batches = inputs()
+    directory = tmp_path / "fanout"
+    receipt = prepare_reference_entity_material(
+        batches(),
+        binding,
+        denominator,
+        directory / "entities.arrow",
+        shard_count=3,
+    )
+    loaded_rows = 0
+    loaded_fields = 0
+    for index in range(3):
+        reader, loaded_binding, loaded_denominator, partition = (
+            load_reference_entity_partition(directory, receipt, index)
+        )
+        assert loaded_binding == binding
+        assert loaded_denominator == denominator
+        assert list(reader)
+        loaded_rows += partition["expected_projection"]["rows"]
+        loaded_fields += partition["expected_projection"]["native_fields"]
+    assert loaded_rows == denominator["elements"]
+    assert loaded_fields == denominator["native_fields"]
+
+
+@pytest.mark.parametrize("shard_count", [0, 33, True])
+def test_entity_material_rejects_invalid_partition_count(
+    tmp_path: Path, shard_count: int
+) -> None:
+    binding, denominator, batches = inputs()
+    with pytest.raises(ValueError, match="entity material preparation"):
+        prepare_reference_entity_material(
+            batches(),
+            binding,
+            denominator,
+            tmp_path / "entities.arrow",
+            shard_count=shard_count,
+        )
+
+
+@pytest.mark.parametrize("mutation", ["contract", "index", "digest"])
+def test_entity_partition_loader_rejects_tampering(
+    tmp_path: Path, mutation: str
+) -> None:
+    binding, denominator, batches = inputs()
+    receipt = prepare_reference_entity_material(
+        batches(),
+        binding,
+        denominator,
+        tmp_path / "entities.arrow",
+        shard_count=2,
+    )
+    if mutation == "contract":
+        receipt["contract_sha256"] = "0" * 64
+    elif mutation == "index":
+        receipt["partitions"][0]["index"] = 1
+    else:
+        (tmp_path / "reference-00.arrow").write_bytes(b"changed")
+    with pytest.raises((TypeError, ValueError), match="entity"):
+        load_reference_entity_partition(tmp_path, receipt, 0)
 
 
 @pytest.mark.parametrize(
