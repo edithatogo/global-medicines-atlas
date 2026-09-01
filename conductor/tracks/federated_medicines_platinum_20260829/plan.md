@@ -2,12 +2,22 @@
 
 ## Phase 1: Product and remote-query contracts (AC-01, AC-02, AC-03)
 
-- [ ] Write failing contract tests for v4 resolution, immutable revision/path,
+- [~] Write failing contract tests for v4 resolution, immutable revision/path,
   manifest verification, remote scan, bounded cache, offline state, result
   metadata, and semantic-dimension separation.
-- [ ] Confirm the intended failure before implementation.
-- [ ] Implement a storage-neutral dataset resolver and remote DuckDB/Polars
+  The first storage-neutral slice covers independently admitted exact contract
+  and distribution bindings, immutable location/digest metadata, semantic
+  dimension and entity-granularity separation, anonymous verified reads,
+  explicit offline cache use, eviction, online failure, and byte/time/cache
+  budgets. Full query-result evidence envelopes and scan-engine contracts remain
+  pending. (`fe62623`; 18 focused and 162 affected tests pass.)
+- [x] Confirm the intended failure before implementation. (`fe62623`;
+  collection failed with `ModuleNotFoundError` before the resolver existed.)
+- [~] Implement a storage-neutral dataset resolver and remote DuckDB/Polars
   query adapter with explicit capabilities and deterministic fallbacks.
+  Exact logical resolution and bounded verified byte reads are implemented in
+  `fe62623`; DuckDB/Polars projection and predicate-pushdown adapters remain
+  pending and no storage engine has been promoted.
 - [ ] Add cache receipts, byte/time budgets, expiry/eviction, content
   verification, and stale/unavailable states.
 - [ ] Phase Verification & Checkpoint: an empty machine can run bounded fixture
