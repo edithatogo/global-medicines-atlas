@@ -100,7 +100,7 @@ def _read_index(payload: bytes) -> ReferenceIndex:
     return index
 
 
-def prepare_reference_shards(  # ruff: ignore[too-many-branches,too-many-locals]
+def prepare_reference_shards(  # ruff: ignore[too-many-branches,too-many-locals,too-many-statements]
     batches: Iterator[pa.RecordBatch],
     binding: PbsXmlMemberBinding,
     denominator: dict[str, Any],
@@ -183,13 +183,27 @@ def prepare_reference_shards(  # ruff: ignore[too-many-branches,too-many-locals]
     index_path.write_bytes(_index_payload(index))
     partitions: list[dict[str, Any]] = []
     for index, path in enumerate(paths):
+        start = total * index // shard_count
+        stop = total * (index + 1) // shard_count
+        expected_projection = _projection(
+            iter(pa.ipc.open_stream(pa.memory_map(str(path), "r"))),
+            binding,
+            denominator,
+            nested=True,
+            phase="reference-preparation",
+            row_window=(start, stop),
+        )
         partitions.append({
             "index": index,
             "count": shard_count,
-            "start_row": total * index // shard_count,
-            "stop_row": total * (index + 1) // shard_count,
+            "start_row": start,
+            "stop_row": stop,
             "path": path.name,
             **_digest(path),
+            "expected_projection": {
+                key: expected_projection[key]
+                for key in ("rows", "native_fields", "native_digest")
+            },
         })
     manifest: dict[str, Any] = {
         "schema_version": 1,
@@ -209,7 +223,7 @@ def prepare_reference_shards(  # ruff: ignore[too-many-branches,too-many-locals]
     return manifest
 
 
-def qualify_reference_shard(
+def qualify_reference_shard(  # ruff: ignore[too-many-locals]
     directory: Path, *, shard_index: int, rows_per_batch: int = 4096
 ) -> dict[str, Any]:
     """Verify and qualify exactly one prepared reference partition."""
@@ -265,6 +279,18 @@ def qualify_reference_shard(
         phase="references",
         row_window=window,
     )
+    expected_projection = partition.get("expected_projection")
+    if not isinstance(expected_projection, dict):
+        raise TypeError("PBS reference shard projection digest is invalid")
+    expected_projection = cast("dict[str, Any]", expected_projection)
+    if any(
+        projection.get(key) != expected_projection.get(key)
+        for key in ("rows", "native_fields", "native_digest")
+    ):
+        raise ValueError("PBS reference shard projection digest changed")
+    manifest_sha256 = hashlib.sha256(
+        (directory / "reference-manifest.json").read_bytes()
+    ).hexdigest()
     return {
         "schema_version": 1,
         "qualification": "structural_storage_candidate_only",
@@ -274,6 +300,11 @@ def qualify_reference_shard(
             for key in ("index", "count", "start_row", "stop_row")
         }
         | {"total_rows": denominator["elements"]},
+        "preparation_manifest_sha256": manifest_sha256,
+        "expected_reference_projection": {
+            key: expected_projection[key]
+            for key in ("rows", "native_fields", "native_digest")
+        },
         "source_id": binding.source.source_id,
         "parent_receipt_sha256": binding.parent_receipt_sha256,
         "archive_sha256": binding.archive_payload.sha256,

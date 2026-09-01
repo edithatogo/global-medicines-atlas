@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import py_compile
 from copy import deepcopy
 from pathlib import Path
 from typing import cast
@@ -19,6 +20,12 @@ from global_medicines_atlas.pbs_qualification_aggregate import (
 
 PROJECTIONS = ("native", "domain", "entities", "references", "dates")
 PHASES = ("native", "domain", "entities", "dates")
+
+
+def test_aggregate_cli_compiles_as_repository_script() -> None:
+    py_compile.compile(
+        "scripts/aggregate_historical_pbs_qualification.py", doraise=True
+    )
 
 
 def shard(
@@ -101,6 +108,11 @@ def shard(
         projection = qualification["projections"]
         assert isinstance(projection, dict)
         projection["references"]["native_digest_scope"] = "ordered-window"
+        qualification["preparation_manifest_sha256"] = "8" * 64
+        qualification["expected_reference_projection"] = {
+            key: projection["references"][key]
+            for key in ("rows", "native_fields", "native_digest")
+        }
     return report
 
 
@@ -314,6 +326,23 @@ def test_retry_selection_uses_latest_equal_success_and_rejects_conflict() -> (
         [*reports, retry], 4
     )
     assert conflicts == ["native"]
+
+
+@pytest.mark.parametrize("field", ["preparation_manifest_sha256", "expected"])
+def test_reference_receipts_reject_manifest_or_expected_digest_drift(
+    field: str,
+) -> None:
+    reports = complete()
+    qualification = cast("dict[str, object]", reports[-1]["qualification"])
+    if field == "preparation_manifest_sha256":
+        qualification[field] = "9" * 64
+    else:
+        expected = cast(
+            "dict[str, object]", qualification["expected_reference_projection"]
+        )
+        expected["native_digest"] = "9" * 64
+    with pytest.raises(ValueError, match="incomplete or inconsistent"):
+        aggregate_shards(reports)
 
 
 @pytest.mark.parametrize(

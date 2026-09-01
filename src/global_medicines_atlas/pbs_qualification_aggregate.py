@@ -292,21 +292,40 @@ def aggregate_shards(  # ruff: ignore[too-many-branches]
     }
 
 
-def _aggregate_references(
+def _aggregate_references(  # ruff: ignore[too-many-locals]
     references: list[tuple[dict[str, Any], dict[str, Any], dict[str, Any]]],
     shared: dict[str, Any],
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     if not references:
         raise _invalid()
     windows: list[tuple[dict[str, Any], dict[str, Any]]] = []
+    preparation_manifest_sha256: str | None = None
     for _report, qualification, projection in references:
         window = qualification.get("reference_window")
         if not isinstance(window, dict):
             raise _invalid()
         window = cast("dict[str, Any]", window)
         digest = projection.get("native_digest")
-        if not _sha256(digest):
+        manifest_digest = qualification.get("preparation_manifest_sha256")
+        expected_projection = qualification.get("expected_reference_projection")
+        if not isinstance(expected_projection, dict):
             raise _invalid()
+        expected_projection = cast("dict[str, Any]", expected_projection)
+        checks = (
+            _sha256(digest),
+            _sha256(manifest_digest),
+            not any(
+                projection.get(key) != expected_projection.get(key)
+                for key in ("rows", "native_fields", "native_digest")
+            ),
+            not (
+                preparation_manifest_sha256 is not None
+                and manifest_digest != preparation_manifest_sha256
+            ),
+        )
+        if not all(checks):
+            raise _invalid()
+        preparation_manifest_sha256 = cast("str", manifest_digest)
         windows.append((window, projection))
     windows.sort(key=lambda item: item[0].get("index", -1))
     count = len(windows)
@@ -360,6 +379,7 @@ def _aggregate_references(
             "reference_window_digest_sha256": hashlib.sha256(
                 manifest_bytes
             ).hexdigest(),
+            "preparation_manifest_sha256": preparation_manifest_sha256,
             "parquet_roundtrip_verified": True,
         },
         digest_manifest,

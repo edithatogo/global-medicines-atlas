@@ -209,6 +209,7 @@ jobs:
 
   qualify-references:
     name: Verify PBS references / ${{ matrix.shard }}
+    if: always() && needs.prepare.result == 'success'
     needs: [prepare, qualify]
     strategy:
       fail-fast: false
@@ -309,7 +310,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
-          name: pbs-historical-qualification-receipt
+          name: pbs-historical-qualification-receipt-${{ github.run_id }}-${{ github.run_attempt }}
           path: pbs-qualification-receipt.json
           if-no-files-found: error
           retention-days: 30
