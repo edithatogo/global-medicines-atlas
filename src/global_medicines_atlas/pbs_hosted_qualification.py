@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import socket
 import ssl
 import time
@@ -15,6 +16,7 @@ from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from http import HTTPStatus
+from pathlib import Path
 from typing import Any, cast
 from urllib.parse import quote, urljoin, urlsplit
 
@@ -26,8 +28,16 @@ from .acquisition import (
     DestinationPolicyError,
 )
 from .adapters.au_pbs import read_pbs_v3_member
-from .pbs_historical_qualification import qualify_pbs_historical_projections
-from .pbs_member_identity import build_pbs_xml_member_binding
+from .pbs_historical_projections import iter_pbs_historical_entity_batches
+from .pbs_historical_qualification import (
+    _denominator,  # pyright: ignore[reportPrivateUsage]
+    qualify_pbs_historical_projections,
+)
+from .pbs_member_identity import (
+    PbsXmlMemberBinding,
+    build_pbs_xml_member_binding,
+)
+from .pbs_reference_shards import prepare_reference_shards
 from .receipts import SourceReceipt
 
 DATASET = "edithatogo/australian-pbs-source-archive"
@@ -499,6 +509,115 @@ def run_hosted_qualification(
         raise
 
 
+def _prepared_file(path: Path, payload: bytes) -> dict[str, Any]:
+    path.write_bytes(payload)
+    return {
+        "path": path.name,
+        "sha256": hashlib.sha256(payload).hexdigest(),
+        "byte_count": len(payload),
+    }
+
+
+def run_hosted_preparation(
+    exact_commit: str,
+    output: Path,
+    *,
+    shard_count: int,
+    transport: httpx.BaseTransport | None = None,
+    progress: Callable[[dict[str, Any]], None] | None = None,
+) -> dict[str, Any]:
+    """Verify once and write transient same-run phase/reference inputs."""
+    retry = _RetryBudget(progress=progress)
+    inputs = _verified_inputs(exact_commit, transport=transport, retry=retry)
+    output.mkdir(parents=True, exist_ok=False)
+    phase = output / "phase-input"
+    phase.mkdir()
+    files = {
+        "archive": _prepared_file(phase / "archive.zip", inputs.archive),
+        "member": _prepared_file(phase / "member.xml", inputs.xml),
+        "source_receipt": _prepared_file(
+            phase / "source-receipt.json", inputs.receipt_bytes
+        ),
+    }
+    phase_manifest = {
+        "schema_version": 1,
+        "purpose": "transient-same-run-pbs-qualification-input",
+        "workflow_commit": inputs.context["workflow_commit"],
+        "preparation_run_id": inputs.context["run_id"],
+        "preparation_run_attempt": inputs.context["run_attempt"],
+        "dataset": DATASET,
+        "revision": REVISION,
+        "binding": inputs.binding.model_dump(mode="json"),
+        "files": files,
+        "publication_performed": False,
+        "evidence_truth": False,
+    }
+    phase_manifest_path = phase / "phase-manifest.json"
+    phase_manifest_path.write_bytes(
+        json.dumps(
+            phase_manifest, sort_keys=True, separators=(",", ":")
+        ).encode()
+    )
+    denominator = _denominator(inputs.xml)
+    references = output / "references"
+    reference_manifest = prepare_reference_shards(
+        iter_pbs_historical_entity_batches(
+            inputs.archive,
+            inputs.xml,
+            inputs.parent,
+            inputs.binding,
+        ),
+        inputs.binding,
+        denominator,
+        references,
+        shard_count=shard_count,
+    )
+    reference_manifest.update({
+        "workflow_commit": inputs.context["workflow_commit"],
+        "preparation_run_id": inputs.context["run_id"],
+        "preparation_run_attempt": inputs.context["run_attempt"],
+        "dataset": DATASET,
+        "revision": REVISION,
+    })
+    (references / "reference-manifest.json").write_bytes(
+        json.dumps(
+            reference_manifest, sort_keys=True, separators=(",", ":")
+        ).encode()
+    )
+    workers = output / "workers"
+    workers.mkdir()
+    for partition in reference_manifest["partitions"]:
+        index = partition["index"]
+        worker = workers / f"reference-{index:02d}"
+        worker.mkdir()
+        for name in (
+            "reference-manifest.json",
+            "reference-index.json",
+            partition["path"],
+        ):
+            shutil.copyfile(references / name, worker / name)
+    return {
+        "schema_version": 1,
+        "status": "prepared",
+        **inputs.context,
+        "dataset": DATASET,
+        "revision": REVISION,
+        "manifest_sha256": MANIFEST.sha256,
+        "source_receipt_file_sha256": RECEIPT.sha256,
+        "archive_path": ARCHIVE.path,
+        "member_path": MEMBER.path,
+        "reference_shards": shard_count,
+        "reference_rows": denominator["elements"],
+        "native_fields": denominator["native_fields"],
+        "native_digest": denominator["native_digest"],
+        "phase_manifest_sha256": hashlib.sha256(
+            phase_manifest_path.read_bytes()
+        ).hexdigest(),
+        "publication_performed": False,
+        "evidence_truth": False,
+    }
+
+
 def metadata_probe_report(report: dict[str, Any]) -> dict[str, Any]:
     """Scope aggregate diagnostics without carrying corpus qualification data."""
     allowed = (
@@ -597,14 +716,24 @@ def run_hosted_metadata_probe(
     })
 
 
-def _run(
+@dataclass(frozen=True)
+class _VerifiedInputs:
+    context: dict[str, str]
+    started_at: str
+    manifest: dict[str, Any]
+    receipt_bytes: bytes
+    archive: bytes
+    xml: bytes
+    parent: SourceReceipt
+    binding: PbsXmlMemberBinding
+
+
+def _verified_inputs(
     exact_commit: str,
     *,
-    projection: str | None,
-    reference_shard: tuple[int, int] | None,
     transport: httpx.BaseTransport | None,
     retry: _RetryBudget,
-) -> dict[str, Any]:
+) -> _VerifiedInputs:
     with _at("context", progress=retry.checkpoint):
         context = _context(exact_commit)
     started_at = datetime.now(UTC).isoformat()
@@ -679,12 +808,33 @@ def _run(
             raise _RejectionError("pin-mismatch")
     with _at("member-binding", progress=retry.checkpoint):
         binding = build_pbs_xml_member_binding(archive, parent)
+    return _VerifiedInputs(
+        context=context,
+        started_at=started_at,
+        manifest=manifest,
+        receipt_bytes=receipt_bytes,
+        archive=archive,
+        xml=xml,
+        parent=parent,
+        binding=binding,
+    )
+
+
+def _run(
+    exact_commit: str,
+    *,
+    projection: str | None,
+    reference_shard: tuple[int, int] | None,
+    transport: httpx.BaseTransport | None,
+    retry: _RetryBudget,
+) -> dict[str, Any]:
+    inputs = _verified_inputs(exact_commit, transport=transport, retry=retry)
     with _at("projection-qualification", progress=retry.checkpoint):
         qualification = qualify_pbs_historical_projections(
-            archive,
-            xml,
-            parent,
-            binding,
+            inputs.archive,
+            inputs.xml,
+            inputs.parent,
+            inputs.binding,
             projection=projection,
             reference_shard=reference_shard,
             progress=lambda phase, batches, rows: retry.checkpoint(
@@ -698,7 +848,7 @@ def _run(
         "transport_diagnostics": _diagnostics(
             retry.event, retry.retry_detail, None
         ),
-        **context,
+        **inputs.context,
         "dataset": DATASET,
         "revision": REVISION,
         "manifest_sha256": MANIFEST.sha256,
@@ -709,9 +859,9 @@ def _run(
         "anonymous_public_checks": 2,
         "qualification": qualification,
         "publication_performed": False,
-        "retrieval_started_at": started_at,
+        "retrieval_started_at": inputs.started_at,
         "qualification_completed_at": datetime.now(UTC).isoformat(),
-        "run_url": f"https://github.com/edithatogo/global-medicines-atlas/actions/runs/{context['run_id']}",
+        "run_url": f"https://github.com/edithatogo/global-medicines-atlas/actions/runs/{inputs.context['run_id']}",
         "public_objects": {
             name: asdict(pin)
             for name, pin in (

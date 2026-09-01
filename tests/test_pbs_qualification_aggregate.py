@@ -11,6 +11,8 @@ from scripts import aggregate_historical_pbs_qualification as cli
 
 from global_medicines_atlas import pbs_qualification_aggregate as aggregate
 from global_medicines_atlas.pbs_qualification_aggregate import (
+    MEMBER_BINDING_SHA256,
+    PARENT_RECEIPT_SHA256,
     REVISION,
     aggregate_shards,
 )
@@ -32,10 +34,24 @@ def shard(
         "run_attempt": "1",
         "dataset": "edithatogo/australian-pbs-source-archive",
         "revision": REVISION,
-        "manifest_sha256": "c" * 64,
-        "source_receipt_file_sha256": "d" * 64,
-        "archive_path": "raw/source.zip",
-        "member_path": "raw/member.xml",
+        "manifest_sha256": aggregate.MANIFEST.sha256,
+        "source_receipt_file_sha256": aggregate.RECEIPT.sha256,
+        "archive_path": aggregate.ARCHIVE.path,
+        "member_path": aggregate.MEMBER.path,
+        "member_retrieval": "extracted-from-verified-archive",
+        "public_objects": {
+            name: {
+                "path": pin.path,
+                "sha256": pin.sha256,
+                "byte_count": pin.byte_count,
+            }
+            for name, pin in (
+                ("manifest", aggregate.MANIFEST),
+                ("source_receipt", aggregate.RECEIPT),
+                ("archive", aggregate.ARCHIVE),
+                ("member", aggregate.MEMBER),
+            )
+        },
         "anonymous_public_checks": 2,
         "publication_performed": False,
         "qualification": {
@@ -43,10 +59,10 @@ def shard(
             "qualification": "structural_storage_candidate_only",
             "projection_shard": name,
             "source_id": "au-pbs-historical-xml",
-            "parent_receipt_sha256": "e" * 64,
-            "archive_sha256": "f" * 64,
-            "member_sha256": "1" * 64,
-            "member_binding_sha256": "2" * 64,
+            "parent_receipt_sha256": PARENT_RECEIPT_SHA256,
+            "archive_sha256": aggregate.ARCHIVE.sha256,
+            "member_sha256": aggregate.MEMBER.sha256,
+            "member_binding_sha256": MEMBER_BINDING_SHA256,
             "native_fields": 12,
             "elements": 4,
             "native_digest": "3" * 64,
@@ -56,6 +72,11 @@ def shard(
                     if window
                     else (12 if name in {"native", "domain"} else 4),
                     "native_fields": 3 if window else 12,
+                    "unmapped_rows": 0,
+                    "duplicate_literal_rows": 0,
+                    "ambiguous_reference_rows": 0,
+                    "unresolved_reference_rows": 0,
+                    "date_unselected_rows": 0,
                     "native_digest": f"{start + 4:x}" * 64
                     if window
                     else "3" * 64,
@@ -132,6 +153,91 @@ def test_aggregate_rejects_identity_denominator_digest_and_parquet_drift(
         aggregate_shards(reports)
 
 
+@pytest.mark.parametrize(
+    ("path", "value"),
+    [
+        (("dataset",), "mutated/dataset"),
+        (("revision",), "9" * 40),
+        (("manifest_sha256",), "9" * 64),
+        (("source_receipt_file_sha256",), "9" * 64),
+        (("archive_path",), "raw/mutated.zip"),
+        (("member_path",), "bronze/mutated.xml"),
+        (("member_retrieval",), "direct"),
+        (("qualification", "source_id"), "mutated"),
+        (("qualification", "parent_receipt_sha256"), "9" * 64),
+        (("qualification", "archive_sha256"), "9" * 64),
+        (("qualification", "member_sha256"), "9" * 64),
+        (("qualification", "member_binding_sha256"), "9" * 64),
+        (("qualification", "date_profile"), "selected"),
+        (("qualification", "domain_semantics_qualified"), True),
+    ],
+)
+def test_aggregate_rejects_authoritative_value_mutated_in_every_shard(
+    path: tuple[str, ...], value: object
+) -> None:
+    reports = complete()
+    for report in reports:
+        target: dict[str, object] = report
+        for key in path[:-1]:
+            child = target[key]
+            assert isinstance(child, dict)
+            target = child
+        target[path[-1]] = value
+    with pytest.raises(ValueError, match="PBS qualification shards"):
+        aggregate_shards(reports)
+
+
+def test_aggregate_rejects_public_pin_mutated_in_every_shard() -> None:
+    reports = complete()
+    for report in reports:
+        public_objects = report["public_objects"]
+        assert isinstance(public_objects, dict)
+        archive = public_objects["archive"]
+        assert isinstance(archive, dict)
+        archive["sha256"] = "9" * 64
+    with pytest.raises(ValueError, match="PBS qualification shards"):
+        aggregate_shards(reports)
+
+
+@pytest.mark.parametrize("mutation", ["missing", "extra", "bool-counter"])
+def test_aggregate_rejects_non_exact_projection_counter_schema(
+    mutation: str,
+) -> None:
+    reports = complete()
+    qualification = reports[0]["qualification"]
+    assert isinstance(qualification, dict)
+    projections = qualification["projections"]
+    assert isinstance(projections, dict)
+    projection = projections["native"]
+    assert isinstance(projection, dict)
+    if mutation == "missing":
+        projection.pop("unmapped_rows")
+    elif mutation == "extra":
+        projection["invented_rows"] = 7
+    else:
+        projection["unmapped_rows"] = False
+    with pytest.raises(ValueError, match="PBS qualification shards"):
+        aggregate_shards(reports)
+
+
+def test_reference_aggregate_sums_only_declared_counters() -> None:
+    reports = complete()
+    for index, report in enumerate(reports[4:], 1):
+        qualification = report["qualification"]
+        assert isinstance(qualification, dict)
+        projections = qualification["projections"]
+        assert isinstance(projections, dict)
+        projection = projections["references"]
+        assert isinstance(projection, dict)
+        projection["unmapped_rows"] = index
+        projection["date_unselected_rows"] = index * 2
+    result = aggregate_shards(reports)
+    reference = result["qualification"]["projections"]["references"]
+    assert reference["unmapped_rows"] == 10
+    assert reference["date_unselected_rows"] == 20
+    assert "invented_rows" not in reference
+
+
 def test_aggregate_rejects_missing_duplicate_and_extra_shards() -> None:
     baseline = complete()
     for candidate in (
@@ -165,6 +271,8 @@ def test_cli_writes_digest_bound_success_and_incomplete_receipts(
         str(receipts),
         "--exact-commit",
         "a" * 40,
+        "--reference-shards",
+        "4",
         "--output",
         str(output),
     ]
@@ -185,7 +293,9 @@ def test_aggregate_rejects_invalid_containers(reports: object) -> None:
         aggregate_shards(reports)
 
 
-@pytest.mark.parametrize("case", ["qualification", "projection-set", "projection"])
+@pytest.mark.parametrize(
+    "case", ["qualification", "projection-set", "projection"]
+)
 def test_aggregate_rejects_malformed_phase_receipts(case: str) -> None:
     reports = complete()
     if case == "qualification":
@@ -216,7 +326,9 @@ def test_aggregate_rejects_malformed_phase_receipts(case: str) -> None:
         ("field-total", 4),
     ],
 )
-def test_reference_aggregate_rejects_window_drift(case: str, value: object) -> None:
+def test_reference_aggregate_rejects_window_drift(
+    case: str, value: object
+) -> None:
     reports = complete()
     qualification = reports[4]["qualification"]
     assert isinstance(qualification, dict)

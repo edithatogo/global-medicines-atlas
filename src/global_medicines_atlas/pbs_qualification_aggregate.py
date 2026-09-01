@@ -7,12 +7,41 @@ import json
 import re
 from typing import Any, cast
 
+from .pbs_hosted_qualification import (
+    ARCHIVE,
+    DATASET,
+    MANIFEST,
+    MEMBER,
+    RECEIPT,
+    REVISION,
+    PinnedFile,
+)
+
 PROJECTIONS = ("native", "domain", "entities", "references", "dates")
 PHASE_PROJECTIONS = ("native", "domain", "entities", "dates")
-DATASET = "edithatogo/australian-pbs-source-archive"
-REVISION = "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
 ANONYMOUS_PUBLIC_CHECKS = 2
 MAX_REFERENCE_SHARDS = 64
+PARENT_RECEIPT_SHA256 = (
+    "3a8dfd676043f39549bff8c8f966814bca70a59245a0038ea287d44e049ff33d"
+)
+MEMBER_BINDING_SHA256 = (
+    "5bc111736f76cee651a73be99b37f5921b2924e53428b0c0f8ae45964943c4f2"
+)
+_COUNTER_KEYS = (
+    "rows",
+    "native_fields",
+    "unmapped_rows",
+    "duplicate_literal_rows",
+    "ambiguous_reference_rows",
+    "unresolved_reference_rows",
+    "date_unselected_rows",
+)
+_PROJECTION_KEYS = (
+    *_COUNTER_KEYS,
+    "native_digest",
+    "parquet_roundtrip_verified",
+)
+_REFERENCE_PROJECTION_KEYS = (*_PROJECTION_KEYS, "native_digest_scope")
 _SHARED_REPORT_KEYS = (
     "workflow_commit",
     "dataset",
@@ -21,7 +50,111 @@ _SHARED_REPORT_KEYS = (
     "source_receipt_file_sha256",
     "archive_path",
     "member_path",
+    "member_retrieval",
 )
+
+
+def _sha256(value: object) -> bool:
+    return (
+        isinstance(value, str)
+        and re.fullmatch(r"[0-9a-f]{64}", value) is not None
+    )
+
+
+def _valid_projection_schema(name: str, projection: dict[str, Any]) -> bool:
+    expected = (
+        _REFERENCE_PROJECTION_KEYS if name == "references" else _PROJECTION_KEYS
+    )
+    return (
+        tuple(projection) == expected
+        and all(
+            type(projection[key]) is int and projection[key] >= 0
+            for key in _COUNTER_KEYS
+        )
+        and _sha256(projection["native_digest"])
+        and projection["parquet_roundtrip_verified"] is True
+        and (
+            name != "references"
+            or projection["native_digest_scope"] == "ordered-window"
+        )
+    )
+
+
+def _valid_public_objects(value: object) -> bool:
+    if not isinstance(value, dict):
+        return False
+    objects = cast("dict[str, object]", value)
+    if tuple(objects) != (
+        "manifest",
+        "source_receipt",
+        "archive",
+        "member",
+    ):
+        return False
+    pins: dict[str, PinnedFile] = {
+        "manifest": MANIFEST,
+        "source_receipt": RECEIPT,
+        "archive": ARCHIVE,
+        "member": MEMBER,
+    }
+    return all(
+        objects.get(name)
+        == {
+            "path": pin.path,
+            "sha256": pin.sha256,
+            "byte_count": pin.byte_count,
+        }
+        for name, pin in pins.items()
+    )
+
+
+def _valid_identity(
+    report: dict[str, Any], qualification: dict[str, Any]
+) -> bool:
+    expected_report = {
+        "dataset": DATASET,
+        "revision": REVISION,
+        "manifest_sha256": MANIFEST.sha256,
+        "source_receipt_file_sha256": RECEIPT.sha256,
+        "archive_path": ARCHIVE.path,
+        "member_path": MEMBER.path,
+        "member_retrieval": "extracted-from-verified-archive",
+    }
+    expected_qualification = {
+        "schema_version": 1,
+        "qualification": "structural_storage_candidate_only",
+        "source_id": "au-pbs-historical-xml",
+        "parent_receipt_sha256": PARENT_RECEIPT_SHA256,
+        "archive_sha256": ARCHIVE.sha256,
+        "member_sha256": MEMBER.sha256,
+        "member_binding_sha256": MEMBER_BINDING_SHA256,
+        "date_profile": "not-selected",
+        "domain_semantics_qualified": False,
+    }
+    native_fields = qualification.get("native_fields")
+    elements = qualification.get("elements")
+    counters_valid = (
+        type(native_fields) is int
+        and native_fields > 0
+        and type(elements) is int
+        and elements > 0
+    )
+    return all((
+        all(report.get(key) == value for key, value in expected_report.items()),
+        all(
+            qualification.get(key) == value
+            for key, value in expected_qualification.items()
+        ),
+        _valid_public_objects(report.get("public_objects")),
+        isinstance(report.get("workflow_commit"), str),
+        re.fullmatch(r"[0-9a-f]{40}", report["workflow_commit"]) is not None,
+        type(report.get("anonymous_public_checks")) is int,
+        report.get("anonymous_public_checks") == ANONYMOUS_PUBLIC_CHECKS,
+        counters_valid,
+        _sha256(qualification.get("native_digest")),
+    ))
+
+
 _SHARED_QUALIFICATION_KEYS = (
     "source_id",
     "parent_receipt_sha256",
@@ -62,7 +195,9 @@ def _projection(
     if tuple(projections) != (name,):
         raise _invalid()
     projection = projections[cast("str", name)]
-    if not isinstance(projection, dict):
+    if not isinstance(projection, dict) or not _valid_projection_schema(
+        cast("str", name), cast("dict[str, Any]", projection)
+    ):
         raise _invalid()
     return cast("str", name), qualification, cast("dict[str, Any]", projection)
 
@@ -94,16 +229,14 @@ def aggregate_shards(  # ruff: ignore[too-many-branches]
     if tuple(sorted(phases, key=PHASE_PROJECTIONS.index)) != PHASE_PROJECTIONS:
         raise _invalid()
     first, first_qualification = normalized[0]
-    if (
-        first.get("dataset") != DATASET
-        or first.get("revision") != REVISION
-        or (
-            expected_commit is not None
-            and first.get("workflow_commit") != expected_commit
-        )
+    if not _valid_identity(first, first_qualification) or (
+        expected_commit is not None
+        and first.get("workflow_commit") != expected_commit
     ):
         raise _invalid()
     for report, qualification in normalized:
+        if not _valid_public_objects(report.get("public_objects")):
+            raise _invalid()
         if any(
             report.get(key) != first.get(key) for key in _SHARED_REPORT_KEYS
         ):
@@ -125,7 +258,6 @@ def aggregate_shards(  # ruff: ignore[too-many-branches]
             != qualification.get("native_fields")
             or projection.get("native_digest")
             != qualification.get("native_digest")
-            or projection.get("parquet_roundtrip_verified") is not True
         ):
             raise _invalid()
         phase_outputs[name] = projection
@@ -160,7 +292,7 @@ def aggregate_shards(  # ruff: ignore[too-many-branches]
     }
 
 
-def _aggregate_references(  # ruff: ignore[too-many-branches]
+def _aggregate_references(
     references: list[tuple[dict[str, Any], dict[str, Any], dict[str, Any]]],
     shared: dict[str, Any],
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
@@ -173,12 +305,7 @@ def _aggregate_references(  # ruff: ignore[too-many-branches]
             raise _invalid()
         window = cast("dict[str, Any]", window)
         digest = projection.get("native_digest")
-        if (
-            projection.get("native_digest_scope") != "ordered-window"
-            or projection.get("parquet_roundtrip_verified") is not True
-            or not isinstance(digest, str)
-            or re.fullmatch(r"[0-9a-f]{64}", digest) is None
-        ):
+        if not _sha256(digest):
             raise _invalid()
         windows.append((window, projection))
     windows.sort(key=lambda item: item[0].get("index", -1))
@@ -211,11 +338,8 @@ def _aggregate_references(  # ruff: ignore[too-many-branches]
         if type(fields) is not int or fields < 0:
             raise _invalid()
         native_fields += fields
-        for key, value in projection.items():
-            if key in {"rows", "native_fields"}:
-                continue
-            if key.endswith("_rows") and type(value) is int:
-                numeric_totals[key] = numeric_totals.get(key, 0) + value
+        for key in _COUNTER_KEYS[2:]:
+            numeric_totals[key] = numeric_totals.get(key, 0) + projection[key]
         digest_manifest.append({
             "start_row": start,
             "stop_row": stop,

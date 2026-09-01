@@ -21,6 +21,7 @@ from test_pbs_historical_silver import PATH, SOURCE
 from test_pbs_silver import XML
 
 from global_medicines_atlas import pbs_hosted_qualification as hosted
+from global_medicines_atlas import pbs_prepared_qualification as prepared
 
 SHA = "a" * 40
 
@@ -535,18 +536,61 @@ def test_workflow_has_durable_receipt_and_no_dataset_write() -> None:
     ).read_text(encoding="utf-8")
     assert "gh issue comment 341" in workflow
     assert "if: always()" in workflow
-    assert "--failure-only" in workflow
+    assert workflow.count("gh issue comment 341") == 1
+    assert "retention-days: 1" in workflow
     assert "persist-credentials: false" in workflow
     assert "HF_TOKEN" not in workflow
     assert "upload_folder" not in workflow
     assert "exact_commit" in workflow
     assert "fail-fast: false" in workflow
     assert "[native, domain, entities, dates]" in workflow
-    assert "--reference-shard-count 32" in workflow
-    assert "needs: [qualify, qualify-references]" in workflow
+    assert "--reference-shards 16" in workflow
+    assert "max-parallel: 4" in workflow
+    assert "needs: [prepare, qualify, qualify-references]" in workflow
     assert "pbs-${{ matrix.projection }}-receipt.json" in workflow
     assert "aggregate_historical_pbs_qualification.py" in workflow
     assert "merge-multiple: true" in workflow
+
+
+def test_preparation_fetches_once_and_writes_bounded_transient_workers(
+    tmp_path: Path, synthetic, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, calls, transport = synthetic
+    output = tmp_path / "prepared"
+
+    report = hosted.run_hosted_preparation(
+        SHA, output, shard_count=2, transport=transport
+    )
+
+    assert report["status"] == "prepared"
+    assert report["reference_shards"] == 2
+    assert report["publication_performed"] is False
+    assert report["evidence_truth"] is False
+    assert len(calls) == 5
+    phase = json.loads(
+        (output / "phase-input" / "phase-manifest.json").read_text()
+    )
+    assert phase["purpose"] == "transient-same-run-pbs-qualification-input"
+    assert phase["evidence_truth"] is False
+    for index in range(2):
+        worker = output / "workers" / f"reference-{index:02d}"
+        assert sorted(path.name for path in worker.iterdir()) == [
+            f"reference-{index:02d}.arrow",
+            "reference-index.json",
+            "reference-manifest.json",
+        ]
+    for name in ("ARCHIVE", "MANIFEST", "MEMBER", "RECEIPT"):
+        monkeypatch.setattr(prepared, name, getattr(hosted, name))
+    phase_report = prepared.qualify_prepared_phase(
+        output / "phase-input", SHA, "native"
+    )
+    reference_report = prepared.qualify_prepared_reference(
+        output / "workers" / "reference-00", SHA, 0
+    )
+    assert phase_report["status"] == "passed"
+    assert phase_report["qualification"]["projection_shard"] == "native"
+    assert reference_report["status"] == "passed"
+    assert reference_report["qualification"]["reference_window"]["index"] == 0
 
 
 def test_checkpoint_survives_interruption(synthetic, monkeypatch, tmp_path):

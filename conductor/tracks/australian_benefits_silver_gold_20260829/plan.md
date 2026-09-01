@@ -688,17 +688,19 @@
   records only six batches and 8,358 rows at 3,307,188 ms. This regressed the
   earlier hosted prefix despite the small synthetic result and is incomplete,
   not qualification. No retry or publication occurred.
-- [~] Disaggregate hosted qualification into independently bounded native,
-  domain, entity and date jobs plus deterministic reference row windows. Each
-  reference window must build the complete global literal index, validate the
-  full ordered entity identity/row denominator, and allocate diagnostics only
-  for its half-open range. Every job retains a digest-bound durable receipt;
-  the final aggregate fails closed on missing, overlapping or inconsistent
-  windows, commit/revision/pin drift, denominator or ordered-digest drift, or
-  missing Parquet equality. The repository candidate uses 32 reference windows
-  under the unchanged 55-minute per-job cap and never stores source bytes in
-  artifacts. It depends on the independently reviewed linear window API in
-  PR #419; hosted dispatch remains pending reviewed merges.
+- [~] Disaggregate hosted qualification with one anonymous preparation job
+  that verifies the pinned public source and computes the entity denominator
+  and complete global literal index exactly once. It emits retention-one-day,
+  same-run-only inputs marked `evidence_truth=false`: one phase input and 16
+  digest-bound reference partitions, each worker receiving only its assigned
+  Arrow partition, the complete global index and exact manifest identity.
+  Four bounded phase workers and the reference matrix run with `max-parallel: 4`.
+  Only the final aggregate writes durable issue evidence; it fails closed with
+  exact missing/failed shard IDs, exact hosted pins and schemas, gap-free ordered
+  windows, denominators, declared counter types, digests and Parquet equality.
+  These transient Actions artifacts are not reusable data or publication;
+  reusable data remains public-Hugging-Face-only under its separate publication
+  gate. Hosted dispatch remains pending reviewed merge.
   Exact merged-main run `33509616416` at `ccf7570` falsified that synthetic
   forecast: after the same 55-minute limit it had emitted only 8,358 reference
   rows in six batches, versus 163,700 rows in 120 batches at `757dc41`.
