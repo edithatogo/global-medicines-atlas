@@ -165,6 +165,52 @@ def test_reference_output_does_not_recombine_nested_arrow_chunks(
     assert all(batch.num_rows <= 2 for batch in actual_batches)
 
 
+def test_reference_output_allocates_diagnostics_after_batch_bounds(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = _production_xml()
+    batches = list(
+        iter_pbs_entity_batches(
+            payload, _receipt(payload, "au-pbs"), rows_per_batch=4096
+        )
+    )
+    input_rows = max(batch.num_rows for batch in batches)
+    index, _, _ = pbs_references._index(iter(batches))  # pyright: ignore[reportPrivateUsage]
+    entities = batches[0].to_pylist()
+    diagnostics = [
+        pbs_references._diagnostics(  # pyright: ignore[reportPrivateUsage]
+            pbs_references._contract(entity),  # pyright: ignore[reportPrivateUsage]
+            index,
+        )
+        for entity in entities
+    ]
+    row_limit = max(
+        pbs_references._size(entity)  # pyright: ignore[reportPrivateUsage]
+        + pbs_references._size(diagnostic)  # pyright: ignore[reportPrivateUsage]
+        - 1
+        for entity, diagnostic in zip(entities, diagnostics, strict=True)
+    )
+    allocation_lengths: list[int] = []
+    original = pbs_references.pa.array
+
+    def bounded_array(
+        values: object, *args: object, **kwargs: object
+    ) -> object:
+        allocation_lengths.append(len(values))  # type: ignore[arg-type]
+        return original(values, *args, **kwargs)  # pyright: ignore[reportUnknownArgumentType]
+
+    monkeypatch.setattr(pbs_references.pa, "array", bounded_array)
+    monkeypatch.setattr(pbs_references, "MAX_BATCH_BYTES", row_limit)
+    output = list(
+        pbs_references._reference_batches(  # pyright: ignore[reportPrivateUsage]
+            iter(batches), iter(batches), 4096
+        )
+    )
+    max_output_rows = max(batch.num_rows for batch in output)
+    assert max_output_rows < input_rows
+    assert max(allocation_lengths) == max_output_rows
+
+
 @pytest.mark.parametrize("case", ["missing-index", "changed-schema"])
 def test_reference_output_rejects_cross_pass_identity(case: str) -> None:
     payload = _production_xml()
@@ -232,6 +278,8 @@ def test_reference_row_windows_equal_full_global_diagnostics() -> None:
     ("start", "stop", "expected", "message"),
     [
         (-1, 1, None, "window is invalid"),
+        (0, 0, None, "window is invalid"),
+        (1, None, None, "window is invalid"),
         (2, 1, None, "window is invalid"),
         (0, 10_000, None, "window exceeds total"),
         (0, None, 1, "total row denominator changed"),

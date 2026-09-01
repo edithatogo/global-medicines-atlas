@@ -275,8 +275,10 @@ def _resolve_window(
 ) -> int:
     if type(start_row) is not int or start_row < 0:
         raise ValueError("PBS reference row window is invalid")
+    if stop_row is None and start_row != 0:
+        raise ValueError("PBS reference row window is invalid")
     if stop_row is not None and (
-        type(stop_row) is not int or stop_row < start_row
+        type(stop_row) is not int or stop_row <= start_row
     ):
         raise ValueError("PBS reference row window is invalid")
     if expected_total_rows is not None and (
@@ -291,15 +293,13 @@ def _resolve_window(
     return resolved_stop
 
 
-def _annotated_batch(
-    batch: pa.RecordBatch, index: ReferenceIndex, schema: pa.Schema
-) -> tuple[pa.RecordBatch, list[dict[str, Any]], list[dict[str, Any]]]:
-    entities = batch.to_pylist()
-    diagnostics = [
-        _diagnostics(_contract(entity), index) for entity in entities
-    ]
+def _annotated_slice(
+    batch: pa.RecordBatch,
+    diagnostics: list[dict[str, Any]],
+    schema: pa.Schema,
+) -> pa.RecordBatch:
     diagnostic_names = tuple(schema.names[len(batch.schema.names) :])
-    output = pa.RecordBatch.from_arrays(  # pyright: ignore[reportUnknownMemberType]
+    return pa.RecordBatch.from_arrays(  # pyright: ignore[reportUnknownMemberType]
         [
             *batch.columns,  # pyright: ignore[reportUnknownMemberType]
             *(
@@ -312,15 +312,13 @@ def _annotated_batch(
         ],
         schema=schema,
     )
-    return output, entities, diagnostics
 
 
-def _bounded_slices(
-    output: pa.RecordBatch,
+def _bounded_ranges(
     entities: list[dict[str, Any]],
     diagnostics: list[dict[str, Any]],
     rows_per_batch: int,
-) -> Iterator[pa.RecordBatch]:
+) -> Iterator[tuple[int, int]]:
     start = rows = size = 0
     for position, (entity, diagnostic) in enumerate(
         zip(entities, diagnostics, strict=True)
@@ -331,13 +329,29 @@ def _bounded_slices(
         if rows and (
             rows >= rows_per_batch or size + row_size > MAX_BATCH_BYTES
         ):
-            yield output.slice(start, position - start)
+            yield start, position
             rows = size = 0
             start = position
         rows += 1
         size += row_size
-    if start < output.num_rows:
-        yield output.slice(start)
+    if start < len(entities):
+        yield start, len(entities)
+
+
+def _annotated_batches(
+    batch: pa.RecordBatch,
+    index: ReferenceIndex,
+    schema: pa.Schema,
+    rows_per_batch: int,
+) -> Iterator[pa.RecordBatch]:
+    entities = batch.to_pylist()
+    diagnostics = [
+        _diagnostics(_contract(entity), index) for entity in entities
+    ]
+    for start, stop in _bounded_ranges(entities, diagnostics, rows_per_batch):
+        yield _annotated_slice(
+            batch.slice(start, stop - start), diagnostics[start:stop], schema
+        )
 
 
 def _reference_batches(
@@ -372,11 +386,6 @@ def _reference_batches(
         )
         if schema is None:
             schema = _schema(selected.schema)
-        output, entities, diagnostics = _annotated_batch(
-            selected, index, schema
-        )
-        yield from _bounded_slices(
-            output, entities, diagnostics, rows_per_batch
-        )
+        yield from _annotated_batches(selected, index, schema, rows_per_batch)
     if output_rows != total_rows:
         raise ValueError("PBS reference cross-pass row count changed")
