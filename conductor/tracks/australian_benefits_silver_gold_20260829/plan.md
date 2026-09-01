@@ -196,6 +196,21 @@
   without overwriting source values.
 - [ ] Emit field-level lineage, coverage denominators, quality findings, and
   promotion candidates.
+  Aggregate candidate qualification now binds all six XML Silver tables, the
+  complete 40-field and source-row denominators, per-table lineage digests,
+  conversion-quality counts, B1/B2 identities and explicit candidate-only
+  blockers (`e6abca6`). Field-addressed lineage output, real-source execution and public
+  v4 identity verification remain pending; no promotion is inferred.
+
+## Aggregate qualification review fixes
+
+- [x] Register the new qualification module in the governed unit lane so every
+  primary Test-Goblin profile collects an explicitly assigned test module.
+  Format the new module and tests with the repository-pinned formatter after
+  the first exact-head routine lane exposed the missing format gate; exercise
+  every serialized evidence-drift gate and the no-quality blocker branch.
+  (`59f5aa9`, `4a326ee`, `07a53f3`; changed module 97% branch coverage,
+  Ruff and BasedPyright pass.)
 - [ ] Phase Verification & Checkpoint: every MBS source field is preserved or
   explicitly mapped with deterministic output evidence.
 
@@ -678,6 +693,14 @@
 
 ## Phase 6: Integrated qualification (AC-08)
 
+- [x] Repair aggregate MBS Silver denominator review findings at `b073f10`:
+  require each serialized table's exact contract-derived field count, require
+  only known conversion statuses, and require quality counts to sum to the
+  complete field-occurrence denominator. Focused qualification, MBS, and
+  harness tests pass (79 tests; changed module 95% coverage), with Ruff and
+  BasedPyright clean. The broader Australian source-contract run also passed
+  all semantic assertions but recorded one unrelated Hypothesis 200 ms timing
+  flake under combined coverage load; no deadline or test was weakened.
 - [x] Profile the persistent local `PERF-QUERY` failure by separating connection
   lifecycle, cohort-validity SQL, page SQL and conclusion construction. Static
   audit finds repeated keys/assertion/coverage queries for overlapping cohort
