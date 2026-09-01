@@ -18,6 +18,7 @@ import shutil
 import tempfile
 import time
 from collections.abc import Mapping
+from contextlib import ExitStack
 from dataclasses import dataclass
 from typing import Literal, Protocol, cast
 
@@ -27,6 +28,7 @@ import polars as pl
 from .platinum_resolver import (
     CacheReceipt,
     ProductRead,
+    ResolvedResource,
     StorageNeutralResolver,
 )
 
@@ -105,12 +107,105 @@ class QueryResult:
     result_sha256: str
     evidence: QueryEvidence
     cache_receipt: CacheReceipt
+    query_receipt: QueryReceipt
+
+
+@dataclass(frozen=True)
+class QueryReceipt:
+    """Content-addressed binding of a plan, result and exact evidence."""
+
+    resource_id: str
+    engine: EngineName
+    canonical_query: bytes
+    query_sha256: str
+    result_sha256: str
+    row_count: int
+    object_sha256: str
+    contract_sha256: str
+    cache_receipt_sha256: str
+
+    @property
+    def canonical_bytes(self) -> bytes:
+        """Encode the receipt deterministically without its own digest."""
+        return json.dumps(
+            {
+                "cache_receipt_sha256": self.cache_receipt_sha256,
+                "contract_sha256": self.contract_sha256,
+                "engine": self.engine,
+                "object_sha256": self.object_sha256,
+                "query_sha256": self.query_sha256,
+                "resource_id": self.resource_id,
+                "result_sha256": self.result_sha256,
+                "row_count": self.row_count,
+                "version": "1.0",
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+
+    @property
+    def receipt_sha256(self) -> str:
+        """Return the content address of the exact query observation."""
+        return hashlib.sha256(self.canonical_bytes).hexdigest()
+
+
+UnavailableReason = Literal[
+    "unknown_resource",
+    "offline_cache_unavailable",
+    "offline_contract_expired",
+    "verified_resource_unavailable",
+]
+
+
+@dataclass(frozen=True)
+class QueryUnavailable:
+    """Typed fail-closed state for a valid query whose bytes are unavailable."""
+
+    status: Literal["unavailable"]
+    reason: UnavailableReason
+    resource_id: str
+    engine: EngineName
+    evidence: QueryEvidence | None
+    cache_receipt: CacheReceipt | None
+
+    @property
+    def canonical_bytes(self) -> bytes:
+        """Encode an unavailable observation with exact known evidence."""
+        return json.dumps(
+            {
+                "cache_receipt_sha256": (
+                    self.cache_receipt.receipt_sha256
+                    if self.cache_receipt is not None
+                    else None
+                ),
+                "engine": self.engine,
+                "evidence": (
+                    _evidence_document(self.evidence)
+                    if self.evidence is not None
+                    else None
+                ),
+                "reason": self.reason,
+                "resource_id": self.resource_id,
+                "status": self.status,
+                "version": "1.0",
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+
+    @property
+    def receipt_sha256(self) -> str:
+        """Return the content address of this exact unavailable state."""
+        return hashlib.sha256(self.canonical_bytes).hexdigest()
 
 
 class QueryAdapter(Protocol):
     """Storage-neutral engine boundary used by the shared query service."""
 
-    name: EngineName
+    @property
+    def name(self) -> EngineName:
+        """Return the immutable engine identity implemented by the adapter."""
+        ...
 
     def execute(
         self, read: ProductRead, spec: QuerySpec
@@ -217,6 +312,65 @@ class PlatinumQueryService:
         offline: bool = False,
     ) -> QueryResult:
         """Return bounded deterministic rows or fail closed before overclaim."""
+        adapter = self._adapter(engine, spec)
+        with self._resolver.open(resource_id, offline=offline) as read:
+            return _available(adapter, read, spec)
+
+    def query_state(
+        self,
+        resource_id: str,
+        *,
+        engine: str,
+        spec: QuerySpec,
+        offline: bool = False,
+    ) -> QueryResult | QueryUnavailable:
+        """Return typed unavailability only for valid resource-read failures."""
+        adapter = self._adapter(engine, spec)
+        try:
+            metadata = self._resolver.resolve(resource_id)
+        except ValueError:
+            return QueryUnavailable(
+                status="unavailable",
+                reason="unknown_resource",
+                resource_id=resource_id,
+                engine=adapter.name,
+                evidence=None,
+                cache_receipt=None,
+            )
+        evidence = _evidence(metadata)
+        receipt = self._resolver.cache_receipt(resource_id)
+        if offline and receipt.status != "verified_exact_digest":
+            return QueryUnavailable(
+                status="unavailable",
+                reason=(
+                    "offline_contract_expired"
+                    if receipt.status == "contract_expired"
+                    else "offline_cache_unavailable"
+                ),
+                resource_id=resource_id,
+                engine=adapter.name,
+                evidence=evidence,
+                cache_receipt=receipt,
+            )
+        stack = ExitStack()
+        try:
+            read = stack.enter_context(
+                self._resolver.open(resource_id, offline=offline)
+            )
+        except ValueError:
+            stack.close()
+            return QueryUnavailable(
+                status="unavailable",
+                reason="verified_resource_unavailable",
+                resource_id=resource_id,
+                engine=adapter.name,
+                evidence=evidence,
+                cache_receipt=self._resolver.cache_receipt(resource_id),
+            )
+        with stack:
+            return _available(adapter, read, spec)
+
+    def _adapter(self, engine: str, spec: QuerySpec) -> QueryAdapter:
         _validate_spec(spec)
         try:
             adapter = self._adapters[engine]
@@ -224,46 +378,115 @@ class PlatinumQueryService:
             raise ValueError("unsupported query engine") from None
         if adapter.name != engine:
             raise ValueError("query engine adapter identity mismatch")
-        with self._resolver.open(resource_id, offline=offline) as read:
-            rows = adapter.execute(read, spec)
-            canonical = json.dumps(
-                rows,
-                ensure_ascii=False,
-                allow_nan=False,
-                sort_keys=True,
-                separators=(",", ":"),
-            ).encode()
-            if len(canonical) > spec.max_result_bytes:
-                raise ValueError("query result exceeds byte budget")
-            metadata = read.metadata
-            evidence = QueryEvidence(
-                resource_id=metadata.resource_id,
-                dataset=metadata.dataset,
-                revision=metadata.revision,
-                path=metadata.path,
-                object_sha256=metadata.sha256,
-                contract_sha256=metadata.contract_sha256,
-                semantic_dimension=metadata.semantic_dimension,
-                entity_granularity=metadata.entity_granularity,
-                source_id=metadata.source_id,
-                acquisition_id=metadata.acquisition_id,
-                layer=metadata.layer,
-                schema_era=metadata.schema_era,
-                comparison_cohort=metadata.comparison_cohort,
-                effective_date=metadata.effective_date,
-                retrieved_at=metadata.retrieved_at,
-            )
-            return QueryResult(
-                status="available",
-                engine=adapter.name,
-                capabilities=CAPABILITIES,
-                rows=rows,
-                row_count=len(rows),
-                canonical_rows=canonical,
-                result_sha256=hashlib.sha256(canonical).hexdigest(),
-                evidence=evidence,
-                cache_receipt=read.cache_receipt,
-            )
+        return adapter
+
+
+def _available(
+    adapter: QueryAdapter, read: ProductRead, spec: QuerySpec
+) -> QueryResult:
+    rows = adapter.execute(read, spec)
+    canonical = json.dumps(
+        rows,
+        ensure_ascii=False,
+        allow_nan=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+    if len(canonical) > spec.max_result_bytes:
+        raise ValueError("query result exceeds byte budget")
+    evidence = _evidence(read.metadata)
+    result_sha256 = hashlib.sha256(canonical).hexdigest()
+    canonical_query = _canonical_query(spec)
+    query_receipt = QueryReceipt(
+        resource_id=read.metadata.resource_id,
+        engine=adapter.name,
+        canonical_query=canonical_query,
+        query_sha256=hashlib.sha256(canonical_query).hexdigest(),
+        result_sha256=result_sha256,
+        row_count=len(rows),
+        object_sha256=read.metadata.sha256,
+        contract_sha256=read.metadata.contract_sha256,
+        cache_receipt_sha256=read.cache_receipt.receipt_sha256,
+    )
+    return QueryResult(
+        status="available",
+        engine=adapter.name,
+        capabilities=CAPABILITIES,
+        rows=rows,
+        row_count=len(rows),
+        canonical_rows=canonical,
+        result_sha256=result_sha256,
+        evidence=evidence,
+        cache_receipt=read.cache_receipt,
+        query_receipt=query_receipt,
+    )
+
+
+def _evidence(metadata: ResolvedResource) -> QueryEvidence:
+    return QueryEvidence(
+        resource_id=metadata.resource_id,
+        dataset=metadata.dataset,
+        revision=metadata.revision,
+        path=metadata.path,
+        object_sha256=metadata.sha256,
+        contract_sha256=metadata.contract_sha256,
+        semantic_dimension=metadata.semantic_dimension,
+        entity_granularity=metadata.entity_granularity,
+        source_id=metadata.source_id,
+        acquisition_id=metadata.acquisition_id,
+        layer=metadata.layer,
+        schema_era=metadata.schema_era,
+        comparison_cohort=metadata.comparison_cohort,
+        effective_date=metadata.effective_date,
+        retrieved_at=metadata.retrieved_at,
+    )
+
+
+def _evidence_document(evidence: QueryEvidence) -> dict[str, object]:
+    return {
+        "acquisition_id": evidence.acquisition_id,
+        "comparison_cohort": evidence.comparison_cohort,
+        "comparison_validity": evidence.comparison_validity,
+        "contract_sha256": evidence.contract_sha256,
+        "coverage_state": evidence.coverage_state,
+        "dataset": evidence.dataset,
+        "effective_date": evidence.effective_date,
+        "entity_granularity": evidence.entity_granularity,
+        "layer": evidence.layer,
+        "object_sha256": evidence.object_sha256,
+        "path": evidence.path,
+        "resource_id": evidence.resource_id,
+        "retrieved_at": evidence.retrieved_at,
+        "review_state": evidence.review_state,
+        "revision": evidence.revision,
+        "schema_era": evidence.schema_era,
+        "semantic_dimension": evidence.semantic_dimension,
+        "source_id": evidence.source_id,
+        "uncertainty_state": evidence.uncertainty_state,
+    }
+
+
+def _canonical_query(spec: QuerySpec) -> bytes:
+    return json.dumps(
+        {
+            "columns": spec.columns,
+            "filters": [
+                {
+                    "column": item.column,
+                    "operator": item.operator,
+                    "value": item.value,
+                }
+                for item in spec.filters
+            ],
+            "limit": spec.limit,
+            "max_result_bytes": spec.max_result_bytes,
+            "timeout_seconds": spec.timeout_seconds,
+            "version": "1.0",
+        },
+        allow_nan=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
 
 
 def _validate_spec(spec: QuerySpec) -> None:
