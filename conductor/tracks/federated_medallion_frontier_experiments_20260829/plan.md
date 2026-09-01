@@ -36,6 +36,12 @@
   restored per-object SHA-256 equality, and keeps chunk reuse non-authoritative.
   Nine focused tests provide 100% statement and branch coverage; the combined
   Phase 1/2 contract suite passes 28 tests with Ruff and BasedPyright clean.
+  Review fix `81b5dbb` registers the new file in the governed unit inventory.
+  The resulting local full collection ran 4,268 tests: 4,263 passed, one
+  skipped, two existing stable-v1 release tests failed because only uv 0.12.7
+  was available instead of pinned 0.11.29, and two existing product tests
+  failed their unchanged 250ms local query budget at 348.022ms and 367.446ms.
+  No frontier contract failed; hosted Linux lanes remain authoritative.
 - [x] Confirm the intended failure before implementation. The new contract test
   failed at collection with `ModuleNotFoundError` before the implementation was
   added; subsequent bounded fixes made custom denominator and anonymous-
