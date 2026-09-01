@@ -230,6 +230,8 @@ def test_mutable_or_malformed_collection_items_fail_closed(
 
 
 def test_structural_metadata_bounds_fail_before_reconciliation() -> None:
+    with pytest.raises(ValueError, match="empty collection denominator"):
+        reconcile(expected=(), observed=())
     with pytest.raises(ValueError, match="collection limit"):
         reconcile(
             expected=tuple(
@@ -243,10 +245,7 @@ def test_structural_metadata_bounds_fail_before_reconciliation() -> None:
                 replace(
                     expectation(),
                     items=tuple(
-                        replace(
-                            MBS,
-                            dataset=f"edithatogo/dataset-{index}",
-                        )
+                        replace(MBS, dataset=f"edithatogo/dataset-{index}")
                         for index in range(1001)
                     ),
                 ),
@@ -277,3 +276,43 @@ def test_structural_metadata_bounds_fail_before_reconciliation() -> None:
                 ),
             )
         )
+
+
+def test_revision_conflicts_and_registry_duplicates_fail_closed() -> None:
+    other = replace(
+        expectation(),
+        identity="edithatogo/policy-other",
+        items=(replace(MBS, revision="d" * 40),),
+    )
+    observed_other = CollectionObservation(
+        identity=other.identity,
+        title=other.title,
+        private=False,
+        note=other.note,
+        items=other.items,
+    )
+    with pytest.raises(ValueError, match="revision conflict"):
+        reconcile(
+            expected=(expectation(), other),
+            observed=(observation(), observed_other),
+        )
+
+    entries = registry().entries
+    with pytest.raises(ValueError, match="duplicate registry dataset"):
+        reconcile(estate=replace(registry(), entries=(entries[0], entries[0])))
+    duplicate_membership = replace(
+        entries[0], collections=(expectation().identity,) * 2
+    )
+    with pytest.raises(ValueError, match="duplicate registry collection"):
+        reconcile(
+            estate=replace(
+                registry(), entries=(duplicate_membership, entries[1])
+            )
+        )
+
+
+def test_empty_collection_is_rejected() -> None:
+    empty_expected = replace(expectation(), items=())
+    empty_observed = replace(observation(), items=())
+    with pytest.raises(ValueError, match="collection must be populated"):
+        reconcile(expected=(empty_expected,), observed=(empty_observed,))
