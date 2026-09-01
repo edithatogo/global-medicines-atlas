@@ -93,6 +93,7 @@ class ResolvedResource:
     sha256: str
     byte_count: int
     contract_sha256: str
+    semantic_manifest_sha256: str
     source_id: str
     acquisition_id: str
     layer: str
@@ -384,6 +385,9 @@ def _resolve_resource(
         sha256=obj.sha256,
         byte_count=obj.byte_count,
         contract_sha256=binding.contract_sha256,
+        semantic_manifest_sha256=hashlib.sha256(
+            resource.semantic_manifest
+        ).hexdigest(),
         source_id=obj.source_id,
         acquisition_id=obj.acquisition_id,
         layer=obj.layer,

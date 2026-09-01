@@ -112,6 +112,7 @@ def resolver(
     payload: bytes,
     *,
     status: int = 200,
+    metadata_json: object | None = None,
     clock: Any = lambda: NOW,
 ) -> StorageNeutralResolver:
     raw = contract(payload)
@@ -140,7 +141,11 @@ def resolver(
         if "/api/datasets/" in request.url.path:
             return httpx.Response(
                 status,
-                json={"sha": "a" * 40, "private": False, "gated": False},
+                json=(
+                    metadata_json
+                    if metadata_json is not None
+                    else {"sha": "a" * 40, "private": False, "gated": False}
+                ),
             )
         return httpx.Response(status, content=payload)
 
@@ -215,6 +220,9 @@ def test_query_projects_filters_limits_and_wraps_exact_evidence(
     )
     assert result.query_receipt.cache_receipt_sha256 == (
         result.cache_receipt.receipt_sha256
+    )
+    assert result.query_receipt.semantic_manifest_sha256 == (
+        result.evidence.semantic_manifest_sha256
     )
 
 
@@ -424,6 +432,9 @@ def test_query_state_distinguishes_offline_miss_eviction_and_expiry() -> None:
             missing.receipt_sha256
             == hashlib.sha256(missing.canonical_bytes).hexdigest()
         )
+        assert missing.query_sha256 == hashlib.sha256(
+            missing.canonical_query
+        ).hexdigest()
 
         available = service.query_state(
             "au.mbs.service-items",
@@ -454,6 +465,15 @@ def test_query_state_reports_unknown_expired_and_remote_unavailable() -> None:
         assert unknown.reason == "unknown_resource"
         assert unknown.evidence is None
         assert unknown.cache_receipt is None
+
+    with resolver(payload, metadata_json=[]) as client:
+        malformed = PlatinumQueryService(client).query_state(
+            "au.mbs.service-items",
+            engine="polars",
+            spec=QuerySpec(columns=("item_code",), limit=1),
+        )
+        assert isinstance(malformed, QueryUnavailable)
+        assert malformed.reason == "verified_resource_unavailable"
 
     with resolver(payload, status=503) as client:
         remote = PlatinumQueryService(client).query_state(
@@ -497,3 +517,23 @@ def test_cache_receipts_are_content_addressed_and_expiry_is_explicit() -> None:
         )
         assert isinstance(outcome, QueryUnavailable)
         assert outcome.reason == "offline_contract_expired"
+
+
+def test_unavailable_receipt_binds_attempted_query_plan() -> None:
+    payload = parquet_payload()
+    with resolver(payload, status=503) as client:
+        service = PlatinumQueryService(client)
+        first = service.query_state(
+            "au.mbs.service-items",
+            engine="duckdb",
+            spec=QuerySpec(columns=("item_code",), limit=1),
+        )
+        second = service.query_state(
+            "au.mbs.service-items",
+            engine="duckdb",
+            spec=QuerySpec(columns=("benefit",), limit=2),
+        )
+    assert isinstance(first, QueryUnavailable)
+    assert isinstance(second, QueryUnavailable)
+    assert first.query_sha256 != second.query_sha256
+    assert first.receipt_sha256 != second.receipt_sha256

@@ -79,6 +79,7 @@ class QueryEvidence:
     path: str
     object_sha256: str
     contract_sha256: str
+    semantic_manifest_sha256: str
     semantic_dimension: str
     entity_granularity: str
     source_id: str
@@ -122,6 +123,7 @@ class QueryReceipt:
     row_count: int
     object_sha256: str
     contract_sha256: str
+    semantic_manifest_sha256: str
     cache_receipt_sha256: str
 
     @property
@@ -137,6 +139,7 @@ class QueryReceipt:
                 "resource_id": self.resource_id,
                 "result_sha256": self.result_sha256,
                 "row_count": self.row_count,
+                "semantic_manifest_sha256": self.semantic_manifest_sha256,
                 "version": "1.0",
             },
             sort_keys=True,
@@ -165,6 +168,8 @@ class QueryUnavailable:
     reason: UnavailableReason
     resource_id: str
     engine: EngineName
+    canonical_query: bytes
+    query_sha256: str
     evidence: QueryEvidence | None
     cache_receipt: CacheReceipt | None
 
@@ -186,6 +191,7 @@ class QueryUnavailable:
                 ),
                 "reason": self.reason,
                 "resource_id": self.resource_id,
+                "query_sha256": self.query_sha256,
                 "status": self.status,
                 "version": "1.0",
             },
@@ -326,6 +332,8 @@ class PlatinumQueryService:
     ) -> QueryResult | QueryUnavailable:
         """Return typed unavailability only for valid resource-read failures."""
         adapter = self._adapter(engine, spec)
+        canonical_query = _canonical_query(spec)
+        query_sha256 = hashlib.sha256(canonical_query).hexdigest()
         try:
             metadata = self._resolver.resolve(resource_id)
         except ValueError:
@@ -334,6 +342,8 @@ class PlatinumQueryService:
                 reason="unknown_resource",
                 resource_id=resource_id,
                 engine=adapter.name,
+                canonical_query=canonical_query,
+                query_sha256=query_sha256,
                 evidence=None,
                 cache_receipt=None,
             )
@@ -349,6 +359,8 @@ class PlatinumQueryService:
                 ),
                 resource_id=resource_id,
                 engine=adapter.name,
+                canonical_query=canonical_query,
+                query_sha256=query_sha256,
                 evidence=evidence,
                 cache_receipt=receipt,
             )
@@ -357,13 +369,15 @@ class PlatinumQueryService:
             read = stack.enter_context(
                 self._resolver.open(resource_id, offline=offline)
             )
-        except ValueError:
+        except (TypeError, ValueError):
             stack.close()
             return QueryUnavailable(
                 status="unavailable",
                 reason="verified_resource_unavailable",
                 resource_id=resource_id,
                 engine=adapter.name,
+                canonical_query=canonical_query,
+                query_sha256=query_sha256,
                 evidence=evidence,
                 cache_receipt=self._resolver.cache_receipt(resource_id),
             )
@@ -406,6 +420,7 @@ def _available(
         row_count=len(rows),
         object_sha256=read.metadata.sha256,
         contract_sha256=read.metadata.contract_sha256,
+        semantic_manifest_sha256=read.metadata.semantic_manifest_sha256,
         cache_receipt_sha256=read.cache_receipt.receipt_sha256,
     )
     return QueryResult(
@@ -430,6 +445,7 @@ def _evidence(metadata: ResolvedResource) -> QueryEvidence:
         path=metadata.path,
         object_sha256=metadata.sha256,
         contract_sha256=metadata.contract_sha256,
+        semantic_manifest_sha256=metadata.semantic_manifest_sha256,
         semantic_dimension=metadata.semantic_dimension,
         entity_granularity=metadata.entity_granularity,
         source_id=metadata.source_id,
@@ -461,6 +477,7 @@ def _evidence_document(evidence: QueryEvidence) -> dict[str, object]:
         "revision": evidence.revision,
         "schema_era": evidence.schema_era,
         "semantic_dimension": evidence.semantic_dimension,
+        "semantic_manifest_sha256": evidence.semantic_manifest_sha256,
         "source_id": evidence.source_id,
         "uncertainty_state": evidence.uncertainty_state,
     }
