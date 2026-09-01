@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
+from contextlib import contextmanager
 from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -17,6 +19,7 @@ from global_medicines_atlas.federation_distribution import (
     ProducedObject,
     reconcile_distribution,
 )
+from global_medicines_atlas.federation_reader import VerifiedRead
 from global_medicines_atlas.platinum_resolver import (
     CacheReceipt,
     ProductResource,
@@ -278,6 +281,44 @@ def test_cache_receipt_reports_exact_nondefault_budgets() -> None:
         assert receipt.max_cache_entries == 1
         assert receipt.max_open_reads == 1
         assert receipt.timeout_seconds == pytest.approx(7.5)
+        assert client.cached_bytes == len(PAYLOAD)
+
+
+def test_resource_and_semantic_manifest_denominators_are_bounded() -> None:
+    item = resource()
+    with pytest.raises(ValueError, match="resource denominator"):
+        resolver(Hub(), *(item for _ in range(257)))
+
+    oversized = replace(item, semantic_manifest=b" " * (16 * 1024 + 1))
+    admitted = frozenset({
+        hashlib.sha256(oversized.semantic_manifest).hexdigest()
+    })
+    with pytest.raises(ValueError, match="semantic manifest exceeds"):
+        resolver(Hub(), oversized, admitted_semantics=admitted)
+
+
+def test_reader_identity_mismatch_fails_closed() -> None:
+    hub = Hub()
+    client = resolver(hub)
+
+    @contextmanager
+    def mismatched(*_args: object, **_kwargs: object) -> Any:
+        metadata = client.resolve("au.mbs.service-items")
+        yield VerifiedRead(
+            stream=io.BytesIO(PAYLOAD),
+            origin="remote",
+            contract_sha256=metadata.contract_sha256,
+            sha256="f" * 64,
+            byte_count=len(PAYLOAD),
+        )
+
+    client._reader.open = mismatched  # type: ignore[method-assign]
+    with (
+        pytest.raises(ValueError, match="identity mismatch"),
+        client.open("au.mbs.service-items"),
+    ):
+        pytest.fail("mismatched reader identity")
+    client.close()
 
 
 def test_verified_read_does_not_claim_retention_beyond_cache_budget() -> None:
