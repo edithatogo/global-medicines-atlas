@@ -15,8 +15,96 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  prepare-reference-index:
+    name: Prepare transient PBS global reference index
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Prepare digest-bound global index
+        timeout-minutes: 55
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          uv run --locked --python 3.14.6 python scripts/prepare_historical_pbs_reference_node.py \
+            --exact-commit "$REQUESTED_COMMIT" --reference-shards 16 \
+            --output node --receipt reference-index-receipt.json
+          cp node/reference-index.json .
+      - name: Retain derived index node and bounded receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-node-index-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            reference-index.json
+            reference-index-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
+  prepare-reference-partitions:
+    name: Prepare transient PBS reference partition / ${{ matrix.key }}
+    if: github.ref == 'refs/heads/main'
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - {shard: 0, key: "00"}
+          - {shard: 1, key: "01"}
+          - {shard: 2, key: "02"}
+          - {shard: 3, key: "03"}
+          - {shard: 4, key: "04"}
+          - {shard: 5, key: "05"}
+          - {shard: 6, key: "06"}
+          - {shard: 7, key: "07"}
+          - {shard: 8, key: "08"}
+          - {shard: 9, key: "09"}
+          - {shard: 10, key: "10"}
+          - {shard: 11, key: "11"}
+          - {shard: 12, key: "12"}
+          - {shard: 13, key: "13"}
+          - {shard: 14, key: "14"}
+          - {shard: 15, key: "15"}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Prepare one digest-bound entity partition
+        timeout-minutes: 55
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+          SHARD: ${{ matrix.shard }}
+          KEY: ${{ matrix.key }}
+        run: |
+          uv run --locked --python 3.14.6 python scripts/prepare_historical_pbs_reference_node.py \
+            --exact-commit "$REQUESTED_COMMIT" --reference-shards 16 --shard-index "$SHARD" \
+            --output node --receipt "reference-$KEY-receipt.json"
+          cp "node/reference-$KEY.arrow" .
+      - name: Retain one derived partition node and bounded receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-node-${{ matrix.key }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            reference-${{ matrix.key }}.arrow
+            reference-${{ matrix.key }}-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
   prepare:
-    name: Prepare verified transient PBS shard inputs
+    name: Assemble verified transient PBS shard inputs
+    needs: [prepare-reference-index, prepare-reference-partitions]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 65
@@ -32,15 +120,17 @@ jobs:
       - name: Bind preparation artifact identity
         id: identity
         run: echo "suffix=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_OUTPUT"
-      - name: Verify public source once and prepare bounded inputs
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          pattern: pbs-reference-node-*-${{ github.run_id }}-*
+          path: nodes
+      - name: Assemble exact node coverage and manifest
         timeout-minutes: 55
-        env:
-          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
         run: |
           set -euo pipefail
-          uv run --locked --python 3.14.6 python scripts/prepare_historical_pbs_qualification.py \
-            --exact-commit "$REQUESTED_COMMIT" --reference-shards 16 \
-            --output prepared --receipt pbs-preparation.json
+          uv run --locked --python 3.14.6 python scripts/assemble_historical_pbs_reference_manifest.py \
+            --input nodes --output prepared/references --reference-shards 16
+          cp prepared/references/preparation-receipt.json pbs-preparation.json
       - name: Retain transient global reference index
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:

@@ -143,6 +143,7 @@ def prepare_reference_index(
         "schema_version": 1,
         "purpose": "transient-reference-global-index",
         "binding_sha256": binding.digest(),
+        "binding": binding.model_dump(mode="json"),
         "denominator": {
             key: denominator[key]
             for key in ("native_fields", "elements", "native_digest")

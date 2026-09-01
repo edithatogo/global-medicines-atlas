@@ -613,6 +613,28 @@ def test_preparation_fetches_once_and_writes_bounded_transient_workers(
     assert reference_report["qualification"]["reference_window"]["index"] == 0
 
 
+@pytest.mark.parametrize("shard_index", [None, 0])
+def test_reference_preparation_node_is_independent_and_derived_only(
+    tmp_path: Path, synthetic, shard_index: int | None
+) -> None:
+    output = tmp_path / ("index" if shard_index is None else "partition")
+    report = hosted.run_hosted_reference_node(
+        SHA,
+        output,
+        shard_count=2,
+        shard_index=shard_index,
+        transport=synthetic[2],
+    )
+
+    assert report["status"] == "prepared"
+    assert report["node_kind"] == (
+        "index" if shard_index is None else "partition"
+    )
+    assert report["publication_performed"] is False
+    assert not list(output.rglob("*.zip"))
+    assert not list(output.rglob("*.xml"))
+
+
 def test_preparation_reports_bounded_stage_checkpoints(
     tmp_path: Path, synthetic
 ) -> None:
@@ -632,7 +654,6 @@ def test_preparation_reports_bounded_stage_checkpoints(
     ]
     assert "denominator" in observed
     assert "entity-partition-preparation" in observed
-    assert "global-index-preparation" in observed
     assert "manifest-verification" in observed
 
 
@@ -652,7 +673,7 @@ def test_preparation_failure_retains_exact_safe_stage_and_type(
         )
     report = hosted.failure_report(caught.value)
     assert report["failure_stage"] == "entity-partition-preparation"
-    assert report["failure_category"] == "unexpected"
+    assert report["failure_category"] == "resource"
     assert report["failure_type"] == "memory-error"
     assert "secret" not in json.dumps(report)
 
@@ -785,7 +806,15 @@ def test_progress_is_fixed_aggregate_only(synthetic):
     }
     assert all(
         set(event["progress"])
-        == {"stage", "phase", "batches", "rows", "elapsed_ms"}
+        == {
+            "stage",
+            "phase",
+            "batches",
+            "rows",
+            "elapsed_ms",
+            "free_space_bytes",
+            "max_rss_bytes",
+        }
         for event in checkpoints
     )
     assert "001.2300" not in json.dumps(checkpoints)

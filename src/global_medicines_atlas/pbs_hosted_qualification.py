@@ -39,7 +39,11 @@ from .pbs_member_identity import (
     PbsXmlMemberBinding,
     build_pbs_xml_member_binding,
 )
-from .pbs_reference_shards import prepare_reference_shards
+from .pbs_reference_shards import (
+    prepare_reference_index,
+    prepare_reference_partition,
+    prepare_reference_shards,
+)
 from .receipts import SourceReceipt
 
 DATASET = "edithatogo/australian-pbs-source-archive"
@@ -597,7 +601,6 @@ def run_hosted_preparation(
             denominator,
             references,
             shard_count=shard_count,
-            progress=retry.checkpoint,
         )
     reference_manifest.update({
         "workflow_commit": inputs.context["workflow_commit"],
@@ -629,6 +632,64 @@ def run_hosted_preparation(
         "reference_manifest_sha256": hashlib.sha256(
             (references / "reference-manifest.json").read_bytes()
         ).hexdigest(),
+        "publication_performed": False,
+        "evidence_truth": False,
+    }
+
+
+def run_hosted_reference_node(
+    exact_commit: str,
+    output: Path,
+    *,
+    shard_count: int,
+    shard_index: int | None = None,
+    transport: httpx.BaseTransport | None = None,
+    progress: Callable[[dict[str, Any]], None] | None = None,
+) -> dict[str, Any]:
+    """Prepare one independently retryable derived reference DAG node."""
+    retry = _RetryBudget(progress=progress)
+    inputs = _verified_inputs(exact_commit, transport=transport, retry=retry)
+    with _at("denominator", progress=retry.checkpoint):
+        denominator = _denominator(inputs.xml)
+    output.mkdir(parents=True, exist_ok=False)
+    batches = iter_pbs_historical_entity_batches(
+        inputs.archive, inputs.xml, inputs.parent, inputs.binding
+    )
+    if shard_index is None:
+        with _at("global-index-preparation", progress=retry.checkpoint):
+            node = prepare_reference_index(
+                batches,
+                inputs.binding,
+                denominator,
+                output / "reference-index.json",
+            )
+        node_kind = "index"
+    else:
+        with _at("entity-partition-preparation", progress=retry.checkpoint):
+            node = prepare_reference_partition(
+                batches,
+                inputs.binding,
+                denominator,
+                output / f"reference-{shard_index:02d}.arrow",
+                shard_index=shard_index,
+                shard_count=shard_count,
+            )
+        node_kind = "partition"
+    node.update({
+        "workflow_commit": inputs.context["workflow_commit"],
+        "preparation_run_id": inputs.context["run_id"],
+        "preparation_run_attempt": inputs.context["run_attempt"],
+        "dataset": DATASET,
+        "revision": REVISION,
+    })
+    return {
+        "schema_version": 1,
+        "status": "prepared",
+        **inputs.context,
+        "dataset": DATASET,
+        "revision": REVISION,
+        "node_kind": node_kind,
+        "node": node,
         "publication_performed": False,
         "evidence_truth": False,
     }
