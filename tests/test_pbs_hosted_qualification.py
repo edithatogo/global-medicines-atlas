@@ -12,6 +12,7 @@ from urllib.parse import quote
 
 import httpx
 import pytest
+from scripts import prepare_historical_pbs_qualification as prepare_cli
 from scripts import qualify_historical_pbs_public as cli
 from test_au_pbs_v3 import _zip  # ruff: ignore[import-private-name]
 from test_australian_source_contracts import (
@@ -551,7 +552,15 @@ def test_workflow_has_durable_receipt_and_no_dataset_write() -> None:
         "pbs-${{ matrix.projection }}-receipt-${{ github.run_attempt }}.json"
         in workflow
     )
-    assert "needs: [prepare, qualify]" in workflow
+    qualify_block = workflow.split("  qualify:\n", 1)[1].split(
+        "  qualify-references:\n", 1
+    )[0]
+    assert "needs: prepare" not in qualify_block
+    reference_block = workflow.split("  qualify-references:\n", 1)[1].split(
+        "  aggregate:\n", 1
+    )[0]
+    assert "needs: prepare" in reference_block
+    assert "needs: [prepare, qualify]" not in reference_block
     assert (
         "pbs-reference-global-${{ needs.prepare.outputs.artifact_suffix }}"
         in workflow
@@ -602,6 +611,103 @@ def test_preparation_fetches_once_and_writes_bounded_transient_workers(
     reference_report = prepared.qualify_prepared_reference(worker, SHA, 0)
     assert reference_report["status"] == "passed"
     assert reference_report["qualification"]["reference_window"]["index"] == 0
+
+
+def test_preparation_reports_bounded_stage_checkpoints(
+    tmp_path: Path, synthetic
+) -> None:
+    checkpoints: list[dict[str, object]] = []
+
+    hosted.run_hosted_preparation(
+        SHA,
+        tmp_path / "prepared",
+        shard_count=2,
+        transport=synthetic[2],
+        progress=checkpoints.append,
+    )
+
+    observed = [
+        report["progress"]["stage"]  # type: ignore[index]
+        for report in checkpoints
+    ]
+    assert "denominator" in observed
+    assert "entity-partition-preparation" in observed
+    assert "global-index-preparation" in observed
+    assert "manifest-verification" in observed
+
+
+def test_preparation_failure_retains_exact_safe_stage_and_type(
+    tmp_path: Path, synthetic, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def fail(*_args, **_kwargs):
+        raise MemoryError("synthetic-source-secret")
+
+    monkeypatch.setattr(hosted, "prepare_reference_shards", fail)
+    with pytest.raises(hosted.QualificationError) as caught:
+        hosted.run_hosted_preparation(
+            SHA,
+            tmp_path / "prepared",
+            shard_count=2,
+            transport=synthetic[2],
+        )
+    report = hosted.failure_report(caught.value)
+    assert report["failure_stage"] == "entity-partition-preparation"
+    assert report["failure_category"] == "unexpected"
+    assert report["failure_type"] == "memory-error"
+    assert "secret" not in json.dumps(report)
+
+
+def test_preparation_classifies_disk_exhaustion_without_message() -> None:
+    with (
+        pytest.raises(hosted.QualificationError) as caught,
+        hosted._at("entity-partition-preparation"),
+    ):
+        raise OSError(errno.ENOSPC, "synthetic-sensitive-path")
+    report = hosted.failure_report(caught.value)
+    assert report["failure_category"] == "resource"
+    assert report["failure_type"] == "disk-full"
+    assert "sensitive" not in json.dumps(report)
+
+
+def test_preparation_cli_persists_last_checkpoint_on_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def fail(_commit, _output, *, shard_count, progress):
+        assert shard_count == 16
+        progress({
+            "schema_version": 1,
+            "status": "incomplete",
+            "progress": {
+                "stage": "global-index-preparation",
+                "phase": "references",
+                "batches": 120,
+                "rows": 163700,
+                "elapsed_ms": 1,
+            },
+        })
+        raise MemoryError("synthetic-source-secret")
+
+    monkeypatch.setattr(prepare_cli, "run_hosted_preparation", fail)
+    receipt = tmp_path / "receipt.json"
+    assert (
+        prepare_cli.main([
+            "--exact-commit",
+            SHA,
+            "--output",
+            str(tmp_path / "prepared"),
+            "--receipt",
+            str(receipt),
+            "--reference-shards",
+            "16",
+        ])
+        == 1
+    )
+    report = json.loads(receipt.read_text())["report"]
+    assert report["failure_stage"] == "global-index-preparation"
+    assert report["failure_type"] == "memory-error"
+    assert report["progress"]["rows"] == 163700
+    assert "secret" not in receipt.read_text()
+    assert not receipt.with_suffix(".json.tmp").exists()
 
 
 def test_prepared_worker_rejects_invalid_context_and_manifest(

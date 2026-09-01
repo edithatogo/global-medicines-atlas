@@ -7,8 +7,11 @@ import hashlib
 import json
 import os
 import re
+import resource
+import shutil
 import socket
 import ssl
+import sys
 import time
 from collections.abc import Callable, Generator
 from contextlib import contextmanager
@@ -58,6 +61,10 @@ FAILURE_STAGES = frozenset({
     "member-binding",
     "projection-qualification",
     "report",
+    "denominator",
+    "entity-partition-preparation",
+    "global-index-preparation",
+    "manifest-verification",
     "unavailable",
 })
 FAILURE_CATEGORIES = frozenset({
@@ -77,6 +84,7 @@ FAILURE_CATEGORIES = frozenset({
     "byte-limit",
     "pin-mismatch",
     "unexpected",
+    "resource",
     "unavailable",
 })
 TRANSPORT_DETAILS = frozenset({
@@ -87,6 +95,40 @@ TRANSPORT_DETAILS = frozenset({
     "network-unreachable",
     "unknown",
 })
+FAILURE_TYPES = frozenset({
+    "qualification-error",
+    "validation-error",
+    "type-error",
+    "lookup-error",
+    "timeout-error",
+    "memory-error",
+    "disk-full",
+    "os-error",
+    "runtime-error",
+    "http-error",
+    "unexpected",
+    "unavailable",
+})
+
+
+def _failure_type(error: BaseException) -> str:
+    """Map exception classes to fixed codes without reading their messages."""
+    if isinstance(error, OSError) and error.errno == errno.ENOSPC:
+        return "disk-full"
+    for kind, code in (
+        (QualificationError, "qualification-error"),
+        (MemoryError, "memory-error"),
+        (TimeoutError, "timeout-error"),
+        (httpx.HTTPError, "http-error"),
+        (TypeError, "type-error"),
+        (LookupError, "lookup-error"),
+        (ValueError, "validation-error"),
+        (OSError, "os-error"),
+        (RuntimeError, "runtime-error"),
+    ):
+        if isinstance(error, kind):
+            return code
+    return "unexpected"
 
 
 def _detail_code(value: object) -> str:
@@ -152,7 +194,12 @@ class QualificationError(ValueError):
     """Carry only fixed, allowlisted diagnostic codes across the CLI boundary."""
 
     def __init__(
-        self, stage: str, category: str, *, transport_detail: str = "unknown"
+        self,
+        stage: str,
+        category: str,
+        *,
+        transport_detail: str = "unknown",
+        failure_type: str = "qualification-error",
     ) -> None:
         self.retry_event: tuple[str, str] | None = None
         self.retry_detail = "unknown"
@@ -160,6 +207,9 @@ class QualificationError(ValueError):
         self.stage = stage if stage in FAILURE_STAGES else "unavailable"
         self.category = (
             category if category in FAILURE_CATEGORIES else "unexpected"
+        )
+        self.failure_type = (
+            failure_type if failure_type in FAILURE_TYPES else "unexpected"
         )
         super().__init__(
             f"PBS qualification failed: {self.stage}/{self.category}"
@@ -236,6 +286,11 @@ class _RetryBudget:
                     2**63 - 1,
                     max(0, int((time.monotonic() - self.started) * 1000)),
                 ),
+                "free_space_bytes": shutil.disk_usage(".").free,
+                "max_rss_bytes": int(
+                    resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+                )
+                * (1 if sys.platform == "darwin" else 1024),
             },
         })
         self.progress(report)
@@ -302,6 +357,10 @@ def _at(
             category = _transport_category(error)
         elif isinstance(error, DestinationPolicyError):
             category = "destination-policy"
+        elif isinstance(error, MemoryError) or (
+            isinstance(error, OSError) and error.errno == errno.ENOSPC
+        ):
+            category = "resource"
         elif isinstance(error, (LookupError, TypeError)):
             category = "structure"
         elif isinstance(error, ValueError):
@@ -309,7 +368,10 @@ def _at(
         else:
             category = "unexpected"
         raise QualificationError(
-            stage, category, transport_detail=_transport_detail(error)
+            stage,
+            category,
+            transport_detail=_transport_detail(error),
+            failure_type=_failure_type(error),
         ) from None
 
 
@@ -520,20 +582,23 @@ def run_hosted_preparation(
     retry = _RetryBudget(progress=progress)
     inputs = _verified_inputs(exact_commit, transport=transport, retry=retry)
     output.mkdir(parents=True, exist_ok=False)
-    denominator = _denominator(inputs.xml)
+    with _at("denominator", progress=retry.checkpoint):
+        denominator = _denominator(inputs.xml)
     references = output / "references"
-    reference_manifest = prepare_reference_shards(
-        iter_pbs_historical_entity_batches(
-            inputs.archive,
-            inputs.xml,
-            inputs.parent,
+    with _at("entity-partition-preparation", progress=retry.checkpoint):
+        reference_manifest = prepare_reference_shards(
+            iter_pbs_historical_entity_batches(
+                inputs.archive,
+                inputs.xml,
+                inputs.parent,
+                inputs.binding,
+            ),
             inputs.binding,
-        ),
-        inputs.binding,
-        denominator,
-        references,
-        shard_count=shard_count,
-    )
+            denominator,
+            references,
+            shard_count=shard_count,
+            progress=retry.checkpoint,
+        )
     reference_manifest.update({
         "workflow_commit": inputs.context["workflow_commit"],
         "preparation_run_id": inputs.context["run_id"],
@@ -541,11 +606,12 @@ def run_hosted_preparation(
         "dataset": DATASET,
         "revision": REVISION,
     })
-    (references / "reference-manifest.json").write_bytes(
-        json.dumps(
-            reference_manifest, sort_keys=True, separators=(",", ":")
-        ).encode()
-    )
+    with _at("manifest-verification", progress=retry.checkpoint):
+        (references / "reference-manifest.json").write_bytes(
+            json.dumps(
+                reference_manifest, sort_keys=True, separators=(",", ":")
+            ).encode()
+        )
     return {
         "schema_version": 1,
         "status": "prepared",
@@ -842,10 +908,19 @@ def failure_report(error: Exception | None = None) -> dict[str, Any]:
         value = os.environ.get(key, "")
         context[name] = value if re.fullmatch(pattern, value) else "unavailable"
     # Revalidate codes at the serialization boundary, including tampered objects.
-    failure = QualificationError("unavailable", "unavailable")
+    failure = QualificationError(
+        "unavailable",
+        "unavailable",
+        failure_type=_failure_type(error)
+        if error is not None
+        else "unavailable",
+    )
     if isinstance(error, QualificationError):
         failure = QualificationError(
-            error.stage, error.category, transport_detail=error.transport_detail
+            error.stage,
+            error.category,
+            transport_detail=error.transport_detail,
+            failure_type=error.failure_type,
         )
     return {
         "schema_version": 1,
@@ -856,6 +931,7 @@ def failure_report(error: Exception | None = None) -> dict[str, Any]:
         "reason": "qualification-did-not-complete",
         "failure_stage": failure.stage,
         "failure_category": failure.category,
+        "failure_type": failure.failure_type,
         "transport_diagnostics": _diagnostics(
             error.retry_event
             if isinstance(error, QualificationError)

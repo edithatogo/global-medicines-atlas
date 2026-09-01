@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections import Counter
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from pathlib import Path
 from tempfile import TemporaryFile
 from typing import Any, cast
@@ -108,6 +108,7 @@ def prepare_reference_shards(  # ruff: ignore[too-many-branches,too-many-locals,
     output: Path,
     *,
     shard_count: int,
+    progress: Callable[[str, str, int, int], None] | None = None,
 ) -> dict[str, Any]:
     """Write digest-bound transient Arrow partitions and one global index."""
     total = denominator.get("elements")
@@ -149,10 +150,14 @@ def prepare_reference_shards(  # ruff: ignore[too-many-branches,too-many-locals,
     complete_digest = hashlib.sha256()
     observed = 0
     schema: pa.Schema | None = None
+    if progress is not None:
+        progress("entity-partition-preparation", "references", 0, 0)
     with TemporaryFile() as spool:  # ruff: ignore[too-many-nested-blocks]
         spool_writer: pa.RecordBatchStreamWriter | None = None
         try:
+            batch_count = 0
             for batch in batches:
+                batch_count += 1
                 if schema is None:
                     schema = batch.schema
                     spool_writer = pa.ipc.new_stream(spool, schema)
@@ -198,6 +203,13 @@ def prepare_reference_shards(  # ruff: ignore[too-many-branches,too-many-locals,
                             selected
                         )
                 observed = batch_stop
+                if progress is not None:
+                    progress(
+                        "entity-partition-preparation",
+                        "references",
+                        batch_count,
+                        observed,
+                    )
         finally:
             if spool_writer is not None:
                 spool_writer.close()
@@ -215,6 +227,13 @@ def prepare_reference_shards(  # ruff: ignore[too-many-branches,too-many-locals,
                 "PBS reference shard complete stream digest changed"
             )
         spool.seek(0)
+        if progress is not None:
+            progress(
+                "global-index-preparation",
+                "references",
+                batch_count,
+                observed,
+            )
         index, identity, indexed_rows = _index(iter(pa.ipc.open_stream(spool)))
         if (
             identity is None
@@ -224,6 +243,8 @@ def prepare_reference_shards(  # ruff: ignore[too-many-branches,too-many-locals,
             raise ValueError("PBS reference shard index denominator changed")
     index_path = output / "reference-index.json"
     index_path.write_bytes(_index_payload(index))
+    if progress is not None:
+        progress("manifest-verification", "references", batch_count, observed)
     partitions: list[dict[str, Any]] = []
     for index, path in enumerate(paths):
         start = total * index // shard_count
