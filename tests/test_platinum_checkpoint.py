@@ -12,6 +12,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 
+import global_medicines_atlas.platinum_checkpoint as checkpoint
 from global_medicines_atlas.platinum_checkpoint import (
     PublicFixturePin,
     fetch_unadmitted_public_fixture,
@@ -242,3 +243,52 @@ def test_anonymous_fetch_rejects_nonpositive_timeout() -> None:
         pytest.raises(ValueError, match="timeout"),
     ):
         fetch_unadmitted_public_fixture(pin(raw), client, timeout_seconds=0)
+
+
+def test_anonymous_fetch_enforces_remote_byte_budget() -> None:
+    raw = payload()
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        content = (
+            metadata()
+            if "/api/datasets/" in str(request.url)
+            else b"x" * (64 * 1024 + 1)
+        )
+        return httpx.Response(200, content=content)
+
+    with (
+        httpx.Client(transport=httpx.MockTransport(handler)) as client,
+        pytest.raises(ValueError, match="size exceeds budget"),
+    ):
+        fetch_unadmitted_public_fixture(pin(raw), client)
+
+
+def test_anonymous_fetch_enforces_redirect_limit() -> None:
+    raw = payload()
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(302, headers={"location": str(request.url)})
+
+    with (
+        httpx.Client(transport=httpx.MockTransport(handler)) as client,
+        pytest.raises(ValueError, match="redirect limit"),
+    ):
+        fetch_unadmitted_public_fixture(pin(raw), client)
+
+
+@pytest.mark.parametrize("clock", [iter((0.0, 31.0)), iter((0.0, 0.0, 31.0))])
+def test_anonymous_fetch_enforces_single_deadline(
+    monkeypatch: pytest.MonkeyPatch, clock
+) -> None:
+    raw = payload()
+    monkeypatch.setattr(checkpoint.time, "monotonic", lambda: next(clock))
+
+    with (
+        httpx.Client(
+            transport=httpx.MockTransport(
+                lambda _request: httpx.Response(200, content=metadata())
+            )
+        ) as client,
+        pytest.raises(ValueError, match="deadline"),
+    ):
+        fetch_unadmitted_public_fixture(pin(raw), client, timeout_seconds=30)
