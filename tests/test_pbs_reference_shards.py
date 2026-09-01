@@ -161,3 +161,27 @@ def test_preparation_rejects_invalid_shard_count(
             tmp_path / str(count),
             shard_count=count,
         )
+
+
+@pytest.mark.parametrize("mutation", ["reorder", "drop", "duplicate"])
+def test_preparation_rejects_entity_stream_order_or_coverage_drift(
+    tmp_path: Path, mutation: str
+) -> None:
+    binding, denominator, batches = inputs()
+    table = pa.Table.from_batches(list(batches())).combine_chunks()
+    midpoint = table.num_rows // 2
+    first = table.slice(0, midpoint).to_batches()[0]
+    second = table.slice(midpoint).to_batches()[0]
+    changed = {
+        "reorder": [second, first],
+        "drop": [first],
+        "duplicate": [first, first],
+    }[mutation]
+    with pytest.raises(ValueError, match=r"denominator|stream digest"):
+        prepare_reference_shards(
+            iter(changed),
+            binding,
+            denominator,
+            tmp_path / mutation,
+            shard_count=2,
+        )

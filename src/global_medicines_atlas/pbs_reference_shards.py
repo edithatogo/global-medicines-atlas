@@ -13,6 +13,7 @@ from typing import Any, cast
 import pyarrow as pa
 
 from .pbs_historical_qualification import (
+    _account_nested_batch,  # pyright: ignore[reportPrivateUsage]
     _projection,  # pyright: ignore[reportPrivateUsage]
 )
 from .pbs_member_identity import PbsXmlMemberBinding
@@ -122,6 +123,30 @@ def prepare_reference_shards(  # ruff: ignore[too-many-branches,too-many-locals,
         output / f"reference-{index:02d}.arrow" for index in range(shard_count)
     ]
     writers: list[pa.RecordBatchStreamWriter | None] = [None] * shard_count
+    lineage = {
+        "source_id": binding.source.source_id,
+        "source_sha256": binding.member_payload.sha256,
+        "schema_era": binding.source.catalog_version,
+        "receipt_sha256": binding.parent_receipt_sha256,
+        "member_binding_sha256": binding.digest(),
+        "archive_sha256": binding.archive_payload.sha256,
+        "member_path": binding.member_path,
+    }
+    counter_keys = (
+        "rows",
+        "native_fields",
+        "unmapped_rows",
+        "duplicate_literal_rows",
+        "ambiguous_reference_rows",
+        "unresolved_reference_rows",
+        "date_unselected_rows",
+    )
+    expected_counts: list[dict[str, int]] = [
+        dict.fromkeys(counter_keys, 0) for _ in range(shard_count)
+    ]
+    expected_digests = [hashlib.sha256() for _ in range(shard_count)]
+    complete_counts: dict[str, int] = dict.fromkeys(counter_keys, 0)
+    complete_digest = hashlib.sha256()
     observed = 0
     schema: pa.Schema | None = None
     with TemporaryFile() as spool:  # ruff: ignore[too-many-nested-blocks]
@@ -143,6 +168,9 @@ def prepare_reference_shards(  # ruff: ignore[too-many-branches,too-many-locals,
                         "PBS reference spool was not initialized"
                     )
                 spool_writer.write_batch(batch)  # pyright: ignore[reportUnknownMemberType]
+                _account_nested_batch(
+                    batch, lineage, complete_counts, complete_digest
+                )
                 batch_start, batch_stop = observed, observed + batch.num_rows
                 for index, writer in enumerate(writers):
                     start = total * index // shard_count
@@ -156,11 +184,18 @@ def prepare_reference_shards(  # ruff: ignore[too-many-branches,too-many-locals,
                             raise RuntimeError(
                                 "PBS reference partition was not initialized"
                             )
+                        selected = batch.slice(
+                            selected_start - batch_start,
+                            selected_stop - selected_start,
+                        )
+                        _account_nested_batch(
+                            selected,
+                            lineage,
+                            expected_counts[index],
+                            expected_digests[index],
+                        )
                         writer.write_batch(  # pyright: ignore[reportUnknownMemberType]
-                            batch.slice(
-                                selected_start - batch_start,
-                                selected_stop - selected_start,
-                            )
+                            selected
                         )
                 observed = batch_stop
         finally:
@@ -171,6 +206,14 @@ def prepare_reference_shards(  # ruff: ignore[too-many-branches,too-many-locals,
                     writer.close()
         if schema is None or observed != total:
             raise ValueError("PBS reference shard entity denominator changed")
+        if (
+            complete_counts["rows"] != total
+            or complete_counts["native_fields"] != denominator["native_fields"]
+            or complete_digest.hexdigest() != denominator["native_digest"]
+        ):
+            raise ValueError(
+                "PBS reference shard complete stream digest changed"
+            )
         spool.seek(0)
         index, identity, indexed_rows = _index(iter(pa.ipc.open_stream(spool)))
         if (
@@ -193,6 +236,18 @@ def prepare_reference_shards(  # ruff: ignore[too-many-branches,too-many-locals,
             phase="reference-preparation",
             row_window=(start, stop),
         )
+        independently_expected = {
+            "rows": expected_counts[index]["rows"],
+            "native_fields": expected_counts[index]["native_fields"],
+            "native_digest": expected_digests[index].hexdigest(),
+        }
+        if any(
+            expected_projection[key] != independently_expected[key]
+            for key in independently_expected
+        ):
+            raise ValueError(
+                "PBS reference partition changed after preparation"
+            )
         partitions.append({
             "index": index,
             "count": shard_count,
@@ -200,10 +255,7 @@ def prepare_reference_shards(  # ruff: ignore[too-many-branches,too-many-locals,
             "stop_row": stop,
             "path": path.name,
             **_digest(path),
-            "expected_projection": {
-                key: expected_projection[key]
-                for key in ("rows", "native_fields", "native_digest")
-            },
+            "expected_projection": independently_expected,
         })
     manifest: dict[str, Any] = {
         "schema_version": 1,
