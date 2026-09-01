@@ -40,7 +40,9 @@
     "archive-root payload path",
     "oversized data-card collections",
     "data-card claims outside the approved source profile",
-    "cleartext public metadata URLs"
+    "cleartext public metadata URLs",
+    "data-card summary outside the approved source profile",
+    "correction route outside the approved repository"
   ],
   "external_actions": {
     "credentials_used": false,

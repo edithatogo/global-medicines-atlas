@@ -66,12 +66,14 @@ _PROFILES = {
 
 _CARD_CLAIMS = {
     "au-mbs": (
+        "Immutable source-native MBS release evidence with receipt-bound provenance.",
         ("Historical and current MBS service-benefit analysis",),
         (
             "MBS funding evidence is not regulatory approval or formulary evidence.",
         ),
     ),
     "au-pbs": (
+        "Immutable source-native PBS release evidence with receipt-bound provenance.",
         ("Historical and current PBS formulary and funding analysis",),
         (
             "PBS listing evidence is not regulatory approval or prescribing advice.",
@@ -281,6 +283,7 @@ class SourceMetadataDocument(_Model):
     @model_validator(mode="after")
     def data_card_claims_are_profile_bound(self) -> Self:
         claims = (
+            self.data_card.summary,
             self.data_card.intended_uses,
             self.data_card.limitations,
         )
@@ -321,11 +324,13 @@ class SourceMetadataDocument(_Model):
             raise ValueError("version history revisions must be unique")
 
         correction = str(self.maintenance.correction_url).rstrip("/")
-        if correction in {
-            str(self.source.authority_url).rstrip("/"),
-            str(self.source.source_url).rstrip("/"),
-        }:
-            raise ValueError("correction route must be distinct and actionable")
+        approved_correction = (
+            "https://github.com/edithatogo/global-medicines-atlas/issues"
+        )
+        if correction != approved_correction:
+            raise ValueError(
+                "correction route is outside the approved repository"
+            )
         return self
 
 

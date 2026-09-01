@@ -288,8 +288,26 @@ def test_binds_data_card_claims_to_source_profile() -> None:
         validate_source_metadata(document)
 
 
+def test_binds_data_card_summary_to_source_profile() -> None:
+    document = _fixture("valid-mbs.json")
+    document["data_card"]["summary"] = "Missing coverage proves non-approval."
+    with pytest.raises(SourceMetadataError, match="claims do not match"):
+        validate_source_metadata(document)
+
+
 def test_requires_https_for_public_metadata_urls() -> None:
     document = _fixture("valid-mbs.json")
     document["source"]["authority_url"] = "http://www.health.gov.au/"
     with pytest.raises(SourceMetadataError, match="must use HTTPS"):
+        validate_source_metadata(document)
+
+
+def test_restricts_correction_route_to_approved_repository() -> None:
+    document = _fixture("valid-mbs.json")
+    document["maintenance"]["correction_url"] = (
+        "https://example.test/collect-corrections"
+    )
+    with pytest.raises(
+        SourceMetadataError, match="outside the approved repository"
+    ):
         validate_source_metadata(document)
