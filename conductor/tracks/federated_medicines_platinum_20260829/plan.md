@@ -23,7 +23,7 @@
   the deterministic row limit into their Parquet scan while enforcing column,
   filter, row, result-byte and time budgets. DuckDB's named file is transient
   and removed on context exit; no storage engine is promoted as authority.
-- [~] Add cache receipts, byte/time budgets, expiry/eviction, content
+- [x] Add cache receipts, byte/time budgets, expiry/eviction, content
   verification, and stale/unavailable states.
   - [x] Add transient exact-contract cache receipts with last verified origin/time,
     current verified-cache availability, contract expiry, immutable content
@@ -39,8 +39,17 @@
     independently admitted semantic manifest, and unavailable receipts bind
     the attempted query plan while malformed remote metadata remains typed
     unavailability. (`40d733b`, `a95fe45`; 51 focused tests pass and the query
-    and resolver modules retain 100% statement and branch coverage.) Durable
-    persistence of these process receipts remains pending.
+    and resolver modules retain 100% statement and branch coverage.)
+  - [x] Persist cache, successful-query, and unavailable-query receipts as
+    bounded atomic content-addressed envelopes. Every read re-verifies the
+    envelope and inner receipt digests; expiry, explicit eviction, entry/byte
+    eviction, malformed claims, interrupted replacement, and restart readback
+    fail closed. The store accepts only receipt types and never source or query
+    result payload bytes. Exact canonical inner bytes survive non-ASCII values;
+    a bounded root-wide lock serializes multi-instance transactions; and
+    unsupported directory sync remains best-effort without bypassing budgets.
+    (`b9b5ffe`, `86a56aa`; 37 focused tests pass with 100% statement and branch
+    coverage; 239 affected tests and the routine harness pass.)
 - [ ] Phase Verification & Checkpoint: an empty machine can run bounded fixture
   queries from pinned public revisions with no durable local lake.
 
