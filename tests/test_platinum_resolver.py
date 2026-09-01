@@ -96,14 +96,36 @@ def binding(raw: bytes) -> DistributionBinding:
     )[0]
 
 
+def semantic_manifest(
+    contract_sha256: str,
+    *,
+    resource_id: str = "au.mbs.service-items",
+    dimension: str = "service_benefit",
+    granularity: str = "service_item",
+) -> bytes:
+    return json.dumps(
+        {
+            "contract_sha256": contract_sha256,
+            "entity_granularity": granularity,
+            "resource_id": resource_id,
+            "semantic_dimension": dimension,
+            "version": "1.0",
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+
+
 def resource(raw: bytes | None = None) -> ProductResource:
     raw = contract() if raw is None else raw
+    distribution = binding(raw)
     return ProductResource(
         resource_id="au.mbs.service-items",
         semantic_dimension="service_benefit",
         entity_granularity="service_item",
-        binding=binding(raw),
+        binding=distribution,
         contract=raw,
+        semantic_manifest=semantic_manifest(distribution.contract_sha256),
     )
 
 
@@ -111,6 +133,7 @@ def resolver(
     hub: Hub,
     *resources: ProductResource,
     admitted: frozenset[str] | None = None,
+    admitted_semantics: frozenset[str] | None = None,
     **options: Any,
 ) -> StorageNeutralResolver:
     selected = resources or (resource(),)
@@ -121,6 +144,12 @@ def resolver(
         admitted_contracts=admitted
         if admitted is not None
         else frozenset(item.binding.contract_sha256 for item in selected),
+        admitted_semantic_manifests=admitted_semantics
+        if admitted_semantics is not None
+        else frozenset(
+            hashlib.sha256(item.semantic_manifest).hexdigest()
+            for item in selected
+        ),
         transport_factory=lambda: httpx.MockTransport(hub.handle),
         clock=clock,
         **options,
@@ -199,6 +228,10 @@ def test_cache_receipt_expires_and_offline_read_fails_closed() -> None:
             == "verified_exact_digest"
         )
         clock.now += timedelta(days=2)
+        assert (
+            "verified_cache_offline"
+            not in client.resolve("au.mbs.service-items").capabilities
+        )
         expired = client.cache_receipt("au.mbs.service-items")
         assert expired.status == "unavailable"
         assert expired.last_origin == "remote"
@@ -250,6 +283,10 @@ def test_cache_receipt_reports_exact_nondefault_budgets() -> None:
 def test_verified_read_does_not_claim_retention_beyond_cache_budget() -> None:
     hub = Hub()
     with resolver(hub, cache_bytes=1) as client:
+        assert (
+            "verified_cache_offline"
+            not in client.resolve("au.mbs.service-items").capabilities
+        )
         with client.open("au.mbs.service-items") as result:
             assert result.verified.stream.read() == PAYLOAD
             assert result.cache_receipt.status == "unavailable"
@@ -267,6 +304,63 @@ def test_resolution_requires_independently_admitted_exact_contract() -> None:
     with pytest.raises(ValueError, match="admitted"):
         resolver(hub, item, admitted=frozenset())
     assert not hub.requests
+
+
+def test_semantics_require_an_independently_admitted_manifest() -> None:
+    original = resource()
+    forged = replace(
+        original,
+        semantic_dimension="regulatory",
+        semantic_manifest=semantic_manifest(
+            original.binding.contract_sha256,
+            dimension="regulatory",
+        ),
+    )
+    admitted = frozenset({
+        hashlib.sha256(original.semantic_manifest).hexdigest()
+    })
+    with pytest.raises(ValueError, match=r"semantic manifest.*admitted"):
+        resolver(Hub(), forged, admitted_semantics=admitted)
+
+
+@pytest.mark.parametrize(
+    "manifest",
+    [
+        b'{"version":"1.0","version":"1.0"}',
+        json.dumps({
+            "contract_sha256": "d" * 64,
+            "entity_granularity": "service_item",
+            "extra": True,
+            "resource_id": "au.mbs.service-items",
+            "semantic_dimension": "service_benefit",
+            "version": "1.0",
+        }).encode(),
+    ],
+)
+def test_admitted_semantic_manifest_must_have_exact_unique_claims(
+    manifest: bytes,
+) -> None:
+    item = replace(resource(), semantic_manifest=manifest)
+    admitted = frozenset({hashlib.sha256(manifest).hexdigest()})
+    with pytest.raises(ValueError, match=r"semantic manifest"):
+        resolver(Hub(), item, admitted_semantics=admitted)
+
+
+def test_fail_closed_contract_does_not_advertise_offline_capability() -> None:
+    raw = contract(cache={"offline_behavior": "fail_closed"})
+    item = resource(raw)
+    with resolver(Hub(), item) as client:
+        assert (
+            "verified_cache_offline"
+            not in client.resolve(item.resource_id).capabilities
+        )
+        with client.open(item.resource_id):
+            pass
+        with (
+            pytest.raises(ValueError, match="offline"),
+            client.open(item.resource_id, offline=True),
+        ):
+            pytest.fail("fail-closed policy")
 
 
 @pytest.mark.parametrize(
@@ -304,7 +398,14 @@ def test_duplicate_resource_or_contract_alias_is_rejected() -> None:
     item = resource()
     with pytest.raises(ValueError, match="duplicate resource"):
         resolver(Hub(), item, item)
-    alias = replace(item, resource_id="au.mbs.other")
+    alias = replace(
+        item,
+        resource_id="au.mbs.other",
+        semantic_manifest=semantic_manifest(
+            item.binding.contract_sha256,
+            resource_id="au.mbs.other",
+        ),
+    )
     with pytest.raises(ValueError, match="contract alias"):
         resolver(Hub(), item, alias)
 

@@ -15,7 +15,7 @@ import re
 import threading
 from collections.abc import Callable, Generator, Sequence
 from contextlib import contextmanager
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any, Literal, Self
 
@@ -44,12 +44,12 @@ Capability = Literal[
     "anonymous_verified_read",
     "verified_cache_offline",
 ]
-CAPABILITIES: tuple[Capability, ...] = (
+BASE_CAPABILITIES: tuple[Capability, ...] = (
     "exact_v4_resolution",
     "anonymous_verified_read",
-    "verified_cache_offline",
 )
 RESOURCE_LIMIT = 256
+SEMANTIC_MANIFEST_BYTES = 16 * 1024
 _RESOURCE_ID = re.compile(r"[a-z0-9]+(?:[._-][a-z0-9]+)+")
 _DIMENSIONS = {
     "service_benefit",
@@ -77,6 +77,7 @@ class ProductResource:
     entity_granularity: EntityGranularity
     binding: DistributionBinding
     contract: bytes
+    semantic_manifest: bytes
 
 
 @dataclass(frozen=True)
@@ -96,7 +97,7 @@ class ResolvedResource:
     acquisition_id: str
     layer: str
     cache_expires_at: datetime
-    capabilities: tuple[Capability, ...] = CAPABILITIES
+    capabilities: tuple[Capability, ...]
 
 
 @dataclass(frozen=True)
@@ -136,6 +137,7 @@ class StorageNeutralResolver:
         schema: bytes,
         resources: Sequence[ProductResource],
         admitted_contracts: frozenset[str],
+        admitted_semantic_manifests: frozenset[str],
         max_read_bytes: int = 64 * 1024 * 1024,
         cache_bytes: int = 64 * 1024 * 1024,
         max_cache_entries: int = 32,
@@ -165,8 +167,15 @@ class StorageNeutralResolver:
         self._max_open_reads = max_open_reads
         self._timeout_seconds = timeout_seconds
         contract_digests: set[str] = set()
+        observed_at = clock()
         for resource in resources:
-            resolved = _resolve_resource(resource, schema)
+            resolved = _resolve_resource(
+                resource,
+                schema,
+                admitted_semantic_manifests,
+                cache_bytes=cache_bytes,
+                observed_at=observed_at,
+            )
             if resource.resource_id in self._resources:
                 raise ValueError("duplicate resource identity")
             if resolved.contract_sha256 in contract_digests:
@@ -206,9 +215,15 @@ class StorageNeutralResolver:
     def resolve(self, resource_id: str) -> ResolvedResource:
         """Resolve one logical identifier without storage or network access."""
         try:
-            return self._resources[resource_id][0]
+            resolved = self._resources[resource_id][0]
         except KeyError:
             raise ValueError("unknown resource identity") from None
+        if (
+            "verified_cache_offline" in resolved.capabilities
+            and resolved.cache_expires_at <= self._clock()
+        ):
+            return replace(resolved, capabilities=BASE_CAPABILITIES)
+        return resolved
 
     def cache_receipt(self, resource_id: str) -> CacheReceipt:
         """Return dynamic cache availability without creating durable state."""
@@ -267,7 +282,12 @@ class StorageNeutralResolver:
 
 
 def _resolve_resource(
-    resource: ProductResource, schema: bytes
+    resource: ProductResource,
+    schema: bytes,
+    admitted_semantic_manifests: frozenset[str],
+    *,
+    cache_bytes: int,
+    observed_at: datetime,
 ) -> ResolvedResource:
     if (
         type(resource.resource_id) is not str
@@ -296,6 +316,16 @@ def _resolve_resource(
         raise ValueError("distribution binding mismatch")
     obj = binding.object
     document: dict[str, Any] = json.loads(resource.contract)
+    _semantic_admission(resource, digest, admitted_semantic_manifests)
+    expires_at = datetime.fromisoformat(document["cache"]["expires_at"])
+    capabilities = BASE_CAPABILITIES
+    if (
+        document["cache"]["offline_behavior"] == "verified_exact_digest_only"
+        and obj.byte_count <= cache_bytes
+        and obj.byte_count <= document["cache"]["max_bytes"]
+        and expires_at > observed_at
+    ):
+        capabilities += ("verified_cache_offline",)
     return ResolvedResource(
         resource_id=resource.resource_id,
         semantic_dimension=resource.semantic_dimension,
@@ -309,10 +339,44 @@ def _resolve_resource(
         source_id=obj.source_id,
         acquisition_id=obj.acquisition_id,
         layer=obj.layer,
-        cache_expires_at=datetime.fromisoformat(
-            document["cache"]["expires_at"]
-        ),
+        cache_expires_at=expires_at,
+        capabilities=capabilities,
     )
+
+
+def _semantic_admission(
+    resource: ProductResource,
+    contract_sha256: str,
+    admitted: frozenset[str],
+) -> None:
+    if len(resource.semantic_manifest) > SEMANTIC_MANIFEST_BYTES:
+        raise ValueError("semantic manifest exceeds metadata budget")
+    digest = hashlib.sha256(resource.semantic_manifest).hexdigest()
+    if digest not in admitted:
+        raise ValueError("semantic manifest is not independently admitted")
+    try:
+        manifest = json.loads(
+            resource.semantic_manifest,
+            object_pairs_hook=_unique_object,
+        )
+    except TypeError, ValueError:
+        raise ValueError("invalid semantic manifest") from None
+    expected = {
+        "contract_sha256": contract_sha256,
+        "entity_granularity": resource.entity_granularity,
+        "resource_id": resource.resource_id,
+        "semantic_dimension": resource.semantic_dimension,
+        "version": "1.0",
+    }
+    if manifest != expected:
+        raise ValueError("semantic manifest claims mismatch")
+
+
+def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result = dict(pairs)
+    if len(result) != len(pairs):
+        raise ValueError("duplicate semantic manifest key")
+    return result
 
 
 def _budgets(
