@@ -700,6 +700,16 @@
   corpus forecast. Focused reference/historical tests: 53 passed; Ruff and
   source BasedPyright passed. Hosted validation and a slice-aware composable
   qualification receipt remain pending; no timeout increase or dispatch.
+  Review fix `e2de222` closes two P1 fail-closed gaps: only `(0, None)` may
+  request unbounded full output, while every explicit window must satisfy
+  `0 <= start < stop <= total`; empty and open-ended nonzero windows now fail.
+  Diagnostic Python values are sized first, then each bounded native slice gets
+  its own Arrow arrays, so a 4,096-row input cannot allocate an over-budget
+  diagnostic array before its row/8 MiB boundaries are enforced. Allocation-
+  length regression coverage forces byte-bound splitting and proves the largest
+  diagnostic allocation equals the largest bounded output batch. Broader
+  affected validation: 267 passed; Ruff, format, source BasedPyright, native
+  context and diff checks passed. Hosted exact-head revalidation remains.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
