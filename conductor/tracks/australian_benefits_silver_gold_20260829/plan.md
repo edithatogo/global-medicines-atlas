@@ -693,6 +693,14 @@
 
 ## Phase 6: Integrated qualification (AC-08)
 
+- [x] Repair aggregate MBS Silver denominator review findings at `b073f10`:
+  require each serialized table's exact contract-derived field count, require
+  only known conversion statuses, and require quality counts to sum to the
+  complete field-occurrence denominator. Focused qualification, MBS, and
+  harness tests pass (79 tests; changed module 95% coverage), with Ruff and
+  BasedPyright clean. The broader Australian source-contract run also passed
+  all semantic assertions but recorded one unrelated Hypothesis 200 ms timing
+  flake under combined coverage load; no deadline or test was weakened.
 - [x] Profile the persistent local `PERF-QUERY` failure by separating connection
   lifecycle, cohort-validity SQL, page SQL and conclusion construction. Static
   audit finds repeated keys/assertion/coverage queries for overlapping cohort
