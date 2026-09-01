@@ -81,6 +81,29 @@ _CARD_CLAIMS = {
     ),
 }
 
+_PROFILE_DETAILS = {
+    "au-mbs": {
+        "authority_url": "https://www.health.gov.au/",
+        "citation_url": "https://www.mbsonline.gov.au/",
+        "source_url_prefix": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-",
+        "coverage_scope": "August 2026 MBS release payloads",
+        "receipt_prefix": "receipts/mbs-",
+    },
+    "au-pbs": {
+        "authority_url": "https://www.health.gov.au/",
+        "citation_url": "https://www.pbs.gov.au/browse/downloads",
+        "source_url_prefix": "https://www.pbs.gov.au/browse/downloads",
+        "coverage_scope": "April 2026 PBS release payloads",
+        "receipt_prefix": "receipts/pbs-",
+    },
+}
+
+_PERMISSION_REFERENCE = "https://www.health.gov.au/using-our-websites/copyright"
+_WITHDRAWAL_POLICY = (
+    "Withdraw or supersede a revision when its receipt, rights or source identity "
+    "fails verification."
+)
+
 
 class SourceMetadataError(ValueError):
     """Source metadata is incomplete, generic, or internally inconsistent."""
@@ -128,6 +151,8 @@ class SourceIdentity(_Model):
 class DataCard(_Model):
     title: NonBlank
     summary: NonBlank
+    version: ExactNonBlank
+    created_at: AwareDatetime
     intended_uses: tuple[NonBlank, ...] = Field(min_length=1, max_length=32)
     limitations: tuple[NonBlank, ...] = Field(min_length=1, max_length=32)
 
@@ -158,6 +183,9 @@ class CroissantDistribution(PayloadBinding):
 
 class Croissant(_Model):
     name: NonBlank
+    description: NonBlank
+    version: ExactNonBlank
+    license: Literal["rights-declared-per-source"]
     conforms_to: Literal["http://mlcommons.org/croissant/1.0"]
     distributions: tuple[CroissantDistribution, ...] = Field(
         min_length=1, max_length=256
@@ -227,8 +255,8 @@ class SourceMetadataDocument(_Model):
             expected_dataset,
             expected_title,
             expected_authority,
-            authority_host,
-            source_hosts,
+            _,
+            _,
         ) = _PROFILES[self.source.source_id]
         if self.dataset != expected_dataset:
             raise ValueError("source profile uses the wrong approved dataset")
@@ -238,19 +266,8 @@ class SourceMetadataDocument(_Model):
             raise ValueError(
                 "Croissant name requires the source-specific title"
             )
-        if self.source.authority_url.host != authority_host:
-            raise ValueError("source profile uses the wrong authority host")
         if self.source.authority != expected_authority:
             raise ValueError("source profile uses the wrong authority identity")
-        if self.source.source_url.host not in source_hosts:
-            raise ValueError("source profile uses the wrong source host")
-        if any(
-            citation.source_url.host not in source_hosts
-            for citation in self.citations
-        ):
-            raise ValueError(
-                "citation uses a host outside the approved source profile"
-            )
 
         provenance = tuple(
             (item.path, item.sha256) for item in self.provenance.payloads
@@ -281,6 +298,34 @@ class SourceMetadataDocument(_Model):
         return self
 
     @model_validator(mode="after")
+    def source_urls_are_profile_bound(self) -> Self:
+        _, _, _, authority_host, source_hosts = _PROFILES[self.source.source_id]
+        profile = _PROFILE_DETAILS[self.source.source_id]
+        if self.source.authority_url.host != authority_host:
+            raise ValueError("source profile uses the wrong authority host")
+        if self.source.source_url.host not in source_hosts:
+            raise ValueError("source profile uses the wrong source host")
+        if str(self.source.authority_url) != profile["authority_url"]:
+            raise ValueError("source profile uses the wrong authority URL")
+        if not str(self.source.source_url).startswith(
+            profile["source_url_prefix"]
+        ):
+            raise ValueError("source profile uses the wrong source URL surface")
+        if any(
+            citation.source_url.host not in source_hosts
+            for citation in self.citations
+        ):
+            raise ValueError(
+                "citation uses a host outside the approved source profile"
+            )
+        if any(
+            str(citation.source_url) != profile["citation_url"]
+            for citation in self.citations
+        ):
+            raise ValueError("citation uses the wrong source URL surface")
+        return self
+
+    @model_validator(mode="after")
     def data_card_claims_are_profile_bound(self) -> Self:
         claims = (
             self.data_card.summary,
@@ -291,6 +336,15 @@ class SourceMetadataDocument(_Model):
             raise ValueError(
                 "data card claims do not match the approved source profile"
             )
+        if (
+            self.data_card.version != self.source.source_version
+            or self.data_card.created_at != self.source.retrieved_at
+            or self.croissant.description != self.data_card.summary
+            or self.croissant.version != self.source.source_version
+        ):
+            raise ValueError(
+                "card and Croissant versions must match source identity"
+            )
         return self
 
     @model_validator(mode="after")
@@ -300,10 +354,13 @@ class SourceMetadataDocument(_Model):
         if (
             self.rights.permission_reference.host != authority_host
             or self.rights.attribution != expected_authority
+            or str(self.rights.permission_reference) != _PERMISSION_REFERENCE
         ):
             raise ValueError(
                 "rights evidence does not match the approved source profile"
             )
+        if self.rights.reviewed_at > self.source.retrieved_at.date():
+            raise ValueError("rights review cannot follow source retrieval")
         return self
 
     @model_validator(mode="after")
@@ -322,6 +379,25 @@ class SourceMetadataDocument(_Model):
         revisions = tuple(item.revision for item in self.version_history)
         if len(revisions) != len(set(revisions)):
             raise ValueError("version history revisions must be unique")
+
+        profile = _PROFILE_DETAILS[self.source.source_id]
+        if self.coverage.scope != profile["coverage_scope"]:
+            raise ValueError("coverage scope does not match the source profile")
+        if not self.provenance.receipt.startswith(profile["receipt_prefix"]):
+            raise ValueError(
+                "provenance receipt does not match the source profile"
+            )
+        if not self.provenance.receipt.endswith(".json"):
+            raise ValueError("provenance receipt must be a JSON path")
+        if any(
+            citation.accessed_at > self.source.retrieved_at.date()
+            for citation in self.citations
+        ):
+            raise ValueError("citation access cannot follow source retrieval")
+        if self.maintenance.withdrawal_policy != _WITHDRAWAL_POLICY:
+            raise ValueError(
+                "withdrawal policy does not match the approved contract"
+            )
 
         correction = str(self.maintenance.correction_url).rstrip("/")
         approved_correction = (

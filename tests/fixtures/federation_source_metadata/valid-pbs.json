@@ -14,11 +14,16 @@
   "data_card": {
     "title": "Australian Pharmaceutical Benefits Scheme source archive",
     "summary": "Immutable source-native PBS release evidence with receipt-bound provenance.",
+    "version": "2026-04",
+    "created_at": "2026-08-30T02:40:00Z",
     "intended_uses": ["Historical and current PBS formulary and funding analysis"],
     "limitations": ["PBS listing evidence is not regulatory approval or prescribing advice."]
   },
   "croissant": {
     "name": "Australian Pharmaceutical Benefits Scheme source archive",
+    "description": "Immutable source-native PBS release evidence with receipt-bound provenance.",
+    "version": "2026-04",
+    "license": "rights-declared-per-source",
     "conforms_to": "http://mlcommons.org/croissant/1.0",
     "distributions": [{"path": "raw/pbs-202604.zip", "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "encoding_format": "application/zip"}]
   },

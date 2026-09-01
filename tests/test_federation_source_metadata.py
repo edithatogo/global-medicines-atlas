@@ -311,3 +311,64 @@ def test_restricts_correction_route_to_approved_repository() -> None:
         SourceMetadataError, match="outside the approved repository"
     ):
         validate_source_metadata(document)
+
+
+def test_rejects_remaining_profile_surface_mismatches() -> None:
+    base = _fixture("valid-mbs.json")
+    cases: list[tuple[dict[str, Any], str]] = []
+
+    mutations = (
+        (
+            ("source", "authority_url"),
+            "https://www.health.gov.au/about-us",
+            "wrong authority URL",
+        ),
+        (
+            ("source", "source_url"),
+            "https://www.mbsonline.gov.au/unrelated",
+            "wrong source URL surface",
+        ),
+        (
+            ("citations", 0, "source_url"),
+            "https://www.mbsonline.gov.au/unrelated",
+            "wrong source URL surface",
+        ),
+        (("data_card", "version"), "2026-07", "versions must match"),
+        (
+            ("rights", "reviewed_at"),
+            "2026-08-31",
+            "rights review cannot follow",
+        ),
+        (("coverage", "scope"), "All MBS history", "coverage scope"),
+        (
+            ("provenance", "receipt"),
+            "receipts/pbs-202608.json",
+            "receipt does not match",
+        ),
+        (
+            ("provenance", "receipt"),
+            "receipts/mbs-202608.txt",
+            "must be a JSON path",
+        ),
+        (
+            ("citations", 0, "accessed_at"),
+            "2026-08-31",
+            "citation access cannot follow",
+        ),
+        (
+            ("maintenance", "withdrawal_policy"),
+            "Never withdraw",
+            "withdrawal policy",
+        ),
+    )
+    for path, value, message in mutations:
+        changed = deepcopy(base)
+        target: Any = changed
+        for part in path[:-1]:
+            target = target[part]
+        target[path[-1]] = value
+        cases.append((changed, message))
+
+    for document, message in cases:
+        with pytest.raises(SourceMetadataError, match=message):
+            validate_source_metadata(document)

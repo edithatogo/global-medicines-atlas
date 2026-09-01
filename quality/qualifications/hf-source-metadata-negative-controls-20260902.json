@@ -15,8 +15,8 @@
     "invalid-croissant-digest.json": "7af1c9d3c47d5e2058a88b01f710161ad5e7f139c82e57c513acb3062b4df178",
     "invalid-generic-card.json": "2176e4e9a698e1d877b4ca6eddaf95911681a03788ac5244e47a8cef5cde1a6f",
     "invalid-version-history.json": "1b33012f78d6ceee8af92030e87a3d1c9b100a1f60bb1320d0be484d24e67691",
-    "valid-mbs.json": "00caccb4e3182e411c3d967e17361cf729ed3dbb0dcf238af2f4a49daa3d4809",
-    "valid-pbs.json": "fbc3bd0eaca0ab1729d46507284639755dcde031f70ee581eee5964055b81735"
+    "valid-mbs.json": "89d109c4b0af30d3089b010bf7e731d4a02d972baf26ce9fe001c88cc129207f",
+    "valid-pbs.json": "24a9b4ecd230a8c9036cf4cfeb8ac92f86dce63ffd0f687f52a2ad224928cbcf"
   },
   "negative_controls": [
     "generic data-card title",
@@ -42,7 +42,13 @@
     "data-card claims outside the approved source profile",
     "cleartext public metadata URLs",
     "data-card summary outside the approved source profile",
-    "correction route outside the approved repository"
+    "correction route outside the approved repository",
+    "same-host source and citation URL surface mismatch",
+    "card or Croissant version mismatch",
+    "rights or citation date after retrieval",
+    "coverage scope outside the source profile",
+    "provenance receipt profile or format mismatch",
+    "withdrawal policy outside the approved contract"
   ],
   "external_actions": {
     "credentials_used": false,

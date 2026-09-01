@@ -14,11 +14,16 @@
   "data_card": {
     "title": "Australian Medicare Benefits Schedule source archive",
     "summary": "Immutable source-native MBS release evidence with receipt-bound provenance.",
+    "version": "2026-08",
+    "created_at": "2026-08-30T05:40:00Z",
     "intended_uses": ["Historical and current MBS service-benefit analysis"],
     "limitations": ["MBS funding evidence is not regulatory approval or formulary evidence."]
   },
   "croissant": {
     "name": "Australian Medicare Benefits Schedule source archive",
+    "description": "Immutable source-native MBS release evidence with receipt-bound provenance.",
+    "version": "2026-08",
+    "license": "rights-declared-per-source",
     "conforms_to": "http://mlcommons.org/croissant/1.0",
     "distributions": [{"path": "raw/mbs-202608.xml", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "encoding_format": "application/xml"}]
   },
