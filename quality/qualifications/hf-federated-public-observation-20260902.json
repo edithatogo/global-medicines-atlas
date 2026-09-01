@@ -2,6 +2,56 @@
   "observed_at": "2026-09-01T19:48:57Z",
   "observation_scope": "anonymous_public_metadata_only",
   "owner": "edithatogo",
+  "dataset_heads": [
+    {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "endpoint": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-source-archive",
+      "raw_response_sha256": "f0b6203c97357b5f57c233da856279c0b115a700da1fb8fb4239a8c94cb68144",
+      "revision": "75f9f20a36ddb829dfe0ca88660664570782be02",
+      "private": false,
+      "gated": false
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "endpoint": "https://huggingface.co/api/datasets/edithatogo/australian-pbs-source-archive",
+      "raw_response_sha256": "92ea9b8db8578bdb83fb739e9f64a551c0c668bbc48681cf74b3b52120c9fa92",
+      "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+      "private": false,
+      "gated": false
+    },
+    {
+      "dataset": "edithatogo/global-medicines-atlas-international-open",
+      "endpoint": "https://huggingface.co/api/datasets/edithatogo/global-medicines-atlas-international-open",
+      "raw_response_sha256": "e427f326b1487e01d331e826fc5eedf3b1dcc680732bf1b75d48d0a0d00ccdd8",
+      "revision": "654f71c84cdb17b4032396bcbc961bef8757fb19",
+      "private": false,
+      "gated": false
+    },
+    {
+      "dataset": "edithatogo/global-medicines-atlas-international-permissive-20260821",
+      "endpoint": "https://huggingface.co/api/datasets/edithatogo/global-medicines-atlas-international-permissive-20260821",
+      "raw_response_sha256": "2e4af66a8ae7e55b96afea87cee0f8c808776c2c81c450ae666cf9c93ef8c2b1",
+      "revision": "87d3b54ac932018c276a1c50033ac287520cf85e",
+      "private": false,
+      "gated": false
+    },
+    {
+      "dataset": "edithatogo/global-medicines-atlas-cms-partd-20260827",
+      "endpoint": "https://huggingface.co/api/datasets/edithatogo/global-medicines-atlas-cms-partd-20260827",
+      "raw_response_sha256": "001335b9cd6bec93bf94238360acb408e4f0abc2bca9fbfe4d97e51aee3a51b4",
+      "revision": "abcff8ebd1f624c4bbb0a87d903b184388c98254",
+      "private": false,
+      "gated": false
+    },
+    {
+      "dataset": "edithatogo/reimbursement-atlas",
+      "endpoint": "https://huggingface.co/api/datasets/edithatogo/reimbursement-atlas",
+      "raw_response_sha256": "6d3e036a0d1f3b0c68140c96a9b4f6cb5cccd3c36b683846d673a9f5cfab4ab4",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "private": false,
+      "gated": false
+    }
+  ],
   "public_collection_denominator": {
     "endpoint": "https://huggingface.co/api/collections?owner=edithatogo&limit=100",
     "raw_response_sha256": "90c07ea02f5184862d482da84716baa83909ba942b0c40b9e4cea4fadef5f7d0",
@@ -65,7 +115,7 @@
     "policy_aus_publicly_observable": false
   },
   "boundaries": [
-    "The committed receipt captures selected public-safe response fields and binds both complete raw HTTP response bytes by SHA-256.",
+    "The committed receipt captures selected public-safe response fields and binds all eight complete raw HTTP response bytes by SHA-256.",
     "Absence from the exhausted anonymous public denominator does not prove that a private collection is absent.",
     "Collection membership and notes are mutable discovery metadata, not dataset authority or byte-level verification.",
     "No credential, private estate state, source payload, collection mutation, visibility change or publication was used."

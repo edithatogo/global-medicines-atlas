@@ -39,8 +39,9 @@ hosted receipts remain the byte-level authority for already qualified objects.
 
 The content-addressed public observation receipt at
 `quality/qualifications/hf-federated-public-observation-20260902.json` binds the
-complete raw response bytes from both official API endpoints by SHA-256 and
-retains their public-safe normalized fields. It shows that the public `Health
+complete raw response bytes from the six dataset endpoints and both collection
+endpoints by SHA-256 and retains their public-safe normalized fields. It shows
+that the public `Health
 Economics and Outcomes Research` collection contains four datasets, including
 both Australian source archives. Its reimbursement-atlas note still says the
 origin is unresolved, and the two Australian members have no explanatory
