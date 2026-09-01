@@ -540,6 +540,13 @@ def test_workflow_has_durable_receipt_and_no_dataset_write() -> None:
     assert "HF_TOKEN" not in workflow
     assert "upload_folder" not in workflow
     assert "exact_commit" in workflow
+    assert "fail-fast: false" in workflow
+    assert "[native, domain, entities, dates]" in workflow
+    assert "--reference-shard-count 32" in workflow
+    assert "needs: [qualify, qualify-references]" in workflow
+    assert "pbs-${{ matrix.projection }}-receipt.json" in workflow
+    assert "aggregate_historical_pbs_qualification.py" in workflow
+    assert "merge-multiple: true" in workflow
 
 
 def test_checkpoint_survives_interruption(synthetic, monkeypatch, tmp_path):

@@ -44,9 +44,27 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--exact-commit", required=True)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument(
+        "--projection",
+        choices=("native", "domain", "entities", "references", "dates"),
+    )
+    parser.add_argument("--reference-shard-index", type=int)
+    parser.add_argument("--reference-shard-count", type=int)
     parser.add_argument("--failure-only", action="store_true")
     parser.add_argument("--metadata-only", action="store_true")
     args = parser.parse_args(argv)
+    shard_values = (args.reference_shard_index, args.reference_shard_count)
+    if (None in shard_values) != (shard_values == (None, None)):
+        parser.error(
+            "reference shard index and count must be supplied together"
+        )
+    reference_shard = (
+        None
+        if shard_values == (None, None)
+        else (args.reference_shard_index, args.reference_shard_count)
+    )
+    if reference_shard is not None and args.projection != "references":
+        parser.error("reference shards require the references projection")
     report = failure_report()
     if args.metadata_only:
         report = metadata_probe_report(report)
@@ -57,17 +75,28 @@ def main(argv: list[str] | None = None) -> int:
         latest = _write(args.output, value)
 
     if not args.failure_only:
-        try:
+        try:  # ruff: ignore[too-many-statements-in-try-clause] -- one bounded runner transaction
             runner = (
                 run_hosted_metadata_probe
                 if args.metadata_only
                 else run_hosted_qualification
             )
-            report = runner(args.exact_commit, progress=checkpoint)
+            runner_kwargs: dict[str, Any] = {"progress": checkpoint}
+            if not args.metadata_only:
+                runner_kwargs["projection"] = args.projection
+                runner_kwargs["reference_shard"] = reference_shard
+            report = runner(args.exact_commit, **runner_kwargs)
         except Exception as error:  # Never log source-bearing exception text.
             report = failure_report(error)
             if "progress" in latest:
                 report["progress"] = latest["progress"]
+    if args.projection is not None:
+        report["projection_shard"] = args.projection
+    if reference_shard is not None and "reference_window" not in report:
+        report["reference_shard"] = {
+            "index": reference_shard[0],
+            "count": reference_shard[1],
+        }
     if args.metadata_only:
         report = metadata_probe_report(report)
     report = _write(args.output, report)

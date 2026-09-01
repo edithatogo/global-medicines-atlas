@@ -467,6 +467,8 @@ def _public(client: httpx.Client, deadline: float) -> None:
 def run_hosted_qualification(
     exact_commit: str,
     *,
+    projection: str | None = None,
+    reference_shard: tuple[int, int] | None = None,
     transport: httpx.BaseTransport | None = None,
     progress: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
@@ -484,7 +486,13 @@ def run_hosted_qualification(
     """
     retry = _RetryBudget(progress=progress)
     try:
-        return _run(exact_commit, transport=transport, retry=retry)
+        return _run(
+            exact_commit,
+            projection=projection,
+            reference_shard=reference_shard,
+            transport=transport,
+            retry=retry,
+        )
     except QualificationError as error:
         error.retry_event = retry.event
         error.retry_detail = retry.retry_detail
@@ -592,6 +600,8 @@ def run_hosted_metadata_probe(
 def _run(
     exact_commit: str,
     *,
+    projection: str | None,
+    reference_shard: tuple[int, int] | None,
     transport: httpx.BaseTransport | None,
     retry: _RetryBudget,
 ) -> dict[str, Any]:
@@ -675,6 +685,8 @@ def _run(
             xml,
             parent,
             binding,
+            projection=projection,
+            reference_shard=reference_shard,
             progress=lambda phase, batches, rows: retry.checkpoint(
                 "projection-qualification", phase, batches, rows
             ),
@@ -711,6 +723,8 @@ def _run(
         },
         "source_publication_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5466488482",
     }
+    if projection is not None:
+        report["projection_shard"] = projection
     with _at("report", progress=retry.checkpoint):
         if len(json.dumps(report, sort_keys=True).encode()) > MAX_REPORT_BYTES:
             raise _RejectionError("byte-limit")

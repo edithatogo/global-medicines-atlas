@@ -16,38 +16,143 @@ concurrency:
 
 jobs:
   qualify:
-    name: Verify pinned public PBS lineage and projection denominators
+    name: Verify PBS ${{ matrix.projection }} projection shard
     if: github.ref == 'refs/heads/main'
+    strategy:
+      fail-fast: false
+      matrix:
+        projection: [native, domain, entities, dates]
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     permissions:
       contents: read
-      issues: write # Durable bounded aggregate receipt, not raw payloads.
+      issues: write # Durable bounded shard receipt, never source bytes.
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
-      - name: Verify original public PBS archive and all projections anonymously
+      - name: Verify one original-public PBS projection anonymously
         timeout-minutes: 55
         env:
+          PROJECTION: ${{ matrix.projection }}
           REQUESTED_COMMIT: ${{ inputs.exact_commit }}
         run: |
           set -euo pipefail
           uv run --locked --python 3.14.6 python scripts/qualify_historical_pbs_public.py \
-            --exact-commit "$REQUESTED_COMMIT" --output pbs-qualification-receipt.json
-      - name: Persist aggregate receipt durably in the track issue
+            --exact-commit "$REQUESTED_COMMIT" --projection "$PROJECTION" \
+            --output "pbs-$PROJECTION-receipt.json"
+      - name: Persist shard receipt durably in the track issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PROJECTION: ${{ matrix.projection }}
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          if ! test -s "pbs-$PROJECTION-receipt.json"; then
+            uv run --locked --python 3.14.6 python scripts/qualify_historical_pbs_public.py \
+              --exact-commit "$REQUESTED_COMMIT" --projection "$PROJECTION" \
+              --failure-only --output "pbs-$PROJECTION-receipt.json"
+          fi
+          gh issue comment 341 --repo "$GITHUB_REPOSITORY" \
+            --body-file "pbs-$PROJECTION-receipt.json"
+      - name: Retain immutable shard receipt without raw source material
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-${{ matrix.projection }}-qualification-receipt
+          path: pbs-${{ matrix.projection }}-receipt.json
+          if-no-files-found: error
+          retention-days: 30
+
+  qualify-references:
+    name: Verify PBS reference window ${{ matrix.shard }} of 32
+    if: github.ref == 'refs/heads/main'
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+      issues: write # Durable bounded reference-window receipt only.
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Verify one globally indexed reference window anonymously
+        timeout-minutes: 55
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+          SHARD: ${{ matrix.shard }}
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.14.6 python scripts/qualify_historical_pbs_public.py \
+            --exact-commit "$REQUESTED_COMMIT" --projection references \
+            --reference-shard-index "$SHARD" --reference-shard-count 32 \
+            --output "pbs-references-$SHARD-receipt.json"
+      - name: Persist reference-window receipt durably in the track issue
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
           REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+          SHARD: ${{ matrix.shard }}
         run: |
           set -euo pipefail
-          if ! test -s pbs-qualification-receipt.json; then
+          if ! test -s "pbs-references-$SHARD-receipt.json"; then
             uv run --locked --python 3.14.6 python scripts/qualify_historical_pbs_public.py \
-              --exact-commit "$REQUESTED_COMMIT" --failure-only \
-              --output pbs-qualification-receipt.json
+              --exact-commit "$REQUESTED_COMMIT" --projection references \
+              --reference-shard-index "$SHARD" --reference-shard-count 32 \
+              --failure-only --output "pbs-references-$SHARD-receipt.json"
           fi
+          gh issue comment 341 --repo "$GITHUB_REPOSITORY" \
+            --body-file "pbs-references-$SHARD-receipt.json"
+      - name: Retain immutable reference-window receipt without source bytes
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-references-${{ matrix.shard }}-qualification-receipt
+          path: pbs-references-${{ matrix.shard }}-receipt.json
+          if-no-files-found: error
+          retention-days: 30
+
+  aggregate:
+    name: Verify complete PBS projection-shard aggregate
+    if: always() && github.ref == 'refs/heads/main'
+    needs: [qualify, qualify-references]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write # Durable bounded aggregate receipt, never source bytes.
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - uses: actions/download-artifact@37930b1c5dced7b7a54526c4b63b47c02546fc2a # v7.0.0
+        continue-on-error: true
+        with:
+          pattern: pbs-*-qualification-receipt
+          path: receipts
+          merge-multiple: true
+      - name: Verify exact shard coverage, identities, denominators and parity
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.14.6 python scripts/aggregate_historical_pbs_qualification.py \
+            --receipts receipts --exact-commit "$REQUESTED_COMMIT" \
+            --output pbs-qualification-receipt.json
+      - name: Persist aggregate receipt durably in the track issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
           gh issue comment 341 --repo "$GITHUB_REPOSITORY" \
             --body-file pbs-qualification-receipt.json
       - name: Retain aggregate receipt without raw source material

@@ -681,6 +681,24 @@
   digests. One 1,000-item synthetic output-only comparison produced 10,001 rows
   and six equal batches: baseline CPU 0.741650 s, candidate 0.657760 s. This
   bounded observation is not a corpus forecast; hosted validation remains.
+  PR #416 merged as `ccf7570`; exact run `33509616416` timed out at the
+  unchanged 55-minute limit. Its durable receipt (issue #341 comment
+  `5494894668`, verified SHA-256
+  `0feb584f31457ea61318cd701825f0273eb472ac3cfe753b7de1176336d0a204`)
+  records only six batches and 8,358 rows at 3,307,188 ms. This regressed the
+  earlier hosted prefix despite the small synthetic result and is incomplete,
+  not qualification. No retry or publication occurred.
+- [~] Disaggregate hosted qualification into independently bounded native,
+  domain, entity and date jobs plus deterministic reference row windows. Each
+  reference window must build the complete global literal index, validate the
+  full ordered entity identity/row denominator, and allocate diagnostics only
+  for its half-open range. Every job retains a digest-bound durable receipt;
+  the final aggregate fails closed on missing, overlapping or inconsistent
+  windows, commit/revision/pin drift, denominator or ordered-digest drift, or
+  missing Parquet equality. The repository candidate uses 32 reference windows
+  under the unchanged 55-minute per-job cap and never stores source bytes in
+  artifacts. It depends on the independently reviewed linear window API in
+  PR #419; hosted dispatch remains pending reviewed merges.
   Exact merged-main run `33509616416` at `ccf7570` falsified that synthetic
   forecast: after the same 55-minute limit it had emitted only 8,358 reference
   rows in six batches, versus 163,700 rows in 120 batches at `757dc41`.
