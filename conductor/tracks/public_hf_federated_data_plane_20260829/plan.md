@@ -200,6 +200,12 @@
 - [x] Apply repository formatting after the exact hosted routine lane identified
   the two unformatted collection files. (`4285845`; format check and 25 focused
   tests pass; no quality gate or behavior changed.)
+- [x] Require every collection member to declare the `dataset` resource type;
+  reject model/Space aliases that reuse the same owner/name identity. (`47f75d7`;
+  hosted P2 review correction.)
+- [x] Bound estate-registry entries and each entry's collection-membership tuple
+  before dictionary/set allocation or iteration. (`47f75d7`; hosted P2 review
+  correction; 26 focused and 141 affected tests pass.)
 
 - [ ] Populate and make `Policy AUS` public, update HEOR membership/notes, and
   refresh the public dataset-estate registry.
