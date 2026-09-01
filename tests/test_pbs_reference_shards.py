@@ -24,6 +24,9 @@ from global_medicines_atlas.pbs_member_identity import (
 )
 from global_medicines_atlas.pbs_reference_shards import (
     _read_index,  # ruff: ignore[import-private-name]  # pyright: ignore[reportPrivateUsage]
+    assemble_reference_manifest,
+    prepare_reference_index,
+    prepare_reference_partition,
     prepare_reference_shards,
     qualify_reference_shard,
 )
@@ -98,6 +101,93 @@ def test_prepared_reference_shards_reassemble_full_ordered_projection(
         )
     )
     assert prepared.equals(full, check_metadata=True)
+
+
+def test_disaggregated_preparation_reassembles_existing_worker_contract(
+    tmp_path: Path,
+) -> None:
+    binding, denominator, batches = inputs()
+    directory = tmp_path / "dag"
+    index_receipt = prepare_reference_index(
+        batches(), binding, denominator, directory / "reference-index.json"
+    )
+    partition_receipts = [
+        prepare_reference_partition(
+            batches(),
+            binding,
+            denominator,
+            directory / f"reference-{index:02d}.arrow",
+            shard_index=index,
+            shard_count=3,
+        )
+        for index in range(3)
+    ]
+    manifest = assemble_reference_manifest(
+        directory,
+        binding,
+        denominator,
+        index_receipt,
+        partition_receipts,
+    )
+    reports = [
+        qualify_reference_shard(directory, shard_index=index, rows_per_batch=2)
+        for index in range(3)
+    ]
+    assert manifest["evidence_truth"] is False
+    assert manifest["publication_performed"] is False
+    assert (
+        sum(report["projections"]["references"]["rows"] for report in reports)
+        == denominator["elements"]
+    )
+    assert (
+        sum(
+            report["projections"]["references"]["native_fields"]
+            for report in reports
+        )
+        == denominator["native_fields"]
+    )
+
+
+@pytest.mark.parametrize(
+    "mutation", ["index-digest", "partition-digest", "missing", "binding"]
+)
+def test_disaggregated_manifest_fails_closed_on_incomplete_or_mixed_nodes(
+    tmp_path: Path, mutation: str
+) -> None:
+    binding, denominator, batches = inputs()
+    directory = tmp_path / mutation
+    index_receipt = prepare_reference_index(
+        batches(), binding, denominator, directory / "reference-index.json"
+    )
+    partition_receipts = [
+        prepare_reference_partition(
+            batches(),
+            binding,
+            denominator,
+            directory / f"reference-{index:02d}.arrow",
+            shard_index=index,
+            shard_count=2,
+        )
+        for index in range(2)
+    ]
+    if mutation == "index-digest":
+        (directory / "reference-index.json").write_bytes(b"changed")
+    elif mutation == "partition-digest":
+        (directory / "reference-00.arrow").write_bytes(b"changed")
+    elif mutation == "missing":
+        partition_receipts.pop()
+    else:
+        partition_receipts[0]["binding_sha256"] = "9" * 64
+    with pytest.raises(
+        (TypeError, ValueError), match=r"binding|digest|coverage"
+    ):
+        assemble_reference_manifest(
+            directory,
+            binding,
+            denominator,
+            index_receipt,
+            partition_receipts,
+        )
 
 
 def test_prepared_reference_shard_rejects_tampered_partition(
