@@ -93,6 +93,7 @@ _PROFILE_DETAILS = {
         "source_url_prefix": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-",
         "coverage_scope": "August 2026 MBS release payloads",
         "receipt_prefix": "receipts/mbs-",
+        "effective_from": "2026-08-01",
     },
     "au-pbs": {
         "authority_url": "https://www.health.gov.au/",
@@ -100,6 +101,7 @@ _PROFILE_DETAILS = {
         "source_url_prefix": "https://www.pbs.gov.au/browse/downloads",
         "coverage_scope": "April 2026 PBS release payloads",
         "receipt_prefix": "receipts/pbs-",
+        "effective_from": "2026-04-01",
     },
 }
 
@@ -352,16 +354,12 @@ class SourceMetadataDocument(_Model):
         if str(self.source.authority_url) != profile["authority_url"]:
             raise ValueError("source profile uses the wrong authority URL")
         expected_source_url = profile["source_url_prefix"]
+        if (
+            re.fullmatch(r"\d{4}-(?:0[1-9]|1[0-2])", self.source.source_version)
+            is None
+        ):
+            raise ValueError("source version must use canonical YYYY-MM format")
         if self.source.source_id == "au-mbs":
-            if (
-                re.fullmatch(
-                    r"\d{4}-(?:0[1-9]|1[0-2])", self.source.source_version
-                )
-                is None
-            ):
-                raise ValueError(
-                    "source version must use canonical YYYY-MM format"
-                )
             expected_source_url += (
                 self.source.source_version[:4] + self.source.source_version[5:]
             )
@@ -437,6 +435,10 @@ class SourceMetadataDocument(_Model):
             raise ValueError("version history revisions must be unique")
 
         profile = _PROFILE_DETAILS[self.source.source_id]
+        if self.source.effective_from != date.fromisoformat(
+            profile["effective_from"]
+        ):
+            raise ValueError("effective date does not match the source release")
         if self.coverage.scope != profile["coverage_scope"]:
             raise ValueError("coverage scope does not match the source profile")
         if not self.provenance.receipt.startswith(profile["receipt_prefix"]):

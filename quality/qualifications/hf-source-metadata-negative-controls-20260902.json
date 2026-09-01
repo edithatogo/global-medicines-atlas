@@ -55,7 +55,9 @@
     "payload or receipt path containing control characters",
     "non-canonical source version alias",
     "payload media-type mismatch",
-    "cross-source citation dataset"
+    "cross-source citation dataset",
+    "non-canonical PBS source version",
+    "effective date outside the source release"
   ],
   "external_actions": {
     "credentials_used": false,

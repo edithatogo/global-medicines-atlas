@@ -216,6 +216,29 @@ def test_rejects_hostile_metadata_aliases(mutation: str, message: str) -> None:
         validate_source_metadata(document)
 
 
+def test_binds_pbs_version_and_effective_date_to_release() -> None:
+    document = _fixture("valid-pbs.json")
+    for target in (
+        document["source"],
+        document["data_card"],
+        document["croissant"],
+    ):
+        target[
+            "source_version" if target is document["source"] else "version"
+        ] = "not-a-version"
+    document["version_history"][0]["source_version"] = "not-a-version"
+    with pytest.raises(SourceMetadataError, match="canonical YYYY-MM"):
+        validate_source_metadata(document)
+
+    document = _fixture("valid-pbs.json")
+    document["source"]["effective_from"] = "1990-01-01"
+    document["version_history"][0]["effective_from"] = "1990-01-01"
+    with pytest.raises(
+        SourceMetadataError, match="does not match the source release"
+    ):
+        validate_source_metadata(document)
+
+
 @pytest.mark.parametrize(
     ("field", "url"),
     [
