@@ -32,6 +32,9 @@ _RESERVED = {
 _SAFE_NAME = re.compile(r"[^A-Za-z0-9._-]+")
 _MIN_COLUMNS = 2
 _COPY_CHUNK_BYTES = 1024 * 1024
+_SHA256 = re.compile(r"[0-9a-f]{64}")
+_CMS_PAYLOAD_COUNT = 33
+_IDENTITY_PATH_INDEX = 2
 
 
 def _file_sha256(path: Path) -> str:
@@ -379,6 +382,175 @@ def projection_manifest_rows(
             "parquet_sha256": projection.parquet_sha256,
             "parquet_byte_count": projection.parquet_path.stat().st_size,
         }
+
+
+def _raw_projection_inventory(
+    raw_manifest: object,
+) -> dict[str, tuple[str, str]]:
+    if not isinstance(raw_manifest, dict):
+        raise TypeError("CMS Part D raw manifest must be an object")
+    manifest = cast("dict[str, object]", raw_manifest)
+    raw_payloads = manifest.get("payloads")
+    if not isinstance(raw_payloads, list):
+        raise TypeError("CMS Part D raw manifest payloads must be a list")
+    raw_payloads = cast("list[object]", raw_payloads)
+    if len(raw_payloads) != _CMS_PAYLOAD_COUNT:
+        raise ValueError("CMS Part D raw manifest must contain 33 payloads")
+    expected: dict[str, tuple[str, str]] = {}
+    for raw in raw_payloads:
+        if not isinstance(raw, dict):
+            raise TypeError("CMS Part D raw payload entries must be objects")
+        raw = cast("dict[str, object]", raw)
+        hub_path = raw.get("hub_path")
+        family = raw.get("family")
+        digest = raw.get("sha256")
+        invalid_fields = (
+            not isinstance(hub_path, str)
+            or not isinstance(family, str)
+            or family not in {"formulary", "spending"}
+            or not isinstance(digest, str)
+            or _SHA256.fullmatch(digest) is None
+        )
+        if invalid_fields:
+            raise ValueError("CMS Part D raw payload identity is invalid")
+        hub_path = _string(hub_path)
+        family = _string(family)
+        digest = _string(digest)
+        parts = hub_path.split("/")
+        if (
+            len(parts) <= _IDENTITY_PATH_INDEX
+            or _SHA256.fullmatch(parts[_IDENTITY_PATH_INDEX]) is None
+        ):
+            raise ValueError("CMS Part D raw payload path is invalid")
+        identity = parts[_IDENTITY_PATH_INDEX]
+        if identity in expected:
+            raise ValueError("CMS Part D raw payload identities must be unique")
+        expected[identity] = (family, digest)
+    return expected
+
+
+def _positive_int(value: object) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) and value > 0
+
+
+def _string(value: object) -> str:
+    return cast("str", value)
+
+
+def _qualified_projection_rows(projections: object) -> int:
+    if not isinstance(projections, list) or not projections:
+        raise ValueError("CMS Part D projection entries must be nonempty")
+    projections = cast("list[object]", projections)
+    calculated_rows = 0
+    filenames: set[str] = set()
+    for projection in projections:
+        if not isinstance(projection, dict):
+            raise TypeError("CMS Part D projection entries must be objects")
+        projection = cast("dict[str, object]", projection)
+        filename = projection.get("parquet_filename")
+        row_count = projection.get("row_count")
+        byte_count = projection.get("parquet_byte_count")
+        digest = projection.get("parquet_sha256")
+        valid_name = (
+            isinstance(filename, str)
+            and PurePosixPath(filename).name == filename
+            and filename not in filenames
+        )
+        valid_digest = isinstance(digest, str) and _SHA256.fullmatch(digest)
+        if not (
+            valid_name
+            and _positive_int(row_count)
+            and _positive_int(byte_count)
+            and valid_digest
+        ):
+            raise ValueError("CMS Part D projection evidence is invalid")
+        filename = _string(filename)
+        row_count = cast("int", row_count)
+        filenames.add(filename)
+        calculated_rows += row_count
+    return calculated_rows
+
+
+def _qualified_shard(
+    shard: object,
+    expected: dict[str, tuple[str, str]],
+    observed: set[str],
+) -> dict[str, object]:
+    if not isinstance(shard, dict):
+        raise TypeError("CMS Part D projection shards must be objects")
+    shard = cast("dict[str, object]", shard)
+    identity = shard.get("identity")
+    family = shard.get("family")
+    valid_identity = (
+        isinstance(identity, str)
+        and identity in expected
+        and identity not in observed
+        and family == expected[identity][0]
+    )
+    valid_contract = (
+        shard.get("schema_id")
+        == "global-medicines-atlas.cms-partd-source-record-shard"
+        and shard.get("schema_version") == 1
+        and shard.get("source_values_preserved_as_strings") is True
+        and shard.get("cross_plan_year_schema_equivalence_claimed") is False
+    )
+    if not valid_identity or not valid_contract:
+        raise ValueError("CMS Part D projection shard is not qualified")
+    projections = shard.get("projections")
+    calculated_rows = _qualified_projection_rows(projections)
+    projection_count = shard.get("source_record_projection_count")
+    record_count = shard.get("source_record_count")
+    projection_list = cast("list[object]", projections)
+    if (
+        projection_count != len(projection_list)
+        or not _positive_int(record_count)
+        or calculated_rows != record_count
+    ):
+        raise ValueError("CMS Part D projection shard totals are invalid")
+    qualified_identity = _string(identity)
+    observed.add(qualified_identity)
+    return {
+        **shard,
+        "raw_payload_sha256": expected[qualified_identity][1],
+    }
+
+
+def qualify_cms_partd_projections(
+    raw_manifest: object,
+    shards: object,
+    *,
+    qualified_at: str,
+    raw_revision: str,
+) -> dict[str, object]:
+    """Bind source-record shards to the exact immutable raw inventory."""
+    expected = _raw_projection_inventory(raw_manifest)
+
+    if not isinstance(shards, list):
+        raise TypeError("CMS Part D projection shards must be a list")
+    shards = cast("list[object]", shards)
+    if len(shards) != len(expected):
+        raise ValueError("CMS Part D projection shards do not match raw count")
+    observed: set[str] = set()
+    normalized = [_qualified_shard(row, expected, observed) for row in shards]
+    normalized.sort(key=lambda item: cast("str", item["identity"]))
+    return {
+        "schema_id": "global-medicines-atlas.cms-partd-source-record-qualification",
+        "schema_version": 1,
+        "qualified_at": qualified_at,
+        "raw_revision": raw_revision,
+        "payload_count": len(expected),
+        "source_record_projection_count": sum(
+            cast("int", row["source_record_projection_count"])
+            for row in normalized
+        ),
+        "source_record_count": sum(
+            cast("int", row["source_record_count"]) for row in normalized
+        ),
+        "source_values_preserved_as_strings": True,
+        "cross_plan_year_schema_equivalence_claimed": False,
+        "runner_source_bytes_retained": False,
+        "shards": normalized,
+    }
 
 
 def projection_cli() -> None:
