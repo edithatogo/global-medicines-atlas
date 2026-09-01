@@ -1,0 +1,40 @@
+{
+  "schema_id": "global-medicines-atlas.hf-source-metadata-negative-controls",
+  "schema_version": 1,
+  "recorded_at": "2026-09-01T20:24:12Z",
+  "scope": "offline_repository_metadata_contract_only",
+  "intended_red": {
+    "command": "uv run pytest -q tests/test_federation_source_metadata.py",
+    "observed_result": "collection_error",
+    "error": "ModuleNotFoundError: No module named 'global_medicines_atlas.federation_source_metadata'",
+    "meaning": "The source-specific validator did not exist before this slice."
+  },
+  "historical_boundary": "The original Phase 1 estate-enumeration red output was not retained and is explicitly irrecoverable; this receipt does not recreate or replace it.",
+  "fixtures": {
+    "invalid-citation.json": "d87abd2afa1b3d0e9f36c1e5f54b978c85f7a68f247c830526f6147948cccfd1",
+    "invalid-croissant-digest.json": "7af1c9d3c47d5e2058a88b01f710161ad5e7f139c82e57c513acb3062b4df178",
+    "invalid-generic-card.json": "2176e4e9a698e1d877b4ca6eddaf95911681a03788ac5244e47a8cef5cde1a6f",
+    "invalid-version-history.json": "1b33012f78d6ceee8af92030e87a3d1c9b100a1f60bb1320d0be484d24e67691",
+    "valid-mbs.json": "00caccb4e3182e411c3d967e17361cf729ed3dbb0dcf238af2f4a49daa3d4809",
+    "valid-pbs.json": "fbc3bd0eaca0ab1729d46507284639755dcde031f70ee581eee5964055b81735"
+  },
+  "negative_controls": [
+    "generic data-card title",
+    "Croissant/provenance digest mismatch",
+    "citation revision mismatch",
+    "missing current version-history entry",
+    "cross-source dataset alias",
+    "incomplete payload coverage",
+    "unresolved rights",
+    "non-actionable correction route",
+    "provenance payload mutation",
+    "effective-date mismatch"
+  ],
+  "external_actions": {
+    "credentials_used": false,
+    "dataset_created": false,
+    "publication_performed": false,
+    "visibility_changed": false,
+    "collection_mutated": false
+  }
+}

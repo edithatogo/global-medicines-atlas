@@ -4,7 +4,11 @@
 
 - [~] Write failing tests for complete estate enumeration, exact revision and
   manifest allowlists, public/non-gated state, and anonymous restoration.
-- [ ] Confirm the intended failure before implementation.
+- [x] Record that the original Phase 1 intended-failure output was not retained
+  and is irrecoverable; do not fabricate it from later green tests. The
+  source-metadata slice retains its own reproducible collection failure and
+  digest-bound negative controls in
+  `quality/qualifications/hf-source-metadata-negative-controls-20260902.json`.
 - [x] Generate a public-safe estate registry snapshot without credentials or
   restricted contents. (`f5d10ed`, permission hardening `31f2458`;
   93 entries from stable owner-filtered scans, six private identities redacted;
@@ -48,8 +52,11 @@
   Anonymous metadata recheck on 2026-08-31 confirms public/non-gated identity.
 - [ ] Create the Australian benefits medallion dataset from GitHub Actions
   once its non-empty, independently admitted producer manifest exists.
-- [ ] Require source-specific data cards, Croissant, citations, provenance,
+- [~] Require source-specific data cards, Croissant, citations, provenance,
   coverage, rights/permission, withdrawal/correction, and version histories.
+  The offline MBS/PBS contract, valid/invalid fixtures, and intended-red receipt
+  are implemented; emitting and anonymously verifying the metadata in each
+  hosted source archive remains pending.
 - [ ] Phase Verification & Checkpoint: datasets exist publicly but contain only
   exact approved manifests; empty repositories are not claimed as data.
 

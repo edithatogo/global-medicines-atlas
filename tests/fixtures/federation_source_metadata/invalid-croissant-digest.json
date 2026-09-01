@@ -1,0 +1,4 @@
+{
+  "$base": "valid-pbs.json",
+  "$set": {"croissant.distributions.0.sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}
+}

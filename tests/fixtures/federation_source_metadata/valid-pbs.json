@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "dataset": "edithatogo/australian-pbs-source-archive",
+  "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+  "source": {
+    "source_id": "au-pbs",
+    "authority": "Australian Government Department of Health, Disability and Ageing",
+    "authority_url": "https://www.health.gov.au/",
+    "source_url": "https://www.pbs.gov.au/browse/downloads",
+    "source_version": "2026-04",
+    "effective_from": "2026-04-01",
+    "retrieved_at": "2026-08-30T02:40:00Z"
+  },
+  "data_card": {
+    "title": "Australian Pharmaceutical Benefits Scheme source archive",
+    "summary": "Immutable source-native PBS release evidence with receipt-bound provenance.",
+    "intended_uses": ["Historical and current PBS formulary and funding analysis"],
+    "limitations": ["PBS listing evidence is not regulatory approval or prescribing advice."]
+  },
+  "croissant": {
+    "name": "Australian Pharmaceutical Benefits Scheme source archive",
+    "conforms_to": "http://mlcommons.org/croissant/1.0",
+    "distributions": [{"path": "raw/pbs-202604.zip", "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "encoding_format": "application/zip"}]
+  },
+  "citations": [{"dataset": "edithatogo/australian-pbs-source-archive", "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7", "source_url": "https://www.pbs.gov.au/browse/downloads", "accessed_at": "2026-08-30"}],
+  "provenance": {"receipt": "receipts/pbs-202604.json", "payloads": [{"path": "raw/pbs-202604.zip", "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}]},
+  "coverage": {"scope": "April 2026 PBS release payloads", "payload_paths": ["raw/pbs-202604.zip"], "exclusions": []},
+  "rights": {"permission_state": "approved", "permission_reference": "https://www.health.gov.au/using-our-websites/copyright", "attribution": "Australian Government Department of Health, Disability and Ageing", "reviewed_at": "2026-08-29"},
+  "maintenance": {"correction_url": "https://github.com/edithatogo/global-medicines-atlas/issues", "withdrawal_policy": "Withdraw or supersede a revision when its receipt, rights or source identity fails verification."},
+  "version_history": [{"revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7", "source_version": "2026-04", "effective_from": "2026-04-01", "status": "current"}]
+}

@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "revision": "75f9f20a36ddb829dfe0ca88660664570782be02",
+  "source": {
+    "source_id": "au-mbs",
+    "authority": "Australian Government Department of Health, Disability and Ageing",
+    "authority_url": "https://www.health.gov.au/",
+    "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-202608",
+    "source_version": "2026-08",
+    "effective_from": "2026-08-01",
+    "retrieved_at": "2026-08-30T05:40:00Z"
+  },
+  "data_card": {
+    "title": "Australian Medicare Benefits Schedule source archive",
+    "summary": "Immutable source-native MBS release evidence with receipt-bound provenance.",
+    "intended_uses": ["Historical and current MBS service-benefit analysis"],
+    "limitations": ["MBS funding evidence is not regulatory approval or formulary evidence."]
+  },
+  "croissant": {
+    "name": "Australian Medicare Benefits Schedule source archive",
+    "conforms_to": "http://mlcommons.org/croissant/1.0",
+    "distributions": [{"path": "raw/mbs-202608.xml", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "encoding_format": "application/xml"}]
+  },
+  "citations": [{"dataset": "edithatogo/australian-mbs-source-archive", "revision": "75f9f20a36ddb829dfe0ca88660664570782be02", "source_url": "https://www.mbsonline.gov.au/", "accessed_at": "2026-08-30"}],
+  "provenance": {"receipt": "receipts/mbs-202608.json", "payloads": [{"path": "raw/mbs-202608.xml", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}]},
+  "coverage": {"scope": "August 2026 MBS release payloads", "payload_paths": ["raw/mbs-202608.xml"], "exclusions": []},
+  "rights": {"permission_state": "approved", "permission_reference": "https://www.health.gov.au/using-our-websites/copyright", "attribution": "Australian Government Department of Health, Disability and Ageing", "reviewed_at": "2026-08-29"},
+  "maintenance": {"correction_url": "https://github.com/edithatogo/global-medicines-atlas/issues", "withdrawal_policy": "Withdraw or supersede a revision when its receipt, rights or source identity fails verification."},
+  "version_history": [{"revision": "75f9f20a36ddb829dfe0ca88660664570782be02", "source_version": "2026-08", "effective_from": "2026-08-01", "status": "current"}]
+}

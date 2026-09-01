@@ -1,0 +1,229 @@
+"""Offline source-specific metadata contracts for public federation archives.
+
+This module validates caller-supplied metadata only. It performs no network,
+credential, publication, collection, or visibility operation.
+"""
+
+from __future__ import annotations
+
+from datetime import date
+from pathlib import PurePosixPath
+from typing import Annotated, Any, Literal, Self
+
+from pydantic import (
+    AnyHttpUrl,
+    AwareDatetime,
+    BaseModel,
+    ConfigDict,
+    Field,
+    StringConstraints,
+    ValidationError,
+    model_validator,
+)
+
+NonBlank = Annotated[
+    str, StringConstraints(strip_whitespace=True, min_length=1, max_length=2048)
+]
+Sha256 = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
+Revision = Annotated[str, Field(pattern=r"^[0-9a-f]{40}$")]
+
+_PROFILES = {
+    "au-mbs": (
+        "edithatogo/australian-mbs-source-archive",
+        "Australian Medicare Benefits Schedule source archive",
+    ),
+    "au-pbs": (
+        "edithatogo/australian-pbs-source-archive",
+        "Australian Pharmaceutical Benefits Scheme source archive",
+    ),
+}
+
+
+class SourceMetadataError(ValueError):
+    """Source metadata is incomplete, generic, or internally inconsistent."""
+
+
+class _Model(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+        frozen=True,
+        str_strip_whitespace=True,
+        validate_default=True,
+    )
+
+
+class SourceIdentity(_Model):
+    source_id: Literal["au-mbs", "au-pbs"]
+    authority: NonBlank
+    authority_url: AnyHttpUrl
+    source_url: AnyHttpUrl
+    source_version: NonBlank
+    effective_from: date
+    retrieved_at: AwareDatetime
+
+
+class DataCard(_Model):
+    title: NonBlank
+    summary: NonBlank
+    intended_uses: tuple[NonBlank, ...] = Field(min_length=1)
+    limitations: tuple[NonBlank, ...] = Field(min_length=1)
+
+
+class PayloadBinding(_Model):
+    path: NonBlank
+    sha256: Sha256
+
+    @model_validator(mode="after")
+    def path_is_safe(self) -> Self:
+        path = PurePosixPath(self.path)
+        if path.is_absolute() or ".." in path.parts or "\\" in self.path:
+            raise ValueError("payload path must be safe and relative")
+        return self
+
+
+class CroissantDistribution(PayloadBinding):
+    encoding_format: NonBlank
+
+
+class Croissant(_Model):
+    name: NonBlank
+    conforms_to: Literal["http://mlcommons.org/croissant/1.0"]
+    distributions: tuple[CroissantDistribution, ...] = Field(min_length=1)
+
+
+class Citation(_Model):
+    dataset: NonBlank
+    revision: Revision
+    source_url: AnyHttpUrl
+    accessed_at: date
+
+
+class Provenance(_Model):
+    receipt: NonBlank
+    payloads: tuple[PayloadBinding, ...] = Field(min_length=1)
+
+
+class Coverage(_Model):
+    scope: NonBlank
+    payload_paths: tuple[NonBlank, ...]
+    exclusions: tuple[NonBlank, ...]
+
+
+class Rights(_Model):
+    permission_state: Literal["approved"]
+    permission_reference: AnyHttpUrl
+    attribution: NonBlank
+    reviewed_at: date
+
+
+class Maintenance(_Model):
+    correction_url: AnyHttpUrl
+    withdrawal_policy: NonBlank
+
+
+class VersionHistoryEntry(_Model):
+    revision: Revision
+    source_version: NonBlank
+    effective_from: date
+    status: Literal["current", "superseded", "withdrawn"]
+
+
+class SourceMetadataDocument(_Model):
+    schema_version: Literal[1]
+    dataset: NonBlank
+    revision: Revision
+    source: SourceIdentity
+    data_card: DataCard
+    croissant: Croissant
+    citations: tuple[Citation, ...] = Field(min_length=1)
+    provenance: Provenance
+    coverage: Coverage
+    rights: Rights
+    maintenance: Maintenance
+    version_history: tuple[VersionHistoryEntry, ...] = Field(min_length=1)
+
+    @property
+    def source_ids(self) -> tuple[str, ...]:
+        return (self.source.source_id,)
+
+    @model_validator(mode="after")
+    def metadata_is_source_specific_and_closed(self) -> Self:
+        expected_dataset, expected_title = _PROFILES[self.source.source_id]
+        if self.dataset != expected_dataset:
+            raise ValueError("source profile uses the wrong approved dataset")
+        if self.data_card.title != expected_title:
+            raise ValueError("data card requires the source-specific title")
+        if self.croissant.name != expected_title:
+            raise ValueError(
+                "Croissant name requires the source-specific title"
+            )
+
+        provenance = tuple(
+            (item.path, item.sha256) for item in self.provenance.payloads
+        )
+        distributions = tuple(
+            (item.path, item.sha256) for item in self.croissant.distributions
+        )
+        if len(provenance) != len(set(provenance)):
+            raise ValueError("provenance payload bindings must be unique")
+        if distributions != provenance:
+            raise ValueError(
+                "Croissant distribution mismatch with provenance payloads"
+            )
+        payload_paths = tuple(path for path, _ in provenance)
+        if self.coverage.payload_paths != payload_paths:
+            raise ValueError(
+                "coverage payload denominator must equal provenance payloads"
+            )
+        if len(self.coverage.exclusions) != len(set(self.coverage.exclusions)):
+            raise ValueError("coverage exclusions must be unique")
+
+        if not any(
+            citation.dataset == self.dataset
+            and citation.revision == self.revision
+            for citation in self.citations
+        ):
+            raise ValueError("citation must identify this dataset revision")
+        return self
+
+    @model_validator(mode="after")
+    def lifecycle_is_revision_bound(self) -> Self:
+        current = tuple(
+            item for item in self.version_history if item.status == "current"
+        )
+        if len(current) != 1 or current[0].revision != self.revision:
+            raise ValueError(
+                "version history must contain the current revision exactly once"
+            )
+        if current[0].source_version != self.source.source_version:
+            raise ValueError("version history source version mismatch")
+        if current[0].effective_from != self.source.effective_from:
+            raise ValueError("version history effective date mismatch")
+        revisions = tuple(item.revision for item in self.version_history)
+        if len(revisions) != len(set(revisions)):
+            raise ValueError("version history revisions must be unique")
+
+        correction = str(self.maintenance.correction_url).rstrip("/")
+        if correction in {
+            str(self.source.authority_url).rstrip("/"),
+            str(self.source.source_url).rstrip("/"),
+        }:
+            raise ValueError("correction route must be distinct and actionable")
+        return self
+
+
+def validate_source_metadata(
+    document: dict[str, Any],
+) -> SourceMetadataDocument:
+    """Validate one public-source metadata document without external I/O."""
+
+    try:
+        return SourceMetadataDocument.model_validate(document)
+    except ValidationError as error:
+        messages = "; ".join(item["msg"] for item in error.errors())
+        if "permission_state" in str(error) and "approved" in str(error):
+            messages = (
+                "source-byte publication permission must be approved; "
+                + messages
+            )
+        raise SourceMetadataError(messages) from error

@@ -1,0 +1,4 @@
+{
+  "$base": "valid-pbs.json",
+  "$set": {"version_history.0.status": "superseded"}
+}
