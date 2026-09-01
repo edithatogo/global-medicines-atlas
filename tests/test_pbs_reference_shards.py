@@ -25,6 +25,8 @@ from global_medicines_atlas.pbs_member_identity import (
 from global_medicines_atlas.pbs_reference_shards import (
     _read_index,  # ruff: ignore[import-private-name]  # pyright: ignore[reportPrivateUsage]
     assemble_reference_manifest,
+    load_reference_entity_material,
+    prepare_reference_entity_material,
     prepare_reference_index,
     prepare_reference_partition,
     prepare_reference_shards,
@@ -146,6 +148,75 @@ def test_disaggregated_preparation_reassembles_existing_worker_contract(
         )
         == denominator["native_fields"]
     )
+
+
+def test_entity_material_is_reusable_by_index_and_partition_nodes(
+    tmp_path: Path,
+) -> None:
+    binding, denominator, batches = inputs()
+    directory = tmp_path / "material"
+    receipt = prepare_reference_entity_material(
+        batches(), binding, denominator, directory / "entities.arrow"
+    )
+    index_batches, loaded_binding, loaded_denominator = (
+        load_reference_entity_material(directory, receipt)
+    )
+    index_receipt = prepare_reference_index(
+        iter(index_batches),
+        loaded_binding,
+        loaded_denominator,
+        directory / "reference-index.json",
+    )
+    partition_receipts = []
+    for index in range(2):
+        partition_batches, loaded_binding, loaded_denominator = (
+            load_reference_entity_material(directory, receipt)
+        )
+        partition_receipts.append(
+            prepare_reference_partition(
+                iter(partition_batches),
+                loaded_binding,
+                loaded_denominator,
+                directory / f"reference-{index:02d}.arrow",
+                shard_index=index,
+                shard_count=2,
+            )
+        )
+    manifest = assemble_reference_manifest(
+        directory,
+        binding,
+        denominator,
+        index_receipt,
+        partition_receipts,
+    )
+    assert receipt["evidence_truth"] is False
+    assert receipt["publication_performed"] is False
+    assert manifest["denominator"] == denominator
+
+
+@pytest.mark.parametrize(
+    "mutation", ["digest", "path", "binding", "denominator", "purpose"]
+)
+def test_entity_material_loader_rejects_tampering(
+    tmp_path: Path, mutation: str
+) -> None:
+    binding, denominator, batches = inputs()
+    directory = tmp_path / mutation
+    receipt = prepare_reference_entity_material(
+        batches(), binding, denominator, directory / "entities.arrow"
+    )
+    if mutation == "digest":
+        (directory / "entities.arrow").write_bytes(b"changed")
+    elif mutation == "path":
+        receipt["entity_material"]["path"] = "../entities.arrow"
+    elif mutation == "binding":
+        receipt["binding_sha256"] = "9" * 64
+    elif mutation == "denominator":
+        receipt["denominator"]["elements"] += 1
+    else:
+        receipt["purpose"] = "other"
+    with pytest.raises((TypeError, ValueError), match=r"entity material"):
+        load_reference_entity_material(directory, receipt)
 
 
 @pytest.mark.parametrize(

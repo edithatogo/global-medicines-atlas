@@ -89,6 +89,110 @@ def _counter() -> dict[str, int]:
     )
 
 
+def prepare_reference_entity_material(
+    batches: Iterator[pa.RecordBatch],
+    binding: PbsXmlMemberBinding,
+    denominator: dict[str, Any],
+    output: Path,
+) -> dict[str, Any]:
+    """Materialize the verified entity stream once for downstream DAG nodes."""
+    total = denominator.get("elements")
+    if type(total) is not int or total < 1:
+        raise ValueError("invalid PBS reference entity material preparation")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    counts = _counter()
+    digest = hashlib.sha256()
+    schema: pa.Schema | None = None
+    writer: pa.RecordBatchStreamWriter | None = None
+    try:
+        for batch in batches:
+            if schema is None:
+                schema = batch.schema
+                writer = pa.ipc.new_stream(str(output), schema)
+            elif not batch.schema.equals(schema, check_metadata=True):
+                raise ValueError("PBS reference entity material schema changed")
+            if writer is None:
+                raise RuntimeError(
+                    "PBS reference entity material was not initialized"
+                )
+            writer.write_batch(batch)  # pyright: ignore[reportUnknownMemberType]
+            _account_nested_batch(batch, _lineage(binding), counts, digest)
+    finally:
+        if writer is not None:
+            writer.close()
+    expected_denominator = {
+        key: denominator[key]
+        for key in ("native_fields", "elements", "native_digest")
+    }
+    if (
+        schema is None
+        or counts["rows"] != total
+        or counts["native_fields"] != expected_denominator["native_fields"]
+        or digest.hexdigest() != expected_denominator["native_digest"]
+    ):
+        raise ValueError("PBS reference entity material denominator changed")
+    contract: dict[str, Any] = {
+        "schema_version": 1,
+        "purpose": "transient-reference-entity-material",
+        "binding": binding.model_dump(mode="json"),
+        "binding_sha256": binding.digest(),
+        "denominator": expected_denominator,
+        "entity_material": {"path": output.name, **_digest(output)},
+        "publication_performed": False,
+        "evidence_truth": False,
+    }
+    return {
+        **contract,
+        "contract_sha256": hashlib.sha256(_encoded(contract)).hexdigest(),
+    }
+
+
+def load_reference_entity_material(
+    directory: Path, receipt: dict[str, Any]
+) -> tuple[pa.RecordBatchReader, PbsXmlMemberBinding, dict[str, Any]]:
+    """Validate one material receipt and open its content-bound Arrow stream."""
+    contract = {
+        key: value for key, value in receipt.items() if key != "contract_sha256"
+    }
+    if (
+        receipt.get("purpose") != "transient-reference-entity-material"
+        or receipt.get("schema_version") != 1
+        or receipt.get("publication_performed") is not False
+        or receipt.get("evidence_truth") is not False
+        or receipt.get("contract_sha256")
+        != hashlib.sha256(_encoded(contract)).hexdigest()
+    ):
+        raise ValueError("PBS reference entity material receipt changed")
+    material = receipt.get("entity_material")
+    denominator = receipt.get("denominator")
+    if not isinstance(material, dict) or not isinstance(denominator, dict):
+        raise TypeError("PBS reference entity material receipt is invalid")
+    material = cast("dict[str, Any]", material)
+    denominator = cast("dict[str, Any]", denominator)
+    binding = PbsXmlMemberBinding.model_validate(receipt.get("binding"))
+    if binding.digest() != receipt.get("binding_sha256"):
+        raise ValueError("PBS reference entity material binding changed")
+    path = directory / str(material.get("path"))
+    if path.parent != directory or _digest(path) != {
+        key: material.get(key) for key in ("sha256", "byte_count")
+    }:
+        raise ValueError("PBS reference entity material digest changed")
+    if (
+        set(denominator) != {"native_fields", "elements", "native_digest"}
+        or any(
+            type(denominator.get(key)) is not int
+            for key in ("native_fields", "elements")
+        )
+        or not isinstance(denominator.get("native_digest"), str)
+    ):
+        raise ValueError("PBS reference entity material denominator changed")
+    return (
+        pa.ipc.open_stream(pa.memory_map(str(path), "r")),
+        binding,
+        denominator,
+    )
+
+
 def prepare_reference_index(
     batches: Iterator[pa.RecordBatch],
     binding: PbsXmlMemberBinding,
