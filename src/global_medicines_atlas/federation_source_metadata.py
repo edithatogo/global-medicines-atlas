@@ -16,18 +16,36 @@ from pydantic import (
     AnyHttpUrl,
     AwareDatetime,
     BaseModel,
+    BeforeValidator,
     ConfigDict,
     Field,
     StringConstraints,
     ValidationError,
+    field_validator,
     model_validator,
 )
+
+
+def _reject_padded(value: Any) -> Any:
+    if isinstance(value, str) and value != value.strip():
+        raise ValueError("exact metadata identity must not be padded")
+    return value
+
 
 NonBlank = Annotated[
     str, StringConstraints(strip_whitespace=True, min_length=1, max_length=2048)
 ]
-Sha256 = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
-Revision = Annotated[str, Field(pattern=r"^[0-9a-f]{40}$")]
+ExactNonBlank = Annotated[
+    str,
+    BeforeValidator(_reject_padded),
+    StringConstraints(strip_whitespace=False, min_length=1, max_length=2048),
+]
+Sha256 = Annotated[
+    str, BeforeValidator(_reject_padded), Field(pattern=r"^[0-9a-f]{64}$")
+]
+Revision = Annotated[
+    str, BeforeValidator(_reject_padded), Field(pattern=r"^[0-9a-f]{40}$")
+]
 
 _PROFILES = {
     "au-mbs": (
@@ -64,7 +82,11 @@ def _public_url_without_userinfo(value: AnyHttpUrl) -> AnyHttpUrl:
     return value
 
 
-PublicUrl = Annotated[AnyHttpUrl, AfterValidator(_public_url_without_userinfo)]
+PublicUrl = Annotated[
+    AnyHttpUrl,
+    BeforeValidator(_reject_padded),
+    AfterValidator(_public_url_without_userinfo),
+]
 
 
 class SourceIdentity(_Model):
@@ -72,9 +94,14 @@ class SourceIdentity(_Model):
     authority: NonBlank
     authority_url: PublicUrl
     source_url: PublicUrl
-    source_version: NonBlank
+    source_version: ExactNonBlank
     effective_from: date
     retrieved_at: AwareDatetime
+
+    @field_validator("source_id", mode="before")
+    @classmethod
+    def source_id_is_exact(cls, value: Any) -> Any:
+        return _reject_padded(value)
 
 
 class DataCard(_Model):
@@ -85,7 +112,7 @@ class DataCard(_Model):
 
 
 class PayloadBinding(_Model):
-    path: NonBlank
+    path: ExactNonBlank
     sha256: Sha256
 
     @model_validator(mode="after")
@@ -94,6 +121,7 @@ class PayloadBinding(_Model):
         path = PurePosixPath(decoded)
         if (
             decoded != self.path
+            or self.path != path.as_posix()
             or path.is_absolute()
             or ".." in path.parts
             or "\\" in decoded
@@ -109,25 +137,27 @@ class CroissantDistribution(PayloadBinding):
 class Croissant(_Model):
     name: NonBlank
     conforms_to: Literal["http://mlcommons.org/croissant/1.0"]
-    distributions: tuple[CroissantDistribution, ...] = Field(min_length=1)
+    distributions: tuple[CroissantDistribution, ...] = Field(
+        min_length=1, max_length=256
+    )
 
 
 class Citation(_Model):
-    dataset: NonBlank
+    dataset: ExactNonBlank
     revision: Revision
     source_url: PublicUrl
     accessed_at: date
 
 
 class Provenance(_Model):
-    receipt: NonBlank
-    payloads: tuple[PayloadBinding, ...] = Field(min_length=1)
+    receipt: ExactNonBlank
+    payloads: tuple[PayloadBinding, ...] = Field(min_length=1, max_length=256)
 
 
 class Coverage(_Model):
     scope: NonBlank
-    payload_paths: tuple[NonBlank, ...]
-    exclusions: tuple[NonBlank, ...]
+    payload_paths: tuple[ExactNonBlank, ...] = Field(max_length=256)
+    exclusions: tuple[NonBlank, ...] = Field(max_length=256)
 
 
 class Rights(_Model):
@@ -144,24 +174,26 @@ class Maintenance(_Model):
 
 class VersionHistoryEntry(_Model):
     revision: Revision
-    source_version: NonBlank
+    source_version: ExactNonBlank
     effective_from: date
     status: Literal["current", "superseded", "withdrawn"]
 
 
 class SourceMetadataDocument(_Model):
     schema_version: Literal[1]
-    dataset: NonBlank
+    dataset: ExactNonBlank
     revision: Revision
     source: SourceIdentity
     data_card: DataCard
     croissant: Croissant
-    citations: tuple[Citation, ...] = Field(min_length=1)
+    citations: tuple[Citation, ...] = Field(min_length=1, max_length=32)
     provenance: Provenance
     coverage: Coverage
     rights: Rights
     maintenance: Maintenance
-    version_history: tuple[VersionHistoryEntry, ...] = Field(min_length=1)
+    version_history: tuple[VersionHistoryEntry, ...] = Field(
+        min_length=1, max_length=256
+    )
 
     @property
     def source_ids(self) -> tuple[str, ...]:

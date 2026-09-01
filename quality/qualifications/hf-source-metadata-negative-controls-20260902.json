@@ -32,7 +32,10 @@
     "unsafe and percent-encoded payload paths",
     "source and citation host mismatch",
     "duplicate payload path with conflicting digests",
-    "userinfo in public metadata URLs"
+    "userinfo in public metadata URLs",
+    "canonical aliases of one payload path",
+    "padded exact identities",
+    "oversized citation collections"
   ],
   "external_actions": {
     "credentials_used": false,

@@ -206,3 +206,39 @@ def test_rejects_unsafe_payload_paths(unsafe_path: str) -> None:
     document["provenance"]["payloads"][0]["path"] = unsafe_path
     with pytest.raises(SourceMetadataError, match="payload path must be safe"):
         validate_source_metadata(document)
+
+
+@pytest.mark.parametrize(
+    ("field_path", "value"),
+    [
+        (("revision",), " 75f9f20a36ddb829dfe0ca88660664570782be02"),
+        (("dataset",), "edithatogo/australian-mbs-source-archive "),
+        (("provenance", "payloads", 0, "sha256"), "a" * 64 + "\n"),
+        (("provenance", "payloads", 0, "path"), " raw/mbs-202608.xml"),
+    ],
+)
+def test_rejects_padded_exact_identities(
+    field_path: tuple[str | int, ...], value: str
+) -> None:
+    document = _fixture("valid-mbs.json")
+    target: Any = document
+    for part in field_path[:-1]:
+        target = target[part]
+    target[field_path[-1]] = value
+    with pytest.raises(SourceMetadataError, match="must not be padded"):
+        validate_source_metadata(document)
+
+
+@pytest.mark.parametrize("alias", ["raw/./mbs.xml", "raw//mbs.xml"])
+def test_rejects_noncanonical_payload_path_aliases(alias: str) -> None:
+    document = _fixture("valid-mbs.json")
+    document["provenance"]["payloads"][0]["path"] = alias
+    with pytest.raises(SourceMetadataError, match="safe and relative"):
+        validate_source_metadata(document)
+
+
+def test_bounds_citation_records_before_semantic_iteration() -> None:
+    document = _fixture("valid-mbs.json")
+    document["citations"] *= 33
+    with pytest.raises(SourceMetadataError, match="at most 32 items"):
+        validate_source_metadata(document)
