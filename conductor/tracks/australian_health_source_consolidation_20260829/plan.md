@@ -207,7 +207,9 @@
   PR delivery gate. PR #410 patch coverage repair exercises exact-head drift,
   every hosted-context short-circuit, and the separately constructed authorized
   success path without changing the checked-in inert contract; the module now
-  has 100% statement and branch coverage locally.
+  has 100% statement and branch coverage locally. The exact original two-file
+  command was reproduced at `f36f061` with 87 passed; the coverage-repair head
+  adds four cases and the same command now reports 91 passed.
 - [ ] Add the hosted append transaction and obtain exact authorization for the
   two newer histories before dispatch. Do not reuse the old replace-all,
   private-target legacy publisher or its dataset-wide privacy rollback.
