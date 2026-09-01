@@ -370,6 +370,7 @@ def test_workflow_disaggregates_preparation_without_raw_artifacts() -> None:
     )[0]
     assert "needs:" not in phase
     assert workflow.count("needs: qualify") == 2
+    assert "needs.qualify.result" not in workflow
     assert (
         "pbs-reference-complete-${{ needs.prepare.outputs.artifact_suffix }}"
         in workflow

@@ -752,6 +752,10 @@
   local copy during assembly. Checkpoints now distinguish workspace and temp
   free space and retain an allowlisted `enospc` code without exception text.
   No raw artifact, timeout increase, dispatch or publication is included.
+  Review fix: preparation still waits for the phase wave to finish, but runs
+  under `always()` even when an independent phase fails; a phase failure can no
+  longer suppress all preparation diagnostics. Exact aggregate coverage still
+  fails closed unless every required phase, index, group and reference passes.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
