@@ -13,7 +13,9 @@ from test_mbs_workbook_silver import (
 )
 
 from global_medicines_atlas.mbs_workbook_xml_mapping import (
+    MbsWorkbookXmlCandidateMatch,
     MbsWorkbookXmlCandidateReport,
+    MbsWorkbookXmlFieldMapping,
     MbsWorkbookXmlSchemaMapping,
     build_mbs_workbook_xml_candidate_report,
     declare_mbs_workbook_xml_mapping,
@@ -116,6 +118,52 @@ def test_contracts_reject_mapping_report_and_status_tampering():
     changed_report["report_sha256"] = "0" * 64
     with pytest.raises(ValidationError, match="report digest differs"):
         MbsWorkbookXmlCandidateReport.model_validate(changed_report)
+
+    changed_report = report.model_dump()
+    changed_report["mapping"]["xml_schema_era"] = "other-era"
+    # Rebind the nested mapping only far enough to exercise the report-era gate.
+    changed_report["mapping"] = declare_mbs_workbook_xml_mapping(
+        xml_schema_era="other-era"
+    ).model_dump()
+    with pytest.raises(ValidationError, match="XML era differs"):
+        MbsWorkbookXmlCandidateReport.model_validate(changed_report)
+
+    changed_report = report.model_dump()
+    changed_report["matches"] = changed_report["matches"][::-1]
+    with pytest.raises(ValidationError, match="not deterministic"):
+        MbsWorkbookXmlCandidateReport.model_validate(changed_report)
+
+
+def test_individual_mapping_and_match_contracts_are_content_bound():
+    with pytest.raises(ValidationError, match="disposition differs"):
+        MbsWorkbookXmlFieldMapping(
+            workbook_native_header="Element",
+            disposition="exact_native_header",
+        )
+    with pytest.raises(ValidationError, match="renamed"):
+        MbsWorkbookXmlFieldMapping(
+            workbook_native_header="ItemNum",
+            xml_native_name="Other",
+            disposition="exact_native_header",
+        )
+    with pytest.raises(ValidationError, match="candidate key differs"):
+        MbsWorkbookXmlCandidateMatch(
+            workbook_occurrence_id="fixture:sheet#row=2",
+            sheet_name="Sheet1",
+            row_index=2,
+            item_num="00123",
+            sub_item_state="missing",
+            xml_native_id="mbs-key:" + "0" * 64,
+            match_status="not_observed",
+        )
+
+
+def test_mapping_digest_is_revalidated():
+    mapping = declare_mbs_workbook_xml_mapping(xml_schema_era="fixture-era")
+    changed = mapping.model_dump()
+    changed["mapping_sha256"] = "0" * 64
+    with pytest.raises(ValidationError, match="mapping digest differs"):
+        MbsWorkbookXmlSchemaMapping.model_validate(changed)
 
 
 @pytest.mark.parametrize("era", ["", " padded", "padded "])
