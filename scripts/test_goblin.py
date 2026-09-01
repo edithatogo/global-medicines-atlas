@@ -119,6 +119,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_historical_comparison.py",
         "tests/test_historical_comparison_columnar.py",
         "tests/test_mbs_historical_comparison.py",
+        "tests/test_mbs_schema_change_events.py",
         "tests/test_context_validation.py",
         "tests/test_medallion_datahouse_contract.py",
         "tests/test_medallion_contract_conformance.py",
