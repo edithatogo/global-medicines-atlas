@@ -9,6 +9,7 @@ observation, bind an exact authorization and record durable verification.
 from __future__ import annotations
 
 import hashlib
+import os
 from typing import Annotated, Literal, Self
 
 from pydantic import (
@@ -26,6 +27,16 @@ GitId = Annotated[
 ]
 Digest = Annotated[
     str, Field(pattern=r"^[0-9a-f]{64}$", min_length=64, max_length=64)
+]
+ApprovalReference = Annotated[
+    str,
+    Field(
+        pattern=(
+            r"^https://github\.com/edithatogo/global-medicines-atlas/"
+            r"issues/339#issuecomment-[1-9][0-9]*$"
+        ),
+        max_length=200,
+    ),
 ]
 EXACT_HEADS = (
     (
@@ -276,6 +287,49 @@ class DurableHistoryReceipt(_Metadata):
         max_length=200,
     )
     verification_sha256: Digest
+
+
+class DonorHistoryPublicationContract(_Metadata):
+    """Exact hosted authority envelope; false remains deliberately inert."""
+
+    dataset: Literal["edithatogo/australian-mbs-source-archive"]
+    heads: tuple[tuple[str, GitId], ...] = Field(min_length=2, max_length=2)
+    publication_authorized: bool = False
+    authorization_reference: ApprovalReference | None = None
+
+    _strict_authority_flag = field_validator(
+        "publication_authorized", mode="before"
+    )(_boolean)
+
+    @model_validator(mode="after")
+    def exact_scope(self) -> Self:
+        if self.heads != EXACT_HEADS:
+            raise ValueError("history publication contract heads differ")
+        if self.publication_authorized != (
+            self.authorization_reference is not None
+        ):
+            raise ValueError("authorization flag and exact receipt must agree")
+        return self
+
+
+def require_donor_history_hosted_authority(
+    contract: DonorHistoryPublicationContract,
+) -> None:
+    """Reject every run until an explicitly approved contract replaces this one."""
+    checked = DonorHistoryPublicationContract.model_validate(
+        contract.model_dump()
+    )
+    if (
+        os.environ.get("GITHUB_ACTIONS") != "true"
+        or os.environ.get("GITHUB_REPOSITORY")
+        != "edithatogo/global-medicines-atlas"
+        or os.environ.get("GITHUB_REF") != "refs/heads/main"
+    ):
+        raise ValueError(
+            "donor history publication requires GitHub Actions on main"
+        )
+    if not checked.publication_authorized:
+        raise ValueError("exact donor history publication is not authorized")
 
 
 def verification_digest(verification: HistoryVerification) -> str:

@@ -9,11 +9,13 @@ from pydantic import ValidationError
 
 from global_medicines_atlas.donor_delta import DeltaObservation
 from global_medicines_atlas.donor_history_publication import (
+    DonorHistoryPublicationContract,
     DurableHistoryReceipt,
     HistoryAppendPlan,
     HistoryVerification,
     cleanup_preconditions_match,
     observation_digest,
+    require_donor_history_hosted_authority,
     validate_append_plan,
     verification_digest,
 )
@@ -22,6 +24,116 @@ from global_medicines_atlas.donor_history_publication import (
 def test_empty_history_plan_fails_closed():
     with pytest.raises(ValueError, match="validation errors"):
         HistoryAppendPlan.model_validate({})
+
+
+def test_checked_in_publication_contract_is_exact_and_inert(monkeypatch):
+    raw = json.loads(
+        (
+            Path(__file__).resolve().parents[1]
+            / "quality/qualifications/australian-donor-history-publication-contract.json"
+        ).read_text()
+    )
+    contract = DonorHistoryPublicationContract.model_validate(raw)
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REPOSITORY", "edithatogo/global-medicines-atlas")
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
+    with pytest.raises(ValueError, match="not authorized"):
+        require_donor_history_hosted_authority(contract)
+
+
+def test_history_authority_rejects_non_hosted_context(monkeypatch):
+    raw = json.loads(
+        (
+            Path(__file__).resolve().parents[1]
+            / "quality/qualifications/australian-donor-history-publication-contract.json"
+        ).read_text()
+    )
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    with pytest.raises(ValueError, match="GitHub Actions on main"):
+        require_donor_history_hosted_authority(
+            DonorHistoryPublicationContract.model_validate(raw)
+        )
+
+
+@pytest.mark.parametrize(
+    ("variable", "value"),
+    [
+        ("GITHUB_REPOSITORY", "edithatogo/another-repository"),
+        ("GITHUB_REF", "refs/heads/not-main"),
+    ],
+)
+def test_history_authority_rejects_hosted_scope_drift(
+    monkeypatch, variable, value
+):
+    raw = json.loads(
+        (
+            Path(__file__).resolve().parents[1]
+            / "quality/qualifications/australian-donor-history-publication-contract.json"
+        ).read_text()
+    )
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REPOSITORY", "edithatogo/global-medicines-atlas")
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
+    monkeypatch.setenv(variable, value)
+    with pytest.raises(ValueError, match="GitHub Actions on main"):
+        require_donor_history_hosted_authority(
+            DonorHistoryPublicationContract.model_validate(raw)
+        )
+
+
+def test_history_authority_accepts_exact_authorized_hosted_contract(
+    monkeypatch,
+):
+    raw = json.loads(
+        (
+            Path(__file__).resolve().parents[1]
+            / "quality/qualifications/australian-donor-history-publication-contract.json"
+        ).read_text()
+    )
+    raw["publication_authorized"] = True
+    raw["authorization_reference"] = (
+        "https://github.com/edithatogo/global-medicines-atlas/"
+        "issues/339#issuecomment-123"
+    )
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REPOSITORY", "edithatogo/global-medicines-atlas")
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
+    assert (
+        require_donor_history_hosted_authority(
+            DonorHistoryPublicationContract.model_validate(raw)
+        )
+        is None
+    )
+
+
+def test_history_contract_requires_exact_authorization_receipt():
+    raw = json.loads(
+        (
+            Path(__file__).resolve().parents[1]
+            / "quality/qualifications/australian-donor-history-publication-contract.json"
+        ).read_text()
+    )
+    raw["publication_authorized"] = True
+    with pytest.raises(ValidationError, match="must agree"):
+        DonorHistoryPublicationContract.model_validate(raw)
+    raw["authorization_reference"] = (
+        "https://github.com/edithatogo/global-medicines-atlas/"
+        "issues/340#issuecomment-123"
+    )
+    with pytest.raises(ValidationError):
+        DonorHistoryPublicationContract.model_validate(raw)
+
+
+def test_history_contract_rejects_different_donor_heads():
+    raw = json.loads(
+        (
+            Path(__file__).resolve().parents[1]
+            / "quality/qualifications/australian-donor-history-publication-contract.json"
+        ).read_text()
+    )
+    raw["heads"][0][1] = "f" * 40
+    with pytest.raises(ValidationError, match="heads differ"):
+        DonorHistoryPublicationContract.model_validate(raw)
 
 
 def plan():
