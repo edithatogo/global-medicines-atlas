@@ -52,6 +52,15 @@ def inputs():
     return binding, denominator, batches
 
 
+def _resign(receipt: dict[str, object]) -> None:
+    contract = {
+        key: value for key, value in receipt.items() if key != "contract_sha256"
+    }
+    receipt["contract_sha256"] = shards.hashlib.sha256(
+        shards._encoded(contract)  # pyright: ignore[reportPrivateUsage]
+    ).hexdigest()
+
+
 def test_prepared_reference_shards_reassemble_full_ordered_projection(
     tmp_path: Path,
 ) -> None:
@@ -237,6 +246,35 @@ def test_entity_material_rejects_invalid_partition_count(
         )
 
 
+def test_preparation_nodes_reject_invalid_or_changed_denominators(
+    tmp_path: Path,
+) -> None:
+    binding, denominator, batches = inputs()
+    invalid = dict(denominator, elements=0)
+    with pytest.raises(ValueError, match="index preparation"):
+        prepare_reference_index(
+            batches(), binding, invalid, tmp_path / "invalid-index.json"
+        )
+    with pytest.raises(ValueError, match="partition preparation"):
+        prepare_reference_partition(
+            batches(),
+            binding,
+            denominator,
+            tmp_path / "invalid-partition.arrow",
+            shard_index=2,
+            shard_count=2,
+        )
+    changed = dict(denominator, native_fields=denominator["native_fields"] + 1)
+    with pytest.raises(ValueError, match="material denominator changed"):
+        prepare_reference_entity_material(
+            batches(), binding, changed, tmp_path / "changed-material.arrow"
+        )
+    with pytest.raises(ValueError, match="index denominator changed"):
+        prepare_reference_index(
+            batches(), binding, changed, tmp_path / "changed-index.json"
+        )
+
+
 @pytest.mark.parametrize("mutation", ["contract", "index", "digest"])
 def test_entity_partition_loader_rejects_tampering(
     tmp_path: Path, mutation: str
@@ -285,6 +323,78 @@ def test_entity_material_loader_rejects_tampering(
 
 
 @pytest.mark.parametrize(
+    ("mutation", "expected"),
+    [
+        ("material-type", "receipt is invalid"),
+        ("denominator-type", "receipt is invalid"),
+        ("binding", "binding changed"),
+        ("denominator-keys", "denominator changed"),
+        ("denominator-fields", "denominator changed"),
+        ("denominator-digest", "denominator changed"),
+    ],
+)
+def test_entity_material_loader_rejects_resigned_invalid_contracts(
+    tmp_path: Path, mutation: str, expected: str
+) -> None:
+    binding, denominator, batches = inputs()
+    receipt = prepare_reference_entity_material(
+        batches(), binding, denominator, tmp_path / "entities.arrow"
+    )
+    if mutation == "material-type":
+        receipt["entity_material"] = []
+    elif mutation == "denominator-type":
+        receipt["denominator"] = []
+    elif mutation == "binding":
+        receipt["binding_sha256"] = "0" * 64
+    elif mutation == "denominator-keys":
+        receipt["denominator"]["extra"] = 1
+    elif mutation == "denominator-fields":
+        receipt["denominator"]["elements"] = True
+    else:
+        receipt["denominator"]["native_digest"] = 1
+    _resign(receipt)
+    with pytest.raises((TypeError, ValueError), match=expected):
+        load_reference_entity_material(tmp_path, receipt)
+
+
+@pytest.mark.parametrize(
+    ("mutation", "index", "expected"),
+    [
+        ("partitions-type", 0, "receipt is invalid"),
+        ("denominator-type", 0, "receipt is invalid"),
+        ("range", 3, "index changed"),
+        ("record-type", 0, "receipt is invalid"),
+        ("record-index", 0, "index changed"),
+        ("binding", 0, "binding changed"),
+    ],
+)
+def test_entity_partition_loader_rejects_resigned_invalid_contracts(
+    tmp_path: Path, mutation: str, index: int, expected: str
+) -> None:
+    binding, denominator, batches = inputs()
+    receipt = prepare_reference_entity_material(
+        batches(),
+        binding,
+        denominator,
+        tmp_path / "entities.arrow",
+        shard_count=2,
+    )
+    if mutation == "partitions-type":
+        receipt["partitions"] = {}
+    elif mutation == "denominator-type":
+        receipt["denominator"] = []
+    elif mutation == "record-type":
+        receipt["partitions"][0] = []
+    elif mutation == "record-index":
+        receipt["partitions"][0]["index"] = 1
+    elif mutation == "binding":
+        receipt["binding_sha256"] = "0" * 64
+    _resign(receipt)
+    with pytest.raises((TypeError, ValueError), match=expected):
+        load_reference_entity_partition(tmp_path, receipt, index)
+
+
+@pytest.mark.parametrize(
     "mutation", ["index-digest", "partition-digest", "missing", "binding"]
 )
 def test_disaggregated_manifest_fails_closed_on_incomplete_or_mixed_nodes(
@@ -323,6 +433,59 @@ def test_disaggregated_manifest_fails_closed_on_incomplete_or_mixed_nodes(
             denominator,
             index_receipt,
             partition_receipts,
+        )
+
+
+@pytest.mark.parametrize(
+    ("mutation", "expected"),
+    [
+        ("index-binding", "index receipt binding"),
+        ("index-type", "index receipt is invalid"),
+        ("partition-binding", "partition receipt binding"),
+        ("partition-type", "partition receipt is invalid"),
+        ("empty", "coverage changed"),
+        ("projection-type", "partition receipt is invalid"),
+        ("coverage", "coverage changed"),
+        ("native-fields", "denominator changed"),
+    ],
+)
+def test_manifest_rejects_each_invalid_node_contract(
+    tmp_path: Path, mutation: str, expected: str
+) -> None:
+    binding, denominator, batches = inputs()
+    index_receipt = prepare_reference_index(
+        batches(), binding, denominator, tmp_path / "reference-index.json"
+    )
+    partitions = [
+        prepare_reference_partition(
+            batches(),
+            binding,
+            denominator,
+            tmp_path / f"reference-{index:02d}.arrow",
+            shard_index=index,
+            shard_count=2,
+        )
+        for index in range(2)
+    ]
+    if mutation == "index-binding":
+        index_receipt["purpose"] = "other"
+    elif mutation == "index-type":
+        index_receipt["index"] = []
+    elif mutation == "partition-binding":
+        partitions[0]["purpose"] = "other"
+    elif mutation == "partition-type":
+        partitions[0]["partition"] = []
+    elif mutation == "empty":
+        partitions.clear()
+    elif mutation == "projection-type":
+        partitions[0]["partition"]["expected_projection"] = []
+    elif mutation == "coverage":
+        partitions[0]["partition"]["count"] = 3
+    else:
+        partitions[0]["partition"]["expected_projection"]["native_fields"] += 1
+    with pytest.raises((TypeError, ValueError), match=expected):
+        assemble_reference_manifest(
+            tmp_path, binding, denominator, index_receipt, partitions
         )
 
 
