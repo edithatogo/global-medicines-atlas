@@ -24,10 +24,26 @@ from .models import FrozenModel
 from .receipts import SourceReceipt
 
 
-class MbsFieldOutcomeCount(FrozenModel):
-    """One non-value-bearing native-state or conversion denominator."""
+class MbsNativeStateCount(FrozenModel):
+    """One non-value-bearing native-state denominator."""
 
-    outcome: str = Field(min_length=1)
+    outcome: Literal["missing_field", "null", "value"]
+    count: int = Field(strict=True, ge=1)
+
+
+class MbsConversionStatusCount(FrozenModel):
+    """One closed-vocabulary typed-conversion denominator."""
+
+    outcome: Literal[
+        "missing_field",
+        "null",
+        "blank",
+        "preserved",
+        "converted",
+        "invalid",
+        "unrepresentable",
+        "unsupported_format",
+    ]
     count: int = Field(strict=True, ge=1)
 
 
@@ -42,8 +58,8 @@ class MbsSilverFieldLineage(FrozenModel):
     mapping_status: Literal["source_native"] = "source_native"
     source_value_overwritten: Literal[False] = False
     occurrence_count: int = Field(strict=True, ge=1)
-    native_states: tuple[MbsFieldOutcomeCount, ...]
-    conversion_statuses: tuple[MbsFieldOutcomeCount, ...]
+    native_states: tuple[MbsNativeStateCount, ...]
+    conversion_statuses: tuple[MbsConversionStatusCount, ...]
     lineage_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
 
     @model_validator(mode="after")
@@ -195,11 +211,15 @@ def build_mbs_silver_field_lineage(
                 value_type=contract.value_type,
                 occurrence_count=counts[name],
                 native_states=tuple(
-                    MbsFieldOutcomeCount(outcome=outcome, count=value)
+                    MbsNativeStateCount.model_validate(
+                        {"outcome": outcome, "count": value}
+                    )
                     for outcome, value in sorted(states[name].items())
                 ),
                 conversion_statuses=tuple(
-                    MbsFieldOutcomeCount(outcome=outcome, count=value)
+                    MbsConversionStatusCount.model_validate(
+                        {"outcome": outcome, "count": value}
+                    )
                     for outcome, value in sorted(conversions[name].items())
                 ),
                 lineage_sha256=digests[name].hexdigest(),

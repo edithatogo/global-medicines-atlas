@@ -85,6 +85,8 @@ def test_report_is_deterministic_bound_and_contains_no_source_values() -> None:
         ("row_count", "row denominator"),
         ("state_count", "lineage denominator"),
         ("outcome_order", "outcomes differ"),
+        ("native_vocabulary", "Input should be"),
+        ("conversion_vocabulary", "Input should be"),
         ("digest", "report digest"),
         ("promotion", "Input should be 'candidate_only'"),
     ],
@@ -109,6 +111,10 @@ def test_serialized_lineage_rejects_contract_and_evidence_drift(
             {"outcome": "value", "count": 1},
             {"outcome": "missing_field", "count": 1},
         )
+    elif change == "native_vocabulary":
+        values["fields"][0]["native_states"][0]["outcome"] = "converted"
+    elif change == "conversion_vocabulary":
+        values["fields"][0]["conversion_statuses"][0]["outcome"] = "invented"
     elif change == "promotion":
         values["qualification"] = "qualified"
     else:

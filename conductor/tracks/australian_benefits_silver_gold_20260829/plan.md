@@ -207,6 +207,10 @@
 
 ## Aggregate qualification review fixes
 
+- [x] Constrain field-lineage native states and conversion statuses to
+  separate versioned vocabularies so digest-valid serialized reports cannot
+  assign undefined semantics. (Hosted review fix; focused revalidation and
+  exact-head checks recorded in evidence.)
 - [x] Register the new qualification module in the governed unit lane so every
   primary Test-Goblin profile collects an explicitly assigned test module.
   Format the new module and tests with the repository-pinned formatter after
