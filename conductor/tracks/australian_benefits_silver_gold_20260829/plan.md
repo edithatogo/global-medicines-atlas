@@ -200,6 +200,13 @@
   exact values and receipt identities; presence on only one side remains
   `unknown`, never inferred addition or cessation. Legacy-workbook-to-XML
   mappings and independently qualified real-source execution remain pending.
+
+### Schema-era change-event review fixes
+
+- [x] Bind every event ID to the mapping digest, both schema eras, both source
+  revisions, B1/B2 identities, and selection scope so identical native values
+  in different comparisons cannot collide. (Hosted review fix; exact-head
+  validation recorded in evidence.)
 - [~] Emit field-level lineage, coverage denominators, quality findings, and
   promotion candidates.
   Aggregate candidate qualification now binds all six XML Silver tables, the

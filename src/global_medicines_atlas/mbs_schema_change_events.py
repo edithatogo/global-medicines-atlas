@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections.abc import Mapping
 from typing import Literal
 
 from pydantic import ConfigDict, Field, model_validator
@@ -237,13 +238,21 @@ def _validate_inputs(
         raise ValueError("MBS schema comparison cohort roles differ")
 
 
-def _event(values: dict[str, object]) -> MbsObservedChangeEvent:
+def _event(
+    values: dict[str, object], comparison_identity: Mapping[str, object]
+) -> MbsObservedChangeEvent:
     canonical_values = {
         key: value.model_dump() if isinstance(value, NativeField) else value
         for key, value in values.items()
     }
     event_id = (
-        "mbs-event:" + hashlib.sha256(_canonical(canonical_values)).hexdigest()
+        "mbs-event:"
+        + hashlib.sha256(
+            _canonical({
+                "comparison": comparison_identity,
+                "event": canonical_values,
+            })
+        ).hexdigest()
     )
     return MbsObservedChangeEvent.model_validate({
         "event_id": event_id,
@@ -259,6 +268,18 @@ def _events(
     before = {row.native_id: row for row in historical.rows}
     after = {row.native_id: row for row in current.rows}
     output: list[MbsObservedChangeEvent] = []
+    comparison_identity = {
+        "mapping_sha256": mapping.mapping_sha256,
+        "historical_schema_era": historical.schema_era,
+        "current_schema_era": current.schema_era,
+        "historical_source_revision": historical.source_revision,
+        "current_source_revision": current.source_revision,
+        "historical_b1_sha256": historical.b1_sha256,
+        "current_b1_sha256": current.b1_sha256,
+        "historical_b2_sha256": historical.b2_sha256,
+        "current_b2_sha256": current.b2_sha256,
+        "scope_id": historical.scope_id,
+    }
     count = 0
     for native_id in sorted(before.keys() | after.keys()):
         old_row, new_row = before.get(native_id), after.get(native_id)
@@ -267,21 +288,24 @@ def _events(
             if count > MAX_DIFFERENCES:
                 raise ValueError("MBS schema change event limit exceeded")
             output.append(
-                _event({
-                    "native_id": native_id,
-                    "silver_target_field": None,
-                    "kind": "observed_only_current"
-                    if old_row is None
-                    else "observed_only_historical",
-                    "historical_occurrence": old_row.occurrence_id
-                    if old_row
-                    else None,
-                    "current_occurrence": new_row.occurrence_id
-                    if new_row
-                    else None,
-                    "historical": None,
-                    "current": None,
-                })
+                _event(
+                    {
+                        "native_id": native_id,
+                        "silver_target_field": None,
+                        "kind": "observed_only_current"
+                        if old_row is None
+                        else "observed_only_historical",
+                        "historical_occurrence": old_row.occurrence_id
+                        if old_row
+                        else None,
+                        "current_occurrence": new_row.occurrence_id
+                        if new_row
+                        else None,
+                        "historical": None,
+                        "current": None,
+                    },
+                    comparison_identity,
+                )
             )
             continue
         old_fields = {item.name: item for item in old_row.fields}
@@ -293,15 +317,18 @@ def _events(
             old = old_fields.get(field.historical_native_name)
             new = new_fields.get(field.current_native_name)
             output.append(
-                _event({
-                    "native_id": native_id,
-                    "silver_target_field": field.silver_target_field,
-                    "kind": "unchanged" if old == new else "field_changed",
-                    "historical_occurrence": old_row.occurrence_id,
-                    "current_occurrence": new_row.occurrence_id,
-                    "historical": old,
-                    "current": new,
-                })
+                _event(
+                    {
+                        "native_id": native_id,
+                        "silver_target_field": field.silver_target_field,
+                        "kind": "unchanged" if old == new else "field_changed",
+                        "historical_occurrence": old_row.occurrence_id,
+                        "current_occurrence": new_row.occurrence_id,
+                        "historical": old,
+                        "current": new,
+                    },
+                    comparison_identity,
+                )
             )
     return tuple(output)
 

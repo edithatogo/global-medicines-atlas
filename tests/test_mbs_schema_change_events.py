@@ -122,6 +122,36 @@ def test_mapping_and_events_are_deterministic_and_input_order_independent():
         build_mbs_schema_change_report(reversed_historical, current, mapping())
 
 
+def test_event_ids_include_schema_era_and_receipt_provenance():
+    payload = xml(data(extra="<ScheduleFee>1.00</ScheduleFee>"))
+    selected = (key(),)
+    first_historical = build(payload, selected, schema_era="mbs-xml-era-2024")
+    first_current = build(payload, selected, schema_era="mbs-xml-era-2025")
+    second_historical = build(payload, selected, schema_era="mbs-xml-era-2025")
+    second_current = build(payload, selected, schema_era="mbs-xml-era-2026")
+    first = build_mbs_schema_change_report(
+        first_historical,
+        first_current,
+        declare_mbs_xml_schema_era_mapping(
+            table="fees",
+            historical_schema_era="mbs-xml-era-2024",
+            current_schema_era="mbs-xml-era-2025",
+        ),
+    )
+    second = build_mbs_schema_change_report(
+        second_historical,
+        second_current,
+        mapping(),
+    )
+
+    assert [
+        event.model_dump(exclude={"event_id"}) for event in first.events
+    ] == [event.model_dump(exclude={"event_id"}) for event in second.events]
+    assert {event.event_id for event in first.events}.isdisjoint(
+        event.event_id for event in second.events
+    )
+
+
 @pytest.mark.parametrize("era", ["", " ", " padded", "padded "])
 def test_mapping_rejects_blank_or_normalized_eras(era):
     with pytest.raises(ValidationError, match=r"schema era|at least 1"):
