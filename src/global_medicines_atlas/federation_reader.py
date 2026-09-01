@@ -138,6 +138,12 @@ class FederatedReader:
             self._purge_expired()
             return sum(item.size for item in self._cache.values())
 
+    def has_cached(self, contract_sha256: str) -> bool:
+        """Report current exact-contract cache presence after expiry cleanup."""
+        with self._lock:
+            self._purge_expired()
+            return contract_sha256 in self._cache
+
     def _purge_expired(self) -> None:
         now = self._clock()
         expired = [

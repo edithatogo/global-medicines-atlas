@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import replace
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -18,6 +18,7 @@ from global_medicines_atlas.federation_distribution import (
     reconcile_distribution,
 )
 from global_medicines_atlas.platinum_resolver import (
+    CacheReceipt,
     ProductResource,
     StorageNeutralResolver,
 )
@@ -43,6 +44,14 @@ class Hub:
                 json={"sha": "a" * 40, "private": False, "gated": False},
             )
         return httpx.Response(self.status, content=self.payload)
+
+
+class Clock:
+    def __init__(self) -> None:
+        self.now = NOW
+
+    def __call__(self) -> datetime:
+        return self.now
 
 
 def contract(**changes: Any) -> bytes:
@@ -105,6 +114,7 @@ def resolver(
     **options: Any,
 ) -> StorageNeutralResolver:
     selected = resources or (resource(),)
+    clock = options.pop("clock", lambda: NOW)
     return StorageNeutralResolver(
         schema=SCHEMA,
         resources=selected,
@@ -112,7 +122,7 @@ def resolver(
         if admitted is not None
         else frozenset(item.binding.contract_sha256 for item in selected),
         transport_factory=lambda: httpx.MockTransport(hub.handle),
-        clock=lambda: NOW,
+        clock=clock,
         **options,
     )
 
@@ -143,17 +153,112 @@ def test_remote_read_and_explicit_offline_cache_roundtrip() -> None:
             assert result.metadata == client.resolve("au.mbs.service-items")
             assert result.verified.origin == "remote"
             assert result.verified.stream.read() == PAYLOAD
+            assert result.cache_receipt == CacheReceipt(
+                resource_id="au.mbs.service-items",
+                contract_sha256=result.metadata.contract_sha256,
+                object_sha256=result.metadata.sha256,
+                byte_count=len(PAYLOAD),
+                status="verified_exact_digest",
+                last_origin="remote",
+                last_verified_at=NOW,
+                expires_at=datetime(2026, 9, 2, tzinfo=UTC),
+                max_read_bytes=64 * 1024 * 1024,
+                cache_budget_bytes=64 * 1024 * 1024,
+                max_cache_entries=32,
+                max_open_reads=2,
+                timeout_seconds=30,
+            )
         assert len(hub.requests) == 2
         with client.open("au.mbs.service-items", offline=True) as result:
             assert result.verified.origin == "verified_cache"
             assert result.verified.stream.read() == PAYLOAD
         assert len(hub.requests) == 2
         client.evict()
+        receipt = client.cache_receipt("au.mbs.service-items")
+        assert receipt.status == "unavailable"
+        assert receipt.last_origin == "verified_cache"
+        assert receipt.last_verified_at == NOW
         with (
             pytest.raises(ValueError, match="offline"),
             client.open("au.mbs.service-items", offline=True),
         ):
             pytest.fail("offline miss must fail closed")
+
+
+def test_cache_receipt_expires_and_offline_read_fails_closed() -> None:
+    hub = Hub()
+    clock = Clock()
+    with resolver(hub, clock=clock) as client:
+        assert (
+            client.cache_receipt("au.mbs.service-items").status == "unavailable"
+        )
+        with client.open("au.mbs.service-items"):
+            pass
+        assert (
+            client.cache_receipt("au.mbs.service-items").status
+            == "verified_exact_digest"
+        )
+        clock.now += timedelta(days=2)
+        expired = client.cache_receipt("au.mbs.service-items")
+        assert expired.status == "unavailable"
+        assert expired.last_origin == "remote"
+        assert expired.last_verified_at == NOW
+        with (
+            pytest.raises(ValueError, match="offline"),
+            client.open("au.mbs.service-items", offline=True),
+        ):
+            pytest.fail("expired cache must never be used offline")
+
+
+def test_unverified_or_failed_content_never_produces_verified_receipt() -> None:
+    hub = Hub()
+    hub.payload = b"x" * len(PAYLOAD)
+    with resolver(hub) as client:
+        with (
+            pytest.raises(ValueError, match=r"size|digest"),
+            client.open("au.mbs.service-items"),
+        ):
+            pytest.fail("corrupt bytes")
+        receipt = client.cache_receipt("au.mbs.service-items")
+        assert receipt.status == "unavailable"
+        assert receipt.last_origin is None
+        assert receipt.last_verified_at is None
+
+
+def test_cache_receipt_reports_exact_nondefault_budgets() -> None:
+    item = resource()
+    hub = Hub()
+    with resolver(
+        hub,
+        item,
+        max_read_bytes=1024,
+        cache_bytes=512,
+        max_cache_entries=1,
+        max_open_reads=1,
+        timeout_seconds=7.5,
+    ) as client:
+        with client.open(item.resource_id):
+            pass
+        receipt = client.cache_receipt(item.resource_id)
+        assert receipt.max_read_bytes == 1024
+        assert receipt.cache_budget_bytes == 512
+        assert receipt.max_cache_entries == 1
+        assert receipt.max_open_reads == 1
+        assert receipt.timeout_seconds == pytest.approx(7.5)
+
+
+def test_verified_read_does_not_claim_retention_beyond_cache_budget() -> None:
+    hub = Hub()
+    with resolver(hub, cache_bytes=1) as client:
+        with client.open("au.mbs.service-items") as result:
+            assert result.verified.stream.read() == PAYLOAD
+            assert result.cache_receipt.status == "unavailable"
+            assert result.cache_receipt.last_origin == "remote"
+        with (
+            pytest.raises(ValueError, match="offline"),
+            client.open("au.mbs.service-items", offline=True),
+        ):
+            pytest.fail("unretained bytes must not become offline data")
 
 
 def test_resolution_requires_independently_admitted_exact_contract() -> None:

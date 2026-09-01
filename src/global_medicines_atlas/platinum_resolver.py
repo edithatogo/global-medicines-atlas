@@ -9,13 +9,15 @@ retrieval to the existing anonymous bounded federation reader.
 from __future__ import annotations
 
 import hashlib
+import json
 import math
 import re
+import threading
 from collections.abc import Callable, Generator, Sequence
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Literal, Self
+from typing import TYPE_CHECKING, Any, Literal, Self
 
 if TYPE_CHECKING:
     import httpx
@@ -93,7 +95,27 @@ class ResolvedResource:
     source_id: str
     acquisition_id: str
     layer: str
+    cache_expires_at: datetime
     capabilities: tuple[Capability, ...] = CAPABILITIES
+
+
+@dataclass(frozen=True)
+class CacheReceipt:
+    """Current transient-cache state and the last verified read evidence."""
+
+    resource_id: str
+    contract_sha256: str
+    object_sha256: str
+    byte_count: int
+    status: Literal["verified_exact_digest", "unavailable"]
+    last_origin: Literal["remote", "verified_cache"] | None
+    last_verified_at: datetime | None
+    expires_at: datetime
+    max_read_bytes: int
+    cache_budget_bytes: int
+    max_cache_entries: int
+    max_open_reads: int
+    timeout_seconds: float
 
 
 @dataclass(frozen=True)
@@ -102,6 +124,7 @@ class ProductRead:
 
     metadata: ResolvedResource
     verified: VerifiedRead
+    cache_receipt: CacheReceipt
 
 
 class StorageNeutralResolver:
@@ -131,6 +154,16 @@ class StorageNeutralResolver:
         if not resources or len(resources) > RESOURCE_LIMIT:
             raise ValueError("resource denominator exceeds budget")
         self._resources: dict[str, tuple[ResolvedResource, bytes]] = {}
+        self._last_reads: dict[
+            str, tuple[Literal["remote", "verified_cache"], datetime]
+        ] = {}
+        self._receipt_lock = threading.Lock()
+        self._clock = clock
+        self._max_read_bytes = max_read_bytes
+        self._cache_bytes = cache_bytes
+        self._max_cache_entries = max_cache_entries
+        self._max_open_reads = max_open_reads
+        self._timeout_seconds = timeout_seconds
         contract_digests: set[str] = set()
         for resource in resources:
             resolved = _resolve_resource(resource, schema)
@@ -177,6 +210,28 @@ class StorageNeutralResolver:
         except KeyError:
             raise ValueError("unknown resource identity") from None
 
+    def cache_receipt(self, resource_id: str) -> CacheReceipt:
+        """Return dynamic cache availability without creating durable state."""
+        metadata = self.resolve(resource_id)
+        available = self._reader.has_cached(metadata.contract_sha256)
+        with self._receipt_lock:
+            last = self._last_reads.get(resource_id)
+        return CacheReceipt(
+            resource_id=resource_id,
+            contract_sha256=metadata.contract_sha256,
+            object_sha256=metadata.sha256,
+            byte_count=metadata.byte_count,
+            status="verified_exact_digest" if available else "unavailable",
+            last_origin=last[0] if last else None,
+            last_verified_at=last[1] if last else None,
+            expires_at=metadata.cache_expires_at,
+            max_read_bytes=self._max_read_bytes,
+            cache_budget_bytes=self._cache_bytes,
+            max_cache_entries=self._max_cache_entries,
+            max_open_reads=self._max_open_reads,
+            timeout_seconds=self._timeout_seconds,
+        )
+
     @contextmanager
     def open(
         self, resource_id: str, *, offline: bool = False
@@ -191,7 +246,16 @@ class StorageNeutralResolver:
                 or verified.byte_count != metadata.byte_count
             ):
                 raise ValueError("resolved read identity mismatch")
-            yield ProductRead(metadata, verified)
+            with self._receipt_lock:
+                self._last_reads[resource_id] = (
+                    verified.origin,
+                    self._clock(),
+                )
+            yield ProductRead(
+                metadata,
+                verified,
+                self.cache_receipt(resource_id),
+            )
 
     def evict(self) -> None:
         """Remove only transient verified cache objects owned by this resolver."""
@@ -231,6 +295,7 @@ def _resolve_resource(
     if binding != resource.binding:
         raise ValueError("distribution binding mismatch")
     obj = binding.object
+    document: dict[str, Any] = json.loads(resource.contract)
     return ResolvedResource(
         resource_id=resource.resource_id,
         semantic_dimension=resource.semantic_dimension,
@@ -244,6 +309,9 @@ def _resolve_resource(
         source_id=obj.source_id,
         acquisition_id=obj.acquisition_id,
         layer=obj.layer,
+        cache_expires_at=datetime.fromisoformat(
+            document["cache"]["expires_at"]
+        ),
     )
 
 
