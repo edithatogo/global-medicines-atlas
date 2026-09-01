@@ -242,7 +242,9 @@ def build_mbs_workbook_xml_candidate_report(  # ruff: ignore[too-many-locals]
             continue
         item_value = cast("dict[str, object]", item).get("display_value")
         if not isinstance(item_value, str):
-            continue
+            # Arrow schema constrains display_value to str | None; a data row
+            # without source text is not an identity candidate.
+            continue  # pragma: no cover - parser/schema invariant
         sub = row.get("SubItemNum")
         observed_sub = (
             cast("dict[str, object]", sub).get("display_value")

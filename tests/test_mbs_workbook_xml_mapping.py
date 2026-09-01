@@ -20,6 +20,7 @@ from global_medicines_atlas.mbs_workbook_xml_mapping import (
     build_mbs_workbook_xml_candidate_report,
     declare_mbs_workbook_xml_mapping,
 )
+from global_medicines_atlas.receipts import EvidenceClass
 
 
 def inputs():
@@ -183,6 +184,35 @@ def test_mapping_digest_is_revalidated():
     changed["mapping_sha256"] = "0" * 64
     with pytest.raises(ValidationError, match="mapping digest differs"):
         MbsWorkbookXmlSchemaMapping.model_validate(changed)
+
+
+def test_candidate_builder_rejects_live_evidence_classes():
+    payload, cohort, mapping = inputs()
+    live_receipt = _receipt(payload).model_copy(
+        update={"evidence_class": EvidenceClass.LIVE}
+    )
+    with pytest.raises(ValueError, match="synthetic workbook"):
+        build_mbs_workbook_xml_candidate_report(
+            payload, live_receipt, cohort, mapping
+        )
+    live_cohort = cohort.model_copy(
+        update={
+            "evidence_class": "live",
+            "snapshot": cohort.snapshot.model_copy(
+                update={"cohort": "current"}
+            ),
+        }
+    )
+    with pytest.raises(ValueError, match="synthetic XML"):
+        build_mbs_workbook_xml_candidate_report(
+            payload, _receipt(payload), live_cohort, mapping
+        )
+    serialized = build_mbs_workbook_xml_candidate_report(
+        payload, _receipt(payload), cohort, mapping
+    ).model_dump()
+    serialized["xml"] = live_cohort.model_dump()
+    with pytest.raises(ValidationError, match="synthetic XML"):
+        MbsWorkbookXmlCandidateReport.model_validate(serialized)
 
 
 @pytest.mark.parametrize("era", ["", " padded", "padded "])
