@@ -639,10 +639,21 @@
   qualifier preserved all five counts and reduced observed CPU from 3.419859 s
   to 2.081080 s (one bounded comparison, not a corpus throughput prediction).
   Focused projection/hosted tests: 141 passed; Ruff and BasedPyright passed.
-- [~] Deliver the reviewed optimization through hosted checks, then dispatch one
+- [x] Deliver the reviewed optimization through hosted checks, then dispatch one
   exact merged-main PBS qualification run. Accept only a complete durable receipt
   with all five projection denominators/digests and anonymous public pin checks;
   do not infer success from progress, extend the timeout or publish any bytes.
+  PR #407 merged as `d58da9b`; all hosted checks passed. Exact run
+  `33496451984` timed out at 55 minutes and remains incomplete. Its durable
+  receipt records `references`, zero output batches/rows and 2,302,255 ms at
+  the last checkpoint, proving the entity projection completed but the blocking
+  reference index had not yielded output. No timeout increase or duplicate run.
+- [~] Replace reference-index full entity-row materialization with selective
+  Arrow columns and flattened native attribute fields. Preserve item/AMT/ATC
+  literal contracts, source order, missing/empty states, duplicate occurrence
+  counts, distinct resource counts, ambiguity diagnostics, identity checks and
+  exact index entry/byte limits. Re-run the exact merged-main qualifier only
+  after focused parity, full validation, review and hosted checks pass.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
