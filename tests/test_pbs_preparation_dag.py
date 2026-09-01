@@ -1,0 +1,459 @@
+"""Fail-closed contracts for resumable PBS preparation nodes."""
+
+import hashlib
+import json
+from pathlib import Path
+from types import SimpleNamespace
+
+import pytest
+from scripts import assemble_historical_pbs_reference_manifest as assemble
+from scripts import prepare_historical_pbs_reference_node as node_cli
+
+
+def _receipt(
+    path: Path,
+    *,
+    attempt: int,
+    index: int,
+    digest: str,
+    status: str = "prepared",
+) -> None:
+    node = {
+        "purpose": "transient-reference-entity-partition",
+        "partition": {"index": index, "sha256": digest},
+    }
+    report = {
+        "status": status,
+        "run_attempt": str(attempt),
+        "node_kind": "partition",
+        "node": node,
+    }
+    encoded = json.dumps(report, sort_keys=True, separators=(",", ":")).encode()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps({
+            "report": report,
+            "report_sha256": hashlib.sha256(encoded).hexdigest(),
+        }),
+        encoding="utf-8",
+    )
+
+
+def _material_receipt(
+    path: Path, *, attempt: int, digest: str, status: str = "prepared"
+) -> None:
+    report = {
+        "status": status,
+        "run_attempt": str(attempt),
+        "node": {"contract_sha256": digest},
+    }
+    encoded = json.dumps(report, sort_keys=True, separators=(",", ":")).encode()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps({
+            "report": report,
+            "report_sha256": hashlib.sha256(encoded).hexdigest(),
+        }),
+        encoding="utf-8",
+    )
+
+
+def test_latest_successful_node_is_selected_across_attempts(
+    tmp_path: Path,
+) -> None:
+    _receipt(
+        tmp_path / "attempt-1" / "reference-00-receipt.json",
+        attempt=1,
+        index=0,
+        digest="same",
+    )
+    _receipt(
+        tmp_path / "attempt-2" / "reference-00-receipt.json",
+        attempt=2,
+        index=0,
+        digest="same",
+    )
+
+    selected = assemble._latest_nodes(tmp_path)  # pyright: ignore[reportPrivateUsage]
+
+    assert selected["partition:0"][1]["run_attempt"] == "2"
+    assert selected["partition:0"][2]["partition"]["sha256"] == "same"
+
+
+def test_divergent_successful_attempts_are_rejected(tmp_path: Path) -> None:
+    _receipt(
+        tmp_path / "copy-a" / "reference-00-receipt.json",
+        attempt=1,
+        index=0,
+        digest="a",
+    )
+    _receipt(
+        tmp_path / "copy-b" / "reference-00-receipt.json",
+        attempt=2,
+        index=0,
+        digest="b",
+    )
+
+    with pytest.raises(ValueError, match="successful attempts conflict"):
+        assemble._latest_nodes(tmp_path)  # pyright: ignore[reportPrivateUsage]
+
+
+def test_failed_attempt_is_ignored_before_later_success(tmp_path: Path) -> None:
+    _receipt(
+        tmp_path / "attempt-1" / "reference-00-receipt.json",
+        attempt=1,
+        index=0,
+        digest="failed",
+        status="failed",
+    )
+    _receipt(
+        tmp_path / "attempt-2" / "reference-00-receipt.json",
+        attempt=2,
+        index=0,
+        digest="success",
+    )
+    selected = assemble._latest_nodes(tmp_path)  # pyright: ignore[reportPrivateUsage]
+    assert selected["partition:0"][1]["run_attempt"] == "2"
+
+
+def test_entity_attempt_selection_rejects_divergent_success(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        node_cli, "load_reference_entity_material", lambda *_: None
+    )
+    _material_receipt(
+        tmp_path / "attempt-1" / "reference-entities-receipt.json",
+        attempt=1,
+        digest="a",
+    )
+    _material_receipt(
+        tmp_path / "attempt-2" / "reference-entities-receipt.json",
+        attempt=2,
+        digest="b",
+    )
+    with pytest.raises(ValueError, match="successful attempts conflict"):
+        node_cli._material_report(tmp_path, None)  # pyright: ignore[reportPrivateUsage]
+
+
+def test_entity_attempt_selection_ignores_failed_and_uses_latest_identical(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        node_cli, "load_reference_entity_material", lambda *_: None
+    )
+    _material_receipt(
+        tmp_path / "failed" / "reference-entities-receipt.json",
+        attempt=1,
+        digest="failed",
+        status="failed",
+    )
+    for attempt in (2, 3):
+        _material_receipt(
+            tmp_path / str(attempt) / "reference-entities-receipt.json",
+            attempt=attempt,
+            digest="same",
+        )
+    directory, report = node_cli._material_report(  # pyright: ignore[reportPrivateUsage]
+        tmp_path, None
+    )
+    assert directory.name == "3"
+    assert report["run_attempt"] == "3"
+
+
+def test_manifest_assembly_failure_writes_bounded_receipt(
+    tmp_path: Path,
+) -> None:
+    output = tmp_path / "output"
+    assert (
+        assemble.main([
+            "--input",
+            str(tmp_path / "missing"),
+            "--output",
+            str(output),
+            "--reference-shards",
+            "16",
+        ])
+        == 1
+    )
+    raw = (output / "preparation-receipt.json").read_text(encoding="utf-8")
+    report = json.loads(raw)["report"]
+    assert report["failure_stage"] == "manifest-verification"
+    assert report["failure_category"] == "validation"
+    assert report["publication_performed"] is False
+
+
+@pytest.mark.parametrize("payload", [[], {"report": []}])
+def test_node_receipt_rejects_invalid_wrapper(
+    tmp_path: Path, payload: object
+) -> None:
+    path = tmp_path / "attempt" / "reference-entities-receipt.json"
+    path.parent.mkdir()
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(TypeError, match="receipt is invalid"):
+        node_cli._material_report(  # pyright: ignore[reportPrivateUsage]
+            tmp_path, None
+        )
+
+
+def test_node_receipt_rejects_changed_digest(tmp_path: Path) -> None:
+    path = tmp_path / "attempt" / "reference-entities-receipt.json"
+    _material_receipt(path, attempt=1, digest="expected")
+    wrapper = json.loads(path.read_text(encoding="utf-8"))
+    wrapper["report_sha256"] = "0" * 64
+    path.write_text(json.dumps(wrapper), encoding="utf-8")
+    with pytest.raises(ValueError, match="digest changed"):
+        node_cli._material_report(  # pyright: ignore[reportPrivateUsage]
+            tmp_path, None
+        )
+
+
+def test_node_receipt_skips_invalid_material_and_fails_closed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _material_receipt(
+        tmp_path / "attempt" / "reference-entities-receipt.json",
+        attempt=1,
+        digest="expected",
+    )
+    monkeypatch.setattr(
+        node_cli,
+        "load_reference_entity_partition",
+        lambda *_: (_ for _ in ()).throw(ValueError("corrupt")),
+    )
+    with pytest.raises(ValueError, match="did not prepare"):
+        node_cli._material_report(  # pyright: ignore[reportPrivateUsage]
+            tmp_path, 0
+        )
+
+
+def test_node_run_routes_entity_and_partition_nodes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    entity_args = SimpleNamespace(
+        entity_material=True,
+        input=None,
+        shard_index=None,
+        exact_commit="a" * 40,
+        output=tmp_path / "entity",
+        reference_shards=2,
+    )
+    monkeypatch.setattr(
+        node_cli,
+        "run_hosted_entity_material",
+        lambda *_, **__: {"kind": "entity"},
+    )
+    assert node_cli._run(entity_args, lambda _: None) == {  # pyright: ignore[reportPrivateUsage]
+        "kind": "entity"
+    }
+    entity_args.input = tmp_path
+    with pytest.raises(ValueError, match="invalid PBS entity"):
+        node_cli._run(entity_args, lambda _: None)  # pyright: ignore[reportPrivateUsage]
+
+    partition_args = SimpleNamespace(
+        entity_material=False,
+        input=tmp_path,
+        shard_index=1,
+        exact_commit="b" * 40,
+        output=tmp_path / "partition",
+        reference_shards=2,
+    )
+    monkeypatch.setattr(
+        node_cli,
+        "_material_report",
+        lambda *_: (tmp_path, {"node": {}, "run_id": "7", "run_attempt": "3"}),
+    )
+    monkeypatch.setattr(
+        node_cli,
+        "run_prepared_reference_node",
+        lambda *_, **__: {"kind": "partition"},
+    )
+    assert node_cli._run(partition_args, lambda _: None) == {  # pyright: ignore[reportPrivateUsage]
+        "kind": "partition"
+    }
+    partition_args.input = None
+    with pytest.raises(ValueError, match="input is required"):
+        node_cli._run(partition_args, lambda _: None)  # pyright: ignore[reportPrivateUsage]
+
+
+def test_node_main_preserves_bounded_checkpoint_on_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    receipt = tmp_path / "receipt.json"
+
+    def fail(_args: object, checkpoint: object) -> dict[str, object]:
+        checkpoint({"status": "running", "progress": {"stage": "global-index"}})
+        raise MemoryError
+
+    monkeypatch.setattr(node_cli, "_run", fail)
+    result = node_cli.main([
+        "--exact-commit",
+        "c" * 40,
+        "--output",
+        str(tmp_path / "output"),
+        "--receipt",
+        str(receipt),
+        "--reference-shards",
+        "2",
+        "--entity-material",
+    ])
+    report = json.loads(receipt.read_text(encoding="utf-8"))["report"]
+    assert result == 1
+    assert report["failure_stage"] == "global-index"
+    assert report["progress"] == {"stage": "global-index"}
+
+
+@pytest.mark.parametrize("payload", [[], {"report": []}])
+def test_manifest_node_rejects_invalid_wrapper(
+    tmp_path: Path, payload: object
+) -> None:
+    path = tmp_path / "receipt.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(TypeError, match="receipt is invalid"):
+        assemble._node(path)  # pyright: ignore[reportPrivateUsage]
+
+
+def test_manifest_node_rejects_digest_and_missing_prepared_node(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "receipt.json"
+    report = {"status": "prepared"}
+    path.write_text(
+        json.dumps({"report": report, "report_sha256": "bad"}),
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="digest changed"):
+        assemble._node(path)  # pyright: ignore[reportPrivateUsage]
+    encoded = json.dumps(report, sort_keys=True, separators=(",", ":")).encode()
+    path.write_text(
+        json.dumps({
+            "report": report,
+            "report_sha256": hashlib.sha256(encoded).hexdigest(),
+        }),
+        encoding="utf-8",
+    )
+    with pytest.raises(TypeError, match="receipt is invalid"):
+        assemble._node(path)  # pyright: ignore[reportPrivateUsage]
+
+
+def test_manifest_run_copies_selected_nodes_and_binds_context(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = tmp_path / "source"
+    source.mkdir()
+    (source / "index.arrow").write_bytes(b"index")
+    (source / "reference-00.arrow").write_bytes(b"partition")
+    index_node = {
+        "node_kind": "index",
+        "binding": {"synthetic": True},
+        "denominator": {"row_count": 1},
+        "index": {"path": "index.arrow"},
+        "workflow_commit": "a" * 40,
+    }
+    partition_node = {
+        "node_kind": "partition",
+        "partition": {"index": 0, "path": "reference-00.arrow"},
+    }
+    report = {
+        "workflow_commit": "a" * 40,
+        "run_id": "10",
+        "run_attempt": "2",
+    }
+    monkeypatch.setattr(
+        assemble,
+        "_latest_nodes",
+        lambda _: {
+            "index": (source / "index-receipt.json", report, index_node),
+            "partition:0": (
+                source / "partition-receipt.json",
+                report,
+                partition_node,
+            ),
+        },
+    )
+    monkeypatch.setattr(
+        assemble.PbsXmlMemberBinding,
+        "model_validate",
+        lambda value: value,
+    )
+    monkeypatch.setattr(
+        assemble,
+        "assemble_reference_manifest",
+        lambda *_: {"schema_version": 1, "status": "prepared"},
+    )
+    output = tmp_path / "output"
+    result = assemble._run(  # pyright: ignore[reportPrivateUsage]
+        SimpleNamespace(input=tmp_path, output=output, reference_shards=1)
+    )
+    assert result["status"] == "prepared"
+    assert result["run_id"] == "10"
+    manifest = json.loads(
+        (output / "reference-manifest.json").read_text(encoding="utf-8")
+    )
+    assert manifest["preparation_run_attempt"] == "2"
+    assert (output / "index.arrow").read_bytes() == b"index"
+    assert (output / "reference-00.arrow").read_bytes() == b"partition"
+
+
+def test_manifest_latest_nodes_rejects_invalid_partition_and_attempt(
+    tmp_path: Path,
+) -> None:
+    _receipt(
+        tmp_path / "bad-partition" / "reference-00-receipt.json",
+        attempt=1,
+        index=0,
+        digest="same",
+    )
+    wrapper_path = tmp_path / "bad-partition" / "reference-00-receipt.json"
+    wrapper = json.loads(wrapper_path.read_text(encoding="utf-8"))
+    wrapper["report"]["node"]["partition"] = []
+    encoded = json.dumps(
+        wrapper["report"], sort_keys=True, separators=(",", ":")
+    ).encode()
+    wrapper["report_sha256"] = hashlib.sha256(encoded).hexdigest()
+    wrapper_path.write_text(json.dumps(wrapper), encoding="utf-8")
+    with pytest.raises(TypeError, match="partition receipt is invalid"):
+        assemble._latest_nodes(tmp_path)  # pyright: ignore[reportPrivateUsage]
+
+    wrapper["report"]["node"]["partition"] = {"index": 0}
+    wrapper["report"]["run_attempt"] = "latest"
+    encoded = json.dumps(
+        wrapper["report"], sort_keys=True, separators=(",", ":")
+    ).encode()
+    wrapper["report_sha256"] = hashlib.sha256(encoded).hexdigest()
+    wrapper_path.write_text(json.dumps(wrapper), encoding="utf-8")
+    with pytest.raises(ValueError, match="attempt is invalid"):
+        assemble._latest_nodes(tmp_path)  # pyright: ignore[reportPrivateUsage]
+
+
+def test_workflow_disaggregates_preparation_without_raw_artifacts() -> None:
+    workflow = Path(
+        ".github/workflows/pbs-historical-qualification.yml"
+    ).read_text(encoding="utf-8")
+    assert "prepare-reference-index:" in workflow
+    assert "prepare-reference-partitions:" in workflow
+    assert workflow.count("--entity-material") == 1
+    assert workflow.count("name: pbs-reference-entity-partition-") == 16
+    assert "pattern: pbs-reference-index-input-" in workflow
+    assert (
+        "pattern: pbs-reference-entity-partition-${{ matrix.key }}-" in workflow
+    )
+    assert "--input material --output node" in workflow
+    assert "max-parallel: 3" in workflow
+    assert "max-parallel: 4" in workflow
+    assert "prepare_historical_pbs_reference_node.py" in workflow
+    assert "assemble_historical_pbs_reference_manifest.py" in workflow
+    assert "pattern: pbs-reference-node-*-${{ github.run_id }}-*" in workflow
+    assert "archive.zip" not in workflow
+    assert "member.xml" not in workflow
+    phase = workflow.split("  qualify:\n", 1)[1].split(
+        "  qualify-references:\n", 1
+    )[0]
+    assert "needs:" not in phase
+    entity = workflow.split("  prepare-reference-entities:\n", 1)[1].split(
+        "  prepare-reference-index:\n", 1
+    )[0]
+    assert "needs: qualify" in entity
+    assert "if: always()" in entity

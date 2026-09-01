@@ -24,6 +24,12 @@ from global_medicines_atlas.pbs_member_identity import (
 )
 from global_medicines_atlas.pbs_reference_shards import (
     _read_index,  # ruff: ignore[import-private-name]  # pyright: ignore[reportPrivateUsage]
+    assemble_reference_manifest,
+    load_reference_entity_material,
+    load_reference_entity_partition,
+    prepare_reference_entity_material,
+    prepare_reference_index,
+    prepare_reference_partition,
     prepare_reference_shards,
     qualify_reference_shard,
 )
@@ -44,6 +50,15 @@ def inputs():
         )
 
     return binding, denominator, batches
+
+
+def _resign(receipt: dict[str, object]) -> None:
+    contract = {
+        key: value for key, value in receipt.items() if key != "contract_sha256"
+    }
+    receipt["contract_sha256"] = shards.hashlib.sha256(
+        shards._encoded(contract)  # pyright: ignore[reportPrivateUsage]
+    ).hexdigest()
 
 
 def test_prepared_reference_shards_reassemble_full_ordered_projection(
@@ -98,6 +113,380 @@ def test_prepared_reference_shards_reassemble_full_ordered_projection(
         )
     )
     assert prepared.equals(full, check_metadata=True)
+
+
+def test_disaggregated_preparation_reassembles_existing_worker_contract(
+    tmp_path: Path,
+) -> None:
+    binding, denominator, batches = inputs()
+    directory = tmp_path / "dag"
+    index_receipt = prepare_reference_index(
+        batches(), binding, denominator, directory / "reference-index.json"
+    )
+    partition_receipts = [
+        prepare_reference_partition(
+            batches(),
+            binding,
+            denominator,
+            directory / f"reference-{index:02d}.arrow",
+            shard_index=index,
+            shard_count=3,
+        )
+        for index in range(3)
+    ]
+    manifest = assemble_reference_manifest(
+        directory,
+        binding,
+        denominator,
+        index_receipt,
+        partition_receipts,
+    )
+    reports = [
+        qualify_reference_shard(directory, shard_index=index, rows_per_batch=2)
+        for index in range(3)
+    ]
+    assert manifest["evidence_truth"] is False
+    assert manifest["publication_performed"] is False
+    assert (
+        sum(report["projections"]["references"]["rows"] for report in reports)
+        == denominator["elements"]
+    )
+    assert (
+        sum(
+            report["projections"]["references"]["native_fields"]
+            for report in reports
+        )
+        == denominator["native_fields"]
+    )
+
+
+def test_entity_material_is_reusable_by_index_and_partition_nodes(
+    tmp_path: Path,
+) -> None:
+    binding, denominator, batches = inputs()
+    directory = tmp_path / "material"
+    receipt = prepare_reference_entity_material(
+        batches(), binding, denominator, directory / "entities.arrow"
+    )
+    index_batches, loaded_binding, loaded_denominator = (
+        load_reference_entity_material(directory, receipt)
+    )
+    index_receipt = prepare_reference_index(
+        iter(index_batches),
+        loaded_binding,
+        loaded_denominator,
+        directory / "reference-index.json",
+    )
+    partition_receipts = []
+    for index in range(2):
+        partition_batches, loaded_binding, loaded_denominator = (
+            load_reference_entity_material(directory, receipt)
+        )
+        partition_receipts.append(
+            prepare_reference_partition(
+                iter(partition_batches),
+                loaded_binding,
+                loaded_denominator,
+                directory / f"reference-{index:02d}.arrow",
+                shard_index=index,
+                shard_count=2,
+            )
+        )
+    manifest = assemble_reference_manifest(
+        directory,
+        binding,
+        denominator,
+        index_receipt,
+        partition_receipts,
+    )
+    assert receipt["evidence_truth"] is False
+    assert receipt["publication_performed"] is False
+    assert manifest["denominator"] == denominator
+
+
+def test_entity_material_writes_independently_bound_partitions_once(
+    tmp_path: Path,
+) -> None:
+    binding, denominator, batches = inputs()
+    directory = tmp_path / "fanout"
+    receipt = prepare_reference_entity_material(
+        batches(),
+        binding,
+        denominator,
+        directory / "entities.arrow",
+        shard_count=3,
+    )
+    loaded_rows = 0
+    loaded_fields = 0
+    for index in range(3):
+        reader, loaded_binding, loaded_denominator, partition = (
+            load_reference_entity_partition(directory, receipt, index)
+        )
+        assert loaded_binding == binding
+        assert loaded_denominator == denominator
+        assert list(reader)
+        loaded_rows += partition["expected_projection"]["rows"]
+        loaded_fields += partition["expected_projection"]["native_fields"]
+    assert loaded_rows == denominator["elements"]
+    assert loaded_fields == denominator["native_fields"]
+
+
+@pytest.mark.parametrize("shard_count", [0, 33, True])
+def test_entity_material_rejects_invalid_partition_count(
+    tmp_path: Path, shard_count: int
+) -> None:
+    binding, denominator, batches = inputs()
+    with pytest.raises(ValueError, match="entity material preparation"):
+        prepare_reference_entity_material(
+            batches(),
+            binding,
+            denominator,
+            tmp_path / "entities.arrow",
+            shard_count=shard_count,
+        )
+
+
+def test_preparation_nodes_reject_invalid_or_changed_denominators(
+    tmp_path: Path,
+) -> None:
+    binding, denominator, batches = inputs()
+    invalid = dict(denominator, elements=0)
+    with pytest.raises(ValueError, match="index preparation"):
+        prepare_reference_index(
+            batches(), binding, invalid, tmp_path / "invalid-index.json"
+        )
+    with pytest.raises(ValueError, match="partition preparation"):
+        prepare_reference_partition(
+            batches(),
+            binding,
+            denominator,
+            tmp_path / "invalid-partition.arrow",
+            shard_index=2,
+            shard_count=2,
+        )
+    changed = dict(denominator, native_fields=denominator["native_fields"] + 1)
+    with pytest.raises(ValueError, match="material denominator changed"):
+        prepare_reference_entity_material(
+            batches(), binding, changed, tmp_path / "changed-material.arrow"
+        )
+    with pytest.raises(ValueError, match="index denominator changed"):
+        prepare_reference_index(
+            batches(), binding, changed, tmp_path / "changed-index.json"
+        )
+
+
+@pytest.mark.parametrize("mutation", ["contract", "index", "digest"])
+def test_entity_partition_loader_rejects_tampering(
+    tmp_path: Path, mutation: str
+) -> None:
+    binding, denominator, batches = inputs()
+    receipt = prepare_reference_entity_material(
+        batches(),
+        binding,
+        denominator,
+        tmp_path / "entities.arrow",
+        shard_count=2,
+    )
+    if mutation == "contract":
+        receipt["contract_sha256"] = "0" * 64
+    elif mutation == "index":
+        receipt["partitions"][0]["index"] = 1
+    else:
+        (tmp_path / "reference-00.arrow").write_bytes(b"changed")
+    with pytest.raises((TypeError, ValueError), match="entity"):
+        load_reference_entity_partition(tmp_path, receipt, 0)
+
+
+@pytest.mark.parametrize(
+    "mutation", ["digest", "path", "binding", "denominator", "purpose"]
+)
+def test_entity_material_loader_rejects_tampering(
+    tmp_path: Path, mutation: str
+) -> None:
+    binding, denominator, batches = inputs()
+    directory = tmp_path / mutation
+    receipt = prepare_reference_entity_material(
+        batches(), binding, denominator, directory / "entities.arrow"
+    )
+    if mutation == "digest":
+        (directory / "entities.arrow").write_bytes(b"changed")
+    elif mutation == "path":
+        receipt["entity_material"]["path"] = "../entities.arrow"
+    elif mutation == "binding":
+        receipt["binding_sha256"] = "9" * 64
+    elif mutation == "denominator":
+        receipt["denominator"]["elements"] += 1
+    else:
+        receipt["purpose"] = "other"
+    with pytest.raises((TypeError, ValueError), match=r"entity material"):
+        load_reference_entity_material(directory, receipt)
+
+
+@pytest.mark.parametrize(
+    ("mutation", "expected"),
+    [
+        ("material-type", "receipt is invalid"),
+        ("denominator-type", "receipt is invalid"),
+        ("binding", "binding changed"),
+        ("denominator-keys", "denominator changed"),
+        ("denominator-fields", "denominator changed"),
+        ("denominator-digest", "denominator changed"),
+    ],
+)
+def test_entity_material_loader_rejects_resigned_invalid_contracts(
+    tmp_path: Path, mutation: str, expected: str
+) -> None:
+    binding, denominator, batches = inputs()
+    receipt = prepare_reference_entity_material(
+        batches(), binding, denominator, tmp_path / "entities.arrow"
+    )
+    if mutation == "material-type":
+        receipt["entity_material"] = []
+    elif mutation == "denominator-type":
+        receipt["denominator"] = []
+    elif mutation == "binding":
+        receipt["binding_sha256"] = "0" * 64
+    elif mutation == "denominator-keys":
+        receipt["denominator"]["extra"] = 1
+    elif mutation == "denominator-fields":
+        receipt["denominator"]["elements"] = True
+    else:
+        receipt["denominator"]["native_digest"] = 1
+    _resign(receipt)
+    with pytest.raises((TypeError, ValueError), match=expected):
+        load_reference_entity_material(tmp_path, receipt)
+
+
+@pytest.mark.parametrize(
+    ("mutation", "index", "expected"),
+    [
+        ("partitions-type", 0, "receipt is invalid"),
+        ("denominator-type", 0, "receipt is invalid"),
+        ("range", 3, "index changed"),
+        ("record-type", 0, "receipt is invalid"),
+        ("record-index", 0, "index changed"),
+        ("binding", 0, "binding changed"),
+    ],
+)
+def test_entity_partition_loader_rejects_resigned_invalid_contracts(
+    tmp_path: Path, mutation: str, index: int, expected: str
+) -> None:
+    binding, denominator, batches = inputs()
+    receipt = prepare_reference_entity_material(
+        batches(),
+        binding,
+        denominator,
+        tmp_path / "entities.arrow",
+        shard_count=2,
+    )
+    if mutation == "partitions-type":
+        receipt["partitions"] = {}
+    elif mutation == "denominator-type":
+        receipt["denominator"] = []
+    elif mutation == "record-type":
+        receipt["partitions"][0] = []
+    elif mutation == "record-index":
+        receipt["partitions"][0]["index"] = 1
+    elif mutation == "binding":
+        receipt["binding_sha256"] = "0" * 64
+    _resign(receipt)
+    with pytest.raises((TypeError, ValueError), match=expected):
+        load_reference_entity_partition(tmp_path, receipt, index)
+
+
+@pytest.mark.parametrize(
+    "mutation", ["index-digest", "partition-digest", "missing", "binding"]
+)
+def test_disaggregated_manifest_fails_closed_on_incomplete_or_mixed_nodes(
+    tmp_path: Path, mutation: str
+) -> None:
+    binding, denominator, batches = inputs()
+    directory = tmp_path / mutation
+    index_receipt = prepare_reference_index(
+        batches(), binding, denominator, directory / "reference-index.json"
+    )
+    partition_receipts = [
+        prepare_reference_partition(
+            batches(),
+            binding,
+            denominator,
+            directory / f"reference-{index:02d}.arrow",
+            shard_index=index,
+            shard_count=2,
+        )
+        for index in range(2)
+    ]
+    if mutation == "index-digest":
+        (directory / "reference-index.json").write_bytes(b"changed")
+    elif mutation == "partition-digest":
+        (directory / "reference-00.arrow").write_bytes(b"changed")
+    elif mutation == "missing":
+        partition_receipts.pop()
+    else:
+        partition_receipts[0]["binding_sha256"] = "9" * 64
+    with pytest.raises(
+        (TypeError, ValueError), match=r"binding|digest|coverage"
+    ):
+        assemble_reference_manifest(
+            directory,
+            binding,
+            denominator,
+            index_receipt,
+            partition_receipts,
+        )
+
+
+@pytest.mark.parametrize(
+    ("mutation", "expected"),
+    [
+        ("index-binding", "index receipt binding"),
+        ("index-type", "index receipt is invalid"),
+        ("partition-binding", "partition receipt binding"),
+        ("partition-type", "partition receipt is invalid"),
+        ("empty", "coverage changed"),
+        ("projection-type", "partition receipt is invalid"),
+        ("coverage", "coverage changed"),
+        ("native-fields", "denominator changed"),
+    ],
+)
+def test_manifest_rejects_each_invalid_node_contract(
+    tmp_path: Path, mutation: str, expected: str
+) -> None:
+    binding, denominator, batches = inputs()
+    index_receipt = prepare_reference_index(
+        batches(), binding, denominator, tmp_path / "reference-index.json"
+    )
+    partitions = [
+        prepare_reference_partition(
+            batches(),
+            binding,
+            denominator,
+            tmp_path / f"reference-{index:02d}.arrow",
+            shard_index=index,
+            shard_count=2,
+        )
+        for index in range(2)
+    ]
+    if mutation == "index-binding":
+        index_receipt["purpose"] = "other"
+    elif mutation == "index-type":
+        index_receipt["index"] = []
+    elif mutation == "partition-binding":
+        partitions[0]["purpose"] = "other"
+    elif mutation == "partition-type":
+        partitions[0]["partition"] = []
+    elif mutation == "empty":
+        partitions.clear()
+    elif mutation == "projection-type":
+        partitions[0]["partition"]["expected_projection"] = []
+    elif mutation == "coverage":
+        partitions[0]["partition"]["count"] = 3
+    else:
+        partitions[0]["partition"]["expected_projection"]["native_fields"] += 1
+    with pytest.raises((TypeError, ValueError), match=expected):
+        assemble_reference_manifest(
+            tmp_path, binding, denominator, index_receipt, partitions
+        )
 
 
 def test_prepared_reference_shard_rejects_tampered_partition(

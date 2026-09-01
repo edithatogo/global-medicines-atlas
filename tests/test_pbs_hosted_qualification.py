@@ -12,6 +12,7 @@ from urllib.parse import quote
 
 import httpx
 import pytest
+from scripts import prepare_historical_pbs_qualification as prepare_cli
 from scripts import qualify_historical_pbs_public as cli
 from test_au_pbs_v3 import _zip  # ruff: ignore[import-private-name]
 from test_australian_source_contracts import (
@@ -551,7 +552,15 @@ def test_workflow_has_durable_receipt_and_no_dataset_write() -> None:
         "pbs-${{ matrix.projection }}-receipt-${{ github.run_attempt }}.json"
         in workflow
     )
-    assert "needs: [prepare, qualify]" in workflow
+    qualify_block = workflow.split("  qualify:\n", 1)[1].split(
+        "  qualify-references:\n", 1
+    )[0]
+    assert "needs: prepare" not in qualify_block
+    reference_block = workflow.split("  qualify-references:\n", 1)[1].split(
+        "  aggregate:\n", 1
+    )[0]
+    assert "needs: prepare" in reference_block
+    assert "needs: [prepare, qualify]" not in reference_block
     assert (
         "pbs-reference-global-${{ needs.prepare.outputs.artifact_suffix }}"
         in workflow
@@ -602,6 +611,222 @@ def test_preparation_fetches_once_and_writes_bounded_transient_workers(
     reference_report = prepared.qualify_prepared_reference(worker, SHA, 0)
     assert reference_report["status"] == "passed"
     assert reference_report["qualification"]["reference_window"]["index"] == 0
+
+
+@pytest.mark.parametrize("shard_index", [None, 0])
+def test_reference_preparation_node_is_independent_and_derived_only(
+    tmp_path: Path, synthetic, shard_index: int | None
+) -> None:
+    output = tmp_path / ("index" if shard_index is None else "partition")
+    report = hosted.run_hosted_reference_node(
+        SHA,
+        output,
+        shard_count=2,
+        shard_index=shard_index,
+        transport=synthetic[2],
+    )
+
+    assert report["status"] == "prepared"
+    assert report["node_kind"] == (
+        "index" if shard_index is None else "partition"
+    )
+    assert report["publication_performed"] is False
+    assert not list(output.rglob("*.zip"))
+    assert not list(output.rglob("*.xml"))
+
+
+def test_reference_nodes_reuse_one_digest_bound_entity_material(
+    tmp_path: Path, synthetic
+) -> None:
+    material_directory = tmp_path / "material"
+    material_report = hosted.run_hosted_entity_material(
+        SHA, material_directory, shard_count=2, transport=synthetic[2]
+    )
+    calls_after_material = len(synthetic[1])
+
+    node = hosted.run_prepared_reference_node(
+        SHA,
+        material_directory,
+        material_report["node"],
+        tmp_path / "index",
+        shard_count=2,
+        preparation_run_id=material_report["run_id"],
+        preparation_run_attempt=material_report["run_attempt"],
+    )
+
+    assert node["node_kind"] == "index"
+    partition = hosted.run_prepared_reference_node(
+        SHA,
+        material_directory,
+        material_report["node"],
+        tmp_path / "partition",
+        shard_count=2,
+        shard_index=0,
+        preparation_run_id=material_report["run_id"],
+        preparation_run_attempt=material_report["run_attempt"],
+    )
+    assert partition["node_kind"] == "partition"
+    assert len(synthetic[1]) == calls_after_material
+    assert not list(material_directory.rglob("*.zip"))
+    assert not list(material_directory.rglob("*.xml"))
+
+
+@pytest.mark.parametrize(
+    ("mutation", "expected"),
+    [
+        ("run-id", "context"),
+        ("partitions", "partition index"),
+        ("range", "partition index"),
+        ("record", "receipt is invalid"),
+        ("count", "partition count"),
+        ("projection", "projection is invalid"),
+        ("projection-drift", "projection changed"),
+    ],
+)
+def test_prepared_reference_node_rejects_invalid_partition_contract(
+    tmp_path: Path,
+    synthetic,
+    monkeypatch: pytest.MonkeyPatch,
+    mutation: str,
+    expected: str,
+) -> None:
+    material_directory = tmp_path / "material"
+    material_report = hosted.run_hosted_entity_material(
+        SHA, material_directory, shard_count=2, transport=synthetic[2]
+    )
+    receipt = material_report["node"]
+    run_id = material_report["run_id"]
+    shard_index = 0
+    loaded = hosted.load_reference_entity_partition(
+        material_directory, receipt, 0
+    )
+    if mutation == "run-id":
+        run_id = "0"
+    elif mutation == "partitions":
+        receipt["partitions"] = {}
+    elif mutation == "range":
+        shard_index = 2
+    elif mutation == "record":
+        receipt["partitions"][0] = []
+    elif mutation == "count":
+        receipt["partitions"][0]["count"] = 3
+    elif mutation == "projection":
+        monkeypatch.setattr(
+            hosted, "load_reference_entity_partition", lambda *_: loaded
+        )
+        receipt["partitions"][0]["expected_projection"] = []
+    else:
+        monkeypatch.setattr(
+            hosted, "load_reference_entity_partition", lambda *_: loaded
+        )
+        receipt["partitions"][0]["expected_projection"]["rows"] += 1
+    with pytest.raises((TypeError, ValueError), match=expected):
+        hosted.run_prepared_reference_node(
+            SHA,
+            material_directory,
+            receipt,
+            tmp_path / "output",
+            shard_count=2,
+            shard_index=shard_index,
+            preparation_run_id=run_id,
+            preparation_run_attempt=material_report["run_attempt"],
+        )
+
+
+def test_preparation_reports_bounded_stage_checkpoints(
+    tmp_path: Path, synthetic
+) -> None:
+    checkpoints: list[dict[str, object]] = []
+
+    hosted.run_hosted_preparation(
+        SHA,
+        tmp_path / "prepared",
+        shard_count=2,
+        transport=synthetic[2],
+        progress=checkpoints.append,
+    )
+
+    observed = [
+        report["progress"]["stage"]  # type: ignore[index]
+        for report in checkpoints
+    ]
+    assert "denominator" in observed
+    assert "entity-partition-preparation" in observed
+    assert "manifest-verification" in observed
+
+
+def test_preparation_failure_retains_exact_safe_stage_and_type(
+    tmp_path: Path, synthetic, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def fail(*_args, **_kwargs):
+        raise MemoryError("synthetic-source-secret")
+
+    monkeypatch.setattr(hosted, "prepare_reference_shards", fail)
+    with pytest.raises(hosted.QualificationError) as caught:
+        hosted.run_hosted_preparation(
+            SHA,
+            tmp_path / "prepared",
+            shard_count=2,
+            transport=synthetic[2],
+        )
+    report = hosted.failure_report(caught.value)
+    assert report["failure_stage"] == "entity-partition-preparation"
+    assert report["failure_category"] == "resource"
+    assert report["failure_type"] == "memory-error"
+    assert "secret" not in json.dumps(report)
+
+
+def test_preparation_classifies_disk_exhaustion_without_message() -> None:
+    with (
+        pytest.raises(hosted.QualificationError) as caught,
+        hosted._at("entity-partition-preparation"),
+    ):
+        raise OSError(errno.ENOSPC, "synthetic-sensitive-path")
+    report = hosted.failure_report(caught.value)
+    assert report["failure_category"] == "resource"
+    assert report["failure_type"] == "disk-full"
+    assert "sensitive" not in json.dumps(report)
+
+
+def test_preparation_cli_persists_last_checkpoint_on_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def fail(_commit, _output, *, shard_count, progress):
+        assert shard_count == 16
+        progress({
+            "schema_version": 1,
+            "status": "incomplete",
+            "progress": {
+                "stage": "global-index-preparation",
+                "phase": "references",
+                "batches": 120,
+                "rows": 163700,
+                "elapsed_ms": 1,
+            },
+        })
+        raise MemoryError("synthetic-source-secret")
+
+    monkeypatch.setattr(prepare_cli, "run_hosted_preparation", fail)
+    receipt = tmp_path / "receipt.json"
+    assert (
+        prepare_cli.main([
+            "--exact-commit",
+            SHA,
+            "--output",
+            str(tmp_path / "prepared"),
+            "--receipt",
+            str(receipt),
+            "--reference-shards",
+            "16",
+        ])
+        == 1
+    )
+    report = json.loads(receipt.read_text())["report"]
+    assert report["failure_stage"] == "global-index-preparation"
+    assert report["failure_type"] == "memory-error"
+    assert report["progress"]["rows"] == 163700
+    assert "secret" not in receipt.read_text()
+    assert not receipt.with_suffix(".json.tmp").exists()
 
 
 def test_prepared_worker_rejects_invalid_context_and_manifest(
@@ -679,7 +904,15 @@ def test_progress_is_fixed_aggregate_only(synthetic):
     }
     assert all(
         set(event["progress"])
-        == {"stage", "phase", "batches", "rows", "elapsed_ms"}
+        == {
+            "stage",
+            "phase",
+            "batches",
+            "rows",
+            "elapsed_ms",
+            "free_space_bytes",
+            "max_rss_bytes",
+        }
         for event in checkpoints
     )
     assert "001.2300" not in json.dumps(checkpoints)

@@ -6,7 +6,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from global_medicines_atlas.pbs_hosted_qualification import (
     failure_report,
@@ -29,6 +29,12 @@ def _write(path: Path, report: dict[str, Any]) -> None:
     )
 
 
+def _write_atomic(path: Path, report: dict[str, Any]) -> None:
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    _write(temporary, report)
+    temporary.replace(path)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--exact-commit", required=True)
@@ -36,17 +42,35 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--receipt", required=True, type=Path)
     parser.add_argument("--reference-shards", required=True, type=int)
     args = parser.parse_args(argv)
+    checkpoints: list[dict[str, Any]] = []
+
+    def persist(report: dict[str, Any]) -> None:
+        checkpoints.append(report)
+        bounded = dict(report)
+        bounded["operation"] = "pbs-qualification-preparation"
+        bounded["publication_performed"] = False
+        _write_atomic(args.receipt, bounded)
+
     try:
         report = run_hosted_preparation(
             args.exact_commit,
             args.output,
             shard_count=args.reference_shards,
+            progress=persist,
         )
     except Exception as error:  # Never serialize source-bearing exception text.
         report = failure_report(error)
         report["operation"] = "pbs-qualification-preparation"
         report["publication_performed"] = False
-    _write(args.receipt, report)
+        if checkpoints and isinstance(
+            progress_value := checkpoints[-1].get("progress"), dict
+        ):
+            progress_value = cast("dict[str, Any]", progress_value)
+            report["progress"] = progress_value
+            stage = progress_value.get("stage")
+            if isinstance(stage, str):
+                report["failure_stage"] = stage
+    _write_atomic(args.receipt, report)
     return 0 if report["status"] == "prepared" else 1
 
 
