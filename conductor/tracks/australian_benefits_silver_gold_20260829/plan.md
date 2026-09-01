@@ -820,14 +820,14 @@
   assembly/reference qualification behind only their actual prepared-input
   dependencies. The aggregate remains an `always()` fail-closed completeness
   gate, so partial failures retain their own receipts and GitHub can rerun failed
-  jobs without discarding successful siblings. Implemented `5e9afb8`; the
+  jobs without discarding successful siblings. Implemented `d1e3ca0`; the
   workflow contract failed before the dependency change, then the complete 121
   PBS hosted-qualification tests, Ruff, format, actionlint and Conductor context
   validation passed. This raises possible first-wave hosted concurrency from
   four to nine to reduce elapsed time; runner availability still provides the
   external queue bound. No timeout, source, receipt, publication or qualification
   semantics changed. Hosted unit review exposed one older preparation test
-  pinned to the former three-group throttle; review fix `65bdfe0` makes the
+  pinned to the former three-group throttle; review fix `8fcaa81` makes the
   existing end-to-end DAG contract require no `needs: qualify` dependency and
   the new four-group limit. Both PBS workflow suites now pass 135 tests, with
   Ruff, format and actionlint green.
