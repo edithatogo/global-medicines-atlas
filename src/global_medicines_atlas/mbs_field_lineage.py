@@ -211,15 +211,17 @@ def build_mbs_silver_field_lineage(
                 value_type=contract.value_type,
                 occurrence_count=counts[name],
                 native_states=tuple(
-                    MbsNativeStateCount.model_validate(
-                        {"outcome": outcome, "count": value}
-                    )
+                    MbsNativeStateCount.model_validate({
+                        "outcome": outcome,
+                        "count": value,
+                    })
                     for outcome, value in sorted(states[name].items())
                 ),
                 conversion_statuses=tuple(
-                    MbsConversionStatusCount.model_validate(
-                        {"outcome": outcome, "count": value}
-                    )
+                    MbsConversionStatusCount.model_validate({
+                        "outcome": outcome,
+                        "count": value,
+                    })
                     for outcome, value in sorted(conversions[name].items())
                 ),
                 lineage_sha256=digests[name].hexdigest(),
