@@ -272,3 +272,24 @@ def test_bounds_data_card_collections(field: str) -> None:
     document["data_card"][field] *= 33
     with pytest.raises(SourceMetadataError, match="at most 32 items"):
         validate_source_metadata(document)
+
+
+def test_binds_data_card_claims_to_source_profile() -> None:
+    document = _fixture("valid-mbs.json")
+    document["data_card"]["intended_uses"] = ["Clinical decisions"]
+    with pytest.raises(SourceMetadataError, match="claims do not match"):
+        validate_source_metadata(document)
+
+    document = _fixture("valid-mbs.json")
+    document["data_card"]["limitations"] = [
+        "Missing coverage proves non-approval."
+    ]
+    with pytest.raises(SourceMetadataError, match="claims do not match"):
+        validate_source_metadata(document)
+
+
+def test_requires_https_for_public_metadata_urls() -> None:
+    document = _fixture("valid-mbs.json")
+    document["source"]["authority_url"] = "http://www.health.gov.au/"
+    with pytest.raises(SourceMetadataError, match="must use HTTPS"):
+        validate_source_metadata(document)

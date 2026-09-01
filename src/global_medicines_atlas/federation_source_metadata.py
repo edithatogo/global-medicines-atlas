@@ -64,6 +64,21 @@ _PROFILES = {
     ),
 }
 
+_CARD_CLAIMS = {
+    "au-mbs": (
+        ("Historical and current MBS service-benefit analysis",),
+        (
+            "MBS funding evidence is not regulatory approval or formulary evidence.",
+        ),
+    ),
+    "au-pbs": (
+        ("Historical and current PBS formulary and funding analysis",),
+        (
+            "PBS listing evidence is not regulatory approval or prescribing advice.",
+        ),
+    ),
+}
+
 
 class SourceMetadataError(ValueError):
     """Source metadata is incomplete, generic, or internally inconsistent."""
@@ -79,6 +94,8 @@ class _Model(BaseModel):
 
 
 def _public_url_without_userinfo(value: AnyHttpUrl) -> AnyHttpUrl:
+    if value.scheme != "https":
+        raise ValueError("public metadata URL must use HTTPS")
     if value.username is not None or value.password is not None:
         raise ValueError("public metadata URL must not contain userinfo")
     return value
@@ -259,6 +276,18 @@ class SourceMetadataDocument(_Model):
             for citation in self.citations
         ):
             raise ValueError("citation must identify this dataset revision")
+        return self
+
+    @model_validator(mode="after")
+    def data_card_claims_are_profile_bound(self) -> Self:
+        claims = (
+            self.data_card.intended_uses,
+            self.data_card.limitations,
+        )
+        if claims != _CARD_CLAIMS[self.source.source_id]:
+            raise ValueError(
+                "data card claims do not match the approved source profile"
+            )
         return self
 
     @model_validator(mode="after")

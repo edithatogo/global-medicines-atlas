@@ -38,7 +38,9 @@
     "oversized citation collections",
     "rights evidence outside the approved source profile",
     "archive-root payload path",
-    "oversized data-card collections"
+    "oversized data-card collections",
+    "data-card claims outside the approved source profile",
+    "cleartext public metadata URLs"
   ],
   "external_actions": {
     "credentials_used": false,
