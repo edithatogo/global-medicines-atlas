@@ -33,8 +33,10 @@ from global_medicines_atlas.pbs_reference_shards import (
     prepare_reference_entity_material,
     prepare_reference_index,
     prepare_reference_partition,
+    prepare_reference_partition_group,
     prepare_reference_shards,
     qualify_reference_shard,
+    validate_reference_partition_group,
 )
 from global_medicines_atlas.pbs_references import (
     _index,  # ruff: ignore[import-private-name]  # pyright: ignore[reportPrivateUsage]
@@ -223,6 +225,103 @@ def test_disaggregated_preparation_reassembles_existing_worker_contract(
         )
         == denominator["native_fields"]
     )
+
+
+def test_partition_group_scans_once_and_emits_only_assigned_contiguous_window(
+    tmp_path: Path,
+) -> None:
+    binding, denominator, batches = inputs()
+    scans = 0
+
+    def counted():
+        nonlocal scans
+        scans += 1
+        yield from batches()
+
+    receipt = prepare_reference_partition_group(
+        counted(),
+        binding,
+        denominator,
+        tmp_path,
+        group_index=1,
+        group_count=2,
+        shard_count=4,
+    )
+    loaded_binding, loaded_denominator, partitions = (
+        validate_reference_partition_group(tmp_path, receipt)
+    )
+    assert scans == 1
+    assert loaded_binding == binding
+    assert loaded_denominator == denominator
+    assert receipt["group"] == {
+        "index": 1,
+        "count": 2,
+        "start_partition": 2,
+        "stop_partition": 4,
+    }
+    assert [partition["index"] for partition in partitions] == [2, 3]
+    assert sorted(path.name for path in tmp_path.glob("*.arrow")) == [
+        "reference-02.arrow",
+        "reference-03.arrow",
+    ]
+    assert (
+        sum(
+            partition["expected_projection"]["rows"] for partition in partitions
+        )
+        == partitions[-1]["stop_row"] - partitions[0]["start_row"]
+    )
+
+
+@pytest.mark.parametrize("mutation", ["drop", "reorder", "receipt", "bytes"])
+def test_partition_group_rejects_drop_reorder_and_tamper(
+    tmp_path: Path, mutation: str
+) -> None:
+    binding, denominator, batches = inputs()
+    receipt = prepare_reference_partition_group(
+        batches(),
+        binding,
+        denominator,
+        tmp_path,
+        group_index=0,
+        group_count=2,
+        shard_count=4,
+    )
+    if mutation == "drop":
+        receipt["partitions"].pop()
+        _resign(receipt)
+    elif mutation == "reorder":
+        receipt["partitions"].reverse()
+        _resign(receipt)
+    elif mutation == "receipt":
+        receipt["group"]["stop_partition"] = 3
+    else:
+        with (tmp_path / "reference-00.arrow").open("ab") as stream:
+            stream.write(b"tampered")
+    with pytest.raises((TypeError, ValueError), match=r"group|digest"):
+        validate_reference_partition_group(tmp_path, receipt)
+
+
+@pytest.mark.parametrize(
+    ("group_index", "group_count", "shard_count"),
+    [(-1, 2, 4), (2, 2, 4), (0, 3, 4), (True, 2, 4), (0, True, 4)],
+)
+def test_partition_group_rejects_invalid_or_uneven_coverage(
+    tmp_path: Path,
+    group_index: int,
+    group_count: int,
+    shard_count: int,
+) -> None:
+    binding, denominator, batches = inputs()
+    with pytest.raises(ValueError, match="group preparation"):
+        prepare_reference_partition_group(
+            batches(),
+            binding,
+            denominator,
+            tmp_path,
+            group_index=group_index,
+            group_count=group_count,
+            shard_count=shard_count,
+        )
 
 
 def test_entity_material_is_reusable_by_index_and_partition_nodes(
