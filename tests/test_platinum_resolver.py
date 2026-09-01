@@ -215,7 +215,9 @@ def test_duplicate_resource_or_contract_alias_is_rejected() -> None:
         {"timeout_seconds": 0},
     ],
 )
-def test_byte_time_and_cache_budgets_fail_closed(options: dict[str, Any]) -> None:
+def test_byte_time_and_cache_budgets_fail_closed(
+    options: dict[str, Any],
+) -> None:
     with pytest.raises(ValueError, match=r"budget|timeout|exceeds"):
         resolver(Hub(), **options)
 
