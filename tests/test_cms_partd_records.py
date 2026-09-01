@@ -7,6 +7,7 @@ import sys
 import zipfile
 from io import BytesIO
 from pathlib import Path
+from typing import cast
 
 import pyarrow.parquet as pq
 import pytest
@@ -15,6 +16,7 @@ from global_medicines_atlas import cms_partd_records as records
 from global_medicines_atlas.cms_partd_records import (
     project_cms_partd_payload,
     projection_cli,
+    qualify_cms_partd_projections,
 )
 
 WORKFLOW = (
@@ -292,5 +294,84 @@ def test_projection_workflow_is_hosted_public_and_resumable() -> None:
     assert "resolve/${RAW_REVISION}" in workflow
     assert "token=False" in workflow
     assert "Remove runner source bytes" in workflow
-    assert "runner_source_bytes_retained': False" in workflow
+    assert '--raw-revision "$RAW_REVISION"' in workflow
     assert "upload_folder" in workflow
+    assert "scripts/qualify_cms_partd_records.py" in workflow
+
+
+def _qualification_inputs() -> tuple[
+    dict[str, object], list[dict[str, object]]
+]:
+    payloads: list[dict[str, str]] = []
+    shards: list[dict[str, object]] = []
+    for number in range(33):
+        identity = f"{number:064x}"
+        family = "formulary" if number < 30 else "spending"
+        payloads.append({
+            "hub_path": f"bronze/payloads/{identity}/payload",
+            "family": family,
+            "sha256": f"{number + 100:064x}",
+        })
+        shards.append({
+            "schema_id": "global-medicines-atlas.cms-partd-source-record-shard",
+            "schema_version": 1,
+            "identity": identity,
+            "family": family,
+            "source_record_projection_count": 1,
+            "source_record_count": number + 1,
+            "source_values_preserved_as_strings": True,
+            "cross_plan_year_schema_equivalence_claimed": False,
+            "projections": [
+                {
+                    "parquet_filename": f"table-{number}.parquet",
+                    "row_count": number + 1,
+                    "column_count": 2,
+                    "parquet_sha256": "a" * 64,
+                    "parquet_byte_count": 100,
+                }
+            ],
+        })
+    return {"revision": "raw-revision", "payloads": payloads}, shards
+
+
+def test_qualification_binds_every_shard_to_raw_manifest() -> None:
+    raw, shards = _qualification_inputs()
+    result = qualify_cms_partd_projections(
+        raw,
+        list(reversed(shards)),
+        qualified_at="2026-09-01T00:00:00Z",
+        raw_revision="raw-revision",
+    )
+    assert result["payload_count"] == 33
+    assert result["source_record_projection_count"] == 33
+    assert result["source_record_count"] == sum(range(1, 34))
+    assert result["raw_revision"] == "raw-revision"
+    result_shards = cast("list[dict[str, object]]", result["shards"])
+    assert result_shards[0]["raw_payload_sha256"] == f"{100:064x}"
+    assert [row["identity"] for row in result_shards] == sorted(
+        cast("str", row["identity"]) for row in shards
+    )
+
+
+@pytest.mark.parametrize("drift", ["duplicate", "family", "rows", "path"])
+def test_qualification_rejects_inventory_or_projection_drift(
+    drift: str,
+) -> None:
+    raw, shards = _qualification_inputs()
+    if drift == "duplicate":
+        shards[-1] = shards[0]
+    elif drift == "family":
+        shards[0]["family"] = "spending"
+    elif drift == "rows":
+        shards[0]["source_record_count"] = 2
+    else:
+        projections = shards[0]["projections"]
+        assert isinstance(projections, list)
+        projections[0]["parquet_filename"] = "../table.parquet"
+    with pytest.raises(ValueError, match="CMS Part D"):
+        qualify_cms_partd_projections(
+            raw,
+            shards,
+            qualified_at="2026-09-01T00:00:00Z",
+            raw_revision="raw-revision",
+        )
