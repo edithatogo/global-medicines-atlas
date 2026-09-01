@@ -23,6 +23,11 @@
 - [ ] Phase Verification & Checkpoint: an empty machine can run bounded fixture
   queries from pinned public revisions with no durable local lake.
 
+### Resolver review fixes
+
+- [x] Apply repository formatting to the resolver contract tests before hosted
+  qualification. (`2c46aa9`; format check and 18 focused tests pass.)
+
 ## Phase 2: CLI and API (AC-01, AC-02, AC-04)
 
 - [ ] Write failing CLI/API tests for MBS services, PBS medicines, evidence
