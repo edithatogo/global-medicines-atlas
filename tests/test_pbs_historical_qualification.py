@@ -78,6 +78,36 @@ def test_progress_is_aggregate_and_does_not_change_qualification() -> None:
     )
 
 
+def test_entity_projection_is_built_once_and_replayed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    archive = _zip([(PATH, XML)])
+    parent = _receipt(archive, SOURCE)
+    binding = build_pbs_xml_member_binding(archive, parent)
+    original = qualifier.iter_pbs_historical_entity_batches
+    calls = 0
+
+    def counted(*args, **kwargs):
+        nonlocal calls
+        calls += 1
+        yield from original(*args, **kwargs)
+
+    monkeypatch.setattr(
+        qualifier, "iter_pbs_historical_entity_batches", counted
+    )
+    report = qualifier.qualify_pbs_historical_projections(
+        archive, XML, parent, binding, rows_per_batch=1
+    )
+    assert calls == 1
+    assert tuple(report["projections"]) == (
+        "native",
+        "domain",
+        "entities",
+        "references",
+        "dates",
+    )
+
+
 def test_denominator_reports_only_bounded_intervals(monkeypatch):
     slot = PbsXmlSlot("/item/1", "/item/1/text", "/item/text", "secret")
     monkeypatch.setattr(
