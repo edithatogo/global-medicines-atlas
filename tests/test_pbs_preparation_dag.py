@@ -398,7 +398,6 @@ def test_workflow_disaggregates_preparation_without_raw_artifacts() -> None:
     assert "--entity-material" not in workflow
     assert "--global-index" in workflow
     assert '--group-index "$GROUP" --group-count 4' in workflow
-    assert "max-parallel: 3" in workflow
     assert "max-parallel: 4" in workflow
     assert "prepare_historical_pbs_reference_node.py" in workflow
     assert "assemble_historical_pbs_reference_manifest.py" in workflow
@@ -409,7 +408,7 @@ def test_workflow_disaggregates_preparation_without_raw_artifacts() -> None:
         "  qualify-references:\n", 1
     )[0]
     assert "needs:" not in phase
-    assert workflow.count("needs: qualify") == 2
+    assert "needs: qualify" not in workflow
     assert "needs.qualify.result" not in workflow
     assert (
         "pbs-reference-complete-${{ needs.prepare.outputs.artifact_suffix }}"
