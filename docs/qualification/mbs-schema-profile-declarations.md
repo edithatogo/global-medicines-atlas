@@ -27,9 +27,15 @@ upload or filesystem-writing behavior.
 ## Federation boundary
 
 Federation v4 does not accept these declaration fields in its closed source
-object. A future export requires a separately versioned declaration artifact and
-consumer contract/canary; do not modify old v4 records or relabel their payloads.
+object. `bind_mbs_profile_to_federation` therefore produces a separately
+versioned, content-bound read-side binding without modifying the v4 record or
+relabeling its payload. The binding preserves the source release in v4
+`schema_era` and carries the comparison schema profile separately. Its status
+remains `declared`; it is not admission, qualification, rights evidence or an
+export/publication instruction.
+
 Native comparisons additionally permit a `historical` cohort, while federation
-v4 accepts only `legacy`, `current` and `synthetic`. An exporter must reject an
-unsupported cohort until an explicit versioned mapping exists, never silently
-convert `historical` to `legacy` or `current`. No exporter is added here.
+v4 accepts only `legacy`, `current` and `synthetic`. The consumer rejects
+`historical` and every other unsupported value rather than silently converting
+it to `legacy` or `current`. Evolving that cohort vocabulary still requires a
+new compatible federation contract; this read-side canary does not do so.
