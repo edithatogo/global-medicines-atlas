@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import json
 from collections import Counter
 from collections.abc import Iterator
 from itertools import pairwise
 from typing import Any, cast
 
+import orjson
 import pyarrow as pa
 import pyarrow.compute as pc
 
@@ -23,9 +23,7 @@ type ReferenceIndex = dict[tuple[str, str], tuple[Counter[str | None], int]]
 
 
 def _size(value: object) -> int:
-    return len(
-        json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode()
-    )
+    return len(orjson.dumps(value))
 
 
 def _attribute(row: dict[str, Any], name: str) -> tuple[str | None, str]:
@@ -36,7 +34,9 @@ def _attribute(row: dict[str, Any], name: str) -> tuple[str | None, str]:
     return None, "missing_field"
 
 
-def _contract(row: dict[str, Any]) -> dict[str, Any]:
+def _contract(  # pyright: ignore[reportUnusedFunction] -- retained parity oracle
+    row: dict[str, Any],
+) -> dict[str, Any]:
     kind = "unmapped"
     value, state = None, "not_applicable"
     resource, resource_state = None, "not_applicable"
@@ -273,9 +273,20 @@ def _reference_batches(
 ) -> Iterator[pa.RecordBatch]:
     """Annotate two trusted same-input streams; reject schema/identity drift."""
     index, identity = _index(index_batches)
-    rows: list[dict[str, Any]] = []
+    pieces: list[pa.RecordBatch] = []
+    rows = 0
     size = 0
     schema: pa.Schema | None = None
+
+    def assembled() -> pa.RecordBatch:
+        if schema is None or not pieces:
+            raise ValueError("PBS reference output assembly is empty")
+        table = pa.Table.from_batches(pieces, schema=schema).combine_chunks()
+        batches = table.to_batches()
+        if len(batches) != 1:
+            raise ValueError("PBS reference output assembly changed chunks")
+        return batches[0]
+
     for batch in output_batches:
         if identity is None or not batch.schema.equals(
             identity, check_metadata=True
@@ -283,17 +294,44 @@ def _reference_batches(
             raise ValueError("PBS reference cross-pass identity changed")
         if schema is None:
             schema = _schema(batch.schema)
-        for entity in batch.to_pylist():
-            row = {**entity, **_diagnostics(_contract(entity), index)}
-            row_size = _size(row)
+        diagnostics = [
+            _diagnostics(contract, index)
+            for contract in _columnar_contracts(batch)
+        ]
+        if len(diagnostics) != batch.num_rows:
+            raise ValueError("PBS reference output contract count changed")
+        diagnostic_names = tuple(schema.names[len(batch.schema.names) :])
+        output = pa.RecordBatch.from_arrays(  # pyright: ignore[reportUnknownMemberType]
+            [
+                *batch.columns,  # pyright: ignore[reportUnknownMemberType]
+                *(
+                    pa.array(
+                        [item[name] for item in diagnostics],
+                        type=schema.field(name).type,  # pyright: ignore[reportUnknownMemberType, reportUnknownArgumentType]
+                    )
+                    for name in diagnostic_names
+                ),
+            ],
+            schema=schema,
+        )
+        start = 0
+        for position, (entity, diagnostic) in enumerate(
+            zip(batch.to_pylist(), diagnostics, strict=True)
+        ):
+            row_size = _size(entity) + _size(diagnostic) - 1
             if row_size > MAX_BATCH_BYTES:
                 raise ValueError("PBS reference row exceeds batch byte limit")
             if rows and (
-                len(rows) >= rows_per_batch or size + row_size > MAX_BATCH_BYTES
+                rows >= rows_per_batch or size + row_size > MAX_BATCH_BYTES
             ):
-                yield pa.RecordBatch.from_pylist(rows, schema=schema)
-                rows, size = [], 0
-            rows.append(row)
+                if position > start:
+                    pieces.append(output.slice(start, position - start))
+                yield assembled()
+                pieces, rows, size = [], 0, 0
+                start = position
+            rows += 1
             size += row_size
-    if rows:
-        yield pa.RecordBatch.from_pylist(rows, schema=schema)
+        if start < batch.num_rows:
+            pieces.append(output.slice(start))
+    if pieces:
+        yield assembled()

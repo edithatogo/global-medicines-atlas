@@ -1,5 +1,6 @@
 """Synthetic source-local PBS identifier/reference diagnostics."""
 
+import json
 from io import BytesIO
 
 import pyarrow as pa
@@ -15,6 +16,24 @@ from test_australian_source_contracts import (
 
 from global_medicines_atlas import pbs_references
 from global_medicines_atlas.pbs_entities import iter_pbs_entity_batches
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        None,
+        True,
+        -123456789,
+        'é/\\"\n\u2028',
+        ["missing", None, ""],
+        {"path": "/a~1b", "value": " Before "},
+    ],
+)
+def test_fast_encoded_size_matches_governed_json(value: object) -> None:
+    expected = len(
+        json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode()
+    )
+    assert pbs_references._size(value) == expected  # pyright: ignore[reportPrivateUsage]
 
 
 def table(payload: bytes, size: int = 2) -> pa.Table:
@@ -74,6 +93,19 @@ def test_columnar_index_contracts_equal_row_contracts(payload: bytes) -> None:
             batch
         )
     ] == expected
+
+
+def test_reference_output_reuses_columnar_contracts(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Output must not rescan every nested row after the index pass."""
+    monkeypatch.setattr(
+        pbs_references,
+        "_contract",
+        lambda _row: (_ for _ in ()).throw(AssertionError("row rescan")),
+    )
+    rows = table(_production_xml()).to_pylist()
+    assert any(row["contract_kind"] == "amt_reference" for row in rows)
 
 
 def test_forward_duplicates_conflicts_and_literal_identity() -> None:
