@@ -194,13 +194,16 @@
   input streaming or complete real-corpus qualification.
 - [ ] Add explicit schema-era mappings and historical/current change events
   without overwriting source values.
-- [ ] Emit field-level lineage, coverage denominators, quality findings, and
+- [~] Emit field-level lineage, coverage denominators, quality findings, and
   promotion candidates.
   Aggregate candidate qualification now binds all six XML Silver tables, the
   complete 40-field and source-row denominators, per-table lineage digests,
   conversion-quality counts, B1/B2 identities and explicit candidate-only
-  blockers (`e6abca6`). Field-addressed lineage output, real-source execution and public
-  v4 identity verification remain pending; no promotion is inferred.
+  blockers (`e6abca6`). XML field-addressed lineage now maps all 40 native
+  paths to exact Silver table/field/type destinations and records per-field
+  state, conversion and occurrence denominators without copying source values.
+  Real-workbook field lineage, real-source execution and public v4 identity
+  verification remain pending; no promotion is inferred.
 
 ## Aggregate qualification review fixes
 
