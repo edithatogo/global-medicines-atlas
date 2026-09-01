@@ -1,0 +1,15 @@
+{
+  "authorization_reference": null,
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "heads": [
+    [
+      "edithatogo/aus_mbs_pbs_graph",
+      "3993e5e331eb2d3d9e9d354d80e52c684ad26a1e"
+    ],
+    [
+      "edithatogo/aus-health-data-scraper",
+      "009e80544588a956c8922aaab052ee08947e2b30"
+    ]
+  ],
+  "publication_authorized": false
+}
