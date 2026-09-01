@@ -88,7 +88,11 @@ class MbsWorkbookXmlCandidateMatch(FrozenModel):
     sub_item_state: Literal["missing", "null", "value"]
     sub_item_value: str | None = None
     xml_native_id: str
-    match_status: Literal["matched_once", "not_observed", "ambiguous"]
+    match_status: Literal[
+        "matched_once",
+        "not_observed_complete_cohort",
+        "outside_selection_unknown",
+    ]
 
     @model_validator(mode="after")
     def key_is_bound(self) -> MbsWorkbookXmlCandidateMatch:
@@ -132,11 +136,11 @@ class MbsWorkbookXmlCandidateReport(FrozenModel):
         if any(
             match.match_status
             != (
-                "not_observed"
-                if counts[match.xml_native_id] == 0
-                else "matched_once"
+                "matched_once"
                 if counts[match.xml_native_id] == 1
-                else "ambiguous"
+                else "outside_selection_unknown"
+                if self.xml.omitted_record_count > 0
+                else "not_observed_complete_cohort"
             )
             for match in self.matches
         ):
@@ -259,7 +263,7 @@ def build_mbs_workbook_xml_candidate_report(  # ruff: ignore[too-many-locals]
             sub_item_value=sub_value,
         )
         counts = Counter(native.native_id for native in xml.snapshot.rows)
-        count = counts[key.content_id()]
+        observed = counts[key.content_id()] == 1
         matches.append(
             MbsWorkbookXmlCandidateMatch(
                 workbook_occurrence_id=f"{workbook_receipt.payload.sha256}:{path}#row={row_index}",
@@ -269,11 +273,11 @@ def build_mbs_workbook_xml_candidate_report(  # ruff: ignore[too-many-locals]
                 sub_item_state=sub_state,
                 sub_item_value=sub_value,
                 xml_native_id=key.content_id(),
-                match_status="not_observed"
-                if count == 0
-                else "matched_once"
-                if count == 1
-                else "ambiguous",
+                match_status="matched_once"
+                if observed
+                else "outside_selection_unknown"
+                if xml.omitted_record_count > 0
+                else "not_observed_complete_cohort",
             )
         )
     matches_tuple = tuple(

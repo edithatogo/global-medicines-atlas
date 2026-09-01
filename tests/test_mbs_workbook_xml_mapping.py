@@ -90,7 +90,26 @@ def test_unobserved_keys_remain_unknown_and_output_is_deterministic():
     assert first == build_mbs_workbook_xml_candidate_report(
         payload, _receipt(payload), cohort, mapping
     )
-    assert {match.match_status for match in second.matches} == {"not_observed"}
+    assert {match.match_status for match in second.matches} == {
+        "not_observed_complete_cohort"
+    }
+
+
+def test_omitted_xml_denominator_never_becomes_negative_evidence():
+    payload, _, mapping = inputs()
+    partial = build(
+        xml(data("99999", sub=""), data("00123", sub="")),
+        (key("99999", state="missing", value=None),),
+        table="services",
+        schema_era="mbs-xml-fixture-v1",
+    )
+    report = build_mbs_workbook_xml_candidate_report(
+        payload, _receipt(payload), partial, mapping
+    )
+    assert partial.omitted_record_count == 1
+    assert {match.match_status for match in report.matches} == {
+        "outside_selection_unknown"
+    }
 
 
 def test_contracts_reject_mapping_report_and_status_tampering():
@@ -111,7 +130,7 @@ def test_contracts_reject_mapping_report_and_status_tampering():
     with pytest.raises(ValidationError, match="field mapping differs"):
         MbsWorkbookXmlSchemaMapping.model_validate(changed)
     changed_report = report.model_dump()
-    changed_report["matches"][0]["match_status"] = "ambiguous"
+    changed_report["matches"][0]["match_status"] = "outside_selection_unknown"
     with pytest.raises(ValidationError, match="match status differs"):
         MbsWorkbookXmlCandidateReport.model_validate(changed_report)
     changed_report = report.model_dump()
@@ -154,7 +173,7 @@ def test_individual_mapping_and_match_contracts_are_content_bound():
             item_num="00123",
             sub_item_state="missing",
             xml_native_id="mbs-key:" + "0" * 64,
-            match_status="not_observed",
+            match_status="not_observed_complete_cohort",
         )
 
 
