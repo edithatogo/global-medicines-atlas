@@ -182,6 +182,21 @@ def test_global_index_rejects_denominator_tamper_before_artifact(
     assert not output.exists()
 
 
+def test_global_index_rejects_entity_schema_drift(tmp_path: Path) -> None:
+    binding, denominator, batches = inputs()
+    values = list(batches())
+    changed = values[1].append_column(
+        "unexpected", pa.array([1] * values[1].num_rows)
+    )
+    with pytest.raises(ValueError, match="entity schema changed"):
+        prepare_reference_index(
+            iter([values[0], changed]),
+            binding,
+            denominator,
+            tmp_path / "reference-index.json",
+        )
+
+
 def test_disaggregated_preparation_reassembles_existing_worker_contract(
     tmp_path: Path,
 ) -> None:
@@ -322,6 +337,138 @@ def test_partition_group_rejects_invalid_or_uneven_coverage(
             group_count=group_count,
             shard_count=shard_count,
         )
+
+
+def test_partition_group_rejects_existing_output(tmp_path: Path) -> None:
+    binding, denominator, batches = inputs()
+    (tmp_path / "reference-00.arrow").write_bytes(b"occupied")
+    with pytest.raises(ValueError, match="output already exists"):
+        prepare_reference_partition_group(
+            batches(),
+            binding,
+            denominator,
+            tmp_path,
+            group_index=0,
+            group_count=2,
+            shard_count=4,
+        )
+
+
+def test_partition_group_rejects_schema_and_writer_initialization_drift(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    binding, denominator, batches = inputs()
+    values = list(batches())
+    changed = values[1].append_column(
+        "unexpected", pa.array([1] * values[1].num_rows)
+    )
+    with pytest.raises(ValueError, match="entity schema changed"):
+        prepare_reference_partition_group(
+            iter([values[0], changed]),
+            binding,
+            denominator,
+            tmp_path / "schema",
+            group_index=0,
+            group_count=2,
+            shard_count=4,
+        )
+
+    monkeypatch.setattr(pa.ipc, "new_stream", lambda *_: None)
+    with pytest.raises(RuntimeError, match="was not initialized"):
+        prepare_reference_partition_group(
+            batches(),
+            binding,
+            denominator,
+            tmp_path / "writer",
+            group_index=0,
+            group_count=2,
+            shard_count=4,
+        )
+
+
+def test_partition_group_rejects_denominator_and_written_projection_drift(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    binding, denominator, batches = inputs()
+    with pytest.raises(ValueError, match="denominator changed"):
+        prepare_reference_partition_group(
+            batches(),
+            binding,
+            {**denominator, "native_digest": "0" * 64},
+            tmp_path / "denominator",
+            group_index=0,
+            group_count=2,
+            shard_count=4,
+        )
+
+    original = shards._projection  # pyright: ignore[reportPrivateUsage]
+
+    def changed(*args: Any, **kwargs: Any) -> dict[str, Any]:
+        report = original(*args, **kwargs)
+        report["native_digest"] = "9" * 64
+        return report
+
+    monkeypatch.setattr(shards, "_projection", changed)
+    with pytest.raises(ValueError, match="changed after preparation"):
+        prepare_reference_partition_group(
+            batches(),
+            binding,
+            denominator,
+            tmp_path / "projection",
+            group_index=0,
+            group_count=2,
+            shard_count=4,
+        )
+
+
+@pytest.mark.parametrize("mutation", ["container", "binding", "partition"])
+def test_partition_group_validation_rejects_structural_receipt_drift(
+    tmp_path: Path, mutation: str
+) -> None:
+    binding, denominator, batches = inputs()
+    receipt = prepare_reference_partition_group(
+        batches(),
+        binding,
+        denominator,
+        tmp_path,
+        group_index=0,
+        group_count=2,
+        shard_count=4,
+    )
+    if mutation == "container":
+        receipt["group"] = []
+    elif mutation == "binding":
+        receipt["binding_sha256"] = "0" * 64
+    else:
+        receipt["partitions"][0] = []
+    _resign(receipt)
+    with pytest.raises((TypeError, ValueError), match=r"receipt|binding"):
+        validate_reference_partition_group(tmp_path, receipt)
+
+
+def test_partition_group_validation_rejects_projection_drift(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    binding, denominator, batches = inputs()
+    receipt = prepare_reference_partition_group(
+        batches(),
+        binding,
+        denominator,
+        tmp_path,
+        group_index=0,
+        group_count=2,
+        shard_count=4,
+    )
+    original = shards._projection  # pyright: ignore[reportPrivateUsage]
+
+    def changed(*args: Any, **kwargs: Any) -> dict[str, Any]:
+        report = original(*args, **kwargs)
+        report["native_digest"] = "8" * 64
+        return report
+
+    monkeypatch.setattr(shards, "_projection", changed)
+    with pytest.raises(ValueError, match="projection changed"):
+        validate_reference_partition_group(tmp_path, receipt)
 
 
 def test_entity_material_is_reusable_by_index_and_partition_nodes(

@@ -756,6 +756,14 @@
   under `always()` even when an independent phase fails; a phase failure can no
   longer suppress all preparation diagnostics. Exact aggregate coverage still
   fails closed unless every required phase, index, group and reference passes.
+  Hosted Codecov then measured 85.61644% patch coverage at `25ee9b9`, with ten
+  uncovered changed lines and eleven partial branches confined to the new
+  partition-group contracts. Focused negative tests now exercise index/group
+  schema drift, pre-existing outputs, uninitialized writers, denominator and
+  written-projection drift, malformed containers/partitions, binding drift and
+  validation-time projection drift. The affected module reaches 96% branch
+  coverage locally and all ten hosted annotations are executed; no exclusion,
+  threshold or coverage configuration changed.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
