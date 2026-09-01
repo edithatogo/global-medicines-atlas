@@ -197,6 +197,9 @@
 - [x] Bound caller-supplied collection counts, member counts, and public text
   before denominator reconciliation. (`6e728ce`; one structural hostile-input
   regression, 25 focused tests pass.)
+- [x] Apply repository formatting after the exact hosted routine lane identified
+  the two unformatted collection files. (`4285845`; format check and 25 focused
+  tests pass; no quality gate or behavior changed.)
 
 - [ ] Populate and make `Policy AUS` public, update HEOR membership/notes, and
   refresh the public dataset-estate registry.
