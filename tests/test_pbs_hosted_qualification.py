@@ -671,6 +671,68 @@ def test_reference_nodes_reuse_one_digest_bound_entity_material(
     assert not list(material_directory.rglob("*.xml"))
 
 
+@pytest.mark.parametrize(
+    ("mutation", "expected"),
+    [
+        ("run-id", "context"),
+        ("partitions", "partition index"),
+        ("range", "partition index"),
+        ("record", "receipt is invalid"),
+        ("count", "partition count"),
+        ("projection", "projection is invalid"),
+        ("projection-drift", "projection changed"),
+    ],
+)
+def test_prepared_reference_node_rejects_invalid_partition_contract(
+    tmp_path: Path,
+    synthetic,
+    monkeypatch: pytest.MonkeyPatch,
+    mutation: str,
+    expected: str,
+) -> None:
+    material_directory = tmp_path / "material"
+    material_report = hosted.run_hosted_entity_material(
+        SHA, material_directory, shard_count=2, transport=synthetic[2]
+    )
+    receipt = material_report["node"]
+    run_id = material_report["run_id"]
+    shard_index = 0
+    loaded = hosted.load_reference_entity_partition(
+        material_directory, receipt, 0
+    )
+    if mutation == "run-id":
+        run_id = "0"
+    elif mutation == "partitions":
+        receipt["partitions"] = {}
+    elif mutation == "range":
+        shard_index = 2
+    elif mutation == "record":
+        receipt["partitions"][0] = []
+    elif mutation == "count":
+        receipt["partitions"][0]["count"] = 3
+    elif mutation == "projection":
+        monkeypatch.setattr(
+            hosted, "load_reference_entity_partition", lambda *_: loaded
+        )
+        receipt["partitions"][0]["expected_projection"] = []
+    else:
+        monkeypatch.setattr(
+            hosted, "load_reference_entity_partition", lambda *_: loaded
+        )
+        receipt["partitions"][0]["expected_projection"]["rows"] += 1
+    with pytest.raises((TypeError, ValueError), match=expected):
+        hosted.run_prepared_reference_node(
+            SHA,
+            material_directory,
+            receipt,
+            tmp_path / "output",
+            shard_count=2,
+            shard_index=shard_index,
+            preparation_run_id=run_id,
+            preparation_run_attempt=material_report["run_attempt"],
+        )
+
+
 def test_preparation_reports_bounded_stage_checkpoints(
     tmp_path: Path, synthetic
 ) -> None:
