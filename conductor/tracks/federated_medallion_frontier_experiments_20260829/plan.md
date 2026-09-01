@@ -26,10 +26,20 @@
 
 ## Phase 2: Remote query, streaming, and Xet mechanics (AC-02, AC-06)
 
-- [ ] Write failing correctness/parity, request-count, byte-amplification,
+- [x] Write failing correctness/parity, request-count, byte-amplification,
   memory/cache, cold/warm/concurrent, interruption/resume, offline, digest, and
-  identity tests.
-- [ ] Confirm the intended failure before implementation.
+  identity tests. Implemented `fcb7244`: the versioned remote-query envelope
+  requires the complete four-engine by five-scenario denominator, exact result
+  parity, predeclared request/source-byte/memory ceilings, explicit cache and
+  latency observations, no-request offline behavior, and exact interrupted
+  resume. The paired Xet envelope requires two anonymously verified revisions,
+  restored per-object SHA-256 equality, and keeps chunk reuse non-authoritative.
+  Nine focused tests provide 100% statement and branch coverage; the combined
+  Phase 1/2 contract suite passes 28 tests with Ruff and BasedPyright clean.
+- [x] Confirm the intended failure before implementation. The new contract test
+  failed at collection with `ModuleNotFoundError` before the implementation was
+  added; subsequent bounded fixes made custom denominator and anonymous-
+  verification failures observable rather than generic field errors.
 - [ ] Benchmark DuckDB, Polars, Arrow streaming, optional DataFusion, and Xet-
   aware restore/dedup against the production fallback.
 - [ ] Record profiling evidence and reject optimizations that weaken immutable
