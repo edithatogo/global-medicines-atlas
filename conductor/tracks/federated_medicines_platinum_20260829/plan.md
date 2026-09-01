@@ -18,8 +18,15 @@
   Exact logical resolution and bounded verified byte reads are implemented in
   `fe62623`; DuckDB/Polars projection and predicate-pushdown adapters remain
   pending and no storage engine has been promoted.
-- [ ] Add cache receipts, byte/time budgets, expiry/eviction, content
+- [~] Add cache receipts, byte/time budgets, expiry/eviction, content
   verification, and stale/unavailable states.
+  - [x] Add transient exact-contract cache receipts with last verified origin/time,
+    current verified-cache availability, contract expiry, immutable content
+    identity, and enforced read/cache-entry/open-result/time budgets. Expiry,
+    explicit eviction, corrupt same-size content, insufficient cache capacity,
+    online failure, and offline misses remain unavailable and fail closed.
+    (`ac639c4`; 22 focused tests pass.) Durable product/query receipts and typed
+    higher-level unavailable response envelopes remain pending.
 - [ ] Phase Verification & Checkpoint: an empty machine can run bounded fixture
   queries from pinned public revisions with no durable local lake.
 
