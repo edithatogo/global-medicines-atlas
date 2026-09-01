@@ -185,6 +185,78 @@ def test_reference_output_rejects_cross_pass_identity(case: str) -> None:
         )
 
 
+def test_reference_row_windows_equal_full_global_diagnostics() -> None:
+    payload = _xml()
+    item = payload[
+        payload.index(b"<pbs:pharmaceutical-item") : payload.index(
+            b"</pbs:pharmaceutical-item>"
+        )
+        + len(b"</pbs:pharmaceutical-item>")
+    ]
+    payload = payload.replace(b"</pbs:schedule>", item + b"</pbs:schedule>")
+    batches = list(
+        iter_pbs_entity_batches(
+            payload, _receipt(payload, "au-pbs"), rows_per_batch=3
+        )
+    )
+    total = sum(batch.num_rows for batch in batches)
+    full = pa.Table.from_batches(
+        list(
+            pbs_references._reference_batches(  # pyright: ignore[reportPrivateUsage]
+                iter(batches), iter(batches), 4
+            )
+        )
+    )
+    windows = []
+    for start, stop in ((0, 2), (2, total - 1), (total - 1, total)):
+        windows.extend(
+            pbs_references._reference_batches(  # pyright: ignore[reportPrivateUsage]
+                iter(batches),
+                iter(batches),
+                4,
+                start_row=start,
+                stop_row=stop,
+                expected_total_rows=total,
+            )
+        )
+    windowed = pa.Table.from_batches(windows)
+    assert windowed.equals(full, check_metadata=True)
+    assert {
+        row["diagnostic"]
+        for row in windowed.to_pylist()
+        if row["contract_kind"] == "item_xml_id"
+    } == {"duplicate_source_literal"}
+
+
+@pytest.mark.parametrize(
+    ("start", "stop", "expected", "message"),
+    [
+        (-1, 1, None, "window is invalid"),
+        (2, 1, None, "window is invalid"),
+        (0, 10_000, None, "window exceeds total"),
+        (0, None, 1, "total row denominator changed"),
+    ],
+)
+def test_reference_row_window_rejects_invalid_denominators(
+    start: int, stop: int | None, expected: int | None, message: str
+) -> None:
+    payload = _production_xml()
+    batches = list(
+        iter_pbs_entity_batches(payload, _receipt(payload, "au-pbs"))
+    )
+    with pytest.raises(ValueError, match=message):
+        list(
+            pbs_references._reference_batches(  # pyright: ignore[reportPrivateUsage]
+                iter(batches),
+                iter(batches),
+                1024,
+                start_row=start,
+                stop_row=stop,
+                expected_total_rows=expected,
+            )
+        )
+
+
 def test_forward_duplicates_conflicts_and_literal_identity() -> None:
     payload = _xml()
     item = payload[
