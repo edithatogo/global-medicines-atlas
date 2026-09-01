@@ -151,6 +151,12 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     and the two risk/evidence views were reconciled and re-acquisition qualified
     every in-scope control.
 - [~] Task: Produce signed release package and consumer verification guide ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+  - Repository-owned candidate packaging and the consumer verification guide
+    are complete. The task deliberately remains in progress because a signed
+    stable release has not been approved or produced, and the authoritative
+    qualification contract still has four dependent/hosted gates plus the
+    distinct stable-promotion human gate. The machine-readable reconciliation
+    is `quality/qualifications/stable-v1-release-readiness-reconciliation.json`.
   - Isolated remaining human gate: stable-v1 promotion approval. GitHub
     attestation verification passed for the published `v1.0.0rc1` wheel;
     receipt: `quality/qualifications/stable-v1-release-provenance-receipt.json`.

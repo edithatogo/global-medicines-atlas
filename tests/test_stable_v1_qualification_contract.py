@@ -264,6 +264,38 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
         _validator(QUALIFICATION_SCHEMA).validate(invalid)
 
 
+def test_release_readiness_reconciliation_separates_package_from_release() -> (
+    None
+):
+    qualification = _load(QUALIFICATION)
+    receipt = _load(
+        ROOT
+        / "quality/qualifications/stable-v1-release-readiness-reconciliation.json"
+    )
+    assert (
+        receipt["qualification_state"] == qualification["qualification_state"]
+    )
+    assert receipt["release_performed"] is False
+    assert receipt["candidate_package"] == {
+        "consumer_verification_guide_complete": True,
+        "repository_owned_work_complete": True,
+        "signed_stable_release_produced": False,
+        "source_prerelease": "v1.0.0rc1",
+    }
+    assert {item["gate_id"] for item in receipt["unresolved_gates"]} == set(
+        qualification["unresolved_gate_ids"]
+    )
+    assert {
+        item["gate_id"]
+        for item in receipt["unresolved_gates"]
+        if item["kind"] == "human_public_release_gate"
+    } == {"stable-v1-release-approval"}
+    assert receipt["separate_non_acceptance_gate"] == {
+        "gate_id": "production-disaster-recovery-authority",
+        "state": "blocked_external_authority",
+    }
+
+
 def test_structural_medicine_v2_is_not_temporal_migration_v2() -> None:
     schema = _load(CANONICAL_SCHEMA)
     assert schema["properties"]["schema_id"]["const"] == (
