@@ -78,6 +78,15 @@ def test_atomic_content_addressed_write_and_exact_readback(tmp_path) -> None:
     assert not tuple(tmp_path.rglob("*.tmp"))
 
 
+def test_non_ascii_canonical_receipt_bytes_survive_exactly(tmp_path) -> None:
+    receipt = query_receipt(resource_id="au.mbs.médecine")
+    store = DurableReceiptStore(
+        tmp_path, clock=lambda: NOW, max_bytes=4096, max_entries=2
+    )
+    stored = store.persist(receipt, expires_at=NOW + timedelta(hours=1))
+    assert store.read(stored.envelope_sha256) == receipt.canonical_bytes
+
+
 def test_tamper_and_expiry_fail_closed(tmp_path) -> None:
     current = NOW
     store = DurableReceiptStore(
@@ -190,6 +199,18 @@ def test_store_budgets_are_strict(tmp_path, max_bytes, max_entries) -> None:
         )
 
 
+@pytest.mark.parametrize("timeout", [True, 0, 31, float("inf")])
+def test_store_lock_budget_is_strict(tmp_path, timeout) -> None:
+    with pytest.raises(ValueError, match="budget"):
+        DurableReceiptStore(
+            tmp_path,
+            clock=lambda: NOW,
+            max_bytes=4096,
+            max_entries=1,
+            lock_timeout_seconds=timeout,
+        )
+
+
 def _write_envelope(tmp_path: Path, document: object) -> str:
     raw = json.dumps(document, sort_keys=True, separators=(",", ":")).encode()
     digest = hashlib.sha256(raw).hexdigest()
@@ -205,7 +226,9 @@ def _write_envelope(tmp_path: Path, document: object) -> str:
         (lambda item: item.update(extra=True), "claims"),
         (lambda item: item.update(kind="source_payload"), "kind"),
         (lambda item: item.update(version="2.0"), "claims"),
-        (lambda item: item.update(receipt=[]), "claims"),
+        (lambda item: item.update(receipt_base64=[]), "claims"),
+        (lambda item: item.update(receipt_base64="not-base64"), "claims"),
+        (lambda item: item.update(receipt_base64="W10="), "claims"),
         (lambda item: item.update(receipt_sha256="0" * 64), "receipt digest"),
         (
             lambda item: item.update(receipt_sha256="bad"),
@@ -341,3 +364,25 @@ def test_directory_sync_is_best_effort_on_unsupported_hosts(
 
     monkeypatch.setattr(platinum_receipts.os, "open", unsupported)
     platinum_receipts._sync_directory(tmp_path)
+
+
+def test_directory_fsync_failure_is_best_effort(tmp_path, monkeypatch) -> None:
+    def unsupported(_descriptor: int) -> None:
+        raise OSError("directory fsync unavailable")
+
+    monkeypatch.setattr(platinum_receipts.os, "fsync", unsupported)
+    platinum_receipts._sync_directory(tmp_path)
+
+
+def test_root_wide_lock_contention_fails_bounded(tmp_path) -> None:
+    tmp_path.mkdir(exist_ok=True)
+    (tmp_path / ".platinum-receipts.lock").mkdir()
+    store = DurableReceiptStore(
+        tmp_path,
+        clock=lambda: NOW,
+        max_bytes=4096,
+        max_entries=2,
+        lock_timeout_seconds=0.01,
+    )
+    with pytest.raises(ReceiptStoreError, match="lock is unavailable"):
+        store.persist(query_receipt(), expires_at=NOW + timedelta(hours=1))

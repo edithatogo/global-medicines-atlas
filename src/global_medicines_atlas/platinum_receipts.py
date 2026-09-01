@@ -7,12 +7,17 @@ temporary sibling, flushed, atomically replaced, and verified on every read.
 
 from __future__ import annotations
 
+import base64
+import binascii
 import hashlib
 import json
+import math
 import os
 import tempfile
 import threading
-from collections.abc import Callable
+import time
+from collections.abc import Callable, Generator
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -25,6 +30,7 @@ ReceiptKind = Literal["cache", "query", "query_unavailable"]
 PersistableReceipt = CacheReceipt | QueryReceipt | QueryUnavailable
 _DIGEST_LENGTH = 64
 _MAX_RECEIPT_BYTES = 64 * 1024
+_MAX_LOCK_TIMEOUT_SECONDS = 30.0
 
 
 class ReceiptStoreError(ValueError):
@@ -59,26 +65,31 @@ class DurableReceiptStore:
         *,
         max_bytes: int,
         max_entries: int,
+        lock_timeout_seconds: float = 5.0,
         clock: Callable[[], datetime] = lambda: datetime.now(UTC),
     ) -> None:
-        if (
-            type(max_bytes) is not int
-            or max_bytes < 1
-            or type(max_entries) is not int
-            or max_entries < 1
+        if type(max_bytes) is not int or max_bytes < 1:
+            raise ValueError("receipt store budget is invalid")
+        if type(max_entries) is not int or max_entries < 1:
+            raise ValueError("receipt store budget is invalid")
+        if type(lock_timeout_seconds) not in {int, float}:
+            raise ValueError("receipt store budget is invalid")
+        if not math.isfinite(lock_timeout_seconds) or not (
+            0 < lock_timeout_seconds <= _MAX_LOCK_TIMEOUT_SECONDS
         ):
             raise ValueError("receipt store budget is invalid")
         self._root = root
         self._max_bytes = max_bytes
         self._max_entries = max_entries
         self._clock = clock
+        self._lock_timeout_seconds = float(lock_timeout_seconds)
         self._lock = threading.RLock()
 
     def persist(
         self, receipt: PersistableReceipt, *, expires_at: datetime
     ) -> StoredReceipt:
         """Atomically persist a verified, bounded receipt-only envelope."""
-        with self._lock:
+        with self._lock, self._root_lock():
             return self._persist(receipt, expires_at=expires_at)
 
     def _persist(
@@ -109,7 +120,9 @@ class DurableReceiptStore:
         document: dict[str, object] = {
             "expires_at": expiry.isoformat(),
             "kind": kind,
-            "receipt": receipt_document,
+            "receipt_base64": base64.b64encode(canonical_receipt).decode(
+                "ascii"
+            ),
             "receipt_sha256": receipt.receipt_sha256,
             "stored_at": now.isoformat(),
             "version": "1.0",
@@ -120,8 +133,8 @@ class DurableReceiptStore:
         envelope_sha256 = hashlib.sha256(envelope).hexdigest()
         path = self._path(envelope_sha256)
         _atomic_write(path, envelope)
-        stored = self._load(path, envelope_sha256).stored
         try:
+            stored = self._load(path, envelope_sha256).stored
             self._enforce_budgets(protected=envelope_sha256)
         except BaseException:
             path.unlink(missing_ok=True)
@@ -130,7 +143,7 @@ class DurableReceiptStore:
 
     def read(self, envelope_sha256: str) -> bytes:
         """Return exact canonical receipt bytes after digest and expiry checks."""
-        with self._lock:
+        with self._lock, self._root_lock():
             return self._read(envelope_sha256)
 
     def _read(self, envelope_sha256: str) -> bytes:
@@ -145,7 +158,7 @@ class DurableReceiptStore:
 
     def evict(self, envelope_sha256: str) -> bool:
         """Remove one exact durable receipt envelope, if present."""
-        with self._lock:
+        with self._lock, self._root_lock():
             return self._evict(envelope_sha256)
 
     def _evict(self, envelope_sha256: str) -> bool:
@@ -184,7 +197,7 @@ class DurableReceiptStore:
         if set(document) != {
             "expires_at",
             "kind",
-            "receipt",
+            "receipt_base64",
             "receipt_sha256",
             "stored_at",
             "version",
@@ -194,13 +207,20 @@ class DurableReceiptStore:
         if raw_kind not in {"cache", "query", "query_unavailable"}:
             raise ReceiptStoreError("receipt envelope kind is invalid")
         kind = cast("ReceiptKind", raw_kind)
-        if document["version"] != "1.0" or not isinstance(
-            document["receipt"], dict
-        ):
+        encoded_receipt = document["receipt_base64"]
+        if document["version"] != "1.0" or not isinstance(encoded_receipt, str):
             raise ReceiptStoreError("receipt envelope claims are invalid")
-        canonical_receipt = _canonical(
-            cast("dict[str, object]", document["receipt"])
-        )
+        try:
+            canonical_receipt = base64.b64decode(encoded_receipt, validate=True)
+            receipt_document: object = json.loads(
+                canonical_receipt, object_pairs_hook=_unique_object
+            )
+        except binascii.Error, json.JSONDecodeError, ValueError:
+            raise ReceiptStoreError(
+                "receipt envelope claims are invalid"
+            ) from None
+        if not isinstance(receipt_document, dict):
+            raise ReceiptStoreError("receipt envelope claims are invalid")
         receipt_sha256 = _digest(document["receipt_sha256"])
         if hashlib.sha256(canonical_receipt).hexdigest() != receipt_sha256:
             raise ReceiptStoreError("receipt digest mismatch")
@@ -243,6 +263,28 @@ class DurableReceiptStore:
             evicted.path.unlink(missing_ok=True)
             entries.remove(evicted)
             total -= evicted.byte_count
+
+    @contextmanager
+    def _root_lock(self) -> Generator[None]:
+        """Serialize write/scan/evict transactions across store instances."""
+        self._root.mkdir(parents=True, exist_ok=True)
+        lock = self._root / ".platinum-receipts.lock"
+        deadline = time.monotonic() + self._lock_timeout_seconds
+        while True:
+            try:
+                lock.mkdir()
+            except FileExistsError:
+                if time.monotonic() >= deadline:
+                    raise ReceiptStoreError(
+                        "receipt store lock is unavailable"
+                    ) from None
+                time.sleep(0.01)
+            else:
+                break
+        try:
+            yield
+        finally:
+            lock.rmdir()
 
 
 def _kind(receipt: PersistableReceipt) -> ReceiptKind:
@@ -294,7 +336,10 @@ def _sync_directory(path: Path) -> None:
     except OSError:
         return
     try:
-        os.fsync(descriptor)
+        try:
+            os.fsync(descriptor)
+        except OSError:
+            return
     finally:
         os.close(descriptor)
 
