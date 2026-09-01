@@ -684,6 +684,7 @@ def run_hosted_reference_node(
                 denominator,
                 output / "reference-index.json",
             )
+        node = {**node, "workflow_commit": inputs.context["workflow_commit"]}
         node_kind = "index"
     else:
         with _at("entity-partition-preparation", progress=retry.checkpoint):

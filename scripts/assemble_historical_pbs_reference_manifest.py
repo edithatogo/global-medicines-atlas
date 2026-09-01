@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 from typing import Any, cast
 
@@ -121,6 +122,32 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _hosted_identity(
+    selected: dict[str, tuple[Path, dict[str, Any], dict[str, Any]]],
+    index_report: dict[str, Any],
+    index_receipt: dict[str, Any],
+) -> tuple[str, str, str]:
+    workflow_commit = index_report.get("workflow_commit")
+    dataset = index_report.get("dataset")
+    revision = index_report.get("revision")
+    if (
+        not isinstance(workflow_commit, str)
+        or re.fullmatch(r"[0-9a-f]{40}", workflow_commit) is None
+        or index_receipt.get("workflow_commit") != workflow_commit
+        or not isinstance(dataset, str)
+        or not isinstance(revision, str)
+    ):
+        raise ValueError("PBS reference node hosted identity changed")
+    if any(
+        report.get("workflow_commit") != workflow_commit
+        or report.get("dataset") != dataset
+        or report.get("revision") != revision
+        for _, report, _ in selected.values()
+    ):
+        raise ValueError("PBS reference node hosted identity changed")
+    return workflow_commit, dataset, revision
+
+
 def _run(args: argparse.Namespace) -> dict[str, Any]:
     selected = _latest_nodes(args.input)
     if set(selected) != {
@@ -129,6 +156,9 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
     }:
         raise ValueError("PBS reference node coverage is incomplete")
     index_path, index_report, index_receipt = selected["index"]
+    hosted_identity = _hosted_identity(
+        selected, index_report, index_receipt
+    )
     binding = PbsXmlMemberBinding.model_validate(index_receipt.get("binding"))
     denominator = cast("dict[str, Any]", index_receipt["denominator"])
     partition_receipts = [
@@ -156,7 +186,9 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
         partition_receipts,
     )
     manifest.update({
-        "workflow_commit": index_receipt.get("workflow_commit"),
+        "workflow_commit": hosted_identity[0],
+        "dataset": hosted_identity[1],
+        "revision": hosted_identity[2],
         "preparation_run_id": index_report.get("run_id"),
         "preparation_run_attempt": index_report.get("run_attempt"),
     })

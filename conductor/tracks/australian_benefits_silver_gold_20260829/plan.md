@@ -764,6 +764,15 @@
   validation-time projection drift. The affected module reaches 96% branch
   coverage locally and all ten hosted annotations are executed; no exclusion,
   threshold or coverage configuration changed.
+  Exact-head review found the outer hosted index report carried the workflow
+  commit while its inner deterministic node receipt did not. Assembly read the
+  inner receipt and could therefore write a null commit that every downstream
+  prepared worker correctly rejects. The hosted index now binds the exact
+  commit into the inner node before its wrapper digest is written. Assembly
+  requires the inner/outer commit plus every node's commit, dataset and revision
+  to agree, and writes that identity into the manifest. A full synthetic hosted
+  index plus two groups now passes real assembly and downstream prepared-shard
+  qualification; a missing inner commit fails closed.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression

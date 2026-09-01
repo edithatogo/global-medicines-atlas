@@ -279,6 +279,8 @@ def test_manifest_run_copies_selected_nodes_and_binds_context(
     }
     report = {
         "workflow_commit": "a" * 40,
+        "dataset": "example/dataset",
+        "revision": "revision",
         "run_id": "10",
         "run_attempt": "2",
     }
@@ -314,8 +316,46 @@ def test_manifest_run_copies_selected_nodes_and_binds_context(
         (output / "reference-manifest.json").read_text(encoding="utf-8")
     )
     assert manifest["preparation_run_attempt"] == "2"
+    assert manifest["workflow_commit"] == "a" * 40
+    assert manifest["dataset"] == "example/dataset"
     assert (output / "index.arrow").read_bytes() == b"index"
     assert (output / "reference-00.arrow").read_bytes() == b"partition"
+
+
+def test_manifest_run_rejects_unbound_inner_index_commit(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    report = {
+        "workflow_commit": "a" * 40,
+        "dataset": "example/dataset",
+        "revision": "revision",
+        "run_id": "10",
+        "run_attempt": "2",
+    }
+    monkeypatch.setattr(
+        assemble,
+        "_latest_nodes",
+        lambda _: {
+            "index": (
+                tmp_path / "index-receipt.json",
+                report,
+                {"node_kind": "index", "workflow_commit": None},
+            ),
+            "partition:0": (
+                tmp_path / "partition-receipt.json",
+                report,
+                {"node_kind": "partition", "partition": {"index": 0}},
+            ),
+        },
+    )
+    with pytest.raises(ValueError, match="hosted identity changed"):
+        assemble._run(  # pyright: ignore[reportPrivateUsage]
+            SimpleNamespace(
+                input=tmp_path,
+                output=tmp_path / "output",
+                reference_shards=1,
+            )
+        )
 
 
 def test_manifest_latest_nodes_rejects_invalid_partition_and_attempt(
