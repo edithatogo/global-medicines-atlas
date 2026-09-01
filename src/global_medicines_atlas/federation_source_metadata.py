@@ -9,6 +9,7 @@ from __future__ import annotations
 from datetime import date
 from pathlib import PurePosixPath
 from typing import Annotated, Any, Literal, Self
+from urllib.parse import unquote
 
 from pydantic import (
     AnyHttpUrl,
@@ -75,8 +76,14 @@ class PayloadBinding(_Model):
 
     @model_validator(mode="after")
     def path_is_safe(self) -> Self:
-        path = PurePosixPath(self.path)
-        if path.is_absolute() or ".." in path.parts or "\\" in self.path:
+        decoded = unquote(self.path)
+        path = PurePosixPath(decoded)
+        if (
+            decoded != self.path
+            or path.is_absolute()
+            or ".." in path.parts
+            or "\\" in decoded
+        ):
             raise ValueError("payload path must be safe and relative")
         return self
 

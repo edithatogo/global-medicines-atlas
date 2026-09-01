@@ -144,7 +144,15 @@ def test_rejects_remaining_structural_aliases() -> None:
 
 
 @pytest.mark.parametrize(
-    "unsafe_path", ["/raw/mbs.xml", "../mbs.xml", "raw\\mbs.xml"]
+    "unsafe_path",
+    [
+        "/raw/mbs.xml",
+        "../mbs.xml",
+        "raw\\mbs.xml",
+        "%2e%2e/mbs.xml",
+        "raw%5cmbs.xml",
+        "raw%2fmbs.xml",
+    ],
 )
 def test_rejects_unsafe_payload_paths(unsafe_path: str) -> None:
     document = _fixture("valid-mbs.json")

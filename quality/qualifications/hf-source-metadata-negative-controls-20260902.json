@@ -28,7 +28,8 @@
     "unresolved rights",
     "non-actionable correction route",
     "provenance payload mutation",
-    "effective-date mismatch"
+    "effective-date mismatch",
+    "unsafe and percent-encoded payload paths"
   ],
   "external_actions": {
     "credentials_used": false,
