@@ -1,5 +1,6 @@
 """Transient partition contract for hosted PBS reference qualification."""
 
+import json
 from pathlib import Path
 
 import pyarrow as pa
@@ -21,6 +22,7 @@ from global_medicines_atlas.pbs_member_identity import (
     build_pbs_xml_member_binding,
 )
 from global_medicines_atlas.pbs_reference_shards import (
+    _read_index,  # ruff: ignore[import-private-name]  # pyright: ignore[reportPrivateUsage]
     prepare_reference_shards,
     qualify_reference_shard,
 )
@@ -109,6 +111,41 @@ def test_prepared_reference_shard_rejects_tampered_partition(
         stream.write(b"changed")
     with pytest.raises(ValueError, match="digest"):
         qualify_reference_shard(directory, shard_index=0)
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {},
+        [None],
+        [{"kind": 1, "value": "x", "resources": [], "targets": 0}],
+        [{"kind": "k", "value": 1, "resources": [], "targets": 0}],
+        [{"kind": "k", "value": "x", "resources": {}, "targets": 0}],
+        [{"kind": "k", "value": "x", "resources": [], "targets": -1}],
+        [{"kind": "k", "value": "x", "resources": [None], "targets": 1}],
+        [
+            {
+                "kind": "k",
+                "value": "x",
+                "resources": [{"value": 1, "count": 1}],
+                "targets": 1,
+            }
+        ],
+        [
+            {
+                "kind": "k",
+                "value": "x",
+                "resources": [{"value": "r", "count": 0}],
+                "targets": 1,
+            }
+        ],
+    ],
+)
+def test_reference_index_rejects_invalid_typed_payloads(
+    payload: object,
+) -> None:
+    with pytest.raises((TypeError, ValueError), match="index is invalid"):
+        _read_index(json.dumps(payload).encode())
 
 
 @pytest.mark.parametrize("count", [0, 11, 33, True])
