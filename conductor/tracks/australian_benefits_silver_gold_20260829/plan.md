@@ -814,6 +814,23 @@
   to agree, and writes that identity into the manifest. A full synthetic hosted
   index plus two groups now passes real assembly and downstream prepared-shard
   qualification; a missing inner commit fails closed.
+- [x] Shorten the hosted critical path after the successful disaggregated run:
+  start the four phase workers, global reference index and four reference-group
+  workers independently, retain `fail-fast: false` for each matrix, and keep
+  assembly/reference qualification behind only their actual prepared-input
+  dependencies. The aggregate remains an `always()` fail-closed completeness
+  gate, so partial failures retain their own receipts and GitHub can rerun failed
+  jobs without discarding successful siblings. Implemented `6ffe169`; the
+  workflow contract failed before the dependency change, then the complete 121
+  PBS hosted-qualification tests, Ruff, format, actionlint and Conductor context
+  validation passed. This raises possible first-wave hosted concurrency from
+  four to nine to reduce elapsed time; runner availability still provides the
+  external queue bound. No timeout, source, receipt, publication or qualification
+  semantics changed. Hosted unit review exposed one older preparation test
+  pinned to the former three-group throttle; review fix `2f42a11` makes the
+  existing end-to-end DAG contract require no `needs: qualify` dependency and
+  the new four-group limit. Both PBS workflow suites now pass 135 tests, with
+  Ruff, format and actionlint green.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression

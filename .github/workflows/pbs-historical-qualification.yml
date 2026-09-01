@@ -13,7 +13,8 @@ concurrency:
 jobs:
   prepare-reference-index:
     name: Prepare streaming PBS global reference index
-    needs: qualify
+    # Independent of projection qualification so a slow or failed phase does
+    # not extend/suppress reference preparation; aggregation remains fail closed.
     if: always() && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 65
@@ -223,11 +224,12 @@ jobs:
           retention-days: 30
   prepare-reference-groups:
     name: Prepare PBS reference group / ${{ matrix.group }}
-    needs: qualify
+    # Run beside the projection and index lanes. Each matrix child retains its
+    # own retryable artifact and fail-fast remains disabled.
     if: always() && github.ref == 'refs/heads/main'
     strategy:
       fail-fast: false
-      max-parallel: 3
+      max-parallel: 4
       matrix:
         group: [0, 1, 2, 3]
     runs-on: ubuntu-24.04
