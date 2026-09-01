@@ -196,6 +196,21 @@
   without overwriting source values.
 - [ ] Emit field-level lineage, coverage denominators, quality findings, and
   promotion candidates.
+  Aggregate candidate qualification now binds all six XML Silver tables, the
+  complete 40-field and source-row denominators, per-table lineage digests,
+  conversion-quality counts, B1/B2 identities and explicit candidate-only
+  blockers (`e6abca6`). Field-addressed lineage output, real-source execution and public
+  v4 identity verification remain pending; no promotion is inferred.
+
+## Aggregate qualification review fixes
+
+- [x] Register the new qualification module in the governed unit lane so every
+  primary Test-Goblin profile collects an explicitly assigned test module.
+  Format the new module and tests with the repository-pinned formatter after
+  the first exact-head routine lane exposed the missing format gate; exercise
+  every serialized evidence-drift gate and the no-quality blocker branch.
+  (`59f5aa9`, `4a326ee`, `07a53f3`; changed module 97% branch coverage,
+  Ruff and BasedPyright pass.)
 - [ ] Phase Verification & Checkpoint: every MBS source field is preserved or
   explicitly mapped with deterministic output evidence.
 
@@ -648,12 +663,24 @@
   receipt records `references`, zero output batches/rows and 2,302,255 ms at
   the last checkpoint, proving the entity projection completed but the blocking
   reference index had not yielded output. No timeout increase or duplicate run.
-- [~] Replace reference-index full entity-row materialization with selective
+- [x] Replace reference-index full entity-row materialization with selective
   Arrow columns and flattened native attribute fields. Preserve item/AMT/ATC
   literal contracts, source order, missing/empty states, duplicate occurrence
   counts, distinct resource counts, ambiguity diagnostics, identity checks and
   exact index entry/byte limits. Re-run the exact merged-main qualifier only
   after focused parity, full validation, review and hosted checks pass.
+  PR #408 merged as `757dc41`; all protected hosted checks passed. Exact run
+  `33502075161` then reached reference output: 120 batches and 163,700 rows at
+  3,307,650 ms before the unchanged 55-minute timeout. Receipt:
+  issue #341 comment `5493802123`. This is incomplete progress, not a
+  qualification result.
+- [~] Replace reference-output nested-row reconstruction with Arrow batch
+  reuse and exact columnar diagnostics. Retain governed JSON encoded-byte
+  limits using byte-equivalent `orjson`, exact output flush boundaries,
+  item/AMT/ATC diagnostics, lineage, metadata-aware Parquet equality and native
+  digests. One 1,000-item synthetic output-only comparison produced 10,001 rows
+  and six equal batches: baseline CPU 0.741650 s, candidate 0.657760 s. This
+  bounded observation is not a corpus forecast; hosted validation remains.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
@@ -678,6 +705,14 @@
 
 ## Phase 6: Integrated qualification (AC-08)
 
+- [x] Repair aggregate MBS Silver denominator review findings at `b073f10`:
+  require each serialized table's exact contract-derived field count, require
+  only known conversion statuses, and require quality counts to sum to the
+  complete field-occurrence denominator. Focused qualification, MBS, and
+  harness tests pass (79 tests; changed module 95% coverage), with Ruff and
+  BasedPyright clean. The broader Australian source-contract run also passed
+  all semantic assertions but recorded one unrelated Hypothesis 200 ms timing
+  flake under combined coverage load; no deadline or test was weakened.
 - [x] Profile the persistent local `PERF-QUERY` failure by separating connection
   lifecycle, cohort-validity SQL, page SQL and conclusion construction. Static
   audit finds repeated keys/assertion/coverage queries for overlapping cohort
