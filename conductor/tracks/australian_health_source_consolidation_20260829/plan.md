@@ -209,7 +209,9 @@
   success path without changing the checked-in inert contract; the module now
   has 100% statement and branch coverage locally. The exact original two-file
   command was reproduced at `f36f061` with 87 passed; the coverage-repair head
-  adds four cases and the same command now reports 91 passed.
+  adds four cases and the same command now reports 91 passed. PR #410 exact
+  updated head `e237897` passed all 38 protected checks and auto-merged as
+  `6dbb91b`; this delivers only the inert authority envelope, not an append.
 - [ ] Add the hosted append transaction and obtain exact authorization for the
   two newer histories before dispatch. Do not reuse the old replace-all,
   private-target legacy publisher or its dataset-wide privacy rollback.
