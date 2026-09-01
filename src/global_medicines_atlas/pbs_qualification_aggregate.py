@@ -66,7 +66,8 @@ def _valid_projection_schema(name: str, projection: dict[str, Any]) -> bool:
         _REFERENCE_PROJECTION_KEYS if name == "references" else _PROJECTION_KEYS
     )
     return (
-        tuple(projection) == expected
+        len(projection) == len(expected)
+        and set(projection) == set(expected)
         and all(
             type(projection[key]) is int and projection[key] >= 0
             for key in _COUNTER_KEYS
@@ -84,12 +85,13 @@ def _valid_public_objects(value: object) -> bool:
     if not isinstance(value, dict):
         return False
     objects = cast("dict[str, object]", value)
-    if tuple(objects) != (
+    expected_names = {
         "manifest",
         "source_receipt",
         "archive",
         "member",
-    ):
+    }
+    if len(objects) != len(expected_names) or set(objects) != expected_names:
         return False
     pins: dict[str, PinnedFile] = {
         "manifest": MANIFEST,

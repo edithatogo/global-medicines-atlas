@@ -125,6 +125,12 @@ def complete() -> list[dict[str, object]]:
 def test_aggregate_requires_exact_complete_projection_set() -> None:
     result = aggregate_shards(list(reversed(complete())))
     assert result["status"] == "passed"
+
+
+def test_aggregate_accepts_hosted_sorted_key_receipt_roundtrip() -> None:
+    reports = json.loads(json.dumps(complete(), sort_keys=True))
+    result = aggregate_shards(reports)
+    assert result["status"] == "passed"
     assert result["projection_shards"] == list(PROJECTIONS)
     assert list(result["qualification"]["projections"]) == list(PROJECTIONS)
     assert result["qualification"]["native_fields"] == 12
