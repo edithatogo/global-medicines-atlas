@@ -30,8 +30,17 @@
     identity, and enforced read/cache-entry/open-result/time budgets. Expiry,
     explicit eviction, corrupt same-size content, insufficient cache capacity,
     online failure, and offline misses remain unavailable and fail closed.
-    (`ce38493`; 22 focused tests pass.) Durable product/query receipts and typed
-    higher-level unavailable response envelopes remain pending.
+    (`ce38493`; 22 focused tests pass.)
+  - [x] Add deterministic content addresses for exact cache observations,
+    successful query plan/result bindings, and typed unavailable envelopes.
+    Contract expiry, eviction/cold cache, unknown resources, and verified
+    retrieval failure remain distinct; invalid query plans are not relabelled
+    as source unavailability. Successful receipts additionally bind the
+    independently admitted semantic manifest, and unavailable receipts bind
+    the attempted query plan while malformed remote metadata remains typed
+    unavailability. (`40d733b`, `a95fe45`; 51 focused tests pass and the query
+    and resolver modules retain 100% statement and branch coverage.) Durable
+    persistence of these process receipts remains pending.
 - [ ] Phase Verification & Checkpoint: an empty machine can run bounded fixture
   queries from pinned public revisions with no durable local lake.
 

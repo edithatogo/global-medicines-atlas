@@ -236,7 +236,7 @@ def test_cache_receipt_expires_and_offline_read_fails_closed() -> None:
             not in client.resolve("au.mbs.service-items").capabilities
         )
         expired = client.cache_receipt("au.mbs.service-items")
-        assert expired.status == "unavailable"
+        assert expired.status == "contract_expired"
         assert expired.last_origin == "remote"
         assert expired.last_verified_at == NOW
         with (

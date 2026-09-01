@@ -93,6 +93,7 @@ class ResolvedResource:
     sha256: str
     byte_count: int
     contract_sha256: str
+    semantic_manifest_sha256: str
     source_id: str
     acquisition_id: str
     layer: str
@@ -112,7 +113,7 @@ class CacheReceipt:
     contract_sha256: str
     object_sha256: str
     byte_count: int
-    status: Literal["verified_exact_digest", "unavailable"]
+    status: Literal["verified_exact_digest", "unavailable", "contract_expired"]
     last_origin: Literal["remote", "verified_cache"] | None
     last_verified_at: datetime | None
     expires_at: datetime
@@ -121,6 +122,39 @@ class CacheReceipt:
     max_cache_entries: int
     max_open_reads: int
     timeout_seconds: float
+
+    @property
+    def canonical_bytes(self) -> bytes:
+        """Encode current cache evidence without filesystem identity."""
+        return json.dumps(
+            {
+                "byte_count": self.byte_count,
+                "cache_budget_bytes": self.cache_budget_bytes,
+                "contract_sha256": self.contract_sha256,
+                "expires_at": self.expires_at.isoformat(),
+                "last_origin": self.last_origin,
+                "last_verified_at": (
+                    self.last_verified_at.isoformat()
+                    if self.last_verified_at is not None
+                    else None
+                ),
+                "max_cache_entries": self.max_cache_entries,
+                "max_open_reads": self.max_open_reads,
+                "max_read_bytes": self.max_read_bytes,
+                "object_sha256": self.object_sha256,
+                "resource_id": self.resource_id,
+                "status": self.status,
+                "timeout_seconds": self.timeout_seconds,
+                "version": "1.0",
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+
+    @property
+    def receipt_sha256(self) -> str:
+        """Return the content address of this exact transient observation."""
+        return hashlib.sha256(self.canonical_bytes).hexdigest()
 
 
 @dataclass(frozen=True)
@@ -232,7 +266,12 @@ class StorageNeutralResolver:
     def cache_receipt(self, resource_id: str) -> CacheReceipt:
         """Return dynamic cache availability without creating durable state."""
         metadata = self.resolve(resource_id)
-        available = self._reader.has_cached(metadata.contract_sha256)
+        expired = metadata.cache_expires_at <= self._clock()
+        available = (
+            False
+            if expired
+            else self._reader.has_cached(metadata.contract_sha256)
+        )
         with self._receipt_lock:
             last = self._last_reads.get(resource_id)
         return CacheReceipt(
@@ -240,7 +279,13 @@ class StorageNeutralResolver:
             contract_sha256=metadata.contract_sha256,
             object_sha256=metadata.sha256,
             byte_count=metadata.byte_count,
-            status="verified_exact_digest" if available else "unavailable",
+            status=(
+                "contract_expired"
+                if expired
+                else "verified_exact_digest"
+                if available
+                else "unavailable"
+            ),
             last_origin=last[0] if last else None,
             last_verified_at=last[1] if last else None,
             expires_at=metadata.cache_expires_at,
@@ -340,6 +385,9 @@ def _resolve_resource(
         sha256=obj.sha256,
         byte_count=obj.byte_count,
         contract_sha256=binding.contract_sha256,
+        semantic_manifest_sha256=hashlib.sha256(
+            resource.semantic_manifest
+        ).hexdigest(),
         source_id=obj.source_id,
         acquisition_id=obj.acquisition_id,
         layer=obj.layer,
