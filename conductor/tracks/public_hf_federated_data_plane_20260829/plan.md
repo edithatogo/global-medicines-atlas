@@ -191,6 +191,13 @@
   affected federation/estate tests pass; Ruff and BasedPyright pass.) This is
   metadata consistency only, not live observation, publication, admission,
   rights authority, or a collection mutation.
+
+### Collection reconciliation review fixes
+
+- [x] Bound caller-supplied collection counts, member counts, and public text
+  before denominator reconciliation. (`6e728ce`; one structural hostile-input
+  regression, 25 focused tests pass.)
+
 - [ ] Populate and make `Policy AUS` public, update HEOR membership/notes, and
   refresh the public dataset-estate registry.
 - [ ] Configure an approved independent public recovery target, checksum
