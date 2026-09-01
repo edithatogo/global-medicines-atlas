@@ -273,19 +273,7 @@ def _reference_batches(
 ) -> Iterator[pa.RecordBatch]:
     """Annotate two trusted same-input streams; reject schema/identity drift."""
     index, identity = _index(index_batches)
-    pieces: list[pa.RecordBatch] = []
-    rows = 0
-    size = 0
     schema: pa.Schema | None = None
-
-    def assembled(
-        output_schema: pa.Schema, output_pieces: list[pa.RecordBatch]
-    ) -> pa.RecordBatch:
-        table = pa.Table.from_batches(
-            output_pieces, schema=output_schema
-        ).combine_chunks()
-        return table.to_batches()[0]
-
     for batch in output_batches:
         if identity is None or not batch.schema.equals(
             identity, check_metadata=True
@@ -293,9 +281,9 @@ def _reference_batches(
             raise ValueError("PBS reference cross-pass identity changed")
         if schema is None:
             schema = _schema(batch.schema)
+        entities = batch.to_pylist()
         diagnostics = [
-            _diagnostics(contract, index)
-            for contract in _columnar_contracts(batch)
+            _diagnostics(_contract(entity), index) for entity in entities
         ]
         diagnostic_names = tuple(schema.names[len(batch.schema.names) :])
         output = pa.RecordBatch.from_arrays(  # pyright: ignore[reportUnknownMemberType]
@@ -312,8 +300,10 @@ def _reference_batches(
             schema=schema,
         )
         start = 0
+        rows = 0
+        size = 0
         for position, (entity, diagnostic) in enumerate(
-            zip(batch.to_pylist(), diagnostics, strict=True)
+            zip(entities, diagnostics, strict=True)
         ):
             row_size = _size(entity) + _size(diagnostic) - 1
             if row_size > MAX_BATCH_BYTES:
@@ -321,14 +311,10 @@ def _reference_batches(
             if rows and (
                 rows >= rows_per_batch or size + row_size > MAX_BATCH_BYTES
             ):
-                if position > start:
-                    pieces.append(output.slice(start, position - start))
-                yield assembled(schema, pieces)
-                pieces, rows, size = [], 0, 0
+                yield output.slice(start, position - start)
+                rows, size = 0, 0
                 start = position
             rows += 1
             size += row_size
         if start < batch.num_rows:
-            pieces.append(output.slice(start))
-    if pieces:
-        yield assembled(cast("pa.Schema", schema), pieces)
+            yield output.slice(start)

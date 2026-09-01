@@ -1,7 +1,9 @@
 """Synthetic source-local PBS identifier/reference diagnostics."""
 
 import json
+from collections.abc import Iterator
 from io import BytesIO
+from typing import Any
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -95,17 +97,72 @@ def test_columnar_index_contracts_equal_row_contracts(payload: bytes) -> None:
     ] == expected
 
 
-def test_reference_output_reuses_columnar_contracts(
+def test_reference_output_does_not_flatten_nested_fields_twice(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Output must not rescan every nested row after the index pass."""
-    monkeypatch.setattr(
-        pbs_references,
-        "_contract",
-        lambda _row: (_ for _ in ()).throw(AssertionError("row rescan")),
+    """Output reuses its required row materialisation after columnar indexing."""
+    payload = _production_xml()
+    batches = list(
+        iter_pbs_entity_batches(payload, _receipt(payload, "au-pbs"))
     )
-    rows = table(_production_xml()).to_pylist()
+    original = pbs_references._columnar_contracts  # pyright: ignore[reportPrivateUsage]
+    calls = 0
+
+    def index_only(batch: pa.RecordBatch) -> Iterator[dict[str, Any]]:
+        nonlocal calls
+        calls += 1
+        if calls > len(batches):
+            raise AssertionError("second flatten")
+        return original(batch)
+
+    monkeypatch.setattr(pbs_references, "_columnar_contracts", index_only)
+    rows = pa.Table.from_batches(
+        list(
+            pbs_references._reference_batches(  # pyright: ignore[reportPrivateUsage]
+                iter(batches), iter(batches), 1024
+            )
+        )
+    ).to_pylist()
     assert any(row["contract_kind"] == "amt_reference" for row in rows)
+
+
+def test_reference_output_does_not_recombine_nested_arrow_chunks(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Each already-bounded entity batch stays a zero-copy output boundary."""
+    payload = _production_xml()
+    batches = list(
+        iter_pbs_entity_batches(
+            payload, _receipt(payload, "au-pbs"), rows_per_batch=3
+        )
+    )
+    expected = pa.Table.from_batches(
+        list(pbs_references._reference_batches(iter(batches), iter(batches), 2))  # pyright: ignore[reportPrivateUsage]
+    )
+    with monkeypatch.context() as context:
+        context.setattr(
+            pbs_references.pa,
+            "Table",
+            type(
+                "ForbiddenTable",
+                (),
+                {
+                    "from_batches": staticmethod(
+                        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+                            AssertionError("deep copy")
+                        )
+                    )
+                },
+            ),
+        )
+        actual_batches = list(
+            pbs_references._reference_batches(  # pyright: ignore[reportPrivateUsage]
+                iter(batches), iter(batches), 2
+            )
+        )
+    actual = pa.Table.from_batches(actual_batches)
+    assert actual.equals(expected, check_metadata=True)
+    assert all(batch.num_rows <= 2 for batch in actual_batches)
 
 
 @pytest.mark.parametrize("case", ["missing-index", "changed-schema"])
