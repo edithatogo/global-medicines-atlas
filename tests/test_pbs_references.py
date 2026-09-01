@@ -57,6 +57,25 @@ def test_fixture_contracts_and_lossless_parquet(payload: bytes) -> None:
     assert result.schema.metadata[b"reference_resolution"] == b"not-performed"
 
 
+@pytest.mark.parametrize("payload", [_xml(), _production_xml()])
+def test_columnar_index_contracts_equal_row_contracts(payload: bytes) -> None:
+    batches = list(
+        iter_pbs_entity_batches(payload, _receipt(payload, "au-pbs"))
+    )
+    expected = [
+        pbs_references._contract(row)  # pyright: ignore[reportPrivateUsage]
+        for batch in batches
+        for row in batch.to_pylist()
+    ]
+    assert [
+        contract
+        for batch in batches
+        for contract in pbs_references._columnar_contracts(  # pyright: ignore[reportPrivateUsage]
+            batch
+        )
+    ] == expected
+
+
 def test_forward_duplicates_conflicts_and_literal_identity() -> None:
     payload = _xml()
     item = payload[

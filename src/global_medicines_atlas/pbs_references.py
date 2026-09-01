@@ -5,9 +5,11 @@ from __future__ import annotations
 import json
 from collections import Counter
 from collections.abc import Iterator
-from typing import Any
+from itertools import pairwise
+from typing import Any, cast
 
 import pyarrow as pa
+import pyarrow.compute as pc
 
 from .adapters.au_pbs import PBS_V3_NAMESPACE, RDF_NAMESPACE
 from .pbs_entities import iter_pbs_entity_batches
@@ -76,8 +78,7 @@ def _index(
             identity = batch.schema
         elif not batch.schema.equals(identity, check_metadata=True):
             raise ValueError("PBS reference input identity changed")
-        for row in batch.to_pylist():
-            contract = _contract(row)
+        for contract in _columnar_contracts(batch):
             value = contract["reference_value"]
             if value is None or value == "":  # ruff: ignore[compare-to-empty-string] -- preserve whitespace-only literals
                 continue
@@ -99,6 +100,86 @@ def _index(
             counts[resource] += 1
             index[key] = (counts, targets)
     return index, identity
+
+
+def _columnar_contracts(batch: pa.RecordBatch) -> Iterator[dict[str, Any]]:
+    """Read reference candidates without materialising complete entity rows."""
+    names = (
+        "entity_id",
+        "item_occurrence_id",
+        "native_name",
+        "mapping_target",
+        "native_xml_id",
+        "xml_id_state",
+        "native_text",
+        "text_state",
+    )
+    columns: dict[str, list[Any]] = {
+        name: cast(
+            "list[Any]",
+            batch.column(batch.schema.get_field_index(name)).to_pylist(),
+        )
+        for name in names
+    }
+    nested = cast(
+        "pa.ListArray[Any]",
+        batch.column(batch.schema.get_field_index("native_fields")),
+    )
+    offsets = cast("list[int]", nested.offsets.to_pylist())
+    flattened = cast("pa.StructArray", pc.list_flatten(nested))
+    fields: dict[str, list[Any]] = {
+        name: cast(
+            "list[Any]",
+            flattened.field(name).to_pylist(),  # pyright: ignore[reportUnknownMemberType]
+        )
+        for name in ("record_id", "path", "value", "state")
+    }
+    rdf_resource = f"{{{RDF_NAMESPACE}}}resource"
+    for row_number, (start, stop) in enumerate(pairwise(offsets)):
+        kind = "unmapped"
+        value, state = None, "not_applicable"
+        resource, resource_state = None, "not_applicable"
+        if (
+            columns["item_occurrence_id"][row_number]
+            == columns["entity_id"][row_number]
+        ):
+            kind = "item_xml_id"
+            value = columns["native_xml_id"][row_number]
+            state = columns["xml_id_state"][row_number]
+        elif columns["native_name"][row_number] == _PBS + "code":
+            mapping = columns["mapping_target"][row_number]
+            record_id = fields["record_id"][start]
+            attributes = {
+                path[len(record_id) + len("/attributes/") :]: (
+                    fields["value"][position],
+                    fields["state"][position],
+                )
+                for position, path in enumerate(
+                    fields["path"][start:stop], start
+                )
+                if path.startswith(record_id + "/attributes/")
+            }
+            if mapping == "amt_references":
+                kind = "amt_reference"
+                resource, resource_state = attributes.get(
+                    rdf_resource.replace("~", "~0").replace("/", "~1"),
+                    (None, "missing_field"),
+                )
+            elif mapping == "classifications" and attributes.get("type") == (
+                "ATC",
+                "value",
+            ):
+                kind = "atc_reference"
+            if kind != "unmapped":
+                value = columns["native_text"][row_number]
+                state = columns["text_state"][row_number]
+        yield {
+            "contract_kind": kind,
+            "reference_value": value,
+            "reference_value_state": state,
+            "reference_resource": resource,
+            "reference_resource_state": resource_state,
+        }
 
 
 def _diagnostics(
