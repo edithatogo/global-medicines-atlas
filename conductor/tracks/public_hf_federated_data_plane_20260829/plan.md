@@ -178,9 +178,19 @@
 
 ### Discovery and recovery
 
-- [ ] Write failing reconciliation tests for collection visibility, item
+- [x] Write failing reconciliation tests for collection visibility, item
   membership, notes, revisions, estate-registry identity, and stale entries.
-- [ ] Confirm the intended failure before implementation.
+  (`83f6443`; 24 synthetic offline cases bind a complete caller-owned scoped
+  denominator without reading or mutating Hub state.)
+- [x] Confirm the intended failure before implementation. (`83f6443`;
+  collection failed with `ModuleNotFoundError` before the pure reconciler was
+  added.)
+- [x] Implement pure collection/registry reconciliation with exact public
+  visibility, immutable dataset revisions, notes, member bijections, registry
+  identity, cross-membership, and stale-entry rejection. (`83f6443`; 215
+  affected federation/estate tests pass; Ruff and BasedPyright pass.) This is
+  metadata consistency only, not live observation, publication, admission,
+  rights authority, or a collection mutation.
 - [ ] Populate and make `Policy AUS` public, update HEOR membership/notes, and
   refresh the public dataset-estate registry.
 - [ ] Configure an approved independent public recovery target, checksum
