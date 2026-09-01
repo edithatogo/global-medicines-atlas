@@ -28,7 +28,7 @@
 
 - [x] Write failing correctness/parity, request-count, byte-amplification,
   memory/cache, cold/warm/concurrent, interruption/resume, offline, digest, and
-  identity tests. Implemented `fcb7244`: the versioned remote-query envelope
+  identity tests. Implemented `20e3e9e`: the versioned remote-query envelope
   requires the complete four-engine by five-scenario denominator, exact result
   parity, predeclared request/source-byte/memory ceilings, explicit cache and
   latency observations, no-request offline behavior, and exact interrupted
