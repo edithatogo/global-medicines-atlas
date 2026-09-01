@@ -198,8 +198,13 @@
   selected Silver table and bind distinct caller-declared eras by digest.
   Deterministic observed-change reports retain both complete native cohorts,
   exact values and receipt identities; presence on only one side remains
-  `unknown`, never inferred addition or cessation. Legacy-workbook-to-XML
-  mappings and independently qualified real-source execution remain pending.
+  `unknown`, never inferred addition or cessation. The legacy P7 workbook now
+  has an exhaustive, digest-bound mapping from its qualified header profile to
+  exact-name XML fields, with annotations and declining-list membership kept
+  source-only. Deterministic synthetic-fixture comparison candidates bind
+  workbook row addresses and receipts to literal XML item keys without
+  asserting semantic equivalence. Independently qualified real-source
+  execution remains pending.
 
 ### Schema-era change-event review fixes
 
