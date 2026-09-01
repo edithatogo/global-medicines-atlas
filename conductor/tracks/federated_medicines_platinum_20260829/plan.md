@@ -35,7 +35,10 @@
     successful query plan/result bindings, and typed unavailable envelopes.
     Contract expiry, eviction/cold cache, unknown resources, and verified
     retrieval failure remain distinct; invalid query plans are not relabelled
-    as source unavailability. (`40d733b`; 50 focused tests pass and the query
+    as source unavailability. Successful receipts additionally bind the
+    independently admitted semantic manifest, and unavailable receipts bind
+    the attempted query plan while malformed remote metadata remains typed
+    unavailability. (`40d733b`, `a95fe45`; 51 focused tests pass and the query
     and resolver modules retain 100% statement and branch coverage.) Durable
     persistence of these process receipts remains pending.
 - [ ] Phase Verification & Checkpoint: an empty machine can run bounded fixture
