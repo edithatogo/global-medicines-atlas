@@ -196,6 +196,11 @@
   without overwriting source values.
 - [ ] Emit field-level lineage, coverage denominators, quality findings, and
   promotion candidates.
+  Aggregate candidate qualification now binds all six XML Silver tables, the
+  complete 40-field and source-row denominators, per-table lineage digests,
+  conversion-quality counts, B1/B2 identities and explicit candidate-only
+  blockers (`e6abca6`). Field-addressed lineage output, real-source execution and public
+  v4 identity verification remain pending; no promotion is inferred.
 - [ ] Phase Verification & Checkpoint: every MBS source field is preserved or
   explicitly mapped with deterministic output evidence.
 
