@@ -162,7 +162,7 @@ def main(argv: list[str] | None = None) -> int:
         report = _aggregate_complete(
             reports, args.exact_commit, args.reference_shards
         )
-    except KeyError, TypeError, ValueError, json.JSONDecodeError:
+    except (KeyError, TypeError, ValueError, json.JSONDecodeError):  # fmt: skip
         reports = locals().get("reports", [])
         missing, failed = _coverage(reports, args.reference_shards)
         failed = sorted(set(failed) | set(locals().get("conflicts", [])))
