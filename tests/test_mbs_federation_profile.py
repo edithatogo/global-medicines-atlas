@@ -84,6 +84,7 @@ def test_rejects_cohort_evidence_class_mismatch():
     ("path", "value"),
     [
         (("version",), "5.0.0"),
+        (("authority", "schema_sha256"), "f" * 64),
         (("source", "source_id"), "au-pbs"),
         (("source", "layer"), "gold"),
         (("source", "bronze_stratum"), "B2"),

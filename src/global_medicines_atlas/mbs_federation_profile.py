@@ -13,6 +13,7 @@ from typing import Any, Literal, cast
 from pydantic import ConfigDict
 
 from .federation import validate_federation_semantics
+from .federation_reader import SCHEMA_SHA256
 from .historical_comparison import Digest, ProfileName
 from .mbs_schema_profile import MbsSchemaProfileDeclaration
 from .models import FrozenModel
@@ -97,6 +98,7 @@ def _bind(
     location = copied["location"]
     identities = (
         (copied["version"], "4.0.0"),
+        (copied["authority"]["schema_sha256"], SCHEMA_SHA256),
         (source["source_id"], declaration.source_id),
         (source["layer"], "silver"),
         (source["bronze_stratum"], None),

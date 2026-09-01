@@ -592,6 +592,8 @@
   document. It accepts only the existing v4 cohorts and grants no admission,
   qualification, rights or publication authority. Synthetic contract,
   identity, immutable-model, bounds and non-mapping tests pass.
+  PR #423 review fix requires the exact embedded federation v4 schema digest,
+  rather than accepting a merely well-shaped alternate contract identity.
 - [x] Implement the offline read-side prerequisite for already-decoded MBS
   batches: bounded flat declaration JSON with duplicate-key rejection, exact
   caller-supplied receipt/profile/schema/metadata and every row's B1/B2 lineage.
