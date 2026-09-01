@@ -144,6 +144,21 @@ def test_rejects_remaining_structural_aliases() -> None:
 
 
 @pytest.mark.parametrize(
+    "receipt",
+    [
+        "receipts/mbs-../../unrelated.json",
+        "receipts//mbs-202608.json",
+        "receipts%2fmbs-202608.json",
+    ],
+)
+def test_requires_safe_content_addressed_receipt(receipt: str) -> None:
+    document = _fixture("valid-mbs.json")
+    document["provenance"]["receipt"] = receipt
+    with pytest.raises(SourceMetadataError, match="receipt path must be safe"):
+        validate_source_metadata(document)
+
+
+@pytest.mark.parametrize(
     ("field", "url"),
     [
         ("authority_url", "https://user:secret@www.health.gov.au/"),

@@ -28,7 +28,7 @@
     "distributions": [{"path": "raw/mbs-202608.xml", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "encoding_format": "application/xml"}]
   },
   "citations": [{"dataset": "edithatogo/australian-mbs-source-archive", "revision": "75f9f20a36ddb829dfe0ca88660664570782be02", "source_url": "https://www.mbsonline.gov.au/", "accessed_at": "2026-08-30"}],
-  "provenance": {"receipt": "receipts/mbs-202608.json", "payloads": [{"path": "raw/mbs-202608.xml", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}]},
+  "provenance": {"receipt": "receipts/mbs-202608.json", "receipt_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", "payloads": [{"path": "raw/mbs-202608.xml", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}]},
   "coverage": {"scope": "August 2026 MBS release payloads", "payload_paths": ["raw/mbs-202608.xml"], "exclusions": []},
   "rights": {"permission_state": "approved", "permission_reference": "https://www.health.gov.au/using-our-websites/copyright", "attribution": "Australian Government Department of Health, Disability and Ageing", "reviewed_at": "2026-08-29"},
   "maintenance": {"correction_url": "https://github.com/edithatogo/global-medicines-atlas/issues", "withdrawal_policy": "Withdraw or supersede a revision when its receipt, rights or source identity fails verification."},

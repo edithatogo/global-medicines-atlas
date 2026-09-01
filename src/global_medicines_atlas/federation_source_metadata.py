@@ -201,7 +201,27 @@ class Citation(_Model):
 
 class Provenance(_Model):
     receipt: ExactNonBlank
+    receipt_sha256: Sha256
     payloads: tuple[PayloadBinding, ...] = Field(min_length=1, max_length=256)
+
+    @model_validator(mode="after")
+    def receipt_path_is_safe(self) -> Self:
+        decoded = unquote(self.receipt)
+        path = PurePosixPath(decoded)
+        noncanonical = (
+            decoded != self.receipt or self.receipt != path.as_posix()
+        )
+        unsafe = (
+            not path.parts
+            or path.is_absolute()
+            or ".." in path.parts
+            or "\\" in decoded
+        )
+        if noncanonical or unsafe:
+            raise ValueError(
+                "provenance receipt path must be safe and canonical"
+            )
+        return self
 
 
 class Coverage(_Model):

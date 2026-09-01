@@ -28,7 +28,7 @@
     "distributions": [{"path": "raw/pbs-202604.zip", "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "encoding_format": "application/zip"}]
   },
   "citations": [{"dataset": "edithatogo/australian-pbs-source-archive", "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7", "source_url": "https://www.pbs.gov.au/browse/downloads", "accessed_at": "2026-08-30"}],
-  "provenance": {"receipt": "receipts/pbs-202604.json", "payloads": [{"path": "raw/pbs-202604.zip", "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}]},
+  "provenance": {"receipt": "receipts/pbs-202604.json", "receipt_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", "payloads": [{"path": "raw/pbs-202604.zip", "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}]},
   "coverage": {"scope": "April 2026 PBS release payloads", "payload_paths": ["raw/pbs-202604.zip"], "exclusions": []},
   "rights": {"permission_state": "approved", "permission_reference": "https://www.health.gov.au/using-our-websites/copyright", "attribution": "Australian Government Department of Health, Disability and Ageing", "reviewed_at": "2026-08-29"},
   "maintenance": {"correction_url": "https://github.com/edithatogo/global-medicines-atlas/issues", "withdrawal_policy": "Withdraw or supersede a revision when its receipt, rights or source identity fails verification."},
