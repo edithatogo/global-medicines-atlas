@@ -177,12 +177,14 @@ def qualify_mbs_silver(
                 for name in field_names:
                     value = row[name]
                     outcomes[value["conversion_status"]] += 1
-                    digest.update(_canonical({
-                        "source_record_id": row["source_record_id"],
-                        "source_ordinal": row["source_ordinal"],
-                        "field": name,
-                        **value,
-                    }))
+                    digest.update(
+                        _canonical({
+                            "source_record_id": row["source_record_id"],
+                            "source_ordinal": row["source_ordinal"],
+                            "field": name,
+                            **value,
+                        })
+                    )
                     digest.update(b"\n")
         if source_record_count is None:
             source_record_count = row_count

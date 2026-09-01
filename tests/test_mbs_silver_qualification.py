@@ -105,15 +105,18 @@ def test_qualification_is_deterministic_and_binds_receipt_and_payload() -> None:
     assert first.source_sha256 == receipt.payload.sha256
     assert first.receipt_sha256 == receipt.digest()
     assert len(first.qualification_sha256) == 64
-    assert MbsSilverQualification.model_validate_json(
-        first.model_dump_json()
-    ) == first
+    assert (
+        MbsSilverQualification.model_validate_json(first.model_dump_json())
+        == first
+    )
 
     with pytest.raises(ValueError, match="payload"):
         qualify_mbs_silver(payload + b" ", receipt, date_format="mbs-dmy")
 
 
-def test_serialized_qualification_rejects_promotion_or_denominator_drift() -> None:
+def test_serialized_qualification_rejects_promotion_or_denominator_drift() -> (
+    None
+):
     payload = _xml()
     values = qualify_mbs_silver(
         payload, _receipt(payload), date_format="mbs-dmy"
