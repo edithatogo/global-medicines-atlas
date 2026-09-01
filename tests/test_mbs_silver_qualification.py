@@ -131,3 +131,48 @@ def test_serialized_qualification_rejects_promotion_or_denominator_drift() -> (
     values["source_record_count"] = 3
     with pytest.raises(ValidationError, match="row denominator"):
         MbsSilverQualification.model_validate(values)
+
+
+@pytest.mark.parametrize(
+    ("change", "message"),
+    [
+        ("tables", "table denominator"),
+        ("fields", "field denominator"),
+        ("quality", "quality outcomes"),
+        ("blockers", "candidate blockers"),
+        ("digest", "qualification digest"),
+    ],
+)
+def test_serialized_qualification_rejects_all_evidence_drift(
+    change: str, message: str
+) -> None:
+    payload = _xml()
+    report = qualify_mbs_silver(
+        payload, _receipt(payload), date_format="mbs-dmy"
+    )
+    values = report.model_dump()
+    if change == "tables":
+        values["tables"] = tuple(reversed(values["tables"]))
+    elif change == "fields":
+        table = dict(values["tables"][0])
+        table["field_count"] += 1
+        table["field_occurrence_count"] += table["row_count"]
+        values["tables"] = (table, *values["tables"][1:])
+    elif change == "quality":
+        values["quality"] = tuple(reversed(values["quality"]))
+    elif change == "blockers":
+        values["blockers"] = values["blockers"][:-1]
+    else:
+        values["qualification_sha256"] = "0" * 64
+    with pytest.raises(ValidationError, match=message):
+        MbsSilverQualification.model_validate(values)
+
+
+def test_clean_candidate_retains_only_external_identity_blockers() -> None:
+    payload = b"""<MBS_XML><Data><ItemNum>00123</ItemNum>
+      <SubItemNum>00</SubItemNum></Data></MBS_XML>"""
+    report = qualify_mbs_silver(payload, _receipt(payload))
+    assert report.blockers == (
+        "public_v4_identity_unverified",
+        "real_source_era_unqualified",
+    )
