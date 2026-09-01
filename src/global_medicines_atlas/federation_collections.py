@@ -26,6 +26,7 @@ class CollectionItem:
     dataset: str
     revision: str
     note: str
+    item_type: Literal["dataset"] = "dataset"
 
 
 @dataclass(frozen=True)
@@ -159,8 +160,12 @@ def _validate_registry(
         raise ValueError("estate registry must be public")
     if type(registry.gated) is not bool or registry.gated:
         raise ValueError("estate registry must be non-gated")
+    if len(registry.entries) > COLLECTION_ITEM_LIMIT:
+        raise ValueError("registry entry limit exceeded")
     result: dict[str, RegistryEntry] = {}
     for entry in registry.entries:
+        if len(entry.collections) > COLLECTION_LIMIT:
+            raise ValueError("registry membership limit exceeded")
         _identity(entry.dataset, "registry dataset identity")
         _revision(entry.revision)
         if entry.dataset in result:
@@ -192,6 +197,8 @@ def _unique_items(
         raise ValueError("collection member limit exceeded")
     result: dict[str, CollectionItem] = {}
     for item in items:
+        if item.item_type != "dataset":
+            raise ValueError("collection member must use dataset resource type")
         _identity(item.dataset, "dataset identity")
         _revision(item.revision)
         _text(item.note, "collection member note")

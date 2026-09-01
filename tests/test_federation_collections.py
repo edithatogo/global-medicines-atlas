@@ -140,6 +140,12 @@ def test_member_identity_revision_and_note_cannot_drift(mode: str) -> None:
         reconcile(observed=(replace(observation(), items=tuple(items)),))
 
 
+def test_collection_member_must_be_a_dataset_resource() -> None:
+    wrong = replace(MBS, item_type="model")  # type: ignore[arg-type]
+    with pytest.raises(ValueError, match="dataset resource type"):
+        reconcile(observed=(replace(observation(), items=(wrong, PBS)),))
+
+
 @pytest.mark.parametrize(
     ("field", "value", "message"),
     [
@@ -248,3 +254,26 @@ def test_structural_metadata_bounds_fail_before_reconciliation() -> None:
         )
     with pytest.raises(ValueError, match="note"):
         reconcile(expected=(replace(expectation(), note="x" * 4097),))
+    with pytest.raises(ValueError, match="registry entry limit"):
+        reconcile(
+            estate=replace(
+                registry(),
+                entries=tuple(registry().entries[0] for _ in range(1001)),
+            )
+        )
+    with pytest.raises(ValueError, match="registry membership limit"):
+        reconcile(
+            estate=replace(
+                registry(),
+                entries=(
+                    replace(
+                        registry().entries[0],
+                        collections=tuple(
+                            f"edithatogo/collection-{index}"
+                            for index in range(101)
+                        ),
+                    ),
+                    registry().entries[1],
+                ),
+            )
+        )
