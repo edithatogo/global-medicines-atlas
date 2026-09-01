@@ -14,6 +14,9 @@ from typing import Literal
 
 _IDENTITY = re.compile(r"[A-Za-z0-9_-]+/[A-Za-z0-9_.-]+")
 _REVISION = re.compile(r"[0-9a-f]{40}")
+COLLECTION_LIMIT = 100
+COLLECTION_ITEM_LIMIT = 1000
+TEXT_LIMIT = 4096
 
 
 @dataclass(frozen=True)
@@ -91,6 +94,8 @@ def reconcile_collection_estate(
     """
     if not expected:
         raise ValueError("empty collection denominator")
+    if len(expected) > COLLECTION_LIMIT or len(observed) > COLLECTION_LIMIT:
+        raise ValueError("collection limit exceeded")
     _identity(registry_dataset, "registry identity")
     expected_by_id = _unique_collections(expected, "expected")
     observed_by_id = _unique_collections(observed, "observed")
@@ -181,6 +186,8 @@ def _unique_collections[
 
 
 def _unique_items(items: tuple[CollectionItem, ...]) -> dict[str, CollectionItem]:
+    if len(items) > COLLECTION_ITEM_LIMIT:
+        raise ValueError("collection member limit exceeded")
     result: dict[str, CollectionItem] = {}
     for item in items:
         _identity(item.dataset, "dataset identity")
@@ -211,5 +218,10 @@ def _revision(value: str) -> None:
 
 
 def _text(value: str, label: str) -> None:
-    if type(value) is not str or not value.strip() or value != value.strip():
+    if (
+        type(value) is not str
+        or not value.strip()
+        or value != value.strip()
+        or len(value) > TEXT_LIMIT
+    ):
         raise ValueError(f"invalid {label}")

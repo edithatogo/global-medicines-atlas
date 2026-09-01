@@ -219,3 +219,32 @@ def test_mutable_or_malformed_collection_items_fail_closed(
     expected = replace(expectation(), items=(item, PBS))
     with pytest.raises(ValueError, match=r"immutable|note|identity"):
         reconcile(expected=(expected,))
+
+
+def test_structural_metadata_bounds_fail_before_reconciliation() -> None:
+    with pytest.raises(ValueError, match="collection limit"):
+        reconcile(
+            expected=tuple(
+                replace(expectation(), identity=f"edithatogo/policy-{index}")
+                for index in range(101)
+            )
+        )
+    with pytest.raises(ValueError, match="member limit"):
+        reconcile(
+            expected=(
+                replace(
+                    expectation(),
+                    items=tuple(
+                        replace(
+                            MBS,
+                            dataset=f"edithatogo/dataset-{index}",
+                        )
+                        for index in range(1001)
+                    ),
+                ),
+            )
+        )
+    with pytest.raises(ValueError, match="note"):
+        reconcile(
+            expected=(replace(expectation(), note="x" * 4097),)
+        )
