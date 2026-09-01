@@ -164,6 +164,11 @@ def test_rejects_cross_source_hosts_and_ambiguous_paths() -> None:
         validate_source_metadata(document)
 
     document = _fixture("valid-mbs.json")
+    document["source"]["authority"] = "Unrelated authority"
+    with pytest.raises(SourceMetadataError, match="wrong authority identity"):
+        validate_source_metadata(document)
+
+    document = _fixture("valid-mbs.json")
     document["source"]["source_url"] = "https://www.pbs.gov.au/browse/downloads"
     with pytest.raises(SourceMetadataError, match="wrong source host"):
         validate_source_metadata(document)
@@ -199,6 +204,7 @@ def test_rejects_cross_source_hosts_and_ambiguous_paths() -> None:
         "%2e%2e/mbs.xml",
         "raw%5cmbs.xml",
         "raw%2fmbs.xml",
+        ".",
     ],
 )
 def test_rejects_unsafe_payload_paths(unsafe_path: str) -> None:
@@ -240,5 +246,29 @@ def test_rejects_noncanonical_payload_path_aliases(alias: str) -> None:
 def test_bounds_citation_records_before_semantic_iteration() -> None:
     document = _fixture("valid-mbs.json")
     document["citations"] *= 33
+    with pytest.raises(SourceMetadataError, match="at most 32 items"):
+        validate_source_metadata(document)
+
+
+def test_binds_rights_evidence_to_source_profile() -> None:
+    document = _fixture("valid-mbs.json")
+    document["rights"]["permission_reference"] = "https://example.test/claim"
+    with pytest.raises(
+        SourceMetadataError, match="rights evidence does not match"
+    ):
+        validate_source_metadata(document)
+
+    document = _fixture("valid-mbs.json")
+    document["rights"]["attribution"] = "Unrelated publisher"
+    with pytest.raises(
+        SourceMetadataError, match="rights evidence does not match"
+    ):
+        validate_source_metadata(document)
+
+
+@pytest.mark.parametrize("field", ["intended_uses", "limitations"])
+def test_bounds_data_card_collections(field: str) -> None:
+    document = _fixture("valid-mbs.json")
+    document["data_card"][field] *= 33
     with pytest.raises(SourceMetadataError, match="at most 32 items"):
         validate_source_metadata(document)

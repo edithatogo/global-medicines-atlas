@@ -51,12 +51,14 @@ _PROFILES = {
     "au-mbs": (
         "edithatogo/australian-mbs-source-archive",
         "Australian Medicare Benefits Schedule source archive",
+        "Australian Government Department of Health, Disability and Ageing",
         "www.health.gov.au",
         frozenset({"www.mbsonline.gov.au"}),
     ),
     "au-pbs": (
         "edithatogo/australian-pbs-source-archive",
         "Australian Pharmaceutical Benefits Scheme source archive",
+        "Australian Government Department of Health, Disability and Ageing",
         "www.health.gov.au",
         frozenset({"www.pbs.gov.au"}),
     ),
@@ -107,8 +109,8 @@ class SourceIdentity(_Model):
 class DataCard(_Model):
     title: NonBlank
     summary: NonBlank
-    intended_uses: tuple[NonBlank, ...] = Field(min_length=1)
-    limitations: tuple[NonBlank, ...] = Field(min_length=1)
+    intended_uses: tuple[NonBlank, ...] = Field(min_length=1, max_length=32)
+    limitations: tuple[NonBlank, ...] = Field(min_length=1, max_length=32)
 
 
 class PayloadBinding(_Model):
@@ -119,13 +121,14 @@ class PayloadBinding(_Model):
     def path_is_safe(self) -> Self:
         decoded = unquote(self.path)
         path = PurePosixPath(decoded)
-        if (
-            decoded != self.path
-            or self.path != path.as_posix()
+        noncanonical = decoded != self.path or self.path != path.as_posix()
+        unsafe = (
+            not path.parts
             or path.is_absolute()
             or ".." in path.parts
             or "\\" in decoded
-        ):
+        )
+        if noncanonical or unsafe:
             raise ValueError("payload path must be safe and relative")
         return self
 
@@ -201,9 +204,13 @@ class SourceMetadataDocument(_Model):
 
     @model_validator(mode="after")
     def metadata_is_source_specific_and_closed(self) -> Self:
-        expected_dataset, expected_title, authority_host, source_hosts = (
-            _PROFILES[self.source.source_id]
-        )
+        (
+            expected_dataset,
+            expected_title,
+            expected_authority,
+            authority_host,
+            source_hosts,
+        ) = _PROFILES[self.source.source_id]
         if self.dataset != expected_dataset:
             raise ValueError("source profile uses the wrong approved dataset")
         if self.data_card.title != expected_title:
@@ -214,6 +221,8 @@ class SourceMetadataDocument(_Model):
             )
         if self.source.authority_url.host != authority_host:
             raise ValueError("source profile uses the wrong authority host")
+        if self.source.authority != expected_authority:
+            raise ValueError("source profile uses the wrong authority identity")
         if self.source.source_url.host not in source_hosts:
             raise ValueError("source profile uses the wrong source host")
         if any(
@@ -250,6 +259,19 @@ class SourceMetadataDocument(_Model):
             for citation in self.citations
         ):
             raise ValueError("citation must identify this dataset revision")
+        return self
+
+    @model_validator(mode="after")
+    def rights_are_profile_bound(self) -> Self:
+        expected_authority = _PROFILES[self.source.source_id][2]
+        authority_host = _PROFILES[self.source.source_id][3]
+        if (
+            self.rights.permission_reference.host != authority_host
+            or self.rights.attribution != expected_authority
+        ):
+            raise ValueError(
+                "rights evidence does not match the approved source profile"
+            )
         return self
 
     @model_validator(mode="after")

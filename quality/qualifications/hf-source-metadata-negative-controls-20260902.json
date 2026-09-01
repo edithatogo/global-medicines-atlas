@@ -35,7 +35,10 @@
     "userinfo in public metadata URLs",
     "canonical aliases of one payload path",
     "padded exact identities",
-    "oversized citation collections"
+    "oversized citation collections",
+    "rights evidence outside the approved source profile",
+    "archive-root payload path",
+    "oversized data-card collections"
   ],
   "external_actions": {
     "credentials_used": false,
