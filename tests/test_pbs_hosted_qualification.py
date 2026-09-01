@@ -562,7 +562,7 @@ def test_workflow_has_durable_receipt_and_no_dataset_write() -> None:
     assert "needs: prepare" in reference_block
     assert "needs: [prepare, qualify]" not in reference_block
     assert (
-        "pbs-reference-global-${{ needs.prepare.outputs.artifact_suffix }}"
+        "pbs-reference-complete-${{ needs.prepare.outputs.artifact_suffix }}"
         in workflow
     )
     assert "prepared/phase-input" not in workflow
@@ -631,6 +631,34 @@ def test_reference_preparation_node_is_independent_and_derived_only(
         "index" if shard_index is None else "partition"
     )
     assert report["publication_performed"] is False
+    assert not list(output.rglob("*.zip"))
+    assert not list(output.rglob("*.xml"))
+
+
+def test_reference_group_is_independent_and_emits_only_assigned_quarter(
+    tmp_path: Path, synthetic
+) -> None:
+    output = tmp_path / "group"
+    report = hosted.run_hosted_reference_group(
+        SHA,
+        output,
+        shard_count=4,
+        group_index=2,
+        group_count=4,
+        transport=synthetic[2],
+    )
+
+    assert report["status"] == "prepared"
+    assert report["node_kind"] == "partition-group"
+    assert report["node"]["group"] == {
+        "index": 2,
+        "count": 4,
+        "start_partition": 2,
+        "stop_partition": 3,
+    }
+    assert [path.name for path in output.glob("*.arrow")] == [
+        "reference-02.arrow"
+    ]
     assert not list(output.rglob("*.zip"))
     assert not list(output.rglob("*.xml"))
 
@@ -785,6 +813,7 @@ def test_preparation_classifies_disk_exhaustion_without_message() -> None:
     report = hosted.failure_report(caught.value)
     assert report["failure_category"] == "resource"
     assert report["failure_type"] == "disk-full"
+    assert report["resource_code"] == "enospc"
     assert "sensitive" not in json.dumps(report)
 
 
@@ -911,6 +940,8 @@ def test_progress_is_fixed_aggregate_only(synthetic):
             "rows",
             "elapsed_ms",
             "free_space_bytes",
+            "workspace_free_space_bytes",
+            "temp_free_space_bytes",
             "max_rss_bytes",
         }
         for event in checkpoints

@@ -1,5 +1,4 @@
 name: Qualify pinned historical PBS projections
-
 on:
   workflow_dispatch:
     inputs:
@@ -7,228 +6,15 @@ on:
         description: Exact merged main commit containing the reviewed qualifier
         required: true
         type: string
-
 permissions: {}
-
 concurrency:
   group: pbs-historical-projection-qualification
   cancel-in-progress: false
-
 jobs:
-  prepare-reference-entities:
-    name: Prepare verified transient PBS entity material
-    needs: qualify
-    if: always() && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 65
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
-        with:
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
-      - name: Verify exact public source and materialize derived entities once
-        timeout-minutes: 55
-        env:
-          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
-        run: |
-          uv run --locked --python 3.14.6 python scripts/prepare_historical_pbs_reference_node.py \
-            --exact-commit "$REQUESTED_COMMIT" --reference-shards 16 --entity-material \
-            --output node --receipt reference-entities-receipt.json
-          cp node/reference-entities.arrow .
-      - name: Retain derived entity material and bounded receipt
-        if: always()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-index-input-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            reference-entities.arrow
-            reference-entities-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Retain derived entity partition 00
-        if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-entity-partition-00-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            node/reference-00.arrow
-            reference-entities-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Retain derived entity partition 01
-        if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-entity-partition-01-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            node/reference-01.arrow
-            reference-entities-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Retain derived entity partition 02
-        if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-entity-partition-02-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            node/reference-02.arrow
-            reference-entities-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Retain derived entity partition 03
-        if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-entity-partition-03-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            node/reference-03.arrow
-            reference-entities-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Retain derived entity partition 04
-        if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-entity-partition-04-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            node/reference-04.arrow
-            reference-entities-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Retain derived entity partition 05
-        if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-entity-partition-05-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            node/reference-05.arrow
-            reference-entities-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Retain derived entity partition 06
-        if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-entity-partition-06-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            node/reference-06.arrow
-            reference-entities-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Retain derived entity partition 07
-        if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-entity-partition-07-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            node/reference-07.arrow
-            reference-entities-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Retain derived entity partition 08
-        if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-entity-partition-08-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            node/reference-08.arrow
-            reference-entities-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Retain derived entity partition 09
-        if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-entity-partition-09-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            node/reference-09.arrow
-            reference-entities-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Retain derived entity partition 10
-        if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-entity-partition-10-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            node/reference-10.arrow
-            reference-entities-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Retain derived entity partition 11
-        if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-entity-partition-11-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            node/reference-11.arrow
-            reference-entities-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Retain derived entity partition 12
-        if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-entity-partition-12-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            node/reference-12.arrow
-            reference-entities-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Retain derived entity partition 13
-        if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-entity-partition-13-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            node/reference-13.arrow
-            reference-entities-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Retain derived entity partition 14
-        if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-entity-partition-14-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            node/reference-14.arrow
-            reference-entities-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Retain derived entity partition 15
-        if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-entity-partition-15-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            node/reference-15.arrow
-            reference-entities-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
-
   prepare-reference-index:
-    name: Prepare transient PBS global reference index
-    needs: prepare-reference-entities
-    if: github.ref == 'refs/heads/main'
+    name: Prepare streaming PBS global reference index
+    needs: qualify
+    if: always() && needs.qualify.result == 'success' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     permissions:
@@ -238,94 +24,28 @@ jobs:
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
-        with:
-          pattern: pbs-reference-index-input-${{ github.run_id }}-*
-          path: material
-      - name: Prepare digest-bound global index
+      - name: Stream one digest-bound global index
         timeout-minutes: 55
         env:
           REQUESTED_COMMIT: ${{ inputs.exact_commit }}
         run: |
           uv run --locked --python 3.14.6 python scripts/prepare_historical_pbs_reference_node.py \
-            --exact-commit "$REQUESTED_COMMIT" --reference-shards 16 \
-            --input material --output node --receipt reference-index-receipt.json
-          cp node/reference-index.json .
-      - name: Retain derived index node and bounded receipt
+            --exact-commit "$REQUESTED_COMMIT" --reference-shards 16 --global-index \
+            --output node --receipt reference-index-receipt.json
+      - name: Retain only the derived index and bounded receipt
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: pbs-reference-node-index-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
-            reference-index.json
+            node/reference-index.json
             reference-index-receipt.json
           if-no-files-found: error
           retention-days: 1
-
-  prepare-reference-partitions:
-    name: Prepare transient PBS reference partition / ${{ matrix.key }}
-    needs: prepare-reference-entities
-    if: github.ref == 'refs/heads/main'
-    strategy:
-      fail-fast: false
-      max-parallel: 3
-      matrix:
-        include:
-          - {shard: 0, key: "00"}
-          - {shard: 1, key: "01"}
-          - {shard: 2, key: "02"}
-          - {shard: 3, key: "03"}
-          - {shard: 4, key: "04"}
-          - {shard: 5, key: "05"}
-          - {shard: 6, key: "06"}
-          - {shard: 7, key: "07"}
-          - {shard: 8, key: "08"}
-          - {shard: 9, key: "09"}
-          - {shard: 10, key: "10"}
-          - {shard: 11, key: "11"}
-          - {shard: 12, key: "12"}
-          - {shard: 13, key: "13"}
-          - {shard: 14, key: "14"}
-          - {shard: 15, key: "15"}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 65
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
-        with:
-          persist-credentials: false
-      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
-        with:
-          pattern: pbs-reference-entity-partition-${{ matrix.key }}-${{ github.run_id }}-*
-          path: material
-      - name: Prepare one digest-bound entity partition
-        timeout-minutes: 55
-        env:
-          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
-          SHARD: ${{ matrix.shard }}
-          KEY: ${{ matrix.key }}
-        run: |
-          uv run --locked --python 3.14.6 python scripts/prepare_historical_pbs_reference_node.py \
-            --exact-commit "$REQUESTED_COMMIT" --reference-shards 16 --shard-index "$SHARD" \
-            --input material --output node --receipt "reference-$KEY-receipt.json"
-          cp "node/reference-$KEY.arrow" .
-      - name: Retain one derived partition node and bounded receipt
-        if: always()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-node-${{ matrix.key }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            reference-${{ matrix.key }}.arrow
-            reference-${{ matrix.key }}-receipt.json
-          if-no-files-found: error
-          retention-days: 1
-
   prepare:
     name: Assemble verified transient PBS shard inputs
-    needs: [prepare-reference-index, prepare-reference-partitions]
-    if: github.ref == 'refs/heads/main'
+    needs: [prepare-reference-index, prepare-reference-groups]
+    if: always() && needs.prepare-reference-index.result == 'success' && needs.prepare-reference-groups.result == 'success' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     permissions:
@@ -344,132 +64,17 @@ jobs:
         with:
           pattern: pbs-reference-node-*-${{ github.run_id }}-*
           path: nodes
-      - name: Assemble exact node coverage and manifest
+      - name: Assemble exact index and partition coverage
         timeout-minutes: 55
         run: |
-          set -euo pipefail
           uv run --locked --python 3.14.6 python scripts/assemble_historical_pbs_reference_manifest.py \
             --input nodes --output prepared/references --reference-shards 16
           cp prepared/references/preparation-receipt.json pbs-preparation.json
-      - name: Retain transient global reference index
+      - name: Retain transient verified reference inputs
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
-          name: pbs-reference-global-${{ steps.identity.outputs.suffix }}
-          path: |
-            prepared/references/reference-index.json
-            prepared/references/reference-manifest.json
-          if-no-files-found: error
-          retention-days: 1
-      - name: Retain transient reference input 00
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-partition-00-${{ steps.identity.outputs.suffix }}
-          path: prepared/references/reference-00.arrow
-          if-no-files-found: error
-          retention-days: 1
-      - name: Retain transient reference input 01
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-partition-01-${{ steps.identity.outputs.suffix }}
-          path: prepared/references/reference-01.arrow
-          if-no-files-found: error
-          retention-days: 1
-      - name: Retain transient reference input 02
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-partition-02-${{ steps.identity.outputs.suffix }}
-          path: prepared/references/reference-02.arrow
-          if-no-files-found: error
-          retention-days: 1
-      - name: Retain transient reference input 03
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-partition-03-${{ steps.identity.outputs.suffix }}
-          path: prepared/references/reference-03.arrow
-          if-no-files-found: error
-          retention-days: 1
-      - name: Retain transient reference input 04
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-partition-04-${{ steps.identity.outputs.suffix }}
-          path: prepared/references/reference-04.arrow
-          if-no-files-found: error
-          retention-days: 1
-      - name: Retain transient reference input 05
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-partition-05-${{ steps.identity.outputs.suffix }}
-          path: prepared/references/reference-05.arrow
-          if-no-files-found: error
-          retention-days: 1
-      - name: Retain transient reference input 06
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-partition-06-${{ steps.identity.outputs.suffix }}
-          path: prepared/references/reference-06.arrow
-          if-no-files-found: error
-          retention-days: 1
-      - name: Retain transient reference input 07
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-partition-07-${{ steps.identity.outputs.suffix }}
-          path: prepared/references/reference-07.arrow
-          if-no-files-found: error
-          retention-days: 1
-      - name: Retain transient reference input 08
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-partition-08-${{ steps.identity.outputs.suffix }}
-          path: prepared/references/reference-08.arrow
-          if-no-files-found: error
-          retention-days: 1
-      - name: Retain transient reference input 09
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-partition-09-${{ steps.identity.outputs.suffix }}
-          path: prepared/references/reference-09.arrow
-          if-no-files-found: error
-          retention-days: 1
-      - name: Retain transient reference input 10
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-partition-10-${{ steps.identity.outputs.suffix }}
-          path: prepared/references/reference-10.arrow
-          if-no-files-found: error
-          retention-days: 1
-      - name: Retain transient reference input 11
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-partition-11-${{ steps.identity.outputs.suffix }}
-          path: prepared/references/reference-11.arrow
-          if-no-files-found: error
-          retention-days: 1
-      - name: Retain transient reference input 12
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-partition-12-${{ steps.identity.outputs.suffix }}
-          path: prepared/references/reference-12.arrow
-          if-no-files-found: error
-          retention-days: 1
-      - name: Retain transient reference input 13
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-partition-13-${{ steps.identity.outputs.suffix }}
-          path: prepared/references/reference-13.arrow
-          if-no-files-found: error
-          retention-days: 1
-      - name: Retain transient reference input 14
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-partition-14-${{ steps.identity.outputs.suffix }}
-          path: prepared/references/reference-14.arrow
-          if-no-files-found: error
-          retention-days: 1
-      - name: Retain transient reference input 15
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-reference-partition-15-${{ steps.identity.outputs.suffix }}
-          path: prepared/references/reference-15.arrow
+          name: pbs-reference-complete-${{ steps.identity.outputs.suffix }}
+          path: prepared/references
           if-no-files-found: error
           retention-days: 1
       - name: Retain bounded preparation receipt
@@ -480,7 +85,6 @@ jobs:
           path: pbs-preparation.json
           if-no-files-found: error
           retention-days: 30
-
   qualify:
     name: Verify PBS phase / ${{ matrix.projection }}
     strategy:
@@ -515,7 +119,6 @@ jobs:
           path: pbs-${{ matrix.projection }}-receipt-${{ github.run_attempt }}.json
           if-no-files-found: error
           retention-days: 30
-
   qualify-references:
     name: Verify PBS references / ${{ matrix.shard }}
     if: always() && needs.prepare.result == 'success'
@@ -552,11 +155,7 @@ jobs:
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
         with:
-          name: pbs-reference-global-${{ needs.prepare.outputs.artifact_suffix }}
-          path: input
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
-        with:
-          name: pbs-reference-partition-${{ matrix.key }}-${{ needs.prepare.outputs.artifact_suffix }}
+          name: pbs-reference-complete-${{ needs.prepare.outputs.artifact_suffix }}
           path: input
       - name: Qualify one prepared reference window
         timeout-minutes: 55
@@ -577,7 +176,6 @@ jobs:
           path: pbs-references-${{ matrix.shard }}-receipt-${{ github.run_attempt }}.json
           if-no-files-found: error
           retention-days: 30
-
   aggregate:
     name: Verify complete PBS shard aggregate
     if: always() && github.ref == 'refs/heads/main'
@@ -623,3 +221,41 @@ jobs:
           path: pbs-qualification-receipt.json
           if-no-files-found: error
           retention-days: 30
+  prepare-reference-groups:
+    name: Prepare PBS reference group / ${{ matrix.group }}
+    needs: qualify
+    if: always() && needs.qualify.result == 'success' && github.ref == 'refs/heads/main'
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        group: [0, 1, 2, 3]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Stream one four-partition group from the exact public source
+        timeout-minutes: 55
+        env:
+          GROUP: ${{ matrix.group }}
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          uv run --locked --python 3.14.6 python scripts/prepare_historical_pbs_reference_node.py \
+            --exact-commit "$REQUESTED_COMMIT" --reference-shards 16 \
+            --group-index "$GROUP" --group-count 4 \
+            --output node --receipt "reference-group-$GROUP-receipt.json"
+      - name: Retain only the assigned derived group and bounded receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-node-group-${{ matrix.group }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            node/reference-*.arrow
+            reference-group-${{ matrix.group }}-receipt.json
+          if-no-files-found: error
+          retention-days: 1

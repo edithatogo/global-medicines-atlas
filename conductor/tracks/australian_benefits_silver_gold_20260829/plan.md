@@ -734,6 +734,24 @@
   diagnostic allocation equals the largest bounded output batch. Broader
   affected validation: 267 passed; Ruff, format, source BasedPyright, native
   context and diff checks passed. Hosted exact-head revalidation remains.
+  The first merged sharded workflow (`9d3a984`, run `33526575517`) failed in
+  monolithic preparation after 30m15s, before reference shards could start.
+  The diagnostic split (`cbf81a8`, run `33537778788`) then proved the native,
+  domain, entities and dates jobs succeed independently, while the entity
+  material job failed with fixed `resource/disk-full` evidence. Its design
+  wrote a complete reusable entity stream plus all 16 partitions in one job,
+  amplifying local disk even though no raw source bytes were retained.
+  The next candidate removes that shared spool entirely: one job streams the
+  bounded global literal index directly, and four independently retryable jobs
+  each re-read the exact pinned public source and retain only one contiguous
+  quarter (four of 16 final partitions). Phase jobs run first at maximum four;
+  index plus group preparation then runs at one plus three, so every active
+  wave has true concurrency at most four. Assembly accepts only digest-valid,
+  identical successful retries, rejects divergent successes, and requires the
+  index plus exact groups 0..3 and partitions 0..15. Hard links avoid a second
+  local copy during assembly. Checkpoints now distinguish workspace and temp
+  free space and retain an allowlisted `enospc` code without exception text.
+  No raw artifact, timeout increase, dispatch or publication is included.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
