@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import os
 import re
@@ -10,7 +9,6 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any, cast
 
-from .pbs_historical_qualification import qualify_pbs_historical_projections
 from .pbs_hosted_qualification import (
     ARCHIVE,
     DATASET,
@@ -19,14 +17,7 @@ from .pbs_hosted_qualification import (
     RECEIPT,
     REVISION,
 )
-from .pbs_member_identity import (
-    PbsXmlMemberBinding,
-    validate_pbs_xml_member_binding,
-)
 from .pbs_reference_shards import qualify_reference_shard
-from .receipts import SourceReceipt
-
-PHASES = ("native", "domain", "entities", "dates")
 
 
 def _context(exact_commit: str, preparation: dict[str, Any]) -> dict[str, str]:
@@ -41,7 +32,8 @@ def _context(exact_commit: str, preparation: dict[str, Any]) -> dict[str, str]:
         values["workflow_commit"] == exact_commit,
         preparation.get("workflow_commit") == exact_commit,
         preparation.get("preparation_run_id") == values["run_id"],
-        preparation.get("preparation_run_attempt") == values["run_attempt"],
+        isinstance(preparation.get("preparation_run_attempt"), str),
+        str(preparation.get("preparation_run_attempt")).isdigit(),
     )
     if not all(checks):
         raise ValueError("PBS prepared qualification context changed")
@@ -63,20 +55,6 @@ def _read_manifest(path: Path, purpose: str) -> dict[str, Any]:
     )):
         raise ValueError("PBS prepared input manifest is invalid")
     return manifest
-
-
-def _payload(path: Path, record: object) -> bytes:
-    if not isinstance(record, dict):
-        raise TypeError("PBS prepared input pin is invalid")
-    record = cast("dict[str, Any]", record)
-    payload = path.read_bytes()
-    if record != {
-        "path": path.name,
-        "sha256": hashlib.sha256(payload).hexdigest(),
-        "byte_count": len(payload),
-    }:
-        raise ValueError("PBS prepared input digest changed")
-    return payload
 
 
 def _report(
@@ -106,43 +84,6 @@ def _report(
         "qualification": qualification,
         "publication_performed": False,
     }
-
-
-def qualify_prepared_phase(
-    directory: Path, exact_commit: str, projection: str
-) -> dict[str, Any]:
-    """Verify transient raw inputs and qualify one non-reference phase."""
-    if projection not in PHASES:
-        raise ValueError("unknown PBS prepared projection")
-    manifest = _read_manifest(
-        directory / "phase-manifest.json",
-        "transient-same-run-pbs-qualification-input",
-    )
-    context = _context(exact_commit, manifest)
-    files = manifest.get("files")
-    if not isinstance(files, dict):
-        raise TypeError("PBS prepared input manifest is invalid")
-    files = cast("dict[str, Any]", files)
-    archive = _payload(directory / "archive.zip", files.get("archive"))
-    member = _payload(directory / "member.xml", files.get("member"))
-    receipt_bytes = _payload(
-        directory / "source-receipt.json", files.get("source_receipt")
-    )
-    if (
-        hashlib.sha256(archive).hexdigest() != ARCHIVE.sha256
-        or len(archive) != ARCHIVE.byte_count
-        or hashlib.sha256(member).hexdigest() != MEMBER.sha256
-        or len(member) != MEMBER.byte_count
-        or hashlib.sha256(receipt_bytes).hexdigest() != RECEIPT.sha256
-    ):
-        raise ValueError("PBS prepared public pin changed")
-    parent = SourceReceipt.model_validate_json(receipt_bytes)
-    binding = PbsXmlMemberBinding.model_validate(manifest.get("binding"))
-    binding = validate_pbs_xml_member_binding(binding, archive, member, parent)
-    qualification = qualify_pbs_historical_projections(
-        archive, member, parent, binding, projection=projection
-    )
-    return _report(context, qualification)
 
 
 def qualify_prepared_reference(

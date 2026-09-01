@@ -691,16 +691,20 @@
 - [~] Disaggregate hosted qualification with one anonymous preparation job
   that verifies the pinned public source and computes the entity denominator
   and complete global literal index exactly once. It emits retention-one-day,
-  same-run-only inputs marked `evidence_truth=false`: one phase input and 16
-  digest-bound reference partitions, each worker receiving only its assigned
+  same-run-only derived inputs marked `evidence_truth=false`: one global index
+  artifact and 16 digest-bound reference partitions, each worker receiving its assigned
   Arrow partition, the complete global index and exact manifest identity.
-  Four bounded phase workers and the reference matrix run with `max-parallel: 4`.
+  Four bounded phase workers independently stream the pinned public source and
+  complete before the reference matrix starts, enforcing global `max-parallel: 4`.
   Only the final aggregate writes durable issue evidence; it fails closed with
   exact missing/failed shard IDs, exact hosted pins and schemas, gap-free ordered
   windows, denominators, declared counter types, digests and Parquet equality.
   These transient Actions artifacts are not reusable data or publication;
   reusable data remains public-Hugging-Face-only under its separate publication
-  gate. Hosted dispatch remains pending reviewed merge.
+  gate. Preparation outputs expose their exact attempt identity so rerun-failed
+  consumers reuse the successful prep; attempt-specific receipts aggregate by
+  deterministic latest success and reject conflicting successes. Hosted dispatch
+  remains pending reviewed merge.
   Exact merged-main run `33509616416` at `ccf7570` falsified that synthetic
   forecast: after the same 55-minute limit it had emitted only 8,358 reference
   rows in six batches, versus 163,700 rows in 120 batches at `757dc41`.

@@ -547,7 +547,17 @@ def test_workflow_has_durable_receipt_and_no_dataset_write() -> None:
     assert "--reference-shards 16" in workflow
     assert "max-parallel: 4" in workflow
     assert "needs: [prepare, qualify, qualify-references]" in workflow
-    assert "pbs-${{ matrix.projection }}-receipt.json" in workflow
+    assert (
+        "pbs-${{ matrix.projection }}-receipt-${{ github.run_attempt }}.json"
+        in workflow
+    )
+    assert "needs: [prepare, qualify]" in workflow
+    assert (
+        "pbs-reference-global-${{ needs.prepare.outputs.artifact_suffix }}"
+        in workflow
+    )
+    assert "prepared/phase-input" not in workflow
+    assert "archive.zip" not in workflow
     assert "aggregate_historical_pbs_qualification.py" in workflow
     assert "merge-multiple: true" in workflow
 
@@ -567,28 +577,29 @@ def test_preparation_fetches_once_and_writes_bounded_transient_workers(
     assert report["publication_performed"] is False
     assert report["evidence_truth"] is False
     assert len(calls) == 5
-    phase = json.loads(
-        (output / "phase-input" / "phase-manifest.json").read_text()
+    assert not (output / "phase-input").exists()
+    assert not list(output.rglob("archive.zip"))
+    assert not list(output.rglob("member.xml"))
+    manifest = json.loads(
+        (output / "references" / "reference-manifest.json").read_text()
     )
-    assert phase["purpose"] == "transient-same-run-pbs-qualification-input"
-    assert phase["evidence_truth"] is False
+    assert manifest["evidence_truth"] is False
     for index in range(2):
-        worker = output / "workers" / f"reference-{index:02d}"
-        assert sorted(path.name for path in worker.iterdir()) == [
-            f"reference-{index:02d}.arrow",
-            "reference-index.json",
-            "reference-manifest.json",
-        ]
+        assert (
+            output / "references" / f"reference-{index:02d}.arrow"
+        ).is_file()
     for name in ("ARCHIVE", "MANIFEST", "MEMBER", "RECEIPT"):
         monkeypatch.setattr(prepared, name, getattr(hosted, name))
-    phase_report = prepared.qualify_prepared_phase(
-        output / "phase-input", SHA, "native"
-    )
-    reference_report = prepared.qualify_prepared_reference(
-        output / "workers" / "reference-00", SHA, 0
-    )
-    assert phase_report["status"] == "passed"
-    assert phase_report["qualification"]["projection_shard"] == "native"
+    worker = tmp_path / "worker"
+    worker.mkdir()
+    for name in (
+        "reference-00.arrow",
+        "reference-index.json",
+        "reference-manifest.json",
+    ):
+        (worker / name).write_bytes((output / "references" / name).read_bytes())
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "2")
+    reference_report = prepared.qualify_prepared_reference(worker, SHA, 0)
     assert reference_report["status"] == "passed"
     assert reference_report["qualification"]["reference_window"]["index"] == 0
 

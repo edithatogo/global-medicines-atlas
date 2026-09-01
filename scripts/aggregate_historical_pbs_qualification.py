@@ -24,7 +24,7 @@ def _write(output: Path, report: dict[str, Any]) -> None:
 
 def _read_reports(path: Path) -> list[dict[str, Any]]:
     reports: list[dict[str, Any]] = []
-    for receipt in sorted(path.glob("**/pbs-*-receipt.json")):
+    for receipt in sorted(path.glob("**/pbs-*-receipt-*.json")):
         envelope: object = json.loads(receipt.read_text(encoding="utf-8"))
         if not isinstance(envelope, dict):
             raise TypeError("invalid shard receipt")
@@ -92,6 +92,47 @@ def _coverage(
     return missing, failed
 
 
+def _latest_successes(
+    reports: list[dict[str, Any]], reference_shards: int
+) -> tuple[list[dict[str, Any]], list[str]]:
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for report in reports:
+        identity = _shard_id(report)
+        if identity is not None:
+            grouped.setdefault(identity, []).append(report)
+    selected: list[dict[str, Any]] = []
+    conflicts: list[str] = []
+    for identity, candidates in grouped.items():
+        successes = [
+            value for value in candidates if value.get("status") == "passed"
+        ]
+        if not successes:
+            selected.append(candidates[-1])
+            continue
+        fingerprints = {
+            json.dumps(
+                value.get("qualification"),
+                sort_keys=True,
+                separators=(",", ":"),
+            )
+            for value in successes
+        }
+        attempts = [value.get("run_attempt") for value in successes]
+        if len(fingerprints) != 1 or any(
+            not isinstance(attempt, str) or not attempt.isdigit()
+            for attempt in attempts
+        ):
+            conflicts.append(identity)
+            continue
+        selected.append(
+            max(successes, key=lambda value: int(value["run_attempt"]))
+        )
+    expected = 4 + reference_shards
+    if len(selected) > expected:
+        raise ValueError("unexpected PBS shard identity")
+    return selected, conflicts
+
+
 def _aggregate_complete(
     reports: list[dict[str, Any]], exact_commit: str, reference_shards: int
 ) -> dict[str, Any]:
@@ -99,6 +140,11 @@ def _aggregate_complete(
     if missing or failed:
         raise ValueError("shard coverage is incomplete")
     return aggregate_shards(reports, expected_commit=exact_commit)
+
+
+def _require_no_conflicts(conflicts: list[str]) -> None:
+    if conflicts:
+        raise ValueError("conflicting successful shard receipts")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -109,13 +155,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--reference-shards", required=True, type=int)
     args = parser.parse_args(argv)
     try:
-        reports = _read_reports(args.receipts)
+        reports, conflicts = _latest_successes(
+            _read_reports(args.receipts), args.reference_shards
+        )
+        _require_no_conflicts(conflicts)
         report = _aggregate_complete(
             reports, args.exact_commit, args.reference_shards
         )
     except KeyError, TypeError, ValueError, json.JSONDecodeError:
         reports = locals().get("reports", [])
         missing, failed = _coverage(reports, args.reference_shards)
+        failed = sorted(set(failed) | set(locals().get("conflicts", [])))
         report = {
             "schema_version": 1,
             "status": "incomplete",

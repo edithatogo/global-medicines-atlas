@@ -5,11 +5,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 from typing import Any
 
 from global_medicines_atlas.pbs_prepared_qualification import (
-    qualify_prepared_phase,
     qualify_prepared_reference,
 )
 
@@ -34,35 +34,23 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--exact-commit", required=True)
     parser.add_argument("--input", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument(
-        "--projection", choices=("native", "domain", "entities", "dates")
-    )
-    group.add_argument("--reference-shard", type=int)
+    parser.add_argument("--reference-shard", required=True, type=int)
     args = parser.parse_args(argv)
-    identity = (
-        {"projection_shard": args.projection}
-        if args.projection is not None
-        else {
-            "projection_shard": "references",
-            "reference_shard": args.reference_shard,
-        }
-    )
+    identity = {
+        "projection_shard": "references",
+        "reference_shard": args.reference_shard,
+    }
     try:
-        report = (
-            qualify_prepared_phase(
-                args.input, args.exact_commit, args.projection
-            )
-            if args.projection is not None
-            else qualify_prepared_reference(
-                args.input, args.exact_commit, args.reference_shard
-            )
+        report = qualify_prepared_reference(
+            args.input, args.exact_commit, args.reference_shard
         )
     except Exception:  # Never serialize source-bearing exception text.
         report = {
             "schema_version": 1,
             "status": "incomplete",
             **identity,
+            "run_id": os.environ.get("GITHUB_RUN_ID", "unavailable"),
+            "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT", "unavailable"),
             "reason": "prepared-shard-did-not-complete",
             "publication_performed": False,
         }

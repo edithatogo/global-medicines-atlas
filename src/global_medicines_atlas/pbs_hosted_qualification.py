@@ -7,7 +7,6 @@ import hashlib
 import json
 import os
 import re
-import shutil
 import socket
 import ssl
 import time
@@ -509,15 +508,6 @@ def run_hosted_qualification(
         raise
 
 
-def _prepared_file(path: Path, payload: bytes) -> dict[str, Any]:
-    path.write_bytes(payload)
-    return {
-        "path": path.name,
-        "sha256": hashlib.sha256(payload).hexdigest(),
-        "byte_count": len(payload),
-    }
-
-
 def run_hosted_preparation(
     exact_commit: str,
     output: Path,
@@ -530,34 +520,6 @@ def run_hosted_preparation(
     retry = _RetryBudget(progress=progress)
     inputs = _verified_inputs(exact_commit, transport=transport, retry=retry)
     output.mkdir(parents=True, exist_ok=False)
-    phase = output / "phase-input"
-    phase.mkdir()
-    files = {
-        "archive": _prepared_file(phase / "archive.zip", inputs.archive),
-        "member": _prepared_file(phase / "member.xml", inputs.xml),
-        "source_receipt": _prepared_file(
-            phase / "source-receipt.json", inputs.receipt_bytes
-        ),
-    }
-    phase_manifest = {
-        "schema_version": 1,
-        "purpose": "transient-same-run-pbs-qualification-input",
-        "workflow_commit": inputs.context["workflow_commit"],
-        "preparation_run_id": inputs.context["run_id"],
-        "preparation_run_attempt": inputs.context["run_attempt"],
-        "dataset": DATASET,
-        "revision": REVISION,
-        "binding": inputs.binding.model_dump(mode="json"),
-        "files": files,
-        "publication_performed": False,
-        "evidence_truth": False,
-    }
-    phase_manifest_path = phase / "phase-manifest.json"
-    phase_manifest_path.write_bytes(
-        json.dumps(
-            phase_manifest, sort_keys=True, separators=(",", ":")
-        ).encode()
-    )
     denominator = _denominator(inputs.xml)
     references = output / "references"
     reference_manifest = prepare_reference_shards(
@@ -584,18 +546,6 @@ def run_hosted_preparation(
             reference_manifest, sort_keys=True, separators=(",", ":")
         ).encode()
     )
-    workers = output / "workers"
-    workers.mkdir()
-    for partition in reference_manifest["partitions"]:
-        index = partition["index"]
-        worker = workers / f"reference-{index:02d}"
-        worker.mkdir()
-        for name in (
-            "reference-manifest.json",
-            "reference-index.json",
-            partition["path"],
-        ):
-            shutil.copyfile(references / name, worker / name)
     return {
         "schema_version": 1,
         "status": "prepared",
@@ -610,8 +560,8 @@ def run_hosted_preparation(
         "reference_rows": denominator["elements"],
         "native_fields": denominator["native_fields"],
         "native_digest": denominator["native_digest"],
-        "phase_manifest_sha256": hashlib.sha256(
-            phase_manifest_path.read_bytes()
+        "reference_manifest_sha256": hashlib.sha256(
+            (references / "reference-manifest.json").read_bytes()
         ).hexdigest(),
         "publication_performed": False,
         "evidence_truth": False,

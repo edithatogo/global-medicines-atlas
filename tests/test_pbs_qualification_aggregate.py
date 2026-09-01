@@ -255,7 +255,7 @@ def test_cli_writes_digest_bound_success_and_incomplete_receipts(
     receipts = tmp_path / "receipts"
     receipts.mkdir()
     for ordinal, report in enumerate(complete()):
-        path = receipts / f"pbs-{ordinal}-receipt.json"
+        path = receipts / f"pbs-{ordinal}-receipt-1.json"
         canonical = json.dumps(
             report, sort_keys=True, separators=(",", ":")
         ).encode()
@@ -279,9 +279,41 @@ def test_cli_writes_digest_bound_success_and_incomplete_receipts(
     assert cli.main(arguments) == 0
     envelope = json.loads(output.read_text())
     assert envelope["report"]["status"] == "passed"
-    (receipts / "pbs-7-receipt.json").unlink()
+    (receipts / "pbs-7-receipt-1.json").unlink()
     assert cli.main(arguments) == 1
     assert json.loads(output.read_text())["report"]["status"] == "incomplete"
+
+
+def test_retry_selection_uses_latest_equal_success_and_rejects_conflict() -> (
+    None
+):
+    reports = complete()
+    retry = deepcopy(reports[0])
+    retry["run_attempt"] = "2"
+    selected, conflicts = cli._latest_successes(  # pyright: ignore[reportPrivateUsage]
+        [*reports, retry], 4
+    )
+    assert not conflicts
+    assert len(selected) == 8
+    assert (
+        next(
+            report
+            for report in selected
+            if cast("dict[str, object]", report["qualification"])[
+                "projection_shard"
+            ]
+            == "native"
+        )["run_attempt"]
+        == "2"
+    )
+
+    cast("dict[str, object]", retry["qualification"])["native_digest"] = (
+        "9" * 64
+    )
+    _, conflicts = cli._latest_successes(  # pyright: ignore[reportPrivateUsage]
+        [*reports, retry], 4
+    )
+    assert conflicts == ["native"]
 
 
 @pytest.mark.parametrize(
