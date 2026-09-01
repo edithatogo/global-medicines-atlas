@@ -179,6 +179,9 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     passed again. A canonical-remote test checks out that exact commit, rebuilds
     the candidate byte-for-byte, and consumes both distributions on Linux,
     macOS and Windows. Independent Conductor review passed with no findings.
+  - Review fix: recompute the reconciliation's referenced stable-v1 contract
+    SHA-256 in tests so a stale content binding cannot pass after contract
+    drift. The receipt path must resolve to the canonical contract.
 - [x] Task: Verify dataset cards, Croissant records, checksums and GitHub/Hugging Face/Zenodo identifier links without publishing restricted data ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
   - The content-bound publication-metadata receipt verifies cards, Croissant,
     checksums, restricted-data boundaries and non-overlapping object roles.

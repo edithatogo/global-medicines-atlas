@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -274,6 +275,13 @@ def test_release_readiness_reconciliation_separates_package_from_release() -> (
     )
     assert (
         receipt["qualification_state"] == qualification["qualification_state"]
+    )
+    contract_path = ROOT / receipt["contract"]["path"]
+    assert contract_path.is_relative_to(ROOT)
+    assert contract_path == QUALIFICATION
+    assert (
+        receipt["contract"]["sha256"]
+        == hashlib.sha256(contract_path.read_bytes()).hexdigest()
     )
     assert receipt["release_performed"] is False
     assert receipt["candidate_package"] == {
