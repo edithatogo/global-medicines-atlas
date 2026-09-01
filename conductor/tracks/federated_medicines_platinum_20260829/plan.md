@@ -2,16 +2,46 @@
 
 ## Phase 1: Product and remote-query contracts (AC-01, AC-02, AC-03)
 
-- [ ] Write failing contract tests for v4 resolution, immutable revision/path,
+- [~] Write failing contract tests for v4 resolution, immutable revision/path,
   manifest verification, remote scan, bounded cache, offline state, result
   metadata, and semantic-dimension separation.
-- [ ] Confirm the intended failure before implementation.
-- [ ] Implement a storage-neutral dataset resolver and remote DuckDB/Polars
+  The first storage-neutral slice covers independently admitted exact contract
+  and distribution bindings, immutable location/digest metadata, semantic
+  dimension and entity-granularity separation, anonymous verified reads,
+  explicit offline cache use, eviction, online failure, and byte/time/cache
+  budgets. Full query-result evidence envelopes and scan-engine contracts remain
+  pending. (`99b623c`; 18 focused and 162 affected tests pass.)
+- [x] Confirm the intended failure before implementation. (`99b623c`;
+  collection failed with `ModuleNotFoundError` before the resolver existed.)
+- [~] Implement a storage-neutral dataset resolver and remote DuckDB/Polars
   query adapter with explicit capabilities and deterministic fallbacks.
-- [ ] Add cache receipts, byte/time budgets, expiry/eviction, content
+  Exact logical resolution and bounded verified byte reads are implemented in
+  `99b623c`; DuckDB/Polars projection and predicate-pushdown adapters remain
+  pending and no storage engine has been promoted.
+- [~] Add cache receipts, byte/time budgets, expiry/eviction, content
   verification, and stale/unavailable states.
+  - [x] Add transient exact-contract cache receipts with last verified origin/time,
+    current verified-cache availability, contract expiry, immutable content
+    identity, and enforced read/cache-entry/open-result/time budgets. Expiry,
+    explicit eviction, corrupt same-size content, insufficient cache capacity,
+    online failure, and offline misses remain unavailable and fail closed.
+    (`ce38493`; 22 focused tests pass.) Durable product/query receipts and typed
+    higher-level unavailable response envelopes remain pending.
 - [ ] Phase Verification & Checkpoint: an empty machine can run bounded fixture
   queries from pinned public revisions with no durable local lake.
+
+### Resolver review fixes
+
+- [x] Apply repository formatting to the resolver contract tests before hosted
+  qualification. (`f4f0864`; format check and 18 focused tests pass.)
+- [x] Bind product semantic dimension and entity granularity to an independently
+  admitted, byte-digested, exact-key semantic manifest rather than trusting
+  caller labels. Reject unadmitted, duplicate-key, extra-field, aliased, or
+  contract-mismatched manifests. (`7cc1693`; hosted P1 review correction.)
+- [x] Advertise offline-cache capability only when the v4 contract permits
+  exact-digest offline use, configured cache capacity can retain the object,
+  the contract cache budget permits it, and expiry is still future. (`7cc1693`;
+  hosted P2 review correction; 26 focused tests pass.)
 
 ## Phase 2: CLI and API (AC-01, AC-02, AC-04)
 
