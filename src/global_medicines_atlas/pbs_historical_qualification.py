@@ -4,17 +4,17 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Generator, Iterator
 from io import BytesIO
-from typing import Any
+from itertools import pairwise
+from tempfile import TemporaryFile
+from typing import Any, cast
 
 import pyarrow as pa
+import pyarrow.compute as pc
 import pyarrow.parquet as pq
 
-from .pbs_historical_annotations import (
-    iter_pbs_historical_date_batches,
-    iter_pbs_historical_reference_batches,
-)
+from .pbs_dates import _date_batches  # pyright: ignore[reportPrivateUsage]
 from .pbs_historical_projections import (
     iter_pbs_historical_domain_batches,
     iter_pbs_historical_entity_batches,
@@ -23,6 +23,9 @@ from .pbs_historical_silver import iter_pbs_historical_silver_batches
 from .pbs_member_identity import (
     PbsXmlMemberBinding,
     validate_pbs_xml_member_binding,
+)
+from .pbs_references import (
+    _reference_batches,  # pyright: ignore[reportPrivateUsage]
 )
 from .pbs_xml_slots import iter_pbs_xml_slots
 from .receipts import SourceReceipt
@@ -35,6 +38,7 @@ _NATIVE_KEYS = (
     "value",
     "state",
 )
+QUALIFICATION_ROWS_PER_BATCH = 4096
 
 
 def _encoded(values: list[Any]) -> bytes:
@@ -109,7 +113,7 @@ def _projection(
         b"qualification": b"candidate",
         b"conversion": b"none",
     }
-    counts = dict.fromkeys(
+    counts: dict[str, int] = dict.fromkeys(
         (
             "rows",
             "native_fields",
@@ -135,31 +139,13 @@ def _projection(
         restored = pq.read_table(BytesIO(output.getvalue()))  # pyright: ignore[reportUnknownMemberType]
         if not table.equals(restored, check_metadata=True):
             raise ValueError("historical Parquet roundtrip changed projection")
+        if nested:
+            _account_nested_batch(batch, expected, counts, digest)
+            _checkpoint(progress, phase, batch_number, counts["rows"])
+            continue
         for row in batch.to_pylist():
             if any(row.get(key) != value for key, value in expected.items()):
                 raise ValueError("historical projection row lineage changed")
-            if nested:
-                fields = row["native_fields"]
-                if not fields:
-                    raise ValueError("historical entity lineage is empty")
-                record_id = fields[0]["record_id"]
-                parent_path = "/".join(record_id.split("/")[:-2])
-                expected_parent = (
-                    f"{binding.member_payload.sha256}:{parent_path}"
-                    if parent_path
-                    else None
-                )
-                if (
-                    row["entity_id"]
-                    != f"{binding.member_payload.sha256}:{record_id}"
-                    or row["parent_entity_id"] != expected_parent
-                    or any(field["record_id"] != record_id for field in fields)
-                    or row["item_occurrence_id"]
-                    != fields[0]["item_occurrence_id"]
-                ):
-                    raise ValueError(
-                        "historical entity occurrence lineage changed"
-                    )
             counts["rows"] += 1
             counts["unmapped_rows"] += row.get("mapping_target") == "unmapped"
             counts["duplicate_literal_rows"] += (
@@ -174,7 +160,7 @@ def _projection(
             counts["date_unselected_rows"] += (
                 row.get("date_conversion_status") == "profile_not_selected"
             )
-            for field in row["native_fields"] if nested else (row,):
+            for field in (row,):
                 if (
                     any(
                         field.get(key) != value
@@ -202,13 +188,115 @@ def _projection(
     }
 
 
+def _account_nested_batch(
+    batch: pa.RecordBatch,
+    expected: dict[str, str],
+    counts: dict[str, int],
+    digest: Any,
+) -> None:
+    """Account for an entity batch without materialising nested row dicts."""
+    columns: dict[str, list[Any]] = {
+        name: cast(
+            "list[Any]",
+            batch.column(batch.schema.get_field_index(name)).to_pylist(),
+        )
+        for name in (
+            *expected,
+            "entity_id",
+            "parent_entity_id",
+            "item_occurrence_id",
+            "mapping_target",
+            "diagnostic",
+            "date_conversion_status",
+        )
+        if name in batch.schema.names
+    }
+    if any(
+        any(value != expected[name] for value in columns[name])
+        for name in expected
+    ):
+        raise ValueError("historical projection row lineage changed")
+
+    nested = cast(
+        "pa.ListArray[Any]",
+        batch.column(batch.schema.get_field_index("native_fields")),
+    )
+    lengths = cast("list[int]", pc.list_value_length(nested).to_pylist())
+    if any(length == 0 for length in lengths):
+        raise ValueError("historical entity lineage is empty")
+    offsets = cast("list[int]", nested.offsets.to_pylist())
+    flattened = cast("pa.StructArray", pc.list_flatten(nested))
+    fields: dict[str, list[Any]] = {
+        name: cast(
+            "list[Any]",
+            flattened.field(name).to_pylist(),  # pyright: ignore[reportUnknownMemberType]
+        )
+        for name in (
+            *expected,
+            "source_field_id",
+            "item_occurrence_id",
+            *_NATIVE_KEYS,
+        )
+    }
+    if any(
+        any(value != expected[name] for value in fields[name])
+        for name in expected
+    ) or any(
+        source_field_id != f"{expected['source_sha256']}:{path}"
+        for source_field_id, path in zip(
+            fields["source_field_id"], fields["path"], strict=True
+        )
+    ):
+        raise ValueError("historical native field lineage changed")
+
+    for row_number, (start, stop) in enumerate(pairwise(offsets)):
+        record_id = fields["record_id"][start]
+        parent_path = "/".join(record_id.split("/")[:-2])
+        expected_parent = (
+            f"{expected['source_sha256']}:{parent_path}"
+            if parent_path
+            else None
+        )
+        if (
+            columns["entity_id"][row_number]
+            != f"{expected['source_sha256']}:{record_id}"
+            or columns["parent_entity_id"][row_number] != expected_parent
+            or any(
+                value != record_id for value in fields["record_id"][start:stop]
+            )
+            or columns["item_occurrence_id"][row_number]
+            != fields["item_occurrence_id"][start]
+        ):
+            raise ValueError("historical entity occurrence lineage changed")
+
+    counts["rows"] += batch.num_rows
+    counts["unmapped_rows"] += columns.get("mapping_target", []).count(
+        "unmapped"
+    )
+    counts["duplicate_literal_rows"] += columns.get("diagnostic", []).count(
+        "duplicate_source_literal"
+    )
+    counts["ambiguous_reference_rows"] += columns.get("diagnostic", []).count(
+        "ambiguous_source_targets"
+    )
+    counts["unresolved_reference_rows"] += columns.get("diagnostic", []).count(
+        "unresolved"
+    )
+    counts["date_unselected_rows"] += columns.get(
+        "date_conversion_status", []
+    ).count("profile_not_selected")
+    for values in zip(*(fields[name] for name in _NATIVE_KEYS), strict=True):
+        digest.update(_encoded(list(values)))
+    counts["native_fields"] += len(fields["record_id"])
+
+
 def qualify_pbs_historical_projections(
     archive_payload: bytes,
     member_payload: bytes,
     parent: SourceReceipt,
     binding: PbsXmlMemberBinding,
     *,
-    rows_per_batch: int = 1024,
+    rows_per_batch: int = QUALIFICATION_ROWS_PER_BATCH,
     progress: Callable[[str, int, int], None] | None = None,
 ) -> dict[str, Any]:
     """Account for every XML slot in five candidate projections and Parquet.
@@ -219,7 +307,11 @@ def qualify_pbs_historical_projections(
     full top-level/nested lineage and metadata-aware per-batch Parquet equality.
     Report only fixed counters and evidence IDs, never native text or payloads.
     All transforms use existing finite parsing/index/entity/output bounds;
-    in-memory per-batch Parquet buffers add memory, not a total resident cap.
+    The default uses the existing maximum validated row bound to reduce repeated
+    Parquet setup; encoded-byte limits can still emit smaller batches. In-memory
+    per-batch Parquet buffers add memory, not a total resident cap. Entity output
+    is replayed from an automatically deleted Arrow spool so reference and date
+    qualification do not rebuild the source-derived entity projection.
     No date profile, semantic/source-era qualification, acquisition, filesystem
     output, network call, admission or publication occurs. Errors yield no report.
     An optional callback receives phase codes and processed batch/row counters,
@@ -236,9 +328,6 @@ def qualify_pbs_historical_projections(
     routes = (
         ("native", iter_pbs_historical_silver_batches, False),
         ("domain", iter_pbs_historical_domain_batches, False),
-        ("entities", iter_pbs_historical_entity_batches, True),
-        ("references", iter_pbs_historical_reference_batches, True),
-        ("dates", iter_pbs_historical_date_batches, True),
     )
     projections = {}
     for name, route, nested in routes:
@@ -258,6 +347,72 @@ def qualify_pbs_historical_projections(
             progress=progress,
             phase=name,
         )
+    with TemporaryFile() as spool:
+        entity_schema: pa.Schema | None = None
+
+        def entity_batches() -> Generator[pa.RecordBatch]:
+            nonlocal entity_schema
+            writer = None
+            try:
+                for batch in iter_pbs_historical_entity_batches(
+                    archive_payload,
+                    member_payload,
+                    parent,
+                    binding,
+                    rows_per_batch=rows_per_batch,
+                ):
+                    if writer is None:
+                        entity_schema = batch.schema
+                        writer = pa.ipc.new_stream(spool, batch.schema)
+                    writer.write_batch(  # pyright: ignore[reportUnknownMemberType]
+                        batch
+                    )
+                    yield batch
+            finally:
+                if writer is not None:
+                    writer.close()
+
+        if progress is not None:
+            progress("entities", 0, 0)
+        entity_stream = entity_batches()
+        try:
+            projections["entities"] = _projection(
+                entity_stream,
+                binding,
+                denominator,
+                nested=True,
+                progress=progress,
+                phase="entities",
+            )
+        finally:
+            entity_stream.close()
+        if entity_schema is None:
+            raise ValueError("historical entity projection is empty")
+
+        def replay_entities() -> Iterator[pa.RecordBatch]:
+            spool.seek(0)
+            yield from pa.ipc.open_stream(spool)
+
+        replay_routes = (
+            (
+                "references",
+                _reference_batches(
+                    replay_entities(), replay_entities(), rows_per_batch
+                ),
+            ),
+            ("dates", _date_batches(replay_entities(), None, rows_per_batch)),
+        )
+        for name, batches in replay_routes:
+            if progress is not None:
+                progress(name, 0, 0)
+            projections[name] = _projection(
+                batches,
+                binding,
+                denominator,
+                nested=True,
+                progress=progress,
+                phase=name,
+            )
     return {
         "schema_version": 1,
         "qualification": "structural_storage_candidate_only",

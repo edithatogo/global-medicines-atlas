@@ -625,11 +625,24 @@
   3,001 entity rows in 1.418274 s: iterator 0.910293 s, Parquet 0.111921 s,
   residual accounting 0.396060 s. Profiling overhead is included; this is not
   a throughput benchmark or prediction that the 55-minute corpus limit fits.
-- [ ] Test a columnar lineage precheck and selective native-field materialization
+- [x] Test a columnar lineage precheck and selective native-field materialization
   for entity qualification, preserving every nested identity/parent/occurrence,
   independent ordered native digest and Parquet equality. The possible saving
   is bounded by accounting work in that observation; iterator work still
   dominates and requires separate evidence before changing the producer.
+  Nested accounting now flattens Arrow list/struct columns without entity-row
+  dictionaries. A single temporary Arrow stream replays the independently
+  checked entity projection into reference and date qualification, replacing
+  four entity builds with one; it is automatically deleted and is not a dataset
+  destination. The existing maximum 4,096-row bound reduces Parquet setup while
+  8 MiB encoded-byte limits remain authoritative. A 1,000-item synthetic full
+  qualifier preserved all five counts and reduced observed CPU from 3.419859 s
+  to 2.081080 s (one bounded comparison, not a corpus throughput prediction).
+  Focused projection/hosted tests: 141 passed; Ruff and BasedPyright passed.
+- [~] Deliver the reviewed optimization through hosted checks, then dispatch one
+  exact merged-main PBS qualification run. Accept only a complete durable receipt
+  with all five projection denominators/digests and anonymous public pin checks;
+  do not infer success from progress, extend the timeout or publish any bytes.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
