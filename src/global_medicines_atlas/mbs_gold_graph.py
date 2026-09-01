@@ -26,7 +26,7 @@ class MbsGoldFieldEvidence(FrozenModel):
     native_name: str = Field(min_length=1)
     native_state: Literal["missing_field", "null", "value"]
     native_value: str | None
-    conversion_status: ConversionStatus
+    conversion_status: ConversionStatus | Literal["unrepresentable"]
     typed_value: str | None
 
     @model_validator(mode="after")
@@ -127,6 +127,27 @@ class MbsGoldGraphCandidate(FrozenModel):
             or len(self.edges) != self.source_record_count
         ):
             raise ValueError("Gold graph denominator differs from Silver")
+        service_evidence = {
+            _evidence_address(node.evidence)
+            for node in self.nodes
+            if node.kind == "mbs_service_record"
+        }
+        benefit_evidence = {
+            _evidence_address(node.evidence)
+            for node in self.nodes
+            if node.kind == "mbs_benefit_record"
+        }
+        edge_evidence = {
+            _evidence_address(edge.evidence) for edge in self.edges
+        }
+        if not (
+            len(service_evidence)
+            == len(benefit_evidence)
+            == len(edge_evidence)
+            == self.source_record_count
+            and service_evidence == benefit_evidence == edge_evidence
+        ):
+            raise ValueError("Gold graph evidence denominator is ambiguous")
         for edge in self.edges:
             source = by_id.get(edge.source_node_id)
             target = by_id.get(edge.target_node_id)
@@ -152,6 +173,15 @@ def _canonical(value: object) -> bytes:
     return json.dumps(
         value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
     ).encode()
+
+
+def _evidence_address(evidence: MbsGoldEvidence) -> tuple[str, int, str, str]:
+    return (
+        evidence.source_record_id,
+        evidence.source_ordinal,
+        evidence.source_sha256,
+        evidence.receipt_sha256,
+    )
 
 
 def _digest(value: object) -> str:

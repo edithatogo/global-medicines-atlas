@@ -4,7 +4,7 @@
 # pyright: reportUnknownMemberType=false
 
 from io import BytesIO
-from operator import itemgetter
+from operator import attrgetter, itemgetter
 
 import pyarrow.parquet as pq
 import pytest
@@ -22,6 +22,7 @@ from global_medicines_atlas.mbs_gold_graph import (
     MbsGoldGraphCandidate,
     MbsGoldNode,
     _edge_id,  # ruff: ignore[import-private-name] -- adversarial contract test
+    _node_id,  # ruff: ignore[import-private-name] -- adversarial contract test
     build_mbs_gold_graph_candidate,
     project_mbs_gold_graph_arrow,
 )
@@ -84,6 +85,22 @@ def test_live_receipts_are_out_of_scope_before_projection():
     )
     with pytest.raises(ValueError, match="synthetic evidence"):
         build_mbs_gold_graph_candidate(payload, receipt)
+
+
+def test_unrepresentable_silver_values_remain_graph_evidence():
+    payload = _xml(
+        "<Benefit100>123456789012345678901234567890123456789</Benefit100>"
+    )
+    result = build_mbs_gold_graph_candidate(payload, _receipt(payload))
+    benefit = next(
+        node for node in result.nodes if node.kind == "mbs_benefit_record"
+    )
+    field = next(
+        field for field in benefit.fields if field.native_name == "Benefit100"
+    )
+    assert field.native_value == "123456789012345678901234567890123456789"
+    assert field.conversion_status == "unrepresentable"
+    assert field.typed_value is None
 
 
 def test_field_node_edge_and_graph_tampering_fail_closed():
@@ -212,3 +229,77 @@ def test_node_field_order_and_self_edges_are_rejected():
     changed_edge["target_node_id"] = changed_edge["source_node_id"]
     with pytest.raises(ValidationError, match="self-edge"):
         MbsGoldEdge.model_validate(changed_edge)
+
+
+def test_graph_denominator_requires_unique_evidence_addresses():
+    payload = b"""<MBS_XML>
+      <Data><ItemNum>1</ItemNum><NewItem>A</NewItem><Benefit100>1</Benefit100></Data>
+      <Data><ItemNum>2</ItemNum><NewItem>B</NewItem><Benefit100>2</Benefit100></Data>
+    </MBS_XML>"""
+    result = build_mbs_gold_graph_candidate(payload, _receipt(payload))
+    service = next(
+        node for node in result.nodes if node.kind == "mbs_service_record"
+    )
+    benefit = next(
+        node
+        for node in result.nodes
+        if node.kind == "mbs_benefit_record"
+        and node.evidence == service.evidence
+    )
+    other_service = next(
+        node
+        for node in result.nodes
+        if node.kind == "mbs_service_record"
+        and node.evidence != service.evidence
+    )
+    other_benefit = next(
+        node
+        for node in result.nodes
+        if node.kind == "mbs_benefit_record"
+        and node.evidence != service.evidence
+    )
+    duplicate_service = MbsGoldNode(
+        node_id=_node_id(
+            other_service.kind, service.evidence, other_service.fields
+        ),
+        kind=other_service.kind,
+        evidence=service.evidence,
+        fields=other_service.fields,
+    )
+    duplicate_benefit = MbsGoldNode(
+        node_id=_node_id(
+            other_benefit.kind, benefit.evidence, other_benefit.fields
+        ),
+        kind=other_benefit.kind,
+        evidence=benefit.evidence,
+        fields=other_benefit.fields,
+    )
+    duplicate_edge = MbsGoldEdge(
+        edge_id=_edge_id(
+            duplicate_service.node_id,
+            duplicate_benefit.node_id,
+            service.evidence,
+        ),
+        source_node_id=duplicate_service.node_id,
+        target_node_id=duplicate_benefit.node_id,
+        evidence=service.evidence,
+    )
+    nodes = tuple(
+        sorted(
+            (service, benefit, duplicate_service, duplicate_benefit),
+            key=attrgetter("node_id"),
+        )
+    )
+    original_edge = next(
+        edge for edge in result.edges if edge.evidence == service.evidence
+    )
+    edges = tuple(
+        sorted((original_edge, duplicate_edge), key=attrgetter("edge_id"))
+    )
+    forged = result.model_dump()
+    forged["nodes"] = tuple(node.model_dump() for node in nodes)
+    forged["edges"] = tuple(edge.model_dump() for edge in edges)
+    with pytest.raises(
+        ValidationError, match="evidence denominator is ambiguous"
+    ):
+        MbsGoldGraphCandidate.model_validate(forged)
