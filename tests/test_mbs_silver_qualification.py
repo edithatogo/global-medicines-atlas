@@ -139,6 +139,8 @@ def test_serialized_qualification_rejects_promotion_or_denominator_drift() -> (
         ("tables", "table denominator"),
         ("fields", "field denominator"),
         ("quality", "quality outcomes"),
+        ("quality_count", "quality outcome denominator"),
+        ("quality_unknown", "quality outcome denominator"),
         ("blockers", "candidate blockers"),
         ("digest", "qualification digest"),
     ],
@@ -154,12 +156,20 @@ def test_serialized_qualification_rejects_all_evidence_drift(
     if change == "tables":
         values["tables"] = tuple(reversed(values["tables"]))
     elif change == "fields":
-        table = dict(values["tables"][0])
-        table["field_count"] += 1
-        table["field_occurrence_count"] += table["row_count"]
-        values["tables"] = (table, *values["tables"][1:])
+        first = dict(values["tables"][0])
+        second = dict(values["tables"][1])
+        first["field_count"] += 1
+        first["field_occurrence_count"] += first["row_count"]
+        second["field_count"] -= 1
+        second["field_occurrence_count"] -= second["row_count"]
+        values["tables"] = (first, second, *values["tables"][2:])
     elif change == "quality":
         values["quality"] = tuple(reversed(values["quality"]))
+    elif change == "quality_count":
+        values["quality"] = values["quality"][:-1]
+        values["blockers"] = values["blockers"][:-1]
+    elif change == "quality_unknown":
+        values["quality"][0]["status"] = "invented"
     elif change == "blockers":
         values["blockers"] = values["blockers"][:-1]
     else:

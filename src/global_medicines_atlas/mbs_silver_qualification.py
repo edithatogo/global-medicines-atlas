@@ -32,6 +32,16 @@ _QUALITY_STATUSES = frozenset({
     "unrepresentable",
     "unsupported_format",
 })
+_CONVERSION_STATUSES = frozenset({
+    "missing_field",
+    "null",
+    "blank",
+    "preserved",
+    "converted",
+    "invalid",
+    "unrepresentable",
+    "unsupported_format",
+})
 Blocker = Literal[
     "public_v4_identity_unverified",
     "real_source_era_unqualified",
@@ -99,12 +109,32 @@ class MbsSilverQualification(FrozenModel):
             for table in self.tables
         ):
             raise ValueError("MBS Silver row denominator differs")
+        expected_fields = {
+            table: sum(
+                field.target_table == table for field in mbs_field_contracts()
+            )
+            for table in _TABLES
+        }
+        if any(
+            table.field_count != expected_fields[table.table]
+            for table in self.tables
+        ):
+            raise ValueError("MBS Silver table field denominator differs")
         if self.field_count != len(mbs_field_contracts()):
             raise ValueError("MBS Silver field denominator differs")
+        if any(
+            item.status not in _CONVERSION_STATUSES for item in self.quality
+        ):
+            raise ValueError("quality outcome denominator differs")
         if tuple(item.status for item in self.quality) != tuple(
             sorted({item.status for item in self.quality})
         ):
             raise ValueError("quality outcomes must be sorted and unique")
+        if (
+            sum(item.count for item in self.quality)
+            != self.field_occurrence_count
+        ):
+            raise ValueError("quality outcome denominator differs")
         expected_blockers = (
             "public_v4_identity_unverified",
             "real_source_era_unqualified",
