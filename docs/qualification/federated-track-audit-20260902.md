@@ -37,10 +37,14 @@ non-gated dataset heads:
 This observation verifies public metadata, not every object digest. Existing
 hosted receipts remain the byte-level authority for already qualified objects.
 
-The public `Health Economics and Outcomes Research` collection contains four
-datasets, including both Australian source archives. Its reimbursement-atlas
-note still says the origin is unresolved, and the two Australian members have
-no explanatory notes. `Policy AUS` was not present in the anonymous public
+The content-addressed public observation receipt at
+`quality/qualifications/hf-federated-public-observation-20260902.json` binds the
+complete raw response bytes from both official API endpoints by SHA-256 and
+retains their public-safe normalized fields. It shows that the public `Health
+Economics and Outcomes Research` collection contains four datasets, including
+both Australian source archives. Its reimbursement-atlas note still says the
+origin is unresolved, and the two Australian members have no explanatory
+notes. `Policy AUS` was not present in the exhausted anonymous public
 collection denominator. That proves only that it was not publicly observable;
 it does not authorize inspection of, or a visibility change to, private state.
 

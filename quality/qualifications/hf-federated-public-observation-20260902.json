@@ -1,0 +1,73 @@
+{
+  "observed_at": "2026-09-01T19:48:57Z",
+  "observation_scope": "anonymous_public_metadata_only",
+  "owner": "edithatogo",
+  "public_collection_denominator": {
+    "endpoint": "https://huggingface.co/api/collections?owner=edithatogo&limit=100",
+    "raw_response_sha256": "90c07ea02f5184862d482da84716baa83909ba942b0c40b9e4cea4fadef5f7d0",
+    "collection_count": 8,
+    "exhaustion_basis": "response count below explicit limit of 100",
+    "collections": [
+      "edithatogo/dataset-estate-catalog-6a695b6dcc338fa1be059d04",
+      "edithatogo/foi-and-public-information-research-6a2e1141d8c6003998146df8",
+      "edithatogo/fyi-archive-global-public-information-request-archives-6a6946d45c8cc5852a1d62d4",
+      "edithatogo/hathitrust-nz-6a472b1e3de68381856b31f9",
+      "edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+      "edithatogo/hermes-tool-calling-experiments-6a2e124b52702b466be7efed",
+      "edithatogo/new-zealand-legal-and-parliamentary-corpora-6a2eb7e16d4ee03d87eae247",
+      "edithatogo/new-zealand-public-web-archives-6a2eb7d81aa2f5a72444bd5a"
+    ],
+    "policy_aus_public_match_count": 0
+  },
+  "heor_collection": {
+    "endpoint": "https://huggingface.co/api/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+    "raw_response_sha256": "1c683a23ef3e56522624128bf32352509f536287c5d25cb19fdc076645e8b6c2",
+    "slug": "edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+    "title": "Health Economics and Outcomes Research",
+    "description": "Registry-driven view of health-economics, reimbursement, outcomes-research, and related evidence datasets.",
+    "private": false,
+    "last_updated": "2026-08-30T03:33:28.898Z",
+    "members": [
+      {
+        "dataset": "edithatogo/reimbursement-atlas",
+        "position": 0,
+        "private": false,
+        "gated": false,
+        "note": "Metadata-only reimbursement atlas; origin remains unresolved in the registry."
+      },
+      {
+        "dataset": "edithatogo/nz-health-appropriations",
+        "position": 1,
+        "private": false,
+        "gated": false,
+        "note": "Checksum-pinned NZ health appropriations medallion dataset; manifest SHA-256 9a33babda857b0aa7c60a6012000cf1e730fed729781cb8ceb6e7a4714cae40e; revision 9b85bac06597d4435fd078f6bed0f30bb008542b."
+      },
+      {
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "position": 2,
+        "private": false,
+        "gated": false,
+        "note": null
+      },
+      {
+        "dataset": "edithatogo/australian-pbs-source-archive",
+        "position": 3,
+        "private": false,
+        "gated": false,
+        "note": null
+      }
+    ]
+  },
+  "interpretation": {
+    "heor_member_count": 4,
+    "australian_member_notes_missing": 2,
+    "reimbursement_atlas_note_stale": true,
+    "policy_aus_publicly_observable": false
+  },
+  "boundaries": [
+    "The committed receipt captures selected public-safe response fields and binds both complete raw HTTP response bytes by SHA-256.",
+    "Absence from the exhausted anonymous public denominator does not prove that a private collection is absent.",
+    "Collection membership and notes are mutable discovery metadata, not dataset authority or byte-level verification.",
+    "No credential, private estate state, source payload, collection mutation, visibility change or publication was used."
+  ]
+}
