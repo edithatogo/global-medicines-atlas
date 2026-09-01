@@ -1,0 +1,48 @@
+{
+  "as_of": "2026-09-01T12:20:00Z",
+  "candidate_package": {
+    "consumer_verification_guide_complete": true,
+    "repository_owned_work_complete": true,
+    "signed_stable_release_produced": false,
+    "source_prerelease": "v1.0.0rc1"
+  },
+  "contract": {
+    "path": "quality/qualifications/stable-v1-contract.json",
+    "sha256": "94f2f14cb71d2a996fd40e48bd7d7f03cef2bc723f1852dba2a06fe783c9aaa9"
+  },
+  "qualification_state": "blocked",
+  "release_performed": false,
+  "schema_id": "global-medicines-atlas.stable-v1-release-readiness-reconciliation",
+  "schema_version": 1,
+  "separate_non_acceptance_gate": {
+    "gate_id": "production-disaster-recovery-authority",
+    "state": "blocked_external_authority"
+  },
+  "unresolved_gates": [
+    {
+      "gate_id": "renovate-output-verification",
+      "kind": "hosted_activation_and_observation",
+      "state": "blocked"
+    },
+    {
+      "gate_id": "stable-v1-australian-health-federation",
+      "kind": "dependent_repository_tracks",
+      "state": "blocked"
+    },
+    {
+      "gate_id": "stable-v1-bronze-current-scope",
+      "kind": "dependent_repository_track",
+      "state": "blocked"
+    },
+    {
+      "gate_id": "stable-v1-maturity-m5",
+      "kind": "dependent_evidence",
+      "state": "blocked"
+    },
+    {
+      "gate_id": "stable-v1-release-approval",
+      "kind": "human_public_release_gate",
+      "state": "blocked"
+    }
+  ]
+}
