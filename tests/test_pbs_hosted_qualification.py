@@ -21,6 +21,7 @@ from test_pbs_historical_silver import PATH, SOURCE
 from test_pbs_silver import XML
 
 from global_medicines_atlas import pbs_hosted_qualification as hosted
+from global_medicines_atlas import pbs_prepared_qualification as prepared
 
 SHA = "a" * 40
 
@@ -535,11 +536,98 @@ def test_workflow_has_durable_receipt_and_no_dataset_write() -> None:
     ).read_text(encoding="utf-8")
     assert "gh issue comment 341" in workflow
     assert "if: always()" in workflow
-    assert "--failure-only" in workflow
+    assert workflow.count("gh issue comment 341") == 1
+    assert "retention-days: 1" in workflow
     assert "persist-credentials: false" in workflow
     assert "HF_TOKEN" not in workflow
     assert "upload_folder" not in workflow
     assert "exact_commit" in workflow
+    assert "fail-fast: false" in workflow
+    assert "[native, domain, entities, dates]" in workflow
+    assert "--reference-shards 16" in workflow
+    assert "max-parallel: 4" in workflow
+    assert "needs: [prepare, qualify, qualify-references]" in workflow
+    assert (
+        "pbs-${{ matrix.projection }}-receipt-${{ github.run_attempt }}.json"
+        in workflow
+    )
+    assert "needs: [prepare, qualify]" in workflow
+    assert (
+        "pbs-reference-global-${{ needs.prepare.outputs.artifact_suffix }}"
+        in workflow
+    )
+    assert "prepared/phase-input" not in workflow
+    assert "archive.zip" not in workflow
+    assert "aggregate_historical_pbs_qualification.py" in workflow
+    assert "merge-multiple: true" in workflow
+
+
+def test_preparation_fetches_once_and_writes_bounded_transient_workers(
+    tmp_path: Path, synthetic, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, calls, transport = synthetic
+    output = tmp_path / "prepared"
+
+    report = hosted.run_hosted_preparation(
+        SHA, output, shard_count=2, transport=transport
+    )
+
+    assert report["status"] == "prepared"
+    assert report["reference_shards"] == 2
+    assert report["publication_performed"] is False
+    assert report["evidence_truth"] is False
+    assert len(calls) == 5
+    assert not (output / "phase-input").exists()
+    assert not list(output.rglob("archive.zip"))
+    assert not list(output.rglob("member.xml"))
+    manifest = json.loads(
+        (output / "references" / "reference-manifest.json").read_text()
+    )
+    assert manifest["evidence_truth"] is False
+    for index in range(2):
+        assert (
+            output / "references" / f"reference-{index:02d}.arrow"
+        ).is_file()
+    for name in ("ARCHIVE", "MANIFEST", "MEMBER", "RECEIPT"):
+        monkeypatch.setattr(prepared, name, getattr(hosted, name))
+    worker = tmp_path / "worker"
+    worker.mkdir()
+    for name in (
+        "reference-00.arrow",
+        "reference-index.json",
+        "reference-manifest.json",
+    ):
+        (worker / name).write_bytes((output / "references" / name).read_bytes())
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "2")
+    reference_report = prepared.qualify_prepared_reference(worker, SHA, 0)
+    assert reference_report["status"] == "passed"
+    assert reference_report["qualification"]["reference_window"]["index"] == 0
+
+
+def test_prepared_worker_rejects_invalid_context_and_manifest(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    path = tmp_path / "manifest.json"
+    path.write_text("[]")
+    with pytest.raises(TypeError, match="manifest"):
+        prepared._read_manifest(  # pyright: ignore[reportPrivateUsage]
+            path, "expected"
+        )
+    path.write_text(json.dumps({"schema_version": 1}))
+    with pytest.raises(ValueError, match="manifest"):
+        prepared._read_manifest(  # pyright: ignore[reportPrivateUsage]
+            path, "expected"
+        )
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/not-main")
+    with pytest.raises(ValueError, match="context"):
+        prepared._context(  # pyright: ignore[reportPrivateUsage]
+            SHA,
+            {
+                "workflow_commit": SHA,
+                "preparation_run_id": "123",
+                "preparation_run_attempt": "1",
+            },
+        )
 
 
 def test_checkpoint_survives_interruption(synthetic, monkeypatch, tmp_path):

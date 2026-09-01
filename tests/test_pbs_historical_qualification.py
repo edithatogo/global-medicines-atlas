@@ -54,6 +54,94 @@ def test_all_projections_have_exact_denominators_and_parquet_parity() -> None:
     )
 
 
+@pytest.mark.parametrize(
+    "projection", ["native", "domain", "entities", "references", "dates"]
+)
+def test_one_projection_shard_preserves_full_denominator(
+    projection: str,
+) -> None:
+    archive = _zip([(PATH, XML)])
+    parent = _receipt(archive, SOURCE)
+    binding = build_pbs_xml_member_binding(archive, parent)
+    report = qualifier.qualify_pbs_historical_projections(
+        archive, XML, parent, binding, projection=projection
+    )
+    assert report["projection_shard"] == projection
+    assert tuple(report["projections"]) == (projection,)
+    result = report["projections"][projection]
+    assert result["native_fields"] == report["native_fields"]
+    assert result["native_digest"] == report["native_digest"]
+    assert result["parquet_roundtrip_verified"] is True
+
+
+def test_unknown_projection_shard_fails_closed() -> None:
+    archive = _zip([(PATH, XML)])
+    parent = _receipt(archive, SOURCE)
+    binding = build_pbs_xml_member_binding(archive, parent)
+    with pytest.raises(ValueError, match="projection shard"):
+        qualifier.qualify_pbs_historical_projections(
+            archive, XML, parent, binding, projection="unknown"
+        )
+
+
+def test_reference_windows_are_gap_free_and_preserve_ordered_counts() -> None:
+    archive = _zip([(PATH, XML)])
+    parent = _receipt(archive, SOURCE)
+    binding = build_pbs_xml_member_binding(archive, parent)
+    reports = [
+        qualifier.qualify_pbs_historical_projections(
+            archive,
+            XML,
+            parent,
+            binding,
+            projection="references",
+            reference_shard=(index, 2),
+        )
+        for index in range(2)
+    ]
+    assert [report["reference_window"] for report in reports] == [
+        {
+            "index": 0,
+            "count": 2,
+            "start_row": 0,
+            "stop_row": 5,
+            "total_rows": 10,
+        },
+        {
+            "index": 1,
+            "count": 2,
+            "start_row": 5,
+            "stop_row": 10,
+            "total_rows": 10,
+        },
+    ]
+    projections = [report["projections"]["references"] for report in reports]
+    assert sum(item["rows"] for item in projections) == 10
+    assert (
+        sum(item["native_fields"] for item in projections)
+        == reports[0]["native_fields"]
+    )
+    assert all(
+        item["native_digest_scope"] == "ordered-window" for item in projections
+    )
+
+
+@pytest.mark.parametrize("shard", [(-1, 2), (2, 2), (0, 0), (0, 65)])
+def test_invalid_reference_window_fails_closed(shard: tuple[int, int]) -> None:
+    archive = _zip([(PATH, XML)])
+    parent = _receipt(archive, SOURCE)
+    binding = build_pbs_xml_member_binding(archive, parent)
+    with pytest.raises(ValueError, match="reference shard"):
+        qualifier.qualify_pbs_historical_projections(
+            archive,
+            XML,
+            parent,
+            binding,
+            projection="references",
+            reference_shard=shard,
+        )
+
+
 def test_progress_is_aggregate_and_does_not_change_qualification() -> None:
     archive = _zip([(PATH, XML)])
     parent = _receipt(archive, SOURCE)

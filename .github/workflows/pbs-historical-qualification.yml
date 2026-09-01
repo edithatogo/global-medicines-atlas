@@ -15,46 +15,302 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  qualify:
-    name: Verify pinned public PBS lineage and projection denominators
+  prepare:
+    name: Prepare verified transient PBS shard inputs
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     permissions:
       contents: read
-      issues: write # Durable bounded aggregate receipt, not raw payloads.
+    outputs:
+      artifact_suffix: ${{ steps.identity.outputs.suffix }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
-      - name: Verify original public PBS archive and all projections anonymously
+      - name: Bind preparation artifact identity
+        id: identity
+        run: echo "suffix=${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_OUTPUT"
+      - name: Verify public source once and prepare bounded inputs
         timeout-minutes: 55
         env:
           REQUESTED_COMMIT: ${{ inputs.exact_commit }}
         run: |
           set -euo pipefail
-          uv run --locked --python 3.14.6 python scripts/qualify_historical_pbs_public.py \
-            --exact-commit "$REQUESTED_COMMIT" --output pbs-qualification-receipt.json
-      - name: Persist aggregate receipt durably in the track issue
-        if: always()
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
-        run: |
-          set -euo pipefail
-          if ! test -s pbs-qualification-receipt.json; then
-            uv run --locked --python 3.14.6 python scripts/qualify_historical_pbs_public.py \
-              --exact-commit "$REQUESTED_COMMIT" --failure-only \
-              --output pbs-qualification-receipt.json
-          fi
-          gh issue comment 341 --repo "$GITHUB_REPOSITORY" \
-            --body-file pbs-qualification-receipt.json
-      - name: Retain aggregate receipt without raw source material
+          uv run --locked --python 3.14.6 python scripts/prepare_historical_pbs_qualification.py \
+            --exact-commit "$REQUESTED_COMMIT" --reference-shards 16 \
+            --output prepared --receipt pbs-preparation.json
+      - name: Retain transient global reference index
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-global-${{ steps.identity.outputs.suffix }}
+          path: |
+            prepared/references/reference-index.json
+            prepared/references/reference-manifest.json
+          if-no-files-found: error
+          retention-days: 1
+      - name: Retain transient reference input 00
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-partition-00-${{ steps.identity.outputs.suffix }}
+          path: prepared/references/reference-00.arrow
+          if-no-files-found: error
+          retention-days: 1
+      - name: Retain transient reference input 01
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-partition-01-${{ steps.identity.outputs.suffix }}
+          path: prepared/references/reference-01.arrow
+          if-no-files-found: error
+          retention-days: 1
+      - name: Retain transient reference input 02
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-partition-02-${{ steps.identity.outputs.suffix }}
+          path: prepared/references/reference-02.arrow
+          if-no-files-found: error
+          retention-days: 1
+      - name: Retain transient reference input 03
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-partition-03-${{ steps.identity.outputs.suffix }}
+          path: prepared/references/reference-03.arrow
+          if-no-files-found: error
+          retention-days: 1
+      - name: Retain transient reference input 04
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-partition-04-${{ steps.identity.outputs.suffix }}
+          path: prepared/references/reference-04.arrow
+          if-no-files-found: error
+          retention-days: 1
+      - name: Retain transient reference input 05
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-partition-05-${{ steps.identity.outputs.suffix }}
+          path: prepared/references/reference-05.arrow
+          if-no-files-found: error
+          retention-days: 1
+      - name: Retain transient reference input 06
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-partition-06-${{ steps.identity.outputs.suffix }}
+          path: prepared/references/reference-06.arrow
+          if-no-files-found: error
+          retention-days: 1
+      - name: Retain transient reference input 07
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-partition-07-${{ steps.identity.outputs.suffix }}
+          path: prepared/references/reference-07.arrow
+          if-no-files-found: error
+          retention-days: 1
+      - name: Retain transient reference input 08
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-partition-08-${{ steps.identity.outputs.suffix }}
+          path: prepared/references/reference-08.arrow
+          if-no-files-found: error
+          retention-days: 1
+      - name: Retain transient reference input 09
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-partition-09-${{ steps.identity.outputs.suffix }}
+          path: prepared/references/reference-09.arrow
+          if-no-files-found: error
+          retention-days: 1
+      - name: Retain transient reference input 10
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-partition-10-${{ steps.identity.outputs.suffix }}
+          path: prepared/references/reference-10.arrow
+          if-no-files-found: error
+          retention-days: 1
+      - name: Retain transient reference input 11
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-partition-11-${{ steps.identity.outputs.suffix }}
+          path: prepared/references/reference-11.arrow
+          if-no-files-found: error
+          retention-days: 1
+      - name: Retain transient reference input 12
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-partition-12-${{ steps.identity.outputs.suffix }}
+          path: prepared/references/reference-12.arrow
+          if-no-files-found: error
+          retention-days: 1
+      - name: Retain transient reference input 13
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-partition-13-${{ steps.identity.outputs.suffix }}
+          path: prepared/references/reference-13.arrow
+          if-no-files-found: error
+          retention-days: 1
+      - name: Retain transient reference input 14
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-partition-14-${{ steps.identity.outputs.suffix }}
+          path: prepared/references/reference-14.arrow
+          if-no-files-found: error
+          retention-days: 1
+      - name: Retain transient reference input 15
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-partition-15-${{ steps.identity.outputs.suffix }}
+          path: prepared/references/reference-15.arrow
+          if-no-files-found: error
+          retention-days: 1
+      - name: Retain bounded preparation receipt
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
-          name: pbs-historical-qualification-receipt
+          name: pbs-preparation-log-${{ github.run_id }}-${{ github.run_attempt }}
+          path: pbs-preparation.json
+          if-no-files-found: error
+          retention-days: 30
+
+  qualify:
+    name: Verify PBS phase / ${{ matrix.projection }}
+    needs: prepare
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        projection: [native, domain, entities, dates]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Qualify one phase from the pinned public source
+        timeout-minutes: 55
+        env:
+          PROJECTION: ${{ matrix.projection }}
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.14.6 python scripts/qualify_historical_pbs_public.py \
+            --exact-commit "$REQUESTED_COMMIT" --projection "$PROJECTION" \
+            --output "pbs-$PROJECTION-receipt-$GITHUB_RUN_ATTEMPT.json"
+      - name: Retain immutable phase receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-${{ matrix.projection }}-receipt-${{ github.run_id }}-${{ github.run_attempt }}
+          path: pbs-${{ matrix.projection }}-receipt-${{ github.run_attempt }}.json
+          if-no-files-found: error
+          retention-days: 30
+
+  qualify-references:
+    name: Verify PBS references / ${{ matrix.shard }}
+    if: always() && needs.prepare.result == 'success'
+    needs: [prepare, qualify]
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - {shard: 0, key: "00"}
+          - {shard: 1, key: "01"}
+          - {shard: 2, key: "02"}
+          - {shard: 3, key: "03"}
+          - {shard: 4, key: "04"}
+          - {shard: 5, key: "05"}
+          - {shard: 6, key: "06"}
+          - {shard: 7, key: "07"}
+          - {shard: 8, key: "08"}
+          - {shard: 9, key: "09"}
+          - {shard: 10, key: "10"}
+          - {shard: 11, key: "11"}
+          - {shard: 12, key: "12"}
+          - {shard: 13, key: "13"}
+          - {shard: 14, key: "14"}
+          - {shard: 15, key: "15"}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: pbs-reference-global-${{ needs.prepare.outputs.artifact_suffix }}
+          path: input
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: pbs-reference-partition-${{ matrix.key }}-${{ needs.prepare.outputs.artifact_suffix }}
+          path: input
+      - name: Qualify one prepared reference window
+        timeout-minutes: 55
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+          SHARD: ${{ matrix.shard }}
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.14.6 python scripts/qualify_prepared_pbs_shard.py \
+            --exact-commit "$REQUESTED_COMMIT" --input input \
+            --reference-shard "$SHARD" \
+            --output "pbs-references-$SHARD-receipt-$GITHUB_RUN_ATTEMPT.json"
+      - name: Retain immutable reference receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-references-${{ matrix.shard }}-receipt-${{ github.run_id }}-${{ github.run_attempt }}
+          path: pbs-references-${{ matrix.shard }}-receipt-${{ github.run_attempt }}.json
+          if-no-files-found: error
+          retention-days: 30
+
+  aggregate:
+    name: Verify complete PBS shard aggregate
+    if: always() && github.ref == 'refs/heads/main'
+    needs: [prepare, qualify, qualify-references]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write # One durable bounded aggregate receipt only.
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        continue-on-error: true
+        with:
+          pattern: pbs-*-receipt-${{ github.run_id }}-*
+          path: receipts
+          merge-multiple: true
+      - name: Verify exact shard coverage, identities, denominators and parity
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.14.6 python scripts/aggregate_historical_pbs_qualification.py \
+            --receipts receipts --exact-commit "$REQUESTED_COMMIT" \
+            --reference-shards 16 \
+            --output pbs-qualification-receipt.json
+      - name: Persist the sole aggregate receipt in the track issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh issue comment 341 --repo "$GITHUB_REPOSITORY" \
+            --body-file pbs-qualification-receipt.json
+      - name: Retain aggregate receipt without source material
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-historical-qualification-receipt-${{ github.run_id }}-${{ github.run_attempt }}
           path: pbs-qualification-receipt.json
           if-no-files-found: error
           retention-days: 30

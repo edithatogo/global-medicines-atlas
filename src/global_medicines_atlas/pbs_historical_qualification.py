@@ -39,6 +39,27 @@ _NATIVE_KEYS = (
     "state",
 )
 QUALIFICATION_ROWS_PER_BATCH = 4096
+MAX_REFERENCE_SHARDS = 64
+
+
+def _reference_window(
+    projection: str | None,
+    shard: tuple[int, int] | None,
+    total: int,
+) -> tuple[int, int] | None:
+    if shard is None:
+        return None
+    index, count = shard
+    if not all((
+        projection == "references",
+        type(index) is int,
+        type(count) is int,
+        1 <= count <= MAX_REFERENCE_SHARDS,
+        0 <= index < count,
+        count <= total,
+    )):
+        raise ValueError("invalid PBS reference shard")
+    return total * index // count, total * (index + 1) // count
 
 
 def _encoded(values: list[Any]) -> bytes:
@@ -95,6 +116,7 @@ def _projection(
     nested: bool,
     progress: Callable[[str, int, int], None] | None = None,
     phase: str = "unavailable",
+    row_window: tuple[int, int] | None = None,
 ) -> dict[str, Any]:
     expected = {
         "source_id": binding.source.source_id,
@@ -173,19 +195,27 @@ def _projection(
                 digest.update(_encoded([field[key] for key in _NATIVE_KEYS]))
                 counts["native_fields"] += 1
         _checkpoint(progress, phase, batch_number, counts["rows"])
-    if (
-        counts["native_fields"] != denominator["native_fields"]
-        or counts["rows"]
-        != denominator["elements" if nested else "native_fields"]
+    expected_rows = denominator["elements" if nested else "native_fields"]
+    if row_window is not None:
+        expected_rows = row_window[1] - row_window[0]
+    if counts["rows"] != expected_rows or (
+        row_window is None
+        and counts["native_fields"] != denominator["native_fields"]
     ):
         raise ValueError("historical projection denominator changed")
-    if digest.hexdigest() != denominator["native_digest"]:
+    if (
+        row_window is None
+        and digest.hexdigest() != denominator["native_digest"]
+    ):
         raise ValueError("historical projection native digest changed")
-    return {
+    report = {
         **counts,
         "native_digest": digest.hexdigest(),
         "parquet_roundtrip_verified": True,
     }
+    if row_window is not None:
+        report["native_digest_scope"] = "ordered-window"
+    return report
 
 
 def _account_nested_batch(
@@ -225,6 +255,8 @@ def _account_nested_batch(
     if any(length == 0 for length in lengths):
         raise ValueError("historical entity lineage is empty")
     offsets = cast("list[int]", nested.offsets.to_pylist())
+    offset_base = offsets[0]
+    offsets = [offset - offset_base for offset in offsets]
     flattened = cast("pa.StructArray", pc.list_flatten(nested))
     fields: dict[str, list[Any]] = {
         name: cast(
@@ -298,6 +330,8 @@ def qualify_pbs_historical_projections(
     *,
     rows_per_batch: int = QUALIFICATION_ROWS_PER_BATCH,
     progress: Callable[[str, int, int], None] | None = None,
+    projection: str | None = None,
+    reference_shard: tuple[int, int] | None = None,
 ) -> dict[str, Any]:
     """Account for every XML slot in five candidate projections and Parquet.
 
@@ -317,6 +351,12 @@ def qualify_pbs_historical_projections(
     An optional callback receives phase codes and processed batch/row counters,
     never source text. Its partial checkpoints are not qualification reports.
     """
+    projection_names = ("native", "domain", "entities", "references", "dates")
+    if projection is not None and projection not in projection_names:
+        raise ValueError("unknown PBS projection shard")
+    selected: set[str] = set(
+        projection_names if projection is None else (projection,)
+    )
     if progress is not None:
         progress("binding-validation", 0, 0)
     binding = validate_pbs_xml_member_binding(
@@ -325,12 +365,17 @@ def qualify_pbs_historical_projections(
     if progress is not None:
         progress("denominator", 0, 0)
     denominator = _denominator(member_payload, progress)
+    reference_window = _reference_window(
+        projection, reference_shard, denominator["elements"]
+    )
     routes = (
         ("native", iter_pbs_historical_silver_batches, False),
         ("domain", iter_pbs_historical_domain_batches, False),
     )
-    projections = {}
+    projections: dict[str, Any] = {}
     for name, route, nested in routes:
+        if name not in selected:
+            continue
         if progress is not None:
             progress(name, 0, 0)
         projections[name] = _projection(
@@ -347,73 +392,22 @@ def qualify_pbs_historical_projections(
             progress=progress,
             phase=name,
         )
-    with TemporaryFile() as spool:
-        entity_schema: pa.Schema | None = None
-
-        def entity_batches() -> Generator[pa.RecordBatch]:
-            nonlocal entity_schema
-            writer = None
-            try:
-                for batch in iter_pbs_historical_entity_batches(
-                    archive_payload,
-                    member_payload,
-                    parent,
-                    binding,
-                    rows_per_batch=rows_per_batch,
-                ):
-                    if writer is None:
-                        entity_schema = batch.schema
-                        writer = pa.ipc.new_stream(spool, batch.schema)
-                    writer.write_batch(  # pyright: ignore[reportUnknownMemberType]
-                        batch
-                    )
-                    yield batch
-            finally:
-                if writer is not None:
-                    writer.close()
-
-        if progress is not None:
-            progress("entities", 0, 0)
-        entity_stream = entity_batches()
-        try:
-            projections["entities"] = _projection(
-                entity_stream,
+    if selected & {"entities", "references", "dates"}:
+        with TemporaryFile() as spool:
+            _qualify_entity_projection_shards(
+                archive_payload,
+                member_payload,
+                parent,
                 binding,
                 denominator,
-                nested=True,
-                progress=progress,
-                phase="entities",
+                rows_per_batch,
+                progress,
+                selected,
+                projections,
+                spool,
+                reference_window,
             )
-        finally:
-            entity_stream.close()
-        if entity_schema is None:
-            raise ValueError("historical entity projection is empty")
-
-        def replay_entities() -> Iterator[pa.RecordBatch]:
-            spool.seek(0)
-            yield from pa.ipc.open_stream(spool)
-
-        replay_routes = (
-            (
-                "references",
-                _reference_batches(
-                    replay_entities(), replay_entities(), rows_per_batch
-                ),
-            ),
-            ("dates", _date_batches(replay_entities(), None, rows_per_batch)),
-        )
-        for name, batches in replay_routes:
-            if progress is not None:
-                progress(name, 0, 0)
-            projections[name] = _projection(
-                batches,
-                binding,
-                denominator,
-                nested=True,
-                progress=progress,
-                phase=name,
-            )
-    return {
+    report: dict[str, Any] = {
         "schema_version": 1,
         "qualification": "structural_storage_candidate_only",
         "source_id": binding.source.source_id,
@@ -427,3 +421,108 @@ def qualify_pbs_historical_projections(
         "domain_semantics_qualified": False,
         "publication_performed": False,
     }
+    if projection is not None:
+        report["projection_shard"] = projection
+    if reference_shard is not None and reference_window is not None:
+        report["reference_window"] = {
+            "index": reference_shard[0],
+            "count": reference_shard[1],
+            "start_row": reference_window[0],
+            "stop_row": reference_window[1],
+            "total_rows": denominator["elements"],
+        }
+    return report
+
+
+def _qualify_entity_projection_shards(
+    archive_payload: bytes,
+    member_payload: bytes,
+    parent: SourceReceipt,
+    binding: PbsXmlMemberBinding,
+    denominator: dict[str, Any],
+    rows_per_batch: int,
+    progress: Callable[[str, int, int], None] | None,
+    selected: set[str],
+    projections: dict[str, Any],
+    spool: Any,
+    reference_window: tuple[int, int] | None,
+) -> None:
+    """Build one bounded entity spool for the selected nested projection."""
+    entity_schema: pa.Schema | None = None
+
+    def entity_batches() -> Generator[pa.RecordBatch]:
+        nonlocal entity_schema
+        writer = None
+        try:
+            for batch in iter_pbs_historical_entity_batches(
+                archive_payload,
+                member_payload,
+                parent,
+                binding,
+                rows_per_batch=rows_per_batch,
+            ):
+                if writer is None:
+                    entity_schema = batch.schema
+                    writer = pa.ipc.new_stream(spool, batch.schema)
+                writer.write_batch(batch)  # pyright: ignore[reportUnknownMemberType]
+                yield batch
+        finally:
+            if writer is not None:
+                writer.close()
+
+    entity_stream = entity_batches()
+    try:
+        if "entities" in selected:
+            if progress is not None:
+                progress("entities", 0, 0)
+            projections["entities"] = _projection(
+                entity_stream,
+                binding,
+                denominator,
+                nested=True,
+                progress=progress,
+                phase="entities",
+            )
+        else:
+            for _batch in entity_stream:
+                pass
+    finally:
+        entity_stream.close()
+    if entity_schema is None:
+        raise ValueError("historical entity projection is empty")
+
+    def replay_entities() -> Iterator[pa.RecordBatch]:
+        spool.seek(0)
+        yield from pa.ipc.open_stream(spool)
+
+    replay_routes = (
+        (
+            "references",
+            lambda: _reference_batches(
+                replay_entities(),
+                replay_entities(),
+                rows_per_batch,
+                start_row=reference_window[0] if reference_window else 0,
+                stop_row=reference_window[1] if reference_window else None,
+                expected_total_rows=denominator["elements"],
+            ),
+        ),
+        (
+            "dates",
+            lambda: _date_batches(replay_entities(), None, rows_per_batch),
+        ),
+    )
+    for name, batches in replay_routes:
+        if name not in selected:
+            continue
+        if progress is not None:
+            progress(name, 0, 0)
+        projections[name] = _projection(
+            batches(),
+            binding,
+            denominator,
+            nested=True,
+            progress=progress,
+            phase=name,
+            row_window=reference_window if name == "references" else None,
+        )
