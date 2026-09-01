@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -262,6 +263,45 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
     invalid["unresolved_gate_ids"] = []
     with pytest.raises(ValidationError):
         _validator(QUALIFICATION_SCHEMA).validate(invalid)
+
+
+def test_release_readiness_reconciliation_separates_package_from_release() -> (
+    None
+):
+    qualification = _load(QUALIFICATION)
+    receipt = _load(
+        ROOT
+        / "quality/qualifications/stable-v1-release-readiness-reconciliation.json"
+    )
+    assert (
+        receipt["qualification_state"] == qualification["qualification_state"]
+    )
+    contract_path = ROOT / receipt["contract"]["path"]
+    assert contract_path.is_relative_to(ROOT)
+    assert contract_path == QUALIFICATION
+    assert (
+        receipt["contract"]["sha256"]
+        == hashlib.sha256(contract_path.read_bytes()).hexdigest()
+    )
+    assert receipt["release_performed"] is False
+    assert receipt["candidate_package"] == {
+        "consumer_verification_guide_complete": True,
+        "repository_owned_work_complete": True,
+        "signed_stable_release_produced": False,
+        "source_prerelease": "v1.0.0rc1",
+    }
+    assert {item["gate_id"] for item in receipt["unresolved_gates"]} == set(
+        qualification["unresolved_gate_ids"]
+    )
+    assert {
+        item["gate_id"]
+        for item in receipt["unresolved_gates"]
+        if item["kind"] == "human_public_release_gate"
+    } == {"stable-v1-release-approval"}
+    assert receipt["separate_non_acceptance_gate"] == {
+        "gate_id": "production-disaster-recovery-authority",
+        "state": "blocked_external_authority",
+    }
 
 
 def test_structural_medicine_v2_is_not_temporal_migration_v2() -> None:
