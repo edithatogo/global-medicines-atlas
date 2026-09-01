@@ -640,7 +640,7 @@ def test_reference_nodes_reuse_one_digest_bound_entity_material(
 ) -> None:
     material_directory = tmp_path / "material"
     material_report = hosted.run_hosted_entity_material(
-        SHA, material_directory, transport=synthetic[2]
+        SHA, material_directory, shard_count=2, transport=synthetic[2]
     )
     calls_after_material = len(synthetic[1])
 
@@ -655,6 +655,17 @@ def test_reference_nodes_reuse_one_digest_bound_entity_material(
     )
 
     assert node["node_kind"] == "index"
+    partition = hosted.run_prepared_reference_node(
+        SHA,
+        material_directory,
+        material_report["node"],
+        tmp_path / "partition",
+        shard_count=2,
+        shard_index=0,
+        preparation_run_id=material_report["run_id"],
+        preparation_run_attempt=material_report["run_attempt"],
+    )
+    assert partition["node_kind"] == "partition"
     assert len(synthetic[1]) == calls_after_material
     assert not list(material_directory.rglob("*.zip"))
     assert not list(material_directory.rglob("*.xml"))

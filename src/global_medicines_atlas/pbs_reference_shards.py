@@ -89,26 +89,56 @@ def _counter() -> dict[str, int]:
     )
 
 
-def prepare_reference_entity_material(
+def prepare_reference_entity_material(  # ruff: ignore[too-many-branches,too-many-locals]
     batches: Iterator[pa.RecordBatch],
     binding: PbsXmlMemberBinding,
     denominator: dict[str, Any],
     output: Path,
+    *,
+    shard_count: int | None = None,
 ) -> dict[str, Any]:
     """Materialize the verified entity stream once for downstream DAG nodes."""
     total = denominator.get("elements")
-    if type(total) is not int or total < 1:
+    if (
+        type(total) is not int
+        or total < 1
+        or (
+            shard_count is not None
+            and (
+                type(shard_count) is not int
+                or not 1 <= shard_count <= min(MAX_REFERENCE_SHARDS, total)
+            )
+        )
+    ):
         raise ValueError("invalid PBS reference entity material preparation")
     output.parent.mkdir(parents=True, exist_ok=True)
     counts = _counter()
     digest = hashlib.sha256()
     schema: pa.Schema | None = None
     writer: pa.RecordBatchStreamWriter | None = None
+    partition_paths = (
+        [
+            output.parent / f"reference-{index:02d}.arrow"
+            for index in range(shard_count)
+        ]
+        if shard_count is not None
+        else []
+    )
+    partition_writers: list[pa.RecordBatchStreamWriter | None] = [
+        None for _ in partition_paths
+    ]
+    partition_counts = [_counter() for _ in partition_paths]
+    partition_digests = [hashlib.sha256() for _ in partition_paths]
+    observed = 0
     try:
         for batch in batches:
             if schema is None:
                 schema = batch.schema
                 writer = pa.ipc.new_stream(str(output), schema)
+                partition_writers = [
+                    pa.ipc.new_stream(str(path), schema)
+                    for path in partition_paths
+                ]
             elif not batch.schema.equals(schema, check_metadata=True):
                 raise ValueError("PBS reference entity material schema changed")
             if writer is None:
@@ -117,9 +147,35 @@ def prepare_reference_entity_material(
                 )
             writer.write_batch(batch)  # pyright: ignore[reportUnknownMemberType]
             _account_nested_batch(batch, _lineage(binding), counts, digest)
+            batch_start, batch_stop = observed, observed + batch.num_rows
+            for index, partition_writer in enumerate(partition_writers):
+                start = total * index // len(partition_writers)
+                stop = total * (index + 1) // len(partition_writers)
+                selected_start = max(start, batch_start)
+                selected_stop = min(stop, batch_stop)
+                if selected_start < selected_stop:
+                    if partition_writer is None:
+                        raise RuntimeError(
+                            "PBS reference entity partition was not initialized"
+                        )
+                    selected = batch.slice(
+                        selected_start - batch_start,
+                        selected_stop - selected_start,
+                    )
+                    partition_writer.write_batch(selected)  # pyright: ignore[reportUnknownMemberType]
+                    _account_nested_batch(
+                        selected,
+                        _lineage(binding),
+                        partition_counts[index],
+                        partition_digests[index],
+                    )
+            observed = batch_stop
     finally:
         if writer is not None:
             writer.close()
+        for partition_writer in partition_writers:
+            if partition_writer is not None:
+                partition_writer.close()
     expected_denominator = {
         key: denominator[key]
         for key in ("native_fields", "elements", "native_digest")
@@ -138,6 +194,22 @@ def prepare_reference_entity_material(
         "binding_sha256": binding.digest(),
         "denominator": expected_denominator,
         "entity_material": {"path": output.name, **_digest(output)},
+        "partitions": [
+            {
+                "index": index,
+                "count": len(partition_paths),
+                "start_row": total * index // len(partition_paths),
+                "stop_row": total * (index + 1) // len(partition_paths),
+                "path": path.name,
+                **_digest(path),
+                "expected_projection": {
+                    "rows": partition_counts[index]["rows"],
+                    "native_fields": partition_counts[index]["native_fields"],
+                    "native_digest": partition_digests[index].hexdigest(),
+                },
+            }
+            for index, path in enumerate(partition_paths)
+        ],
         "publication_performed": False,
         "evidence_truth": False,
     }
@@ -190,6 +262,52 @@ def load_reference_entity_material(
         pa.ipc.open_stream(pa.memory_map(str(path), "r")),
         binding,
         denominator,
+    )
+
+
+def load_reference_entity_partition(
+    directory: Path, receipt: dict[str, Any], shard_index: int
+) -> tuple[
+    pa.RecordBatchReader,
+    PbsXmlMemberBinding,
+    dict[str, Any],
+    dict[str, Any],
+]:
+    """Validate and open one independently bound prepared entity partition."""
+    contract = {
+        key: value for key, value in receipt.items() if key != "contract_sha256"
+    }
+    if (
+        receipt.get("contract_sha256")
+        != hashlib.sha256(_encoded(contract)).hexdigest()
+    ):
+        raise ValueError("PBS reference entity material receipt changed")
+    partitions = receipt.get("partitions")
+    denominator = receipt.get("denominator")
+    if not isinstance(partitions, list) or not isinstance(denominator, dict):
+        raise TypeError("PBS reference entity partition receipt is invalid")
+    partitions = cast("list[object]", partitions)
+    if not 0 <= shard_index < len(partitions):
+        raise ValueError("PBS reference entity partition index changed")
+    partition = partitions[shard_index]
+    if not isinstance(partition, dict):
+        raise TypeError("PBS reference entity partition receipt is invalid")
+    partition = cast("dict[str, Any]", partition)
+    if partition.get("index") != shard_index:
+        raise ValueError("PBS reference entity partition index changed")
+    binding = PbsXmlMemberBinding.model_validate(receipt.get("binding"))
+    if binding.digest() != receipt.get("binding_sha256"):
+        raise ValueError("PBS reference entity material binding changed")
+    path = directory / str(partition.get("path"))
+    if path.parent != directory or _digest(path) != {
+        key: partition.get(key) for key in ("sha256", "byte_count")
+    }:
+        raise ValueError("PBS reference entity partition digest changed")
+    return (
+        pa.ipc.open_stream(pa.memory_map(str(path), "r")),
+        binding,
+        cast("dict[str, Any]", denominator),
+        partition,
     )
 
 

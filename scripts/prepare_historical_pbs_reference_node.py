@@ -14,6 +14,10 @@ from global_medicines_atlas.pbs_hosted_qualification import (
     run_hosted_entity_material,
     run_prepared_reference_node,
 )
+from global_medicines_atlas.pbs_reference_shards import (
+    load_reference_entity_material,
+    load_reference_entity_partition,
+)
 
 
 def _write(path: Path, report: dict[str, Any]) -> None:
@@ -33,24 +37,54 @@ def _write(path: Path, report: dict[str, Any]) -> None:
     temporary.replace(path)
 
 
-def _material_report(directory: Path) -> dict[str, Any]:
-    wrapper: object = json.loads(
-        (directory / "reference-entities-receipt.json").read_bytes()
-    )
-    if not isinstance(wrapper, dict):
-        raise TypeError("PBS entity material receipt is invalid")
-    wrapper = cast("dict[str, Any]", wrapper)
-    if not isinstance(wrapper.get("report"), dict):
-        raise TypeError("PBS entity material receipt is invalid")
-    report = cast("dict[str, Any]", wrapper["report"])
-    encoded = json.dumps(report, sort_keys=True, separators=(",", ":")).encode()
-    if wrapper.get("report_sha256") != hashlib.sha256(encoded).hexdigest():
-        raise ValueError("PBS entity material receipt digest changed")
-    if report.get("status") != "prepared" or not isinstance(
-        report.get("node"), dict
-    ):
+def _material_report(
+    directory: Path, shard_index: int | None
+) -> tuple[Path, dict[str, Any]]:
+    successes: list[tuple[Path, dict[str, Any]]] = []
+    for path in directory.glob("**/reference-entities-receipt.json"):
+        wrapper: object = json.loads(path.read_bytes())
+        if not isinstance(wrapper, dict):
+            raise TypeError("PBS entity material receipt is invalid")
+        wrapper = cast("dict[str, Any]", wrapper)
+        if not isinstance(wrapper.get("report"), dict):
+            raise TypeError("PBS entity material receipt is invalid")
+        report = cast("dict[str, Any]", wrapper["report"])
+        encoded = json.dumps(
+            report, sort_keys=True, separators=(",", ":")
+        ).encode()
+        if wrapper.get("report_sha256") != hashlib.sha256(encoded).hexdigest():
+            raise ValueError("PBS entity material receipt digest changed")
+        if report.get("status") != "prepared":
+            continue
+        if (
+            not isinstance(report.get("node"), dict)
+            or not isinstance(report.get("run_attempt"), str)
+            or not report["run_attempt"].isdigit()
+        ):
+            raise TypeError("PBS entity material receipt is invalid")
+        material_directory = (
+            path.parent if shard_index is None else path.parent / "node"
+        )
+        try:
+            if shard_index is None:
+                load_reference_entity_material(
+                    material_directory, cast("dict[str, Any]", report["node"])
+                )
+            else:
+                load_reference_entity_partition(
+                    material_directory,
+                    cast("dict[str, Any]", report["node"]),
+                    shard_index,
+                )
+        except OSError, TypeError, ValueError:
+            continue
+        successes.append((material_directory, report))
+    if not successes:
         raise ValueError("PBS entity material did not prepare")
-    return report
+    expected = successes[0][1]["node"]
+    if any(report["node"] != expected for _, report in successes[1:]):
+        raise ValueError("PBS entity material successful attempts conflict")
+    return max(successes, key=lambda item: int(item[1]["run_attempt"]))
 
 
 def _run(
@@ -61,14 +95,19 @@ def _run(
         if args.input is not None or args.shard_index is not None:
             raise ValueError("invalid PBS entity material node arguments")
         return run_hosted_entity_material(
-            args.exact_commit, args.output, progress=checkpoint
+            args.exact_commit,
+            args.output,
+            shard_count=args.reference_shards,
+            progress=checkpoint,
         )
     if args.input is None:
         raise ValueError("PBS entity material input is required")
-    material = _material_report(args.input)
+    material_directory, material = _material_report(
+        args.input, args.shard_index
+    )
     return run_prepared_reference_node(
         args.exact_commit,
-        args.input,
+        material_directory,
         cast("dict[str, Any]", material["node"]),
         args.output,
         shard_count=args.reference_shards,

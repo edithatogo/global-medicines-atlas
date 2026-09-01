@@ -17,7 +17,8 @@ concurrency:
 jobs:
   prepare-reference-entities:
     name: Prepare verified transient PBS entity material
-    if: github.ref == 'refs/heads/main'
+    needs: qualify
+    if: always() && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     permissions:
@@ -40,12 +41,189 @@ jobs:
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
-          name: pbs-reference-entities-${{ github.run_id }}-${{ github.run_attempt }}
+          name: pbs-reference-index-input-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             reference-entities.arrow
             reference-entities-receipt.json
           if-no-files-found: error
           retention-days: 1
+
+      - name: Retain derived entity partition 00
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-entity-partition-00-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            node/reference-00.arrow
+            reference-entities-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Retain derived entity partition 01
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-entity-partition-01-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            node/reference-01.arrow
+            reference-entities-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Retain derived entity partition 02
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-entity-partition-02-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            node/reference-02.arrow
+            reference-entities-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Retain derived entity partition 03
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-entity-partition-03-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            node/reference-03.arrow
+            reference-entities-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Retain derived entity partition 04
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-entity-partition-04-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            node/reference-04.arrow
+            reference-entities-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Retain derived entity partition 05
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-entity-partition-05-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            node/reference-05.arrow
+            reference-entities-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Retain derived entity partition 06
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-entity-partition-06-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            node/reference-06.arrow
+            reference-entities-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Retain derived entity partition 07
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-entity-partition-07-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            node/reference-07.arrow
+            reference-entities-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Retain derived entity partition 08
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-entity-partition-08-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            node/reference-08.arrow
+            reference-entities-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Retain derived entity partition 09
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-entity-partition-09-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            node/reference-09.arrow
+            reference-entities-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Retain derived entity partition 10
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-entity-partition-10-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            node/reference-10.arrow
+            reference-entities-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Retain derived entity partition 11
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-entity-partition-11-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            node/reference-11.arrow
+            reference-entities-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Retain derived entity partition 12
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-entity-partition-12-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            node/reference-12.arrow
+            reference-entities-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Retain derived entity partition 13
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-entity-partition-13-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            node/reference-13.arrow
+            reference-entities-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Retain derived entity partition 14
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-entity-partition-14-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            node/reference-14.arrow
+            reference-entities-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Retain derived entity partition 15
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-reference-entity-partition-15-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            node/reference-15.arrow
+            reference-entities-receipt.json
+          if-no-files-found: error
+          retention-days: 1
+
 
   prepare-reference-index:
     name: Prepare transient PBS global reference index
@@ -62,9 +240,8 @@ jobs:
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
         with:
-          pattern: pbs-reference-entities-${{ github.run_id }}-*
+          pattern: pbs-reference-index-input-${{ github.run_id }}-*
           path: material
-          merge-multiple: true
       - name: Prepare digest-bound global index
         timeout-minutes: 55
         env:
@@ -91,7 +268,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     strategy:
       fail-fast: false
-      max-parallel: 4
+      max-parallel: 3
       matrix:
         include:
           - {shard: 0, key: "00"}
@@ -121,9 +298,8 @@ jobs:
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
         with:
-          pattern: pbs-reference-entities-${{ github.run_id }}-*
+          pattern: pbs-reference-entity-partition-${{ matrix.key }}-${{ github.run_id }}-*
           path: material
-          merge-multiple: true
       - name: Prepare one digest-bound entity partition
         timeout-minutes: 55
         env:

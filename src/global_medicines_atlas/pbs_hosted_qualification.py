@@ -33,6 +33,7 @@ from .adapters.au_pbs import read_pbs_v3_member
 from .pbs_historical_projections import iter_pbs_historical_entity_batches
 from .pbs_historical_qualification import (
     _denominator,  # pyright: ignore[reportPrivateUsage]
+    _projection,  # pyright: ignore[reportPrivateUsage]
     qualify_pbs_historical_projections,
 )
 from .pbs_member_identity import (
@@ -41,6 +42,7 @@ from .pbs_member_identity import (
 )
 from .pbs_reference_shards import (
     load_reference_entity_material,
+    load_reference_entity_partition,
     prepare_reference_entity_material,
     prepare_reference_index,
     prepare_reference_partition,
@@ -694,6 +696,7 @@ def run_hosted_entity_material(
     exact_commit: str,
     output: Path,
     *,
+    shard_count: int,
     transport: httpx.BaseTransport | None = None,
     progress: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
@@ -711,6 +714,7 @@ def run_hosted_entity_material(
             inputs.binding,
             denominator,
             output / "reference-entities.arrow",
+            shard_count=shard_count,
         )
     return {
         "schema_version": 1,
@@ -743,29 +747,69 @@ def run_prepared_reference_node(
         or re.fullmatch(r"[1-9][0-9]*", preparation_run_attempt) is None
     ):
         raise ValueError("PBS entity material context is invalid")
-    reader, binding, denominator = load_reference_entity_material(
-        input_directory, material_receipt
-    )
     output.mkdir(parents=True, exist_ok=False)
     if shard_index is None:
+        reader, binding, denominator = load_reference_entity_material(
+            input_directory, material_receipt
+        )
         node = prepare_reference_index(
             iter(reader), binding, denominator, output / "reference-index.json"
         )
         node_kind = "index"
     else:
-        node = prepare_reference_partition(
+        partitions = material_receipt.get("partitions")
+        if not isinstance(partitions, list):
+            raise ValueError("PBS reference entity partition index changed")
+        partitions = cast("list[object]", partitions)
+        if not 0 <= shard_index < len(partitions):
+            raise ValueError("PBS reference entity partition index changed")
+        record = partitions[shard_index]
+        if not isinstance(record, dict):
+            raise TypeError("PBS reference entity partition receipt is invalid")
+        record = cast("dict[str, Any]", record)
+        if record.get("count") != shard_count:
+            raise ValueError("PBS reference entity partition count changed")
+        source = input_directory / str(record.get("path"))
+        destination = output / f"reference-{shard_index:02d}.arrow"
+        shutil.copyfile(source, destination)
+        reader, binding, denominator, partition = (
+            load_reference_entity_partition(
+                output, material_receipt, shard_index
+            )
+        )
+        projection = _projection(
             iter(reader),
             binding,
             denominator,
-            output / f"reference-{shard_index:02d}.arrow",
-            shard_index=shard_index,
-            shard_count=shard_count,
+            nested=True,
+            phase="reference-preparation",
+            row_window=(partition["start_row"], partition["stop_row"]),
         )
+        expected = partition.get("expected_projection")
+        if not isinstance(expected, dict):
+            raise TypeError(
+                "PBS reference entity partition projection is invalid"
+            )
+        expected = cast("dict[str, Any]", expected)
+        if any(
+            projection.get(key) != expected.get(key)
+            for key in ("rows", "native_fields", "native_digest")
+        ):
+            raise ValueError(
+                "PBS reference entity partition projection changed"
+            )
+        node = {
+            "schema_version": 1,
+            "purpose": "transient-reference-entity-partition",
+            "binding_sha256": binding.digest(),
+            "denominator": denominator,
+            "partition": partition,
+            "publication_performed": False,
+            "evidence_truth": False,
+        }
         node_kind = "partition"
     node.update({
         "workflow_commit": context["workflow_commit"],
-        "preparation_run_id": preparation_run_id,
-        "preparation_run_attempt": preparation_run_attempt,
         "dataset": DATASET,
         "revision": REVISION,
     })

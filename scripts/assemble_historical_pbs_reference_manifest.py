@@ -18,7 +18,7 @@ from global_medicines_atlas.pbs_reference_shards import (
 )
 
 
-def _node(path: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+def _node(path: Path) -> tuple[dict[str, Any], dict[str, Any] | None]:
     raw: object = json.loads(path.read_bytes())
     if not isinstance(raw, dict):
         raise TypeError("PBS reference node receipt is invalid")
@@ -29,10 +29,10 @@ def _node(path: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     encoded = json.dumps(report, sort_keys=True, separators=(",", ":")).encode()
     if raw.get("report_sha256") != hashlib.sha256(encoded).hexdigest():
         raise ValueError("PBS reference node receipt digest changed")
-    if report.get("status") != "prepared" or not isinstance(
-        report.get("node"), dict
-    ):
-        raise ValueError("PBS reference node did not prepare")
+    if report.get("status") != "prepared":
+        return report, None
+    if not isinstance(report.get("node"), dict):
+        raise TypeError("PBS reference node receipt is invalid")
     return report, cast("dict[str, Any]", report["node"])
 
 
@@ -40,8 +40,11 @@ def _latest_nodes(
     directory: Path,
 ) -> dict[str, tuple[Path, dict[str, Any], dict[str, Any]]]:
     selected: dict[str, tuple[Path, dict[str, Any], dict[str, Any]]] = {}
+    canonical: dict[str, dict[str, Any]] = {}
     for path in directory.glob("**/*-receipt.json"):
         report, node = _node(path)
+        if node is None:
+            continue
         kind = node.get("node_kind", report.get("node_kind"))
         if (
             kind == "index"
@@ -60,13 +63,11 @@ def _latest_nodes(
         if not isinstance(attempt, str) or not attempt.isdigit():
             raise ValueError("PBS reference node attempt is invalid")
         previous = selected.get(key)
+        if key in canonical and node != canonical[key]:
+            raise ValueError("PBS reference node successful attempts conflict")
+        canonical[key] = node
         if previous is None or int(attempt) > int(previous[1]["run_attempt"]):
             selected[key] = path, report, node
-        elif (
-            int(attempt) == int(previous[1]["run_attempt"])
-            and node != previous[2]
-        ):
-            raise ValueError("PBS reference node duplicate conflicts")
     return selected
 
 
@@ -109,8 +110,8 @@ def _run(args: argparse.Namespace) -> dict[str, Any]:
     )
     manifest.update({
         "workflow_commit": index_receipt.get("workflow_commit"),
-        "preparation_run_id": index_receipt.get("preparation_run_id"),
-        "preparation_run_attempt": index_receipt.get("preparation_run_attempt"),
+        "preparation_run_id": index_report.get("run_id"),
+        "preparation_run_attempt": index_report.get("run_attempt"),
     })
     path = args.output / "reference-manifest.json"
     path.write_bytes(
