@@ -681,6 +681,35 @@
   digests. One 1,000-item synthetic output-only comparison produced 10,001 rows
   and six equal batches: baseline CPU 0.741650 s, candidate 0.657760 s. This
   bounded observation is not a corpus forecast; hosted validation remains.
+  Exact merged-main run `33509616416` at `ccf7570` falsified that synthetic
+  forecast: after the same 55-minute limit it had emitted only 8,358 reference
+  rows in six batches, versus 163,700 rows in 120 batches at `757dc41`.
+  Receipt: issue #341 comment `5494894668`. The deep nested Arrow
+  `Table.from_batches(...).combine_chunks()` reconstruction and a second full
+  native-field flatten on the output pass are therefore removed. Output now
+  appends diagnostics to each already-bounded input batch and yields bounded
+  zero-copy slices; the complete literal index, ordered rows, global
+  diagnostics, exact JSON byte checks, lineage, digest and Parquet table
+  equality remain mandatory. A deterministic half-open `start_row`/`stop_row`
+  API completes the global index, validates an optional total-row denominator,
+  scans the complete output identity, and annotates only the selected window.
+  Concatenated synthetic windows equal the full table and retain duplicates
+  spanning windows. On one 1,000-item synthetic case the replacement emitted
+  10,005 equal ordered rows in 4.978997 s versus 8.700892 s for the pre-#416
+  row-reconstruction baseline in sequential local observations; this is not a
+  corpus forecast. Focused reference/historical tests: 53 passed; Ruff and
+  source BasedPyright passed. Hosted validation and a slice-aware composable
+  qualification receipt remain pending; no timeout increase or dispatch.
+  Review fix `e2de222` closes two P1 fail-closed gaps: only `(0, None)` may
+  request unbounded full output, while every explicit window must satisfy
+  `0 <= start < stop <= total`; empty and open-ended nonzero windows now fail.
+  Diagnostic Python values are sized first, then each bounded native slice gets
+  its own Arrow arrays, so a 4,096-row input cannot allocate an over-budget
+  diagnostic array before its row/8 MiB boundaries are enforced. Allocation-
+  length regression coverage forces byte-bound splitting and proves the largest
+  diagnostic allocation equals the largest bounded output batch. Broader
+  affected validation: 267 passed; Ruff, format, source BasedPyright, native
+  context and diff checks passed. Hosted exact-head revalidation remains.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression

@@ -1,7 +1,9 @@
 """Synthetic source-local PBS identifier/reference diagnostics."""
 
 import json
+from collections.abc import Iterator
 from io import BytesIO
+from typing import Any
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -95,17 +97,118 @@ def test_columnar_index_contracts_equal_row_contracts(payload: bytes) -> None:
     ] == expected
 
 
-def test_reference_output_reuses_columnar_contracts(
+def test_reference_output_does_not_flatten_nested_fields_twice(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Output must not rescan every nested row after the index pass."""
-    monkeypatch.setattr(
-        pbs_references,
-        "_contract",
-        lambda _row: (_ for _ in ()).throw(AssertionError("row rescan")),
+    """Output reuses its required row materialisation after columnar indexing."""
+    payload = _production_xml()
+    batches = list(
+        iter_pbs_entity_batches(payload, _receipt(payload, "au-pbs"))
     )
-    rows = table(_production_xml()).to_pylist()
+    original = pbs_references._columnar_contracts  # pyright: ignore[reportPrivateUsage]
+    calls = 0
+
+    def index_only(batch: pa.RecordBatch) -> Iterator[dict[str, Any]]:
+        nonlocal calls
+        calls += 1
+        if calls > len(batches):
+            raise AssertionError("second flatten")
+        return original(batch)
+
+    monkeypatch.setattr(pbs_references, "_columnar_contracts", index_only)
+    rows = pa.Table.from_batches(
+        list(
+            pbs_references._reference_batches(  # pyright: ignore[reportPrivateUsage]
+                iter(batches), iter(batches), 1024
+            )
+        )
+    ).to_pylist()
     assert any(row["contract_kind"] == "amt_reference" for row in rows)
+
+
+def test_reference_output_does_not_recombine_nested_arrow_chunks(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Each already-bounded entity batch stays a zero-copy output boundary."""
+    payload = _production_xml()
+    batches = list(
+        iter_pbs_entity_batches(
+            payload, _receipt(payload, "au-pbs"), rows_per_batch=3
+        )
+    )
+    expected = pa.Table.from_batches(
+        list(pbs_references._reference_batches(iter(batches), iter(batches), 2))  # pyright: ignore[reportPrivateUsage]
+    )
+    with monkeypatch.context() as context:
+        context.setattr(
+            pbs_references.pa,
+            "Table",
+            type(
+                "ForbiddenTable",
+                (),
+                {
+                    "from_batches": staticmethod(
+                        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+                            AssertionError("deep copy")
+                        )
+                    )
+                },
+            ),
+        )
+        actual_batches = list(
+            pbs_references._reference_batches(  # pyright: ignore[reportPrivateUsage]
+                iter(batches), iter(batches), 2
+            )
+        )
+    actual = pa.Table.from_batches(actual_batches)
+    assert actual.equals(expected, check_metadata=True)
+    assert all(batch.num_rows <= 2 for batch in actual_batches)
+
+
+def test_reference_output_allocates_diagnostics_after_batch_bounds(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = _production_xml()
+    batches = list(
+        iter_pbs_entity_batches(
+            payload, _receipt(payload, "au-pbs"), rows_per_batch=4096
+        )
+    )
+    input_rows = max(batch.num_rows for batch in batches)
+    index, _, _ = pbs_references._index(iter(batches))  # pyright: ignore[reportPrivateUsage]
+    entities = batches[0].to_pylist()
+    diagnostics = [
+        pbs_references._diagnostics(  # pyright: ignore[reportPrivateUsage]
+            pbs_references._contract(entity),  # pyright: ignore[reportPrivateUsage]
+            index,
+        )
+        for entity in entities
+    ]
+    row_limit = max(
+        pbs_references._size(entity)  # pyright: ignore[reportPrivateUsage]
+        + pbs_references._size(diagnostic)  # pyright: ignore[reportPrivateUsage]
+        - 1
+        for entity, diagnostic in zip(entities, diagnostics, strict=True)
+    )
+    allocation_lengths: list[int] = []
+    original = pbs_references.pa.array
+
+    def bounded_array(
+        values: object, *args: object, **kwargs: object
+    ) -> object:
+        allocation_lengths.append(len(values))  # type: ignore[arg-type]
+        return original(values, *args, **kwargs)  # pyright: ignore[reportUnknownArgumentType]
+
+    monkeypatch.setattr(pbs_references.pa, "array", bounded_array)
+    monkeypatch.setattr(pbs_references, "MAX_BATCH_BYTES", row_limit)
+    output = list(
+        pbs_references._reference_batches(  # pyright: ignore[reportPrivateUsage]
+            iter(batches), iter(batches), 4096
+        )
+    )
+    max_output_rows = max(batch.num_rows for batch in output)
+    assert max_output_rows < input_rows
+    assert max(allocation_lengths) == max_output_rows
 
 
 @pytest.mark.parametrize("case", ["missing-index", "changed-schema"])
@@ -124,6 +227,80 @@ def test_reference_output_rejects_cross_pass_identity(case: str) -> None:
         list(
             pbs_references._reference_batches(  # pyright: ignore[reportPrivateUsage]
                 index, output, 1024
+            )
+        )
+
+
+def test_reference_row_windows_equal_full_global_diagnostics() -> None:
+    payload = _xml()
+    item = payload[
+        payload.index(b"<pbs:pharmaceutical-item") : payload.index(
+            b"</pbs:pharmaceutical-item>"
+        )
+        + len(b"</pbs:pharmaceutical-item>")
+    ]
+    payload = payload.replace(b"</pbs:schedule>", item + b"</pbs:schedule>")
+    batches = list(
+        iter_pbs_entity_batches(
+            payload, _receipt(payload, "au-pbs"), rows_per_batch=3
+        )
+    )
+    total = sum(batch.num_rows for batch in batches)
+    full = pa.Table.from_batches(
+        list(
+            pbs_references._reference_batches(  # pyright: ignore[reportPrivateUsage]
+                iter(batches), iter(batches), 4
+            )
+        )
+    )
+    windows = []
+    for start, stop in ((0, 2), (2, total - 1), (total - 1, total)):
+        windows.extend(
+            pbs_references._reference_batches(  # pyright: ignore[reportPrivateUsage]
+                iter(batches),
+                iter(batches),
+                4,
+                start_row=start,
+                stop_row=stop,
+                expected_total_rows=total,
+            )
+        )
+    windowed = pa.Table.from_batches(windows)
+    assert windowed.equals(full, check_metadata=True)
+    assert {
+        row["diagnostic"]
+        for row in windowed.to_pylist()
+        if row["contract_kind"] == "item_xml_id"
+    } == {"duplicate_source_literal"}
+
+
+@pytest.mark.parametrize(
+    ("start", "stop", "expected", "message"),
+    [
+        (-1, 1, None, "window is invalid"),
+        (0, 0, None, "window is invalid"),
+        (1, None, None, "window is invalid"),
+        (2, 1, None, "window is invalid"),
+        (0, 10_000, None, "window exceeds total"),
+        (0, None, 1, "total row denominator changed"),
+    ],
+)
+def test_reference_row_window_rejects_invalid_denominators(
+    start: int, stop: int | None, expected: int | None, message: str
+) -> None:
+    payload = _production_xml()
+    batches = list(
+        iter_pbs_entity_batches(payload, _receipt(payload, "au-pbs"))
+    )
+    with pytest.raises(ValueError, match=message):
+        list(
+            pbs_references._reference_batches(  # pyright: ignore[reportPrivateUsage]
+                iter(batches),
+                iter(batches),
+                1024,
+                start_row=start,
+                stop_row=stop,
+                expected_total_rows=expected,
             )
         )
 

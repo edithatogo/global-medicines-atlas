@@ -69,15 +69,16 @@ def _contract(  # pyright: ignore[reportUnusedFunction] -- retained parity oracl
 
 def _index(
     batches: Iterator[pa.RecordBatch],
-) -> tuple[ReferenceIndex, pa.Schema | None]:
+) -> tuple[ReferenceIndex, pa.Schema | None, int]:
     index: ReferenceIndex = {}
     identity: pa.Schema | None = None
-    entries = encoded_bytes = 0
+    entries = encoded_bytes = total_rows = 0
     for batch in batches:
         if identity is None:
             identity = batch.schema
         elif not batch.schema.equals(identity, check_metadata=True):
             raise ValueError("PBS reference input identity changed")
+        total_rows += batch.num_rows
         for contract in _columnar_contracts(batch):
             value = contract["reference_value"]
             if value is None or value == "":  # ruff: ignore[compare-to-empty-string] -- preserve whitespace-only literals
@@ -99,7 +100,7 @@ def _index(
                     targets += 1
             counts[resource] += 1
             index[key] = (counts, targets)
-    return index, identity
+    return index, identity, total_rows
 
 
 def _columnar_contracts(batch: pa.RecordBatch) -> Iterator[dict[str, Any]]:
@@ -266,69 +267,125 @@ def iter_pbs_reference_batches(
     )
 
 
+def _resolve_window(
+    total_rows: int,
+    start_row: int,
+    stop_row: int | None,
+    expected_total_rows: int | None,
+) -> int:
+    if type(start_row) is not int or start_row < 0:
+        raise ValueError("PBS reference row window is invalid")
+    if stop_row is None and start_row != 0:
+        raise ValueError("PBS reference row window is invalid")
+    if stop_row is not None and (
+        type(stop_row) is not int or stop_row <= start_row
+    ):
+        raise ValueError("PBS reference row window is invalid")
+    if expected_total_rows is not None and (
+        type(expected_total_rows) is not int or expected_total_rows < 0
+    ):
+        raise ValueError("PBS reference row window is invalid")
+    if expected_total_rows is not None and total_rows != expected_total_rows:
+        raise ValueError("PBS reference total row denominator changed")
+    resolved_stop = total_rows if stop_row is None else stop_row
+    if start_row > total_rows or resolved_stop > total_rows:
+        raise ValueError("PBS reference row window exceeds total rows")
+    return resolved_stop
+
+
+def _annotated_slice(
+    batch: pa.RecordBatch,
+    diagnostics: list[dict[str, Any]],
+    schema: pa.Schema,
+) -> pa.RecordBatch:
+    diagnostic_names = tuple(schema.names[len(batch.schema.names) :])
+    return pa.RecordBatch.from_arrays(  # pyright: ignore[reportUnknownMemberType]
+        [
+            *batch.columns,  # pyright: ignore[reportUnknownMemberType]
+            *(
+                pa.array(
+                    [item[name] for item in diagnostics],
+                    type=schema.field(name).type,  # pyright: ignore[reportUnknownMemberType, reportUnknownArgumentType]
+                )
+                for name in diagnostic_names
+            ),
+        ],
+        schema=schema,
+    )
+
+
+def _bounded_ranges(
+    entities: list[dict[str, Any]],
+    diagnostics: list[dict[str, Any]],
+    rows_per_batch: int,
+) -> Iterator[tuple[int, int]]:
+    start = rows = size = 0
+    for position, (entity, diagnostic) in enumerate(
+        zip(entities, diagnostics, strict=True)
+    ):
+        row_size = _size(entity) + _size(diagnostic) - 1
+        if row_size > MAX_BATCH_BYTES:
+            raise ValueError("PBS reference row exceeds batch byte limit")
+        if rows and (
+            rows >= rows_per_batch or size + row_size > MAX_BATCH_BYTES
+        ):
+            yield start, position
+            rows = size = 0
+            start = position
+        rows += 1
+        size += row_size
+    if start < len(entities):
+        yield start, len(entities)
+
+
+def _annotated_batches(
+    batch: pa.RecordBatch,
+    index: ReferenceIndex,
+    schema: pa.Schema,
+    rows_per_batch: int,
+) -> Iterator[pa.RecordBatch]:
+    entities = batch.to_pylist()
+    diagnostics = [
+        _diagnostics(_contract(entity), index) for entity in entities
+    ]
+    for start, stop in _bounded_ranges(entities, diagnostics, rows_per_batch):
+        yield _annotated_slice(
+            batch.slice(start, stop - start), diagnostics[start:stop], schema
+        )
+
+
 def _reference_batches(
     index_batches: Iterator[pa.RecordBatch],
     output_batches: Iterator[pa.RecordBatch],
     rows_per_batch: int,
+    *,
+    start_row: int = 0,
+    stop_row: int | None = None,
+    expected_total_rows: int | None = None,
 ) -> Iterator[pa.RecordBatch]:
-    """Annotate two trusted same-input streams; reject schema/identity drift."""
-    index, identity = _index(index_batches)
-    pieces: list[pa.RecordBatch] = []
-    rows = 0
-    size = 0
+    """Annotate a deterministic row window after indexing the complete input."""
+    index, identity, total_rows = _index(index_batches)
+    resolved_stop = _resolve_window(
+        total_rows, start_row, stop_row, expected_total_rows
+    )
     schema: pa.Schema | None = None
-
-    def assembled(
-        output_schema: pa.Schema, output_pieces: list[pa.RecordBatch]
-    ) -> pa.RecordBatch:
-        table = pa.Table.from_batches(
-            output_pieces, schema=output_schema
-        ).combine_chunks()
-        return table.to_batches()[0]
-
+    output_rows = 0
     for batch in output_batches:
         if identity is None or not batch.schema.equals(
             identity, check_metadata=True
         ):
             raise ValueError("PBS reference cross-pass identity changed")
-        if schema is None:
-            schema = _schema(batch.schema)
-        diagnostics = [
-            _diagnostics(contract, index)
-            for contract in _columnar_contracts(batch)
-        ]
-        diagnostic_names = tuple(schema.names[len(batch.schema.names) :])
-        output = pa.RecordBatch.from_arrays(  # pyright: ignore[reportUnknownMemberType]
-            [
-                *batch.columns,  # pyright: ignore[reportUnknownMemberType]
-                *(
-                    pa.array(
-                        [item[name] for item in diagnostics],
-                        type=schema.field(name).type,  # pyright: ignore[reportUnknownMemberType, reportUnknownArgumentType]
-                    )
-                    for name in diagnostic_names
-                ),
-            ],
-            schema=schema,
+        batch_start = output_rows
+        output_rows += batch.num_rows
+        selected_start = max(start_row, batch_start)
+        selected_stop = min(resolved_stop, output_rows)
+        if selected_start >= selected_stop:
+            continue
+        selected = batch.slice(
+            selected_start - batch_start, selected_stop - selected_start
         )
-        start = 0
-        for position, (entity, diagnostic) in enumerate(
-            zip(batch.to_pylist(), diagnostics, strict=True)
-        ):
-            row_size = _size(entity) + _size(diagnostic) - 1
-            if row_size > MAX_BATCH_BYTES:
-                raise ValueError("PBS reference row exceeds batch byte limit")
-            if rows and (
-                rows >= rows_per_batch or size + row_size > MAX_BATCH_BYTES
-            ):
-                if position > start:
-                    pieces.append(output.slice(start, position - start))
-                yield assembled(schema, pieces)
-                pieces, rows, size = [], 0, 0
-                start = position
-            rows += 1
-            size += row_size
-        if start < batch.num_rows:
-            pieces.append(output.slice(start))
-    if pieces:
-        yield assembled(cast("pa.Schema", schema), pieces)
+        if schema is None:
+            schema = _schema(selected.schema)
+        yield from _annotated_batches(selected, index, schema, rows_per_batch)
+    if output_rows != total_rows:
+        raise ValueError("PBS reference cross-pass row count changed")
