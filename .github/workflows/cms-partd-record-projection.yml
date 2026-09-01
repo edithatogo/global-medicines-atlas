@@ -152,33 +152,25 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           set -euo pipefail
+          curl --fail --show-error --silent --location --retry 10 \
+            "https://huggingface.co/datasets/${HF_DATASET}/resolve/${RAW_REVISION}/manifest.json" \
+            --output raw-manifest.json
+          qualified_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          uv run --frozen --python 3.14.6 python scripts/qualify_cms_partd_records.py \
+            --raw-manifest raw-manifest.json --shards-dir receipts \
+            --qualified-at "$qualified_at" --raw-revision "$RAW_REVISION" \
+            --output source-record-qualification.json
           python3 -m pip install --disable-pip-version-check --quiet huggingface-hub==1.14.0
           python3 - <<'PY'
           import json
           import os
-          from datetime import UTC, datetime
           from hashlib import sha256
           from pathlib import Path
           from huggingface_hub import HfApi, hf_hub_download
 
-          shards = [json.loads(path.read_text()) for path in sorted(Path('receipts').glob('**/source-records.json'))]
-          if len(shards) != 33:
-              raise RuntimeError(f'expected 33 record shards, found {len(shards)}')
-          payload = {
-              'schema_id': 'global-medicines-atlas.cms-partd-source-record-qualification',
-              'schema_version': 1,
-              'qualified_at': datetime.now(UTC).isoformat(),
-              'raw_revision': os.environ['RAW_REVISION'],
-              'payload_count': 33,
-              'source_record_projection_count': sum(row['source_record_projection_count'] for row in shards),
-              'source_record_count': sum(row['source_record_count'] for row in shards),
-              'source_values_preserved_as_strings': True,
-              'cross_plan_year_schema_equivalence_claimed': False,
-              'runner_source_bytes_retained': False,
-              'shards': shards,
-          }
           path = Path('source-record-qualification.json')
-          path.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n')
+          payload = json.loads(path.read_text())
+          shards = payload['shards']
           api = HfApi(token=os.environ['HF_TOKEN'])
           result = api.upload_file(
               repo_id=os.environ['HF_DATASET'], repo_type='dataset',
