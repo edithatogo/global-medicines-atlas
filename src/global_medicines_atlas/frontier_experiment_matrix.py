@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 from enum import StrEnum
+from itertools import pairwise
 from pathlib import Path
 from typing import Literal, Self
 
@@ -21,6 +22,36 @@ class WorkloadSize(StrEnum):
 class FrontierDisposition(StrEnum):
     REUSED = "reused"
     DEFER = "defer"
+
+
+_REQUIRED_PREREQUISITES: dict[str, frozenset[str]] = {
+    "remote_query_streaming": frozenset({
+        "exact_public_object",
+        "anonymous_digest",
+        "request_instrumentation",
+    }),
+    "xet_object_mechanics": frozenset({
+        "two_exact_revisions",
+        "anonymous_digest",
+    }),
+    "iceberg_catalogue": frozenset({
+        "prior_matrix_verified",
+        "changed_workload",
+    }),
+    "batch_attestation": frozenset({
+        "prior_fixture_verified",
+        "cross_dataset_revisions",
+    }),
+    "graph_semantic_projection": frozenset({
+        "gold_fixture",
+        "rights_controls",
+        "negative_controls",
+    }),
+    "transactional_alternatives": frozenset({
+        "prior_decision_verified",
+        "high_update_workload",
+    }),
+}
 
 
 class ImportedEvidence(FrozenModel):
@@ -63,6 +94,9 @@ class FrontierExperiment(FrozenModel):
     experiment_id: str = Field(pattern=r"^[a-z0-9_-]+$")
     hypothesis: str = Field(min_length=1)
     unmet_requirement: str = Field(min_length=1)
+    baseline: str = Field(min_length=1)
+    threshold: str = Field(min_length=1)
+    rights_sensitivity_review: str = Field(min_length=1)
     profile: WorkloadSize
     prerequisite_evidence: dict[str, bool] = Field(min_length=1, max_length=16)
     public_object: PublicObjectPrerequisite | None = None
@@ -77,6 +111,11 @@ class FrontierExperiment(FrozenModel):
 
     @model_validator(mode="after")
     def prerequisites_control_execution(self) -> Self:
+        required = _REQUIRED_PREREQUISITES.get(self.experiment_id)
+        if required is None:
+            raise ValueError("unknown frontier experiment family")
+        if set(self.prerequisite_evidence) != set(required):
+            raise ValueError("frontier prerequisite denominator differs")
         ready = all(self.prerequisite_evidence.values())
         if self.experiment_started and (
             not ready
@@ -107,12 +146,25 @@ class FrontierExperimentMatrix(FrozenModel):
         sizes = tuple(item.size for item in self.workloads)
         if set(sizes) != set(WorkloadSize) or len(sizes) != len(set(sizes)):
             raise ValueError("tiny, medium and large workloads required once")
-        ordered = sorted(self.workloads, key=lambda item: item.maximum_rows)
-        if [item.size for item in ordered] != list(WorkloadSize):
+        by_size = {item.size: item for item in self.workloads}
+        ordered = [by_size[size] for size in WorkloadSize]
+        dimensions = (
+            "maximum_rows",
+            "maximum_source_bytes",
+            "maximum_requests",
+            "maximum_memory_bytes",
+        )
+        if any(
+            not all(
+                getattr(left, dimension) < getattr(right, dimension)
+                for left, right in pairwise(ordered)
+            )
+            for dimension in dimensions
+        ):
             raise ValueError("workload bounds must increase by profile")
-        ids = [item.experiment_id for item in self.experiments]
-        if len(ids) != len(set(ids)):
-            raise ValueError("duplicate frontier experiment")
+        ids = {item.experiment_id for item in self.experiments}
+        if ids != set(_REQUIRED_PREREQUISITES):
+            raise ValueError("frontier experiment family denominator differs")
         imported = {item.path for item in self.imported_evidence}
         for experiment in self.experiments:
             if not set(experiment.reused_evidence) <= imported:
