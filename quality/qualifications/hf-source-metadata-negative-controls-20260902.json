@@ -63,7 +63,9 @@
     "malformed historical source version",
     "future historical release",
     "citation revision absent from version history",
-    "unobserved non-current release history"
+    "unobserved non-current release history",
+    "payload outside the observed source release",
+    "receipt identity outside the observed source release"
   ],
   "external_actions": {
     "credentials_used": false,

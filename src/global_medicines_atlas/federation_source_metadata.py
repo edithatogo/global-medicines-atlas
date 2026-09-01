@@ -96,6 +96,9 @@ _PROFILE_DETAILS = {
         "effective_from": "2026-08-01",
         "source_version": "2026-08",
         "retrieved_at": "2026-08-30T05:40:00Z",
+        "receipt": "receipts/mbs-202608.json",
+        "receipt_sha256": "c" * 64,
+        "payloads": (("raw/mbs-202608.xml", "a" * 64),),
     },
     "au-pbs": {
         "authority_url": "https://www.health.gov.au/",
@@ -106,6 +109,9 @@ _PROFILE_DETAILS = {
         "effective_from": "2026-04-01",
         "source_version": "2026-04",
         "retrieved_at": "2026-08-30T02:40:00Z",
+        "receipt": "receipts/pbs-202604.json",
+        "receipt_sha256": "d" * 64,
+        "payloads": (("raw/pbs-202604.zip", "b" * 64),),
     },
 }
 
@@ -379,13 +385,20 @@ class SourceMetadataDocument(_Model):
     def source_urls_are_profile_bound(self) -> Self:
         _, _, _, authority_host, source_hosts = _PROFILES[self.source.source_id]
         profile = _PROFILE_DETAILS[self.source.source_id]
+        observed_payloads = tuple(
+            (item.path, item.sha256) for item in self.provenance.payloads
+        )
+        if observed_payloads != profile["payloads"]:
+            raise ValueError(
+                "payloads do not match the observed source release"
+            )
         if self.source.authority_url.host != authority_host:
             raise ValueError("source profile uses the wrong authority host")
         if self.source.source_url.host not in source_hosts:
             raise ValueError("source profile uses the wrong source host")
         if str(self.source.authority_url) != profile["authority_url"]:
             raise ValueError("source profile uses the wrong authority URL")
-        expected_source_url = profile["source_url_prefix"]
+        expected_source_url = str(profile["source_url_prefix"])
         if (
             re.fullmatch(r"\d{4}-(?:0[1-9]|1[0-2])", self.source.source_version)
             is None
@@ -483,12 +496,13 @@ class SourceMetadataDocument(_Model):
             )
         if self.coverage.scope != profile["coverage_scope"]:
             raise ValueError("coverage scope does not match the source profile")
-        if not self.provenance.receipt.startswith(profile["receipt_prefix"]):
+        if (
+            self.provenance.receipt != profile["receipt"]
+            or self.provenance.receipt_sha256 != profile["receipt_sha256"]
+        ):
             raise ValueError(
-                "provenance receipt does not match the source profile"
+                "provenance receipt does not match the observed source release"
             )
-        if not self.provenance.receipt.endswith(".json"):
-            raise ValueError("provenance receipt must be a JSON path")
         if any(
             citation.accessed_at > self.source.retrieved_at.date()
             for citation in self.citations

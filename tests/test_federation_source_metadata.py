@@ -289,6 +289,24 @@ def test_binds_all_release_identities(mutation: str, message: str) -> None:
         validate_source_metadata(document)
 
 
+def test_binds_payload_and_receipt_to_observed_release() -> None:
+    document = _fixture("valid-mbs.json")
+    payload = {"path": "raw/pbs-202604.zip", "sha256": "b" * 64}
+    document["provenance"]["payloads"] = [payload]
+    document["croissant"]["distributions"] = [
+        {**payload, "encoding_format": "application/zip"}
+    ]
+    document["coverage"]["payload_paths"] = [payload["path"]]
+    with pytest.raises(SourceMetadataError, match="observed source release"):
+        validate_source_metadata(document)
+
+    document = _fixture("valid-mbs.json")
+    document["provenance"]["receipt"] = "receipts/mbs-190001.json"
+    document["provenance"]["receipt_sha256"] = "e" * 64
+    with pytest.raises(SourceMetadataError, match="observed source release"):
+        validate_source_metadata(document)
+
+
 @pytest.mark.parametrize(
     ("field", "url"),
     [
@@ -494,7 +512,7 @@ def test_rejects_remaining_profile_surface_mismatches() -> None:
         (
             ("provenance", "receipt"),
             "receipts/mbs-202608.txt",
-            "must be a JSON path",
+            "receipt does not match",
         ),
         (
             ("citations", 0, "accessed_at"),
