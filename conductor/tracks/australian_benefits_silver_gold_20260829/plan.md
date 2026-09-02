@@ -830,7 +830,11 @@
   pinned to the former three-group throttle; review fix `2f42a11` makes the
   existing end-to-end DAG contract require no `needs: qualify` dependency and
   the new four-group limit. Both PBS workflow suites now pass 135 tests, with
-  Ruff, format and actionlint green.
+  Ruff, format and actionlint green. PR #435 merged as `fabb7c8` from exact
+  reviewed head `a4f8d55` after all 37 hosted checks passed and no review
+  threads remained unresolved. Merge-receipt review adds the
+  canonical PR and exact Test-Goblin run URLs required for durable hosted
+  traceability; it changes no completion claim.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
