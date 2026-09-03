@@ -178,6 +178,16 @@ class GlobalMedicinesAtlasClient:
         ))
         return self._transport.request("GET", path, query)
 
+    def dataset_identity_route_api_v1_datasets__resource_id__get(
+        self,
+        *,
+        resource_id: str,
+    ) -> JsonValue:
+        encoded_resource_id = quote(str(resource_id), safe="")
+        path = f"/api/v1/datasets/{encoded_resource_id}"
+        query = _query(())
+        return self._transport.request("GET", path, query)
+
     def evidence_api_v1_evidence_get(
         self,
         *,

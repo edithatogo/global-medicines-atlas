@@ -7,11 +7,17 @@ from datetime import UTC, datetime
 from typing import Annotated, Any
 from uuid import uuid4
 
-from fastapi import FastAPI, Query, Request
+from fastapi import FastAPI, Path, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 from pydantic import AwareDatetime, ValidationError
 
+from .platinum_identity_service import (
+    DatasetIdentityLookup,
+    UnknownPlatinumResourceError,
+)
+from .platinum_surface_contracts import DatasetIdentityEnvelope
+from .platinum_types import RESOURCE_ID_PATTERN
 from .product_contracts import (
     API_BASE_PATH,
     MAX_PAGE_SIZE,
@@ -145,8 +151,27 @@ def _cache_headers(response: Response) -> None:
     response.headers["vary"] = "accept"
 
 
+def _identity_cache_headers(
+    response: Response, identity: DatasetIdentityEnvelope
+) -> None:
+    """Keep dynamic offline-capability claims inside their verified lifetime."""
+    if "verified_cache_offline" not in identity.capabilities:
+        _cache_headers(response)
+        return
+    remaining = max(
+        0,
+        int((identity.cache_expires_at - datetime.now(UTC)).total_seconds()),
+    )
+    response.headers["cache-control"] = (
+        f"public, max-age={min(60, remaining)}, must-revalidate"
+    )
+    response.headers["vary"] = "accept"
+
+
 def create_app(  # ruff: ignore[too-many-statements] - route registration is intentionally centralized.
     service: ReadOnlyQueryService,
+    *,
+    dataset_identities: DatasetIdentityLookup | None = None,
 ) -> FastAPI:
     """Create an API application with an explicitly injected query service."""
 
@@ -373,6 +398,50 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
     app.add_api_route(
         f"{API_BASE_PATH}/sources",
         sources,
+        methods=["HEAD"],
+        response_model=None,
+        include_in_schema=False,
+    )
+
+    @app.api_route(
+        f"{API_BASE_PATH}/datasets/{{resource_id:path}}",
+        methods=["GET"],
+        response_model=DatasetIdentityEnvelope,
+        responses={**_ERROR_RESPONSES, 404: {"model": ErrorEnvelope}},
+        tags=["datasets"],
+        summary="Inspect one admitted immutable dataset identity",
+    )
+    def dataset_identity_route(
+        request: Request,
+        response: Response,
+        resource_id: Annotated[
+            str,
+            Path(min_length=1, max_length=256, pattern=RESOURCE_ID_PATTERN),
+        ],
+    ) -> DatasetIdentityEnvelope | JSONResponse:
+        if dataset_identities is None:
+            return _error_response(
+                request,
+                status_code=503,
+                code=ErrorCode.SERVICE_UNAVAILABLE,
+                message="The dataset identity service is unavailable",
+                retryable=True,
+            )
+        try:
+            result = dataset_identities.identity(resource_id)
+        except UnknownPlatinumResourceError:
+            return _error_response(
+                request,
+                status_code=404,
+                code=ErrorCode.NOT_FOUND,
+                message="The admitted dataset resource was not found",
+            )
+        _identity_cache_headers(response, result)
+        return result
+
+    app.add_api_route(
+        f"{API_BASE_PATH}/datasets/{{resource_id:path}}",
+        dataset_identity_route,
         methods=["HEAD"],
         response_model=None,
         include_in_schema=False,

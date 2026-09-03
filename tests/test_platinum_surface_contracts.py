@@ -64,13 +64,21 @@ def test_identity_preserves_every_admitted_binding_without_row_claims() -> None:
         {"sha256": "bad"},
         {"contract_sha256": "bad"},
         {"semantic_manifest_sha256": "bad"},
-        {"byte_count": 0},
+        {"byte_count": -1},
         {"retrieved_at": "not-a-time"},
     ],
 )
 def test_identity_adapter_rejects_mutable_or_malformed_claims(changed) -> None:
     with pytest.raises((ValueError, ValidationError)):
         dataset_identity(replace(resource(), **changed), jurisdiction="AU")
+
+
+def test_identity_preserves_admitted_zero_byte_object() -> None:
+    envelope = dataset_identity(
+        replace(resource(), byte_count=0), jurisdiction="AU"
+    )
+
+    assert envelope.byte_count == 0
 
 
 @pytest.mark.parametrize(

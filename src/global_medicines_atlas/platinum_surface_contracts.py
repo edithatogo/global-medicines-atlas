@@ -3,16 +3,14 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Annotated, Literal
+from typing import TYPE_CHECKING, Annotated, Literal
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field
 
-from .platinum_resolver import (
-    Capability,
-    EntityGranularity,
-    ResolvedResource,
-    SemanticDimension,
-)
+from .platinum_types import Capability, EntityGranularity, SemanticDimension
+
+if TYPE_CHECKING:
+    from .platinum_resolver import ResolvedResource
 
 Sha256 = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
 Revision = Annotated[str, Field(pattern=r"^[0-9a-f]{40}$")]
@@ -34,7 +32,7 @@ class DatasetIdentityEnvelope(PlatinumSurfaceModel):
     revision: Revision
     path: str = Field(min_length=1, max_length=2048)
     object_sha256: Sha256
-    byte_count: int = Field(gt=0)
+    byte_count: int = Field(ge=0)
     contract_sha256: Sha256
     semantic_manifest_sha256: Sha256
     jurisdiction: Jurisdiction

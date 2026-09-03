@@ -27,30 +27,20 @@ from .federation_distribution import (
     reconcile_distribution,
 )
 from .federation_reader import FederatedReader, VerifiedRead
+from .platinum_types import (
+    RESOURCE_ID_PATTERN,
+    Capability,
+    EntityGranularity,
+    SemanticDimension,
+)
 
-SemanticDimension = Literal[
-    "service_benefit", "funding", "formulary", "regulatory", "terminology"
-]
-EntityGranularity = Literal[
-    "service_item",
-    "medicine_item",
-    "evidence_edge",
-    "history_event",
-    "coverage_record",
-    "provenance_record",
-]
-Capability = Literal[
-    "exact_v4_resolution",
-    "anonymous_verified_read",
-    "verified_cache_offline",
-]
 BASE_CAPABILITIES: tuple[Capability, ...] = (
     "exact_v4_resolution",
     "anonymous_verified_read",
 )
 RESOURCE_LIMIT = 256
 SEMANTIC_MANIFEST_BYTES = 16 * 1024
-_RESOURCE_ID = re.compile(r"[a-z0-9]+(?:[._-][a-z0-9]+)+")
+_RESOURCE_ID = re.compile(RESOURCE_ID_PATTERN)
 _DIMENSIONS = {
     "service_benefit",
     "funding",

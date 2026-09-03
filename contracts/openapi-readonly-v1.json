@@ -458,6 +458,196 @@
       ],
       "type": "object"
     },
+    "DatasetIdentityEnvelope": {
+      "additionalProperties": false,
+      "properties": {
+        "acquisition_id": {
+          "minLength": 1,
+          "title": "Acquisition Id",
+          "type": "string"
+        },
+        "byte_count": {
+          "minimum": 0.0,
+          "title": "Byte Count",
+          "type": "integer"
+        },
+        "cache_expires_at": {
+          "format": "date-time",
+          "title": "Cache Expires At",
+          "type": "string"
+        },
+        "capabilities": {
+          "items": {
+            "enum": [
+              "exact_v4_resolution",
+              "anonymous_verified_read",
+              "verified_cache_offline"
+            ],
+            "type": "string"
+          },
+          "title": "Capabilities",
+          "type": "array"
+        },
+        "comparison_cohort": {
+          "enum": [
+            "legacy",
+            "current",
+            "synthetic"
+          ],
+          "title": "Comparison Cohort",
+          "type": "string"
+        },
+        "comparison_validity": {
+          "const": "not_evaluated",
+          "title": "Comparison Validity",
+          "type": "string"
+        },
+        "contract_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Contract Sha256",
+          "type": "string"
+        },
+        "coverage_state": {
+          "const": "not_declared",
+          "title": "Coverage State",
+          "type": "string"
+        },
+        "dataset": {
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$",
+          "title": "Dataset",
+          "type": "string"
+        },
+        "effective_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Effective Date"
+        },
+        "entity_granularity": {
+          "enum": [
+            "service_item",
+            "medicine_item",
+            "evidence_edge",
+            "history_event",
+            "coverage_record",
+            "provenance_record"
+          ],
+          "title": "Entity Granularity",
+          "type": "string"
+        },
+        "jurisdiction": {
+          "pattern": "^[A-Z]{2,3}$",
+          "title": "Jurisdiction",
+          "type": "string"
+        },
+        "layer": {
+          "minLength": 1,
+          "title": "Layer",
+          "type": "string"
+        },
+        "object_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Object Sha256",
+          "type": "string"
+        },
+        "path": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "product_admitted": {
+          "const": true,
+          "title": "Product Admitted",
+          "type": "boolean"
+        },
+        "resource_id": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Resource Id",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "format": "date-time",
+          "title": "Retrieved At",
+          "type": "string"
+        },
+        "revision": {
+          "pattern": "^[0-9a-f]{40}$",
+          "title": "Revision",
+          "type": "string"
+        },
+        "rows_queried": {
+          "const": false,
+          "title": "Rows Queried",
+          "type": "boolean"
+        },
+        "schema_era": {
+          "minLength": 1,
+          "title": "Schema Era",
+          "type": "string"
+        },
+        "semantic_dimension": {
+          "enum": [
+            "service_benefit",
+            "funding",
+            "formulary",
+            "regulatory",
+            "terminology"
+          ],
+          "title": "Semantic Dimension",
+          "type": "string"
+        },
+        "semantic_manifest_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Semantic Manifest Sha256",
+          "type": "string"
+        },
+        "source_id": {
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
+        },
+        "version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "resource_id",
+        "dataset",
+        "revision",
+        "path",
+        "object_sha256",
+        "byte_count",
+        "contract_sha256",
+        "semantic_manifest_sha256",
+        "jurisdiction",
+        "semantic_dimension",
+        "entity_granularity",
+        "source_id",
+        "acquisition_id",
+        "layer",
+        "schema_era",
+        "comparison_cohort",
+        "effective_date",
+        "retrieved_at",
+        "cache_expires_at",
+        "capabilities",
+        "coverage_state",
+        "comparison_validity",
+        "product_admitted",
+        "rows_queried"
+      ],
+      "type": "object"
+    },
     "DiscoveryMetadata": {
       "additionalProperties": false,
       "properties": {
@@ -1522,6 +1712,52 @@
             }
           },
           "400": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "422": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "503": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/datasets/{resource_id}": {
+      "get": {
+        "operationId": "dataset_identity_route_api_v1_datasets__resource_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "resource_id",
+            "required": true,
+            "schema": {
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)+$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "application/json": {
+              "$ref": "#/components/schemas/DatasetIdentityEnvelope"
+            }
+          },
+          "400": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "404": {
             "application/json": {
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
