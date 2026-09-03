@@ -1,6 +1,8 @@
 """Fail-closed contracts for remote-query and Xet frontier experiments."""
 
 import copy
+import hashlib
+import json
 from typing import Any
 
 import pytest
@@ -15,7 +17,21 @@ SHA = "a" * 64
 REVISION = "b" * 40
 
 
+def query_identity() -> dict[str, Any]:
+    query: dict[str, Any] = {
+        "query_id": "pbs-example-funded-items-v1",
+        "predicate": "schedule_code = 'GE' AND benefit_amount > 0",
+        "projected_columns": ["item_code", "benefit_amount"],
+        "order_by": ["item_code"],
+        "limit": 100,
+    }
+    encoded = json.dumps(query, sort_keys=True, separators=(",", ":")).encode()
+    query["canonical_sha256"] = hashlib.sha256(encoded).hexdigest()
+    return query
+
+
 def query_document() -> dict[str, Any]:
+    query = query_identity()
     observations: list[dict[str, Any]] = [
         {
             "engine": engine,
@@ -24,11 +40,20 @@ def query_document() -> dict[str, Any]:
                 "interrupted_resume": "resumed",
                 "offline": "offline_rejected",
             }.get(scenario, "passed"),
+            "query_sha256": query["canonical_sha256"],
             "result_sha256": None if scenario == "offline" else SHA,
             "request_count": 0 if scenario == "offline" else 2,
             "transferred_bytes": 0 if scenario == "offline" else 512,
             "peak_memory_bytes": 1024,
             "cache_bytes": 0 if scenario in {"cold", "offline"} else 128,
+            "scanned_rows": 0 if scenario == "offline" else 100,
+            "returned_rows": 0 if scenario == "offline" else 25,
+            "interrupted_after_bytes": (
+                256 if scenario == "interrupted_resume" else None
+            ),
+            "resumed_from_byte": (
+                256 if scenario == "interrupted_resume" else None
+            ),
             "latency_ns": 1000,
         }
         for engine in ("python_fallback", "duckdb", "polars", "arrow")
@@ -56,7 +81,9 @@ def query_document() -> dict[str, Any]:
             "maximum_source_bytes": 4096,
             "maximum_requests": 8,
             "maximum_memory_bytes": 8192,
+            "maximum_cache_bytes": 1024,
         },
+        "query": query,
         "expected_result_sha256": SHA,
         "observations": observations,
         "production_dependency_adopted": False,
@@ -109,6 +136,9 @@ def test_complete_remote_query_matrix_preserves_parity_and_bounds() -> None:
         ("request_count", 9, "request bound"),
         ("transferred_bytes", 4097, "source-byte bound"),
         ("peak_memory_bytes", 8193, "memory bound"),
+        ("cache_bytes", 1025, "cache bound"),
+        ("scanned_rows", 101, "row bound"),
+        ("returned_rows", 101, "row bound"),
     ],
 )
 def test_remote_query_resource_bounds_fail_closed(
@@ -116,6 +146,8 @@ def test_remote_query_resource_bounds_fail_closed(
 ) -> None:
     raw = query_document()
     raw["observations"][0][field] = value
+    if field == "returned_rows":
+        raw["observations"][0]["scanned_rows"] = value
     with pytest.raises(ValidationError, match=message):
         RemoteQueryQualification.model_validate(raw)
 
@@ -125,6 +157,50 @@ def test_remote_query_requires_complete_engine_scenario_denominator() -> None:
     raw["observations"].pop()
     with pytest.raises(ValidationError, match="engine/scenario denominator"):
         RemoteQueryQualification.model_validate(raw)
+
+
+def test_remote_query_binds_exact_query_and_each_observation() -> None:
+    raw = query_document()
+    raw["query"]["predicate"] = "schedule_code = 'DIFFERENT'"
+    with pytest.raises(ValidationError, match="canonical identity"):
+        RemoteQueryQualification.model_validate(raw)
+
+    raw = query_document()
+    raw["observations"][0]["query_sha256"] = "c" * 64
+    with pytest.raises(ValidationError, match="observation identity"):
+        RemoteQueryQualification.model_validate(raw)
+
+    raw = query_document()
+    raw["query"]["limit"] = 101
+    raw["query"] = query_identity() | {"limit": 101}
+    encoded = json.dumps(
+        {
+            key: value
+            for key, value in raw["query"].items()
+            if key != "canonical_sha256"
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+    raw["query"]["canonical_sha256"] = hashlib.sha256(encoded).hexdigest()
+    with pytest.raises(ValidationError, match="limit exceeds row bound"):
+        RemoteQueryQualification.model_validate(raw)
+
+    for field in ("projected_columns", "order_by"):
+        raw = query_document()
+        raw["query"][field] = ["item_code", "item_code"]
+        encoded = json.dumps(
+            {
+                key: value
+                for key, value in raw["query"].items()
+                if key != "canonical_sha256"
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+        raw["query"]["canonical_sha256"] = hashlib.sha256(encoded).hexdigest()
+        with pytest.raises(ValidationError, match="columns repeat"):
+            RemoteQueryQualification.model_validate(raw)
 
 
 def test_remote_query_rejects_parity_and_failure_semantic_drift() -> None:
@@ -149,6 +225,30 @@ def test_remote_query_rejects_parity_and_failure_semantic_drift() -> None:
     )
     interrupted["result_sha256"] = None
     with pytest.raises(ValidationError, match="must resume exactly"):
+        RemoteQueryQualification.model_validate(raw)
+
+    raw = query_document()
+    interrupted = next(
+        item
+        for item in raw["observations"]
+        if item["scenario"] == "interrupted_resume"
+    )
+    interrupted["resumed_from_byte"] = 128
+    with pytest.raises(ValidationError, match="must resume exactly"):
+        RemoteQueryQualification.model_validate(raw)
+
+    raw = query_document()
+    warm = next(
+        item for item in raw["observations"] if item["scenario"] == "warm"
+    )
+    warm["resumed_from_byte"] = 1
+    with pytest.raises(ValidationError, match="has resume offsets"):
+        RemoteQueryQualification.model_validate(raw)
+
+    raw = query_document()
+    raw["observations"][0]["returned_rows"] = 101
+    raw["profile"]["maximum_rows"] = 200
+    with pytest.raises(ValidationError, match="returned rows exceed"):
         RemoteQueryQualification.model_validate(raw)
 
     raw = query_document()
