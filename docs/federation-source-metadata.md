@@ -9,9 +9,13 @@ and PBS archive identities independently and requires:
   distinction between benefits, formulary, regulatory and clinical evidence;
 - Croissant distributions that exactly equal the receipt-bound provenance
   payload denominator by path, order and SHA-256;
-- a citation that names the exact dataset revision;
+- a citation and lifecycle entry that name the exact observed immutable dataset
+  revision;
 - complete payload coverage, explicit exclusions, approved permission evidence
   and attribution;
+- exact source-native payload and B1 receipt paths and SHA-256 identities from
+  the anonymously verified MBS and PBS archive revisions;
+- the source-specific authorization reference and its observed review date;
 - a distinct correction route, withdrawal policy, and exactly one current
   version-history entry matching the source version and effective date.
 

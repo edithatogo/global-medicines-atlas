@@ -6,16 +6,16 @@
     "source_id": "au-mbs",
     "authority": "Australian Government Department of Health, Disability and Ageing",
     "authority_url": "https://www.health.gov.au/",
-    "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-202608",
+    "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/81efb2067580a870ca258e28007f588c/$FILE/MBS-XML-20260801.XML",
     "source_version": "2026-08",
     "effective_from": "2026-08-01",
-    "retrieved_at": "2026-08-30T05:40:00Z"
+    "retrieved_at": "2026-08-30T06:29:11.031891Z"
   },
   "data_card": {
     "title": "Australian Medicare Benefits Schedule source archive",
     "summary": "Immutable source-native MBS release evidence with receipt-bound provenance.",
     "version": "2026-08",
-    "created_at": "2026-08-30T05:40:00Z",
+    "created_at": "2026-08-30T06:29:11.031891Z",
     "intended_uses": ["Historical and current MBS service-benefit analysis"],
     "limitations": ["MBS funding evidence is not regulatory approval or formulary evidence."]
   },
@@ -25,12 +25,12 @@
     "version": "2026-08",
     "license": "rights-declared-per-source",
     "conforms_to": "http://mlcommons.org/croissant/1.0",
-    "distributions": [{"path": "raw/mbs-202608.xml", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "encoding_format": "application/xml"}]
+    "distributions": [{"path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml", "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565", "encoding_format": "application/xml"}]
   },
   "citations": [{"dataset": "edithatogo/australian-mbs-source-archive", "revision": "75f9f20a36ddb829dfe0ca88660664570782be02", "source_url": "https://www.mbsonline.gov.au/", "accessed_at": "2026-08-30"}],
-  "provenance": {"receipt": "receipts/mbs-202608.json", "receipt_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", "payloads": [{"path": "raw/mbs-202608.xml", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}]},
-  "coverage": {"scope": "August 2026 MBS release payloads", "payload_paths": ["raw/mbs-202608.xml"], "exclusions": []},
-  "rights": {"permission_state": "approved", "permission_reference": "https://www.health.gov.au/using-our-websites/copyright", "attribution": "Australian Government Department of Health, Disability and Ageing", "reviewed_at": "2026-08-29"},
+  "provenance": {"receipt": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/source-receipt.json", "receipt_sha256": "4f694fd7364061cd05fee33ea52e6dbeef17d1067b8437f72e726ab168fc2fc7", "payloads": [{"path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml", "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"}]},
+  "coverage": {"scope": "August 2026 MBS release payloads", "payload_paths": ["raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml"], "exclusions": []},
+  "rights": {"permission_state": "approved", "permission_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330", "attribution": "Australian Government Department of Health, Disability and Ageing", "reviewed_at": "2026-08-30"},
   "maintenance": {"correction_url": "https://github.com/edithatogo/global-medicines-atlas/issues", "withdrawal_policy": "Withdraw or supersede a revision when its receipt, rights or source identity fails verification."},
   "version_history": [{"revision": "75f9f20a36ddb829dfe0ca88660664570782be02", "source_version": "2026-08", "effective_from": "2026-08-01", "status": "current"}]
 }

@@ -300,6 +300,35 @@ def test_binds_payload_and_receipt_to_observed_release() -> None:
     with pytest.raises(SourceMetadataError, match="observed source release"):
         validate_source_metadata(document)
 
+
+@pytest.mark.parametrize("fixture", ["valid-mbs.json", "valid-pbs.json"])
+def test_binds_dataset_revision_to_observed_release(fixture: str) -> None:
+    document = _fixture(fixture)
+    unrelated_revision = "f" * 40
+    document["revision"] = unrelated_revision
+    document["citations"][0]["revision"] = unrelated_revision
+    document["version_history"][0]["revision"] = unrelated_revision
+    with pytest.raises(
+        SourceMetadataError, match="revision does not match the observed"
+    ):
+        validate_source_metadata(document)
+
+
+@pytest.mark.parametrize(
+    ("fixture", "unobserved_date"),
+    [("valid-mbs.json", "1900-01-01"), ("valid-pbs.json", "2026-08-30")],
+)
+def test_binds_rights_date_to_observed_authorization(
+    fixture: str, unobserved_date: str
+) -> None:
+    document = _fixture(fixture)
+    document["rights"]["reviewed_at"] = unobserved_date
+    with pytest.raises(
+        SourceMetadataError,
+        match="rights review date does not match observed authorization",
+    ):
+        validate_source_metadata(document)
+
     document = _fixture("valid-mbs.json")
     document["provenance"]["receipt"] = "receipts/mbs-190001.json"
     document["provenance"]["receipt_sha256"] = "e" * 64
@@ -501,7 +530,7 @@ def test_rejects_remaining_profile_surface_mismatches() -> None:
         (
             ("rights", "reviewed_at"),
             "2026-08-31",
-            "rights review cannot follow",
+            "rights review date does not match observed authorization",
         ),
         (("coverage", "scope"), "All MBS history", "coverage scope"),
         (

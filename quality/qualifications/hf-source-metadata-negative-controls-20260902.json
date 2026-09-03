@@ -15,8 +15,8 @@
     "invalid-croissant-digest.json": "7af1c9d3c47d5e2058a88b01f710161ad5e7f139c82e57c513acb3062b4df178",
     "invalid-generic-card.json": "2176e4e9a698e1d877b4ca6eddaf95911681a03788ac5244e47a8cef5cde1a6f",
     "invalid-version-history.json": "1b33012f78d6ceee8af92030e87a3d1c9b100a1f60bb1320d0be484d24e67691",
-    "valid-mbs.json": "7394e1a7a195d15180f4e3149fe2bb26c1f2b924af846a219c78758e12b67033",
-    "valid-pbs.json": "d52d806601869c1f1ae5c5680c7b9de9cf8ac001aed153e4de8991c2c87d6f45"
+    "valid-mbs.json": "bc215dac59fb5e0c4cd50c20e5b046eef70b2004369506d1872e1383b5b8d4de",
+    "valid-pbs.json": "35b1146c5907239fe667aab6f3a71eade3f06e2d7dc28a76c227d36c52ed1bf7"
   },
   "negative_controls": [
     "generic data-card title",
@@ -65,7 +65,9 @@
     "citation revision absent from version history",
     "unobserved non-current release history",
     "payload outside the observed source release",
-    "receipt identity outside the observed source release"
+    "receipt identity outside the observed source release",
+    "dataset revision outside the observed hosted release",
+    "rights review date outside the observed authorization"
   ],
   "external_actions": {
     "credentials_used": false,

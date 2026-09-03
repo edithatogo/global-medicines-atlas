@@ -6,16 +6,16 @@
     "source_id": "au-pbs",
     "authority": "Australian Government Department of Health, Disability and Ageing",
     "authority_url": "https://www.health.gov.au/",
-    "source_url": "https://www.pbs.gov.au/browse/downloads",
+    "source_url": "https://www.pbs.gov.au/publication/schedule/2026/04/2026-04-01-XML-V3.zip?variant=3",
     "source_version": "2026-04",
     "effective_from": "2026-04-01",
-    "retrieved_at": "2026-08-30T02:40:00Z"
+    "retrieved_at": "2026-08-30T03:31:25Z"
   },
   "data_card": {
     "title": "Australian Pharmaceutical Benefits Scheme source archive",
     "summary": "Immutable source-native PBS release evidence with receipt-bound provenance.",
     "version": "2026-04",
-    "created_at": "2026-08-30T02:40:00Z",
+    "created_at": "2026-08-30T03:31:25Z",
     "intended_uses": ["Historical and current PBS formulary and funding analysis"],
     "limitations": ["PBS listing evidence is not regulatory approval or prescribing advice."]
   },
@@ -25,12 +25,12 @@
     "version": "2026-04",
     "license": "rights-declared-per-source",
     "conforms_to": "http://mlcommons.org/croissant/1.0",
-    "distributions": [{"path": "raw/pbs-202604.zip", "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "encoding_format": "application/zip"}]
+    "distributions": [{"path": "raw/2026-04-01/2026-04-01-XML-V3.zip", "sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20", "encoding_format": "application/zip"}]
   },
   "citations": [{"dataset": "edithatogo/australian-pbs-source-archive", "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7", "source_url": "https://www.pbs.gov.au/browse/downloads", "accessed_at": "2026-08-30"}],
-  "provenance": {"receipt": "receipts/pbs-202604.json", "receipt_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd", "payloads": [{"path": "raw/pbs-202604.zip", "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}]},
-  "coverage": {"scope": "April 2026 PBS release payloads", "payload_paths": ["raw/pbs-202604.zip"], "exclusions": []},
-  "rights": {"permission_state": "approved", "permission_reference": "https://www.health.gov.au/using-our-websites/copyright", "attribution": "Australian Government Department of Health, Disability and Ageing", "reviewed_at": "2026-08-29"},
+  "provenance": {"receipt": "bronze/2026-04-01/source-receipt.json", "receipt_sha256": "a5eb06cf7e655eb0e0d8fe5d244297721ebede51e96c237333f7dffd76e1ccd1", "payloads": [{"path": "raw/2026-04-01/2026-04-01-XML-V3.zip", "sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20"}]},
+  "coverage": {"scope": "April 2026 PBS release payloads", "payload_paths": ["raw/2026-04-01/2026-04-01-XML-V3.zip"], "exclusions": []},
+  "rights": {"permission_state": "approved", "permission_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/340", "attribution": "Australian Government Department of Health, Disability and Ageing", "reviewed_at": "2026-08-29"},
   "maintenance": {"correction_url": "https://github.com/edithatogo/global-medicines-atlas/issues", "withdrawal_policy": "Withdraw or supersede a revision when its receipt, rights or source identity fails verification."},
   "version_history": [{"revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7", "source_version": "2026-04", "effective_from": "2026-04-01", "status": "current"}]
 }

@@ -90,32 +90,45 @@ _PROFILE_DETAILS = {
     "au-mbs": {
         "authority_url": "https://www.health.gov.au/",
         "citation_url": "https://www.mbsonline.gov.au/",
-        "source_url_prefix": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-",
+        "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/81efb2067580a870ca258e28007f588c/$FILE/MBS-XML-20260801.XML",
         "coverage_scope": "August 2026 MBS release payloads",
-        "receipt_prefix": "receipts/mbs-",
         "effective_from": "2026-08-01",
         "source_version": "2026-08",
-        "retrieved_at": "2026-08-30T05:40:00Z",
-        "receipt": "receipts/mbs-202608.json",
-        "receipt_sha256": "c" * 64,
-        "payloads": (("raw/mbs-202608.xml", "a" * 64),),
+        "retrieved_at": "2026-08-30T06:29:11.031891Z",
+        "revision": "75f9f20a36ddb829dfe0ca88660664570782be02",
+        "receipt": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/source-receipt.json",
+        "receipt_sha256": "4f694fd7364061cd05fee33ea52e6dbeef17d1067b8437f72e726ab168fc2fc7",
+        "payloads": (
+            (
+                "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+                "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+            ),
+        ),
+        "permission_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+        "rights_reviewed_at": "2026-08-30",
     },
     "au-pbs": {
         "authority_url": "https://www.health.gov.au/",
         "citation_url": "https://www.pbs.gov.au/browse/downloads",
-        "source_url_prefix": "https://www.pbs.gov.au/browse/downloads",
+        "source_url": "https://www.pbs.gov.au/publication/schedule/2026/04/2026-04-01-XML-V3.zip?variant=3",
         "coverage_scope": "April 2026 PBS release payloads",
-        "receipt_prefix": "receipts/pbs-",
         "effective_from": "2026-04-01",
         "source_version": "2026-04",
-        "retrieved_at": "2026-08-30T02:40:00Z",
-        "receipt": "receipts/pbs-202604.json",
-        "receipt_sha256": "d" * 64,
-        "payloads": (("raw/pbs-202604.zip", "b" * 64),),
+        "retrieved_at": "2026-08-30T03:31:25Z",
+        "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+        "receipt": "bronze/2026-04-01/source-receipt.json",
+        "receipt_sha256": "a5eb06cf7e655eb0e0d8fe5d244297721ebede51e96c237333f7dffd76e1ccd1",
+        "payloads": (
+            (
+                "raw/2026-04-01/2026-04-01-XML-V3.zip",
+                "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+            ),
+        ),
+        "permission_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/340",
+        "rights_reviewed_at": "2026-08-29",
     },
 }
 
-_PERMISSION_REFERENCE = "https://www.health.gov.au/using-our-websites/copyright"
 _WITHDRAWAL_POLICY = (
     "Withdraw or supersede a revision when its receipt, rights or source identity "
     "fails verification."
@@ -398,7 +411,7 @@ class SourceMetadataDocument(_Model):
             raise ValueError("source profile uses the wrong source host")
         if str(self.source.authority_url) != profile["authority_url"]:
             raise ValueError("source profile uses the wrong authority URL")
-        expected_source_url = str(profile["source_url_prefix"])
+        expected_source_url = str(profile["source_url"])
         if (
             re.fullmatch(r"\d{4}-(?:0[1-9]|1[0-2])", self.source.source_version)
             is None
@@ -407,10 +420,6 @@ class SourceMetadataDocument(_Model):
         if self.source.source_version != profile["source_version"]:
             raise ValueError(
                 "source version does not match the approved release"
-            )
-        if self.source.source_id == "au-mbs":
-            expected_source_url += (
-                self.source.source_version[:4] + self.source.source_version[5:]
             )
         if str(self.source.source_url) != expected_source_url:
             raise ValueError("source profile uses the wrong source URL surface")
@@ -453,17 +462,19 @@ class SourceMetadataDocument(_Model):
     @model_validator(mode="after")
     def rights_are_profile_bound(self) -> Self:
         expected_authority = _PROFILES[self.source.source_id][2]
-        authority_host = _PROFILES[self.source.source_id][3]
+        profile = _PROFILE_DETAILS[self.source.source_id]
         if (
-            self.rights.permission_reference.host != authority_host
-            or self.rights.attribution != expected_authority
-            or str(self.rights.permission_reference) != _PERMISSION_REFERENCE
+            self.rights.attribution != expected_authority
+            or str(self.rights.permission_reference)
+            != profile["permission_reference"]
         ):
             raise ValueError(
                 "rights evidence does not match the approved source profile"
             )
-        if self.rights.reviewed_at > self.source.retrieved_at.date():
-            raise ValueError("rights review cannot follow source retrieval")
+        if self.rights.reviewed_at.isoformat() != profile["rights_reviewed_at"]:
+            raise ValueError(
+                "rights review date does not match observed authorization"
+            )
         return self
 
     @model_validator(mode="after")
@@ -487,6 +498,10 @@ class SourceMetadataDocument(_Model):
         )
 
         profile = _PROFILE_DETAILS[self.source.source_id]
+        if self.revision != profile["revision"]:
+            raise ValueError(
+                "dataset revision does not match the observed source release"
+            )
         if (
             self.source.retrieved_at.isoformat().replace("+00:00", "Z")
             != profile["retrieved_at"]
