@@ -67,8 +67,11 @@ class IdentityStub:
 
 
 class ExpiringIdentityStub:
+    def __init__(self, lifetime_seconds: int = 30) -> None:
+        self._lifetime_seconds = lifetime_seconds
+
     def identity(self, _resource_id: str):
-        expiry = datetime.now(UTC) + timedelta(seconds=30)
+        expiry = datetime.now(UTC) + timedelta(seconds=self._lifetime_seconds)
         resource = replace(
             resolved(),
             cache_expires_at=expiry,
@@ -159,11 +162,16 @@ def test_dataset_identity_endpoint_returns_exact_typed_envelope() -> None:
     assert response.headers["cache-control"].startswith("public")
 
 
-def test_dynamic_offline_capability_cache_cannot_outlive_expiry() -> None:
+@pytest.mark.parametrize(
+    ("lifetime_seconds", "maximum_age"), [(30, 30), (90, 60), (-1, 0)]
+)
+def test_dynamic_offline_capability_cache_cannot_outlive_expiry(
+    lifetime_seconds: int, maximum_age: int
+) -> None:
     test_client = TestClient(
         create_app(
             cast("ReadOnlyQueryService", QueryStub()),
-            dataset_identities=ExpiringIdentityStub(),
+            dataset_identities=ExpiringIdentityStub(lifetime_seconds),
         )
     )
 
@@ -171,7 +179,7 @@ def test_dynamic_offline_capability_cache_cannot_outlive_expiry() -> None:
 
     assert response.status_code == 200
     assert response.headers["cache-control"].startswith("public, max-age=")
-    assert int(response.headers["cache-control"].split("=")[1]) <= 30
+    assert int(response.headers["cache-control"].split("=")[1]) <= maximum_age
     assert "stale-while-revalidate" not in response.headers["cache-control"]
 
 
