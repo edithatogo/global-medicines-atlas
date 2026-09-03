@@ -238,6 +238,20 @@ def _validate_inputs(
         mapping.current_schema_era,
     ):
         raise ValueError("MBS schema comparison eras differ from mapping")
+    expected_native_names = (
+        tuple(item.historical_native_name for item in mapping.fields),
+        tuple(item.current_native_name for item in mapping.fields),
+    )
+    for snapshot, expected in zip(
+        (historical, current), expected_native_names, strict=True
+    ):
+        if snapshot.rows and any(
+            tuple(field.name for field in row.fields) != expected
+            for row in snapshot.rows
+        ):
+            raise ValueError(
+                "MBS schema comparison native fields differ from mapping"
+            )
     if (historical.cohort, current.cohort) not in {
         ("synthetic", "synthetic"),
         ("legacy", "current"),
