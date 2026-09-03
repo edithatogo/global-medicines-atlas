@@ -524,19 +524,32 @@
 - [~] Write failing JSON/Arrow schema, semantic, property, negative-control,
   confidence, review-state, temporal, contradiction, and rights tests for nodes
   and edges. MBS service/benefit synthetic-candidate schema, evidence,
-  determinism, tamper, no-inference, Arrow and Parquet tests now pass; the
-  remaining source families and real-source controls remain pending.
+  determinism, tamper, no-inference, Arrow and Parquet tests now pass. PBS
+  source-document/native-entity and exact source-containment candidate tests
+  also pass with complete nested Silver-field, B1/B2, row/path, schema-era,
+  rights, retrieval, review, temporal and negative-control evidence. Medicine
+  identity, adjudication, cross-source relations and real-source controls remain
+  pending.
 - [~] Confirm the intended failure before implementation.
-  The MBS Gold graph module was absent before this bounded implementation.
+  Both the MBS and PBS Gold graph modules were absent before their bounded
+  implementations; the PBS test collection failed with `ModuleNotFoundError`
+  before `4b5731b`.
 - [~] Generate stable node/edge tables for MBS, PBS, medicines, restrictions,
   source documents, organizations, and terminology references.
   MBS now emits source-record-scoped service and benefit evidence nodes plus
-  only same-record explicit edges from synthetic Silver candidates. PBS,
-  medicines, restrictions, documents, organizations and terminology remain.
+  only same-record explicit edges from synthetic Silver candidates. PBS now
+  emits source-document and native-entity nodes for schedule, item,
+  presentation, restriction, AMT-reference, classification and unmapped source
+  structure, plus only exact XML parent/child containment edges from synthetic
+  Silver. Canonical medicines, organizations, resolved terminology and
+  cross-source relationships remain.
 - [~] Implement official/source-explicit and deterministic mappings first;
   isolate lexical, ontology-assisted, embedding, and NLP candidates.
   The first MBS projection is deterministic and source-explicit; no lexical,
   ontology, embedding, NLP, terminology or admission path is present.
+  The first PBS projection is likewise source-explicit structural containment;
+  it records no asserted funding, formulary, regulatory, medicine-identity or
+  terminology-equivalence dimension and performs no inference or admission.
 - [ ] Add adjudication queues, calibrated thresholds, conflict/supersession, and
   review receipts before any candidate promotion.
 - [ ] Phase Verification & Checkpoint: every edge is evidence-bearing and no
