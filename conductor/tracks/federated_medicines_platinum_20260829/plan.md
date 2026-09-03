@@ -81,6 +81,10 @@
 - [x] Scope the advisory free-threaded canary concurrency key to its workflow
   and ref so activity on another branch cannot cancel the exact-head run.
   (Hosted isolation regression passes; exact-head checks pending.)
+- [x] Reject default client query parameters and caller-managed automatic
+  redirects before transport, and consume response bodies through an
+  absolute-deadline bridge so a stalled chunk cannot extend the shared wall
+  deadline. (45 hostile focused tests; 100% statement and branch coverage.)
 
 ### Resolver review fixes
 

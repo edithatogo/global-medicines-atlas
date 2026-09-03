@@ -11,7 +11,9 @@ import hashlib
 import io
 import json
 import math
+import queue
 import re
+import threading
 import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -277,30 +279,65 @@ def _download(
                 != "identity"
             ):
                 raise ValueError("HTTP content encoding is not identity")
-            chunks: list[bytes] = []
-            size = 0
-            for chunk in response.iter_bytes(64 * 1024):
-                size += len(chunk)
-                if size > limit:
-                    raise ValueError("remote size exceeds budget")
-                if time.monotonic() > deadline:
-                    raise ValueError("HTTP retrieval deadline exceeded")
-                chunks.append(chunk)
-            return b"".join(chunks)
+            return _read_until_deadline(
+                response, limit=limit, deadline=deadline
+            )
     raise ValueError("HTTP redirect limit exceeded")
+
+
+def _read_until_deadline(
+    response: httpx.Response, *, limit: int, deadline: float
+) -> bytes:
+    """Consume a sync response without allowing a stalled read past deadline."""
+    events: queue.Queue[tuple[bytes | None, Exception | None]] = queue.Queue(1)
+
+    def produce() -> None:
+        try:
+            for chunk in response.iter_bytes(64 * 1024):
+                events.put((chunk, None))
+            events.put((None, None))
+        except Exception as error:  # pragma: no cover - transport-specific
+            events.put((None, error))
+
+    threading.Thread(target=produce, daemon=True).start()
+    chunks: list[bytes] = []
+    size = 0
+    while True:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            response.close()
+            raise ValueError("HTTP retrieval deadline exceeded")
+        try:
+            chunk, error = events.get(timeout=remaining)
+        except queue.Empty:
+            response.close()
+            raise ValueError("HTTP retrieval deadline exceeded") from None
+        if error is not None:
+            raise error
+        if chunk is None:
+            return b"".join(chunks)
+        size += len(chunk)
+        if size > limit:
+            raise ValueError("remote size exceeds budget")
+        chunks.append(chunk)
 
 
 def _require_anonymous_client(client: httpx.Client) -> None:
     """Reject state that can add credentials to the preflight requests."""
     credential_headers = {"authorization", "cookie", "proxy-authorization"}
-    if (
+    credential_state = (
         client.auth is not None
         or len(client.cookies) > 0
         or credential_headers.intersection(client.headers.keys())
         or client.event_hooks.get("request")
         or client.event_hooks.get("response")
-    ):
-        raise ValueError("anonymous client must not carry credentials or hooks")
+    )
+    unsafe_defaults = bool(client.params) or client.follow_redirects
+    if credential_state or unsafe_defaults:
+        raise ValueError(
+            "anonymous client must not carry credentials, hooks, parameters, "
+            "or automatic redirects"
+        )
 
 
 def fetch_unadmitted_public_fixture(

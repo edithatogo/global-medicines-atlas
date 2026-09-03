@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import time
 from dataclasses import replace
 from datetime import UTC, datetime
 from pathlib import Path
@@ -272,6 +273,28 @@ def test_anonymous_fetch_rejects_client_hooks(hook_kind: str) -> None:
         fetch_unadmitted_public_fixture(pin(raw), client)
 
 
+@pytest.mark.parametrize(
+    "client_kwargs",
+    [{"params": {"api_key": "secret"}}, {"follow_redirects": True}],
+)
+def test_anonymous_fetch_rejects_implicit_request_mutation(
+    client_kwargs,
+) -> None:
+    """Defaults cannot bypass destination or anonymous-request validation."""
+    raw = payload()
+    with (
+        httpx.Client(
+            transport=httpx.MockTransport(
+                lambda _request: pytest.fail("mutated request issued")
+            ),
+            trust_env=False,
+            **client_kwargs,
+        ) as client,
+        pytest.raises(ValueError, match="anonymous client"),
+    ):
+        fetch_unadmitted_public_fixture(pin(raw), client)
+
+
 def test_each_request_receives_only_the_remaining_shared_deadline(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -285,7 +308,7 @@ def test_each_request_receives_only_the_remaining_shared_deadline(
         observed_timeouts.append(kwargs["timeout"])
         return original_stream(self, method, url, **kwargs)
 
-    clock = iter((100.0, 101.0, 102.0, 103.0, 104.0))
+    clock = iter(float(value) for value in range(100, 112))
     monkeypatch.setattr(checkpoint.time, "monotonic", lambda: next(clock))
     monkeypatch.setattr(httpx.Client, "stream", recording_stream)
 
@@ -426,3 +449,53 @@ def test_anonymous_fetch_enforces_single_deadline(
         pytest.raises(ValueError, match="deadline"),
     ):
         fetch_unadmitted_public_fixture(pin(raw), client, timeout_seconds=30)
+
+
+def test_stream_stall_cannot_exceed_aggregate_deadline() -> None:
+    """A body read stalled by its transport cannot extend the wall deadline."""
+    raw = payload()
+
+    class StalledStream(httpx.SyncByteStream):
+        def __iter__(self):
+            time.sleep(0.2)
+            yield raw
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if "/api/datasets/" in str(request.url):
+            return httpx.Response(200, content=metadata())
+        return httpx.Response(200, stream=StalledStream())
+
+    started = time.monotonic()
+    with (
+        httpx.Client(
+            transport=httpx.MockTransport(handler), trust_env=False
+        ) as client,
+        pytest.raises(ValueError, match="deadline"),
+    ):
+        fetch_unadmitted_public_fixture(pin(raw), client, timeout_seconds=0.02)
+    assert time.monotonic() - started < 0.15
+
+
+def test_stream_transport_failure_is_preserved() -> None:
+    """The deadline bridge must not relabel a transport failure as success."""
+
+    class BrokenStream(httpx.SyncByteStream):
+        def __iter__(self):
+            raise RuntimeError("stream failed")
+            yield b""  # pragma: no cover - preserves generator typing
+
+    with (
+        httpx.Client(
+            transport=httpx.MockTransport(
+                lambda _request: httpx.Response(200, stream=BrokenStream())
+            ),
+            trust_env=False,
+        ) as client,
+        pytest.raises(RuntimeError, match="stream failed"),
+    ):
+        checkpoint._download(
+            client,
+            "https://huggingface.co/example",
+            limit=10,
+            deadline=time.monotonic() + 1,
+        )
