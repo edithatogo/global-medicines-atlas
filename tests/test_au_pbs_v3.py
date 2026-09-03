@@ -17,6 +17,7 @@ from scripts.qualify_pbs_v3_archive import qualify
 
 from global_medicines_atlas.adapters.au_pbs import (
     PBS_V3_NAMESPACE,
+    PBS_V3_SOURCE_SCHEMA,
     PBS_XML_POLICY,
     inspect_pbs_v3_tags,
     parse_pbs_v3_archive,
@@ -360,6 +361,23 @@ def test_source_parquet_is_deterministic_and_source_faithful() -> None:
     assert row["projected_item_sha256"] == (
         result.records[0].projected_item_sha256
     )
+
+
+def test_source_schema_keeps_funding_and_nonfunding_dimensions_separate() -> (
+    None
+):
+    metadata = {
+        key.decode(): value.decode()
+        for key, value in PBS_V3_SOURCE_SCHEMA.metadata.items()
+    }
+
+    assert metadata["dimension"] == "funding_formulary_source_structure"
+    assert metadata["mapping_status"] == "source_native"
+    assert metadata["absence_interpretation"] == "unknown"
+    assert metadata["qualification"] == "candidate"
+    assert metadata["regulatory_status"] == "not_asserted"
+    assert metadata["terminology_status"] == "reference_only"
+    assert metadata["classification_status"] == "reference_only"
 
 
 def test_source_parquet_preserves_missing_amt_resource_as_null() -> None:

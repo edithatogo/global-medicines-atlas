@@ -78,20 +78,35 @@ class PbsV3Archive:
     xml_payload: bytes
 
 
-PBS_V3_SOURCE_SCHEMA = pa.schema([
-    pa.field("item_code", pa.string(), nullable=False),
-    pa.field("product_name", pa.string(), nullable=False),
-    pa.field("amt_codes", pa.list_(pa.string()), nullable=False),
-    pa.field(
-        "amt_resources",
-        pa.list_(pa.field("item", pa.string(), nullable=True)),
-        nullable=False,
-    ),
-    pa.field("atc_codes", pa.list_(pa.string()), nullable=False),
-    pa.field("restrictions", pa.list_(pa.string()), nullable=False),
-    pa.field("restriction_effective_dates", pa.list_(pa.string())),
-    pa.field("projected_item_sha256", pa.string(), nullable=False),
-])
+PBS_V3_SOURCE_SCHEMA = pa.schema(
+    [
+        pa.field("item_code", pa.string(), nullable=False),
+        pa.field("product_name", pa.string(), nullable=False),
+        pa.field("amt_codes", pa.list_(pa.string()), nullable=False),
+        pa.field(
+            "amt_resources",
+            pa.list_(pa.field("item", pa.string(), nullable=True)),
+            nullable=False,
+        ),
+        pa.field("atc_codes", pa.list_(pa.string()), nullable=False),
+        pa.field("restrictions", pa.list_(pa.string()), nullable=False),
+        pa.field("restriction_effective_dates", pa.list_(pa.string())),
+        pa.field("projected_item_sha256", pa.string(), nullable=False),
+    ],
+    metadata={
+        "schema_name": "global-medicines-atlas.pbs-v3.source-faithful",
+        "schema_version": "1.0",
+        "source_id": SOURCE_ID,
+        "dimension": "funding_formulary_source_structure",
+        "qualification": "candidate",
+        "mapping_status": "source_native",
+        "absence_interpretation": "unknown",
+        "conversion": "none",
+        "regulatory_status": "not_asserted",
+        "terminology_status": "reference_only",
+        "classification_status": "reference_only",
+    },
+)
 
 
 def read_pbs_v3_member(payload: bytes) -> tuple[ExtractedMember, bytes]:
