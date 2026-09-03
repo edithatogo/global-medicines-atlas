@@ -381,7 +381,7 @@ def test_generated_client_smokes_every_committed_read_only_operation() -> None:
         valid_at="2026-07-31",
     )
     client.dataset_identity_route_api_v1_datasets__resource_id__get(
-        resource_id="au.mbs/services?current=true"
+        resource_id="au.mbs-services_current"
     )
     client.evidence_api_v1_evidence_get(
         concept_id="nz:123",
@@ -407,7 +407,7 @@ def test_generated_client_smokes_every_committed_read_only_operation() -> None:
     )
     assert transport.calls[3] == (
         "GET",
-        "/api/v1/datasets/au.mbs%2Fservices%3Fcurrent%3Dtrue",
+        "/api/v1/datasets/au.mbs-services_current",
         (),
     )
 

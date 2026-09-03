@@ -194,6 +194,14 @@ def test_unknown_identity_is_typed_not_found_without_internal_detail() -> None:
     assert response.headers["cache-control"] == "no-store"
 
 
+def test_invalid_resource_path_is_typed_validation_error() -> None:
+    response = client().get("/api/v1/datasets/au.mbs/services")
+
+    assert response.status_code == 422
+    assert response.json()["error"] == "invalid_request"
+    assert response.headers["cache-control"] == "no-store"
+
+
 def test_unconfigured_identity_service_fails_closed() -> None:
     response = client(configured=False).get(
         "/api/v1/datasets/au.mbs.services.current"

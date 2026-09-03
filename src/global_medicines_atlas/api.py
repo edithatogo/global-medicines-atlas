@@ -17,6 +17,7 @@ from .platinum_identity_service import (
     UnknownPlatinumResourceError,
 )
 from .platinum_surface_contracts import DatasetIdentityEnvelope
+from .platinum_types import RESOURCE_ID_PATTERN
 from .product_contracts import (
     API_BASE_PATH,
     MAX_PAGE_SIZE,
@@ -403,7 +404,7 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
     )
 
     @app.api_route(
-        f"{API_BASE_PATH}/datasets/{{resource_id}}",
+        f"{API_BASE_PATH}/datasets/{{resource_id:path}}",
         methods=["GET"],
         response_model=DatasetIdentityEnvelope,
         responses={**_ERROR_RESPONSES, 404: {"model": ErrorEnvelope}},
@@ -413,7 +414,10 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
     def dataset_identity_route(
         request: Request,
         response: Response,
-        resource_id: Annotated[str, Path(min_length=1, max_length=256)],
+        resource_id: Annotated[
+            str,
+            Path(min_length=1, max_length=256, pattern=RESOURCE_ID_PATTERN),
+        ],
     ) -> DatasetIdentityEnvelope | JSONResponse:
         if dataset_identities is None:
             return _error_response(
@@ -436,7 +440,7 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
         return result
 
     app.add_api_route(
-        f"{API_BASE_PATH}/datasets/{{resource_id}}",
+        f"{API_BASE_PATH}/datasets/{{resource_id:path}}",
         dataset_identity_route,
         methods=["HEAD"],
         response_model=None,
