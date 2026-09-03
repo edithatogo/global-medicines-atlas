@@ -842,7 +842,8 @@
   available. Preserve `fail-fast: false`, attempt-bound artifacts, exact sixteen-
   shard assembly, and the final fail-closed aggregate. Implemented `c10dd41`;
   the two workflow contracts failed before the DAG change, then both complete
-  PBS hosted/preparation suites passed (135 tests), with Ruff, format,
+  PBS hosted/preparation suites passed (136 tests), including exact expansion
+  of eight pair receipts to gap-free partitions 0..15, with Ruff, format,
   actionlint and diff checks green. This changes scheduling and retry scope only:
   it does not change source retrieval, qualification semantics, receipts,
   publication, timeouts or human gates. Hosted elapsed-time evidence remains

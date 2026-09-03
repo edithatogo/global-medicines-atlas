@@ -140,6 +140,60 @@ def test_group_receipt_expands_to_exact_partition_nodes(
     assert selected["partition:0"][2]["partition"] == partition
 
 
+def test_eight_pair_receipts_expand_to_exact_sixteen_partition_nodes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    for group_index in range(8):
+        node = {
+            "purpose": "transient-reference-partition-group",
+            "group": {"index": group_index},
+            "binding_sha256": "binding",
+            "denominator": {"elements": 16},
+        }
+        report = {
+            "status": "prepared",
+            "run_attempt": "1",
+            "node_kind": "partition-group",
+            "node": node,
+        }
+        encoded = json.dumps(
+            report, sort_keys=True, separators=(",", ":")
+        ).encode()
+        path = (
+            tmp_path
+            / f"group-{group_index}"
+            / (f"reference-group-{group_index}-receipt.json")
+        )
+        path.parent.mkdir()
+        path.write_text(
+            json.dumps({
+                "report": report,
+                "report_sha256": hashlib.sha256(encoded).hexdigest(),
+            }),
+            encoding="utf-8",
+        )
+
+    def validate(_material: Path, node: dict) -> tuple[object, dict, list]:
+        start = node["group"]["index"] * 2
+        partitions = [
+            {
+                "index": index,
+                "count": 1,
+                "path": f"reference-{index:02}.arrow",
+            }
+            for index in range(start, start + 2)
+        ]
+        return object(), {"elements": 16}, partitions
+
+    monkeypatch.setattr(
+        assemble, "validate_reference_partition_group", validate
+    )
+
+    selected = assemble._latest_nodes(tmp_path)  # pyright: ignore[reportPrivateUsage]
+
+    assert set(selected) == {f"partition:{index}" for index in range(16)}
+
+
 def test_manifest_assembly_failure_writes_bounded_receipt(
     tmp_path: Path,
 ) -> None:
