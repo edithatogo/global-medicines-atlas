@@ -533,7 +533,8 @@
 - [~] Confirm the intended failure before implementation.
   Both the MBS and PBS Gold graph modules were absent before their bounded
   implementations; the PBS test collection failed with `ModuleNotFoundError`
-  before `4b5731b`.
+  before current implementation `379c744` (original pre-rebase identity
+  `4b5731b`).
 - [~] Generate stable node/edge tables for MBS, PBS, medicines, restrictions,
   source documents, organizations, and terminology references.
   MBS now emits source-record-scoped service and benefit evidence nodes plus
