@@ -50,6 +50,13 @@ def test_explicit_service_benefit_edges_preserve_every_silver_record():
     for edge in result.edges:
         assert edge.inferred is False
         assert edge.assertion_basis == "same_source_record"
+        assert edge.mapping_method == "source-explicit"
+        assert edge.confidence is None
+        assert edge.review_state == "not_reviewed"
+        assert edge.valid_time_status == "unselected"
+        assert edge.contradiction_edge_ids == ()
+        assert edge.supersedes_edge_ids == ()
+        assert edge.negative_control_outcome == "not_applicable"
         assert by_id[edge.source_node_id].kind == "mbs_service_record"
         assert by_id[edge.target_node_id].kind == "mbs_benefit_record"
         assert by_id[edge.source_node_id].evidence == edge.evidence
@@ -123,6 +130,10 @@ def test_field_node_edge_and_graph_tampering_fail_closed():
     changed_edge["edge_id"] = "mbs-gold-edge:" + "0" * 64
     with pytest.raises(ValidationError, match="edge identity"):
         MbsGoldEdge.model_validate(changed_edge)
+    changed_edge = edge.model_dump()
+    changed_edge["contradiction_edge_ids"] = ("mbs-gold-edge:" + "0" * 64,)
+    with pytest.raises(ValidationError, match="graph history"):
+        MbsGoldEdge.model_validate(changed_edge)
     changed_graph = result.model_dump()
     changed_graph["edges"][0]["source_node_id"] = changed_graph["edges"][0][
         "target_node_id"
@@ -184,6 +195,8 @@ def test_graph_order_uniqueness_denominator_and_edge_support_are_validated():
         source_node_id=edge.source_node_id,
         target_node_id=absent,
         evidence=edge.evidence,
+        retrieved_at=edge.retrieved_at,
+        rights_state=edge.rights_state,
     )
     changed = result.model_dump()
     changed["edges"] = list(changed["edges"])
@@ -208,6 +221,8 @@ def test_graph_order_uniqueness_denominator_and_edge_support_are_validated():
         source_node_id=services[0].node_id,
         target_node_id=other_benefit.node_id,
         evidence=services[0].evidence,
+        retrieved_at=result.edges[0].retrieved_at,
+        rights_state=result.edges[0].rights_state,
     )
     changed = result.model_dump()
     changed["edges"] = list(changed["edges"])
@@ -283,6 +298,8 @@ def test_graph_denominator_requires_unique_evidence_addresses():
         source_node_id=duplicate_service.node_id,
         target_node_id=duplicate_benefit.node_id,
         evidence=service.evidence,
+        retrieved_at=result.edges[0].retrieved_at,
+        rights_state=result.edges[0].rights_state,
     )
     nodes = tuple(
         sorted(

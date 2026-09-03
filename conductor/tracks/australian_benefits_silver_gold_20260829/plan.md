@@ -542,7 +542,9 @@
 - [~] Generate stable node/edge tables for MBS, PBS, medicines, restrictions,
   source documents, organizations, and terminology references.
   MBS now emits source-record-scoped service and benefit evidence nodes plus
-  only same-record explicit edges from synthetic Silver candidates. PBS now
+  only same-record explicit edges from synthetic Silver candidates. Those MBS
+  edges now also preserve method, confidence, review, valid/retrieval time,
+  rights, sensitivity, history, negative-control and comparison controls. PBS now
   emits source-document and native-entity nodes for schedule, item,
   presentation, restriction, AMT-reference, classification and unmapped source
   structure, plus only exact XML parent/child containment edges from synthetic
