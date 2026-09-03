@@ -133,9 +133,11 @@ class MbsComparisonCohort(FrozenModel):
             self.evidence_class == "synthetic"
         ):
             raise ValueError("cohort evidence class mismatch")
-        if any(
-            tuple(field.name for field in row.fields) != names
-            for row in snapshot.rows
+        field_denominators = {
+            tuple(field.name for field in row.fields) for row in snapshot.rows
+        }
+        if len(field_denominators) > 1 or any(
+            len(field_names) != len(names) for field_names in field_denominators
         ):
             raise ValueError("cohort native fields differ from selected table")
         if not snapshot.complete or snapshot.declared_rows != len(

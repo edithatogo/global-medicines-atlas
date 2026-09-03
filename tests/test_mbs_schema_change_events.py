@@ -13,6 +13,7 @@ import global_medicines_atlas.mbs_schema_change_events as changes
 from global_medicines_atlas.mbs_schema_change_events import (
     MbsSchemaChangeReport,
     MbsSchemaEraMapping,
+    MbsSchemaFieldMapping,
     build_mbs_schema_change_report,
     declare_mbs_xml_schema_era_mapping,
 )
@@ -71,6 +72,134 @@ def test_explicit_mapping_covers_exact_table_contract_and_is_content_bound():
     )
 
 
+def test_explicit_mapping_accepts_complete_unambiguous_native_renames():
+    exact = mapping()
+    renamed = declare_mbs_xml_schema_era_mapping(
+        table="fees",
+        historical_schema_era="mbs-xml-era-2025",
+        current_schema_era="mbs-xml-era-2026",
+        fields=tuple(
+            MbsSchemaFieldMapping(
+                historical_native_name=field.historical_native_name,
+                current_native_name=(
+                    "CurrentScheduleFee"
+                    if field.silver_target_field == "ScheduleFee"
+                    else field.current_native_name
+                ),
+                silver_target_field=field.silver_target_field,
+            )
+            for field in exact.fields
+        ),
+    )
+
+    schedule = next(
+        field
+        for field in renamed.fields
+        if field.silver_target_field == "ScheduleFee"
+    )
+    assert schedule.historical_native_name == "ScheduleFee"
+    assert schedule.current_native_name == "CurrentScheduleFee"
+    assert renamed.mapping_sha256 != exact.mapping_sha256
+
+
+def test_renamed_native_field_reaches_change_events_with_its_value():
+    historical, current = cohorts()
+    exact = mapping()
+    fields = tuple(
+        MbsSchemaFieldMapping(
+            historical_native_name=field.historical_native_name,
+            current_native_name=(
+                "CurrentScheduleFee"
+                if field.silver_target_field == "ScheduleFee"
+                else field.current_native_name
+            ),
+            silver_target_field=field.silver_target_field,
+        )
+        for field in exact.fields
+    )
+    renamed_mapping = declare_mbs_xml_schema_era_mapping(
+        table="fees",
+        historical_schema_era="mbs-xml-era-2025",
+        current_schema_era="mbs-xml-era-2026",
+        fields=fields,
+    )
+    renamed_rows = tuple(
+        row.model_copy(
+            update={
+                "fields": tuple(
+                    field.model_copy(update={"name": "CurrentScheduleFee"})
+                    if field.name == "ScheduleFee"
+                    else field
+                    for field in row.fields
+                )
+            }
+        )
+        for row in current.snapshot.rows
+    )
+    renamed_current = current.model_copy(
+        update={
+            "snapshot": current.snapshot.model_copy(
+                update={"rows": renamed_rows}
+            )
+        }
+    )
+
+    report = build_mbs_schema_change_report(
+        historical, renamed_current, renamed_mapping
+    )
+    schedule = next(
+        event
+        for event in report.events
+        if event.native_id == key().content_id()
+        and event.silver_target_field == "ScheduleFee"
+    )
+    assert schedule.current is not None
+    assert schedule.current.name == "CurrentScheduleFee"
+    assert schedule.current.value == "2.00"
+
+
+def test_mapping_native_names_must_match_retained_cohort_fields():
+    historical, current = cohorts()
+    exact = mapping()
+    fields = list(exact.fields)
+    fields[-1] = fields[-1].model_copy(
+        update={"current_native_name": "CurrentScheduleFee"}
+    )
+    renamed_mapping = declare_mbs_xml_schema_era_mapping(
+        table="fees",
+        historical_schema_era="mbs-xml-era-2025",
+        current_schema_era="mbs-xml-era-2026",
+        fields=tuple(fields),
+    )
+    with pytest.raises(ValueError, match="native fields differ"):
+        build_mbs_schema_change_report(historical, current, renamed_mapping)
+
+
+@pytest.mark.parametrize("change", ["target", "duplicate", "padded"])
+def test_explicit_native_rename_mapping_is_complete_and_unambiguous(change):
+    exact = mapping()
+    fields = list(exact.fields)
+    if change == "target":
+        fields[0] = fields[0].model_copy(
+            update={"silver_target_field": "wrong"}
+        )
+    elif change == "duplicate":
+        fields[1] = fields[1].model_copy(
+            update={"current_native_name": fields[0].current_native_name}
+        )
+    else:
+        fields[0] = fields[0].model_copy(
+            update={"historical_native_name": " padded"}
+        )
+    with pytest.raises(ValidationError, match=r"differs|ambiguous|invalid"):
+        declare_mbs_xml_schema_era_mapping(
+            table="fees",
+            historical_schema_era="mbs-xml-era-2025",
+            current_schema_era="mbs-xml-era-2026",
+            fields=tuple(fields),
+        )
+
+
 def test_change_report_preserves_values_and_treats_absence_as_unknown():
     historical, current = cohorts()
     report = build_mbs_schema_change_report(historical, current, mapping())
@@ -86,6 +215,8 @@ def test_change_report_preserves_values_and_treats_absence_as_unknown():
         and event.silver_target_field == "ScheduleFee"
     )
     assert schedule.kind == "field_changed"
+    assert schedule.historical is not None
+    assert schedule.current is not None
     assert schedule.historical.value == "1.00"
     assert schedule.current.value == "2.00"
     assert {event.kind for event in report.events} >= {
@@ -171,7 +302,7 @@ def test_mapping_rejects_blank_or_normalized_eras(era):
 @pytest.mark.parametrize(
     ("change", "message"),
     [
-        ("mapping_field", "field mapping differs"),
+        ("mapping_field", "mapping digest differs"),
         ("mapping_digest", "mapping digest differs"),
         ("event", "events differ"),
         ("report_digest", "report digest differs"),

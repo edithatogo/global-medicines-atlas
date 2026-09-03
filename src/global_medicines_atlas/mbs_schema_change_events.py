@@ -61,16 +61,22 @@ class MbsSchemaEraMapping(FrozenModel):
             for item in mbs_field_contracts()
             if item.target_table == self.table
         )
-        expected = tuple(
-            MbsSchemaFieldMapping(
-                historical_native_name=name,
-                current_native_name=name,
-                silver_target_field=name,
-            )
-            for name in names
+        targets = tuple(item.silver_target_field for item in self.fields)
+        historical_names = tuple(
+            item.historical_native_name for item in self.fields
         )
-        if not names or self.fields != expected:
+        current_names = tuple(item.current_native_name for item in self.fields)
+        if not names or targets != names:
             raise ValueError("MBS schema-era field mapping differs")
+        if any(
+            not value.strip() or value != value.strip()
+            for value in (*historical_names, *current_names)
+        ):
+            raise ValueError("MBS schema-era native field name is invalid")
+        if len(set(historical_names)) != len(historical_names) or len(
+            set(current_names)
+        ) != len(current_names):
+            raise ValueError("MBS schema-era native field mapping is ambiguous")
         if self.mapping_sha256 != _mapping_digest(self):
             raise ValueError("MBS schema-era mapping digest differs")
         return self
@@ -160,17 +166,19 @@ def declare_mbs_xml_schema_era_mapping(
     table: TargetTable,
     historical_schema_era: str,
     current_schema_era: str,
+    fields: tuple[MbsSchemaFieldMapping, ...] | None = None,
 ) -> MbsSchemaEraMapping:
-    """Declare complete exact-name XML mappings without qualifying either era."""
-    fields = tuple(
-        MbsSchemaFieldMapping(
-            historical_native_name=item.native_name,
-            current_native_name=item.native_name,
-            silver_target_field=item.native_name,
+    """Declare a complete explicit XML mapping without qualifying either era."""
+    if fields is None:
+        fields = tuple(
+            MbsSchemaFieldMapping(
+                historical_native_name=item.native_name,
+                current_native_name=item.native_name,
+                silver_target_field=item.native_name,
+            )
+            for item in mbs_field_contracts()
+            if item.target_table == table
         )
-        for item in mbs_field_contracts()
-        if item.target_table == table
-    )
     provisional = MbsSchemaEraMapping.model_construct(
         table=table,
         historical_schema_era=historical_schema_era,
@@ -230,6 +238,20 @@ def _validate_inputs(
         mapping.current_schema_era,
     ):
         raise ValueError("MBS schema comparison eras differ from mapping")
+    expected_native_names = (
+        tuple(item.historical_native_name for item in mapping.fields),
+        tuple(item.current_native_name for item in mapping.fields),
+    )
+    for snapshot, expected in zip(
+        (historical, current), expected_native_names, strict=True
+    ):
+        if snapshot.rows and any(
+            tuple(field.name for field in row.fields) != expected
+            for row in snapshot.rows
+        ):
+            raise ValueError(
+                "MBS schema comparison native fields differ from mapping"
+            )
     if (historical.cohort, current.cohort) not in {
         ("synthetic", "synthetic"),
         ("legacy", "current"),

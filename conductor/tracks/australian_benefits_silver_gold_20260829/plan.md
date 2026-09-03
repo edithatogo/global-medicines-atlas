@@ -196,6 +196,9 @@
   without overwriting source values.
   XML candidate mappings now require complete exact field coverage for a
   selected Silver table and bind distinct caller-declared eras by digest.
+  Complete mappings may now preserve explicit historical/current native-name
+  changes while requiring the stable Silver target denominator in exact order,
+  unique native identities on each side, and content-bound mapping evidence.
   Deterministic observed-change reports retain both complete native cohorts,
   exact values and receipt identities; presence on only one side remains
   `unknown`, never inferred addition or cessation. The legacy P7 workbook now
