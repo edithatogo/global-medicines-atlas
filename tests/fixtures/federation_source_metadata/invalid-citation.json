@@ -1,0 +1,4 @@
+{
+  "$base": "valid-mbs.json",
+  "$set": {"citations.0.revision": "0000000000000000000000000000000000000000"}
+}
