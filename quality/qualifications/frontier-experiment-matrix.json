@@ -2,7 +2,7 @@
   "schema_id": "global-medicines-atlas.frontier-experiment-matrix",
   "schema_version": 1,
   "imported_evidence": [
-    {"path": "quality/qualifications/datahouse-experiment-matrix.json", "sha256": "306af27e36d9eca87e43e146d88b572ef575525af4838169f9c31c63416e3d0d"},
+    {"path": "quality/qualifications/datahouse-experiment-matrix.json", "sha256": "038c2485269d631d931d0b05cedf4dee817d5a44bc4628628b1b3ca93049e761"},
     {"path": "quality/qualifications/free-tier-datahouse-decision-packet.json", "sha256": "334b898451294991a7a9519378a41fa7dd1407d3c6b3a8214509ee0a049d2b1a"},
     {"path": "tests/fixtures/datahouse/bronze_records.json", "sha256": "f5f2b56824852355c200c72246f25b7009f60ee0d4326535d34eb2340588b1da"},
     {"path": "tests/fixtures/datahouse/attestation_leaves.json", "sha256": "27b7568e812ac49f7cdcecc62659262c785cb6476e0517da59b2e8e60fa2295b"}
