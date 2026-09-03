@@ -566,8 +566,14 @@
   The first PBS projection is likewise source-explicit structural containment;
   it records no asserted funding, formulary, regulatory, medicine-identity or
   terminology-equivalence dimension and performs no inference or admission.
-- [ ] Add adjudication queues, calibrated thresholds, conflict/supersession, and
-  review receipts before any candidate promotion.
+- [~] Add adjudication queues, calibrated thresholds, conflict/supersession, and
+  review receipts before any candidate promotion. A generic Gold-edge adapter
+  now creates deterministic, full-edge-digest-bound `pending_review` cases for
+  explicit PBS controls and the legacy/current MBS edge contract, and can
+  remove cases only when caller-supplied append-only `AdjudicationEvent`
+  records already exist. It creates no reviewer identity, adjudication,
+  threshold, receipt, authority, admission or promotion; those controls remain
+  pending.
 - [ ] Phase Verification & Checkpoint: every edge is evidence-bearing and no
   candidate class can masquerade as an authoritative link.
 
