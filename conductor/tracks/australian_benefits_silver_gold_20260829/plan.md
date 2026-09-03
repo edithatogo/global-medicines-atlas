@@ -846,8 +846,9 @@
   of eight pair receipts to gap-free partitions 0..15, with Ruff, format,
   actionlint and diff checks green. This changes scheduling and retry scope only:
   it does not change source retrieval, qualification semantics, receipts,
-  publication, timeouts or human gates. Hosted elapsed-time evidence remains
-  pending an exact-main qualification run.
+  publication, timeouts or human gates. Rebased implementation `0e5f938`
+  supersedes `c10dd41`; hosted elapsed-time evidence remains pending an
+  exact-main qualification run.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
