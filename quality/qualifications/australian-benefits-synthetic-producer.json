@@ -1,0 +1,46 @@
+{
+  "schema_id": "global-medicines-atlas.synthetic-producer-inventory",
+  "schema_version": 1,
+  "producer_repository": "example/australian-benefits-synthetic",
+  "dataset": "example/australian-benefits-synthetic",
+  "evidence_kind": "synthetic",
+  "publishable": false,
+  "objects": [
+    {
+      "source_id": "synthetic-mbs",
+      "acquisition_id": "synthetic-mbs-fixture-v1",
+      "layer": "bronze",
+      "bronze_stratum": "B2",
+      "path": "bronze/mbs.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "byte_count": 128
+    },
+    {
+      "source_id": "synthetic-mbs",
+      "acquisition_id": "synthetic-mbs-fixture-v1",
+      "layer": "silver",
+      "bronze_stratum": null,
+      "path": "silver/mbs.parquet",
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "byte_count": 256
+    },
+    {
+      "source_id": "synthetic-pbs",
+      "acquisition_id": "synthetic-pbs-fixture-v1",
+      "layer": "gold",
+      "bronze_stratum": null,
+      "path": "gold/benefits.parquet",
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "byte_count": 384
+    },
+    {
+      "source_id": "synthetic-pbs",
+      "acquisition_id": "synthetic-pbs-fixture-v1",
+      "layer": "platinum",
+      "bronze_stratum": null,
+      "path": "platinum/benefits.json",
+      "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "byte_count": 512
+    }
+  ]
+}
