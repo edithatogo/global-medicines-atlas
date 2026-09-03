@@ -18,7 +18,12 @@ from pydantic import AwareDatetime, ConfigDict, Field, model_validator
 
 from .models import FrozenModel
 from .pbs_entities import iter_pbs_entity_batches
-from .receipts import EvidenceClass, RightsState, SourceReceipt
+from .receipts import (
+    EvidenceClass,
+    RightsState,
+    SensitivityClassification,
+    SourceReceipt,
+)
 
 NodeDimension = Literal[
     "source_document",
@@ -96,12 +101,12 @@ class PbsGoldEvidence(FrozenModel):
             != self.field_count
         ):
             raise ValueError("PBS Gold field ordinal denominator differs")
-        if not self.entity_id.startswith(f"{self.source_sha256}:"):
+        if self.entity_id != f"{self.source_sha256}:{self.source_record_id}":
             raise ValueError("PBS Gold entity identity differs from B2")
-        if (
-            self.parent_entity_id is not None
-            and not self.parent_entity_id.startswith(f"{self.source_sha256}:")
-        ):
+        expected_parent = _source_parent_entity_id(
+            self.source_sha256, self.source_record_id
+        )
+        if self.parent_entity_id != expected_parent:
             raise ValueError("PBS Gold parent identity differs from B2")
         return self
 
@@ -179,8 +184,13 @@ class PbsGoldEdge(FrozenModel):
     supporting_native_rows: tuple[str, ...] = Field(min_length=1, max_length=1)
     supporting_native_paths: tuple[str, ...] = Field(min_length=1)
     valid_time_status: Literal["unselected"] = "unselected"
+    source_effective_from: AwareDatetime | None = None
+    source_effective_to: AwareDatetime | None = None
     retrieved_at: AwareDatetime
     rights_state: RightsState
+    sensitivity: SensitivityClassification = Field(
+        default_factory=SensitivityClassification
+    )
     contradiction_edge_ids: tuple[str, ...] = ()
     supersedes_edge_ids: tuple[str, ...] = ()
     negative_control_outcome: Literal["not_applicable"] = "not_applicable"
@@ -293,6 +303,17 @@ def _digest(value: object) -> str:
     return hashlib.sha256(_canonical(value)).hexdigest()
 
 
+def _source_parent_entity_id(
+    source_sha256: str, source_record_id: str
+) -> str | None:
+    """Derive the exact XML parent identity from a native record path."""
+    element_path, ordinal_separator, _ordinal = source_record_id.rpartition("/")
+    parent_path, element_separator, _element = element_path.rpartition("/")
+    if not ordinal_separator or not element_separator or not parent_path:
+        return None
+    return f"{source_sha256}:{parent_path}"
+
+
 def _node_id(
     dimension: str,
     evidence: PbsGoldEvidence,
@@ -391,8 +412,11 @@ def build_pbs_gold_graph_candidate(
                 supporting_native_paths=tuple(
                     field.path for field in node.fields
                 ),
+                source_effective_from=receipt.effective_from,
+                source_effective_to=receipt.effective_to,
                 retrieved_at=receipt.retrieval.retrieved_at,
                 rights_state=receipt.rights_state,
+                sensitivity=receipt.sensitivity or SensitivityClassification(),
             )
         )
     node_tuple = tuple(sorted(nodes, key=lambda item: item.node_id))

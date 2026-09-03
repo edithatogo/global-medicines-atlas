@@ -5,6 +5,7 @@
 # pyright: reportUnknownLambdaType=false
 # pyright: reportUnknownMemberType=false
 
+from datetime import UTC, datetime
 from io import BytesIO
 from operator import itemgetter
 
@@ -33,7 +34,13 @@ from global_medicines_atlas.pbs_gold_graph import (
     build_pbs_gold_graph_candidate,
     project_pbs_gold_graph_arrow,
 )
-from global_medicines_atlas.receipts import EvidenceClass
+from global_medicines_atlas.receipts import (
+    DataSensitivity,
+    EvidenceClass,
+    PersonalDataState,
+    PublicationDisposition,
+    SensitivityClassification,
+)
 
 
 def graph() -> PbsGoldGraphCandidate:
@@ -126,6 +133,9 @@ def test_every_edge_is_same_source_parent_child_evidence() -> None:
             field.path for field in child.fields
         )
         assert edge.valid_time_status == "unselected"
+        assert edge.source_effective_from is None
+        assert edge.source_effective_to is None
+        assert edge.sensitivity == SensitivityClassification()
         assert edge.contradiction_edge_ids == ()
         assert edge.supersedes_edge_ids == ()
 
@@ -347,6 +357,48 @@ def test_edge_revision_native_row_and_history_claims_fail_closed() -> None:
             PbsGoldEdge.model_validate(changed)
 
 
+def test_entity_and_parent_identities_are_exactly_bound_to_native_records() -> (
+    None
+):
+    result = graph()
+    child = next(
+        node
+        for node in result.nodes
+        if node.evidence.parent_entity_id is not None
+    )
+    evidence = child.evidence.model_dump()
+    evidence["entity_id"] = evidence["source_sha256"] + ":invented"
+    with pytest.raises(ValidationError, match="entity identity differs"):
+        PbsGoldEvidence.model_validate(evidence)
+
+    evidence = child.evidence.model_dump()
+    evidence["parent_entity_id"] = evidence["source_sha256"] + ":/invented/1"
+    with pytest.raises(ValidationError, match="parent identity differs"):
+        PbsGoldEvidence.model_validate(evidence)
+
+
+def test_edges_preserve_source_effective_interval_and_sensitivity() -> None:
+    payload = XML
+    receipt = _receipt(payload, "au-pbs").model_copy(
+        update={
+            "effective_from": datetime(2026, 8, 1, tzinfo=UTC),
+            "effective_to": datetime(2026, 9, 1, tzinfo=UTC),
+            "sensitivity": SensitivityClassification(
+                data_sensitivity=DataSensitivity.NON_SENSITIVE,
+                personal_data=PersonalDataState.NONE,
+                publication=PublicationDisposition.PERMITTED,
+                reason_codes=("synthetic_public_fixture",),
+            ),
+        }
+    )
+    result = build_pbs_gold_graph_candidate(payload, receipt)
+    for edge in result.edges:
+        assert edge.valid_time_status == "unselected"
+        assert edge.source_effective_from == receipt.effective_from
+        assert edge.source_effective_to == receipt.effective_to
+        assert edge.sensitivity == receipt.sensitivity
+
+
 def test_node_structural_dimension_cannot_be_relabelled_or_mixed() -> None:
     result = graph()
     node = next(
@@ -384,7 +436,7 @@ def test_missing_or_internally_incomplete_silver_entities_fail_closed(
     original = pbs_gold_graph._rows
 
     def without_root(batches: object) -> list[dict[str, object]]:
-        rows = original(batches)  # type: ignore[arg-type]
+        rows = original(batches)  # type: ignore[arg-type]  # ty: ignore[invalid-argument-type]
         return [row for row in rows if row["parent_entity_id"] is not None]
 
     monkeypatch.setattr(pbs_gold_graph, "_rows", without_root)
