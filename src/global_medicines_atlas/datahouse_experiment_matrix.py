@@ -96,6 +96,8 @@ class ExperimentResult(FrozenModel):
             raise ValueError(
                 "only a supported experiment can be a promotion candidate"
             )
+        if self.disposition == "promote-candidate" and not_run:
+            raise ValueError("an unrun experiment cannot be a promotion candidate")
         return self
 
 
