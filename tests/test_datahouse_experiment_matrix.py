@@ -127,6 +127,30 @@ def test_executed_outcome_rejects_unmet_prerequisites() -> None:
 
 
 @pytest.mark.unit
+def test_matrix_rows_record_measurement_and_disposition_contract() -> None:
+    matrix = ExperimentMatrix.model_validate_json(MATRIX.read_bytes())
+
+    assert all(item.unmet_requirement for item in matrix.experiments)
+    assert all(item.hypothesis and item.baseline for item in matrix.experiments)
+    assert all(item.thresholds and item.rights_review for item in matrix.experiments)
+    assert {item.disposition for item in matrix.experiments} <= {
+        "promote-candidate", "retain-preview", "defer", "reject"
+    }
+
+
+@pytest.mark.unit
+def test_unrun_experiment_cannot_be_marked_promotion_candidate() -> None:
+    payload = _payload()
+    experiments = payload["experiments"]
+    assert isinstance(experiments, list)
+    item = cast("dict[str, object]", experiments[3])
+    item["disposition"] = "promote-candidate"
+
+    with pytest.raises(ValidationError, match="unrun experiment"):
+        ExperimentMatrix.model_validate(payload)
+
+
+@pytest.mark.unit
 def test_matrix_input_digests_are_verified(tmp_path: Path) -> None:
     matrix = ExperimentMatrix.model_validate_json(MATRIX.read_bytes())
     verify_matrix_inputs(matrix, ROOT)
