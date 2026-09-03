@@ -1,0 +1,14 @@
+{
+  "recorded_at": "2026-09-04T00:00:00Z",
+  "kind": "pbs_historical_qualification_aggregate",
+  "status": "passed_structural_storage_candidate_only",
+  "track_id": "australian_benefits_silver_gold_20260829",
+  "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/33549535561",
+  "workflow_commit": "0a116e164999ae6ee5e33c05a94e0d6ddb454c65",
+  "dataset": "edithatogo/australian-pbs-source-archive",
+  "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+  "report_sha256": "ef4ff6af79d4aadaa8983966cc2e9e9a7426346f238348d6a00ab7fcef8cf1a4",
+  "qualification": "structural_storage_candidate_only",
+  "publication_performed": false,
+  "boundary": "Hosted aggregate receipt only; no public publication, admission, rights conclusion, release, or clinical/policy claim."
+}
