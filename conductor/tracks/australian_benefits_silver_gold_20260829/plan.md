@@ -508,6 +508,9 @@
   references using the existing canonical medicine model.
 - [ ] Keep PBS funding/formulary, ARTG regulatory, AMT terminology, and ATC
   classification assertions independent in storage, lineage, and coverage.
+- Hosted run `33549535561` now records a passed PBS aggregate receipt at
+  `pbs-aggregate-receipt-20260904.json`; it is structural-storage-candidate
+  evidence only and does not close this Silver checkpoint.
 - [ ] Phase Verification & Checkpoint: PBS Silver is complete for the approved
   denominator without restricted terminology payload publication.
 
