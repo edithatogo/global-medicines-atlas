@@ -534,7 +534,8 @@
   Both the MBS and PBS Gold graph modules were absent before their bounded
   implementations; the PBS test collection failed with `ModuleNotFoundError`
   before current implementation `f36f56f` (earlier pre-rebase identities
-  `4b5731b`, `379c744`, and `0bfad02`).
+  `4b5731b`, `379c744`, and `0bfad02`). The bounded Australian provenance
+  supplement likewise first failed collection because its module was absent.
 - [~] Generate stable node/edge tables for MBS, PBS, medicines, restrictions,
   source documents, organizations, and terminology references.
   MBS now emits source-record-scoped service and benefit evidence nodes plus
@@ -542,8 +543,11 @@
   emits source-document and native-entity nodes for schedule, item,
   presentation, restriction, AMT-reference, classification and unmapped source
   structure, plus only exact XML parent/child containment edges from synthetic
-  Silver. Canonical medicines, organizations, resolved terminology and
-  cross-source relationships remain.
+  Silver. A separate synthetic-receipt projection now emits exact source
+  documents, explicitly non-canonical source-declared organization labels, and
+  only document-to-declared-authority provenance edges with B1/B2, time,
+  rights, sensitivity and review controls. Canonical organizations, canonical
+  medicines, resolved terminology and cross-source relationships remain.
   Frozen full at `eb56007`: 4,341 passed, two failed, one optional pyiceberg
   skip, 96.75% coverage. Both failures are unchanged stable-v1 release
   reproducibility checks requiring pinned uv 0.11.29 while the local candidates
