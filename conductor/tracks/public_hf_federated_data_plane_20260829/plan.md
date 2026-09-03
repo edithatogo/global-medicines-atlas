@@ -116,10 +116,13 @@
   210 integrated tests and 28 independent review tests pass, 99.08% closure
   coverage. PR #403 merged as `44a603d` after all 38 hosted checks passed;
   reviewed/merged trees match. Actual admission remains separately pending.
-- [ ] Add independently trusted typed admission adapters after byte closure;
+- [~] Add independently trusted typed admission adapters after byte closure;
   validate subject/layer/lineage and authorization rather than treating
   self-consistent or digest-matched receipts as authority. Existing public
   archives must not be retroactively labelled v4-admitted.
+  Offline exact-profile adapter implemented with immutable admission records;
+  actual producer trust profiles and live archive admission remain pending and
+  require complete v4 evidence rather than retroactive relabelling.
 
 - [x] Write failing tests that map every produced Bronze/Silver/Gold/Platinum
   object to one public destination and reject mutable/unpinned references.
