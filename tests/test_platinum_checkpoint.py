@@ -6,6 +6,8 @@ import hashlib
 import io
 import json
 from dataclasses import replace
+from datetime import UTC, datetime
+from pathlib import Path
 
 import httpx
 import pyarrow as pa
@@ -78,6 +80,45 @@ def test_verified_transport_remains_explicitly_unadmitted() -> None:
         == hashlib.sha256(result.canonical_bytes).hexdigest()
     )
     assert b"fields" not in result.canonical_sample_rows
+    assert result.observed_at.endswith("+00:00")
+
+
+def test_observation_time_is_bound_into_receipt_digest() -> None:
+    """A stale observation cannot be relabelled without changing identity."""
+    raw = payload()
+    first = observe_unadmitted_public_fixture(
+        pin(raw),
+        metadata(),
+        raw,
+        observed_at=datetime(2026, 9, 1, tzinfo=UTC),
+    )
+    relabelled = replace(first, observed_at="2026-09-02T00:00:00+00:00")
+
+    assert first.receipt_sha256 != relabelled.receipt_sha256
+    assert json.loads(first.canonical_bytes)["observed_at"] == first.observed_at
+
+    with pytest.raises(ValueError, match="timezone"):
+        observe_unadmitted_public_fixture(
+            pin(raw),
+            metadata(),
+            raw,
+            observed_at=datetime(2026, 9, 1),  # ruff: ignore[call-datetime-without-tzinfo] - negative control
+        )
+
+
+def test_public_preflight_receipt_content_address_is_current() -> None:
+    """The committed live receipt must bind every public claim it contains."""
+    receipt_path = Path(
+        "quality/qualifications/platinum-mbs-transport-preflight-20260902.json"
+    )
+    receipt = json.loads(receipt_path.read_bytes())
+    claimed_digest = receipt.pop("receipt_sha256")
+    canonical = json.dumps(
+        receipt, sort_keys=True, separators=(",", ":")
+    ).encode()
+
+    assert receipt["observed_at"].endswith("+00:00")
+    assert hashlib.sha256(canonical).hexdigest() == claimed_digest
 
 
 @pytest.mark.parametrize(
@@ -182,10 +223,82 @@ def test_anonymous_fetch_uses_exact_revision_and_bounded_payload() -> None:
     with httpx.Client(
         transport=httpx.MockTransport(handler),
         headers={"Accept-Encoding": "identity"},
+        trust_env=False,
     ) as client:
         result = fetch_unadmitted_public_fixture(exact, client)
     assert result.transport_verified is True
     assert result.product_admitted is False
+
+
+@pytest.mark.parametrize(
+    "client_kwargs",
+    [
+        {"headers": {"Authorization": "Bearer secret"}},
+        {"headers": {"Cookie": "session=secret"}},
+        {"auth": ("user", "secret")},
+        {"cookies": {"session": "secret"}},
+    ],
+)
+def test_anonymous_fetch_rejects_inherited_credentials(client_kwargs) -> None:
+    """No supplied client credential may enter an anonymous receipt path."""
+    raw = payload()
+    with (
+        httpx.Client(
+            transport=httpx.MockTransport(
+                lambda _request: pytest.fail("credentialled request issued")
+            ),
+            trust_env=False,
+            **client_kwargs,
+        ) as client,
+        pytest.raises(ValueError, match="anonymous client"),
+    ):
+        fetch_unadmitted_public_fixture(pin(raw), client)
+
+
+def test_anonymous_fetch_rejects_request_hooks() -> None:
+    """A request hook must not be able to inject credentials after validation."""
+    raw = payload()
+    with (
+        httpx.Client(
+            transport=httpx.MockTransport(
+                lambda _request: pytest.fail("hooked request issued")
+            ),
+            event_hooks={"request": [lambda _request: None]},
+            trust_env=False,
+        ) as client,
+        pytest.raises(ValueError, match="anonymous client"),
+    ):
+        fetch_unadmitted_public_fixture(pin(raw), client)
+
+
+def test_each_request_receives_only_the_remaining_shared_deadline(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Metadata latency reduces the timeout available to the payload request."""
+    raw = payload()
+    exact = pin(raw)
+    observed_timeouts: list[float] = []
+    original_stream = httpx.Client.stream
+
+    def recording_stream(self, method, url, **kwargs):
+        observed_timeouts.append(kwargs["timeout"])
+        return original_stream(self, method, url, **kwargs)
+
+    clock = iter((100.0, 101.0, 102.0, 103.0, 104.0))
+    monkeypatch.setattr(checkpoint.time, "monotonic", lambda: next(clock))
+    monkeypatch.setattr(httpx.Client, "stream", recording_stream)
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        content = metadata() if "/api/datasets/" in str(request.url) else raw
+        return httpx.Response(200, content=content)
+
+    with httpx.Client(
+        transport=httpx.MockTransport(handler), trust_env=False
+    ) as client:
+        fetch_unadmitted_public_fixture(exact, client, timeout_seconds=10)
+
+    assert len(observed_timeouts) == 2
+    assert 0 < observed_timeouts[1] < observed_timeouts[0] <= 10
 
 
 def test_anonymous_fetch_rejects_redirect_outside_allowlist() -> None:

@@ -13,6 +13,7 @@ import json
 import re
 import time
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, Literal, cast
 from urllib.parse import quote, urljoin, urlsplit
@@ -128,6 +129,7 @@ class CheckpointPreflight:
     sample_row_count: int
     sample_sha256: str
     canonical_sample_rows: bytes
+    observed_at: str
     layer: Literal["bronze"] = "bronze"
     representation: Literal["projection"] = "projection"
     transport_verified: Literal[True] = True
@@ -147,6 +149,7 @@ class CheckpointPreflight:
                 "layer": self.layer,
                 "metadata_sha256": self.metadata_sha256,
                 "object_sha256": self.object_sha256,
+                "observed_at": self.observed_at,
                 "path": self.path,
                 "product_admitted": self.product_admitted,
                 "reasons": self.reasons,
@@ -156,7 +159,7 @@ class CheckpointPreflight:
                 "sample_row_count": self.sample_row_count,
                 "sample_sha256": self.sample_sha256,
                 "transport_verified": self.transport_verified,
-                "version": "1.0",
+                "version": "1.1",
             },
             sort_keys=True,
             separators=(",", ":"),
@@ -172,6 +175,8 @@ def observe_unadmitted_public_fixture(
     pin: PublicFixturePin,
     metadata_bytes: bytes,
     payload_bytes: bytes,
+    *,
+    observed_at: datetime | None = None,
 ) -> CheckpointPreflight:
     """Verify exact public transport while refusing product admission."""
     if not metadata_bytes or len(metadata_bytes) > _MAX_METADATA_BYTES:
@@ -217,6 +222,9 @@ def observe_unadmitted_public_fixture(
         sort_keys=True,
         separators=(",", ":"),
     ).encode()
+    observation_time = observed_at or datetime.now(UTC)
+    if observation_time.tzinfo is None:
+        raise ValueError("observation time must include a timezone")
     return CheckpointPreflight(
         dataset=pin.dataset,
         revision=pin.revision,
@@ -229,6 +237,7 @@ def observe_unadmitted_public_fixture(
         sample_row_count=sample.num_rows,
         sample_sha256=hashlib.sha256(canonical_sample).hexdigest(),
         canonical_sample_rows=canonical_sample,
+        observed_at=observation_time.astimezone(UTC).isoformat(),
     )
 
 
@@ -249,10 +258,11 @@ def _download(
 ) -> bytes:
     for _attempt in range(4):
         _safe_url(url)
-        if time.monotonic() > deadline:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
             raise ValueError("HTTP retrieval deadline exceeded")
         client.cookies.clear()
-        with client.stream("GET", url) as response:
+        with client.stream("GET", url, timeout=remaining) as response:
             if response.is_redirect:
                 location = response.headers.get("location")
                 if location is None:
@@ -279,6 +289,18 @@ def _download(
     raise ValueError("HTTP redirect limit exceeded")
 
 
+def _require_anonymous_client(client: httpx.Client) -> None:
+    """Reject state that can add credentials to the preflight requests."""
+    credential_headers = {"authorization", "cookie", "proxy-authorization"}
+    if (
+        client.auth is not None
+        or len(client.cookies) > 0
+        or credential_headers.intersection(client.headers.keys())
+        or client.event_hooks.get("request")
+    ):
+        raise ValueError("anonymous client must not carry credentials or hooks")
+
+
 def fetch_unadmitted_public_fixture(
     pin: PublicFixturePin,
     client: httpx.Client,
@@ -288,6 +310,7 @@ def fetch_unadmitted_public_fixture(
     """Fetch an exact anonymous fixture and return its unadmitted preflight."""
     if timeout_seconds <= 0:
         raise ValueError("timeout must be positive")
+    _require_anonymous_client(client)
     deadline = time.monotonic() + timeout_seconds
     metadata = _download(
         client,

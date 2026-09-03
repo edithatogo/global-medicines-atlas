@@ -8,9 +8,9 @@
   ],
   "dataset": "edithatogo/australian-mbs-source-archive",
   "layer": "bronze",
-  "metadata_sha256": "f0b6203c97357b5f57c233da856279c0b115a700da1fb8fb4239a8c94cb68144",
+  "metadata_sha256": "e0999392d339656217fdc07a9d496acefe51764725f23957982c6b8e7f85d5fb",
   "object_sha256": "6362f7f3a5d9870545cc074450b81a82475d68fdb062f38083713f56bd88d2fe",
-  "observed_at": "2026-09-02T08:11:49+10:00",
+  "observed_at": "2026-09-03T07:48:58.275651+00:00",
   "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/p7.parquet",
   "product_admitted": false,
   "reasons": [
@@ -18,12 +18,12 @@
     "independently admitted semantic manifest is absent",
     "Australian benefits medallion dataset is not yet published"
   ],
-  "receipt_sha256": "318a5021f87c8bbf5ee1b33f8f6062b4c810fe053e3d776c3d30a836ddfe5c03",
+  "receipt_sha256": "1311b712019d08f59b862212f74cdd4577665d60580db5bf25d32c57beb74584",
   "representation": "projection",
   "revision": "75f9f20a36ddb829dfe0ca88660664570782be02",
   "row_count": 165,
   "sample_row_count": 5,
   "sample_sha256": "08388f5bf5f23c6414a395e96e92e34b2b83e8b66fa35c8e49eeeaec7a43ef3e",
   "transport_verified": true,
-  "version": "1.0"
+  "version": "1.1"
 }
