@@ -89,9 +89,12 @@ class ExperimentResult(FrozenModel):
             )
         if not not_run and not self.evidence:
             raise ValueError("executed outcome requires measured evidence")
-        if self.disposition == "promote-candidate" and not_run:
+        if (
+            self.disposition == "promote-candidate"
+            and self.outcome != ExperimentOutcome.SUPPORTED
+        ):
             raise ValueError(
-                "an unrun experiment cannot be a promotion candidate"
+                "only a supported experiment can be a promotion candidate"
             )
         return self
 
