@@ -380,6 +380,9 @@ def test_generated_client_smokes_every_committed_read_only_operation() -> None:
         observed_at="2026-07-31",
         valid_at="2026-07-31",
     )
+    client.dataset_identity_route_api_v1_datasets__resource_id__get(
+        resource_id="au.mbs/services?current=true"
+    )
     client.evidence_api_v1_evidence_get(
         concept_id="nz:123",
         observed_at="2026-07-31",
@@ -390,7 +393,7 @@ def test_generated_client_smokes_every_committed_read_only_operation() -> None:
     client.readiness_api_v1_readiness_get()
     client.sources_api_v1_sources_get(jurisdiction="NZ")
 
-    assert len(transport.calls) == 8
+    assert len(transport.calls) == 9
     assert {method for method, _, _ in transport.calls} == {"GET"}
     assert transport.calls[0][2] == (
         ("concept_id", "nz:123"),
@@ -401,6 +404,11 @@ def test_generated_client_smokes_every_committed_read_only_operation() -> None:
         ("limit", "20"),
         ("observed_at", "2026-07-31"),
         ("valid_at", "2026-07-31"),
+    )
+    assert transport.calls[3] == (
+        "GET",
+        "/api/v1/datasets/au.mbs%2Fservices%3Fcurrent%3Dtrue",
+        (),
     )
 
 
