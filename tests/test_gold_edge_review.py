@@ -4,6 +4,8 @@ from datetime import UTC, datetime
 
 import pytest
 from pydantic import ValidationError
+from test_mbs_gold_graph import graph as mbs_graph
+from test_pbs_gold_graph import graph as pbs_graph
 
 from global_medicines_atlas.gold_edge_review import (
     GoldEdgeReviewCase,
@@ -14,45 +16,19 @@ from global_medicines_atlas.matching_models import (
     AdjudicationEvent,
     ReviewState,
 )
-from global_medicines_atlas.models import FrozenModel
 
 QUEUED_AT = datetime(2026, 9, 3, tzinfo=UTC)
 
 
-class ExampleGoldEdge(FrozenModel):
-    edge_id: str
-    kind: str
-    source_node_id: str
-    target_node_id: str
-    semantic_dimension: str
-    mapping_method: str
-    inferred: bool
-
-
-def pbs_edge(edge_id: str = "pbs-gold-edge:" + "1" * 64) -> dict[str, object]:
-    return {
-        "edge_id": edge_id,
-        "kind": "source_contains_entity",
-        "source_node_id": "pbs-gold-node:" + "2" * 64,
-        "target_node_id": "pbs-gold-node:" + "3" * 64,
-        "semantic_dimension": "source_structure",
-        "mapping_method": "source-explicit",
-        "review_state": "not_reviewed",
-        "inferred": False,
-        "evidence": {"receipt_sha256": "4" * 64},
-    }
+def pbs_edge() -> dict[str, object]:
+    return pbs_graph().edges[0].model_dump(mode="python")
 
 
 def mbs_legacy_edge() -> dict[str, object]:
-    return {
-        "edge_id": "mbs-gold-edge:" + "5" * 64,
-        "kind": "source_record_has_benefit",
-        "source_node_id": "mbs-gold-node:" + "6" * 64,
-        "target_node_id": "mbs-gold-node:" + "7" * 64,
-        "assertion_basis": "same_source_record",
-        "inferred": False,
-        "evidence": {"receipt_sha256": "8" * 64},
-    }
+    payload = mbs_graph(1).edges[0].model_dump(mode="python")
+    for name in ("semantic_dimension", "mapping_method"):
+        payload.pop(name)
+    return payload
 
 
 def test_queue_adapts_current_pbs_and_legacy_mbs_without_promotion():
@@ -78,30 +54,21 @@ def test_queue_adapts_current_pbs_and_legacy_mbs_without_promotion():
     assert all(case.promotion_performed is False for case in queue)
     assert "reviewer_id" not in GoldEdgeReviewCase.model_fields
     assert "decision" not in GoldEdgeReviewCase.model_fields
-    model_edge = ExampleGoldEdge(
-        edge_id="pbs-gold-edge:" + "a" * 64,
-        kind="source_contains_entity",
-        source_node_id="pbs-gold-node:" + "b" * 64,
-        target_node_id="pbs-gold-node:" + "c" * 64,
-        semantic_dimension="source_structure",
-        mapping_method="source-explicit",
-        inferred=False,
-    )
-    assert (
-        build_gold_edge_review_queue((model_edge,), queued_at=QUEUED_AT)[
-            0
-        ].edge_id
-        == model_edge.edge_id
-    )
+    model_edge = pbs_graph().edges[0]
+    model_case = build_gold_edge_review_queue(
+        (model_edge,), queued_at=QUEUED_AT
+    )[0]
+    mapping_case = build_gold_edge_review_queue(
+        (model_edge.model_dump(mode="python"),), queued_at=QUEUED_AT
+    )[0]
+    assert model_case == mapping_case
 
 
 def test_case_digest_binds_complete_edge_and_case_fields():
     first = build_gold_edge_review_queue((pbs_edge(),), queued_at=QUEUED_AT)[0]
-    changed_edge = pbs_edge()
-    changed_edge["evidence"] = {"receipt_sha256": "9" * 64}
-    second = build_gold_edge_review_queue((changed_edge,), queued_at=QUEUED_AT)[
-        0
-    ]
+    second = build_gold_edge_review_queue(
+        (pbs_graph().edges[1],), queued_at=QUEUED_AT
+    )[0]
     assert first.edge_sha256 != second.edge_sha256
     assert first.review_case_id != second.review_case_id
     forged = first.model_dump()
@@ -117,17 +84,15 @@ def test_queue_rejects_duplicate_or_unsupported_edges():
         )
     unsupported = pbs_edge()
     unsupported["kind"] = "asserted_equivalence"
-    del unsupported["semantic_dimension"]
-    del unsupported["mapping_method"]
-    with pytest.raises(ValueError, match="explicit review controls"):
+    with pytest.raises(ValueError, match="not supported"):
         build_gold_edge_review_queue((unsupported,), queued_at=QUEUED_AT)
     inferred = pbs_edge()
     inferred["inferred"] = True
-    with pytest.raises(ValueError, match="non-inferred"):
+    with pytest.raises(ValidationError):
         build_gold_edge_review_queue((inferred,), queued_at=QUEUED_AT)
     missing_id = pbs_edge()
     del missing_id["source_node_id"]
-    with pytest.raises(ValueError, match="source_node_id"):
+    with pytest.raises(ValidationError, match="source_node_id"):
         build_gold_edge_review_queue((missing_id,), queued_at=QUEUED_AT)
 
 

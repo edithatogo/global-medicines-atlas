@@ -11,7 +11,9 @@ from typing import Literal, cast
 from pydantic import AwareDatetime, Field, model_validator
 
 from .matching_models import AdjudicationEvent, ReviewState
+from .mbs_gold_graph import MbsGoldEdge
 from .models import FrozenModel
+from .pbs_gold_graph import PbsGoldEdge
 
 
 class GoldEdgeReviewCase(FrozenModel):
@@ -90,34 +92,21 @@ def _case_id(
 def _edge_payload(
     edge: Mapping[str, object] | FrozenModel,
 ) -> dict[str, object]:
-    if isinstance(edge, FrozenModel):
-        return cast("dict[str, object]", edge.model_dump(mode="json"))
-    return dict(edge)
-
-
-def _controls(payload: Mapping[str, object]) -> tuple[str, str]:
-    dimension = payload.get("semantic_dimension")
-    method = payload.get("mapping_method")
-    if (
-        isinstance(dimension, str)
-        and dimension
-        and isinstance(method, str)
-        and method
-    ):
-        return dimension, method
-    if (
-        payload.get("kind") == "source_record_has_benefit"
-        and payload.get("assertion_basis") == "same_source_record"
-    ):
-        return "service_benefit", "source-explicit"
-    raise ValueError("Gold edge lacks explicit review controls")
-
-
-def _required_text(payload: Mapping[str, object], name: str) -> str:
-    value = payload.get(name)
-    if not isinstance(value, str) or not value:
-        raise ValueError(f"Gold edge {name} must be non-empty text")
-    return value
+    raw = (
+        edge.model_dump(mode="python")
+        if isinstance(edge, FrozenModel)
+        else dict(edge)
+    )
+    kind = raw.get("kind")
+    if kind == "source_contains_entity":
+        validated: FrozenModel = PbsGoldEdge.model_validate(raw)
+    elif kind == "source_record_has_benefit":
+        validated = MbsGoldEdge.model_validate(raw)
+    else:
+        raise ValueError(
+            "Gold edge kind is not supported by the review adapter"
+        )
+    return cast("dict[str, object]", validated.model_dump(mode="json"))
 
 
 def build_gold_edge_review_queue(
@@ -130,16 +119,15 @@ def build_gold_edge_review_queue(
     edge_ids: set[str] = set()
     for edge in edges:
         payload = _edge_payload(edge)
-        if payload.get("inferred") is not False:
-            raise ValueError("Gold review adapter requires a non-inferred edge")
-        edge_id = _required_text(payload, "edge_id")
+        edge_id = cast("str", payload["edge_id"])
         if edge_id in edge_ids:
             raise ValueError(f"Duplicate Gold edge: {edge_id}")
         edge_ids.add(edge_id)
-        edge_kind = _required_text(payload, "kind")
-        source = _required_text(payload, "source_node_id")
-        target = _required_text(payload, "target_node_id")
-        dimension, method = _controls(payload)
+        edge_kind = cast("str", payload["kind"])
+        source = cast("str", payload["source_node_id"])
+        target = cast("str", payload["target_node_id"])
+        dimension = cast("str", payload["semantic_dimension"])
+        method = cast("str", payload["mapping_method"])
         edge_sha256 = _digest(payload)
         case = GoldEdgeReviewCase(
             review_case_id=_case_id(
