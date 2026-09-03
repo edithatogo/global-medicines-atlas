@@ -9,15 +9,21 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Iterable
+from datetime import datetime
 from typing import Any, Literal, cast
 
 import pyarrow as pa
-from pydantic import ConfigDict, Field, model_validator
+from pydantic import AwareDatetime, ConfigDict, Field, model_validator
 
 from .mbs_silver import iter_mbs_silver_batches
 from .mbs_typed_values import ConversionStatus
 from .models import FrozenModel
-from .receipts import EvidenceClass, SourceReceipt
+from .receipts import (
+    EvidenceClass,
+    RightsState,
+    SensitivityClassification,
+    SourceReceipt,
+)
 
 
 class MbsGoldFieldEvidence(FrozenModel):
@@ -44,6 +50,7 @@ class MbsGoldEvidence(FrozenModel):
     source_ordinal: int = Field(strict=True, ge=0)
     source_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     receipt_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    catalog_version: str = Field(min_length=1)
 
 
 class MbsGoldNode(FrozenModel):
@@ -72,7 +79,29 @@ class MbsGoldEdge(FrozenModel):
     source_node_id: str = Field(pattern=r"^mbs-gold-node:[0-9a-f]{64}$")
     target_node_id: str = Field(pattern=r"^mbs-gold-node:[0-9a-f]{64}$")
     evidence: MbsGoldEvidence
+    supporting_revisions: tuple[str, ...] = Field(min_length=1, max_length=1)
     assertion_basis: Literal["same_source_record"] = "same_source_record"
+    semantic_dimension: Literal["service_benefit"] = "service_benefit"
+    mapping_method: Literal["source-explicit"] = "source-explicit"
+    confidence: None = None
+    confidence_calibration: Literal["not_applicable_source_record"] = (
+        "not_applicable_source_record"
+    )
+    review_state: Literal["not_reviewed"] = "not_reviewed"
+    valid_time_status: Literal["unselected"] = "unselected"
+    source_effective_from: AwareDatetime | None = None
+    source_effective_to: AwareDatetime | None = None
+    retrieved_at: AwareDatetime
+    rights_state: RightsState
+    sensitivity: SensitivityClassification = Field(
+        default_factory=SensitivityClassification
+    )
+    contradiction_edge_ids: tuple[str, ...] = ()
+    supersedes_edge_ids: tuple[str, ...] = ()
+    negative_control_outcome: Literal["not_applicable"] = "not_applicable"
+    comparison_validity: Literal["same_source_record_only"] = (
+        "same_source_record_only"
+    )
     inferred: Literal[False] = False
 
     @model_validator(mode="after")
@@ -83,6 +112,10 @@ class MbsGoldEdge(FrozenModel):
             self.source_node_id, self.target_node_id, self.evidence
         ):
             raise ValueError("Gold edge identity differs from evidence")
+        if self.contradiction_edge_ids or self.supersedes_edge_ids:
+            raise ValueError("Gold candidate cannot assert graph history")
+        if self.supporting_revisions != (self.evidence.catalog_version,):
+            raise ValueError("Gold edge revision differs from B1 evidence")
         return self
 
 
@@ -171,16 +204,25 @@ class MbsGoldGraphCandidate(FrozenModel):
 
 def _canonical(value: object) -> bytes:
     return json.dumps(
-        value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        default=lambda item: (
+            item.isoformat() if isinstance(item, datetime) else str(item)
+        ),
     ).encode()
 
 
-def _evidence_address(evidence: MbsGoldEvidence) -> tuple[str, int, str, str]:
+def _evidence_address(
+    evidence: MbsGoldEvidence,
+) -> tuple[str, int, str, str, str]:
     return (
         evidence.source_record_id,
         evidence.source_ordinal,
         evidence.source_sha256,
         evidence.receipt_sha256,
+        evidence.catalog_version,
     )
 
 
@@ -236,6 +278,20 @@ def _rows(batches: Iterable[pa.RecordBatch]) -> list[dict[str, Any]]:
     return [row for batch in batches for row in batch.to_pylist()]
 
 
+def _source_effective_bounds(
+    receipt: SourceReceipt,
+) -> tuple[datetime | None, datetime | None]:
+    temporal = receipt.temporal
+    if temporal is None:  # pragma: no cover - SourceReceipt invariant
+        raise ValueError("MBS Gold candidate requires temporal evidence")
+    return (
+        receipt.effective_from
+        or temporal.valid_from
+        or temporal.source_effective_at,
+        receipt.effective_to or temporal.valid_to,
+    )
+
+
 def build_mbs_gold_graph_candidate(
     payload: bytes, receipt: SourceReceipt
 ) -> MbsGoldGraphCandidate:
@@ -268,7 +324,10 @@ def build_mbs_gold_graph_candidate(
             raise ValueError(
                 "MBS Gold Silver row evidence differs"
             )  # pragma: no cover - same receipt/table producer invariant
-        evidence = MbsGoldEvidence(**{key: service_row[key] for key in keys})
+        evidence = MbsGoldEvidence(
+            **{key: service_row[key] for key in keys},
+            catalog_version=receipt.source.catalog_version,
+        )
         service_fields = _fields(service_row)
         benefit_fields = _fields(benefit_row)
         service = MbsGoldNode(
@@ -288,6 +347,12 @@ def build_mbs_gold_graph_candidate(
             source_node_id=service.node_id,
             target_node_id=benefit.node_id,
             evidence=evidence,
+            supporting_revisions=(receipt.source.catalog_version,),
+            source_effective_from=_source_effective_bounds(receipt)[0],
+            source_effective_to=_source_effective_bounds(receipt)[1],
+            retrieved_at=receipt.retrieval.retrieved_at,
+            rights_state=receipt.rights_state,
+            sensitivity=receipt.sensitivity or SensitivityClassification(),
         )
         nodes.extend((service, benefit))
         edges.append(edge)
@@ -329,6 +394,7 @@ MBS_GOLD_EDGE_SCHEMA = pa.schema(
         pa.field("evidence_json", pa.string(), nullable=False),
         pa.field("assertion_basis", pa.string(), nullable=False),
         pa.field("inferred", pa.bool_(), nullable=False),
+        pa.field("controls_json", pa.string(), nullable=False),
     ],
     metadata={
         "schema_name": "global-medicines-atlas.mbs-gold.edges",
@@ -371,6 +437,19 @@ def project_mbs_gold_graph_arrow(
                 ).decode(),
                 "assertion_basis": edge.assertion_basis,
                 "inferred": edge.inferred,
+                "controls_json": _canonical(
+                    edge.model_dump(
+                        exclude={
+                            "edge_id",
+                            "kind",
+                            "source_node_id",
+                            "target_node_id",
+                            "evidence",
+                            "assertion_basis",
+                            "inferred",
+                        }
+                    )
+                ).decode(),
             }
             for edge in graph.edges
         ],
