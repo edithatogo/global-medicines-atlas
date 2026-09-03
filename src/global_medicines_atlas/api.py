@@ -7,11 +7,16 @@ from datetime import UTC, datetime
 from typing import Annotated, Any
 from uuid import uuid4
 
-from fastapi import FastAPI, Query, Request
+from fastapi import FastAPI, Path, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 from pydantic import AwareDatetime, ValidationError
 
+from .platinum_identity_service import (
+    DatasetIdentityLookup,
+    UnknownPlatinumResourceError,
+)
+from .platinum_surface_contracts import DatasetIdentityEnvelope
 from .product_contracts import (
     API_BASE_PATH,
     MAX_PAGE_SIZE,
@@ -147,6 +152,8 @@ def _cache_headers(response: Response) -> None:
 
 def create_app(  # ruff: ignore[too-many-statements] - route registration is intentionally centralized.
     service: ReadOnlyQueryService,
+    *,
+    dataset_identities: DatasetIdentityLookup | None = None,
 ) -> FastAPI:
     """Create an API application with an explicitly injected query service."""
 
@@ -373,6 +380,47 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
     app.add_api_route(
         f"{API_BASE_PATH}/sources",
         sources,
+        methods=["HEAD"],
+        response_model=None,
+        include_in_schema=False,
+    )
+
+    @app.api_route(
+        f"{API_BASE_PATH}/datasets/{{resource_id}}",
+        methods=["GET"],
+        response_model=DatasetIdentityEnvelope,
+        responses={**_ERROR_RESPONSES, 404: {"model": ErrorEnvelope}},
+        tags=["datasets"],
+        summary="Inspect one admitted immutable dataset identity",
+    )
+    def dataset_identity_route(
+        request: Request,
+        response: Response,
+        resource_id: Annotated[str, Path(min_length=1, max_length=256)],
+    ) -> DatasetIdentityEnvelope | JSONResponse:
+        if dataset_identities is None:
+            return _error_response(
+                request,
+                status_code=503,
+                code=ErrorCode.SERVICE_UNAVAILABLE,
+                message="The dataset identity service is unavailable",
+                retryable=True,
+            )
+        try:
+            result = dataset_identities.identity(resource_id)
+        except UnknownPlatinumResourceError:
+            return _error_response(
+                request,
+                status_code=404,
+                code=ErrorCode.NOT_FOUND,
+                message="The admitted dataset resource was not found",
+            )
+        _cache_headers(response)
+        return result
+
+    app.add_api_route(
+        f"{API_BASE_PATH}/datasets/{{resource_id}}",
+        dataset_identity_route,
         methods=["HEAD"],
         response_model=None,
         include_in_schema=False,

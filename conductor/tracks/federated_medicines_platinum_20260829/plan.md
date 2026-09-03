@@ -114,6 +114,13 @@
   fail-closed coverage/comparison states and that no rows were queried. Every
   claim-bearing state is required. This contract performs no discovery,
   admission, publication or I/O.
+- [x] Add the first resolver-backed read-only API slice at
+  `/api/v1/datasets/{resource_id}`. The injected shared identity service maps
+  admitted resources to explicit jurisdictions without opening bytes; unknown
+  resources return a detail-free typed 404 and an unconfigured service returns
+  a typed retryable 503. GET/HEAD, cache policy and OpenAPI responses are
+  bounded independently of later query endpoints; the semantic OpenAPI
+  snapshot and generated read-only client include the new operation.
 - [ ] Write failing CLI/API tests for MBS services, PBS medicines, evidence
   edges, history, coverage, provenance, dataset identity, pagination, filters,
   errors, and OpenAPI compatibility.
