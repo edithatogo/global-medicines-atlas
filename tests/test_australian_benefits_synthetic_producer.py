@@ -50,7 +50,9 @@ def test_synthetic_objects_have_content_addressable_layer_paths() -> None:
 
     for item in document["objects"]:
         assert len(item["sha256"]) == 64
-        assert all(character in "0123456789abcdef" for character in item["sha256"])
+        assert all(
+            character in "0123456789abcdef" for character in item["sha256"]
+        )
         assert item["path"].startswith(f"{item['layer']}/")
         assert item["path"].rsplit(".", 1)[-1] in {"json", "parquet"}
         if item["layer"] == "bronze":
