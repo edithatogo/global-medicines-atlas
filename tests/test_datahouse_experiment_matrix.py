@@ -132,9 +132,14 @@ def test_matrix_rows_record_measurement_and_disposition_contract() -> None:
 
     assert all(item.unmet_requirement for item in matrix.experiments)
     assert all(item.hypothesis and item.baseline for item in matrix.experiments)
-    assert all(item.thresholds and item.rights_review for item in matrix.experiments)
+    assert all(
+        item.thresholds and item.rights_review for item in matrix.experiments
+    )
     assert {item.disposition for item in matrix.experiments} <= {
-        "promote-candidate", "retain-preview", "defer", "reject"
+        "promote-candidate",
+        "retain-preview",
+        "defer",
+        "reject",
     }
 
 
