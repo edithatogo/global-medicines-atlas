@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import math
 import re
 import time
 from dataclasses import dataclass
@@ -297,6 +298,7 @@ def _require_anonymous_client(client: httpx.Client) -> None:
         or len(client.cookies) > 0
         or credential_headers.intersection(client.headers.keys())
         or client.event_hooks.get("request")
+        or client.event_hooks.get("response")
     ):
         raise ValueError("anonymous client must not carry credentials or hooks")
 
@@ -308,8 +310,12 @@ def fetch_unadmitted_public_fixture(
     timeout_seconds: float = 30,
 ) -> CheckpointPreflight:
     """Fetch an exact anonymous fixture and return its unadmitted preflight."""
-    if timeout_seconds <= 0:
-        raise ValueError("timeout must be positive")
+    if (
+        type(timeout_seconds) not in {int, float}
+        or not math.isfinite(timeout_seconds)
+        or timeout_seconds <= 0
+    ):
+        raise ValueError("timeout must be finite positive seconds")
     _require_anonymous_client(client)
     deadline = time.monotonic() + timeout_seconds
     metadata = _download(

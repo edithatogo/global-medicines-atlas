@@ -255,15 +255,16 @@ def test_anonymous_fetch_rejects_inherited_credentials(client_kwargs) -> None:
         fetch_unadmitted_public_fixture(pin(raw), client)
 
 
-def test_anonymous_fetch_rejects_request_hooks() -> None:
-    """A request hook must not be able to inject credentials after validation."""
+@pytest.mark.parametrize("hook_kind", ["request", "response"])
+def test_anonymous_fetch_rejects_client_hooks(hook_kind: str) -> None:
+    """No client hook may inject credentials during a preflight sequence."""
     raw = payload()
     with (
         httpx.Client(
             transport=httpx.MockTransport(
                 lambda _request: pytest.fail("hooked request issued")
             ),
-            event_hooks={"request": [lambda _request: None]},
+            event_hooks={hook_kind: [lambda _message: None]},
             trust_env=False,
         ) as client,
         pytest.raises(ValueError, match="anonymous client"),
@@ -356,6 +357,26 @@ def test_anonymous_fetch_rejects_nonpositive_timeout() -> None:
         pytest.raises(ValueError, match="timeout"),
     ):
         fetch_unadmitted_public_fixture(pin(raw), client, timeout_seconds=0)
+
+
+@pytest.mark.parametrize(
+    "timeout_seconds", [float("inf"), float("-inf"), float("nan"), True, "30"]
+)
+def test_anonymous_fetch_rejects_nonfinite_or_boolean_timeout(
+    timeout_seconds: object,
+) -> None:
+    raw = payload()
+    with (
+        httpx.Client(
+            transport=httpx.MockTransport(lambda _request: None)
+        ) as client,
+        pytest.raises(ValueError, match="finite positive"),
+    ):
+        fetch_unadmitted_public_fixture(
+            pin(raw),
+            client,
+            timeout_seconds=timeout_seconds,  # type: ignore[arg-type]
+        )
 
 
 def test_anonymous_fetch_enforces_remote_byte_budget() -> None:
