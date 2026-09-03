@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.datahouse-experiment-matrix",
   "schema_version": 1,
-  "generated_at": "2026-08-20T14:25:00Z",
+  "generated_at": "2026-09-03T10:46:00Z",
   "fixture_path": "tests/fixtures/datahouse/bronze_records.json",
   "fixture_sha256": "f5f2b56824852355c200c72246f25b7009f60ee0d4326535d34eb2340588b1da",
   "dependency_lock_path": "uv.lock",

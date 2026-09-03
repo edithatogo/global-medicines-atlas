@@ -151,8 +151,44 @@ def test_unrun_experiment_cannot_be_marked_promotion_candidate() -> None:
     item = cast("dict[str, object]", experiments[3])
     item["disposition"] = "promote-candidate"
 
-    with pytest.raises(ValidationError, match="unrun experiment"):
+    with pytest.raises(ValidationError, match="successful outcome"):
         ExperimentMatrix.model_validate(payload)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "outcome", [ExperimentOutcome.UNSUPPORTED, ExperimentOutcome.FAILED]
+)
+def test_unsuccessful_experiment_cannot_be_promotion_candidate(
+    outcome: ExperimentOutcome,
+) -> None:
+    payload = _payload()
+    experiments = cast("list[dict[str, object]]", payload["experiments"])
+    item = experiments[0]
+    item["outcome"] = outcome
+    item["disposition"] = "promote-candidate"
+
+    with pytest.raises(ValidationError, match="successful outcome"):
+        ExperimentMatrix.model_validate(payload)
+
+
+@pytest.mark.unit
+def test_v1_rows_without_enrichment_fields_remain_compatible() -> None:
+    payload = _payload()
+    experiments = cast("list[dict[str, object]]", payload["experiments"])
+    for item in experiments:
+        for field in (
+            "unmet_requirement",
+            "hypothesis",
+            "baseline",
+            "thresholds",
+            "rights_review",
+            "disposition",
+        ):
+            item.pop(field)
+
+    matrix = ExperimentMatrix.model_validate(payload)
+    assert all(item.disposition is None for item in matrix.experiments)
 
 
 @pytest.mark.unit

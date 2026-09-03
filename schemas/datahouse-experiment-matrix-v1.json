@@ -27,31 +27,90 @@
       "additionalProperties": false,
       "description": "One capability-specific result or explicit not-run receipt.",
       "properties": {
+        "baseline": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Baseline"
+        },
+        "dependencies": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "disposition": {
+          "anyOf": [
+            {
+              "enum": [
+                "promote-candidate",
+                "retain-preview",
+                "defer",
+                "reject"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Disposition"
+        },
+        "evidence": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
         "experiment_id": {
           "$ref": "#/$defs/ExperimentId"
         },
-        "unmet_requirement": {
-          "minLength": 1,
-          "title": "Unmet Requirement",
-          "type": "string"
+        "feature_flags": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Feature Flags",
+          "type": "array"
         },
         "hypothesis": {
-          "minLength": 1,
-          "title": "Hypothesis",
-          "type": "string"
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Hypothesis"
         },
-        "baseline": {
-          "minLength": 1,
-          "title": "Baseline",
-          "type": "string"
-        },
-        "thresholds": {
+        "limitations": {
           "items": {
             "type": "string"
           },
           "minItems": 1,
-          "title": "Thresholds",
+          "title": "Limitations",
           "type": "array"
+        },
+        "optional_for_core": {
+          "const": true,
+          "default": true,
+          "title": "Optional For Core",
+          "type": "boolean"
         },
         "outcome": {
           "$ref": "#/$defs/ExperimentOutcome"
@@ -68,6 +127,30 @@
           "title": "Prerequisites Met",
           "type": "boolean"
         },
+        "production_deployment_claimed": {
+          "const": false,
+          "default": false,
+          "title": "Production Deployment Claimed",
+          "type": "boolean"
+        },
+        "rights_review": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rights Review"
+        },
+        "rollback_procedure": {
+          "minLength": 1,
+          "title": "Rollback Procedure",
+          "type": "string"
+        },
         "specifications": {
           "items": {
             "$ref": "#/$defs/SpecificationReference"
@@ -76,91 +159,42 @@
           "title": "Specifications",
           "type": "array"
         },
-        "feature_flags": {
-          "default": [],
-          "items": {
-            "type": "string"
-          },
-          "title": "Feature Flags",
-          "type": "array"
-        },
-        "dependencies": {
-          "default": [],
-          "items": {
-            "type": "string"
-          },
-          "title": "Dependencies",
-          "type": "array"
-        },
-        "evidence": {
-          "default": [],
-          "items": {
-            "type": "string"
-          },
-          "title": "Evidence",
-          "type": "array"
-        },
-        "limitations": {
-          "items": {
-            "type": "string"
-          },
-          "minItems": 1,
-          "title": "Limitations",
-          "type": "array"
-        },
-        "rollback_procedure": {
-          "minLength": 1,
-          "title": "Rollback Procedure",
-          "type": "string"
-        },
-        "rights_review": {
-          "minLength": 1,
-          "title": "Rights Review",
-          "type": "string"
-        },
-        "disposition": {
-          "enum": [
-            "promote-candidate",
-            "retain-preview",
-            "defer",
-            "reject"
-          ],
-          "title": "Disposition",
-          "type": "string"
-        },
-        "optional_for_core": {
-          "const": true,
-          "default": true,
-          "title": "Optional For Core",
-          "type": "boolean"
-        },
-        "production_deployment_claimed": {
-          "const": false,
-          "default": false,
-          "title": "Production Deployment Claimed",
-          "type": "boolean"
-        },
         "technology_promotion_claimed": {
           "const": false,
           "default": false,
           "title": "Technology Promotion Claimed",
           "type": "boolean"
+        },
+        "thresholds": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Thresholds",
+          "type": "array"
+        },
+        "unmet_requirement": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unmet Requirement"
         }
       },
       "required": [
         "experiment_id",
-        "unmet_requirement",
-        "hypothesis",
-        "baseline",
-        "thresholds",
         "outcome",
         "prerequisites",
         "prerequisites_met",
         "specifications",
         "limitations",
-        "rollback_procedure",
-        "rights_review",
-        "disposition"
+        "rollback_procedure"
       ],
       "title": "ExperimentResult",
       "type": "object"
@@ -169,6 +203,19 @@
       "additionalProperties": false,
       "description": "An authoritative specification pinned by version or revision.",
       "properties": {
+        "revision": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{40}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Revision"
+        },
         "title": {
           "minLength": 1,
           "title": "Title",
@@ -192,19 +239,6 @@
           ],
           "default": null,
           "title": "Version"
-        },
-        "revision": {
-          "anyOf": [
-            {
-              "pattern": "^[0-9a-f]{40}$",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Revision"
         }
       },
       "required": [
@@ -218,30 +252,10 @@
   "additionalProperties": false,
   "description": "Complete disposition of all approved datahouse experiments.",
   "properties": {
-    "schema_id": {
-      "const": "global-medicines-atlas.datahouse-experiment-matrix",
-      "title": "Schema Id",
-      "type": "string"
-    },
-    "schema_version": {
-      "const": 1,
-      "title": "Schema Version",
-      "type": "integer"
-    },
-    "generated_at": {
-      "format": "date-time",
-      "title": "Generated At",
-      "type": "string"
-    },
-    "fixture_path": {
-      "pattern": "^tests/fixtures/datahouse/[a-z0-9_.-]+$",
-      "title": "Fixture Path",
-      "type": "string"
-    },
-    "fixture_sha256": {
-      "pattern": "^[0-9a-f]{64}$",
-      "title": "Fixture Sha256",
-      "type": "string"
+    "bronze_completion_blocking": {
+      "const": false,
+      "title": "Bronze Completion Blocking",
+      "type": "boolean"
     },
     "dependency_lock_path": {
       "const": "uv.lock",
@@ -253,27 +267,47 @@
       "title": "Dependency Lock Sha256",
       "type": "string"
     },
-    "python_reference": {
-      "const": "3.14",
-      "title": "Python Reference",
-      "type": "string"
-    },
-    "bronze_completion_blocking": {
-      "const": false,
-      "title": "Bronze Completion Blocking",
-      "type": "boolean"
-    },
-    "payload_receipts_remain_authoritative": {
-      "const": true,
-      "title": "Payload Receipts Remain Authoritative",
-      "type": "boolean"
-    },
     "experiments": {
       "items": {
         "$ref": "#/$defs/ExperimentResult"
       },
       "title": "Experiments",
       "type": "array"
+    },
+    "fixture_path": {
+      "pattern": "^tests/fixtures/datahouse/[a-z0-9_.-]+$",
+      "title": "Fixture Path",
+      "type": "string"
+    },
+    "fixture_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Fixture Sha256",
+      "type": "string"
+    },
+    "generated_at": {
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "payload_receipts_remain_authoritative": {
+      "const": true,
+      "title": "Payload Receipts Remain Authoritative",
+      "type": "boolean"
+    },
+    "python_reference": {
+      "const": "3.14",
+      "title": "Python Reference",
+      "type": "string"
+    },
+    "schema_id": {
+      "const": "global-medicines-atlas.datahouse-experiment-matrix",
+      "title": "Schema Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
     }
   },
   "required": [
