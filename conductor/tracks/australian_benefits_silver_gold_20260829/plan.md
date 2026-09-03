@@ -544,6 +544,12 @@
   structure, plus only exact XML parent/child containment edges from synthetic
   Silver. Canonical medicines, organizations, resolved terminology and
   cross-source relationships remain.
+  Frozen full at `eb56007`: 4,341 passed, two failed, one optional pyiceberg
+  skip, 96.75% coverage. Both failures are unchanged stable-v1 release
+  reproducibility checks requiring pinned uv 0.11.29 while the local candidates
+  are uv 0.12.7; no toolchain pin or gate was weakened. Later full-harness lanes
+  were not reached after pytest failed. Exact-head hosted checks remain
+  authoritative.
 - [~] Implement official/source-explicit and deterministic mappings first;
   isolate lexical, ontology-assisted, embedding, and NLP candidates.
   The first MBS projection is deterministic and source-explicit; no lexical,
