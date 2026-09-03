@@ -32,7 +32,7 @@ class DatasetIdentityEnvelope(PlatinumSurfaceModel):
     revision: Revision
     path: str = Field(min_length=1, max_length=2048)
     object_sha256: Sha256
-    byte_count: int = Field(gt=0)
+    byte_count: int = Field(ge=0)
     contract_sha256: Sha256
     semantic_manifest_sha256: Sha256
     jurisdiction: Jurisdiction

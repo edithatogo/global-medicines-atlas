@@ -467,7 +467,7 @@
           "type": "string"
         },
         "byte_count": {
-          "exclusiveMinimum": 0.0,
+          "minimum": 0.0,
           "title": "Byte Count",
           "type": "integer"
         },
