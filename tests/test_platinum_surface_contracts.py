@@ -9,7 +9,10 @@ import pytest
 from pydantic import ValidationError
 
 from global_medicines_atlas.platinum_resolver import ResolvedResource
-from global_medicines_atlas.platinum_surface_contracts import dataset_identity
+from global_medicines_atlas.platinum_surface_contracts import (
+    DatasetIdentityEnvelope,
+    dataset_identity,
+)
 
 
 def resource() -> ResolvedResource:
@@ -37,7 +40,7 @@ def resource() -> ResolvedResource:
 
 
 def test_identity_preserves_every_admitted_binding_without_row_claims() -> None:
-    envelope = dataset_identity(resource())
+    envelope = dataset_identity(resource(), jurisdiction="AU")
     payload = envelope.model_dump(mode="json")
 
     assert payload["revision"] == "a" * 40
@@ -47,6 +50,9 @@ def test_identity_preserves_every_admitted_binding_without_row_claims() -> None:
     assert payload["semantic_dimension"] == "service_benefit"
     assert payload["entity_granularity"] == "service_item"
     assert payload["comparison_cohort"] == "current"
+    assert payload["jurisdiction"] == "AU"
+    assert payload["coverage_state"] == "not_declared"
+    assert payload["comparison_validity"] == "not_evaluated"
     assert payload["product_admitted"] is True
     assert payload["rows_queried"] is False
 
@@ -64,4 +70,36 @@ def test_identity_preserves_every_admitted_binding_without_row_claims() -> None:
 )
 def test_identity_adapter_rejects_mutable_or_malformed_claims(changed) -> None:
     with pytest.raises((ValueError, ValidationError)):
-        dataset_identity(replace(resource(), **changed))
+        dataset_identity(replace(resource(), **changed), jurisdiction="AU")
+
+
+@pytest.mark.parametrize(
+    "changed",
+    [
+        {"semantic_dimension": "funding_and_regulatory"},
+        {"entity_granularity": "patient"},
+        {"capabilities": ("unbounded_download",)},
+    ],
+)
+def test_identity_rejects_open_ended_semantic_claims(changed) -> None:
+    with pytest.raises(ValidationError):
+        dataset_identity(replace(resource(), **changed), jurisdiction="AU")
+
+
+def test_identity_requires_every_claim_bearing_state() -> None:
+    payload = dataset_identity(resource(), jurisdiction="AU").model_dump()
+    for field in (
+        "jurisdiction",
+        "coverage_state",
+        "comparison_validity",
+        "product_admitted",
+        "rows_queried",
+    ):
+        incomplete = {
+            key: value for key, value in payload.items() if key != field
+        }
+        with pytest.raises(ValidationError):
+            DatasetIdentityEnvelope.model_validate(incomplete)
+
+    with pytest.raises(ValidationError):
+        dataset_identity(resource(), jurisdiction="Australia")

@@ -7,10 +7,16 @@ from typing import Annotated, Literal
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field
 
-from .platinum_resolver import ResolvedResource
+from .platinum_resolver import (
+    Capability,
+    EntityGranularity,
+    ResolvedResource,
+    SemanticDimension,
+)
 
 Sha256 = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
 Revision = Annotated[str, Field(pattern=r"^[0-9a-f]{40}$")]
+Jurisdiction = Annotated[str, Field(pattern=r"^[A-Z]{2,3}$")]
 
 
 class PlatinumSurfaceModel(BaseModel):
@@ -31,8 +37,9 @@ class DatasetIdentityEnvelope(PlatinumSurfaceModel):
     byte_count: int = Field(gt=0)
     contract_sha256: Sha256
     semantic_manifest_sha256: Sha256
-    semantic_dimension: str = Field(min_length=1)
-    entity_granularity: str = Field(min_length=1)
+    jurisdiction: Jurisdiction
+    semantic_dimension: SemanticDimension
+    entity_granularity: EntityGranularity
     source_id: str = Field(min_length=1)
     acquisition_id: str = Field(min_length=1)
     layer: str = Field(min_length=1)
@@ -41,12 +48,16 @@ class DatasetIdentityEnvelope(PlatinumSurfaceModel):
     effective_date: str | None
     retrieved_at: AwareDatetime
     cache_expires_at: AwareDatetime
-    capabilities: tuple[str, ...]
-    product_admitted: Literal[True] = True
-    rows_queried: Literal[False] = False
+    capabilities: tuple[Capability, ...]
+    coverage_state: Literal["not_declared"]
+    comparison_validity: Literal["not_evaluated"]
+    product_admitted: Literal[True]
+    rows_queried: Literal[False]
 
 
-def dataset_identity(resource: ResolvedResource) -> DatasetIdentityEnvelope:
+def dataset_identity(
+    resource: ResolvedResource, *, jurisdiction: str
+) -> DatasetIdentityEnvelope:
     """Translate one admitted resolver result without performing I/O."""
     return DatasetIdentityEnvelope(
         resource_id=resource.resource_id,
@@ -57,6 +68,7 @@ def dataset_identity(resource: ResolvedResource) -> DatasetIdentityEnvelope:
         byte_count=resource.byte_count,
         contract_sha256=resource.contract_sha256,
         semantic_manifest_sha256=resource.semantic_manifest_sha256,
+        jurisdiction=jurisdiction,
         semantic_dimension=resource.semantic_dimension,
         entity_granularity=resource.entity_granularity,
         source_id=resource.source_id,
@@ -68,6 +80,10 @@ def dataset_identity(resource: ResolvedResource) -> DatasetIdentityEnvelope:
         retrieved_at=datetime.fromisoformat(resource.retrieved_at),
         cache_expires_at=resource.cache_expires_at,
         capabilities=resource.capabilities,
+        coverage_state="not_declared",
+        comparison_validity="not_evaluated",
+        product_admitted=True,
+        rows_queried=False,
     )
 
 
