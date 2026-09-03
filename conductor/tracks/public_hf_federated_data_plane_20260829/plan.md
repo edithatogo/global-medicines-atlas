@@ -164,6 +164,16 @@
   observation and guard regression failed first; 91 reader/contract tests and
   39 receipt/matrix tests pass, reader 100% branch coverage.)
 
+### Source-metadata review fixes
+
+- [x] Replace placeholder MBS/PBS payload, B1 receipt, retrieval, and Hub
+  revision identities with the exact anonymously verified archive identities.
+  (`54cea68`; both valid fixtures now describe the observed public revisions.)
+- [x] Bind each permission reference and review date to its source-specific
+  authorization evidence and reject jointly mutated revision aliases.
+  (`54cea68`; 59 focused and 172 affected tests pass; no Hub mutation or new
+  rights conclusion.)
+
 - [x] Close expired cache spools on open and occupancy inspection. (`9f2b929`;
   automated P2 review; regression failed first, then 91 tests and 100% coverage.)
 - [x] Declare format plugins in the CI test group as well as the optional runtime
