@@ -68,7 +68,7 @@ def evidence():
 
 def test_exact_independent_profile_admits_without_io():
     raw, closed, trusted = evidence()
-    result = admit_closed_contract(raw, closed, trusted=trusted)
+    result = admit_closed_contract(raw, closed, schema=SCHEMA, trusted=trusted)
     assert result.scope == "offline_trusted_profile"
     assert result.contract_sha256 == hashlib.sha256(raw).hexdigest()
     assert "authorization" not in result.model_dump()
@@ -95,7 +95,10 @@ def test_subject_layer_and_authority_must_match_independent_profile(
     raw, closed, trusted = evidence()
     with pytest.raises(ValueError, match="independently trusted"):
         admit_closed_contract(
-            raw, closed, trusted=trusted.model_copy(update={field: value})
+            raw,
+            closed,
+            schema=SCHEMA,
+            trusted=trusted.model_copy(update={field: value}),
         )
 
 
@@ -110,27 +113,45 @@ def test_authorization_lineage_and_closure_cannot_be_substituted():
         admit_closed_contract(
             raw,
             closed,
+            schema=SCHEMA,
             trusted=trusted.model_copy(update={"authorization": other}),
         )
     with pytest.raises(ValueError, match="lineage"):
         admit_closed_contract(
             raw,
             closed,
+            schema=SCHEMA,
             trusted=trusted.model_copy(
                 update={"lineage": trusted.lineage[:-1]}
             ),
         )
     with pytest.raises(ValueError, match="different contract"):
-        admit_closed_contract(raw + b" ", closed, trusted=trusted)
+        admit_closed_contract(
+            raw + b" ", closed, schema=SCHEMA, trusted=trusted
+        )
 
 
 def test_existing_archive_or_malformed_bytes_are_not_retroactively_admitted():
     _, closed, trusted = evidence()
     with pytest.raises(ValueError, match="different contract"):
-        admit_closed_contract(b"{}", closed, trusted=trusted)
+        admit_closed_contract(b"{}", closed, schema=SCHEMA, trusted=trusted)
     malformed = b"[]"
     matching = closed.model_copy(
         update={"contract_sha256": hashlib.sha256(malformed).hexdigest()}
     )
-    with pytest.raises(ValueError, match="invalid closed"):
-        admit_closed_contract(malformed, matching, trusted=trusted)
+    with pytest.raises(ValueError, match="invalid federation"):
+        admit_closed_contract(
+            malformed, matching, schema=SCHEMA, trusted=trusted
+        )
+
+
+def test_forged_closure_roles_cannot_detach_from_contract_bytes():
+    raw, closed, trusted = evidence()
+    document = json.loads(raw)
+    document["rights"]["authorization"]["url"] = "https://example.org/forged"
+    altered = json.dumps(document).encode()
+    forged = closed.model_copy(
+        update={"contract_sha256": hashlib.sha256(altered).hexdigest()}
+    )
+    with pytest.raises(ValueError, match="roles belong"):
+        admit_closed_contract(altered, forged, schema=SCHEMA, trusted=trusted)

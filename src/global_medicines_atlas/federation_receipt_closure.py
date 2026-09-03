@@ -250,3 +250,10 @@ def verify_receipt_closure(
         roles=roles,
         receipts=tuple(verified),
     )
+
+
+def contract_receipt_roles(
+    contract: bytes, *, schema: bytes
+) -> tuple[ReceiptRole, ...]:
+    """Revalidate contract bytes and return their exact referenced roles."""
+    return _roles(_document(contract, schema))

@@ -13,7 +13,11 @@ from typing import Annotated, Literal
 from pydantic import Field
 
 from .federation_reader import SCHEMA_SHA256
-from .federation_receipt_closure import ReceiptClosure, ReceiptRole
+from .federation_receipt_closure import (
+    ReceiptClosure,
+    ReceiptRole,
+    contract_receipt_roles,
+)
 from .models import FrozenModel
 
 Digest = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
@@ -54,18 +58,18 @@ def admit_closed_contract(
     contract: bytes,
     closure: ReceiptClosure,
     *,
+    schema: bytes,
     trusted: TrustedAdmissionProfile,
 ) -> AdmissionRecord:
     """Admit only an exact byte-closed contract matching independent trust."""
     if closure.contract_sha256 != hashlib.sha256(contract).hexdigest():
         raise ValueError("receipt closure belongs to a different contract")
-    try:
-        document = json.loads(contract)
-        authority = document["authority"]
-        source = document["source"]
-        location = document["location"]
-    except TypeError, ValueError, KeyError:
-        raise ValueError("invalid closed federation contract") from None
+    if closure.roles != contract_receipt_roles(contract, schema=schema):
+        raise ValueError("receipt closure roles belong to a different contract")
+    document = json.loads(contract)
+    authority = document["authority"]
+    source = document["source"]
+    location = document["location"]
     actual = (
         authority["producer_repository"],
         location["dataset"],
