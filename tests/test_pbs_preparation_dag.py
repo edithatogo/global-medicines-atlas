@@ -394,11 +394,11 @@ def test_workflow_disaggregates_preparation_without_raw_artifacts() -> None:
         ".github/workflows/pbs-historical-qualification.yml"
     ).read_text(encoding="utf-8")
     assert "prepare-reference-index:" in workflow
-    assert "prepare-reference-groups:" in workflow
+    assert "prepare-reference-pairs:" in workflow
     assert "--entity-material" not in workflow
     assert "--global-index" in workflow
-    assert '--group-index "$GROUP" --group-count 4' in workflow
-    assert "max-parallel: 4" in workflow
+    assert '--group-index "$GROUP" --group-count 8' in workflow
+    assert "max-parallel: 8" in workflow
     assert "prepare_historical_pbs_reference_node.py" in workflow
     assert "assemble_historical_pbs_reference_manifest.py" in workflow
     assert "pattern: pbs-reference-node-*-${{ github.run_id }}-*" in workflow

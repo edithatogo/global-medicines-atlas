@@ -45,8 +45,8 @@ jobs:
           retention-days: 1
   prepare:
     name: Assemble verified transient PBS shard inputs
-    needs: [prepare-reference-index, prepare-reference-groups]
-    if: always() && needs.prepare-reference-index.result == 'success' && needs.prepare-reference-groups.result == 'success' && github.ref == 'refs/heads/main'
+    needs: [prepare-reference-index, prepare-reference-pairs]
+    if: always() && needs.prepare-reference-index.result == 'success' && needs.prepare-reference-pairs.result == 'success' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     permissions:
@@ -222,16 +222,16 @@ jobs:
           path: pbs-qualification-receipt.json
           if-no-files-found: error
           retention-days: 30
-  prepare-reference-groups:
-    name: Prepare PBS reference group / ${{ matrix.group }}
-    # Run beside the projection and index lanes. Each matrix child retains its
-    # own retryable artifact and fail-fast remains disabled.
+  prepare-reference-pairs:
+    name: Prepare PBS reference pair / ${{ matrix.group }}
+    # Eight two-shard units reduce both wall time and the retry failure domain.
+    # Each child retains its own artifact and fail-fast remains disabled.
     if: always() && github.ref == 'refs/heads/main'
     strategy:
       fail-fast: false
-      max-parallel: 4
+      max-parallel: 8
       matrix:
-        group: [0, 1, 2, 3]
+        group: [0, 1, 2, 3, 4, 5, 6, 7]
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     permissions:
@@ -241,7 +241,7 @@ jobs:
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
-      - name: Stream one four-partition group from the exact public source
+      - name: Stream one two-partition group from the exact public source
         timeout-minutes: 55
         env:
           GROUP: ${{ matrix.group }}
@@ -249,7 +249,7 @@ jobs:
         run: |
           uv run --locked --python 3.14.6 python scripts/prepare_historical_pbs_reference_node.py \
             --exact-commit "$REQUESTED_COMMIT" --reference-shards 16 \
-            --group-index "$GROUP" --group-count 4 \
+            --group-index "$GROUP" --group-count 8 \
             --output node --receipt "reference-group-$GROUP-receipt.json"
       - name: Retain only the assigned derived group and bounded receipt
         if: always()
