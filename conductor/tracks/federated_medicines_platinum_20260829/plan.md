@@ -62,6 +62,19 @@
     independently admitted v4 product contract and semantic manifest bind a
     published Australian benefits medallion dataset.
 
+### Public-fixture checkpoint review fixes
+
+- [x] Reject clients carrying inherited authorization, cookies, proxy
+  authorization, or request hooks before any anonymous-preflight request is
+  issued. (`bb77884`; hostile credential and hook controls pass.)
+- [x] Apply the remaining shared deadline to each metadata, redirect, and
+  payload request rather than inheriting an unrelated client timeout.
+  (`bb77884`; latency reduces every later request budget.)
+- [x] Bind the UTC observation timestamp into receipt version 1.1, regenerate
+  the bounded live receipt anonymously, and verify its committed content
+  address. (`bb77884`; 35 focused tests pass with 100% statement and branch
+  coverage.)
+
 ### Resolver review fixes
 
 - [x] Apply repository formatting to the resolver contract tests before hosted
