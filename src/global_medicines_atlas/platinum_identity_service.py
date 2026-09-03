@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from .platinum_resolver import ResolvedResource
 
 _JURISDICTION = re.compile(r"[A-Z]{2,3}")
+_RESOURCE_JURISDICTION = re.compile(r"(?P<jurisdiction>[a-z]{2,3})\.")
 
 
 class UnknownPlatinumResourceError(LookupError):
@@ -43,7 +44,10 @@ class ResolverDatasetIdentityService:
         jurisdictions: Mapping[str, str],
     ) -> None:
         if not jurisdictions or any(
-            not resource_id or _JURISDICTION.fullmatch(jurisdiction) is None
+            not resource_id
+            or _JURISDICTION.fullmatch(jurisdiction) is None
+            or (match := _RESOURCE_JURISDICTION.match(resource_id)) is None
+            or match.group("jurisdiction").upper() != jurisdiction
             for resource_id, jurisdiction in jurisdictions.items()
         ):
             raise ValueError("valid resource jurisdictions are required")

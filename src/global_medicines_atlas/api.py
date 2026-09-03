@@ -150,6 +150,21 @@ def _cache_headers(response: Response) -> None:
     response.headers["vary"] = "accept"
 
 
+def _identity_cache_headers(
+    response: Response, identity: DatasetIdentityEnvelope
+) -> None:
+    """Keep dynamic offline-capability claims inside their verified lifetime."""
+    if "verified_cache_offline" not in identity.capabilities:
+        _cache_headers(response)
+        return
+    remaining = max(
+        0,
+        int((identity.cache_expires_at - datetime.now(UTC)).total_seconds()),
+    )
+    response.headers["cache-control"] = f"public, max-age={min(60, remaining)}"
+    response.headers["vary"] = "accept"
+
+
 def create_app(  # ruff: ignore[too-many-statements] - route registration is intentionally centralized.
     service: ReadOnlyQueryService,
     *,
@@ -415,7 +430,7 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
                 code=ErrorCode.NOT_FOUND,
                 message="The admitted dataset resource was not found",
             )
-        _cache_headers(response)
+        _identity_cache_headers(response, result)
         return result
 
     app.add_api_route(

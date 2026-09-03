@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from dataclasses import replace
+from datetime import UTC, datetime, timedelta
 from typing import cast
 
 import pytest
@@ -65,6 +66,21 @@ class IdentityStub:
         return dataset_identity(resolved(), jurisdiction="AU")
 
 
+class ExpiringIdentityStub:
+    def identity(self, _resource_id: str):
+        expiry = datetime.now(UTC) + timedelta(seconds=30)
+        resource = replace(
+            resolved(),
+            cache_expires_at=expiry,
+            capabilities=(
+                "exact_v4_resolution",
+                "anonymous_verified_read",
+                "verified_cache_offline",
+            ),
+        )
+        return dataset_identity(resource, jurisdiction="AU")
+
+
 def client(*, configured: bool = True) -> TestClient:
     return TestClient(
         create_app(
@@ -92,7 +108,7 @@ def test_resolver_service_returns_identity_without_opening_bytes() -> None:
     ("resource_id", "jurisdictions"),
     [
         ("unknown.resource", {"au.mbs.services.current": "AU"}),
-        ("unknown.resource", {"unknown.resource": "AU"}),
+        ("au.unknown.resource", {"au.unknown.resource": "AU"}),
     ],
 )
 def test_resolver_service_hides_unknown_resource_details(
@@ -120,6 +136,16 @@ def test_resolver_service_rejects_invalid_jurisdiction_map(
         )
 
 
+def test_resolver_service_rejects_jurisdiction_not_bound_by_resource_id() -> (
+    None
+):
+    with pytest.raises(ValueError, match="jurisdictions"):
+        ResolverDatasetIdentityService(
+            cast("StorageNeutralResolver", ResolverStub()),
+            jurisdictions={"au.mbs.services.current": "NZ"},
+        )
+
+
 def test_dataset_identity_endpoint_returns_exact_typed_envelope() -> None:
     response = client().get(
         "/api/v1/datasets/au.mbs.services.current",
@@ -131,6 +157,22 @@ def test_dataset_identity_endpoint_returns_exact_typed_envelope() -> None:
     assert response.json()["coverage_state"] == "not_declared"
     assert response.json()["comparison_validity"] == "not_evaluated"
     assert response.headers["cache-control"].startswith("public")
+
+
+def test_dynamic_offline_capability_cache_cannot_outlive_expiry() -> None:
+    test_client = TestClient(
+        create_app(
+            cast("ReadOnlyQueryService", QueryStub()),
+            dataset_identities=ExpiringIdentityStub(),
+        )
+    )
+
+    response = test_client.get("/api/v1/datasets/au.mbs.services.current")
+
+    assert response.status_code == 200
+    assert response.headers["cache-control"].startswith("public, max-age=")
+    assert int(response.headers["cache-control"].split("=")[1]) <= 30
+    assert "stale-while-revalidate" not in response.headers["cache-control"]
 
 
 def test_unknown_identity_is_typed_not_found_without_internal_detail() -> None:
