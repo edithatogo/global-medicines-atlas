@@ -835,6 +835,18 @@
   threads remained unresolved. Merge-receipt review adds the
   canonical PR and exact Test-Goblin run URLs required for durable hosted
   traceability; it changes no completion claim.
+- [x] Further isolate the hosted PBS preparation failure domain after the first
+  successful run showed each four-shard group occupied about 30 minutes. Replace
+  four groups of four with eight independently retryable groups of two and allow
+  all eight preparation children to run concurrently when hosted capacity is
+  available. Preserve `fail-fast: false`, attempt-bound artifacts, exact sixteen-
+  shard assembly, and the final fail-closed aggregate. Implemented `c10dd41`;
+  the two workflow contracts failed before the DAG change, then both complete
+  PBS hosted/preparation suites passed (135 tests), with Ruff, format,
+  actionlint and diff checks green. This changes scheduling and retry scope only:
+  it does not change source retrieval, qualification semantics, receipts,
+  publication, timeouts or human gates. Hosted elapsed-time evidence remains
+  pending an exact-main qualification run.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
