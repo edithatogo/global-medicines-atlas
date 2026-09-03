@@ -65,11 +65,15 @@
 ### Public-fixture checkpoint review fixes
 
 - [x] Reject clients carrying inherited authorization, cookies, proxy
-  authorization, or request hooks before any anonymous-preflight request is
-  issued. (`c73948e`; hostile credential and hook controls pass.)
+  authorization, or request/response hooks before any anonymous-preflight
+  request is issued. (`c73948e`, `057e044`; hostile credential and hook
+  controls pass.)
 - [x] Apply the remaining shared deadline to each metadata, redirect, and
   payload request rather than inheriting an unrelated client timeout.
   (`c73948e`; latency reduces every later request budget.)
+- [x] Reject boolean, non-numeric, NaN, and infinite timeout values before
+  constructing the shared preflight deadline. (`057e044`; boundedness remains
+  an input invariant.)
 - [x] Bind the UTC observation timestamp into receipt version 1.1, regenerate
   the bounded live receipt anonymously, and verify its committed content
   address. (`c73948e`; 35 focused tests pass with 100% statement and branch
