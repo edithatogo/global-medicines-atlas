@@ -161,7 +161,9 @@ def _identity_cache_headers(
         0,
         int((identity.cache_expires_at - datetime.now(UTC)).total_seconds()),
     )
-    response.headers["cache-control"] = f"public, max-age={min(60, remaining)}"
+    response.headers["cache-control"] = (
+        f"public, max-age={min(60, remaining)}, must-revalidate"
+    )
     response.headers["vary"] = "accept"
 
 

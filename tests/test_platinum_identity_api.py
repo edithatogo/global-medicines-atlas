@@ -179,8 +179,10 @@ def test_dynamic_offline_capability_cache_cannot_outlive_expiry(
 
     assert response.status_code == 200
     assert response.headers["cache-control"].startswith("public, max-age=")
-    assert int(response.headers["cache-control"].split("=")[1]) <= maximum_age
+    max_age = response.headers["cache-control"].split(",")[1].split("=")[1]
+    assert int(max_age) <= maximum_age
     assert "stale-while-revalidate" not in response.headers["cache-control"]
+    assert "must-revalidate" in response.headers["cache-control"]
 
 
 def test_unknown_identity_is_typed_not_found_without_internal_detail() -> None:
