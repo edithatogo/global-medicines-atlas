@@ -107,6 +107,11 @@
 
 ## Phase 2: CLI and API (AC-01, AC-02, AC-04)
 
+- [x] Define the strict shared dataset-identity response envelope over an
+  already-admitted resolver resource. It preserves the exact public revision,
+  object/contract/semantic digests, semantic dimension, entity granularity,
+  cohort, times and capabilities while declaring that no rows were queried.
+  This contract performs no discovery, admission, publication or I/O.
 - [ ] Write failing CLI/API tests for MBS services, PBS medicines, evidence
   edges, history, coverage, provenance, dataset identity, pagination, filters,
   errors, and OpenAPI compatibility.
