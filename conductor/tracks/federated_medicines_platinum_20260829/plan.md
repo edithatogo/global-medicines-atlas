@@ -78,6 +78,9 @@
   the bounded live receipt anonymously, and verify its committed content
   address. (`4e3df33`; 35 focused tests pass with 100% statement and branch
   coverage.)
+- [x] Scope the advisory free-threaded canary concurrency key to its workflow
+  and ref so activity on another branch cannot cancel the exact-head run.
+  (Hosted isolation regression passes; exact-head checks pending.)
 
 ### Resolver review fixes
 
