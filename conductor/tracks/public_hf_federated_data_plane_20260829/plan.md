@@ -172,7 +172,8 @@
 - [x] Bind each permission reference and review date to its source-specific
   authorization evidence and reject jointly mutated revision aliases.
   (`54cea68`; 59 focused and 172 affected tests pass; no Hub mutation or new
-  rights conclusion.)
+  rights conclusion.) PR #427 merged as `9ea3b0d` from reviewed head
+  `c4ef596` after all 38 hosted checks passed and all review threads resolved.
 
 - [x] Close expired cache spools on open and occupancy inspection. (`9f2b929`;
   automated P2 review; regression failed first, then 91 tests and 100% coverage.)
