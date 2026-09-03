@@ -52,6 +52,39 @@
     coverage; 239 affected tests and the routine harness pass.)
 - [ ] Phase Verification & Checkpoint: an empty machine can run bounded fixture
   queries from pinned public revisions with no durable local lake.
+  - [x] Verify one exact, anonymously readable, 24,367-byte MBS Bronze
+    projection at immutable revision `75f9f20` with a five-row bounded
+    structural query. The public-safe receipt binds the object, metadata,
+    schema, row denominator and sample digest without retaining source rows.
+    Transport verification is independent of product admission, so the
+    receipt records `transport_verified=true`, `product_admitted=false` and
+    `checkpoint_complete=false`. The checkpoint remains open until an
+    independently admitted v4 product contract and semantic manifest bind a
+    published Australian benefits medallion dataset.
+
+### Public-fixture checkpoint review fixes
+
+- [x] Reject clients carrying inherited authorization, cookies, proxy
+  authorization, or request/response hooks before any anonymous-preflight
+  request is issued. (`4e3df33`, `4627692`; hostile credential and hook
+  controls pass.)
+- [x] Apply the remaining shared deadline to each metadata, redirect, and
+  payload request rather than inheriting an unrelated client timeout.
+  (`4e3df33`; latency reduces every later request budget.)
+- [x] Reject boolean, non-numeric, NaN, and infinite timeout values before
+  constructing the shared preflight deadline. (`4627692`; boundedness remains
+  an input invariant.)
+- [x] Bind the UTC observation timestamp into receipt version 1.1, regenerate
+  the bounded live receipt anonymously, and verify its committed content
+  address. (`4e3df33`; 35 focused tests pass with 100% statement and branch
+  coverage.)
+- [x] Scope the advisory free-threaded canary concurrency key to its workflow
+  and ref so activity on another branch cannot cancel the exact-head run.
+  (Hosted isolation regression passes; exact-head checks pending.)
+- [x] Reject default client query parameters and caller-managed automatic
+  redirects before transport, and consume response bodies through an
+  absolute-deadline bridge so a stalled chunk cannot extend the shared wall
+  deadline. (45 hostile focused tests; 100% statement and branch coverage.)
 
 ### Resolver review fixes
 

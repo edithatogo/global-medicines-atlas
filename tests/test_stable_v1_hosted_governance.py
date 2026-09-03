@@ -247,6 +247,11 @@ def test_free_threaded_canary_is_advisory_and_sha_pinned() -> None:
         "astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b"
         in workflow
     )
+    assert (
+        "group: python-free-threaded-canary-${{ github.workflow }}-"
+        "${{ github.ref }}" in workflow
+    )
+    assert "group: python-free-threaded-canary\n" not in workflow
 
 
 def test_current_receipt_reports_all_hosted_controls_verified() -> None:
