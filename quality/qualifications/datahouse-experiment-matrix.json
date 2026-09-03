@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.datahouse-experiment-matrix",
   "schema_version": 1,
-  "generated_at": "2026-08-20T14:25:00Z",
+  "generated_at": "2026-09-03T10:39:03Z",
   "fixture_path": "tests/fixtures/datahouse/bronze_records.json",
   "fixture_sha256": "f5f2b56824852355c200c72246f25b7009f60ee0d4326535d34eb2340588b1da",
   "dependency_lock_path": "uv.lock",
@@ -13,7 +13,10 @@
     {
       "experiment_id": "iceberg_rest",
       "outcome": "supported",
-      "prerequisites": ["disposable REST catalogue implementation", "governed Parquet fixture"],
+      "prerequisites": [
+        "disposable REST catalogue implementation",
+        "governed Parquet fixture"
+      ],
       "prerequisites_met": true,
       "specifications": [
         {
@@ -22,19 +25,43 @@
           "version": "Apache Iceberg 1.11.0"
         }
       ],
-      "feature_flags": ["namespace", "table", "snapshot", "schema-evolution", "partition-evolution"],
-      "dependencies": ["pyiceberg optional extra"],
-      "evidence": ["quality/qualifications/iceberg-rest-interoperability.json"],
-      "limitations": ["Apache Iceberg REST fixture 1.11.0 was exercised through PyIceberg 0.11.1 on one disposable Linux runner; this is implementation-specific, not universal conformance."],
+      "feature_flags": [
+        "namespace",
+        "table",
+        "snapshot",
+        "schema-evolution",
+        "partition-evolution"
+      ],
+      "dependencies": [
+        "pyiceberg optional extra"
+      ],
+      "evidence": [
+        "quality/qualifications/iceberg-rest-interoperability.json"
+      ],
+      "limitations": [
+        "Apache Iceberg REST fixture 1.11.0 was exercised through PyIceberg 0.11.1 on one disposable Linux runner; this is implementation-specific, not universal conformance."
+      ],
       "rollback_procedure": "Delete the disposable catalogue and rebuild optional metadata from governed Parquet and table specifications.",
       "optional_for_core": true,
       "production_deployment_claimed": false,
-      "technology_promotion_claimed": false
+      "technology_promotion_claimed": false,
+      "unmet_requirement": "Evaluate iceberg rest for a measured federated data-plane requirement.",
+      "hypothesis": "The optional iceberg rest capability can improve interoperability or verification without changing source identity.",
+      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.14 fallback.",
+      "thresholds": [
+        "Correctness and deterministic identity parity with baseline",
+        "No production dependency or evidentiary-authority change"
+      ],
+      "rights_review": "Public or synthetic fixtures only; no restricted bytes or credentials.",
+      "disposition": "retain-preview"
     },
     {
       "experiment_id": "iceberg_v3",
       "outcome": "degraded",
-      "prerequisites": ["pinned v3 capability vector", "v2 fallback fixture"],
+      "prerequisites": [
+        "pinned v3 capability vector",
+        "v2 fallback fixture"
+      ],
       "prerequisites_met": true,
       "specifications": [
         {
@@ -43,19 +70,43 @@
           "version": "format version 3; Apache Iceberg 1.11.0"
         }
       ],
-      "feature_flags": ["nanosecond-timestamps", "default-values", "multi-argument-transforms", "row-lineage", "deletion-vectors"],
-      "dependencies": ["pyiceberg optional extra"],
-      "evidence": ["quality/qualifications/iceberg-rest-interoperability.json"],
-      "limitations": ["PyIceberg 0.11.1 created a v3 table and exposed nanosecond timestamps, defaults, and row-lineage symbols, but did not expose multi-argument transforms or deletion-vector symbols; support is never inferred from format version alone."],
+      "feature_flags": [
+        "nanosecond-timestamps",
+        "default-values",
+        "multi-argument-transforms",
+        "row-lineage",
+        "deletion-vectors"
+      ],
+      "dependencies": [
+        "pyiceberg optional extra"
+      ],
+      "evidence": [
+        "quality/qualifications/iceberg-rest-interoperability.json"
+      ],
+      "limitations": [
+        "PyIceberg 0.11.1 created a v3 table and exposed nanosecond timestamps, defaults, and row-lineage symbols, but did not expose multi-argument transforms or deletion-vector symbols; support is never inferred from format version alone."
+      ],
       "rollback_procedure": "Retain or regenerate the existing v2-compatible table specification without modifying acquisition identity.",
       "optional_for_core": true,
       "production_deployment_claimed": false,
-      "technology_promotion_claimed": false
+      "technology_promotion_claimed": false,
+      "unmet_requirement": "Evaluate iceberg v3 for a measured federated data-plane requirement.",
+      "hypothesis": "The optional iceberg v3 capability can improve interoperability or verification without changing source identity.",
+      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.14 fallback.",
+      "thresholds": [
+        "Correctness and deterministic identity parity with baseline",
+        "No production dependency or evidentiary-authority change"
+      ],
+      "rights_review": "Public or synthetic fixtures only; no restricted bytes or credentials.",
+      "disposition": "retain-preview"
     },
     {
       "experiment_id": "ducklake",
       "outcome": "supported",
-      "prerequisites": ["common governed workload", "DuckLake extension available in an isolated environment"],
+      "prerequisites": [
+        "common governed workload",
+        "DuckLake extension available in an isolated environment"
+      ],
       "prerequisites_met": true,
       "specifications": [
         {
@@ -64,19 +115,43 @@
           "version": "1.0"
         }
       ],
-      "feature_flags": ["catalog-transactions", "parquet-storage", "recovery", "portability"],
-      "dependencies": ["ducklake DuckDB extension in isolated experiment"],
-      "evidence": ["quality/qualifications/ducklake-comparison.json"],
-      "limitations": ["DuckLake 1.0 was exercised with a local single-client DuckDB catalogue and two-row governed fixture; this is not a multi-user or production qualification."],
+      "feature_flags": [
+        "catalog-transactions",
+        "parquet-storage",
+        "recovery",
+        "portability"
+      ],
+      "dependencies": [
+        "ducklake DuckDB extension in isolated experiment"
+      ],
+      "evidence": [
+        "quality/qualifications/ducklake-comparison.json"
+      ],
+      "limitations": [
+        "DuckLake 1.0 was exercised with a local single-client DuckDB catalogue and two-row governed fixture; this is not a multi-user or production qualification."
+      ],
       "rollback_procedure": "Drop the disposable DuckLake catalogue and read the governed Parquet fixture directly with DuckDB.",
       "optional_for_core": true,
       "production_deployment_claimed": false,
-      "technology_promotion_claimed": false
+      "technology_promotion_claimed": false,
+      "unmet_requirement": "Evaluate ducklake for a measured federated data-plane requirement.",
+      "hypothesis": "The optional ducklake capability can improve interoperability or verification without changing source identity.",
+      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.14 fallback.",
+      "thresholds": [
+        "Correctness and deterministic identity parity with baseline",
+        "No production dependency or evidentiary-authority change"
+      ],
+      "rights_review": "Public or synthetic fixtures only; no restricted bytes or credentials.",
+      "disposition": "retain-preview"
     },
     {
       "experiment_id": "object_versioning",
       "outcome": "not_run_prerequisite_unmet",
-      "prerequisites": ["deployed non-production durable object storage", "versioning or Object Lock/WORM", "independent restore evidence"],
+      "prerequisites": [
+        "deployed non-production durable object storage",
+        "versioning or Object Lock/WORM",
+        "independent restore evidence"
+      ],
       "prerequisites_met": false,
       "specifications": [
         {
@@ -85,19 +160,42 @@
           "version": "v1.86.0"
         }
       ],
-      "feature_flags": ["commit", "branch", "merge-conflict", "rollback", "retention", "independent-restore"],
+      "feature_flags": [
+        "commit",
+        "branch",
+        "merge-conflict",
+        "rollback",
+        "retention",
+        "independent-restore"
+      ],
       "dependencies": [],
-      "evidence": ["quality/qualifications/object-versioning-prerequisite.json"],
-      "limitations": ["The repository contract is not evidence of a deployed durable object store."],
+      "evidence": [
+        "quality/qualifications/object-versioning-prerequisite.json"
+      ],
+      "limitations": [
+        "The repository contract is not evidence of a deployed durable object store."
+      ],
       "rollback_procedure": "Remove disposable workflow metadata while retaining provider versions, locked objects, replicas, inventories, and storage receipts.",
       "optional_for_core": true,
       "production_deployment_claimed": false,
-      "technology_promotion_claimed": false
+      "technology_promotion_claimed": false,
+      "unmet_requirement": "Evaluate object versioning for a measured federated data-plane requirement.",
+      "hypothesis": "The optional object versioning capability can improve interoperability or verification without changing source identity.",
+      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.14 fallback.",
+      "thresholds": [
+        "Correctness and deterministic identity parity with baseline",
+        "No production dependency or evidentiary-authority change"
+      ],
+      "rights_review": "Public or synthetic fixtures only; no restricted bytes or credentials.",
+      "disposition": "defer"
     },
     {
       "experiment_id": "batch_attestation",
       "outcome": "supported",
-      "prerequisites": ["deterministic leaf encoding", "per-object SHA-256 receipt fixture"],
+      "prerequisites": [
+        "deterministic leaf encoding",
+        "per-object SHA-256 receipt fixture"
+      ],
       "prerequisites_met": true,
       "specifications": [
         {
@@ -106,19 +204,40 @@
           "revision": "4ae95354a9e419dd1a02eb0d6bc5f117b151c4fc"
         }
       ],
-      "feature_flags": ["root-reproducibility", "inclusion", "tamper-detection", "incremental-update"],
+      "feature_flags": [
+        "root-reproducibility",
+        "inclusion",
+        "tamper-detection",
+        "incremental-update"
+      ],
       "dependencies": [],
-      "evidence": ["quality/qualifications/merkle-attestation.json"],
-      "limitations": ["A root cannot replace any per-object content identity or receipt; non-membership proofs are explicitly unsupported in version 1."],
+      "evidence": [
+        "quality/qualifications/merkle-attestation.json"
+      ],
+      "limitations": [
+        "A root cannot replace any per-object content identity or receipt; non-membership proofs are explicitly unsupported in version 1."
+      ],
       "rollback_procedure": "Discard the additive batch receipt and verify every object directly against its authoritative SHA-256 receipt.",
       "optional_for_core": true,
       "production_deployment_claimed": false,
-      "technology_promotion_claimed": false
+      "technology_promotion_claimed": false,
+      "unmet_requirement": "Evaluate batch attestation for a measured federated data-plane requirement.",
+      "hypothesis": "The optional batch attestation capability can improve interoperability or verification without changing source identity.",
+      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.14 fallback.",
+      "thresholds": [
+        "Correctness and deterministic identity parity with baseline",
+        "No production dependency or evidentiary-authority change"
+      ],
+      "rights_review": "Public or synthetic fixtures only; no restricted bytes or credentials.",
+      "disposition": "retain-preview"
     },
     {
       "experiment_id": "delta_hudi",
       "outcome": "not_run_prerequisite_unmet",
-      "prerequisites": ["measured high-update workload", "explicit update, delete, concurrency, or transaction requirement"],
+      "prerequisites": [
+        "measured high-update workload",
+        "explicit update, delete, concurrency, or transaction requirement"
+      ],
       "prerequisites_met": false,
       "specifications": [
         {
@@ -132,14 +251,34 @@
           "version": "1.2.0"
         }
       ],
-      "feature_flags": ["updates", "deletes", "concurrency", "recovery", "compaction", "portability"],
+      "feature_flags": [
+        "updates",
+        "deletes",
+        "concurrency",
+        "recovery",
+        "compaction",
+        "portability"
+      ],
       "dependencies": [],
-      "evidence": ["quality/qualifications/delta-hudi-prerequisite.json"],
-      "limitations": ["Current source evidence has not established a high-update transaction requirement."],
+      "evidence": [
+        "quality/qualifications/delta-hudi-prerequisite.json"
+      ],
+      "limitations": [
+        "Current source evidence has not established a high-update transaction requirement."
+      ],
       "rollback_procedure": "Do not install or promote either format; retain the Iceberg-ready Parquet baseline.",
       "optional_for_core": true,
       "production_deployment_claimed": false,
-      "technology_promotion_claimed": false
+      "technology_promotion_claimed": false,
+      "unmet_requirement": "Evaluate delta hudi for a measured federated data-plane requirement.",
+      "hypothesis": "The optional delta hudi capability can improve interoperability or verification without changing source identity.",
+      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.14 fallback.",
+      "thresholds": [
+        "Correctness and deterministic identity parity with baseline",
+        "No production dependency or evidentiary-authority change"
+      ],
+      "rights_review": "Public or synthetic fixtures only; no restricted bytes or credentials.",
+      "disposition": "defer"
     }
   ]
 }

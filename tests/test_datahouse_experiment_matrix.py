@@ -127,6 +127,66 @@ def test_executed_outcome_rejects_unmet_prerequisites() -> None:
 
 
 @pytest.mark.unit
+def test_matrix_rows_record_measurement_and_disposition_contract() -> None:
+    matrix = ExperimentMatrix.model_validate_json(MATRIX.read_bytes())
+
+    assert all(item.unmet_requirement for item in matrix.experiments)
+    assert all(item.hypothesis and item.baseline for item in matrix.experiments)
+    assert all(
+        item.thresholds and item.rights_review for item in matrix.experiments
+    )
+    assert {item.disposition for item in matrix.experiments} <= {
+        "promote-candidate",
+        "retain-preview",
+        "defer",
+        "reject",
+    }
+
+
+@pytest.mark.unit
+def test_unrun_experiment_cannot_be_marked_promotion_candidate() -> None:
+    payload = _payload()
+    experiments = payload["experiments"]
+    assert isinstance(experiments, list)
+    item = cast("dict[str, object]", experiments[3])
+    item["disposition"] = "promote-candidate"
+
+    with pytest.raises(ValidationError, match="only a supported"):
+        ExperimentMatrix.model_validate(payload)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("outcome", ["unsupported", "failed", "degraded"])
+def test_unsuccessful_experiment_cannot_be_marked_promotion_candidate(
+    outcome: str,
+) -> None:
+    payload = _payload()
+    experiments = payload["experiments"]
+    assert isinstance(experiments, list)
+    item = cast("dict[str, object]", experiments[0])
+    item["outcome"] = outcome
+    item["disposition"] = "promote-candidate"
+
+    with pytest.raises(ValidationError, match="only a supported"):
+        ExperimentMatrix.model_validate(payload)
+
+
+@pytest.mark.unit
+def test_schema_v1_accepts_legacy_rows_without_optional_enrichment() -> None:
+    payload = _payload()
+    experiments = payload["experiments"]
+    assert isinstance(experiments, list)
+    for item in experiments:
+        assert isinstance(item, dict)
+        item.pop("optional_for_core", None)
+        item.pop("production_deployment_claimed", None)
+        item.pop("technology_promotion_claimed", None)
+
+    matrix = ExperimentMatrix.model_validate(payload)
+    assert all(item.optional_for_core for item in matrix.experiments)
+
+
+@pytest.mark.unit
 def test_matrix_input_digests_are_verified(tmp_path: Path) -> None:
     matrix = ExperimentMatrix.model_validate_json(MATRIX.read_bytes())
     verify_matrix_inputs(matrix, ROOT)

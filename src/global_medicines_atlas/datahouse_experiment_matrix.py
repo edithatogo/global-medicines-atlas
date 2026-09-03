@@ -57,6 +57,10 @@ class ExperimentResult(FrozenModel):
     """One capability-specific result or explicit not-run receipt."""
 
     experiment_id: ExperimentId
+    unmet_requirement: str = Field(min_length=1)
+    hypothesis: str = Field(min_length=1)
+    baseline: str = Field(min_length=1)
+    thresholds: tuple[str, ...] = Field(min_length=1)
     outcome: ExperimentOutcome
     prerequisites: tuple[str, ...] = Field(min_length=1)
     prerequisites_met: bool
@@ -66,6 +70,10 @@ class ExperimentResult(FrozenModel):
     evidence: tuple[str, ...] = ()
     limitations: tuple[str, ...] = Field(min_length=1)
     rollback_procedure: str = Field(min_length=1)
+    rights_review: str = Field(min_length=1)
+    disposition: Literal[
+        "promote-candidate", "retain-preview", "defer", "reject"
+    ]
     optional_for_core: Literal[True] = True
     production_deployment_claimed: Literal[False] = False
     technology_promotion_claimed: Literal[False] = False
@@ -81,6 +89,13 @@ class ExperimentResult(FrozenModel):
             )
         if not not_run and not self.evidence:
             raise ValueError("executed outcome requires measured evidence")
+        if (
+            self.disposition == "promote-candidate"
+            and self.outcome != ExperimentOutcome.SUPPORTED
+        ):
+            raise ValueError(
+                "only a supported experiment can be a promotion candidate"
+            )
         return self
 
 
