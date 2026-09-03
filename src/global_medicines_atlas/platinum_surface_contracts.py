@@ -3,16 +3,14 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Annotated, Literal
+from typing import TYPE_CHECKING, Annotated, Literal
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field
 
-from .platinum_resolver import (
-    Capability,
-    EntityGranularity,
-    ResolvedResource,
-    SemanticDimension,
-)
+from .platinum_types import Capability, EntityGranularity, SemanticDimension
+
+if TYPE_CHECKING:
+    from .platinum_resolver import ResolvedResource
 
 Sha256 = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
 Revision = Annotated[str, Field(pattern=r"^[0-9a-f]{40}$")]

@@ -4,13 +4,15 @@ from __future__ import annotations
 
 import re
 from collections.abc import Mapping
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
-from .platinum_resolver import StorageNeutralResolver
 from .platinum_surface_contracts import (
     DatasetIdentityEnvelope,
     dataset_identity,
 )
+
+if TYPE_CHECKING:
+    from .platinum_resolver import ResolvedResource
 
 _JURISDICTION = re.compile(r"[A-Z]{2,3}")
 
@@ -25,12 +27,18 @@ class DatasetIdentityLookup(Protocol):
     def identity(self, resource_id: str) -> DatasetIdentityEnvelope: ...
 
 
+class ResolverIdentityLookup(Protocol):
+    """Resolver subset needed by this metadata-only service."""
+
+    def resolve(self, resource_id: str) -> ResolvedResource: ...
+
+
 class ResolverDatasetIdentityService:
     """Expose resolver identities without opening or querying their bytes."""
 
     def __init__(
         self,
-        resolver: StorageNeutralResolver,
+        resolver: ResolverIdentityLookup,
         *,
         jurisdictions: Mapping[str, str],
     ) -> None:

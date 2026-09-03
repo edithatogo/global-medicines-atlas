@@ -27,23 +27,8 @@ from .federation_distribution import (
     reconcile_distribution,
 )
 from .federation_reader import FederatedReader, VerifiedRead
+from .platinum_types import Capability, EntityGranularity, SemanticDimension
 
-SemanticDimension = Literal[
-    "service_benefit", "funding", "formulary", "regulatory", "terminology"
-]
-EntityGranularity = Literal[
-    "service_item",
-    "medicine_item",
-    "evidence_edge",
-    "history_event",
-    "coverage_record",
-    "provenance_record",
-]
-Capability = Literal[
-    "exact_v4_resolution",
-    "anonymous_verified_read",
-    "verified_cache_offline",
-]
 BASE_CAPABILITIES: tuple[Capability, ...] = (
     "exact_v4_resolution",
     "anonymous_verified_read",
