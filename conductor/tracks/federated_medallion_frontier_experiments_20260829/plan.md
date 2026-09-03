@@ -28,7 +28,8 @@
 
 - [x] Write failing correctness/parity, request-count, byte-amplification,
   memory/cache, cold/warm/concurrent, interruption/resume, offline, digest, and
-  identity tests. Implemented `20e3e9e`: the versioned remote-query envelope
+  identity tests. Rebased implementation `ea773ef` supersedes `20e3e9e`: the
+  versioned remote-query envelope
   requires the complete four-engine by five-scenario denominator, exact result
   parity, predeclared request/source-byte/memory ceilings, explicit cache and
   latency observations, no-request offline behavior, and exact interrupted
@@ -36,12 +37,17 @@
   restored per-object SHA-256 equality, and keeps chunk reuse non-authoritative.
   Nine focused tests provide 100% statement and branch coverage; the combined
   Phase 1/2 contract suite passes 28 tests with Ruff and BasedPyright clean.
-  Review fix `81b5dbb` registers the new file in the governed unit inventory.
+  Review fix `8bca71a` registers the new file in the governed unit inventory.
   The resulting local full collection ran 4,268 tests: 4,263 passed, one
   skipped, two existing stable-v1 release tests failed because only uv 0.12.7
   was available instead of pinned 0.11.29, and two existing product tests
   failed their unchanged 250ms local query budget at 348.022ms and 367.446ms.
   No frontier contract failed; hosted Linux lanes remain authoritative.
+  Exact-head contract repair `0efa537` additionally binds a canonical query
+  identity and every observation to it, enforces scanned/returned row and cache
+  ceilings, and requires matching interruption/resume byte offsets with at
+  least two requests. Thirteen focused tests provide 100% statement and branch
+  coverage; Ruff, format, ty and BasedPyright pass.
 - [x] Confirm the intended failure before implementation. The new contract test
   failed at collection with `ModuleNotFoundError` before the implementation was
   added; subsequent bounded fixes made custom denominator and anonymous-
