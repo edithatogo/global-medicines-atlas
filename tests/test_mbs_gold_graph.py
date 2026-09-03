@@ -3,6 +3,7 @@
 # pyright: reportPrivateUsage=false
 # pyright: reportUnknownMemberType=false
 
+from datetime import UTC, datetime
 from io import BytesIO
 from operator import attrgetter, itemgetter
 
@@ -54,6 +55,8 @@ def test_explicit_service_benefit_edges_preserve_every_silver_record():
         assert edge.confidence is None
         assert edge.review_state == "not_reviewed"
         assert edge.valid_time_status == "unselected"
+        assert edge.supporting_revisions == ("synthetic-iso-v1",)
+        assert edge.evidence.catalog_version == "synthetic-iso-v1"
         assert edge.contradiction_edge_ids == ()
         assert edge.supersedes_edge_ids == ()
         assert edge.negative_control_outcome == "not_applicable"
@@ -92,6 +95,47 @@ def test_live_receipts_are_out_of_scope_before_projection():
     )
     with pytest.raises(ValueError, match="synthetic evidence"):
         build_mbs_gold_graph_candidate(payload, receipt)
+
+
+def test_canonical_temporal_receipt_clocks_are_projected_without_retrieval_fill():
+    payload = _xml()
+    receipt = _receipt(payload)
+    assert receipt.temporal is not None
+    valid_from = datetime(2026, 7, 1, tzinfo=UTC)
+    valid_to = datetime(2026, 8, 1, tzinfo=UTC)
+    receipt = receipt.model_copy(
+        update={
+            "temporal": receipt.temporal.model_copy(
+                update={
+                    "source_effective_at": datetime(2026, 6, 1, tzinfo=UTC),
+                    "valid_from": valid_from,
+                    "valid_to": valid_to,
+                }
+            )
+        }
+    )
+    edge = build_mbs_gold_graph_candidate(payload, receipt).edges[0]
+    assert receipt.temporal is not None
+    assert edge.source_effective_from == valid_from
+    assert edge.source_effective_to == valid_to
+    assert edge.retrieved_at == receipt.temporal.retrieved_at
+
+
+def test_source_effective_clock_is_preserved_when_no_valid_interval_exists():
+    payload = _xml()
+    receipt = _receipt(payload)
+    assert receipt.temporal is not None
+    source_effective_at = datetime(2026, 6, 1, tzinfo=UTC)
+    receipt = receipt.model_copy(
+        update={
+            "temporal": receipt.temporal.model_copy(
+                update={"source_effective_at": source_effective_at}
+            )
+        }
+    )
+    edge = build_mbs_gold_graph_candidate(payload, receipt).edges[0]
+    assert edge.source_effective_from == source_effective_at
+    assert edge.source_effective_to is None
 
 
 def test_unrepresentable_silver_values_remain_graph_evidence():
@@ -133,6 +177,10 @@ def test_field_node_edge_and_graph_tampering_fail_closed():
     changed_edge = edge.model_dump()
     changed_edge["contradiction_edge_ids"] = ("mbs-gold-edge:" + "0" * 64,)
     with pytest.raises(ValidationError, match="graph history"):
+        MbsGoldEdge.model_validate(changed_edge)
+    changed_edge = edge.model_dump()
+    changed_edge["supporting_revisions"] = ("other-revision",)
+    with pytest.raises(ValidationError, match="revision differs"):
         MbsGoldEdge.model_validate(changed_edge)
     changed_graph = result.model_dump()
     changed_graph["edges"][0]["source_node_id"] = changed_graph["edges"][0][
@@ -195,6 +243,7 @@ def test_graph_order_uniqueness_denominator_and_edge_support_are_validated():
         source_node_id=edge.source_node_id,
         target_node_id=absent,
         evidence=edge.evidence,
+        supporting_revisions=edge.supporting_revisions,
         retrieved_at=edge.retrieved_at,
         rights_state=edge.rights_state,
     )
@@ -221,6 +270,7 @@ def test_graph_order_uniqueness_denominator_and_edge_support_are_validated():
         source_node_id=services[0].node_id,
         target_node_id=other_benefit.node_id,
         evidence=services[0].evidence,
+        supporting_revisions=result.edges[0].supporting_revisions,
         retrieved_at=result.edges[0].retrieved_at,
         rights_state=result.edges[0].rights_state,
     )
@@ -298,6 +348,7 @@ def test_graph_denominator_requires_unique_evidence_addresses():
         source_node_id=duplicate_service.node_id,
         target_node_id=duplicate_benefit.node_id,
         evidence=service.evidence,
+        supporting_revisions=result.edges[0].supporting_revisions,
         retrieved_at=result.edges[0].retrieved_at,
         rights_state=result.edges[0].rights_state,
     )
