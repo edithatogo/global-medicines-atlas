@@ -9,6 +9,7 @@ import pytest
 from global_medicines_atlas.platinum_api_contract import (
     ApiContractError,
     make_api_observation,
+    observe_api_exchange,
 )
 
 
@@ -67,3 +68,18 @@ def test_invalid_request_identity_and_status_fail_closed() -> None:
             status_code=99,
             request_id="api-test",
         )
+
+
+def test_transport_adapter_binds_completed_exchange_without_retaining_body() -> None:
+    response_body = b'{"rows":[{"value":"fixture"}]}'
+    observation = observe_api_exchange(
+        method="GET",
+        path="/api/v1/evidence",
+        canonical_query=b'[["limit","1"]]',
+        response_body=response_body,
+        status_code=200,
+        request_id="transport-test",
+    )
+    assert observation.response_sha256 == hashlib.sha256(response_body).hexdigest()
+    assert response_body not in observation.canonical_bytes
+    assert observation.path == "/api/v1/evidence"

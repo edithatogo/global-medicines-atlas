@@ -101,4 +101,36 @@ def make_api_observation(
     )
 
 
-__all__ = ["ApiContractError", "ApiObservation", "make_api_observation"]
+def observe_api_exchange(
+    *,
+    method: str,
+    path: str,
+    canonical_query: bytes,
+    response_body: bytes,
+    status_code: int,
+    request_id: str,
+) -> ApiObservation:
+    """Create a contract observation from one completed API exchange.
+
+    This adapter is intentionally transport-agnostic: FastAPI, HTTPX, and
+    federation probes can pass their already-canonicalised request and body
+    bytes without importing a web framework into the contract layer.  The
+    response body is hashed immediately and is never retained by the returned
+    observation.
+    """
+    return make_api_observation(
+        method=method,
+        path=path,
+        canonical_query=canonical_query,
+        response_bytes=response_body,
+        status_code=status_code,
+        request_id=request_id,
+    )
+
+
+__all__ = [
+    "ApiContractError",
+    "ApiObservation",
+    "make_api_observation",
+    "observe_api_exchange",
+]
