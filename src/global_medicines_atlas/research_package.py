@@ -25,6 +25,17 @@ _CROISSANT_PAYLOAD_KEYS = frozenset({
 })
 
 
+def _distribution_field(
+    distribution: CrateDistribution | Mapping[str, object], field: str
+) -> str:
+    value = (
+        distribution.get(field)
+        if isinstance(distribution, Mapping)
+        else getattr(distribution, field)
+    )
+    return str(value)
+
+
 class CrateDistribution(FrozenModel):
     """A distribution reference; bytes are deliberately never embedded."""
 
@@ -67,18 +78,19 @@ class ResearchCrate(FrozenModel):
                 "version": self.version,
                 "url": self.dataset_url,
                 "distribution": [
-                    item.identifier for item in self.distributions
+                    _distribution_field(item, "identifier")
+                    for item in self.distributions
                 ],
             }
         ]
         graph.extend(
             {
-                "@id": item.identifier,
+                "@id": _distribution_field(item, "identifier"),
                 "@type": "https://schema.org/DataDownload",
-                "name": item.name,
-                "contentUrl": item.content_url,
-                "encodingFormat": item.media_type,
-                "sha256": item.sha256,
+                "name": _distribution_field(item, "name"),
+                "contentUrl": _distribution_field(item, "content_url"),
+                "encodingFormat": _distribution_field(item, "media_type"),
+                "sha256": _distribution_field(item, "sha256"),
             }
             for item in self.distributions
         )

@@ -21,6 +21,26 @@ EXPORT_MANIFEST_SCHEMA = "global-medicines-atlas.research-export"
 EXPORT_MANIFEST_VERSION = 1
 
 
+def _source_field(source: ExportSource | Mapping[str, Any], field: str) -> str:
+    value = (
+        source.get(field)
+        if isinstance(source, Mapping)
+        else getattr(source, field)
+    )
+    return str(value)
+
+
+def _citation_field(
+    citation: ExportCitation | Mapping[str, Any], field: str
+) -> str:
+    value = (
+        citation.get(field)
+        if isinstance(citation, Mapping)
+        else getattr(citation, field)
+    )
+    return str(value)
+
+
 def _canonical_bytes(value: Any) -> bytes:
     return (
         json.dumps(
@@ -108,10 +128,18 @@ def build_query_snapshot_manifest(
         sources=tuple(
             sorted(
                 sources,
-                key=lambda item: (item.dataset_id, item.revision, item.path),
+                key=lambda item: (
+                    _source_field(item, "dataset_id"),
+                    _source_field(item, "revision"),
+                    _source_field(item, "path"),
+                ),
             )
         ),
-        citations=tuple(sorted(citations, key=lambda item: item.citation_id)),
+        citations=tuple(
+            sorted(
+                citations, key=lambda item: _citation_field(item, "citation_id")
+            )
+        ),
         generated_at=generated_at,
         generator_commit=generator_commit,
     )
