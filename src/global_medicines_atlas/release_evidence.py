@@ -104,7 +104,13 @@ class ReleaseEvidence(FrozenModel):
     unresolved_gates: tuple[str, ...]
 
     @model_validator(mode="after")
-    def qualification_is_fail_closed(self) -> ReleaseEvidence:
+    def qualification_is_fail_closed(  # ruff: ignore[too-many-branches]
+        self,
+    ) -> ReleaseEvidence:
+        required_gates = {gate for gates in _REQUIREMENT_GATES.values() for gate in gates}
+        missing_gates = required_gates.difference(self.gate_outcomes)
+        if missing_gates:
+            raise ValueError("gate outcomes are missing required gates")
         requirement_ids = tuple(item.requirement_id for item in self.requirement_map)
         if len(set(requirement_ids)) != len(requirement_ids):
             raise ValueError("requirement map must not contain duplicate identifiers")

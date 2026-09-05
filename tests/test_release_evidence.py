@@ -423,6 +423,15 @@ def test_release_evidence_rejects_stale_requirement_satisfaction() -> None:
         })
 
 
+@pytest.mark.edge
+def test_release_evidence_rejects_missing_gate_outcome() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    outcomes = dict(evidence.gate_outcomes)
+    outcomes.pop("traceability")
+    with pytest.raises(ValidationError, match="missing required gates"):
+        ReleaseEvidence.model_validate({**evidence.model_dump(), "gate_outcomes": outcomes})
+
+
 @pytest.mark.unit
 def test_checked_in_json_schema_accepts_model_and_rejects_approval() -> None:
     schema = json.loads(
