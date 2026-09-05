@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from datetime import UTC, datetime
 from io import BytesIO
@@ -252,6 +253,32 @@ def test_hosted_qualification_binds_raw_member_and_projection(
     assert admission["state"] == "accepted"
     assert (tmp_path / "stage/bronze/2026-04-01/source-receipt.json").exists()
     assert (tmp_path / "stage/bronze/2026-04-01/admission.json").exists()
+    receipt = json.loads(
+        (tmp_path / "stage/bronze/2026-04-01/source-receipt.json").read_text()
+    )
+    parquet = pq.read_table(  # pyright: ignore[reportUnknownMemberType]
+        tmp_path / "stage/bronze/2026-04-01/pbs-v3-source.parquet"
+    )
+    assert (
+        parquet.schema.metadata[b"source_id"]
+        == str(manifest["source_id"]).encode()
+    )
+    assert (
+        parquet.schema.metadata[b"source_id"]
+        == receipt["source"]["source_id"].encode()
+    )
+    assert (
+        receipt["transformation"]["transformation_id"]
+        == "au-pbs-v3-source-parquet-v2"
+    )
+    script = Path(pbs_qualifier.__file__)
+    adapter = (
+        script.parent.parent / "src/global_medicines_atlas/adapters/au_pbs.py"
+    )
+    expected = hashlib.sha256(
+        script.read_bytes() + b"\x00" + adapter.read_bytes()
+    ).hexdigest()
+    assert receipt["transformation"]["transformation_sha256"] == expected
 
 
 def test_hosted_qualification_rejects_non_calendar_effective_date(
@@ -371,13 +398,16 @@ def test_source_schema_keeps_funding_and_nonfunding_dimensions_separate() -> (
         for key, value in PBS_V3_SOURCE_SCHEMA.metadata.items()
     }
 
-    assert metadata["dimension"] == "funding_formulary_source_structure"
+    assert metadata["schema_version"] == "2.0"
+    assert "dimension" not in metadata
+    assert metadata["dimension_funding"] == "source_structure"
+    assert metadata["dimension_formulary"] == "source_structure"
     assert metadata["mapping_status"] == "source_native"
     assert metadata["absence_interpretation"] == "unknown"
     assert metadata["qualification"] == "candidate"
-    assert metadata["regulatory_status"] == "not_asserted"
-    assert metadata["terminology_status"] == "reference_only"
-    assert metadata["classification_status"] == "reference_only"
+    assert metadata["dimension_regulatory"] == "not_asserted"
+    assert metadata["dimension_terminology"] == "reference_only"
+    assert metadata["dimension_classification"] == "reference_only"
 
 
 def test_source_parquet_preserves_missing_amt_resource_as_null() -> None:
@@ -488,70 +518,64 @@ def test_pbs_policy_retains_finite_official_schedule_envelope() -> None:
     assert PBS_XML_POLICY.max_bytes == 512 * 1024 * 1024
     assert PBS_XML_POLICY.max_xml_text_bytes == 384 * 1024 * 1024
 
-def test_source_id_parameterization_default() -> None:
-    """Verify default source_id is used when not explicitly provided."""
-    test_record = PbsV3SourceRecord(
-        item_code="99999X",
-        drug_name="Example Medicine",
-        benefit_types=["PBS"],
-        manner_of_administration="Oral",
-        amt_code=None,
-        atc_code=None,
-        restriction_flags=[],
-        restrictions=[],
-        restriction_effective_dates=None,
-        item_sha256=hashlib.sha256(b"example").hexdigest(),
+
+@pytest.mark.parametrize("source_id", ["au-pbs", "au-pbs-historical-xml"])
+def test_source_identity_parameterization_preserves_native_values(
+    source_id: str,
+) -> None:
+    records = parse_pbs_v3_archive(_zip([("sch-a.xml", _xml())])).records
+    default = pq.read_table(BytesIO(pbs_v3_source_parquet(records)))  # pyright: ignore[reportUnknownMemberType]
+    selected = pq.read_table(  # pyright: ignore[reportUnknownMemberType]
+        BytesIO(pbs_v3_source_parquet(records, source_id=source_id))
     )
-    output = pbs_v3_source_parquet([test_record])
-    parsed = pq.read_table(pa.BufferReader(output))
-    
-    assert parsed.schema.metadata[b"source_id"] == b"au-pbs"
+    assert default.schema.metadata[b"source_id"] == b"au-pbs"
+    assert selected.schema.metadata[b"source_id"] == source_id.encode()
+    assert selected.to_pylist() == default.to_pylist()
+    assert selected.schema.metadata[b"dimension_regulatory"] == b"not_asserted"
 
 
-def test_source_id_parameterization_historical() -> None:
-    """Verify historical source_id can be explicitly set."""
-    test_record = PbsV3SourceRecord(
-        item_code="88888Y",
-        drug_name="Sample Drug",
-        benefit_types=["PBS"],
-        manner_of_administration="Intravenous",
-        amt_code=None,
-        atc_code=None,
-        restriction_flags=[],
-        restrictions=[],
-        restriction_effective_dates=None,
-        item_sha256=hashlib.sha256(b"sample").hexdigest(),
+def test_source_identity_rejects_unrelated_domain():
+    with pytest.raises(ValueError, match="source identity"):
+        pbs_v3_source_parquet((), source_id="au-mbs")
+
+
+@pytest.mark.parametrize("changed", ["script", "adapter"])
+def test_qualification_digest_changes_with_either_implementation(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, changed: str
+) -> None:
+    script = Path(pbs_qualifier.__file__).resolve()
+    adapter = (
+        script.parent.parent / "src/global_medicines_atlas/adapters/au_pbs.py"
     )
-    output = pbs_v3_source_parquet([test_record], source_id="au-pbs-historical-xml")
-    parsed = pq.read_table(pa.BufferReader(output))
-    
-    assert parsed.schema.metadata[b"source_id"] == b"au-pbs-historical-xml"
+    baseline = hashlib.sha256(
+        script.read_bytes() + b"\x00" + adapter.read_bytes()
+    ).hexdigest()
+    original = Path.read_bytes
+    changed_path = script if changed == "script" else adapter
 
+    def read(path: Path) -> bytes:
+        value = original(path)
+        return (
+            value + b"\n# synthetic implementation change\n"
+            if path.resolve() == changed_path
+            else value
+        )
 
-def test_semantic_dimension_separation() -> None:
-    """Verify independent semantic dimensions are declared correctly."""
-    test_record = PbsV3SourceRecord(
-        item_code="77777Z",
-        drug_name="Demo Medication",
-        benefit_types=["RPBS"],
-        manner_of_administration="Topical",
-        amt_code="12345",
-        atc_code="A01BC",
-        restriction_flags=["R"],
-        restrictions=["Test restriction"],
-        restriction_effective_dates=None,
-        item_sha256=hashlib.sha256(b"demo").hexdigest(),
+    monkeypatch.setattr(Path, "read_bytes", read)
+    archive = tmp_path / "input.zip"
+    archive.write_bytes(_zip([("sch-a.xml", _production_xml())]))
+    qualify(
+        archive,
+        tmp_path / "stage",
+        source_url="https://www.pbs.gov.au/example.zip",
+        dataset="edithatogo/australian-pbs-source-archive",
+        retrieved_at=RETRIEVED_AT,
+        http_metadata=HTTP_METADATA,
     )
-    output = pbs_v3_source_parquet([test_record])
-    parsed = pq.read_table(pa.BufferReader(output))
-    meta = parsed.schema.metadata
-    
-    assert meta[b"dimension_funding"] == b"source_structure"
-    assert meta[b"dimension_formulary"] == b"source_structure"
-    assert meta[b"dimension_terminology"] == b"reference_only"
-    assert meta[b"dimension_classification"] == b"reference_only"
-    assert b"funding_formulary_source_structure" not in b"".join(meta.values())
-
+    receipt = json.loads(
+        (tmp_path / "stage/bronze/2026-04-01/source-receipt.json").read_text()
+    )
+    assert receipt["transformation"]["transformation_sha256"] != baseline
 
 
 def test_parse_pbs_v3_archive_rejects_decompression_bomb() -> None:

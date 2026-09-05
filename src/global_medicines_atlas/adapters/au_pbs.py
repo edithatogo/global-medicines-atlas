@@ -92,33 +92,21 @@ PBS_V3_SOURCE_SCHEMA = pa.schema(
         pa.field("restrictions", pa.list_(pa.string()), nullable=False),
         pa.field("restriction_effective_dates", pa.list_(pa.string())),
         pa.field("projected_item_sha256", pa.string(), nullable=False),
-])
-        "regulatory_status": "not_asserted",
-        "terminology_status": "reference_only",
-def pbs_v3_source_parquet(
-    records: list[PbsV3SourceRecord],
-    *,
-    source_id: str = DEFAULT_SOURCE_ID,
-) -> bytes:
-    """Project PBS v3 source records into a Parquet file.
-    
-    Args:
-        records: Source records to serialize
-        source_id: Source identity for provenance (e.g., 'au-pbs', 'au-pbs-historical-xml')
-    """
-    # Apply semantic metadata to schema
-    schema_with_metadata = PBS_V3_SOURCE_SCHEMA.with_metadata({
+    ],
+    metadata={
         "schema_name": "global-medicines-atlas.pbs-v3.source-faithful",
         "schema_version": "2.0",
-        "source_id": source_id,
+        "source_id": SOURCE_ID,
         "dimension_funding": "source_structure",
-        "dimension_formulary": "source_structure", 
+        "dimension_formulary": "source_structure",
         "dimension_terminology": "reference_only",
         "dimension_classification": "reference_only",
-        "regulatory_assertion": "not_asserted",
-        "transformation_adapter_digest": _get_adapter_digest(),
-    })
-    
+        "dimension_regulatory": "not_asserted",
+        "qualification": "candidate",
+        "mapping_status": "source_native",
+        "absence_interpretation": "unknown",
+        "conversion": "none",
+    },
 )
 
 
@@ -140,7 +128,7 @@ def read_pbs_v3_member(payload: bytes) -> tuple[ExtractedMember, bytes]:
         ]
         if len(matches) != 1:
             raise ValueError(
-        schema=schema_with_metadata,
+                "PBS archive must contain exactly one schedule XML"
             )
         info = matches[0]
         xml_payload = archive.read(info)
@@ -202,8 +190,15 @@ def inspect_pbs_v3_tags(
     return tuple(element.tag for element in islice(root.iter(), max_tags))
 
 
-def pbs_v3_source_parquet(records: tuple[PbsV3Record, ...]) -> bytes:
+def pbs_v3_source_parquet(
+    records: tuple[PbsV3Record, ...], *, source_id: str = SOURCE_ID
+) -> bytes:
     """Build deterministic source-faithful Parquet for admitted PBS records."""
+    if source_id not in {SOURCE_ID, "au-pbs-historical-xml"}:
+        raise ValueError("unsupported PBS source identity")
+    metadata = dict(PBS_V3_SOURCE_SCHEMA.metadata or {})
+    metadata[b"source_id"] = source_id.encode()
+    schema = PBS_V3_SOURCE_SCHEMA.with_metadata(metadata)  # pyright: ignore[reportUnknownMemberType]
     rows = [
         {
             "item_code": record.item_code,
@@ -223,7 +218,7 @@ def pbs_v3_source_parquet(records: tuple[PbsV3Record, ...]) -> bytes:
     ]
     output = BytesIO()
     pq.write_table(  # pyright: ignore[reportUnknownMemberType]
-        pa.Table.from_pylist(rows, schema=PBS_V3_SOURCE_SCHEMA),
+        pa.Table.from_pylist(rows, schema=schema),
         output,
         compression="zstd",
         version="2.6",

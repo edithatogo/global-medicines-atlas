@@ -156,11 +156,12 @@ def qualify(  # ruff: ignore[too-many-locals] - atomic qualification event
             # Bind both the qualification script and the adapter implementation
             transformation_sha256=hashlib.sha256(
                 Path(__file__).read_bytes()
-                + b"
+                + b"\x00"
                 + (
                     Path(__file__).parent.parent
                     / "src/global_medicines_atlas/adapters/au_pbs.py"
                 ).read_bytes()
+            ).hexdigest(),
             output_sha256=hashlib.sha256(parquet).hexdigest(),
             output_byte_count=len(parquet),
         ),
