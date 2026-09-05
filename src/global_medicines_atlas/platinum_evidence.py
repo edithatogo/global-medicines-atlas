@@ -12,7 +12,7 @@ import hashlib
 import json
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, cast
 
 REQUIRED_EVIDENCE_FIELDS = (
     "dataset",
@@ -39,7 +39,7 @@ class PlatinumEvidenceError(ValueError):
 
 def _read(value: object, field: str) -> Any:
     if isinstance(value, Mapping):
-        return value.get(field)
+        return cast(Mapping[str, Any], value).get(field)
     return getattr(value, field, None)
 
 
@@ -53,7 +53,9 @@ def validate_result_evidence(result: object) -> object:
     """
     evidence = _read(result, "evidence") or result
     missing = tuple(
-        field for field in REQUIRED_EVIDENCE_FIELDS if _read(evidence, field) is None
+        field
+        for field in REQUIRED_EVIDENCE_FIELDS
+        if _read(evidence, field) is None
     )
     if missing:
         raise PlatinumEvidenceError(
@@ -68,7 +70,9 @@ def validate_result_evidence(result: object) -> object:
     ):
         value = _read(evidence, field)
         if not isinstance(value, str) or not value.strip():
-            raise PlatinumEvidenceError(f"result evidence field {field!r} is invalid")
+            raise PlatinumEvidenceError(
+                f"result evidence field {field!r} is invalid"
+            )
     return result
 
 
@@ -149,8 +153,7 @@ def aggregate_result_evidence(
         validate_result_evidence(result)
         evidence = _read(result, "evidence") or result
         document = {
-            field: _read(evidence, field)
-            for field in REQUIRED_EVIDENCE_FIELDS
+            field: _read(evidence, field) for field in REQUIRED_EVIDENCE_FIELDS
         }
         resource_id = _read(evidence, "resource_id")
         if not isinstance(resource_id, str) or not resource_id.strip():
@@ -164,7 +167,12 @@ def aggregate_result_evidence(
     if not documents:
         raise PlatinumEvidenceError("result evidence aggregate cannot be empty")
     canonical = json.dumps(
-        sorted(documents, key=lambda item: tuple(str(item[field]) for field in REQUIRED_EVIDENCE_FIELDS)),
+        sorted(
+            documents,
+            key=lambda item: tuple(
+                str(item[field]) for field in REQUIRED_EVIDENCE_FIELDS
+            ),
+        ),
         sort_keys=True,
         separators=(",", ":"),
         default=str,
@@ -193,7 +201,7 @@ def checkpoint_representative_evidence(
         str(_read(_read(result, "evidence") or result, "semantic_dimension"))
         for result in materialized
     }
-    required = {item for item in required_dimensions if isinstance(item, str) and item}
+    required = {item for item in required_dimensions if item}
     missing = sorted(required - observed)
     if missing:
         raise PlatinumEvidenceError(

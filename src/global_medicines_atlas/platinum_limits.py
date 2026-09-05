@@ -30,7 +30,10 @@ class RateLimitPolicy:
     window_seconds: float = 60.0
 
     def __post_init__(self) -> None:
-        if type(self.requests) is not int or not 1 <= self.requests <= _MAX_REQUESTS:
+        if (
+            type(self.requests) is not int
+            or not 1 <= self.requests <= _MAX_REQUESTS
+        ):
             raise ValueError("requests must be between 1 and 10000")
         if (
             type(self.window_seconds) is not float
@@ -55,7 +58,10 @@ class InMemoryRateLimiter:
         clock: Callable[[], float] = monotonic,
         max_consumers: int = 10_000,
     ) -> None:
-        if type(max_consumers) is not int or not 1 <= max_consumers <= _MAX_CONSUMERS:
+        if (
+            type(max_consumers) is not int
+            or not 1 <= max_consumers <= _MAX_CONSUMERS
+        ):
             raise ValueError("max_consumers must be bounded")
         self.policy = policy if policy is not None else RateLimitPolicy()
         self._clock = clock
@@ -64,15 +70,21 @@ class InMemoryRateLimiter:
 
     def admit(self, consumer: str) -> None:
         """Consume one request slot, rejecting malformed or over-limit keys."""
-        if type(consumer) is not str or not consumer or len(consumer) > _MAX_CONSUMER_KEY:
+        if (
+            type(consumer) is not str
+            or not consumer
+            or len(consumer) > _MAX_CONSUMER_KEY
+        ):
             raise ValueError("consumer key is invalid")
         now = self._clock()
-        if not isinstance(now, (int, float)) or not isfinite(now) or now < 0:
+        if not isfinite(now) or now < 0:
             raise ValueError("clock must return a non-negative finite value")
         current = self._windows.get(consumer)
         if current is None:
             if len(self._windows) >= self._max_consumers:
-                raise PlatinumRateLimitExceededError("consumer capacity exceeded")
+                raise PlatinumRateLimitExceededError(
+                    "consumer capacity exceeded"
+                )
             self._windows[consumer] = (float(now), 1)
             return
         started, count = current

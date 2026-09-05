@@ -10,14 +10,19 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Mapping
-from typing import Literal
+from typing import Literal, cast
 
 from pydantic import Field, model_validator
 
 from .models import FrozenModel
 
 _HASH = r"^[0-9a-f]{64}$"
-_CROISSANT_PAYLOAD_KEYS = frozenset({"recordSet", "records", "data", "examples"})
+_CROISSANT_PAYLOAD_KEYS = frozenset({
+    "recordSet",
+    "records",
+    "data",
+    "examples",
+})
 
 
 class CrateDistribution(FrozenModel):
@@ -61,7 +66,9 @@ class ResearchCrate(FrozenModel):
                 "name": self.name,
                 "version": self.version,
                 "url": self.dataset_url,
-                "distribution": [item.identifier for item in self.distributions],
+                "distribution": [
+                    item.identifier for item in self.distributions
+                ],
             }
         ]
         graph.extend(
@@ -82,8 +89,9 @@ class ResearchCrate(FrozenModel):
 
     def canonical_jsonld_bytes(self) -> bytes:
         return (
-            json.dumps(self.jsonld(), sort_keys=True, separators=(",", ":"))
-            .encode("utf-8")
+            json.dumps(
+                self.jsonld(), sort_keys=True, separators=(",", ":")
+            ).encode("utf-8")
             + b"\n"
         )
 
@@ -114,7 +122,12 @@ class ResearchCrate(FrozenModel):
         return descriptor
 
     def canonical_croissant_bytes(self) -> bytes:
-        return json.dumps(self.croissant(), sort_keys=True, separators=(",", ":")).encode("utf-8") + b"\n"
+        return (
+            json.dumps(
+                self.croissant(), sort_keys=True, separators=(",", ":")
+            ).encode("utf-8")
+            + b"\n"
+        )
 
     def croissant_sha256(self) -> str:
         return hashlib.sha256(self.canonical_croissant_bytes()).hexdigest()
@@ -129,16 +142,21 @@ def validate_metadata_only_croissant(descriptor: Mapping[str, object]) -> None:
     """
 
     if descriptor.get("cr:metadataOnly") is not True:
-        raise ValueError("Croissant descriptor must declare metadata-only output")
+        raise ValueError(
+            "Croissant descriptor must declare metadata-only output"
+        )
 
     def walk(value: object) -> None:
         if isinstance(value, Mapping):
-            if _CROISSANT_PAYLOAD_KEYS.intersection(value):
-                raise ValueError("Croissant descriptor must not embed payload data")
-            for child in value.values():
+            mapping = cast(Mapping[str, object], value)
+            if _CROISSANT_PAYLOAD_KEYS.intersection(mapping):
+                raise ValueError(
+                    "Croissant descriptor must not embed payload data"
+                )
+            for child in mapping.values():
                 walk(child)
         elif isinstance(value, (list, tuple)):
-            for child in value:
+            for child in cast(tuple[object, ...] | list[object], value):
                 walk(child)
 
     walk(descriptor)
@@ -162,5 +180,7 @@ def build_research_crate(
         name=name,
         version=version,
         dataset_url=dataset_url,
-        distributions=tuple(sorted(distributions, key=lambda item: item.identifier)),
+        distributions=tuple(
+            sorted(distributions, key=lambda item: item.identifier)
+        ),
     )

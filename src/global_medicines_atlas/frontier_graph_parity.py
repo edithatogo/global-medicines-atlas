@@ -11,7 +11,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from hashlib import sha256
-from typing import Any
+from typing import Any, cast
 
 from .frontier_graph_export import EDGE_STATEMENT, NODE_STATEMENT
 
@@ -57,8 +57,12 @@ def validate_graph_previews(
             for row in nodes
         ],
         "edges": [
-            {"edge_id": row["edge_id"], "source_node_id": row["source_node_id"],
-             "target_node_id": row["target_node_id"], "payload_json": _json(row)}
+            {
+                "edge_id": row["edge_id"],
+                "source_node_id": row["source_node_id"],
+                "target_node_id": row["target_node_id"],
+                "payload_json": _json(row),
+            }
             for row in edges
         ],
     }
@@ -89,35 +93,59 @@ def _document(value: str, label: str) -> dict[str, Any]:
         result = json.loads(value)
     except (TypeError, json.JSONDecodeError) as error:
         raise ValueError(f"invalid {label} JSON") from error
-    if not isinstance(result, dict) or set(result) != {"nodes", "edges"}:
+    if not isinstance(result, dict) or set(cast(dict[str, Any], result)) != {
+        "nodes",
+        "edges",
+    }:
         raise ValueError(f"invalid {label} graph envelope")
-    return result
+    return cast(dict[str, Any], result)
 
 
 def _rows(document: dict[str, Any], key: str) -> list[dict[str, Any]]:
     rows = document[key]
-    if not isinstance(rows, list) or any(not isinstance(row, dict) for row in rows):
+    if not isinstance(rows, list) or any(
+        not isinstance(row, dict) for row in cast(list[object], rows)
+    ):
         raise ValueError("graph rows must be objects")
-    return rows
+    return cast(list[dict[str, Any]], rows)
 
 
 def _json(value: object) -> str:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"),
-                      ensure_ascii=True, allow_nan=False)
+    return json.dumps(
+        value,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+        allow_nan=False,
+    )
 
 
 def _rdf_id(kind: str, value: str) -> str:
-    return "<urn:gma:" + kind + ":" + value.replace("%", "%25").replace("#", "%23") + ">"
+    return (
+        "<urn:gma:"
+        + kind
+        + ":"
+        + value.replace("%", "%25").replace("#", "%23")
+        + ">"
+    )
 
 
-def _rdf_lines(nodes: list[dict[str, Any]], edges: list[dict[str, Any]]) -> list[str]:
+def _rdf_lines(
+    nodes: list[dict[str, Any]], edges: list[dict[str, Any]]
+) -> list[str]:
     lines = [
         f"{_rdf_id('node', row['node_id'])} <urn:gma:payload-json> {json.dumps(_json(row), ensure_ascii=True)} ."
         for row in nodes
     ]
     for row in edges:
-        source, target = _rdf_id("node", row["source_node_id"]), _rdf_id("node", row["target_node_id"])
-        edge, quoted = _rdf_id("edge", row["edge_id"]), f"<<{source} <urn:gma:connects-to> {target}>>"
+        source, target = (
+            _rdf_id("node", row["source_node_id"]),
+            _rdf_id("node", row["target_node_id"]),
+        )
+        edge, quoted = (
+            _rdf_id("edge", row["edge_id"]),
+            f"<<{source} <urn:gma:connects-to> {target}>>",
+        )
         lines.extend((
             f"{quoted} <urn:gma:edge-id> {json.dumps(row['edge_id'], ensure_ascii=True)} .",
             f"{quoted} <urn:gma:edge-resource> {edge} .",
