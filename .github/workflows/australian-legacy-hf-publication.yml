@@ -67,9 +67,15 @@ jobs:
           Path('publication-intent.json').write_text(
               json.dumps(intent, indent=2, sort_keys=True) + '\n', encoding='utf-8'
           )
+          Path('issue-comment.json').write_text(
+              json.dumps({'body': json.dumps(intent, indent=2, sort_keys=True) + '\n'},
+                         sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
           PY
-          gh issue comment 340 --repo "${GITHUB_REPOSITORY}" \
-            --body-file publication-intent.json
+          gh api "repos/${GITHUB_REPOSITORY}/issues/340/comments" \
+            --method POST --input issue-comment.json \
+            --jq '.html_url'
 
       - name: Build, publish, and anonymously restore exact archive
         id: publish
