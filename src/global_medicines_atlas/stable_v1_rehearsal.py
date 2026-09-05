@@ -65,6 +65,10 @@ _FIXTURE_IDENTITY_KEYS = {
     "structural_projection_fixture",
 }
 _SHA256_HEX_LENGTH = 64
+# The child is intentionally isolated, but hosted runners can briefly contend
+# for interpreter startup and filesystem resources while the full harness runs.
+# Keep a bounded timeout while allowing that transient contention to settle.
+_CLEAN_PROCESS_TIMEOUT_SECONDS = 60
 Digest = str
 
 
@@ -319,7 +323,7 @@ def _run_clean_process() -> dict[str, str]:
             capture_output=True,
             check=False,
             text=True,
-            timeout=30,
+            timeout=_CLEAN_PROCESS_TIMEOUT_SECONDS,
         )
     if completed.returncode != 0:
         raise StableV1RehearsalError("clean-process reproduction failed")
