@@ -107,6 +107,12 @@
 
 ## Phase 2: CLI and API (AC-01, AC-02, AC-04)
 
+- [x] Reduce duplicate comparison cohort work while preserving request-local
+  validity, bounded provenance and executed SQL pagination. The shared service
+  now issues three rather than four comparison statements and binds repeated
+  scope/time values once per statement. Query/API regressions pass. A paired
+  20-sample fixture comparison measured p95 441.374 ms before and 331.128 ms
+  after; the 250 ms performance gate remains failing and is not waived.
 - [x] Define the strict shared dataset-identity response envelope over an
   already-admitted resolver resource. It preserves the exact public revision,
   object/contract/semantic digests, semantic dimension, entity granularity,

@@ -530,12 +530,12 @@ def test_comparisons_reuse_request_cohort(
             for name in methods
         ]
         first = service.comparisons(_comparison(limit=1))
-        assert [spy.call_count for spy in spies] == [2, 1, 1, 1]
+        assert [spy.call_count for spy in spies] == [1, 1, 1, 1]
         assert first.metadata.page.next_cursor is not None
         second = service.comparisons(
             _comparison(limit=1, cursor=first.metadata.page.next_cursor)
         )
-        assert [spy.call_count for spy in spies] == [4, 2, 2, 2]
+        assert [spy.call_count for spy in spies] == [2, 2, 2, 2]
     assert first.validity == second.validity
     assert service._conclusion_key(first.conclusions[0]) != (
         service._conclusion_key(second.conclusions[0])
@@ -565,9 +565,9 @@ def test_comparison_plan_describes_executed_page_statement(
     ):
         service.comparisons(query)
         receipt = service.query_plan_evidence(query)
-    assert len(statements) == 3
-    assert statements[1] == statements[2]
-    sql, parameters = statements[1]
+    assert len(statements) == 2
+    assert statements[0] == statements[1]
+    sql, parameters = statements[0]
     assert receipt.sql_sha256 == hashlib.sha256(sql.encode()).hexdigest()
     assert receipt.parameter_count == len(parameters)
     assert receipt.requested_limit == 1
