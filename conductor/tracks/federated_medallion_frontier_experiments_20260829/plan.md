@@ -57,9 +57,10 @@
   unavailable candidates until their dependencies and exact public objects are
   observed. The receipt compares operation counts and output digests without
   promoting wall-clock noise or an optional dependency.
-- [ ] Extend the deterministic receipt with measured DuckDB, Polars, Arrow
-  streaming, optional DataFusion, and Xet-aware restore/dedup observations when
-  their exact public objects and environments are available.
+- [x] Extend the deterministic receipt with measured DuckDB, Polars, and Arrow
+  observations when those optional engines are available; unavailable engines
+  remain explicit and fail closed. DataFusion and Xet-aware restore/dedup still
+  require exact environments and public objects before measurement.
 - [x] Record deterministic profiling evidence and reject optimizations that weaken immutable
   identities, bounded resource behavior, or Python 3.14 completeness.
 - [ ] Phase Verification & Checkpoint: each candidate has measured value and an
@@ -80,9 +81,9 @@
 
 ## Phase 4: Attestation and research packages (AC-04)
 
-- [ ] Write failing Merkle mutation/order/missing-leaf, RO-Crate/Croissant
-  completeness, OpenLineage schema/identity, and optional signature/provenance
-  tests.
+- [x] Write and pass failing-first Merkle mutation/order/missing-leaf and
+  metadata-only RO-Crate completeness controls. Croissant, OpenLineage, and
+  optional signature/provenance remain separate candidate surfaces.
 - [ ] Confirm the intended failure before implementation.
 - [ ] Generate cross-dataset batch roots, research packages, and federation
   lineage over exact public revisions.
