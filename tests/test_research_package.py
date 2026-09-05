@@ -5,6 +5,7 @@ import pytest
 from global_medicines_atlas.research_package import (
     CrateDistribution,
     build_research_crate,
+    validate_metadata_only_croissant,
 )
 
 
@@ -68,3 +69,16 @@ def test_croissant_is_deterministic_and_payload_free() -> None:
     assert all("sha256" in item and "contentUrl" in item for item in distributions)
     assert crate.canonical_croissant_bytes() == crate.canonical_croissant_bytes()
     assert len(crate.croissant_sha256()) == 64
+    validate_metadata_only_croissant(descriptor)
+
+
+def test_croissant_payload_keys_are_rejected_recursively() -> None:
+    with pytest.raises(ValueError, match="must not embed payload"):
+        validate_metadata_only_croissant(
+            {"cr:metadataOnly": True, "distribution": [{"recordSet": []}]}
+        )
+
+
+def test_croissant_without_metadata_flag_is_rejected() -> None:
+    with pytest.raises(ValueError, match="metadata-only"):
+        validate_metadata_only_croissant({"@type": "Dataset"})
