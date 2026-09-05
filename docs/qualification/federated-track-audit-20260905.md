@@ -88,3 +88,25 @@ again at the unchanged graph snapshot: observed PERF-QUERY p95 values were
 677.985, 1017.465 and 1853.499 ms against the required 250 ms. These failures
 remain open. A three-sample diagnostic with one DuckDB thread did not reliably
 meet the budget and does not justify a configuration change or qualification.
+
+## PBS repair review follow-up
+
+The browser-requested agent subsequently pushed
+`0a329afaf3ba24ea87fd8cad93531d19bf4e259f` to PR #460. Its commit message
+contains `[skip ci]`; Chrome displayed required checks as expected, with no
+completed checks for that head. The three original comments became outdated
+but remained unresolved.
+
+Read-only compilation and focused collection at that exact detached commit
+confirmed that the attempted repair is not usable: the qualification script
+has an unterminated bytes literal and incomplete digest expression, and the
+adapter has an unexpected indent. The inserted serializer also references
+undefined names and is overwritten by the existing serializer; the added tests
+reference undefined types/imports. No focused PBS tests execute past collection.
+The bot's implementation summary is therefore not validation evidence.
+
+A local isolated repair is in progress. No broken bot change has been
+integrated into this implementation branch, no review conversation resolved,
+and no source qualification or publication attributed to that repair. The
+remote head must be rechecked before delivery because the browser follow-up
+may independently change it.
