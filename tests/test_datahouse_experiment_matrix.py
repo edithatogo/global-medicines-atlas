@@ -151,9 +151,7 @@ def test_unrun_experiment_cannot_be_marked_promotion_candidate() -> None:
     item = cast("dict[str, object]", experiments[3])
     item["disposition"] = "promote-candidate"
 
-    with pytest.raises(
-        ValidationError, match="only a supported"
-    ):
+    with pytest.raises(ValidationError, match="only a supported"):
         ExperimentMatrix.model_validate(payload)
 
 
