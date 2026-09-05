@@ -1,5 +1,6 @@
 """Acceptance checks for mandatory Platinum result evidence."""
 
+import hashlib
 from dataclasses import dataclass
 
 import pytest
@@ -7,6 +8,7 @@ import pytest
 from global_medicines_atlas.platinum_evidence import (
     PlatinumEvidenceError,
     aggregate_result_evidence,
+    checkpoint_representative_evidence,
     validate_result_evidence,
 )
 
@@ -72,3 +74,31 @@ def test_result_evidence_aggregate_rejects_empty_and_duplicate_resources() -> No
     duplicate = _Result(_Evidence())
     with pytest.raises(PlatinumEvidenceError, match="duplicated"):
         aggregate_result_evidence((duplicate, duplicate))
+
+
+def test_representative_checkpoint_records_only_observed_dimensions() -> None:
+    results = (
+        _Result(_Evidence(path="benefits.parquet", semantic_dimension="funding")),
+        _Result(_Evidence(path="history.parquet", semantic_dimension="service_benefit")),
+    )
+    checkpoint = checkpoint_representative_evidence(
+        results, required_dimensions=("funding", "service_benefit")
+    )
+
+    assert checkpoint.result_count == 2
+    assert checkpoint.semantic_dimensions == ("funding", "service_benefit")
+    assert checkpoint.resource_ids == (
+        "owner/dataset:benefits.parquet",
+        "owner/dataset:history.parquet",
+    )
+    assert b"rows" not in checkpoint.canonical_bytes
+    assert checkpoint.receipt_sha256 == hashlib.sha256(
+        checkpoint.canonical_bytes
+    ).hexdigest()
+
+
+def test_representative_checkpoint_does_not_infer_unobserved_dimensions() -> None:
+    with pytest.raises(PlatinumEvidenceError, match="required dimensions"):
+        checkpoint_representative_evidence(
+            (_Result(_Evidence()),), required_dimensions=("regulatory",)
+        )

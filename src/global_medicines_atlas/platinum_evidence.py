@@ -100,6 +100,40 @@ class ResultEvidenceAggregate:
         return hashlib.sha256(self.canonical_bytes).hexdigest()
 
 
+@dataclass(frozen=True)
+class RepresentativeEvidenceCheckpoint:
+    """Payload-free checkpoint for a representative result cohort.
+
+    This records only dimensions actually observed in the supplied results;
+    it never turns a missing dimension into negative evidence.
+    """
+
+    result_count: int
+    semantic_dimensions: tuple[str, ...]
+    resource_ids: tuple[str, ...]
+    evidence_sha256: str
+
+    @property
+    def canonical_bytes(self) -> bytes:
+        """Serialize the representative checkpoint deterministically."""
+        return json.dumps(
+            {
+                "evidence_sha256": self.evidence_sha256,
+                "resource_ids": self.resource_ids,
+                "result_count": self.result_count,
+                "semantic_dimensions": self.semantic_dimensions,
+                "version": "1.0",
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+
+    @property
+    def receipt_sha256(self) -> str:
+        """Return the content address of the representative checkpoint."""
+        return hashlib.sha256(self.canonical_bytes).hexdigest()
+
+
 def aggregate_result_evidence(
     results: Iterable[object],
 ) -> ResultEvidenceAggregate:
@@ -142,10 +176,44 @@ def aggregate_result_evidence(
     )
 
 
+def checkpoint_representative_evidence(
+    results: Iterable[object],
+    *,
+    required_dimensions: Iterable[str] = (),
+) -> RepresentativeEvidenceCheckpoint:
+    """Validate a representative cohort and record observed dimensions.
+
+    Every result must pass the mandatory evidence validator.  Required
+    dimensions are an explicit caller contract; dimensions not supplied are
+    reported as unobserved rather than inferred absent.
+    """
+    materialized = tuple(results)
+    aggregate = aggregate_result_evidence(materialized)
+    observed = {
+        str(_read(_read(result, "evidence") or result, "semantic_dimension"))
+        for result in materialized
+    }
+    required = {item for item in required_dimensions if isinstance(item, str) and item}
+    missing = sorted(required - observed)
+    if missing:
+        raise PlatinumEvidenceError(
+            "representative evidence is missing required dimensions: "
+            + ", ".join(missing)
+        )
+    return RepresentativeEvidenceCheckpoint(
+        result_count=aggregate.result_count,
+        semantic_dimensions=tuple(sorted(observed)),
+        resource_ids=aggregate.resource_ids,
+        evidence_sha256=aggregate.evidence_sha256,
+    )
+
+
 __all__ = [
     "REQUIRED_EVIDENCE_FIELDS",
     "PlatinumEvidenceError",
+    "RepresentativeEvidenceCheckpoint",
     "ResultEvidenceAggregate",
     "aggregate_result_evidence",
+    "checkpoint_representative_evidence",
     "validate_result_evidence",
 ]
