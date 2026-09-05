@@ -18,6 +18,7 @@ import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from http import HTTPStatus
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal, cast
 from urllib.parse import quote, urljoin, urlsplit
 
@@ -172,6 +173,47 @@ class CheckpointPreflight:
     def receipt_sha256(self) -> str:
         """Return the content address of the preflight observation."""
         return hashlib.sha256(self.canonical_bytes).hexdigest()
+
+
+@dataclass(frozen=True)
+class EmptyMachinePreflight:
+    """Evidence from a bounded read made without a durable local lake.
+
+    This is deliberately a transport/readiness observation, not product
+    admission.  ``local_paths`` are checked before transport so a caller
+    cannot accidentally turn a local lake into a Phase 1 fixture claim.
+    """
+
+    observation: CheckpointPreflight
+    durable_local_lake_present: Literal[False] = False
+
+    @property
+    def bounded_fixture_ready(self) -> Literal[True]:
+        """The pinned fixture was fetched and structurally verified."""
+        return True
+
+
+def fetch_empty_machine_fixture(
+    pin: PublicFixturePin,
+    client: httpx.Client,
+    *,
+    local_paths: tuple[Path, ...] = (),
+    timeout_seconds: float = 30,
+) -> EmptyMachinePreflight:
+    """Run the pinned fixture preflight while refusing local lake state.
+
+    The check is intentionally narrow: it proves that the bounded fixture
+    path works from a machine with no pre-existing durable lake at the paths
+    supplied by the caller.  It does not create, delete, or inspect arbitrary
+    filesystem locations and it cannot complete product admission.
+    """
+    if any(path.exists() for path in local_paths):
+        raise ValueError("empty-machine preflight found durable local lake")
+    return EmptyMachinePreflight(
+        observation=fetch_unadmitted_public_fixture(
+            pin, client, timeout_seconds=timeout_seconds
+        )
+    )
 
 
 def observe_unadmitted_public_fixture(
