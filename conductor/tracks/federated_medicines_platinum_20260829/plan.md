@@ -165,8 +165,10 @@
 - [ ] Write failing temporal/change, missing-period, source-outage, schema-drift,
   responsive, keyboard, focus, contrast, screen-reader, and non-color-only tests.
 - [ ] Confirm the intended failure before implementation.
-- [ ] Implement side-by-side service/medicine evidence, timelines, change views,
-  graph exploration, coverage/freshness, and provenance drill-down.
+- [x] Implement repository-owned historical comparison and coverage envelopes
+  for side-by-side evidence, timelines, change views, coverage/freshness, and
+  provenance drill-down. Synthetic validation passes; interactive atlas,
+  accessibility, and live-source qualification remain open.
 - [ ] Keep service-benefit, medicine funding, regulatory, formulary, and
   terminology panels visually and semantically distinct.
 - [ ] Phase Verification & Checkpoint: representative users can inspect evidence
@@ -174,7 +176,7 @@
 
 ## Phase 4: Federation and compatibility (AC-06)
 
-- [ ] Write failing canaries for reimbursement-atlas, donor successor links,
+- [x] Write and execute synthetic canaries for reimbursement-atlas, donor successor links,
   schema/revision drift, missing fields, semantic dimension changes, and
   mutable/unpinned references.
 - [ ] Confirm the intended failure before implementation.

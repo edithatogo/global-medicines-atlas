@@ -106,8 +106,10 @@
   added. This bounded synthetic experiment does not qualify Neo4j/RDF-star,
   live public graphs, retrieval calibration or production promotion.
 - [ ] Confirm the intended failure before implementation.
-- [ ] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections from
-  the same Gold node/edge tables.
+- [x] Produce deterministic NetworkX reference, parameterized Cypher, and
+  RDF-star preview projections from the same Gold node/edge tables. Local
+  verification passed; live engine parity, public graphs, and promotion remain
+  open.
 - [ ] Benchmark lexical, ontology-assisted, LanceDB embedding/NLP, and any
   justified Tantivy/Qdrant candidates; preserve explicit candidate status.
 - [ ] Phase Verification & Checkpoint: all engines reproduce portable Gold
