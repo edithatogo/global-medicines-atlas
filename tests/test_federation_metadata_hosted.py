@@ -8,6 +8,7 @@ import runpy
 import subprocess  # ruff: ignore[suspicious-subprocess-import] - mock only
 import sys
 import time
+from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -119,6 +120,7 @@ def test_intent_before_append_and_verification_after(setup):
         ("GITHUB_ACTIONS", "false"),
         ("GITHUB_REF", "refs/pull/1/merge"),
         ("GITHUB_SHA", "b" * 40),
+        ("GITHUB_RUN_ID", "invalid"),
     ],
 )
 def test_local_or_unbound_execution_cannot_touch_transport(
@@ -136,6 +138,16 @@ def test_local_or_unbound_execution_cannot_touch_transport(
 def test_failed_intent_prevents_write(setup):
     document, hub = setup
     with pytest.raises(ValueError, match="intent URL"):
+        execute_metadata_append(
+            document, exact_commit="a" * 40, hub=hub, persist=lambda _: ""
+        )
+    assert "append" not in hub.calls
+
+
+def test_head_drift_before_intent_cannot_publish(setup):
+    document, hub = setup
+    hub.drift = True
+    with pytest.raises(ValueError, match="before metadata intent"):
         execute_metadata_append(
             document, exact_commit="a" * 40, hub=hub, persist=lambda _: ""
         )
@@ -223,6 +235,100 @@ def test_forged_recovery_plan_is_rejected(setup):
             acknowledgement={"revision": "f" * 40},
         )
     assert "append" not in hub.calls
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [("revision", "e" * 40), ("private", True), ("gated", True)],
+)
+def test_nonpublic_or_wrong_baseline_cannot_publish(setup, field, value):
+    document, hub = setup
+    original = hub.snapshot
+    hub.snapshot = lambda dataset, revision: replace(
+        original(dataset, revision), **{field: value}
+    )
+    with pytest.raises(ValueError, match="exact public"):
+        execute_metadata_append(
+            document, exact_commit="a" * 40, hub=hub, persist=lambda _: ""
+        )
+    assert "append" not in hub.calls
+
+
+@pytest.mark.parametrize("phase", ["cas_acknowledged", "anonymously_verified"])
+def test_missing_durable_receipt_never_returns_success(setup, phase):
+    document, hub = setup
+
+    def persist(receipt):
+        return (
+            ""
+            if receipt["status"] == phase
+            else (
+                "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-1"
+            )
+        )
+
+    with pytest.raises(ValueError, match="durable"):
+        execute_metadata_append(
+            document, exact_commit="a" * 40, hub=hub, persist=persist
+        )
+    assert hub.calls.count("append") == 1
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "message"),
+    [
+        ("parent_basis", "unverified", "parent evidence"),
+        ("revision", "main", "revision invalid"),
+    ],
+)
+def test_recovery_rejects_unsupported_parent_or_mutable_revision(
+    setup, field, value, message
+):
+    document, hub = setup
+    records = []
+
+    def persist(receipt):
+        records.append(receipt)
+        return "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-1"
+
+    execute_metadata_append(
+        document, exact_commit="a" * 40, hub=hub, persist=persist
+    )
+    ack = {**records[1], field: value}
+    with pytest.raises(ValueError, match=message):
+        execute_metadata_append(
+            document,
+            exact_commit="a" * 40,
+            hub=hub,
+            persist=persist,
+            acknowledgement=ack,
+        )
+    assert hub.calls.count("append") == 1
+
+
+def test_invalid_append_revision_and_wrong_anonymous_revision(setup):
+    document, hub = setup
+
+    def persist(_):
+        return "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-1"
+
+    original_append = hub.append
+    hub.append = lambda _: "main"
+    with pytest.raises(ValueError, match="invalid revision"):
+        execute_metadata_append(
+            document, exact_commit="a" * 40, hub=hub, persist=persist
+        )
+    hub.append = original_append
+    original_snapshot = hub.snapshot
+    hub.snapshot = lambda dataset, revision: (
+        replace(original_snapshot(dataset, revision), revision="e" * 40)
+        if hub.plan
+        else original_snapshot(dataset, revision)
+    )
+    with pytest.raises(ValueError, match="readback revision"):
+        execute_metadata_append(
+            document, exact_commit="a" * 40, hub=hub, persist=persist
+        )
 
 
 @pytest.mark.parametrize("login", ["someone", "github-actions[bot]"])

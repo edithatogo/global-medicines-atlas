@@ -110,3 +110,17 @@ def test_engine_parallel_edge_loss_is_detected(monkeypatch):
     monkeypatch.setattr(nx.MultiDiGraph, "add_edge", discard_payload)
     with pytest.raises((ValueError, KeyError), match=r"fields|edge_id"):
         qualify_networkx_graph(nodes, edges)
+
+
+def test_engine_control_field_change_is_detected(monkeypatch):
+    nx = pytest.importorskip("networkx")
+    nodes, edges = project_mbs_gold_graph_arrow(graph())
+    original = nx.MultiDiGraph.add_edge
+
+    def alter_control(self, left, right, **kwargs):
+        kwargs["payload"] = {**kwargs["payload"], "review_state": "promoted"}
+        return original(self, left, right, **kwargs)
+
+    monkeypatch.setattr(nx.MultiDiGraph, "add_edge", alter_control)
+    with pytest.raises(ValueError, match="lost portable Gold fields"):
+        qualify_networkx_graph(nodes, edges)

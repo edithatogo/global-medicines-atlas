@@ -25,6 +25,7 @@ concurrency:
 
 jobs:
   append:
+    name: Append and anonymously verify source metadata
     runs-on: ubuntu-24.04
     environment: australian-hf-publication
     timeout-minutes: 30

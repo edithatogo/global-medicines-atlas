@@ -49,6 +49,7 @@ global-medicines-atlas = "global_medicines_atlas.cli:app"
 
 [dependency-groups]
 test = [
+  "networkx==3.6.1", # Execute optional preview graph parity in governed coverage.
   "beautifulsoup4>=4.13",
   "jsonschema[format-nongpl]>=4.25",
   "packaging>=26",

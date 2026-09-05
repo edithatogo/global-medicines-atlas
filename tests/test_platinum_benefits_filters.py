@@ -12,6 +12,10 @@ from typer.testing import CliRunner
 
 from global_medicines_atlas.api import create_app
 from global_medicines_atlas.cli import app
+from global_medicines_atlas.generated.openapi_client import (
+    ClientTransport,
+    GlobalMedicinesAtlasClient,
+)
 from global_medicines_atlas.platinum_benefits import (
     BenefitsFilter,
     BenefitsQuery,
@@ -96,6 +100,32 @@ def test_http_filter_and_unknown_source_column():
         },
     )
     assert response.status_code == 422
+
+
+def test_generated_client_carries_filters_and_pagination_to_service():
+    http = TestClient(
+        create_app(cast("ReadOnlyQueryService", object()), benefits=service())
+    )
+    client = GlobalMedicinesAtlasClient(ClientTransport(http))
+    filters = '[{"column":"item_code","operator":">=","value":"200"}]'
+    first = client.benefits_route_api_v1_benefits__resource_id__get(
+        resource_id="au.mbs.service-items",
+        columns=("item_code",),
+        filters=filters,
+        limit=1,
+        offline=False,
+    )
+    assert first["rows"] == [{"item_code": "200"}]
+    second = client.benefits_route_api_v1_benefits__resource_id__get(
+        resource_id="au.mbs.service-items",
+        columns=("item_code",),
+        filters=filters,
+        limit=1,
+        cursor=first["next_cursor"],
+        offline=True,
+    )
+    assert second["rows"] == [{"item_code": "300"}]
+    assert second["applied_filters"] == json.loads(filters)
 
 
 def test_cli_offline_attempt_preserves_filter_evidence(tmp_path):
