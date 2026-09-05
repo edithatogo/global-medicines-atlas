@@ -152,7 +152,7 @@ def test_unrun_experiment_cannot_be_marked_promotion_candidate() -> None:
     item["disposition"] = "promote-candidate"
 
     with pytest.raises(
-        ValidationError, match=r"only a supported|unrun experiment"
+        ValidationError, match="only a supported"
     ):
         ExperimentMatrix.model_validate(payload)
 
