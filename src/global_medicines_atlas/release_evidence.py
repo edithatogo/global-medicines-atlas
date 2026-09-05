@@ -152,6 +152,14 @@ class ReleaseEvidence(FrozenModel):
             raise ValueError(
                 "ordinary release qualification cannot produce approved evidence"
             )
+        unresolved = set(self.unresolved_gates)
+        omitted = {
+            gate
+            for gate, status in self.gate_outcomes.items()
+            if status is not GateStatus.PASSED and gate not in unresolved
+        }
+        if omitted:
+            raise ValueError("unresolved gates omit non-passed outcomes")
         for item in self.requirement_map:
             expected_satisfied = all(
                 self.gate_outcomes.get(gate) is GateStatus.PASSED

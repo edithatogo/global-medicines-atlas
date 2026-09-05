@@ -432,6 +432,20 @@ def test_release_evidence_rejects_missing_gate_outcome() -> None:
         ReleaseEvidence.model_validate({**evidence.model_dump(), "gate_outcomes": outcomes})
 
 
+@pytest.mark.edge
+def test_release_evidence_rejects_omitted_failed_gate() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    outcomes = {**evidence.gate_outcomes, "traceability": GateStatus.FAILED}
+    with pytest.raises(ValidationError, match="omit non-passed"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "gate_outcomes": outcomes,
+            "unresolved_gates": tuple(
+                gate for gate in evidence.unresolved_gates if gate != "traceability"
+            ),
+        })
+
+
 @pytest.mark.unit
 def test_checked_in_json_schema_accepts_model_and_rejects_approval() -> None:
     schema = json.loads(
