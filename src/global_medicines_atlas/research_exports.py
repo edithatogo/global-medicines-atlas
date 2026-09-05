@@ -23,7 +23,13 @@ EXPORT_MANIFEST_VERSION = 1
 
 def _canonical_bytes(value: Any) -> bytes:
     return (
-        json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        json.dumps(
+            value,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+            allow_nan=False,
+        )
         + "\n"
     ).encode("utf-8")
 

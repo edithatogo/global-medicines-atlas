@@ -70,3 +70,15 @@ def test_manifest_requires_pinned_source() -> None:
             generated_at=datetime(2026, 1, 1, tzinfo=UTC),
             generator_commit="abc1234",
         )
+
+
+@pytest.mark.edge
+def test_manifest_rejects_non_json_numeric_values() -> None:
+    with pytest.raises(ValueError, match="Out of range float values"):
+        build_query_snapshot_manifest(
+            query={"threshold": float("nan")},
+            result_rows=[],
+            sources=[_source()],
+            generated_at=datetime(2026, 1, 1, tzinfo=UTC),
+            generator_commit="abc1234",
+        )
