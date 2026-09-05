@@ -61,3 +61,16 @@ def test_envelope_rejects_page_count_mismatch() -> None:
     )
     with pytest.raises(ValueError, match="returned count"):
         build_coverage_envelope(response)
+
+
+def test_envelope_digest_binds_coverage_payload() -> None:
+    original = build_coverage_envelope(_response())
+    changed = _response().model_copy(
+        update={
+            "coverage": (
+                _response().coverage[0].model_copy(update={"covered_count": 1}),
+            )
+        }
+    )
+    revised = build_coverage_envelope(changed)
+    assert revised.page_sha256 != original.page_sha256
