@@ -88,6 +88,51 @@ class ResearchCrate(FrozenModel):
     def jsonld_sha256(self) -> str:
         return hashlib.sha256(self.canonical_jsonld_bytes()).hexdigest()
 
+    def croissant(self) -> dict[str, object]:
+        """Return a deterministic, metadata-only Croissant descriptor.
+
+        The descriptor references distributions by URL and digest only.  It
+        intentionally has no ``recordSet`` or inline data so generating this
+        Platinum projection can never embed governed source payloads.
+        """
+
+        return {
+            "@context": {
+                "@vocab": "https://schema.org/",
+                "cr": "http://mlcommons.org/croissant/",
+            },
+            "@type": "Dataset",
+            "name": self.name,
+            "version": self.version,
+            "identifier": self.identifier,
+            "url": self.dataset_url,
+            "cr:metadataOnly": True,
+            "distribution": [
+                {
+                    "@type": "DataDownload",
+                    "name": item.name,
+                    "contentUrl": item.content_url,
+                    "encodingFormat": item.media_type,
+                    "sha256": item.sha256,
+                }
+                for item in self.distributions
+            ],
+        }
+
+    def canonical_croissant_bytes(self) -> bytes:
+        """Serialize the Croissant descriptor with stable key ordering."""
+
+        return (
+            json.dumps(self.croissant(), sort_keys=True, separators=(",", ":"))
+            .encode("utf-8")
+            + b"\n"
+        )
+
+    def croissant_sha256(self) -> str:
+        """Return the content digest of the canonical Croissant descriptor."""
+
+        return hashlib.sha256(self.canonical_croissant_bytes()).hexdigest()
+
 
 def build_research_crate(
     *,
