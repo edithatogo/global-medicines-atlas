@@ -39,7 +39,7 @@ class PlatinumEvidenceError(ValueError):
 
 def _read(value: object, field: str) -> Any:
     if isinstance(value, Mapping):
-        return cast(Mapping[str, Any], value).get(field)
+        return cast("Mapping[str, Any]", value).get(field)
     return getattr(value, field, None)
 
 

@@ -19,6 +19,8 @@ from .historical_comparison import (
 )
 from .models import FrozenModel
 
+_MAX_PAGE_LIMIT = 1000
+
 
 class ChangeObservation(FrozenModel):
     """One literal key/field change with an explicit interpretation."""
@@ -118,6 +120,7 @@ class HistoricalChange(FrozenModel):
 
 class HistoricalChangePage(FrozenModel):
     """Bounded transport page over historical-change envelopes."""
+
     items: tuple[HistoricalChange, ...]
     offset: int = Field(ge=0)
     limit: int = Field(ge=1, le=1000)
@@ -127,16 +130,24 @@ class HistoricalChangePage(FrozenModel):
 
 class HistoricalChangeService:
     """Injected, read-only service for bounded historical-change pages."""
-    def __init__(self, items: list[HistoricalChange] | tuple[HistoricalChange, ...]):
+
+    def __init__(
+        self, items: list[HistoricalChange] | tuple[HistoricalChange, ...]
+    ):
         self._items = tuple(items)
 
-    def page(self, *, offset: int = 0, limit: int = 100) -> HistoricalChangePage:
-        if offset < 0 or limit < 1 or limit > 1000:
+    def page(
+        self, *, offset: int = 0, limit: int = 100
+    ) -> HistoricalChangePage:
+        if offset < 0 or limit < 1 or limit > _MAX_PAGE_LIMIT:
             raise ValueError("paging bounds are invalid")
         end = min(offset + limit, len(self._items))
         return HistoricalChangePage(
-            items=self._items[offset:end], offset=offset, limit=limit,
-            total=len(self._items), next_offset=end if end < len(self._items) else None,
+            items=self._items[offset:end],
+            offset=offset,
+            limit=limit,
+            total=len(self._items),
+            next_offset=end if end < len(self._items) else None,
         )
 
 

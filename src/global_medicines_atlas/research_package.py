@@ -148,7 +148,7 @@ def validate_metadata_only_croissant(descriptor: Mapping[str, object]) -> None:
 
     def walk(value: object) -> None:
         if isinstance(value, Mapping):
-            mapping = cast(Mapping[str, object], value)
+            mapping = cast("Mapping[str, object]", value)
             if _CROISSANT_PAYLOAD_KEYS.intersection(mapping):
                 raise ValueError(
                     "Croissant descriptor must not embed payload data"
@@ -156,7 +156,7 @@ def validate_metadata_only_croissant(descriptor: Mapping[str, object]) -> None:
             for child in mapping.values():
                 walk(child)
         elif isinstance(value, (list, tuple)):
-            for child in cast(tuple[object, ...] | list[object], value):
+            for child in cast("tuple[object, ...] | list[object]", value):
                 walk(child)
 
     walk(descriptor)

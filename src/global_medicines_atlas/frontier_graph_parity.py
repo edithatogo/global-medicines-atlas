@@ -93,21 +93,21 @@ def _document(value: str, label: str) -> dict[str, Any]:
         result = json.loads(value)
     except (TypeError, json.JSONDecodeError) as error:
         raise ValueError(f"invalid {label} JSON") from error
-    if not isinstance(result, dict) or set(cast(dict[str, Any], result)) != {
+    if not isinstance(result, dict) or set(cast("dict[str, Any]", result)) != {
         "nodes",
         "edges",
     }:
         raise ValueError(f"invalid {label} graph envelope")
-    return cast(dict[str, Any], result)
+    return cast("dict[str, Any]", result)
 
 
 def _rows(document: dict[str, Any], key: str) -> list[dict[str, Any]]:
     rows = document[key]
     if not isinstance(rows, list) or any(
-        not isinstance(row, dict) for row in cast(list[object], rows)
+        not isinstance(row, dict) for row in cast("list[object]", rows)
     ):
         raise ValueError("graph rows must be objects")
-    return cast(list[dict[str, Any]], rows)
+    return cast("list[dict[str, Any]]", rows)
 
 
 def _json(value: object) -> str:
