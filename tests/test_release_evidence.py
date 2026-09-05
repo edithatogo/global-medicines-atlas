@@ -496,6 +496,18 @@ def test_release_evidence_rejects_unsorted_schema_versions() -> None:
         })
 
 
+@pytest.mark.edge
+def test_release_evidence_rejects_negative_counts() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    counts = dict(evidence.receipt_counts)
+    counts[EvidenceClass.LIVE] = -1
+    with pytest.raises(ValidationError, match="counts must be nonnegative"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "receipt_counts": counts,
+        })
+
+
 @pytest.mark.unit
 def test_checked_in_json_schema_accepts_model_and_rejects_approval() -> None:
     schema = json.loads(

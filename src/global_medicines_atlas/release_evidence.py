@@ -126,6 +126,10 @@ class ReleaseEvidence(FrozenModel):
             raise ValueError("dataset schema versions must be unique and sorted")
         if self.migration_versions != tuple(sorted(set(self.migration_versions))):
             raise ValueError("migration versions must be unique and sorted")
+        if any(count < 0 for count in self.receipt_counts.values()) or any(
+            count < 0 for count in self.rights_states.values()
+        ):
+            raise ValueError("evidence counts must be nonnegative")
         for item in self.requirement_map:
             expected_gates = _REQUIREMENT_GATES[item.requirement_id]
             if item.gates != expected_gates:
