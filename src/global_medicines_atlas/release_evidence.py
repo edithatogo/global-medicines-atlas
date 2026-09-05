@@ -122,6 +122,10 @@ class ReleaseEvidence(FrozenModel):
             raise ValueError("requirement map is missing required identifiers")
         if requirement_ids != REQUIREMENT_IDS:
             raise ValueError("requirement map must use canonical order")
+        if self.dataset_schema_versions != tuple(sorted(set(self.dataset_schema_versions))):
+            raise ValueError("dataset schema versions must be unique and sorted")
+        if self.migration_versions != tuple(sorted(set(self.migration_versions))):
+            raise ValueError("migration versions must be unique and sorted")
         for item in self.requirement_map:
             expected_gates = _REQUIREMENT_GATES[item.requirement_id]
             if item.gates != expected_gates:

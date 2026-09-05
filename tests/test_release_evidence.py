@@ -486,6 +486,16 @@ def test_release_evidence_rejects_noncanonical_requirement_order() -> None:
         })
 
 
+@pytest.mark.edge
+def test_release_evidence_rejects_unsorted_schema_versions() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    with pytest.raises(ValidationError, match="schema versions must be unique and sorted"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "dataset_schema_versions": ("2", "1"),
+        })
+
+
 @pytest.mark.unit
 def test_checked_in_json_schema_accepts_model_and_rejects_approval() -> None:
     schema = json.loads(
