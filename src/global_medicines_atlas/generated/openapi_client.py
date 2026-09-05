@@ -111,6 +111,7 @@ class GlobalMedicinesAtlasClient:
         resource_id: str,
         columns: Sequence[str],
         cursor: str | None = None,
+        filters: str | None = None,
         limit: int | None = None,
         offline: bool | None = None,
     ) -> JsonValue:
@@ -119,6 +120,7 @@ class GlobalMedicinesAtlasClient:
         query = _query((
             ("columns", columns),
             ("cursor", cursor),
+            ("filters", filters),
             ("limit", limit),
             ("offline", offline),
         ))

@@ -581,6 +581,7 @@ def benefits_query(
     columns: Annotated[list[str], typer.Option("--column")],
     limit: Annotated[int, typer.Option(min=1, max=100)] = 100,
     cursor: str | None = None,
+    filters_json: Annotated[str | None, typer.Option("--filters-json")] = None,
     *,
     offline: bool = False,
 ) -> None:
@@ -588,10 +589,20 @@ def benefits_query(
     from .platinum_benefits import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
         BenefitsQuery,
         BenefitsService,
+        parse_benefits_filters,
     )
-    from .platinum_configuration import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
-        load_benefits_resolver,
-    )
+
+    try:
+        from .platinum_configuration import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
+            load_benefits_resolver,
+        )
+    except ModuleNotFoundError as error:
+        if error.name != "jsonschema":
+            raise
+        _fail(
+            ErrorCode.SERVICE_UNAVAILABLE,
+            "Install 'global-medicines-atlas[federation]' to query benefits",
+        )
     from .platinum_identity_service import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
         UnknownPlatinumResourceError,
     )
@@ -601,7 +612,11 @@ def benefits_query(
         _fail(ErrorCode.SERVICE_UNAVAILABLE, f"{_CURSOR_ENV} requires 32 bytes")
     try:
         query = BenefitsQuery(
-            columns=tuple(columns), limit=limit, cursor=cursor, offline=offline
+            columns=tuple(columns),
+            limit=limit,
+            cursor=cursor,
+            offline=offline,
+            filters=parse_benefits_filters(filters_json),
         )
         resolver = load_benefits_resolver(
             trust_file=trust_file,

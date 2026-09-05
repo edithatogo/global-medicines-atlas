@@ -138,6 +138,14 @@
 - [~] Write failing CLI/API tests for MBS services, PBS medicines, evidence
   edges, history, coverage, provenance, dataset identity, pagination, filters,
   errors, and OpenAPI compatibility.
+- [x] Add bounded scalar benefits predicates to the shared service, GET API
+  and CLI, preserving filter types and existing query-engine semantics. Bind
+  predicates to query evidence and signed cursors; reject malformed copied
+  models, unknown filter keys/columns, duplicate JSON keys and nonfinite or
+  oversized values. Regenerate the semantic OpenAPI snapshot and read-only
+  client. Missing optional jsonschema now reports installation guidance for
+  `global-medicines-atlas[federation]`; unrelated import failures propagate.
+  This slice does not close history, edge, coverage or production admission.
 - [ ] Confirm the intended failure before implementation.
 - [ ] Implement typed commands and read-only endpoints using shared service
   contracts rather than duplicated query logic.

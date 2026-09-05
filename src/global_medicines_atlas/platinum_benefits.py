@@ -11,9 +11,10 @@ from __future__ import annotations
 import hashlib
 import hmac
 import json
-from typing import TYPE_CHECKING, Annotated, Literal, Protocol
+import math
+from typing import TYPE_CHECKING, Annotated, Literal, Protocol, cast
 
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from .platinum_identity_service import ResolverDatasetIdentityService
 from .platinum_surface_contracts import (
@@ -31,12 +32,67 @@ _MIN_CURSOR_KEY_BYTES = 32
 Column = Annotated[
     str, Field(pattern=r"^[A-Za-z_][A-Za-z0-9_]*$", max_length=128)
 ]
+MAX_FILTERS = 16
+MAX_FILTER_TEXT = 1024
+MAX_FILTER_JSON = 16384
+
+
+class BenefitsFilter(PlatinumSurfaceModel):
+    """One typed scalar predicate, combined with other predicates using AND."""
+
+    column: Column
+    operator: Literal["=", "!=", "<", "<=", ">", ">="]
+    value: Scalar
+
+    @field_validator("value", mode="before")
+    @classmethod
+    def scalar_is_bounded(cls, value: object) -> object:
+        """Reject coercion, nested values, nonfinite numbers and huge scalars."""
+        if value is None or type(value) is bool:
+            return value
+        if type(value) is str and len(value) <= MAX_FILTER_TEXT:
+            return value
+        if type(value) is int and -(2**63) <= value < 2**63:
+            return value
+        if type(value) is float and math.isfinite(value):
+            return value
+        raise ValueError("filter value must be a bounded finite scalar")
+
+
+def parse_benefits_filters(encoded: str | None) -> tuple[BenefitsFilter, ...]:
+    """Parse the same bounded JSON predicate array for CLI and GET requests."""
+    if encoded is None:
+        return ()
+    if type(encoded) is not str or len(encoded) > MAX_FILTER_JSON:
+        raise ValueError("filter JSON exceeds input bound")
+
+    def unique(pairs: list[tuple[str, object]]) -> dict[str, object]:
+        result: dict[str, object] = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError("duplicate filter JSON key")
+            result[key] = value
+        return result
+
+    try:
+        parsed = json.loads(encoded, object_pairs_hook=unique)
+    except RecursionError:
+        raise ValueError("filter JSON nesting exceeds input bound") from None
+    if type(parsed) is not list:
+        raise ValueError("filters require a bounded JSON array")
+    items = cast("list[object]", parsed)
+    if len(items) > MAX_FILTERS:
+        raise ValueError("filters require a bounded JSON array")
+    return tuple(BenefitsFilter.model_validate(item) for item in items)
 
 
 class BenefitsQuery(PlatinumSurfaceModel):
     """Source-column projection and bounded page of an immutable resource."""
 
     columns: tuple[Column, ...] = Field(min_length=1, max_length=64)
+    filters: tuple[BenefitsFilter, ...] = Field(
+        default=(), max_length=MAX_FILTERS
+    )
     limit: int = Field(default=100, ge=1, le=100)
     cursor: str | None = Field(default=None, max_length=160)
     offline: bool = False
@@ -46,6 +102,8 @@ class BenefitsPage(PlatinumSurfaceModel):
     """Rows with exact identity and explicit limits on interpretability."""
 
     status: Literal["available", "unavailable"]
+    applied_filters: tuple[BenefitsFilter, ...] = ()
+    query_sha256: Sha256
     identity: DatasetIdentityEnvelope
     rows: tuple[dict[str, Scalar], ...]
     window_sha256: Sha256 | None
@@ -84,9 +142,19 @@ class BenefitsService:
 
     def query(self, resource_id: str, query: BenefitsQuery) -> BenefitsPage:
         """Read one bounded window; preserve source ordering and semantics."""
-        query = BenefitsQuery.model_validate(query.model_dump())
+        if set(vars(query)) - set(BenefitsQuery.model_fields):
+            raise ValueError("unknown copied query fields")
+        if type(query.filters) is not tuple:
+            raise ValueError("copied filters must be a typed tuple")
+        for item in query.filters:
+            if type(item) is not BenefitsFilter:
+                raise ValueError("copied filters must be typed predicates")
+            if set(vars(item)) - set(BenefitsFilter.model_fields):
+                raise ValueError("unknown copied filter fields")
+        query = BenefitsQuery.model_validate(query.model_dump(warnings=False))
         from .platinum_query import (  # ruff: ignore[import-outside-top-level] - optional federation runtime is loaded only for configured queries.
             PlatinumQueryService,
+            QueryFilter,
             QuerySpec,
         )
 
@@ -98,12 +166,21 @@ class BenefitsService:
         result = PlatinumQueryService(self._resolver).query_state(
             resource_id,
             engine="polars",
-            spec=QuerySpec(columns=query.columns, limit=_WINDOW_LIMIT),
+            spec=QuerySpec(
+                columns=query.columns,
+                limit=_WINDOW_LIMIT,
+                filters=tuple(
+                    QueryFilter(item.column, item.operator, item.value)
+                    for item in query.filters
+                ),
+            ),
             offline=query.offline,
         )
         if result.status == "unavailable":
             return BenefitsPage(
                 status="unavailable",
+                applied_filters=query.filters,
+                query_sha256=result.query_sha256,
                 identity=identity,
                 rows=(),
                 window_sha256=None,
@@ -134,6 +211,8 @@ class BenefitsService:
         end = offset + len(rows)
         return BenefitsPage(
             status="available",
+            applied_filters=query.filters,
+            query_sha256=result.query_receipt.query_sha256,
             identity=identity,
             rows=rows,
             window_sha256=result.result_sha256,

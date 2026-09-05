@@ -12,7 +12,12 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 from pydantic import AwareDatetime, ValidationError
 
-from .platinum_benefits import BenefitsLookup, BenefitsPage, BenefitsQuery
+from .platinum_benefits import (
+    BenefitsLookup,
+    BenefitsPage,
+    BenefitsQuery,
+    parse_benefits_filters,
+)
 from .platinum_identity_service import (
     DatasetIdentityLookup,
     UnknownPlatinumResourceError,
@@ -414,6 +419,13 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
         columns: Annotated[list[str], Query(min_length=1, max_length=64)],
         limit: Annotated[int, Query(ge=1, le=100)] = 100,
         cursor: Annotated[str | None, Query(max_length=160)] = None,
+        filters: Annotated[
+            str | None,
+            Query(
+                max_length=16384,
+                description="JSON array of up to 16 column/operator/scalar predicates, combined with AND.",
+            ),
+        ] = None,
         *,
         offline: bool = False,
     ) -> BenefitsPage | JSONResponse:
@@ -430,6 +442,7 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
                 resource_id,
                 BenefitsQuery(
                     columns=tuple(columns),
+                    filters=parse_benefits_filters(filters),
                     limit=limit,
                     cursor=cursor,
                     offline=offline,

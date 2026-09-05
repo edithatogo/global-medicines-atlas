@@ -20,9 +20,66 @@
       ],
       "type": "object"
     },
+    "BenefitsFilter": {
+      "additionalProperties": false,
+      "properties": {
+        "column": {
+          "maxLength": 128,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Column",
+          "type": "string"
+        },
+        "operator": {
+          "enum": [
+            "=",
+            "!=",
+            "<",
+            "<=",
+            ">",
+            ">="
+          ],
+          "title": "Operator",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "column",
+        "operator",
+        "value"
+      ],
+      "type": "object"
+    },
     "BenefitsPage": {
       "additionalProperties": false,
       "properties": {
+        "applied_filters": {
+          "default": [],
+          "items": {
+            "$ref": "#/components/schemas/BenefitsFilter"
+          },
+          "title": "Applied Filters",
+          "type": "array"
+        },
         "comparison_validity": {
           "const": "not_evaluated",
           "default": "not_evaluated",
@@ -60,6 +117,11 @@
             }
           ],
           "title": "Page Sha256"
+        },
+        "query_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Query Sha256",
+          "type": "string"
         },
         "reason": {
           "anyOf": [
@@ -152,6 +214,7 @@
       },
       "required": [
         "status",
+        "query_sha256",
         "identity",
         "rows",
         "window_sha256",
@@ -1559,6 +1622,22 @@
               "anyOf": [
                 {
                   "maxLength": 160,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "filters",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 16384,
                   "type": "string"
                 },
                 {

@@ -1,5 +1,21 @@
 # Australian benefits CLI configuration
 
+Install the optional query support with
+`pip install 'global-medicines-atlas[federation]'`. A core-only installation
+reports `SERVICE_UNAVAILABLE` with this installation guidance when jsonschema
+is missing; unrelated import failures are not relabelled as missing extras.
+
+Use `--filters-json '[{"column":"item_code","operator":"=","value":"200"}]'`
+to select source rows. The GET endpoint accepts the same JSON array through
+its `filters` query parameter. Up to 16 predicates are combined using AND;
+operators are `=`, `!=`, `<`, `<=`, `>` and `>=`. Values are bounded scalar
+strings, numbers, booleans or null and retain the existing query engine's
+scalar comparison semantics. Null is not a special `IS NULL` operator.
+Unknown columns, extra keys, nonfinite numbers and duplicate JSON keys fail.
+Every available or unavailable response includes `applied_filters` and the
+query SHA-256. A pagination cursor cannot continue a different filter query,
+even when both queries happen to produce the same rows.
+
 `gma benefits RESOURCE --trust-file TRUST.json --metadata-root METADATA
 --schema-file contracts/medallion/v4/federation.schema.json --column item_code
 --limit 100` reads one bounded page through the shared benefits service.
