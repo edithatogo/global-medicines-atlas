@@ -548,6 +548,16 @@ def test_release_evidence_rejects_duplicate_snapshot_digests() -> None:
         })
 
 
+@pytest.mark.edge
+def test_release_evidence_rejects_unsorted_snapshot_scopes() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    with pytest.raises(ValidationError, match="snapshot scopes must be unique and sorted"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "snapshot_scopes": ("z", "a"),
+        })
+
+
 @pytest.mark.unit
 def test_checked_in_json_schema_accepts_model_and_rejects_approval() -> None:
     schema = json.loads(
