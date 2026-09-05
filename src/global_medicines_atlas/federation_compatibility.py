@@ -70,7 +70,8 @@ def _validate_snapshot(snapshot: CompatibilitySnapshot) -> None:
     if not snapshot.semantic_dimension:
         raise ValueError("semantic dimension must be nonempty")
     if not snapshot.required_fields or any(
-        not field for field in snapshot.required_fields
+        not field or field != field.strip() or any(char.isspace() for char in field)
+        for field in snapshot.required_fields
     ):
         raise ValueError("required fields must be nonempty")
     if (

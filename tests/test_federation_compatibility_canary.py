@@ -55,3 +55,11 @@ def test_mutable_or_unpinned_revisions_are_rejected(revision: str) -> None:
 def test_successor_must_be_explicit_and_nonempty() -> None:
     with pytest.raises(ValueError, match="successor"):
         compare_federation_snapshots(BASE, replace(BASE, successor_dataset=""))
+
+
+@pytest.mark.parametrize("field", ["", " id", "id ", "field name"])
+def test_required_field_names_are_canonical(field: str) -> None:
+    with pytest.raises(ValueError, match="required fields"):
+        compare_federation_snapshots(
+            BASE, replace(BASE, required_fields=frozenset({field}))
+        )
