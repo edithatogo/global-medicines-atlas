@@ -98,6 +98,13 @@
 - [ ] Write failing deterministic graph, engine-parity, query-semantic,
   confidence/calibration, negative-control, review, rights, and restricted-byte
   tests.
+- [x] Execute the optional NetworkX directed multigraph projection against the
+  same portable Gold tables and independently compare every node's ancestors,
+  descendants and directed degrees with Python table traversal. Preserve
+  parallel edges, self loops, isolated nodes and all candidate/null/control
+  fields. NetworkX 3.6.1 was already available locally; no core dependency was
+  added. This bounded synthetic experiment does not qualify Neo4j/RDF-star,
+  live public graphs, retrieval calibration or production promotion.
 - [ ] Confirm the intended failure before implementation.
 - [ ] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections from
   the same Gold node/edge tables.
