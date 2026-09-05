@@ -121,7 +121,16 @@
   a typed retryable 503. GET/HEAD, cache policy and OpenAPI responses are
   bounded independently of later query endpoints; the semantic OpenAPI
   snapshot and generated read-only client include the new operation.
-- [ ] Write failing CLI/API tests for MBS services, PBS medicines, evidence
+- [x] Add the bounded Australian benefits shared query service and GET API.
+  The service consumes admitted MBS/PBS identities and verified Parquet through
+  the existing Polars adapter. Pages preserve semantic dimension, granularity,
+  revision, cohort and source evidence, with separate page/window digests and
+  signed cursors bound to resource, query, result and page size. A maximum
+  1,000-row scan window is explicit: exhausting the window never establishes
+  source completeness. Offline misses return typed unavailability. Clean-wheel
+  API imports defer the optional federation runtime. This local slice does not
+  complete CLI wiring, filters, general edges/history/coverage or qualification.
+- [~] Write failing CLI/API tests for MBS services, PBS medicines, evidence
   edges, history, coverage, provenance, dataset identity, pagination, filters,
   errors, and OpenAPI compatibility.
 - [ ] Confirm the intended failure before implementation.

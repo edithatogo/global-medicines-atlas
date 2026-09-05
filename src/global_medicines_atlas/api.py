@@ -12,6 +12,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 from pydantic import AwareDatetime, ValidationError
 
+from .platinum_benefits import BenefitsLookup, BenefitsPage, BenefitsQuery
 from .platinum_identity_service import (
     DatasetIdentityLookup,
     UnknownPlatinumResourceError,
@@ -172,6 +173,7 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
     service: ReadOnlyQueryService,
     *,
     dataset_identities: DatasetIdentityLookup | None = None,
+    benefits: BenefitsLookup | None = None,
 ) -> FastAPI:
     """Create an API application with an explicitly injected query service."""
 
@@ -401,6 +403,63 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
         methods=["HEAD"],
         response_model=None,
         include_in_schema=False,
+    )
+
+    def benefits_route(
+        request: Request,
+        response: Response,
+        resource_id: Annotated[
+            str, Path(max_length=256, pattern=RESOURCE_ID_PATTERN)
+        ],
+        columns: Annotated[list[str], Query(min_length=1, max_length=64)],
+        limit: Annotated[int, Query(ge=1, le=100)] = 100,
+        cursor: Annotated[str | None, Query(max_length=160)] = None,
+        *,
+        offline: bool = False,
+    ) -> BenefitsPage | JSONResponse:
+        if benefits is None:
+            return _error_response(
+                request,
+                status_code=503,
+                code=ErrorCode.SERVICE_UNAVAILABLE,
+                message="The Australian benefits query service is unavailable",
+                retryable=True,
+            )
+        try:
+            result = benefits.query(
+                resource_id,
+                BenefitsQuery(
+                    columns=tuple(columns),
+                    limit=limit,
+                    cursor=cursor,
+                    offline=offline,
+                ),
+            )
+        except UnknownPlatinumResourceError:
+            return _error_response(
+                request,
+                status_code=404,
+                code=ErrorCode.NOT_FOUND,
+                message="The admitted benefits resource was not found",
+            )
+        except ValueError:
+            return _error_response(
+                request,
+                status_code=422,
+                code=ErrorCode.INVALID_REQUEST,
+                message="The benefits query or cursor is invalid",
+            )
+        response.headers["cache-control"] = "no-store"
+        return result
+
+    app.add_api_route(
+        f"{API_BASE_PATH}/benefits/{{resource_id}}",
+        benefits_route,
+        methods=["GET"],
+        response_model=BenefitsPage,
+        responses={**_ERROR_RESPONSES, 404: {"model": ErrorEnvelope}},
+        tags=["benefits"],
+        summary="Query a bounded window of admitted Australian benefit evidence",
     )
 
     @app.api_route(
