@@ -12,6 +12,10 @@ on:
         required: true
         type: choice
         options: [mbs, pbs]
+      recovery_receipt:
+        description: Optional bot CAS acknowledgement comment ID for verification-only recovery
+        required: false
+        type: string
 
 permissions: {}
 
@@ -39,7 +43,9 @@ jobs:
           HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
           REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
           SOURCE: ${{ inputs.source }}
+          RECOVERY_RECEIPT: ${{ inputs.recovery_receipt }}
         run: |
           uv run --frozen --python 3.14.6 --with huggingface-hub==1.14.0 \
             python scripts/publish_source_metadata.py \
-            --source "$SOURCE" --exact-commit "$REQUESTED_COMMIT"
+            --source "$SOURCE" --exact-commit "$REQUESTED_COMMIT" \
+            --recovery-receipt "$RECOVERY_RECEIPT"

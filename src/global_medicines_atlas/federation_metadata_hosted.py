@@ -72,12 +72,13 @@ def require_hosted_main(exact_commit: str) -> None:
         raise ValueError("metadata publication requires run identity")
 
 
-def execute_metadata_append(
+def execute_metadata_append(  # ruff: ignore[too-many-branches, too-many-statements] -- explicit write/recovery gates
     document: dict[str, Any],
     *,
     exact_commit: str,
     hub: MetadataHub,
     persist: Callable[[dict[str, Any]], str],
+    acknowledgement: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Persist intent, CAS-add metadata and persist anonymous verification.
 
@@ -97,7 +98,10 @@ def execute_metadata_append(
             "source baseline must be exact public non-gated revision"
         )
     plan = prepare_metadata_append(document, before.objects)
-    if hub.head(plan.dataset) != plan.parent_revision:
+    if (
+        acknowledgement is None
+        and hub.head(plan.dataset) != plan.parent_revision
+    ):
         raise ValueError("default head drifted before metadata intent")
     intent: dict[str, Any] = {
         "schema_id": "global-medicines-atlas.source-metadata-append",
@@ -129,15 +133,57 @@ def execute_metadata_append(
         > MAX_RECEIPT_CHARS
     ):
         raise ValueError("durable receipt exceeds supported issue size")
-    intent_url = persist(intent)
+    revision: str = ""
+    if acknowledgement is not None:
+        expected = {
+            key: value for key, value in intent.items() if key != "run_url"
+        }
+        actual = {key: acknowledgement.get(key) for key in expected}
+        actual["status"] = "intent"
+        if (
+            actual != expected
+            or acknowledgement.get("status") != "cas_acknowledged"
+        ):
+            raise ValueError("recovery acknowledgement differs from exact plan")
+        if (
+            acknowledgement.get("parent_basis")
+            != "server_enforced_parent_commit"
+        ):
+            raise ValueError("recovery parent evidence missing")
+        observed_revision = acknowledgement.get("revision")
+        if not isinstance(observed_revision, str) or not re.fullmatch(
+            r"[0-9a-f]{40}", observed_revision
+        ):
+            raise ValueError("recovery revision invalid")
+        revision = observed_revision
+        if hub.head(plan.dataset) != revision:
+            raise ValueError("default head differs from acknowledged revision")
+        intent_url = acknowledgement.get("intent_url", "")
+    else:
+        intent_url = persist(intent)
     if not intent_url.startswith(
         f"https://github.com/{REPOSITORY}/issues/340#"
     ):
         raise ValueError("durable intent URL missing")
     # Server-side CAS remains mandatory even after this second head check.
-    if hub.head(plan.dataset) != plan.parent_revision:
-        raise ValueError("default head drifted after metadata intent")
-    revision = hub.append(plan)
+    if acknowledgement is None:
+        if hub.head(plan.dataset) != plan.parent_revision:
+            raise ValueError("default head drifted after metadata intent")
+        revision = hub.append(plan)
+        if not re.fullmatch(r"[0-9a-f]{40}", revision):
+            raise ValueError("append returned invalid revision")
+        acknowledgement = {
+            **intent,
+            "status": "cas_acknowledged",
+            "revision": revision,
+            "intent_url": intent_url,
+            "parent_basis": "server_enforced_parent_commit",
+        }
+        acknowledgement_url = persist(acknowledgement)
+        if not acknowledgement_url.startswith(
+            f"https://github.com/{REPOSITORY}/issues/340#"
+        ):
+            raise ValueError("durable CAS acknowledgement URL missing")
     after = hub.snapshot(plan.dataset, revision)
     if after.revision != revision:
         raise ValueError("anonymous readback revision differs")

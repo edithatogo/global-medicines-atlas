@@ -45,7 +45,7 @@ class FakeHub:
     def snapshot(self, dataset, revision):
         self.calls.append("snapshot")
         objects = self.objects
-        if self.plan:
+        if self.plan and revision != self.document["revision"]:
             objects += (self.plan.addition,)
         if self.tamper and self.plan:
             objects = objects[1:]
@@ -105,11 +105,12 @@ def test_intent_before_append_and_verification_after(setup):
         "intent",
         "head",
         "append",
+        "cas_acknowledged",
         "snapshot",
         "anonymously_verified",
     ]
     assert result["revision"] == "f" * 40
-    assert records[0]["addition"] == records[1]["addition"]
+    assert records[0]["addition"] == records[2]["addition"]
 
 
 @pytest.mark.parametrize(
@@ -168,7 +169,95 @@ def test_changed_sibling_cannot_emit_success(setup):
         execute_metadata_append(
             document, exact_commit="a" * 40, hub=hub, persist=persist
         )
-    assert [item["status"] for item in records] == ["intent"]
+    assert [item["status"] for item in records] == [
+        "intent",
+        "cas_acknowledged",
+    ]
+
+
+def test_acknowledged_append_recovers_without_second_write(setup):
+    document, hub = setup
+    hub.tamper = True
+    records = []
+
+    def persist(receipt):
+        records.append(receipt)
+        return "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-1"
+
+    with pytest.raises(ValueError, match="sibling inventory"):
+        execute_metadata_append(
+            document, exact_commit="a" * 40, hub=hub, persist=persist
+        )
+    acknowledgement = records[-1]
+    hub.tamper = False
+    hub.head = lambda _dataset: "f" * 40
+    result = execute_metadata_append(
+        document,
+        exact_commit="a" * 40,
+        hub=hub,
+        persist=persist,
+        acknowledgement=acknowledgement,
+    )
+    assert result["status"] == "anonymously_verified"
+    assert hub.calls.count("append") == 1
+    hub.head = lambda _dataset: "e" * 40
+    with pytest.raises(ValueError, match="acknowledged revision"):
+        execute_metadata_append(
+            document,
+            exact_commit="a" * 40,
+            hub=hub,
+            persist=persist,
+            acknowledgement=acknowledgement,
+        )
+    assert hub.calls.count("append") == 1
+
+
+def test_forged_recovery_plan_is_rejected(setup):
+    document, hub = setup
+    with pytest.raises(ValueError, match="acknowledgement"):
+        execute_metadata_append(
+            document,
+            exact_commit="a" * 40,
+            hub=hub,
+            persist=lambda _: "",
+            acknowledgement={"revision": "f" * 40},
+        )
+    assert "append" not in hub.calls
+
+
+@pytest.mark.parametrize("login", ["someone", "github-actions[bot]"])
+def test_recovery_requires_authenticated_matching_intent(monkeypatch, login):
+    script = runpy.run_path(
+        str(Path(__file__).parents[1] / "scripts/publish_source_metadata.py")
+    )
+    root = "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-"
+    intent = {"status": "intent", "addition": {"sha256": "a" * 64}}
+    ack = {
+        **intent,
+        "status": "cas_acknowledged",
+        "revision": "f" * 40,
+        "intent_url": root + "1",
+        "parent_basis": "server_enforced_parent_commit",
+    }
+
+    def read(command, **_kwargs):
+        identifier = command[-1].rsplit("/", 1)[-1]
+        return json.dumps({
+            "user": {"login": login},
+            "issue_url": "https://api.github.com/repos/edithatogo/global-medicines-atlas/issues/340",
+            "html_url": root + identifier,
+            "body": json.dumps(ack if identifier == "2" else intent),
+        })
+
+    monkeypatch.setattr(subprocess, "check_output", read)
+    if login != "github-actions[bot]":
+        with pytest.raises(ValueError, match="authenticated"):
+            script["read_acknowledgement"]("2")
+    else:
+        assert script["read_acknowledgement"]("2") == ack
+        intent["addition"] = {"sha256": "b" * 64}
+        with pytest.raises(ValueError, match="prior intent"):
+            script["read_acknowledgement"]("2")
 
 
 def test_receipt_size_rejected_before_external_write(setup):

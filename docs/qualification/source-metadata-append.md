@@ -43,8 +43,8 @@ Never use the existing PBS replace-all publisher
 (`.github/workflows/australian-pbs-hf-publication.yml`,
 `upload_folder(..., delete_patterns=['*'])`) for this transaction.
 
-After the append, independently observe the new commit's parent and public
-non-gated identity, anonymously restore/hash all siblings, then run the
+After the append, persist the server-enforced CAS acknowledgement and observe
+public non-gated identity, anonymously restore/hash all siblings, then run the
 verifier. Persist a durable issue receipt containing code commit, workflow/run,
 dataset, parent and new revisions, metadata path/bytes/SHA-256, complete before
 and after inventories and anonymous verification outcome. Cleanup must follow
@@ -53,3 +53,21 @@ revision intact and must not trigger deletion or a dataset-wide privacy change.
 
 Hosted execution and external publication remain unverified until a reviewed
 main commit is dispatched and its public durable receipts are observed.
+
+## Interrupted verification recovery
+
+The workflow persists and reads back a bot-authored `cas_acknowledged` receipt
+immediately after the Hub commit response and before anonymous verification.
+If verification is interrupted, pass that issue-comment ID as
+`recovery_receipt`. Both the acknowledgement and its linked prior intent must
+be bot-authored comments on issue 340 with matching exact plan fields. Recovery
+requires the acknowledged revision still be the dataset head, rehashes the
+original baseline and the complete resulting sibling set, and emits verified
+receipt evidence without another append.
+
+Parent evidence remains the authenticated workflow's recorded successful
+server-enforced CAS response; no independent Git ancestry claim is made.
+An ambiguous commit response, or interruption before acknowledgement becomes
+durable, remains a manual reconciliation boundary. Date-sorted commit lists
+are not accepted as parent evidence. Recovery preserves the exact reviewed
+code commit requirement and cannot silently adopt an unrelated newer head.

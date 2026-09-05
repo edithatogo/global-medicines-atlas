@@ -11,13 +11,15 @@ import hashlib
 import importlib
 import json
 import os
+import re
 import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import] - fixed gh commands, no shell
 import sys
 import tempfile
 import time
+from http import HTTPStatus
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 from urllib.parse import quote, urljoin
 
 import httpx
@@ -137,7 +139,7 @@ class HubTransport:
         response: httpx.Response, target: Path, limit: int, deadline: float
     ) -> None:
         if (
-            response.status_code != httpx.codes.OK
+            response.status_code != HTTPStatus.OK
             or response.headers.get("content-encoding", "identity")
             != "identity"
         ):
@@ -162,7 +164,7 @@ class HubTransport:
         if not siblings or len(siblings) > MAX_OBJECTS:
             raise ValueError("invalid source sibling denominator")
         total = 0
-        objects = []
+        objects: list[ObjectDigest] = []
         for item in siblings:
             size = item.size
             if type(size) is not int or not 0 <= size <= MAX_OBJECT_BYTES:
@@ -255,11 +257,68 @@ def persist_receipt(document: dict[str, Any], directory: Path) -> str:
     return str(observed["html_url"])
 
 
+def read_acknowledgement(comment_id: str) -> dict[str, Any]:
+    """Authenticate a bot CAS acknowledgement and its matching prior intent.
+
+    This proves the workflow observed a CAS response, not independent Git
+    ancestry. Missing acknowledgement after an ambiguous write stays blocked.
+    """
+
+    def read(identifier: str) -> dict[str, Any]:
+        if not re.fullmatch(r"[0-9]+", identifier):
+            raise ValueError("invalid recovery receipt identifier")
+        raw = subprocess.check_output(
+            ["gh", "api", f"repos/{REPOSITORY}/issues/comments/{identifier}"],
+            text=True,
+            timeout=30,
+        )
+        if len(raw) > MAX_RECEIPT_CHARS * 2:
+            raise ValueError("recovery receipt exceeds bound")
+        observed = json.loads(raw)
+        if (
+            observed.get("user", {}).get("login") != "github-actions[bot]"
+            or observed.get("issue_url")
+            != f"https://api.github.com/repos/{REPOSITORY}/issues/340"
+            or observed.get("html_url")
+            != f"https://github.com/{REPOSITORY}/issues/340#issuecomment-{identifier}"
+        ):
+            raise ValueError(
+                "recovery receipt is not authenticated issue evidence"
+            )
+        body = observed.get("body")
+        if not isinstance(body, str) or len(body) > MAX_RECEIPT_CHARS:
+            raise ValueError("recovery receipt body invalid")
+        document = json.loads(body)
+        if not isinstance(document, dict):
+            raise TypeError("recovery receipt document invalid")
+        return cast("dict[str, Any]", document)
+
+    acknowledgement = read(comment_id)
+    match = re.fullmatch(
+        rf"https://github.com/{re.escape(REPOSITORY)}/issues/340#issuecomment-([0-9]+)",
+        str(acknowledgement.get("intent_url", "")),
+    )
+    if match is None or acknowledgement.get("status") != "cas_acknowledged":
+        raise ValueError("recovery acknowledgement missing prior intent")
+    intent = read(match[1])
+    expected = {
+        **intent,
+        "status": "cas_acknowledged",
+        "revision": acknowledgement.get("revision"),
+        "intent_url": acknowledgement["intent_url"],
+        "parent_basis": "server_enforced_parent_commit",
+    }
+    if intent.get("status") != "intent" or acknowledgement != expected:
+        raise ValueError("recovery acknowledgement differs from prior intent")
+    return acknowledgement
+
+
 def main() -> None:
     """Publish one reviewed source profile after exact-main workflow checks."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", choices=("mbs", "pbs"), required=True)
     parser.add_argument("--exact-commit", required=True)
+    parser.add_argument("--recovery-receipt", default="")
     args = parser.parse_args()
     require_hosted_main(args.exact_commit)
     # Independently bind the current repository default head before Hub writes.
@@ -275,6 +334,11 @@ def main() -> None:
     ).strip()
     if head != args.exact_commit:
         raise ValueError("reviewed main has advanced")
+    acknowledgement = (
+        read_acknowledgement(args.recovery_receipt)
+        if args.recovery_receipt
+        else None
+    )
     root = Path(__file__).resolve().parents[1]
     document = json.loads(
         (
@@ -291,6 +355,7 @@ def main() -> None:
         exact_commit=args.exact_commit,
         hub=HubTransport(cache),
         persist=lambda receipt: persist_receipt(receipt, receipts),
+        acknowledgement=acknowledgement,
     )
     # Only successful durable anonymous verification permits source cache removal.
     shutil.rmtree(cache)
@@ -308,7 +373,7 @@ if __name__ == "__main__":
         worker = object.__new__(HubTransport)
         worker.cache = Path(sys.argv[6])
         print(
-            worker._download_worker(
+            worker._download_worker(  # pyright: ignore[reportPrivateUsage]
                 sys.argv[2], sys.argv[3], sys.argv[4], int(sys.argv[5])
             )
         )
