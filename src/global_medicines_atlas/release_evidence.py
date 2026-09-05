@@ -106,7 +106,7 @@ class ReleaseEvidence(FrozenModel):
     unresolved_gates: tuple[str, ...]
 
     @model_validator(mode="after")
-    def qualification_is_fail_closed(  # ruff: ignore[too-many-branches]
+    def qualification_is_fail_closed(  # ruff: ignore[too-many-branches,too-many-statements]
         self,
     ) -> ReleaseEvidence:
         required_gates = {gate for gates in _REQUIREMENT_GATES.values() for gate in gates}
@@ -136,6 +136,10 @@ class ReleaseEvidence(FrozenModel):
             raise ValueError("receipt digests must be lowercase hexadecimal")
         if any(_HEX_DIGEST.fullmatch(value) is None for value in self.snapshot_manifest_digests):
             raise ValueError("snapshot digests must be lowercase hexadecimal")
+        if self.receipt_digests != tuple(sorted(self.receipt_digests)):
+            raise ValueError("receipt digests must be sorted")
+        if self.snapshot_manifest_digests != tuple(sorted(self.snapshot_manifest_digests)):
+            raise ValueError("snapshot digests must be sorted")
         for item in self.requirement_map:
             expected_gates = _REQUIREMENT_GATES[item.requirement_id]
             if item.gates != expected_gates:

@@ -518,6 +518,14 @@ def test_release_evidence_rejects_malformed_receipt_digest() -> None:
         })
 
 
+@pytest.mark.edge
+def test_release_evidence_rejects_unsorted_receipt_digests() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    digests = ("f" * 64, "0" * 64)
+    with pytest.raises(ValidationError, match="receipt digests must be sorted"):
+        ReleaseEvidence.model_validate({**evidence.model_dump(), "receipt_digests": digests})
+
+
 @pytest.mark.unit
 def test_checked_in_json_schema_accepts_model_and_rejects_approval() -> None:
     schema = json.loads(
