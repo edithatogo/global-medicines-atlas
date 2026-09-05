@@ -67,3 +67,24 @@ observation the comment was present, but no acknowledgement, new fix commit or
 completed validation was visible. This is a submitted request, not evidence of
 a running job or completed repair. No review thread was resolved, protection
 changed, publication dispatched or merge performed by this browser action.
+
+## Local validation follow-up
+
+Two full harness snapshots remain failed, not superseded by focused reruns:
+the graph snapshot `4c1d69e` recorded 4,467 passing tests, 11 failures and six
+setup errors; the API snapshot `68e9df5` recorded 4,477 passing tests and eight
+failures. Their measured coverage was 96.82% and 96.81%, respectively.
+
+Both release-reproducibility tests passed unchanged at integration commit
+`5f77f89888e24dc237e1f2944321e79a3a757e84` after installing the required
+`uv 0.11.29` into an isolated temporary tool environment and prepending it to
+PATH for those test processes only. Clean-clone artifact equality/consumption
+took 245.72 seconds; reconstruction from the canonical remote receipt commit
+took 66.19 seconds. No global tool, version pin or test threshold was changed.
+
+Isolated date, workbook, recovery, entity, historical-comparison and one
+performance/three-strata rerun passed, but three product runner checks failed
+again at the unchanged graph snapshot: observed PERF-QUERY p95 values were
+677.985, 1017.465 and 1853.499 ms against the required 250 ms. These failures
+remain open. A three-sample diagnostic with one DuckDB thread did not reliably
+meet the budget and does not justify a configuration change or qualification.
