@@ -76,7 +76,9 @@ def test_schema_era_drift_is_not_a_change() -> None:
 
 def test_service_pages_injected_changes_deterministically() -> None:
     first = compare_historical_snapshots(None, snapshot(value="new"))
-    second = compare_historical_snapshots(snapshot(value="old"), snapshot(value="new"))
+    second = compare_historical_snapshots(
+        snapshot(value="old"), snapshot(value="new")
+    )
     page = HistoricalChangeService((first, second)).page(offset=1, limit=1)
     assert page.items == (second,)
     assert page.total == 2

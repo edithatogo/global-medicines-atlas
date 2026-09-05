@@ -40,7 +40,9 @@ class ResearchLineageReceipt(FrozenModel):
     def require_input_and_output(self) -> ResearchLineageReceipt:
         roles = {artifact.role for artifact in self.artifacts}
         if roles != {"input", "output"}:
-            raise ValueError("lineage receipt requires input and output artifacts")
+            raise ValueError(
+                "lineage receipt requires input and output artifacts"
+            )
         identifiers = tuple(artifact.identifier for artifact in self.artifacts)
         if len(identifiers) != len(set(identifiers)):
             raise ValueError("lineage artifact identifiers must be unique")
@@ -53,8 +55,9 @@ class ResearchLineageReceipt(FrozenModel):
 
     def canonical_bytes(self) -> bytes:
         return (
-            json.dumps(self.document(), sort_keys=True, separators=(",", ":"))
-            .encode("utf-8")
+            json.dumps(
+                self.document(), sort_keys=True, separators=(",", ":")
+            ).encode("utf-8")
             + b"\n"
         )
 

@@ -140,7 +140,9 @@ class HistoricalChangeService:
     def __init__(self, changes: Sequence[HistoricalChange]) -> None:
         self._changes = tuple(changes)
 
-    def page(self, *, offset: int = 0, limit: int = 100) -> HistoricalChangePage:
+    def page(
+        self, *, offset: int = 0, limit: int = 100
+    ) -> HistoricalChangePage:
         if offset < 0 or limit < 1 or limit > MAX_HISTORICAL_CHANGE_PAGE_SIZE:
             raise ValueError("historical change paging bounds are invalid")
         total = len(self._changes)
