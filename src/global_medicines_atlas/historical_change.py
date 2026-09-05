@@ -116,6 +116,30 @@ class HistoricalChange(FrozenModel):
         return self
 
 
+class HistoricalChangePage(FrozenModel):
+    """Bounded transport page over historical-change envelopes."""
+    items: tuple[HistoricalChange, ...]
+    offset: int = Field(ge=0)
+    limit: int = Field(ge=1, le=1000)
+    total: int = Field(ge=0)
+    next_offset: int | None = Field(default=None, ge=0)
+
+
+class HistoricalChangeService:
+    """Injected, read-only service for bounded historical-change pages."""
+    def __init__(self, items: list[HistoricalChange] | tuple[HistoricalChange, ...]):
+        self._items = tuple(items)
+
+    def page(self, *, offset: int = 0, limit: int = 100) -> HistoricalChangePage:
+        if offset < 0 or limit < 1 or limit > 1000:
+            raise ValueError("paging bounds are invalid")
+        end = min(offset + limit, len(self._items))
+        return HistoricalChangePage(
+            items=self._items[offset:end], offset=offset, limit=limit,
+            total=len(self._items), next_offset=end if end < len(self._items) else None,
+        )
+
+
 def _observation(item: NativeDifference) -> ChangeObservation:
     if item.kind == "present_only_left":
         kind = "removed_observation"
