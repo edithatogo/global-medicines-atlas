@@ -200,6 +200,26 @@ def test_weak_cursor_keys_rejected() -> None:
         )
 
 
+def test_authentic_cursor_cannot_escape_verified_window() -> None:
+    backend = service()
+    query = BenefitsQuery(columns=("item_code",), limit=1)
+    first = backend.query("au.mbs.service-items", query)
+    assert first.next_cursor is not None
+    binding_digest = first.next_cursor.split(":")[1]
+    token = backend._cursor(5, binding_digest)
+    with pytest.raises(ValueError, match="offset exceeds query window"):
+        backend.query(
+            "au.mbs.service-items", query.model_copy(update={"cursor": token})
+        )
+
+
+def test_other_admitted_sources_are_not_australian_benefits() -> None:
+    with pytest.raises(ValueError, match="not an Australian benefits source"):
+        service("other").query(
+            "au.other.service-items", BenefitsQuery(columns=("item_code",))
+        )
+
+
 @pytest.mark.parametrize("limit", [-1, 0, 101, 1000])
 @pytest.mark.parametrize("construction", ["copy", "construct"])
 def test_shared_service_revalidates_unchecked_limits(

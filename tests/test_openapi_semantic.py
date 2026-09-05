@@ -360,6 +360,34 @@ def test_generated_client_smoke_is_typed_read_only_and_offline() -> None:
     ).read_text(encoding="utf-8")
 
 
+def test_generated_benefits_client_preserves_projection_and_cursor() -> None:
+    transport = RecordingTransport()
+    client = GlobalMedicinesAtlasClient(transport)
+    filters = '[{"column":"item_code","operator":"=","value":"100"}]'
+    assert client.benefits_route_api_v1_benefits__resource_id__get(
+        resource_id="au:pbs/β?x=true",
+        columns=("item_code", "benefit"),
+        cursor="1:bound:signed",
+        filters=filters,
+        limit=1,
+        offline=True,
+    ) == {"offline": True}
+    assert transport.calls == [
+        (
+            "GET",
+            "/api/v1/benefits/au%3Apbs%2F%CE%B2%3Fx%3Dtrue",
+            (
+                ("columns", "item_code"),
+                ("columns", "benefit"),
+                ("cursor", "1:bound:signed"),
+                ("filters", filters),
+                ("limit", "1"),
+                ("offline", "true"),
+            ),
+        )
+    ]
+
+
 def test_generated_client_smokes_every_committed_read_only_operation() -> None:
     transport = RecordingTransport()
     client = GlobalMedicinesAtlasClient(transport)

@@ -144,6 +144,29 @@ def test_parser_limit_and_boolean_type():
     assert result[0].value is True
 
 
+@pytest.mark.parametrize("value", [None, -(2**63), 2**63 - 1, 1.25])
+def test_scalar_native_types_are_not_coerced(value):
+    predicate = BenefitsFilter(column="benefit", operator="=", value=value)
+    assert predicate.value == value
+    assert type(predicate.value) is type(value)
+
+
+@pytest.mark.parametrize("filters", [[], ({"column": "benefit"},)])
+def test_unchecked_filter_containers_rejected_before_resolution(filters):
+    query = BenefitsQuery(columns=("item_code",)).model_copy(
+        update={"filters": filters}
+    )
+    with pytest.raises(ValueError, match="copied filters"):
+        service().query("au.mbs.service-items", query)
+
+
+def test_deeply_nested_filter_input_has_bounded_error():
+    with pytest.raises(
+        ValueError, match=r"nesting exceeds input bound|validation error"
+    ):
+        parse_benefits_filters("[" * 2000 + "]" * 2000)
+
+
 def test_unknown_copied_fields_cannot_be_silently_dropped():
     query = BenefitsQuery(columns=("item_code",))
     with pytest.raises(ValueError, match="unknown copied query"):

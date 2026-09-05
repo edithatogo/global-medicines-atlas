@@ -146,3 +146,49 @@ def test_duplicate_resources_rejected(tmp_path):
     (tmp_path / "trust.json").write_text(json.dumps(trust))
     with pytest.raises(ValueError, match="duplicate resource"):
         load(tmp_path)
+
+
+@pytest.mark.parametrize(
+    ("resource", "extra", "secret", "error"),
+    [
+        ("au.mbs.items", [], "", "service_unavailable"),
+        ("au.mbs.items", [], "short", "service_unavailable"),
+        ("au.mbs.missing", [], "k" * 32, "not_found"),
+        ("au.mbs.items", ["--filters-json", "{}"], "k" * 32, "invalid_request"),
+        (
+            "au.mbs.items",
+            ["--column", "item; DROP TABLE"],
+            "k" * 32,
+            "invalid_request",
+        ),
+    ],
+)
+def test_cli_errors_are_typed_without_disclosing_operator_inputs(
+    tmp_path, resource, extra, secret, error
+):
+    configuration(tmp_path)
+    result = CliRunner().invoke(
+        app,
+        [
+            "benefits",
+            resource,
+            "--trust-file",
+            str(tmp_path / "trust.json"),
+            "--metadata-root",
+            str(tmp_path),
+            "--schema-file",
+            str(tmp_path / "schema.json"),
+            "--column",
+            "item_code",
+            "--offline",
+            *extra,
+        ],
+        env={"GMA_CURSOR_SECRET": secret},
+    )
+    assert result.exit_code == 2, result.output
+    assert not result.stdout
+    envelope = json.loads(result.stderr)
+    assert envelope["error"] == error
+    assert str(tmp_path) not in result.stderr
+    if secret:
+        assert secret not in result.stderr
