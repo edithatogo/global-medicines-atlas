@@ -57,6 +57,13 @@
   The offline MBS/PBS contract, valid/invalid fixtures, and intended-red receipt
   are implemented; emitting and anonymously verifying the metadata in each
   hosted source archive remains pending.
+  Offline append preparation/readback validation now binds the exact parent,
+  complete preserved sibling inventory and one content-addressed source
+  metadata addition (`federation_metadata_append.py`). The hosted-only CAS
+  adapter and source-specific workflow are now prepared with mocked SDK,
+  preservation, deadline and durable-receipt tests. Actual dispatch,
+  independent anonymous observation and durable publication receipts remain
+  pending; see `docs/qualification/source-metadata-append.md`.
 - [ ] Phase Verification & Checkpoint: datasets exist publicly but contain only
   exact approved manifests; empty repositories are not claimed as data.
 

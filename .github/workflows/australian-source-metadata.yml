@@ -1,0 +1,52 @@
+name: Append Australian source metadata
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_contract_commit:
+        description: Exact reviewed main commit containing metadata profiles
+        required: true
+        type: string
+      source:
+        description: Existing approved public source archive
+        required: true
+        type: choice
+        options: [mbs, pbs]
+      recovery_receipt:
+        description: Optional bot CAS acknowledgement comment ID for verification-only recovery
+        required: false
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: australian-source-metadata
+  cancel-in-progress: false
+
+jobs:
+  append:
+    name: Append and anonymously verify source metadata
+    runs-on: ubuntu-24.04
+    environment: australian-hf-publication
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: write # Persist and read back exact intent and verification.
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Append only to the pinned source parent and verify anonymously
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+          REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
+          SOURCE: ${{ inputs.source }}
+          RECOVERY_RECEIPT: ${{ inputs.recovery_receipt }}
+        run: |
+          uv run --frozen --python 3.14.6 --with huggingface-hub==1.14.0 \
+            python scripts/publish_source_metadata.py \
+            --source "$SOURCE" --exact-commit "$REQUESTED_COMMIT" \
+            --recovery-receipt "$RECOVERY_RECEIPT"

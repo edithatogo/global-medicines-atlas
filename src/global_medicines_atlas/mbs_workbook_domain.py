@@ -102,7 +102,8 @@ _ADDITIONS = (
 )
 
 
-def _mapping(header: str | None) -> tuple[str, str | None]:
+def workbook_header_mapping(header: str | None) -> tuple[str, str | None]:
+    """Return the existing source-native header destination, without inference."""
     if header in _FIELDS:
         return _FIELDS[header].target_table, header
     if header in _ANNOTATIONS:
@@ -158,7 +159,7 @@ def iter_workbook_domain_batches(
         for row in batch.to_pylist():
             column = row["coordinate"].rstrip(digits)
             header = headers_by_path[row["sheet_path"]].get(column)
-            target, field = _mapping(header)
+            target, field = workbook_header_mapping(header)
             is_header = row["row_index"] == 1
             rows.append({
                 **row,

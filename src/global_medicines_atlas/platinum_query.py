@@ -90,6 +90,7 @@ class QueryEvidence:
     effective_date: str | None
     retrieved_at: str
     coverage_state: Literal["not_declared"] = "not_declared"
+    confidence_state: Literal["not_declared"] = "not_declared"
     uncertainty_state: Literal["not_declared"] = "not_declared"
     review_state: Literal["not_declared"] = "not_declared"
     comparison_validity: Literal["not_evaluated"] = "not_evaluated"
@@ -465,6 +466,7 @@ def _evidence_document(evidence: QueryEvidence) -> dict[str, object]:
         "comparison_validity": evidence.comparison_validity,
         "contract_sha256": evidence.contract_sha256,
         "coverage_state": evidence.coverage_state,
+        "confidence_state": evidence.confidence_state,
         "dataset": evidence.dataset,
         "effective_date": evidence.effective_date,
         "entity_granularity": evidence.entity_granularity,

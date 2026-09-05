@@ -18,6 +18,7 @@ import pytest
 import global_medicines_atlas.platinum_checkpoint as checkpoint
 from global_medicines_atlas.platinum_checkpoint import (
     PublicFixturePin,
+    fetch_empty_machine_fixture,
     fetch_unadmitted_public_fixture,
     observe_unadmitted_public_fixture,
 )
@@ -229,6 +230,54 @@ def test_anonymous_fetch_uses_exact_revision_and_bounded_payload() -> None:
         result = fetch_unadmitted_public_fixture(exact, client)
     assert result.transport_verified is True
     assert result.product_admitted is False
+
+
+def test_empty_machine_preflight_rejects_existing_local_lake(
+    tmp_path: Path,
+) -> None:
+    raw = payload()
+    exact = pin(raw)
+    lake = tmp_path / "lake"
+    lake.mkdir()
+
+    with (
+        httpx.Client(
+            transport=httpx.MockTransport(
+                lambda _request: pytest.fail("transport issued")
+            ),
+            trust_env=False,
+        ) as client,
+        pytest.raises(ValueError, match="durable local lake"),
+    ):
+        fetch_empty_machine_fixture(exact, client, local_paths=(lake,))
+
+
+def test_empty_machine_preflight_is_bounded_and_unadmitted(
+    tmp_path: Path,
+) -> None:
+    raw = payload()
+    exact = pin(raw)
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if "/api/datasets/" in str(request.url):
+            return httpx.Response(200, content=metadata())
+        assert exact.revision in str(request.url)
+        return httpx.Response(200, content=raw)
+
+    with httpx.Client(
+        transport=httpx.MockTransport(handler),
+        headers={"Accept-Encoding": "identity"},
+        trust_env=False,
+    ) as client:
+        result = fetch_empty_machine_fixture(
+            exact, client, local_paths=(tmp_path / "absent-lake",)
+        )
+
+    assert result.bounded_fixture_ready is True
+    assert result.durable_local_lake_present is False
+    assert result.observation.transport_verified is True
+    assert result.observation.product_admitted is False
+    assert result.observation.checkpoint_complete is False
 
 
 @pytest.mark.parametrize(

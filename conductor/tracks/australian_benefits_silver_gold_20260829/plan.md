@@ -228,6 +228,15 @@
 
 ## Aggregate qualification review fixes
 
+- [x] Build deterministic workbook column-addressed lineage over the existing
+  qualified header mapping and value producer. Preserve every sheet, header,
+  unlabelled cell, B1/B2 identity and conversion denominator without copying
+  values or selecting date semantics. Synthetic acceptance is not real-source
+  qualification, federation admission or public publication.
+  Implemented `684344b`; 93 affected workbook tests pass with 100% new-module
+  statement/branch coverage; 47 harness inventory tests and Ruff, formatting,
+  ty and BasedPyright pass. Full/hosted validation remains separate.
+
 - [x] Constrain field-lineage native states and conversion statuses to
   separate versioned vocabularies so digest-valid serialized reports cannot
   assign undefined semantics. (Hosted review fix; focused revalidation and

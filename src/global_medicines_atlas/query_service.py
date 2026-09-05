@@ -625,26 +625,17 @@ class ReadOnlyQueryService:
         dimensions: list[str],
     ) -> list[ProductConclusion]:
         """Build the bounded cohort once for page-invariant validity and rows."""
-        cohort_limit = len(jurisdictions) * len(dimensions)
-        cohort_query = query.model_copy(
-            update={"cursor": None, "limit": cohort_limit}
-        )
-        cohort_keys = self._comparison_page_keys(
-            connection,
-            cohort_query,
-            jurisdictions,
-            dimensions,
-            None,
-        )
-        pairs = [(key[0], key[1]) for key in cohort_keys]
+        # These scans already restrict the complete jurisdiction/dimension
+        # product and bound provenance per partition. Discovering the same
+        # pairs in a preliminary UNION scan adds no filtering or evidence.
         assertion_rows = self._comparison_assertions(
-            connection, cohort_query, jurisdictions, dimensions, pairs
+            connection, query, jurisdictions, dimensions
         )
         coverage_rows = self._comparison_coverage(
-            connection, cohort_query, jurisdictions, dimensions, pairs
+            connection, query, jurisdictions, dimensions
         )
         conclusions = self._build_conclusions(
-            cohort_query, assertion_rows, coverage_rows
+            query, assertion_rows, coverage_rows
         )
         conclusions.sort(key=self._conclusion_key)
         return conclusions
@@ -766,13 +757,7 @@ class ReadOnlyQueryService:
         query: ComparisonQuery,
         jurisdictions: list[str],
         dimensions: list[str],
-        pairs: list[tuple[str, str]],
     ) -> list[dict[str, Any]]:
-        if not pairs:
-            return []
-        pair_sql, pair_parameters = self._pair_predicate(
-            pairs, dimension_column="kind"
-        )
         return self._fetch_dicts(
             connection,
             f"""
@@ -797,14 +782,13 @@ class ReadOnlyQueryService:
                        PARTITION BY jurisdiction, kind ORDER BY assertion_id
                    ) AS evidence_rank
             FROM temporal_assertions
-            WHERE concept_id = ?
-              AND jurisdiction IN (SELECT unnest(?))
-              AND kind IN (SELECT unnest(?))
-              AND valid_from <= ?
-              AND (valid_to IS NULL OR ? < valid_to)
-              AND observed_from <= ?
-              AND (observed_to IS NULL OR ? < observed_to)
-              AND ({pair_sql})
+            WHERE concept_id = $1
+              AND jurisdiction IN (SELECT unnest($2))
+              AND kind IN (SELECT unnest($3))
+              AND valid_from <= $4
+              AND (valid_to IS NULL OR $4 < valid_to)
+              AND observed_from <= $5
+              AND (observed_to IS NULL OR $5 < observed_to)
             )
             SELECT * EXCLUDE (evidence_rank)
             FROM ranked
@@ -816,10 +800,7 @@ class ReadOnlyQueryService:
                 jurisdictions,
                 dimensions,
                 query.valid_at,
-                query.valid_at,
                 query.observed_at,
-                query.observed_at,
-                *pair_parameters,
             ],
         )
 
@@ -829,16 +810,10 @@ class ReadOnlyQueryService:
         query: ComparisonQuery,
         jurisdictions: list[str],
         dimensions: list[str],
-        pairs: list[tuple[str, str]],
     ) -> list[dict[str, Any]]:
-        if not pairs:
-            return []
-        pair_sql, pair_parameters = self._pair_predicate(
-            pairs, dimension_column="dimension"
-        )
         return self._fetch_dicts(
             connection,
-            f"""
+            """
             WITH ranked AS (
             SELECT jurisdiction, source_id, receipt_id, observation_id,
                    dimension, medicine_concept_id, assertion_status,
@@ -850,49 +825,31 @@ class ReadOnlyQueryService:
                            observation_id
                    ) AS coverage_rank
             FROM temporal_coverage
-            WHERE jurisdiction IN (SELECT unnest(?))
-              AND dimension IN (SELECT unnest(?))
+            WHERE jurisdiction IN (SELECT unnest($1))
+              AND dimension IN (SELECT unnest($2))
               AND (
-                  medicine_concept_id = ?
+                  medicine_concept_id = $3
                   OR medicine_concept_id IS NULL
               )
-              AND valid_from <= ?
-              AND (valid_to IS NULL OR ? < valid_to)
-              AND observed_from <= ?
-              AND (observed_to IS NULL OR ? < observed_to)
-              AND ({pair_sql})
+              AND valid_from <= $4
+              AND (valid_to IS NULL OR $4 < valid_to)
+              AND observed_from <= $5
+              AND (observed_to IS NULL OR $5 < observed_to)
             )
             SELECT * EXCLUDE (coverage_rank)
             FROM ranked
             WHERE coverage_rank = 1
             ORDER BY jurisdiction, dimension, medicine_concept_id NULLS LAST,
                      observation_id
-            """,  # ruff: ignore[hardcoded-sql-expression]
+            """,
             [
                 jurisdictions,
                 dimensions,
                 query.concept_id,
                 query.valid_at,
-                query.valid_at,
                 query.observed_at,
-                query.observed_at,
-                *pair_parameters,
             ],
         )
-
-    @staticmethod
-    def _pair_predicate(
-        pairs: Sequence[tuple[str, str]],
-        *,
-        dimension_column: Literal["kind", "dimension"],
-    ) -> tuple[str, list[object]]:
-        clauses = [
-            f"(jurisdiction = ? AND {dimension_column} = ?)" for _pair in pairs
-        ]
-        parameters: list[object] = [
-            value for pair in pairs for value in (pair[0], pair[1])
-        ]
-        return " OR ".join(clauses), parameters
 
     def _comparison_page_keys(
         self,
@@ -923,50 +880,42 @@ class ReadOnlyQueryService:
             jurisdictions,
             dimensions,
             query.valid_at,
-            query.valid_at,
-            query.observed_at,
-            query.observed_at,
-            query.concept_id,
-            jurisdictions,
-            dimensions,
-            query.concept_id,
-            query.valid_at,
-            query.valid_at,
-            query.observed_at,
             query.observed_at,
         ]
         keyset = ""
         if after is not None:
             parameters.extend(after)
-            keyset = "WHERE (jurisdiction, dimension, concept_id) > (?, ?, ?)"
+            keyset = (
+                "WHERE (jurisdiction, dimension, concept_id) > ($6, $7, $8)"
+            )
         parameters.append(query.limit + 1)
         sql = f"""
             WITH candidate_keys AS (
                 SELECT DISTINCT jurisdiction, kind AS dimension, concept_id
                 FROM temporal_assertions
-                WHERE concept_id = ?
-                  AND jurisdiction IN (SELECT unnest(?))
-                  AND kind IN (SELECT unnest(?))
-                  AND valid_from <= ?
-                  AND (valid_to IS NULL OR ? < valid_to)
-                  AND observed_from <= ?
-                  AND (observed_to IS NULL OR ? < observed_to)
+                WHERE concept_id = $1
+                  AND jurisdiction IN (SELECT unnest($2))
+                  AND kind IN (SELECT unnest($3))
+                  AND valid_from <= $4
+                  AND (valid_to IS NULL OR $4 < valid_to)
+                  AND observed_from <= $5
+                  AND (observed_to IS NULL OR $5 < observed_to)
                 UNION
-                SELECT DISTINCT jurisdiction, dimension, ? AS concept_id
+                SELECT DISTINCT jurisdiction, dimension, $1 AS concept_id
                 FROM temporal_coverage
-                WHERE jurisdiction IN (SELECT unnest(?))
-                  AND dimension IN (SELECT unnest(?))
-                  AND (medicine_concept_id = ? OR medicine_concept_id IS NULL)
-                  AND valid_from <= ?
-                  AND (valid_to IS NULL OR ? < valid_to)
-                  AND observed_from <= ?
-                  AND (observed_to IS NULL OR ? < observed_to)
+                WHERE jurisdiction IN (SELECT unnest($2))
+                  AND dimension IN (SELECT unnest($3))
+                  AND (medicine_concept_id = $1 OR medicine_concept_id IS NULL)
+                  AND valid_from <= $4
+                  AND (valid_to IS NULL OR $4 < valid_to)
+                  AND observed_from <= $5
+                  AND (observed_to IS NULL OR $5 < observed_to)
             )
             SELECT jurisdiction, dimension, concept_id
             FROM candidate_keys
             {keyset}
             ORDER BY jurisdiction, dimension, concept_id
-            LIMIT ?
+            LIMIT ${len(parameters)}
             """  # ruff: ignore[hardcoded-sql-expression]
         return sql, parameters
 

@@ -18,6 +18,7 @@ import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from http import HTTPStatus
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal, cast
 from urllib.parse import quote, urljoin, urlsplit
 
@@ -174,6 +175,47 @@ class CheckpointPreflight:
         return hashlib.sha256(self.canonical_bytes).hexdigest()
 
 
+@dataclass(frozen=True)
+class EmptyMachinePreflight:
+    """Evidence from a bounded read made without a durable local lake.
+
+    This is deliberately a transport/readiness observation, not product
+    admission.  ``local_paths`` are checked before transport so a caller
+    cannot accidentally turn a local lake into a Phase 1 fixture claim.
+    """
+
+    observation: CheckpointPreflight
+    durable_local_lake_present: Literal[False] = False
+
+    @property
+    def bounded_fixture_ready(self) -> Literal[True]:
+        """The pinned fixture was fetched and structurally verified."""
+        return True
+
+
+def fetch_empty_machine_fixture(
+    pin: PublicFixturePin,
+    client: httpx.Client,
+    *,
+    local_paths: tuple[Path, ...] = (),
+    timeout_seconds: float = 30,
+) -> EmptyMachinePreflight:
+    """Run the pinned fixture preflight while refusing local lake state.
+
+    The check is intentionally narrow: it proves that the bounded fixture
+    path works from a machine with no pre-existing durable lake at the paths
+    supplied by the caller.  It does not create, delete, or inspect arbitrary
+    filesystem locations and it cannot complete product admission.
+    """
+    if any(path.exists() for path in local_paths):
+        raise ValueError("empty-machine preflight found durable local lake")
+    return EmptyMachinePreflight(
+        observation=fetch_unadmitted_public_fixture(
+            pin, client, timeout_seconds=timeout_seconds
+        )
+    )
+
+
 def observe_unadmitted_public_fixture(
     pin: PublicFixturePin,
     metadata_bytes: bytes,
@@ -288,38 +330,56 @@ def _download(
 def _read_until_deadline(
     response: httpx.Response, *, limit: int, deadline: float
 ) -> bytes:
-    """Consume a sync response without allowing a stalled read past deadline."""
+    """Consume until deadline, cancelling queue delivery on every exit.
+
+    Closing the response requests transport cleanup. A transport that ignores
+    close may still block its daemon read, but no abandoned queue put persists
+    after that read returns.
+    """
     events: queue.Queue[tuple[bytes | None, Exception | None]] = queue.Queue(1)
+    cancelled = threading.Event()
+
+    def emit(event: tuple[bytes | None, Exception | None]) -> bool:
+        while not cancelled.is_set():
+            try:
+                events.put(event, timeout=0.01)
+            except queue.Full:
+                continue
+            return True
+        return False
 
     def produce() -> None:
         try:
             for chunk in response.iter_bytes(64 * 1024):
-                events.put((chunk, None))
-            events.put((None, None))
+                if not emit((chunk, None)):
+                    return
+            emit((None, None))
         except Exception as error:  # pragma: no cover - transport-specific
-            events.put((None, error))
+            emit((None, error))
 
     threading.Thread(target=produce, daemon=True).start()
     chunks: list[bytes] = []
     size = 0
-    while True:
-        remaining = deadline - time.monotonic()
-        if remaining <= 0:
-            response.close()
-            raise ValueError("HTTP retrieval deadline exceeded")
-        try:
-            chunk, error = events.get(timeout=remaining)
-        except queue.Empty:
-            response.close()
-            raise ValueError("HTTP retrieval deadline exceeded") from None
-        if error is not None:
-            raise error
-        if chunk is None:
-            return b"".join(chunks)
-        size += len(chunk)
-        if size > limit:
-            raise ValueError("remote size exceeds budget")
-        chunks.append(chunk)
+    try:
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise ValueError("HTTP retrieval deadline exceeded")
+            try:
+                chunk, error = events.get(timeout=remaining)
+            except queue.Empty:
+                raise ValueError("HTTP retrieval deadline exceeded") from None
+            if error is not None:
+                raise error
+            if chunk is None:
+                return b"".join(chunks)
+            size += len(chunk)
+            if size > limit:
+                raise ValueError("remote size exceeds budget")
+            chunks.append(chunk)
+    finally:
+        cancelled.set()
+        response.close()
 
 
 def _require_anonymous_client(client: httpx.Client) -> None:

@@ -20,6 +20,213 @@
       ],
       "type": "object"
     },
+    "BenefitsFilter": {
+      "additionalProperties": false,
+      "properties": {
+        "column": {
+          "maxLength": 128,
+          "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+          "title": "Column",
+          "type": "string"
+        },
+        "operator": {
+          "enum": [
+            "=",
+            "!=",
+            "<",
+            "<=",
+            ">",
+            ">="
+          ],
+          "title": "Operator",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "column",
+        "operator",
+        "value"
+      ],
+      "type": "object"
+    },
+    "BenefitsPage": {
+      "additionalProperties": false,
+      "properties": {
+        "applied_filters": {
+          "default": [],
+          "items": {
+            "$ref": "#/components/schemas/BenefitsFilter"
+          },
+          "title": "Applied Filters",
+          "type": "array"
+        },
+        "comparison_validity": {
+          "const": "not_evaluated",
+          "default": "not_evaluated",
+          "title": "Comparison Validity",
+          "type": "string"
+        },
+        "coverage_state": {
+          "const": "not_declared",
+          "default": "not_declared",
+          "title": "Coverage State",
+          "type": "string"
+        },
+        "identity": {
+          "$ref": "#/components/schemas/DatasetIdentityEnvelope"
+        },
+        "next_cursor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Next Cursor"
+        },
+        "page_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Page Sha256"
+        },
+        "query_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Query Sha256",
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reason"
+        },
+        "receipt_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Receipt Sha256",
+          "type": "string"
+        },
+        "review_state": {
+          "const": "not_declared",
+          "default": "not_declared",
+          "title": "Review State",
+          "type": "string"
+        },
+        "rows": {
+          "items": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "type": "object"
+          },
+          "title": "Rows",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "available",
+            "unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "uncertainty_state": {
+          "const": "not_declared",
+          "default": "not_declared",
+          "title": "Uncertainty State",
+          "type": "string"
+        },
+        "window_complete": {
+          "title": "Window Complete",
+          "type": "boolean"
+        },
+        "window_limit": {
+          "const": 1000,
+          "default": 1000,
+          "title": "Window Limit",
+          "type": "integer"
+        },
+        "window_rows": {
+          "title": "Window Rows",
+          "type": "integer"
+        },
+        "window_sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Window Sha256"
+        }
+      },
+      "required": [
+        "status",
+        "query_sha256",
+        "identity",
+        "rows",
+        "window_sha256",
+        "page_sha256",
+        "receipt_sha256",
+        "reason",
+        "next_cursor",
+        "window_rows",
+        "window_complete"
+      ],
+      "type": "object"
+    },
     "ComparisonDimensionState": {
       "enum": [
         "aligned",
@@ -1380,6 +1587,114 @@
   },
   "contract": "global-medicines-atlas.openapi-readonly",
   "paths": {
+    "/api/v1/benefits/{resource_id}": {
+      "get": {
+        "operationId": "benefits_route_api_v1_benefits__resource_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "resource_id",
+            "required": true,
+            "schema": {
+              "maxLength": 256,
+              "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)+$",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "columns",
+            "required": true,
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 64,
+              "minItems": 1,
+              "type": "array"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 160,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "filters",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 16384,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offline",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "application/json": {
+              "$ref": "#/components/schemas/BenefitsPage"
+            }
+          },
+          "400": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "404": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "422": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "503": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          }
+        },
+        "security": []
+      }
+    },
     "/api/v1/comparisons": {
       "get": {
         "operationId": "comparisons_api_v1_comparisons_get",

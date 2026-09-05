@@ -431,6 +431,7 @@ dev = [
     { name = "jsonschema", extra = ["format-nongpl"] },
     { name = "lancedb" },
     { name = "mutmut" },
+    { name = "networkx" },
     { name = "packaging" },
     { name = "pyarrow-stubs" },
     { name = "pytest" },
@@ -463,6 +464,7 @@ test = [
     { name = "beautifulsoup4" },
     { name = "jsonschema", extra = ["format-nongpl"] },
     { name = "lancedb" },
+    { name = "networkx" },
     { name = "packaging" },
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -476,6 +478,7 @@ test-goblin = [
     { name = "jsonschema", extra = ["format-nongpl"] },
     { name = "lancedb" },
     { name = "mutmut" },
+    { name = "networkx" },
     { name = "packaging" },
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -527,6 +530,7 @@ dev = [
     { name = "jsonschema", extras = ["format-nongpl"], marker = "python_full_version == '3.14.*'", specifier = ">=4.25" },
     { name = "lancedb", marker = "python_full_version == '3.14.*'", specifier = ">=0.27" },
     { name = "mutmut", marker = "python_full_version == '3.14.*'", specifier = ">=3.5" },
+    { name = "networkx", marker = "python_full_version == '3.14.*'", specifier = "==3.6.1" },
     { name = "packaging", marker = "python_full_version == '3.14.*'", specifier = ">=26" },
     { name = "pyarrow-stubs", marker = "python_full_version == '3.14.*'", specifier = ">=20.0.0.20260625" },
     { name = "pytest", marker = "python_full_version == '3.14.*'", specifier = ">=9.1" },
@@ -555,6 +559,7 @@ test = [
     { name = "beautifulsoup4", marker = "python_full_version == '3.14.*'", specifier = ">=4.13" },
     { name = "jsonschema", extras = ["format-nongpl"], marker = "python_full_version == '3.14.*'", specifier = ">=4.25" },
     { name = "lancedb", marker = "python_full_version == '3.14.*'", specifier = ">=0.27" },
+    { name = "networkx", marker = "python_full_version == '3.14.*'", specifier = "==3.6.1" },
     { name = "packaging", marker = "python_full_version == '3.14.*'", specifier = ">=26" },
     { name = "pytest", marker = "python_full_version == '3.14.*'", specifier = ">=9.1" },
     { name = "pytest-cov", marker = "python_full_version == '3.14.*'", specifier = ">=7.0" },
@@ -568,6 +573,7 @@ test-goblin = [
     { name = "jsonschema", extras = ["format-nongpl"], marker = "python_full_version == '3.14.*'", specifier = ">=4.25" },
     { name = "lancedb", marker = "python_full_version == '3.14.*'", specifier = ">=0.27" },
     { name = "mutmut", marker = "python_full_version == '3.14.*'", specifier = ">=3.5" },
+    { name = "networkx", marker = "python_full_version == '3.14.*'", specifier = "==3.6.1" },
     { name = "packaging", marker = "python_full_version == '3.14.*'", specifier = ">=26" },
     { name = "pytest", marker = "python_full_version == '3.14.*'", specifier = ">=9.1" },
     { name = "pytest-cov", marker = "python_full_version == '3.14.*'", specifier = ">=7.0" },
@@ -1091,6 +1097,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/af/b0/ebcae42b90b07756b7aa10c4176835f436332e6c1cb28bc35bae83462382/mutmut-3.6.0.tar.gz", hash = "sha256:bcbd3e4d0d2d4edf3dfb42955417279a8866a3dbbcb87d619f2f3fd0ac7fafda", size = 51538, upload-time = "2026-06-06T07:44:51.798Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a9/5a/a0caa3f9db407b5d12c311bd4c87aa67fdd6e3f329377149e303108a1c51/mutmut-3.6.0-py3-none-any.whl", hash = "sha256:a9f5b8dcf6cbf9496769d7cf8bdbba37a0ec709ad98f88d103238b62f10bdf37", size = 47770, upload-time = "2026-06-06T07:44:50.038Z" },
+]
+
+[[package]]
+name = "networkx"
+version = "3.6.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/6a/51/63fe664f3908c97be9d2e4f1158eb633317598cfa6e1fc14af5383f17512/networkx-3.6.1.tar.gz", hash = "sha256:26b7c357accc0c8cde558ad486283728b65b6a95d85ee1cd66bafab4c8168509", size = 2517025, upload-time = "2025-12-08T17:02:39.908Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9e/c9/b2622292ea83fbb4ec318f5b9ab867d0a28ab43c5717bb85b0a5f6b3b0a4/networkx-3.6.1-py3-none-any.whl", hash = "sha256:d47fbf302e7d9cbbb9e2555a0d267983d2aa476bac30e90dfbe5669bd57f3762", size = 2068504, upload-time = "2025-12-08T17:02:38.159Z" },
 ]
 
 [[package]]

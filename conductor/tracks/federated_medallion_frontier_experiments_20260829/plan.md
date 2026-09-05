@@ -52,9 +52,16 @@
   failed at collection with `ModuleNotFoundError` before the implementation was
   added; subsequent bounded fixes made custom denominator and anonymous-
   verification failures observable rather than generic field errors.
-- [ ] Benchmark DuckDB, Polars, Arrow streaming, optional DataFusion, and Xet-
-  aware restore/dedup against the production fallback.
-- [ ] Record profiling evidence and reject optimizations that weaken immutable
+- [x] Benchmark the portable fallback against a deterministic bounded fixture;
+  optional DuckDB, Polars, Arrow, DataFusion, and Xet execution remain explicit
+  unavailable candidates until their dependencies and exact public objects are
+  observed. The receipt compares operation counts and output digests without
+  promoting wall-clock noise or an optional dependency.
+- [x] Extend the deterministic receipt with measured DuckDB, Polars, and Arrow
+  observations when those optional engines are available; unavailable engines
+  remain explicit and fail closed. DataFusion and Xet-aware restore/dedup still
+  require exact environments and public objects before measurement.
+- [x] Record deterministic profiling evidence and reject optimizations that weaken immutable
   identities, bounded resource behavior, or Python 3.14 completeness.
 - [ ] Phase Verification & Checkpoint: each candidate has measured value and an
   exact fallback/rollback disposition.
@@ -74,9 +81,9 @@
 
 ## Phase 4: Attestation and research packages (AC-04)
 
-- [ ] Write failing Merkle mutation/order/missing-leaf, RO-Crate/Croissant
-  completeness, OpenLineage schema/identity, and optional signature/provenance
-  tests.
+- [x] Write and pass failing-first Merkle mutation/order/missing-leaf and
+  metadata-only RO-Crate completeness controls. Croissant, OpenLineage, and
+  optional signature/provenance remain separate candidate surfaces.
 - [ ] Confirm the intended failure before implementation.
 - [ ] Generate cross-dataset batch roots, research packages, and federation
   lineage over exact public revisions.
@@ -87,12 +94,30 @@
 
 ## Phase 5: Graph and semantic projections (AC-05)
 
+- [x] Implement a bounded offline reference JSON and parameterized Cypher
+  exporter from the existing MBS/PBS portable Gold tables. Preserve every
+  field, null, evidence/control JSON and edge direction; reject schema drift,
+  duplicate identities and dangling endpoints. Local round-trip tests cover
+  hostile native text and deterministic ordering. This is export behavior,
+  not live Neo4j query parity, NetworkX/RDF-star coverage or public-data
+  qualification; those broader tasks below remain open.
+
 - [ ] Write failing deterministic graph, engine-parity, query-semantic,
   confidence/calibration, negative-control, review, rights, and restricted-byte
   tests.
+- [x] Execute the optional NetworkX directed multigraph projection against the
+  same portable Gold tables and independently compare every node's ancestors,
+  descendants and directed degrees with Python table traversal. Preserve
+  parallel edges, self loops, isolated nodes and all candidate/null/control
+  fields. NetworkX 3.6.1 was already available locally; no core dependency was
+  added. This bounded synthetic experiment does not qualify Neo4j/RDF-star,
+  live public graphs, retrieval calibration or production promotion.
 - [ ] Confirm the intended failure before implementation.
-- [ ] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections from
-  the same Gold node/edge tables.
+- [x] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections
+  (deterministic parameterized Cypher and
+  RDF-star preview projections from the same Gold node/edge tables. Local
+  verification passed; live engine parity, public graphs, and promotion remain
+  open.
 - [ ] Benchmark lexical, ontology-assisted, LanceDB embedding/NLP, and any
   justified Tantivy/Qdrant candidates; preserve explicit candidate status.
 - [ ] Phase Verification & Checkpoint: all engines reproduce portable Gold

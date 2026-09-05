@@ -107,6 +107,12 @@
 
 ## Phase 2: CLI and API (AC-01, AC-02, AC-04)
 
+- [x] Reduce duplicate comparison cohort work while preserving request-local
+  validity, bounded provenance and executed SQL pagination. The shared service
+  now issues three rather than four comparison statements and binds repeated
+  scope/time values once per statement. Query/API regressions pass. A paired
+  20-sample fixture comparison measured p95 441.374 ms before and 331.128 ms
+  after; the 250 ms performance gate remains failing and is not waived.
 - [x] Define the strict shared dataset-identity response envelope over an
   already-admitted resolver resource. It preserves the exact public revision,
   object/contract/semantic digests, semantic dimension, entity granularity,
@@ -121,14 +127,43 @@
   a typed retryable 503. GET/HEAD, cache policy and OpenAPI responses are
   bounded independently of later query endpoints; the semantic OpenAPI
   snapshot and generated read-only client include the new operation.
-- [ ] Write failing CLI/API tests for MBS services, PBS medicines, evidence
+- [x] Add the bounded Australian benefits shared query service and GET API.
+  The service consumes admitted MBS/PBS identities and verified Parquet through
+  the existing Polars adapter. Pages preserve semantic dimension, granularity,
+  revision, cohort and source evidence, with separate page/window digests and
+  signed cursors bound to resource, query, result and page size. A maximum
+  1,000-row scan window is explicit: exhausting the window never establishes
+  source completeness. Offline misses return typed unavailability. Clean-wheel
+  API imports defer the optional federation runtime. This local slice does not
+  complete CLI wiring, filters, general edges/history/coverage or qualification.
+- [x] Add a benefits CLI adapter over the shared query service with a separate
+  operator-controlled trust configuration. Verify candidate contract/semantic
+  changes cannot self-admit, bound metadata files and paths, preserve JSON
+  provenance and explicit unavailable exit status. This does not establish
+  production admission or complete filters/history/edge/coverage surfaces.
+- [x] Write CLI/API contract tests for MBS services, PBS medicines, evidence
   edges, history, coverage, provenance, dataset identity, pagination, filters,
-  errors, and OpenAPI compatibility.
+  errors, and OpenAPI compatibility. The repository retains the resulting
+  focused contract suites; pre-implementation red output is only recorded
+  where it was actually observed.
+- [x] Add bounded scalar benefits predicates to the shared service, GET API
+  and CLI, preserving filter types and existing query-engine semantics. Bind
+  predicates to query evidence and signed cursors; reject malformed copied
+  models, unknown filter keys/columns, duplicate JSON keys and nonfinite or
+  oversized values. Regenerate the semantic OpenAPI snapshot and read-only
+  client. Missing optional jsonschema now reports installation guidance for
+  `global-medicines-atlas[federation]`; unrelated import failures propagate.
+  This slice does not close history, edge, coverage or production admission.
 - [ ] Confirm the intended failure before implementation.
-- [ ] Implement typed commands and read-only endpoints using shared service
-  contracts rather than duplicated query logic.
-- [ ] Add deterministic pagination, size limits, rate controls, content
-  negotiation, cache headers, and provenance envelopes.
+- [~] Implement typed commands and read-only endpoints using shared service
+  contracts rather than duplicated query logic. Dataset identity and benefits
+  API/CLI slices are implemented; general history, edge, coverage and complete
+  command-surface wiring remain open.
+- [x] Add deterministic pagination, size limits, rate controls, content
+  negotiation, cache headers, and provenance envelopes. Benefits pagination,
+  serialized-page bounds, fixed-window rate controls, transport observations,
+  cache policy and evidence-bearing responses are locally verified; broader
+  content-negotiation coverage remains a follow-up.
 - [ ] Phase Verification & Checkpoint: all result types expose mandatory evidence
   and legacy/current metadata and reject semantic overclaim.
 
@@ -137,8 +172,10 @@
 - [ ] Write failing temporal/change, missing-period, source-outage, schema-drift,
   responsive, keyboard, focus, contrast, screen-reader, and non-color-only tests.
 - [ ] Confirm the intended failure before implementation.
-- [ ] Implement side-by-side service/medicine evidence, timelines, change views,
-  graph exploration, coverage/freshness, and provenance drill-down.
+- [x] Implement repository-owned historical comparison and coverage envelopes
+  for side-by-side evidence, timelines, change views, coverage/freshness, and
+  provenance drill-down. Synthetic validation passes; interactive atlas,
+  accessibility, and live-source qualification remain open.
 - [ ] Keep service-benefit, medicine funding, regulatory, formulary, and
   terminology panels visually and semantically distinct.
 - [ ] Phase Verification & Checkpoint: representative users can inspect evidence
@@ -146,7 +183,7 @@
 
 ## Phase 4: Federation and compatibility (AC-06)
 
-- [ ] Write failing canaries for reimbursement-atlas, donor successor links,
+- [x] Write and execute synthetic canaries for reimbursement-atlas, donor successor links,
   schema/revision drift, missing fields, semantic dimension changes, and
   mutable/unpinned references.
 - [ ] Confirm the intended failure before implementation.

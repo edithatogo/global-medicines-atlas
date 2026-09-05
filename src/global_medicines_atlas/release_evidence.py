@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import] - fixed git executable
 from collections import Counter
@@ -27,6 +28,7 @@ from .snapshots import SnapshotManifest, canonical_json_bytes
 
 RELEASE_EVIDENCE_SCHEMA_ID = "global-medicines-atlas.release-evidence"
 RELEASE_EVIDENCE_SCHEMA_VERSION = 1
+_HEX_DIGEST = re.compile(r"^[0-9a-f]{64}$")
 REQUIREMENT_IDS = (
     "M-001",
     "M-002",
@@ -104,7 +106,72 @@ class ReleaseEvidence(FrozenModel):
     unresolved_gates: tuple[str, ...]
 
     @model_validator(mode="after")
-    def qualification_is_fail_closed(self) -> ReleaseEvidence:
+    def qualification_is_fail_closed(  # ruff: ignore[too-many-branches,too-many-statements]
+        self,
+    ) -> ReleaseEvidence:
+        required_gates = {
+            gate for gates in _REQUIREMENT_GATES.values() for gate in gates
+        }
+        missing_gates = required_gates.difference(self.gate_outcomes)
+        if missing_gates:
+            raise ValueError("gate outcomes are missing required gates")
+        requirement_ids = tuple(
+            item.requirement_id for item in self.requirement_map
+        )
+        if len(set(requirement_ids)) != len(requirement_ids):
+            raise ValueError(
+                "requirement map must not contain duplicate identifiers"
+            )
+        unknown = set(requirement_ids).difference(REQUIREMENT_IDS)
+        if unknown:
+            raise ValueError("requirement map contains unknown identifiers")
+        missing = set(REQUIREMENT_IDS).difference(requirement_ids)
+        if missing:
+            raise ValueError("requirement map is missing required identifiers")
+        if requirement_ids != REQUIREMENT_IDS:
+            raise ValueError("requirement map must use canonical order")
+        if self.dataset_schema_versions != tuple(
+            sorted(set(self.dataset_schema_versions))
+        ):
+            raise ValueError(
+                "dataset schema versions must be unique and sorted"
+            )
+        if self.migration_versions != tuple(
+            sorted(set(self.migration_versions))
+        ):
+            raise ValueError("migration versions must be unique and sorted")
+        if any(count < 0 for count in self.receipt_counts.values()) or any(
+            count < 0 for count in self.rights_states.values()
+        ):
+            raise ValueError("evidence counts must be nonnegative")
+        if any(
+            _HEX_DIGEST.fullmatch(value) is None
+            for value in self.receipt_digests
+        ):
+            raise ValueError("receipt digests must be lowercase hexadecimal")
+        if any(
+            _HEX_DIGEST.fullmatch(value) is None
+            for value in self.snapshot_manifest_digests
+        ):
+            raise ValueError("snapshot digests must be lowercase hexadecimal")
+        if self.receipt_digests != tuple(sorted(self.receipt_digests)):
+            raise ValueError("receipt digests must be sorted")
+        if len(set(self.receipt_digests)) != len(self.receipt_digests):
+            raise ValueError("receipt digests must be unique")
+        if self.snapshot_manifest_digests != tuple(
+            sorted(self.snapshot_manifest_digests)
+        ):
+            raise ValueError("snapshot digests must be sorted")
+        if len(set(self.snapshot_manifest_digests)) != len(
+            self.snapshot_manifest_digests
+        ):
+            raise ValueError("snapshot digests must be unique")
+        if self.snapshot_scopes != tuple(sorted(set(self.snapshot_scopes))):
+            raise ValueError("snapshot scopes must be unique and sorted")
+        for item in self.requirement_map:
+            expected_gates = _REQUIREMENT_GATES[item.requirement_id]
+            if item.gates != expected_gates:
+                raise ValueError("requirement map gates do not match contract")
         non_live = sum(
             count
             for evidence_class, count in self.receipt_counts.items()
@@ -133,6 +200,27 @@ class ReleaseEvidence(FrozenModel):
             raise ValueError(
                 "ordinary release qualification cannot produce approved evidence"
             )
+        unresolved = set(self.unresolved_gates)
+        if len(unresolved) != len(self.unresolved_gates):
+            raise ValueError("unresolved gates must be unique")
+        if self.unresolved_gates != tuple(sorted(self.unresolved_gates)):
+            raise ValueError("unresolved gates must be sorted")
+        omitted = {
+            gate
+            for gate, status in self.gate_outcomes.items()
+            if status is not GateStatus.PASSED and gate not in unresolved
+        }
+        if omitted:
+            raise ValueError("unresolved gates omit non-passed outcomes")
+        for item in self.requirement_map:
+            expected_satisfied = all(
+                self.gate_outcomes.get(gate) is GateStatus.PASSED
+                for gate in item.gates
+            )
+            if item.satisfied != expected_satisfied:
+                raise ValueError(
+                    "requirement satisfaction does not match gates"
+                )
         return self
 
     def canonical_json(self) -> bytes:

@@ -105,6 +105,27 @@ class GlobalMedicinesAtlasClient:
     def __init__(self, transport: ReadOnlyTransport) -> None:
         self._transport = transport
 
+    def benefits_route_api_v1_benefits__resource_id__get(
+        self,
+        *,
+        resource_id: str,
+        columns: Sequence[str],
+        cursor: str | None = None,
+        filters: str | None = None,
+        limit: int | None = None,
+        offline: bool | None = None,
+    ) -> JsonValue:
+        encoded_resource_id = quote(str(resource_id), safe="")
+        path = f"/api/v1/benefits/{encoded_resource_id}"
+        query = _query((
+            ("columns", columns),
+            ("cursor", cursor),
+            ("filters", filters),
+            ("limit", limit),
+            ("offline", offline),
+        ))
+        return self._transport.request("GET", path, query)
+
     def comparisons_api_v1_comparisons_get(
         self,
         *,

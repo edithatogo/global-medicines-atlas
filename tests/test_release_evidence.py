@@ -365,6 +365,217 @@ def test_release_evidence_model_rejects_approved_state() -> None:
         })
 
 
+@pytest.mark.edge
+def test_release_evidence_rejects_duplicate_requirement_ids() -> None:
+    evidence = qualify(EvidenceClass.FIXTURE)
+    requirements = list(evidence.requirement_map)
+    requirements.append(requirements[0])
+    with pytest.raises(ValidationError, match="duplicate identifiers"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "requirement_map": requirements,
+        })
+
+
+@pytest.mark.edge
+def test_release_evidence_rejects_unknown_requirement_ids() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    requirements = list(evidence.requirement_map)
+    requirements[0] = requirements[0].model_copy(
+        update={"requirement_id": "M-999"}
+    )
+    with pytest.raises(ValidationError, match="unknown identifiers"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "requirement_map": requirements,
+        })
+
+
+@pytest.mark.edge
+def test_release_evidence_rejects_incomplete_requirement_map() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    with pytest.raises(ValidationError, match="missing required identifiers"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "requirement_map": list(evidence.requirement_map)[1:],
+        })
+
+
+@pytest.mark.edge
+def test_release_evidence_rejects_requirement_gate_drift() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    requirements = list(evidence.requirement_map)
+    requirements[0] = requirements[0].model_copy(
+        update={"gates": ("traceability",)}
+    )
+    with pytest.raises(ValidationError, match="gates do not match"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "requirement_map": requirements,
+        })
+
+
+@pytest.mark.edge
+def test_release_evidence_rejects_stale_requirement_satisfaction() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    requirements = list(evidence.requirement_map)
+    requirements[0] = requirements[0].model_copy(update={"satisfied": False})
+    with pytest.raises(ValidationError, match="satisfaction does not match"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "requirement_map": requirements,
+        })
+
+
+@pytest.mark.edge
+def test_release_evidence_rejects_missing_gate_outcome() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    outcomes = dict(evidence.gate_outcomes)
+    outcomes.pop("traceability")
+    with pytest.raises(ValidationError, match="missing required gates"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "gate_outcomes": outcomes,
+        })
+
+
+@pytest.mark.edge
+def test_release_evidence_rejects_omitted_failed_gate() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    outcomes = {**evidence.gate_outcomes, "traceability": GateStatus.FAILED}
+    with pytest.raises(ValidationError, match="omit non-passed"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "gate_outcomes": outcomes,
+            "unresolved_gates": tuple(
+                gate
+                for gate in evidence.unresolved_gates
+                if gate != "traceability"
+            ),
+        })
+
+
+@pytest.mark.edge
+def test_release_evidence_rejects_duplicate_unresolved_gate() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    unresolved = ("traceability", "traceability")
+    with pytest.raises(ValidationError, match="must be unique"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "gate_outcomes": {
+                **evidence.gate_outcomes,
+                "traceability": GateStatus.FAILED,
+            },
+            "unresolved_gates": unresolved,
+        })
+
+
+@pytest.mark.edge
+def test_release_evidence_rejects_unsorted_unresolved_gates() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    with pytest.raises(ValidationError, match="must be sorted"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "gate_outcomes": {
+                **evidence.gate_outcomes,
+                "traceability": GateStatus.FAILED,
+                "rights_review": GateStatus.FAILED,
+            },
+            "unresolved_gates": ("traceability", "rights_review"),
+        })
+
+
+@pytest.mark.edge
+def test_release_evidence_rejects_noncanonical_requirement_order() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    with pytest.raises(ValidationError, match="canonical order"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "requirement_map": tuple(reversed(evidence.requirement_map)),
+        })
+
+
+@pytest.mark.edge
+def test_release_evidence_rejects_unsorted_schema_versions() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    with pytest.raises(
+        ValidationError, match="schema versions must be unique and sorted"
+    ):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "dataset_schema_versions": ("2", "1"),
+        })
+
+
+@pytest.mark.edge
+def test_release_evidence_rejects_negative_counts() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    counts = dict(evidence.receipt_counts)
+    counts[EvidenceClass.LIVE] = -1
+    with pytest.raises(ValidationError, match="counts must be nonnegative"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "receipt_counts": counts,
+        })
+
+
+@pytest.mark.edge
+def test_release_evidence_rejects_malformed_receipt_digest() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    with pytest.raises(ValidationError, match="receipt digests"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "receipt_digests": ("not-a-digest",),
+        })
+
+
+@pytest.mark.edge
+def test_release_evidence_rejects_unsorted_receipt_digests() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    digests = ("f" * 64, "0" * 64)
+    with pytest.raises(ValidationError, match="receipt digests must be sorted"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "receipt_digests": digests,
+        })
+
+
+@pytest.mark.edge
+def test_release_evidence_rejects_duplicate_receipt_digests() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    digest = "0" * 64
+    with pytest.raises(ValidationError, match="receipt digests must be unique"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "receipt_digests": (digest, digest),
+        })
+
+
+@pytest.mark.edge
+def test_release_evidence_rejects_duplicate_snapshot_digests() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    digest = "0" * 64
+    with pytest.raises(
+        ValidationError, match="snapshot digests must be unique"
+    ):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "snapshot_manifest_digests": (digest, digest),
+        })
+
+
+@pytest.mark.edge
+def test_release_evidence_rejects_unsorted_snapshot_scopes() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    with pytest.raises(
+        ValidationError, match="snapshot scopes must be unique and sorted"
+    ):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "snapshot_scopes": ("z", "a"),
+        })
+
+
 @pytest.mark.unit
 def test_checked_in_json_schema_accepts_model_and_rejects_approval() -> None:
     schema = json.loads(
