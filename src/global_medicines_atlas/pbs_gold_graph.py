@@ -31,6 +31,7 @@ NodeDimension = Literal[
     "pbs_item_structure",
     "presentation_structure",
     "restriction_structure",
+    "price_structure",
     "terminology_reference_structure",
     "classification_reference_structure",
     "unmapped_source_structure",
