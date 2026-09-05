@@ -27,6 +27,10 @@ from global_medicines_atlas.pbs_member_identity import (
 from global_medicines_atlas.pbs_silver import iter_pbs_silver_batches
 
 
+def test_native_price_target_is_explicit() -> None:
+    assert domain._item_target((domain._PBS + "price",)) == "prices"
+
+
 @pytest.mark.parametrize("payload", [_xml(), _production_xml()])
 def test_established_families_preserve_every_native_row(payload: bytes) -> None:
     receipt = _receipt(payload, "au-pbs")
