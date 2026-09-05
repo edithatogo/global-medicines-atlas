@@ -209,9 +209,10 @@ def test_shared_service_revalidates_unchecked_limits(
     if construction == "copy":
         unchecked = query.model_copy(update={"limit": limit})
     else:
-        unchecked = BenefitsQuery.model_construct(
-            **{**query.model_dump(), "limit": limit}
-        )
+        unchecked = BenefitsQuery.model_construct(**{
+            **query.model_dump(),
+            "limit": limit,
+        })
     backend = BenefitsService(
         cast("StorageNeutralResolver", object()), cursor_key=b"k" * 32
     )
