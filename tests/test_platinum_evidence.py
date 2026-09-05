@@ -6,6 +6,7 @@ import pytest
 
 from global_medicines_atlas.platinum_evidence import (
     PlatinumEvidenceError,
+    aggregate_result_evidence,
     validate_result_evidence,
 )
 
@@ -47,3 +48,27 @@ def test_result_evidence_rejects_missing_claim_bearing_field() -> None:
 
 def test_identity_shaped_envelope_can_be_validated_without_nested_evidence() -> None:
     assert validate_result_evidence(_Evidence())
+
+
+def test_result_evidence_aggregate_is_payload_free_and_order_independent() -> None:
+    first = _Result(_Evidence(path="benefits.parquet"))
+    second = _Result(_Evidence(path="history.parquet"))
+    left = aggregate_result_evidence((first, second))
+    right = aggregate_result_evidence((second, first))
+
+    assert left == right
+    assert left.result_count == 2
+    assert left.resource_ids == (
+        "owner/dataset:benefits.parquet",
+        "owner/dataset:history.parquet",
+    )
+    assert b"rows" not in left.canonical_bytes
+    assert len(left.receipt_sha256) == 64
+
+
+def test_result_evidence_aggregate_rejects_empty_and_duplicate_resources() -> None:
+    with pytest.raises(PlatinumEvidenceError, match="cannot be empty"):
+        aggregate_result_evidence(())
+    duplicate = _Result(_Evidence())
+    with pytest.raises(PlatinumEvidenceError, match="duplicated"):
+        aggregate_result_evidence((duplicate, duplicate))

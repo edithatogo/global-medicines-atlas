@@ -8,7 +8,10 @@ metadata required by the Platinum contract.
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+import hashlib
+import json
+from collections.abc import Iterable, Mapping
+from dataclasses import dataclass
 from typing import Any
 
 REQUIRED_EVIDENCE_FIELDS = (
@@ -69,8 +72,80 @@ def validate_result_evidence(result: object) -> object:
     return result
 
 
+@dataclass(frozen=True)
+class ResultEvidenceAggregate:
+    """Payload-free, deterministic evidence checkpoint for result batches."""
+
+    result_count: int
+    resource_ids: tuple[str, ...]
+    evidence_sha256: str
+
+    @property
+    def canonical_bytes(self) -> bytes:
+        """Return the canonical checkpoint without rows or result payloads."""
+        return json.dumps(
+            {
+                "evidence_sha256": self.evidence_sha256,
+                "resource_ids": self.resource_ids,
+                "result_count": self.result_count,
+                "version": "1.0",
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+
+    @property
+    def receipt_sha256(self) -> str:
+        """Return the content address of the checkpoint."""
+        return hashlib.sha256(self.canonical_bytes).hexdigest()
+
+
+def aggregate_result_evidence(
+    results: Iterable[object],
+) -> ResultEvidenceAggregate:
+    """Validate and aggregate result evidence without retaining result data.
+
+    The aggregate is suitable for a read-only Phase 2 checkpoint.  It binds
+    each result's mandatory evidence and resource identity, rejects duplicate
+    identities, and never serializes rows or other claim-bearing payloads.
+    """
+    documents: list[dict[str, object]] = []
+    resource_ids: list[str] = []
+    for result in results:
+        validate_result_evidence(result)
+        evidence = _read(result, "evidence") or result
+        document = {
+            field: _read(evidence, field)
+            for field in REQUIRED_EVIDENCE_FIELDS
+        }
+        resource_id = _read(evidence, "resource_id")
+        if not isinstance(resource_id, str) or not resource_id.strip():
+            resource_id = f"{document['dataset']}:{document['path']}"
+        if resource_id in resource_ids:
+            raise PlatinumEvidenceError(
+                f"result evidence resource identity is duplicated: {resource_id}"
+            )
+        resource_ids.append(resource_id)
+        documents.append(document)
+    if not documents:
+        raise PlatinumEvidenceError("result evidence aggregate cannot be empty")
+    canonical = json.dumps(
+        sorted(documents, key=lambda item: tuple(str(item[field]) for field in REQUIRED_EVIDENCE_FIELDS)),
+        sort_keys=True,
+        separators=(",", ":"),
+        default=str,
+    ).encode()
+    return ResultEvidenceAggregate(
+        result_count=len(documents),
+        resource_ids=tuple(sorted(resource_ids)),
+        evidence_sha256=hashlib.sha256(canonical).hexdigest(),
+    )
+
+
 __all__ = [
     "REQUIRED_EVIDENCE_FIELDS",
     "PlatinumEvidenceError",
+    "ResultEvidenceAggregate",
+    "aggregate_result_evidence",
     "validate_result_evidence",
 ]
