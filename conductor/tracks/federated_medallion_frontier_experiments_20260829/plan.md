@@ -113,7 +113,8 @@
   added. This bounded synthetic experiment does not qualify Neo4j/RDF-star,
   live public graphs, retrieval calibration or production promotion.
 - [ ] Confirm the intended failure before implementation.
-- [x] Produce deterministic NetworkX reference, parameterized Cypher, and
+- [x] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections
+  (deterministic parameterized Cypher and
   RDF-star preview projections from the same Gold node/edge tables. Local
   verification passed; live engine parity, public graphs, and promotion remain
   open.
