@@ -47,6 +47,50 @@ class GoldGraphExport:
     edge_statement: str = EDGE_STATEMENT
 
 
+def export_rdf_star(nodes: pa.Table, edges: pa.Table, *, max_rows: int = 100_000,
+                    max_bytes: int = 64 * 1024 * 1024) -> str:
+    """Return a deterministic RDF-star/N-Triples preview of Gold tables.
+
+    The quoted edge statement carries the complete source row as a JSON
+    literal, so this is a lossless, rebuildable projection rather than a
+    semantic assertion.  It deliberately performs the same schema, identity,
+    closure, and size checks as :func:`export_gold_tables`; no RDF engine or
+    terminology vocabulary is required.
+    """
+    exported = export_gold_tables(nodes, edges, max_rows=max_rows,
+                                   max_bytes=max_bytes)
+    payload = json.loads(exported.reference_json)
+    lines: list[str] = []
+    for row in payload["nodes"]:
+        subject = _rdf_id("node", row["node_id"])
+        lines.append(f"{subject} <urn:gma:payload-json> {_rdf_literal(_json(row))} .")
+    for row in payload["edges"]:
+        source = _rdf_id("node", row["source_node_id"])
+        target = _rdf_id("node", row["target_node_id"])
+        edge = _rdf_id("edge", row["edge_id"])
+        quoted = f"<<{source} <urn:gma:connects-to> {target}>>"
+        lines.extend(
+            (
+                f"{quoted} <urn:gma:edge-id> {_rdf_literal(row['edge_id'])} .",
+                f"{quoted} <urn:gma:edge-resource> {edge} .",
+                f"{edge} <urn:gma:payload-json> {_rdf_literal(_json(row))} .",
+            )
+        )
+    result = "\n".join(lines) + ("\n" if lines else "")
+    if len(result.encode("utf-8")) > max_bytes:
+        raise ValueError("serialized graph byte bound exceeded")
+    return result
+
+
+def _rdf_id(kind: str, value: str) -> str:
+    return "<urn:gma:" + kind + ":" + value.replace("%", "%25").replace("#", "%23") + ">"
+
+
+def _rdf_literal(value: str) -> str:
+    # JSON string escaping is a valid conservative N-Triples string escape.
+    return json.dumps(value, ensure_ascii=True)
+
+
 def _json(value: object) -> str:
     return json.dumps(
         value,

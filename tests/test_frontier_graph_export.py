@@ -7,7 +7,10 @@ import pytest
 from test_mbs_gold_graph import graph
 from test_pbs_gold_graph import graph as pbs_graph
 
-from global_medicines_atlas.frontier_graph_export import export_gold_tables
+from global_medicines_atlas.frontier_graph_export import (
+    export_gold_tables,
+    export_rdf_star,
+)
 from global_medicines_atlas.mbs_gold_graph import project_mbs_gold_graph_arrow
 from global_medicines_atlas.pbs_gold_graph import project_pbs_gold_graph_arrow
 
@@ -102,3 +105,19 @@ def test_null_identity_rejected_even_with_nullable_arrow_field():
         export_gold_tables(
             pa.Table.from_pylist(rows, schema=nodes.schema), edges
         )
+
+
+def test_rdf_star_is_deterministic_lossless_and_quotes_edges():
+    nodes, edges = project_mbs_gold_graph_arrow(graph())
+    result = export_rdf_star(nodes, edges)
+    assert result == export_rdf_star(nodes.take([3, 1, 0, 2]), edges.take([1, 0]))
+    assert "<<<urn:gma:node:" in result
+    assert "<urn:gma:payload-json>" in result
+    assert "native_name" in result
+    assert "urn:gma:edge-resource" in result
+
+
+def test_rdf_star_reuses_fail_closed_bounds():
+    nodes, edges = project_mbs_gold_graph_arrow(graph())
+    with pytest.raises(ValueError, match="bound"):
+        export_rdf_star(nodes, edges, max_rows=1)
