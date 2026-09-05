@@ -23,6 +23,11 @@ def test_benchmark_is_deterministic_and_reports_portable_parity() -> None:
     assert first.observations[0].rows_scanned == 3
     assert first.observations[0].rows_returned == 2
     assert first.technology_promotion_claimed is False
+    xet = next(
+        item for item in first.observations if item.candidate == "xet_restore"
+    )
+    assert xet.status == "unavailable"
+    assert "two exact" in xet.note
 
 
 def test_benchmark_rejects_divergent_candidate_output() -> None:
