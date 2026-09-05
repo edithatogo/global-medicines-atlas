@@ -365,6 +365,18 @@ def test_release_evidence_model_rejects_approved_state() -> None:
         })
 
 
+@pytest.mark.edge
+def test_release_evidence_rejects_duplicate_requirement_ids() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    requirements = list(evidence.requirement_map)
+    requirements.append(requirements[0])
+    with pytest.raises(ValidationError, match="duplicate identifiers"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "requirement_map": requirements,
+        })
+
+
 @pytest.mark.unit
 def test_checked_in_json_schema_accepts_model_and_rejects_approval() -> None:
     schema = json.loads(

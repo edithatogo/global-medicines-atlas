@@ -105,6 +105,9 @@ class ReleaseEvidence(FrozenModel):
 
     @model_validator(mode="after")
     def qualification_is_fail_closed(self) -> ReleaseEvidence:
+        requirement_ids = tuple(item.requirement_id for item in self.requirement_map)
+        if len(set(requirement_ids)) != len(requirement_ids):
+            raise ValueError("requirement map must not contain duplicate identifiers")
         non_live = sum(
             count
             for evidence_class, count in self.receipt_counts.items()
