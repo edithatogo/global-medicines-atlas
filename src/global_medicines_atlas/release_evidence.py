@@ -146,6 +146,13 @@ class ReleaseEvidence(FrozenModel):
             raise ValueError(
                 "ordinary release qualification cannot produce approved evidence"
             )
+        for item in self.requirement_map:
+            expected_satisfied = all(
+                self.gate_outcomes.get(gate) is GateStatus.PASSED
+                for gate in item.gates
+            )
+            if item.satisfied != expected_satisfied:
+                raise ValueError("requirement satisfaction does not match gates")
         return self
 
     def canonical_json(self) -> bytes:
