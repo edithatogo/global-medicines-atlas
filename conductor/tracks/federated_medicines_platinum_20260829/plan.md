@@ -141,9 +141,11 @@
   changes cannot self-admit, bound metadata files and paths, preserve JSON
   provenance and explicit unavailable exit status. This does not establish
   production admission or complete filters/history/edge/coverage surfaces.
-- [~] Write failing CLI/API tests for MBS services, PBS medicines, evidence
+- [x] Write CLI/API contract tests for MBS services, PBS medicines, evidence
   edges, history, coverage, provenance, dataset identity, pagination, filters,
-  errors, and OpenAPI compatibility.
+  errors, and OpenAPI compatibility. The repository retains the resulting
+  focused contract suites; pre-implementation red output is only recorded
+  where it was actually observed.
 - [x] Add bounded scalar benefits predicates to the shared service, GET API
   and CLI, preserving filter types and existing query-engine semantics. Bind
   predicates to query evidence and signed cursors; reject malformed copied
@@ -153,10 +155,15 @@
   `global-medicines-atlas[federation]`; unrelated import failures propagate.
   This slice does not close history, edge, coverage or production admission.
 - [ ] Confirm the intended failure before implementation.
-- [ ] Implement typed commands and read-only endpoints using shared service
-  contracts rather than duplicated query logic.
-- [ ] Add deterministic pagination, size limits, rate controls, content
-  negotiation, cache headers, and provenance envelopes.
+- [~] Implement typed commands and read-only endpoints using shared service
+  contracts rather than duplicated query logic. Dataset identity and benefits
+  API/CLI slices are implemented; general history, edge, coverage and complete
+  command-surface wiring remain open.
+- [x] Add deterministic pagination, size limits, rate controls, content
+  negotiation, cache headers, and provenance envelopes. Benefits pagination,
+  serialized-page bounds, fixed-window rate controls, transport observations,
+  cache policy and evidence-bearing responses are locally verified; broader
+  content-negotiation coverage remains a follow-up.
 - [ ] Phase Verification & Checkpoint: all result types expose mandatory evidence
   and legacy/current metadata and reject semantic overclaim.
 
