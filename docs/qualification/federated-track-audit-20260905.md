@@ -44,3 +44,26 @@ not full track qualification. No plan checkbox is completed by this document.
 An open PR with `mergeStateStatus=BLOCKED` does not establish a merge queue,
 healthy protection configuration or the cause of the block. Those claims need
 current rule and check evidence when browser access is restored.
+
+## Browser recheck: 2026-09-05
+
+Chrome subsequently accessed GitHub successfully through the normal browser
+interface. The earlier browser-policy refusal is retained above as historical
+evidence, not a current access diagnosis.
+
+[PR #460](https://github.com/edithatogo/global-medicines-atlas/pull/460)
+displayed 38 successful checks and the explicit merge requirement **All
+comments must be resolved**. Auto-merge (squash) was already enabled. The
+current three-file diff still contained the hard-coded PBS source identity,
+unchanged schema version, and compound funding/formulary dimension identified
+by the three unresolved review comments. Passing checks therefore did not
+establish that these findings were fixed.
+
+A [bounded repair request](https://github.com/edithatogo/global-medicines-atlas/pull/460#issuecomment-5550253639)
+was posted through Chrome to the existing repository coding agent. It requests
+source-specific historical identity, versioned implementation provenance,
+independent semantic dimensions and regression tests. At the subsequent
+observation the comment was present, but no acknowledgement, new fix commit or
+completed validation was visible. This is a submitted request, not evidence of
+a running job or completed repair. No review thread was resolved, protection
+changed, publication dispatched or merge performed by this browser action.
