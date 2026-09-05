@@ -155,6 +155,8 @@ class ReleaseEvidence(FrozenModel):
         unresolved = set(self.unresolved_gates)
         if len(unresolved) != len(self.unresolved_gates):
             raise ValueError("unresolved gates must be unique")
+        if self.unresolved_gates != tuple(sorted(self.unresolved_gates)):
+            raise ValueError("unresolved gates must be sorted")
         omitted = {
             gate
             for gate, status in self.gate_outcomes.items()

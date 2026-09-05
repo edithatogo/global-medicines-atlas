@@ -461,6 +461,21 @@ def test_release_evidence_rejects_duplicate_unresolved_gate() -> None:
         })
 
 
+@pytest.mark.edge
+def test_release_evidence_rejects_unsorted_unresolved_gates() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    with pytest.raises(ValidationError, match="must be sorted"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "gate_outcomes": {
+                **evidence.gate_outcomes,
+                "traceability": GateStatus.FAILED,
+                "rights_review": GateStatus.FAILED,
+            },
+            "unresolved_gates": ("traceability", "rights_review"),
+        })
+
+
 @pytest.mark.unit
 def test_checked_in_json_schema_accepts_model_and_rejects_approval() -> None:
     schema = json.loads(
