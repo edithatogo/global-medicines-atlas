@@ -78,11 +78,32 @@ def test_unknown_namespaces_prices_and_wrappers_are_not_guessed() -> None:
     rows = pa.Table.from_batches(
         list(iter_pbs_domain_batches(payload, _receipt(payload, "au-pbs")))
     ).to_pylist()
-    for value in ("001.2300", "not a PBS restriction", "FAKE"):
+    row = next(row for row in rows if row["value"] == "001.2300")
+    assert row["mapping_target"] == "prices"
+    assert row["mapping_status"] == "source_structure"
+    for value in ("not a PBS restriction", "FAKE"):
         row = next(row for row in rows if row["value"] == value)
         assert row["mapping_target"] == "unmapped"
         assert row["mapping_status"] == "unmapped"
         assert row["item_occurrence_id"] is not None
+
+
+def test_price_mapping_is_namespace_and_item_bound() -> None:
+    payload = _xml().replace(
+        b"</pbs:pharmaceutical-item>",
+        b'<pbs:price currency="AUD">001.2300</pbs:price>'
+        b'<foreign-price xmlns="urn:other">002.3400</foreign-price>'
+        b"</pbs:pharmaceutical-item>",
+    )
+    rows = pa.Table.from_batches(
+        list(iter_pbs_domain_batches(payload, _receipt(payload, "au-pbs")))
+    ).to_pylist()
+    price = next(row for row in rows if row["value"] == "001.2300")
+    assert price["mapping_target"] == "prices"
+    assert price["item_occurrence_id"] is not None
+    foreign = next(row for row in rows if row["value"] == "002.3400")
+    assert foreign["mapping_target"] == "unmapped"
+    assert foreign["item_occurrence_id"] is not None
 
 
 def test_duplicate_native_item_ids_have_distinct_occurrence_lineage() -> None:
