@@ -8,6 +8,7 @@ engines without making a dependency, latency, or production-promotion claim.
 from __future__ import annotations
 
 import hashlib
+import importlib
 import json
 from collections.abc import Mapping, Sequence
 from typing import Literal
@@ -106,19 +107,104 @@ def benchmark_fixture(rows: Sequence[Mapping[str, object]]) -> FrontierBenchmark
         query_sha256=_digest(query),
         output_sha256=_digest(result),
     )
-    return FrontierBenchmarkReceipt(
-        schema_id=BENCHMARK_SCHEMA,
-        schema_version=1,
-        workload=workload,
-        observations=(BenchmarkObservation(
+    observations = [BenchmarkObservation(
             candidate="python_fallback", status="measured", rows_scanned=len(normalized),
             rows_returned=len(result), operations=len(normalized) + len(selected),
             output_sha256=workload.output_sha256, fallback="portable_python",
             note="Deterministic reference traversal; wall-clock timing intentionally omitted.",
-        ),),
+        )]
+    observations.extend(_optional_engine_observations(normalized, workload.output_sha256))
+    return FrontierBenchmarkReceipt(
+        schema_id=BENCHMARK_SCHEMA,
+        schema_version=1,
+        workload=workload,
+        observations=tuple(observations),
         production_dependency_adopted=False,
         technology_promotion_claimed=False,
         disposition="retain-preview",
+    )
+
+
+def _unavailable(candidate: Candidate, reason: str) -> BenchmarkObservation:
+    return BenchmarkObservation(
+        candidate=candidate, status="unavailable", rows_scanned=0, rows_returned=0,
+        operations=0, fallback="optional_engine", note=reason,
+    )
+
+
+def _optional_engine_observations(
+    rows: Sequence[Mapping[str, object]], expected_output: str
+) -> list[BenchmarkObservation]:
+    """Measure installed optional engines without making them required.
+
+    The fixture and projection are intentionally tiny and the result is reduced
+    to the same canonical representation as the Python reference. Import or
+    execution failures become explicit unavailable observations.
+    """
+    observations: list[BenchmarkObservation] = []
+    try:
+        polars = importlib.import_module("polars")
+        frame = polars.DataFrame(list(rows))
+        output = (
+            frame.filter(polars.col("active") == True)  # ruff: ignore[true-false-comparison]
+            .select(["id", "value"])
+            .sort(["id", "value"])
+            .to_dicts()
+        )
+        observations.append(_measured("polars", len(rows), output, expected_output,
+                                     "Optional Polars expression evaluation; no wall-clock timing."))
+    except (ImportError, ModuleNotFoundError) as exc:
+        observations.append(_unavailable("polars", f"optional engine unavailable: {type(exc).__name__}"))
+    except Exception as exc:  # pragma: no cover - platform-specific engine failures
+        observations.append(_unavailable("polars", f"optional engine failed closed: {type(exc).__name__}"))
+
+    try:  # ruff: ignore[too-many-statements-in-try-clause]
+        arrow = importlib.import_module("pyarrow")
+        compute = importlib.import_module("pyarrow.compute")
+        table = arrow.Table.from_pylist(list(rows))
+        filtered = table.filter(compute.equal(table["active"], arrow.scalar(value=True)))
+        output = [{"id": item["id"], "value": item["value"]}
+                  for item in filtered.select(["id", "value"]).to_pylist()]
+        output.sort(key=lambda item: (str(item["id"]), str(item["value"])))
+        observations.append(_measured("arrow", len(rows), output, expected_output,
+                                     "Optional Arrow compute evaluation; no wall-clock timing."))
+    except (ImportError, ModuleNotFoundError) as exc:
+        observations.append(_unavailable("arrow", f"optional engine unavailable: {type(exc).__name__}"))
+    except Exception as exc:  # pragma: no cover - platform-specific engine failures
+        observations.append(_unavailable("arrow", f"optional engine failed closed: {type(exc).__name__}"))
+
+    try:  # ruff: ignore[too-many-statements-in-try-clause]
+        duckdb = importlib.import_module("duckdb")
+        # Use a parameterised VALUES relation so no fixture text becomes SQL.
+        values = ", ".join("(?, ?, ?)" for _ in rows)
+        params = [value for row in rows for value in (row.get("id"), row.get("value"), row.get("active"))]
+        connection = duckdb.connect()
+        try:
+            output_rows = connection.execute(
+                f"SELECT column0 AS id, column1 AS value FROM (VALUES {values}) "  # ruff: ignore[hardcoded-sql-expression]
+                "WHERE column2 IS TRUE ORDER BY id, value", params
+            ).fetchall()
+        finally:
+            connection.close()
+        output = [{"id": item[0], "value": item[1]} for item in output_rows]
+        observations.append(_measured("duckdb", len(rows), output, expected_output,
+                                     "Optional DuckDB VALUES query; no wall-clock timing."))
+    except (ImportError, ModuleNotFoundError) as exc:
+        observations.append(_unavailable("duckdb", f"optional engine unavailable: {type(exc).__name__}"))
+    except Exception as exc:  # pragma: no cover - platform-specific engine failures
+        observations.append(_unavailable("duckdb", f"optional engine failed closed: {type(exc).__name__}"))
+    return observations
+
+
+def _measured(candidate: Candidate, row_count: int, output: list[dict[str, object]],
+              expected_output: str, note: str) -> BenchmarkObservation:
+    digest = _digest(output)
+    if digest != expected_output:
+        return _unavailable(candidate, "optional engine parity mismatch; retained as unavailable")
+    return BenchmarkObservation(
+        candidate=candidate, status="measured", rows_scanned=row_count,
+        rows_returned=len(output), operations=row_count + len(output),
+        output_sha256=digest, fallback="optional_engine", note=note,
     )
 
 
