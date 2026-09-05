@@ -56,6 +56,10 @@ def test_synthetic_objects_have_content_addressable_layer_paths() -> None:
         assert item["path"].startswith(f"{item['layer']}/")
         assert item["path"].rsplit(".", 1)[-1] in {"json", "parquet"}
         if item["layer"] == "bronze":
-            assert item["bronze_stratum"] == "B2"
+            # Bronze is the three-stratum evidentiary boundary.  A complete
+            # producer may legitimately contribute a source index (B0),
+            # acquisition metadata (B1), or raw evidence (B2); do not make
+            # the denominator silently equate Bronze with B2.
+            assert item["bronze_stratum"] in {"B0", "B1", "B2"}
         else:
             assert item["bronze_stratum"] is None
