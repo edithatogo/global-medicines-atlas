@@ -233,7 +233,7 @@ def test_mapping_reuses_native_buffers_and_matches_row_reference(
     assert mapped.schema.metadata == {
         **native.schema.metadata,
         b"schema_name": b"global-medicines-atlas.pbs-silver.domain-fields",
-        b"mapping_profile": b"pbs-adapter-structural-v1",
+        b"mapping_profile": b"pbs-adapter-structural-v2",
     }
 
 

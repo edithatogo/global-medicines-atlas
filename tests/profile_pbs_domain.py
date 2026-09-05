@@ -37,7 +37,7 @@ def row_reference(batch: pa.RecordBatch) -> pa.RecordBatch:
     metadata = dict(schema.metadata or {})
     metadata.update({
         b"schema_name": b"global-medicines-atlas.pbs-silver.domain-fields",
-        b"mapping_profile": b"pbs-adapter-structural-v1",
+        b"mapping_profile": b"pbs-adapter-structural-v2",
     })
     schema = schema.with_metadata(metadata)  # pyright: ignore[reportUnknownMemberType]
     return pa.RecordBatch.from_pylist(
