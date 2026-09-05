@@ -508,6 +508,16 @@ def test_release_evidence_rejects_negative_counts() -> None:
         })
 
 
+@pytest.mark.edge
+def test_release_evidence_rejects_malformed_receipt_digest() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    with pytest.raises(ValidationError, match="receipt digests"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "receipt_digests": ("not-a-digest",),
+        })
+
+
 @pytest.mark.unit
 def test_checked_in_json_schema_accepts_model_and_rejects_approval() -> None:
     schema = json.loads(

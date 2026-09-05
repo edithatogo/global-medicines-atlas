@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import] - fixed git executable
 from collections import Counter
@@ -27,6 +28,7 @@ from .snapshots import SnapshotManifest, canonical_json_bytes
 
 RELEASE_EVIDENCE_SCHEMA_ID = "global-medicines-atlas.release-evidence"
 RELEASE_EVIDENCE_SCHEMA_VERSION = 1
+_HEX_DIGEST = re.compile(r"^[0-9a-f]{64}$")
 REQUIREMENT_IDS = (
     "M-001",
     "M-002",
@@ -130,6 +132,10 @@ class ReleaseEvidence(FrozenModel):
             count < 0 for count in self.rights_states.values()
         ):
             raise ValueError("evidence counts must be nonnegative")
+        if any(_HEX_DIGEST.fullmatch(value) is None for value in self.receipt_digests):
+            raise ValueError("receipt digests must be lowercase hexadecimal")
+        if any(_HEX_DIGEST.fullmatch(value) is None for value in self.snapshot_manifest_digests):
+            raise ValueError("snapshot digests must be lowercase hexadecimal")
         for item in self.requirement_map:
             expected_gates = _REQUIREMENT_GATES[item.requirement_id]
             if item.gates != expected_gates:
