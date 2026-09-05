@@ -9,7 +9,7 @@ states.
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import ConfigDict, Field, model_validator
 
@@ -155,6 +155,12 @@ class HistoricalChangeService:
             total=total,
             next_offset=end if end < total else None,
         )
+
+    def page_payload(
+        self, *, offset: int = 0, limit: int = 100
+    ) -> dict[str, Any]:
+        """Return one bounded, JSON-safe page for a read-only transport."""
+        return self.page(offset=offset, limit=limit).model_dump(mode="json")
 
 
 def _observation(item: NativeDifference) -> ChangeObservation:
