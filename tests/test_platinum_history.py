@@ -3,6 +3,7 @@ from datetime import UTC, datetime
 import pytest
 
 from global_medicines_atlas.historical_change import (
+    HistoricalChangeService,
     compare_historical_snapshots,
 )
 from global_medicines_atlas.platinum_history import (
@@ -41,8 +42,6 @@ def test_envelope_rejects_tampered_digest() -> None:
 
 def test_historical_service_page_payload_is_json_safe_and_bounded() -> None:
     change = compare_historical_snapshots(None, None)
-    from global_medicines_atlas.historical_change import HistoricalChangeService
-
     payload = HistoricalChangeService((change,)).page_payload(limit=1)
     assert payload["total"] == 1
     assert payload["next_offset"] is None
