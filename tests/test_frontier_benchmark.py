@@ -41,3 +41,8 @@ def test_benchmark_bounds_fixture() -> None:
         benchmark_fixture([])
     with pytest.raises(ValueError, match=r"1\.\.10000"):
         benchmark_fixture([{"id": index} for index in range(10_001)])
+
+
+def test_benchmark_rejects_non_finite_fixture_values() -> None:
+    with pytest.raises(ValueError, match="Out of range float values"):
+        benchmark_fixture([{"id": "a", "value": float("nan"), "active": True}])

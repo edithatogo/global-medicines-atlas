@@ -81,7 +81,9 @@ class FrontierBenchmarkReceipt(FrozenModel):
 
 def _digest(value: object) -> str:
     return hashlib.sha256(
-        json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        json.dumps(
+            value, sort_keys=True, separators=(",", ":"), allow_nan=False
+        ).encode("utf-8")
     ).hexdigest()
 
 
@@ -91,7 +93,9 @@ def benchmark_fixture(rows: Sequence[Mapping[str, object]]) -> FrontierBenchmark
         raise ValueError("benchmark fixture must contain 1..10000 rows")
     normalized = sorted(
         (dict(row) for row in rows),
-        key=lambda row: json.dumps(row, sort_keys=True, separators=(",", ":")),
+        key=lambda row: json.dumps(
+            row, sort_keys=True, separators=(",", ":"), allow_nan=False
+        ),
     )
     fixture_sha = _digest(normalized)
     selected = [row for row in normalized if row.get("active") is True]
