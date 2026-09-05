@@ -142,6 +142,8 @@ class ReleaseEvidence(FrozenModel):
             raise ValueError("receipt digests must be unique")
         if self.snapshot_manifest_digests != tuple(sorted(self.snapshot_manifest_digests)):
             raise ValueError("snapshot digests must be sorted")
+        if len(set(self.snapshot_manifest_digests)) != len(self.snapshot_manifest_digests):
+            raise ValueError("snapshot digests must be unique")
         for item in self.requirement_map:
             expected_gates = _REQUIREMENT_GATES[item.requirement_id]
             if item.gates != expected_gates:
