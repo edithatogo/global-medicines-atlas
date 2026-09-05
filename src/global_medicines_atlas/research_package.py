@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections.abc import Mapping
 from typing import Literal
 
 from pydantic import Field, model_validator
@@ -16,6 +17,7 @@ from pydantic import Field, model_validator
 from .models import FrozenModel
 
 _HASH = r"^[0-9a-f]{64}$"
+_CROISSANT_PAYLOAD_KEYS = frozenset({"recordSet", "records", "data", "examples"})
 
 
 class CrateDistribution(FrozenModel):
@@ -87,6 +89,30 @@ class ResearchCrate(FrozenModel):
 
     def jsonld_sha256(self) -> str:
         return hashlib.sha256(self.canonical_jsonld_bytes()).hexdigest()
+
+
+def validate_metadata_only_croissant(descriptor: Mapping[str, object]) -> None:
+    """Fail closed when a Croissant descriptor contains inline payload data.
+
+    Croissant metadata may be published independently of the governed bytes.
+    This check is intentionally structural and recursive: a payload-bearing
+    nested object must not be able to bypass the top-level metadata-only flag.
+    """
+
+    if descriptor.get("cr:metadataOnly") is not True:
+        raise ValueError("Croissant descriptor must declare metadata-only output")
+
+    def walk(value: object) -> None:
+        if isinstance(value, Mapping):
+            if _CROISSANT_PAYLOAD_KEYS.intersection(value):
+                raise ValueError("Croissant descriptor must not embed payload data")
+            for child in value.values():
+                walk(child)
+        elif isinstance(value, (list, tuple)):
+            for child in value:
+                walk(child)
+
+    walk(descriptor)
 
 
 def build_research_crate(
