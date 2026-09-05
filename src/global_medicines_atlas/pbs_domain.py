@@ -25,7 +25,7 @@ _ADDITIONS = (
 )
 
 
-def _item_target(suffix: tuple[str, ...]) -> str:  # ruff: ignore[too-many-return-statements] -- ordered source-family boundary
+def _item_target(suffix: tuple[str, ...]) -> str:
     if not suffix:
         return "items"
     if suffix == (_PBS + "block-container",) or (
