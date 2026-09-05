@@ -90,6 +90,35 @@ class ResearchCrate(FrozenModel):
     def jsonld_sha256(self) -> str:
         return hashlib.sha256(self.canonical_jsonld_bytes()).hexdigest()
 
+    def croissant(self) -> dict[str, object]:
+        """Return a deterministic metadata-only Croissant descriptor."""
+        descriptor: dict[str, object] = {
+            "@context": "https://mlcommons.org/croissant/1.0",
+            "@type": "Dataset",
+            "name": self.name,
+            "version": self.version,
+            "url": self.dataset_url,
+            "cr:metadataOnly": True,
+            "distribution": [
+                {
+                    "@id": item.identifier,
+                    "name": item.name,
+                    "contentUrl": item.content_url,
+                    "encodingFormat": item.media_type,
+                    "sha256": item.sha256,
+                }
+                for item in self.distributions
+            ],
+        }
+        validate_metadata_only_croissant(descriptor)
+        return descriptor
+
+    def canonical_croissant_bytes(self) -> bytes:
+        return json.dumps(self.croissant(), sort_keys=True, separators=(",", ":")).encode("utf-8") + b"\n"
+
+    def croissant_sha256(self) -> str:
+        return hashlib.sha256(self.canonical_croissant_bytes()).hexdigest()
+
 
 def validate_metadata_only_croissant(descriptor: Mapping[str, object]) -> None:
     """Fail closed when a Croissant descriptor contains inline payload data.
