@@ -8,6 +8,7 @@ states.
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import Literal
 
 from pydantic import ConfigDict, Field, model_validator
@@ -19,7 +20,7 @@ from .historical_comparison import (
 )
 from .models import FrozenModel
 
-_MAX_PAGE_LIMIT = 1000
+MAX_HISTORICAL_CHANGE_PAGE_SIZE = 1000
 
 
 class ChangeObservation(FrozenModel):
@@ -119,35 +120,40 @@ class HistoricalChange(FrozenModel):
 
 
 class HistoricalChangePage(FrozenModel):
-    """Bounded transport page over historical-change envelopes."""
+    """A bounded page of already-computed historical change envelopes."""
 
     items: tuple[HistoricalChange, ...]
     offset: int = Field(ge=0)
-    limit: int = Field(ge=1, le=1000)
+    limit: int = Field(ge=1, le=MAX_HISTORICAL_CHANGE_PAGE_SIZE)
     total: int = Field(ge=0)
     next_offset: int | None = Field(default=None, ge=0)
 
 
 class HistoricalChangeService:
-    """Injected, read-only service for bounded historical-change pages."""
+    """Read-only paging over an injected, immutable historical result set.
 
-    def __init__(
-        self, items: list[HistoricalChange] | tuple[HistoricalChange, ...]
-    ):
-        self._items = tuple(items)
+    The service does not acquire snapshots or infer changes.  Callers provide
+    the already-qualified envelopes, and paging only selects a deterministic
+    bounded window for a route or other transport adapter.
+    """
+
+    def __init__(self, changes: Sequence[HistoricalChange]) -> None:
+        self._changes = tuple(changes)
 
     def page(
         self, *, offset: int = 0, limit: int = 100
     ) -> HistoricalChangePage:
-        if offset < 0 or limit < 1 or limit > _MAX_PAGE_LIMIT:
-            raise ValueError("paging bounds are invalid")
-        end = min(offset + limit, len(self._items))
+        if offset < 0 or limit < 1 or limit > MAX_HISTORICAL_CHANGE_PAGE_SIZE:
+            raise ValueError("historical change paging bounds are invalid")
+        total = len(self._changes)
+        items = self._changes[offset : offset + limit]
+        end = offset + len(items)
         return HistoricalChangePage(
-            items=self._items[offset:end],
+            items=items,
             offset=offset,
             limit=limit,
-            total=len(self._items),
-            next_offset=end if end < len(self._items) else None,
+            total=total,
+            next_offset=end if end < total else None,
         )
 
 
