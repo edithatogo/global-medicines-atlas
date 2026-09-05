@@ -111,6 +111,9 @@ class ReleaseEvidence(FrozenModel):
         unknown = set(requirement_ids).difference(REQUIREMENT_IDS)
         if unknown:
             raise ValueError("requirement map contains unknown identifiers")
+        missing = set(REQUIREMENT_IDS).difference(requirement_ids)
+        if missing:
+            raise ValueError("requirement map is missing required identifiers")
         non_live = sum(
             count
             for evidence_class, count in self.receipt_counts.items()
