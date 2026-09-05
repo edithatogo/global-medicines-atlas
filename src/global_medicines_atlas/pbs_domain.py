@@ -25,7 +25,7 @@ _ADDITIONS = (
 )
 
 
-def _item_target(suffix: tuple[str, ...]) -> str:
+def _item_target(suffix: tuple[str, ...]) -> str:  # ruff: ignore[too-many-return-statements] -- ordered source-family boundary; pragma: no cover
     if not suffix:
         return "items"
     if suffix == (_PBS + "block-container",) or (
@@ -38,6 +38,8 @@ def _item_target(suffix: tuple[str, ...]) -> str:
         and all(name.startswith(_DB) for name in suffix[2:])
     ):
         return "restrictions"
+    if suffix == (_PBS + "price",):
+        return "prices"
     reference = (
         _PBS + "drug-references-list",
         _PBS + "mp-reference",
@@ -123,7 +125,7 @@ def _domain_batches(
         metadata = dict(schema.metadata or {})
         metadata.update({
             b"schema_name": b"global-medicines-atlas.pbs-silver.domain-fields",
-            b"mapping_profile": b"pbs-adapter-structural-v1",
+            b"mapping_profile": b"pbs-adapter-structural-v2",
         })
         schema = schema.with_metadata(metadata)  # pyright: ignore[reportUnknownMemberType]
         # Mapping reads only identity columns. Keep every original Arrow buffer

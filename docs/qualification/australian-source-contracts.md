@@ -307,7 +307,7 @@ public derivatives remain pending. No dependency or acquisition change.
 
 `iter_pbs_domain_batches` adds `mapping_target`, `mapping_status` and
 `item_occurrence_id` to every native slot without changing or removing it.
-Profile `pbs-adapter-structural-v1` covers the two root/item layouts exercised
+Profile `pbs-adapter-structural-v2` covers the two root/item layouts exercised
 by the existing PBS v3 adapter fixtures. Exact expanded names and ancestry
 identify schedule metadata, item occurrences, block-container/DocBook
 presentation text, restrictions, drug/mp/code reference structures, and
