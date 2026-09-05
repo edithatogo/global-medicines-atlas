@@ -127,10 +127,32 @@
 - [ ] Confirm the intended failure before implementation.
 - [ ] Implement typed commands and read-only endpoints using shared service
   contracts rather than duplicated query logic.
-- [ ] Add deterministic pagination, size limits, rate controls, content
-  negotiation, cache headers, and provenance envelopes.
+- [x] Add deterministic pagination, size limits, rate controls, content
+  negotiation, cache headers, and provenance envelopes for the bounded
+  read-only surfaces. (`0226f1a4`, `6d05cac5`, `a5f25be7`, `663ea48f`;
+  focused pagination, transport, API-contract, and result-evidence suites
+  pass.) Domain-specific route coverage remains a separate open item above.
 - [ ] Phase Verification & Checkpoint: all result types expose mandatory evidence
   and legacy/current metadata and reject semantic overclaim.
+
+### Phase 2 evidence-backed slices
+
+The following slices are implemented and locally validated, but do not by
+themselves close the broader Phase 2 checkpoint or qualify a published
+product:
+
+- [x] Strict result-evidence aggregation rejects empty batches, duplicate
+  identities, and missing claim-bearing metadata while emitting deterministic,
+  payload-free receipts. (`a3c37f45`, `84de7b51`.)
+- [x] Bounded pagination, serialized-page limits, fixed-window rate controls,
+  GET/HEAD transport observations, cache-policy bounds, and API contract
+  validation are implemented. (`0226f1a4`, `6d05cac5`, `a5f25be7`.)
+- [x] Historical-change and temporal-coverage envelopes preserve explicit
+  missing-period, source-outage, schema-drift, granularity, clock, and
+  uncertainty states. (`da7f0d6c`, `dad19db`.)
+- [x] Federation compatibility canary and consumer adapter preserve producer
+  authority, immutable identity, and explicit successor-link semantics.
+  (`69f4dde`, `96d9905c`.)
 
 ## Phase 3: Historical comparison and atlas (AC-04, AC-05)
 
