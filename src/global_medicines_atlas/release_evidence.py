@@ -114,6 +114,10 @@ class ReleaseEvidence(FrozenModel):
         missing = set(REQUIREMENT_IDS).difference(requirement_ids)
         if missing:
             raise ValueError("requirement map is missing required identifiers")
+        for item in self.requirement_map:
+            expected_gates = _REQUIREMENT_GATES[item.requirement_id]
+            if item.gates != expected_gates:
+                raise ValueError("requirement map gates do not match contract")
         non_live = sum(
             count
             for evidence_class, count in self.receipt_counts.items()
