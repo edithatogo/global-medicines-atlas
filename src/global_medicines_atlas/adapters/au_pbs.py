@@ -95,16 +95,17 @@ PBS_V3_SOURCE_SCHEMA = pa.schema(
     ],
     metadata={
         "schema_name": "global-medicines-atlas.pbs-v3.source-faithful",
-        "schema_version": "1.0",
+        "schema_version": "2.0",
         "source_id": SOURCE_ID,
-        "dimension": "funding_formulary_source_structure",
+        "dimension_funding": "source_structure",
+        "dimension_formulary": "source_structure",
+        "dimension_terminology": "reference_only",
+        "dimension_classification": "reference_only",
+        "dimension_regulatory": "not_asserted",
         "qualification": "candidate",
         "mapping_status": "source_native",
         "absence_interpretation": "unknown",
         "conversion": "none",
-        "regulatory_status": "not_asserted",
-        "terminology_status": "reference_only",
-        "classification_status": "reference_only",
     },
 )
 
@@ -189,8 +190,15 @@ def inspect_pbs_v3_tags(
     return tuple(element.tag for element in islice(root.iter(), max_tags))
 
 
-def pbs_v3_source_parquet(records: tuple[PbsV3Record, ...]) -> bytes:
+def pbs_v3_source_parquet(
+    records: tuple[PbsV3Record, ...], *, source_id: str = SOURCE_ID
+) -> bytes:
     """Build deterministic source-faithful Parquet for admitted PBS records."""
+    if source_id not in {SOURCE_ID, "au-pbs-historical-xml"}:
+        raise ValueError("unsupported PBS source identity")
+    metadata = dict(PBS_V3_SOURCE_SCHEMA.metadata or {})
+    metadata[b"source_id"] = source_id.encode()
+    schema = PBS_V3_SOURCE_SCHEMA.with_metadata(metadata)  # pyright: ignore[reportUnknownMemberType]
     rows = [
         {
             "item_code": record.item_code,
@@ -210,7 +218,7 @@ def pbs_v3_source_parquet(records: tuple[PbsV3Record, ...]) -> bytes:
     ]
     output = BytesIO()
     pq.write_table(  # pyright: ignore[reportUnknownMemberType]
-        pa.Table.from_pylist(rows, schema=PBS_V3_SOURCE_SCHEMA),
+        pa.Table.from_pylist(rows, schema=schema),
         output,
         compression="zstd",
         version="2.6",
