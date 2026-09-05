@@ -52,9 +52,15 @@
   failed at collection with `ModuleNotFoundError` before the implementation was
   added; subsequent bounded fixes made custom denominator and anonymous-
   verification failures observable rather than generic field errors.
-- [ ] Benchmark DuckDB, Polars, Arrow streaming, optional DataFusion, and Xet-
-  aware restore/dedup against the production fallback.
-- [ ] Record profiling evidence and reject optimizations that weaken immutable
+- [x] Benchmark the portable fallback against a deterministic bounded fixture;
+  optional DuckDB, Polars, Arrow, DataFusion, and Xet execution remain explicit
+  unavailable candidates until their dependencies and exact public objects are
+  observed. The receipt compares operation counts and output digests without
+  promoting wall-clock noise or an optional dependency.
+- [ ] Extend the deterministic receipt with measured DuckDB, Polars, Arrow
+  streaming, optional DataFusion, and Xet-aware restore/dedup observations when
+  their exact public objects and environments are available.
+- [x] Record deterministic profiling evidence and reject optimizations that weaken immutable
   identities, bounded resource behavior, or Python 3.14 completeness.
 - [ ] Phase Verification & Checkpoint: each candidate has measured value and an
   exact fallback/rollback disposition.
