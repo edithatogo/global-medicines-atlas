@@ -488,6 +488,71 @@ def test_pbs_policy_retains_finite_official_schedule_envelope() -> None:
     assert PBS_XML_POLICY.max_bytes == 512 * 1024 * 1024
     assert PBS_XML_POLICY.max_xml_text_bytes == 384 * 1024 * 1024
 
+def test_source_id_parameterization_default() -> None:
+    """Verify default source_id is used when not explicitly provided."""
+    test_record = PbsV3SourceRecord(
+        item_code="99999X",
+        drug_name="Example Medicine",
+        benefit_types=["PBS"],
+        manner_of_administration="Oral",
+        amt_code=None,
+        atc_code=None,
+        restriction_flags=[],
+        restrictions=[],
+        restriction_effective_dates=None,
+        item_sha256=hashlib.sha256(b"example").hexdigest(),
+    )
+    output = pbs_v3_source_parquet([test_record])
+    parsed = pq.read_table(pa.BufferReader(output))
+    
+    assert parsed.schema.metadata[b"source_id"] == b"au-pbs"
+
+
+def test_source_id_parameterization_historical() -> None:
+    """Verify historical source_id can be explicitly set."""
+    test_record = PbsV3SourceRecord(
+        item_code="88888Y",
+        drug_name="Sample Drug",
+        benefit_types=["PBS"],
+        manner_of_administration="Intravenous",
+        amt_code=None,
+        atc_code=None,
+        restriction_flags=[],
+        restrictions=[],
+        restriction_effective_dates=None,
+        item_sha256=hashlib.sha256(b"sample").hexdigest(),
+    )
+    output = pbs_v3_source_parquet([test_record], source_id="au-pbs-historical-xml")
+    parsed = pq.read_table(pa.BufferReader(output))
+    
+    assert parsed.schema.metadata[b"source_id"] == b"au-pbs-historical-xml"
+
+
+def test_semantic_dimension_separation() -> None:
+    """Verify independent semantic dimensions are declared correctly."""
+    test_record = PbsV3SourceRecord(
+        item_code="77777Z",
+        drug_name="Demo Medication",
+        benefit_types=["RPBS"],
+        manner_of_administration="Topical",
+        amt_code="12345",
+        atc_code="A01BC",
+        restriction_flags=["R"],
+        restrictions=["Test restriction"],
+        restriction_effective_dates=None,
+        item_sha256=hashlib.sha256(b"demo").hexdigest(),
+    )
+    output = pbs_v3_source_parquet([test_record])
+    parsed = pq.read_table(pa.BufferReader(output))
+    meta = parsed.schema.metadata
+    
+    assert meta[b"dimension_funding"] == b"source_structure"
+    assert meta[b"dimension_formulary"] == b"source_structure"
+    assert meta[b"dimension_terminology"] == b"reference_only"
+    assert meta[b"dimension_classification"] == b"reference_only"
+    assert b"funding_formulary_source_structure" not in b"".join(meta.values())
+
+
 
 def test_parse_pbs_v3_archive_rejects_decompression_bomb() -> None:
     with pytest.raises(ArchiveSafetyError, match="decompression ratio"):

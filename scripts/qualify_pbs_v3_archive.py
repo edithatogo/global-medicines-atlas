@@ -71,7 +71,9 @@ def qualify(  # ruff: ignore[too-many-locals] - atomic qualification event
         raise ValueError(
             "PBS effective date must be an ISO calendar date"
         ) from error
-    parquet = pbs_v3_source_parquet(archive.records)
+    # Use the historical source identity for this qualification context
+    source_id = "au-pbs-historical-xml"
+    parquet = pbs_v3_source_parquet(archive.records, source_id=source_id)
     output_dir.mkdir(parents=True, exist_ok=False)
     raw_dir = output_dir / "raw" / effective_date
     bronze_dir = output_dir / "bronze" / effective_date
@@ -150,10 +152,15 @@ def qualify(  # ruff: ignore[too-many-locals] - atomic qualification event
         ),
         evidence_class=EvidenceClass.LIVE,
         transformation=TransformationEvidence(
-            transformation_id="au-pbs-v3-source-parquet-v1",
+            transformation_id="au-pbs-v3-source-parquet-v2",
+            # Bind both the qualification script and the adapter implementation
             transformation_sha256=hashlib.sha256(
                 Path(__file__).read_bytes()
-            ).hexdigest(),
+                + b"
+                + (
+                    Path(__file__).parent.parent
+                    / "src/global_medicines_atlas/adapters/au_pbs.py"
+                ).read_bytes()
             output_sha256=hashlib.sha256(parquet).hexdigest(),
             output_byte_count=len(parquet),
         ),

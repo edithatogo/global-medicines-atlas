@@ -92,20 +92,33 @@ PBS_V3_SOURCE_SCHEMA = pa.schema(
         pa.field("restrictions", pa.list_(pa.string()), nullable=False),
         pa.field("restriction_effective_dates", pa.list_(pa.string())),
         pa.field("projected_item_sha256", pa.string(), nullable=False),
-    ],
-    metadata={
-        "schema_name": "global-medicines-atlas.pbs-v3.source-faithful",
-        "schema_version": "1.0",
-        "source_id": SOURCE_ID,
-        "dimension": "funding_formulary_source_structure",
-        "qualification": "candidate",
-        "mapping_status": "source_native",
-        "absence_interpretation": "unknown",
-        "conversion": "none",
+])
         "regulatory_status": "not_asserted",
         "terminology_status": "reference_only",
-        "classification_status": "reference_only",
-    },
+def pbs_v3_source_parquet(
+    records: list[PbsV3SourceRecord],
+    *,
+    source_id: str = DEFAULT_SOURCE_ID,
+) -> bytes:
+    """Project PBS v3 source records into a Parquet file.
+    
+    Args:
+        records: Source records to serialize
+        source_id: Source identity for provenance (e.g., 'au-pbs', 'au-pbs-historical-xml')
+    """
+    # Apply semantic metadata to schema
+    schema_with_metadata = PBS_V3_SOURCE_SCHEMA.with_metadata({
+        "schema_name": "global-medicines-atlas.pbs-v3.source-faithful",
+        "schema_version": "2.0",
+        "source_id": source_id,
+        "dimension_funding": "source_structure",
+        "dimension_formulary": "source_structure", 
+        "dimension_terminology": "reference_only",
+        "dimension_classification": "reference_only",
+        "regulatory_assertion": "not_asserted",
+        "transformation_adapter_digest": _get_adapter_digest(),
+    })
+    
 )
 
 
@@ -127,7 +140,7 @@ def read_pbs_v3_member(payload: bytes) -> tuple[ExtractedMember, bytes]:
         ]
         if len(matches) != 1:
             raise ValueError(
-                "PBS archive must contain exactly one schedule XML"
+        schema=schema_with_metadata,
             )
         info = matches[0]
         xml_payload = archive.read(info)
