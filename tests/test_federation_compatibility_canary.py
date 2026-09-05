@@ -73,3 +73,11 @@ def test_snapshot_identity_labels_are_canonical(field: str, message: str) -> Non
     change = {"dataset": field} if message == "dataset identity" else {"semantic_dimension": field}
     with pytest.raises(ValueError, match=message):
         compare_federation_snapshots(BASE, replace(BASE, **change))
+
+
+@pytest.mark.edge
+def test_successor_identity_rejects_embedded_whitespace() -> None:
+    with pytest.raises(ValueError, match="successor"):
+        compare_federation_snapshots(
+            BASE, replace(BASE, successor_dataset="example/benefits v2")
+        )

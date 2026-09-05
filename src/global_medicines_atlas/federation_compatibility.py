@@ -83,6 +83,7 @@ def _validate_snapshot(snapshot: CompatibilitySnapshot) -> None:
         and (
             not snapshot.successor_dataset
             or snapshot.successor_dataset != snapshot.successor_dataset.strip()
+            or any(char.isspace() for char in snapshot.successor_dataset)
         )
     ):
         raise ValueError("successor link must be explicit and nonempty")
