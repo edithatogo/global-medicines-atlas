@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from collections.abc import Sequence
 from typing import Literal
 
 from pydantic import Field, model_validator
@@ -71,14 +72,17 @@ def build_research_lineage_receipt(
     *,
     export_id: str,
     revision: str,
-    artifacts: tuple[ResearchLineageArtifact, ...],
+    artifacts: Sequence[ResearchLineageArtifact],
 ) -> ResearchLineageReceipt:
     """Build a stable receipt by sorting artifacts by identifier."""
+
+    def artifact_identifier(artifact: ResearchLineageArtifact) -> str:
+        return artifact.identifier
 
     return ResearchLineageReceipt(
         schema_id="global-medicines-atlas.research-lineage",
         schema_version=1,
         export_id=export_id,
         revision=revision,
-        artifacts=tuple(sorted(artifacts, key=lambda item: item.identifier)),
+        artifacts=tuple(sorted(artifacts, key=artifact_identifier)),
     )
