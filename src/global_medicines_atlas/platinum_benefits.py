@@ -84,6 +84,7 @@ class BenefitsService:
 
     def query(self, resource_id: str, query: BenefitsQuery) -> BenefitsPage:
         """Read one bounded window; preserve source ordering and semantics."""
+        query = BenefitsQuery.model_validate(query.model_dump())
         from .platinum_query import (  # ruff: ignore[import-outside-top-level] - optional federation runtime is loaded only for configured queries.
             PlatinumQueryService,
             QuerySpec,

@@ -198,3 +198,22 @@ def test_weak_cursor_keys_rejected() -> None:
         BenefitsService(
             cast("StorageNeutralResolver", object()), cursor_key=b"short"
         )
+
+
+@pytest.mark.parametrize("limit", [-1, 0, 101, 1000])
+@pytest.mark.parametrize("construction", ["copy", "construct"])
+def test_shared_service_revalidates_unchecked_limits(
+    limit: int, construction: str
+) -> None:
+    query = BenefitsQuery(columns=("item_code",), limit=1)
+    if construction == "copy":
+        unchecked = query.model_copy(update={"limit": limit})
+    else:
+        unchecked = BenefitsQuery.model_construct(
+            **{**query.model_dump(), "limit": limit}
+        )
+    backend = BenefitsService(
+        cast("StorageNeutralResolver", object()), cursor_key=b"k" * 32
+    )
+    with pytest.raises(ValueError, match="limit"):
+        backend.query("au.mbs.service-items", unchecked)
