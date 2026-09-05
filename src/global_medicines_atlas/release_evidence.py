@@ -153,6 +153,8 @@ class ReleaseEvidence(FrozenModel):
                 "ordinary release qualification cannot produce approved evidence"
             )
         unresolved = set(self.unresolved_gates)
+        if len(unresolved) != len(self.unresolved_gates):
+            raise ValueError("unresolved gates must be unique")
         omitted = {
             gate
             for gate, status in self.gate_outcomes.items()

@@ -367,7 +367,7 @@ def test_release_evidence_model_rejects_approved_state() -> None:
 
 @pytest.mark.edge
 def test_release_evidence_rejects_duplicate_requirement_ids() -> None:
-    evidence = qualify(EvidenceClass.LIVE)
+    evidence = qualify(EvidenceClass.FIXTURE)
     requirements = list(evidence.requirement_map)
     requirements.append(requirements[0])
     with pytest.raises(ValidationError, match="duplicate identifiers"):
@@ -443,6 +443,21 @@ def test_release_evidence_rejects_omitted_failed_gate() -> None:
             "unresolved_gates": tuple(
                 gate for gate in evidence.unresolved_gates if gate != "traceability"
             ),
+        })
+
+
+@pytest.mark.edge
+def test_release_evidence_rejects_duplicate_unresolved_gate() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    unresolved = ("traceability", "traceability")
+    with pytest.raises(ValidationError, match="must be unique"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "gate_outcomes": {
+                **evidence.gate_outcomes,
+                "traceability": GateStatus.FAILED,
+            },
+            "unresolved_gates": unresolved,
         })
 
 
