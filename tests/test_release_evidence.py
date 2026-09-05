@@ -526,6 +526,17 @@ def test_release_evidence_rejects_unsorted_receipt_digests() -> None:
         ReleaseEvidence.model_validate({**evidence.model_dump(), "receipt_digests": digests})
 
 
+@pytest.mark.edge
+def test_release_evidence_rejects_duplicate_receipt_digests() -> None:
+    evidence = qualify(EvidenceClass.LIVE)
+    digest = "0" * 64
+    with pytest.raises(ValidationError, match="receipt digests must be unique"):
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "receipt_digests": (digest, digest),
+        })
+
+
 @pytest.mark.unit
 def test_checked_in_json_schema_accepts_model_and_rejects_approval() -> None:
     schema = json.loads(

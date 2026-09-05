@@ -138,6 +138,8 @@ class ReleaseEvidence(FrozenModel):
             raise ValueError("snapshot digests must be lowercase hexadecimal")
         if self.receipt_digests != tuple(sorted(self.receipt_digests)):
             raise ValueError("receipt digests must be sorted")
+        if len(set(self.receipt_digests)) != len(self.receipt_digests):
+            raise ValueError("receipt digests must be unique")
         if self.snapshot_manifest_digests != tuple(sorted(self.snapshot_manifest_digests)):
             raise ValueError("snapshot digests must be sorted")
         for item in self.requirement_map:
