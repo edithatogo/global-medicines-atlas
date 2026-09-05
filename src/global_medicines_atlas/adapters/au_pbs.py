@@ -78,20 +78,36 @@ class PbsV3Archive:
     xml_payload: bytes
 
 
-PBS_V3_SOURCE_SCHEMA = pa.schema([
-    pa.field("item_code", pa.string(), nullable=False),
-    pa.field("product_name", pa.string(), nullable=False),
-    pa.field("amt_codes", pa.list_(pa.string()), nullable=False),
-    pa.field(
-        "amt_resources",
-        pa.list_(pa.field("item", pa.string(), nullable=True)),
-        nullable=False,
-    ),
-    pa.field("atc_codes", pa.list_(pa.string()), nullable=False),
-    pa.field("restrictions", pa.list_(pa.string()), nullable=False),
-    pa.field("restriction_effective_dates", pa.list_(pa.string())),
-    pa.field("projected_item_sha256", pa.string(), nullable=False),
-])
+PBS_V3_SOURCE_SCHEMA = pa.schema(
+    [
+        pa.field("item_code", pa.string(), nullable=False),
+        pa.field("product_name", pa.string(), nullable=False),
+        pa.field("amt_codes", pa.list_(pa.string()), nullable=False),
+        pa.field(
+            "amt_resources",
+            pa.list_(pa.field("item", pa.string(), nullable=True)),
+            nullable=False,
+        ),
+        pa.field("atc_codes", pa.list_(pa.string()), nullable=False),
+        pa.field("restrictions", pa.list_(pa.string()), nullable=False),
+        pa.field("restriction_effective_dates", pa.list_(pa.string())),
+        pa.field("projected_item_sha256", pa.string(), nullable=False),
+    ],
+    metadata={
+        "schema_name": "global-medicines-atlas.pbs-v3.source-faithful",
+        "schema_version": "2.0",
+        "source_id": SOURCE_ID,
+        "dimension_funding": "source_structure",
+        "dimension_formulary": "source_structure",
+        "dimension_terminology": "reference_only",
+        "dimension_classification": "reference_only",
+        "dimension_regulatory": "not_asserted",
+        "qualification": "candidate",
+        "mapping_status": "source_native",
+        "absence_interpretation": "unknown",
+        "conversion": "none",
+    },
+)
 
 
 def read_pbs_v3_member(payload: bytes) -> tuple[ExtractedMember, bytes]:
@@ -174,8 +190,15 @@ def inspect_pbs_v3_tags(
     return tuple(element.tag for element in islice(root.iter(), max_tags))
 
 
-def pbs_v3_source_parquet(records: tuple[PbsV3Record, ...]) -> bytes:
+def pbs_v3_source_parquet(
+    records: tuple[PbsV3Record, ...], *, source_id: str = SOURCE_ID
+) -> bytes:
     """Build deterministic source-faithful Parquet for admitted PBS records."""
+    if source_id not in {SOURCE_ID, "au-pbs-historical-xml"}:
+        raise ValueError("unsupported PBS source identity")
+    metadata = dict(PBS_V3_SOURCE_SCHEMA.metadata or {})
+    metadata[b"source_id"] = source_id.encode()
+    schema = PBS_V3_SOURCE_SCHEMA.with_metadata(metadata)  # pyright: ignore[reportUnknownMemberType]
     rows = [
         {
             "item_code": record.item_code,
@@ -195,7 +218,7 @@ def pbs_v3_source_parquet(records: tuple[PbsV3Record, ...]) -> bytes:
     ]
     output = BytesIO()
     pq.write_table(  # pyright: ignore[reportUnknownMemberType]
-        pa.Table.from_pylist(rows, schema=PBS_V3_SOURCE_SCHEMA),
+        pa.Table.from_pylist(rows, schema=schema),
         output,
         compression="zstd",
         version="2.6",
