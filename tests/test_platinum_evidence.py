@@ -1,0 +1,49 @@
+"""Acceptance checks for mandatory Platinum result evidence."""
+
+from dataclasses import dataclass
+
+import pytest
+
+from global_medicines_atlas.platinum_evidence import (
+    PlatinumEvidenceError,
+    validate_result_evidence,
+)
+
+
+@dataclass(frozen=True)
+class _Evidence:
+    dataset: str = "owner/dataset"
+    revision: str = "a" * 40
+    path: str = "platinum/items.parquet"
+    object_sha256: str = "a" * 64
+    semantic_dimension: str = "funding"
+    entity_granularity: str = "medicine_item"
+    schema_era: str = "v1"
+    comparison_cohort: str = "current"
+    effective_date: str | None = "2026-01-01"
+    retrieved_at: str = "2026-01-02T00:00:00Z"
+    coverage_state: str = "not_declared"
+    confidence_state: str = "not_declared"
+    uncertainty_state: str = "not_declared"
+    review_state: str = "not_declared"
+    comparison_validity: str = "not_evaluated"
+
+
+@dataclass(frozen=True)
+class _Result:
+    evidence: _Evidence
+
+
+def test_result_evidence_accepts_complete_conservative_envelope() -> None:
+    result = _Result(_Evidence())
+    assert validate_result_evidence(result) is result
+
+
+def test_result_evidence_rejects_missing_claim_bearing_field() -> None:
+    result = _Result(_Evidence(confidence_state=""))
+    with pytest.raises(PlatinumEvidenceError, match="confidence_state"):
+        validate_result_evidence(result)
+
+
+def test_identity_shaped_envelope_can_be_validated_without_nested_evidence() -> None:
+    assert validate_result_evidence(_Evidence())
