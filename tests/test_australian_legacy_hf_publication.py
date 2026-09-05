@@ -57,9 +57,9 @@ def test_workflow_uploads_only_from_actions_and_verifies_anonymously() -> None:
     assert 'test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"' in workflow
     assert 'test "${GITHUB_REF}" = "refs/heads/${default_branch}"' in workflow
     assert 'test "${GITHUB_SHA}" = "${default_head}"' in workflow
-    assert workflow.index('gh api "repos/${GITHUB_REPOSITORY}/issues/340/comments"') < workflow.index(
-        "api.create_repo("
-    )
+    assert workflow.index(
+        'gh api "repos/${GITHUB_REPOSITORY}/issues/340/comments"'
+    ) < workflow.index("api.create_repo(")
     assert "private=True, exist_ok=False" in workflow
     assert (
         "existing target must be the exact private non-gated retry transaction"
