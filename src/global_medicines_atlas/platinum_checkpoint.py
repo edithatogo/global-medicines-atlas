@@ -288,38 +288,56 @@ def _download(
 def _read_until_deadline(
     response: httpx.Response, *, limit: int, deadline: float
 ) -> bytes:
-    """Consume a sync response without allowing a stalled read past deadline."""
+    """Consume until deadline, cancelling queue delivery on every exit.
+
+    Closing the response requests transport cleanup. A transport that ignores
+    close may still block its daemon read, but no abandoned queue put persists
+    after that read returns.
+    """
     events: queue.Queue[tuple[bytes | None, Exception | None]] = queue.Queue(1)
+    cancelled = threading.Event()
+
+    def emit(event: tuple[bytes | None, Exception | None]) -> bool:
+        while not cancelled.is_set():
+            try:
+                events.put(event, timeout=0.01)
+            except queue.Full:
+                continue
+            return True
+        return False
 
     def produce() -> None:
         try:
             for chunk in response.iter_bytes(64 * 1024):
-                events.put((chunk, None))
-            events.put((None, None))
+                if not emit((chunk, None)):
+                    return
+            emit((None, None))
         except Exception as error:  # pragma: no cover - transport-specific
-            events.put((None, error))
+            emit((None, error))
 
     threading.Thread(target=produce, daemon=True).start()
     chunks: list[bytes] = []
     size = 0
-    while True:
-        remaining = deadline - time.monotonic()
-        if remaining <= 0:
-            response.close()
-            raise ValueError("HTTP retrieval deadline exceeded")
-        try:
-            chunk, error = events.get(timeout=remaining)
-        except queue.Empty:
-            response.close()
-            raise ValueError("HTTP retrieval deadline exceeded") from None
-        if error is not None:
-            raise error
-        if chunk is None:
-            return b"".join(chunks)
-        size += len(chunk)
-        if size > limit:
-            raise ValueError("remote size exceeds budget")
-        chunks.append(chunk)
+    try:
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise ValueError("HTTP retrieval deadline exceeded")
+            try:
+                chunk, error = events.get(timeout=remaining)
+            except queue.Empty:
+                raise ValueError("HTTP retrieval deadline exceeded") from None
+            if error is not None:
+                raise error
+            if chunk is None:
+                return b"".join(chunks)
+            size += len(chunk)
+            if size > limit:
+                raise ValueError("remote size exceeds budget")
+            chunks.append(chunk)
+    finally:
+        cancelled.set()
+        response.close()
 
 
 def _require_anonymous_client(client: httpx.Client) -> None:
