@@ -35,7 +35,9 @@ class TemporalCoverageRouteAdapter:
     def __init__(self, observations: Sequence[CoverageObservation]) -> None:
         self._observations = tuple(observations)
 
-    def page(self, *, offset: int = 0, limit: int = 100) -> TemporalCoveragePage:
+    def page(
+        self, *, offset: int = 0, limit: int = 100
+    ) -> TemporalCoveragePage:
         """Return a bounded page without inferring coverage or validity."""
         if offset < 0 or limit < 1 or limit > _MAX_PAGE_SIZE:
             raise ValueError("temporal coverage paging bounds are invalid")
@@ -50,7 +52,9 @@ class TemporalCoverageRouteAdapter:
             next_offset=end if end < total else None,
         )
 
-    def page_payload(self, *, offset: int = 0, limit: int = 100) -> dict[str, Any]:
+    def page_payload(
+        self, *, offset: int = 0, limit: int = 100
+    ) -> dict[str, Any]:
         """Return only JSON-safe source-faithful observations for transport."""
         return self.page(offset=offset, limit=limit).model_dump(mode="json")
 

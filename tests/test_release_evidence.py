@@ -381,7 +381,9 @@ def test_release_evidence_rejects_duplicate_requirement_ids() -> None:
 def test_release_evidence_rejects_unknown_requirement_ids() -> None:
     evidence = qualify(EvidenceClass.LIVE)
     requirements = list(evidence.requirement_map)
-    requirements[0] = requirements[0].model_copy(update={"requirement_id": "M-999"})
+    requirements[0] = requirements[0].model_copy(
+        update={"requirement_id": "M-999"}
+    )
     with pytest.raises(ValidationError, match="unknown identifiers"):
         ReleaseEvidence.model_validate({
             **evidence.model_dump(),
@@ -403,7 +405,9 @@ def test_release_evidence_rejects_incomplete_requirement_map() -> None:
 def test_release_evidence_rejects_requirement_gate_drift() -> None:
     evidence = qualify(EvidenceClass.LIVE)
     requirements = list(evidence.requirement_map)
-    requirements[0] = requirements[0].model_copy(update={"gates": ("traceability",)})
+    requirements[0] = requirements[0].model_copy(
+        update={"gates": ("traceability",)}
+    )
     with pytest.raises(ValidationError, match="gates do not match"):
         ReleaseEvidence.model_validate({
             **evidence.model_dump(),
@@ -429,7 +433,10 @@ def test_release_evidence_rejects_missing_gate_outcome() -> None:
     outcomes = dict(evidence.gate_outcomes)
     outcomes.pop("traceability")
     with pytest.raises(ValidationError, match="missing required gates"):
-        ReleaseEvidence.model_validate({**evidence.model_dump(), "gate_outcomes": outcomes})
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "gate_outcomes": outcomes,
+        })
 
 
 @pytest.mark.edge
@@ -441,7 +448,9 @@ def test_release_evidence_rejects_omitted_failed_gate() -> None:
             **evidence.model_dump(),
             "gate_outcomes": outcomes,
             "unresolved_gates": tuple(
-                gate for gate in evidence.unresolved_gates if gate != "traceability"
+                gate
+                for gate in evidence.unresolved_gates
+                if gate != "traceability"
             ),
         })
 
@@ -489,7 +498,9 @@ def test_release_evidence_rejects_noncanonical_requirement_order() -> None:
 @pytest.mark.edge
 def test_release_evidence_rejects_unsorted_schema_versions() -> None:
     evidence = qualify(EvidenceClass.LIVE)
-    with pytest.raises(ValidationError, match="schema versions must be unique and sorted"):
+    with pytest.raises(
+        ValidationError, match="schema versions must be unique and sorted"
+    ):
         ReleaseEvidence.model_validate({
             **evidence.model_dump(),
             "dataset_schema_versions": ("2", "1"),
@@ -523,7 +534,10 @@ def test_release_evidence_rejects_unsorted_receipt_digests() -> None:
     evidence = qualify(EvidenceClass.LIVE)
     digests = ("f" * 64, "0" * 64)
     with pytest.raises(ValidationError, match="receipt digests must be sorted"):
-        ReleaseEvidence.model_validate({**evidence.model_dump(), "receipt_digests": digests})
+        ReleaseEvidence.model_validate({
+            **evidence.model_dump(),
+            "receipt_digests": digests,
+        })
 
 
 @pytest.mark.edge
@@ -541,7 +555,9 @@ def test_release_evidence_rejects_duplicate_receipt_digests() -> None:
 def test_release_evidence_rejects_duplicate_snapshot_digests() -> None:
     evidence = qualify(EvidenceClass.LIVE)
     digest = "0" * 64
-    with pytest.raises(ValidationError, match="snapshot digests must be unique"):
+    with pytest.raises(
+        ValidationError, match="snapshot digests must be unique"
+    ):
         ReleaseEvidence.model_validate({
             **evidence.model_dump(),
             "snapshot_manifest_digests": (digest, digest),
@@ -551,7 +567,9 @@ def test_release_evidence_rejects_duplicate_snapshot_digests() -> None:
 @pytest.mark.edge
 def test_release_evidence_rejects_unsorted_snapshot_scopes() -> None:
     evidence = qualify(EvidenceClass.LIVE)
-    with pytest.raises(ValidationError, match="snapshot scopes must be unique and sorted"):
+    with pytest.raises(
+        ValidationError, match="snapshot scopes must be unique and sorted"
+    ):
         ReleaseEvidence.model_validate({
             **evidence.model_dump(),
             "snapshot_scopes": ("z", "a"),

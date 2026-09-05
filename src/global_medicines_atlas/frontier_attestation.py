@@ -42,9 +42,13 @@ class VerificationCostReceipt(FrozenModel):
     @model_validator(mode="after")
     def cost_shape(self) -> VerificationCostReceipt:
         if self.object_sha256_checks != self.leaf_count:
-            raise ValueError("object SHA-256 checks must cover every manifest leaf")
+            raise ValueError(
+                "object SHA-256 checks must cover every manifest leaf"
+            )
         if self.merkle_leaf_hashes != self.leaf_count:
-            raise ValueError("Merkle leaf hashes must cover every manifest leaf")
+            raise ValueError(
+                "Merkle leaf hashes must cover every manifest leaf"
+            )
         return self
 
 
@@ -52,7 +56,9 @@ def _sha256(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
 
 
-def build_verification_cost_receipt(manifest: MerkleManifest) -> VerificationCostReceipt:
+def build_verification_cost_receipt(
+    manifest: MerkleManifest,
+) -> VerificationCostReceipt:
     """Build deterministic work-count evidence without reading object payloads."""
     leaf_count = len(manifest.leaves)
     # The tree duplicates an odd final node at each level, so count the actual
@@ -81,12 +87,21 @@ def verify_verification_cost_receipt(
 ) -> bool:
     """Verify receipt binding and manifest integrity, retaining object checks."""
     expected = build_verification_cost_receipt(manifest)
-    return receipt == expected and merkle_root(manifest.leaves) == receipt.manifest_root_sha256
+    return (
+        receipt == expected
+        and merkle_root(manifest.leaves) == receipt.manifest_root_sha256
+    )
 
 
-def canonical_verification_cost_bytes(receipt: VerificationCostReceipt) -> bytes:
+def canonical_verification_cost_bytes(
+    receipt: VerificationCostReceipt,
+) -> bytes:
     """Serialize the receipt deterministically for an evidence ledger."""
     return (
-        json.dumps(receipt.model_dump(mode="json"), sort_keys=True, separators=(",", ":"))
+        json.dumps(
+            receipt.model_dump(mode="json"),
+            sort_keys=True,
+            separators=(",", ":"),
+        )
         + "\n"
     ).encode("utf-8")

@@ -48,11 +48,15 @@ def test_result_evidence_rejects_missing_claim_bearing_field() -> None:
         validate_result_evidence(result)
 
 
-def test_identity_shaped_envelope_can_be_validated_without_nested_evidence() -> None:
+def test_identity_shaped_envelope_can_be_validated_without_nested_evidence() -> (
+    None
+):
     assert validate_result_evidence(_Evidence())
 
 
-def test_result_evidence_aggregate_is_payload_free_and_order_independent() -> None:
+def test_result_evidence_aggregate_is_payload_free_and_order_independent() -> (
+    None
+):
     first = _Result(_Evidence(path="benefits.parquet"))
     second = _Result(_Evidence(path="history.parquet"))
     left = aggregate_result_evidence((first, second))
@@ -68,7 +72,9 @@ def test_result_evidence_aggregate_is_payload_free_and_order_independent() -> No
     assert len(left.receipt_sha256) == 64
 
 
-def test_result_evidence_aggregate_rejects_empty_and_duplicate_resources() -> None:
+def test_result_evidence_aggregate_rejects_empty_and_duplicate_resources() -> (
+    None
+):
     with pytest.raises(PlatinumEvidenceError, match="cannot be empty"):
         aggregate_result_evidence(())
     duplicate = _Result(_Evidence())
@@ -78,8 +84,14 @@ def test_result_evidence_aggregate_rejects_empty_and_duplicate_resources() -> No
 
 def test_representative_checkpoint_records_only_observed_dimensions() -> None:
     results = (
-        _Result(_Evidence(path="benefits.parquet", semantic_dimension="funding")),
-        _Result(_Evidence(path="history.parquet", semantic_dimension="service_benefit")),
+        _Result(
+            _Evidence(path="benefits.parquet", semantic_dimension="funding")
+        ),
+        _Result(
+            _Evidence(
+                path="history.parquet", semantic_dimension="service_benefit"
+            )
+        ),
     )
     checkpoint = checkpoint_representative_evidence(
         results, required_dimensions=("funding", "service_benefit")
@@ -92,12 +104,15 @@ def test_representative_checkpoint_records_only_observed_dimensions() -> None:
         "owner/dataset:history.parquet",
     )
     assert b"rows" not in checkpoint.canonical_bytes
-    assert checkpoint.receipt_sha256 == hashlib.sha256(
-        checkpoint.canonical_bytes
-    ).hexdigest()
+    assert (
+        checkpoint.receipt_sha256
+        == hashlib.sha256(checkpoint.canonical_bytes).hexdigest()
+    )
 
 
-def test_representative_checkpoint_does_not_infer_unobserved_dimensions() -> None:
+def test_representative_checkpoint_does_not_infer_unobserved_dimensions() -> (
+    None
+):
     with pytest.raises(PlatinumEvidenceError, match="required dimensions"):
         checkpoint_representative_evidence(
             (_Result(_Evidence()),), required_dimensions=("regulatory",)

@@ -71,7 +71,7 @@ def bind_consumer_contract(
         authority = document["authority"]
         source = document["source"]
         location = document["location"]
-    except (json.JSONDecodeError, KeyError, TypeError):
+    except json.JSONDecodeError, KeyError, TypeError:
         raise ValueError("invalid consumer contract") from None
     if authority.get("schema_sha256") != SCHEMA_SHA256:
         raise ValueError("consumer contract schema pin mismatch")

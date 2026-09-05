@@ -37,7 +37,9 @@ class MerkleManifest(FrozenModel):
 
     @field_validator("leaves")
     @classmethod
-    def unique_paths(cls, value: tuple[MerkleLeaf, ...]) -> tuple[MerkleLeaf, ...]:
+    def unique_paths(
+        cls, value: tuple[MerkleLeaf, ...]
+    ) -> tuple[MerkleLeaf, ...]:
         paths = [leaf.path for leaf in value]
         if len(paths) != len(set(paths)):
             raise ValueError("Merkle leaf paths must be unique")
@@ -50,7 +52,10 @@ def _hash_pair(left: bytes, right: bytes) -> bytes:
 
 def _leaf_hash(leaf: MerkleLeaf) -> bytes:
     return hashlib.sha256(
-        b"leaf\0" + leaf.path.encode("utf-8") + b"\0" + leaf.sha256.encode("ascii")
+        b"leaf\0"
+        + leaf.path.encode("utf-8")
+        + b"\0"
+        + leaf.sha256.encode("ascii")
     ).digest()
 
 
@@ -65,14 +70,18 @@ def merkle_root(leaves: Sequence[MerkleLeaf]) -> str:
     while len(level) > 1:
         if len(level) % 2:
             level.append(level[-1])
-        level = [_hash_pair(level[i], level[i + 1]) for i in range(0, len(level), 2)]
+        level = [
+            _hash_pair(level[i], level[i + 1]) for i in range(0, len(level), 2)
+        ]
     return level[0].hex()
 
 
 def build_merkle_manifest(leaves: Sequence[MerkleLeaf]) -> MerkleManifest:
     """Build an order-independent manifest while retaining every receipt."""
     normalized = tuple(sorted(leaves, key=lambda leaf: leaf.path))
-    return MerkleManifest(leaves=normalized, root_sha256=merkle_root(normalized))
+    return MerkleManifest(
+        leaves=normalized, root_sha256=merkle_root(normalized)
+    )
 
 
 def verify_merkle_manifest(manifest: MerkleManifest) -> bool:
@@ -83,6 +92,10 @@ def verify_merkle_manifest(manifest: MerkleManifest) -> bool:
 def canonical_merkle_manifest_bytes(manifest: MerkleManifest) -> bytes:
     """Serialize a manifest deterministically for a publication receipt."""
     return (
-        json.dumps(manifest.model_dump(mode="json"), sort_keys=True, separators=(",", ":"))
+        json.dumps(
+            manifest.model_dump(mode="json"),
+            sort_keys=True,
+            separators=(",", ":"),
+        )
         + "\n"
     ).encode("utf-8")

@@ -78,16 +78,15 @@ def _validate_snapshot(snapshot: CompatibilitySnapshot) -> None:
     ):
         raise ValueError("semantic dimension must be nonempty")
     if not snapshot.required_fields or any(
-        not field or field != field.strip() or any(char.isspace() for char in field)
+        not field
+        or field != field.strip()
+        or any(char.isspace() for char in field)
         for field in snapshot.required_fields
     ):
         raise ValueError("required fields must be nonempty")
-    if (
-        snapshot.successor_dataset is not None
-        and (
-            not snapshot.successor_dataset
-            or snapshot.successor_dataset != snapshot.successor_dataset.strip()
-            or any(char.isspace() for char in snapshot.successor_dataset)
-        )
+    if snapshot.successor_dataset is not None and (
+        not snapshot.successor_dataset
+        or snapshot.successor_dataset != snapshot.successor_dataset.strip()
+        or any(char.isspace() for char in snapshot.successor_dataset)
     ):
         raise ValueError("successor link must be explicit and nonempty")

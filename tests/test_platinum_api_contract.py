@@ -37,7 +37,9 @@ def test_observation_is_deterministic_and_excludes_response_payload() -> None:
         ("GET", "/api/v1/evidence?secret=x"),
     ],
 )
-def test_mutating_or_unscoped_requests_fail_closed(method: str, path: str) -> None:
+def test_mutating_or_unscoped_requests_fail_closed(
+    method: str, path: str
+) -> None:
     with pytest.raises(ApiContractError):
         make_api_observation(
             method=method,
@@ -70,7 +72,9 @@ def test_invalid_request_identity_and_status_fail_closed() -> None:
         )
 
 
-def test_transport_adapter_binds_completed_exchange_without_retaining_body() -> None:
+def test_transport_adapter_binds_completed_exchange_without_retaining_body() -> (
+    None
+):
     response_body = b'{"rows":[{"value":"fixture"}]}'
     observation = observe_api_exchange(
         method="GET",
@@ -80,6 +84,8 @@ def test_transport_adapter_binds_completed_exchange_without_retaining_body() -> 
         status_code=200,
         request_id="transport-test",
     )
-    assert observation.response_sha256 == hashlib.sha256(response_body).hexdigest()
+    assert (
+        observation.response_sha256 == hashlib.sha256(response_body).hexdigest()
+    )
     assert response_body not in observation.canonical_bytes
     assert observation.path == "/api/v1/evidence"

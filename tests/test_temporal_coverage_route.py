@@ -30,7 +30,10 @@ def _observation(identifier: str) -> CoverageObservation:
 
 
 def test_route_pages_source_faithful_json() -> None:
-    adapter = TemporalCoverageRouteAdapter((_observation("one"), _observation("two")))
+    adapter = TemporalCoverageRouteAdapter((
+        _observation("one"),
+        _observation("two"),
+    ))
     payload = adapter.page_payload(offset=1, limit=1)
     assert payload["total"] == 2
     assert payload["next_offset"] is None
@@ -38,7 +41,9 @@ def test_route_pages_source_faithful_json() -> None:
     assert payload["items"][0]["valid_time"]["start"].startswith("2025-01-01")
 
 
-@pytest.mark.parametrize("kwargs", [{"offset": -1}, {"limit": 0}, {"limit": 1001}])
+@pytest.mark.parametrize(
+    "kwargs", [{"offset": -1}, {"limit": 0}, {"limit": 1001}]
+)
 def test_route_rejects_unbounded_requests(kwargs: dict[str, int]) -> None:
     with pytest.raises(ValueError, match="paging bounds"):
         TemporalCoverageRouteAdapter(()).page(**kwargs)

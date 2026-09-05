@@ -12,9 +12,10 @@ from global_medicines_atlas.historical_change_adapter import (
 
 
 def test_adapter_returns_bounded_json_safe_page() -> None:
-    service = HistoricalChangeService(
-        [compare_historical_snapshots(None, None), compare_historical_snapshots(None, None)]
-    )
+    service = HistoricalChangeService([
+        compare_historical_snapshots(None, None),
+        compare_historical_snapshots(None, None),
+    ])
 
     payload = historical_change_page_payload(service, offset=1, limit=1)
 
@@ -25,7 +26,9 @@ def test_adapter_returns_bounded_json_safe_page() -> None:
     assert payload["items"][0]["absence_interpretation"] == "unknown"
 
 
-@pytest.mark.parametrize("kwargs", [{"offset": -1}, {"limit": 0}, {"limit": 1001}])
+@pytest.mark.parametrize(
+    "kwargs", [{"offset": -1}, {"limit": 0}, {"limit": 1001}]
+)
 def test_adapter_preserves_service_bounds(kwargs: dict[str, int]) -> None:
     service = HistoricalChangeService([])
     with pytest.raises(ValueError, match="paging bounds"):

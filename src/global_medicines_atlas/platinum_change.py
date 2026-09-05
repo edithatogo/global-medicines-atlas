@@ -85,7 +85,9 @@ def build_change_page(
     if offset > total:
         raise ValueError("change page offset exceeds total changes")
     changes = comparison.changes[offset : offset + limit]
-    next_offset = offset + len(changes) if offset + len(changes) < total else None
+    next_offset = (
+        offset + len(changes) if offset + len(changes) < total else None
+    )
     return ChangePage(
         comparison_state=comparison.comparison_state,
         availability=comparison.availability,

@@ -240,9 +240,7 @@ class BenefitsService:
             identity=identity,
             rows=rows,
             window_sha256=result.result_sha256,
-            page_sha256=hashlib.sha256(
-                encoded_rows
-            ).hexdigest(),
+            page_sha256=hashlib.sha256(encoded_rows).hexdigest(),
             receipt_sha256=result.query_receipt.receipt_sha256,
             reason=None,
             next_cursor=self._cursor(end, binding)

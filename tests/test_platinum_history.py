@@ -11,15 +11,20 @@ from global_medicines_atlas.platinum_history import (
 )
 
 
-def test_envelope_binds_deterministic_change_digest_and_unknown_absence() -> None:
+def test_envelope_binds_deterministic_change_digest_and_unknown_absence() -> (
+    None
+):
     change = compare_historical_snapshots(None, None)
     generated = datetime(2026, 1, 1, tzinfo=UTC)
     result = build_historical_change_envelope(change, generated_at=generated)
     assert isinstance(result, HistoricalChangeEnvelope)
     assert result.generated_at == generated
-    assert result.change_sha256 == build_historical_change_envelope(
-        change, generated_at=generated
-    ).change_sha256
+    assert (
+        result.change_sha256
+        == build_historical_change_envelope(
+            change, generated_at=generated
+        ).change_sha256
+    )
     assert result.comparison.comparison_state == "source_outage"
     assert result.absence_is_negative_evidence is False
     assert result.source_outage_is_negative_evidence is False

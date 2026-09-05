@@ -28,9 +28,14 @@ def test_benchmark_is_deterministic_and_reports_portable_parity() -> None:
 def test_benchmark_rejects_divergent_candidate_output() -> None:
     document = benchmark_fixture(FIXTURE).model_dump(mode="json")
     document["observations"].append({
-        "candidate": "polars", "status": "measured", "rows_scanned": 3,
-        "rows_returned": 2, "operations": 3, "output_sha256": "0" * 64,
-        "fallback": "optional_engine", "note": "negative control",
+        "candidate": "polars",
+        "status": "measured",
+        "rows_scanned": 3,
+        "rows_returned": 2,
+        "operations": 3,
+        "output_sha256": "0" * 64,
+        "fallback": "optional_engine",
+        "note": "negative control",
     })
     with pytest.raises(ValidationError, match="candidate output differs"):
         type(benchmark_fixture(FIXTURE))(**document)

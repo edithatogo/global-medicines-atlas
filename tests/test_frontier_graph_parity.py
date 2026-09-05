@@ -19,7 +19,9 @@ def test_all_preview_surfaces_have_exact_semantic_parity() -> None:
     export = export_gold_tables(nodes, edges)
     networkx = qualify_networkx_graph(nodes, edges)
     report = validate_graph_previews(
-        export.reference_json, export.parameters_json, export_rdf_star(nodes, edges),
+        export.reference_json,
+        export.parameters_json,
+        export_rdf_star(nodes, edges),
         networkx_recovered_json=networkx.recovered_json,
     )
     assert report.node_count == nodes.num_rows
@@ -42,11 +44,18 @@ def test_projection_mutation_is_rejected(field: str) -> None:
     else:
         values[field] = values[field].replace("payload-json", "tampered", 1)
     with pytest.raises(ValueError, match="parity"):
-        validate_graph_previews(export.reference_json, values["parameters_json"], values["rdf_star"])
+        validate_graph_previews(
+            export.reference_json, values["parameters_json"], values["rdf_star"]
+        )
 
 
 def test_non_fixed_cypher_templates_are_rejected() -> None:
     nodes, edges = project_mbs_gold_graph_arrow(graph())
     export = export_gold_tables(nodes, edges)
     with pytest.raises(ValueError, match="template"):
-        validate_graph_previews(export.reference_json, export.parameters_json, export_rdf_star(nodes, edges), node_statement="CREATE (n)")
+        validate_graph_previews(
+            export.reference_json,
+            export.parameters_json,
+            export_rdf_star(nodes, edges),
+            node_statement="CREATE (n)",
+        )

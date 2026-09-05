@@ -34,7 +34,9 @@ class CoverageLookup(Protocol):
 def _digest(response: CoverageResponse) -> str:
     payload = {
         "clocks": response.metadata.clocks.model_dump(mode="json"),
-        "coverage": [item.model_dump(mode="json") for item in response.coverage],
+        "coverage": [
+            item.model_dump(mode="json") for item in response.coverage
+        ],
         "page": response.metadata.page.model_dump(mode="json"),
     }
     canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"))

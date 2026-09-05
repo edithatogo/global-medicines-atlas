@@ -74,7 +74,9 @@ class QuerySnapshotManifest(FrozenModel):
 
     @field_validator("query")
     @classmethod
-    def query_is_json_object(cls, value: Mapping[str, Any]) -> Mapping[str, Any]:
+    def query_is_json_object(
+        cls, value: Mapping[str, Any]
+    ) -> Mapping[str, Any]:
         _canonical_bytes(value)
         return value
 
@@ -103,7 +105,12 @@ def build_query_snapshot_manifest(
         query_sha256=_digest(query),
         result_sha256=hashlib.sha256(result_payload).hexdigest(),
         result_row_count=len(result_rows),
-        sources=tuple(sorted(sources, key=lambda item: (item.dataset_id, item.revision, item.path))),
+        sources=tuple(
+            sorted(
+                sources,
+                key=lambda item: (item.dataset_id, item.revision, item.path),
+            )
+        ),
         citations=tuple(sorted(citations, key=lambda item: item.citation_id)),
         generated_at=generated_at,
         generator_commit=generator_commit,

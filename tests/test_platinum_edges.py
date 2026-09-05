@@ -13,7 +13,9 @@ def test_edge_selection_is_sorted_and_lossless() -> None:
     source = edges.to_pylist()[0]["source_node_id"]
     selected = select_gold_edges(edges, source_node_id=source)
     assert [row["edge_id"] for row in selected.to_pylist()] == sorted(
-        row["edge_id"] for row in edges.to_pylist() if row["source_node_id"] == source
+        row["edge_id"]
+        for row in edges.to_pylist()
+        if row["source_node_id"] == source
     )
     assert selected.schema.equals(edges.schema, check_metadata=True)
     assert selected.to_pylist()[0]["evidence_json"]

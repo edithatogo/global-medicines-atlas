@@ -14,9 +14,10 @@ from global_medicines_atlas.frontier_merkle import (
 
 
 def _manifest(count: int = 3):
-    return build_merkle_manifest(
-        [MerkleLeaf(path=f"objects/{index}", sha256=f"{index + 1:064x}") for index in range(count)]
-    )
+    return build_merkle_manifest([
+        MerkleLeaf(path=f"objects/{index}", sha256=f"{index + 1:064x}")
+        for index in range(count)
+    ])
 
 
 def test_receipt_binds_manifest_and_counts_base_object_checks() -> None:
@@ -43,7 +44,11 @@ def test_receipt_rejects_manifest_or_cost_mutation() -> None:
 
 
 def test_receipt_requires_one_sha_check_per_leaf() -> None:
-    receipt = build_verification_cost_receipt(_manifest()).model_dump(mode="json")
+    receipt = build_verification_cost_receipt(_manifest()).model_dump(
+        mode="json"
+    )
     receipt["object_sha256_checks"] = 2
     with pytest.raises(ValueError, match="cover every manifest leaf"):
-        type(build_verification_cost_receipt(_manifest())).model_validate(receipt)
+        type(build_verification_cost_receipt(_manifest())).model_validate(
+            receipt
+        )

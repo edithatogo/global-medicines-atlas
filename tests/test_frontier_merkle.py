@@ -12,7 +12,9 @@ from global_medicines_atlas.frontier_merkle import (
 
 
 def _leaf(path: str, value: str = "a") -> MerkleLeaf:
-    return MerkleLeaf(path=path, sha256=hashlib.sha256(value.encode()).hexdigest())
+    return MerkleLeaf(
+        path=path, sha256=hashlib.sha256(value.encode()).hexdigest()
+    )
 
 
 @pytest.mark.unit
@@ -20,7 +22,9 @@ def test_root_and_manifest_are_order_stable() -> None:
     first = build_merkle_manifest([_leaf("b", "2"), _leaf("a", "1")])
     second = build_merkle_manifest([_leaf("a", "1"), _leaf("b", "2")])
     assert first.root_sha256 == second.root_sha256
-    assert canonical_merkle_manifest_bytes(first) == canonical_merkle_manifest_bytes(second)
+    assert canonical_merkle_manifest_bytes(
+        first
+    ) == canonical_merkle_manifest_bytes(second)
     assert verify_merkle_manifest(first)
 
 

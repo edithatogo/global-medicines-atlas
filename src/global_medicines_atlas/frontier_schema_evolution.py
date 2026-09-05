@@ -46,7 +46,9 @@ class SchemaDescriptor(FrozenModel):
         if len(names) != len(set(names)):
             raise ValueError("schema fields repeat")
         payload = self.model_dump(exclude={"canonical_sha256"}, mode="json")
-        encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+        encoded = json.dumps(
+            payload, sort_keys=True, separators=(",", ":")
+        ).encode()
         if hashlib.sha256(encoded).hexdigest() != self.canonical_sha256:
             raise ValueError("schema canonical identity differs")
         return self
@@ -59,16 +61,22 @@ class SchemaEvolutionDecision(FrozenModel):
     before: SchemaDescriptor
     after: SchemaDescriptor
     compatibility: Compatibility
-    migration_id: str | None = Field(default=None, pattern=r"^[a-z0-9][a-z0-9_.-]{0,127}$")
+    migration_id: str | None = Field(
+        default=None, pattern=r"^[a-z0-9][a-z0-9_.-]{0,127}$"
+    )
     migration_reviewed: bool = False
     authority_promoted: Literal[False] = False
 
     @model_validator(mode="after")
     def validates_transition(self) -> Self:
-        if self.before.schema_id != self.schema_id or self.after.schema_id != self.schema_id:
+        if (
+            self.before.schema_id != self.schema_id
+            or self.after.schema_id != self.schema_id
+        ):
             raise ValueError("schema transition identity differs")
         if self.after.major < self.before.major or (
-            self.after.major == self.before.major and self.after.minor < self.before.minor
+            self.after.major == self.before.major
+            and self.after.minor < self.before.minor
         ):
             raise ValueError("schema transition moves backwards")
         old = {field.name: field for field in self.before.fields}
@@ -82,14 +90,26 @@ class SchemaEvolutionDecision(FrozenModel):
             for name, field in old.items()
             if name in new
         )
-        naturally_compatible = self.after.major == self.before.major and additive_nullable and unchanged
+        naturally_compatible = (
+            self.after.major == self.before.major
+            and additive_nullable
+            and unchanged
+        )
         if self.compatibility == "compatible" and not naturally_compatible:
-            raise ValueError("compatible transition is not additive and nullable")
+            raise ValueError(
+                "compatible transition is not additive and nullable"
+            )
         if self.compatibility == "breaking" and (
-            self.migration_id is None or not self.migration_reviewed or self.after.major == self.before.major
+            self.migration_id is None
+            or not self.migration_reviewed
+            or self.after.major == self.before.major
         ):
-            raise ValueError("breaking transition requires reviewed major migration")
-        if self.compatibility == "compatible" and (self.migration_id is not None or self.migration_reviewed):
+            raise ValueError(
+                "breaking transition requires reviewed major migration"
+            )
+        if self.compatibility == "compatible" and (
+            self.migration_id is not None or self.migration_reviewed
+        ):
             raise ValueError("compatible transition cannot claim a migration")
         return self
 
@@ -98,7 +118,9 @@ class RestObservation(FrozenModel):
     """Payload-free REST lifecycle observation pinned to an exact schema."""
 
     method: RestMethod
-    path: str = Field(pattern=r"^/v[0-9]+/[a-z0-9][a-z0-9_.-]{0,127}/[a-z0-9][a-z0-9_.-]{0,127}$")
+    path: str = Field(
+        pattern=r"^/v[0-9]+/[a-z0-9][a-z0-9_.-]{0,127}/[a-z0-9][a-z0-9_.-]{0,127}$"
+    )
     schema_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     status_code: int = Field(strict=True, ge=100, le=599)
     outcome: RestOutcome
@@ -114,7 +136,9 @@ class RestObservation(FrozenModel):
             or self.request_count != 1
             or (self.method == "GET" and self.response_sha256 is None)
         ):
-            raise ValueError("passed REST observation must be one successful request")
+            raise ValueError(
+                "passed REST observation must be one successful request"
+            )
         if self.outcome == "rejected" and success:
             raise ValueError("rejected REST observation cannot be successful")
         if self.method == "HEAD" and self.response_sha256 is not None:
@@ -128,7 +152,9 @@ class RestSchemaQualification(FrozenModel):
     schema_id: Literal["global-medicines-atlas.frontier-schema-rest"]
     schema_version: Literal[1]
     transition: SchemaEvolutionDecision
-    observations: tuple[RestObservation, ...] = Field(min_length=2, max_length=8)
+    observations: tuple[RestObservation, ...] = Field(
+        min_length=2, max_length=8
+    )
     production_dependency_adopted: Literal[False]
     technology_promotion_claimed: Literal[False]
 
@@ -137,8 +163,13 @@ class RestSchemaQualification(FrozenModel):
         paths = {item.path for item in self.observations}
         if len(paths) != len(self.observations):
             raise ValueError("REST observation paths repeat")
-        if any(f"/v{self.transition.after.major}/" not in path for path in paths):
+        if any(
+            f"/v{self.transition.after.major}/" not in path for path in paths
+        ):
             raise ValueError("REST path is not pinned to target schema major")
-        if any(item.schema_sha256 != self.transition.after.canonical_sha256 for item in self.observations):
+        if any(
+            item.schema_sha256 != self.transition.after.canonical_sha256
+            for item in self.observations
+        ):
             raise ValueError("REST schema identity differs")
         return self

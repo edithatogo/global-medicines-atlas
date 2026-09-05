@@ -67,10 +67,19 @@ def test_required_field_names_are_canonical(field: str) -> None:
 
 @pytest.mark.parametrize(
     ("field", "message"),
-    [(" example/benefits", "dataset identity"), ("service benefit", "semantic dimension")],
+    [
+        (" example/benefits", "dataset identity"),
+        ("service benefit", "semantic dimension"),
+    ],
 )
-def test_snapshot_identity_labels_are_canonical(field: str, message: str) -> None:
-    change = {"dataset": field} if message == "dataset identity" else {"semantic_dimension": field}
+def test_snapshot_identity_labels_are_canonical(
+    field: str, message: str
+) -> None:
+    change = (
+        {"dataset": field}
+        if message == "dataset identity"
+        else {"semantic_dimension": field}
+    )
     with pytest.raises(ValueError, match=message):
         compare_federation_snapshots(BASE, replace(BASE, **change))
 

@@ -77,7 +77,10 @@ def make_api_observation(
         raise ApiContractError("only GET and HEAD observations are permitted")
     if not path.startswith("/api/v1/") or "?" in path or "#" in path:
         raise ApiContractError("path must be a relative versioned API path")
-    if type(status_code) is not int or not _HTTP_STATUS_MIN <= status_code <= _HTTP_STATUS_MAX:
+    if (
+        type(status_code) is not int
+        or not _HTTP_STATUS_MIN <= status_code <= _HTTP_STATUS_MAX
+    ):
         raise ApiContractError("status code is invalid")
     if (
         not request_id

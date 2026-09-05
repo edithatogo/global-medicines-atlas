@@ -25,7 +25,9 @@ def test_fixed_window_is_deterministic_and_resets() -> None:
 def test_consumers_are_isolated_and_invalid_policy_fails_closed() -> None:
     with pytest.raises(ValueError, match="requests"):
         RateLimitPolicy(requests=0)
-    limiter = InMemoryRateLimiter(RateLimitPolicy(requests=1, window_seconds=1.0))
+    limiter = InMemoryRateLimiter(
+        RateLimitPolicy(requests=1, window_seconds=1.0)
+    )
     limiter.admit("a")
     limiter.admit("b")
     with pytest.raises(ValueError, match="consumer key"):
