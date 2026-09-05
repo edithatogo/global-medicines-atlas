@@ -64,7 +64,7 @@ class FrontierBenchmarkReceipt(FrozenModel):
     schema_version: Literal[1]
     workload: BenchmarkWorkload
     observations: tuple[BenchmarkObservation, ...] = Field(
-        min_length=1, max_length=5
+        min_length=1, max_length=6
     )
     production_dependency_adopted: Literal[False]
     technology_promotion_claimed: Literal[False]
@@ -141,6 +141,16 @@ def benchmark_fixture(
     ]
     observations.extend(
         _optional_engine_observations(normalized, workload.output_sha256)
+    )
+    # Xet restore is a separately governed operation: without two exact,
+    # anonymously verified public revisions it must still appear in the
+    # denominator as an explicit unavailable candidate rather than silently
+    # disappearing from the receipt.
+    observations.append(
+        _unavailable(
+            "xet_restore",
+            "requires two exact anonymously verified public revisions",
+        )
     )
     return FrontierBenchmarkReceipt(
         schema_id=BENCHMARK_SCHEMA,
