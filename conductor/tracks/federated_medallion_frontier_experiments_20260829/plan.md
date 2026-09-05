@@ -87,6 +87,14 @@
 
 ## Phase 5: Graph and semantic projections (AC-05)
 
+- [x] Implement a bounded offline reference JSON and parameterized Cypher
+  exporter from the existing MBS/PBS portable Gold tables. Preserve every
+  field, null, evidence/control JSON and edge direction; reject schema drift,
+  duplicate identities and dangling endpoints. Local round-trip tests cover
+  hostile native text and deterministic ordering. This is export behavior,
+  not live Neo4j query parity, NetworkX/RDF-star coverage or public-data
+  qualification; those broader tasks below remain open.
+
 - [ ] Write failing deterministic graph, engine-parity, query-semantic,
   confidence/calibration, negative-control, review, rights, and restricted-byte
   tests.
