@@ -125,7 +125,7 @@ def _domain_batches(
         metadata = dict(schema.metadata or {})
         metadata.update({
             b"schema_name": b"global-medicines-atlas.pbs-silver.domain-fields",
-            b"mapping_profile": b"pbs-adapter-structural-v1",
+            b"mapping_profile": b"pbs-adapter-structural-v2",
         })
         schema = schema.with_metadata(metadata)  # pyright: ignore[reportUnknownMemberType]
         # Mapping reads only identity columns. Keep every original Arrow buffer

@@ -343,6 +343,7 @@ def _dimension(parent_entity_id: str | None, target: str) -> NodeDimension:
         "items": "pbs_item_structure",
         "presentations": "presentation_structure",
         "restrictions": "restriction_structure",
+        "prices": "price_structure",
         "amt_references": "terminology_reference_structure",
         "classifications": "classification_reference_structure",
         "unmapped": "unmapped_source_structure",
