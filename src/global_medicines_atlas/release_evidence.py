@@ -120,6 +120,8 @@ class ReleaseEvidence(FrozenModel):
         missing = set(REQUIREMENT_IDS).difference(requirement_ids)
         if missing:
             raise ValueError("requirement map is missing required identifiers")
+        if requirement_ids != REQUIREMENT_IDS:
+            raise ValueError("requirement map must use canonical order")
         for item in self.requirement_map:
             expected_gates = _REQUIREMENT_GATES[item.requirement_id]
             if item.gates != expected_gates:
