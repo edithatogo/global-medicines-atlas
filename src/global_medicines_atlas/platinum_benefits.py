@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING, Annotated, Literal, Protocol, cast
 from pydantic import Field, field_validator
 
 from .platinum_identity_service import ResolverDatasetIdentityService
+from .platinum_limits import InMemoryRateLimiter
 from .platinum_surface_contracts import (
     DatasetIdentityEnvelope,
     PlatinumSurfaceModel,
@@ -35,6 +36,7 @@ Column = Annotated[
 MAX_FILTERS = 16
 MAX_FILTER_TEXT = 1024
 MAX_FILTER_JSON = 16384
+MAX_PAGE_BYTES = 4 * 1024 * 1024
 
 
 class BenefitsFilter(PlatinumSurfaceModel):
@@ -130,7 +132,11 @@ class BenefitsService:
     """Query already-admitted Australian resources using verified Parquet."""
 
     def __init__(
-        self, resolver: StorageNeutralResolver, *, cursor_key: bytes
+        self,
+        resolver: StorageNeutralResolver,
+        *,
+        cursor_key: bytes,
+        rate_limiter: InMemoryRateLimiter | None = None,
     ) -> None:
         if (
             type(cursor_key) is not bytes
@@ -139,9 +145,18 @@ class BenefitsService:
             raise ValueError("cursor key must contain at least 32 bytes")
         self._resolver = resolver
         self._key = cursor_key
+        self._rate_limiter = rate_limiter
 
-    def query(self, resource_id: str, query: BenefitsQuery) -> BenefitsPage:
+    def query(
+        self,
+        resource_id: str,
+        query: BenefitsQuery,
+        *,
+        consumer_id: str = "anonymous",
+    ) -> BenefitsPage:
         """Read one bounded window; preserve source ordering and semantics."""
+        if self._rate_limiter is not None:
+            self._rate_limiter.admit(consumer_id)
         if set(vars(query)) - set(BenefitsQuery.model_fields):
             raise ValueError("unknown copied query fields")
         if type(query.filters) is not tuple:
@@ -208,6 +223,15 @@ class BenefitsService:
         if offset > len(result.rows):
             raise ValueError("cursor offset exceeds query window")
         rows = result.rows[offset : offset + query.limit]
+        encoded_rows = json.dumps(
+            rows,
+            ensure_ascii=False,
+            allow_nan=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+        if len(encoded_rows) > MAX_PAGE_BYTES:
+            raise ValueError("page exceeds response byte limit")
         end = offset + len(rows)
         return BenefitsPage(
             status="available",
@@ -217,13 +241,7 @@ class BenefitsService:
             rows=rows,
             window_sha256=result.result_sha256,
             page_sha256=hashlib.sha256(
-                json.dumps(
-                    rows,
-                    ensure_ascii=False,
-                    allow_nan=False,
-                    sort_keys=True,
-                    separators=(",", ":"),
-                ).encode()
+                encoded_rows
             ).hexdigest(),
             receipt_sha256=result.query_receipt.receipt_sha256,
             reason=None,
