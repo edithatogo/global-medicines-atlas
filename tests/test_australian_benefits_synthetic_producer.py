@@ -42,3 +42,24 @@ def test_synthetic_producer_contains_no_remote_or_payload_claims() -> None:
     assert "http://" not in text
     assert "https://" not in text
     assert "payload" not in text.lower()
+
+
+@pytest.mark.unit
+def test_synthetic_objects_have_content_addressable_layer_paths() -> None:
+    document = json.loads(FIXTURE.read_text(encoding="utf-8"))
+
+    for item in document["objects"]:
+        assert len(item["sha256"]) == 64
+        assert all(
+            character in "0123456789abcdef" for character in item["sha256"]
+        )
+        assert item["path"].startswith(f"{item['layer']}/")
+        assert item["path"].rsplit(".", 1)[-1] in {"json", "parquet"}
+        if item["layer"] == "bronze":
+            # Bronze is the three-stratum evidentiary boundary.  A complete
+            # producer may legitimately contribute a source index (B0),
+            # acquisition metadata (B1), or raw evidence (B2); do not make
+            # the denominator silently equate Bronze with B2.
+            assert item["bronze_stratum"] in {"B0", "B1", "B2"}
+        else:
+            assert item["bronze_stratum"] is None
