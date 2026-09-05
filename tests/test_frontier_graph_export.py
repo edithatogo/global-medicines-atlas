@@ -110,7 +110,9 @@ def test_null_identity_rejected_even_with_nullable_arrow_field():
 def test_rdf_star_is_deterministic_lossless_and_quotes_edges():
     nodes, edges = project_mbs_gold_graph_arrow(graph())
     result = export_rdf_star(nodes, edges)
-    assert result == export_rdf_star(nodes.take([3, 1, 0, 2]), edges.take([1, 0]))
+    assert result == export_rdf_star(
+        nodes.take([3, 1, 0, 2]), edges.take([1, 0])
+    )
     assert "<<<urn:gma:node:" in result
     assert "<urn:gma:payload-json>" in result
     assert "native_name" in result
