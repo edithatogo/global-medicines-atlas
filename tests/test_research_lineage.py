@@ -12,7 +12,9 @@ def _artifact(identifier: str, role: str) -> ResearchLineageArtifact:
     return ResearchLineageArtifact(
         identifier=identifier,
         role=role,  # type: ignore[arg-type]
-        public_url=f"https://huggingface.co/datasets/example/resolve/main/{identifier}",
+        public_url=(
+            f"https://huggingface.co/datasets/example/resolve/{'a' * 40}/{identifier}"
+        ),
         sha256="b" * 64,
     )
 
@@ -42,6 +44,40 @@ def test_lineage_receipt_requires_both_roles_and_unique_ids() -> None:
             export_id="export-1",
             revision="a" * 40,
             artifacts=(_artifact("only.json", "input"),),
+        )
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://example.test/a",
+        "https://user:pass@example.test/a",
+        "https://example.test/a#fragment",
+    ],
+)
+def test_artifact_url_must_be_public_https_without_credentials_or_fragment(
+    url: str,
+) -> None:
+    with pytest.raises(ValueError, match=r"public HTTPS|credentials|fragment"):
+        ResearchLineageArtifact(
+            identifier="input.json",
+            role="input",
+            public_url=url,
+            sha256="b" * 64,
+        )
+
+
+def test_artifact_urls_bind_to_receipt_revision() -> None:
+    with pytest.raises(
+        ValueError, match="bind to the declared immutable revision"
+    ):
+        build_research_lineage_receipt(
+            export_id="export-1",
+            revision="c" * 40,
+            artifacts=(
+                _artifact("input.json", "input"),
+                _artifact("output.json", "output"),
+            ),
         )
     with pytest.raises(ValueError, match="identifiers must be unique"):
         build_research_lineage_receipt(
