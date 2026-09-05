@@ -110,3 +110,26 @@ integrated into this implementation branch, no review conversation resolved,
 and no source qualification or publication attributed to that repair. The
 remote head must be rechecked before delivery because the browser follow-up
 may independently change it.
+
+## Integration delivery and check observation (2026-09-05 07:55 UTC)
+
+Draft PR [#463](https://github.com/edithatogo/global-medicines-atlas/pull/463)
+contains integrated head `a5e9c962fa584922be756c1a409828b642e74482`.
+All 39 reported checks are terminal: 37 passed; Context and repository policy
+and Codecov patch failed. The policy failure is an unnamed metadata workflow
+job; patch coverage is 83.49%, including optional NetworkX paths absent from
+the governed test environment. Repairs are in progress without lowering gates.
+This observation supersedes earlier not-pushed status only for the delivered
+head; it does not establish a complete track, publication, or release.
+
+The performance change was subsequently integrated locally as `3d023b9`.
+Both append-only ledger branches were retained when resolving the cherry-pick
+conflict. Routine validation passed on that snapshot. Its measured 331.128 ms
+p95 still exceeds the 250 ms budget; no performance qualification is claimed.
+Fresh query/API regression tests passed all 38 tests. The initial invocation selected
+a nonexistent `tests/test_api.py` and ran no tests; the corrected invocation
+uses `tests/test_product_api.py`.
+
+Chrome tab creation timed out twice. No browser mutation or review resolution
+was verified during those attempts. Local validation and scoped repository
+repair remain available independently of that connection failure.
