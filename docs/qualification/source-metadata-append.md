@@ -14,9 +14,26 @@ transaction and requires the complete unchanged baseline plus its one exact
 addition, a new immutable revision, the expected parent, public/non-gated
 state, and matching anonymously retrieved metadata bytes.
 
-## Required hosted integration
+## Prepared hosted integration (execution pending)
 
-The next implementation must run only from the approved GitHub Actions
+`.github/workflows/australian-source-metadata.yml` now runs
+`scripts/publish_source_metadata.py` for one reviewed `mbs` or `pbs` profile.
+The transport uses exactly one Hub add operation and `parent_commit` CAS;
+it has no remove operation or dataset creation/visibility mutation. A current
+head differing from the profile's pinned source revision is rejected before
+writing. The durable receipt labels parent evidence as server-enforced CAS.
+
+Anonymous downloads use the existing DNS-bound transport and approved Hub
+delivery hosts. Each isolated download subprocess has an absolute 60-second
+deadline and is killed on expiry, with byte bounds checked before writes.
+Inventories are capped at 10,000 entries, 512 MiB per object and 2 GiB per
+snapshot (up to 4 GiB across before/after plus metadata); the workflow has a
+30-minute timeout. An issue receipt projection exceeding 60,000 characters is
+rejected before any append. Exact issue receipt readback must succeed before
+temporary source cache cleanup. Tests mock the SDK and transport; no hosted
+execution or publication has been performed for this workflow.
+
+The hosted implementation runs only from the approved GitHub Actions
 environment, bind the reviewed default-branch commit and durable issue intent,
 and independently obtain a complete baseline inventory at the pinned source
 revision. Hash every baseline object and retain byte counts; API sibling names
@@ -34,4 +51,5 @@ and after inventories and anonymous verification outcome. Cleanup must follow
 verified durable receipt persistence. A failed append leaves the prior source
 revision intact and must not trigger deletion or a dataset-wide privacy change.
 
-No hosted integration or publication is claimed by the offline tests.
+Hosted execution and external publication remain unverified until a reviewed
+main commit is dispatched and its public durable receipts are observed.
