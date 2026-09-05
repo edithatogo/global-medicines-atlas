@@ -193,6 +193,9 @@ def build_research_crate(
         version=version,
         dataset_url=dataset_url,
         distributions=tuple(
-            sorted(distributions, key=lambda item: item.identifier)
+            sorted(
+                distributions,
+                key=lambda item: _distribution_field(item, "identifier"),
+            )
         ),
     )
