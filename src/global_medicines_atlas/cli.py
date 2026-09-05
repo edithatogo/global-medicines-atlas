@@ -60,6 +60,7 @@ app.add_typer(
 app.add_typer(source_app, name="source", help="Inspect governed sources.")
 _CURSOR_ENV = "GMA_CURSOR_" + "SECRET"
 _MINIMUM_CURSOR_KEY_BYTES = 16
+_BENEFITS_CURSOR_KEY_BYTES = 32
 _ROW_COLLECTIONS = frozenset({
     "conclusions",
     "concepts",
@@ -569,6 +570,59 @@ def health(
         checks=(check,),
     )
     typer.echo(response.model_dump_json())
+
+
+@app.command("benefits")
+def benefits_query(
+    resource_id: Annotated[str, typer.Argument()],
+    trust_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
+    metadata_root: Annotated[Path, typer.Option(exists=True, file_okay=False)],
+    schema_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
+    columns: Annotated[list[str], typer.Option("--column")],
+    limit: Annotated[int, typer.Option(min=1, max=100)] = 100,
+    cursor: str | None = None,
+    *,
+    offline: bool = False,
+) -> None:
+    """Query one page using independently provisioned operator trust metadata."""
+    from .platinum_benefits import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
+        BenefitsQuery,
+        BenefitsService,
+    )
+    from .platinum_configuration import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
+        load_benefits_resolver,
+    )
+    from .platinum_identity_service import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
+        UnknownPlatinumResourceError,
+    )
+
+    secret = os.environ.get(_CURSOR_ENV, "")
+    if len(secret.encode()) < _BENEFITS_CURSOR_KEY_BYTES:
+        _fail(ErrorCode.SERVICE_UNAVAILABLE, f"{_CURSOR_ENV} requires 32 bytes")
+    try:
+        query = BenefitsQuery(
+            columns=tuple(columns), limit=limit, cursor=cursor, offline=offline
+        )
+        resolver = load_benefits_resolver(
+            trust_file=trust_file,
+            metadata_root=metadata_root,
+            schema_file=schema_file,
+        )
+        page = BenefitsService(resolver, cursor_key=secret.encode()).query(
+            resource_id, query
+        )
+    except UnknownPlatinumResourceError:
+        _fail(
+            ErrorCode.NOT_FOUND, "The admitted benefits resource was not found"
+        )
+    except ValueError, OSError:
+        _fail(
+            ErrorCode.INVALID_REQUEST,
+            "The benefits query or operator configuration is invalid",
+        )
+    typer.echo(page.model_dump_json())
+    if page.status == "unavailable":
+        raise typer.Exit(3)
 
 
 def main() -> None:

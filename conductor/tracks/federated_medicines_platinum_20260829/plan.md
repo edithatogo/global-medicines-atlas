@@ -130,6 +130,11 @@
   source completeness. Offline misses return typed unavailability. Clean-wheel
   API imports defer the optional federation runtime. This local slice does not
   complete CLI wiring, filters, general edges/history/coverage or qualification.
+- [x] Add a benefits CLI adapter over the shared query service with a separate
+  operator-controlled trust configuration. Verify candidate contract/semantic
+  changes cannot self-admit, bound metadata files and paths, preserve JSON
+  provenance and explicit unavailable exit status. This does not establish
+  production admission or complete filters/history/edge/coverage surfaces.
 - [~] Write failing CLI/API tests for MBS services, PBS medicines, evidence
   edges, history, coverage, provenance, dataset identity, pagination, filters,
   errors, and OpenAPI compatibility.
