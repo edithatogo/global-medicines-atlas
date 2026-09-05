@@ -61,13 +61,17 @@ def compare_federation_snapshots(
 
 
 def _validate_snapshot(snapshot: CompatibilitySnapshot) -> None:
-    if not snapshot.dataset:
+    if not snapshot.dataset or snapshot.dataset != snapshot.dataset.strip():
         raise ValueError("dataset identity must be nonempty")
     if _IMMUTABLE_REVISION.fullmatch(snapshot.revision) is None:
         raise ValueError("immutable revision is required")
     if _DIGEST.fullmatch(snapshot.schema_sha256) is None:
         raise ValueError("schema digest must be lowercase hexadecimal")
-    if not snapshot.semantic_dimension:
+    if (
+        not snapshot.semantic_dimension
+        or snapshot.semantic_dimension != snapshot.semantic_dimension.strip()
+        or any(char.isspace() for char in snapshot.semantic_dimension)
+    ):
         raise ValueError("semantic dimension must be nonempty")
     if not snapshot.required_fields or any(
         not field or field != field.strip() or any(char.isspace() for char in field)
@@ -76,6 +80,9 @@ def _validate_snapshot(snapshot: CompatibilitySnapshot) -> None:
         raise ValueError("required fields must be nonempty")
     if (
         snapshot.successor_dataset is not None
-        and not snapshot.successor_dataset
+        and (
+            not snapshot.successor_dataset
+            or snapshot.successor_dataset != snapshot.successor_dataset.strip()
+        )
     ):
         raise ValueError("successor link must be explicit and nonempty")
