@@ -72,7 +72,7 @@ def require_hosted_main(exact_commit: str) -> None:
         raise ValueError("metadata publication requires run identity")
 
 
-def execute_metadata_append(  # ruff: ignore[too-many-branches, too-many-statements] -- explicit write/recovery gates
+def execute_metadata_append(  # ruff: ignore[too-many-branches] -- explicit write/recovery gates
     document: dict[str, Any],
     *,
     exact_commit: str,
@@ -138,12 +138,10 @@ def execute_metadata_append(  # ruff: ignore[too-many-branches, too-many-stateme
         expected = {
             key: value for key, value in intent.items() if key != "run_url"
         }
-        actual = {key: acknowledgement.get(key) for key in expected}
-        actual["status"] = "intent"
-        if (
-            actual != expected
-            or acknowledgement.get("status") != "cas_acknowledged"
-        ):
+        if {
+            **{key: acknowledgement.get(key) for key in expected},
+            "status": "intent",
+        } != expected or acknowledgement.get("status") != "cas_acknowledged":
             raise ValueError("recovery acknowledgement differs from exact plan")
         if (
             acknowledgement.get("parent_basis")
