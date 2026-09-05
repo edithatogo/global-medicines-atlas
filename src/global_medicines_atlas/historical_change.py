@@ -8,6 +8,7 @@ states.
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import Literal
 
 from pydantic import ConfigDict, Field, model_validator
@@ -18,6 +19,8 @@ from .historical_comparison import (
     compare_native_snapshots,
 )
 from .models import FrozenModel
+
+MAX_HISTORICAL_CHANGE_PAGE_SIZE = 1000
 
 
 class ChangeObservation(FrozenModel):
@@ -114,6 +117,42 @@ class HistoricalChange(FrozenModel):
         if (self.left is None or self.right is None) and self.changes:
             raise ValueError("missing snapshots cannot have inferred changes")
         return self
+
+
+class HistoricalChangePage(FrozenModel):
+    """A bounded page of already-computed historical change envelopes."""
+
+    items: tuple[HistoricalChange, ...]
+    offset: int = Field(ge=0)
+    limit: int = Field(ge=1, le=MAX_HISTORICAL_CHANGE_PAGE_SIZE)
+    total: int = Field(ge=0)
+    next_offset: int | None = Field(default=None, ge=0)
+
+
+class HistoricalChangeService:
+    """Read-only paging over an injected, immutable historical result set.
+
+    The service does not acquire snapshots or infer changes.  Callers provide
+    the already-qualified envelopes, and paging only selects a deterministic
+    bounded window for a route or other transport adapter.
+    """
+
+    def __init__(self, changes: Sequence[HistoricalChange]) -> None:
+        self._changes = tuple(changes)
+
+    def page(self, *, offset: int = 0, limit: int = 100) -> HistoricalChangePage:
+        if offset < 0 or limit < 1 or limit > MAX_HISTORICAL_CHANGE_PAGE_SIZE:
+            raise ValueError("historical change paging bounds are invalid")
+        total = len(self._changes)
+        items = self._changes[offset : offset + limit]
+        end = offset + len(items)
+        return HistoricalChangePage(
+            items=items,
+            offset=offset,
+            limit=limit,
+            total=total,
+            next_offset=end if end < total else None,
+        )
 
 
 def _observation(item: NativeDifference) -> ChangeObservation:

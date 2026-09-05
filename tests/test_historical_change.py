@@ -1,6 +1,9 @@
 from datetime import UTC, datetime
 
+import pytest
+
 from global_medicines_atlas.historical_change import (
+    HistoricalChangeService,
     compare_historical_snapshots,
 )
 from global_medicines_atlas.historical_comparison import (
@@ -69,3 +72,18 @@ def test_schema_era_drift_is_not_a_change() -> None:
     )
     assert result.comparison_state == "schema_drift"
     assert result.changes == ()
+
+
+def test_service_pages_injected_changes_deterministically() -> None:
+    first = compare_historical_snapshots(None, snapshot(value="new"))
+    second = compare_historical_snapshots(snapshot(value="old"), snapshot(value="new"))
+    page = HistoricalChangeService((first, second)).page(offset=1, limit=1)
+    assert page.items == (second,)
+    assert page.total == 2
+    assert page.next_offset is None
+
+
+def test_service_rejects_unbounded_paging() -> None:
+    service = HistoricalChangeService(())
+    with pytest.raises(ValueError, match="bounds"):
+        service.page(limit=1001)
