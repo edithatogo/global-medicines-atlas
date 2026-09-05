@@ -81,3 +81,11 @@ def test_successor_identity_rejects_embedded_whitespace() -> None:
         compare_federation_snapshots(
             BASE, replace(BASE, successor_dataset="example/benefits v2")
         )
+
+
+@pytest.mark.edge
+def test_dataset_identity_rejects_embedded_whitespace() -> None:
+    with pytest.raises(ValueError, match="dataset identity"):
+        compare_federation_snapshots(
+            BASE, replace(BASE, dataset="example/benefits v2")
+        )

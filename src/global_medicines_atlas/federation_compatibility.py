@@ -61,7 +61,11 @@ def compare_federation_snapshots(
 
 
 def _validate_snapshot(snapshot: CompatibilitySnapshot) -> None:
-    if not snapshot.dataset or snapshot.dataset != snapshot.dataset.strip():
+    if (
+        not snapshot.dataset
+        or snapshot.dataset != snapshot.dataset.strip()
+        or any(char.isspace() for char in snapshot.dataset)
+    ):
         raise ValueError("dataset identity must be nonempty")
     if _IMMUTABLE_REVISION.fullmatch(snapshot.revision) is None:
         raise ValueError("immutable revision is required")
