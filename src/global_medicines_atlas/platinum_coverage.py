@@ -8,8 +8,8 @@ from typing import Protocol
 
 from pydantic import AwareDatetime, Field
 
-from .product_contracts import AsOfClocks, CoverageItem, CoverageResponse
 from .platinum_surface_contracts import PlatinumSurfaceModel, Sha256
+from .product_contracts import AsOfClocks, CoverageItem, CoverageResponse
 
 
 class CoverageEnvelope(PlatinumSurfaceModel):
