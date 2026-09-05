@@ -108,6 +108,9 @@ class ReleaseEvidence(FrozenModel):
         requirement_ids = tuple(item.requirement_id for item in self.requirement_map)
         if len(set(requirement_ids)) != len(requirement_ids):
             raise ValueError("requirement map must not contain duplicate identifiers")
+        unknown = set(requirement_ids).difference(REQUIREMENT_IDS)
+        if unknown:
+            raise ValueError("requirement map contains unknown identifiers")
         non_live = sum(
             count
             for evidence_class, count in self.receipt_counts.items()
