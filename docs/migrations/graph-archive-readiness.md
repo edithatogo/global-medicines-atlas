@@ -1,5 +1,12 @@
 # Graph repository archival readiness
 
+Final archival status (2026-09-06): both Australian donor repositories are
+archived. Graph archival was separately approved and verified at
+2026-09-06T03:02:52Z; see the
+[graph archival receipt](../../quality/qualifications/graph-archival-20260906.json).
+Both graph branch refs are retained; earlier pending statements below describe
+the preparation chronology, not the current archive state.
+
 Prepared on 2026-09-06 for `edithatogo/aus_mbs_pbs_graph` at
 `3993e5e331eb2d3d9e9d354d80e52c684ad26a1e`. The repository is unarchived;
 archival approval is the remaining human gate. See the

@@ -1,5 +1,12 @@
 # Australian donor compatibility and successor preparation
 
+Final archival status (2026-09-06): both Australian donor repositories are
+archived. Graph archival was separately approved and verified at
+2026-09-06T03:02:52Z; see the
+[graph archival receipt](../../quality/qualifications/graph-archival-20260906.json).
+Both graph branch refs are retained; earlier pending statements below describe
+the preparation chronology, not the current archive state.
+
 Current status (2026-09-06): the four-object history append passed anonymous
 verification in [run 34005721959](https://github.com/edithatogo/global-medicines-atlas/actions/runs/34005721959).
 `aus-health-data-scraper` is archived; its issues #1–#3 and PR #5 are closed as

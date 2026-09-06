@@ -294,8 +294,11 @@ See [scraper archival readiness](../../../docs/migrations/scraper-archive-readin
   174 passed; no new code or data delta since preserved baseline scope.
 - [x] Resolve issues #2–#4 and close onboarding PR #6 as superseded, retaining
   both branches and discussion history; re-query open work as empty.
-- [~] Review, validate and merge the graph readiness record.
-- [ ] Obtain graph-only archival approval, repeat final drift preflight, archive
-  without deletion, and record before/after evidence.
+- [x] Review, validate and merge the graph readiness record. PR #479 merged
+  `067977b0`; all 39 checks passed.
+- [x] Obtain graph-only archival approval, repeat final drift preflight, archive
+  without deletion, and record before/after evidence. Issue #339 comment
+  5556516869; archived 2026-09-06T03:02:52Z. Restored the missing Renovate
+  ref to its exact recorded commit before archival; both branches verified.
 
 See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.md).
