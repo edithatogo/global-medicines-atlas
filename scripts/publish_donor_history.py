@@ -9,6 +9,7 @@ import hashlib
 import importlib
 import json
 import os
+import re
 import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import] -- fixed argv only
 import tempfile
@@ -79,8 +80,19 @@ def git(directory: Path, *args: str) -> str:
             stderr=subprocess.DEVNULL,
             env=environment,
         ).strip()
-    except subprocess.CalledProcessError, subprocess.TimeoutExpired:
-        raise ValueError("bounded donor Git operation failed") from None
+    except subprocess.CalledProcessError as error:
+        # Expose only Git diagnostic identifiers, never source paths or text.
+        codes = sorted(
+            set(re.findall(r": ([a-z][A-Za-z]+):", error.stderr or ""))
+        )
+        raise ValueError(
+            f"bounded donor Git operation failed (exit {error.returncode}; "
+            f"diagnostics {','.join(codes) or 'unclassified'})"
+        ) from None
+    except subprocess.TimeoutExpired:
+        raise ValueError(
+            "bounded donor Git operation failed (timeout)"
+        ) from None
 
 
 def gh(endpoint: str) -> Any:
