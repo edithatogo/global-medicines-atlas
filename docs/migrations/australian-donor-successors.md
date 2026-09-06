@@ -1,6 +1,15 @@
 # Australian donor compatibility and successor preparation
 
-Current status (2026-09-06): the four-object history append passed anonymous
+Final archival status (2026-09-06): both Australian donor repositories are
+archived. Graph archival was separately approved and verified at
+2026-09-06T03:02:52Z; see the
+[graph archival receipt](../../quality/qualifications/graph-archival-20260906.json).
+Both graph branch refs are retained; earlier pending statements below describe
+the preparation chronology, not the current archive state.
+
+## Historical preparation snapshot (before archival)
+
+Pre-graph-archive snapshot (2026-09-06): the four-object history append passed anonymous
 verification in [run 34005721959](https://github.com/edithatogo/global-medicines-atlas/actions/runs/34005721959).
 `aus-health-data-scraper` is archived; its issues #1–#3 and PR #5 are closed as
 superseded, with branches/history and local edits retained. The graph repository
@@ -8,9 +17,10 @@ is unarchived and requires separate approval. See the
 [closeout receipt](../../quality/qualifications/scraper-archival-20260906.json).
 Earlier pending/disabled statements below describe the preparation chronology.
 
-This is the canonical successor map, not a claim that consolidation, live
-scheduling, or donor archival is complete. It adapts the existing nzmedicines
-compatibility-notice pattern without inheriting that repository's approvals.
+The capability dispositions below remain the canonical successor map.
+The notice text and checklist retain the pre-archive preparation snapshot;
+current archival status is recorded above and in the final receipts. The
+compatibility pattern does not inherit another repository's approvals.
 
 ## Exact baseline and capability disposition
 

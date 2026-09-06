@@ -17,4 +17,6 @@ from `aus_mbs_pbs_graph` and `aus-health-data-scraper`.
 
 Current closeout: scraper publication and archival completed on 2026-09-06;
 [receipt](../../../quality/qualifications/scraper-archival-20260906.json). Both
-latest donor histories are verified; graph archival remains separately pending.
+latest donor histories are verified. Graph archival completed on 2026-09-06;
+[graph receipt](../../../quality/qualifications/graph-archival-20260906.json).
+Both compatibility repositories are archived.
