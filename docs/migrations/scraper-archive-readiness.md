@@ -1,5 +1,13 @@
 # Scraper archival readiness
 
+Current status (2026-09-06): the four-object history append passed anonymous
+verification in [run 34005721959](https://github.com/edithatogo/global-medicines-atlas/actions/runs/34005721959).
+`aus-health-data-scraper` is archived; its issues #1–#3 and PR #5 are closed as
+superseded, with branches/history and local edits retained. The graph repository
+is unarchived and requires separate approval. See the
+[closeout receipt](../../quality/qualifications/scraper-archival-20260906.json).
+Earlier pending/disabled statements below describe the preparation chronology.
+
 Scope: `edithatogo/aus-health-data-scraper`, observed on 2026-09-06 at
 `009e80544588a956c8922aaab052ee08947e2b30`. This is preparation, not an
 archive approval or a claim of complete historical source coverage.

@@ -252,11 +252,13 @@
   `7babb53` plus reviewed synthetic transport/detached-HEAD follow-up; final
   hosted delivery merged in PR #476 (`af24b15`), with 38 checks passing. Full local run: 4,810 passed,
   two pinned-uv environment failures (both passed targeted recovery), one skip.
-- [~] Obtain exact history publication approval, dispatch and verify the receipt.
-  Approval: issue #339 comment 5556212193; hosted execution pending.
-- [~] Re-query the donor, resolve open donor work and record scraper archival
-  without deleting history or local work. Scraper-only archival is approved
-  in issue #339 comment 5556212193; execution awaits verified preservation.
+- [x] Obtain exact history publication approval, dispatch and verify the receipt.
+  Approval: issue #339 comment 5556212193; run 34005721959 succeeded.
+  Verification: issue #340 comment 5556271994; all 30 objects verified.
+- [x] Re-query the donor, resolve open donor work and record scraper archival
+  without deleting history or local work. Scraper archived 2026-09-06T02:12:07Z;
+  main and both branches retained. Issues #1–#3 and PR #5 closed as superseded.
+  Receipt: `quality/qualifications/scraper-archival-20260906.json`.
 
 See [scraper archival readiness](../../../docs/migrations/scraper-archive-readiness.md).
 
