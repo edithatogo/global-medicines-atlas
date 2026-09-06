@@ -133,7 +133,8 @@ def benefits_page_payload(page: BenefitsPage) -> dict[str, object]:
     """
     if type(page) is not BenefitsPage:
         raise TypeError("benefits payload requires a validated BenefitsPage")
-    return page.model_dump(mode="json")
+    validated = BenefitsPage.model_validate(page.model_dump(mode="python"))
+    return validated.model_dump(mode="json")
 
 
 class BenefitsLookup(Protocol):

@@ -166,6 +166,11 @@ def test_benefits_page_payload_is_json_safe_and_fail_closed() -> None:
     assert isinstance(payload["applied_filters"], list)
     with pytest.raises(TypeError, match="validated BenefitsPage"):
         benefits_page_payload(cast("BenefitsPage", object()))
+    forged_data = page.model_dump()
+    forged_data["coverage_state"] = "complete"
+    forged = BenefitsPage.model_construct(**forged_data)
+    with pytest.raises((ValueError, TypeError)):
+        benefits_page_payload(forged)
 
 
 @pytest.mark.parametrize(
