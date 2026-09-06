@@ -7,7 +7,9 @@ archived. Graph archival was separately approved and verified at
 Both graph branch refs are retained; earlier pending statements below describe
 the preparation chronology, not the current archive state.
 
-Current status (2026-09-06): the four-object history append passed anonymous
+## Historical preparation snapshot (before archival)
+
+Pre-graph-archive snapshot (2026-09-06): the four-object history append passed anonymous
 verification in [run 34005721959](https://github.com/edithatogo/global-medicines-atlas/actions/runs/34005721959).
 `aus-health-data-scraper` is archived; its issues #1–#3 and PR #5 are closed as
 superseded, with branches/history and local edits retained. The graph repository
@@ -114,7 +116,7 @@ on GMA issue #339 must be bound in a reviewed contract before workflow dispatch.
 The current preparation has not cloned donor source data, uploaded archives,
 dispatched a publication workflow or archived a repository.
 
-## Final closeout sequence
+## Historical final closeout sequence
 
 1. Complete this change's local and protected hosted checks and merge its PR.
 2. Obtain exact approval for the four-object history append; review the bound
@@ -129,6 +131,6 @@ dispatched a publication workflow or archived a repository.
 The consolidated track remains in progress until its required external
 preservation and archival evidence exists.
 
-## Approved execution (2026-09-06)
+## Approval snapshot (2026-09-06, before execution)
 
 The maintainer approved the four-object history publication and subsequent scraper-only archival in [issue #339](https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5556212193). The exact contract is now enabled for reviewed hosted execution. Earlier disabled/pending statements above describe preparation. Publication, restoration and archival results remain pending; the graph repository remains unapproved for archival.
