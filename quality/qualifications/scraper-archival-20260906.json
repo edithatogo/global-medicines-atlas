@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-09-06T02:14:04.987225Z",
+  "repository": "edithatogo/aus-health-data-scraper",
+  "approval_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5556212193",
+  "authorization_pr": 477,
+  "authorization_commit": "4814a4da66eaa9c7a9670ad82d54a5fdd8640551",
+  "publication": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "revision": "97038008d17a48f620302f04fe6a3156fb8d5d57",
+    "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/34005721959",
+    "run_conclusion": "success",
+    "receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5556271994",
+    "verification_sha256": "835e2532ae88bb38b13a78f54f00f526906c5eaf7071411ec3d92b903b754df0",
+    "prior_objects_preserved": 26,
+    "verified_objects": 30,
+    "added_objects": 4,
+    "restored": [
+      {
+        "baseline": "64e764cebeb3826f98ce672cbb4affc65d06a92f",
+        "baseline_bundle_sha256": "59dcaf9b4471eb5a41d7940e9cf73daf38c5290c400564d312ddcce18d52103b",
+        "baseline_is_ancestor": true,
+        "bundle_sha256": "b387e5adcb97963549099c5e568f98d84b704def755f3dbc01b0a5ec764d54f3",
+        "clean_restore": true,
+        "delta_sha256": "3fe86bbad85e59167af14af999186b33581c8d8cf848955f9519726e706c0375",
+        "head": "3993e5e331eb2d3d9e9d354d80e52c684ad26a1e",
+        "prerequisites": [
+          "64e764cebeb3826f98ce672cbb4affc65d06a92f"
+        ],
+        "repository": "edithatogo/aus_mbs_pbs_graph"
+      },
+      {
+        "baseline": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+        "baseline_bundle_sha256": "d03fa28ef0283537787034b0d52796b3f3d59f055cdc161a9725b38658ba9665",
+        "baseline_is_ancestor": true,
+        "bundle_sha256": "a6f169a593639b026434a87fd40f3cce6d5fcfe805c937bad478f427a413a8d8",
+        "clean_restore": true,
+        "delta_sha256": "0d88e7d1d357cde353c277d408279d6cb571c8deadf2147a890d1fb5fd465952",
+        "head": "009e80544588a956c8922aaab052ee08947e2b30",
+        "prerequisites": [
+          "931da0b9b6ae3e3cec0743568abb71a50d62b7cf"
+        ],
+        "repository": "edithatogo/aus-health-data-scraper"
+      }
+    ],
+    "current_revision_equals_verified": true
+  },
+  "archival": {
+    "before": false,
+    "after": true,
+    "updated_at": "2026-09-06T02:12:07Z",
+    "head_before": "009e80544588a956c8922aaab052ee08947e2b30",
+    "head_after": "009e80544588a956c8922aaab052ee08947e2b30",
+    "retained_branches": {
+      "main": "009e80544588a956c8922aaab052ee08947e2b30",
+      "renovate/configure": "efee1f50b98f7faca98c8cc019df062beff01ff1"
+    },
+    "closed_as_superseded_issues": [
+      1,
+      2,
+      3
+    ],
+    "closed_unmerged_prs": [
+      5
+    ],
+    "open_issues": 0,
+    "open_prs": 0,
+    "local_inventory_unchanged": "docs/migrations/scraper-local-20260906/inventory.json"
+  },
+  "graph_repository_archived": false,
+  "validation": {
+    "focused_passed": 81,
+    "final_hosted_passed": 37,
+    "full_test_suite_passed": 4819,
+    "full_test_suite_skipped": 1,
+    "coverage_percent": 96.65,
+    "full_harness_exit": 1,
+    "full_harness_limitation": "macOS mutation survivor-debt gate after native subprocess errors; authoritative Linux mutation passed. No thresholds changed."
+  }
+}

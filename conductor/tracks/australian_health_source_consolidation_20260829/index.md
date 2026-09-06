@@ -13,3 +13,7 @@ GitHub parent: [#339](https://github.com/edithatogo/global-medicines-atlas/issue
 This track is the canonical completeness boundary for incorporating all code,
 data, workflows, fixtures, historical artifacts, and material design intent
 from `aus_mbs_pbs_graph` and `aus-health-data-scraper`.
+
+Current closeout: scraper publication and archival completed on 2026-09-06;
+[receipt](../../../quality/qualifications/scraper-archival-20260906.json). Both
+latest donor histories are verified; graph archival remains separately pending.
