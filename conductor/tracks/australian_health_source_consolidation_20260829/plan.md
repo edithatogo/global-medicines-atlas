@@ -250,9 +250,10 @@
 - [x] Implement and test the exact hosted history append and recovery runner;
   retain disabled publication authority until separately approved.
   `7babb53` plus reviewed synthetic transport/detached-HEAD follow-up; final
-  hosted delivery remains pending in PR #476. Full local run: 4,810 passed,
+  hosted delivery merged in PR #476 (`af24b15`), with 38 checks passing. Full local run: 4,810 passed,
   two pinned-uv environment failures (both passed targeted recovery), one skip.
-- [ ] Obtain exact history publication approval, dispatch and verify the receipt.
+- [~] Obtain exact history publication approval, dispatch and verify the receipt.
+  Approval: issue #339 comment 5556212193; hosted execution pending.
 - [ ] Re-query the donor and obtain exact scraper archival approval; resolve
   open donor work and record archival without deleting history or local work.
 

@@ -139,8 +139,14 @@ def test_history_cli_refuses_local_before_network(publisher, monkeypatch):
 
 
 def test_history_cli_refuses_inert_contract_before_network(
-    publisher, monkeypatch
+    publisher, monkeypatch, tmp_path
 ):
+    contract_path = tmp_path / "quality/qualifications/australian-donor-history-publication-contract.json"
+    contract_path.parent.mkdir(parents=True)
+    raw = json.loads((publisher.ROOT / contract_path.relative_to(tmp_path)).read_text())
+    raw.update(publication_authorized=False, authorization_reference=None)
+    contract_path.write_text(json.dumps(raw))
+    monkeypatch.setattr(publisher, "ROOT", tmp_path)
     for key, value in {
         "GITHUB_ACTIONS": "true",
         "GITHUB_REPOSITORY": "edithatogo/global-medicines-atlas",

@@ -113,3 +113,7 @@ dispatched a publication workflow or archived a repository.
 
 The consolidated track remains in progress until its required external
 preservation and archival evidence exists.
+
+## Approved execution (2026-09-06)
+
+The maintainer approved the four-object history publication and subsequent scraper-only archival in [issue #339](https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5556212193). The exact contract is now enabled for reviewed hosted execution. Earlier disabled/pending statements above describe preparation. Publication, restoration and archival results remain pending; the graph repository remains unapproved for archival.

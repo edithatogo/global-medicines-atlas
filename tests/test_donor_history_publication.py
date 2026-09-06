@@ -27,7 +27,7 @@ def test_empty_history_plan_fails_closed():
         HistoryAppendPlan.model_validate({})
 
 
-def test_checked_in_publication_contract_is_exact_and_inert(monkeypatch):
+def test_checked_in_publication_contract_is_exact_and_approved(monkeypatch):
     raw = json.loads(
         (
             Path(__file__).resolve().parents[1]
@@ -38,8 +38,17 @@ def test_checked_in_publication_contract_is_exact_and_inert(monkeypatch):
     monkeypatch.setenv("GITHUB_ACTIONS", "true")
     monkeypatch.setenv("GITHUB_REPOSITORY", "edithatogo/global-medicines-atlas")
     monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
+    assert contract.publication_authorized is True
+    assert contract.authorization_reference == (
+        "https://github.com/edithatogo/global-medicines-atlas/"
+        "issues/339#issuecomment-5556212193"
+    )
+    require_donor_history_hosted_authority(contract)
+    inert = contract.model_copy(update={
+        "publication_authorized": False, "authorization_reference": None
+    })
     with pytest.raises(ValueError, match="not authorized"):
-        require_donor_history_hosted_authority(contract)
+        require_donor_history_hosted_authority(inert)
 
 
 def test_history_authority_rejects_non_hosted_context(monkeypatch):
@@ -115,6 +124,7 @@ def test_history_contract_requires_exact_authorization_receipt():
         ).read_text()
     )
     raw["publication_authorized"] = True
+    raw["authorization_reference"] = None
     with pytest.raises(ValidationError, match="must agree"):
         DonorHistoryPublicationContract.model_validate(raw)
     raw["authorization_reference"] = (
