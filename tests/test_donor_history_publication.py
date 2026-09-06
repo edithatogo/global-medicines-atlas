@@ -44,9 +44,12 @@ def test_checked_in_publication_contract_is_exact_and_approved(monkeypatch):
         "issues/339#issuecomment-5556212193"
     )
     require_donor_history_hosted_authority(contract)
-    inert = contract.model_copy(update={
-        "publication_authorized": False, "authorization_reference": None
-    })
+    inert = contract.model_copy(
+        update={
+            "publication_authorized": False,
+            "authorization_reference": None,
+        }
+    )
     with pytest.raises(ValueError, match="not authorized"):
         require_donor_history_hosted_authority(inert)
 
