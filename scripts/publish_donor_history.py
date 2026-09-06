@@ -14,7 +14,7 @@ import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import] -- fixed argv only
 import tempfile
 from pathlib import Path
-from typing import Any
+from typing import Any, BinaryIO
 
 from publish_source_metadata import (
     HubTransport,
@@ -51,7 +51,7 @@ MAX_HEADER_LINE = 4096
 MAX_DELTA_PATHS = 256
 
 
-def git(directory: Path, *args: str) -> str:
+def git(directory: Path, *args: str, stdin: BinaryIO | None = None) -> str:
     """Run bounded Git without user hooks, config or inherited credentials."""
     environment = {
         key: value
@@ -76,6 +76,7 @@ def git(directory: Path, *args: str) -> str:
                 *args,
             ],
             text=True,
+            stdin=stdin,
             timeout=120,
             stderr=subprocess.PIPE,
             env=environment,
@@ -131,6 +132,25 @@ def prerequisites(file: Path) -> tuple[str, ...]:
             if line.startswith(b"-"):
                 result.append(line[1:41].decode("ascii"))
     raise ValueError("unbounded Git bundle header")
+
+
+def unpack_bundle(directory: Path, bundle: Path) -> None:
+    """Restore verified bundle objects without derived pack-index sidecars.
+
+    Git validates the PACK stream and each object strictly. Unbuffered header
+    reads leave the descriptor at the exact pack offset passed to Git.
+    """
+    prerequisites(bundle)
+    with bundle.open("rb", buffering=0) as stream:
+        stream.readline(MAX_HEADER_LINE)
+        for _ in range(MAX_DELTA_PATHS):
+            line = stream.readline(MAX_HEADER_LINE)
+            if line == b"\n":
+                git(directory, "unpack-objects", "--strict", stdin=stream)
+                return
+            if not line or len(line) >= MAX_HEADER_LINE:
+                break
+    raise ValueError("unbounded Git bundle header during restoration")
 
 
 class DonorTransport:
@@ -359,11 +379,13 @@ class DonorTransport:
             restore = self.workspace / f"restore-{name}"
             restore.mkdir()
             git(restore, "init", "--bare", "--quiet")
+            git(restore, "bundle", "verify", str(files[baseline_path]))
+            unpack_bundle(restore, files[baseline_path])
             git(
                 restore,
-                "fetch",
-                str(files[baseline_path]),
-                "refs/archive/pinned:refs/archive/baseline",
+                "update-ref",
+                "refs/archive/baseline",
+                observed.baseline,
             )
             if (
                 git(restore, "rev-parse", "refs/archive/baseline")
@@ -373,12 +395,8 @@ class DonorTransport:
             bundle = files[extension.bundle.path]
             required = prerequisites(bundle)
             git(restore, "bundle", "verify", str(bundle))
-            git(
-                restore,
-                "fetch",
-                str(bundle),
-                "refs/archive/extension:refs/archive/extension",
-            )
+            unpack_bundle(restore, bundle)
+            git(restore, "update-ref", "refs/archive/extension", observed.head)
             if (
                 git(restore, "rev-parse", "refs/archive/extension")
                 != observed.head

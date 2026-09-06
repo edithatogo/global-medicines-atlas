@@ -266,3 +266,12 @@ See [scraper archival readiness](../../../docs/migrations/scraper-archive-readin
   contract and record publishing versus verification commit/run identities.
   PR #476 review comment 3942541730; 114 focused tests pass, 100% orchestration
   statement/branch coverage. Current-head preservation remains a final preflight.
+
+
+### Review Fixes: standalone history restoration
+
+- [x] Rebuild loose Git objects directly from verified bundle PACK streams
+  using `unpack-objects --strict`, then bind exact refs, prove ancestry and run
+  full strict fsck. This avoids intermittent generated pack-index failures
+  without relaxing object verification. 115 focused tests pass, including a
+  corrupt-stream rejection; final hosted qualification remains in PR #476.

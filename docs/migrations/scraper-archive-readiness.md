@@ -77,6 +77,9 @@ archival of the graph repository.
   independent GitHub/Git delta checks, anonymous baseline snapshot, absent-only
   object additions, server-enforced parent CAS, durable intent and acknowledgement,
   anonymous all-object digest comparison, and clean bare Git restoration.
+  Restoration uses strict unpacking to loose objects rather than depending on
+  generated pack-index sidecars; exact refs, ancestry and full strict fsck
+  remain mandatory. Corrupt PACK streams are rejected.
 - Cleanup: only after durable verified receipt readback. No deletion or visibility
   rollback of the public dataset; failures retain the hosted temporary workspace
   for the remainder of the runner lifetime and do not claim cleanup.

@@ -95,19 +95,12 @@ def test_incremental_bundle_restores_only_with_baseline(publisher, tmp_path):
     git(restore, "init", "--bare", "--quiet")
     with pytest.raises(ValueError, match="Git operation failed"):
         git(restore, "bundle", "verify", str(extension))
-    git(
-        restore,
-        "fetch",
-        str(baseline_bundle),
-        "refs/archive/pinned:refs/archive/baseline",
-    )
+    git(restore, "bundle", "verify", str(baseline_bundle))
+    publisher.unpack_bundle(restore, baseline_bundle)
+    git(restore, "update-ref", "refs/archive/baseline", baseline)
     git(restore, "bundle", "verify", str(extension))
-    git(
-        restore,
-        "fetch",
-        str(extension),
-        "refs/archive/extension:refs/archive/extension",
-    )
+    publisher.unpack_bundle(restore, extension)
+    git(restore, "update-ref", "refs/archive/extension", head)
     assert git(restore, "rev-parse", "refs/archive/extension") == head
     git(restore, "merge-base", "--is-ancestor", baseline, head)
     git(restore, "update-ref", "--no-deref", "HEAD", head)
@@ -260,7 +253,7 @@ def test_complete_hosted_transport_with_synthetic_git(  # ruff: ignore[too-many-
     monkeypatch.setattr(publisher, "BASELINES", baselines)
     monkeypatch.setattr(publisher, "EXACT_HEADS", tuple(heads))
 
-    def git(directory, *args):
+    def git(directory, *args, **kwargs):
         if args[0] == "clone":
             repository = (
                 args[-2]
@@ -268,7 +261,7 @@ def test_complete_hosted_transport_with_synthetic_git(  # ruff: ignore[too-many-
                 .removesuffix(".git")
             )
             args = (*args[:-2], str(sources[repository]), args[-1])
-        return real_git(directory, *args)
+        return real_git(directory, *args, **kwargs)
 
     def gh(endpoint):
         repository = "/".join(endpoint.split("/")[1:3])
@@ -365,3 +358,14 @@ def test_complete_hosted_transport_with_synthetic_git(  # ruff: ignore[too-many-
     assert len(result["verification"]["restored"]) == 2
     assert storage["unrelated-retained.txt"] == b"unrelated public object"
     assert len(storage) == 7
+    assert not list(workspace.glob("restore-*/objects/pack/*.pack"))
+
+
+def test_unpack_rejects_invalid_pack_stream(publisher, tmp_path):
+    repository = tmp_path / "restore"
+    repository.mkdir()
+    publisher.git(repository, "init", "--bare", "--quiet")
+    bundle = tmp_path / "corrupt.bundle"
+    bundle.write_bytes(b"# v2 git bundle\n\nPACK-corrupt")
+    with pytest.raises(ValueError, match="Git operation failed"):
+        publisher.unpack_bundle(repository, bundle)
