@@ -9,9 +9,16 @@ and ``current``) and retain the returned uncertainty for downstream use.
 from __future__ import annotations
 
 from collections.abc import Iterable, Mapping
+from copy import deepcopy
 from typing import Any, Literal, TypedDict
 
-ChangeKind = Literal["addition", "cessation", "change"]
+ChangeKind = Literal[
+    "addition",
+    "cessation",
+    "change",
+    "present_only_legacy",
+    "present_only_current",
+]
 
 
 class PbsSnapshotChange(TypedDict):
@@ -27,6 +34,9 @@ def compare_pbs_snapshots(
     current: Iterable[Mapping[str, Any]],
     *,
     key: str = "native_xml_id",
+    legacy_complete: bool = True,
+    current_complete: bool = True,
+    max_rows: int = 100_000,
 ) -> list[PbsSnapshotChange]:
     """Return stable literal additions, cessations, and changes.
 
@@ -36,9 +46,14 @@ def compare_pbs_snapshots(
     ordinary dictionaries so the result cannot alias caller-owned mappings.
     """
 
+    if max_rows < 1:
+        raise ValueError("max_rows must be positive")
+
     def index(rows: Iterable[Mapping[str, Any]]) -> dict[str, dict[str, Any]]:
         result: dict[str, dict[str, Any]] = {}
         for row in rows:
+            if len(result) >= max_rows:
+                raise ValueError("PBS snapshot exceeds max_rows bound")
             if key not in row or not isinstance(row[key], str) or not row[key]:
                 raise ValueError(
                     "PBS snapshot rows require a non-empty string key"
@@ -46,7 +61,7 @@ def compare_pbs_snapshots(
             identity = row[key]
             if identity in result:
                 raise ValueError("duplicate PBS snapshot key")
-            result[identity] = dict(row)
+            result[identity] = deepcopy(dict(row))
         return result
 
     before = index(legacy)
@@ -56,9 +71,11 @@ def compare_pbs_snapshots(
         old = before.get(identity)
         new = after.get(identity)
         if old is None:
-            kind: ChangeKind = "addition"
+            kind: ChangeKind = (
+                "addition" if current_complete else "present_only_current"
+            )
         elif new is None:
-            kind = "cessation"
+            kind = "cessation" if legacy_complete else "present_only_legacy"
         elif old != new:
             kind = "change"
         else:
