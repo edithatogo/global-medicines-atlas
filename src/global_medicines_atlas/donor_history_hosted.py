@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import re
 from collections.abc import Callable
 from typing import Any, Protocol
 
@@ -114,7 +115,9 @@ def execute_history_append(
             raise ValueError("durable acknowledgement URL missing")
     else:
         expected = {
-            key: value for key, value in intent.items() if key != "run_url"
+            key: value
+            for key, value in intent.items()
+            if key not in {"run_url", "code_commit"}
         }
         observed = {key: acknowledgement.get(key) for key in expected}
         observed["status"] = "intent"
@@ -131,8 +134,13 @@ def execute_history_append(
         ):
             raise ValueError("recovery CAS evidence missing")
         revision = acknowledgement["revision"]
-    if transport.head() != revision:
-        raise ValueError("archive head differs from acknowledged revision")
+    # Later writers may advance main; restore this immutable CAS revision.
+    # Current-head preservation is a separate final archival preflight.
+    if (
+        not isinstance(revision, str)
+        or re.fullmatch(r"[0-9a-f]{40}", revision) is None
+    ):
+        raise ValueError("acknowledgement requires an immutable revision")
     verification = HistoryVerification.model_validate(
         transport.verify(plan, revision).model_dump()
     )
@@ -144,6 +152,8 @@ def execute_history_append(
         "verification": verification.model_dump(mode="json"),
         "verification_sha256": verification_digest(verification),
         "archive_authorized": False,
+        "verification_code_commit": exact_commit,
+        "verification_run_url": intent["run_url"],
     }
     url = persist(result)
     if not url.startswith(

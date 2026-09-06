@@ -257,3 +257,12 @@
   open donor work and record archival without deleting history or local work.
 
 See [scraper archival readiness](../../../docs/migrations/scraper-archive-readiness.md).
+
+
+### Review Fixes: immutable history recovery
+
+- [x] Preserve verification/recovery of the acknowledged immutable revision
+  after another archive writer advances main; require the exact approved
+  contract and record publishing versus verification commit/run identities.
+  PR #476 review comment 3942541730; 114 focused tests pass, 100% orchestration
+  statement/branch coverage. Current-head preservation remains a final preflight.

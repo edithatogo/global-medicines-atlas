@@ -82,7 +82,12 @@ archival of the graph repository.
   for the remainder of the runner lifetime and do not claim cleanup.
 - Recovery: supply the authenticated bot CAS acknowledgement comment ID. The
   publisher verifies its prior intent, rechecks exact scope and restores without
-  uploading again. A write with no durable acknowledgement remains unresolved;
+  uploading again, even if another writer has advanced the dataset head.
+  A later reviewed execution commit may verify the same exact contract; the
+  receipt retains the original publishing commit and records the verifier.
+  This proves the pinned publication revision, not preservation by subsequent
+  writers; final archival still needs a current-state preflight.
+  A write with no durable acknowledgement remains unresolved;
   it never creates an empty new commit to conceal that ambiguity.
 
 Publication is deliberately disabled. The exact contract still has

@@ -531,7 +531,7 @@ def test_hosted_history_append_and_recovery(execution_case):
     assert result["status"] == "anonymously_verified"
 
 
-@pytest.mark.parametrize("stage", ["before", "after", "acknowledged"])
+@pytest.mark.parametrize("stage", ["before", "after"])
 def test_history_head_drift_blocks(execution_case, stage):
     _, transport, persist, receipts = execution_case
     if stage == "before":
@@ -543,15 +543,9 @@ def test_history_head_drift_blocks(execution_case, stage):
             return persist(document)
 
         execution_case = (*execution_case[:2], drift, receipts)
-    else:
-
-        def head():
-            return "a" * 40 if transport.writes else "d" * 40
-
-        transport.head = head
     with pytest.raises(ValueError, match="head"):
         execute_case(execution_case)
-    assert transport.writes == int(stage == "acknowledged")
+    assert transport.writes == 0
     assert not any(r["status"] == "anonymously_verified" for r in receipts)
 
 
@@ -578,7 +572,7 @@ def test_history_bad_receipt_prevents_completion(execution_case, stage):
     ("field", "value"),
     [
         ("status", "intent"),
-        ("code_commit", "0" * 40),
+        ("schema_id", "other-schema"),
         ("parent_basis", "asserted"),
     ],
 )
@@ -620,3 +614,45 @@ def test_history_invalid_restore_cannot_complete(execution_case):
     with pytest.raises(ValueError, match="anonymous_objects"):
         execute_case(execution_case)
     assert len(execution_case[3]) == 2
+
+
+@pytest.mark.parametrize("recovery", [False, True])
+def test_history_verifies_immutable_revision_after_other_writer(
+    execution_case, recovery
+):
+    _, transport, _, receipts = execution_case
+    if not recovery:
+        transport.head = lambda: "a" * 40 if transport.writes else "d" * 40
+        result = execute_case(execution_case)
+    else:
+        execute_case(execution_case)
+        transport.head = lambda: "a" * 40
+        result = execute_case(execution_case, acknowledgement=receipts[1])
+    assert result["revision"] == "e" * 40
+    assert transport.writes == 1
+
+
+@pytest.mark.parametrize("revision", [None, "../main", "main"])
+def test_history_rejects_unpinned_recovery_revision(execution_case, revision):
+    execute_case(execution_case)
+    acknowledgement = {**execution_case[3][1], "revision": revision}
+    with pytest.raises(ValueError, match="immutable revision"):
+        execute_case(execution_case, acknowledgement=acknowledgement)
+
+
+def test_recovery_preserves_original_code_and_records_verifier(
+    execution_case, monkeypatch
+):
+    execute_case(execution_case)
+    contract, transport, persist, receipts = execution_case
+    monkeypatch.setenv("GITHUB_SHA", "1" * 40)
+    result = execute_history_append(
+        contract,
+        exact_commit="1" * 40,
+        transport=transport,
+        persist=persist,
+        acknowledgement=receipts[1],
+    )
+    assert result["code_commit"] == "f" * 40
+    assert result["verification_code_commit"] == "1" * 40
+    assert transport.writes == 1
