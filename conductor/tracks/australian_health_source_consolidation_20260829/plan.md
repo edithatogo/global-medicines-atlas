@@ -250,11 +250,13 @@
 - [x] Implement and test the exact hosted history append and recovery runner;
   retain disabled publication authority until separately approved.
   `7babb53` plus reviewed synthetic transport/detached-HEAD follow-up; final
-  hosted delivery remains pending in PR #476. Full local run: 4,810 passed,
+  hosted delivery merged in PR #476 (`af24b15`), with 38 checks passing. Full local run: 4,810 passed,
   two pinned-uv environment failures (both passed targeted recovery), one skip.
-- [ ] Obtain exact history publication approval, dispatch and verify the receipt.
-- [ ] Re-query the donor and obtain exact scraper archival approval; resolve
-  open donor work and record archival without deleting history or local work.
+- [~] Obtain exact history publication approval, dispatch and verify the receipt.
+  Approval: issue #339 comment 5556212193; hosted execution pending.
+- [~] Re-query the donor, resolve open donor work and record scraper archival
+  without deleting history or local work. Scraper-only archival is approved
+  in issue #339 comment 5556212193; execution awaits verified preservation.
 
 See [scraper archival readiness](../../../docs/migrations/scraper-archive-readiness.md).
 
@@ -275,3 +277,9 @@ See [scraper archival readiness](../../../docs/migrations/scraper-archive-readin
   full strict fsck. This avoids intermittent generated pack-index failures
   without relaxing object verification. 115 focused tests pass, including a
   corrupt-stream rejection; final hosted qualification remains in PR #476.
+
+### Review Fixes: approved archival gate
+
+- [x] Reconcile scraper archival approval in the plan and acceptance review;
+  retain graph archival as a separate pending decision. PR #477 comment
+  3942668945; no repeated scraper approval is required.
