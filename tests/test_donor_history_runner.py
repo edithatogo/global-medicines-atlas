@@ -15,7 +15,25 @@ from global_medicines_atlas.federation_metadata_hosted import PublicSnapshot
 @pytest.fixture
 def publisher(monkeypatch):
     monkeypatch.syspath_prepend(str(Path(__file__).parents[1] / "scripts"))
-    return importlib.import_module("publish_donor_history")
+    module = importlib.import_module("publish_donor_history")
+    original = module.subprocess.check_output
+
+    def synthetic_git_diagnostic(argv, **kwargs):
+        try:
+            return original(argv, **kwargs)
+        except module.subprocess.CalledProcessError as error:
+            if argv[-3:] == ["fsck", "--full", "--strict"]:
+                # These tests create only public synthetic README objects.
+                # Do not obscure their failure behind the production redaction.
+                raise AssertionError(
+                    f"synthetic Git fsck: {error.stderr}"
+                ) from None
+            raise
+
+    monkeypatch.setattr(
+        module.subprocess, "check_output", synthetic_git_diagnostic
+    )
+    return module
 
 
 def test_incremental_bundle_restores_only_with_baseline(publisher, tmp_path):
