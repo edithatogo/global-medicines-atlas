@@ -1,0 +1,35 @@
+{
+  "schema_id": "global-medicines-atlas.australian-pbs-utilisation-publication-authorization",
+  "schema_version": 1,
+  "authorized_at": "2026-09-06",
+  "external_publication_authorized": true,
+  "maintainer_asserted_redistribution_permission": true,
+  "dataset": "edithatogo/australian-pbs-utilisation-archive",
+  "visibility": "public",
+  "gated": false,
+  "allowed_sources": [
+    "au-pbs-dos-utilisation",
+    "au-pbs-expenditure"
+  ],
+  "allowed_domains": [
+    "www.pbs.gov.au",
+    "pbs.gov.au"
+  ],
+  "categories": [
+    "date_of_supply_monthly_prescriptions",
+    "item_drug_mapping",
+    "annual_expenditure_and_prescriptions_report"
+  ],
+  "required_controls": [
+    "github-actions-only-upload",
+    "protected-default-branch-deployment-environment",
+    "default-branch-head-equals-exact-authorized-commit",
+    "durable-issue-intent-before-dataset-creation",
+    "anonymous-all-object-digest-verification",
+    "no-workstation-raw-retention"
+  ],
+  "publication_does_not_authorize": [
+    "medicine-level clinical equivalence claims",
+    "unlicensed vocabulary redistribution"
+  ]
+}
