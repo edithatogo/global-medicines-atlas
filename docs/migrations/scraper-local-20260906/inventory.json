@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-09-06",
+  "repository": "edithatogo/aus-health-data-scraper",
+  "local_base": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+  "hosted_head": "009e80544588a956c8922aaab052ee08947e2b30",
+  "local_entries": [
+    {
+      "path": "src/processor.py",
+      "bytes": 4942,
+      "sha256": "af3e3b3ac96b5579f602254b5eecf1689129a9d1f7a4694836708c4d305b11e6",
+      "disposition": "adapt-group-selection"
+    },
+    {
+      "path": "tests/test_processor.py",
+      "bytes": 2577,
+      "sha256": "1cca7198cd417dbec489cb58c083f17cbc42bb68a195f46e91f56dfd1f8eda4d",
+      "disposition": "adapt-group-selection"
+    },
+    {
+      "path": "tests/fixtures/sample_pbs.json",
+      "bytes": 293,
+      "sha256": "26944df150c4eb89fefd2da4cc9e5f7c8ce7d91a603cbd69300c5bc389a01674",
+      "disposition": "retain-synthetic-legacy"
+    }
+  ],
+  "preserved_patch": {
+    "path": "group-filter.patch",
+    "sha256": "c8a1ca0d2ade71a4b6c49b29d127e576856ed216e44ae7e18a49de29fc472135"
+  },
+  "deleted_placeholder_paths": [
+    "legacy_scripts/Rename - Medicare Services - v4, 20241110.ipynb",
+    "legacy_scripts/Rename - Medicare Services Data - v2, 20240225.ipynb",
+    "legacy_scripts/Rename - Medicare Services Data - v3, 20240831.ipynb",
+    "legacy_scripts/Scrape (Medicare Registrants) - v1, 20250627.ipynb",
+    "legacy_scripts/Scrape - v1, 20250412.ipynb",
+    "legacy_scripts/Scrape - v2, 20250622.ipynb",
+    "legacy_scripts/Scrape MBS Items - v1, 20241102.ipynb"
+  ],
+  "excluded": [
+    ".DS_Store",
+    "data/.DS_Store"
+  ],
+  "boundary": "Read-only donor snapshot; original dirty checkout untouched. Synthetic PBS examples are not source acquisition or supported PBS input. Deleted notebooks are zero-byte baseline placeholders retained in baseline history."
+}

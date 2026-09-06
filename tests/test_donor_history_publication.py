@@ -8,6 +8,7 @@ import pytest
 from pydantic import ValidationError
 
 from global_medicines_atlas.donor_delta import DeltaObservation
+from global_medicines_atlas.donor_history_hosted import execute_history_append
 from global_medicines_atlas.donor_history_publication import (
     DonorHistoryPublicationContract,
     DurableHistoryReceipt,
@@ -441,3 +442,181 @@ def test_direct_model_rejects_constructed_unsafe_object():
     )
     with pytest.raises(ValidationError):
         HistoryAppendPlan.model_validate(raw)
+
+
+def test_local_history_runner_fails_before_io(monkeypatch):
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    with pytest.raises(ValueError, match="Actions dispatch"):
+        execute_history_append(
+            None, exact_commit="0" * 40, transport=None, persist=None
+        )
+
+
+@pytest.fixture
+def execution_case(monkeypatch):
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REPOSITORY", "edithatogo/global-medicines-atlas")
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_dispatch")
+    monkeypatch.setenv("GITHUB_SHA", "f" * 40)
+    monkeypatch.setenv("GITHUB_RUN_ID", "123")
+    contract = DonorHistoryPublicationContract.model_validate({
+        **json.loads(
+            (
+                Path(__file__).parents[1]
+                / "quality/qualifications/australian-donor-history-publication-contract.json"
+            ).read_text()
+        ),
+        "publication_authorized": True,
+        "authorization_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-123",
+    })
+    checked = HistoryAppendPlan.model_validate(plan())
+    receipts = []
+
+    class Transport:
+        current = checked.before.revision
+        writes = 0
+
+        def observations(self):
+            return tuple(ext.observation for ext in checked.extensions)
+
+        def prepare(self):
+            return checked
+
+        def head(self):
+            return self.current
+
+        def append(self, proposed):
+            assert proposed == checked
+            self.writes += 1
+            self.current = "e" * 40
+            return self.current
+
+        def verify(self, proposed, revision):
+            assert proposed == checked
+            assert revision == self.current
+            return HistoryVerification.model_validate(verified())
+
+    def persist(document):
+        receipts.append(document)
+        return "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-123"
+
+    transport = Transport()
+    return contract, transport, persist, receipts
+
+
+def execute_case(case, **kwargs):
+    contract, transport, persist, _ = case
+    return execute_history_append(
+        contract,
+        exact_commit="f" * 40,
+        transport=transport,
+        persist=persist,
+        **kwargs,
+    )
+
+
+def test_hosted_history_append_and_recovery(execution_case):
+    _, transport, _, receipts = execution_case
+    result = execute_case(execution_case)
+    assert [r["status"] for r in receipts] == [
+        "intent",
+        "cas_acknowledged",
+        "anonymously_verified",
+    ]
+    assert result["archive_authorized"] is False
+    assert transport.writes == 1
+    result = execute_case(execution_case, acknowledgement=receipts[1])
+    assert transport.writes == 1
+    assert result["status"] == "anonymously_verified"
+
+
+@pytest.mark.parametrize("stage", ["before", "after", "acknowledged"])
+def test_history_head_drift_blocks(execution_case, stage):
+    _, transport, persist, receipts = execution_case
+    if stage == "before":
+        transport.current = "a" * 40
+    elif stage == "after":
+
+        def drift(document):
+            transport.current = "a" * 40
+            return persist(document)
+
+        execution_case = (*execution_case[:2], drift, receipts)
+    else:
+
+        def head():
+            return "a" * 40 if transport.writes else "d" * 40
+
+        transport.head = head
+    with pytest.raises(ValueError, match="head"):
+        execute_case(execution_case)
+    assert transport.writes == int(stage == "acknowledged")
+    assert not any(r["status"] == "anonymously_verified" for r in receipts)
+
+
+@pytest.mark.parametrize(
+    "stage", ["intent", "cas_acknowledged", "anonymously_verified"]
+)
+def test_history_bad_receipt_prevents_completion(execution_case, stage):
+    _, transport, persist, receipts = execution_case
+
+    def bad_receipt(document):
+        return (
+            "https://example.invalid/"
+            if document["status"] == stage
+            else persist(document)
+        )
+
+    execution_case = (*execution_case[:2], bad_receipt, receipts)
+    with pytest.raises(ValueError, match="durable"):
+        execute_case(execution_case)
+    assert transport.writes == int(stage != "intent")
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("status", "intent"),
+        ("code_commit", "0" * 40),
+        ("parent_basis", "asserted"),
+    ],
+)
+def test_history_recovery_rejects_mismatched_receipt(
+    execution_case, field, value
+):
+    execute_case(execution_case)
+    acknowledgement = {**execution_case[3][1], field: value}
+    with pytest.raises(ValueError, match="recovery"):
+        execute_case(execution_case, acknowledgement=acknowledgement)
+    assert execution_case[1].writes == 1
+
+
+def test_history_no_empty_commit_for_existing_extensions(execution_case):
+    raw = plan()
+    raw["before"]["objects"] = verified()["after"]["objects"]
+    execution_case[1].prepare = lambda: HistoryAppendPlan.model_validate(raw)
+    with pytest.raises(ValueError, match="authenticated recovery"):
+        execute_case(execution_case)
+    assert execution_case[1].writes == 0
+
+
+def test_history_verification_must_bind_acknowledged_revision(execution_case):
+    raw = verified()
+    raw["after"]["revision"] = "a" * 40
+    execution_case[1].verify = lambda *_: HistoryVerification.model_validate(
+        raw
+    )
+    with pytest.raises(ValueError, match="verification differs"):
+        execute_case(execution_case)
+    assert len(execution_case[3]) == 2
+
+
+def test_history_invalid_restore_cannot_complete(execution_case):
+    invalid = HistoryVerification.model_validate(verified()).model_copy(
+        update={"anonymous_objects": ()}
+    )
+    execution_case[1].verify = lambda *_: invalid
+    with pytest.raises(ValueError, match="anonymous_objects"):
+        execute_case(execution_case)
+    assert len(execution_case[3]) == 2

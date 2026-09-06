@@ -1,0 +1,116 @@
+diff --git a/src/processor.py b/src/processor.py
+index e1b9769..8cb19f9 100644
+--- a/src/processor.py
++++ b/src/processor.py
+@@ -4,31 +4,39 @@ import xml.etree.ElementTree as ET
+ import glob
+ import os
+ 
+-def process_mbs_xml(file_path: Path) -> list[dict]:
++def process_mbs_xml(file_path: Path, group_filter: str | None = None) -> list[dict]:
+     """
+-    Parses an MBS XML file and extracts all items belonging to the "P7" group.
++    Parses an MBS XML file and extracts items. If a group_filter is provided,
++    it only extracts items belonging to that group. Otherwise, it extracts all items.
+ 
+     Args:
+         file_path: The path to the MBS XML file.
++        group_filter: The group to filter by (e.g., "P7"). Defaults to None.
+ 
+     Returns:
+-        A list of dictionaries, where each dictionary represents a "P7" item.
++        A list of dictionaries, where each dictionary represents an item.
+     """
+     tree = ET.parse(file_path)
+     root = tree.getroot()
+     
+-    p7_items = []
++    items = []
+     for item in root.findall("./item"):
+-        group = item.find("Group")
+-        if group is not None and group.text == "P7":
++        if group_filter:
++            group = item.find("Group")
++            if group is not None and group.text == group_filter:
++                item_data = {}
++                for child in item:
++                    item_data[child.tag] = child.text
++                items.append(item_data)
++        else:
+             item_data = {}
+             for child in item:
+                 item_data[child.tag] = child.text
+-            p7_items.append(item_data)
++            items.append(item_data)
+             
+-    return p7_items
++    return items
+ 
+-def combine_and_save_data(raw_data_dir: Path, processed_data_dir: Path):
++def combine_and_save_data(raw_data_dir: Path, processed_data_dir: Path, group_filter: str | None = None):
+     """Processes all HTML and XML files in a directory, combines the data, and saves to CSV.
+ 
+     This function iterates through all `.html`, `.htm`, and `.xml` files in the
+@@ -39,6 +47,7 @@ def combine_and_save_data(raw_data_dir: Path, processed_data_dir: Path):
+     Args:
+         raw_data_dir: The path to the directory containing the raw data files.
+         processed_data_dir: The path where the final combined CSV file will be saved.
++        group_filter: The group to filter by for XML files (e.g., "P7"). Defaults to None.
+     """
+     all_dataframes = []
+     # Use glob to find all supported files
+@@ -58,7 +67,7 @@ def combine_and_save_data(raw_data_dir: Path, processed_data_dir: Path):
+             tables = process_html_file(filepath)
+             all_dataframes.extend(tables)
+         elif file_path_obj.suffix == '.xml':
+-            xml_data = process_mbs_xml(file_path_obj)
++            xml_data = process_mbs_xml(file_path_obj, group_filter=group_filter)
+             if xml_data:
+                 df = pd.DataFrame(xml_data)
+                 all_dataframes.append(df)
+diff --git a/tests/test_processor.py b/tests/test_processor.py
+index e3a5c70..d8f77b6 100644
+--- a/tests/test_processor.py
++++ b/tests/test_processor.py
+@@ -37,8 +37,8 @@ def test_combine_and_save_data(temp_data_dirs):
+ 
+     # Check the content of the CSV
+     df = pd.read_csv(output_file)
+-    # Expect 3 rows from sample_item, 1 from sample_participant, and 1 from sample_mbs
+-    assert len(df) == 5
++    # Expect 4 rows from the html files, and 2 from the xml
++    assert len(df) == 6
+     # Check for a key column from the XML data
+     assert "ItemNum" in df.columns
+     # Check for a key column from the HTML data (assuming column names are parsed)
+@@ -49,16 +49,23 @@ def test_combine_and_save_data(temp_data_dirs):
+ 
+ def test_process_mbs_xml():
+     """
+-    Tests that the process_mbs_xml function correctly parses P7 items.
++    Tests that the process_mbs_xml function correctly parses and filters items.
+     """
+     fixture_path = Path("tests/fixtures/sample_mbs.xml")
+-    p7_items = process_mbs_xml(fixture_path)
+-    
+-    # There is one "P7" item in the sample file
++
++    # Test filtering by a specific group
++    p7_items = process_mbs_xml(fixture_path, group_filter="P7")
+     assert len(p7_items) == 1
+-    
+-    # Check that the extracted item has the correct data
+     item = p7_items[0]
+     assert item["ItemNum"] == "73329"
+     assert item["Group"] == "P7"
+-    assert item["Category"] == "6"
++
++    # Test filtering by a group that exists
++    t8_items = process_mbs_xml(fixture_path, group_filter="T8")
++    assert len(t8_items) == 1
++    
++    # Test without any filter (should return all items)
++    all_items = process_mbs_xml(fixture_path)
++    assert len(all_items) == 2 # There are two items in the sample file
++    assert all_items[0]["ItemNum"] == "73329"
++    assert all_items[1]["ItemNum"] == "12345"

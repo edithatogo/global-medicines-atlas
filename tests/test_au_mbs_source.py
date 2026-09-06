@@ -18,6 +18,7 @@ from global_medicines_atlas.adapters.au_mbs import (
 )
 from global_medicines_atlas.mbs_compatibility import (
     parse_legacy_mbs_items,
+    select_group_records,
     select_p7_records,
 )
 from global_medicines_atlas.models import CanonicalMedicineRecord
@@ -74,6 +75,40 @@ def test_p7_selection_preserves_native_records() -> None:
     batch = parse_mbs_source_xml(payload, _receipt(payload))
     assert select_p7_records(batch) == (batch.records[1],)
     assert select_p7_records(batch)[0].value("Benefit75") == "31.90"
+
+
+@pytest.mark.parametrize("legacy", [False, True])
+def test_group_selection_preserves_order_identity_and_missing_groups(
+    *,
+    legacy: bool,
+) -> None:
+    records = (
+        "<ItemNum>001</ItemNum><Group>P7</Group>",
+        "<ItemNum>002</ItemNum><Group>T8</Group>",
+        "<ItemNum>003</ItemNum>",
+    )
+    root, tag = ("mbs", "item") if legacy else ("MBS_XML", "Data")
+    payload = (
+        f"<{root}>"
+        + "".join(f"<{tag}>{record}</{tag}>" for record in records)
+        + f"</{root}>"
+    ).encode()
+    parser = parse_legacy_mbs_items if legacy else parse_mbs_source_xml
+    batch = parser(payload, _receipt(payload))
+    assert select_group_records(batch) is batch.records
+    assert select_group_records(batch, "T8") == (batch.records[1],)
+    assert select_group_records(batch, "T8")[0] is batch.records[1]
+    assert select_group_records(batch, "P7") == select_p7_records(batch)
+    assert select_group_records(batch, "absent") == ()
+    assert select_group_records(batch, "t8") == ()
+
+
+@pytest.mark.parametrize("group", ["", " ", " T8", "T8 ", 7, False])
+def test_group_selection_rejects_ambiguous_filters(group: object) -> None:
+    payload = FIXTURE.read_bytes()
+    batch = parse_mbs_source_xml(payload, _receipt(payload))
+    with pytest.raises(ValueError, match="group"):
+        select_group_records(batch, group)  # type: ignore[arg-type]
 
 
 def test_legacy_p7_profile_keeps_extra_source_fields_and_schema_era() -> None:

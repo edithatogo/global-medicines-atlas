@@ -238,3 +238,18 @@
   finding was corrected before merge. See `review.md` for the AC audit.
 - [ ] Keep archive tasks pending until the exact parity/publication package and
   maintainer approval are recorded.
+
+
+## Scraper archival readiness follow-up (2026-09-06)
+
+- [~] Reconcile the dirty local scraper delta without modifying it; preserve
+  the general-group patch and synthetic PBS fixture and adapt useful behavior.
+- [~] Record explicit async, complex-table, CSV and participant-coverage
+  dispositions plus the live open issue/PR inventory.
+- [~] Implement and test the exact hosted history append and recovery runner;
+  retain disabled publication authority until separately approved.
+- [ ] Obtain exact history publication approval, dispatch and verify the receipt.
+- [ ] Re-query the donor and obtain exact scraper archival approval; resolve
+  open donor work and record archival without deleting history or local work.
+
+See [scraper archival readiness](../../../docs/migrations/scraper-archive-readiness.md).
