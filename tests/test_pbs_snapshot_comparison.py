@@ -39,7 +39,9 @@ def test_reports_stable_addition_cessation_and_change() -> None:
     ]
 
 
-@pytest.mark.parametrize("rows", [[{"benefit": "missing"}], [{"native_xml_id": ""}]])
+@pytest.mark.parametrize(
+    "rows", [[{"benefit": "missing"}], [{"native_xml_id": ""}]]
+)
 def test_rejects_rows_without_non_empty_identity(rows) -> None:
     with pytest.raises(ValueError, match="non-empty string key"):
         compare_pbs_snapshots(rows, [])

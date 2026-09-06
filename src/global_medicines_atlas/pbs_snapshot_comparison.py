@@ -40,7 +40,9 @@ def compare_pbs_snapshots(
         result: dict[str, dict[str, Any]] = {}
         for row in rows:
             if key not in row or not isinstance(row[key], str) or not row[key]:
-                raise ValueError("PBS snapshot rows require a non-empty string key")
+                raise ValueError(
+                    "PBS snapshot rows require a non-empty string key"
+                )
             identity = row[key]
             if identity in result:
                 raise ValueError("duplicate PBS snapshot key")
