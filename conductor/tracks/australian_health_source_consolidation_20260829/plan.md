@@ -238,3 +238,40 @@
   finding was corrected before merge. See `review.md` for the AC audit.
 - [ ] Keep archive tasks pending until the exact parity/publication package and
   maintainer approval are recorded.
+
+
+## Scraper archival readiness follow-up (2026-09-06)
+
+- [x] Reconcile the dirty local scraper delta without modifying it; preserve
+  the general-group patch and synthetic PBS fixture and adapt useful behavior.
+  Implemented `7babb53`; 226 initial canaries and 109 final focused tests pass.
+- [x] Record explicit async, complex-table, CSV and participant-coverage
+  dispositions plus the live open issue/PR inventory. (`7babb53`)
+- [x] Implement and test the exact hosted history append and recovery runner;
+  retain disabled publication authority until separately approved.
+  `7babb53` plus reviewed synthetic transport/detached-HEAD follow-up; final
+  hosted delivery remains pending in PR #476. Full local run: 4,810 passed,
+  two pinned-uv environment failures (both passed targeted recovery), one skip.
+- [ ] Obtain exact history publication approval, dispatch and verify the receipt.
+- [ ] Re-query the donor and obtain exact scraper archival approval; resolve
+  open donor work and record archival without deleting history or local work.
+
+See [scraper archival readiness](../../../docs/migrations/scraper-archive-readiness.md).
+
+
+### Review Fixes: immutable history recovery
+
+- [x] Preserve verification/recovery of the acknowledged immutable revision
+  after another archive writer advances main; require the exact approved
+  contract and record publishing versus verification commit/run identities.
+  PR #476 review comment 3942541730; 114 focused tests pass, 100% orchestration
+  statement/branch coverage. Current-head preservation remains a final preflight.
+
+
+### Review Fixes: standalone history restoration
+
+- [x] Rebuild loose Git objects directly from verified bundle PACK streams
+  using `unpack-objects --strict`, then bind exact refs, prove ancestry and run
+  full strict fsck. This avoids intermittent generated pack-index failures
+  without relaxing object verification. 115 focused tests pass, including a
+  corrupt-stream rejection; final hosted qualification remains in PR #476.

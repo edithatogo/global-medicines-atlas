@@ -6,6 +6,7 @@
 - [Metadata](metadata.json)
 - [Evidence](evidence.jsonl)
 - [Acceptance and remaining-gate review](review.md)
+- [Scraper archival readiness](../../../docs/migrations/scraper-archive-readiness.md)
 
 GitHub parent: [#339](https://github.com/edithatogo/global-medicines-atlas/issues/339).
 
