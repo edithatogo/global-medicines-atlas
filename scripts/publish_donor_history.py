@@ -77,7 +77,7 @@ def git(directory: Path, *args: str) -> str:
             ],
             text=True,
             timeout=120,
-            stderr=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
             env=environment,
         ).strip()
     except subprocess.CalledProcessError as error:
