@@ -379,6 +379,7 @@ class DonorTransport:
                 observed.baseline,
                 observed.head,
             )
+            git(restore, "update-ref", "--no-deref", "HEAD", observed.head)
             git(restore, "fsck", "--full", "--strict")
             restored.append(
                 RestoredHistory(
