@@ -392,7 +392,10 @@ class DonorTransport:
                 observed.head,
             )
             git(restore, "update-ref", "--no-deref", "HEAD", observed.head)
-            git(restore, "fsck", "--full", "--strict")
+            # Keep pack/index lookup anchored to the restored bare repository.
+            git(
+                restore, "--git-dir", str(restore), "fsck", "--full", "--strict"
+            )
             restored.append(
                 RestoredHistory(
                     repository=observed.repository,

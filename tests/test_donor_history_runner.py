@@ -111,7 +111,7 @@ def test_incremental_bundle_restores_only_with_baseline(publisher, tmp_path):
     assert git(restore, "rev-parse", "refs/archive/extension") == head
     git(restore, "merge-base", "--is-ancestor", baseline, head)
     git(restore, "update-ref", "--no-deref", "HEAD", head)
-    git(restore, "fsck", "--full", "--strict")
+    git(restore, "--git-dir", str(restore), "fsck", "--full", "--strict")
 
 
 @pytest.mark.parametrize(
