@@ -254,8 +254,9 @@
   two pinned-uv environment failures (both passed targeted recovery), one skip.
 - [~] Obtain exact history publication approval, dispatch and verify the receipt.
   Approval: issue #339 comment 5556212193; hosted execution pending.
-- [ ] Re-query the donor and obtain exact scraper archival approval; resolve
-  open donor work and record archival without deleting history or local work.
+- [~] Re-query the donor, resolve open donor work and record scraper archival
+  without deleting history or local work. Scraper-only archival is approved
+  in issue #339 comment 5556212193; execution awaits verified preservation.
 
 See [scraper archival readiness](../../../docs/migrations/scraper-archive-readiness.md).
 
@@ -276,3 +277,9 @@ See [scraper archival readiness](../../../docs/migrations/scraper-archive-readin
   full strict fsck. This avoids intermittent generated pack-index failures
   without relaxing object verification. 115 focused tests pass, including a
   corrupt-stream rejection; final hosted qualification remains in PR #476.
+
+### Review Fixes: approved archival gate
+
+- [x] Reconcile scraper archival approval in the plan and acceptance review;
+  retain graph archival as a separate pending decision. PR #477 comment
+  3942668945; no repeated scraper approval is required.
