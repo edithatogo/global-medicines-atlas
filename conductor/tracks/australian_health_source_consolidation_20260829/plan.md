@@ -285,3 +285,17 @@ See [scraper archival readiness](../../../docs/migrations/scraper-archive-readin
 - [x] Reconcile scraper archival approval in the plan and acceptance review;
   retain graph archival as a separate pending decision. PR #477 comment
   3942668945; no repeated scraper approval is required.
+
+## Graph archival readiness follow-up (2026-09-06)
+
+- [x] Revalidate the exact current graph head against the published restoration
+  receipt and current public revision; inventory refs, releases and artifacts.
+- [x] Verify successor archive links and run donor/parser/history canaries:
+  174 passed; no new code or data delta since preserved baseline scope.
+- [x] Resolve issues #2–#4 and close onboarding PR #6 as superseded, retaining
+  both branches and discussion history; re-query open work as empty.
+- [~] Review, validate and merge the graph readiness record.
+- [ ] Obtain graph-only archival approval, repeat final drift preflight, archive
+  without deletion, and record before/after evidence.
+
+See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.md).
