@@ -14,8 +14,10 @@ from test_platinum_query import NOW, SCHEMA, binding, contract, parquet_payload
 
 from global_medicines_atlas.api import create_app
 from global_medicines_atlas.platinum_benefits import (
+    BenefitsPage,
     BenefitsQuery,
     BenefitsService,
+    benefits_page_payload,
 )
 from global_medicines_atlas.platinum_resolver import (
     ProductResource,
@@ -152,6 +154,18 @@ def test_pbs_funding_is_independent_and_page_digest_is_exact() -> None:
     assert result.page_sha256 != result.window_sha256
     assert result.coverage_state == "not_declared"
     assert result.comparison_validity == "not_evaluated"
+
+
+def test_benefits_page_payload_is_json_safe_and_fail_closed() -> None:
+    page = service().query(
+        "au.mbs.service-items", BenefitsQuery(columns=("item_code",), limit=1)
+    )
+    payload = benefits_page_payload(page)
+    assert payload["status"] == "available"
+    assert payload["rows"] == [{"item_code": "100"}]
+    assert isinstance(payload["applied_filters"], list)
+    with pytest.raises(TypeError, match="validated BenefitsPage"):
+        benefits_page_payload(cast("BenefitsPage", object()))
 
 
 @pytest.mark.parametrize(
