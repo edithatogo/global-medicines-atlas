@@ -245,10 +245,12 @@ def test_build_harvest_manifest_and_verify_anonymous_restore(
     assert verification["status"] == "all_objects_anonymously_verified"
     assert verification["verified_count"] == 2
 
-    # Test failing verification on tampered data
+    # Test failing verification on tampered data with same size but wrong digest
     corrupted = dict(stored)
-    corrupted["raw/mbs/mbs.xml"] = b"TAMPERED"
-    with pytest.raises(RuntimeError, match=r"Anonymous restore .* mismatch"):
+    corrupted["raw/mbs/mbs.xml"] = b"X" * len(data)
+    with pytest.raises(
+        RuntimeError, match=r"Anonymous restore digest mismatch"
+    ):
         verify_anonymous_restore(
             "test/dataset",
             manifest,
@@ -367,3 +369,87 @@ def test_harvest_workflows_enforce_governed_controls() -> None:
         assert "anonymous_digest_verification" in text
         assert "temporary_source_bytes_removed" in text
         assert "environment: australian-hf-publication" in text
+
+
+def test_discover_pbs_dos_misc_and_duplicate() -> None:
+    html = """
+    <a href="/files/dos-jul-2025-to-jun-2026-phrmcy-type.csv">1</a>
+    <a href="/files/dos-jul-2025-to-jun-2026-phrmcy-type.csv">Duplicate</a>
+    <a href="/files/random-supplement.csv">Random</a>
+    """
+    res = discover_pbs_dos_resources(html)
+    assert len(res) == 2
+    assert res[1].category == "pbs_utilisation_supplement"
+    assert res[1].period_label == "other"
+
+
+def test_discover_pbs_expenditure_subpage_error_and_skip() -> None:
+    def failing_fetcher(_url: str) -> str:
+        raise OSError("Network failure")
+
+    index_html = '<a href="expenditure-prescriptions-2025">2025</a>'
+    res = discover_pbs_expenditure_resources(index_html, failing_fetcher)
+    assert res == []
+
+    def non_exp_fetcher(_url: str) -> str:
+        return '<a href="something_else.xlsx">Else</a>'
+
+    res2 = discover_pbs_expenditure_resources(index_html, non_exp_fetcher)
+    assert res2 == []
+
+
+def test_discover_mbs_schedule_subpage_error_and_filtering() -> None:
+    def failing_fetcher(_url: str) -> str:
+        raise OSError("MBS failure")
+
+    index_html = '<a href="Downloads-240801">Old 6-digit</a><a href="Downloads-other">Invalid</a>'
+    res = discover_mbs_schedule_resources(index_html, failing_fetcher)
+    assert res == []
+
+    def mock_fetcher(_url: str) -> str:
+        return (
+            '<a href="/files/MBS-XML-20260801.XML">XML</a>'
+            '<a href="/files/rss.xml">RSS</a>'
+            '<a href="/files/unknown.zip">Unknown</a>'
+        )
+
+    index_html2 = '<a href="Downloads-20260801">August</a>'
+    res2 = discover_mbs_schedule_resources(index_html2, mock_fetcher)
+    assert len(res2) == 1
+    assert res2[0].category == "monthly_schedule_xml"
+
+
+def test_discover_mbs_utilisation_demographics_and_edge_cases() -> None:
+    mock_demographics = {
+        "result": {
+            "resources": [
+                {
+                    "name": "Demographics CSV",
+                    "url": "https://data.gov.au/download/demographics.csv",
+                },
+                {"name": "Empty URL", "url": ""},
+            ]
+        }
+    }
+    urls = [
+        "https://www.health.gov.au/files/misc-stats.xlsx",
+        "https://www.health.gov.au/files/misc-stats.xlsx",
+    ]
+    res = discover_mbs_utilisation_resources(
+        data_gov_demographics_json=mock_demographics,
+        health_gov_urls=urls,
+        max_historical_files=1,
+    )
+    assert len(res) == 2
+    assert res[0].category == "medicare_statistics_supplement"
+    assert res[1].category == "mbs_demographics_statistics"
+
+
+def test_verify_anonymous_restore_size_mismatch() -> None:
+    manifest = {"files": [{"path": "test.txt", "bytes": 100, "sha256": "abc"}]}
+    with pytest.raises(RuntimeError, match=r"size mismatch"):
+        verify_anonymous_restore(
+            "test/ds",
+            manifest,
+            anonymous_downloader=lambda _repo, _p: b"short",
+        )
