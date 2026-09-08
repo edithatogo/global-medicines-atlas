@@ -81,6 +81,13 @@ def stage_resources(
     return stages, manifest
 
 
+def _check_public_repo(info: Any) -> None:
+    if info.private or info.gated:
+        raise RuntimeError(
+            "Existing MBS destination must be anonymously public and non-gated"
+        )
+
+
 def publish_to_huggingface(
     stages: list[HarvestStageResult],
     manifest: dict[str, Any],
@@ -91,12 +98,13 @@ def publish_to_huggingface(
     api: Any = sdk.HfApi(token=hf_token)
     public_api: Any = sdk.HfApi(token=False)
 
-    info: Any = public_api.dataset_info(DATASET, files_metadata=True)
-    if info.private or info.gated:
-        raise RuntimeError(
-            "Existing MBS destination must be anonymously public and non-gated"
-        )
-    parent_commit = str(info.sha)
+    try:
+        info: Any = public_api.dataset_info(DATASET, files_metadata=True)
+        _check_public_repo(info)
+        parent_commit: str | None = str(info.sha)
+    except Exception:
+        api.create_repo(repo_id=DATASET, repo_type="dataset", private=False)
+        parent_commit = None
 
     operations: list[Any] = []
     for s in stages:
