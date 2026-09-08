@@ -37,12 +37,8 @@ HEALTH_GOV_MEDICARE_FILES = [
     "https://www.health.gov.au/sites/default/files/2026-08/medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26.xlsx",
 ]
 
-DATA_GOV_MBS_GROUP_API = (
-    "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group"
-)
-DATA_GOV_MBS_DEMOGRAPHICS_API = (
-    "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group-by-patient-demographics-report"
-)
+DATA_GOV_MBS_GROUP_API = "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group"
+DATA_GOV_MBS_DEMOGRAPHICS_API = "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group-by-patient-demographics-report"
 
 
 def fetch_url_bytes(url: str) -> bytes:
@@ -61,25 +57,39 @@ def fetch_url_json(url: str) -> dict[str, Any]:
 
 def check_contract(contract_path: Path) -> None:
     if not contract_path.exists():
-        raise FileNotFoundError(f"Missing authorization contract at {contract_path}")
-    contract: dict[str, Any] = json.loads(contract_path.read_text(encoding="utf-8"))
+        raise FileNotFoundError(
+            f"Missing authorization contract at {contract_path}"
+        )
+    contract: dict[str, Any] = json.loads(
+        contract_path.read_text(encoding="utf-8")
+    )
     if not contract.get("external_publication_authorized"):
-        raise PermissionError("external_publication_authorized is False in contract")
+        raise PermissionError(
+            "external_publication_authorized is False in contract"
+        )
 
 
-def discover_selected_resources(*, backfill_all: bool = False) -> list[DiscoveredHarvestResource]:
+def discover_selected_resources(
+    *, backfill_all: bool = False
+) -> list[DiscoveredHarvestResource]:
     group_json = None
     demographics_json = None
     try:
         group_json = fetch_url_json(DATA_GOV_MBS_GROUP_API)
     except Exception as exc:
-        print(f"Warning: could not fetch MBS group API from data.gov.au: {exc}", file=sys.stderr)
+        print(
+            f"Warning: could not fetch MBS group API from data.gov.au: {exc}",
+            file=sys.stderr,
+        )
 
     if backfill_all:
         try:
             demographics_json = fetch_url_json(DATA_GOV_MBS_DEMOGRAPHICS_API)
         except Exception as exc:
-            print(f"Warning: could not fetch MBS demographics API: {exc}", file=sys.stderr)
+            print(
+                f"Warning: could not fetch MBS demographics API: {exc}",
+                file=sys.stderr,
+            )
 
     max_hist = 20 if backfill_all else 2
     return discover_mbs_utilisation_resources(
@@ -106,7 +116,9 @@ def stage_resources(
 
     manifest = build_harvest_manifest(DATASET, stages)
     manifest_path = stage_dir / "manifest.json"
-    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    manifest_path.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     return stages, manifest
 
 
@@ -135,10 +147,27 @@ def publish_to_huggingface(
 
     operations: list[Any] = []
     for s in stages:
-        operations.append(sdk.CommitOperationAdd(path_in_repo=s.resource.archive_path, path_or_fileobj=str(s.staged_payload_path)))
-        receipt_path = s.resource.archive_path.replace("raw/", "bronze/") + ".receipt.json"
-        operations.append(sdk.CommitOperationAdd(path_in_repo=receipt_path, path_or_fileobj=str(s.staged_receipt_path)))
-    operations.append(sdk.CommitOperationAdd(path_in_repo="manifest.json", path_or_fileobj=str(stage_dir / "manifest.json")))
+        operations.append(
+            sdk.CommitOperationAdd(
+                path_in_repo=s.resource.archive_path,
+                path_or_fileobj=str(s.staged_payload_path),
+            )
+        )
+        receipt_path = (
+            s.resource.archive_path.replace("raw/", "bronze/") + ".receipt.json"
+        )
+        operations.append(
+            sdk.CommitOperationAdd(
+                path_in_repo=receipt_path,
+                path_or_fileobj=str(s.staged_receipt_path),
+            )
+        )
+    operations.append(
+        sdk.CommitOperationAdd(
+            path_in_repo="manifest.json",
+            path_or_fileobj=str(stage_dir / "manifest.json"),
+        )
+    )
 
     commit_res: Any = api.create_commit(
         repo_id=DATASET,
@@ -150,26 +179,61 @@ def publish_to_huggingface(
     published_revision = str(commit_res.oid)
 
     def anonymous_get(repo: str, filepath: str) -> bytes:
-        cached = cast("str", sdk.hf_hub_download(repo_id=repo, repo_type="dataset", revision=published_revision, filename=filepath, token=False))
+        cached = cast(
+            "str",
+            sdk.hf_hub_download(
+                repo_id=repo,
+                repo_type="dataset",
+                revision=published_revision,
+                filename=filepath,
+                token=False,
+            ),
+        )
         return Path(cached).read_bytes()
 
-    verify_anonymous_restore(DATASET, manifest, anonymous_downloader=anonymous_get)
+    verify_anonymous_restore(
+        DATASET, manifest, anonymous_downloader=anonymous_get
+    )
     return published_revision
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Harvest Australian MBS utilisation data")
-    parser.add_argument("--dry-run", action="store_true", help="Discover resources without staging")
-    parser.add_argument("--stage-dir", type=Path, default=Path("build/harvest/mbs_utilisation"))
-    parser.add_argument("--publish-hosted", action="store_true", help="Publish staged files to Hugging Face (Actions only)")
-    parser.add_argument("--backfill-all", action="store_true", help="Stage all historical demographic/group files")
-    parser.add_argument("--receipt-output", type=Path, default=Path("build/mbs-utilisation-harvest-receipt.json"))
+    parser = argparse.ArgumentParser(
+        description="Harvest Australian MBS utilisation data"
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Discover resources without staging",
+    )
+    parser.add_argument(
+        "--stage-dir", type=Path, default=Path("build/harvest/mbs_utilisation")
+    )
+    parser.add_argument(
+        "--publish-hosted",
+        action="store_true",
+        help="Publish staged files to Hugging Face (Actions only)",
+    )
+    parser.add_argument(
+        "--backfill-all",
+        action="store_true",
+        help="Stage all historical demographic/group files",
+    )
+    parser.add_argument(
+        "--receipt-output",
+        type=Path,
+        default=Path("build/mbs-utilisation-harvest-receipt.json"),
+    )
     args = parser.parse_args()
 
-    contract_path = Path("quality/qualifications/australian-mbs-utilisation-publication-authorization.json")
+    contract_path = Path(
+        "quality/qualifications/australian-mbs-utilisation-publication-authorization.json"
+    )
     check_contract(contract_path)
 
-    backfill_enabled = args.backfill_all or os.environ.get("BACKFILL_ALL") == "1"
+    backfill_enabled = (
+        args.backfill_all or os.environ.get("BACKFILL_ALL") == "1"
+    )
     resources = discover_selected_resources(backfill_all=backfill_enabled)
     print(f"Selected {len(resources)} MBS utilisation resources.")
 
@@ -177,19 +241,27 @@ def main() -> int:
         return 0
 
     if args.publish_hosted and not os.environ.get("GITHUB_ACTIONS"):
-        raise PermissionError("--publish-hosted is permitted only within GitHub Actions runners.")
+        raise PermissionError(
+            "--publish-hosted is permitted only within GitHub Actions runners."
+        )
 
     stages, manifest = stage_resources(resources, args.stage_dir)
-    print(f"Staged {len(stages)} payloads. Manifest has {manifest['file_count']} objects.")
+    print(
+        f"Staged {len(stages)} payloads. Manifest has {manifest['file_count']} objects."
+    )
 
     if not args.publish_hosted:
         return 0
 
     hf_token = os.environ.get("HF_TOKEN")
     if not hf_token:
-        raise ValueError("HF_TOKEN environment variable required for hosted publication")
+        raise ValueError(
+            "HF_TOKEN environment variable required for hosted publication"
+        )
 
-    revision = publish_to_huggingface(stages, manifest, args.stage_dir, hf_token)
+    revision = publish_to_huggingface(
+        stages, manifest, args.stage_dir, hf_token
+    )
 
     receipt_record = {
         "schema_id": "global-medicines-atlas.australian-mbs-utilisation-harvest-receipt",
@@ -202,7 +274,10 @@ def main() -> int:
         "temporary_source_bytes_removed": False,
     }
     args.receipt_output.parent.mkdir(parents=True, exist_ok=True)
-    args.receipt_output.write_text(json.dumps(receipt_record, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    args.receipt_output.write_text(
+        json.dumps(receipt_record, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
     return 0
 
 

@@ -17,13 +17,21 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
-ALLOWED_PBS_DOMAINS = frozenset({"www.pbs.gov.au", "pbs.gov.au", "data.pbs.gov.au"})
+ALLOWED_PBS_DOMAINS = frozenset({
+    "www.pbs.gov.au",
+    "pbs.gov.au",
+    "data.pbs.gov.au",
+})
 ALLOWED_MBS_DOMAINS = frozenset({"www.mbsonline.gov.au", "mbsonline.gov.au"})
-ALLOWED_MEDICARE_STATISTICS_DOMAINS = frozenset(
-    {"www.health.gov.au", "health.gov.au", "data.gov.au"}
-)
+ALLOWED_MEDICARE_STATISTICS_DOMAINS = frozenset({
+    "www.health.gov.au",
+    "health.gov.au",
+    "data.gov.au",
+})
 ALLOWED_AUSTRALIAN_HARVEST_DOMAINS = (
-    ALLOWED_PBS_DOMAINS | ALLOWED_MBS_DOMAINS | ALLOWED_MEDICARE_STATISTICS_DOMAINS
+    ALLOWED_PBS_DOMAINS
+    | ALLOWED_MBS_DOMAINS
+    | ALLOWED_MEDICARE_STATISTICS_DOMAINS
 )
 
 
@@ -73,7 +81,7 @@ def discover_pbs_dos_resources(
 ) -> list[DiscoveredHarvestResource]:
     """Discover PBS Date of Supply (DOS) dispensing utilisation files from HTML."""
     links = re.findall(
-        r'href=[\"\']([^\"\']+\.(?:csv|xlsx?|zip))[\"\']', html, re.IGNORECASE
+        r"href=[\"\']([^\"\']+\.(?:csv|xlsx?|zip))[\"\']", html, re.IGNORECASE
     )
     discovered: list[DiscoveredHarvestResource] = []
     seen: set[str] = set()
@@ -132,7 +140,7 @@ def discover_pbs_expenditure_resources(
 ) -> list[DiscoveredHarvestResource]:
     """Discover PBS Annual Expenditure workbooks across annual subpages."""
     subpage_links = re.findall(
-        r'href=[\"\'](expenditure-prescriptions[^\"]*|pbs-expenditure[^\"]*)[\"\']',
+        r"href=[\"\'](expenditure-prescriptions[^\"]*|pbs-expenditure[^\"]*)[\"\']",
         index_html,
         re.IGNORECASE,
     )
@@ -151,11 +159,13 @@ def discover_pbs_expenditure_resources(
         sp_url = urllib.parse.urljoin(base_url, sp)
         try:
             sp_html = subpage_fetcher(sp_url)
-        except (OSError, TimeoutError, ValueError):
+        except OSError, TimeoutError, ValueError:
             continue
 
         files = re.findall(
-            r'href=[\"\']([^\"\']+\.(?:xlsx?|csv))[\"\']', sp_html, re.IGNORECASE
+            r"href=[\"\']([^\"\']+\.(?:xlsx?|csv))[\"\']",
+            sp_html,
+            re.IGNORECASE,
         )
         for f in sorted(set(files)):
             full_url = urllib.parse.urljoin(sp_url, f)
@@ -190,7 +200,7 @@ def discover_mbs_schedule_resources(
 ) -> list[DiscoveredHarvestResource]:
     """Discover monthly MBS schedule releases from mbsonline.gov.au."""
     release_pages = re.findall(
-        r'href=[\"\']([^\"\']*Downloads-(?:20\d{6}|\d{6})[^\"]*)[\"\']',
+        r"href=[\"\']([^\"\']*Downloads-(?:20\d{6}|\d{6})[^\"]*)[\"\']",
         index_html,
         re.IGNORECASE,
     )
@@ -214,11 +224,13 @@ def discover_mbs_schedule_resources(
         rp_url = urllib.parse.urljoin(base_url, rp)
         try:
             rp_html = subpage_fetcher(rp_url)
-        except (OSError, TimeoutError, ValueError):
+        except OSError, TimeoutError, ValueError:
             continue
 
         files = re.findall(
-            r'href=[\"\']([^\"\']+\.(?:xml|csv|txt|zip))[\"\']', rp_html, re.IGNORECASE
+            r"href=[\"\']([^\"\']+\.(?:xml|csv|txt|zip))[\"\']",
+            rp_html,
+            re.IGNORECASE,
         )
         for f in sorted(set(files)):
             # Skip RSS feeds, templates, and styles
@@ -233,7 +245,9 @@ def discover_mbs_schedule_resources(
                 continue
             seen.add(filename)
 
-            if "mbs-xml" in filename.lower() and filename.lower().endswith(".xml"):
+            if "mbs-xml" in filename.lower() and filename.lower().endswith(
+                ".xml"
+            ):
                 cat = "monthly_schedule_xml"
                 arch_path = f"raw/mbs/releases/{rp}/{filename}"
             elif "basic service description" in filename.lower():
@@ -392,10 +406,14 @@ def stage_harvest_payload(
         retrieved_at=now,
     )
 
-    receipt_relpath = resource.archive_path.replace("raw/", "bronze/") + ".receipt.json"
+    receipt_relpath = (
+        resource.archive_path.replace("raw/", "bronze/") + ".receipt.json"
+    )
     receipt_file = work_dir / receipt_relpath
     receipt_file.parent.mkdir(parents=True, exist_ok=True)
-    receipt_file.write_text(receipt.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    receipt_file.write_text(
+        receipt.model_dump_json(indent=2) + "\n", encoding="utf-8"
+    )
 
     return HarvestStageResult(
         resource=resource,
@@ -412,28 +430,28 @@ def build_harvest_manifest(
     """Generate manifest dictionary for all staged files in a harvest run."""
     files: list[dict[str, Any]] = []
     for s in stages:
-        files.append(
-            {
-                "path": s.resource.archive_path,
-                "bytes": s.receipt.byte_count,
-                "sha256": s.receipt.sha256,
-                "kind": "raw_payload",
-                "source_id": s.receipt.source_id,
-                "category": s.receipt.category,
-            }
+        files.append({
+            "path": s.resource.archive_path,
+            "bytes": s.receipt.byte_count,
+            "sha256": s.receipt.sha256,
+            "kind": "raw_payload",
+            "source_id": s.receipt.source_id,
+            "category": s.receipt.category,
+        })
+        receipt_path = (
+            s.resource.archive_path.replace("raw/", "bronze/") + ".receipt.json"
         )
-        receipt_path = s.resource.archive_path.replace("raw/", "bronze/") + ".receipt.json"
         receipt_bytes = s.staged_receipt_path.stat().st_size
-        receipt_sha = hashlib.sha256(s.staged_receipt_path.read_bytes()).hexdigest()
-        files.append(
-            {
-                "path": receipt_path,
-                "bytes": receipt_bytes,
-                "sha256": receipt_sha,
-                "kind": "b1_receipt",
-                "source_id": s.receipt.source_id,
-            }
-        )
+        receipt_sha = hashlib.sha256(
+            s.staged_receipt_path.read_bytes()
+        ).hexdigest()
+        files.append({
+            "path": receipt_path,
+            "bytes": receipt_bytes,
+            "sha256": receipt_sha,
+            "kind": "b1_receipt",
+            "source_id": s.receipt.source_id,
+        })
 
     manifest: dict[str, Any] = {
         "schema_id": "global-medicines-atlas.harvest-manifest",
@@ -470,14 +488,12 @@ def verify_anonymous_restore(
                 f"Anonymous restore digest mismatch for {path}: "
                 f"got {actual_sha}, expected {expected_sha}"
             )
-        verified_files.append(
-            {
-                "path": path,
-                "bytes": expected_bytes,
-                "sha256": actual_sha,
-                "status": "digest_verified",
-            }
-        )
+        verified_files.append({
+            "path": path,
+            "bytes": expected_bytes,
+            "sha256": actual_sha,
+            "status": "digest_verified",
+        })
 
     return {
         "status": "all_objects_anonymously_verified",

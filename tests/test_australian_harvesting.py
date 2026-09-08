@@ -36,9 +36,7 @@ MBS_UTIL_AUTH_FILE = (
     ROOT
     / "quality/qualifications/australian-mbs-utilisation-publication-authorization.json"
 )
-PBS_WORKFLOW = (
-    ROOT / ".github/workflows/australian-pbs-utilisation-harvest.yml"
-)
+PBS_WORKFLOW = ROOT / ".github/workflows/australian-pbs-utilisation-harvest.yml"
 MBS_WORKFLOW = ROOT / ".github/workflows/australian-mbs-schedule-harvest.yml"
 MBS_UTIL_WORKFLOW = (
     ROOT / ".github/workflows/australian-mbs-utilisation-harvest.yml"
@@ -96,9 +94,7 @@ def test_discover_pbs_dos_resources() -> None:
         by_filename["dos-jul-2025-to-jun-2026-phrmcy-type.csv"].category
         == "date_of_supply_monthly_prescriptions"
     )
-    assert (
-        by_filename["pbs-item-drug-map.csv"].category == "item_drug_mapping"
-    )
+    assert by_filename["pbs-item-drug-map.csv"].category == "item_drug_mapping"
     assert (
         by_filename["dos-jul-2021-to-jun-2026.xlsx"].category
         == "date_of_supply_multiyear_summary"
@@ -205,12 +201,16 @@ def test_stage_harvest_payload_success_and_receipt(tmp_path: Path) -> None:
     assert result.receipt.byte_count == len(data)
     assert result.staged_payload_path.read_bytes() == data
 
-    receipt_json = json.loads(result.staged_receipt_path.read_text(encoding="utf-8"))
+    receipt_json = json.loads(
+        result.staged_receipt_path.read_text(encoding="utf-8")
+    )
     assert receipt_json["sha256"] == expected_sha
     assert receipt_json["source_id"] == "au-pbs-dos-utilisation"
 
 
-def test_build_harvest_manifest_and_verify_anonymous_restore(tmp_path: Path) -> None:
+def test_build_harvest_manifest_and_verify_anonymous_restore(
+    tmp_path: Path,
+) -> None:
     data = b"MBS_XML_TEST_CONTENT"
     resource = DiscoveredHarvestResource(
         source_id="au-mbs",
@@ -264,7 +264,9 @@ def test_pbs_utilisation_publication_authorization() -> None:
     assert auth["visibility"] == "public"
     assert auth["gated"] is False
     assert "github-actions-only-upload" in auth["required_controls"]
-    assert "anonymous-all-object-digest-verification" in auth["required_controls"]
+    assert (
+        "anonymous-all-object-digest-verification" in auth["required_controls"]
+    )
 
 
 def test_mbs_harvest_publication_authorization() -> None:
@@ -316,15 +318,21 @@ def test_discover_mbs_utilisation_resources() -> None:
     by_filename = {d.filename: d for d in discovered}
 
     assert (
-        by_filename["medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26.xlsx"].category
+        by_filename[
+            "medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26.xlsx"
+        ].category
         == "medicare_quarterly_statistics_state_territory"
     )
     assert (
-        by_filename["medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx"].category
+        by_filename[
+            "medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx"
+        ].category
         == "medicare_annual_statistics_state_territory"
     )
     assert (
-        by_filename["medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26.xlsx"].category
+        by_filename[
+            "medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26.xlsx"
+        ].category
         == "medicare_ytd_summary_tables"
     )
     assert (
