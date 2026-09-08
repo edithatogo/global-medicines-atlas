@@ -13,11 +13,13 @@ import importlib
 import json
 import os
 import sys
+import urllib.error
 from pathlib import Path
 from typing import Any, cast
 
 from global_medicines_atlas.australian_harvesting import (
     ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+    DEFAULT_HARVEST_USER_AGENT,
     DiscoveredHarvestResource,
     HarvestStageResult,
     build_cumulative_harvest_manifest,
@@ -31,7 +33,7 @@ from global_medicines_atlas.australian_harvesting import (
 )
 
 DATASET = "edithatogo/australian-mbs-utilisation-archive"
-USER_AGENT = "GlobalMedicinesAtlas-MBSUtilisationHarvester/1.0"
+USER_AGENT = DEFAULT_HARVEST_USER_AGENT
 
 HEALTH_GOV_MEDICARE_FILES = [
     "https://www.health.gov.au/sites/default/files/2026-08/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26.xlsx",
@@ -43,7 +45,7 @@ DATA_GOV_MBS_GROUP_API = "https://data.gov.au/data/api/3/action/package_show?id=
 DATA_GOV_MBS_DEMOGRAPHICS_API = "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group-by-patient-demographics-report"
 
 
-def fetch_url_bytes(url: str, timeout: int = 120) -> tuple[bytes, str]:
+def fetch_url_bytes(url: str, timeout: int = 45) -> tuple[bytes, str]:
     return fetch_url_bytes_governed(
         url,
         allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
@@ -52,7 +54,7 @@ def fetch_url_bytes(url: str, timeout: int = 120) -> tuple[bytes, str]:
     )
 
 
-def fetch_url_text(url: str, timeout: int = 8) -> str:
+def fetch_url_text(url: str, timeout: int = 6) -> str:
     content, _final_url = fetch_url_bytes(url, timeout=timeout)
     return content.decode("utf-8", errors="ignore")
 
@@ -80,18 +82,15 @@ def discover_selected_resources(
             flush=True,
         )
 
-    if backfill_all:
-        try:
-            print(
-                "  Querying data.gov.au MBS demographics package...", flush=True
-            )
-            demographics_json = fetch_url_json(DATA_GOV_MBS_DEMOGRAPHICS_API)
-        except Exception as exc:
-            print(
-                f"Warning: could not fetch MBS demographics API: {exc}",
-                file=sys.stderr,
-                flush=True,
-            )
+    try:
+        print("  Querying data.gov.au MBS demographics package...", flush=True)
+        demographics_json = fetch_url_json(DATA_GOV_MBS_DEMOGRAPHICS_API)
+    except Exception as exc:
+        print(
+            f"Warning: could not fetch MBS demographics API: {exc}",
+            file=sys.stderr,
+            flush=True,
+        )
 
     print("  Discovering Medicare workbooks from health.gov.au...", flush=True)
     health_urls = discover_health_gov_medicare_workbooks(
@@ -126,16 +125,34 @@ def stage_resources(
             f"  [{idx}/{len(resources)}] Fetching and staging {r.filename} from {r.url}...",
             flush=True,
         )
-        stage = stage_harvest_payload(
-            r,
-            stage_dir,
-            data_reader=fetch_url_bytes,
-            allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
-        )
-        stages.append(stage)
-        print(
-            f"  [{idx}/{len(resources)}] Staged {r.filename} ({stage.receipt.byte_count} bytes, sha256={stage.receipt.sha256[:12]}).",
-            flush=True,
+        try:
+            stage = stage_harvest_payload(
+                r,
+                stage_dir,
+                data_reader=fetch_url_bytes,
+                allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+            )
+            stages.append(stage)
+            print(
+                f"  [{idx}/{len(resources)}] Staged {r.filename} ({stage.receipt.byte_count} bytes, sha256={stage.receipt.sha256[:12]}).",
+                flush=True,
+            )
+        except (
+            TimeoutError,
+            urllib.error.URLError,
+            OSError,
+            RuntimeError,
+            ValueError,
+        ) as exc:
+            print(
+                f"  [{idx}/{len(resources)}] Warning: failed to stage {r.filename} from {r.url}: {exc}. Continuing.",
+                file=sys.stderr,
+                flush=True,
+            )
+
+    if not stages:
+        raise RuntimeError(
+            "No resources were successfully staged; cannot proceed."
         )
 
     manifest = build_harvest_manifest(DATASET, stages)

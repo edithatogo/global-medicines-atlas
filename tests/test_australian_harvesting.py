@@ -6,8 +6,10 @@ import hashlib
 import json
 import urllib.request
 from pathlib import Path
+from typing import Any
 
 import pytest
+from scripts.harvest_australian_mbs_utilisation import stage_resources
 
 from global_medicines_atlas.australian_harvesting import (
     ALLOWED_AUSTRALIAN_HARVEST_DOMAINS,
@@ -768,3 +770,103 @@ def test_validate_resources_against_contract_flags(tmp_path: Path) -> None:
     p.write_text(json.dumps({**base, "gated": True}))
     with pytest.raises(ValueError, match=r"Contract gated flag must be False"):
         validate_resources_against_contract(p, "test/ds", res)
+
+
+def test_fetch_url_bytes_governed_curl_fallback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class FailingOpener:
+        def open(self, _req: object, timeout: int = 45) -> None:
+            _ = timeout
+            raise TimeoutError("Simulated urllib timeout")
+
+    def _make_failing_opener(_h: object) -> FailingOpener:
+        return FailingOpener()
+
+    def _mock_which(_prog: str) -> str:
+        return "/usr/bin/curl"
+
+    monkeypatch.setattr("urllib.request.build_opener", _make_failing_opener)
+
+    class FakeProc:
+        returncode = 0
+        stdout = "https://www.health.gov.au/sites/default/files/test.xlsx"
+
+    def _fake_run(cmd: list[str], **_kwargs: Any) -> FakeProc:
+        if "-o" in cmd:
+            out_idx = cmd.index("-o") + 1
+            Path(cmd[out_idx]).write_bytes(b"CURL_EXCEL_BYTES")
+        return FakeProc()
+
+    monkeypatch.setattr("shutil.which", _mock_which)
+    monkeypatch.setattr("subprocess.run", _fake_run)
+
+    content, final_url = fetch_url_bytes_governed(
+        "https://www.health.gov.au/sites/default/files/test.xlsx",
+        allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+    )
+    assert content == b"CURL_EXCEL_BYTES"
+    assert (
+        final_url == "https://www.health.gov.au/sites/default/files/test.xlsx"
+    )
+
+    # Test curl returning an unauthorized host
+    class FakeProcUnauthorized:
+        returncode = 0
+        stdout = "https://unauthorized-evil.com/malicious.xlsx"
+
+    def _fake_run_unauth(
+        cmd: list[str], **_kwargs: Any
+    ) -> FakeProcUnauthorized:
+        if "-o" in cmd:
+            out_idx = cmd.index("-o") + 1
+            Path(cmd[out_idx]).write_bytes(b"EVIL_BYTES")
+        return FakeProcUnauthorized()
+
+    monkeypatch.setattr("subprocess.run", _fake_run_unauth)
+    with pytest.raises(PermissionError, match=r"Final response host"):
+        fetch_url_bytes_governed(
+            "https://www.health.gov.au/sites/default/files/test.xlsx",
+            allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+        )
+
+
+def test_mbs_utilisation_stage_resources_resilient(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    res_good = DiscoveredHarvestResource(
+        source_id="au-data-gov-mbs-group",
+        category="mbs_group_statistics",
+        url="https://data.gov.au/data/mbs-group.csv",
+        filename="mbs-group.csv",
+        archive_path="raw/mbs/utilisation/group/mbs-group.csv",
+    )
+    res_bad = DiscoveredHarvestResource(
+        source_id="au-health-medicare-statistics",
+        category="medicare_quarterly_statistics_state_territory",
+        url="https://www.health.gov.au/timeout.xlsx",
+        filename="timeout.xlsx",
+        archive_path="raw/mbs/utilisation/quarterly/timeout.xlsx",
+    )
+
+    def _fake_fetch(url: str, **_kwargs: Any) -> tuple[bytes, str]:
+        if "timeout" in url:
+            raise TimeoutError("Network timeout on health.gov.au")
+        return b"CSV_CONTENT", url
+
+    monkeypatch.setattr(
+        "scripts.harvest_australian_mbs_utilisation.fetch_url_bytes",
+        _fake_fetch,
+    )
+
+    stage_dir = tmp_path / "stage"
+    stages, manifest = stage_resources([res_good, res_bad], stage_dir)
+    assert len(stages) == 1
+    assert stages[0].resource.filename == "mbs-group.csv"
+    assert manifest["file_count"] == 2
+
+    with pytest.raises(
+        RuntimeError, match=r"No resources were successfully staged"
+    ):
+        stage_resources([res_bad], stage_dir)
