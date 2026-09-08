@@ -120,6 +120,7 @@ def stage_resources(
         flush=True,
     )
     stages: list[HarvestStageResult] = []
+    failed_resources: list[dict[str, str]] = []
     for idx, r in enumerate(resources, start=1):
         print(
             f"  [{idx}/{len(resources)}] Fetching and staging {r.filename} from {r.url}...",
@@ -140,6 +141,7 @@ def stage_resources(
         except (
             TimeoutError,
             urllib.error.URLError,
+            ConnectionError,
             OSError,
             RuntimeError,
             ValueError,
@@ -149,6 +151,12 @@ def stage_resources(
                 file=sys.stderr,
                 flush=True,
             )
+            failed_resources.append({
+                "filename": r.filename,
+                "url": r.url,
+                "source_id": r.source_id,
+                "error": str(exc),
+            })
 
     if not stages:
         raise RuntimeError(
@@ -156,6 +164,8 @@ def stage_resources(
         )
 
     manifest = build_harvest_manifest(DATASET, stages)
+    manifest["coverage_status"] = "partial" if failed_resources else "complete"
+    manifest["failed_resources"] = failed_resources
     manifest_path = stage_dir / "manifest.json"
     manifest_path.write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
@@ -364,6 +374,8 @@ def main() -> int:
         "revision": revision,
         "workflow_run": os.environ.get("GITHUB_RUN_ID", "local"),
         "workflow_commit": os.environ.get("GITHUB_SHA", "local"),
+        "coverage_status": manifest.get("coverage_status", "complete"),
+        "failed_resources": manifest.get("failed_resources", []),
         "anonymous_digest_verification": "passed",
         "verified_file_count": final_manifest["file_count"],
         "temporary_source_bytes_removed": False,

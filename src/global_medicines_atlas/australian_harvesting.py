@@ -18,6 +18,7 @@ import urllib.request
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from http import HTTPStatus
 from pathlib import Path
 from typing import Any, Final
 
@@ -41,6 +42,13 @@ ALLOWED_AUSTRALIAN_HARVEST_DOMAINS = (
 )
 AUSTRALIAN_FY_START_MONTH: Final[int] = 7
 MEDICARE_Q1_PUBLICATION_MONTH: Final[int] = 11
+HTTP_REDIRECT_STATUSES: Final[frozenset[int]] = frozenset({
+    HTTPStatus.MOVED_PERMANENTLY,
+    HTTPStatus.FOUND,
+    HTTPStatus.SEE_OTHER,
+    HTTPStatus.TEMPORARY_REDIRECT,
+    HTTPStatus.PERMANENT_REDIRECT,
+})
 
 DEFAULT_HARVEST_USER_AGENT: Final[str] = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -129,46 +137,80 @@ def _fetch_via_curl_fallback(
     allowed_domains: frozenset[str],
     req_headers: dict[str, str],
     timeout: int,
+    max_redirects: int = 5,
 ) -> tuple[bytes, str]:
     curl_path = shutil.which("curl")
     if not curl_path:
         raise ConnectionError("curl not available for network fallback")
-    curl_timeout = min(timeout, 30)
-    with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
-        tmp_path = Path(tmp_file.name)
-    try:
-        curl_cmd = [
-            curl_path,
-            "-sSL",
-            "--proto",
-            "=https,http",
-            "--proto-redir",
-            "=https,http",
-            "--max-time",
-            str(curl_timeout),
-            "-o",
-            str(tmp_path),
-            "-w",
-            "%{url_effective}",
-            url,
-        ]
-        for k, v in req_headers.items():
-            curl_cmd.extend(["-H", f"{k}: {v}"])
-        proc = subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
-            curl_cmd,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        if proc.returncode == 0 and tmp_path.exists():
-            final_url = proc.stdout.strip() or url
-            _validate_final_host(final_url, allowed_domains)
+
+    current_url = url
+    for _ in range(max_redirects + 1):
+        _validate_final_host(current_url, allowed_domains)
+
+        curl_timeout = min(timeout, 30)
+        with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
+            tmp_path = Path(tmp_file.name)
+        try:
+            # Single-hop fetch without -L to enforce domain allowlist on every redirect hop
+            curl_cmd = [
+                curl_path,
+                "-sS",
+                "--proto",
+                "=https,http",
+                "--max-time",
+                str(curl_timeout),
+                "-o",
+                str(tmp_path),
+                "-w",
+                "%{http_code}\n%{redirect_url}",
+                current_url,
+            ]
+            for k, v in req_headers.items():
+                curl_cmd.extend(["-H", f"{k}: {v}"])
+            proc = subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
+                curl_cmd,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if proc.returncode != 0:
+                raise ConnectionError(
+                    f"curl failed for {current_url}: {proc.stderr.strip()}"
+                )
+
+            stdout_lines = proc.stdout.splitlines()
+            http_code_str = stdout_lines[0].strip() if stdout_lines else "0"
+            try:
+                http_code = int(http_code_str)
+            except ValueError:
+                http_code = 0
+
+            # Follow redirects manually, validating each hop fail-closed
+            if http_code in HTTP_REDIRECT_STATUSES:
+                redirect_url = (
+                    stdout_lines[1].strip() if len(stdout_lines) > 1 else ""
+                )
+                if not redirect_url:
+                    raise ConnectionError(
+                        f"Redirect {http_code} missing destination from {current_url}"
+                    )
+                current_url = urllib.parse.urljoin(current_url, redirect_url)
+                continue
+
+            # Reject non-2xx HTTP error bodies (e.g. 404, 500)
+            if not (HTTPStatus.OK <= http_code < HTTPStatus.MULTIPLE_CHOICES):
+                raise ConnectionError(
+                    f"HTTP error {http_code} from {current_url}"
+                )
+
             content = tmp_path.read_bytes()
-            if content:
-                return content, final_url
-    finally:
-        tmp_path.unlink(missing_ok=True)
-    raise ConnectionError(f"Network retrieval failed for {url}")
+            if not content:
+                raise ConnectionError(f"Empty payload from {current_url}")
+            return content, current_url
+        finally:
+            tmp_path.unlink(missing_ok=True)
+
+    raise ConnectionError(f"Too many redirects ({max_redirects}) for {url}")
 
 
 def fetch_url_bytes_governed(
@@ -424,11 +466,14 @@ def _generate_medicare_candidate_slugs(now: datetime) -> list[str]:
     current_fy_end = (
         now.year + 1 if now.month >= AUSTRALIAN_FY_START_MONTH else now.year
     )
-    fy_start = (
-        current_fy_end
-        if now.month >= MEDICARE_Q1_PUBLICATION_MONTH
-        else current_fy_end - 1
+    # In the Australian fiscal calendar (starts in July / month 7):
+    # - Months 7..10 (Jul-Oct): Q1 of current FY in progress, no reports published yet.
+    # - Months 11..12 (Nov-Dec) & Months 1..6 (Jan-Jun): Q1..Q3 reports are published.
+    is_current_fy_published = (
+        now.month < AUSTRALIAN_FY_START_MONTH
+        or now.month >= MEDICARE_Q1_PUBLICATION_MONTH
     )
+    fy_start = current_fy_end if is_current_fy_published else current_fy_end - 1
     fy_list = [
         f"{y - 1}-{str(y)[2:]}" for y in range(current_fy_end - 1, fy_start + 1)
     ]

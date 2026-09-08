@@ -789,14 +789,16 @@ def test_fetch_url_bytes_governed_curl_fallback(
     monkeypatch.setattr("urllib.request.build_opener", _make_failing_opener)
 
     class FakeProc:
-        returncode = 0
-        stdout = "https://www.health.gov.au/sites/default/files/test.xlsx"
+        def __init__(self, stdout: str = "", returncode: int = 0) -> None:
+            self.stdout = stdout
+            self.returncode = returncode
+            self.stderr = ""
 
     def _fake_run(cmd: list[str], **_kwargs: Any) -> FakeProc:
         if "-o" in cmd:
             out_idx = cmd.index("-o") + 1
             Path(cmd[out_idx]).write_bytes(b"CURL_EXCEL_BYTES")
-        return FakeProc()
+        return FakeProc(stdout="200\n")
 
     monkeypatch.setattr("shutil.which", _mock_which)
     monkeypatch.setattr("subprocess.run", _fake_run)
@@ -810,21 +812,51 @@ def test_fetch_url_bytes_governed_curl_fallback(
         final_url == "https://www.health.gov.au/sites/default/files/test.xlsx"
     )
 
-    # Test curl returning an unauthorized host
-    class FakeProcUnauthorized:
-        returncode = 0
-        stdout = "https://unauthorized-evil.com/malicious.xlsx"
+    # Test curl redirect followed by success
+    call_count = 0
 
-    def _fake_run_unauth(
-        cmd: list[str], **_kwargs: Any
-    ) -> FakeProcUnauthorized:
+    def _fake_run_redirect(cmd: list[str], **_kwargs: Any) -> FakeProc:
+        nonlocal call_count
+        call_count += 1
+        if call_count == 1:
+            return FakeProc(
+                stdout="301\nhttps://www.health.gov.au/sites/default/files/redirected.xlsx"
+            )
         if "-o" in cmd:
             out_idx = cmd.index("-o") + 1
-            Path(cmd[out_idx]).write_bytes(b"EVIL_BYTES")
-        return FakeProcUnauthorized()
+            Path(cmd[out_idx]).write_bytes(b"REDIRECTED_BYTES")
+        return FakeProc(stdout="200\n")
+
+    monkeypatch.setattr("subprocess.run", _fake_run_redirect)
+    content, final_url = fetch_url_bytes_governed(
+        "https://www.health.gov.au/sites/default/files/test.xlsx",
+        allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+    )
+    assert content == b"REDIRECTED_BYTES"
+    assert (
+        final_url
+        == "https://www.health.gov.au/sites/default/files/redirected.xlsx"
+    )
+
+    # Test curl returning an unauthorized host redirect
+    def _fake_run_unauth(_cmd: list[str], **_kwargs: Any) -> FakeProc:
+        return FakeProc(
+            stdout="301\nhttps://unauthorized-evil.com/malicious.xlsx"
+        )
 
     monkeypatch.setattr("subprocess.run", _fake_run_unauth)
     with pytest.raises(PermissionError, match=r"Final response host"):
+        fetch_url_bytes_governed(
+            "https://www.health.gov.au/sites/default/files/test.xlsx",
+            allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+        )
+
+    # Test curl returning an HTTP error (e.g. 404)
+    def _fake_run_404(_cmd: list[str], **_kwargs: Any) -> FakeProc:
+        return FakeProc(stdout="404\n")
+
+    monkeypatch.setattr("subprocess.run", _fake_run_404)
+    with pytest.raises(ConnectionError, match=r"HTTP error 404"):
         fetch_url_bytes_governed(
             "https://www.health.gov.au/sites/default/files/test.xlsx",
             allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
@@ -865,6 +897,15 @@ def test_mbs_utilisation_stage_resources_resilient(
     assert len(stages) == 1
     assert stages[0].resource.filename == "mbs-group.csv"
     assert manifest["file_count"] == 2
+    assert manifest["coverage_status"] == "partial"
+    assert len(manifest["failed_resources"]) == 1
+    assert manifest["failed_resources"][0]["filename"] == "timeout.xlsx"
+
+    # All succeed
+    stages_good, manifest_good = stage_resources([res_good], stage_dir)
+    assert len(stages_good) == 1
+    assert manifest_good["coverage_status"] == "complete"
+    assert manifest_good["failed_resources"] == []
 
     with pytest.raises(
         RuntimeError, match=r"No resources were successfully staged"
