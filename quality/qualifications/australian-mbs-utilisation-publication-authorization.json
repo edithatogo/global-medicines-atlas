@@ -1,0 +1,39 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-utilisation-publication-authorization",
+  "schema_version": 1,
+  "authorized_at": "2026-09-08",
+  "external_publication_authorized": true,
+  "maintainer_asserted_redistribution_permission": true,
+  "dataset": "edithatogo/australian-mbs-utilisation-archive",
+  "visibility": "public",
+  "gated": false,
+  "allowed_sources": [
+    "au-health-medicare-statistics",
+    "au-data-gov-mbs-group",
+    "au-data-gov-mbs-demographics"
+  ],
+  "allowed_domains": [
+    "www.health.gov.au",
+    "health.gov.au",
+    "data.gov.au"
+  ],
+  "categories": [
+    "medicare_quarterly_statistics_state_territory",
+    "medicare_annual_statistics_state_territory",
+    "medicare_ytd_summary_tables",
+    "mbs_group_statistics",
+    "mbs_demographics_statistics"
+  ],
+  "required_controls": [
+    "github-actions-only-upload",
+    "protected-default-branch-deployment-environment",
+    "default-branch-head-equals-exact-authorized-commit",
+    "durable-issue-intent-before-dataset-creation",
+    "anonymous-all-object-digest-verification",
+    "no-workstation-raw-retention"
+  ],
+  "publication_does_not_authorize": [
+    "clinical efficacy conclusions",
+    "re-identification of patient-level claims"
+  ]
+}

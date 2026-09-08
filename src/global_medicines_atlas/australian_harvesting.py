@@ -19,6 +19,12 @@ from pydantic import BaseModel, ConfigDict, Field
 
 ALLOWED_PBS_DOMAINS = frozenset({"www.pbs.gov.au", "pbs.gov.au", "data.pbs.gov.au"})
 ALLOWED_MBS_DOMAINS = frozenset({"www.mbsonline.gov.au", "mbsonline.gov.au"})
+ALLOWED_MEDICARE_STATISTICS_DOMAINS = frozenset(
+    {"www.health.gov.au", "health.gov.au", "data.gov.au"}
+)
+ALLOWED_AUSTRALIAN_HARVEST_DOMAINS = (
+    ALLOWED_PBS_DOMAINS | ALLOWED_MBS_DOMAINS | ALLOWED_MEDICARE_STATISTICS_DOMAINS
+)
 
 
 class DiscoveredHarvestResource(BaseModel):
@@ -252,11 +258,109 @@ def discover_mbs_schedule_resources(
     return discovered
 
 
+def discover_mbs_utilisation_resources(
+    data_gov_group_json: dict[str, Any] | None = None,
+    data_gov_demographics_json: dict[str, Any] | None = None,
+    health_gov_urls: list[str] | None = None,
+    max_historical_files: int = 5,
+) -> list[DiscoveredHarvestResource]:
+    """Discover MBS utilisation files across data.gov.au and Health.gov.au."""
+    discovered: list[DiscoveredHarvestResource] = []
+    seen: set[str] = set()
+
+    if health_gov_urls:
+        for url in health_gov_urls:
+            filename = url.split("/")[-1]
+            if filename in seen:
+                continue
+            seen.add(filename)
+            fn_lower = filename.lower()
+            if "quarterly" in fn_lower:
+                cat = "medicare_quarterly_statistics_state_territory"
+                arch_path = f"raw/mbs/utilisation/quarterly/{filename}"
+            elif "annual" in fn_lower:
+                cat = "medicare_annual_statistics_state_territory"
+                arch_path = f"raw/mbs/utilisation/annual/{filename}"
+            elif "year-to-date" in fn_lower or "ytd" in fn_lower:
+                cat = "medicare_ytd_summary_tables"
+                arch_path = f"raw/mbs/utilisation/ytd/{filename}"
+            else:
+                cat = "medicare_statistics_supplement"
+                arch_path = f"raw/mbs/utilisation/misc/{filename}"
+
+            discovered.append(
+                DiscoveredHarvestResource(
+                    source_id="au-health-medicare-statistics",
+                    category=cat,
+                    url=url,
+                    filename=filename,
+                    archive_path=arch_path,
+                    period_label="current",
+                )
+            )
+
+    def _process_ckan_resources(
+        ckan_dict: dict[str, Any],
+        source_id: str,
+        default_cat: str,
+        path_prefix: str,
+    ) -> None:
+        count = 0
+        resources = ckan_dict.get("result", {}).get("resources", [])
+        for res in resources:
+            if count >= max_historical_files:
+                break
+            url = res.get("url", "")
+            name = res.get("name", "")
+            if not url:
+                continue
+            filename = url.split("/")[-1]
+            if not filename or filename in seen:
+                continue
+            seen.add(filename)
+
+            cat = default_cat
+            if "historical" in name.lower() or "historical" in url.lower():
+                cat = f"{default_cat}_historical"
+            elif "2016" in name or "2016" in url:
+                cat = f"{default_cat}_2016"
+
+            discovered.append(
+                DiscoveredHarvestResource(
+                    source_id=source_id,
+                    category=cat,
+                    url=url,
+                    filename=filename,
+                    archive_path=f"raw/mbs/utilisation/{path_prefix}/{filename}",
+                    period_label=name[:50],
+                )
+            )
+            count += 1
+
+    if data_gov_group_json:
+        _process_ckan_resources(
+            data_gov_group_json,
+            source_id="au-data-gov-mbs-group",
+            default_cat="mbs_group_statistics",
+            path_prefix="group",
+        )
+
+    if data_gov_demographics_json:
+        _process_ckan_resources(
+            data_gov_demographics_json,
+            source_id="au-data-gov-mbs-demographics",
+            default_cat="mbs_demographics_statistics",
+            path_prefix="demographics",
+        )
+
+    return discovered
+
+
 def stage_harvest_payload(
     resource: DiscoveredHarvestResource,
     work_dir: Path,
     data_reader: Callable[[str], bytes],
-    allowed_domains: frozenset[str] = ALLOWED_PBS_DOMAINS | ALLOWED_MBS_DOMAINS,
+    allowed_domains: frozenset[str] = ALLOWED_AUSTRALIAN_HARVEST_DOMAINS,
 ) -> HarvestStageResult:
     """Download and stage a discovered payload fail-closed, producing its B1 receipt."""
     parsed = urllib.parse.urlparse(resource.url)

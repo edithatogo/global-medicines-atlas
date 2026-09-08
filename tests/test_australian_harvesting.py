@@ -9,11 +9,14 @@ from pathlib import Path
 import pytest
 
 from global_medicines_atlas.australian_harvesting import (
+    ALLOWED_AUSTRALIAN_HARVEST_DOMAINS,
     ALLOWED_MBS_DOMAINS,
+    ALLOWED_MEDICARE_STATISTICS_DOMAINS,
     ALLOWED_PBS_DOMAINS,
     DiscoveredHarvestResource,
     build_harvest_manifest,
     discover_mbs_schedule_resources,
+    discover_mbs_utilisation_resources,
     discover_pbs_dos_resources,
     discover_pbs_expenditure_resources,
     stage_harvest_payload,
@@ -29,10 +32,17 @@ MBS_AUTH_FILE = (
     ROOT
     / "quality/qualifications/australian-mbs-harvest-publication-authorization.json"
 )
+MBS_UTIL_AUTH_FILE = (
+    ROOT
+    / "quality/qualifications/australian-mbs-utilisation-publication-authorization.json"
+)
 PBS_WORKFLOW = (
     ROOT / ".github/workflows/australian-pbs-utilisation-harvest.yml"
 )
 MBS_WORKFLOW = ROOT / ".github/workflows/australian-mbs-schedule-harvest.yml"
+MBS_UTIL_WORKFLOW = (
+    ROOT / ".github/workflows/australian-mbs-utilisation-harvest.yml"
+)
 
 
 SAMPLE_PBS_DOS_HTML = """
@@ -267,10 +277,78 @@ def test_mbs_harvest_publication_authorization() -> None:
     assert "github-actions-only-upload" in auth["required_controls"]
 
 
+def test_mbs_utilisation_publication_authorization() -> None:
+    auth = json.loads(MBS_UTIL_AUTH_FILE.read_text(encoding="utf-8"))
+    assert auth["external_publication_authorized"] is True
+    assert auth["maintainer_asserted_redistribution_permission"] is True
+    assert auth["dataset"] == "edithatogo/australian-mbs-utilisation-archive"
+    assert auth["visibility"] == "public"
+    assert auth["gated"] is False
+    assert "github-actions-only-upload" in auth["required_controls"]
+
+
+def test_discover_mbs_utilisation_resources() -> None:
+    mock_ckan = {
+        "result": {
+            "resources": [
+                {
+                    "name": "MBS Group Statistics Report - 2016 (YTD) csv",
+                    "url": "https://data.gov.au/data/dataset/5335e112/download/mbs-group-2016-july.csv",
+                },
+                {
+                    "name": "MBS Group Statistics Report - historical csv 1993-2015",
+                    "url": "https://data.gov.au/data/dataset/5335e112/download/mbs-historical-1993-2015.zip",
+                },
+            ]
+        }
+    }
+    mock_urls = [
+        "https://www.health.gov.au/sites/default/files/2026-08/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26.xlsx",
+        "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
+        "https://www.health.gov.au/sites/default/files/2026-08/medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26.xlsx",
+    ]
+
+    discovered = discover_mbs_utilisation_resources(
+        data_gov_group_json=mock_ckan,
+        health_gov_urls=mock_urls,
+    )
+    assert len(discovered) == 5
+    by_filename = {d.filename: d for d in discovered}
+
+    assert (
+        by_filename["medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26.xlsx"].category
+        == "medicare_quarterly_statistics_state_territory"
+    )
+    assert (
+        by_filename["medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx"].category
+        == "medicare_annual_statistics_state_territory"
+    )
+    assert (
+        by_filename["medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26.xlsx"].category
+        == "medicare_ytd_summary_tables"
+    )
+    assert (
+        by_filename["mbs-group-2016-july.csv"].category
+        == "mbs_group_statistics_2016"
+    )
+    assert (
+        by_filename["mbs-historical-1993-2015.zip"].category
+        == "mbs_group_statistics_historical"
+    )
+
+
+def test_medicare_statistics_domains() -> None:
+    assert "www.health.gov.au" in ALLOWED_MEDICARE_STATISTICS_DOMAINS
+    assert "data.gov.au" in ALLOWED_MEDICARE_STATISTICS_DOMAINS
+    assert "www.health.gov.au" in ALLOWED_AUSTRALIAN_HARVEST_DOMAINS
+    assert "data.gov.au" in ALLOWED_AUSTRALIAN_HARVEST_DOMAINS
+
+
 def test_harvest_workflows_enforce_governed_controls() -> None:
     for wf_path, expected_dataset in [
         (PBS_WORKFLOW, "edithatogo/australian-pbs-utilisation-archive"),
         (MBS_WORKFLOW, "edithatogo/australian-mbs-source-archive"),
+        (MBS_UTIL_WORKFLOW, "edithatogo/australian-mbs-utilisation-archive"),
     ]:
         text = wf_path.read_text(encoding="utf-8")
         assert "schedule:" in text
