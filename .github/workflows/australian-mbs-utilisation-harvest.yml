@@ -26,10 +26,12 @@ jobs:
     name: Acquire MBS utilisation, append and anonymously verify
     runs-on: ubuntu-24.04
     environment: australian-hf-publication
-    timeout-minutes: 35
+    timeout-minutes: 45
     env:
       HF_HOME: ${{ github.workspace }}/build/mbs-util-hf-home
       HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+      HF_HUB_DISABLE_XET: "1"
+      PYTHONUNBUFFERED: "1"
     permissions:
       contents: read
       issues: write # Durable public intent and all-object verification receipts.

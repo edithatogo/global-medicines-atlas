@@ -23,7 +23,10 @@ PAYLOAD = (
 )
 
 
-def test_local_live_acquisition_is_closed(tmp_path: Path) -> None:
+def test_local_live_acquisition_is_closed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
     contract = MbsReleaseContract.model_validate_json(CONTRACT.read_bytes())
     with pytest.raises(ValueError, match="GitHub Actions"):
         stage_mbs_release(
@@ -34,7 +37,10 @@ def test_local_live_acquisition_is_closed(tmp_path: Path) -> None:
         )
 
 
-def test_non_mock_local_transport_is_rejected(tmp_path: Path) -> None:
+def test_non_mock_local_transport_is_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
     contract = MbsReleaseContract.model_validate_json(CONTRACT.read_bytes())
     with (
         httpx.HTTPTransport() as transport,

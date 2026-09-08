@@ -103,9 +103,16 @@ def stage_resources(
 ) -> tuple[list[HarvestStageResult], dict[str, Any]]:
     if not resources:
         raise ValueError("Cannot stage empty resources")
-    stage_dir.mkdir(parents=True, exist_ok=True)
+    print(
+        f"Staging {len(resources)} discovered resources into {stage_dir}...",
+        flush=True,
+    )
     stages: list[HarvestStageResult] = []
-    for r in resources:
+    for idx, r in enumerate(resources, start=1):
+        print(
+            f"  [{idx}/{len(resources)}] Fetching and staging {r.filename} from {r.url}...",
+            flush=True,
+        )
         stage = stage_harvest_payload(
             r,
             stage_dir,
@@ -113,6 +120,10 @@ def stage_resources(
             allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
         )
         stages.append(stage)
+        print(
+            f"  [{idx}/{len(resources)}] Staged {r.filename} ({stage.receipt.byte_count} bytes, sha256={stage.receipt.sha256[:12]}).",
+            flush=True,
+        )
 
     manifest = build_harvest_manifest(DATASET, stages)
     manifest_path = stage_dir / "manifest.json"
@@ -204,6 +215,10 @@ def publish_to_huggingface(
         )
     )
 
+    print(
+        f"Creating Hugging Face commit with {len(operations)} operations to {DATASET} (parent={parent_commit})...",
+        flush=True,
+    )
     commit_res: Any = api.create_commit(
         repo_id=DATASET,
         repo_type="dataset",
@@ -212,6 +227,10 @@ def publish_to_huggingface(
         operations=operations,
     )
     published_revision = str(commit_res.oid)
+    print(
+        f"Committed revision {published_revision}. Verifying anonymous clean-room restore...",
+        flush=True,
+    )
 
     def anonymous_get(repo: str, filepath: str) -> bytes:
         cached = cast(
@@ -228,6 +247,10 @@ def publish_to_huggingface(
 
     verify_anonymous_restore(
         DATASET, cumulative_manifest, anonymous_downloader=anonymous_get
+    )
+    print(
+        f"Anonymous verification passed for all {cumulative_manifest['file_count']} files.",
+        flush=True,
     )
     return published_revision, cumulative_manifest
 
@@ -269,7 +292,7 @@ def main() -> int:
     )
     resources = discover_selected_resources(backfill_all=backfill_enabled)
     validate_resources_against_contract(contract_path, DATASET, resources)
-    print(f"Selected {len(resources)} MBS utilisation resources.")
+    print(f"Selected {len(resources)} MBS utilisation resources.", flush=True)
 
     if args.dry_run:
         return 0
@@ -281,7 +304,8 @@ def main() -> int:
 
     stages, manifest = stage_resources(resources, args.stage_dir)
     print(
-        f"Staged {len(stages)} payloads. Manifest has {manifest['file_count']} objects."
+        f"Staged {len(stages)} payloads. Manifest has {manifest['file_count']} objects.",
+        flush=True,
     )
 
     if not args.publish_hosted:
