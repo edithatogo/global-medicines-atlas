@@ -9,12 +9,11 @@ anonymous verification.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import importlib
 import json
 import os
 import sys
-import urllib.parse
-import urllib.request
 from pathlib import Path
 from typing import Any, cast
 
@@ -22,9 +21,12 @@ from global_medicines_atlas.australian_harvesting import (
     ALLOWED_MBS_DOMAINS,
     DiscoveredHarvestResource,
     HarvestStageResult,
+    build_cumulative_harvest_manifest,
     build_harvest_manifest,
     discover_mbs_schedule_resources,
+    fetch_url_bytes_governed,
     stage_harvest_payload,
+    validate_resources_against_contract,
     verify_anonymous_restore,
 )
 
@@ -32,36 +34,22 @@ DATASET = "edithatogo/australian-mbs-source-archive"
 USER_AGENT = "GlobalMedicinesAtlas-MBSScheduleHarvester/1.0"
 
 
-def fetch_url_bytes(url: str) -> bytes:
-    parsed = urllib.parse.urlparse(url)
-    if parsed.scheme not in {"http", "https"}:
-        raise ValueError(f"Unsupported scheme: {parsed.scheme}")
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})  # ruff: ignore[suspicious-url-open-usage]
-    with urllib.request.urlopen(req, timeout=60) as resp:  # ruff: ignore[suspicious-url-open-usage]
-        return resp.read()
+def fetch_url_bytes(url: str) -> tuple[bytes, str]:
+    return fetch_url_bytes_governed(
+        url, allowed_domains=ALLOWED_MBS_DOMAINS, user_agent=USER_AGENT
+    )
 
 
 def fetch_url_text(url: str) -> str:
-    return fetch_url_bytes(url).decode("utf-8", errors="ignore")
-
-
-def check_contract(contract_path: Path) -> None:
-    if not contract_path.exists():
-        raise FileNotFoundError(
-            f"Missing authorization contract at {contract_path}"
-        )
-    contract: dict[str, Any] = json.loads(
-        contract_path.read_text(encoding="utf-8")
-    )
-    if not contract.get("external_publication_authorized"):
-        raise PermissionError(
-            "external_publication_authorized is False in contract"
-        )
+    content, _final_url = fetch_url_bytes(url)
+    return content.decode("utf-8", errors="ignore")
 
 
 def stage_resources(
     resources: list[DiscoveredHarvestResource], stage_dir: Path
 ) -> tuple[list[HarvestStageResult], dict[str, Any]]:
+    if not resources:
+        raise ValueError("Cannot stage empty resources")
     stage_dir.mkdir(parents=True, exist_ok=True)
     stages: list[HarvestStageResult] = []
     for r in resources:
@@ -88,23 +76,58 @@ def _check_public_repo(info: Any) -> None:
         )
 
 
+def _fetch_existing_manifest(
+    sdk: Any, public_api: Any, dataset: str
+) -> tuple[str | None, dict[str, Any] | None]:
+    try:
+        info = public_api.dataset_info(dataset, files_metadata=True)
+        _check_public_repo(info)
+        parent_commit = str(info.sha)
+    except Exception:
+        return None, None
+
+    try:
+        cached = sdk.hf_hub_download(
+            repo_id=dataset,
+            repo_type="dataset",
+            filename="manifest.json",
+            token=False,
+        )
+        return parent_commit, json.loads(
+            Path(cached).read_text(encoding="utf-8")
+        )
+    except Exception:
+        return parent_commit, None
+
+
 def publish_to_huggingface(
     stages: list[HarvestStageResult],
     manifest: dict[str, Any],
     stage_dir: Path,
     hf_token: str,
-) -> str:
+) -> tuple[str, dict[str, Any]]:
+    if not stages or manifest.get("file_count", 0) <= 0:
+        raise ValueError("Cannot publish an empty harvest")
+
     sdk: Any = importlib.import_module("huggingface_hub")
     api: Any = sdk.HfApi(token=hf_token)
     public_api: Any = sdk.HfApi(token=False)
 
-    try:
-        info: Any = public_api.dataset_info(DATASET, files_metadata=True)
-        _check_public_repo(info)
-        parent_commit: str | None = str(info.sha)
-    except Exception:
-        api.create_repo(repo_id=DATASET, repo_type="dataset", private=False)
-        parent_commit = None
+    parent_commit, existing_manifest = _fetch_existing_manifest(
+        sdk, public_api, DATASET
+    )
+    if parent_commit is None:
+        with contextlib.suppress(Exception):
+            api.create_repo(repo_id=DATASET, repo_type="dataset", private=False)
+
+    cumulative_manifest = build_cumulative_harvest_manifest(
+        DATASET, stages, existing_manifest
+    )
+    manifest_path = stage_dir / "manifest.json"
+    manifest_path.write_text(
+        json.dumps(cumulative_manifest, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
 
     operations: list[Any] = []
     for s in stages:
@@ -126,7 +149,7 @@ def publish_to_huggingface(
     operations.append(
         sdk.CommitOperationAdd(
             path_in_repo="manifest.json",
-            path_or_fileobj=str(stage_dir / "manifest.json"),
+            path_or_fileobj=str(manifest_path),
         )
     )
 
@@ -153,9 +176,9 @@ def publish_to_huggingface(
         return Path(cached).read_bytes()
 
     verify_anonymous_restore(
-        DATASET, manifest, anonymous_downloader=anonymous_get
+        DATASET, cumulative_manifest, anonymous_downloader=anonymous_get
     )
-    return published_revision
+    return published_revision, cumulative_manifest
 
 
 def main() -> int:
@@ -191,8 +214,6 @@ def main() -> int:
     contract_path = Path(
         "quality/qualifications/australian-mbs-harvest-publication-authorization.json"
     )
-    check_contract(contract_path)
-
     index_html = fetch_url_text(
         "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads"
     )
@@ -201,6 +222,7 @@ def main() -> int:
         subpage_fetcher=fetch_url_text,
         max_releases=args.max_releases,
     )
+    validate_resources_against_contract(contract_path, DATASET, resources)
     print(f"Selected {len(resources)} candidate MBS schedule resources.")
 
     if args.dry_run:
@@ -225,7 +247,7 @@ def main() -> int:
             "HF_TOKEN environment variable required for hosted publication"
         )
 
-    revision = publish_to_huggingface(
+    revision, final_manifest = publish_to_huggingface(
         stages, manifest, args.stage_dir, hf_token
     )
 
@@ -236,7 +258,7 @@ def main() -> int:
         "workflow_run": os.environ.get("GITHUB_RUN_ID", "local"),
         "workflow_commit": os.environ.get("GITHUB_SHA", "local"),
         "anonymous_digest_verification": "passed",
-        "verified_file_count": manifest["file_count"],
+        "verified_file_count": final_manifest["file_count"],
         "temporary_source_bytes_removed": False,
     }
     args.receipt_output.parent.mkdir(parents=True, exist_ok=True)

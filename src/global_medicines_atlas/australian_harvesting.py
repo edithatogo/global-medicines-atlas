@@ -7,8 +7,10 @@ Adheres strictly to the Global Medicines Atlas fail-closed contracts.
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 import urllib.parse
+import urllib.request
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -63,6 +65,64 @@ class HarvestPayloadReceipt(BaseModel):
     byte_count: int = Field(ge=0)
     period_label: str = ""
     retrieved_at: str
+    final_url: str = ""
+
+
+class GovernedRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """HTTP redirect handler that enforces domain whitelisting on every redirect hop."""
+
+    def __init__(self, allowed_domains: frozenset[str] | set[str]):
+        super().__init__()
+        self.allowed_domains = {d.lower() for d in allowed_domains}
+
+    def redirect_request(
+        self,
+        req: urllib.request.Request,
+        fp: Any,
+        code: int,
+        msg: str,
+        headers: Any,
+        newurl: str,
+    ) -> urllib.request.Request | None:
+        parsed = urllib.parse.urlparse(newurl)
+        if parsed.netloc.lower() not in self.allowed_domains:
+            raise PermissionError(
+                f"Redirect destination host '{parsed.netloc}' is not in allowed domains: "
+                f"{sorted(self.allowed_domains)}"
+            )
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+def fetch_url_bytes_governed(
+    url: str,
+    allowed_domains: frozenset[str] = ALLOWED_AUSTRALIAN_HARVEST_DOMAINS,
+    user_agent: str = "GlobalMedicinesAtlas-Harvester/1.0",
+    timeout: int = 120,
+) -> tuple[bytes, str]:
+    """Fetch URL bytes fail-closed, validating initial host and every redirect hop.
+
+    Returns (content_bytes, final_resolved_url).
+    """
+    parsed = urllib.parse.urlparse(url)
+    if parsed.netloc.lower() not in allowed_domains:
+        raise PermissionError(
+            f"Initial host '{parsed.netloc}' is not in allowed domains: "
+            f"{sorted(allowed_domains)}"
+        )
+    opener = urllib.request.build_opener(
+        GovernedRedirectHandler(allowed_domains)
+    )
+    req = urllib.request.Request(url, headers={"User-Agent": user_agent})  # ruff: ignore[suspicious-url-open-usage]
+    with opener.open(req, timeout=timeout) as resp:
+        final_url: str = str(resp.geturl())
+        final_parsed = urllib.parse.urlparse(final_url)
+        if final_parsed.netloc.lower() not in allowed_domains:
+            raise PermissionError(
+                f"Final response host '{final_parsed.netloc}' is not in allowed domains: "
+                f"{sorted(allowed_domains)}"
+            )
+        content: bytes = bytes(resp.read())
+        return content, final_url
 
 
 @dataclass(frozen=True)
@@ -272,6 +332,61 @@ def discover_mbs_schedule_resources(
     return discovered
 
 
+def discover_health_gov_medicare_workbooks(
+    subpage_fetcher: Callable[[str], str] | None = None,
+    candidate_slugs: list[str] | None = None,
+    fallback_urls: list[str] | None = None,
+) -> list[str]:
+    """Dynamically discover current Medicare statistics Excel workbooks from health.gov.au."""
+    discovered_urls: list[str] = []
+    seen: set[str] = set()
+
+    if subpage_fetcher is not None:
+        if candidate_slugs is None:
+            now = datetime.now(UTC)
+            cur_year = now.year
+            fy_list = [
+                f"{y - 1}-{str(y)[2:]}"
+                for y in range(cur_year - 1, cur_year + 2)
+            ]
+            quarters = ["june", "march", "december", "september"]
+            months = ["june", "march", "december", "september"]
+
+            candidate_slugs = []
+            for fy in reversed(fy_list):
+                for q in quarters:
+                    candidate_slugs.append(
+                        f"https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-state-and-territory-{q}-quarter-{fy}?language=en"
+                    )
+                candidate_slugs.append(
+                    f"https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-{fy}?language=en"
+                )
+                for m in months:
+                    candidate_slugs.append(
+                        f"https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-summary-tables-july-to-{m}-{fy}?language=en"
+                    )
+
+        for page_url in candidate_slugs:
+            try:
+                page_html = subpage_fetcher(page_url)
+            except OSError, TimeoutError, ValueError:
+                continue
+            xlsx_links = re.findall(
+                r"href=[\"\']([^\"\']+\.xlsx)[\"\']",
+                page_html,
+                re.IGNORECASE,
+            )
+            for link in xlsx_links:
+                full = urllib.parse.urljoin(page_url, link)
+                if full not in seen:
+                    seen.add(full)
+                    discovered_urls.append(full)
+
+    if not discovered_urls and fallback_urls:
+        return fallback_urls
+    return discovered_urls
+
+
 def discover_mbs_utilisation_resources(
     data_gov_group_json: dict[str, Any] | None = None,
     data_gov_demographics_json: dict[str, Any] | None = None,
@@ -333,20 +448,20 @@ def discover_mbs_utilisation_resources(
                 continue
             seen.add(filename)
 
-            cat = default_cat
+            period = name[:50]
             if "historical" in name.lower() or "historical" in url.lower():
-                cat = f"{default_cat}_historical"
+                period = f"historical_{period}"
             elif "2016" in name or "2016" in url:
-                cat = f"{default_cat}_2016"
+                period = f"2016_{period}"
 
             discovered.append(
                 DiscoveredHarvestResource(
                     source_id=source_id,
-                    category=cat,
+                    category=default_cat,
                     url=url,
                     filename=filename,
                     archive_path=f"raw/mbs/utilisation/{path_prefix}/{filename}",
-                    period_label=name[:50],
+                    period_label=period,
                 )
             )
             count += 1
@@ -373,7 +488,7 @@ def discover_mbs_utilisation_resources(
 def stage_harvest_payload(
     resource: DiscoveredHarvestResource,
     work_dir: Path,
-    data_reader: Callable[[str], bytes],
+    data_reader: Callable[[str], bytes | tuple[bytes, str]],
     allowed_domains: frozenset[str] = ALLOWED_AUSTRALIAN_HARVEST_DOMAINS,
 ) -> HarvestStageResult:
     """Download and stage a discovered payload fail-closed, producing its B1 receipt."""
@@ -383,7 +498,19 @@ def stage_harvest_payload(
             f"Domain {parsed.netloc} not permitted in allowed_domains"
         )
 
-    content = data_reader(resource.url)
+    read_result = data_reader(resource.url)
+    final_url = resource.url
+    if isinstance(read_result, tuple):
+        content, resolved_url = read_result
+        resolved_parsed = urllib.parse.urlparse(resolved_url)
+        if resolved_parsed.netloc.lower() not in allowed_domains:
+            raise ValueError(
+                f"Resolved redirect domain '{resolved_parsed.netloc}' not permitted in allowed_domains"
+            )
+        final_url = resolved_url
+    else:
+        content = read_result
+
     if not content:
         raise ValueError(f"Payload from {resource.url} was empty")
 
@@ -399,6 +526,7 @@ def stage_harvest_payload(
         source_id=resource.source_id,
         category=resource.category,
         source_url=resource.url,
+        final_url=final_url,
         archive_path=resource.archive_path,
         sha256=sha256,
         byte_count=byte_count,
@@ -428,6 +556,8 @@ def build_harvest_manifest(
     stages: list[HarvestStageResult],
 ) -> dict[str, Any]:
     """Generate manifest dictionary for all staged files in a harvest run."""
+    if not stages:
+        raise ValueError("Cannot build harvest manifest from empty stages.")
     files: list[dict[str, Any]] = []
     for s in stages:
         files.append({
@@ -464,14 +594,48 @@ def build_harvest_manifest(
     return manifest
 
 
+def build_cumulative_harvest_manifest(
+    dataset: str,
+    stages: list[HarvestStageResult],
+    existing_manifest: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Merge newly staged harvest files with an existing dataset snapshot manifest."""
+    new_manifest = build_harvest_manifest(dataset, stages)
+    files_by_path: dict[str, dict[str, Any]] = {}
+
+    if existing_manifest:
+        for f in existing_manifest.get("files", []):
+            files_by_path[f["path"]] = f
+
+    for f in new_manifest["files"]:
+        files_by_path[f["path"]] = f
+
+    merged_files = sorted(files_by_path.values(), key=lambda x: str(x["path"]))
+    return {
+        "schema_id": "global-medicines-atlas.harvest-manifest",
+        "schema_version": 1,
+        "dataset": dataset,
+        "generated_at": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "file_count": len(merged_files),
+        "files": merged_files,
+    }
+
+
 def verify_anonymous_restore(
     dataset: str,
     manifest: dict[str, Any],
     anonymous_downloader: Callable[[str, str], bytes],
 ) -> dict[str, Any]:
     """Fail-closed verification: downloads every manifest object anonymously and checks SHA-256."""
+    files = manifest.get("files", [])
+    file_count = manifest.get("file_count", len(files))
+    if not files or file_count <= 0:
+        raise ValueError(
+            f"Cannot verify empty manifest for {dataset}; at least one file required"
+        )
+
     verified_files: list[dict[str, Any]] = []
-    for item in manifest.get("files", []):
+    for item in files:
         path = item["path"]
         expected_sha = item["sha256"]
         expected_bytes = item["bytes"]
@@ -501,3 +665,55 @@ def verify_anonymous_restore(
         "verified_count": len(verified_files),
         "verified_files": verified_files,
     }
+
+
+def validate_resources_against_contract(
+    contract_path: Path,
+    dataset: str,
+    resources: list[DiscoveredHarvestResource],
+) -> dict[str, Any]:
+    """Validate authorization contract flags, dataset, visibility, and every resource fail-closed."""
+    if not contract_path.exists():
+        raise FileNotFoundError(
+            f"Missing authorization contract at {contract_path}"
+        )
+    contract: dict[str, Any] = json.loads(
+        contract_path.read_text(encoding="utf-8")
+    )
+    if not contract.get("external_publication_authorized"):
+        raise PermissionError(
+            f"external_publication_authorized is False in contract {contract_path}"
+        )
+    if contract.get("dataset") != dataset:
+        raise ValueError(
+            f"Contract dataset '{contract.get('dataset')}' does not match target dataset '{dataset}'"
+        )
+    if contract.get("visibility") != "public":
+        raise ValueError(
+            f"Contract visibility must be 'public', got '{contract.get('visibility')}'"
+        )
+    if contract.get("gated") is not False:
+        raise ValueError("Contract gated flag must be False")
+
+    allowed_sources = set(contract.get("allowed_sources", []))
+    allowed_domains = {d.lower() for d in contract.get("allowed_domains", [])}
+    allowed_categories = set(contract.get("categories", []))
+
+    for res in resources:
+        if res.source_id not in allowed_sources:
+            raise PermissionError(
+                f"Resource source_id '{res.source_id}' is not permitted by contract {contract_path}. "
+                f"Allowed sources: {sorted(allowed_sources)}"
+            )
+        if res.category not in allowed_categories:
+            raise PermissionError(
+                f"Resource category '{res.category}' is not permitted by contract {contract_path}. "
+                f"Allowed categories: {sorted(allowed_categories)}"
+            )
+        parsed_url = urllib.parse.urlparse(res.url)
+        if parsed_url.netloc.lower() not in allowed_domains:
+            raise PermissionError(
+                f"Resource URL host '{parsed_url.netloc}' is not permitted by contract {contract_path}. "
+                f"Allowed domains: {sorted(allowed_domains)}"
+            )
+    return contract

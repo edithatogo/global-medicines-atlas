@@ -18,7 +18,9 @@
   "categories": [
     "date_of_supply_monthly_prescriptions",
     "item_drug_mapping",
-    "annual_expenditure_and_prescriptions_report"
+    "annual_expenditure_and_prescriptions_report",
+    "date_of_supply_multiyear_summary",
+    "date_of_processing_historical"
   ],
   "required_controls": [
     "github-actions-only-upload",

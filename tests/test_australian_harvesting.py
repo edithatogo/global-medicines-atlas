@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import urllib.request
 from pathlib import Path
 
 import pytest
@@ -14,12 +15,17 @@ from global_medicines_atlas.australian_harvesting import (
     ALLOWED_MEDICARE_STATISTICS_DOMAINS,
     ALLOWED_PBS_DOMAINS,
     DiscoveredHarvestResource,
+    GovernedRedirectHandler,
+    build_cumulative_harvest_manifest,
     build_harvest_manifest,
+    discover_health_gov_medicare_workbooks,
     discover_mbs_schedule_resources,
     discover_mbs_utilisation_resources,
     discover_pbs_dos_resources,
     discover_pbs_expenditure_resources,
+    fetch_url_bytes_governed,
     stage_harvest_payload,
+    validate_resources_against_contract,
     verify_anonymous_restore,
 )
 
@@ -339,11 +345,17 @@ def test_discover_mbs_utilisation_resources() -> None:
     )
     assert (
         by_filename["mbs-group-2016-july.csv"].category
-        == "mbs_group_statistics_2016"
+        == "mbs_group_statistics"
+    )
+    assert by_filename["mbs-group-2016-july.csv"].period_label.startswith(
+        "2016_"
     )
     assert (
         by_filename["mbs-historical-1993-2015.zip"].category
-        == "mbs_group_statistics_historical"
+        == "mbs_group_statistics"
+    )
+    assert by_filename["mbs-historical-1993-2015.zip"].period_label.startswith(
+        "historical_"
     )
 
 
@@ -453,3 +465,306 @@ def test_verify_anonymous_restore_size_mismatch() -> None:
             manifest,
             anonymous_downloader=lambda _repo, _p: b"short",
         )
+
+
+def test_verify_anonymous_restore_empty_rejected() -> None:
+    with pytest.raises(ValueError, match=r"Cannot verify empty manifest"):
+        verify_anonymous_restore(
+            "test/ds",
+            {"files": [], "file_count": 0},
+            anonymous_downloader=lambda _repo, _p: b"",
+        )
+
+
+def test_build_harvest_manifest_rejects_empty() -> None:
+    with pytest.raises(
+        ValueError, match=r"Cannot build harvest manifest from empty stages"
+    ):
+        build_harvest_manifest("test/ds", [])
+
+
+def test_governed_redirect_handler_blocks_unauthorized() -> None:
+    handler = GovernedRedirectHandler(ALLOWED_PBS_DOMAINS)
+
+    req = urllib.request.Request("https://www.pbs.gov.au/file.csv")
+    with pytest.raises(PermissionError, match=r"Redirect destination host"):
+        handler.redirect_request(
+            req,
+            fp=None,
+            code=302,
+            msg="Found",
+            headers={},
+            newurl="https://evil-unapproved.com/file.csv",
+        )
+
+
+def test_validate_resources_against_contract() -> None:
+    valid_res = [
+        DiscoveredHarvestResource(
+            source_id="au-pbs-dos-utilisation",
+            category="date_of_supply_monthly_prescriptions",
+            url="https://www.pbs.gov.au/dos.csv",
+            filename="dos.csv",
+            archive_path="raw/pbs/dos.csv",
+        )
+    ]
+    contract = validate_resources_against_contract(
+        PBS_AUTH_FILE,
+        "edithatogo/australian-pbs-utilisation-archive",
+        valid_res,
+    )
+    assert contract["external_publication_authorized"] is True
+
+    # Bad source ID
+    bad_source = [
+        DiscoveredHarvestResource(
+            source_id="unauthorized-source",
+            category="date_of_supply_monthly_prescriptions",
+            url="https://www.pbs.gov.au/dos.csv",
+            filename="dos.csv",
+            archive_path="raw/pbs/dos.csv",
+        )
+    ]
+    with pytest.raises(PermissionError, match=r"source_id .* is not permitted"):
+        validate_resources_against_contract(
+            PBS_AUTH_FILE,
+            "edithatogo/australian-pbs-utilisation-archive",
+            bad_source,
+        )
+
+    # Bad category
+    bad_cat = [
+        DiscoveredHarvestResource(
+            source_id="au-pbs-dos-utilisation",
+            category="unauthorized_category",
+            url="https://www.pbs.gov.au/dos.csv",
+            filename="dos.csv",
+            archive_path="raw/pbs/dos.csv",
+        )
+    ]
+    with pytest.raises(PermissionError, match=r"category .* is not permitted"):
+        validate_resources_against_contract(
+            PBS_AUTH_FILE,
+            "edithatogo/australian-pbs-utilisation-archive",
+            bad_cat,
+        )
+
+    # Bad domain
+    bad_domain = [
+        DiscoveredHarvestResource(
+            source_id="au-pbs-dos-utilisation",
+            category="date_of_supply_monthly_prescriptions",
+            url="https://unauthorized-domain.com/dos.csv",
+            filename="dos.csv",
+            archive_path="raw/pbs/dos.csv",
+        )
+    ]
+    with pytest.raises(PermissionError, match=r"host .* is not permitted"):
+        validate_resources_against_contract(
+            PBS_AUTH_FILE,
+            "edithatogo/australian-pbs-utilisation-archive",
+            bad_domain,
+        )
+
+    # Mismatched dataset
+    with pytest.raises(ValueError, match=r"Contract dataset"):
+        validate_resources_against_contract(
+            PBS_AUTH_FILE,
+            "wrong/dataset",
+            valid_res,
+        )
+
+
+def test_build_cumulative_harvest_manifest(tmp_path: Path) -> None:
+    data = b"PAYLOAD"
+    res = DiscoveredHarvestResource(
+        source_id="au-mbs",
+        category="monthly_schedule_xml",
+        url="https://www.mbsonline.gov.au/test.xml",
+        filename="test.xml",
+        archive_path="raw/mbs/test.xml",
+    )
+    stage = stage_harvest_payload(
+        res,
+        tmp_path,
+        data_reader=lambda _u: data,
+        allowed_domains=ALLOWED_MBS_DOMAINS,
+    )
+    existing_manifest = {
+        "files": [
+            {
+                "path": "raw/mbs/prior_release.xml",
+                "bytes": 500,
+                "sha256": "0" * 64,
+                "kind": "raw_payload",
+            }
+        ]
+    }
+    cumulative = build_cumulative_harvest_manifest(
+        "test/dataset", [stage], existing_manifest
+    )
+    assert cumulative["file_count"] == 3  # 1 prior + 1 new payload + 1 receipt
+    paths = {f["path"] for f in cumulative["files"]}
+    assert "raw/mbs/prior_release.xml" in paths
+    assert "raw/mbs/test.xml" in paths
+    assert "bronze/mbs/test.xml.receipt.json" in paths
+
+
+def test_discover_health_gov_medicare_workbooks() -> None:
+    mock_html = '<html><body><a href="/sites/default/files/test.xlsx">File</a></body></html>'
+    found = discover_health_gov_medicare_workbooks(
+        subpage_fetcher=lambda _u: mock_html,
+        candidate_slugs=["https://www.health.gov.au/page1"],
+    )
+    assert len(found) == 1
+    assert found[0] == "https://www.health.gov.au/sites/default/files/test.xlsx"
+
+    # Test fallback
+    fallback = ["https://fallback.com/file.xlsx"]
+    found_fallback = discover_health_gov_medicare_workbooks(
+        subpage_fetcher=lambda _u: "",
+        candidate_slugs=["https://www.health.gov.au/empty"],
+        fallback_urls=fallback,
+    )
+    assert found_fallback == fallback
+
+    # Test default candidate generation
+    found_default = discover_health_gov_medicare_workbooks(
+        subpage_fetcher=lambda _u: (
+            '<html><a href="/sites/default/files/auto.xlsx">F</a></html>'
+        ),
+        candidate_slugs=None,
+    )
+    assert len(found_default) >= 1
+    assert "auto.xlsx" in found_default[0]
+
+
+def test_fetch_url_bytes_governed_checks(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    with pytest.raises(PermissionError, match=r"Initial host"):
+        fetch_url_bytes_governed("https://unauthorized-initial.com/file.csv")
+
+    class FakeResp:
+        def __init__(self, final_url: str, data: bytes) -> None:
+            self._final_url = final_url
+            self._data = data
+
+        def geturl(self) -> str:
+            return self._final_url
+
+        def read(self) -> bytes:
+            return self._data
+
+        def __enter__(self) -> FakeResp:
+            return self
+
+        def __exit__(self, *args: object) -> None:
+            pass
+
+    class FakeOpener:
+        def __init__(self, final_url: str, data: bytes) -> None:
+            self.final_url = final_url
+            self.data = data
+
+        def open(self, _req: object, timeout: int = 120) -> FakeResp:
+            _ = timeout
+            return FakeResp(self.final_url, self.data)
+
+    def _good_opener(_h: object) -> FakeOpener:
+        return FakeOpener("https://www.pbs.gov.au/resolved.csv", b"DATA")
+
+    def _bad_opener(_h: object) -> FakeOpener:
+        return FakeOpener("https://evil-unapproved.com/redirected.csv", b"DATA")
+
+    monkeypatch.setattr("urllib.request.build_opener", _good_opener)
+    content, final_url = fetch_url_bytes_governed(
+        "https://www.pbs.gov.au/initial.csv"
+    )
+    assert content == b"DATA"
+    assert final_url == "https://www.pbs.gov.au/resolved.csv"
+
+    # Final URL unapproved
+    monkeypatch.setattr("urllib.request.build_opener", _bad_opener)
+    with pytest.raises(PermissionError, match=r"Final response host"):
+        fetch_url_bytes_governed("https://www.pbs.gov.au/initial.csv")
+
+
+def test_stage_harvest_payload_tuple_reader(tmp_path: Path) -> None:
+    res = DiscoveredHarvestResource(
+        source_id="au-pbs-dos-utilisation",
+        category="date_of_supply_monthly_prescriptions",
+        url="https://www.pbs.gov.au/initial.csv",
+        filename="initial.csv",
+        archive_path="raw/pbs/initial.csv",
+    )
+    # Valid redirect
+    stage = stage_harvest_payload(
+        res,
+        tmp_path,
+        data_reader=lambda _u: (
+            b"content",
+            "https://data.pbs.gov.au/resolved.csv",
+        ),
+        allowed_domains=ALLOWED_PBS_DOMAINS,
+    )
+    assert stage.receipt.final_url == "https://data.pbs.gov.au/resolved.csv"
+
+    # Invalid resolved domain
+    with pytest.raises(ValueError, match=r"Resolved redirect domain"):
+        stage_harvest_payload(
+            res,
+            tmp_path,
+            data_reader=lambda _u: (
+                b"content",
+                "https://evil.com/resolved.csv",
+            ),
+            allowed_domains=ALLOWED_PBS_DOMAINS,
+        )
+
+
+def test_validate_resources_against_contract_flags(tmp_path: Path) -> None:
+    res = [
+        DiscoveredHarvestResource(
+            source_id="au-pbs-dos-utilisation",
+            category="date_of_supply_monthly_prescriptions",
+            url="https://www.pbs.gov.au/dos.csv",
+            filename="dos.csv",
+            archive_path="raw/pbs/dos.csv",
+        )
+    ]
+    # Missing contract
+    with pytest.raises(FileNotFoundError):
+        validate_resources_against_contract(
+            tmp_path / "nonexistent.json", "ds", res
+        )
+
+    base = {
+        "external_publication_authorized": True,
+        "dataset": "test/ds",
+        "visibility": "public",
+        "gated": False,
+        "allowed_sources": ["au-pbs-dos-utilisation"],
+        "allowed_domains": ["www.pbs.gov.au"],
+        "categories": ["date_of_supply_monthly_prescriptions"],
+    }
+    p = tmp_path / "contract.json"
+
+    # Not authorized
+    p.write_text(json.dumps({**base, "external_publication_authorized": False}))
+    with pytest.raises(
+        PermissionError, match=r"external_publication_authorized is False"
+    ):
+        validate_resources_against_contract(p, "test/ds", res)
+
+    # Not public
+    p.write_text(json.dumps({**base, "visibility": "private"}))
+    with pytest.raises(
+        ValueError, match=r"Contract visibility must be 'public'"
+    ):
+        validate_resources_against_contract(p, "test/ds", res)
+
+    # Gated
+    p.write_text(json.dumps({**base, "gated": True}))
+    with pytest.raises(ValueError, match=r"Contract gated flag must be False"):
+        validate_resources_against_contract(p, "test/ds", res)
