@@ -9,7 +9,6 @@ to Hugging Face exclusively from GitHub Actions with anonymous clean-room verifi
 from __future__ import annotations
 
 import argparse
-import contextlib
 import importlib
 import json
 import os
@@ -44,49 +43,63 @@ DATA_GOV_MBS_GROUP_API = "https://data.gov.au/data/api/3/action/package_show?id=
 DATA_GOV_MBS_DEMOGRAPHICS_API = "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group-by-patient-demographics-report"
 
 
-def fetch_url_bytes(url: str) -> tuple[bytes, str]:
+def fetch_url_bytes(url: str, timeout: int = 120) -> tuple[bytes, str]:
     return fetch_url_bytes_governed(
         url,
         allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
         user_agent=USER_AGENT,
+        timeout=timeout,
     )
 
 
-def fetch_url_text(url: str) -> str:
-    content, _final_url = fetch_url_bytes(url)
+def fetch_url_text(url: str, timeout: int = 8) -> str:
+    content, _final_url = fetch_url_bytes(url, timeout=timeout)
     return content.decode("utf-8", errors="ignore")
 
 
-def fetch_url_json(url: str) -> dict[str, Any]:
-    raw, _final_url = fetch_url_bytes(url)
+def fetch_url_json(url: str, timeout: int = 15) -> dict[str, Any]:
+    raw, _final_url = fetch_url_bytes(url, timeout=timeout)
     return json.loads(raw.decode("utf-8", errors="ignore"))
 
 
 def discover_selected_resources(
     *, backfill_all: bool = False
 ) -> list[DiscoveredHarvestResource]:
+    print("Discovering Australian MBS utilisation resources...", flush=True)
     group_json = None
     demographics_json = None
     try:
+        print(
+            "  Querying data.gov.au MBS group statistics package...", flush=True
+        )
         group_json = fetch_url_json(DATA_GOV_MBS_GROUP_API)
     except Exception as exc:
         print(
             f"Warning: could not fetch MBS group API from data.gov.au: {exc}",
             file=sys.stderr,
+            flush=True,
         )
 
     if backfill_all:
         try:
+            print(
+                "  Querying data.gov.au MBS demographics package...", flush=True
+            )
             demographics_json = fetch_url_json(DATA_GOV_MBS_DEMOGRAPHICS_API)
         except Exception as exc:
             print(
                 f"Warning: could not fetch MBS demographics API: {exc}",
                 file=sys.stderr,
+                flush=True,
             )
 
+    print("  Discovering Medicare workbooks from health.gov.au...", flush=True)
     health_urls = discover_health_gov_medicare_workbooks(
         subpage_fetcher=fetch_url_text,
         fallback_urls=HEALTH_GOV_MEDICARE_FILES,
+    )
+    print(
+        f"  Discovered {len(health_urls)} Medicare workbook URLs.", flush=True
     )
 
     max_hist = 20 if backfill_all else 2
@@ -179,8 +192,15 @@ def publish_to_huggingface(
         sdk, public_api, DATASET
     )
     if parent_commit is None:
-        with contextlib.suppress(Exception):
+        print(
+            f"Repository {DATASET} not found on Hugging Face; creating public dataset repository...",
+            flush=True,
+        )
+        try:
             api.create_repo(repo_id=DATASET, repo_type="dataset", private=False)
+            print(f"Created public dataset repository {DATASET}.", flush=True)
+        except Exception as exc:
+            print(f"Notice on create_repo: {exc}", flush=True)
 
     cumulative_manifest = build_cumulative_harvest_manifest(
         DATASET, stages, existing_manifest

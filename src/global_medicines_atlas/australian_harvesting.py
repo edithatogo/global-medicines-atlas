@@ -35,6 +35,7 @@ ALLOWED_AUSTRALIAN_HARVEST_DOMAINS = (
     | ALLOWED_MBS_DOMAINS
     | ALLOWED_MEDICARE_STATISTICS_DOMAINS
 )
+AUSTRALIAN_FY_START_MONTH = 7
 
 
 class DiscoveredHarvestResource(BaseModel):
@@ -344,10 +345,14 @@ def discover_health_gov_medicare_workbooks(
     if subpage_fetcher is not None:
         if candidate_slugs is None:
             now = datetime.now(UTC)
-            cur_year = now.year
+            current_fy_end = (
+                now.year + 1
+                if now.month >= AUSTRALIAN_FY_START_MONTH
+                else now.year
+            )
             fy_list = [
                 f"{y - 1}-{str(y)[2:]}"
-                for y in range(cur_year - 1, cur_year + 2)
+                for y in range(current_fy_end - 1, current_fy_end + 1)
             ]
             quarters = ["june", "march", "december", "september"]
             months = ["june", "march", "december", "september"]
