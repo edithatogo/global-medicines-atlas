@@ -121,7 +121,7 @@ def stage_resources(
         )
         stages.append(stage)
         print(
-            f"  [{idx}/{len(resources)}] Staged {r.filename} ({stage.receipt.payload_bytes} bytes, sha256={stage.receipt.sha256[:12]}).",
+            f"  [{idx}/{len(resources)}] Staged {r.filename} ({stage.receipt.byte_count} bytes, sha256={stage.receipt.sha256[:12]}).",
             flush=True,
         )
 
