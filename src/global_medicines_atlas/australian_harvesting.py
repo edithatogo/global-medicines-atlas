@@ -481,7 +481,7 @@ def discover_health_gov_medicare_workbooks(
 
             try:
                 page_html = subpage_fetcher(page_url)
-            except (OSError, TimeoutError, ValueError):
+            except OSError, TimeoutError, ValueError:
                 continue
             xlsx_links = re.findall(
                 r"href=[\"\']([^\"\']+\.xlsx)[\"\']",
