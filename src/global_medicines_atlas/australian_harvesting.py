@@ -347,7 +347,7 @@ def discover_health_gov_medicare_workbooks(
             cur_year = now.year
             fy_list = [
                 f"{y - 1}-{str(y)[2:]}"
-                for y in range(cur_year - 1, cur_year + 2)
+                for y in range(cur_year - 1, cur_year + 1)
             ]
             quarters = ["june", "march", "december", "september"]
             months = ["june", "march", "december", "september"]
