@@ -130,8 +130,14 @@ def discover_pbs_expenditure_resources(
         index_html,
         re.IGNORECASE,
     )
-    # Deduplicate and sort descending (latest years first)
-    unique_subpages = sorted(set(subpage_links), reverse=True)[:max_subpages]
+
+    def _exp_sort_key(subpage: str) -> tuple[int, str]:
+        years = [int(y) for y in re.findall(r"(?:19|20)\d{2}", subpage)]
+        return (max(years) if years else 0, subpage)
+
+    unique_subpages = sorted(
+        set(subpage_links), key=_exp_sort_key, reverse=True
+    )[:max_subpages]
     discovered: list[DiscoveredHarvestResource] = []
     seen: set[str] = set()
 
@@ -182,7 +188,19 @@ def discover_mbs_schedule_resources(
         index_html,
         re.IGNORECASE,
     )
-    unique_releases = sorted(set(release_pages), reverse=True)[:max_releases]
+
+    def _mbs_sort_key(page: str) -> tuple[int, str]:
+        m8 = re.search(r"Downloads-([12]\d{7})", page, re.IGNORECASE)
+        if m8:
+            return (int(m8.group(1)), page)
+        m6 = re.search(r"Downloads-(\d{6})", page, re.IGNORECASE)
+        if m6:
+            return (20000000 + int(m6.group(1)), page)
+        return (0, page)
+
+    unique_releases = sorted(
+        set(release_pages), key=_mbs_sort_key, reverse=True
+    )[:max_releases]
     discovered: list[DiscoveredHarvestResource] = []
     seen: set[str] = set()
 
