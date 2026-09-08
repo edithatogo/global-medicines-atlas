@@ -1,0 +1,34 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-harvest-publication-authorization",
+  "schema_version": 1,
+  "authorized_at": "2026-09-06",
+  "external_publication_authorized": true,
+  "maintainer_asserted_redistribution_permission": true,
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "visibility": "public",
+  "gated": false,
+  "allowed_sources": [
+    "au-mbs"
+  ],
+  "allowed_domains": [
+    "www.mbsonline.gov.au",
+    "mbsonline.gov.au"
+  ],
+  "categories": [
+    "monthly_schedule_xml",
+    "basic_service_description",
+    "relative_value_guide"
+  ],
+  "required_controls": [
+    "github-actions-only-upload",
+    "protected-default-branch-deployment-environment",
+    "default-branch-head-equals-exact-authorized-commit",
+    "durable-issue-intent-before-dataset-creation",
+    "anonymous-all-object-digest-verification",
+    "no-workstation-raw-retention"
+  ],
+  "publication_does_not_authorize": [
+    "medicine-level claims from MBS service data",
+    "unlicensed terminology redistribution"
+  ]
+}
