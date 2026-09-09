@@ -461,7 +461,7 @@ def discover_mbs_schedule_resources(
     return discovered
 
 
-def _generate_medicare_candidate_slugs(now: datetime) -> list[str]:
+def generate_medicare_candidate_slugs(now: datetime) -> list[str]:
     """Generate prioritized candidate publication URLs on health.gov.au."""
     current_fy_end = (
         now.year + 1 if now.month >= AUSTRALIAN_FY_START_MONTH else now.year
@@ -506,7 +506,7 @@ def discover_health_gov_medicare_workbooks(
 
     if subpage_fetcher is not None:
         if candidate_slugs is None:
-            candidate_slugs = _generate_medicare_candidate_slugs(
+            candidate_slugs = generate_medicare_candidate_slugs(
                 datetime.now(UTC)
             )
 

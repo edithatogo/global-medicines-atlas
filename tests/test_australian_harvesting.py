@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import urllib.request
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -26,6 +27,7 @@ from global_medicines_atlas.australian_harvesting import (
     discover_pbs_dos_resources,
     discover_pbs_expenditure_resources,
     fetch_url_bytes_governed,
+    generate_medicare_candidate_slugs,
     stage_harvest_payload,
     validate_resources_against_contract,
     verify_anonymous_restore,
@@ -630,6 +632,37 @@ def test_discover_health_gov_medicare_workbooks() -> None:
     )
     assert found_fallback == fallback
 
+    # Test deduplication of quarter and ytd FY, and subpage exception handling
+    fetch_calls: list[str] = []
+
+    def _smart_fetcher(url: str) -> str:
+        fetch_calls.append(url)
+        if "failing-subpage" in url:
+            raise TimeoutError("Simulated fetch error")
+        filename = url.rsplit("/", maxsplit=1)[-1].split("?", maxsplit=1)[0]
+        return (
+            f'<html><a href="/sites/default/files/{filename}.xlsx">S</a></html>'
+        )
+
+    slugs = [
+        "https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26?language=en",
+        "https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-state-and-territory-march-quarter-2025-26?language=en",
+        "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26?language=en",
+        "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-summary-tables-july-to-march-2025-26?language=en",
+        "https://www.health.gov.au/resources/publications/failing-subpage?language=en",
+    ]
+    found_smart = discover_health_gov_medicare_workbooks(
+        subpage_fetcher=_smart_fetcher,
+        candidate_slugs=slugs,
+    )
+    assert len(found_smart) == 2
+    assert any("june-quarter" in u for u in found_smart)
+    assert any("july-to-june" in u for u in found_smart)
+    assert any("june-quarter-2025-26" in u for u in fetch_calls)
+    assert not any("march-quarter-2025-26" in u for u in fetch_calls)
+    assert any("july-to-june-2025-26" in u for u in fetch_calls)
+    assert not any("july-to-march-2025-26" in u for u in fetch_calls)
+
     # Test default candidate generation
     found_default = discover_health_gov_medicare_workbooks(
         subpage_fetcher=lambda _u: (
@@ -639,6 +672,27 @@ def test_discover_health_gov_medicare_workbooks() -> None:
     )
     assert len(found_default) >= 1
     assert "auto.xlsx" in found_default[0]
+
+
+def test_generate_medicare_candidate_slugs() -> None:
+    # August 2026: before Q1 publication (months 7..10)
+    slugs_aug = generate_medicare_candidate_slugs(
+        datetime(2026, 8, 15, 0, 0, tzinfo=UTC)
+    )
+    assert any("2025-26" in s for s in slugs_aug)
+    assert not any("2026-27" in s for s in slugs_aug)
+
+    # November 2026: after Q1 publication (months 11..12)
+    slugs_nov = generate_medicare_candidate_slugs(
+        datetime(2026, 11, 20, 0, 0, tzinfo=UTC)
+    )
+    assert any("2026-27" in s for s in slugs_nov)
+
+    # March 2027: in second half of FY (months 1..6)
+    slugs_mar = generate_medicare_candidate_slugs(
+        datetime(2027, 3, 10, 0, 0, tzinfo=UTC)
+    )
+    assert any("2026-27" in s for s in slugs_mar)
 
 
 def test_fetch_url_bytes_governed_checks(
@@ -772,27 +826,32 @@ def test_validate_resources_against_contract_flags(tmp_path: Path) -> None:
         validate_resources_against_contract(p, "test/ds", res)
 
 
-def test_fetch_url_bytes_governed_curl_fallback(
+class FailingOpener:
+    def open(self, _req: object, timeout: int = 45) -> None:
+        _ = timeout
+        raise TimeoutError("Simulated urllib timeout")
+
+
+class FakeProc:
+    def __init__(self, stdout: str = "", returncode: int = 0) -> None:
+        self.stdout = stdout
+        self.returncode = returncode
+        self.stderr = ""
+
+
+def _mock_which_curl(_prog: str) -> str:
+    return "/usr/bin/curl"
+
+
+def _make_failing_opener(_h: object) -> FailingOpener:
+    return FailingOpener()
+
+
+def test_fetch_url_bytes_governed_curl_fallback_success(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    class FailingOpener:
-        def open(self, _req: object, timeout: int = 45) -> None:
-            _ = timeout
-            raise TimeoutError("Simulated urllib timeout")
-
-    def _make_failing_opener(_h: object) -> FailingOpener:
-        return FailingOpener()
-
-    def _mock_which(_prog: str) -> str:
-        return "/usr/bin/curl"
-
     monkeypatch.setattr("urllib.request.build_opener", _make_failing_opener)
-
-    class FakeProc:
-        def __init__(self, stdout: str = "", returncode: int = 0) -> None:
-            self.stdout = stdout
-            self.returncode = returncode
-            self.stderr = ""
+    monkeypatch.setattr("shutil.which", _mock_which_curl)
 
     def _fake_run(cmd: list[str], **_kwargs: Any) -> FakeProc:
         if "-o" in cmd:
@@ -800,7 +859,6 @@ def test_fetch_url_bytes_governed_curl_fallback(
             Path(cmd[out_idx]).write_bytes(b"CURL_EXCEL_BYTES")
         return FakeProc(stdout="200\n")
 
-    monkeypatch.setattr("shutil.which", _mock_which)
     monkeypatch.setattr("subprocess.run", _fake_run)
 
     content, final_url = fetch_url_bytes_governed(
@@ -851,12 +909,143 @@ def test_fetch_url_bytes_governed_curl_fallback(
             allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
         )
 
+
+def test_fetch_url_bytes_governed_curl_fallback_errors(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr("urllib.request.build_opener", _make_failing_opener)
+    monkeypatch.setattr("shutil.which", _mock_which_curl)
+
     # Test curl returning an HTTP error (e.g. 404)
     def _fake_run_404(_cmd: list[str], **_kwargs: Any) -> FakeProc:
         return FakeProc(stdout="404\n")
 
     monkeypatch.setattr("subprocess.run", _fake_run_404)
     with pytest.raises(ConnectionError, match=r"HTTP error 404"):
+        fetch_url_bytes_governed(
+            "https://www.health.gov.au/sites/default/files/test.xlsx",
+            allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+        )
+
+    # Test curl not available on system
+    def _mock_which_none(_p: str) -> None:
+        return None
+
+    monkeypatch.setattr("shutil.which", _mock_which_none)
+    with pytest.raises(ConnectionError, match=r"curl not available"):
+        fetch_url_bytes_governed(
+            "https://www.health.gov.au/sites/default/files/test.xlsx",
+            allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+        )
+    monkeypatch.setattr("shutil.which", _mock_which_curl)
+
+    # Test curl subprocess returncode != 0
+    def _fake_run_nonzero(_cmd: list[str], **_kwargs: Any) -> FakeProc:
+        p = FakeProc(returncode=28)
+        p.stderr = "Operation timed out"
+        return p
+
+    monkeypatch.setattr("subprocess.run", _fake_run_nonzero)
+    with pytest.raises(ConnectionError, match=r"curl failed for"):
+        fetch_url_bytes_governed(
+            "https://www.health.gov.au/sites/default/files/test.xlsx",
+            allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+        )
+
+    # Test invalid non-integer http code
+    def _fake_run_invalid_code(_cmd: list[str], **_kwargs: Any) -> FakeProc:
+        return FakeProc(stdout="NOT_AN_INT\n")
+
+    monkeypatch.setattr("subprocess.run", _fake_run_invalid_code)
+    with pytest.raises(ConnectionError, match=r"HTTP error 0"):
+        fetch_url_bytes_governed(
+            "https://www.health.gov.au/sites/default/files/test.xlsx",
+            allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+        )
+
+    # Test redirect 301 with missing destination url
+    def _fake_run_no_dest(_cmd: list[str], **_kwargs: Any) -> FakeProc:
+        return FakeProc(stdout="301\n")
+
+    monkeypatch.setattr("subprocess.run", _fake_run_no_dest)
+    with pytest.raises(
+        ConnectionError, match=r"Redirect 301 missing destination"
+    ):
+        fetch_url_bytes_governed(
+            "https://www.health.gov.au/sites/default/files/test.xlsx",
+            allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+        )
+
+    # Test empty payload returned by curl
+    def _fake_run_empty(cmd: list[str], **_kwargs: Any) -> FakeProc:
+        if "-o" in cmd:
+            out_idx = cmd.index("-o") + 1
+            Path(cmd[out_idx]).write_bytes(b"")
+        return FakeProc(stdout="200\n")
+
+    monkeypatch.setattr("subprocess.run", _fake_run_empty)
+    with pytest.raises(ConnectionError, match=r"Empty payload"):
+        fetch_url_bytes_governed(
+            "https://www.health.gov.au/sites/default/files/test.xlsx",
+            allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+        )
+
+    # Test exceeding max redirects
+    def _fake_run_loop(_cmd: list[str], **_kwargs: Any) -> FakeProc:
+        return FakeProc(
+            stdout="301\nhttps://www.health.gov.au/sites/default/files/loop.xlsx"
+        )
+
+    monkeypatch.setattr("subprocess.run", _fake_run_loop)
+    with pytest.raises(ConnectionError, match=r"Too many redirects"):
+        fetch_url_bytes_governed(
+            "https://www.health.gov.au/sites/default/files/test.xlsx",
+            allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+        )
+
+
+def test_fetch_url_bytes_governed_headers_and_permissions(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr("urllib.request.build_opener", _make_failing_opener)
+    monkeypatch.setattr("shutil.which", _mock_which_curl)
+
+    # Test custom headers passed to fetch_url_bytes_governed
+    custom_run_called = False
+
+    def _fake_run_headers(cmd: list[str], **_kwargs: Any) -> FakeProc:
+        nonlocal custom_run_called
+        assert "-H" in cmd
+        assert any(
+            cmd[i] == "-H" and cmd[i + 1] == "X-Test-Header: custom-value"
+            for i in range(len(cmd) - 1)
+        )
+        custom_run_called = True
+        if "-o" in cmd:
+            out_idx = cmd.index("-o") + 1
+            Path(cmd[out_idx]).write_bytes(b"HEADER_BYTES")
+        return FakeProc(stdout="200\n")
+
+    monkeypatch.setattr("subprocess.run", _fake_run_headers)
+    c, _ = fetch_url_bytes_governed(
+        "https://www.health.gov.au/sites/default/files/test.xlsx",
+        allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+        headers={"X-Test-Header": "custom-value"},
+    )
+    assert custom_run_called
+    assert c == b"HEADER_BYTES"
+
+    # Test PermissionError in opener.open re-raised directly
+    class PermFailingOpener:
+        def open(self, _req: object, timeout: int = 45) -> None:
+            _ = timeout
+            raise PermissionError("Direct permission denial")
+
+    def _make_perm_failing_opener(_h: object) -> PermFailingOpener:
+        return PermFailingOpener()
+
+    monkeypatch.setattr("urllib.request.build_opener", _make_perm_failing_opener)
+    with pytest.raises(PermissionError, match=r"Direct permission denial"):
         fetch_url_bytes_governed(
             "https://www.health.gov.au/sites/default/files/test.xlsx",
             allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
