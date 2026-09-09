@@ -62,6 +62,16 @@ DEFAULT_HARVEST_HEADERS: Final[dict[str, str]] = {
         "application/octet-stream,*/*;q=0.8"
     ),
     "Accept-Language": "en-AU,en-US;q=0.9,en;q=0.8",
+    "Sec-CH-UA": (
+        '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"'
+    ),
+    "Sec-CH-UA-Mobile": "?0",
+    "Sec-CH-UA-Platform": '"Windows"',
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "none",
+    "Sec-Fetch-User": "?1",
+    "Upgrade-Insecure-Requests": "1",
 }
 
 
@@ -147,7 +157,7 @@ def _fetch_via_curl_fallback(
     for _ in range(max_redirects + 1):
         _validate_final_host(current_url, allowed_domains)
 
-        curl_timeout = min(timeout, 30)
+        curl_timeout = max(timeout, 120)
         with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
             tmp_path = Path(tmp_file.name)
         try:
@@ -155,11 +165,19 @@ def _fetch_via_curl_fallback(
             curl_cmd = [
                 curl_path,
                 "-sS",
+                "--compressed",
                 "--http1.1",
                 "--proto",
                 "=https,http",
+                "--connect-timeout",
+                "20",
                 "--max-time",
                 str(curl_timeout),
+                "--retry",
+                "2",
+                "--retry-delay",
+                "1",
+                "--retry-all-errors",
                 "-o",
                 str(tmp_path),
                 "-w",

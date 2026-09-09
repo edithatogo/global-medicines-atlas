@@ -17,6 +17,7 @@ from global_medicines_atlas.australian_harvesting import (
     ALLOWED_MBS_DOMAINS,
     ALLOWED_MEDICARE_STATISTICS_DOMAINS,
     ALLOWED_PBS_DOMAINS,
+    DEFAULT_HARVEST_HEADERS,
     DiscoveredHarvestResource,
     GovernedRedirectHandler,
     build_cumulative_harvest_manifest,
@@ -855,6 +856,9 @@ def test_fetch_url_bytes_governed_curl_fallback_success(
 
     def _fake_run(cmd: list[str], **_kwargs: Any) -> FakeProc:
         assert "--http1.1" in cmd
+        assert "--compressed" in cmd
+        assert "--connect-timeout" in cmd
+        assert "--retry-all-errors" in cmd
         if "-o" in cmd:
             out_idx = cmd.index("-o") + 1
             Path(cmd[out_idx]).write_bytes(b"CURL_EXCEL_BYTES")
@@ -1103,3 +1107,54 @@ def test_mbs_utilisation_stage_resources_resilient(
         RuntimeError, match=r"No resources were successfully staged"
     ):
         stage_resources([res_bad], stage_dir)
+
+
+def test_harvest_default_headers_client_hints() -> None:
+    assert "User-Agent" in DEFAULT_HARVEST_HEADERS
+    assert "Sec-CH-UA" in DEFAULT_HARVEST_HEADERS
+    assert "Sec-CH-UA-Mobile" in DEFAULT_HARVEST_HEADERS
+    assert "Sec-CH-UA-Platform" in DEFAULT_HARVEST_HEADERS
+    assert "Sec-Fetch-Dest" in DEFAULT_HARVEST_HEADERS
+    assert "Sec-Fetch-Mode" in DEFAULT_HARVEST_HEADERS
+    assert "Sec-Fetch-Site" in DEFAULT_HARVEST_HEADERS
+    assert "Sec-Fetch-User" in DEFAULT_HARVEST_HEADERS
+    assert "Upgrade-Insecure-Requests" in DEFAULT_HARVEST_HEADERS
+
+
+def test_mbs_utilisation_stage_resources_inter_request_delay(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    res1 = DiscoveredHarvestResource(
+        source_id="au-data-gov-mbs-group",
+        category="mbs_group_statistics",
+        url="https://data.gov.au/data/mbs-1.csv",
+        filename="mbs-1.csv",
+        archive_path="raw/mbs/utilisation/group/mbs-1.csv",
+    )
+    res2 = DiscoveredHarvestResource(
+        source_id="au-data-gov-mbs-group",
+        category="mbs_group_statistics",
+        url="https://data.gov.au/data/mbs-2.csv",
+        filename="mbs-2.csv",
+        archive_path="raw/mbs/utilisation/group/mbs-2.csv",
+    )
+
+    monkeypatch.setattr(
+        "scripts.harvest_australian_mbs_utilisation.fetch_url_bytes",
+        lambda url, **_kwargs: (b"DUMMY_CONTENT", url),
+    )
+
+    sleep_calls: list[float] = []
+    monkeypatch.setattr(
+        "scripts.harvest_australian_mbs_utilisation.time.sleep",
+        sleep_calls.append,
+    )
+
+    stage_dir = tmp_path / "stage_delay"
+    stages, manifest = stage_resources(
+        [res1, res2], stage_dir, inter_request_delay_seconds=0.05
+    )
+    assert len(stages) == 2
+    assert manifest["coverage_status"] == "complete"
+    assert sleep_calls == [0.05]
