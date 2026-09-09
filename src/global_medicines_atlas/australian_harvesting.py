@@ -155,6 +155,7 @@ def _fetch_via_curl_fallback(
             curl_cmd = [
                 curl_path,
                 "-sS",
+                "--http1.1",
                 "--proto",
                 "=https,http",
                 "--max-time",

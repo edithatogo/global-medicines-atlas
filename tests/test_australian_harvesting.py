@@ -854,6 +854,7 @@ def test_fetch_url_bytes_governed_curl_fallback_success(
     monkeypatch.setattr("shutil.which", _mock_which_curl)
 
     def _fake_run(cmd: list[str], **_kwargs: Any) -> FakeProc:
+        assert "--http1.1" in cmd
         if "-o" in cmd:
             out_idx = cmd.index("-o") + 1
             Path(cmd[out_idx]).write_bytes(b"CURL_EXCEL_BYTES")
