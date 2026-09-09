@@ -1,0 +1,94 @@
+name: Governed Australian PBS utilisation harvest
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_contract_commit:
+        description: Exact reviewed main commit containing harvest authorization
+        required: true
+        type: string
+      backfill_all:
+        description: Backfill all historical annual files instead of just rolling year
+        required: false
+        default: false
+        type: boolean
+  schedule:
+    - cron: "15 15 15 * *" # Monthly check following Services Australia DOS updates.
+
+permissions: {}
+
+concurrency:
+  group: australian-pbs-utilisation-harvest
+  cancel-in-progress: false
+
+jobs:
+  harvest:
+    name: Acquire PBS utilisation, append and anonymously verify
+    runs-on: ubuntu-24.04
+    environment: australian-hf-publication
+    timeout-minutes: 35
+    env:
+      HF_HOME: ${{ github.workspace }}/build/pbs-hf-home
+      HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+      HF_HUB_DISABLE_XET: "1"
+      PYTHONUNBUFFERED: "1"
+    permissions:
+      contents: read
+      issues: write # Durable public intent and all-object verification receipts.
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+
+      - name: Bind main head and exact harvest authorization
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_COMMIT: ${{ inputs.exact_contract_commit || github.sha }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main
+          test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
+          test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
+          gh issue comment 340 --body "PBS utilisation harvest intent: exact_commit=$GITHUB_SHA; run=https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID; contract=quality/qualifications/australian-pbs-utilisation-publication-authorization.json; destination=edithatogo/australian-pbs-utilisation-archive; failure_policy=retain-published-revision-and-report-failure"
+
+      - name: Acquire, publish and verify using anonymous reads
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          BACKFILL_ALL: ${{ inputs.backfill_all == true && '1' || '0' }}
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.14.6 --with huggingface-hub==1.14.0 python scripts/harvest_australian_pbs_utilisation.py \
+            --publish-hosted \
+            --receipt-output build/pbs-utilisation-harvest-receipt.json
+          gh issue comment 340 --body-file build/pbs-utilisation-harvest-receipt.json
+
+      - name: Remove verified hosted temporary materializations
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import shutil
+          from pathlib import Path
+          path = Path('build/pbs-utilisation-harvest-receipt.json')
+          receipt = json.loads(path.read_text())
+          if receipt.get('anonymous_digest_verification') != 'passed':
+              raise RuntimeError('cleanup requires anonymous verification')
+          for target in (Path('build/harvest'), Path('build/pbs-hf-home')):
+              if target.exists():
+                  shutil.rmtree(target)
+          receipt['temporary_source_bytes_removed'] = True
+          path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + '\n')
+          PY
+          gh issue comment 340 --body-file build/pbs-utilisation-harvest-receipt.json
+
+      - name: Record fail-honest run outcome
+        if: failure() || cancelled()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment 340 --body "PBS utilisation harvest did not complete: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID at $GITHUB_SHA. Consult logs; any published revision is retained."

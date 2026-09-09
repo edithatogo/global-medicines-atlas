@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-09-06T03:04:06.108695Z",
+  "repository": "edithatogo/aus_mbs_pbs_graph",
+  "approval_and_execution_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5556516869",
+  "readiness_pr": 479,
+  "readiness_merge": "067977b008009bfbe54003000f551d01051996e8",
+  "readiness_checks_passed": 39,
+  "archive_authorized": true,
+  "archived_before": false,
+  "archived_after": true,
+  "updated_at": "2026-09-06T03:02:52Z",
+  "head_before": "3993e5e331eb2d3d9e9d354d80e52c684ad26a1e",
+  "head_after": "3993e5e331eb2d3d9e9d354d80e52c684ad26a1e",
+  "retained_branches": {
+    "main": "3993e5e331eb2d3d9e9d354d80e52c684ad26a1e",
+    "renovate/configure": "d05f2475c211f42f1ae135dac9528139bcb02c38"
+  },
+  "preflight_drift": {
+    "missing_branch": "renovate/configure",
+    "commit_verified_accessible": true,
+    "closed_pr": 6,
+    "action": "Restored the missing ref to the exact prior commit before archival. No new commit or merge."
+  },
+  "open_issues": 0,
+  "open_prs": 0,
+  "public_history_revision": "97038008d17a48f620302f04fe6a3156fb8d5d57",
+  "public_revision_current_at_preflight": true,
+  "history_verification_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5556271994",
+  "new_publication": false,
+  "local_donor_modified": false,
+  "boundary": "Both compatibility archives complete. No claim of full terminology, graph or NLP roadmap completion."
+}

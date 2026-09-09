@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-09-06T02:21:56.754544Z",
+  "repository": "edithatogo/aus_mbs_pbs_graph",
+  "status": "prepared_archival_approval_pending",
+  "archived": false,
+  "archive_authorized": false,
+  "head": "3993e5e331eb2d3d9e9d354d80e52c684ad26a1e",
+  "preservation": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "revision": "97038008d17a48f620302f04fe6a3156fb8d5d57",
+    "receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5556271994",
+    "run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/34005721959",
+    "clean_restoration": true,
+    "receipt_model_and_digest_revalidated": true,
+    "current_public_revision_matches": true,
+    "current_sibling_set_matches": true,
+    "verified_archive_objects": 30,
+    "current_head_delta_paths": [
+      "README.md",
+      "SUCCESSOR.md"
+    ],
+    "new_code_or_data_delta": false
+  },
+  "hosted_inventory": {
+    "branches": {
+      "main": "3993e5e331eb2d3d9e9d354d80e52c684ad26a1e",
+      "renovate/configure": "d05f2475c211f42f1ae135dac9528139bcb02c38"
+    },
+    "tags": 0,
+    "releases": 0,
+    "workflow_artifacts": 0,
+    "workflows": [
+      {
+        "name": "Dependency Graph",
+        "state": "active"
+      }
+    ],
+    "closed_as_superseded_issues": [
+      2,
+      3,
+      4
+    ],
+    "closed_unmerged_prs": [
+      6
+    ],
+    "open_issues": 0,
+    "open_prs": 0,
+    "renovate_branch_delta": [
+      "renovate.json"
+    ],
+    "renovate_branch_preservation": "Retained on GitHub with PR history; excluded from main-head bundle claim. Configuration only, no unique data or implemented feature."
+  },
+  "notice_links": [
+    {
+      "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/4d1dae488ac43522f20e8320a8b2a56bf9138341/manifest.json",
+      "http_status": 200
+    },
+    {
+      "url": "https://huggingface.co/datasets/edithatogo/australian-pbs-source-archive/tree/31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+      "http_status": 200
+    }
+  ],
+  "local_checkout_scope": "No graph checkout found among immediate entries of /Volumes/PortableSSD/GitHub. No local graph files modified; not a claim about other disks or locations.",
+  "validation": {
+    "focused_passed": 174,
+    "focused_seconds": 9.31,
+    "context": "pass",
+    "full_harness": "No code changes. Prior same-code local suite: 4819 passed, one optional skip, 96.65% coverage; later macOS mutation failed. Authoritative Linux lanes passed in PR #478. This preparation awaits its own hosted checks."
+  },
+  "remaining": [
+    "Merge reviewed GMA readiness record after required checks.",
+    "Obtain explicit graph-only archival approval.",
+    "Immediately recheck head, refs, open work and public revision; resolve any drift before archival.",
+    "Archive without deleting branches/history and persist before/after state."
+  ]
+}

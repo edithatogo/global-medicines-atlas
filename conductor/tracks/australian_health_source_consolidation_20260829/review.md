@@ -14,7 +14,7 @@ independent human approval, clinical assessment, or blanket publication grant.
 | AC-06 regressions | Donor inventory and MBS/PBS negative tests retain syntax/tag/path defects, empty placeholders, malformed/hostile inputs and heterogeneous table boundaries. |
 | AC-07 semantics | MBS service-benefit, PBS funding/formulary and terminology references remain separate from regulatory/clinical assertions. No graph candidate is promoted by consolidation. |
 | AC-08 public raw | Hosted donor, PBS and August MBS receipts are in the append-only ledger. Current MBS revision `75f9f20a36ddb829dfe0ca88660664570782be02` preserves all 11 prior paths and adds eight verified objects. Raw data was not downloaded locally for this release. |
-| AC-09 notices/gate | Graph PR #5 and scraper PR #4 are merged; pinned complete donor histories remain public. Both repositories were independently observed unarchived. Final archive approval remains pending. |
+| AC-09 notices/gate | Graph PR #5 and scraper PR #4 are merged; pinned complete donor histories remain public. Both repositories were independently observed unarchived. As of 2026-09-06, scraper-only archival is approved by issue #339 comment 5556212193; history verification completed in run 34005721959 and scraper archival was observed at 2026-09-06T02:12:07Z. Graph archival was separately approved and verified at 2026-09-06T03:02:52Z; see issue #339 comment 5556516869. |
 | AC-10 qualification | PR #367 reviewed head `184a9b4`: 38 successful checks. Reconciliation: 122 focused tests and context validation pass. Local full implementation run had 2,793 passes, three failures and one skip; two failures are exact-interpreter requirements and one is the unchanged latency budget. Hosted Linux lanes pass; local full success is not claimed. |
 
 ## Review findings resolved
@@ -36,8 +36,13 @@ and disposition inventory are being added; exact hosted preservation receipts
 for both later heads remain prerequisites to archival. Scraper async caller
 responsiveness is retained as a legacy interface, not claimed as GMA API parity.
 
-The final donor GitHub archival decision is outstanding. Track status remains
-`in_progress`; no donor archival or whole-programme completion is claimed.
+The maintainer approved the four-object history publication and scraper-only
+archival on 2026-09-06 (issue #339 comment 5556212193). Hosted publication and anonymous restoration completed in run 34005721959,
+followed by verified scraper archival at 2026-09-06T02:12:07Z. Exact main and
+both branches were preserved; open donor work was closed as superseded. Graph archival was separately approved and completed at
+2026-09-06T03:02:52Z. Both exact branch refs were verified after archival. Track status remains
+`in_progress`; both compatibility archives are complete, while whole-programme completion
+is not claimed.
 The next safe implementation route is the dependent public data-plane contract
 track, then Australian Silver/Gold and federated Platinum. Restricted ontology
 acquisition, future-file publication and promoted frontier dependencies retain

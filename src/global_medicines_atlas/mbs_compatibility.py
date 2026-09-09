@@ -120,13 +120,30 @@ def parse_legacy_mbs_items(
     return LegacyMbsBatch(records=tuple(records), provenance=provenance)
 
 
+def select_group_records(
+    batch: MbsSourceBatch | LegacyMbsBatch,
+    group: str | None = None,
+) -> tuple[MbsSourceRecord, ...]:
+    """Select an exact native group; None retains all admitted records.
+
+    Keep order, provenance and record identities, including records without a
+    Group when unfiltered. Reject blank filters instead of treating them as
+    permission to broaden a requested selection.
+    """
+    if group is None:
+        return batch.records
+    if not isinstance(group, str) or not group or group.strip() != group:  # pyright: ignore[reportUnnecessaryIsInstance] -- validate untyped callers
+        raise ValueError("group must be a nonblank exact string or None")
+    return tuple(
+        record for record in batch.records if record.value("Group") == group
+    )
+
+
 def select_p7_records(
     batch: MbsSourceBatch | LegacyMbsBatch,
 ) -> tuple[MbsSourceRecord, ...]:
     """Retain donor P7 selection over the admitted native MBS source batch."""
-    return tuple(
-        record for record in batch.records if record.value("Group") == "P7"
-    )
+    return select_group_records(batch, "P7")
 
 
 def _month_index(value: object) -> int:

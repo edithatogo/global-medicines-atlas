@@ -1,0 +1,16 @@
+[
+  {
+    "item_code": "10001",
+    "name": "Medicine A",
+    "category": "General",
+    "atc_code": "A10BA02",
+    "benefit_amount": 30.00
+  },
+  {
+    "item_code": "10002",
+    "name": "Medicine B",
+    "category": "Concessional",
+    "atc_code": "N02BE01",
+    "benefit_amount": 7.30
+  }
+]

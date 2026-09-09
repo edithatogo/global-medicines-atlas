@@ -238,3 +238,67 @@
   finding was corrected before merge. See `review.md` for the AC audit.
 - [ ] Keep archive tasks pending until the exact parity/publication package and
   maintainer approval are recorded.
+
+
+## Scraper archival readiness follow-up (2026-09-06)
+
+- [x] Reconcile the dirty local scraper delta without modifying it; preserve
+  the general-group patch and synthetic PBS fixture and adapt useful behavior.
+  Implemented `7babb53`; 226 initial canaries and 109 final focused tests pass.
+- [x] Record explicit async, complex-table, CSV and participant-coverage
+  dispositions plus the live open issue/PR inventory. (`7babb53`)
+- [x] Implement and test the exact hosted history append and recovery runner;
+  retain disabled publication authority until separately approved.
+  `7babb53` plus reviewed synthetic transport/detached-HEAD follow-up; final
+  hosted delivery merged in PR #476 (`af24b15`), with 38 checks passing. Full local run: 4,810 passed,
+  two pinned-uv environment failures (both passed targeted recovery), one skip.
+- [x] Obtain exact history publication approval, dispatch and verify the receipt.
+  Approval: issue #339 comment 5556212193; run 34005721959 succeeded.
+  Verification: issue #340 comment 5556271994; all 30 objects verified.
+- [x] Re-query the donor, resolve open donor work and record scraper archival
+  without deleting history or local work. Scraper archived 2026-09-06T02:12:07Z;
+  main and both branches retained. Issues #1–#3 and PR #5 closed as superseded.
+  Receipt: `quality/qualifications/scraper-archival-20260906.json`.
+
+See [scraper archival readiness](../../../docs/migrations/scraper-archive-readiness.md).
+
+
+### Review Fixes: immutable history recovery
+
+- [x] Preserve verification/recovery of the acknowledged immutable revision
+  after another archive writer advances main; require the exact approved
+  contract and record publishing versus verification commit/run identities.
+  PR #476 review comment 3942541730; 114 focused tests pass, 100% orchestration
+  statement/branch coverage. Current-head preservation remains a final preflight.
+
+
+### Review Fixes: standalone history restoration
+
+- [x] Rebuild loose Git objects directly from verified bundle PACK streams
+  using `unpack-objects --strict`, then bind exact refs, prove ancestry and run
+  full strict fsck. This avoids intermittent generated pack-index failures
+  without relaxing object verification. 115 focused tests pass, including a
+  corrupt-stream rejection; final hosted qualification remains in PR #476.
+
+### Review Fixes: approved archival gate
+
+- [x] Reconcile scraper archival approval in the plan and acceptance review;
+  retain graph archival as a separate pending decision. PR #477 comment
+  3942668945; no repeated scraper approval is required.
+
+## Graph archival readiness follow-up (2026-09-06)
+
+- [x] Revalidate the exact current graph head against the published restoration
+  receipt and current public revision; inventory refs, releases and artifacts.
+- [x] Verify successor archive links and run donor/parser/history canaries:
+  174 passed; no new code or data delta since preserved baseline scope.
+- [x] Resolve issues #2–#4 and close onboarding PR #6 as superseded, retaining
+  both branches and discussion history; re-query open work as empty.
+- [x] Review, validate and merge the graph readiness record. PR #479 merged
+  `067977b0`; all 39 checks passed.
+- [x] Obtain graph-only archival approval, repeat final drift preflight, archive
+  without deletion, and record before/after evidence. Issue #339 comment
+  5556516869; archived 2026-09-06T03:02:52Z. Restored the missing Renovate
+  ref to its exact recorded commit before archival; both branches verified.
+
+See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.md).
