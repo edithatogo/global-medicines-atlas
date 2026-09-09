@@ -13,6 +13,7 @@ import importlib
 import json
 import os
 import sys
+import time
 import urllib.error
 from pathlib import Path
 from typing import Any, cast
@@ -45,7 +46,7 @@ DATA_GOV_MBS_GROUP_API = "https://data.gov.au/data/api/3/action/package_show?id=
 DATA_GOV_MBS_DEMOGRAPHICS_API = "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group-by-patient-demographics-report"
 
 
-def fetch_url_bytes(url: str, timeout: int = 45) -> tuple[bytes, str]:
+def fetch_url_bytes(url: str, timeout: int = 120) -> tuple[bytes, str]:
     return fetch_url_bytes_governed(
         url,
         allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
@@ -111,7 +112,10 @@ def discover_selected_resources(
 
 
 def stage_resources(
-    resources: list[DiscoveredHarvestResource], stage_dir: Path
+    resources: list[DiscoveredHarvestResource],
+    stage_dir: Path,
+    *,
+    inter_request_delay_seconds: float = 0.0,
 ) -> tuple[list[HarvestStageResult], dict[str, Any]]:
     if not resources:
         raise ValueError("Cannot stage empty resources")
@@ -122,6 +126,8 @@ def stage_resources(
     stages: list[HarvestStageResult] = []
     failed_resources: list[dict[str, str]] = []
     for idx, r in enumerate(resources, start=1):
+        if idx > 1 and inter_request_delay_seconds > 0:
+            time.sleep(inter_request_delay_seconds)
         print(
             f"  [{idx}/{len(resources)}] Fetching and staging {r.filename} from {r.url}...",
             flush=True,
@@ -325,6 +331,12 @@ def main() -> int:
         help="Stage all historical demographic/group files",
     )
     parser.add_argument(
+        "--inter-request-delay",
+        type=float,
+        default=2.0,
+        help="Delay in seconds between staging consecutive resources to avoid rate limits",
+    )
+    parser.add_argument(
         "--receipt-output",
         type=Path,
         default=Path("build/mbs-utilisation-harvest-receipt.json"),
@@ -349,7 +361,11 @@ def main() -> int:
             "--publish-hosted is permitted only within GitHub Actions runners."
         )
 
-    stages, manifest = stage_resources(resources, args.stage_dir)
+    stages, manifest = stage_resources(
+        resources,
+        args.stage_dir,
+        inter_request_delay_seconds=args.inter_request_delay,
+    )
     print(
         f"Staged {len(stages)} payloads. Manifest has {manifest['file_count']} objects.",
         flush=True,
