@@ -1044,7 +1044,9 @@ def test_fetch_url_bytes_governed_headers_and_permissions(
     def _make_perm_failing_opener(_h: object) -> PermFailingOpener:
         return PermFailingOpener()
 
-    monkeypatch.setattr("urllib.request.build_opener", _make_perm_failing_opener)
+    monkeypatch.setattr(
+        "urllib.request.build_opener", _make_perm_failing_opener
+    )
     with pytest.raises(PermissionError, match=r"Direct permission denial"):
         fetch_url_bytes_governed(
             "https://www.health.gov.au/sites/default/files/test.xlsx",
