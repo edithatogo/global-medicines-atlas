@@ -122,6 +122,21 @@ class BenefitsPage(PlatinumSurfaceModel):
     comparison_validity: Literal["not_evaluated"] = "not_evaluated"
 
 
+def benefits_page_payload(page: BenefitsPage) -> dict[str, object]:
+    """Render a validated benefits page for JSON API and CLI transports.
+
+    Transport adapters must not expose a mutable model dump or silently accept
+    arbitrary mappings.  Re-validating the concrete page keeps this boundary
+    fail-closed while ``mode=\"json\"`` converts the nested Pydantic values to
+    JSON-safe primitives.  No acquisition, publication, or interpretation is
+    performed here.
+    """
+    if type(page) is not BenefitsPage:
+        raise TypeError("benefits payload requires a validated BenefitsPage")
+    validated = BenefitsPage.model_validate(page.model_dump(mode="python"))
+    return validated.model_dump(mode="json")
+
+
 class BenefitsLookup(Protocol):
     """Dependency-light interface shared by CLI and HTTP consumers."""
 
