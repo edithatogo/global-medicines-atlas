@@ -9,13 +9,18 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import shutil
+import subprocess  # ruff: ignore[suspicious-subprocess-import]
+import tempfile
+import urllib.error
 import urllib.parse
 import urllib.request
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from http import HTTPStatus
 from pathlib import Path
-from typing import Any
+from typing import Any, Final
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -35,7 +40,29 @@ ALLOWED_AUSTRALIAN_HARVEST_DOMAINS = (
     | ALLOWED_MBS_DOMAINS
     | ALLOWED_MEDICARE_STATISTICS_DOMAINS
 )
-AUSTRALIAN_FY_START_MONTH = 7
+AUSTRALIAN_FY_START_MONTH: Final[int] = 7
+MEDICARE_Q1_PUBLICATION_MONTH: Final[int] = 11
+HTTP_REDIRECT_STATUSES: Final[frozenset[int]] = frozenset({
+    HTTPStatus.MOVED_PERMANENTLY,
+    HTTPStatus.FOUND,
+    HTTPStatus.SEE_OTHER,
+    HTTPStatus.TEMPORARY_REDIRECT,
+    HTTPStatus.PERMANENT_REDIRECT,
+})
+
+DEFAULT_HARVEST_USER_AGENT: Final[str] = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 (compatible; GlobalMedicinesAtlas/1.0)"
+)
+DEFAULT_HARVEST_HEADERS: Final[dict[str, str]] = {
+    "User-Agent": DEFAULT_HARVEST_USER_AGENT,
+    "Accept": (
+        "text/html,application/xhtml+xml,application/xml;q=0.9,"
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,"
+        "application/octet-stream,*/*;q=0.8"
+    ),
+    "Accept-Language": "en-AU,en-US;q=0.9,en;q=0.8",
+}
 
 
 class DiscoveredHarvestResource(BaseModel):
@@ -94,11 +121,104 @@ class GovernedRedirectHandler(urllib.request.HTTPRedirectHandler):
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
+def _validate_final_host(
+    final_url: str, allowed_domains: frozenset[str]
+) -> None:
+    final_parsed = urllib.parse.urlparse(final_url)
+    if final_parsed.netloc.lower() not in allowed_domains:
+        raise PermissionError(
+            f"Final response host '{final_parsed.netloc}' is not in allowed domains: "
+            f"{sorted(allowed_domains)}"
+        )
+
+
+def _fetch_via_curl_fallback(
+    url: str,
+    allowed_domains: frozenset[str],
+    req_headers: dict[str, str],
+    timeout: int,
+    max_redirects: int = 5,
+) -> tuple[bytes, str]:
+    curl_path = shutil.which("curl")
+    if not curl_path:
+        raise ConnectionError("curl not available for network fallback")
+
+    current_url = url
+    for _ in range(max_redirects + 1):
+        _validate_final_host(current_url, allowed_domains)
+
+        curl_timeout = min(timeout, 30)
+        with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
+            tmp_path = Path(tmp_file.name)
+        try:
+            # Single-hop fetch without -L to enforce domain allowlist on every redirect hop
+            curl_cmd = [
+                curl_path,
+                "-sS",
+                "--proto",
+                "=https,http",
+                "--max-time",
+                str(curl_timeout),
+                "-o",
+                str(tmp_path),
+                "-w",
+                "%{http_code}\n%{redirect_url}",
+                current_url,
+            ]
+            for k, v in req_headers.items():
+                curl_cmd.extend(["-H", f"{k}: {v}"])
+            proc = subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
+                curl_cmd,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if proc.returncode != 0:
+                raise ConnectionError(
+                    f"curl failed for {current_url}: {proc.stderr.strip()}"
+                )
+
+            stdout_lines = proc.stdout.splitlines()
+            http_code_str = stdout_lines[0].strip() if stdout_lines else "0"
+            try:
+                http_code = int(http_code_str)
+            except ValueError:
+                http_code = 0
+
+            # Follow redirects manually, validating each hop fail-closed
+            if http_code in HTTP_REDIRECT_STATUSES:
+                redirect_url = (
+                    stdout_lines[1].strip() if len(stdout_lines) > 1 else ""
+                )
+                if not redirect_url:
+                    raise ConnectionError(
+                        f"Redirect {http_code} missing destination from {current_url}"
+                    )
+                current_url = urllib.parse.urljoin(current_url, redirect_url)
+                continue
+
+            # Reject non-2xx HTTP error bodies (e.g. 404, 500)
+            if not (HTTPStatus.OK <= http_code < HTTPStatus.MULTIPLE_CHOICES):
+                raise ConnectionError(
+                    f"HTTP error {http_code} from {current_url}"
+                )
+
+            content = tmp_path.read_bytes()
+            if not content:
+                raise ConnectionError(f"Empty payload from {current_url}")
+            return content, current_url
+        finally:
+            tmp_path.unlink(missing_ok=True)
+
+    raise ConnectionError(f"Too many redirects ({max_redirects}) for {url}")
+
+
 def fetch_url_bytes_governed(
     url: str,
     allowed_domains: frozenset[str] = ALLOWED_AUSTRALIAN_HARVEST_DOMAINS,
-    user_agent: str = "GlobalMedicinesAtlas-Harvester/1.0",
-    timeout: int = 120,
+    user_agent: str = DEFAULT_HARVEST_USER_AGENT,
+    headers: dict[str, str] | None = None,
+    timeout: int = 45,
 ) -> tuple[bytes, str]:
     """Fetch URL bytes fail-closed, validating initial host and every redirect hop.
 
@@ -113,17 +233,25 @@ def fetch_url_bytes_governed(
     opener = urllib.request.build_opener(
         GovernedRedirectHandler(allowed_domains)
     )
-    req = urllib.request.Request(url, headers={"User-Agent": user_agent})  # ruff: ignore[suspicious-url-open-usage]
-    with opener.open(req, timeout=timeout) as resp:
-        final_url: str = str(resp.geturl())
-        final_parsed = urllib.parse.urlparse(final_url)
-        if final_parsed.netloc.lower() not in allowed_domains:
-            raise PermissionError(
-                f"Final response host '{final_parsed.netloc}' is not in allowed domains: "
-                f"{sorted(allowed_domains)}"
-            )
-        content: bytes = bytes(resp.read())
-        return content, final_url
+    req_headers = dict(DEFAULT_HARVEST_HEADERS)
+    if user_agent:
+        req_headers["User-Agent"] = user_agent
+    if headers:
+        req_headers.update(headers)
+
+    req = urllib.request.Request(url, headers=req_headers)  # ruff: ignore[suspicious-url-open-usage]
+    try:
+        with opener.open(req, timeout=timeout) as resp:
+            final_url = str(resp.geturl())
+            content = bytes(resp.read())
+    except PermissionError:
+        raise
+    except TimeoutError, urllib.error.URLError, ConnectionError, OSError:
+        return _fetch_via_curl_fallback(
+            url, allowed_domains, req_headers, timeout
+        )
+    _validate_final_host(final_url, allowed_domains)
+    return content, final_url
 
 
 @dataclass(frozen=True)
@@ -333,6 +461,40 @@ def discover_mbs_schedule_resources(
     return discovered
 
 
+def generate_medicare_candidate_slugs(now: datetime) -> list[str]:
+    """Generate prioritized candidate publication URLs on health.gov.au."""
+    current_fy_end = (
+        now.year + 1 if now.month >= AUSTRALIAN_FY_START_MONTH else now.year
+    )
+    # In the Australian fiscal calendar (starts in July / month 7):
+    # - Months 7..10 (Jul-Oct): Q1 of current FY in progress, no reports published yet.
+    # - Months 11..12 (Nov-Dec) & Months 1..6 (Jan-Jun): Q1..Q3 reports are published.
+    is_current_fy_published = (
+        now.month < AUSTRALIAN_FY_START_MONTH
+        or now.month >= MEDICARE_Q1_PUBLICATION_MONTH
+    )
+    fy_start = current_fy_end if is_current_fy_published else current_fy_end - 1
+    fy_list = [
+        f"{y - 1}-{str(y)[2:]}" for y in range(current_fy_end - 1, fy_start + 1)
+    ]
+    quarters = ("june", "march", "december", "september")
+
+    slugs: list[str] = []
+    for fy in reversed(fy_list):
+        slugs.append(
+            f"https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-{fy}?language=en"
+        )
+        slugs.extend([
+            f"https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-state-and-territory-{q}-quarter-{fy}?language=en"
+            for q in quarters
+        ])
+        slugs.extend([
+            f"https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-summary-tables-july-to-{m}-{fy}?language=en"
+            for m in quarters
+        ])
+    return slugs
+
+
 def discover_health_gov_medicare_workbooks(
     subpage_fetcher: Callable[[str], str] | None = None,
     candidate_slugs: list[str] | None = None,
@@ -344,34 +506,24 @@ def discover_health_gov_medicare_workbooks(
 
     if subpage_fetcher is not None:
         if candidate_slugs is None:
-            now = datetime.now(UTC)
-            current_fy_end = (
-                now.year + 1
-                if now.month >= AUSTRALIAN_FY_START_MONTH
-                else now.year
+            candidate_slugs = generate_medicare_candidate_slugs(
+                datetime.now(UTC)
             )
-            fy_list = [
-                f"{y - 1}-{str(y)[2:]}"
-                for y in range(current_fy_end - 1, current_fy_end + 1)
-            ]
-            quarters = ["june", "march", "december", "september"]
-            months = ["june", "march", "december", "september"]
 
-            candidate_slugs = []
-            for fy in reversed(fy_list):
-                for q in quarters:
-                    candidate_slugs.append(
-                        f"https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-state-and-territory-{q}-quarter-{fy}?language=en"
-                    )
-                candidate_slugs.append(
-                    f"https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-{fy}?language=en"
-                )
-                for m in months:
-                    candidate_slugs.append(
-                        f"https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-summary-tables-july-to-{m}-{fy}?language=en"
-                    )
-
+        found_quarter_fy: set[str] = set()
+        found_ytd_fy: set[str] = set()
         for page_url in candidate_slugs:
+            m_q = re.search(
+                r"medicare-quarterly-statistics.*-(20\d{2}-\d{2})", page_url
+            )
+            if m_q and m_q.group(1) in found_quarter_fy:
+                continue
+            m_ytd = re.search(
+                r"medicare-statistics-year-to-date.*-(20\d{2}-\d{2})", page_url
+            )
+            if m_ytd and m_ytd.group(1) in found_ytd_fy:
+                continue
+
             try:
                 page_html = subpage_fetcher(page_url)
             except OSError, TimeoutError, ValueError:
@@ -381,11 +533,18 @@ def discover_health_gov_medicare_workbooks(
                 page_html,
                 re.IGNORECASE,
             )
+            has_xlsx = False
             for link in xlsx_links:
                 full = urllib.parse.urljoin(page_url, link)
                 if full not in seen:
                     seen.add(full)
                     discovered_urls.append(full)
+                    has_xlsx = True
+            if has_xlsx:
+                if m_q:
+                    found_quarter_fy.add(m_q.group(1))
+                if m_ytd:
+                    found_ytd_fy.add(m_ytd.group(1))
 
     if not discovered_urls and fallback_urls:
         return fallback_urls

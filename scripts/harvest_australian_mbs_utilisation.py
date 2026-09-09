@@ -13,11 +13,13 @@ import importlib
 import json
 import os
 import sys
+import urllib.error
 from pathlib import Path
 from typing import Any, cast
 
 from global_medicines_atlas.australian_harvesting import (
     ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+    DEFAULT_HARVEST_USER_AGENT,
     DiscoveredHarvestResource,
     HarvestStageResult,
     build_cumulative_harvest_manifest,
@@ -31,7 +33,7 @@ from global_medicines_atlas.australian_harvesting import (
 )
 
 DATASET = "edithatogo/australian-mbs-utilisation-archive"
-USER_AGENT = "GlobalMedicinesAtlas-MBSUtilisationHarvester/1.0"
+USER_AGENT = DEFAULT_HARVEST_USER_AGENT
 
 HEALTH_GOV_MEDICARE_FILES = [
     "https://www.health.gov.au/sites/default/files/2026-08/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26.xlsx",
@@ -43,7 +45,7 @@ DATA_GOV_MBS_GROUP_API = "https://data.gov.au/data/api/3/action/package_show?id=
 DATA_GOV_MBS_DEMOGRAPHICS_API = "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group-by-patient-demographics-report"
 
 
-def fetch_url_bytes(url: str, timeout: int = 120) -> tuple[bytes, str]:
+def fetch_url_bytes(url: str, timeout: int = 45) -> tuple[bytes, str]:
     return fetch_url_bytes_governed(
         url,
         allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
@@ -52,7 +54,7 @@ def fetch_url_bytes(url: str, timeout: int = 120) -> tuple[bytes, str]:
     )
 
 
-def fetch_url_text(url: str, timeout: int = 8) -> str:
+def fetch_url_text(url: str, timeout: int = 6) -> str:
     content, _final_url = fetch_url_bytes(url, timeout=timeout)
     return content.decode("utf-8", errors="ignore")
 
@@ -80,18 +82,15 @@ def discover_selected_resources(
             flush=True,
         )
 
-    if backfill_all:
-        try:
-            print(
-                "  Querying data.gov.au MBS demographics package...", flush=True
-            )
-            demographics_json = fetch_url_json(DATA_GOV_MBS_DEMOGRAPHICS_API)
-        except Exception as exc:
-            print(
-                f"Warning: could not fetch MBS demographics API: {exc}",
-                file=sys.stderr,
-                flush=True,
-            )
+    try:
+        print("  Querying data.gov.au MBS demographics package...", flush=True)
+        demographics_json = fetch_url_json(DATA_GOV_MBS_DEMOGRAPHICS_API)
+    except Exception as exc:
+        print(
+            f"Warning: could not fetch MBS demographics API: {exc}",
+            file=sys.stderr,
+            flush=True,
+        )
 
     print("  Discovering Medicare workbooks from health.gov.au...", flush=True)
     health_urls = discover_health_gov_medicare_workbooks(
@@ -121,24 +120,52 @@ def stage_resources(
         flush=True,
     )
     stages: list[HarvestStageResult] = []
+    failed_resources: list[dict[str, str]] = []
     for idx, r in enumerate(resources, start=1):
         print(
             f"  [{idx}/{len(resources)}] Fetching and staging {r.filename} from {r.url}...",
             flush=True,
         )
-        stage = stage_harvest_payload(
-            r,
-            stage_dir,
-            data_reader=fetch_url_bytes,
-            allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
-        )
-        stages.append(stage)
-        print(
-            f"  [{idx}/{len(resources)}] Staged {r.filename} ({stage.receipt.byte_count} bytes, sha256={stage.receipt.sha256[:12]}).",
-            flush=True,
+        try:
+            stage = stage_harvest_payload(
+                r,
+                stage_dir,
+                data_reader=fetch_url_bytes,
+                allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+            )
+            stages.append(stage)
+            print(
+                f"  [{idx}/{len(resources)}] Staged {r.filename} ({stage.receipt.byte_count} bytes, sha256={stage.receipt.sha256[:12]}).",
+                flush=True,
+            )
+        except (
+            TimeoutError,
+            urllib.error.URLError,
+            ConnectionError,
+            OSError,
+            RuntimeError,
+            ValueError,
+        ) as exc:
+            print(
+                f"  [{idx}/{len(resources)}] Warning: failed to stage {r.filename} from {r.url}: {exc}. Continuing.",
+                file=sys.stderr,
+                flush=True,
+            )
+            failed_resources.append({
+                "filename": r.filename,
+                "url": r.url,
+                "source_id": r.source_id,
+                "error": str(exc),
+            })
+
+    if not stages:
+        raise RuntimeError(
+            "No resources were successfully staged; cannot proceed."
         )
 
     manifest = build_harvest_manifest(DATASET, stages)
+    manifest["coverage_status"] = "partial" if failed_resources else "complete"
+    manifest["failed_resources"] = failed_resources
     manifest_path = stage_dir / "manifest.json"
     manifest_path.write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
@@ -347,6 +374,8 @@ def main() -> int:
         "revision": revision,
         "workflow_run": os.environ.get("GITHUB_RUN_ID", "local"),
         "workflow_commit": os.environ.get("GITHUB_SHA", "local"),
+        "coverage_status": manifest.get("coverage_status", "complete"),
+        "failed_resources": manifest.get("failed_resources", []),
         "anonymous_digest_verification": "passed",
         "verified_file_count": final_manifest["file_count"],
         "temporary_source_bytes_removed": False,
