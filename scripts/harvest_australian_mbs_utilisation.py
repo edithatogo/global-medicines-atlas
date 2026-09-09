@@ -46,7 +46,7 @@ DATA_GOV_MBS_GROUP_API = "https://data.gov.au/data/api/3/action/package_show?id=
 DATA_GOV_MBS_DEMOGRAPHICS_API = "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group-by-patient-demographics-report"
 
 
-def fetch_url_bytes(url: str, timeout: int = 45) -> tuple[bytes, str]:
+def fetch_url_bytes(url: str, timeout: int = 120) -> tuple[bytes, str]:
     return fetch_url_bytes_governed(
         url,
         allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,

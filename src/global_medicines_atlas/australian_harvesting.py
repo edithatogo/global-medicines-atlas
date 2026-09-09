@@ -157,7 +157,8 @@ def _fetch_via_curl_fallback(
     for _ in range(max_redirects + 1):
         _validate_final_host(current_url, allowed_domains)
 
-        curl_timeout = max(timeout, 120)
+        curl_timeout = timeout
+        connect_timeout = max(1, min(timeout, 20))
         with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
             tmp_path = Path(tmp_file.name)
         try:
@@ -170,13 +171,15 @@ def _fetch_via_curl_fallback(
                 "--proto",
                 "=https,http",
                 "--connect-timeout",
-                "20",
+                str(connect_timeout),
                 "--max-time",
                 str(curl_timeout),
                 "--retry",
                 "2",
                 "--retry-delay",
                 "1",
+                "--retry-max-time",
+                str(curl_timeout),
                 "--retry-all-errors",
                 "-o",
                 str(tmp_path),
