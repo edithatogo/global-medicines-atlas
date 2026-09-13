@@ -20,6 +20,7 @@ from .platinum_benefits import (
     BenefitsQuery,
     parse_benefits_filters,
 )
+from .platinum_edges import gold_edge_payload
 from .platinum_identity_service import (
     DatasetIdentityLookup,
     UnknownPlatinumResourceError,
@@ -183,6 +184,7 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
     dataset_identities: DatasetIdentityLookup | None = None,
     benefits: BenefitsLookup | None = None,
     historical_changes: HistoricalChangeService | None = None,
+    gold_edges: Any | None = None,
 ) -> FastAPI:
     """Create an API application with an explicitly injected query service."""
 
@@ -219,6 +221,43 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
         RequestValidationError,
         request_validation_error,
     )
+
+    @app.get(
+        f"{API_BASE_PATH}/edges",
+        response_model=None,
+        responses=_ERROR_RESPONSES,
+        tags=["evidence"],
+    )
+    def edges(  # pyright: ignore[reportUnusedFunction] -- FastAPI registers route
+        request: Request,
+        source_node_id: Annotated[str | None, Query(max_length=512)] = None,
+        target_node_id: Annotated[str | None, Query(max_length=512)] = None,
+        kind: Annotated[str | None, Query(max_length=512)] = None,
+        limit: Annotated[int, Query(ge=1, le=1000)] = 1000,
+    ) -> dict[str, Any] | JSONResponse:
+        if gold_edges is None:
+            return _error_response(
+                request,
+                status_code=503,
+                code=ErrorCode.SERVICE_UNAVAILABLE,
+                message="The Gold edge service is unavailable",
+                retryable=True,
+            )
+        try:
+            return gold_edge_payload(
+                gold_edges,
+                source_node_id=source_node_id,
+                target_node_id=target_node_id,
+                kind=kind,
+                max_rows=limit,
+            )
+        except ValueError:
+            return _error_response(
+                request,
+                status_code=422,
+                code=ErrorCode.INVALID_REQUEST,
+                message="The edge selectors are invalid",
+            )
 
     @app.api_route(
         f"{API_BASE_PATH}/comparisons",
