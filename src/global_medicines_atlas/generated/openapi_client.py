@@ -209,6 +209,23 @@ class GlobalMedicinesAtlasClient:
         query = _query(())
         return self._transport.request("GET", path, query)
 
+    def edges_api_v1_edges_get(
+        self,
+        *,
+        kind: str | None = None,
+        limit: int | None = None,
+        source_node_id: str | None = None,
+        target_node_id: str | None = None,
+    ) -> JsonValue:
+        path = "/api/v1/edges"
+        query = _query((
+            ("kind", kind),
+            ("limit", limit),
+            ("source_node_id", source_node_id),
+            ("target_node_id", target_node_id),
+        ))
+        return self._transport.request("GET", path, query)
+
     def evidence_api_v1_evidence_get(
         self,
         *,

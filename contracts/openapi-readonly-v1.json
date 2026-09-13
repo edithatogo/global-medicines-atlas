@@ -2580,6 +2580,92 @@
         "security": []
       }
     },
+    "/api/v1/edges": {
+      "get": {
+        "operationId": "edges_api_v1_edges_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "kind",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 1000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "source_node_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "target_node_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 512,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "application/json": {}
+          },
+          "400": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "422": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "503": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          }
+        },
+        "security": []
+      }
+    },
     "/api/v1/evidence": {
       "get": {
         "operationId": "evidence_api_v1_evidence_get",
