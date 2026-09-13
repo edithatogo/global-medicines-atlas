@@ -1,8 +1,13 @@
 from __future__ import annotations
 
 import pytest
+from fastapi.testclient import TestClient
 
+from global_medicines_atlas import api as api_mod
+from global_medicines_atlas.api import create_app
 from global_medicines_atlas.historical_change import (
+    HistoricalChange,
+    HistoricalChangePage,
     HistoricalChangeService,
     compare_historical_snapshots,
 )
@@ -33,3 +38,65 @@ def test_adapter_preserves_service_bounds(kwargs: dict[str, int]) -> None:
     service = HistoricalChangeService([])
     with pytest.raises(ValueError, match="paging bounds"):
         historical_change_page_payload(service, **kwargs)
+
+
+def test_history_api_is_bounded_and_preserves_unknown_missingness() -> None:
+    history = HistoricalChangeService([
+        compare_historical_snapshots(None, None),
+        compare_historical_snapshots(None, None),
+    ])
+    client = TestClient(
+        create_app(
+            object(),  # type: ignore[arg-type]
+            historical_changes=history,
+        )
+    )
+
+    response = client.get("/api/v1/history", params={"offset": 1, "limit": 1})
+
+    assert response.status_code == 503
+    assert response.json()["retryable"] is False
+    assert (
+        client.get("/api/v1/history", params={"offset": -1}).status_code == 422
+    )
+    assert client.post("/api/v1/history").status_code == 405
+    unavailable = TestClient(create_app(object()))  # type: ignore[arg-type]
+    assert unavailable.get("/api/v1/history").status_code == 503
+
+    class InvalidHistory:
+        def page(self, *, offset: int, limit: int):
+            del offset, limit
+            raise ValueError("invalid page")
+
+    invalid = TestClient(
+        create_app(
+            object(),  # type: ignore[arg-type]
+            historical_changes=InvalidHistory(),  # type: ignore[arg-type]
+        )
+    )
+    assert invalid.get("/api/v1/history").status_code == 422
+
+    item = HistoricalChange.model_construct(
+        left={},
+        right={},
+        availability="both_present",
+        comparison_state="compared",
+        changes=(),
+    )
+    page = HistoricalChangePage.model_construct(
+        items=(item,), offset=0, limit=1, total=1, next_offset=None
+    )
+
+    class StaticHistory:
+        def page(self, *, offset: int, limit: int) -> HistoricalChangePage:
+            del offset, limit
+            return page
+
+    available = TestClient(
+        create_app(object(), historical_changes=StaticHistory())
+    )  # type: ignore[arg-type]
+    assert available.get("/api/v1/history").status_code == 200
+    monkeypatch = pytest.MonkeyPatch()
+    monkeypatch.setattr(api_mod, "_MAX_HISTORY_PAGE_BYTES", 1)
+    assert available.get("/api/v1/history").status_code == 503
+    monkeypatch.undo()

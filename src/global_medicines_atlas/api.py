@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Callable, Mapping, Sequence
 from datetime import UTC, datetime
 from typing import Annotated, Any
@@ -12,6 +13,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 from pydantic import AwareDatetime, ValidationError
 
+from .historical_change import HistoricalChangePage, HistoricalChangeService
 from .platinum_benefits import (
     BenefitsLookup,
     BenefitsPage,
@@ -59,6 +61,7 @@ _ERROR_RESPONSES: dict[int | str, dict[str, Any]] = {
     503: {"model": ErrorEnvelope},
 }
 _MAX_REQUEST_ID_LENGTH = 128
+_MAX_HISTORY_PAGE_BYTES = 4 * 1024 * 1024
 
 
 def _request_id(request: Request) -> str:
@@ -179,6 +182,7 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
     *,
     dataset_identities: DatasetIdentityLookup | None = None,
     benefits: BenefitsLookup | None = None,
+    historical_changes: HistoricalChangeService | None = None,
 ) -> FastAPI:
     """Create an API application with an explicitly injected query service."""
 
@@ -473,6 +477,65 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
         responses={**_ERROR_RESPONSES, 404: {"model": ErrorEnvelope}},
         tags=["benefits"],
         summary="Query a bounded window of admitted Australian benefit evidence",
+    )
+
+    def historical_change_route(
+        request: Request,
+        response: Response,
+        offset: Annotated[int, Query(ge=0)] = 0,
+        limit: Annotated[int, Query(ge=1, le=1000)] = 100,
+    ) -> HistoricalChangePage | JSONResponse:
+        if historical_changes is None:
+            return _error_response(
+                request,
+                status_code=503,
+                code=ErrorCode.SERVICE_UNAVAILABLE,
+                message="The historical change service is unavailable",
+                retryable=True,
+            )
+        try:
+            result = historical_changes.page(offset=offset, limit=limit)
+        except ValueError:
+            return _error_response(
+                request,
+                status_code=422,
+                code=ErrorCode.INVALID_REQUEST,
+                message="The historical change page is invalid",
+            )
+        if any(
+            item.left is None or item.right is None for item in result.items
+        ):
+            return _error_response(
+                request,
+                status_code=503,
+                code=ErrorCode.SERVICE_UNAVAILABLE,
+                message="Historical observations lack attributable source metadata",
+                retryable=False,
+            )
+        encoded = json.dumps(
+            result.model_dump(mode="json"),
+            ensure_ascii=False,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        if len(encoded) > _MAX_HISTORY_PAGE_BYTES:
+            return _error_response(
+                request,
+                status_code=503,
+                code=ErrorCode.SERVICE_UNAVAILABLE,
+                message="Historical change page exceeds the response byte limit",
+                retryable=False,
+            )
+        response.headers["cache-control"] = "no-store"
+        return result
+
+    app.add_api_route(
+        f"{API_BASE_PATH}/history",
+        historical_change_route,
+        methods=["GET"],
+        response_model=HistoricalChangePage,
+        responses=_ERROR_RESPONSES,
+        tags=["history"],
+        summary="Inspect bounded source-native historical change observations",
     )
 
     @app.api_route(
