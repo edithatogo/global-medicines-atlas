@@ -9,7 +9,7 @@ import os
 import shutil
 import tomllib
 from pathlib import Path
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 from global_medicines_atlas.medstat_private_acquisition import (
     CHECKSUM,
@@ -34,7 +34,14 @@ AUTHORIZATION = (
 
 
 def _download(url: str) -> bytes:
-    with urlopen(url, timeout=180) as response:  # ruff: ignore[suspicious-url-open-usage]
+    request = Request(  # ruff: ignore[suspicious-url-open-usage]
+        url,
+        headers={
+            "Accept": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "User-Agent": "global-medicines-atlas/1.0 (authorized aggregate acquisition)",
+        },
+    )
+    with urlopen(request, timeout=180) as response:  # ruff: ignore[suspicious-url-open-usage]
         return response.read()
 
 
