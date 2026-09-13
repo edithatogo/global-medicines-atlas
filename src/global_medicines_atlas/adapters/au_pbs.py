@@ -5,6 +5,7 @@ from __future__ import annotations
 import fnmatch
 import hashlib
 from dataclasses import dataclass
+from datetime import UTC, date, datetime, time
 from io import BytesIO
 from itertools import islice
 from xml.etree import (  # ruff: ignore[suspicious-xml-etree-import]
@@ -22,6 +23,7 @@ from ..models import (
     EvidenceStatus,
     Identifier,
     MedicineConcept,
+    Provenance,
     StatusAssertion,
 )
 from ..parser_safety import ParserPolicy, parse_xml
@@ -346,6 +348,106 @@ def project_pbs_xml(
             )
         )
     return tuple(sorted(records, key=lambda record: record.concept.concept_id))
+
+
+def project_pbs_v3_archive(
+    archive: PbsV3Archive,
+    receipt: SourceReceipt,
+) -> tuple[CanonicalMedicineRecord, ...]:
+    """Project a bounded PBS v3 archive into canonical funding records.
+
+    AMT and ATC values remain source-referenced identifiers. This projector
+    neither resolves terminology nor asserts classification or regulation.
+    """
+    if receipt.source.source_id != SOURCE_ID:
+        raise ValueError(f"Expected source_id {SOURCE_ID!r}")
+    if receipt.source.jurisdiction != "AUS":
+        raise ValueError("Expected jurisdiction 'AUS'")
+    if receipt.payload.sha256 != archive.archive_sha256:
+        raise ValueError("Receipt payload evidence does not match PBS archive")
+    effective_at = _pbs_v3_effective_at(archive.effective_date)
+    provenance = Provenance(
+        source_id=receipt.source.source_id,
+        source_uri=str(receipt.retrieval.uri),
+        retrieved_at=receipt.retrieval.retrieved_at,
+        effective_at=effective_at,
+        source_sha256=archive.archive_sha256,
+        source_version=receipt.source.catalog_version,
+        transformation="au-pbs-v3-canonical-v1",
+    )
+    records: list[CanonicalMedicineRecord] = []
+    for source_record in archive.records:
+        concept_id = f"au-pbs:{source_record.item_code}"
+        identifiers = [
+            Identifier(
+                system="https://www.pbs.gov.au/medicine/item/",
+                value=source_record.item_code,
+                identifier_type="pbs-item-code",
+            )
+        ]
+        identifiers.extend(
+            Identifier(
+                system="https://www.pbs.gov.au/amt/reference/",
+                value=code,
+                identifier_type="amt-reference",
+            )
+            for code, _ in source_record.amt_references
+        )
+        identifiers.extend(
+            Identifier(
+                system=resource,
+                value=code,
+                identifier_type="amt-reference-resource",
+            )
+            for code, resource in source_record.amt_references
+            if resource is not None
+        )
+        identifiers.extend(
+            Identifier(
+                system="https://www.whocc.no/atc/reference/",
+                value=code,
+                identifier_type="atc-reference",
+            )
+            for code in source_record.atc_codes
+        )
+        records.append(
+            CanonicalMedicineRecord(
+                concept=MedicineConcept(
+                    concept_id=concept_id,
+                    jurisdiction="AUS",
+                    level="presentation",
+                    preferred_name=source_record.product_name,
+                    identifiers=tuple(identifiers),
+                ),
+                assertions=(
+                    StatusAssertion(
+                        assertion_id=f"{concept_id}:funding",
+                        concept_id=concept_id,
+                        jurisdiction="AUS",
+                        kind=AssertionKind.FUNDING,
+                        authority=receipt.source.authority,
+                        status_code="listed",
+                        evidence_status=(
+                            EvidenceStatus.CONFIRMED
+                            if receipt.satisfies_live_gate
+                            else EvidenceStatus.UNKNOWN
+                        ),
+                        effective_from=effective_at,
+                        restrictions=source_record.restrictions,
+                        provenance=provenance,
+                    ),
+                ),
+                provenance=(provenance,),
+            )
+        )
+    return tuple(sorted(records, key=lambda record: record.concept.concept_id))
+
+
+def _pbs_v3_effective_at(value: str | None) -> datetime | None:
+    """Convert an official PBS v3 calendar date to an aware instant."""
+    if value is None:
+        return None
+    return datetime.combine(date.fromisoformat(value), time.min, tzinfo=UTC)
 
 
 def _fixture_xml(payload: bytes) -> ET.Element:
