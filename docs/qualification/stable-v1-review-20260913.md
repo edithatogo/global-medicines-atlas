@@ -13,10 +13,14 @@ Stable v1 still requires its existing implementation, evidence and human gates.
 - [x] **New Tests**: Yes — failed-first controls cover runtime/schema parity,
   copied-model serialization, readiness, duplicate gates, state preservation,
   lower maturity and unaccepted recovery risk.
-- [ ] **Test Coverage**: Full harness and hosted results are recorded in the
-  append-only track evidence ledger; focused checks alone do not qualify release.
-- [x] **Test Results**: 112 focused release, authority, workflow and Stable v1
-  contract tests passed before full validation.
+- [x] **Test Coverage**: Local suite reports 97% rounded coverage. All 38 hosted
+  checks pass at `de176cd7297a4d5f68c71387cbd22c0e7b38329b`, including
+  Linux mutation, Mojo and Codecov. Local full harness stops at the mutation
+  survivor baseline after macOS native fork failures; no threshold was changed.
+- [x] **Test Results**: 127 focused tests pass including monitoring. The final
+  full-suite run passes 4,892 tests with one optional PyIceberg skip. The first
+  run detected a stale schema-bound monitoring receipt; regeneration corrected
+  its bindings before the passing run.
 
 ## Findings
 
@@ -28,8 +32,8 @@ Stable v1 still requires its existing implementation, evidence and human gates.
   verified states, raised lower maturity, replaced failed technical gates with
   passed states and accepted a newly unresolved production-recovery risk.
   Duplicate gate identifiers also let the last entry erase an earlier failure.
-- **Fix**: Preserve supplied non-passing states, blockers, recovery disposition
-  and technical evidence. Known maturity ceilings can lower readiness but
+- **Fix**: Preserve non-passing technical states, requirement blockers, unaccepted
+  recovery disposition and technical evidence. Known maturity ceilings can lower readiness but
   cannot raise it. Reject duplicate gate IDs before constructing the map.
 - **Boundary**: This remains a reconciliation tool, not an independent evidence
   verifier. Existing blocked gates still require observable acceptance evidence.
