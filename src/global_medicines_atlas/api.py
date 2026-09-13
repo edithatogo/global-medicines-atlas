@@ -11,7 +11,7 @@ from uuid import uuid4
 from fastapi import FastAPI, Path, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
-from pydantic import AwareDatetime, ValidationError
+from pydantic import AwareDatetime, BaseModel, ConfigDict, ValidationError
 
 from .historical_change import HistoricalChangePage, HistoricalChangeService
 from .platinum_benefits import (
@@ -20,6 +20,7 @@ from .platinum_benefits import (
     BenefitsQuery,
     parse_benefits_filters,
 )
+from .platinum_edges import gold_edge_payload
 from .platinum_identity_service import (
     DatasetIdentityLookup,
     UnknownPlatinumResourceError,
@@ -62,6 +63,29 @@ _ERROR_RESPONSES: dict[int | str, dict[str, Any]] = {
 }
 _MAX_REQUEST_ID_LENGTH = 128
 _MAX_HISTORY_PAGE_BYTES = 4 * 1024 * 1024
+
+
+class GoldEdgeItem(BaseModel):
+    """One source-backed structural Gold adjacency assertion."""
+
+    model_config = ConfigDict(extra="allow")
+
+    edge_id: str
+    kind: str
+    source_node_id: str
+    target_node_id: str
+    evidence: dict[str, Any]
+    controls: dict[str, Any]
+
+
+class GoldEdgePage(BaseModel):
+    """Typed bounded response envelope for structural Gold edges."""
+
+    schema_name: str
+    schema_version: str
+    qualification: str
+    total: int
+    items: list[GoldEdgeItem]
 
 
 def _request_id(request: Request) -> str:
@@ -183,6 +207,7 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
     dataset_identities: DatasetIdentityLookup | None = None,
     benefits: BenefitsLookup | None = None,
     historical_changes: HistoricalChangeService | None = None,
+    gold_edges: Any | None = None,
 ) -> FastAPI:
     """Create an API application with an explicitly injected query service."""
 
@@ -219,6 +244,45 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
         RequestValidationError,
         request_validation_error,
     )
+
+    @app.get(
+        f"{API_BASE_PATH}/edges",
+        response_model=GoldEdgePage,
+        responses=_ERROR_RESPONSES,
+        tags=["evidence"],
+    )
+    def edges(  # pyright: ignore[reportUnusedFunction] -- FastAPI registers route
+        request: Request,
+        source_node_id: Annotated[str | None, Query(max_length=512)] = None,
+        target_node_id: Annotated[str | None, Query(max_length=512)] = None,
+        kind: Annotated[str | None, Query(max_length=512)] = None,
+        limit: Annotated[int, Query(ge=1, le=1000)] = 1000,
+    ) -> GoldEdgePage | JSONResponse:
+        if gold_edges is None:
+            return _error_response(
+                request,
+                status_code=503,
+                code=ErrorCode.SERVICE_UNAVAILABLE,
+                message="The Gold edge service is unavailable",
+                retryable=True,
+            )
+        try:
+            return GoldEdgePage.model_validate(
+                gold_edge_payload(
+                    gold_edges,
+                    source_node_id=source_node_id,
+                    target_node_id=target_node_id,
+                    kind=kind,
+                    max_rows=limit,
+                )
+            )
+        except ValueError:
+            return _error_response(
+                request,
+                status_code=422,
+                code=ErrorCode.INVALID_REQUEST,
+                message="The edge selectors are invalid",
+            )
 
     @app.api_route(
         f"{API_BASE_PATH}/comparisons",

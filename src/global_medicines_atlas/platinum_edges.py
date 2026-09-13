@@ -8,7 +8,9 @@ assertion surface.
 
 from __future__ import annotations
 
+import json
 from operator import itemgetter
+from typing import Any
 
 import pyarrow as pa
 
@@ -57,3 +59,32 @@ def select_gold_edges(
         raise ValueError("edge row bound exceeded")
     selected.sort(key=itemgetter("edge_id"))
     return pa.Table.from_pylist(selected, schema=edges.schema)
+
+
+def gold_edge_payload(
+    edges: pa.Table,
+    *,
+    source_node_id: str | None = None,
+    target_node_id: str | None = None,
+    kind: str | None = None,
+    max_rows: int = MAX_EDGE_ROWS,
+) -> dict[str, Any]:
+    """Render a bounded structural edge page with decoded provenance fields."""
+    selected = select_gold_edges(
+        edges,
+        source_node_id=source_node_id,
+        target_node_id=target_node_id,
+        kind=kind,
+        max_rows=max_rows,
+    )
+    items = selected.to_pylist()
+    for item in items:
+        item["evidence"] = json.loads(item.pop("evidence_json"))
+        item["controls"] = json.loads(item.pop("controls_json"))
+    return {
+        "schema_name": selected.schema.metadata[b"schema_name"].decode(),
+        "schema_version": selected.schema.metadata[b"schema_version"].decode(),
+        "qualification": selected.schema.metadata[b"qualification"].decode(),
+        "total": len(items),
+        "items": items,
+    }

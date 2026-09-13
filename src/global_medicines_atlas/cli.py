@@ -15,6 +15,8 @@ from pydantic import ValidationError
 
 from .comparison_validity import abstaining_status_comparison_validity
 from .historical_change_configuration import load_historical_change_service
+from .platinum_edge_configuration import load_gold_edges
+from .platinum_edges import gold_edge_payload
 from .product_contracts import (
     API_VERSION,
     MAX_EXPORT_ROWS,
@@ -590,6 +592,33 @@ def history_query(
             "The historical evidence file is invalid or unavailable",
         )
     typer.echo(page.model_dump_json())
+
+
+@app.command("edges")
+def edges_query(
+    edge_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
+    source_node_id: Annotated[str | None, typer.Option()] = None,
+    target_node_id: Annotated[str | None, typer.Option()] = None,
+    kind: Annotated[str | None, typer.Option()] = None,
+    limit: Annotated[int, typer.Option(min=1, max=1000)] = 1000,
+) -> None:
+    """Inspect bounded structural Gold evidence edges."""
+    try:
+        payload = gold_edge_payload(
+            load_gold_edges(
+                edge_file,
+                source_node_id=source_node_id,
+                target_node_id=target_node_id,
+                kind=kind,
+                max_rows=limit,
+            ),
+        )
+    except OSError, ValueError:
+        _fail(
+            ErrorCode.INVALID_REQUEST,
+            "The Gold edge file or selectors are invalid",
+        )
+    typer.echo(json.dumps(payload, sort_keys=True, separators=(",", ":")))
 
 
 @app.command("benefits")
