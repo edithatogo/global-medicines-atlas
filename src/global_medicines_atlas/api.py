@@ -11,7 +11,7 @@ from uuid import uuid4
 from fastapi import FastAPI, Path, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
-from pydantic import AwareDatetime, ValidationError
+from pydantic import AwareDatetime, BaseModel, ConfigDict, ValidationError
 
 from .historical_change import HistoricalChangePage, HistoricalChangeService
 from .platinum_benefits import (
@@ -63,6 +63,29 @@ _ERROR_RESPONSES: dict[int | str, dict[str, Any]] = {
 }
 _MAX_REQUEST_ID_LENGTH = 128
 _MAX_HISTORY_PAGE_BYTES = 4 * 1024 * 1024
+
+
+class GoldEdgeItem(BaseModel):
+    """One source-backed structural Gold adjacency assertion."""
+
+    model_config = ConfigDict(extra="allow")
+
+    edge_id: str
+    kind: str
+    source_node_id: str
+    target_node_id: str
+    evidence: dict[str, Any]
+    controls: dict[str, Any]
+
+
+class GoldEdgePage(BaseModel):
+    """Typed bounded response envelope for structural Gold edges."""
+
+    schema_name: str
+    schema_version: str
+    qualification: str
+    total: int
+    items: list[GoldEdgeItem]
 
 
 def _request_id(request: Request) -> str:
@@ -224,7 +247,7 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
 
     @app.get(
         f"{API_BASE_PATH}/edges",
-        response_model=None,
+        response_model=GoldEdgePage,
         responses=_ERROR_RESPONSES,
         tags=["evidence"],
     )
@@ -234,7 +257,7 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
         target_node_id: Annotated[str | None, Query(max_length=512)] = None,
         kind: Annotated[str | None, Query(max_length=512)] = None,
         limit: Annotated[int, Query(ge=1, le=1000)] = 1000,
-    ) -> dict[str, Any] | JSONResponse:
+    ) -> GoldEdgePage | JSONResponse:
         if gold_edges is None:
             return _error_response(
                 request,
@@ -244,12 +267,14 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
                 retryable=True,
             )
         try:
-            return gold_edge_payload(
-                gold_edges,
-                source_node_id=source_node_id,
-                target_node_id=target_node_id,
-                kind=kind,
-                max_rows=limit,
+            return GoldEdgePage.model_validate(
+                gold_edge_payload(
+                    gold_edges,
+                    source_node_id=source_node_id,
+                    target_node_id=target_node_id,
+                    kind=kind,
+                    max_rows=limit,
+                )
             )
         except ValueError:
             return _error_response(

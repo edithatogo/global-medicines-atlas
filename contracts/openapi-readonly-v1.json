@@ -1116,6 +1116,81 @@
       ],
       "type": "object"
     },
+    "GoldEdgeItem": {
+      "additionalProperties": true,
+      "properties": {
+        "controls": {
+          "additionalProperties": true,
+          "title": "Controls",
+          "type": "object"
+        },
+        "edge_id": {
+          "title": "Edge Id",
+          "type": "string"
+        },
+        "evidence": {
+          "additionalProperties": true,
+          "title": "Evidence",
+          "type": "object"
+        },
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        },
+        "source_node_id": {
+          "title": "Source Node Id",
+          "type": "string"
+        },
+        "target_node_id": {
+          "title": "Target Node Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "edge_id",
+        "kind",
+        "source_node_id",
+        "target_node_id",
+        "evidence",
+        "controls"
+      ],
+      "type": "object"
+    },
+    "GoldEdgePage": {
+      "properties": {
+        "items": {
+          "items": {
+            "$ref": "#/components/schemas/GoldEdgeItem"
+          },
+          "title": "Items",
+          "type": "array"
+        },
+        "qualification": {
+          "title": "Qualification",
+          "type": "string"
+        },
+        "schema_name": {
+          "title": "Schema Name",
+          "type": "string"
+        },
+        "schema_version": {
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "total": {
+          "title": "Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema_name",
+        "schema_version",
+        "qualification",
+        "total",
+        "items"
+      ],
+      "type": "object"
+    },
     "HealthCheck": {
       "additionalProperties": false,
       "properties": {
@@ -2645,7 +2720,9 @@
         ],
         "responses": {
           "200": {
-            "application/json": {}
+            "application/json": {
+              "$ref": "#/components/schemas/GoldEdgePage"
+            }
           },
           "400": {
             "application/json": {
