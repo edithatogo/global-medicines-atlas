@@ -202,6 +202,7 @@ class AcquireNewNotLastResortError(ValueError):
 
 HuggingFaceIndex = Mapping[str, Sequence[str]]
 GitHubIndex = Mapping[str, Sequence[str]]
+HuggingFaceRevisionIndex = Mapping[str, str]
 
 
 def load_ecosystem_document(root: Path) -> dict[str, object]:
@@ -347,11 +348,13 @@ def search_hugging_face(
     *,
     ecosystem: Mapping[str, object],
     huggingface_index: HuggingFaceIndex | None = None,
+    huggingface_revisions: HuggingFaceRevisionIndex | None = None,
 ) -> tuple[ReuseCandidate, ...]:
     """Search declared HF datasets including the medicines catalogue."""
 
     hits: list[ReuseCandidate] = []
     extra = huggingface_index or {}
+    revisions = huggingface_revisions or {}
     found_catalogue = False
     for resource in _tables(ecosystem, "hugging_face"):
         repository = str(resource.get("repository", ""))
@@ -381,9 +384,12 @@ def search_hugging_face(
                 source_id=source_id,
                 kind=kind,
                 revision=(
-                    str(resource["snapshot"])
-                    if resource.get("snapshot") is not None
-                    else None
+                    revisions.get(repository)
+                    or (
+                        str(resource["snapshot"])
+                        if resource.get("snapshot") is not None
+                        else None
+                    )
                 ),
             )
         )
@@ -463,6 +469,7 @@ def build_discovery_snapshot(
     repository_root: Path,
     catalog: Iterable[MedicineDataSource] | None = None,
     huggingface_index: HuggingFaceIndex | None = None,
+    huggingface_revisions: HuggingFaceRevisionIndex | None = None,
     github_index: GitHubIndex | None = None,
     generated_at: datetime | None = None,
     freshness_seconds: int = 86_400,
@@ -487,6 +494,7 @@ def build_discovery_snapshot(
         source_id,
         ecosystem=ecosystem,
         huggingface_index=huggingface_index or {},
+        huggingface_revisions=huggingface_revisions,
     )
     surfaces = (
         _surface("local_clones", source_id, local, available=True),
@@ -581,6 +589,7 @@ def evaluate_reuse_gate(
     repository_root: Path,
     catalog: Iterable[MedicineDataSource] | None = None,
     huggingface_index: HuggingFaceIndex | None = None,
+    huggingface_revisions: HuggingFaceRevisionIndex | None = None,
     github_index: GitHubIndex | None = None,
     requested: ReuseDisposition | None = None,
     discovery_snapshot: ReuseDiscoverySnapshot | None = None,
@@ -605,6 +614,7 @@ def evaluate_reuse_gate(
             source_id,
             ecosystem=ecosystem,
             huggingface_index=huggingface_index,
+            huggingface_revisions=huggingface_revisions,
         ),
         *search_source_registry(source_id, catalog=catalog),
     )
@@ -618,6 +628,7 @@ def evaluate_reuse_gate(
         huggingface_index={}
         if huggingface_index is None
         else huggingface_index,
+        huggingface_revisions=huggingface_revisions,
         github_index={} if github_index is None else github_index,
     )
     searched = tuple(surface.name for surface in snapshot.surfaces)

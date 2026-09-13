@@ -53,32 +53,40 @@ def _github_index() -> dict[str, tuple[str, ...]]:
     return index
 
 
-def _huggingface_index() -> dict[str, tuple[str, ...]]:
+def _huggingface_index() -> tuple[dict[str, tuple[str, ...]], dict[str, str]]:
     """Read declared Hugging Face repository trees before acquisition."""
     sdk = importlib.import_module("huggingface_hub")
     with (ROOT / ".context/ecosystem.toml").open("rb") as stream:
         ecosystem = tomllib.load(stream)
     api = sdk.HfApi()
     index: dict[str, tuple[str, ...]] = {}
+    revisions: dict[str, str] = {}
     for resource in ecosystem.get("hugging_face", []):
         repository = resource["repository"]
+        info = api.dataset_info(repository)
+        if not info.sha:
+            raise RuntimeError("Hugging Face reuse repository has no revision")
         entries = api.list_repo_tree(
             repository,
             repo_type="dataset",
+            revision=info.sha,
             recursive=True,
         )
         index[repository] = tuple(entry.path for entry in entries)
-    return index
+        revisions[repository] = info.sha
+    return index, revisions
 
 
 def _reuse_decision() -> ReuseGateDecision:
     """Evaluate all required discovery surfaces before the Medstat download."""
+    huggingface_index, huggingface_revisions = _huggingface_index()
     return evaluate_reuse_gate(
         SOURCE_ID,
         repository_root=ROOT,
         catalog=load_source_catalog(),
         github_index=_github_index(),
-        huggingface_index=_huggingface_index(),
+        huggingface_index=huggingface_index,
+        huggingface_revisions=huggingface_revisions,
     )
 
 
