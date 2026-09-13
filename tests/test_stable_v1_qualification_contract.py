@@ -607,3 +607,23 @@ def test_completed_contract_work_and_phase3a_checkpoint_are_reconciled() -> (
         "publication action",
         "rights determination",
     }
+
+
+@pytest.mark.parametrize("requirement_id", ["M-046", "M-095", "M-105"])
+def test_reconciliation_retains_additional_known_requirement_blockers(
+    requirement_id: str,
+) -> None:
+    raw = _load(QUALIFICATION)
+    item = next(
+        row
+        for row in raw["requirements"]
+        if row["requirement_id"] == requirement_id
+    )
+    item["blocker_ids"].append("new-evidence-required")
+    result = build_contract(raw)
+    observed = next(
+        row
+        for row in result["requirements"]
+        if row["requirement_id"] == requirement_id
+    )
+    assert "new-evidence-required" in observed["blocker_ids"]

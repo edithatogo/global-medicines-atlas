@@ -96,19 +96,25 @@ def build_contract(  # ruff: ignore[too-many-branches]
         requirement_id = requirement["requirement_id"]
         if requirement_id == "M-046":
             requirement["state"] = "blocked"
-            requirement["blocker_ids"] = ["renovate-output-verification"]
+            requirement["blocker_ids"] = _append_unique(
+                requirement["blocker_ids"], ["renovate-output-verification"]
+            )
             requirement["evidence"] = _append_unique(
                 requirement["evidence"], [QUALITY_CLOSURE]
             )
         elif requirement_id == "M-095":
             requirement["state"] = "blocked"
-            requirement["blocker_ids"] = ["stable-v1-bronze-current-scope"]
+            requirement["blocker_ids"] = _append_unique(
+                requirement["blocker_ids"], ["stable-v1-bronze-current-scope"]
+            )
             requirement["evidence"] = _append_unique(
                 requirement["evidence"], [BRONZE_PLAN, BRONZE_MATURITY]
             )
         elif requirement_id in AUSTRALIAN_HEALTH_REQUIREMENTS:
             requirement["state"] = "blocked"
-            requirement["blocker_ids"] = [AUSTRALIAN_HEALTH_GATE]
+            requirement["blocker_ids"] = _append_unique(
+                requirement["blocker_ids"], [AUSTRALIAN_HEALTH_GATE]
+            )
         elif requirement["evidence"] == ["conductor/requirements.md"]:
             requirement["evidence"] = _append_unique(
                 requirement["evidence"], [STABLE_LEDGER]
