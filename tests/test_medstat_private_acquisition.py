@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import json
 from datetime import UTC, datetime
+from io import BytesIO
 from pathlib import Path
+from zipfile import ZipFile
 
 import pytest
 
@@ -16,14 +18,38 @@ from global_medicines_atlas.medstat_private_acquisition import (
     PRIVATE_DATASET,
     MedstatQuery,
     exercise_medstat_private_acquisition,
+    require_authorized_medstat_query,
     require_medstat_authorization,
 )
+from global_medicines_atlas.reuse_gate import evaluate_reuse_gate
+from global_medicines_atlas.source_catalog import load_source_catalog
 
 ROOT = Path(__file__).resolve().parents[1]
 AUTHORIZATION = (
     ROOT
     / "quality/qualifications/nordic-utilisation-acquisition-authorization.json"
 )
+
+
+def workbook_payload() -> bytes:
+    """Return a minimal structurally valid OOXML workbook fixture."""
+    buffer = BytesIO()
+    with ZipFile(buffer, "w") as workbook:
+        workbook.writestr("[Content_Types].xml", "<Types />")
+        workbook.writestr("_rels/.rels", "<Relationships />")
+        workbook.writestr("xl/workbook.xml", "<workbook />")
+        workbook.writestr("xl/worksheets/sheet1.xml", "<worksheet />")
+    return buffer.getvalue()
+
+
+def reuse_decision():
+    return evaluate_reuse_gate(
+        acquisition.SOURCE_ID,
+        repository_root=ROOT,
+        catalog=load_source_catalog(),
+        github_index={},
+        huggingface_index={},
+    )
 
 
 def test_query_binds_the_single_approved_aggregate_scope() -> None:
@@ -41,6 +67,8 @@ def test_query_binds_the_single_approved_aggregate_scope() -> None:
         "https://medstat.dk/da/viewDataTables/medicineAndMedicalGroups/"
         "exportToExcel/"
     )
+    with pytest.raises(PermissionError, match="approved"):
+        require_authorized_medstat_query(MedstatQuery(years=(2024,)))
 
 
 def test_authorization_rejects_pending_or_public_scope(tmp_path: Path) -> None:
@@ -73,10 +101,11 @@ def test_private_acquisition_lands_recovers_and_archives(
     tmp_path: Path,
 ) -> None:
     result = exercise_medstat_private_acquisition(
-        payload=b"synthetic Medstat Excel export",
+        payload=workbook_payload(),
         output_dir=tmp_path / "output",
         authorization_path=AUTHORIZATION,
         observed_at=datetime(2026, 9, 13, tzinfo=UTC),
+        reuse_decision=reuse_decision(),
     )
     assert result.private_dataset == PRIVATE_DATASET
     assert result.public_release_authorized is False
@@ -95,6 +124,7 @@ def test_private_acquisition_rejects_empty_payload_and_unsafe_output(
             payload=b"",
             output_dir=tmp_path / "empty",
             authorization_path=AUTHORIZATION,
+            reuse_decision=reuse_decision(),
         )
     occupied = tmp_path / "occupied"
     occupied.mkdir()
@@ -104,6 +134,7 @@ def test_private_acquisition_rejects_empty_payload_and_unsafe_output(
             payload=b"payload",
             output_dir=occupied,
             authorization_path=AUTHORIZATION,
+            reuse_decision=reuse_decision(),
         )
 
 
@@ -113,10 +144,11 @@ def test_private_acquisition_rejects_naive_time_and_admission(
 ) -> None:
     with pytest.raises(ValueError, match="timezone-aware"):
         exercise_medstat_private_acquisition(
-            payload=b"payload",
+            payload=workbook_payload(),
             output_dir=tmp_path / "naive",
             authorization_path=AUTHORIZATION,
             observed_at=datetime.fromisoformat("2026-09-13T00:00:00"),
+            reuse_decision=reuse_decision(),
         )
 
     def rejected_landing(*_: object, **__: object) -> object:
@@ -129,8 +161,49 @@ def test_private_acquisition_rejects_naive_time_and_admission(
     )
     with pytest.raises(TypeError, match="not admitted"):
         exercise_medstat_private_acquisition(
-            payload=b"payload",
+            payload=workbook_payload(),
             output_dir=tmp_path / "rejected",
+            authorization_path=AUTHORIZATION,
+            observed_at=datetime(2026, 9, 13, tzinfo=UTC),
+            reuse_decision=reuse_decision(),
+        )
+
+
+def test_private_acquisition_rejects_non_workbook_and_missing_reuse_gate(
+    tmp_path: Path,
+) -> None:
+    with pytest.raises(ValueError, match="OOXML"):
+        exercise_medstat_private_acquisition(
+            payload=b"synthetic Medstat Excel export",
+            output_dir=tmp_path / "opaque",
+            authorization_path=AUTHORIZATION,
+            observed_at=datetime(2026, 9, 13, tzinfo=UTC),
+            reuse_decision=reuse_decision(),
+        )
+    arbitrary_zip = BytesIO()
+    with ZipFile(arbitrary_zip, "w") as archive:
+        archive.writestr("response.html", "<html>not a workbook</html>")
+    with pytest.raises(ValueError, match="required OOXML"):
+        exercise_medstat_private_acquisition(
+            payload=arbitrary_zip.getvalue(),
+            output_dir=tmp_path / "arbitrary-zip",
+            authorization_path=AUTHORIZATION,
+            observed_at=datetime(2026, 9, 13, tzinfo=UTC),
+            reuse_decision=reuse_decision(),
+        )
+    with pytest.raises(PermissionError, match="approved"):
+        exercise_medstat_private_acquisition(
+            payload=workbook_payload(),
+            output_dir=tmp_path / "custom-query",
+            authorization_path=AUTHORIZATION,
+            observed_at=datetime(2026, 9, 13, tzinfo=UTC),
+            query=MedstatQuery(years=(2024,)),
+            reuse_decision=reuse_decision(),
+        )
+    with pytest.raises(ValueError, match="reuse gate required"):
+        exercise_medstat_private_acquisition(
+            payload=workbook_payload(),
+            output_dir=tmp_path / "missing-reuse",
             authorization_path=AUTHORIZATION,
             observed_at=datetime(2026, 9, 13, tzinfo=UTC),
         )

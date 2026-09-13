@@ -7,6 +7,7 @@ import importlib
 import json
 import os
 import shutil
+import tomllib
 from pathlib import Path
 from urllib.request import urlopen
 
@@ -15,9 +16,15 @@ from global_medicines_atlas.medstat_private_acquisition import (
     MANIFEST,
     PRIVATE_ARCHIVE,
     PRIVATE_DATASET,
+    SOURCE_ID,
     MedstatQuery,
     exercise_medstat_private_acquisition,
 )
+from global_medicines_atlas.reuse_gate import (
+    ReuseGateDecision,
+    evaluate_reuse_gate,
+)
+from global_medicines_atlas.source_catalog import load_source_catalog
 
 ROOT = Path(__file__).resolve().parents[1]
 AUTHORIZATION = (
@@ -29,6 +36,52 @@ AUTHORIZATION = (
 def _download(url: str) -> bytes:
     with urlopen(url, timeout=180) as response:  # ruff: ignore[suspicious-url-open-usage]
         return response.read()
+
+
+def _github_index() -> dict[str, tuple[str, ...]]:
+    """Read pinned maintainer repository trees before acquiring source bytes."""
+    with (ROOT / ".context/ecosystem.toml").open("rb") as stream:
+        ecosystem = tomllib.load(stream)
+    index: dict[str, tuple[str, ...]] = {}
+    for resource in ecosystem.get("github", []):
+        repository = resource["repository"]
+        revision = resource["snapshot"]
+        url = f"https://api.github.com/repos/{repository}/git/trees/{revision}?recursive=1"
+        with urlopen(url, timeout=60) as response:
+            document = json.load(response)
+        index[repository] = tuple(item["path"] for item in document["tree"])
+    return index
+
+
+def _huggingface_index() -> dict[str, tuple[str, ...]]:
+    """Read declared Hugging Face repository trees before acquisition."""
+    sdk = importlib.import_module("huggingface_hub")
+    with (ROOT / ".context/ecosystem.toml").open("rb") as stream:
+        ecosystem = tomllib.load(stream)
+    api = sdk.HfApi()
+    index: dict[str, tuple[str, ...]] = {}
+    for resource in ecosystem.get("hugging_face", []):
+        repository = resource["repository"]
+        revision = resource.get("snapshot")
+        entries = api.list_repo_tree(
+            repository,
+            repo_type="dataset",
+            revision=revision,
+            recursive=True,
+        )
+        index[repository] = tuple(entry.path for entry in entries)
+    return index
+
+
+def _reuse_decision() -> ReuseGateDecision:
+    """Evaluate all required discovery surfaces before the Medstat download."""
+    return evaluate_reuse_gate(
+        SOURCE_ID,
+        repository_root=ROOT,
+        catalog=load_source_catalog(),
+        github_index=_github_index(),
+        huggingface_index=_huggingface_index(),
+    )
 
 
 def _upload_private_archive(output: Path, token: str) -> str:
@@ -80,12 +133,14 @@ def main() -> None:
     output = ROOT / "work" / "medstat-private"
     shutil.rmtree(output, ignore_errors=True)
     query = MedstatQuery()
+    reuse_decision = _reuse_decision()
     payload = _download(query.export_url())
     manifest = exercise_medstat_private_acquisition(
         payload=payload,
         output_dir=output,
         authorization_path=AUTHORIZATION,
         query=query,
+        reuse_decision=reuse_decision,
     )
     revision = _upload_private_archive(output, token)
     receipt = {

@@ -6,12 +6,15 @@ import json
 import shutil
 from datetime import UTC, datetime
 from hashlib import sha256
+from io import BytesIO
 from pathlib import Path
 from urllib.parse import quote
+from zipfile import BadZipFile, ZipFile
 
 from pydantic import AnyUrl
 
 from .bronze_landing import BronzeLanding, land_bronze_payload
+from .bronze_recovery import reconstruct_bronze
 from .models import FrozenModel
 from .nordic_utilisation_acquisition import load_nordic_authorization
 from .receipts import (
@@ -31,7 +34,7 @@ from .receipts import (
     require_temporal,
     temporal_identity_from_source,
 )
-from .reuse_gate import acquire_new_decision
+from .reuse_gate import ReuseGateDecision, require_reuse_decision
 from .us_live_bronze import copy_evidentiary_truth, write_private_corpus_archive
 
 SOURCE_ID = "dk-medstat-utilisation"
@@ -43,6 +46,20 @@ _EXPORT_ROOT = (
     "https://medstat.dk/da/viewDataTables/medicineAndMedicalGroups/"
     "exportToExcel/"
 )
+_APPROVED_QUERY = {
+    "year": ["2025"],
+    "region": ["0"],
+    "gender": ["A"],
+    "ageGroup": ["A"],
+    "searchVariable": ["turnover"],
+    "atcCode": ["X"],
+    "sector": ["2"],
+}
+_REQUIRED_XLSX_MEMBERS = frozenset({
+    "[Content_Types].xml",
+    "_rels/.rels",
+    "xl/workbook.xml",
+})
 
 
 class MedstatQuery(FrozenModel):
@@ -108,8 +125,36 @@ def require_medstat_authorization(authorization_path: Path) -> None:
         )
 
 
+def require_authorized_medstat_query(query: MedstatQuery) -> None:
+    """Reject query changes outside the maintainer-approved aggregate scope."""
+    if query.source_parameters() != _APPROVED_QUERY:
+        raise PermissionError(
+            "Medstat query must match the approved 2025 national turnover scope"
+        )
+
+
+def require_medstat_workbook(payload: bytes) -> None:
+    """Require a structurally valid OOXML workbook before Bronze admission."""
+    try:
+        with ZipFile(BytesIO(payload)) as workbook:
+            members = set(workbook.namelist())
+    except BadZipFile as error:
+        raise ValueError("Medstat export must be an OOXML workbook") from error
+    if not members >= _REQUIRED_XLSX_MEMBERS or not any(
+        name.startswith("xl/worksheets/") and name.endswith(".xml")
+        for name in members
+    ):
+        raise ValueError(
+            "Medstat export is missing required OOXML workbook members"
+        )
+
+
 def _receipt(
-    payload: bytes, *, observed_at: datetime, query: MedstatQuery
+    payload: bytes,
+    *,
+    observed_at: datetime,
+    query: MedstatQuery,
+    reuse: ReuseGateDecision,
 ) -> SourceReceipt:
     evidence = PayloadEvidence.from_bytes(payload)
     export_url = query.export_url()
@@ -138,7 +183,7 @@ def _receipt(
         ),
         payload=evidence,
         temporal=temporal,
-        reuse=acquire_new_decision(SOURCE_ID),
+        reuse=require_reuse_decision(reuse, SOURCE_ID, now=observed_at),
         rights_state=RightsState.PERMITTED,
         rights_reference=AnyUrl(
             "https://medstat.dk/apps/lms/public/dokumentation/"
@@ -169,6 +214,7 @@ def exercise_medstat_private_acquisition(
     authorization_path: Path,
     observed_at: datetime | None = None,
     query: MedstatQuery | None = None,
+    reuse_decision: ReuseGateDecision | None = None,
 ) -> MedstatPrivateManifest:
     """Land, recover, and privately archive one authorized Medstat export."""
     if not payload:
@@ -180,6 +226,9 @@ def exercise_medstat_private_acquisition(
     if timestamp.tzinfo is None:
         raise ValueError("Medstat acquisition time must be timezone-aware")
     selected = query or MedstatQuery()
+    require_authorized_medstat_query(selected)
+    require_medstat_workbook(payload)
+    reuse = require_reuse_decision(reuse_decision, SOURCE_ID, now=timestamp)
     output_dir.mkdir(parents=True, exist_ok=True)
     corpus = output_dir / "corpus"
     evidence = corpus / "evidence"
@@ -190,7 +239,12 @@ def exercise_medstat_private_acquisition(
         + "\n",
         encoding="utf-8",
     )
-    receipt = _receipt(payload, observed_at=timestamp, query=selected)
+    receipt = _receipt(
+        payload,
+        observed_at=timestamp,
+        query=selected,
+        reuse=reuse,
+    )
     landing = land_bronze_payload(
         payload,
         receipt,
@@ -204,10 +258,13 @@ def exercise_medstat_private_acquisition(
         raise TypeError("Medstat export was not admitted to Bronze")
     clean_room = corpus / "clean-room"
     copy_evidentiary_truth(corpus / "bronze", clean_room)
-    recovered_payloads = tuple((clean_room / "payloads").rglob("*"))
-    if len([path for path in recovered_payloads if path.is_file()]) != 1:
+    recovery = reconstruct_bronze(
+        clean_room,
+        fail_closed_on_incomplete=True,
+    )
+    if len(recovery.landings) != 1:
         raise ValueError(
-            "Medstat clean-room recovery did not preserve one payload"
+            "Medstat clean-room recovery did not reconstruct one acquisition"
         )
     archive_path = output_dir / PRIVATE_ARCHIVE
     archive_sha256, archive_byte_count = write_private_corpus_archive(
