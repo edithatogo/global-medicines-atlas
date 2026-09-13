@@ -84,7 +84,7 @@
     ]
   },
   "release_and_registration_gates": {
-    "renovate_app_dashboard": "not_observed",
+    "renovate_app_dashboard": "observed_issue_491_2026-09-13",
     "osf_draft_registration": "deprecated_superseded_by_ej5nf",
     "osf_registration": "ej5nf_historical_deprecated",
     "osf_structured_responses": "historical_verified_then_deprecated",

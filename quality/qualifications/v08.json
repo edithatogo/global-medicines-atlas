@@ -28,7 +28,7 @@
   ],
   "publication_authorized": false,
   "production_disaster_recovery_qualified": false,
-  "renovate_app_activation_verified": false,
+  "renovate_app_activation_verified": true,
   "limitations": [
     "External publication remains a separate human authority gate.",
     "Independent production backup storage, RPO, RTO and crash consistency are not qualified.",

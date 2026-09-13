@@ -92,7 +92,13 @@ def _retain_gate_observation(
     gate.update(updates)
 
 
-def build_contract(  # ruff: ignore[too-many-branches]
+def _renovate_output_observed() -> bool:
+    """Return whether the durable closure receipt records bot output."""
+    closure = json.loads((ROOT / QUALITY_CLOSURE).read_text(encoding="utf-8"))
+    return closure["renovate"]["dashboard_or_first_pr"] == "observed"
+
+
+def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
     raw: dict[str, Any],
 ) -> dict[str, Any]:
     """Reconcile known blockers without promoting supplied evidence states.
@@ -101,16 +107,25 @@ def build_contract(  # ruff: ignore[too-many-branches]
     Failed or unverified observations must survive regeneration unchanged.
     """
     contract = deepcopy(raw)
+    renovate_observed = _renovate_output_observed()
     for requirement in contract["requirements"]:
         requirement_id = requirement["requirement_id"]
         if requirement_id == "M-046":
-            requirement["state"] = "blocked"
-            requirement["blocker_ids"] = _append_unique(
-                requirement["blocker_ids"], ["renovate-output-verification"]
-            )
             requirement["evidence"] = _append_unique(
                 requirement["evidence"], [QUALITY_CLOSURE]
             )
+            if renovate_observed:
+                requirement["state"] = "verified"
+                requirement["blocker_ids"] = [
+                    blocker
+                    for blocker in requirement["blocker_ids"]
+                    if blocker != "renovate-output-verification"
+                ]
+            else:
+                requirement["state"] = "blocked"
+                requirement["blocker_ids"] = _append_unique(
+                    requirement["blocker_ids"], ["renovate-output-verification"]
+                )
         elif requirement_id == "M-095":
             requirement["state"] = "blocked"
             requirement["blocker_ids"] = _append_unique(
@@ -142,15 +157,26 @@ def build_contract(  # ruff: ignore[too-many-branches]
                 dimension["evidence"], [BRONZE_PLAN, BRONZE_MATURITY]
             )
         elif name == "security_and_supply_chain":
-            dimension["current_level"] = min(dimension["current_level"], "M4")
-            if dimension["state"] == "verified":
-                dimension["state"] = "partial"
-            dimension["blocker_ids"] = _append_unique(
-                dimension["blocker_ids"], ["renovate-output-verification"]
-            )
             dimension["evidence"] = _append_unique(
                 dimension["evidence"], [QUALITY_CLOSURE]
             )
+            if renovate_observed and dimension["state"] != "unverified":
+                dimension["current_level"] = "M5"
+                dimension["state"] = "verified"
+                dimension["blocker_ids"] = [
+                    blocker
+                    for blocker in dimension["blocker_ids"]
+                    if blocker != "renovate-output-verification"
+                ]
+            else:
+                dimension["current_level"] = min(
+                    dimension["current_level"], "M4"
+                )
+                if dimension["state"] == "verified":
+                    dimension["state"] = "partial"
+                dimension["blocker_ids"] = _append_unique(
+                    dimension["blocker_ids"], ["renovate-output-verification"]
+                )
         else:
             dimension["evidence"] = _append_unique(
                 dimension["evidence"], [INDEPENDENT_REPRODUCTION, STABLE_LEDGER]
@@ -164,11 +190,15 @@ def build_contract(  # ruff: ignore[too-many-branches]
         if risk["risk_id"] == "RISK-002":
             risk.update({
                 "description": (
-                    "Maintainer-confirmed Renovate activation has not produced "
+                    "Renovate's Dependency Dashboard is observed at issue #491."
+                    if renovate_observed
+                    else "Maintainer-confirmed Renovate activation has not produced "
                     "an observable Dependency Dashboard or update pull request."
                 ),
-                "disposition": "unresolved",
-                "blocking": True,
+                "disposition": "mitigated"
+                if renovate_observed
+                else "unresolved",
+                "blocking": not renovate_observed,
                 "evidence": [QUALITY_CLOSURE],
             })
 
@@ -204,18 +234,22 @@ def build_contract(  # ruff: ignore[too-many-branches]
         else "renovate-output-verification"
     )
     renovate_gate = gates.pop(renovate_gate_id)
-    _retain_gate_observation(
-        renovate_gate,
-        {
-            "gate_id": "renovate-output-verification",
-            "description": (
-                "Observe a Renovate Dependency Dashboard or first update pull request "
-                "after maintainer-confirmed App activation."
-            ),
-            "state": "blocked",
-            "evidence": [QUALITY_CLOSURE],
-        },
-    )
+    renovate_gate.update({
+        "gate_id": "renovate-output-verification",
+        "description": (
+            "Observe a Renovate Dependency Dashboard or first update pull request "
+            "after maintainer-confirmed App activation."
+        ),
+        "state": (
+            "passed"
+            if renovate_observed
+            and renovate_gate["state"] not in {"failed", "unverified"}
+            else renovate_gate["state"]
+        ),
+        "evidence": _append_unique(
+            renovate_gate["evidence"], [QUALITY_CLOSURE]
+        ),
+    })
 
     _retain_gate_observation(
         gates["stable-v1-release-approval"],
@@ -263,6 +297,7 @@ def build_contract(  # ruff: ignore[too-many-branches]
 def build_support(raw: dict[str, Any]) -> dict[str, Any]:
     """Return support readiness with production and Renovate boundaries split."""
     support = deepcopy(raw)
+    renovate_observed = _renovate_output_observed()
     for boundary in support["support_boundaries"]:
         if boundary["gate_id"] == "documentation-readiness":
             boundary["evidence"] = _append_unique(
@@ -272,11 +307,15 @@ def build_support(raw: dict[str, Any]) -> dict[str, Any]:
         if risk["risk_id"] == "RISK-002":
             risk.update({
                 "description": (
-                    "Maintainer-confirmed Renovate activation has not produced "
+                    "Renovate's Dependency Dashboard is observed at issue #491."
+                    if renovate_observed
+                    else "Maintainer-confirmed Renovate activation has not produced "
                     "an observable Dependency Dashboard or update pull request."
                 ),
-                "disposition": "unresolved",
-                "blocking": True,
+                "disposition": "mitigated"
+                if renovate_observed
+                else "unresolved",
+                "blocking": not renovate_observed,
                 "gate_id": "renovate-output-verification",
                 "evidence": [QUALITY_CLOSURE],
             })

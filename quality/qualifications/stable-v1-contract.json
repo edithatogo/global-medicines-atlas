@@ -264,15 +264,13 @@
     },
     {
       "requirement_id": "M-046",
-      "state": "blocked",
+      "state": "verified",
       "evidence": [
         "conductor/requirements.md",
         "quality/qualifications/v08.json",
         "quality/qualifications/quality-hardening-closure.json"
       ],
-      "blocker_ids": [
-        "renovate-output-verification"
-      ]
+      "blocker_ids": []
     },
     {
       "requirement_id": "M-047",
@@ -987,16 +985,14 @@
     },
     {
       "dimension": "security_and_supply_chain",
-      "current_level": "M4",
+      "current_level": "M5",
       "target_level": "M5",
-      "state": "partial",
+      "state": "verified",
       "evidence": [
         "conductor/maturity-model.json",
         "quality/qualifications/quality-hardening-closure.json"
       ],
-      "blocker_ids": [
-        "renovate-output-verification"
-      ]
+      "blocker_ids": []
     },
     {
       "dimension": "operations_and_recovery",
@@ -1063,9 +1059,9 @@
     },
     {
       "risk_id": "RISK-002",
-      "description": "Maintainer-confirmed Renovate activation has not produced an observable Dependency Dashboard or update pull request.",
-      "disposition": "unresolved",
-      "blocking": true,
+      "description": "Renovate's Dependency Dashboard is observed at issue #491.",
+      "disposition": "mitigated",
+      "blocking": false,
       "evidence": [
         "quality/qualifications/quality-hardening-closure.json"
       ]
@@ -1285,7 +1281,7 @@
     {
       "gate_id": "renovate-output-verification",
       "description": "Observe a Renovate Dependency Dashboard or first update pull request after maintainer-confirmed App activation.",
-      "state": "blocked",
+      "state": "passed",
       "evidence": [
         "quality/qualifications/quality-hardening-closure.json"
       ]
@@ -1293,7 +1289,6 @@
   ],
   "qualification_state": "blocked",
   "unresolved_gate_ids": [
-    "renovate-output-verification",
     "stable-v1-australian-health-federation",
     "stable-v1-bronze-current-scope",
     "stable-v1-maturity-m5",

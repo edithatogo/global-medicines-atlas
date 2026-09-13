@@ -211,7 +211,6 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
     }
     assert set(projection["unresolved_gate_ids"]) == unresolved
     assert unresolved == {
-        "renovate-output-verification",
         "stable-v1-australian-health-federation",
         "stable-v1-bronze-current-scope",
         "stable-v1-maturity-m5",
@@ -242,7 +241,6 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
         if item["state"] != "verified"
     }
     assert blocked_requirements == {
-        "M-046",
         "M-095",
         "M-105",
         "M-106",
@@ -386,16 +384,12 @@ def test_support_readiness_fails_closed_and_matches_residual_risks() -> None:
     }
     assert support_risks == projection_risks
     assert support["readiness_state"] == "blocked"
-    assert any(
-        item["blocking"] and item["disposition"] == "unresolved"
-        for item in support["residual_risks"]
-    )
     unresolved = {
         item["risk_id"]
         for item in support["residual_risks"]
         if item["blocking"] and item["disposition"] == "unresolved"
     }
-    assert unresolved == {"RISK-002"}
+    assert unresolved == set()
     production_dr = next(
         item
         for item in support["residual_risks"]

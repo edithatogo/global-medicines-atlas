@@ -291,8 +291,10 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   - Canonical v2, comparison validity, bounded discovery, clean consumers,
     independent fixture reproduction, support documentation, hosted governance,
     and bounded software/publication controls are recorded as passed.
-  - Current-scope Bronze landing (M-095) and observable Renovate output (M-046)
-    remain technical blockers; both dependent maturity dimensions stay M4.
+  - Current-scope Bronze landing (M-095) remains a technical blocker. Renovate
+    output (M-046) was observed through the bot-authored Dependency Dashboard
+    in issue #491 on 2026-09-13, restoring the security-and-supply-chain
+    maturity dimension to M5.
   - `v1.0.0rc1` authority is explicitly prerelease-only. Final stable promotion
     remains blocked pending a distinct maintainer decision after the technical
     blockers pass.
