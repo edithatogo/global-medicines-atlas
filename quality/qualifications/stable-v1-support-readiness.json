@@ -98,10 +98,10 @@
     },
     {
       "risk_id": "RISK-002",
-      "description": "Maintainer-confirmed Renovate activation has not produced an observable Dependency Dashboard or update pull request.",
+      "description": "Renovate's Dependency Dashboard is observed at issue #491.",
       "owner": "maintainer",
-      "disposition": "unresolved",
-      "blocking": true,
+      "disposition": "mitigated",
+      "blocking": false,
       "gate_id": "renovate-output-verification",
       "evidence": [
         "quality/qualifications/quality-hardening-closure.json"

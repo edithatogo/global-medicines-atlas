@@ -38,7 +38,7 @@
     "https://github.com/edithatogo/global-medicines-atlas/issues/43"
   ],
   "gates": [
-    {"id": "renovate-output-verification", "kind": "hosted", "status": "blocked"},
+    {"id": "renovate-output-verification", "kind": "hosted", "status": "passed"},
     {"id": "stable-v1-australian-health-federation", "kind": "dependent-track", "status": "blocked"},
     {"id": "stable-v1-bronze-current-scope", "kind": "dependent-track", "status": "blocked"},
     {"id": "stable-v1-maturity-m5", "kind": "evidence", "status": "blocked"},
@@ -54,5 +54,5 @@
     "max_identical_failures": 3,
     "merge_policy": "required_checks_then_merge"
   },
-  "updated_at": "2026-09-01T12:20:00Z"
+  "updated_at": "2026-09-13T12:51:00Z"
 }

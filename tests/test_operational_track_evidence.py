@@ -79,4 +79,4 @@ def test_v08_qualification_clears_numeric_gate_without_external_claims() -> (
     assert mutation["survived"] <= 381
     assert qualification["publication_authorized"] is False
     assert qualification["production_disaster_recovery_qualified"] is False
-    assert qualification["renovate_app_activation_verified"] is False
+    assert qualification["renovate_app_activation_verified"] is True

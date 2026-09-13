@@ -30,9 +30,14 @@
     "dependency_dashboard_requested": true,
     "dependabot_configuration": "absent",
     "app_activation": "maintainer_confirmed_2026-08-21",
-    "hosted_onboarding": "activation_accepted_output_unverified",
-    "dashboard_or_first_pr": "not_observed"
+    "hosted_onboarding": "dependency_dashboard_observed_2026-09-13",
+    "dashboard_or_first_pr": "observed",
+    "dashboard": {
+      "url": "https://github.com/edithatogo/global-medicines-atlas/issues/491",
+      "author": "app/renovate",
+      "observed_at": "2026-09-13T09:09:34Z"
+    }
   },
-  "closure_state": "repository_controls_complete_external_renovate_gate_open",
+  "closure_state": "repository_controls_complete",
   "production_or_external_claim": false
 }

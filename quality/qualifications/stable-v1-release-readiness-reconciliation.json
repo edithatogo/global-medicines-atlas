@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-09-01T12:20:00Z",
+  "as_of": "2026-09-13T12:51:00Z",
   "candidate_package": {
     "consumer_verification_guide_complete": true,
     "repository_owned_work_complete": true,
@@ -8,7 +8,7 @@
   },
   "contract": {
     "path": "quality/qualifications/stable-v1-contract.json",
-    "sha256": "94f2f14cb71d2a996fd40e48bd7d7f03cef2bc723f1852dba2a06fe783c9aaa9"
+    "sha256": "8b7a31432723fe5f3e1b7c6d2d079dd9215e6bbc3fb458c704e9c1b0f71b0930"
   },
   "qualification_state": "blocked",
   "release_performed": false,
@@ -19,11 +19,6 @@
     "state": "blocked_external_authority"
   },
   "unresolved_gates": [
-    {
-      "gate_id": "renovate-output-verification",
-      "kind": "hosted_activation_and_observation",
-      "state": "blocked"
-    },
     {
       "gate_id": "stable-v1-australian-health-federation",
       "kind": "dependent_repository_tracks",
