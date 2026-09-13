@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pytest
 
+import global_medicines_atlas.medstat_private_acquisition as acquisition
 from global_medicines_atlas.medstat_private_acquisition import (
     CHECKSUM,
     MANIFEST,
@@ -55,6 +56,17 @@ def test_authorization_rejects_pending_or_public_scope(tmp_path: Path) -> None:
     pending.write_text(json.dumps(document), encoding="utf-8")
     with pytest.raises(PermissionError, match="pending"):
         require_medstat_authorization(pending)
+    denmark.update(
+        decision_status="approved_internal",
+        decision_date="2026-09-13",
+        acquisition_authorized=True,
+        internal_retention_authorized=True,
+        public_release_authorized=True,
+    )
+    public = tmp_path / "public.json"
+    public.write_text(json.dumps(document), encoding="utf-8")
+    with pytest.raises(ValueError, match="publication must remain"):
+        require_medstat_authorization(public)
 
 
 def test_private_acquisition_lands_recovers_and_archives(
@@ -73,3 +85,52 @@ def test_private_acquisition_lands_recovers_and_archives(
     assert (tmp_path / "output" / PRIVATE_ARCHIVE).is_file()
     assert (tmp_path / "output" / MANIFEST).is_file()
     assert (tmp_path / "output" / CHECKSUM).is_file()
+
+
+def test_private_acquisition_rejects_empty_payload_and_unsafe_output(
+    tmp_path: Path,
+) -> None:
+    with pytest.raises(ValueError, match="empty"):
+        exercise_medstat_private_acquisition(
+            payload=b"",
+            output_dir=tmp_path / "empty",
+            authorization_path=AUTHORIZATION,
+        )
+    occupied = tmp_path / "occupied"
+    occupied.mkdir()
+    (occupied / "prior.txt").write_text("prior", encoding="utf-8")
+    with pytest.raises(FileExistsError, match="empty"):
+        exercise_medstat_private_acquisition(
+            payload=b"payload",
+            output_dir=occupied,
+            authorization_path=AUTHORIZATION,
+        )
+
+
+def test_private_acquisition_rejects_naive_time_and_admission(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    with pytest.raises(ValueError, match="timezone-aware"):
+        exercise_medstat_private_acquisition(
+            payload=b"payload",
+            output_dir=tmp_path / "naive",
+            authorization_path=AUTHORIZATION,
+            observed_at=datetime.fromisoformat("2026-09-13T00:00:00"),
+        )
+
+    def rejected_landing(*_: object, **__: object) -> object:
+        return object()
+
+    monkeypatch.setattr(
+        acquisition,
+        "land_bronze_payload",
+        rejected_landing,
+    )
+    with pytest.raises(TypeError, match="not admitted"):
+        exercise_medstat_private_acquisition(
+            payload=b"payload",
+            output_dir=tmp_path / "rejected",
+            authorization_path=AUTHORIZATION,
+            observed_at=datetime(2026, 9, 13, tzinfo=UTC),
+        )
