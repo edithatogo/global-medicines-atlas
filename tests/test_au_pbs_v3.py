@@ -309,6 +309,51 @@ def test_pbs_v3_canonical_projection_preserves_reference_boundaries() -> None:
     assert record.provenance[0].transformation == "au-pbs-v3-canonical-v1"
 
 
+@pytest.mark.parametrize(
+    ("receipt_update", "message"),
+    [
+        (
+            {"source": {"source_id": "wrong-source"}},
+            "Expected source_id",
+        ),
+        (
+            {"source": {"jurisdiction": "NZL"}},
+            "Expected jurisdiction",
+        ),
+        (
+            {
+                "payload": {
+                    "sha256": "0" * 64,
+                    "byte_count": 0,
+                }
+            },
+            "payload evidence does not match PBS archive",
+        ),
+    ],
+)
+def test_pbs_v3_canonical_projection_rejects_unbound_receipt(
+    receipt_update: dict[str, dict[str, object]],
+    message: str,
+) -> None:
+    """Reject canonical projection when its receipt is not archive-bound."""
+    payload = _zip([("release/sch-2026-07.xml", _xml())])
+    archive = parse_pbs_v3_archive(payload)
+    receipt = _receipt(payload)
+    source_update = receipt_update.get("source")
+    payload_update = receipt_update.get("payload")
+    if source_update is not None:
+        receipt = receipt.model_copy(
+            update={"source": receipt.source.model_copy(update=source_update)}
+        )
+    if payload_update is not None:
+        receipt = receipt.model_copy(
+            update={"payload": receipt.payload.model_copy(update=payload_update)}
+        )
+
+    with pytest.raises(ValueError, match=message):
+        project_pbs_v3_archive(archive, receipt)
+
+
 def test_hosted_qualification_binds_raw_member_and_projection(
     tmp_path: Path,
 ) -> None:
