@@ -605,11 +605,13 @@ def edges_query(
     """Inspect bounded structural Gold evidence edges."""
     try:
         payload = gold_edge_payload(
-            load_gold_edges(edge_file),
-            source_node_id=source_node_id,
-            target_node_id=target_node_id,
-            kind=kind,
-            max_rows=limit,
+            load_gold_edges(
+                edge_file,
+                source_node_id=source_node_id,
+                target_node_id=target_node_id,
+                kind=kind,
+                max_rows=limit,
+            ),
         )
     except OSError, ValueError:
         _fail(
