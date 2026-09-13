@@ -62,11 +62,9 @@ def _huggingface_index() -> dict[str, tuple[str, ...]]:
     index: dict[str, tuple[str, ...]] = {}
     for resource in ecosystem.get("hugging_face", []):
         repository = resource["repository"]
-        revision = resource.get("snapshot")
         entries = api.list_repo_tree(
             repository,
             repo_type="dataset",
-            revision=revision,
             recursive=True,
         )
         index[repository] = tuple(entry.path for entry in entries)
