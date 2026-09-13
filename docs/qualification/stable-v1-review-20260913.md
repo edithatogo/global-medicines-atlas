@@ -14,11 +14,11 @@ Stable v1 still requires its existing implementation, evidence and human gates.
   copied-model serialization, readiness, duplicate gates, state preservation,
   lower maturity and unaccepted recovery risk.
 - [x] **Test Coverage**: Local suite reports 97% rounded coverage. All 38 hosted
-  checks pass at `de176cd7297a4d5f68c71387cbd22c0e7b38329b`, including
+  checks pass at `aab814cbbabb9b6ff4cbaf027420e17310f0e8a8`, including
   Linux mutation, Mojo and Codecov. Local full harness stops at the mutation
   survivor baseline after macOS native fork failures; no threshold was changed.
 - [x] **Test Results**: 136 focused tests pass including monitoring. The final
-  full-suite run passes 4,892 tests with one optional PyIceberg skip. The first
+  full-suite run passes 4,901 tests with one optional PyIceberg skip. The first
   run detected a stale schema-bound monitoring receipt; regeneration corrected
   its bindings before the passing run.
 

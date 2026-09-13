@@ -154,7 +154,7 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   - 2026-09-13 review fixes preserve failed/unverified qualification evidence,
     lower maturity and unresolved recovery risk; reject duplicate gate IDs;
     and reject inconsistent live-qualified payloads at runtime, portable schema
-    and canonical serialization boundaries. Focused verification passes 127
+    and canonical serialization boundaries. Focused verification passes 136
     tests including monitoring. Full and hosted verification are recorded in the evidence ledger.
     The review does not complete dependent implementation or authorize release.
   - 2026-09-13 blocker audit: current repository evaluation finds 174 catalogue
@@ -301,7 +301,7 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 
 ## Phase: Review Fixes
 
-- [x] Task: Apply qualification integrity review fixes (04ac572, 425f01b, de176cd).
-  - All 38 hosted checks passed at de176cd; 4,892 local tests passed with one
+- [x] Task: Apply qualification integrity review fixes (04ac572, 425f01b, de176cd, aab814c).
+  - All 38 hosted checks passed at aab814c; 4,901 local tests passed with one
     optional skip. Local mutation remains platform-limited as recorded in the
     evidence ledger. Acceptance gates and signed-release task remain open.
