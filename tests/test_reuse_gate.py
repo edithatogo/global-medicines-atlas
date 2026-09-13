@@ -85,6 +85,7 @@ def test_gate_searches_required_surfaces_and_pins_catalogue() -> None:
         huggingface_index={
             HF_CATALOGUE_REPOSITORY: ("inventory/us-drugsfda.parquet",)
         },
+        huggingface_revisions={HF_CATALOGUE_REPOSITORY: "observed-sha"},
     )
 
     assert decision.searched_surfaces == SEARCH_SURFACES
@@ -102,7 +103,7 @@ def test_gate_searches_required_surfaces_and_pins_catalogue() -> None:
         item.revision
         for item in decision.candidates
         if item.surface == "hugging_face"
-    } == {HF_CATALOGUE_REVISION}
+    } == {"observed-sha"}
 
 
 @pytest.mark.unit
