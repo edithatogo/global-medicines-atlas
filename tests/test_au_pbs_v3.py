@@ -12,6 +12,7 @@ from zipfile import ZIP_DEFLATED, ZipFile
 
 import pyarrow.parquet as pq
 import pytest
+from pydantic import AnyUrl
 from scripts import inspect_pbs_v3 as pbs_inspector
 from scripts import qualify_pbs_v3_archive as pbs_qualifier
 from scripts.qualify_pbs_v3_archive import qualify
@@ -23,8 +24,20 @@ from global_medicines_atlas.adapters.au_pbs import (
     inspect_pbs_v3_tags,
     parse_pbs_v3_archive,
     pbs_v3_source_parquet,
+    project_pbs_v3_archive,
 )
 from global_medicines_atlas.archive_safety import ArchiveSafetyError
+from global_medicines_atlas.receipts import (
+    AcquisitionMethod,
+    AcquisitionStatus,
+    EvidenceClass,
+    PayloadEvidence,
+    RetrievalEvidence,
+    RightsState,
+    SourceIdentity,
+    SourceReceipt,
+    TransformationEvidence,
+)
 
 RETRIEVED_AT = datetime(2026, 8, 30, 3, 0, tzinfo=UTC)
 HTTP_METADATA: dict[str, object] = {
@@ -32,6 +45,37 @@ HTTP_METADATA: dict[str, object] = {
     "url_effective": "https://www.pbs.gov.au/example.zip",
     "content_type": "application/zip",
 }
+
+
+def _receipt(payload: bytes) -> SourceReceipt:
+    """Return a synthetic receipt bound to a PBS v3 archive."""
+    evidence = PayloadEvidence.from_bytes(payload)
+    return SourceReceipt(
+        receipt_id="fixture:au-pbs-v3",
+        source=SourceIdentity(
+            catalog_id="au-pbs",
+            source_id="au-pbs",
+            jurisdiction="AUS",
+            authority="Department of Health, Disability and Ageing",
+            dataset_title="Synthetic PBS v3 fixture",
+            catalog_version="fixture-v3",
+        ),
+        retrieval=RetrievalEvidence(
+            uri=AnyUrl("https://fixtures.invalid/au-pbs-v3.zip"),
+            retrieved_at=RETRIEVED_AT,
+            acquisition_method=AcquisitionMethod.LOCAL_FIXTURE,
+            status=AcquisitionStatus.SUCCEEDED,
+        ),
+        payload=evidence,
+        rights_state=RightsState.UNKNOWN,
+        evidence_class=EvidenceClass.SYNTHETIC,
+        transformation=TransformationEvidence(
+            transformation_id="au-pbs-v3-fixture",
+            transformation_sha256="a" * 64,
+            output_sha256=evidence.sha256,
+            output_byte_count=evidence.byte_count,
+        ),
+    )
 
 
 @pytest.mark.parametrize("option", ["--max-items", "--max_items"])
@@ -223,6 +267,119 @@ def test_parse_pbs_v3_archive_accepts_official_root_shape() -> None:
 
     assert result.effective_date == "2026-04-01"
     assert result.records[0].item_code == "1234A"
+
+
+def test_pbs_v3_canonical_projection_preserves_reference_boundaries() -> None:
+    """Project v3 references without asserting terminology resolution."""
+    payload = _zip([("release/sch-2026-07.xml", _xml())])
+    archive = parse_pbs_v3_archive(payload)
+
+    result = project_pbs_v3_archive(archive, _receipt(payload))
+
+    assert len(result) == 1
+    record = result[0]
+    assert record.concept.concept_id == "au-pbs:1234A"
+    identifiers = {
+        (identifier.system, identifier.value, identifier.identifier_type)
+        for identifier in record.concept.identifiers
+    }
+    assert identifiers == {
+        (
+            "https://www.pbs.gov.au/medicine/item/",
+            "1234A",
+            "pbs-item-code",
+        ),
+        ("https://www.pbs.gov.au/amt/reference/", "123456", "amt-reference"),
+        (
+            "http://snomed.info/id/123456",
+            "123456",
+            "amt-reference-resource",
+        ),
+        ("https://www.whocc.no/atc/reference/", "A01AA01", "atc-reference"),
+    }
+    assert len(record.assertions) == 2
+    assertion = record.assertions[0]
+    assert assertion.kind.value == "funding"
+    assert assertion.status_code == "listed"
+    assert assertion.evidence_status.value == "unknown"
+    assert assertion.restrictions == ()
+    assert assertion.effective_from is not None
+    assert assertion.effective_from.isoformat() == "2026-07-01T00:00:00+00:00"
+    restriction_assertion = record.assertions[1]
+    assert restriction_assertion.restrictions == ("Authority required",)
+    assert restriction_assertion.effective_from is not None
+    assert (
+        restriction_assertion.effective_from.isoformat()
+        == "2026-07-15T00:00:00+00:00"
+    )
+    assert record.provenance[0].source_sha256 == archive.archive_sha256
+    assert record.provenance[0].transformation == "au-pbs-v3-canonical-v1"
+
+
+@pytest.mark.parametrize(
+    ("receipt_update", "message"),
+    [
+        (
+            {"source": {"source_id": "wrong-source"}},
+            "Expected source_id",
+        ),
+        (
+            {"source": {"jurisdiction": "NZL"}},
+            "Expected jurisdiction",
+        ),
+        (
+            {
+                "payload": {
+                    "sha256": "0" * 64,
+                    "byte_count": 0,
+                }
+            },
+            "payload evidence does not match PBS archive",
+        ),
+    ],
+)
+def test_pbs_v3_canonical_projection_rejects_unbound_receipt(
+    receipt_update: dict[str, dict[str, object]],
+    message: str,
+) -> None:
+    """Reject canonical projection when its receipt is not archive-bound."""
+    payload = _zip([("release/sch-2026-07.xml", _xml())])
+    archive = parse_pbs_v3_archive(payload)
+    receipt = _receipt(payload)
+    source_update = receipt_update.get("source")
+    payload_update = receipt_update.get("payload")
+    if source_update is not None:
+        receipt = receipt.model_copy(
+            update={"source": receipt.source.model_copy(update=source_update)}
+        )
+    if payload_update is not None:
+        receipt = receipt.model_copy(
+            update={
+                "payload": receipt.payload.model_copy(update=payload_update)
+            }
+        )
+
+    with pytest.raises(ValueError, match=message):
+        project_pbs_v3_archive(archive, receipt)
+
+
+def test_pbs_v3_canonical_projection_accepts_qualified_historical_receipt() -> (
+    None
+):
+    """The governed historical archive has its own registered source identity."""
+    payload = _zip([("release/sch-2026-07.xml", _xml())])
+    archive = parse_pbs_v3_archive(payload)
+    receipt = _receipt(payload).model_copy(
+        update={
+            "source": _receipt(payload).source.model_copy(
+                update={"source_id": "au-pbs-historical-xml"}
+            )
+        }
+    )
+
+    result = project_pbs_v3_archive(archive, receipt)
+
+    assert result[0].provenance[0].source_id == "au-pbs-historical-xml"
 
 
 def test_hosted_qualification_binds_raw_member_and_projection(
