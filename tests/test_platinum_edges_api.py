@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import cast
 
 import pyarrow.parquet as pq
+import pytest
 from fastapi.testclient import TestClient
 from test_mbs_gold_graph import graph
 from typer.testing import CliRunner
@@ -12,6 +13,10 @@ from typer.testing import CliRunner
 from global_medicines_atlas.api import create_app
 from global_medicines_atlas.cli import app
 from global_medicines_atlas.mbs_gold_graph import project_mbs_gold_graph_arrow
+from global_medicines_atlas.platinum_edge_configuration import (
+    MAX_EDGE_FILE_BYTES,
+    load_gold_edges,
+)
 from global_medicines_atlas.query_service import ReadOnlyQueryService
 
 
@@ -67,3 +72,15 @@ def test_edges_cli_rejects_invalid_file(tmp_path) -> None:
 
     assert result.exit_code == 2
     assert "invalid_request" in result.stderr
+
+
+def test_edge_loader_rejects_directory_and_oversized_file(tmp_path) -> None:
+    directory = tmp_path / "edges"
+    directory.mkdir()
+    with pytest.raises(ValueError, match="regular"):
+        load_gold_edges(directory)
+
+    oversized = tmp_path / "oversized.parquet"
+    oversized.write_bytes(b" " * (MAX_EDGE_FILE_BYTES + 1))
+    with pytest.raises(ValueError, match="byte bound"):
+        load_gold_edges(oversized)

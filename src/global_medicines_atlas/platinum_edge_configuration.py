@@ -16,12 +16,13 @@ MAX_EDGE_FILE_BYTES = 16 * 1024 * 1024
 
 def load_gold_edges(path: Path) -> pa.Table:
     """Load one bounded regular Parquet file and validate its Gold schema."""
-    if not path.is_file() or path.stat().st_size > MAX_EDGE_FILE_BYTES:
-        raise ValueError("Gold edge file is invalid or exceeds byte bound")
     descriptor = os.open(path, os.O_RDONLY | getattr(os, "O_NONBLOCK", 0))
     try:
-        if not stat.S_ISREG(os.fstat(descriptor).st_mode):
+        file_status = os.fstat(descriptor)
+        if not stat.S_ISREG(file_status.st_mode):
             raise ValueError("Gold edge file must be regular")
+        if file_status.st_size > MAX_EDGE_FILE_BYTES:
+            raise ValueError("Gold edge file exceeds byte bound")
         table = pq.read_table(path)  # pyright: ignore[reportUnknownMemberType]
     finally:
         os.close(descriptor)

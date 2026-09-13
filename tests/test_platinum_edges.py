@@ -32,6 +32,8 @@ def test_edge_selection_rejects_unbounded_or_unsupported_queries() -> None:
         select_gold_edges(pa.table({"edge_id": ["e"]}))
     with pytest.raises(ValueError, match="selector"):
         select_gold_edges(edges, kind="")
+    with pytest.raises(ValueError, match="bound exceeded"):
+        select_gold_edges(edges, max_rows=1)
 
 
 def test_empty_selection_preserves_schema() -> None:
