@@ -20,6 +20,8 @@ jobs:
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Install Chromium for the authorized source export
+        run: uv run --python 3.14.6 playwright install --with-deps chromium
       - name: Acquire and retain without publishing
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}

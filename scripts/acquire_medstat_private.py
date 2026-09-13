@@ -9,7 +9,7 @@ import os
 import shutil
 import tomllib
 from pathlib import Path
-from urllib.request import Request, urlopen
+from urllib.request import urlopen
 
 from global_medicines_atlas.medstat_private_acquisition import (
     CHECKSUM,
@@ -31,18 +31,30 @@ AUTHORIZATION = (
     ROOT
     / "quality/qualifications/nordic-utilisation-acquisition-authorization.json"
 )
+_HTTP_OK = 200
 
 
 def _download(url: str) -> bytes:
-    request = Request(  # ruff: ignore[suspicious-url-open-usage]
-        url,
-        headers={
-            "Accept": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            "User-Agent": "global-medicines-atlas/1.0 (authorized aggregate acquisition)",
-        },
-    )
-    with urlopen(request, timeout=180) as response:  # ruff: ignore[suspicious-url-open-usage]
-        return response.read()
+    """Fetch the export through Chromium when the endpoint rejects urllib."""
+    sync_api = importlib.import_module("playwright.sync_api")
+    with sync_api.sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        try:
+            page = browser.new_page(
+                user_agent=(
+                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                    "Chrome/140.0.0.0 Safari/537.36"
+                )
+            )
+            response = page.goto(url, wait_until="networkidle", timeout=180_000)
+            if response is None or response.status != _HTTP_OK:
+                status = (
+                    "no response" if response is None else str(response.status)
+                )
+                raise RuntimeError(f"Medstat export request failed: {status}")
+            return response.body()
+        finally:
+            browser.close()
 
 
 def _github_index() -> dict[str, tuple[str, ...]]:
