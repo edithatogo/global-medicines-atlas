@@ -31,6 +31,7 @@ from ..receipts import SourceReceipt
 from ._receipt import provenance_from_receipt
 
 SOURCE_ID = "au-pbs"
+PBS_V3_SOURCE_IDS = frozenset({SOURCE_ID, "au-pbs-historical-xml"})
 MAX_FIXTURE_BYTES = 1_000_000
 PBS_V3_NAMESPACE = "http://schema.pbs.gov.au/"
 DOCBOOK_NAMESPACE = "http://docbook.org/ns/docbook"
@@ -359,8 +360,11 @@ def project_pbs_v3_archive(
     AMT and ATC values remain source-referenced identifiers. This projector
     neither resolves terminology nor asserts classification or regulation.
     """
-    if receipt.source.source_id != SOURCE_ID:
-        raise ValueError(f"Expected source_id {SOURCE_ID!r}")
+    if receipt.source.source_id not in PBS_V3_SOURCE_IDS:
+        raise ValueError(
+            "Expected source_id from governed PBS v3 identities "
+            f"({', '.join(sorted(PBS_V3_SOURCE_IDS))})"
+        )
     if receipt.source.jurisdiction != "AUS":
         raise ValueError("Expected jurisdiction 'AUS'")
     if receipt.payload.sha256 != archive.archive_sha256:
@@ -410,6 +414,51 @@ def project_pbs_v3_archive(
             )
             for code in source_record.atc_codes
         )
+        assertions = [
+            StatusAssertion(
+                assertion_id=f"{concept_id}:funding",
+                concept_id=concept_id,
+                jurisdiction="AUS",
+                kind=AssertionKind.FUNDING,
+                authority=receipt.source.authority,
+                status_code="listed",
+                evidence_status=(
+                    EvidenceStatus.CONFIRMED
+                    if receipt.satisfies_live_gate
+                    else EvidenceStatus.UNKNOWN
+                ),
+                effective_from=effective_at,
+                provenance=provenance,
+            )
+        ]
+        for restriction, restriction_effective_date in zip(
+            source_record.restrictions,
+            source_record.restriction_effective_dates,
+            strict=True,
+        ):
+            restriction_effective_at = (
+                _pbs_v3_effective_at(restriction_effective_date)
+                if restriction_effective_date is not None
+                else effective_at
+            )
+            assertions.append(
+                StatusAssertion(
+                    assertion_id=f"{concept_id}:funding-restriction:{len(assertions)}",
+                    concept_id=concept_id,
+                    jurisdiction="AUS",
+                    kind=AssertionKind.FUNDING,
+                    authority=receipt.source.authority,
+                    status_code="listed",
+                    evidence_status=(
+                        EvidenceStatus.CONFIRMED
+                        if receipt.satisfies_live_gate
+                        else EvidenceStatus.UNKNOWN
+                    ),
+                    effective_from=restriction_effective_at,
+                    restrictions=(restriction,),
+                    provenance=provenance,
+                )
+            )
         records.append(
             CanonicalMedicineRecord(
                 concept=MedicineConcept(
@@ -419,24 +468,7 @@ def project_pbs_v3_archive(
                     preferred_name=source_record.product_name,
                     identifiers=tuple(identifiers),
                 ),
-                assertions=(
-                    StatusAssertion(
-                        assertion_id=f"{concept_id}:funding",
-                        concept_id=concept_id,
-                        jurisdiction="AUS",
-                        kind=AssertionKind.FUNDING,
-                        authority=receipt.source.authority,
-                        status_code="listed",
-                        evidence_status=(
-                            EvidenceStatus.CONFIRMED
-                            if receipt.satisfies_live_gate
-                            else EvidenceStatus.UNKNOWN
-                        ),
-                        effective_from=effective_at,
-                        restrictions=source_record.restrictions,
-                        provenance=provenance,
-                    ),
-                ),
+                assertions=tuple(assertions),
                 provenance=(provenance,),
             )
         )

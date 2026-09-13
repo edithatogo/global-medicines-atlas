@@ -297,14 +297,21 @@ def test_pbs_v3_canonical_projection_preserves_reference_boundaries() -> None:
         ),
         ("https://www.whocc.no/atc/reference/", "A01AA01", "atc-reference"),
     }
-    assert len(record.assertions) == 1
+    assert len(record.assertions) == 2
     assertion = record.assertions[0]
     assert assertion.kind.value == "funding"
     assert assertion.status_code == "listed"
     assert assertion.evidence_status.value == "unknown"
-    assert assertion.restrictions == ("Authority required",)
+    assert assertion.restrictions == ()
     assert assertion.effective_from is not None
     assert assertion.effective_from.isoformat() == "2026-07-01T00:00:00+00:00"
+    restriction_assertion = record.assertions[1]
+    assert restriction_assertion.restrictions == ("Authority required",)
+    assert restriction_assertion.effective_from is not None
+    assert (
+        restriction_assertion.effective_from.isoformat()
+        == "2026-07-15T00:00:00+00:00"
+    )
     assert record.provenance[0].source_sha256 == archive.archive_sha256
     assert record.provenance[0].transformation == "au-pbs-v3-canonical-v1"
 
@@ -347,11 +354,32 @@ def test_pbs_v3_canonical_projection_rejects_unbound_receipt(
         )
     if payload_update is not None:
         receipt = receipt.model_copy(
-            update={"payload": receipt.payload.model_copy(update=payload_update)}
+            update={
+                "payload": receipt.payload.model_copy(update=payload_update)
+            }
         )
 
     with pytest.raises(ValueError, match=message):
         project_pbs_v3_archive(archive, receipt)
+
+
+def test_pbs_v3_canonical_projection_accepts_qualified_historical_receipt() -> (
+    None
+):
+    """The governed historical archive has its own registered source identity."""
+    payload = _zip([("release/sch-2026-07.xml", _xml())])
+    archive = parse_pbs_v3_archive(payload)
+    receipt = _receipt(payload).model_copy(
+        update={
+            "source": _receipt(payload).source.model_copy(
+                update={"source_id": "au-pbs-historical-xml"}
+            )
+        }
+    )
+
+    result = project_pbs_v3_archive(archive, receipt)
+
+    assert result[0].provenance[0].source_id == "au-pbs-historical-xml"
 
 
 def test_hosted_qualification_binds_raw_member_and_projection(
