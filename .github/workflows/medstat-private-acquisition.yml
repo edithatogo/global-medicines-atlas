@@ -23,4 +23,16 @@ jobs:
       - name: Acquire and retain without publishing
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: uv run --python 3.14.6 --with huggingface-hub==1.14.0 python scripts/acquire_medstat_private.py
+        run: |
+          set -euo pipefail
+          uv run --python 3.14.6 --with huggingface-hub==1.14.0 \
+            python scripts/acquire_medstat_private.py \
+            | tee medstat-private-acquisition-receipt.json
+      - name: Retain redacted acquisition receipt
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: medstat-private-acquisition-receipt
+          path: medstat-private-acquisition-receipt.json
+          if-no-files-found: error
+          retention-days: 30
