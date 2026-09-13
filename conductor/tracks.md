@@ -24,7 +24,7 @@ and rationale contract in that policy.
 - [x] **Track: Harden source operations, security, performance and recovery**
   *Archived: [archive/operational_hardening_20260729/index.md](./archive/operational_hardening_20260729/index.md); production disaster recovery and Renovate activation remain authority-gated.*
 - [~] **Track: Qualify the v0.9 candidate and stable v1 release**
-  *Link: [tracks/stable_v1_qualification_20260729/index.md](./tracks/stable_v1_qualification_20260729/index.md); remaining isolated gates are stable-v1 promotion approval and production disaster-recovery authority.*
+  *Link: [tracks/stable_v1_qualification_20260729/index.md](./tracks/stable_v1_qualification_20260729/index.md); qualification still requires observable Renovate output, current-scope Bronze landing, Australian federation qualification, M5 maturity, and stable promotion approval. Production disaster-recovery authority is a separate non-acceptance gate.*
 - [x] **Track: Develop the academic protocol and preregistration**
   *Link: [tracks/academic_protocol_preregistration_20260729/index.md](./tracks/academic_protocol_preregistration_20260729/index.md); GitHub parent [#66](https://github.com/edithatogo/global-medicines-atlas/issues/66). OSF is deprecated; persistent protocol identity is the in-repo artefacts plus Zenodo `10.5281/zenodo.21734811`.*
 - [~] **Track: Complete bronze medallion landing for current public scope**

@@ -151,6 +151,12 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     and the two risk/evidence views were reconciled and re-acquisition qualified
     every in-scope control.
 - [~] Task: Produce signed release package and consumer verification guide ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+  - 2026-09-13 blocker audit: current repository evaluation finds 174 catalogue
+    sources, 157 in-scope sources and 138 without landing evidence. The latest
+    MBS utilisation hosted receipt verifies 28 files but retains three failed
+    resources and explicitly partial coverage. Renovate-authored issues and
+    pull requests remain unobserved. See
+    `docs/qualification/stable-v1-blocker-audit-20260913.md`.
   - Repository-owned candidate packaging and the consumer verification guide
     are complete. The task deliberately remains in progress because a signed
     stable release has not been approved or produced, and the authoritative
