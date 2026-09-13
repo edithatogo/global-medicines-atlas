@@ -13,6 +13,14 @@ from typer.testing import CliRunner
 
 from global_medicines_atlas import cli
 from global_medicines_atlas.cli import app
+from global_medicines_atlas.historical_change import (
+    compare_historical_snapshots,
+)
+from global_medicines_atlas.historical_comparison import (
+    NativeField,
+    NativeRow,
+    NativeSnapshot,
+)
 from global_medicines_atlas.product_contracts import (
     ComparisonResponse,
     ErrorCode,
@@ -27,6 +35,70 @@ NOW = datetime(2026, 7, 29, tzinfo=UTC)
 CLOCK = NOW.isoformat()
 CURSOR_KEY = "cli-query-" + "secret-long-enough"
 runner = CliRunner()
+
+
+def _history_snapshot(value: str) -> NativeSnapshot:
+    return NativeSnapshot(
+        source_id="au-mbs",
+        table="benefits",
+        dimension="service_benefit",
+        schema_era="2026-09",
+        identity_profile="mbs-item",
+        source_revision="2026-09",
+        source_path="benefits.parquet",
+        b1_sha256="a" * 64,
+        b2_sha256="b" * 64,
+        observed_at=NOW,
+        cohort="historical",
+        declared_rows=1,
+        complete=True,
+        rows=(
+            NativeRow(
+                native_id="1001",
+                occurrence_id="1001",
+                fields=(
+                    NativeField(name="benefit", state="value", value=value),
+                ),
+            ),
+        ),
+    )
+
+
+def test_history_reads_bounded_validated_evidence_file(tmp_path: Path) -> None:
+    history = tmp_path / "history.json"
+    change = compare_historical_snapshots(
+        _history_snapshot("100.00"), _history_snapshot("110.00")
+    )
+    history.write_text(
+        json.dumps({
+            "version": "1.0",
+            "changes": [change.model_dump(mode="json")],
+        })
+    )
+
+    result = runner.invoke(
+        app, ["history", "--history-file", str(history), "--limit", "1"]
+    )
+
+    assert result.exit_code == 0, result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["total"] == 1
+    assert payload["items"][0]["comparison_state"] == "compared"
+    assert payload["items"][0]["left"]["b1_sha256"] == "a" * 64
+
+
+@pytest.mark.parametrize("payload", ["{}", '{"version":"1.0","changes":[{}]}'])
+def test_history_rejects_invalid_evidence_file(
+    tmp_path: Path, payload: str
+) -> None:
+    history = tmp_path / "history.json"
+    history.write_text(payload)
+
+    result = runner.invoke(app, ["history", "--history-file", str(history)])
+
+    assert result.exit_code == 2
+    assert not result.stdout
+    assert json.loads(result.stderr)["error"] == ErrorCode.INVALID_REQUEST
 
 
 class _Page:
