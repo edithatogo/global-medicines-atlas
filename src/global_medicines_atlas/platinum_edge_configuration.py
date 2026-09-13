@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import stat
 from pathlib import Path
+from typing import Any, Literal, cast
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -30,7 +31,7 @@ def load_gold_edges(
             raise ValueError("Gold edge file must be regular")
         if file_status.st_size > MAX_EDGE_FILE_BYTES:
             raise ValueError("Gold edge file exceeds byte bound")
-        filters = [
+        filters: list[tuple[str, Literal["="], str]] = [
             (name, "=", value)
             for name, value in (
                 ("source_node_id", source_node_id),
@@ -39,7 +40,10 @@ def load_gold_edges(
             )
             if value is not None
         ]
-        table = pq.read_table(path, filters=filters or None)  # pyright: ignore[reportUnknownMemberType]
+        table = pq.read_table(  # pyright: ignore[reportUnknownMemberType]
+            path,
+            filters=cast("Any", filters or None),
+        )
     finally:
         os.close(descriptor)
     return select_gold_edges(
