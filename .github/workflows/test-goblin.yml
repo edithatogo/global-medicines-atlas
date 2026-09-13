@@ -202,6 +202,7 @@ jobs:
           files: coverage-${{ matrix.lane }}.xml
           flags: ${{ matrix.lane }}
           name: ${{ matrix.lane }}
+          disable_search: true
           fail_ci_if_error: true
           use_oidc: true
 
@@ -272,6 +273,7 @@ jobs:
           files: coverage.xml
           flags: full
           name: full
+          disable_search: true
           fail_ci_if_error: true
           use_oidc: true
       - name: Upload durable quality receipts
