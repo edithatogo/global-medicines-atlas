@@ -13,7 +13,7 @@ import json
 from collections.abc import Callable, Mapping, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 from .source_catalog import AccessMode, AuthenticationMode
 
@@ -23,6 +23,9 @@ CATALOG_RELATIVE = (
     "src/global_medicines_atlas/data/medicine_source_catalog.json"
 )
 REPORT_RELATIVE = "quality/qualifications/bronze-maturity.json"
+LANDING_OVERRIDES_RELATIVE = (
+    "src/global_medicines_atlas/data/source_landing_overrides.json"
+)
 SCHEMA_RELATIVE = "schemas/bronze-maturity-qualification-v1.json"
 PROPERTY_IDS: tuple[str, ...] = (
     "completeness",
@@ -147,6 +150,79 @@ def landing_source_ids(root: Path, source_ids: set[str]) -> set[str]:
     return found
 
 
+def _contains_exact_value(value: Any, expected: str) -> bool:
+    if isinstance(value, str):
+        return value == expected
+    if isinstance(value, Mapping):
+        return any(
+            _contains_exact_value(item, expected)
+            for item in cast("Mapping[str, Any]", value).values()
+        )
+    if isinstance(value, list):
+        return any(
+            _contains_exact_value(item, expected)
+            for item in cast("list[Any]", value)
+        )
+    return False
+
+
+def receipt_backed_landing_source_ids(
+    root: Path, source_ids: set[str]
+) -> set[str]:
+    """Return source IDs bound by direct, non-publication Bronze receipts.
+
+    Queue labels alone are not evidence. An override can contribute only when
+    it names a landed source and an existing JSON receipt contains that exact
+    source ID. Publication-only references remain deliberately excluded.
+    """
+    path = root / LANDING_OVERRIDES_RELATIVE
+    if not path.is_file():
+        return set()
+    overrides = json.loads(path.read_text(encoding="utf-8")).get(
+        "overrides", []
+    )
+    landed: set[str] = set()
+    for override in overrides:
+        source_id = override.get("source_id")
+        if (
+            not isinstance(source_id, str)
+            or source_id not in source_ids
+            or override.get("state") != "landed_and_evidenced"
+        ):
+            continue
+        for relative in override.get("evidence_references", []):
+            if not isinstance(relative, str):
+                continue
+            name = Path(relative).name.casefold()
+            if "publication" in name or "huggingface" in name:
+                continue
+            receipt_path = root / relative
+            if not receipt_path.is_file() or receipt_path.suffix != ".json":
+                continue
+            try:
+                receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                continue
+            schema_id = receipt.get("schema_id")
+            admitted = receipt.get("accepted_admission_count")
+            if (
+                isinstance(schema_id, str)
+                and schema_id.startswith("global-medicines-atlas.")
+                and (
+                    schema_id.endswith("-live-qualification")
+                    or schema_id
+                    == "global-medicines-atlas.international-public-bronze-qualification"
+                    or schema_id.endswith("-acquisition-success")
+                )
+                and isinstance(admitted, int)
+                and admitted > 0
+                and _contains_exact_value(receipt, source_id)
+            ):
+                landed.add(source_id)
+                break
+    return landed
+
+
 def _property(
     property_id: str,
     *,
@@ -227,7 +303,11 @@ def evaluate_completeness(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
         if source.get("implemented_ingestion") is True
         and str(source["source_id"]) in in_scope
     }
-    landed = landing_source_ids(root, in_scope) | ingested
+    landed = (
+        landing_source_ids(root, in_scope)
+        | receipt_backed_landing_source_ids(root, in_scope)
+        | ingested
+    )
     missing = sorted(in_scope - landed)
     inventory = {
         "catalog_source_count": len(sources),

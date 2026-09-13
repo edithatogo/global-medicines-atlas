@@ -23,6 +23,7 @@ from global_medicines_atlas.bronze_maturity import (
     evaluate_completeness,
     evaluate_repository,
     landing_source_ids,
+    receipt_backed_landing_source_ids,
     reject_forbidden_evidence,
     run_adversarial_review,
 )
@@ -285,6 +286,63 @@ def test_landing_source_ids_skips_undecodable_and_pyc_files(
     (fixtures / "binary.bin").write_bytes(b"\xff\xfe")
     found = landing_source_ids(tmp_path, {"au-artg", "missing"})
     assert found == {"au-artg"}
+
+
+@pytest.mark.unit
+def test_receipt_backed_landing_requires_exact_nonpublication_receipt(
+    tmp_path: Path,
+) -> None:
+    overrides = tmp_path / (
+        "src/global_medicines_atlas/data/source_landing_overrides.json"
+    )
+    overrides.parent.mkdir(parents=True)
+    receipts = tmp_path / "quality/qualifications"
+    receipts.mkdir(parents=True)
+    (receipts / "bronze.json").write_text(
+        json.dumps({
+            "schema_id": "global-medicines-atlas.example-live-qualification",
+            "accepted_admission_count": 1,
+            "source_ids": ["au-artg"],
+        }),
+        encoding="utf-8",
+    )
+    (receipts / "publication.json").write_text(
+        json.dumps({"source_ids": ["au-pbs"]}), encoding="utf-8"
+    )
+    (receipts / "invalid.json").write_text("{", encoding="utf-8")
+    overrides.write_text(
+        json.dumps({
+            "overrides": [
+                {
+                    "source_id": "au-artg",
+                    "state": "landed_and_evidenced",
+                    "evidence_references": [
+                        "quality/qualifications/bronze.json"
+                    ],
+                },
+                {
+                    "source_id": "au-pbs",
+                    "state": "landed_and_evidenced",
+                    "evidence_references": [
+                        "quality/qualifications/publication.json"
+                    ],
+                },
+                {
+                    "source_id": "missing-evidence",
+                    "state": "landed_and_evidenced",
+                    "evidence_references": [
+                        None,
+                        "quality/qualifications/missing.json",
+                        "quality/qualifications/invalid.json",
+                    ],
+                },
+            ]
+        }),
+        encoding="utf-8",
+    )
+    assert receipt_backed_landing_source_ids(
+        tmp_path, {"au-artg", "au-pbs", "missing-evidence"}
+    ) == {"au-artg"}
 
 
 @pytest.mark.unit
