@@ -412,6 +412,131 @@ def test_stable_contract_reconciliation_is_deterministic() -> None:
     assert build_support(support) == support
 
 
+@pytest.mark.parametrize(
+    "section",
+    ["requirements", "maturity_dimensions", "release_gates", "support"],
+)
+def test_reconciliation_does_not_promote_failed_or_unverified_evidence(
+    section: str,
+) -> None:
+    raw = _load(QUALIFICATION)
+    if section == "support":
+        raw[section]["state"] = "unverified"
+        item = raw[section]
+    else:
+        item = next(
+            row
+            for row in raw[section]
+            if row["state"] in {"verified", "passed"}
+        )
+        item["state"] = "failed" if section == "release_gates" else "unverified"
+        if section == "maturity_dimensions":
+            item["current_level"] = "M1"
+        if "blocker_ids" in item:
+            item["blocker_ids"] = ["new-evidence-required"]
+    item["evidence"] = ["failure-receipt.json"]
+    expected = copy.deepcopy(item)
+    result = build_contract(raw)
+    if section == "support":
+        observed = result[section]
+    else:
+        key = {
+            "requirements": "requirement_id",
+            "maturity_dimensions": "dimension",
+            "release_gates": "gate_id",
+        }[section]
+        observed = next(row for row in result[section] if row[key] == item[key])
+    for key, value in expected.items():
+        if key == "evidence":
+            assert set(value) <= set(observed[key])
+        else:
+            assert observed[key] == value
+
+
+def test_support_reconciliation_does_not_override_failed_documentation() -> (
+    None
+):
+    raw = _load(SUPPORT)
+    boundary = next(
+        item
+        for item in raw["support_boundaries"]
+        if item["gate_id"] == "documentation-readiness"
+    )
+    boundary["state"] = "failed"
+    boundary["blocker"] = "new-documentation-failure"
+    result = build_support(raw)
+    observed = next(
+        item
+        for item in result["support_boundaries"]
+        if item["gate_id"] == "documentation-readiness"
+    )
+    assert observed["state"] == "failed"
+    assert observed["blocker"] == "new-documentation-failure"
+
+
+@pytest.mark.parametrize("artifact", ["contract", "support"])
+def test_reconciliation_preserves_unaccepted_recovery_risk(
+    artifact: str,
+) -> None:
+    raw = _load(QUALIFICATION if artifact == "contract" else SUPPORT)
+    risk = next(
+        item for item in raw["residual_risks"] if item["risk_id"] == "RISK-001"
+    )
+    risk.update(
+        disposition="unresolved",
+        blocking=True,
+        evidence=["new-recovery-failure.json"],
+    )
+    expected = copy.deepcopy(risk)
+    result = (
+        build_contract(raw) if artifact == "contract" else build_support(raw)
+    )
+    assert (
+        next(
+            item
+            for item in result["residual_risks"]
+            if item["risk_id"] == "RISK-001"
+        )
+        == expected
+    )
+
+
+@pytest.mark.parametrize(
+    "dimension", ["source_coverage", "security_and_supply_chain"]
+)
+def test_reconciliation_preserves_lower_maturity(dimension: str) -> None:
+    raw = _load(QUALIFICATION)
+    item = next(
+        row
+        for row in raw["maturity_dimensions"]
+        if row["dimension"] == dimension
+    )
+    item.update(
+        current_level="M0",
+        state="unverified",
+        blocker_ids=["new-evidence-required"],
+    )
+    result = build_contract(raw)
+    observed = next(
+        row
+        for row in result["maturity_dimensions"]
+        if row["dimension"] == dimension
+    )
+    assert observed["current_level"] == "M0"
+    assert observed["state"] == "unverified"
+    assert "new-evidence-required" in observed["blocker_ids"]
+
+
+def test_reconciliation_rejects_duplicate_gate_outcomes() -> None:
+    raw = _load(QUALIFICATION)
+    duplicate = copy.deepcopy(raw["release_gates"][0])
+    raw["release_gates"][0]["state"] = "failed"
+    duplicate["state"] = "passed"
+    raw["release_gates"].append(duplicate)
+    with pytest.raises(ValueError, match="duplicate"):
+        build_contract(raw)
+
+
 def test_source_maturity_matrix_is_complete_conservative_projection() -> None:
     matrix = _load(SOURCE_MATURITY)
     _validator(SOURCE_MATURITY_SCHEMA).validate(matrix)
@@ -482,3 +607,49 @@ def test_completed_contract_work_and_phase3a_checkpoint_are_reconciled() -> (
         "publication action",
         "rights determination",
     }
+
+
+@pytest.mark.parametrize("requirement_id", ["M-046", "M-095", "M-105"])
+def test_reconciliation_retains_additional_known_requirement_blockers(
+    requirement_id: str,
+) -> None:
+    raw = _load(QUALIFICATION)
+    item = next(
+        row
+        for row in raw["requirements"]
+        if row["requirement_id"] == requirement_id
+    )
+    item["blocker_ids"].append("new-evidence-required")
+    result = build_contract(raw)
+    observed = next(
+        row
+        for row in result["requirements"]
+        if row["requirement_id"] == requirement_id
+    )
+    assert "new-evidence-required" in observed["blocker_ids"]
+
+
+@pytest.mark.parametrize(
+    "gate_id",
+    [
+        "stable-v1-release-approval",
+        "stable-v1-maturity-m5",
+        "stable-v1-bronze-current-scope",
+        "renovate-output-verification",
+    ],
+)
+@pytest.mark.parametrize("state", ["failed", "unverified"])
+def test_reconciliation_retains_special_gate_observations(
+    gate_id: str, state: str
+) -> None:
+    raw = _load(QUALIFICATION)
+    gate = next(
+        row for row in raw["release_gates"] if row["gate_id"] == gate_id
+    )
+    gate.update(state=state, evidence=["fresh-failure.json"])
+    result = build_contract(raw)
+    observed = next(
+        row for row in result["release_gates"] if row["gate_id"] == gate_id
+    )
+    assert observed["state"] == state
+    assert "fresh-failure.json" in observed["evidence"]

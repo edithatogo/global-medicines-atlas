@@ -20,9 +20,6 @@ INDEPENDENT_REPRODUCTION = (
 BRONZE_PLAN = "conductor/tracks/bronze_medallion_completion_20260819/plan.md"
 BRONZE_MATURITY = "quality/qualifications/bronze-maturity.json"
 QUALITY_CLOSURE = "quality/qualifications/quality-hardening-closure.json"
-PRODUCTION_DR = (
-    "quality/qualifications/stable-v1-production-dr-authority-blocker.json"
-)
 AUSTRALIAN_HEALTH_GATE = "stable-v1-australian-health-federation"
 AUSTRALIAN_HEALTH_REQUIREMENTS = {
     "M-105",
@@ -86,78 +83,85 @@ def _append_unique(items: list[str], additions: list[str]) -> list[str]:
     return list(dict.fromkeys([*items, *additions]))
 
 
-def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
+def _retain_gate_observation(
+    gate: dict[str, Any], updates: dict[str, Any]
+) -> None:
+    """Add known blockers without erasing adverse observations or receipts."""
+    updates["state"] = "blocked" if gate["state"] == "passed" else gate["state"]
+    updates["evidence"] = _append_unique(gate["evidence"], updates["evidence"])
+    gate.update(updates)
+
+
+def build_contract(  # ruff: ignore[too-many-branches]
     raw: dict[str, Any],
 ) -> dict[str, Any]:
-    """Return the current fail-closed software-release qualification."""
+    """Reconcile known blockers without promoting supplied evidence states.
+
+    Historical implementation references are not fresh validation receipts.
+    Failed or unverified observations must survive regeneration unchanged.
+    """
     contract = deepcopy(raw)
     for requirement in contract["requirements"]:
         requirement_id = requirement["requirement_id"]
         if requirement_id == "M-046":
             requirement["state"] = "blocked"
-            requirement["blocker_ids"] = ["renovate-output-verification"]
+            requirement["blocker_ids"] = _append_unique(
+                requirement["blocker_ids"], ["renovate-output-verification"]
+            )
             requirement["evidence"] = _append_unique(
                 requirement["evidence"], [QUALITY_CLOSURE]
             )
         elif requirement_id == "M-095":
             requirement["state"] = "blocked"
-            requirement["blocker_ids"] = ["stable-v1-bronze-current-scope"]
+            requirement["blocker_ids"] = _append_unique(
+                requirement["blocker_ids"], ["stable-v1-bronze-current-scope"]
+            )
             requirement["evidence"] = _append_unique(
                 requirement["evidence"], [BRONZE_PLAN, BRONZE_MATURITY]
             )
         elif requirement_id in AUSTRALIAN_HEALTH_REQUIREMENTS:
             requirement["state"] = "blocked"
-            requirement["blocker_ids"] = [AUSTRALIAN_HEALTH_GATE]
-        else:
-            requirement["state"] = "verified"
-            requirement["blocker_ids"] = []
-            if requirement["evidence"] == ["conductor/requirements.md"]:
-                requirement["evidence"] = _append_unique(
-                    requirement["evidence"], [STABLE_LEDGER]
-                )
+            requirement["blocker_ids"] = _append_unique(
+                requirement["blocker_ids"], [AUSTRALIAN_HEALTH_GATE]
+            )
+        elif requirement["evidence"] == ["conductor/requirements.md"]:
+            requirement["evidence"] = _append_unique(
+                requirement["evidence"], [STABLE_LEDGER]
+            )
 
     for dimension in contract["maturity_dimensions"]:
         name = dimension["dimension"]
         if name == "source_coverage":
-            dimension["current_level"] = "M4"
-            dimension["state"] = "partial"
-            dimension["blocker_ids"] = ["stable-v1-bronze-current-scope"]
+            dimension["current_level"] = min(dimension["current_level"], "M4")
+            if dimension["state"] == "verified":
+                dimension["state"] = "partial"
+            dimension["blocker_ids"] = _append_unique(
+                dimension["blocker_ids"], ["stable-v1-bronze-current-scope"]
+            )
             dimension["evidence"] = _append_unique(
                 dimension["evidence"], [BRONZE_PLAN, BRONZE_MATURITY]
             )
         elif name == "security_and_supply_chain":
-            dimension["current_level"] = "M4"
-            dimension["state"] = "partial"
-            dimension["blocker_ids"] = ["renovate-output-verification"]
+            dimension["current_level"] = min(dimension["current_level"], "M4")
+            if dimension["state"] == "verified":
+                dimension["state"] = "partial"
+            dimension["blocker_ids"] = _append_unique(
+                dimension["blocker_ids"], ["renovate-output-verification"]
+            )
             dimension["evidence"] = _append_unique(
                 dimension["evidence"], [QUALITY_CLOSURE]
             )
         else:
-            dimension["current_level"] = "M5"
-            dimension["state"] = "verified"
-            dimension["blocker_ids"] = []
             dimension["evidence"] = _append_unique(
                 dimension["evidence"], [INDEPENDENT_REPRODUCTION, STABLE_LEDGER]
             )
 
-    contract["support"]["state"] = "verified"
     contract["support"]["evidence"] = _append_unique(
         contract["support"]["evidence"], ["SUPPORT.md", "SECURITY.md"]
     )
 
     for risk in contract["residual_risks"]:
-        if risk["risk_id"] == "RISK-001":
-            risk.update({
-                "description": (
-                    "Production backup storage, RPO, RTO and crash consistency "
-                    "remain unqualified and are outside the software-only stable "
-                    "release scope."
-                ),
-                "disposition": "accepted",
-                "blocking": False,
-                "evidence": [PRODUCTION_DR],
-            })
-        elif risk["risk_id"] == "RISK-002":
+        if risk["risk_id"] == "RISK-002":
             risk.update({
                 "description": (
                     "Maintainer-confirmed Renovate activation has not produced "
@@ -169,10 +173,11 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
             })
 
     gates = {gate["gate_id"]: gate for gate in contract["release_gates"]}
+    if len(gates) != len(contract["release_gates"]):
+        raise ValueError("duplicate release gate identifiers")
     for gate_id, evidence in TECHNICAL_GATE_EVIDENCE.items():
         gate = gates[gate_id]
-        gate["state"] = "passed"
-        gate["evidence"] = evidence
+        gate["evidence"] = _append_unique(gate["evidence"], evidence)
 
     source_gate_id = (
         "stable-v1-source-maturity"
@@ -180,15 +185,18 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
         else "stable-v1-bronze-current-scope"
     )
     source_gate = gates.pop(source_gate_id)
-    source_gate.update({
-        "gate_id": "stable-v1-bronze-current-scope",
-        "description": (
-            "Complete Bronze landing evidence for the current public/no-credential "
-            "scope without treating catalogue blockers as landed sources."
-        ),
-        "state": "blocked",
-        "evidence": [BRONZE_PLAN, BRONZE_MATURITY],
-    })
+    _retain_gate_observation(
+        source_gate,
+        {
+            "gate_id": "stable-v1-bronze-current-scope",
+            "description": (
+                "Complete Bronze landing evidence for the current public/no-credential "
+                "scope without treating catalogue blockers as landed sources."
+            ),
+            "state": "blocked",
+            "evidence": [BRONZE_PLAN, BRONZE_MATURITY],
+        },
+    )
 
     renovate_gate_id = (
         "renovate-app-activation"
@@ -196,39 +204,48 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
         else "renovate-output-verification"
     )
     renovate_gate = gates.pop(renovate_gate_id)
-    renovate_gate.update({
-        "gate_id": "renovate-output-verification",
-        "description": (
-            "Observe a Renovate Dependency Dashboard or first update pull request "
-            "after maintainer-confirmed App activation."
-        ),
-        "state": "blocked",
-        "evidence": [QUALITY_CLOSURE],
-    })
+    _retain_gate_observation(
+        renovate_gate,
+        {
+            "gate_id": "renovate-output-verification",
+            "description": (
+                "Observe a Renovate Dependency Dashboard or first update pull request "
+                "after maintainer-confirmed App activation."
+            ),
+            "state": "blocked",
+            "evidence": [QUALITY_CLOSURE],
+        },
+    )
 
-    gates["stable-v1-release-approval"].update({
-        "description": (
-            "Obtain explicit approval for final stable v1 promotion; the existing "
-            "v1.0.0rc1 authority is prerelease-only."
-        ),
-        "state": "blocked",
-        "evidence": [
-            "quality/qualifications/release-authority-v1.0.0rc1.json",
-            "quality/qualifications/stable-v1-release-provenance-receipt.json",
-        ],
-    })
-    gates["stable-v1-maturity-m5"].update({
-        "description": (
-            "Verify every blocking maturity dimension at M5 after Bronze scope "
-            "and Renovate output verification complete."
-        ),
-        "state": "blocked",
-        "evidence": [
-            "conductor/maturity-model.json",
-            BRONZE_PLAN,
-            QUALITY_CLOSURE,
-        ],
-    })
+    _retain_gate_observation(
+        gates["stable-v1-release-approval"],
+        {
+            "description": (
+                "Obtain explicit approval for final stable v1 promotion; the existing "
+                "v1.0.0rc1 authority is prerelease-only."
+            ),
+            "state": "blocked",
+            "evidence": [
+                "quality/qualifications/release-authority-v1.0.0rc1.json",
+                "quality/qualifications/stable-v1-release-provenance-receipt.json",
+            ],
+        },
+    )
+    _retain_gate_observation(
+        gates["stable-v1-maturity-m5"],
+        {
+            "description": (
+                "Verify every blocking maturity dimension at M5 after Bronze scope "
+                "and Renovate output verification complete."
+            ),
+            "state": "blocked",
+            "evidence": [
+                "conductor/maturity-model.json",
+                BRONZE_PLAN,
+                QUALITY_CLOSURE,
+            ],
+        },
+    )
     contract["release_gates"] = [
         *gates.values(),
         source_gate,
@@ -248,25 +265,11 @@ def build_support(raw: dict[str, Any]) -> dict[str, Any]:
     support = deepcopy(raw)
     for boundary in support["support_boundaries"]:
         if boundary["gate_id"] == "documentation-readiness":
-            boundary["state"] = "passed"
             boundary["evidence"] = _append_unique(
                 boundary["evidence"], ["SUPPORT.md", "SECURITY.md"]
             )
-            boundary["blocker"] = None
     for risk in support["residual_risks"]:
-        if risk["risk_id"] == "RISK-001":
-            risk.update({
-                "description": (
-                    "Production backup storage, RPO, RTO and crash consistency "
-                    "remain unqualified and are outside the software-only stable "
-                    "release scope."
-                ),
-                "disposition": "accepted",
-                "blocking": False,
-                "gate_id": "production-dr-authority",
-                "evidence": [PRODUCTION_DR],
-            })
-        elif risk["risk_id"] == "RISK-002":
+        if risk["risk_id"] == "RISK-002":
             risk.update({
                 "description": (
                     "Maintainer-confirmed Renovate activation has not produced "
