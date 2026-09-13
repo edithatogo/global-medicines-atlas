@@ -521,12 +521,15 @@
   lineage layer. PR #460 records funding/formulary as source structure,
   terminology and classification as reference-only, and regulatory as not
   asserted.
-- [ ] Implement and qualify the loss-aware bridge from `PbsV3Record` to the
-  existing canonical medicine model. It must preserve the independent
-  funding/formulary, regulatory, terminology, and classification dimensions;
-  it must not treat AMT or ATC references as resolved terminology or
-  classification assertions. The existing `project_pbs_xml` minimal-fixture
-  path is separate and does not satisfy this real PBS v3 requirement.
+- [x] Implement and fixture-qualify the loss-aware bridge from `PbsV3Record`
+  to the existing canonical medicine model. PR #498 merged as `5ed2f9f8`.
+  The receipt-bound projector accepts both governed PBS v3 source identities,
+  rejects a mismatched jurisdiction or payload digest, preserves source and
+  restriction effective dates, and emits funding assertions only. AMT and ATC
+  remain source references rather than terminology or classification
+  assertions; regulatory remains unasserted. This covers a bounded fixture,
+  not the approved real-corpus denominator. The existing `project_pbs_xml`
+  minimal-fixture path remains separate.
 - Hosted run `33549535561` now records a passed PBS aggregate receipt at
   `pbs-aggregate-receipt-20260904.json`; it is structural-storage-candidate
   evidence only and does not close this Silver checkpoint.
