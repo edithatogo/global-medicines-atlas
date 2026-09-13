@@ -46,13 +46,25 @@ def _download(url: str) -> bytes:
                     "Chrome/140.0.0.0 Safari/537.36"
                 )
             )
-            response = page.goto(url, wait_until="networkidle", timeout=180_000)
-            if response is None or response.status != _HTTP_OK:
-                status = (
-                    "no response" if response is None else str(response.status)
-                )
-                raise RuntimeError(f"Medstat export request failed: {status}")
-            return response.body()
+            with page.expect_download(timeout=180_000) as download_info:
+                try:
+                    response = page.goto(url, timeout=180_000)
+                except sync_api.Error as error:
+                    if "Download is starting" not in str(error):
+                        raise
+                else:
+                    status = (
+                        "no response"
+                        if response is None
+                        else str(response.status)
+                    )
+                    raise RuntimeError(
+                        f"Medstat export did not start a download: {status}"
+                    )
+            path = download_info.value.path()
+            if path is None:
+                raise RuntimeError("Medstat export download has no local path")
+            return Path(path).read_bytes()
         finally:
             browser.close()
 
