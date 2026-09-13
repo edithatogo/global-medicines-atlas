@@ -38,6 +38,16 @@ def test_edge_route_is_typed_when_unavailable() -> None:
     assert response.json()["error"] == "service_unavailable"
 
 
+def test_edge_route_rejects_invalid_selector() -> None:
+    _, edges = project_mbs_gold_graph_arrow(graph())
+    response = TestClient(
+        create_app(cast("ReadOnlyQueryService", object()), gold_edges=edges)
+    ).get("/api/v1/edges", params={"kind": ""})
+
+    assert response.status_code == 422
+    assert response.json()["error"] == "invalid_request"
+
+
 def test_edges_cli_reads_validated_parquet(tmp_path) -> None:
     _, edges = project_mbs_gold_graph_arrow(graph())
     path = tmp_path / "edges.parquet"
@@ -47,3 +57,13 @@ def test_edges_cli_reads_validated_parquet(tmp_path) -> None:
 
     assert result.exit_code == 0, result.stderr
     assert '"source_id":"au-mbs"' in result.stdout
+
+
+def test_edges_cli_rejects_invalid_file(tmp_path) -> None:
+    path = tmp_path / "edges.parquet"
+    path.write_bytes(b"not parquet")
+
+    result = CliRunner().invoke(app, ["edges", "--edge-file", str(path)])
+
+    assert result.exit_code == 2
+    assert "invalid_request" in result.stderr
