@@ -5,7 +5,10 @@ import pytest
 from test_mbs_gold_graph import graph
 
 from global_medicines_atlas.mbs_gold_graph import project_mbs_gold_graph_arrow
-from global_medicines_atlas.platinum_edges import select_gold_edges
+from global_medicines_atlas.platinum_edges import (
+    gold_edge_payload,
+    select_gold_edges,
+)
 
 
 def test_edge_selection_is_sorted_and_lossless() -> None:
@@ -36,3 +39,15 @@ def test_empty_selection_preserves_schema() -> None:
     selected = select_gold_edges(edges, source_node_id="missing")
     assert selected.num_rows == 0
     assert selected.schema.equals(edges.schema, check_metadata=True)
+
+
+def test_edge_payload_decodes_evidence_and_controls() -> None:
+    _, edges = project_mbs_gold_graph_arrow(graph())
+
+    payload = gold_edge_payload(edges)
+
+    assert payload["total"] == edges.num_rows
+    assert payload["qualification"] == "synthetic_silver_candidate_only"
+    assert payload["items"][0]["evidence"]["source_id"] == "au-mbs"
+    assert payload["items"][0]["inferred"] is False
+    assert payload["items"][0]["controls"]["review_state"] == "not_reviewed"
