@@ -151,6 +151,12 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     and the two risk/evidence views were reconciled and re-acquisition qualified
     every in-scope control.
 - [~] Task: Produce signed release package and consumer verification guide ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
+  - 2026-09-13 review fixes preserve failed/unverified qualification evidence,
+    lower maturity and unresolved recovery risk; reject duplicate gate IDs;
+    and reject inconsistent live-qualified payloads at runtime, portable schema
+    and canonical serialization boundaries. Focused verification passes 112
+    tests. Full and hosted verification are recorded in the evidence ledger.
+    The review does not complete dependent implementation or authorize release.
   - 2026-09-13 blocker audit: current repository evaluation finds 174 catalogue
     sources, 157 in-scope sources and 138 without landing evidence. The latest
     MBS utilisation hosted receipt verifies 28 files but retains three failed

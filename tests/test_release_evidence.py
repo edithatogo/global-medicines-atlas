@@ -190,6 +190,77 @@ def test_clean_live_evidence_can_qualify_but_not_self_approve() -> None:
 
 
 @pytest.mark.edge
+@pytest.mark.parametrize(
+    "blocker", ["traceability", "external_approval_receipt"]
+)
+@pytest.mark.parametrize("validation_layer", ["runtime", "schema"])
+def test_blocked_payload_cannot_be_relabelled_live(
+    blocker: str, validation_layer: str
+) -> None:
+    evidence = (
+        qualify(EvidenceClass.LIVE, request_approval=True)
+        if blocker == "external_approval_receipt"
+        else qualify(
+            EvidenceClass.LIVE,
+            gates={**ALL_GATES, "traceability": GateStatus.FAILED},
+        )
+    )
+    payload = evidence.model_dump(mode="json")
+    payload["release_state"] = "live-qualified"
+    _reject_qualified_payload(payload, validation_layer)
+
+
+@pytest.mark.edge
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("git", {"commit": SHA[:40], "dirty": True}),
+        ("coverage_unknown_denominators", 1),
+        ("dataset_schema_versions", ()),
+        ("migration_versions", ()),
+        ("rights_states", {RightsState.RESTRICTED: 1}),
+        ("receipt_counts", {}),
+        ("receipt_digests", ()),
+        ("snapshot_manifest_digests", (SHA,)),
+        ("gate_outcomes", {}),
+    ],
+)
+@pytest.mark.parametrize("validation_layer", ["runtime", "schema"])
+def test_live_payload_rejects_inconsistent_readiness(
+    field: str, value: object, validation_layer: str
+) -> None:
+    payload = qualify(EvidenceClass.LIVE).model_dump()
+    payload[field] = value
+    _reject_qualified_payload(payload, validation_layer)
+
+
+def _reject_qualified_payload(
+    payload: dict[str, object], validation_layer: str
+) -> None:
+    if validation_layer == "runtime":
+        with pytest.raises(ValidationError):
+            ReleaseEvidence.model_validate(payload)
+    else:
+        schema = json.loads(
+            Path("schemas/release-evidence-v1.json").read_text(encoding="utf-8")
+        )
+        with pytest.raises(jsonschema.ValidationError):
+            jsonschema.Draft202012Validator(schema).validate(
+                json.loads(json.dumps(payload))
+            )
+
+
+@pytest.mark.edge
+def test_canonical_output_revalidates_copied_qualification() -> None:
+    blocked = qualify(EvidenceClass.LIVE, request_approval=True)
+    forged = blocked.model_copy(
+        update={"release_state": ReleaseState.LIVE_QUALIFIED}
+    )
+    with pytest.raises(ValidationError, match="live-qualified"):
+        forged.canonical_json()
+
+
+@pytest.mark.edge
 def test_live_evidence_requires_verified_lineage() -> None:
     live = qualify(EvidenceClass.LIVE)
     payload = live.model_dump()

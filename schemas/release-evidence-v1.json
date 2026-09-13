@@ -61,12 +61,30 @@
       },
       "additionalProperties": {
         "$ref": "#/$defs/gateStatus"
-      }
+      },
+      "required": [
+        "dimension_separation",
+        "jurisdiction_identity",
+        "bitemporal_model",
+        "source_provenance",
+        "rights_review",
+        "canonical_schema",
+        "coverage_denominators",
+        "deterministic_migration",
+        "traceability",
+        "live_lineage_verification"
+      ]
     },
     "receipt_counts": {
       "type": "object",
       "propertyNames": {
-        "enum": ["fixture", "synthetic", "dry_run", "live", "unavailable"]
+        "enum": [
+          "fixture",
+          "synthetic",
+          "dry_run",
+          "live",
+          "unavailable"
+        ]
       },
       "additionalProperties": {
         "$ref": "#/$defs/nonnegativeInteger"
@@ -78,7 +96,12 @@
     "rights_states": {
       "type": "object",
       "propertyNames": {
-        "enum": ["unknown", "permitted", "restricted", "prohibited"]
+        "enum": [
+          "unknown",
+          "permitted",
+          "restricted",
+          "prohibited"
+        ]
       },
       "additionalProperties": {
         "$ref": "#/$defs/nonnegativeInteger"
@@ -92,7 +115,11 @@
       }
     },
     "release_state": {
-      "enum": ["fixture-qualified", "live-qualified", "blocked"]
+      "enum": [
+        "fixture-qualified",
+        "live-qualified",
+        "blocked"
+      ]
     },
     "unresolved_gates": {
       "type": "array",
@@ -116,11 +143,18 @@
       }
     },
     "gateStatus": {
-      "enum": ["passed", "failed", "unverified"]
+      "enum": [
+        "passed",
+        "failed",
+        "unverified"
+      ]
     },
     "gitState": {
       "type": "object",
-      "required": ["commit", "dirty"],
+      "required": [
+        "commit",
+        "dirty"
+      ],
       "properties": {
         "commit": {
           "type": "string",
@@ -170,7 +204,11 @@
     },
     "requirementEvidence": {
       "type": "object",
-      "required": ["requirement_id", "gates", "satisfied"],
+      "required": [
+        "requirement_id",
+        "gates",
+        "satisfied"
+      ],
       "properties": {
         "requirement_id": {
           "enum": [
@@ -201,5 +239,90 @@
       "additionalProperties": false
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "release_state": {
+            "const": "live-qualified"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "git": {
+            "properties": {
+              "dirty": {
+                "const": false
+              }
+            }
+          },
+          "unresolved_gates": {
+            "maxItems": 0
+          },
+          "gate_outcomes": {
+            "additionalProperties": {
+              "const": "passed"
+            }
+          },
+          "requirement_map": {
+            "items": {
+              "properties": {
+                "satisfied": {
+                  "const": true
+                }
+              }
+            }
+          },
+          "dataset_schema_versions": {
+            "minItems": 1
+          },
+          "migration_versions": {
+            "minItems": 1
+          },
+          "receipt_digests": {
+            "minItems": 1
+          },
+          "snapshot_scopes": {
+            "maxItems": 0
+          },
+          "coverage_unknown_denominators": {
+            "const": 0
+          },
+          "receipt_counts": {
+            "required": [
+              "live"
+            ],
+            "properties": {
+              "live": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "additionalProperties": {
+              "const": 0
+            }
+          },
+          "rights_states": {
+            "required": [
+              "permitted"
+            ],
+            "properties": {
+              "permitted": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "additionalProperties": {
+              "const": 0
+            }
+          },
+          "snapshot_manifest_digests": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ]
 }

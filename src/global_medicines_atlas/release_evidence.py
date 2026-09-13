@@ -221,12 +221,44 @@ class ReleaseEvidence(FrozenModel):
                 raise ValueError(
                     "requirement satisfaction does not match gates"
                 )
+        if self.release_state is ReleaseState.LIVE_QUALIFIED:
+            self._validate_live_readiness()
         return self
+
+    def _validate_live_readiness(self) -> None:
+        conditions = {
+            "resolved gates": not self.unresolved_gates,
+            "clean repository": not self.git.dirty,
+            "known denominators": not self.coverage_unknown_denominators,
+            "schema versions": bool(self.dataset_schema_versions),
+            "migration versions": bool(self.migration_versions),
+            "receipt digests": bool(self.receipt_digests),
+            "no fixture snapshot digests": not self.snapshot_manifest_digests,
+            "live receipt count": self.receipt_counts.get(EvidenceClass.LIVE, 0)
+            == len(self.receipt_digests),
+            "permitted rights count": self.rights_states.get(
+                RightsState.PERMITTED, 0
+            )
+            == len(self.receipt_digests),
+            "permitted rights only": not any(
+                count
+                for state, count in self.rights_states.items()
+                if state is not RightsState.PERMITTED
+            ),
+        }
+        missing = [
+            name for name, satisfied in conditions.items() if not satisfied
+        ]
+        if missing:
+            raise ValueError(
+                f"live-qualified evidence lacks {', '.join(missing)}"
+            )
 
     def canonical_json(self) -> bytes:
         """Serialize to stable JSON suitable for content-addressed build output."""
+        validated = ReleaseEvidence.model_validate(self.model_dump())
         return orjson.dumps(
-            self.model_dump(mode="json"),
+            validated.model_dump(mode="json"),
             option=orjson.OPT_APPEND_NEWLINE | orjson.OPT_SORT_KEYS,
         )
 
