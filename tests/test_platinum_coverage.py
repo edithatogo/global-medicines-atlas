@@ -7,6 +7,7 @@ from global_medicines_atlas.platinum_coverage import (
     bind_federated_coverage,
     build_coverage_envelope,
 )
+from global_medicines_atlas.platinum_query import QueryReceipt
 from global_medicines_atlas.platinum_surface_contracts import (
     DatasetIdentityEnvelope,
 )
@@ -23,7 +24,27 @@ from global_medicines_atlas.product_contracts import (
 
 def _identity() -> DatasetIdentityEnvelope:
     return DatasetIdentityEnvelope.model_construct(
-        jurisdiction="AU", source_id="au-pbs"
+        resource_id="au-pbs-current",
+        object_sha256="a" * 64,
+        contract_sha256="b" * 64,
+        semantic_manifest_sha256="c" * 64,
+        jurisdiction="AU",
+        source_id="au-pbs",
+    )
+
+
+def _receipt(response: CoverageResponse) -> QueryReceipt:
+    return QueryReceipt(
+        resource_id="au-pbs-current",
+        engine="polars",
+        canonical_query=b"{}",
+        query_sha256="d" * 64,
+        result_sha256=build_coverage_envelope(response).page_sha256,
+        row_count=1,
+        object_sha256="a" * 64,
+        contract_sha256="b" * 64,
+        semantic_manifest_sha256="c" * 64,
+        cache_receipt_sha256="f" * 64,
     )
 
 
@@ -87,12 +108,11 @@ def test_envelope_digest_binds_coverage_payload() -> None:
     assert revised.page_sha256 != original.page_sha256
 
 
-def test_federated_binding_requires_matching_provenance_and_jurisdiction() -> (
-    None
-):
+def test_federated_binding_requires_exact_receipt_and_jurisdiction() -> None:
     response = _response()
-    with pytest.raises(ValueError, match="provenance"):
-        bind_federated_coverage(response, _identity())
+    receipt = _receipt(response)
+    bound = bind_federated_coverage(response, _identity(), receipt)
+    assert bound.query_receipt_sha256 == receipt.receipt_sha256
     wrong_jurisdiction = response.model_copy(
         update={
             "coverage": (
@@ -101,7 +121,9 @@ def test_federated_binding_requires_matching_provenance_and_jurisdiction() -> (
         }
     )
     with pytest.raises(ValueError, match="jurisdiction"):
-        bind_federated_coverage(wrong_jurisdiction, _identity())
+        bind_federated_coverage(
+            wrong_jurisdiction, _identity(), _receipt(wrong_jurisdiction)
+        )
     linked = response.model_copy(
         update={
             "coverage": (
@@ -120,7 +142,9 @@ def test_federated_binding_requires_matching_provenance_and_jurisdiction() -> (
         }
     )
     assert (
-        bind_federated_coverage(linked, _identity()).identity.source_id
+        bind_federated_coverage(
+            linked, _identity(), _receipt(linked)
+        ).identity.source_id
         == "au-pbs"
     )
     wrong_source = linked.model_copy(
@@ -141,4 +165,38 @@ def test_federated_binding_requires_matching_provenance_and_jurisdiction() -> (
         }
     )
     with pytest.raises(ValueError, match="provenance"):
-        bind_federated_coverage(wrong_source, _identity())
+        bind_federated_coverage(
+            wrong_source, _identity(), _receipt(wrong_source)
+        )
+
+
+def test_federated_binding_rejects_a_receipt_for_another_resource() -> None:
+    response = _response()
+    receipt = _receipt(response)
+    mismatched = QueryReceipt(
+        resource_id="au-pbs-historical",
+        engine=receipt.engine,
+        canonical_query=receipt.canonical_query,
+        query_sha256=receipt.query_sha256,
+        result_sha256=receipt.result_sha256,
+        row_count=receipt.row_count,
+        object_sha256=receipt.object_sha256,
+        contract_sha256=receipt.contract_sha256,
+        semantic_manifest_sha256=receipt.semantic_manifest_sha256,
+        cache_receipt_sha256=receipt.cache_receipt_sha256,
+    )
+    with pytest.raises(ValueError, match="query receipt"):
+        bind_federated_coverage(response, _identity(), mismatched)
+
+
+def test_federated_binding_rejects_a_receipt_for_another_payload() -> None:
+    response = _response()
+    changed = response.model_copy(
+        update={
+            "coverage": (
+                response.coverage[0].model_copy(update={"covered_count": 1}),
+            )
+        }
+    )
+    with pytest.raises(ValueError, match="coverage payload"):
+        bind_federated_coverage(changed, _identity(), _receipt(response))
