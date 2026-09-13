@@ -83,6 +83,15 @@ def _append_unique(items: list[str], additions: list[str]) -> list[str]:
     return list(dict.fromkeys([*items, *additions]))
 
 
+def _retain_gate_observation(
+    gate: dict[str, Any], updates: dict[str, Any]
+) -> None:
+    """Add known blockers without erasing adverse observations or receipts."""
+    updates["state"] = "blocked" if gate["state"] == "passed" else gate["state"]
+    updates["evidence"] = _append_unique(gate["evidence"], updates["evidence"])
+    gate.update(updates)
+
+
 def build_contract(  # ruff: ignore[too-many-branches]
     raw: dict[str, Any],
 ) -> dict[str, Any]:
@@ -176,15 +185,18 @@ def build_contract(  # ruff: ignore[too-many-branches]
         else "stable-v1-bronze-current-scope"
     )
     source_gate = gates.pop(source_gate_id)
-    source_gate.update({
-        "gate_id": "stable-v1-bronze-current-scope",
-        "description": (
-            "Complete Bronze landing evidence for the current public/no-credential "
-            "scope without treating catalogue blockers as landed sources."
-        ),
-        "state": "blocked",
-        "evidence": [BRONZE_PLAN, BRONZE_MATURITY],
-    })
+    _retain_gate_observation(
+        source_gate,
+        {
+            "gate_id": "stable-v1-bronze-current-scope",
+            "description": (
+                "Complete Bronze landing evidence for the current public/no-credential "
+                "scope without treating catalogue blockers as landed sources."
+            ),
+            "state": "blocked",
+            "evidence": [BRONZE_PLAN, BRONZE_MATURITY],
+        },
+    )
 
     renovate_gate_id = (
         "renovate-app-activation"
@@ -192,39 +204,48 @@ def build_contract(  # ruff: ignore[too-many-branches]
         else "renovate-output-verification"
     )
     renovate_gate = gates.pop(renovate_gate_id)
-    renovate_gate.update({
-        "gate_id": "renovate-output-verification",
-        "description": (
-            "Observe a Renovate Dependency Dashboard or first update pull request "
-            "after maintainer-confirmed App activation."
-        ),
-        "state": "blocked",
-        "evidence": [QUALITY_CLOSURE],
-    })
+    _retain_gate_observation(
+        renovate_gate,
+        {
+            "gate_id": "renovate-output-verification",
+            "description": (
+                "Observe a Renovate Dependency Dashboard or first update pull request "
+                "after maintainer-confirmed App activation."
+            ),
+            "state": "blocked",
+            "evidence": [QUALITY_CLOSURE],
+        },
+    )
 
-    gates["stable-v1-release-approval"].update({
-        "description": (
-            "Obtain explicit approval for final stable v1 promotion; the existing "
-            "v1.0.0rc1 authority is prerelease-only."
-        ),
-        "state": "blocked",
-        "evidence": [
-            "quality/qualifications/release-authority-v1.0.0rc1.json",
-            "quality/qualifications/stable-v1-release-provenance-receipt.json",
-        ],
-    })
-    gates["stable-v1-maturity-m5"].update({
-        "description": (
-            "Verify every blocking maturity dimension at M5 after Bronze scope "
-            "and Renovate output verification complete."
-        ),
-        "state": "blocked",
-        "evidence": [
-            "conductor/maturity-model.json",
-            BRONZE_PLAN,
-            QUALITY_CLOSURE,
-        ],
-    })
+    _retain_gate_observation(
+        gates["stable-v1-release-approval"],
+        {
+            "description": (
+                "Obtain explicit approval for final stable v1 promotion; the existing "
+                "v1.0.0rc1 authority is prerelease-only."
+            ),
+            "state": "blocked",
+            "evidence": [
+                "quality/qualifications/release-authority-v1.0.0rc1.json",
+                "quality/qualifications/stable-v1-release-provenance-receipt.json",
+            ],
+        },
+    )
+    _retain_gate_observation(
+        gates["stable-v1-maturity-m5"],
+        {
+            "description": (
+                "Verify every blocking maturity dimension at M5 after Bronze scope "
+                "and Renovate output verification complete."
+            ),
+            "state": "blocked",
+            "evidence": [
+                "conductor/maturity-model.json",
+                BRONZE_PLAN,
+                QUALITY_CLOSURE,
+            ],
+        },
+    )
     contract["release_gates"] = [
         *gates.values(),
         source_gate,

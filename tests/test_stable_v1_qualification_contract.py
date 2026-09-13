@@ -627,3 +627,29 @@ def test_reconciliation_retains_additional_known_requirement_blockers(
         if row["requirement_id"] == requirement_id
     )
     assert "new-evidence-required" in observed["blocker_ids"]
+
+
+@pytest.mark.parametrize(
+    "gate_id",
+    [
+        "stable-v1-release-approval",
+        "stable-v1-maturity-m5",
+        "stable-v1-bronze-current-scope",
+        "renovate-output-verification",
+    ],
+)
+@pytest.mark.parametrize("state", ["failed", "unverified"])
+def test_reconciliation_retains_special_gate_observations(
+    gate_id: str, state: str
+) -> None:
+    raw = _load(QUALIFICATION)
+    gate = next(
+        row for row in raw["release_gates"] if row["gate_id"] == gate_id
+    )
+    gate.update(state=state, evidence=["fresh-failure.json"])
+    result = build_contract(raw)
+    observed = next(
+        row for row in result["release_gates"] if row["gate_id"] == gate_id
+    )
+    assert observed["state"] == state
+    assert "fresh-failure.json" in observed["evidence"]

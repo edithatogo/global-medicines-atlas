@@ -17,7 +17,7 @@ Stable v1 still requires its existing implementation, evidence and human gates.
   checks pass at `de176cd7297a4d5f68c71387cbd22c0e7b38329b`, including
   Linux mutation, Mojo and Codecov. Local full harness stops at the mutation
   survivor baseline after macOS native fork failures; no threshold was changed.
-- [x] **Test Results**: 127 focused tests pass including monitoring. The final
+- [x] **Test Results**: 136 focused tests pass including monitoring. The final
   full-suite run passes 4,892 tests with one optional PyIceberg skip. The first
   run detected a stale schema-bound monitoring receipt; regeneration corrected
   its bindings before the passing run.
@@ -62,3 +62,17 @@ independent human reviewer is claimed. The track remains in progress and must
 not be archived until its full acceptance criteria are evidenced. The existing
 Denmark Medstat source decision remains pending and is not resolved by this
 review or by the instruction to complete the track.
+
+## Hosted review follow-up
+
+Eight failed-first controls reproduced loss of failed/unverified observations
+on the four specially rewritten gates. Reconciliation now preserves those
+states and appends evidence while still blocking previously passed gates.
+
+The schema-only count comparison finding is a semantic-validation boundary,
+not a relaxation of runtime checks: standard JSON Schema 2020-12 cannot compare
+an arbitrary array length with a sibling numeric field. The v1 schema now
+explicitly requires `ReleaseEvidence.model_validate` before qualification, and
+a regression demonstrates schema-valid mismatched counts being rejected there.
+No claim of full schema/runtime equivalence is made. A portable representation
+redesign would require a separately versioned contract.

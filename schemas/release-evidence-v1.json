@@ -324,5 +324,6 @@
         }
       }
     }
-  ]
+  ],
+  "description": "Structural validation only. Consumers must also validate with ReleaseEvidence.model_validate (including cross-field count, requirement-map and gate consistency) before treating a payload as qualified. Schema validity alone is not qualification or release authority."
 }

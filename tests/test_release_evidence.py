@@ -659,3 +659,16 @@ def test_checked_in_json_schema_accepts_model_and_rejects_approval() -> None:
     validator.validate(payload)
     with pytest.raises(jsonschema.ValidationError):
         validator.validate({**payload, "release_state": "approved"})
+
+
+@pytest.mark.edge
+def test_schema_valid_counts_still_require_semantic_validation() -> None:
+    payload = qualify(EvidenceClass.LIVE).model_dump(mode="json")
+    payload["receipt_digests"] = sorted([*payload["receipt_digests"], "f" * 64])
+    schema = json.loads(
+        Path("schemas/release-evidence-v1.json").read_text(encoding="utf-8")
+    )
+    assert "Schema validity alone is not qualification" in schema["description"]
+    jsonschema.Draft202012Validator(schema).validate(payload)
+    with pytest.raises(ValidationError, match="live receipt count"):
+        ReleaseEvidence.model_validate(payload)
