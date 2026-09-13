@@ -93,6 +93,15 @@ def test_federated_binding_requires_matching_provenance_and_jurisdiction() -> (
     response = _response()
     with pytest.raises(ValueError, match="provenance"):
         bind_federated_coverage(response, _identity())
+    wrong_jurisdiction = response.model_copy(
+        update={
+            "coverage": (
+                response.coverage[0].model_copy(update={"jurisdiction": "NZ"}),
+            )
+        }
+    )
+    with pytest.raises(ValueError, match="jurisdiction"):
+        bind_federated_coverage(wrong_jurisdiction, _identity())
     linked = response.model_copy(
         update={
             "coverage": (
@@ -114,3 +123,22 @@ def test_federated_binding_requires_matching_provenance_and_jurisdiction() -> (
         bind_federated_coverage(linked, _identity()).identity.source_id
         == "au-pbs"
     )
+    wrong_source = linked.model_copy(
+        update={
+            "coverage": (
+                linked.coverage[0].model_copy(
+                    update={
+                        "provenance": (
+                            ProvenanceLink(
+                                source_id="nz-pharmac",
+                                source_uri="https://example.test/pharmac",
+                                retrieved_at=linked.metadata.generated_at,
+                            ),
+                        )
+                    }
+                ),
+            )
+        }
+    )
+    with pytest.raises(ValueError, match="provenance"):
+        bind_federated_coverage(wrong_source, _identity())
