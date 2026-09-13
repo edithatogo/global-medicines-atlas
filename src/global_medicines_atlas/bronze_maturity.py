@@ -166,22 +166,59 @@ def _contains_exact_value(value: Any, expected: str) -> bool:
     return False
 
 
-def receipt_backed_landing_source_ids(
-    root: Path, source_ids: set[str]
-) -> set[str]:
-    """Return source IDs bound by direct, non-publication Bronze receipts.
+def _is_receipt_reference(relative: str) -> bool:
+    """Reject publication paths before opening a claimed Bronze receipt."""
 
-    Queue labels alone are not evidence. An override can contribute only when
-    it names a landed source and an existing JSON receipt contains that exact
-    source ID. Publication-only references remain deliberately excluded.
-    """
+    normalized = relative.replace("\\", "/")
+    name = Path(normalized).name.casefold()
+    return (
+        normalized.endswith(".json")
+        and not _evidence_is_forbidden(normalized)
+        and "publication" not in name
+        and "huggingface" not in name
+    )
+
+
+def _is_successful_bronze_receipt(
+    receipt: Mapping[str, Any], source_id: str
+) -> bool:
+    """Require a typed qualification receipt and a positive success outcome."""
+
+    schema_id = receipt.get("schema_id")
+    if not isinstance(schema_id, str) or not schema_id.startswith(
+        "global-medicines-atlas."
+    ):
+        return False
+    if not (
+        schema_id.endswith(("-live-qualification", "-acquisition-success"))
+        or schema_id
+        == "global-medicines-atlas.international-public-bronze-qualification"
+    ):
+        return False
+    admitted = receipt.get("accepted_admission_count")
+    releases = receipt.get("accepted_release_count")
+    failed_releases = receipt.get("release_failed_count")
+    successful_admission = isinstance(admitted, int) and admitted > 0
+    successful_release = (
+        isinstance(releases, int) and releases > 0 and failed_releases == 0
+    )
+    return (
+        successful_admission or successful_release
+    ) and _contains_exact_value(receipt, source_id)
+
+
+def receipt_backed_landing_evidence(
+    root: Path, source_ids: set[str]
+) -> dict[str, str]:
+    """Return each source's direct, successful, non-publication receipt."""
+
     path = root / LANDING_OVERRIDES_RELATIVE
     if not path.is_file():
-        return set()
+        return {}
     overrides = json.loads(path.read_text(encoding="utf-8")).get(
         "overrides", []
     )
-    landed: set[str] = set()
+    evidence: dict[str, str] = {}
     for override in overrides:
         source_id = override.get("source_id")
         if (
@@ -191,36 +228,35 @@ def receipt_backed_landing_source_ids(
         ):
             continue
         for relative in override.get("evidence_references", []):
-            if not isinstance(relative, str):
-                continue
-            name = Path(relative).name.casefold()
-            if "publication" in name or "huggingface" in name:
+            if not isinstance(relative, str) or not _is_receipt_reference(
+                relative
+            ):
                 continue
             receipt_path = root / relative
-            if not receipt_path.is_file() or receipt_path.suffix != ".json":
+            if not receipt_path.is_file():
                 continue
             try:
                 receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
             except json.JSONDecodeError:
                 continue
-            schema_id = receipt.get("schema_id")
-            admitted = receipt.get("accepted_admission_count")
-            if (
-                isinstance(schema_id, str)
-                and schema_id.startswith("global-medicines-atlas.")
-                and (
-                    schema_id.endswith("-live-qualification")
-                    or schema_id
-                    == "global-medicines-atlas.international-public-bronze-qualification"
-                    or schema_id.endswith("-acquisition-success")
-                )
-                and isinstance(admitted, int)
-                and admitted > 0
-                and _contains_exact_value(receipt, source_id)
+            if isinstance(receipt, Mapping) and _is_successful_bronze_receipt(
+                cast("Mapping[str, Any]", receipt), source_id
             ):
-                landed.add(source_id)
+                evidence[source_id] = relative
                 break
-    return landed
+    return evidence
+
+
+def receipt_backed_landing_source_ids(
+    root: Path, source_ids: set[str]
+) -> set[str]:
+    """Return source IDs bound by direct, non-publication Bronze receipts.
+
+    Queue labels alone are not evidence. An override can contribute only when
+    it names a landed source and an existing JSON receipt contains that exact
+    source ID. Publication-only references remain deliberately excluded.
+    """
+    return set(receipt_backed_landing_evidence(root, source_ids))
 
 
 def _property(
@@ -303,10 +339,9 @@ def evaluate_completeness(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
         if source.get("implemented_ingestion") is True
         and str(source["source_id"]) in in_scope
     }
+    receipt_evidence = receipt_backed_landing_evidence(root, in_scope)
     landed = (
-        landing_source_ids(root, in_scope)
-        | receipt_backed_landing_source_ids(root, in_scope)
-        | ingested
+        landing_source_ids(root, in_scope) | set(receipt_evidence) | ingested
     )
     missing = sorted(in_scope - landed)
     inventory = {
@@ -325,6 +360,8 @@ def evaluate_completeness(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
         CATALOG_RELATIVE,
         AUTHORITIES["bronze_completion_spec"],
         "src/global_medicines_atlas/adapters/fixture_contracts.py",
+        LANDING_OVERRIDES_RELATIVE,
+        *sorted(set(receipt_evidence.values())),
     )
     if missing:
         property_row = _property(
@@ -336,7 +373,8 @@ def evaluate_completeness(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
             blocker_ids=("bronze-ingest-incomplete",),
             notes=(
                 f"{len(missing)} in-scope public/no-credential sources lack "
-                "observable adapter, fixture, or implemented_ingestion "
+                "observable adapter, fixture, implemented_ingestion, or "
+                "direct successful receipt-backed "
                 "landing evidence. Excluded and fixture-only rows are not "
                 "scored as negative evidence."
             ),

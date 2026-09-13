@@ -2,8 +2,8 @@
   "schema_id": "global-medicines-atlas.bronze-maturity-qualification",
   "schema_version": 1,
   "horizon": "bronze-current-public-scope",
-  "evaluated_at": "2026-09-13T14:01:14.827291+00:00",
-  "git_commit": "29e0097757210692faf9d1648be19f367244baf8",
+  "evaluated_at": "2026-09-13T14:23:46.559258+00:00",
+  "git_commit": "d58f73d8812f4f4f0d6aaceea6690c80aa23749a",
   "authorities": {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -23,12 +23,21 @@
       "evidence": [
         "src/global_medicines_atlas/data/medicine_source_catalog.json",
         "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
-        "src/global_medicines_atlas/adapters/fixture_contracts.py"
+        "src/global_medicines_atlas/adapters/fixture_contracts.py",
+        "src/global_medicines_atlas/data/source_landing_overrides.json",
+        "quality/qualifications/faers-live-corpus-20260821.json",
+        "quality/qualifications/fda-enforcement-live-corpus-20260821.json",
+        "quality/qualifications/fda-rems-live-corpus-20260821.json",
+        "quality/qualifications/gip-acquisition-success-20260826.json",
+        "quality/qualifications/gsrs-unii-acquisition-success-20260826.json",
+        "quality/qualifications/international-public-bronze-20260827.json",
+        "quality/qualifications/ndc-directory-live-corpus-20260821.json",
+        "quality/qualifications/union-register-live-corpus-20260821.json"
       ],
       "blocker_ids": [
         "bronze-ingest-incomplete"
       ],
-      "notes": "124 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
+      "notes": "125 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
     },
     {
       "property_id": "immutability",
@@ -241,13 +250,22 @@
   "residual_risks": [
     {
       "risk_id": "RISK-001",
-      "description": "124 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "125 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "disposition": "unresolved",
       "blocking": true,
       "evidence": [
         "src/global_medicines_atlas/data/medicine_source_catalog.json",
         "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
-        "src/global_medicines_atlas/adapters/fixture_contracts.py"
+        "src/global_medicines_atlas/adapters/fixture_contracts.py",
+        "src/global_medicines_atlas/data/source_landing_overrides.json",
+        "quality/qualifications/faers-live-corpus-20260821.json",
+        "quality/qualifications/fda-enforcement-live-corpus-20260821.json",
+        "quality/qualifications/fda-rems-live-corpus-20260821.json",
+        "quality/qualifications/gip-acquisition-success-20260826.json",
+        "quality/qualifications/gsrs-unii-acquisition-success-20260826.json",
+        "quality/qualifications/international-public-bronze-20260827.json",
+        "quality/qualifications/ndc-directory-live-corpus-20260821.json",
+        "quality/qualifications/union-register-live-corpus-20260821.json"
       ]
     },
     {
@@ -302,11 +320,20 @@
     {
       "blocker_id": "bronze-ingest-incomplete",
       "property_id": "completeness",
-      "description": "124 in-scope public/no-credential sources lack observable adapter, fixture, or implemented_ingestion landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "125 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "evidence": [
         "src/global_medicines_atlas/data/medicine_source_catalog.json",
         "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
-        "src/global_medicines_atlas/adapters/fixture_contracts.py"
+        "src/global_medicines_atlas/adapters/fixture_contracts.py",
+        "src/global_medicines_atlas/data/source_landing_overrides.json",
+        "quality/qualifications/faers-live-corpus-20260821.json",
+        "quality/qualifications/fda-enforcement-live-corpus-20260821.json",
+        "quality/qualifications/fda-rems-live-corpus-20260821.json",
+        "quality/qualifications/gip-acquisition-success-20260826.json",
+        "quality/qualifications/gsrs-unii-acquisition-success-20260826.json",
+        "quality/qualifications/international-public-bronze-20260827.json",
+        "quality/qualifications/ndc-directory-live-corpus-20260821.json",
+        "quality/qualifications/union-register-live-corpus-20260821.json"
       ]
     }
   ],
@@ -341,7 +368,7 @@
     "bronze_in_scope_count": 157,
     "fixture_only_count": 2,
     "excluded_count": 15,
-    "in_scope_without_landing_or_blocker": 124,
+    "in_scope_without_landing_or_blocker": 125,
     "missing_coverage_is_not_negative_evidence": true
   }
 }

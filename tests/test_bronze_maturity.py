@@ -23,6 +23,7 @@ from global_medicines_atlas.bronze_maturity import (
     evaluate_completeness,
     evaluate_repository,
     landing_source_ids,
+    receipt_backed_landing_evidence,
     receipt_backed_landing_source_ids,
     reject_forbidden_evidence,
     run_adversarial_review,
@@ -310,6 +311,16 @@ def test_receipt_backed_landing_requires_exact_nonpublication_receipt(
         json.dumps({"source_ids": ["au-pbs"]}), encoding="utf-8"
     )
     (receipts / "invalid.json").write_text("{", encoding="utf-8")
+    publication_directory = tmp_path / "docs/publication"
+    publication_directory.mkdir(parents=True)
+    (publication_directory / "admission.json").write_text(
+        json.dumps({
+            "schema_id": "global-medicines-atlas.example-live-qualification",
+            "accepted_admission_count": 1,
+            "source_ids": ["publication-path"],
+        }),
+        encoding="utf-8",
+    )
     overrides.write_text(
         json.dumps({
             "overrides": [
@@ -336,13 +347,21 @@ def test_receipt_backed_landing_requires_exact_nonpublication_receipt(
                         "quality/qualifications/invalid.json",
                     ],
                 },
+                {
+                    "source_id": "publication-path",
+                    "state": "landed_and_evidenced",
+                    "evidence_references": ["docs/publication/admission.json"],
+                },
             ]
         }),
         encoding="utf-8",
     )
     assert receipt_backed_landing_source_ids(
-        tmp_path, {"au-artg", "au-pbs", "missing-evidence"}
+        tmp_path, {"au-artg", "au-pbs", "missing-evidence", "publication-path"}
     ) == {"au-artg"}
+    assert receipt_backed_landing_evidence(tmp_path, {"au-artg"}) == {
+        "au-artg": "quality/qualifications/bronze.json"
+    }
 
 
 @pytest.mark.unit
