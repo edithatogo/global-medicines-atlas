@@ -230,7 +230,8 @@ include = ["src", "sources"]
 target-version = "py314"
 line-length = 80
 src = ["src", "sources"]
-extend-exclude = ["vendor"]
+# Pinned upstream Conductor code follows its own formatting policy.
+extend-exclude = ["vendor", ".agents/plugins/conductor"]
 preview = true
 
 [tool.ruff.lint]

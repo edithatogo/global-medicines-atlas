@@ -80,7 +80,7 @@ def main(argv: list[str] | None = None) -> int:
     state = report["qualification_state"]
     mature = report["bronze_mature"]
     print(
-        f"wrote {args.output.relative_to(ROOT)} "
+        f"wrote {args.output} "
         f"qualification_state={state} bronze_mature={mature}"
     )
     return 0

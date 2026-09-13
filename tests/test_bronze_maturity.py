@@ -11,6 +11,7 @@ from typing import Any
 import pytest
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import ValidationError
+from scripts.qualify_bronze_maturity import main as qualify_bronze_main
 
 from global_medicines_atlas import bronze_maturity as bronze_maturity_mod
 from global_medicines_atlas.bronze_maturity import (
@@ -28,6 +29,21 @@ from global_medicines_atlas.bronze_maturity import (
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXED_CLOCK = datetime(2026, 8, 20, 6, 48, tzinfo=UTC)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("path_kind", ["relative", "absolute"])
+def test_qualification_cli_accepts_custom_output_paths(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, path_kind: str
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    target = Path("reports/bronze.json")
+    if path_kind == "absolute":
+        target = tmp_path / target
+    assert qualify_bronze_main(["--output", str(target)]) == 0
+    report = json.loads(target.read_text(encoding="utf-8"))
+    assert report["report_complete"] is True
+    assert report["qualification_state"] in {"blocked", "qualified"}
 
 
 def _load(path: Path) -> dict[str, Any]:
