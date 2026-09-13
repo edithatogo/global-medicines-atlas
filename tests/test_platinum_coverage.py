@@ -4,7 +4,11 @@ import pytest
 
 from global_medicines_atlas.platinum_coverage import (
     CoverageEnvelope,
+    bind_federated_coverage,
     build_coverage_envelope,
+)
+from global_medicines_atlas.platinum_surface_contracts import (
+    DatasetIdentityEnvelope,
 )
 from global_medicines_atlas.product_contracts import (
     AsOfClocks,
@@ -12,8 +16,15 @@ from global_medicines_atlas.product_contracts import (
     CoverageResponse,
     EvidenceDimension,
     PageMetadata,
+    ProvenanceLink,
     ResponseMetadata,
 )
+
+
+def _identity() -> DatasetIdentityEnvelope:
+    return DatasetIdentityEnvelope.model_construct(
+        jurisdiction="AU", source_id="au-pbs"
+    )
 
 
 def _response() -> CoverageResponse:
@@ -74,3 +85,32 @@ def test_envelope_digest_binds_coverage_payload() -> None:
     )
     revised = build_coverage_envelope(changed)
     assert revised.page_sha256 != original.page_sha256
+
+
+def test_federated_binding_requires_matching_provenance_and_jurisdiction() -> (
+    None
+):
+    response = _response()
+    with pytest.raises(ValueError, match="provenance"):
+        bind_federated_coverage(response, _identity())
+    linked = response.model_copy(
+        update={
+            "coverage": (
+                response.coverage[0].model_copy(
+                    update={
+                        "provenance": (
+                            ProvenanceLink(
+                                source_id="au-pbs",
+                                source_uri="https://example.test/pbs",
+                                retrieved_at=response.metadata.generated_at,
+                            ),
+                        )
+                    }
+                ),
+            )
+        }
+    )
+    assert (
+        bind_federated_coverage(linked, _identity()).identity.source_id
+        == "au-pbs"
+    )
