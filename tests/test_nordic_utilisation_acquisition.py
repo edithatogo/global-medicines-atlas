@@ -90,7 +90,12 @@ def test_authorization_is_independent_and_fail_closed() -> None:
         "no-norpd-utilisation",
         "se-socialstyrelsen-utilisation",
     )
-    for source in authorization.sources:
+    denmark, *pending_sources = authorization.sources
+    denmark.require_payload_authority()
+    assert denmark.decision_status == "approved_internal"
+    assert denmark.public_release_authorized is False
+    assert denmark.external_publication_authorized is False
+    for source in pending_sources:
         with pytest.raises(
             PermissionError, match="payload decision is pending"
         ):
@@ -109,7 +114,7 @@ def test_pending_source_rejects_scope_widening(
 ) -> None:
     raw = _raw()
     sources = _sources(raw)
-    sources[0].update(update)
+    sources[1].update(update)
     with pytest.raises(ValidationError, match=message):
         NordicAuthorization.model_validate(raw)
 

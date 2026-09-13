@@ -4,11 +4,11 @@
   "sources": [
     {
       "source_id": "dk-medstat-utilisation",
-      "decision_date": null,
-      "decision_status": "pending",
-      "decision_basis": "Medstat aggregate statistics have affirmative official reuse terms with attribution, but the public bulk-download page contains supporting metadata rather than utilisation results. Acquisition and retention of exported result payloads require the maintainer's source-specific acceptance.",
-      "acquisition_authorized": false,
-      "internal_retention_authorized": false,
+      "decision_date": "2026-09-13",
+      "decision_status": "approved_internal",
+      "decision_basis": "The accountable maintainer approved bounded internal acquisition and retention on 2026-09-13. The official Medstat landing page currently describes aggregate annual sales statistics through 2025, and its reuse terms permit commercial and non-commercial reuse with Sundhedsdatastyrelsen and date attribution while requiring transformed figures to be identified. Acquire only source-generated aggregate result exports with exact recorded query parameters; do not acquire person-level records or publish source bytes or derived outputs.",
+      "acquisition_authorized": true,
+      "internal_retention_authorized": true,
       "public_release_authorized": false,
       "external_publication_authorized": false,
       "landing_url": "https://medstat.dk/",
