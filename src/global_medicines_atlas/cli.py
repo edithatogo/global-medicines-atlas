@@ -14,6 +14,7 @@ import typer
 from pydantic import ValidationError
 
 from .comparison_validity import abstaining_status_comparison_validity
+from .historical_change_configuration import load_historical_change_service
 from .product_contracts import (
     API_VERSION,
     MAX_EXPORT_ROWS,
@@ -570,6 +571,25 @@ def health(
         checks=(check,),
     )
     typer.echo(response.model_dump_json())
+
+
+@app.command("history")
+def history_query(
+    history_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
+    offset: Annotated[int, typer.Option(min=0)] = 0,
+    limit: Annotated[int, typer.Option(min=1, max=1000)] = 100,
+) -> None:
+    """Page validated source-native historical-change observations."""
+    try:
+        page = load_historical_change_service(history_file).page(
+            offset=offset, limit=limit
+        )
+    except OSError, ValidationError, ValueError:
+        _fail(
+            ErrorCode.INVALID_REQUEST,
+            "The historical evidence file is invalid or unavailable",
+        )
+    typer.echo(page.model_dump_json())
 
 
 @app.command("benefits")
