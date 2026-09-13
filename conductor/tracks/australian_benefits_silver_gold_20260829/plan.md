@@ -513,10 +513,20 @@
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
   and source-native identity.
 - [ ] Confirm the intended failure before implementation.
-- [ ] Implement bounded PBS v3 source-faithful tables and harmonised medicine
-  references using the existing canonical medicine model.
-- [ ] Keep PBS funding/formulary, ARTG regulatory, AMT terminology, and ATC
-  classification assertions independent in storage, lineage, and coverage.
+- [x] Implement bounded PBS v3 source-faithful tables. PR #460 merged as
+  `5b7af3b6`; the table schema and qualifier retain source-native candidate
+  status, exact source identity, and rebuildable Parquet boundaries.
+- [x] Keep PBS funding/formulary, ARTG regulatory, AMT terminology, and ATC
+  classification assertions independent in the source-faithful storage and
+  lineage layer. PR #460 records funding/formulary as source structure,
+  terminology and classification as reference-only, and regulatory as not
+  asserted.
+- [ ] Implement and qualify the loss-aware bridge from `PbsV3Record` to the
+  existing canonical medicine model. It must preserve the independent
+  funding/formulary, regulatory, terminology, and classification dimensions;
+  it must not treat AMT or ATC references as resolved terminology or
+  classification assertions. The existing `project_pbs_xml` minimal-fixture
+  path is separate and does not satisfy this real PBS v3 requirement.
 - Hosted run `33549535561` now records a passed PBS aggregate receipt at
   `pbs-aggregate-receipt-20260904.json`; it is structural-storage-candidate
   evidence only and does not close this Silver checkpoint.
