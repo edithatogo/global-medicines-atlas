@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 
-from pydantic import AwareDatetime, Field
+from pydantic import AwareDatetime, Field, model_validator
 
 from .platinum_query import QueryReceipt
 from .platinum_surface_contracts import (
@@ -36,6 +36,27 @@ class FederatedCoverageEnvelope(CoverageEnvelope):
 
     identity: DatasetIdentityEnvelope
     query_receipt_sha256: Sha256
+    coverage_receipt_sha256: Sha256
+
+
+class CoverageTransformationReceipt(PlatinumSurfaceModel):
+    """Content-addressed evidence for transforming one exact query to coverage."""
+
+    version: str = "1.0"
+    identity: DatasetIdentityEnvelope
+    query_receipt_sha256: Sha256
+    coverage_page_sha256: Sha256
+    receipt_sha256: Sha256
+
+    @model_validator(mode="after")
+    def digest_is_current(self) -> CoverageTransformationReceipt:
+        if self.receipt_sha256 != _receipt_digest(
+            self.identity,
+            self.query_receipt_sha256,
+            self.coverage_page_sha256,
+        ):
+            raise ValueError("coverage receipt digest does not match evidence")
+        return self
 
 
 def _digest(response: CoverageResponse) -> str:
@@ -47,6 +68,24 @@ def _digest(response: CoverageResponse) -> str:
         "page": response.metadata.page.model_dump(mode="json"),
     }
     canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(canonical.encode()).hexdigest()
+
+
+def _receipt_digest(
+    identity: DatasetIdentityEnvelope,
+    query_receipt_sha256: str,
+    coverage_page_sha256: str,
+) -> str:
+    canonical = json.dumps(
+        {
+            "coverage_page_sha256": coverage_page_sha256,
+            "identity": identity.model_dump(mode="json"),
+            "query_receipt_sha256": query_receipt_sha256,
+            "version": "1.0",
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    )
     return hashlib.sha256(canonical.encode()).hexdigest()
 
 
@@ -64,19 +103,12 @@ def build_coverage_envelope(response: CoverageResponse) -> CoverageEnvelope:
     )
 
 
-def bind_federated_coverage(
+def coverage_transformation_receipt(
     response: CoverageResponse,
     identity: DatasetIdentityEnvelope,
     query_receipt: QueryReceipt,
-) -> FederatedCoverageEnvelope:
-    """Bind coverage to the exact resource proven by its query receipt.
-
-    A source label alone is insufficient because an authority can publish
-    several revisions.  The receipt is emitted by the verified resolver query
-    path and binds the queried result to its immutable resource and admitted
-    contract/semantic digests before this product envelope exposes identity.
-    """
-    envelope = build_coverage_envelope(response)
+) -> CoverageTransformationReceipt:
+    """Record the trusted transformation from an exact query into coverage."""
     if (
         query_receipt.resource_id != identity.resource_id
         or query_receipt.object_sha256 != identity.object_sha256
@@ -85,29 +117,51 @@ def bind_federated_coverage(
         != identity.semantic_manifest_sha256
     ):
         raise ValueError("query receipt differs from resource identity")
-    if query_receipt.result_sha256 != envelope.page_sha256:
-        raise ValueError("query receipt differs from coverage payload")
+    envelope = build_coverage_envelope(response)
+    digest = _receipt_digest(
+        identity, query_receipt.receipt_sha256, envelope.page_sha256
+    )
+    return CoverageTransformationReceipt(
+        identity=identity,
+        query_receipt_sha256=query_receipt.receipt_sha256,
+        coverage_page_sha256=envelope.page_sha256,
+        receipt_sha256=digest,
+    )
+
+
+def bind_federated_coverage(
+    response: CoverageResponse,
+    receipt: CoverageTransformationReceipt,
+) -> FederatedCoverageEnvelope:
+    """Expose coverage only when its transformation receipt matches exactly."""
+    envelope = build_coverage_envelope(response)
+    if receipt.coverage_page_sha256 != envelope.page_sha256:
+        raise ValueError("coverage receipt differs from coverage payload")
     for item in envelope.coverage:
-        if item.jurisdiction != identity.jurisdiction:
+        if item.jurisdiction != receipt.identity.jurisdiction:
             raise ValueError(
                 "coverage jurisdiction differs from resource identity"
             )
         if item.provenance and any(
-            link.source_id != identity.source_id for link in item.provenance
+            link.source_id != receipt.identity.source_id
+            for link in item.provenance
         ):
             raise ValueError(
                 "coverage provenance differs from resource identity"
             )
     return FederatedCoverageEnvelope(
         **envelope.model_dump(),
-        identity=identity,
-        query_receipt_sha256=query_receipt.receipt_sha256,
+        identity=receipt.identity,
+        query_receipt_sha256=receipt.query_receipt_sha256,
+        coverage_receipt_sha256=receipt.receipt_sha256,
     )
 
 
 __all__ = [
     "CoverageEnvelope",
+    "CoverageTransformationReceipt",
     "FederatedCoverageEnvelope",
     "bind_federated_coverage",
     "build_coverage_envelope",
+    "coverage_transformation_receipt",
 ]
