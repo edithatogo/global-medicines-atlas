@@ -237,6 +237,19 @@ class GlobalMedicinesAtlasClient:
         query = _query(())
         return self._transport.request("GET", path, query)
 
+    def historical_change_route_api_v1_history_get(
+        self,
+        *,
+        limit: int | None = None,
+        offset: int | None = None,
+    ) -> JsonValue:
+        path = "/api/v1/history"
+        query = _query((
+            ("limit", limit),
+            ("offset", offset),
+        ))
+        return self._transport.request("GET", path, query)
+
     def jurisdictions_api_v1_jurisdictions_get(
         self,
     ) -> JsonValue:

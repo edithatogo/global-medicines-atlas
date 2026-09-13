@@ -417,11 +417,12 @@ def test_generated_client_smokes_every_committed_read_only_operation() -> None:
         valid_at="2026-07-31",
     )
     client.health_api_v1_health_get()
+    client.historical_change_route_api_v1_history_get(limit=10, offset=2)
     client.jurisdictions_api_v1_jurisdictions_get()
     client.readiness_api_v1_readiness_get()
     client.sources_api_v1_sources_get(jurisdiction="NZ")
 
-    assert len(transport.calls) == 9
+    assert len(transport.calls) == 10
     assert {method for method, _, _ in transport.calls} == {"GET"}
     assert transport.calls[0][2] == (
         ("concept_id", "nz:123"),

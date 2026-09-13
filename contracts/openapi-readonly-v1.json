@@ -227,6 +227,63 @@
       ],
       "type": "object"
     },
+    "ChangeObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "difference": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/NativeDifference"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "field_name": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Field Name"
+        },
+        "interpretation": {
+          "enum": [
+            "observed_change",
+            "observed_stability"
+          ],
+          "title": "Interpretation",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "added_observation",
+            "removed_observation",
+            "field_changed",
+            "unchanged"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "native_id": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Native Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "native_id",
+        "kind",
+        "interpretation"
+      ],
+      "type": "object"
+    },
     "ComparisonDimensionState": {
       "enum": [
         "aligned",
@@ -1137,6 +1194,133 @@
       ],
       "type": "string"
     },
+    "HistoricalChange": {
+      "additionalProperties": false,
+      "properties": {
+        "absence_interpretation": {
+          "const": "unknown",
+          "default": "unknown",
+          "title": "Absence Interpretation",
+          "type": "string"
+        },
+        "availability": {
+          "enum": [
+            "both_present",
+            "left_missing",
+            "right_missing",
+            "both_missing"
+          ],
+          "title": "Availability",
+          "type": "string"
+        },
+        "changes": {
+          "items": {
+            "$ref": "#/components/schemas/ChangeObservation"
+          },
+          "maxItems": 65536,
+          "title": "Changes",
+          "type": "array"
+        },
+        "comparison_state": {
+          "enum": [
+            "compared",
+            "missing_period",
+            "source_outage",
+            "schema_drift",
+            "incompatible"
+          ],
+          "title": "Comparison State",
+          "type": "string"
+        },
+        "left": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/NativeSnapshot"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "right": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/NativeSnapshot"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "schema_id": {
+          "const": "global-medicines-atlas.historical-change",
+          "default": "global-medicines-atlas.historical-change",
+          "title": "Schema Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "default": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "left",
+        "right",
+        "availability",
+        "comparison_state",
+        "changes"
+      ],
+      "type": "object"
+    },
+    "HistoricalChangePage": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "$ref": "#/components/schemas/HistoricalChange"
+          },
+          "title": "Items",
+          "type": "array"
+        },
+        "limit": {
+          "maximum": 1000.0,
+          "minimum": 1.0,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "next_offset": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Next Offset"
+        },
+        "offset": {
+          "minimum": 0.0,
+          "title": "Offset",
+          "type": "integer"
+        },
+        "total": {
+          "minimum": 0.0,
+          "title": "Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "items",
+        "offset",
+        "limit",
+        "total"
+      ],
+      "type": "object"
+    },
     "JurisdictionSummary": {
       "additionalProperties": false,
       "properties": {
@@ -1203,6 +1387,311 @@
         "normalized_alias"
       ],
       "type": "string"
+    },
+    "NativeDifference": {
+      "additionalProperties": false,
+      "properties": {
+        "field_name": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Field Name"
+        },
+        "kind": {
+          "enum": [
+            "field_changed",
+            "unchanged",
+            "present_only_left",
+            "present_only_right"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "left": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/NativeField"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "left_occurrence": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Left Occurrence"
+        },
+        "native_id": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Native Id",
+          "type": "string"
+        },
+        "right": {
+          "anyOf": [
+            {
+              "$ref": "#/components/schemas/NativeField"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "right_occurrence": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Right Occurrence"
+        }
+      },
+      "required": [
+        "native_id",
+        "field_name",
+        "kind",
+        "left_occurrence",
+        "right_occurrence",
+        "left",
+        "right"
+      ],
+      "type": "object"
+    },
+    "NativeField": {
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "properties": {
+            "state": {
+              "const": "value"
+            },
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        },
+        {
+          "properties": {
+            "state": {
+              "enum": [
+                "missing",
+                "null"
+              ]
+            },
+            "value": {
+              "type": "null"
+            }
+          }
+        }
+      ],
+      "properties": {
+        "name": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "missing",
+            "null",
+            "value"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "maxLength": 16384,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "name",
+        "state"
+      ],
+      "type": "object"
+    },
+    "NativeRow": {
+      "additionalProperties": false,
+      "properties": {
+        "fields": {
+          "items": {
+            "$ref": "#/components/schemas/NativeField"
+          },
+          "maxItems": 256,
+          "title": "Fields",
+          "type": "array"
+        },
+        "native_id": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Native Id",
+          "type": "string"
+        },
+        "occurrence_id": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Occurrence Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "native_id",
+        "occurrence_id",
+        "fields"
+      ],
+      "type": "object"
+    },
+    "NativeSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "b1_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "B1 Sha256",
+          "type": "string"
+        },
+        "b2_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "B2 Sha256",
+          "type": "string"
+        },
+        "cohort": {
+          "enum": [
+            "synthetic",
+            "legacy",
+            "historical",
+            "current"
+          ],
+          "title": "Cohort",
+          "type": "string"
+        },
+        "complete": {
+          "title": "Complete",
+          "type": "boolean"
+        },
+        "declared_rows": {
+          "maximum": 4096.0,
+          "minimum": 0.0,
+          "title": "Declared Rows",
+          "type": "integer"
+        },
+        "dimension": {
+          "enum": [
+            "service_benefit",
+            "funding",
+            "formulary",
+            "terminology",
+            "regulatory"
+          ],
+          "title": "Dimension",
+          "type": "string"
+        },
+        "identity_profile": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Identity Profile",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "rows": {
+          "items": {
+            "$ref": "#/components/schemas/NativeRow"
+          },
+          "maxItems": 4096,
+          "title": "Rows",
+          "type": "array"
+        },
+        "schema_era": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Schema Era",
+          "type": "string"
+        },
+        "scope_id": {
+          "default": "whole_source",
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Scope Id",
+          "type": "string"
+        },
+        "source_id": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
+        },
+        "source_path": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Source Path",
+          "type": "string"
+        },
+        "source_revision": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Source Revision",
+          "type": "string"
+        },
+        "table": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Table",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "table",
+        "dimension",
+        "schema_era",
+        "identity_profile",
+        "source_revision",
+        "source_path",
+        "b1_sha256",
+        "b2_sha256",
+        "observed_at",
+        "cohort",
+        "declared_rows",
+        "complete",
+        "rows"
+      ],
+      "type": "object"
     },
     "PageMetadata": {
       "additionalProperties": false,
@@ -2209,6 +2698,55 @@
           "200": {
             "application/json": {
               "$ref": "#/components/schemas/HealthResponse"
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/history": {
+      "get": {
+        "operationId": "historical_change_route_api_v1_history_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "maximum": 1000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "application/json": {
+              "$ref": "#/components/schemas/HistoricalChangePage"
+            }
+          },
+          "400": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "422": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "503": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
             }
           }
         },
