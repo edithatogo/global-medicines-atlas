@@ -11,6 +11,7 @@ from fastapi.testclient import TestClient
 
 from global_medicines_atlas.api import create_app
 from global_medicines_atlas.platinum_identity_service import (
+    DatasetIdentityPage,
     ResolverDatasetIdentityService,
     UnknownPlatinumResourceError,
 )
@@ -65,6 +66,10 @@ class IdentityStub:
             raise UnknownPlatinumResourceError
         return dataset_identity(resolved(), jurisdiction="AU")
 
+    def identities(self):
+        datasets = (self.identity("au.mbs.services.current"),)
+        return DatasetIdentityPage(datasets=datasets, returned=len(datasets))
+
 
 class ExpiringIdentityStub:
     def __init__(self, lifetime_seconds: int = 30) -> None:
@@ -82,6 +87,11 @@ class ExpiringIdentityStub:
             ),
         )
         return dataset_identity(resource, jurisdiction="AU")
+
+
+class FailingIdentityStub(IdentityStub):
+    def identities(self) -> DatasetIdentityPage:
+        raise ValueError("incomplete identity page")
 
 
 def client(*, configured: bool = True) -> TestClient:
@@ -104,6 +114,22 @@ def test_resolver_service_returns_identity_without_opening_bytes() -> None:
 
     assert result.jurisdiction == "AU"
     assert result.rows_queried is False
+    assert resolver.opened is False
+
+
+def test_resolver_service_lists_configured_identities_without_opening_bytes() -> (
+    None
+):
+    resolver = ResolverStub()
+    service = ResolverDatasetIdentityService(
+        cast("StorageNeutralResolver", resolver),
+        jurisdictions={"au.mbs.services.current": "AU"},
+    )
+
+    result = service.identities()
+
+    assert result.returned == 1
+    assert result.datasets[0].resource_id == "au.mbs.services.current"
     assert resolver.opened is False
 
 
@@ -160,6 +186,70 @@ def test_dataset_identity_endpoint_returns_exact_typed_envelope() -> None:
     assert response.json()["coverage_state"] == "not_declared"
     assert response.json()["comparison_validity"] == "not_evaluated"
     assert response.headers["cache-control"].startswith("public")
+
+
+def test_dataset_identity_collection_is_bounded_and_deterministic() -> None:
+    response = client().get("/api/v1/datasets")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["returned"] == 1
+    assert [item["resource_id"] for item in payload["datasets"]] == [
+        "au.mbs.services.current"
+    ]
+    assert response.headers["cache-control"] == "no-store"
+
+
+def test_dataset_identity_collection_fails_closed_when_unconfigured() -> None:
+    response = client(configured=False).get("/api/v1/datasets")
+
+    assert response.status_code == 503
+    assert response.json()["error"] == "service_unavailable"
+
+
+def test_dataset_identity_collection_hides_service_failures() -> None:
+    test_client = TestClient(
+        create_app(
+            cast("ReadOnlyQueryService", QueryStub()),
+            dataset_identities=FailingIdentityStub(),
+        )
+    )
+
+    response = test_client.get("/api/v1/datasets")
+
+    assert response.status_code == 503
+    assert "incomplete" not in response.text
+
+
+@pytest.mark.parametrize(
+    ("datasets", "returned", "message"),
+    [
+        (
+            (dataset_identity(resolved(), jurisdiction="AU"),),
+            2,
+            "returned count",
+        ),
+        (
+            (
+                dataset_identity(resolved(), jurisdiction="AU"),
+                dataset_identity(
+                    replace(resolved(), resource_id="au.aaa.services.current"),
+                    jurisdiction="AU",
+                ),
+            ),
+            2,
+            "ordered",
+        ),
+    ],
+)
+def test_dataset_identity_page_rejects_inconsistent_or_unsorted_content(
+    datasets: tuple[object, ...], returned: int, message: str
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        DatasetIdentityPage.model_validate({
+            "datasets": datasets,
+            "returned": returned,
+        })
 
 
 @pytest.mark.parametrize(

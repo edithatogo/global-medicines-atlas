@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib
 import json
 import os
 import secrets
@@ -687,6 +688,54 @@ def benefits_query(
     typer.echo(page.model_dump_json())
     if page.status == "unavailable":
         raise typer.Exit(3)
+
+
+def _dataset_resolver_loader() -> Callable[..., Any]:
+    """Load the optional resolver configuration with a typed failure mode."""
+    try:
+        module = importlib.import_module(
+            ".platinum_configuration", package=__package__
+        )
+    except ModuleNotFoundError as error:
+        if error.name != "jsonschema":
+            raise
+        _fail(
+            ErrorCode.SERVICE_UNAVAILABLE,
+            "Install 'global-medicines-atlas[federation]' to inspect datasets",
+        )
+    return cast("Callable[..., Any]", module.load_benefits_resolver)
+
+
+@app.command("datasets")
+def dataset_list(
+    trust_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
+    metadata_root: Annotated[Path, typer.Option(exists=True, file_okay=False)],
+    schema_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
+) -> None:
+    """List bounded exact identities from independently provisioned trust."""
+    from .platinum_identity_service import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
+        ResolverDatasetIdentityService,
+    )
+
+    try:
+        resolver = _dataset_resolver_loader()(
+            trust_file=trust_file,
+            metadata_root=metadata_root,
+            schema_file=schema_file,
+        )
+        jurisdictions = {
+            resource_id: resource_id.split(".", maxsplit=1)[0].upper()
+            for resource_id in resolver.resource_ids
+        }
+        page = ResolverDatasetIdentityService(
+            resolver, jurisdictions=jurisdictions
+        ).identities()
+    except ValueError, OSError:
+        _fail(
+            ErrorCode.INVALID_REQUEST,
+            "The dataset identity operator configuration is invalid",
+        )
+    typer.echo(page.model_dump_json())
 
 
 def main() -> None:

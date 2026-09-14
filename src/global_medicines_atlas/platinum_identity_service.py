@@ -6,8 +6,11 @@ import re
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Protocol
 
+from pydantic import Field, model_validator
+
 from .platinum_surface_contracts import (
     DatasetIdentityEnvelope,
+    PlatinumSurfaceModel,
     dataset_identity,
 )
 
@@ -22,10 +25,33 @@ class UnknownPlatinumResourceError(LookupError):
     """The requested admitted resource is absent from this service."""
 
 
+class DatasetIdentityPage(PlatinumSurfaceModel):
+    """A small, deterministic catalogue of already-admitted identities."""
+
+    datasets: tuple[DatasetIdentityEnvelope, ...] = Field(
+        min_length=1, max_length=32
+    )
+    returned: int = Field(ge=1, le=32)
+
+    @model_validator(mode="after")
+    def returned_matches_datasets(self) -> DatasetIdentityPage:
+        if self.returned != len(self.datasets):
+            raise ValueError("dataset page returned count must match datasets")
+        if tuple(sorted(item.resource_id for item in self.datasets)) != tuple(
+            item.resource_id for item in self.datasets
+        ):
+            raise ValueError(
+                "dataset page must be ordered by resource identity"
+            )
+        return self
+
+
 class DatasetIdentityLookup(Protocol):
     """Shared lookup contract consumed by CLI and API adapters."""
 
     def identity(self, resource_id: str) -> DatasetIdentityEnvelope: ...
+
+    def identities(self) -> DatasetIdentityPage: ...
 
 
 class ResolverIdentityLookup(Protocol):
@@ -63,9 +89,18 @@ class ResolverDatasetIdentityService:
             raise UnknownPlatinumResourceError from None
         return dataset_identity(resolved, jurisdiction=jurisdiction)
 
+    def identities(self) -> DatasetIdentityPage:
+        """Return every configured identity in stable resource-id order."""
+        datasets = tuple(
+            self.identity(resource_id)
+            for resource_id in sorted(self._jurisdictions)
+        )
+        return DatasetIdentityPage(datasets=datasets, returned=len(datasets))
+
 
 __all__ = [
     "DatasetIdentityLookup",
+    "DatasetIdentityPage",
     "ResolverDatasetIdentityService",
     "UnknownPlatinumResourceError",
 ]

@@ -912,6 +912,31 @@
       ],
       "type": "object"
     },
+    "DatasetIdentityPage": {
+      "additionalProperties": false,
+      "properties": {
+        "datasets": {
+          "items": {
+            "$ref": "#/components/schemas/DatasetIdentityEnvelope"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Datasets",
+          "type": "array"
+        },
+        "returned": {
+          "maximum": 32.0,
+          "minimum": 1.0,
+          "title": "Returned",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "datasets",
+        "returned"
+      ],
+      "type": "object"
+    },
     "DiscoveryMetadata": {
       "additionalProperties": false,
       "properties": {
@@ -2588,6 +2613,35 @@
           "200": {
             "application/json": {
               "$ref": "#/components/schemas/CoverageResponse"
+            }
+          },
+          "400": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "422": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          },
+          "503": {
+            "application/json": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/datasets": {
+      "get": {
+        "operationId": "dataset_identities_route_api_v1_datasets_get",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "application/json": {
+              "$ref": "#/components/schemas/DatasetIdentityPage"
             }
           },
           "400": {

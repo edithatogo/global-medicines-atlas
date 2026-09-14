@@ -23,6 +23,7 @@ from .platinum_benefits import (
 from .platinum_edges import gold_edge_payload
 from .platinum_identity_service import (
     DatasetIdentityLookup,
+    DatasetIdentityPage,
     UnknownPlatinumResourceError,
 )
 from .platinum_surface_contracts import DatasetIdentityEnvelope
@@ -601,6 +602,39 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
         tags=["history"],
         summary="Inspect bounded source-native historical change observations",
     )
+
+    @app.api_route(
+        f"{API_BASE_PATH}/datasets",
+        methods=["GET"],
+        response_model=DatasetIdentityPage,
+        responses=_ERROR_RESPONSES,
+        tags=["datasets"],
+        summary="List bounded admitted immutable dataset identities",
+    )
+    def dataset_identities_route(  # pyright: ignore[reportUnusedFunction] -- FastAPI registers route
+        request: Request,
+        response: Response,
+    ) -> DatasetIdentityPage | JSONResponse:
+        if dataset_identities is None:
+            return _error_response(
+                request,
+                status_code=503,
+                code=ErrorCode.SERVICE_UNAVAILABLE,
+                message="The dataset identity service is unavailable",
+                retryable=True,
+            )
+        try:
+            result = dataset_identities.identities()
+        except UnknownPlatinumResourceError, ValueError:
+            return _error_response(
+                request,
+                status_code=503,
+                code=ErrorCode.SERVICE_UNAVAILABLE,
+                message="The dataset identity service is unavailable",
+                retryable=True,
+            )
+        response.headers["cache-control"] = "no-store"
+        return result
 
     @app.api_route(
         f"{API_BASE_PATH}/datasets/{{resource_id:path}}",
