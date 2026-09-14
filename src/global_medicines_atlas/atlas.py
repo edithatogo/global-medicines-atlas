@@ -14,6 +14,12 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import ValidationError
 
+from .platinum_v2_contracts import (
+    V2ComparisonQuery,
+    V2ComparisonResponse,
+    V2Conclusion,
+    V2EvidenceDimension,
+)
 from .product_contracts import (
     ComparisonQuery,
     ComparisonResponse,
@@ -47,6 +53,12 @@ class AtlasQueryService(Protocol):
     def concept_detail(self, concept_id: str) -> ConceptDetail: ...
 
 
+class V2AtlasQueryService(Protocol):
+    """Additive query surface for five independently rendered dimensions."""
+
+    def comparisons(self, query: V2ComparisonQuery) -> V2ComparisonResponse: ...
+
+
 def _safe_source_uri(uri: str) -> str | None:
     parsed = urlsplit(uri)
     if parsed.scheme in {"http", "https"} and parsed.netloc:
@@ -55,7 +67,7 @@ def _safe_source_uri(uri: str) -> str | None:
 
 
 def _evidence_links(
-    conclusion: ProductConclusion,
+    conclusion: ProductConclusion | V2Conclusion,
 ) -> tuple[dict[str, str | None], ...]:
     if conclusion.provenance:
         return tuple(_evidence_link(item) for item in conclusion.provenance)
@@ -77,7 +89,9 @@ def _evidence_link(item: ProvenanceLink) -> dict[str, str | None]:
     }
 
 
-def _conclusion_view(conclusion: ProductConclusion) -> dict[str, object]:
+def _conclusion_view(
+    conclusion: ProductConclusion | V2Conclusion,
+) -> dict[str, object]:
     return {
         "jurisdiction": conclusion.jurisdiction,
         "dimension": conclusion.dimension.value,
@@ -136,7 +150,59 @@ def _concept_views(
     )
 
 
-def create_atlas_app(service: AtlasQueryService) -> FastAPI:
+def _atlas_comparison(
+    service: AtlasQueryService,
+    v2_service: V2AtlasQueryService | None,
+    *,
+    concept_id: str,
+    jurisdictions: tuple[str, ...],
+    valid_at: datetime,
+    observed_at: datetime,
+) -> tuple[ComparisonResponse | V2ComparisonResponse, CoverageResponse | None]:
+    if v2_service is not None:
+        return (
+            v2_service.comparisons(
+                V2ComparisonQuery(
+                    concept_id=concept_id,
+                    jurisdictions=jurisdictions,
+                    dimensions=tuple(V2EvidenceDimension),
+                    valid_at=valid_at,
+                    observed_at=observed_at,
+                )
+            ),
+            None,
+        )
+    comparison = service.comparisons(
+        ComparisonQuery(
+            concept_id=concept_id,
+            jurisdictions=jurisdictions,
+            dimensions=(
+                EvidenceDimension.REGULATORY,
+                EvidenceDimension.FUNDING,
+            ),
+            valid_at=valid_at,
+            observed_at=observed_at,
+        )
+    )
+    coverage = service.coverage(
+        CoverageQuery(
+            jurisdictions=jurisdictions,
+            dimensions=(
+                EvidenceDimension.REGULATORY,
+                EvidenceDimension.FUNDING,
+            ),
+            valid_at=valid_at,
+            observed_at=observed_at,
+        )
+    )
+    return comparison, coverage
+
+
+def create_atlas_app(
+    service: AtlasQueryService,
+    *,
+    v2_service: V2AtlasQueryService | None = None,
+) -> FastAPI:
     """Create an atlas app with an explicitly injected read-only service."""
     app = FastAPI(
         title="Global Medicines Atlas",
@@ -184,28 +250,13 @@ def create_atlas_app(service: AtlasQueryService) -> FastAPI:
         if concept_id:
             try:
                 selected_concept = service.concept_detail(concept_id)
-                comparison = service.comparisons(
-                    ComparisonQuery(
-                        concept_id=concept_id,
-                        jurisdictions=selected,
-                        dimensions=(
-                            EvidenceDimension.REGULATORY,
-                            EvidenceDimension.FUNDING,
-                        ),
-                        valid_at=selected_valid_at,
-                        observed_at=selected_observed_at,
-                    )
-                )
-                coverage_response = service.coverage(
-                    CoverageQuery(
-                        jurisdictions=selected,
-                        dimensions=(
-                            EvidenceDimension.REGULATORY,
-                            EvidenceDimension.FUNDING,
-                        ),
-                        valid_at=selected_valid_at,
-                        observed_at=selected_observed_at,
-                    )
+                comparison, coverage_response = _atlas_comparison(
+                    service,
+                    v2_service,
+                    concept_id=concept_id,
+                    jurisdictions=selected,
+                    valid_at=selected_valid_at,
+                    observed_at=selected_observed_at,
                 )
             except (ValidationError, ValueError) as exc:
                 error = f"The comparison request is invalid: {exc}"
@@ -213,8 +264,13 @@ def create_atlas_app(service: AtlasQueryService) -> FastAPI:
                 conclusions = tuple(
                     _conclusion_view(item) for item in comparison.conclusions
                 )
-                coverage = tuple(
-                    _coverage_view(item) for item in coverage_response.coverage
+                coverage = (
+                    tuple(
+                        _coverage_view(item)
+                        for item in coverage_response.coverage
+                    )
+                    if coverage_response is not None
+                    else ()
                 )
 
         return _TEMPLATES.TemplateResponse(

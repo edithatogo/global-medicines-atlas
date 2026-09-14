@@ -5,6 +5,13 @@ from datetime import UTC, datetime
 from fastapi.testclient import TestClient
 
 from global_medicines_atlas.atlas import create_atlas_app
+from global_medicines_atlas.platinum_v2_contracts import (
+    V2ComparisonQuery,
+    V2ComparisonResponse,
+    V2Conclusion,
+    V2EvidenceDimension,
+    V2ResponseMetadata,
+)
 from global_medicines_atlas.product_contracts import (
     AsOfClocks,
     ComparisonResponse,
@@ -120,6 +127,60 @@ def test_complete_comparison_keeps_unknown_states_and_nullable_coverage():
     assert response.text.count("Review source evidence") == 2
     assert "Valid at" in response.text
     assert "observed at" in response.text
+
+
+def test_atlas_can_render_all_five_v2_dimensions() -> None:
+    class V2Service:
+        def comparisons(self, query: V2ComparisonQuery) -> V2ComparisonResponse:
+            assert set(query.dimensions) == set(V2EvidenceDimension)
+            clocks = AsOfClocks(
+                valid_at=query.valid_at, observed_at=query.observed_at
+            )
+            conclusions = tuple(
+                V2Conclusion(
+                    concept_id=query.concept_id,
+                    jurisdiction="AU",
+                    dimension=dimension,
+                    state=ProductState.UNKNOWN,
+                    terminology=Terminology(
+                        native_code=dimension.value,
+                        native_label=dimension.value.replace("_", " "),
+                        native_system="fixture",
+                    ),
+                    evidence_availability=EvidenceAvailability.UNAVAILABLE,
+                    evidence_unavailable_reason="No fixture assertion",
+                    uncertainty=Uncertainty(
+                        level=UncertaintyLevel.UNKNOWN,
+                        reason="Synthetic v2 fixture",
+                    ),
+                    valid_time=clocks,
+                )
+                for dimension in V2EvidenceDimension
+            )
+            return V2ComparisonResponse(
+                metadata=V2ResponseMetadata(
+                    generated_at=NOW,
+                    clocks=clocks,
+                    page=PageMetadata(limit=50, returned=len(conclusions)),
+                ),
+                conclusions=conclusions,
+            )
+
+    response = TestClient(
+        create_atlas_app(StateService(), v2_service=V2Service())
+    ).get(
+        "/",
+        params={
+            "concept_id": "rx:fixture",
+            "jurisdiction": "AU",
+            "valid_at": NOW.isoformat(),
+            "observed_at": NOW.isoformat(),
+        },
+    )
+
+    assert response.status_code == 200
+    for dimension in V2EvidenceDimension:
+        assert dimension.value in response.text
 
 
 def test_hostile_values_are_escaped_and_unsafe_links_are_not_clickable():
