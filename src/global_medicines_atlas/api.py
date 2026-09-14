@@ -611,7 +611,7 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
         tags=["datasets"],
         summary="List bounded admitted immutable dataset identities",
     )
-    def dataset_identities_route(
+    def dataset_identities_route(  # pyright: ignore[reportUnusedFunction] -- FastAPI registers route
         request: Request,
         response: Response,
     ) -> DatasetIdentityPage | JSONResponse:
