@@ -12,6 +12,9 @@ from global_medicines_atlas.platinum_v2_contracts import (
     V2ComparisonResponse,
     V2Conclusion,
     V2EvidenceDimension,
+    V2EvidenceItem,
+    V2EvidenceQuery,
+    V2EvidenceResponse,
     V2ResponseMetadata,
 )
 from global_medicines_atlas.product_contracts import (
@@ -36,6 +39,7 @@ CLOCK_PARAMS = {"valid_at": NOW.isoformat(), "observed_at": NOW.isoformat()}
 class StubV2Service:
     def __init__(self) -> None:
         self.query: V2ComparisonQuery | None = None
+        self.evidence_query: V2EvidenceQuery | None = None
         self.invalid_cursor = False
         self.unavailable = False
 
@@ -79,6 +83,46 @@ class StubV2Service:
                 page=PageMetadata(limit=query.limit, returned=1),
             ),
             conclusions=(conclusion,),
+        )
+
+    def v2_evidence(self, query: V2EvidenceQuery) -> V2EvidenceResponse:
+        if self.invalid_cursor:
+            raise InvalidCursorError
+        if self.unavailable:
+            raise QueryServiceError("sensitive DuckDB path")
+        self.evidence_query = query
+        item = V2EvidenceItem(
+            assertion_id="a-nz-service",
+            concept_id=query.concept_id,
+            jurisdiction=query.jurisdiction,
+            dimension=query.dimension,
+            state=ProductState.CONFIRMED,
+            status_code="eligible",
+            terminology=Terminology(
+                native_code="eligible",
+                native_label="Eligible service benefit",
+                native_system="NZ service register",
+            ),
+            provenance=ProvenanceLink(
+                source_id="nz-service-register",
+                source_uri="https://example.test/nz/service/1",
+                retrieved_at=NOW,
+                source_sha256="a" * 64,
+            ),
+            uncertainty=Uncertainty(level=UncertaintyLevel.NONE),
+            valid_time=AsOfClocks(
+                valid_at=query.valid_at, observed_at=query.observed_at
+            ),
+        )
+        return V2EvidenceResponse(
+            metadata=V2ResponseMetadata(
+                generated_at=NOW,
+                clocks=AsOfClocks(
+                    valid_at=query.valid_at, observed_at=query.observed_at
+                ),
+                page=PageMetadata(limit=query.limit, returned=1),
+            ),
+            evidence=(item,),
         )
 
 
@@ -165,6 +209,23 @@ def test_v2_transport_has_stable_cursor_and_service_failures() -> None:
     assert "sensitive" not in response.text
 
 
+def test_v2_evidence_transport_uses_scoped_filters() -> None:
+    client, service = _client()
+    response = client.get(
+        "/api/v2/evidence",
+        params={
+            "concept_id": "rx:1",
+            "jurisdiction": "nz",
+            "dimension": "service_benefit",
+            **CLOCK_PARAMS,
+        },
+    )
+    assert response.status_code == 200
+    assert response.json()["evidence"][0]["dimension"] == "service_benefit"
+    assert service.evidence_query is not None
+    assert service.evidence_query.jurisdiction == "NZ"
+
+
 def test_v2_transport_is_read_only_and_openapi_is_isolated() -> None:
     client, _ = _client()
     response = client.head("/api/v2/comparisons", params=_params())
@@ -178,4 +239,5 @@ def test_v2_transport_is_read_only_and_openapi_is_isolated() -> None:
     schema = client.get("/api/v2/openapi.json").json()
     assert schema["info"]["version"] == "v2"
     assert "/api/v2/comparisons" in schema["paths"]
+    assert "/api/v2/evidence" in schema["paths"]
     assert not any(path.startswith("/api/v1/") for path in schema["paths"])

@@ -17,6 +17,8 @@ from .platinum_v2_contracts import (
     V2ComparisonQuery,
     V2ComparisonResponse,
     V2EvidenceDimension,
+    V2EvidenceQuery,
+    V2EvidenceResponse,
 )
 from .product_contracts import (
     MAX_PAGE_SIZE,
@@ -46,6 +48,8 @@ class V2ComparisonService(Protocol):
     def v2_comparisons(
         self, query: V2ComparisonQuery
     ) -> V2ComparisonResponse: ...
+
+    def v2_evidence(self, query: V2EvidenceQuery) -> V2EvidenceResponse: ...
 
 
 _ERROR_RESPONSES: dict[int | str, dict[str, Any]] = {
@@ -227,6 +231,55 @@ def create_v2_app(service: V2ComparisonService) -> FastAPI:
     app.add_api_route(
         f"{V2_API_BASE_PATH}/comparisons",
         comparisons,
+        methods=["HEAD"],
+        response_model=None,
+        include_in_schema=False,
+    )
+
+    @app.api_route(
+        f"{V2_API_BASE_PATH}/evidence",
+        methods=["GET"],
+        response_model=V2EvidenceResponse,
+        responses=_ERROR_RESPONSES,
+        tags=["evidence"],
+        summary="Page complete source evidence for one V2 dimension",
+    )
+    def evidence(
+        request: Request,
+        response: Response,
+        concept_id: Annotated[str, Query(min_length=1, max_length=512)],
+        jurisdiction: Annotated[str, Query(min_length=2, max_length=3)],
+        dimension: Annotated[V2EvidenceDimension, Query()],
+        valid_at: Annotated[AwareDatetime, Query()],
+        observed_at: Annotated[AwareDatetime, Query()],
+        limit: Annotated[int, Query(ge=1, le=MAX_PAGE_SIZE)] = 50,
+        cursor: Annotated[
+            str | None,
+            Query(min_length=16, max_length=2048, pattern=r"^[A-Za-z0-9_-]+$"),
+        ] = None,
+    ) -> V2EvidenceResponse | JSONResponse:
+        query = _query_or_error(
+            request,
+            lambda: V2EvidenceQuery(
+                concept_id=concept_id,
+                jurisdiction=jurisdiction,
+                dimension=dimension,
+                valid_at=valid_at,
+                observed_at=observed_at,
+                limit=limit,
+                cursor=cursor,
+            ),
+        )
+        if isinstance(query, JSONResponse):
+            return query
+        result = _service_or_error(request, lambda: service.v2_evidence(query))
+        if not isinstance(result, JSONResponse):
+            _cache_headers(response)
+        return result
+
+    app.add_api_route(
+        f"{V2_API_BASE_PATH}/evidence",
+        evidence,
         methods=["HEAD"],
         response_model=None,
         include_in_schema=False,

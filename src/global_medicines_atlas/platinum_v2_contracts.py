@@ -62,6 +62,14 @@ class V2ComparisonQuery(PageRequest, AsOfClocks):
         return self
 
 
+class V2EvidenceQuery(PageRequest, AsOfClocks):
+    """One bounded V2 evidence stream for a selected jurisdiction and dimension."""
+
+    concept_id: NonBlank
+    jurisdiction: JurisdictionCode
+    dimension: V2EvidenceDimension
+
+
 class V2ResponseMetadata(ProductModel):
     """Response metadata that explicitly declares the additive API version."""
 
@@ -131,6 +139,21 @@ class V2Conclusion(ProductModel):
         return self
 
 
+class V2EvidenceItem(ProductModel):
+    """One assertion-level item from the complete V2 evidence stream."""
+
+    assertion_id: NonBlank
+    concept_id: NonBlank
+    jurisdiction: JurisdictionCode
+    dimension: V2EvidenceDimension
+    state: ProductState
+    status_code: NonBlank
+    terminology: Terminology
+    provenance: ProvenanceLink
+    uncertainty: Uncertainty
+    valid_time: AsOfClocks
+
+
 class V2ComparisonResponse(ProductModel):
     """Additive v2 result envelope for independently scoped conclusions."""
 
@@ -144,6 +167,19 @@ class V2ComparisonResponse(ProductModel):
         return self
 
 
+class V2EvidenceResponse(ProductModel):
+    """Additive V2 envelope for a cursor-paginated evidence stream."""
+
+    metadata: V2ResponseMetadata
+    evidence: tuple[V2EvidenceItem, ...]
+
+    @model_validator(mode="after")
+    def page_matches_evidence(self) -> Self:
+        if self.metadata.page.returned != len(self.evidence):
+            raise ValueError("page returned count must match evidence")
+        return self
+
+
 __all__ = [
     "V2_API_BASE_PATH",
     "V2_API_VERSION",
@@ -151,5 +187,8 @@ __all__ = [
     "V2ComparisonResponse",
     "V2Conclusion",
     "V2EvidenceDimension",
+    "V2EvidenceItem",
+    "V2EvidenceQuery",
+    "V2EvidenceResponse",
     "V2ResponseMetadata",
 ]

@@ -22,6 +22,8 @@ from .platinum_v2_contracts import (
     V2ComparisonQuery,
     V2ComparisonResponse,
     V2EvidenceDimension,
+    V2EvidenceQuery,
+    V2EvidenceResponse,
 )
 from .platinum_v2_query_service import V2ReadOnlyQueryService
 from .product_contracts import (
@@ -85,6 +87,7 @@ type ProductResponse = (
     | CoverageResponse
     | EvidenceResponse
     | V2ComparisonResponse
+    | V2EvidenceResponse
 )
 type PageAction = Callable[[str | None, int], ProductResponse]
 
@@ -436,6 +439,59 @@ def v2_comparison(
         cursor=cursor,
         page_limit=limit,
         include_comparison_validity=False,
+    )
+
+
+@app.command("v2-evidence")
+def v2_evidence(
+    database: DatabaseOption,
+    concept_id: Annotated[str, typer.Option("--concept-id")],
+    jurisdiction: Annotated[str, typer.Option("--jurisdiction")],
+    dimension: Annotated[
+        V2EvidenceDimension,
+        typer.Option("--dimension", case_sensitive=False),
+    ],
+    valid_at: ClockOption,
+    observed_at: ClockOption,
+    allowed_root: AllowedRootOption = None,
+    limit: LimitOption = 50,
+    cursor: CursorOption = None,
+    format_: FormatOption = ExportFormat.JSON,
+    max_rows: MaxRowsOption = 50,
+) -> None:
+    """Page complete assertion evidence for one V2 dimension."""
+    output = ExportRequest(format=format_, max_rows=max_rows)
+    if format_ is ExportFormat.JSON and max_rows > limit:
+        _fail(
+            ErrorCode.INVALID_REQUEST,
+            "V2 JSON output requires max-rows no greater than limit; use jsonl "
+            "for multi-page exports",
+        )
+    query = _validated(
+        lambda: V2EvidenceQuery(
+            concept_id=concept_id,
+            jurisdiction=jurisdiction,
+            dimension=dimension,
+            valid_at=valid_at,
+            observed_at=observed_at,
+            limit=limit,
+            cursor=cursor,
+        )
+    )
+    service = cast(
+        "V2ReadOnlyQueryService",
+        _service(database, allowed_root, V2ReadOnlyQueryService),
+    )
+    _run(
+        "v2 evidence",
+        lambda page_cursor, page_limit: service.v2_evidence(
+            query.model_copy(
+                update={"cursor": page_cursor, "limit": page_limit},
+            )
+        ),
+        output,
+        cursor=cursor,
+        page_limit=limit,
     )
 
 

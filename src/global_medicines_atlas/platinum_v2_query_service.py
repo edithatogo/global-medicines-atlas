@@ -11,6 +11,9 @@ from .platinum_v2_contracts import (
     V2ComparisonResponse,
     V2Conclusion,
     V2EvidenceDimension,
+    V2EvidenceItem,
+    V2EvidenceQuery,
+    V2EvidenceResponse,
     V2ResponseMetadata,
 )
 from .product_contracts import (
@@ -27,6 +30,72 @@ from .query_service import ReadOnlyQueryService
 
 class V2ReadOnlyQueryService(ReadOnlyQueryService):
     """Expose five independent dimensions without changing the v1 surface."""
+
+    def v2_evidence(self, query: V2EvidenceQuery) -> V2EvidenceResponse:
+        """Return the complete selected V2 assertion stream in bounded pages."""
+        fingerprint = self._fingerprint(
+            "v2_evidence", cast("Any", query), exclude_cursor=True
+        )
+        after = self._decode_cursor(query.cursor, fingerprint)
+        parameters: list[object] = [
+            query.concept_id,
+            query.jurisdiction,
+            query.dimension.value,
+            query.valid_at,
+            query.valid_at,
+            query.observed_at,
+            query.observed_at,
+        ]
+        keyset = ""
+        if after is not None:
+            parameters.extend(after)
+            keyset = "AND assertion_id > ?"
+        parameters.append(query.limit + 1)
+        with self._connection() as connection:
+            rows = self._fetch_dicts(
+                connection,
+                f"""
+                SELECT assertion_id, concept_id, jurisdiction, kind, authority,
+                       status_code, evidence_status, source_id, source_uri,
+                       CAST(retrieved_at AS VARCHAR) AS retrieved_at,
+                       CAST(observed_from AS VARCHAR) AS observed_from,
+                       source_sha256, source_version, transformation
+                FROM temporal_assertions
+                WHERE concept_id = ?
+                  AND jurisdiction = ?
+                  AND kind = ?
+                  AND valid_from <= ?
+                  AND (valid_to IS NULL OR ? < valid_to)
+                  AND observed_from <= ?
+                  AND (observed_to IS NULL OR ? < observed_to)
+                  {keyset}
+                ORDER BY assertion_id
+                LIMIT ?
+                """,  # ruff: ignore[hardcoded-sql-expression]
+                parameters,
+            )
+        items = [self._v2_evidence_item(query, row) for row in rows]
+        has_more = len(items) > query.limit
+        page = items[: query.limit]
+        next_cursor = (
+            self._encode_cursor(fingerprint, (page[-1].assertion_id,))
+            if has_more and page
+            else None
+        )
+        return V2EvidenceResponse(
+            metadata=V2ResponseMetadata(
+                generated_at=datetime.now(UTC),
+                clocks=AsOfClocks(
+                    valid_at=query.valid_at, observed_at=query.observed_at
+                ),
+                page=PageMetadata(
+                    limit=query.limit,
+                    returned=len(page),
+                    next_cursor=next_cursor,
+                ),
+            ),
+            evidence=tuple(page),
+        )
 
     def v2_comparisons(self, query: V2ComparisonQuery) -> V2ComparisonResponse:
         fingerprint = self._fingerprint(
@@ -118,33 +187,10 @@ class V2ReadOnlyQueryService(ReadOnlyQueryService):
         ):
             state = ProductState.CONFLICTING
         dimension = V2EvidenceDimension(str(first["kind"]))
-        if dimension in {
-            V2EvidenceDimension.SERVICE_BENEFIT,
-            V2EvidenceDimension.TERMINOLOGY,
-        } and int(first["evidence_total"]) > len(rows):
-            return V2Conclusion(
-                concept_id=query.concept_id,
-                jurisdiction=str(first["jurisdiction"]),
-                dimension=dimension,
-                state=ProductState.UNKNOWN,
-                terminology=self._terminology(first),
-                evidence_availability=EvidenceAvailability.UNAVAILABLE,
-                evidence_unavailable_reason=(
-                    "Source assertions exceed the bounded V2 provenance "
-                    "response; V2 evidence paging is unavailable."
-                ),
-                uncertainty=Uncertainty(
-                    level=UncertaintyLevel.UNKNOWN,
-                    reason="No complete V2 evidence page is available.",
-                ),
-                valid_time=AsOfClocks(
-                    valid_at=query.valid_at, observed_at=query.observed_at
-                ),
-            )
         uncertainty = (
             Uncertainty(
                 level=UncertaintyLevel.MEDIUM,
-                reason="Comparison provenance is capped; use evidence paging.",
+                reason="Comparison provenance is capped; use V2 evidence paging.",
             )
             if int(first["evidence_total"]) > len(rows)
             else self._uncertainty(state)
@@ -163,6 +209,25 @@ class V2ReadOnlyQueryService(ReadOnlyQueryService):
             provenance=tuple(self._provenance(row) for row in rows),
             evidence_availability=EvidenceAvailability.AVAILABLE,
             uncertainty=uncertainty,
+            valid_time=AsOfClocks(
+                valid_at=query.valid_at, observed_at=query.observed_at
+            ),
+        )
+
+    def _v2_evidence_item(
+        self, query: V2EvidenceQuery, row: Mapping[str, Any]
+    ) -> V2EvidenceItem:
+        state = self._state(str(row["evidence_status"]))
+        return V2EvidenceItem(
+            assertion_id=str(row["assertion_id"]),
+            concept_id=str(row["concept_id"]),
+            jurisdiction=str(row["jurisdiction"]),
+            dimension=V2EvidenceDimension(str(row["kind"])),
+            state=state,
+            status_code=str(row["status_code"]),
+            terminology=self._terminology(row),
+            provenance=self._provenance(row),
+            uncertainty=self._uncertainty(state),
             valid_time=AsOfClocks(
                 valid_at=query.valid_at, observed_at=query.observed_at
             ),
