@@ -5,11 +5,16 @@ from dataclasses import dataclass
 
 import pytest
 
+from global_medicines_atlas.platinum_benefits import BenefitsPage
 from global_medicines_atlas.platinum_evidence import (
     PlatinumEvidenceError,
     aggregate_result_evidence,
     checkpoint_representative_evidence,
     validate_result_evidence,
+)
+from global_medicines_atlas.platinum_identity_service import DatasetIdentityPage
+from global_medicines_atlas.platinum_surface_contracts import (
+    DatasetIdentityEnvelope,
 )
 
 
@@ -35,6 +40,66 @@ class _Evidence:
 @dataclass(frozen=True)
 class _Result:
     evidence: _Evidence
+
+
+def _identity() -> DatasetIdentityEnvelope:
+    return DatasetIdentityEnvelope(
+        resource_id="au.mbs.services.current",
+        dataset="owner/dataset",
+        revision="a" * 40,
+        path="platinum/items.parquet",
+        object_sha256="b" * 64,
+        byte_count=1,
+        contract_sha256="c" * 64,
+        semantic_manifest_sha256="d" * 64,
+        jurisdiction="AU",
+        semantic_dimension="service_benefit",
+        entity_granularity="service_item",
+        source_id="au-mbs",
+        acquisition_id="acq-1",
+        layer="gold",
+        schema_era="v1",
+        comparison_cohort="current",
+        effective_date="2026-01-01",
+        retrieved_at="2026-01-02T00:00:00Z",
+        cache_expires_at="2026-01-03T00:00:00Z",
+        capabilities=("exact_v4_resolution",),
+        coverage_state="not_declared",
+        comparison_validity="not_evaluated",
+        product_admitted=True,
+        rows_queried=False,
+    )
+
+
+def test_actual_identity_and_benefits_page_share_complete_evidence() -> None:
+    identity = _identity()
+    page = BenefitsPage(
+        status="available",
+        query_sha256="e" * 64,
+        identity=identity,
+        rows=(),
+        window_sha256="f" * 64,
+        page_sha256="0" * 64,
+        receipt_sha256="1" * 64,
+        reason=None,
+        next_cursor=None,
+        window_rows=0,
+        window_complete=True,
+    )
+
+    assert validate_result_evidence(identity) is identity
+    assert validate_result_evidence(page) is page
+    identities = DatasetIdentityPage(datasets=(identity,), returned=1)
+    assert validate_result_evidence(identities) is identities
+
+
+def test_dataset_collection_rejects_bypassed_untyped_members() -> None:
+    malformed = DatasetIdentityPage.model_construct(
+        datasets=[_identity()], returned=1
+    )
+
+    with pytest.raises(PlatinumEvidenceError, match="typed tuple"):
+        validate_result_evidence(malformed)
 
 
 def test_result_evidence_accepts_complete_conservative_envelope() -> None:

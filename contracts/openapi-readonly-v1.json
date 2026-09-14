@@ -86,6 +86,12 @@
           "title": "Comparison Validity",
           "type": "string"
         },
+        "confidence_state": {
+          "const": "not_declared",
+          "default": "not_declared",
+          "title": "Confidence State",
+          "type": "string"
+        },
         "coverage_state": {
           "const": "not_declared",
           "default": "not_declared",
@@ -766,6 +772,12 @@
           "title": "Comparison Validity",
           "type": "string"
         },
+        "confidence_state": {
+          "const": "not_declared",
+          "default": "not_declared",
+          "title": "Confidence State",
+          "type": "string"
+        },
         "contract_sha256": {
           "pattern": "^[0-9a-f]{64}$",
           "title": "Contract Sha256",
@@ -841,6 +853,12 @@
           "title": "Retrieved At",
           "type": "string"
         },
+        "review_state": {
+          "const": "not_declared",
+          "default": "not_declared",
+          "title": "Review State",
+          "type": "string"
+        },
         "revision": {
           "pattern": "^[0-9a-f]{40}$",
           "title": "Revision",
@@ -875,6 +893,12 @@
         "source_id": {
           "minLength": 1,
           "title": "Source Id",
+          "type": "string"
+        },
+        "uncertainty_state": {
+          "const": "not_declared",
+          "default": "not_declared",
+          "title": "Uncertainty State",
           "type": "string"
         },
         "version": {

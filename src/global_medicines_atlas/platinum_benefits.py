@@ -117,6 +117,7 @@ class BenefitsPage(PlatinumSurfaceModel):
     window_limit: Literal[1000] = 1000
     window_complete: bool
     coverage_state: Literal["not_declared"] = "not_declared"
+    confidence_state: Literal["not_declared"] = "not_declared"
     uncertainty_state: Literal["not_declared"] = "not_declared"
     review_state: Literal["not_declared"] = "not_declared"
     comparison_validity: Literal["not_evaluated"] = "not_evaluated"
