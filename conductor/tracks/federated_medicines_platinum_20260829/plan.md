@@ -158,10 +158,12 @@
   checkpoint validator initially rejected the actual dataset-identity envelope
   because confidence, uncertainty and review states were absent; a collection
   response constructed without the typed tuple boundary also fails closed.
-- [~] Implement typed commands and read-only endpoints using shared service
+- [x] Implement typed commands and read-only endpoints using shared service
   contracts rather than duplicated query logic. Dataset identity and benefits
-  API/CLI slices are implemented; general history, edge, coverage and complete
-  command-surface wiring remain open.
+  API/CLI slices, plus bounded history, structural evidence-edge, and explicit
+  coverage API/CLI surfaces are implemented. Their focused contract suite
+  passed 186 tests on 2026-09-14; the remaining Phase 2 checkpoint is a
+  broader qualification task.
 - [x] Add deterministic pagination, size limits, rate controls, content
   negotiation, cache headers, and provenance envelopes. Benefits pagination,
   serialized-page bounds, fixed-window rate controls, transport observations,
@@ -172,8 +174,11 @@
 
 ## Phase 3: Historical comparison and atlas (AC-04, AC-05)
 
-- [ ] Write failing temporal/change, missing-period, source-outage, schema-drift,
+- [x] Write temporal/change, missing-period, source-outage, schema-drift,
   responsive, keyboard, focus, contrast, screen-reader, and non-color-only tests.
+  The focused Phase 3 suite now directly exercises absent-left/right periods,
+  both-source outages, incomplete snapshots, and schema-era drift alongside
+  the established accessible Atlas checks. (`81 passed`, 2026-09-14.)
 - [ ] Confirm the intended failure before implementation.
 - [x] Implement repository-owned historical comparison and coverage envelopes
   for side-by-side evidence, timelines, change views, coverage/freshness, and

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -14,6 +16,28 @@ from global_medicines_atlas.historical_change import (
 from global_medicines_atlas.historical_change_adapter import (
     historical_change_page_payload,
 )
+from global_medicines_atlas.historical_comparison import NativeSnapshot
+
+
+def _snapshot(**changes: object) -> NativeSnapshot:
+    """Build one bounded source-native observation for outcome controls."""
+    return NativeSnapshot.model_validate({
+        "source_id": "synthetic-mbs",
+        "table": "fees",
+        "dimension": "service_benefit",
+        "schema_era": "fixture-v1",
+        "identity_profile": "literal-item-v1",
+        "source_revision": "fixture-1",
+        "source_path": "fixture.xml",
+        "b1_sha256": "a" * 64,
+        "b2_sha256": "b" * 64,
+        "observed_at": datetime(2026, 1, 1, tzinfo=UTC),
+        "cohort": "historical",
+        "declared_rows": 0,
+        "complete": True,
+        "rows": (),
+        **changes,
+    })
 
 
 def test_adapter_returns_bounded_json_safe_page() -> None:
@@ -29,6 +53,42 @@ def test_adapter_returns_bounded_json_safe_page() -> None:
     assert payload["total"] == 2
     assert payload["next_offset"] is None
     assert payload["items"][0]["absence_interpretation"] == "unknown"
+
+
+@pytest.mark.parametrize(
+    ("left", "right", "availability", "state"),
+    [
+        (None, _snapshot(), "left_missing", "missing_period"),
+        (_snapshot(), None, "right_missing", "missing_period"),
+        (None, None, "both_missing", "source_outage"),
+        (
+            _snapshot(complete=False),
+            _snapshot(),
+            "both_present",
+            "source_outage",
+        ),
+        (
+            _snapshot(),
+            _snapshot(schema_era="fixture-v2"),
+            "both_present",
+            "schema_drift",
+        ),
+    ],
+)
+def test_history_outcomes_preserve_missingness_and_schema_drift(
+    left: NativeSnapshot | None,
+    right: NativeSnapshot | None,
+    availability: str,
+    state: str,
+) -> None:
+    """Missing snapshots and incompatible eras never become a cessation."""
+    result = compare_historical_snapshots(left, right)
+
+    assert result.availability == availability
+    assert result.comparison_state == state
+    assert result.absence_interpretation == "unknown"
+    if state != "compared":
+        assert result.changes == ()
 
 
 @pytest.mark.parametrize(
