@@ -60,7 +60,6 @@ input, button { min-height: 2.75rem; padding: .6rem .75rem; font: inherit; }
 button { margin-top: 1rem; border: 0; border-radius: .25rem; color: #fff; background: var(--accent); font-weight: 700; cursor: pointer; }
 .hint { margin: -.65rem 0 0; color: var(--muted); grid-column: 1 / -1; }
 .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(19rem, 100%), 1fr)); gap: 1rem; }
-.dimension-panel { margin-block: 1rem; padding: 1rem; border-left: .45rem solid var(--accent); background: var(--wash); }
 .result-card { padding: 1rem; border: 2px solid var(--border); border-left-width: .6rem; border-radius: .35rem; }
 .status { font-weight: 750; text-transform: capitalize; }
 [data-state="confirmed"] { border-color: #08783e; }
