@@ -12,7 +12,8 @@ import json
 from collections.abc import Mapping
 from typing import Literal, cast
 
-from pydantic import Field, model_validator
+from pydantic import Field, field_validator, model_validator
+from urllib.parse import urlsplit
 
 from .models import FrozenModel
 
@@ -44,6 +45,18 @@ class CrateDistribution(FrozenModel):
     content_url: str = Field(min_length=1)
     media_type: str = Field(min_length=1)
     sha256: str = Field(pattern=_HASH)
+
+    @field_validator("content_url")
+    @classmethod
+    def content_url_is_public_https(cls, value: str) -> str:
+        parsed = urlsplit(value)
+        if parsed.scheme != "https" or not parsed.hostname:
+            raise ValueError("distribution content URL must be public HTTPS")
+        if parsed.username is not None or parsed.password is not None:
+            raise ValueError("distribution content URL must not contain credentials")
+        if parsed.query or parsed.fragment:
+            raise ValueError("distribution content URL must not contain query or fragment")
+        return value
 
 
 class ResearchCrate(FrozenModel):
