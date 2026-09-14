@@ -96,10 +96,15 @@ def test_croissant_without_metadata_flag_is_rejected() -> None:
         "https://user:pass@example.test/data",
         "https://example.test/data?token=x",
         "https://example.test/data#fragment",
+        "https://localhost/data",
+        "https://127.0.0.1/data",
+        "https://169.254.169.254/data",
     ],
 )
 def test_distribution_content_url_requires_public_https(url: str) -> None:
-    with pytest.raises(ValueError, match="public HTTPS|credentials|query|fragment"):
+    with pytest.raises(
+        ValueError, match="public HTTPS|credentials|query|fragment|public host"
+    ):
         CrateDistribution(
             identifier="data",
             name="Data",
