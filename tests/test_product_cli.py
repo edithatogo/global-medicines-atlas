@@ -21,6 +21,7 @@ from global_medicines_atlas.historical_comparison import (
     NativeRow,
     NativeSnapshot,
 )
+from global_medicines_atlas.platinum_v2_contracts import V2ComparisonResponse
 from global_medicines_atlas.product_contracts import (
     ComparisonResponse,
     ErrorCode,
@@ -196,6 +197,77 @@ def test_comparison_emits_contract_json_with_evidence(database: Path) -> None:
         for item in response.validity
     )
     assert not result.stderr
+
+
+@pytest.mark.integration
+def test_v2_comparison_emits_additive_contract_without_v1_validity(
+    database: Path,
+) -> None:
+    result = _invoke(
+        database,
+        "v2-comparison",
+        [
+            "--concept-id",
+            "rx:1",
+            "--jurisdiction",
+            "NZ",
+            "--dimension",
+            "regulatory",
+            "--dimension",
+            "funding",
+        ],
+    )
+
+    assert result.exit_code == 0, result.stderr
+    payload = json.loads(result.stdout)
+    response = V2ComparisonResponse.model_validate(payload)
+    assert response.metadata.api_version == "v2"
+    assert {item.dimension.value for item in response.conclusions} == {
+        "regulatory",
+        "funding",
+    }
+    assert "validity" not in payload
+
+
+@pytest.mark.edge
+def test_v2_comparison_rejects_invalid_json_export_and_duplicate_filters(
+    database: Path,
+) -> None:
+    json_export = _invoke(
+        database,
+        "v2-comparison",
+        [
+            "--concept-id",
+            "rx:1",
+            "--jurisdiction",
+            "NZ",
+            "--dimension",
+            "regulatory",
+            "--limit",
+            "1",
+            "--max-rows",
+            "2",
+        ],
+    )
+    assert json_export.exit_code == 2
+    assert json.loads(json_export.stderr)["error"] == ErrorCode.INVALID_REQUEST
+
+    duplicate = _invoke(
+        database,
+        "v2-comparison",
+        [
+            "--concept-id",
+            "rx:1",
+            "--jurisdiction",
+            "NZ",
+            "--jurisdiction",
+            "nz",
+            "--dimension",
+            "regulatory",
+        ],
+    )
+    assert duplicate.exit_code == 2
+    assert json.loads(duplicate.stderr)["error"] == ErrorCode.INVALID_REQUEST
 
 
 @pytest.mark.integration

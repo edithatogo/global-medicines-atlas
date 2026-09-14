@@ -18,6 +18,12 @@ from .comparison_validity import abstaining_status_comparison_validity
 from .historical_change_configuration import load_historical_change_service
 from .platinum_edge_configuration import load_gold_edges
 from .platinum_edges import gold_edge_payload
+from .platinum_v2_contracts import (
+    V2ComparisonQuery,
+    V2ComparisonResponse,
+    V2EvidenceDimension,
+)
+from .platinum_v2_query_service import V2ReadOnlyQueryService
 from .product_contracts import (
     API_VERSION,
     MAX_EXPORT_ROWS,
@@ -78,6 +84,7 @@ type ProductResponse = (
     | ConceptSearchResponse
     | CoverageResponse
     | EvidenceResponse
+    | V2ComparisonResponse
 )
 type PageAction = Callable[[str | None, int], ProductResponse]
 
@@ -154,9 +161,18 @@ def _fail(
     raise typer.Exit(exit_code)
 
 
+def _validated[ValueT](factory: Callable[[], ValueT]) -> ValueT:
+    """Turn command-model validation into the stable CLI error envelope."""
+    try:
+        return factory()
+    except ValidationError:
+        _fail(ErrorCode.INVALID_REQUEST, "Command parameters are invalid")
+
+
 def _service(
     database: Path,
     allowed_root: Path | None,
+    service_type: type[ReadOnlyQueryService] = ReadOnlyQueryService,
 ) -> ReadOnlyQueryService:
     secret = os.environ.get(_CURSOR_ENV)
     if secret is None:
@@ -173,7 +189,7 @@ def _service(
         )
     root = allowed_root if allowed_root is not None else database.parent
     try:
-        return ReadOnlyQueryService(
+        return service_type(
             database,
             cursor_secret=secret.encode(),
             allowed_root=root,
@@ -248,6 +264,7 @@ def _run(
     *,
     cursor: str | None,
     page_limit: int,
+    include_comparison_validity: bool = True,
 ) -> None:
     rows: list[object] = []
     seen_cursors: set[str] = {cursor} if cursor is not None else set()
@@ -300,7 +317,7 @@ def _run(
     if payload is None or collection_name is None:
         _fail(ErrorCode.INTERNAL_ERROR, f"{operation} returned no response")
     payload[collection_name] = rows
-    if collection_name == "conclusions":
+    if collection_name == "conclusions" and include_comparison_validity:
         conclusions = tuple(
             ProductConclusion.model_validate(row) for row in rows
         )
@@ -363,6 +380,62 @@ def comparison(
         output,
         cursor=cursor,
         page_limit=limit,
+    )
+
+
+@app.command("v2-comparison")
+def v2_comparison(
+    database: DatabaseOption,
+    concept_id: Annotated[str, typer.Option("--concept-id")],
+    jurisdiction: Annotated[
+        list[str], typer.Option("--jurisdiction", help="Repeat per country.")
+    ],
+    valid_at: ClockOption,
+    observed_at: ClockOption,
+    dimension: Annotated[
+        list[V2EvidenceDimension],
+        typer.Option("--dimension", case_sensitive=False),
+    ],
+    allowed_root: AllowedRootOption = None,
+    limit: LimitOption = 50,
+    cursor: CursorOption = None,
+    format_: FormatOption = ExportFormat.JSON,
+    max_rows: MaxRowsOption = 50,
+) -> None:
+    """Compare explicit V2 evidence dimensions without changing V1 output."""
+    output = ExportRequest(format=format_, max_rows=max_rows)
+    if format_ is ExportFormat.JSON and max_rows > limit:
+        _fail(
+            ErrorCode.INVALID_REQUEST,
+            "V2 JSON output requires max-rows no greater than limit; use jsonl "
+            "for multi-page exports",
+        )
+    query = _validated(
+        lambda: V2ComparisonQuery(
+            concept_id=concept_id,
+            jurisdictions=tuple(jurisdiction),
+            dimensions=tuple(dimension),
+            valid_at=valid_at,
+            observed_at=observed_at,
+            limit=limit,
+            cursor=cursor,
+        )
+    )
+    service = cast(
+        "V2ReadOnlyQueryService",
+        _service(database, allowed_root, V2ReadOnlyQueryService),
+    )
+    _run(
+        "v2 comparison",
+        lambda page_cursor, page_limit: service.v2_comparisons(
+            query.model_copy(
+                update={"cursor": page_cursor, "limit": page_limit},
+            )
+        ),
+        output,
+        cursor=cursor,
+        page_limit=limit,
+        include_comparison_validity=False,
     )
 
 
