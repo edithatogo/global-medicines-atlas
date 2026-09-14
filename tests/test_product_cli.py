@@ -21,6 +21,7 @@ from global_medicines_atlas.historical_comparison import (
     NativeRow,
     NativeSnapshot,
 )
+from global_medicines_atlas.platinum_v2_contracts import V2ComparisonResponse
 from global_medicines_atlas.product_contracts import (
     ComparisonResponse,
     ErrorCode,
@@ -196,6 +197,36 @@ def test_comparison_emits_contract_json_with_evidence(database: Path) -> None:
         for item in response.validity
     )
     assert not result.stderr
+
+
+@pytest.mark.integration
+def test_v2_comparison_emits_additive_contract_without_v1_validity(
+    database: Path,
+) -> None:
+    result = _invoke(
+        database,
+        "v2-comparison",
+        [
+            "--concept-id",
+            "rx:1",
+            "--jurisdiction",
+            "NZ",
+            "--dimension",
+            "regulatory",
+            "--dimension",
+            "funding",
+        ],
+    )
+
+    assert result.exit_code == 0, result.stderr
+    payload = json.loads(result.stdout)
+    response = V2ComparisonResponse.model_validate(payload)
+    assert response.metadata.api_version == "v2"
+    assert {item.dimension.value for item in response.conclusions} == {
+        "regulatory",
+        "funding",
+    }
+    assert "validity" not in payload
 
 
 @pytest.mark.integration
