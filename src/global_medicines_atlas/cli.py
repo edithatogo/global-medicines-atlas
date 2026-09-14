@@ -161,6 +161,14 @@ def _fail(
     raise typer.Exit(exit_code)
 
 
+def _validated[ValueT](factory: Callable[[], ValueT]) -> ValueT:
+    """Turn command-model validation into the stable CLI error envelope."""
+    try:
+        return factory()
+    except ValidationError:
+        _fail(ErrorCode.INVALID_REQUEST, "Command parameters are invalid")
+
+
 def _service(
     database: Path,
     allowed_root: Path | None,
@@ -392,18 +400,26 @@ def v2_comparison(
     limit: LimitOption = 50,
     cursor: CursorOption = None,
     format_: FormatOption = ExportFormat.JSON,
-    max_rows: MaxRowsOption = 1_000,
+    max_rows: MaxRowsOption = 50,
 ) -> None:
     """Compare explicit V2 evidence dimensions without changing V1 output."""
     output = ExportRequest(format=format_, max_rows=max_rows)
-    query = V2ComparisonQuery(
-        concept_id=concept_id,
-        jurisdictions=tuple(jurisdiction),
-        dimensions=tuple(dimension),
-        valid_at=valid_at,
-        observed_at=observed_at,
-        limit=limit,
-        cursor=cursor,
+    if format_ is ExportFormat.JSON and max_rows > limit:
+        _fail(
+            ErrorCode.INVALID_REQUEST,
+            "V2 JSON output requires max-rows no greater than limit; use jsonl "
+            "for multi-page exports",
+        )
+    query = _validated(
+        lambda: V2ComparisonQuery(
+            concept_id=concept_id,
+            jurisdictions=tuple(jurisdiction),
+            dimensions=tuple(dimension),
+            valid_at=valid_at,
+            observed_at=observed_at,
+            limit=limit,
+            cursor=cursor,
+        )
     )
     service = cast(
         "V2ReadOnlyQueryService",
