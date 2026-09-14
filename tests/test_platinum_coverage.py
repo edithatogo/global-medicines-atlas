@@ -1,4 +1,5 @@
 import hashlib
+from dataclasses import replace
 from datetime import UTC, datetime
 
 import pytest
@@ -296,6 +297,43 @@ def test_coverage_transformation_receipt_rejects_unreceipted_query_result() -> (
     with pytest.raises(ValueError, match="query result"):
         coverage_transformation_receipt(
             _response(), _identity(), _receipt(), b'[{"item_code":"PBS-002"}]'
+        )
+
+
+def test_coverage_transformation_receipt_rejects_invalid_query_digest() -> None:
+    with pytest.raises(ValueError, match="query digest"):
+        coverage_transformation_receipt(
+            _response(),
+            _identity(),
+            replace(_receipt(), query_sha256="0" * 64),
+            _canonical_query_result(),
+        )
+
+
+@pytest.mark.parametrize(
+    ("raw_result", "error_type", "message"),
+    [
+        (b"not-json", ValueError, "canonical JSON"),
+        (b'{"item_code":"PBS-001"}', TypeError, "JSON array"),
+        (
+            b'[{"item_code":"PBS-001"},{"item_code":"PBS-002"}]',
+            ValueError,
+            "row count",
+        ),
+        (b'[ { "item_code": "PBS-001" } ]', ValueError, "canonical JSON"),
+    ],
+)
+def test_coverage_transformation_receipt_rejects_invalid_result_shape(
+    raw_result: bytes,
+    error_type: type[Exception],
+    message: str,
+) -> None:
+    receipt = replace(
+        _receipt(), result_sha256=hashlib.sha256(raw_result).hexdigest()
+    )
+    with pytest.raises(error_type, match=message):
+        coverage_transformation_receipt(
+            _response(), _identity(), receipt, raw_result
         )
 
 
