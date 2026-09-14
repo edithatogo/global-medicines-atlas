@@ -457,18 +457,26 @@ def v2_evidence(
     limit: LimitOption = 50,
     cursor: CursorOption = None,
     format_: FormatOption = ExportFormat.JSON,
-    max_rows: MaxRowsOption = 1_000,
+    max_rows: MaxRowsOption = 50,
 ) -> None:
     """Page complete assertion evidence for one V2 dimension."""
     output = ExportRequest(format=format_, max_rows=max_rows)
-    query = V2EvidenceQuery(
-        concept_id=concept_id,
-        jurisdiction=jurisdiction,
-        dimension=dimension,
-        valid_at=valid_at,
-        observed_at=observed_at,
-        limit=limit,
-        cursor=cursor,
+    if format_ is ExportFormat.JSON and max_rows > limit:
+        _fail(
+            ErrorCode.INVALID_REQUEST,
+            "V2 JSON output requires max-rows no greater than limit; use jsonl "
+            "for multi-page exports",
+        )
+    query = _validated(
+        lambda: V2EvidenceQuery(
+            concept_id=concept_id,
+            jurisdiction=jurisdiction,
+            dimension=dimension,
+            valid_at=valid_at,
+            observed_at=observed_at,
+            limit=limit,
+            cursor=cursor,
+        )
     )
     service = cast(
         "V2ReadOnlyQueryService",

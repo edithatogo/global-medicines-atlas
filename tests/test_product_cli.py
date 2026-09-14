@@ -295,6 +295,29 @@ def test_v2_evidence_emits_additive_evidence_contract(database: Path) -> None:
 
 
 @pytest.mark.integration
+def test_v2_evidence_rejects_multi_page_json_export(database: Path) -> None:
+    result = _invoke(
+        database,
+        "v2-evidence",
+        [
+            "--concept-id",
+            "rx:1",
+            "--jurisdiction",
+            "NZ",
+            "--dimension",
+            "regulatory",
+            "--limit",
+            "1",
+            "--max-rows",
+            "2",
+        ],
+    )
+
+    assert result.exit_code == 2
+    assert json.loads(result.stderr)["error"] == ErrorCode.INVALID_REQUEST
+
+
+@pytest.mark.integration
 def test_coverage_preserves_unknown_denominator(database: Path) -> None:
     result = _invoke(
         database,
