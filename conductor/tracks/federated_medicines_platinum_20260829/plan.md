@@ -174,8 +174,11 @@
 
 ## Phase 3: Historical comparison and atlas (AC-04, AC-05)
 
-- [ ] Write failing temporal/change, missing-period, source-outage, schema-drift,
+- [x] Write temporal/change, missing-period, source-outage, schema-drift,
   responsive, keyboard, focus, contrast, screen-reader, and non-color-only tests.
+  The focused Phase 3 suite now directly exercises absent-left/right periods,
+  both-source outages, incomplete snapshots, and schema-era drift alongside
+  the established accessible Atlas checks. (`81 passed`, 2026-09-14.)
 - [ ] Confirm the intended failure before implementation.
 - [x] Implement repository-owned historical comparison and coverage envelopes
   for side-by-side evidence, timelines, change views, coverage/freshness, and
