@@ -8,6 +8,7 @@ import pytest
 from test_platinum_query import SCHEMA, binding, contract, parquet_payload
 from typer.testing import CliRunner
 
+from global_medicines_atlas import cli
 from global_medicines_atlas.cli import app
 from global_medicines_atlas.platinum_configuration import load_benefits_resolver
 
@@ -124,6 +125,62 @@ def test_dataset_cli_lists_exact_admitted_identities(tmp_path):
     assert page["returned"] == 1
     assert page["datasets"][0]["resource_id"] == "au.mbs.items"
     assert page["datasets"][0]["schema_era"] == "mbs-2026-09"
+
+
+def test_dataset_cli_rejects_invalid_operator_configuration(tmp_path):
+    configuration(tmp_path)
+    (tmp_path / "contract.json").write_text("{}")
+    result = CliRunner().invoke(
+        app,
+        [
+            "datasets",
+            "--trust-file",
+            str(tmp_path / "trust.json"),
+            "--metadata-root",
+            str(tmp_path),
+            "--schema-file",
+            str(tmp_path / "schema.json"),
+        ],
+    )
+
+    assert result.exit_code == 2
+    assert json.loads(result.stderr)["error"] == "invalid_request"
+
+
+@pytest.mark.parametrize("missing_name", ["jsonschema", "other_dependency"])
+def test_dataset_cli_handles_optional_runtime_imports(
+    tmp_path, monkeypatch, missing_name
+):
+    trust = tmp_path / "trust.json"
+    schema = tmp_path / "schema.json"
+    trust.write_text("{}")
+    schema.write_text("{}")
+    original_import_module = cli.importlib.import_module
+
+    def unavailable(name, *args, **kwargs):
+        if name == ".platinum_configuration":
+            raise ModuleNotFoundError(name=missing_name)
+        return original_import_module(name, *args, **kwargs)
+
+    monkeypatch.setattr(cli.importlib, "import_module", unavailable)
+    result = CliRunner().invoke(
+        app,
+        [
+            "datasets",
+            "--trust-file",
+            str(trust),
+            "--metadata-root",
+            str(tmp_path),
+            "--schema-file",
+            str(schema),
+        ],
+    )
+
+    if missing_name == "jsonschema":
+        assert result.exit_code == 2
+        assert "Install 'global-medicines-atlas[federation]'" in result.stderr
+    else:
+        assert isinstance(result.exception, ModuleNotFoundError)
 
 
 def test_empty_trust_is_not_an_admission_policy(tmp_path):

@@ -89,6 +89,11 @@ class ExpiringIdentityStub:
         return dataset_identity(resource, jurisdiction="AU")
 
 
+class FailingIdentityStub(IdentityStub):
+    def identities(self) -> DatasetIdentityPage:
+        raise ValueError("incomplete identity page")
+
+
 def client(*, configured: bool = True) -> TestClient:
     return TestClient(
         create_app(
@@ -200,6 +205,51 @@ def test_dataset_identity_collection_fails_closed_when_unconfigured() -> None:
 
     assert response.status_code == 503
     assert response.json()["error"] == "service_unavailable"
+
+
+def test_dataset_identity_collection_hides_service_failures() -> None:
+    test_client = TestClient(
+        create_app(
+            cast("ReadOnlyQueryService", QueryStub()),
+            dataset_identities=FailingIdentityStub(),
+        )
+    )
+
+    response = test_client.get("/api/v1/datasets")
+
+    assert response.status_code == 503
+    assert "incomplete" not in response.text
+
+
+@pytest.mark.parametrize(
+    ("datasets", "returned", "message"),
+    [
+        (
+            (dataset_identity(resolved(), jurisdiction="AU"),),
+            2,
+            "returned count",
+        ),
+        (
+            (
+                dataset_identity(resolved(), jurisdiction="AU"),
+                dataset_identity(
+                    replace(resolved(), resource_id="au.aaa.services.current"),
+                    jurisdiction="AU",
+                ),
+            ),
+            2,
+            "ordered",
+        ),
+    ],
+)
+def test_dataset_identity_page_rejects_inconsistent_or_unsorted_content(
+    datasets: tuple[object, ...], returned: int, message: str
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        DatasetIdentityPage.model_validate({
+            "datasets": datasets,
+            "returned": returned,
+        })
 
 
 @pytest.mark.parametrize(

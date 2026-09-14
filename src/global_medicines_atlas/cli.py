@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib
 import json
 import os
 import secrets
@@ -689,16 +690,11 @@ def benefits_query(
         raise typer.Exit(3)
 
 
-@app.command("datasets")
-def dataset_list(
-    trust_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
-    metadata_root: Annotated[Path, typer.Option(exists=True, file_okay=False)],
-    schema_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
-) -> None:
-    """List bounded exact identities from independently provisioned trust."""
+def _dataset_resolver_loader() -> Callable[..., Any]:
+    """Load the optional resolver configuration with a typed failure mode."""
     try:
-        from .platinum_configuration import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
-            load_benefits_resolver,
+        module = importlib.import_module(
+            ".platinum_configuration", package=__package__
         )
     except ModuleNotFoundError as error:
         if error.name != "jsonschema":
@@ -707,12 +703,22 @@ def dataset_list(
             ErrorCode.SERVICE_UNAVAILABLE,
             "Install 'global-medicines-atlas[federation]' to inspect datasets",
         )
+    return cast("Callable[..., Any]", module.load_benefits_resolver)
+
+
+@app.command("datasets")
+def dataset_list(
+    trust_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
+    metadata_root: Annotated[Path, typer.Option(exists=True, file_okay=False)],
+    schema_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
+) -> None:
+    """List bounded exact identities from independently provisioned trust."""
     from .platinum_identity_service import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
         ResolverDatasetIdentityService,
     )
 
     try:
-        resolver = load_benefits_resolver(
+        resolver = _dataset_resolver_loader()(
             trust_file=trust_file,
             metadata_root=metadata_root,
             schema_file=schema_file,
