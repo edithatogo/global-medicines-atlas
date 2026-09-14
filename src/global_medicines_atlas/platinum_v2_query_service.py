@@ -130,7 +130,11 @@ class V2ReadOnlyQueryService(ReadOnlyQueryService):
             jurisdiction=str(first["jurisdiction"]),
             dimension=V2EvidenceDimension(str(first["kind"])),
             state=state,
-            status_code=str(first["status_code"]),
+            status_code=(
+                None
+                if state in {ProductState.UNKNOWN, ProductState.NOT_COVERED}
+                else str(first["status_code"])
+            ),
             terminology=self._terminology(first),
             provenance=tuple(self._provenance(row) for row in rows),
             evidence_availability=EvidenceAvailability.AVAILABLE,

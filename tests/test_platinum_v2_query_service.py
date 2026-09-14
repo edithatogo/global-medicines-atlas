@@ -51,3 +51,22 @@ def test_v2_query_service_preserves_v1_and_additive_dimensions(
     assert "terminology" not in {
         item.dimension.value for item in response.conclusions
     }
+
+
+def test_v2_query_service_omits_unknown_status_code(tmp_path: Path) -> None:
+    service = V2ReadOnlyQueryService(
+        _database(tmp_path / "atlas.duckdb"),
+        cursor_secret=SECRET,
+        allowed_root=tmp_path,
+    )
+    response = service.v2_comparisons(
+        V2ComparisonQuery(
+            concept_id="rx:1",
+            jurisdictions=("US",),
+            dimensions=(V2EvidenceDimension.REGULATORY,),
+            valid_at=NOW,
+            observed_at=NOW,
+        )
+    )
+
+    assert response.conclusions[0].status_code is None

@@ -131,7 +131,9 @@ def test_complete_comparison_keeps_unknown_states_and_nullable_coverage():
 
 def test_atlas_can_render_all_five_v2_dimensions() -> None:
     class V2Service:
-        def comparisons(self, query: V2ComparisonQuery) -> V2ComparisonResponse:
+        def v2_comparisons(
+            self, query: V2ComparisonQuery
+        ) -> V2ComparisonResponse:
             assert set(query.dimensions) == set(V2EvidenceDimension)
             clocks = AsOfClocks(
                 valid_at=query.valid_at, observed_at=query.observed_at

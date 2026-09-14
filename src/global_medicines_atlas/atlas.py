@@ -56,7 +56,9 @@ class AtlasQueryService(Protocol):
 class V2AtlasQueryService(Protocol):
     """Additive query surface for five independently rendered dimensions."""
 
-    def comparisons(self, query: V2ComparisonQuery) -> V2ComparisonResponse: ...
+    def v2_comparisons(
+        self, query: V2ComparisonQuery
+    ) -> V2ComparisonResponse: ...
 
 
 def _safe_source_uri(uri: str) -> str | None:
@@ -161,7 +163,7 @@ def _atlas_comparison(
 ) -> tuple[ComparisonResponse | V2ComparisonResponse, CoverageResponse | None]:
     if v2_service is not None:
         return (
-            v2_service.comparisons(
+            v2_service.v2_comparisons(
                 V2ComparisonQuery(
                     concept_id=concept_id,
                     jurisdictions=jurisdictions,
