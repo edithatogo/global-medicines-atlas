@@ -112,3 +112,22 @@ def test_distribution_content_url_requires_public_https(url: str) -> None:
             media_type="application/octet-stream",
             sha256="a" * 64,
         )
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://example.test/dataset",
+        "https://localhost/dataset",
+        "https://example.test/dataset?token=x",
+    ],
+)
+def test_dataset_url_requires_public_https(url: str) -> None:
+    with pytest.raises(ValueError, match="public HTTPS|query|public host"):
+        build_research_crate(
+            identifier="example@abc",
+            name="Example",
+            version="abc",
+            dataset_url=url,
+            distributions=(_distribution(),),
+        )
