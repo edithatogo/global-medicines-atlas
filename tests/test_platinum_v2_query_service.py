@@ -90,12 +90,13 @@ def test_v2_query_service_preserves_v1_and_additive_dimensions(
     assert values["NZ", "funding"].status_code == "funded"
     assert values["AU", "funding"].status_code is None
     assert values["US", "regulatory"].status_code is None
-    assert "service_benefit" not in {
-        item.dimension.value for item in response.conclusions
-    }
-    assert "terminology" not in {
-        item.dimension.value for item in response.conclusions
-    }
+    assert {item.dimension for item in response.conclusions} == set(
+        V2EvidenceDimension
+    )
+    assert values["NZ", "service_benefit"].state.value == "unknown"
+    assert values["NZ", "service_benefit"].evidence_availability.value == (
+        "unavailable"
+    )
 
 
 def test_v2_query_service_omits_unknown_status_code(tmp_path: Path) -> None:
@@ -115,6 +116,49 @@ def test_v2_query_service_omits_unknown_status_code(tmp_path: Path) -> None:
     )
 
     assert response.conclusions[0].status_code is None
+
+
+def test_v2_comparisons_pages_requested_unknown_dimensions(
+    tmp_path: Path,
+) -> None:
+    service = V2ReadOnlyQueryService(
+        _database(tmp_path / "atlas.duckdb"),
+        cursor_secret=SECRET,
+        allowed_root=tmp_path,
+    )
+    query = V2ComparisonQuery(
+        concept_id="rx:1",
+        jurisdictions=("NZ", "AU", "US"),
+        dimensions=tuple(V2EvidenceDimension),
+        valid_at=NOW,
+        observed_at=NOW,
+        limit=7,
+    )
+
+    first = service.v2_comparisons(query)
+    assert len(first.conclusions) == 7
+    assert first.metadata.page.next_cursor is not None
+    second = service.v2_comparisons(
+        query.model_copy(update={"cursor": first.metadata.page.next_cursor})
+    )
+    assert len(second.conclusions) == 7
+    assert second.metadata.page.next_cursor is not None
+    third = service.v2_comparisons(
+        query.model_copy(update={"cursor": second.metadata.page.next_cursor})
+    )
+    assert len(third.conclusions) == 1
+    assert third.metadata.page.next_cursor is None
+    assert (
+        len({
+            (item.jurisdiction, item.dimension)
+            for item in (
+                *first.conclusions,
+                *second.conclusions,
+                *third.conclusions,
+            )
+        })
+        == 15
+    )
 
 
 def test_v2_evidence_pages_complete_overflowing_v2_dimension(

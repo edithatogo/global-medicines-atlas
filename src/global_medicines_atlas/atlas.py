@@ -20,6 +20,7 @@ from .platinum_v2_contracts import (
     V2Conclusion,
     V2EvidenceDimension,
 )
+from .platinum_v2_query_service import V2ReadOnlyQueryService
 from .product_contracts import (
     ComparisonQuery,
     ComparisonResponse,
@@ -170,6 +171,7 @@ def _atlas_comparison(
                     dimensions=tuple(V2EvidenceDimension),
                     valid_at=valid_at,
                     observed_at=observed_at,
+                    limit=len(jurisdictions) * len(V2EvidenceDimension),
                 )
             ),
             None,
@@ -294,3 +296,18 @@ def create_atlas_app(
         )
 
     return app
+
+
+def create_source_backed_v2_atlas_app(
+    database_path: str | Path,
+    *,
+    cursor_secret: bytes,
+    allowed_root: str | Path | None = None,
+) -> FastAPI:
+    """Create Atlas with the canonical service wired to all V2 dimensions."""
+    service = V2ReadOnlyQueryService(
+        database_path,
+        cursor_secret=cursor_secret,
+        allowed_root=allowed_root,
+    )
+    return create_atlas_app(service, v2_service=service)

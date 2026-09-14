@@ -111,8 +111,8 @@ class V2ReadOnlyQueryService(ReadOnlyQueryService):
             coverage = self._comparison_coverage(
                 connection, cast("Any", query), jurisdictions, dimensions
             )
-            candidate_keys = self._comparison_page_keys(
-                connection, cast("Any", query), jurisdictions, dimensions, after
+            candidate_keys = self._v2_comparison_page_keys(
+                connection, query, jurisdictions, dimensions, after
             )
         page_keys = set(candidate_keys[: query.limit])
         conclusions = [
@@ -172,7 +172,86 @@ class V2ReadOnlyQueryService(ReadOnlyQueryService):
                             query, jurisdiction, dimension, coverage_row
                         )
                     )
+                else:
+                    output.append(
+                        self._v2_missing_conclusion(
+                            query, jurisdiction, dimension
+                        )
+                    )
         return output
+
+    @staticmethod
+    def _v2_comparison_page_keys(
+        connection: Any,
+        query: V2ComparisonQuery,
+        jurisdictions: list[str],
+        dimensions: list[str],
+        after: tuple[str, ...] | None,
+    ) -> list[tuple[str, str, str]]:
+        parameters: list[object] = [
+            query.concept_id,
+            jurisdictions,
+            dimensions,
+        ]
+        keyset = ""
+        if after is not None:
+            parameters.extend(after)
+            keyset = (
+                "WHERE (jurisdiction, dimension, concept_id) > ($4, $5, $6)"
+            )
+        parameters.append(query.limit + 1)
+        rows = connection.execute(
+            f"""
+            WITH requested AS (
+                SELECT jurisdiction, dimension
+                FROM unnest($2) AS jurisdictions(jurisdiction)
+                CROSS JOIN unnest($3) AS dimensions(dimension)
+            )
+            SELECT jurisdiction, dimension, $1 AS concept_id
+            FROM requested
+            {keyset}
+            ORDER BY jurisdiction, dimension, concept_id
+            LIMIT ${len(parameters)}
+            """,  # ruff: ignore[hardcoded-sql-expression]
+            parameters,
+        ).fetchall()
+        return [
+            (str(jurisdiction), str(dimension), str(concept_id))
+            for jurisdiction, dimension, concept_id in rows
+        ]
+
+    @staticmethod
+    def _v2_missing_conclusion(
+        query: V2ComparisonQuery,
+        jurisdiction: str,
+        dimension: V2EvidenceDimension,
+    ) -> V2Conclusion:
+        return V2Conclusion(
+            concept_id=query.concept_id,
+            jurisdiction=jurisdiction,
+            dimension=dimension,
+            state=ProductState.UNKNOWN,
+            terminology=Terminology(
+                native_code=dimension.value,
+                native_label=dimension.value.replace("_", " "),
+                native_system="global-medicines-atlas",
+                canonical_code=query.concept_id,
+                canonical_label=query.concept_id,
+                canonical_system="global-medicines-atlas",
+            ),
+            evidence_availability=EvidenceAvailability.UNAVAILABLE,
+            evidence_unavailable_reason=(
+                "No source assertion or coverage observation is available for "
+                "this requested dimension."
+            ),
+            uncertainty=Uncertainty(
+                level=UncertaintyLevel.UNKNOWN,
+                reason="Missing coverage is not evidence of a negative status.",
+            ),
+            valid_time=AsOfClocks(
+                valid_at=query.valid_at, observed_at=query.observed_at
+            ),
+        )
 
     def _v2_assertion_conclusion(
         self,

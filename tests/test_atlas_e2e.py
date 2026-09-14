@@ -1,10 +1,18 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from pathlib import Path
 
 from fastapi.testclient import TestClient
+from test_concept_query_service import (
+    _catalog_database,  # ruff: ignore[import-private-name]
+)
+from test_query_service import SECRET
 
-from global_medicines_atlas.atlas import create_atlas_app
+from global_medicines_atlas.atlas import (
+    create_atlas_app,
+    create_source_backed_v2_atlas_app,
+)
 from global_medicines_atlas.platinum_v2_contracts import (
     V2ComparisonQuery,
     V2ComparisonResponse,
@@ -135,6 +143,7 @@ def test_atlas_can_render_all_five_v2_dimensions() -> None:
             self, query: V2ComparisonQuery
         ) -> V2ComparisonResponse:
             assert set(query.dimensions) == set(V2EvidenceDimension)
+            assert query.limit == 55
             clocks = AsOfClocks(
                 valid_at=query.valid_at, observed_at=query.observed_at
             )
@@ -172,9 +181,49 @@ def test_atlas_can_render_all_five_v2_dimensions() -> None:
         create_atlas_app(StateService(), v2_service=V2Service())
     ).get(
         "/",
+        params=[
+            ("concept_id", "rx:fixture"),
+            *(
+                ("jurisdiction", code)
+                for code in (
+                    "AU",
+                    "NZ",
+                    "US",
+                    "CA",
+                    "GB",
+                    "DE",
+                    "FR",
+                    "IT",
+                    "ES",
+                    "JP",
+                    "KR",
+                )
+            ),
+            ("valid_at", NOW.isoformat()),
+            ("observed_at", NOW.isoformat()),
+        ],
+    )
+
+    assert response.status_code == 200
+    for dimension in V2EvidenceDimension:
+        assert dimension.value in response.text
+
+
+def test_source_backed_v2_atlas_factory_renders_all_dimensions(
+    tmp_path: Path,
+) -> None:
+    database = _catalog_database(tmp_path / "atlas.duckdb")
+    response = TestClient(
+        create_source_backed_v2_atlas_app(
+            database,
+            cursor_secret=SECRET,
+            allowed_root=tmp_path,
+        )
+    ).get(
+        "/",
         params={
-            "concept_id": "rx:fixture",
-            "jurisdiction": "AU",
+            "concept_id": "gma:aspirin",
+            "jurisdiction": "NZ",
             "valid_at": NOW.isoformat(),
             "observed_at": NOW.isoformat(),
         },
