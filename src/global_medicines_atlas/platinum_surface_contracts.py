@@ -48,6 +48,9 @@ class DatasetIdentityEnvelope(PlatinumSurfaceModel):
     cache_expires_at: AwareDatetime
     capabilities: tuple[Capability, ...]
     coverage_state: Literal["not_declared"]
+    confidence_state: Literal["not_declared"] = "not_declared"
+    uncertainty_state: Literal["not_declared"] = "not_declared"
+    review_state: Literal["not_declared"] = "not_declared"
     comparison_validity: Literal["not_evaluated"]
     product_admitted: Literal[True]
     rows_queried: Literal[False]
@@ -79,6 +82,9 @@ def dataset_identity(
         cache_expires_at=resource.cache_expires_at,
         capabilities=resource.capabilities,
         coverage_state="not_declared",
+        confidence_state="not_declared",
+        uncertainty_state="not_declared",
+        review_state="not_declared",
         comparison_validity="not_evaluated",
         product_admitted=True,
         rows_queried=False,

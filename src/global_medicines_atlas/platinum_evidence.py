@@ -43,6 +43,32 @@ def _read(value: object, field: str) -> Any:
     return getattr(value, field, None)
 
 
+def _evidence_sources(result: object) -> tuple[object, ...]:
+    """Return the declared evidence layers for one public result.
+
+    A page owns its query/coverage states while its admitted ``identity`` owns
+    immutable source identity and cohort fields.  The explicit nested
+    ``evidence`` shape remains supported for row-oriented result models.
+    """
+    return tuple(
+        value
+        for value in (
+            _read(result, "evidence"),
+            result,
+            _read(result, "identity"),
+        )
+        if value is not None
+    )
+
+
+def _evidence_value(result: object, field: str) -> Any:
+    for source in _evidence_sources(result):
+        value = _read(source, field)
+        if value is not None:
+            return value
+    return None
+
+
 def validate_result_evidence(result: object) -> object:
     """Validate mandatory evidence metadata and return ``result`` unchanged.
 
@@ -51,11 +77,20 @@ def validate_result_evidence(result: object) -> object:
     by exposing an ``evidence`` member.  All fields must be present, and the
     conservative state fields may not be blank or ``None``.
     """
-    evidence = _read(result, "evidence") or result
+    datasets = _read(result, "datasets")
+    if datasets is not None:
+        if not isinstance(datasets, tuple) or not datasets:
+            raise PlatinumEvidenceError(
+                "dataset collection evidence must be a nonempty typed tuple"
+            )
+        identities = cast("tuple[object, ...]", datasets)
+        for identity in identities:
+            validate_result_evidence(identity)
+        return result
     missing = tuple(
         field
         for field in REQUIRED_EVIDENCE_FIELDS
-        if _read(evidence, field) is None
+        if _evidence_value(result, field) is None
     )
     if missing:
         raise PlatinumEvidenceError(
@@ -68,7 +103,7 @@ def validate_result_evidence(result: object) -> object:
         "review_state",
         "comparison_validity",
     ):
-        value = _read(evidence, field)
+        value = _evidence_value(result, field)
         if not isinstance(value, str) or not value.strip():
             raise PlatinumEvidenceError(
                 f"result evidence field {field!r} is invalid"
@@ -151,11 +186,11 @@ def aggregate_result_evidence(
     resource_ids: list[str] = []
     for result in results:
         validate_result_evidence(result)
-        evidence = _read(result, "evidence") or result
         document = {
-            field: _read(evidence, field) for field in REQUIRED_EVIDENCE_FIELDS
+            field: _evidence_value(result, field)
+            for field in REQUIRED_EVIDENCE_FIELDS
         }
-        resource_id = _read(evidence, "resource_id")
+        resource_id = _evidence_value(result, "resource_id")
         if not isinstance(resource_id, str) or not resource_id.strip():
             resource_id = f"{document['dataset']}:{document['path']}"
         if resource_id in resource_ids:
@@ -198,7 +233,7 @@ def checkpoint_representative_evidence(
     materialized = tuple(results)
     aggregate = aggregate_result_evidence(materialized)
     observed = {
-        str(_read(_read(result, "evidence") or result, "semantic_dimension"))
+        str(_evidence_value(result, "semantic_dimension"))
         for result in materialized
     }
     required = {item for item in required_dimensions if item}

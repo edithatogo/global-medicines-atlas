@@ -154,7 +154,10 @@
   client. Missing optional jsonschema now reports installation guidance for
   `global-medicines-atlas[federation]`; unrelated import failures propagate.
   This slice does not close history, edge, coverage or production admission.
-- [ ] Confirm the intended failure before implementation.
+- [x] Confirm the intended failure before implementation. The Phase 2
+  checkpoint validator initially rejected the actual dataset-identity envelope
+  because confidence, uncertainty and review states were absent; a collection
+  response constructed without the typed tuple boundary also fails closed.
 - [~] Implement typed commands and read-only endpoints using shared service
   contracts rather than duplicated query logic. Dataset identity and benefits
   API/CLI slices are implemented; general history, edge, coverage and complete
