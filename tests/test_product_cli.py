@@ -21,7 +21,10 @@ from global_medicines_atlas.historical_comparison import (
     NativeRow,
     NativeSnapshot,
 )
-from global_medicines_atlas.platinum_v2_contracts import V2ComparisonResponse
+from global_medicines_atlas.platinum_v2_contracts import (
+    V2ComparisonResponse,
+    V2EvidenceResponse,
+)
 from global_medicines_atlas.product_contracts import (
     ComparisonResponse,
     ErrorCode,
@@ -268,6 +271,27 @@ def test_v2_comparison_rejects_invalid_json_export_and_duplicate_filters(
     )
     assert duplicate.exit_code == 2
     assert json.loads(duplicate.stderr)["error"] == ErrorCode.INVALID_REQUEST
+
+
+@pytest.mark.integration
+def test_v2_evidence_emits_additive_evidence_contract(database: Path) -> None:
+    result = _invoke(
+        database,
+        "v2-evidence",
+        [
+            "--concept-id",
+            "rx:1",
+            "--jurisdiction",
+            "NZ",
+            "--dimension",
+            "regulatory",
+        ],
+    )
+
+    assert result.exit_code == 0, result.stderr
+    response = V2EvidenceResponse.model_validate_json(result.stdout)
+    assert response.metadata.api_version == "v2"
+    assert response.evidence[0].dimension.value == "regulatory"
 
 
 @pytest.mark.integration
