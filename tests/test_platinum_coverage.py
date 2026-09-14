@@ -4,6 +4,7 @@ import pytest
 
 from global_medicines_atlas.platinum_coverage import (
     CoverageEnvelope,
+    CoverageTransformationReceipt,
     bind_federated_coverage,
     build_coverage_envelope,
     coverage_transformation_receipt,
@@ -242,3 +243,31 @@ def test_federated_binding_revalidates_the_receipt_digest() -> None:
     )
     with pytest.raises(ValueError, match="receipt digest"):
         bind_federated_coverage(response, tampered)
+
+
+def test_federated_binding_rejects_mismatched_coverage_dimension() -> None:
+    response = _response()
+    regulatory = response.model_copy(
+        update={
+            "coverage": (
+                response.coverage[0].model_copy(
+                    update={"dimension": EvidenceDimension.REGULATORY}
+                ),
+            )
+        }
+    )
+    receipt = coverage_transformation_receipt(
+        regulatory, _identity(), _receipt()
+    )
+    with pytest.raises(ValueError, match="coverage dimension"):
+        bind_federated_coverage(regulatory, receipt)
+
+
+def test_coverage_transformation_receipt_rejects_unsupported_version() -> None:
+    receipt = coverage_transformation_receipt(
+        _response(), _identity(), _receipt()
+    )
+    with pytest.raises(ValueError, match="version"):
+        CoverageTransformationReceipt(
+            **(receipt.model_dump() | {"version": "2.0"})
+        )

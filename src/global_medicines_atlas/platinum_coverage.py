@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from typing import Literal
 
 from pydantic import AwareDatetime, Field, model_validator
 
@@ -42,7 +43,7 @@ class FederatedCoverageEnvelope(CoverageEnvelope):
 class CoverageTransformationReceipt(PlatinumSurfaceModel):
     """Content-addressed evidence for transforming one exact query to coverage."""
 
-    version: str = "1.0"
+    version: Literal["1.0"] = "1.0"
     identity: DatasetIdentityEnvelope
     query_receipt_sha256: Sha256
     coverage_page_sha256: Sha256
@@ -144,6 +145,10 @@ def bind_federated_coverage(
         if item.jurisdiction != receipt.identity.jurisdiction:
             raise ValueError(
                 "coverage jurisdiction differs from resource identity"
+            )
+        if item.dimension.value != receipt.identity.semantic_dimension:
+            raise ValueError(
+                "coverage dimension differs from resource identity"
             )
         if item.provenance and any(
             link.source_id != receipt.identity.source_id
