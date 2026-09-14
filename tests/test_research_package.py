@@ -119,6 +119,7 @@ def test_distribution_content_url_requires_public_https(url: str) -> None:
     [
         "http://example.test/dataset",
         "https://localhost/dataset",
+        "https://127.0.0.1/dataset",
         "https://example.test/dataset?token=x",
     ],
 )
