@@ -100,8 +100,10 @@
             observed at <time datetime="{{ observed_at }}">{{ observed_at }}</time>.
           </p>
           {% if conclusions %}
-            <div class="card-grid">
-              {% for item in conclusions %}
+            {% for panel in panels %}
+              <section class="dimension-panel" aria-labelledby="dimension-{{ panel.dimension }}">
+                <h3 id="dimension-{{ panel.dimension }}">{{ panel.label }}</h3>
+                {% if panel.records %}<div class="card-grid">{% for item in panel.records %}
                 <article class="result-card" data-state="{{ item.state }}" aria-labelledby="result-{{ loop.index }}">
                   <header>
                     <h3 id="result-{{ loop.index }}">{{ item.jurisdiction }} — {{ item.dimension }}</h3>
@@ -133,8 +135,11 @@
                     </ul>
                   </details>
                 </article>
-              {% endfor %}
-            </div>
+                {% endfor %}</div>{% else %}
+                  <p class="notice" role="status">No conclusion is available for this evidence dimension. Absence is not a negative status.</p>
+                {% endif %}
+              </section>
+            {% endfor %}
           {% else %}
             <p class="notice" role="status">No conclusion is available for these filters. Absence is not a negative status.</p>
           {% endif %}

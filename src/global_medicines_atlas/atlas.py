@@ -31,6 +31,13 @@ from .product_contracts import (
 _PACKAGE_ROOT = Path(__file__).resolve().parent
 _TEMPLATES = Jinja2Templates(directory=_PACKAGE_ROOT / "templates")
 _DEFAULT_JURISDICTIONS = ("NZ", "AU", "US")
+_DIMENSION_LABELS = {
+    EvidenceDimension.SERVICE_BENEFIT: "Service benefit evidence",
+    EvidenceDimension.FUNDING: "Medicine funding evidence",
+    EvidenceDimension.REGULATORY: "Regulatory evidence",
+    EvidenceDimension.FORMULARY: "Formulary evidence",
+    EvidenceDimension.TERMINOLOGY: "Terminology evidence",
+}
 
 
 class AtlasQueryService(Protocol):
@@ -112,6 +119,24 @@ def _coverage_view(item: CoverageItem) -> dict[str, object]:
     }
 
 
+def _dimension_panels(
+    conclusions: Sequence[dict[str, object]],
+) -> tuple[dict[str, object], ...]:
+    """Keep dimensions visibly separate without treating an empty panel as absence."""
+    return tuple(
+        {
+            "dimension": dimension.value,
+            "label": _DIMENSION_LABELS[dimension],
+            "records": tuple(
+                item
+                for item in conclusions
+                if item["dimension"] == dimension.value
+            ),
+        }
+        for dimension in EvidenceDimension
+    )
+
+
 def _jurisdictions(values: Sequence[str]) -> tuple[str, ...]:
     parsed = tuple(
         part.strip().upper()
@@ -163,6 +188,7 @@ def create_atlas_app(service: AtlasQueryService) -> FastAPI:
         selected_observed_at = observed_at or datetime.now(UTC)
         selected = _jurisdictions(jurisdiction or ())
         conclusions: tuple[dict[str, object], ...] = ()
+        panels: tuple[dict[str, object], ...] = ()
         coverage: tuple[dict[str, object], ...] = ()
         concept_options: tuple[dict[str, str], ...] = ()
         selected_concept: ConceptDetail | None = None
@@ -188,10 +214,7 @@ def create_atlas_app(service: AtlasQueryService) -> FastAPI:
                     ComparisonQuery(
                         concept_id=concept_id,
                         jurisdictions=selected,
-                        dimensions=(
-                            EvidenceDimension.REGULATORY,
-                            EvidenceDimension.FUNDING,
-                        ),
+                        dimensions=tuple(EvidenceDimension),
                         valid_at=selected_valid_at,
                         observed_at=selected_observed_at,
                     )
@@ -199,10 +222,7 @@ def create_atlas_app(service: AtlasQueryService) -> FastAPI:
                 coverage_response = service.coverage(
                     CoverageQuery(
                         jurisdictions=selected,
-                        dimensions=(
-                            EvidenceDimension.REGULATORY,
-                            EvidenceDimension.FUNDING,
-                        ),
+                        dimensions=tuple(EvidenceDimension),
                         valid_at=selected_valid_at,
                         observed_at=selected_observed_at,
                     )
@@ -213,6 +233,7 @@ def create_atlas_app(service: AtlasQueryService) -> FastAPI:
                 conclusions = tuple(
                     _conclusion_view(item) for item in comparison.conclusions
                 )
+                panels = _dimension_panels(conclusions)
                 coverage = tuple(
                     _coverage_view(item) for item in coverage_response.coverage
                 )
@@ -230,6 +251,7 @@ def create_atlas_app(service: AtlasQueryService) -> FastAPI:
                 "valid_at": selected_valid_at.isoformat(),
                 "observed_at": selected_observed_at.isoformat(),
                 "conclusions": conclusions,
+                "panels": panels,
                 "coverage": coverage,
                 "error": error,
             },
