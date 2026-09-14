@@ -232,3 +232,13 @@ def test_federated_binding_rejects_a_receipt_for_another_payload() -> None:
             changed,
             coverage_transformation_receipt(response, _identity(), _receipt()),
         )
+
+
+def test_federated_binding_revalidates_the_receipt_digest() -> None:
+    response = _response()
+    receipt = coverage_transformation_receipt(response, _identity(), _receipt())
+    tampered = receipt.model_construct(
+        **(receipt.model_dump() | {"receipt_sha256": "0" * 64})
+    )
+    with pytest.raises(ValueError, match="receipt digest"):
+        bind_federated_coverage(response, tampered)

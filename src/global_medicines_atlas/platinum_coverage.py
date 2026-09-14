@@ -134,6 +134,9 @@ def bind_federated_coverage(
     receipt: CoverageTransformationReceipt,
 ) -> FederatedCoverageEnvelope:
     """Expose coverage only when its transformation receipt matches exactly."""
+    receipt = CoverageTransformationReceipt.model_validate(
+        receipt.model_dump(warnings=False)
+    )
     envelope = build_coverage_envelope(response)
     if receipt.coverage_page_sha256 != envelope.page_sha256:
         raise ValueError("coverage receipt differs from coverage payload")
