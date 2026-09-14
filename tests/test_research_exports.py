@@ -82,3 +82,27 @@ def test_manifest_rejects_non_json_numeric_values() -> None:
             generated_at=datetime(2026, 1, 1, tzinfo=UTC),
             generator_commit="abc1234",
         )
+
+
+@pytest.mark.parametrize(
+    "uri",
+    [
+        "http://example.test/citation",
+        "https://user:secret@example.test/citation",
+        "https://example.test/citation?access_token=secret",
+        "https://example.test/citation#fragment",
+        "https://127.0.0.1/citation",
+        "https://[::1]/citation",
+        "https://169.254.169.254/citation",
+        "https://localhost/citation",
+    ],
+)
+def test_citation_uri_rejects_private_or_ambiguous_references(uri: str) -> None:
+    with pytest.raises(
+        ValueError, match=r"public HTTPS|credentials|query|fragment|public host"
+    ):
+        ExportCitation(
+            citation_id="source",
+            title="Source",
+            uri=uri,
+        )
