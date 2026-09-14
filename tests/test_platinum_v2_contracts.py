@@ -2,6 +2,8 @@
 
 from datetime import UTC, datetime
 
+import pytest
+
 from global_medicines_atlas.platinum_v2_contracts import (
     V2ComparisonQuery,
     V2EvidenceDimension,
@@ -37,3 +39,34 @@ def test_v2_adds_dimensions_without_changing_v1_contracts() -> None:
 
     assert query.dimensions[0] is V2EvidenceDimension.SERVICE_BENEFIT
     assert metadata.api_version == "v2"
+
+
+@pytest.mark.parametrize(
+    ("jurisdictions", "dimensions", "message"),
+    [
+        (
+            ("AU", "AU"),
+            (V2EvidenceDimension.FUNDING,),
+            "jurisdictions must be unique",
+        ),
+        (
+            ("AU",),
+            (V2EvidenceDimension.FUNDING, V2EvidenceDimension.FUNDING),
+            "dimensions must be unique",
+        ),
+    ],
+)
+def test_v2_comparison_rejects_duplicate_filters(
+    jurisdictions: tuple[str, ...],
+    dimensions: tuple[V2EvidenceDimension, ...],
+    message: str,
+) -> None:
+    clock = datetime(2026, 9, 14, tzinfo=UTC)
+    with pytest.raises(ValueError, match=message):
+        V2ComparisonQuery(
+            concept_id="rx:fixture",
+            jurisdictions=jurisdictions,
+            dimensions=dimensions,
+            valid_at=clock,
+            observed_at=clock,
+        )
