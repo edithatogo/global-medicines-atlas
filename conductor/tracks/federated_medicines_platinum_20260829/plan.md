@@ -158,10 +158,12 @@
   checkpoint validator initially rejected the actual dataset-identity envelope
   because confidence, uncertainty and review states were absent; a collection
   response constructed without the typed tuple boundary also fails closed.
-- [~] Implement typed commands and read-only endpoints using shared service
+- [x] Implement typed commands and read-only endpoints using shared service
   contracts rather than duplicated query logic. Dataset identity and benefits
-  API/CLI slices are implemented; general history, edge, coverage and complete
-  command-surface wiring remain open.
+  API/CLI slices, plus bounded history, structural evidence-edge, and explicit
+  coverage API/CLI surfaces are implemented. Their focused contract suite
+  passed 186 tests on 2026-09-14; the remaining Phase 2 checkpoint is a
+  broader qualification task.
 - [x] Add deterministic pagination, size limits, rate controls, content
   negotiation, cache headers, and provenance envelopes. Benefits pagination,
   serialized-page bounds, fixed-window rate controls, transport observations,
