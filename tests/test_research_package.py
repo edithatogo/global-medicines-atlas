@@ -103,7 +103,7 @@ def test_croissant_without_metadata_flag_is_rejected() -> None:
 )
 def test_distribution_content_url_requires_public_https(url: str) -> None:
     with pytest.raises(
-        ValueError, match="public HTTPS|credentials|query|fragment|public host"
+        ValueError, match=r"public HTTPS|credentials|query|fragment|public host"
     ):
         CrateDistribution(
             identifier="data",
@@ -124,7 +124,7 @@ def test_distribution_content_url_requires_public_https(url: str) -> None:
     ],
 )
 def test_dataset_url_requires_public_https(url: str) -> None:
-    with pytest.raises(ValueError, match="public HTTPS|query|public host"):
+    with pytest.raises(ValueError, match=r"public HTTPS|query|public host"):
         build_research_crate(
             identifier="example@abc",
             name="Example",

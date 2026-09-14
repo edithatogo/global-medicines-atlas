@@ -12,9 +12,9 @@ import json
 from collections.abc import Mapping
 from ipaddress import ip_address
 from typing import Literal, cast
+from urllib.parse import urlsplit
 
 from pydantic import Field, field_validator, model_validator
-from urllib.parse import urlsplit
 
 from .models import FrozenModel
 
