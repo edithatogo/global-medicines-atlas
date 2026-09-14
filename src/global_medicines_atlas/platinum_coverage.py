@@ -6,7 +6,7 @@ import hashlib
 import json
 from typing import Literal, Protocol, cast
 
-from pydantic import AwareDatetime, Field, model_validator
+from pydantic import AwareDatetime, Field, ValidationError, model_validator
 
 from .platinum_query import QueryReceipt
 from .platinum_surface_contracts import (
@@ -115,6 +115,16 @@ def build_coverage_envelope(response: CoverageResponse) -> CoverageEnvelope:
     )
 
 
+def _coverage_from_query_rows(rows: list[object]) -> tuple[CoverageItem, ...]:
+    """Derive the exact coverage page from canonical, receipted query rows."""
+    try:
+        return tuple(CoverageItem.model_validate(row) for row in rows)
+    except ValidationError as error:
+        raise ValueError(
+            "query result cannot be transformed into coverage"
+        ) from error
+
+
 def coverage_transformation_receipt(
     response: CoverageResponse,
     identity: DatasetIdentityEnvelope,
@@ -156,6 +166,9 @@ def coverage_transformation_receipt(
     ).encode()
     if canonical_rows != canonical_query_result:
         raise ValueError("query result is not canonical JSON")
+    derived_coverage = _coverage_from_query_rows(result_rows)
+    if derived_coverage != response.coverage:
+        raise ValueError("coverage differs from receipted query result")
     envelope = build_coverage_envelope(response)
     digest = _receipt_digest(
         identity,

@@ -1,4 +1,5 @@
 import hashlib
+import json
 from dataclasses import replace
 from datetime import UTC, datetime
 
@@ -56,8 +57,8 @@ def _identity() -> DatasetIdentityEnvelope:
     )
 
 
-def _receipt() -> QueryReceipt:
-    result = _canonical_query_result()
+def _receipt(response: CoverageResponse | None = None) -> QueryReceipt:
+    result = _canonical_query_result(response)
     return QueryReceipt(
         resource_id="au-pbs-current",
         engine="polars",
@@ -72,8 +73,15 @@ def _receipt() -> QueryReceipt:
     )
 
 
-def _canonical_query_result() -> bytes:
-    return b'[{"item_code":"PBS-001"}]'
+def _canonical_query_result(response: CoverageResponse | None = None) -> bytes:
+    response = _response() if response is None else response
+    return json.dumps(
+        [item.model_dump(mode="json") for item in response.coverage],
+        ensure_ascii=False,
+        allow_nan=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
 
 
 def _response() -> CoverageResponse:
@@ -167,8 +175,8 @@ def test_federated_binding_requires_exact_receipt_and_jurisdiction() -> None:
             coverage_transformation_receipt(
                 wrong_jurisdiction,
                 _identity(),
-                _receipt(),
-                _canonical_query_result(),
+                _receipt(wrong_jurisdiction),
+                _canonical_query_result(wrong_jurisdiction),
             ),
         )
     linked = response.model_copy(
@@ -192,7 +200,10 @@ def test_federated_binding_requires_exact_receipt_and_jurisdiction() -> None:
         bind_federated_coverage(
             linked,
             coverage_transformation_receipt(
-                linked, _identity(), _receipt(), _canonical_query_result()
+                linked,
+                _identity(),
+                _receipt(linked),
+                _canonical_query_result(linked),
             ),
         ).identity.source_id
         == "au-pbs"
@@ -218,7 +229,10 @@ def test_federated_binding_requires_exact_receipt_and_jurisdiction() -> None:
         bind_federated_coverage(
             wrong_source,
             coverage_transformation_receipt(
-                wrong_source, _identity(), _receipt(), _canonical_query_result()
+                wrong_source,
+                _identity(),
+                _receipt(wrong_source),
+                _canonical_query_result(wrong_source),
             ),
         )
 
@@ -286,7 +300,10 @@ def test_federated_binding_rejects_mismatched_coverage_dimension() -> None:
         }
     )
     receipt = coverage_transformation_receipt(
-        regulatory, _identity(), _receipt(), _canonical_query_result()
+        regulatory,
+        _identity(),
+        _receipt(regulatory),
+        _canonical_query_result(regulatory),
     )
     with pytest.raises(ValueError, match="coverage dimension"):
         bind_federated_coverage(regulatory, receipt)
@@ -308,6 +325,39 @@ def test_coverage_transformation_receipt_rejects_unreceipted_query_result() -> (
     with pytest.raises(ValueError, match="query result"):
         coverage_transformation_receipt(
             _response(), _identity(), _receipt(), b'[{"item_code":"PBS-002"}]'
+        )
+
+
+def test_coverage_transformation_receipt_derives_coverage_from_receipted_rows() -> (
+    None
+):
+    response = _response()
+    unrelated = response.model_copy(
+        update={
+            "coverage": (
+                response.coverage[0].model_copy(update={"covered_count": 1}),
+            )
+        }
+    )
+    with pytest.raises(ValueError, match="coverage differs"):
+        coverage_transformation_receipt(
+            unrelated,
+            _identity(),
+            _receipt(response),
+            _canonical_query_result(response),
+        )
+
+
+def test_coverage_transformation_receipt_rejects_rows_without_coverage_shape() -> (
+    None
+):
+    raw_result = b'[{"item_code":"PBS-001"}]'
+    receipt = replace(
+        _receipt(), result_sha256=hashlib.sha256(raw_result).hexdigest()
+    )
+    with pytest.raises(ValueError, match="cannot be transformed"):
+        coverage_transformation_receipt(
+            _response(), _identity(), receipt, raw_result
         )
 
 
