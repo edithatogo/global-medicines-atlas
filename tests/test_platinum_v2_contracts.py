@@ -111,7 +111,9 @@ def test_v2_response_preserves_five_dimension_conclusions() -> None:
     )
 
     assert response.metadata.api_version == "v2"
-    assert response.conclusions[0].dimension is V2EvidenceDimension.SERVICE_BENEFIT
+    assert (
+        response.conclusions[0].dimension is V2EvidenceDimension.SERVICE_BENEFIT
+    )
 
 
 def test_v2_response_rejects_inconsistent_page_count() -> None:
