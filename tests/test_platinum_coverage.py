@@ -1,3 +1,4 @@
+import hashlib
 from datetime import UTC, datetime
 
 import pytest
@@ -54,18 +55,23 @@ def _identity() -> DatasetIdentityEnvelope:
 
 
 def _receipt() -> QueryReceipt:
+    result = _canonical_query_result()
     return QueryReceipt(
         resource_id="au-pbs-current",
         engine="polars",
         canonical_query=b"{}",
-        query_sha256="d" * 64,
-        result_sha256="e" * 64,
+        query_sha256=hashlib.sha256(b"{}").hexdigest(),
+        result_sha256=hashlib.sha256(result).hexdigest(),
         row_count=1,
         object_sha256="a" * 64,
         contract_sha256="b" * 64,
         semantic_manifest_sha256="c" * 64,
         cache_receipt_sha256="f" * 64,
     )
+
+
+def _canonical_query_result() -> bytes:
+    return b'[{"item_code":"PBS-001"}]'
 
 
 def _response() -> CoverageResponse:
@@ -132,7 +138,7 @@ def test_federated_binding_requires_exact_receipt_and_jurisdiction() -> None:
     response = _response()
     receipt = _receipt()
     transformation = coverage_transformation_receipt(
-        response, _identity(), receipt
+        response, _identity(), receipt, _canonical_query_result()
     )
     bound = bind_federated_coverage(response, transformation)
     assert bound.query_receipt_sha256 == receipt.receipt_sha256
@@ -147,7 +153,10 @@ def test_federated_binding_requires_exact_receipt_and_jurisdiction() -> None:
         bind_federated_coverage(
             wrong_jurisdiction,
             coverage_transformation_receipt(
-                wrong_jurisdiction, _identity(), _receipt()
+                wrong_jurisdiction,
+                _identity(),
+                _receipt(),
+                _canonical_query_result(),
             ),
         )
     linked = response.model_copy(
@@ -170,7 +179,9 @@ def test_federated_binding_requires_exact_receipt_and_jurisdiction() -> None:
     assert (
         bind_federated_coverage(
             linked,
-            coverage_transformation_receipt(linked, _identity(), _receipt()),
+            coverage_transformation_receipt(
+                linked, _identity(), _receipt(), _canonical_query_result()
+            ),
         ).identity.source_id
         == "au-pbs"
     )
@@ -195,7 +206,7 @@ def test_federated_binding_requires_exact_receipt_and_jurisdiction() -> None:
         bind_federated_coverage(
             wrong_source,
             coverage_transformation_receipt(
-                wrong_source, _identity(), _receipt()
+                wrong_source, _identity(), _receipt(), _canonical_query_result()
             ),
         )
 
@@ -216,7 +227,9 @@ def test_federated_binding_rejects_a_receipt_for_another_resource() -> None:
         cache_receipt_sha256=receipt.cache_receipt_sha256,
     )
     with pytest.raises(ValueError, match="query receipt"):
-        coverage_transformation_receipt(response, _identity(), mismatched)
+        coverage_transformation_receipt(
+            response, _identity(), mismatched, _canonical_query_result()
+        )
 
 
 def test_federated_binding_rejects_a_receipt_for_another_payload() -> None:
@@ -231,13 +244,17 @@ def test_federated_binding_rejects_a_receipt_for_another_payload() -> None:
     with pytest.raises(ValueError, match="coverage payload"):
         bind_federated_coverage(
             changed,
-            coverage_transformation_receipt(response, _identity(), _receipt()),
+            coverage_transformation_receipt(
+                response, _identity(), _receipt(), _canonical_query_result()
+            ),
         )
 
 
 def test_federated_binding_revalidates_the_receipt_digest() -> None:
     response = _response()
-    receipt = coverage_transformation_receipt(response, _identity(), _receipt())
+    receipt = coverage_transformation_receipt(
+        response, _identity(), _receipt(), _canonical_query_result()
+    )
     tampered = receipt.model_construct(
         **(receipt.model_dump() | {"receipt_sha256": "0" * 64})
     )
@@ -257,7 +274,7 @@ def test_federated_binding_rejects_mismatched_coverage_dimension() -> None:
         }
     )
     receipt = coverage_transformation_receipt(
-        regulatory, _identity(), _receipt()
+        regulatory, _identity(), _receipt(), _canonical_query_result()
     )
     with pytest.raises(ValueError, match="coverage dimension"):
         bind_federated_coverage(regulatory, receipt)
@@ -265,9 +282,34 @@ def test_federated_binding_rejects_mismatched_coverage_dimension() -> None:
 
 def test_coverage_transformation_receipt_rejects_unsupported_version() -> None:
     receipt = coverage_transformation_receipt(
-        _response(), _identity(), _receipt()
+        _response(), _identity(), _receipt(), _canonical_query_result()
     )
     with pytest.raises(ValueError, match="version"):
         CoverageTransformationReceipt(
             **(receipt.model_dump() | {"version": "2.0"})
         )
+
+
+def test_coverage_transformation_receipt_rejects_unreceipted_query_result() -> (
+    None
+):
+    with pytest.raises(ValueError, match="query result"):
+        coverage_transformation_receipt(
+            _response(), _identity(), _receipt(), b'[{"item_code":"PBS-002"}]'
+        )
+
+
+def test_coverage_receipt_binds_generated_time() -> None:
+    response = _response()
+    changed_time = response.model_copy(
+        update={
+            "metadata": response.metadata.model_copy(
+                update={"generated_at": datetime(2026, 1, 2, tzinfo=UTC)}
+            )
+        }
+    )
+    receipt = coverage_transformation_receipt(
+        response, _identity(), _receipt(), _canonical_query_result()
+    )
+    with pytest.raises(ValueError, match="coverage payload"):
+        bind_federated_coverage(changed_time, receipt)

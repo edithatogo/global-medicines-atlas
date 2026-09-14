@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from typing import Literal
+from typing import Literal, cast
 
 from pydantic import AwareDatetime, Field, model_validator
 
@@ -46,6 +46,7 @@ class CoverageTransformationReceipt(PlatinumSurfaceModel):
     version: Literal["1.0"] = "1.0"
     identity: DatasetIdentityEnvelope
     query_receipt_sha256: Sha256
+    query_result_sha256: Sha256
     coverage_page_sha256: Sha256
     receipt_sha256: Sha256
 
@@ -54,6 +55,7 @@ class CoverageTransformationReceipt(PlatinumSurfaceModel):
         if self.receipt_sha256 != _receipt_digest(
             self.identity,
             self.query_receipt_sha256,
+            self.query_result_sha256,
             self.coverage_page_sha256,
         ):
             raise ValueError("coverage receipt digest does not match evidence")
@@ -62,6 +64,7 @@ class CoverageTransformationReceipt(PlatinumSurfaceModel):
 
 def _digest(response: CoverageResponse) -> str:
     payload = {
+        "generated_at": response.metadata.generated_at.isoformat(),
         "clocks": response.metadata.clocks.model_dump(mode="json"),
         "coverage": [
             item.model_dump(mode="json") for item in response.coverage
@@ -75,6 +78,7 @@ def _digest(response: CoverageResponse) -> str:
 def _receipt_digest(
     identity: DatasetIdentityEnvelope,
     query_receipt_sha256: str,
+    query_result_sha256: str,
     coverage_page_sha256: str,
 ) -> str:
     canonical = json.dumps(
@@ -82,6 +86,7 @@ def _receipt_digest(
             "coverage_page_sha256": coverage_page_sha256,
             "identity": identity.model_dump(mode="json"),
             "query_receipt_sha256": query_receipt_sha256,
+            "query_result_sha256": query_result_sha256,
             "version": "1.0",
         },
         sort_keys=True,
@@ -108,6 +113,7 @@ def coverage_transformation_receipt(
     response: CoverageResponse,
     identity: DatasetIdentityEnvelope,
     query_receipt: QueryReceipt,
+    canonical_query_result: bytes,
 ) -> CoverageTransformationReceipt:
     """Record the trusted transformation from an exact query into coverage."""
     if (
@@ -118,13 +124,43 @@ def coverage_transformation_receipt(
         != identity.semantic_manifest_sha256
     ):
         raise ValueError("query receipt differs from resource identity")
+    if hashlib.sha256(query_receipt.canonical_query).hexdigest() != (
+        query_receipt.query_sha256
+    ):
+        raise ValueError("query receipt query digest is invalid")
+    if hashlib.sha256(canonical_query_result).hexdigest() != (
+        query_receipt.result_sha256
+    ):
+        raise ValueError("query receipt differs from query result")
+    try:
+        parsed_rows: object = json.loads(canonical_query_result)
+    except (TypeError, ValueError) as error:
+        raise ValueError("query result is not canonical JSON") from error
+    if not isinstance(parsed_rows, list):
+        raise TypeError("query result must be a JSON array")
+    result_rows = cast("list[object]", parsed_rows)
+    if len(result_rows) != query_receipt.row_count:
+        raise ValueError("query receipt row count differs from query result")
+    canonical_rows = json.dumps(
+        result_rows,
+        ensure_ascii=False,
+        allow_nan=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+    if canonical_rows != canonical_query_result:
+        raise ValueError("query result is not canonical JSON")
     envelope = build_coverage_envelope(response)
     digest = _receipt_digest(
-        identity, query_receipt.receipt_sha256, envelope.page_sha256
+        identity,
+        query_receipt.receipt_sha256,
+        query_receipt.result_sha256,
+        envelope.page_sha256,
     )
     return CoverageTransformationReceipt(
         identity=identity,
         query_receipt_sha256=query_receipt.receipt_sha256,
+        query_result_sha256=query_receipt.result_sha256,
         coverage_page_sha256=envelope.page_sha256,
         receipt_sha256=digest,
     )
