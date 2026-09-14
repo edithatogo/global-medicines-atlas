@@ -184,8 +184,12 @@
   for side-by-side evidence, timelines, change views, coverage/freshness, and
   provenance drill-down. Synthetic validation passes; interactive atlas,
   accessibility, and live-source qualification remain open.
-- [ ] Keep service-benefit, medicine funding, regulatory, formulary, and
-  terminology panels visually and semantically distinct.
+- [x] Keep service-benefit, medicine funding, regulatory, formulary, and
+  terminology panels visually and semantically distinct. The source-backed
+  Atlas V2 factory renders all five requested dimensions as distinct
+  assertion-backed, coverage-backed, or explicit-unknown cards, with missing
+  coverage never represented as a negative status (PR #521, merged
+  `3ea526b32cdc937cf416f8abebd8c59170dd1eb4`; evidence recorded in PR #522).
 - [ ] Phase Verification & Checkpoint: representative users can inspect evidence
   and uncertainty without mistaking legacy or missing data for current status.
 
