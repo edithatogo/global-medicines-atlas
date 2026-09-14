@@ -190,9 +190,13 @@
   schema/revision drift, missing fields, semantic dimension changes, and
   mutable/unpinned references.
 - [ ] Confirm the intended failure before implementation.
-- [ ] Publish consumer fixtures and compatibility adapters; update
+- [x] Publish consumer fixtures and compatibility adapters; update
   reimbursement-atlas to consume GMA/HF contracts rather than duplicate raw
-  authority.
+  authority. The protected external PR [reimbursement-atlas#816](https://github.com/edithatogo/reimbursement-atlas/pull/816)
+  merged at `a93516ed416118bc51c1db2b71ab540fa4d0fe52` after all required
+  hosted checks passed. It consumes an explicitly revision-pinned, digested
+  GMA contract identity and rejects malformed contract sections without
+  republishing raw authority.
 - [ ] Verify archived donor READMEs and releases resolve to public successor
   data and documentation without redirecting to local files.
 - [ ] Phase Verification & Checkpoint: federation has one authority per contract
