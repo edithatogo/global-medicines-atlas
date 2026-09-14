@@ -16,6 +16,7 @@ from global_medicines_atlas.product_contracts import (
     EvidenceAvailability,
     PageMetadata,
     ProductState,
+    ProvenanceLink,
     Terminology,
     Uncertainty,
     UncertaintyLevel,
@@ -96,15 +97,18 @@ def test_v2_response_preserves_five_dimension_conclusions() -> None:
                 concept_id="mbs:23",
                 jurisdiction="AU",
                 dimension=V2EvidenceDimension.SERVICE_BENEFIT,
-                state=ProductState.CONFIRMED,
-                status_code="active",
+                state=ProductState.UNKNOWN,
                 terminology=Terminology(
                     native_code="23",
                     native_label="General practitioner attendance",
                     native_system="MBS",
                 ),
-                evidence_availability=EvidenceAvailability.AVAILABLE,
-                uncertainty=Uncertainty(level=UncertaintyLevel.NONE),
+                evidence_availability=EvidenceAvailability.UNAVAILABLE,
+                evidence_unavailable_reason="No source assertion is available.",
+                uncertainty=Uncertainty(
+                    level=UncertaintyLevel.UNKNOWN,
+                    reason="Fixture has no source assertion.",
+                ),
                 valid_time=clocks,
             ),
         ),
@@ -127,3 +131,70 @@ def test_v2_response_rejects_inconsistent_page_count() -> None:
             ),
             conclusions=(),
         )
+
+
+@pytest.mark.parametrize(
+    ("changes", "message"),
+    [
+        (
+            {
+                "state": ProductState.CONFIRMED,
+                "evidence_availability": EvidenceAvailability.UNAVAILABLE,
+            },
+            "confirmed conclusions require evidence",
+        ),
+        (
+            {
+                "evidence_availability": EvidenceAvailability.AVAILABLE,
+                "evidence_unavailable_reason": None,
+            },
+            "available evidence requires at least one provenance link",
+        ),
+        (
+            {"evidence_unavailable_reason": None},
+            "unavailable evidence requires an explicit reason",
+        ),
+        (
+            {"status_code": "active"},
+            "unknown and not-covered conclusions cannot imply a status",
+        ),
+        (
+            {
+                "provenance": (
+                    ProvenanceLink(
+                        source_id="fixture",
+                        source_uri="https://example.invalid/source",
+                        retrieved_at=datetime(2026, 9, 14, tzinfo=UTC),
+                    ),
+                ),
+            },
+            "unavailable evidence cannot include provenance links",
+        ),
+    ],
+)
+def test_v2_conclusion_enforces_explicit_evidence(
+    changes: dict[str, object], message: str
+) -> None:
+    clock = datetime(2026, 9, 14, tzinfo=UTC)
+    values: dict[str, object] = {
+        "concept_id": "mbs:23",
+        "jurisdiction": "AU",
+        "dimension": V2EvidenceDimension.SERVICE_BENEFIT,
+        "state": ProductState.UNKNOWN,
+        "terminology": Terminology(
+            native_code="23",
+            native_label="General practitioner attendance",
+            native_system="MBS",
+        ),
+        "evidence_availability": EvidenceAvailability.UNAVAILABLE,
+        "evidence_unavailable_reason": "No source assertion is available.",
+        "uncertainty": Uncertainty(
+            level=UncertaintyLevel.UNKNOWN,
+            reason="Fixture has no source assertion.",
+        ),
+        "valid_time": AsOfClocks(valid_at=clock, observed_at=clock),
+    }
+    values.update(changes)
+
+    with pytest.raises(ValueError, match=message):
+        V2Conclusion(**values)

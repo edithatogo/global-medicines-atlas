@@ -86,6 +86,50 @@ class V2Conclusion(ProductModel):
     uncertainty: Uncertainty
     valid_time: AsOfClocks
 
+    @model_validator(mode="after")
+    def evidence_is_explicit(self) -> Self:
+        if self.evidence_availability is EvidenceAvailability.AVAILABLE:
+            if not self.provenance:
+                raise ValueError(
+                    "available evidence requires at least one provenance link",
+                )
+            if self.evidence_unavailable_reason is not None:
+                raise ValueError(
+                    "available evidence cannot have an unavailable reason",
+                )
+        elif self.evidence_availability is EvidenceAvailability.UNAVAILABLE:
+            if self.provenance:
+                raise ValueError(
+                    "unavailable evidence cannot include provenance links",
+                )
+            if self.evidence_unavailable_reason is None:
+                raise ValueError(
+                    "unavailable evidence requires an explicit reason",
+                )
+        elif self.evidence_unavailable_reason is not None:
+            raise ValueError(
+                "not-required evidence cannot have an unavailable reason",
+            )
+
+        if (
+            self.state
+            in {
+                ProductState.CONFIRMED,
+                ProductState.INFERRED,
+                ProductState.CONFLICTING,
+            }
+            and self.evidence_availability is not EvidenceAvailability.AVAILABLE
+        ):
+            raise ValueError(f"{self.state} conclusions require evidence")
+        if (
+            self.state in {ProductState.UNKNOWN, ProductState.NOT_COVERED}
+            and self.status_code is not None
+        ):
+            raise ValueError(
+                "unknown and not-covered conclusions cannot imply a status",
+            )
+        return self
+
 
 class V2ComparisonResponse(ProductModel):
     """Additive v2 result envelope for independently scoped conclusions."""
