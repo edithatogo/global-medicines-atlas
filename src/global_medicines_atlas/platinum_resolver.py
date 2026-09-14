@@ -240,6 +240,11 @@ class StorageNeutralResolver:
         """Return bounded verified-cache occupancy from the shared reader."""
         return self._reader.cached_bytes
 
+    @property
+    def resource_ids(self) -> tuple[str, ...]:
+        """Return configured resource identities without opening payload bytes."""
+        return tuple(sorted(self._resources))
+
     def resolve(self, resource_id: str) -> ResolvedResource:
         """Resolve one logical identifier without storage or network access."""
         try:

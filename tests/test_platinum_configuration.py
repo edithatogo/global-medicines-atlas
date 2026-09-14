@@ -104,6 +104,28 @@ def test_cli_offline_returns_provenance_and_typed_unavailability(tmp_path):
     assert page["identity"]["semantic_dimension"] == "service_benefit"
 
 
+def test_dataset_cli_lists_exact_admitted_identities(tmp_path):
+    configuration(tmp_path)
+    result = CliRunner().invoke(
+        app,
+        [
+            "datasets",
+            "--trust-file",
+            str(tmp_path / "trust.json"),
+            "--metadata-root",
+            str(tmp_path),
+            "--schema-file",
+            str(tmp_path / "schema.json"),
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    page = json.loads(result.stdout)
+    assert page["returned"] == 1
+    assert page["datasets"][0]["resource_id"] == "au.mbs.items"
+    assert page["datasets"][0]["schema_era"] == "mbs-2026-09"
+
+
 def test_empty_trust_is_not_an_admission_policy(tmp_path):
     trust = tmp_path / "trust.json"
     trust.write_text(json.dumps({"version": "1.0", "resources": []}))

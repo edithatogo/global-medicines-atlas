@@ -689,6 +689,49 @@ def benefits_query(
         raise typer.Exit(3)
 
 
+@app.command("datasets")
+def dataset_list(
+    trust_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
+    metadata_root: Annotated[Path, typer.Option(exists=True, file_okay=False)],
+    schema_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
+) -> None:
+    """List bounded exact identities from independently provisioned trust."""
+    try:
+        from .platinum_configuration import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
+            load_benefits_resolver,
+        )
+    except ModuleNotFoundError as error:
+        if error.name != "jsonschema":
+            raise
+        _fail(
+            ErrorCode.SERVICE_UNAVAILABLE,
+            "Install 'global-medicines-atlas[federation]' to inspect datasets",
+        )
+    from .platinum_identity_service import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
+        ResolverDatasetIdentityService,
+    )
+
+    try:
+        resolver = load_benefits_resolver(
+            trust_file=trust_file,
+            metadata_root=metadata_root,
+            schema_file=schema_file,
+        )
+        jurisdictions = {
+            resource_id: resource_id.split(".", maxsplit=1)[0].upper()
+            for resource_id in resolver.resource_ids
+        }
+        page = ResolverDatasetIdentityService(
+            resolver, jurisdictions=jurisdictions
+        ).identities()
+    except ValueError, OSError:
+        _fail(
+            ErrorCode.INVALID_REQUEST,
+            "The dataset identity operator configuration is invalid",
+        )
+    typer.echo(page.model_dump_json())
+
+
 def main() -> None:
     """Run the command-line application."""
     app()
