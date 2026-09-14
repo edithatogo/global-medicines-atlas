@@ -12,6 +12,7 @@ import json
 from collections.abc import Mapping, Sequence
 from datetime import datetime
 from typing import Any
+from urllib.parse import urlsplit
 
 from pydantic import Field, field_validator
 
@@ -76,6 +77,19 @@ class ExportCitation(FrozenModel):
     title: str = Field(min_length=1)
     uri: str = Field(min_length=1)
     accessed_at: datetime | None = None
+
+    @field_validator("uri")
+    @classmethod
+    def uri_is_public_https(cls, value: str) -> str:
+        """Reject credentials and ambiguous fragments from export citations."""
+        parsed = urlsplit(value)
+        if parsed.scheme != "https" or not parsed.hostname:
+            raise ValueError("citation URI must be public HTTPS")
+        if parsed.username is not None or parsed.password is not None:
+            raise ValueError("citation URI must not contain credentials")
+        if parsed.fragment:
+            raise ValueError("citation URI must not contain a fragment")
+        return value
 
 
 class QuerySnapshotManifest(FrozenModel):
