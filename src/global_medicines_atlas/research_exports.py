@@ -11,6 +11,7 @@ import hashlib
 import json
 from collections.abc import Mapping, Sequence
 from datetime import datetime
+from ipaddress import ip_address
 from typing import Any
 from urllib.parse import urlsplit
 
@@ -81,14 +82,25 @@ class ExportCitation(FrozenModel):
     @field_validator("uri")
     @classmethod
     def uri_is_public_https(cls, value: str) -> str:
-        """Reject credentials and ambiguous fragments from export citations."""
+        """Reject non-public or non-canonical citation references."""
         parsed = urlsplit(value)
         if parsed.scheme != "https" or not parsed.hostname:
             raise ValueError("citation URI must be public HTTPS")
         if parsed.username is not None or parsed.password is not None:
             raise ValueError("citation URI must not contain credentials")
+        if parsed.query:
+            raise ValueError("citation URI must not contain a query")
         if parsed.fragment:
             raise ValueError("citation URI must not contain a fragment")
+        hostname = parsed.hostname
+        if hostname == "localhost" or hostname.endswith(".localhost"):
+            raise ValueError("citation URI must use a public host")
+        try:
+            address = ip_address(hostname)
+        except ValueError:
+            address = None
+        if address is not None and not address.is_global:
+            raise ValueError("citation URI must use a public host")
         return value
 
 
