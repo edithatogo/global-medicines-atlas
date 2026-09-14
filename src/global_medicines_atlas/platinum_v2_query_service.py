@@ -117,6 +117,30 @@ class V2ReadOnlyQueryService(ReadOnlyQueryService):
             or int(first["distinct_status_total"]) > 1
         ):
             state = ProductState.CONFLICTING
+        dimension = V2EvidenceDimension(str(first["kind"]))
+        if dimension in {
+            V2EvidenceDimension.SERVICE_BENEFIT,
+            V2EvidenceDimension.TERMINOLOGY,
+        } and int(first["evidence_total"]) > len(rows):
+            return V2Conclusion(
+                concept_id=query.concept_id,
+                jurisdiction=str(first["jurisdiction"]),
+                dimension=dimension,
+                state=ProductState.UNKNOWN,
+                terminology=self._terminology(first),
+                evidence_availability=EvidenceAvailability.UNAVAILABLE,
+                evidence_unavailable_reason=(
+                    "Source assertions exceed the bounded V2 provenance "
+                    "response; V2 evidence paging is unavailable."
+                ),
+                uncertainty=Uncertainty(
+                    level=UncertaintyLevel.UNKNOWN,
+                    reason="No complete V2 evidence page is available.",
+                ),
+                valid_time=AsOfClocks(
+                    valid_at=query.valid_at, observed_at=query.observed_at
+                ),
+            )
         uncertainty = (
             Uncertainty(
                 level=UncertaintyLevel.MEDIUM,
@@ -128,7 +152,7 @@ class V2ReadOnlyQueryService(ReadOnlyQueryService):
         return V2Conclusion(
             concept_id=query.concept_id,
             jurisdiction=str(first["jurisdiction"]),
-            dimension=V2EvidenceDimension(str(first["kind"])),
+            dimension=dimension,
             state=state,
             status_code=(
                 None
