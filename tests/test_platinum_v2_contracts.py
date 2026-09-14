@@ -151,6 +151,20 @@ def test_v2_response_rejects_inconsistent_page_count() -> None:
             "available evidence requires at least one provenance link",
         ),
         (
+            {
+                "evidence_availability": EvidenceAvailability.AVAILABLE,
+                "evidence_unavailable_reason": "Incorrectly supplied",
+                "provenance": (
+                    ProvenanceLink(
+                        source_id="fixture",
+                        source_uri="https://example.invalid/source",
+                        retrieved_at=datetime(2026, 9, 14, tzinfo=UTC),
+                    ),
+                ),
+            },
+            "available evidence cannot have an unavailable reason",
+        ),
+        (
             {"evidence_unavailable_reason": None},
             "unavailable evidence requires an explicit reason",
         ),
@@ -169,6 +183,12 @@ def test_v2_response_rejects_inconsistent_page_count() -> None:
                 ),
             },
             "unavailable evidence cannot include provenance links",
+        ),
+        (
+            {
+                "evidence_availability": EvidenceAvailability.NOT_REQUIRED,
+            },
+            "not-required evidence cannot have an unavailable reason",
         ),
     ],
 )
