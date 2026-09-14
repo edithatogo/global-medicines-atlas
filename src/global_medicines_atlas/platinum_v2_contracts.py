@@ -14,11 +14,16 @@ from pydantic import AwareDatetime, Field, model_validator
 
 from .product_contracts import (
     AsOfClocks,
+    EvidenceAvailability,
     JurisdictionCode,
     NonBlank,
     PageMetadata,
     PageRequest,
     ProductModel,
+    ProductState,
+    ProvenanceLink,
+    Terminology,
+    Uncertainty,
 )
 
 V2_API_VERSION = "v2"
@@ -66,10 +71,41 @@ class V2ResponseMetadata(ProductModel):
     page: PageMetadata
 
 
+class V2Conclusion(ProductModel):
+    """One v2 evidence conclusion without collapsing its semantic dimension."""
+
+    concept_id: NonBlank
+    jurisdiction: JurisdictionCode
+    dimension: V2EvidenceDimension
+    state: ProductState
+    status_code: NonBlank | None = None
+    terminology: Terminology
+    provenance: tuple[ProvenanceLink, ...] = ()
+    evidence_availability: EvidenceAvailability
+    evidence_unavailable_reason: NonBlank | None = None
+    uncertainty: Uncertainty
+    valid_time: AsOfClocks
+
+
+class V2ComparisonResponse(ProductModel):
+    """Additive v2 result envelope for independently scoped conclusions."""
+
+    metadata: V2ResponseMetadata
+    conclusions: tuple[V2Conclusion, ...]
+
+    @model_validator(mode="after")
+    def page_matches_conclusions(self) -> Self:
+        if self.metadata.page.returned != len(self.conclusions):
+            raise ValueError("page returned count must match conclusions")
+        return self
+
+
 __all__ = [
     "V2_API_BASE_PATH",
     "V2_API_VERSION",
     "V2ComparisonQuery",
+    "V2ComparisonResponse",
+    "V2Conclusion",
     "V2EvidenceDimension",
     "V2ResponseMetadata",
 ]

@@ -6,10 +6,20 @@ import pytest
 
 from global_medicines_atlas.platinum_v2_contracts import (
     V2ComparisonQuery,
+    V2ComparisonResponse,
+    V2Conclusion,
     V2EvidenceDimension,
     V2ResponseMetadata,
 )
-from global_medicines_atlas.product_contracts import AsOfClocks, PageMetadata
+from global_medicines_atlas.product_contracts import (
+    AsOfClocks,
+    EvidenceAvailability,
+    PageMetadata,
+    ProductState,
+    Terminology,
+    Uncertainty,
+    UncertaintyLevel,
+)
 
 
 def test_v2_adds_dimensions_without_changing_v1_contracts() -> None:
@@ -69,4 +79,49 @@ def test_v2_comparison_rejects_duplicate_filters(
             dimensions=dimensions,
             valid_at=clock,
             observed_at=clock,
+        )
+
+
+def test_v2_response_preserves_five_dimension_conclusions() -> None:
+    clock = datetime(2026, 9, 14, tzinfo=UTC)
+    clocks = AsOfClocks(valid_at=clock, observed_at=clock)
+    response = V2ComparisonResponse(
+        metadata=V2ResponseMetadata(
+            generated_at=clock,
+            clocks=clocks,
+            page=PageMetadata(limit=10, returned=1),
+        ),
+        conclusions=(
+            V2Conclusion(
+                concept_id="mbs:23",
+                jurisdiction="AU",
+                dimension=V2EvidenceDimension.SERVICE_BENEFIT,
+                state=ProductState.CONFIRMED,
+                status_code="active",
+                terminology=Terminology(
+                    native_code="23",
+                    native_label="General practitioner attendance",
+                    native_system="MBS",
+                ),
+                evidence_availability=EvidenceAvailability.AVAILABLE,
+                uncertainty=Uncertainty(level=UncertaintyLevel.NONE),
+                valid_time=clocks,
+            ),
+        ),
+    )
+
+    assert response.metadata.api_version == "v2"
+    assert response.conclusions[0].dimension is V2EvidenceDimension.SERVICE_BENEFIT
+
+
+def test_v2_response_rejects_inconsistent_page_count() -> None:
+    clock = datetime(2026, 9, 14, tzinfo=UTC)
+    with pytest.raises(ValueError, match="returned count"):
+        V2ComparisonResponse(
+            metadata=V2ResponseMetadata(
+                generated_at=clock,
+                clocks=AsOfClocks(valid_at=clock, observed_at=clock),
+                page=PageMetadata(limit=10, returned=1),
+            ),
+            conclusions=(),
         )
