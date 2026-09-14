@@ -10,9 +10,11 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Mapping
+from ipaddress import ip_address
 from typing import Literal, cast
+from urllib.parse import urlsplit
 
-from pydantic import Field, model_validator
+from pydantic import Field, field_validator, model_validator
 
 from .models import FrozenModel
 
@@ -45,6 +47,31 @@ class CrateDistribution(FrozenModel):
     media_type: str = Field(min_length=1)
     sha256: str = Field(pattern=_HASH)
 
+    @field_validator("content_url")
+    @classmethod
+    def content_url_is_public_https(cls, value: str) -> str:
+        parsed = urlsplit(value)
+        if parsed.scheme != "https" or not parsed.hostname:
+            raise ValueError("distribution content URL must be public HTTPS")
+        if parsed.username is not None or parsed.password is not None:
+            raise ValueError(
+                "distribution content URL must not contain credentials"
+            )
+        if parsed.query or parsed.fragment:
+            raise ValueError(
+                "distribution content URL must not contain query or fragment"
+            )
+        hostname = parsed.hostname
+        if hostname == "localhost" or hostname.endswith(".localhost"):
+            raise ValueError("distribution content URL must use a public host")
+        try:
+            address = ip_address(hostname)
+        except ValueError:
+            address = None
+        if address is not None and not address.is_global:
+            raise ValueError("distribution content URL must use a public host")
+        return value
+
 
 class ResearchCrate(FrozenModel):
     """Small RO-Crate 1.1 JSON-LD envelope for an Atlas revision."""
@@ -59,6 +86,27 @@ class ResearchCrate(FrozenModel):
     distributions: tuple[CrateDistribution, ...] = Field(min_length=1)
     source_receipts_authoritative: Literal[True] = True
     payloads_embedded: Literal[False] = False
+
+    @field_validator("dataset_url")
+    @classmethod
+    def dataset_url_is_public_https(cls, value: str) -> str:
+        parsed = urlsplit(value)
+        if parsed.scheme != "https" or not parsed.hostname:
+            raise ValueError("dataset URL must be public HTTPS")
+        if parsed.username is not None or parsed.password is not None:
+            raise ValueError("dataset URL must not contain credentials")
+        if parsed.query or parsed.fragment:
+            raise ValueError("dataset URL must not contain query or fragment")
+        hostname = parsed.hostname
+        if hostname == "localhost" or hostname.endswith(".localhost"):
+            raise ValueError("dataset URL must use a public host")
+        try:
+            address = ip_address(hostname)
+        except ValueError:
+            address = None
+        if address is not None and not address.is_global:
+            raise ValueError("dataset URL must use a public host")
+        return value
 
     @model_validator(mode="after")
     def unique_identifiers(self) -> ResearchCrate:
