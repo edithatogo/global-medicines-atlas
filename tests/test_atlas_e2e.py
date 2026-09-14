@@ -122,24 +122,6 @@ def test_complete_comparison_keeps_unknown_states_and_nullable_coverage():
     assert "observed at" in response.text
 
 
-def test_atlas_keeps_each_evidence_dimension_in_a_named_panel():
-    service = StateService()
-    response = TestClient(create_atlas_app(service)).get(
-        "/", params={"concept_id": "rx:fixture", "jurisdiction": "NZ"}
-    )
-
-    assert response.status_code == 200
-    for dimension, label in (
-        ("service_benefit", "Service-benefit evidence"),
-        ("funding", "Medicine funding evidence"),
-        ("regulatory", "Regulatory evidence"),
-        ("formulary", "Formulary evidence"),
-        ("terminology", "Terminology evidence"),
-    ):
-        assert f'data-dimension="{dimension}"' in response.text
-        assert label in response.text
-
-
 def test_hostile_values_are_escaped_and_unsafe_links_are_not_clickable():
     client = TestClient(create_atlas_app(StateService()))
     response = client.get(

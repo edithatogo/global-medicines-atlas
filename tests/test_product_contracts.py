@@ -237,14 +237,6 @@ def test_confirmed_conclusion_keeps_dimensions_and_evidence_explicit() -> None:
     assert value.valid_time == clocks()
 
 
-def test_evidence_dimensions_keep_service_and_terminology_separate() -> None:
-    assert EvidenceDimension.SERVICE_BENEFIT.value == "service_benefit"
-    assert EvidenceDimension.FUNDING.value == "funding"
-    assert EvidenceDimension.REGULATORY.value == "regulatory"
-    assert EvidenceDimension.FORMULARY.value == "formulary"
-    assert EvidenceDimension.TERMINOLOGY.value == "terminology"
-
-
 @pytest.mark.parametrize(
     "state",
     [ProductState.CONFIRMED, ProductState.INFERRED, ProductState.CONFLICTING],

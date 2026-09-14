@@ -184,11 +184,8 @@
   for side-by-side evidence, timelines, change views, coverage/freshness, and
   provenance drill-down. Synthetic validation passes; interactive atlas,
   accessibility, and live-source qualification remain open.
-- [x] Keep service-benefit, medicine funding, regulatory, formulary, and
-  terminology panels visually and semantically distinct. The Atlas now queries
-  and renders five named dimension panels; an empty panel explicitly reports
-  unavailable evidence without treating it as negative status. (`92 passed`,
-  2026-09-14.)
+- [ ] Keep service-benefit, medicine funding, regulatory, formulary, and
+  terminology panels visually and semantically distinct.
 - [ ] Phase Verification & Checkpoint: representative users can inspect evidence
   and uncertainty without mistaking legacy or missing data for current status.
 

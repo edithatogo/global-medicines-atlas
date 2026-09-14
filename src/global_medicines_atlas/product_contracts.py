@@ -76,11 +76,9 @@ class ProductState(StrEnum):
 
 
 class EvidenceDimension(StrEnum):
-    SERVICE_BENEFIT = "service_benefit"
     REGULATORY = "regulatory"
     FUNDING = "funding"
     FORMULARY = "formulary"
-    TERMINOLOGY = "terminology"
 
 
 class EvidenceAvailability(StrEnum):

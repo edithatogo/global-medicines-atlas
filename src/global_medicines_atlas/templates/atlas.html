@@ -100,15 +100,11 @@
             observed at <time datetime="{{ observed_at }}">{{ observed_at }}</time>.
           </p>
           {% if conclusions %}
-            {% for panel in dimension_panels %}
-              <section class="evidence-panel" data-dimension="{{ panel.dimension }}" aria-labelledby="panel-{{ panel.dimension }}">
-                <h3 id="panel-{{ panel.dimension }}">{{ panel.label }}</h3>
-                {% if panel.rows %}
-                  <div class="card-grid">
-                  {% for item in panel.rows %}
-                    <article class="result-card" data-state="{{ item.state }}" aria-labelledby="result-{{ panel.dimension }}-{{ loop.index }}">
+            <div class="card-grid">
+              {% for item in conclusions %}
+                <article class="result-card" data-state="{{ item.state }}" aria-labelledby="result-{{ loop.index }}">
                   <header>
-                    <h4 id="result-{{ panel.dimension }}-{{ loop.index }}">{{ item.jurisdiction }} — {{ item.dimension }}</h4>
+                    <h3 id="result-{{ loop.index }}">{{ item.jurisdiction }} — {{ item.dimension }}</h3>
                     <p class="status"><span aria-hidden="true">●</span> Status: {{ item.state_label }}</p>
                   </header>
                   {% if item.state in ["unknown", "not_covered", "conflicting", "not_applicable"] %}
@@ -136,14 +132,9 @@
                       {% endfor %}
                     </ul>
                   </details>
-                    </article>
-                  {% endfor %}
-                  </div>
-                {% else %}
-                  <p class="notice" role="status">No {{ panel.label | lower }} is available for these filters. Absence is not a negative status.</p>
-                {% endif %}
-              </section>
-            {% endfor %}
+                </article>
+              {% endfor %}
+            </div>
           {% else %}
             <p class="notice" role="status">No conclusion is available for these filters. Absence is not a negative status.</p>
           {% endif %}
