@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from typing import Literal, cast
+from typing import Literal, Protocol, cast
 
 from pydantic import AwareDatetime, Field, model_validator
 
@@ -30,6 +30,12 @@ class CoverageEnvelope(PlatinumSurfaceModel):
     coverage_complete: bool = False
     missing_coverage_is_negative_evidence: bool = False
     temporal_selection: str = "valid_and_observed_half_open"
+
+
+class CoverageLookup(Protocol):
+    """Compatibility protocol for services that expose temporal coverage."""
+
+    def coverage(self, query: object) -> CoverageResponse: ...
 
 
 class FederatedCoverageEnvelope(CoverageEnvelope):
@@ -203,6 +209,7 @@ def bind_federated_coverage(
 
 __all__ = [
     "CoverageEnvelope",
+    "CoverageLookup",
     "CoverageTransformationReceipt",
     "FederatedCoverageEnvelope",
     "bind_federated_coverage",

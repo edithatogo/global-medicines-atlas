@@ -6,6 +6,7 @@ import pytest
 
 from global_medicines_atlas.platinum_coverage import (
     CoverageEnvelope,
+    CoverageLookup,
     CoverageTransformationReceipt,
     bind_federated_coverage,
     build_coverage_envelope,
@@ -94,6 +95,16 @@ def _response() -> CoverageResponse:
             ),
         ),
     )
+
+
+def test_coverage_lookup_remains_a_public_compatibility_protocol() -> None:
+    class Lookup:
+        def coverage(self, query: object) -> CoverageResponse:
+            assert query == "coverage-query"
+            return _response()
+
+    lookup: CoverageLookup = Lookup()
+    assert lookup.coverage("coverage-query") == _response()
 
 
 def test_envelope_preserves_unknown_and_undeclared_coverage() -> None:
