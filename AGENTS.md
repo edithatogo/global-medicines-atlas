@@ -67,6 +67,10 @@ in `conductor/autonomy.md` before escalating a technical blocker.
 ## Completion
 
 Use a scoped `codex/` branch and pull request. Run the focused tests followed by
-`uv run python scripts/test_goblin.py full` where platform support permits.
+one broader affected check. Run `uv run python scripts/test_goblin.py full`
+for production-behavior or release-gate changes where platform support permits.
+For a test-only follow-up after current full-suite evidence, rerun the affected
+tests and routine checks; do not repeat the local full profile solely because
+the test changed. Complete protected CI lanes still run on every pull request.
 Linux CI is authoritative for mutmut and Mojo. Record evidence in the active
 track and reconcile plan markers only with observable results.

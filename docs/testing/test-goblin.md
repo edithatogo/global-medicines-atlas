@@ -124,8 +124,8 @@ TEST_GOBLIN_PICKED_MODE=branch TEST_GOBLIN_PICKED_PARENT=origin/main \
 
 The `changed` profile uses pytest-testmon's dependency map and stays serial so
 the local database has one writer. Its first run would execute the whole
-manifest; the harness refuses that implicit bootstrap. Build the map only when
-the full run is intentional:
+manifest; the harness rejects a missing, empty, or invalid map instead of
+silently bootstrapping. Build the map only when the full run is intentional:
 
 ```bash
 TEST_GOBLIN_ALLOW_TESTMON_BOOTSTRAP=1 \
@@ -135,7 +135,9 @@ TEST_GOBLIN_ALLOW_TESTMON_BOOTSTRAP=1 \
 Delete `.testmondata*` when the environment or test inventory changes
 unexpectedly, then explicitly rebuild it. `TESTMON_DATAFILE` is supported for
 a custom map path. Prefer `picked` for immediate stateless feedback and
-`changed` when a current dependency map is available.
+`changed` when a current dependency map is available. A partially populated
+map can still select many tests, so the profile is a feedback aid rather than
+a promise of a small run.
 
 For a source change, run focused tests, then one broader affected selection
 and the `routine` profile. For a test-only change after a passing full run,

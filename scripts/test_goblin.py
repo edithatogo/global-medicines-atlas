@@ -9,10 +9,12 @@ import os
 import platform
 import re
 import shutil
+import sqlite3
 import subprocess
 import sys
 import time
 from collections.abc import Sequence
+from contextlib import closing
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Protocol, cast
@@ -936,17 +938,40 @@ def fast() -> None:
     )
 
 
+def has_testmon_database(path: Path) -> bool:
+    """Recognize a populated Testmon SQLite map without creating one."""
+    if not path.is_file() or path.stat().st_size == 0:
+        return False
+    try:
+        with closing(
+            sqlite3.connect(f"{path.resolve().as_uri()}?mode=ro", uri=True)
+        ) as db:
+            tables = {
+                row[0]
+                for row in db.execute(
+                    "SELECT name FROM sqlite_master WHERE type = 'table'"
+                )
+            }
+            return {"metadata", "test_execution", "file_fp"} <= tables and (
+                db.execute("SELECT 1 FROM test_execution LIMIT 1").fetchone()
+                is not None
+            )
+    except OSError, sqlite3.DatabaseError:
+        return False
+
+
 def changed() -> None:
     """Run tests affected by changed code using the local testmon database."""
     datafile = Path(os.environ.get("TESTMON_DATAFILE", ".testmondata"))
     if not datafile.is_absolute():
         datafile = PROJECT_ROOT / datafile
     if (
-        not datafile.is_file()
+        not has_testmon_database(datafile)
         and os.environ.get("TEST_GOBLIN_ALLOW_TESTMON_BOOTSTRAP") != "1"
     ):
         raise SystemExit(
-            "No testmon database exists; the first changed run would execute "
+            "No initialized Testmon database exists; the first changed run "
+            "would execute "
             "the full test manifest. Use the picked profile for immediate "
             "feedback, or set TEST_GOBLIN_ALLOW_TESTMON_BOOTSTRAP=1 to "
             "build the database explicitly."

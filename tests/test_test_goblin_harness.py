@@ -6,6 +6,7 @@ import hashlib
 import importlib.util
 import json
 import re
+import sqlite3
 import sys
 import tomllib
 from pathlib import Path
@@ -209,12 +210,29 @@ def test_changed_profile_accepts_existing_custom_testmon_database(
     monkeypatch.setenv("TESTMON_DATAFILE", "cache/testmon.db")
     monkeypatch.delenv("TEST_GOBLIN_ALLOW_TESTMON_BOOTSTRAP", raising=False)
     (tmp_path / "cache").mkdir()
-    (tmp_path / "cache/testmon.db").touch()
+    with sqlite3.connect(tmp_path / "cache/testmon.db") as db:
+        db.execute("CREATE TABLE metadata (value TEXT)")
+        db.execute("CREATE TABLE file_fp (value TEXT)")
+        db.execute("CREATE TABLE test_execution (value TEXT)")
+        db.execute("INSERT INTO test_execution VALUES ('test_example')")
     monkeypatch.setattr(HARNESS, "run", commands.append)
 
     HARNESS.changed()
 
     assert "--testmon" in commands[0]
+
+
+@pytest.mark.parametrize("contents", [b"", b"invalid SQLite database"])
+def test_changed_profile_rejects_uninitialized_testmon_file(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, contents: bytes
+) -> None:
+    monkeypatch.setattr(HARNESS, "PROJECT_ROOT", tmp_path)
+    monkeypatch.delenv("TESTMON_DATAFILE", raising=False)
+    monkeypatch.delenv("TEST_GOBLIN_ALLOW_TESTMON_BOOTSTRAP", raising=False)
+    (tmp_path / ".testmondata").write_bytes(contents)
+
+    with pytest.raises(SystemExit, match="No initialized Testmon database"):
+        HARNESS.changed()
 
 
 def test_failed_profile_never_falls_back_to_all_tests(
