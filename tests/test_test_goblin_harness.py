@@ -849,6 +849,12 @@ def test_mutation_baseline_is_strict_on_linux_and_advisory_on_macos(
     )
     assert "advisory" in capsys.readouterr().err
 
+    malformed = {**observations, "total": 2249.0}
+    with pytest.raises(ValueError, match="status counts must equal total"):
+        HARNESS.enforce_platform_mutation_baseline(
+            malformed, operating_system="Darwin"
+        )
+
 
 def test_mutmut_observations_reject_missing_or_non_numeric_results(
     tmp_path,

@@ -1121,6 +1121,7 @@ def mutation() -> None:
     )
     operating_system = platform.system()
     observations["linux_authoritative"] = float(operating_system == "Linux")
+    validate_mutation_observations(observations)
     write_quality_receipt(
         kind="mutation",
         observations=observations,
@@ -1175,9 +1176,20 @@ def enforce_mutation_baseline(observations: dict[str, float]) -> None:
     """Reject mutation regressions while preserving the independent target."""
 
     baseline = load_phase3_baselines(PHASE3_BASELINES_PATH).mutation
+    current = validate_mutation_observations(observations)
+    if mutation_regressed(baseline, current):
+        raise ValueError(
+            "mutation survivor debt regressed from the immutable baseline"
+        )
+
+
+def validate_mutation_observations(
+    observations: dict[str, float],
+) -> MutationObservations:
+    """Reject inconsistent Mutmut counts on every supported platform."""
     killed = int(observations["killed"])
     survived = int(observations["survived"])
-    current = MutationObservations(
+    return MutationObservations(
         killed=killed,
         survived=survived,
         untested=int(observations.get("untested", 0)),
@@ -1189,16 +1201,13 @@ def enforce_mutation_baseline(observations: dict[str, float]) -> None:
         total=int(observations.get("total", killed + survived)),
         score_percent=observations["score_percent"],
     )
-    if mutation_regressed(baseline, current):
-        raise ValueError(
-            "mutation survivor debt regressed from the immutable baseline"
-        )
 
 
 def enforce_platform_mutation_baseline(
     observations: dict[str, float], *, operating_system: str
 ) -> None:
     """Enforce Linux results; retain non-Linux observations as advisory."""
+    validate_mutation_observations(observations)
     if operating_system == "Linux":
         enforce_mutation_baseline(observations)
     else:
