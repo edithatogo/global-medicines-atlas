@@ -87,3 +87,48 @@ def test_croissant_payload_keys_are_rejected_recursively() -> None:
 def test_croissant_without_metadata_flag_is_rejected() -> None:
     with pytest.raises(ValueError, match="metadata-only"):
         validate_metadata_only_croissant({"@type": "Dataset"})
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://example.test/data",
+        "https://user:pass@example.test/data",
+        "https://example.test/data?token=x",
+        "https://example.test/data#fragment",
+        "https://localhost/data",
+        "https://127.0.0.1/data",
+        "https://169.254.169.254/data",
+    ],
+)
+def test_distribution_content_url_requires_public_https(url: str) -> None:
+    with pytest.raises(
+        ValueError, match=r"public HTTPS|credentials|query|fragment|public host"
+    ):
+        CrateDistribution(
+            identifier="data",
+            name="Data",
+            content_url=url,
+            media_type="application/octet-stream",
+            sha256="a" * 64,
+        )
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://example.test/dataset",
+        "https://localhost/dataset",
+        "https://127.0.0.1/dataset",
+        "https://example.test/dataset?token=x",
+    ],
+)
+def test_dataset_url_requires_public_https(url: str) -> None:
+    with pytest.raises(ValueError, match=r"public HTTPS|query|public host"):
+        build_research_crate(
+            identifier="example@abc",
+            name="Example",
+            version="abc",
+            dataset_url=url,
+            distributions=(_distribution(),),
+        )
