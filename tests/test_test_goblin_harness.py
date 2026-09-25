@@ -825,6 +825,31 @@ def test_mutation_baseline_blocks_regression() -> None:
         HARNESS.enforce_mutation_baseline(regressed)
 
 
+def test_mutation_baseline_is_strict_on_linux_and_advisory_on_macos(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    observations = {
+        "killed": 1879.0,
+        "survived": 364.0,
+        "untested": 2.0,
+        "skipped": 0.0,
+        "suspicious": 5.0,
+        "timeout": 0.0,
+        "check_was_interrupted_by_user": 0.0,
+        "segfault": 0.0,
+        "total": 2250.0,
+        "score_percent": 1879 / 2250 * 100,
+    }
+    with pytest.raises(ValueError, match="survivor debt regressed"):
+        HARNESS.enforce_platform_mutation_baseline(
+            observations, operating_system="Linux"
+        )
+    HARNESS.enforce_platform_mutation_baseline(
+        observations, operating_system="Darwin"
+    )
+    assert "advisory" in capsys.readouterr().err
+
+
 def test_mutmut_observations_reject_missing_or_non_numeric_results(
     tmp_path,
 ) -> None:

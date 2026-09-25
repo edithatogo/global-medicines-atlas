@@ -1119,6 +1119,8 @@ def mutation() -> None:
     observations["promotion_target_met"] = float(
         observations["score_percent"] >= mutation_budget
     )
+    operating_system = platform.system()
+    observations["linux_authoritative"] = float(operating_system == "Linux")
     write_quality_receipt(
         kind="mutation",
         observations=observations,
@@ -1129,7 +1131,9 @@ def mutation() -> None:
         artifacts=[artifact, survivor_report],
         command=command,
     )
-    enforce_mutation_baseline(observations)
+    enforce_platform_mutation_baseline(
+        observations, operating_system=operating_system
+    )
     enforce_optional_receipt("mutation")
 
 
@@ -1188,6 +1192,20 @@ def enforce_mutation_baseline(observations: dict[str, float]) -> None:
     if mutation_regressed(baseline, current):
         raise ValueError(
             "mutation survivor debt regressed from the immutable baseline"
+        )
+
+
+def enforce_platform_mutation_baseline(
+    observations: dict[str, float], *, operating_system: str
+) -> None:
+    """Enforce Linux results; retain non-Linux observations as advisory."""
+    if operating_system == "Linux":
+        enforce_mutation_baseline(observations)
+    else:
+        print(
+            f"{operating_system} mutation observations are advisory; "
+            "Linux CI enforces the immutable mutation baseline.",
+            file=sys.stderr,
         )
 
 
