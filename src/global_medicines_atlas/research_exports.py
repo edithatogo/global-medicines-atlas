@@ -23,26 +23,6 @@ EXPORT_MANIFEST_SCHEMA = "global-medicines-atlas.research-export"
 EXPORT_MANIFEST_VERSION = 1
 
 
-def _source_field(source: ExportSource | Mapping[str, Any], field: str) -> str:
-    value = (
-        source.get(field)
-        if isinstance(source, Mapping)
-        else getattr(source, field)
-    )
-    return str(value)
-
-
-def _citation_field(
-    citation: ExportCitation | Mapping[str, Any], field: str
-) -> str:
-    value = (
-        citation.get(field)
-        if isinstance(citation, Mapping)
-        else getattr(citation, field)
-    )
-    return str(value)
-
-
 def _canonical_bytes(value: Any) -> bytes:
     return (
         json.dumps(
@@ -58,6 +38,18 @@ def _canonical_bytes(value: Any) -> bytes:
 
 def _digest(value: Any) -> str:
     return hashlib.sha256(_canonical_bytes(value)).hexdigest()
+
+
+def _source_sort_key(source: ExportSource | Mapping[str, Any]) -> bytes:
+    return _canonical_bytes(
+        ExportSource.model_validate(source).model_dump(mode="json")
+    )
+
+
+def _citation_sort_key(citation: ExportCitation | Mapping[str, Any]) -> bytes:
+    return _canonical_bytes(
+        ExportCitation.model_validate(citation).model_dump(mode="json")
+    )
 
 
 class ExportSource(FrozenModel):
@@ -154,16 +146,13 @@ def build_query_snapshot_manifest(
         sources=tuple(
             sorted(
                 sources,
-                key=lambda item: (
-                    _source_field(item, "dataset_id"),
-                    _source_field(item, "revision"),
-                    _source_field(item, "path"),
-                ),
+                key=_source_sort_key,
             )
         ),
         citations=tuple(
             sorted(
-                citations, key=lambda item: _citation_field(item, "citation_id")
+                citations,
+                key=_citation_sort_key,
             )
         ),
         generated_at=generated_at,
