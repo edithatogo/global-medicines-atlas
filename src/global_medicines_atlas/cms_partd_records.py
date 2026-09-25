@@ -110,6 +110,7 @@ class CMSPartDProjection:
     row_count: int
     column_count: int
     parquet_sha256: str
+    projection_text_encoding: str
 
 
 def _safe_member(path: str) -> str:
@@ -136,9 +137,12 @@ def _project_stream(
     outer_member_path: str,
     inner_member_path: str | None,
     output: Path,
+    projection_text_encoding: Literal["utf-8-sig", "latin-1"] = "utf-8-sig",
     batch_rows: int = 50_000,
 ) -> CMSPartDProjection:
-    text = io.TextIOWrapper(stream, encoding="utf-8-sig", newline="")
+    text = io.TextIOWrapper(
+        stream, encoding=projection_text_encoding, newline=""
+    )
     first = text.readline()
     if not first:
         raise ValueError("CMS Part D table is empty")
@@ -200,6 +204,7 @@ def _project_stream(
         row_count=count,
         column_count=len(columns),
         parquet_sha256=_file_sha256(output),
+        projection_text_encoding=projection_text_encoding,
     )
 
 
@@ -275,6 +280,7 @@ def _project_json(
         row_count=len(rows),
         column_count=len(columns),
         parquet_sha256=_file_sha256(output),
+        projection_text_encoding="utf-8-sig",
     )
 
 
@@ -349,15 +355,28 @@ def project_cms_partd_payload(
                         inner_info,
                         archive_path=Path(inner_file.name),
                     ) as stream:
+                        buffered = io.BufferedReader(
+                            cast("io.RawIOBase", stream)
+                        )
+                        # CMS does not declare a charset for these tables.
+                        # Latin-1 maps each unmarked byte reversibly; a BOM
+                        # explicitly identifies UTF-8. Neither path guesses
+                        # the intended display characters of legacy bytes.
+                        encoding: Literal["utf-8-sig", "latin-1"] = (
+                            "utf-8-sig"
+                            if buffered.peek(3).startswith(b"\xef\xbb\xbf")
+                            else "latin-1"
+                        )
                         projections.append(
                             _project_stream(
-                                stream,
+                                buffered,
                                 payload_identity=identity,
                                 outer_member_path=outer_path,
                                 inner_member_path=inner_path,
                                 output=_projection_path(
                                     output, outer_path, inner_path
                                 ),
+                                projection_text_encoding=encoding,
                             )
                         )
                 inner_archive.close()
@@ -381,6 +400,7 @@ def projection_manifest_rows(
             "column_count": projection.column_count,
             "parquet_sha256": projection.parquet_sha256,
             "parquet_byte_count": projection.parquet_path.stat().st_size,
+            "projection_text_encoding": projection.projection_text_encoding,
         }
 
 
@@ -437,7 +457,7 @@ def _string(value: object) -> str:
     return cast("str", value)
 
 
-def _qualified_projection_rows(projections: object) -> int:
+def _qualified_projection_rows(projections: object, *, family: str) -> int:
     if not isinstance(projections, list) or not projections:
         raise ValueError("CMS Part D projection entries must be nonempty")
     projections = cast("list[object]", projections)
@@ -451,6 +471,10 @@ def _qualified_projection_rows(projections: object) -> int:
         row_count = projection.get("row_count")
         byte_count = projection.get("parquet_byte_count")
         digest = projection.get("parquet_sha256")
+        encoding = projection.get("projection_text_encoding")
+        allowed_encodings = (
+            {"latin-1", "utf-8-sig"} if family == "formulary" else {"utf-8-sig"}
+        )
         valid_name = (
             isinstance(filename, str)
             and PurePosixPath(filename).name == filename
@@ -462,6 +486,8 @@ def _qualified_projection_rows(projections: object) -> int:
             and _positive_int(row_count)
             and _positive_int(byte_count)
             and valid_digest
+            and isinstance(encoding, str)
+            and encoding in allowed_encodings
         ):
             raise ValueError("CMS Part D projection evidence is invalid")
         filename = _string(filename)
@@ -497,7 +523,9 @@ def _qualified_shard(
     if not valid_identity or not valid_contract:
         raise ValueError("CMS Part D projection shard is not qualified")
     projections = shard.get("projections")
-    calculated_rows = _qualified_projection_rows(projections)
+    calculated_rows = _qualified_projection_rows(
+        projections, family=_string(family)
+    )
     projection_count = shard.get("source_record_projection_count")
     record_count = shard.get("source_record_count")
     projection_list = cast("list[object]", projections)

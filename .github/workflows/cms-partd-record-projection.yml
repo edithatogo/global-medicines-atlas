@@ -2,6 +2,11 @@ name: Project CMS Part D source records
 
 on:
   workflow_dispatch:
+    inputs:
+      payload_identity:
+        description: Optional exact payload identity for one-shard canary
+        required: false
+        type: string
 
 concurrency:
   group: cms-partd-record-projection
@@ -24,16 +29,24 @@ jobs:
     steps:
       - name: Read exact anonymous manifest
         id: inventory
+        env:
+          PAYLOAD_IDENTITY: ${{ inputs.payload_identity }}
         run: |
           set -euo pipefail
           curl --fail --show-error --silent --location --retry 10 \
             "https://huggingface.co/datasets/${HF_DATASET}/resolve/${RAW_REVISION}/manifest.json" \
             --output manifest.json
-          matrix=$(jq -c '{include:[.payloads[] | {
+          if [[ -n "$PAYLOAD_IDENTITY" ]] && [[ ! "$PAYLOAD_IDENTITY" =~ ^[0-9a-f]{64}$ ]]; then
+            echo 'Canary payload identity must be a 64-character lowercase SHA-256' >&2
+            exit 1
+          fi
+          matrix=$(jq -c --arg identity "$PAYLOAD_IDENTITY" '{include:[.payloads[] | select($identity == "" or (.hub_path | split("/")[2]) == $identity) | {
             identity:(.hub_path | split("/")[2]), family:.family, hub_path:.hub_path,
             payload_sha256:.sha256
           }]}' manifest.json)
-          test "$(jq '.include | length' <<<"$matrix")" -eq 33
+          expected=33
+          if [[ -n "$PAYLOAD_IDENTITY" ]]; then expected=1; fi
+          test "$(jq '.include | length' <<<"$matrix")" -eq "$expected"
           echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
 
   project_publish:
@@ -138,6 +151,7 @@ jobs:
   finalize:
     name: Qualify and anonymously verify source records
     needs: project_publish
+    if: ${{ inputs.payload_identity == '' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
