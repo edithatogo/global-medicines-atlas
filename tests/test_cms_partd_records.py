@@ -77,6 +77,49 @@ def test_nested_formulary_tables_are_separate_and_source_faithful(
     assert tables["pricing.csv"]["PRICE"].to_pylist() == ["10.00"]
 
 
+def test_formulary_projection_preserves_non_utf8_source_field_bytes(
+    tmp_path: Path,
+) -> None:
+    payload = tmp_path / "SPUF.zip"
+    payload.write_bytes(
+        _zip({"tables.zip": _zip({"names.txt": b"A|B\n1|\xd3\x81\n"})})
+    )
+
+    (projection,) = project_cms_partd_payload(
+        payload, family="formulary", identity="a" * 64, output=tmp_path / "out"
+    )
+
+    table = pq.read_table(projection.parquet_path)  # pyright: ignore[reportUnknownMemberType]
+    assert table["B"].to_pylist()[0].encode("latin-1") == b"\xd3\x81"
+    assert projection.projection_text_encoding == "latin-1"
+    assert (
+        next(records.projection_manifest_rows((projection,)))[
+            "projection_text_encoding"
+        ]
+        == "latin-1"
+    )
+
+
+def test_formulary_projection_respects_explicit_utf8_bom(
+    tmp_path: Path,
+) -> None:
+    payload = tmp_path / "SPUF.zip"
+    payload.write_bytes(
+        _zip({
+            "tables.zip": _zip({"names.txt": b"\xef\xbb\xbfA|B\n1|\xc3\xa9\n"})
+        })
+    )
+
+    (projection,) = project_cms_partd_payload(
+        payload, family="formulary", identity="a" * 64, output=tmp_path / "out"
+    )
+
+    table = pq.read_table(projection.parquet_path)  # pyright: ignore[reportUnknownMemberType]
+    assert table.column_names[0] == "A"
+    assert table["B"].to_pylist() == ["é"]
+    assert projection.projection_text_encoding == "utf-8-sig"
+
+
 def test_deflate64_member_uses_bounded_7zip_fallback(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -298,6 +341,10 @@ def test_projection_workflow_is_hosted_public_and_resumable() -> None:
     assert '--raw-revision "$RAW_REVISION"' in workflow
     assert "upload_folder" in workflow
     assert "scripts/qualify_cms_partd_records.py" in workflow
+    assert "payload_identity:" in workflow
+    assert "if: ${{ inputs.payload_identity == '' }}" in workflow
+    assert "expected=33" in workflow
+    assert 'if [[ -n "$PAYLOAD_IDENTITY" ]]; then expected=1; fi' in workflow
 
 
 def _qualification_inputs() -> tuple[
@@ -329,6 +376,9 @@ def _qualification_inputs() -> tuple[
                     "column_count": 2,
                     "parquet_sha256": "a" * 64,
                     "parquet_byte_count": 100,
+                    "projection_text_encoding": (
+                        "latin-1" if family == "formulary" else "utf-8-sig"
+                    ),
                 }
             ],
         })
@@ -499,6 +549,9 @@ def test_qualification_rejects_invalid_shard_contract(field, value):
         ("parquet_byte_count", 0),
         ("parquet_sha256", None),
         ("parquet_sha256", "not-a-digest"),
+        ("projection_text_encoding", None),
+        ("projection_text_encoding", "utf-8"),
+        ("projection_text_encoding", []),
     ],
 )
 def test_qualification_rejects_invalid_projection_evidence(field, value):

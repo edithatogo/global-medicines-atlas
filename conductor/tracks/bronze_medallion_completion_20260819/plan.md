@@ -452,6 +452,16 @@ for credentialed or rights-unresolved sources.
           - As of 2026-09-01T19:37:26Z, the hosted projection workflow has no
             observed runs. Configuration and a merged qualifier are readiness
             evidence, not execution or publication evidence.
+          - The 2026-09-13 hosted attempt ran all 33 shards: three spending
+            projections succeeded, but 30 formulary projections failed on
+            undecodable high bytes under the assumed UTF-8 codec; final
+            qualification was skipped. The corrective projection uses a
+            reversible Latin-1 byte mapping for unmarked legacy text and
+            UTF-8 only when an explicit BOM is present, records the mapping
+            per projection, and adds a one-shard hosted canary before another
+            full dispatch. This is a projection choice, not a claim that CMS
+            declared the source's character set or that any failed shard is
+            qualified.
     - [x] Keep public release and external publication separately gated; the maintainer approved attributed public release and external publication on 2026-08-27 subject to the CMS Agreement for Use and fail-closed interpretation boundaries
 - [x] Task: Review Fixes for CMS Part D public qualification
     - [x] Reconcile the preflight recommendation with the maintainer's exact approved-public decision
