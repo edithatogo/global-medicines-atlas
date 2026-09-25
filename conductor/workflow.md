@@ -41,7 +41,12 @@
    appropriate to the change.
 3. Confirm the intended failure.
 4. Implement the smallest coherent change.
-5. Run the focused tests, then the broader affected harness.
+5. Run the focused tests, then one broader affected harness selection. Reuse
+   current full-suite evidence for a test-only follow-up when production code,
+   shared fixtures, dependencies, and release gates are unchanged; do not
+   rerun the full local profile solely because a test was added. Run the full
+   profile for changed production behavior or gates where platform support
+   permits, and retain complete protected CI lanes for every pull request.
 6. Run routine typing with `ty` and formal typing with BasedPyright.
 7. Verify coverage remains strictly above 90% for governed core code and upload CI coverage to Codecov.
 8. Run security, provenance, licensing, deterministic-regeneration, and source-boundary gates.

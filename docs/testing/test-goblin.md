@@ -80,6 +80,7 @@ uv sync --python 3.14.6 --group test-goblin --locked
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py quick
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py fast
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py changed
+uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py failed
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py picked
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py contracts
 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py metamorphic
@@ -105,22 +106,61 @@ to avoid starving performance and subprocess tests.
 TEST_GOBLIN_WORKERS=4 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py quick
 ```
 
-The `fast` profile excludes modules carrying the governed `slow` marker. The
-`changed` profile uses pytest-testmon's dependency map for local feedback and
-deliberately stays serial so its local database has one writer. The `picked`
-profile uses pytest-picked for a stateless selection based on unstaged Git
-changes. To compare the current branch with an explicit parent, run:
+The `fast` profile excludes modules carrying the governed `slow` marker. Use
+the smallest relevant test file or node ID while editing. If a test fails, the
+`failed` profile reruns cached failures; `--lfnf=none` prevents pytest from
+running the whole manifest when no failure is cached. A zero-test result is
+feedback only, never qualification evidence. `--ff` and `--nf` reorder tests
+but do not reduce the number selected.
+
+The `picked` profile uses pytest-picked for a stateless selection based on
+unstaged Git changes. To compare the current branch with an explicit parent,
+run:
 
 ```bash
 TEST_GOBLIN_PICKED_MODE=branch TEST_GOBLIN_PICKED_PARENT=origin/main \
   uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py picked
 ```
 
-These are developer accelerators only: pull requests continue to run the
-complete authoritative lanes. Delete `.testmondata*` whenever the environment
-or test inventory changes unexpectedly; the first testmon run rebuilds it by
-running the full manifest. Prefer `picked` for a fast stateless approximation
-and `changed` when testmon's accumulated dependency map is available.
+The `changed` profile uses pytest-testmon's dependency map and stays serial so
+the local database has one writer. Its first run would execute the whole
+manifest; the harness refuses that implicit bootstrap. Build the map only when
+the full run is intentional:
+
+```bash
+TEST_GOBLIN_ALLOW_TESTMON_BOOTSTRAP=1 \
+  uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py changed
+```
+
+Delete `.testmondata*` when the environment or test inventory changes
+unexpectedly, then explicitly rebuild it. `TESTMON_DATAFILE` is supported for
+a custom map path. Prefer `picked` for immediate stateless feedback and
+`changed` when a current dependency map is available.
+
+For a source change, run focused tests, then one broader affected selection
+and the `routine` profile. For a test-only change after a passing full run,
+rerun that test file and `routine`; do not repeat the local full profile solely
+because the test changed. Pull requests continue to run the complete
+authoritative lanes. Repeat the local full profile when production behavior,
+shared fixtures, dependencies, or a release gate changed, or when a failure
+specifically requires it. A selected subset never satisfies coverage,
+mutation, platform parity, or release qualification on its own.
+
+The other recent impact-analysis plugins need a shadow evaluation before
+adoption. [pytest-impacted](https://github.com/promptromp/pytest-impacted)
+and [pytest-gitscope](https://github.com/johnnoone/pytest-gitscope) infer
+dependencies statically; [pytest-tia](https://github.com/breadMSA/pytest-tia)
+uses a recorded per-test coverage map and reports a Python tracer limitation
+that can otherwise omit shared callers. None has demonstrated fewer false
+negatives or a better maintenance cost than the installed selectors here. If
+evaluated, compare each candidate's selections with full CI across real
+changes to source modules, shared fixtures, generated artifacts, and test
+infrastructure before making it a required gate. The
+[pytest plugin handbook](https://pydevtools.com/handbook/explanation/essential-pytest-plugins/)
+also suggests retries and benchmarking; blanket retries can conceal defects,
+while benchmarking addresses performance regression rather than test
+selection. This repository already has random ordering, timeouts, bounded
+benchmarks, and Scalene profiling.
 
 Hosted coverage explicitly selects Coverage.py's `sys.monitoring` core on
 Python 3.14. The bounded smoke lane verified that current dynamic test contexts,

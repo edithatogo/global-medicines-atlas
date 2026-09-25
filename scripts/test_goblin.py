@@ -938,7 +938,25 @@ def fast() -> None:
 
 def changed() -> None:
     """Run tests affected by changed code using the local testmon database."""
+    datafile = Path(os.environ.get("TESTMON_DATAFILE", ".testmondata"))
+    if not datafile.is_absolute():
+        datafile = PROJECT_ROOT / datafile
+    if (
+        not datafile.is_file()
+        and os.environ.get("TEST_GOBLIN_ALLOW_TESTMON_BOOTSTRAP") != "1"
+    ):
+        raise SystemExit(
+            "No testmon database exists; the first changed run would execute "
+            "the full test manifest. Use the picked profile for immediate "
+            "feedback, or set TEST_GOBLIN_ALLOW_TESTMON_BOOTSTRAP=1 to "
+            "build the database explicitly."
+        )
     run(build_pytest_command(ALL_TESTS, "--testmon", parallel=False))
+
+
+def failed() -> None:
+    """Rerun cached failures without falling back to the full manifest."""
+    run(build_pytest_command(ALL_TESTS, "--lf", "--lfnf=none", parallel=False))
 
 
 def picked() -> None:
@@ -1333,6 +1351,7 @@ def main() -> None:  # ruff: ignore[too-many-branches]
             "quick",
             "fast",
             "changed",
+            "failed",
             "picked",
             "contracts",
             "coverage",
@@ -1362,8 +1381,8 @@ def main() -> None:  # ruff: ignore[too-many-branches]
         quick()
     elif selected_profile == "fast":
         fast()
-    elif selected_profile == "changed":
-        changed()
+    elif selected_profile in {"changed", "failed"}:
+        {"changed": changed, "failed": failed}[selected_profile]()
     elif selected_profile == "picked":
         picked()
     elif selected_profile == "coverage":
