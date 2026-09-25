@@ -6,6 +6,7 @@ import hashlib
 import importlib.util
 import json
 import re
+import sqlite3
 import sys
 import tomllib
 from pathlib import Path
@@ -178,11 +179,72 @@ def test_fast_profile_excludes_manifest_slow_tests(monkeypatch) -> None:
 def test_changed_profile_uses_testmon_without_xdist(monkeypatch) -> None:
     commands: list[list[str]] = []
     monkeypatch.setenv("TEST_GOBLIN_WORKERS", "4")
+    monkeypatch.setenv("TEST_GOBLIN_ALLOW_TESTMON_BOOTSTRAP", "1")
     monkeypatch.setattr(HARNESS, "run", commands.append)
 
     HARNESS.changed()
 
     assert "--testmon" in commands[0]
+    assert "-n" not in commands[0]
+
+
+def test_changed_profile_rejects_implicit_full_bootstrap(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    commands: list[list[str]] = []
+    monkeypatch.setattr(HARNESS, "PROJECT_ROOT", tmp_path)
+    monkeypatch.delenv("TESTMON_DATAFILE", raising=False)
+    monkeypatch.delenv("TEST_GOBLIN_ALLOW_TESTMON_BOOTSTRAP", raising=False)
+    monkeypatch.setattr(HARNESS, "run", commands.append)
+
+    with pytest.raises(SystemExit, match="first changed run would execute"):
+        HARNESS.changed()
+    assert commands == []
+
+
+def test_changed_profile_accepts_existing_custom_testmon_database(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    commands: list[list[str]] = []
+    monkeypatch.setattr(HARNESS, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setenv("TESTMON_DATAFILE", "cache/testmon.db")
+    monkeypatch.delenv("TEST_GOBLIN_ALLOW_TESTMON_BOOTSTRAP", raising=False)
+    (tmp_path / "cache").mkdir()
+    with sqlite3.connect(tmp_path / "cache/testmon.db") as db:
+        db.execute("CREATE TABLE metadata (value TEXT)")
+        db.execute("CREATE TABLE file_fp (value TEXT)")
+        db.execute("CREATE TABLE test_execution (value TEXT)")
+        db.execute("INSERT INTO test_execution VALUES ('test_example')")
+    monkeypatch.setattr(HARNESS, "run", commands.append)
+
+    HARNESS.changed()
+
+    assert "--testmon" in commands[0]
+
+
+@pytest.mark.parametrize("contents", [b"", b"invalid SQLite database"])
+def test_changed_profile_rejects_uninitialized_testmon_file(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, contents: bytes
+) -> None:
+    monkeypatch.setattr(HARNESS, "PROJECT_ROOT", tmp_path)
+    monkeypatch.delenv("TESTMON_DATAFILE", raising=False)
+    monkeypatch.delenv("TEST_GOBLIN_ALLOW_TESTMON_BOOTSTRAP", raising=False)
+    (tmp_path / ".testmondata").write_bytes(contents)
+
+    with pytest.raises(SystemExit, match="No initialized Testmon database"):
+        HARNESS.changed()
+
+
+def test_failed_profile_never_falls_back_to_all_tests(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    commands: list[list[str]] = []
+    monkeypatch.setenv("TEST_GOBLIN_WORKERS", "4")
+    monkeypatch.setattr(HARNESS, "run", commands.append)
+
+    HARNESS.failed()
+
+    assert commands[0][-2:] == ["--lf", "--lfnf=none"]
     assert "-n" not in commands[0]
 
 
