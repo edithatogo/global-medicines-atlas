@@ -825,6 +825,76 @@ def test_mutation_baseline_blocks_regression() -> None:
         HARNESS.enforce_mutation_baseline(regressed)
 
 
+def test_mutation_baseline_is_strict_on_linux_and_advisory_on_macos(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    observations = {
+        "killed": 1879.0,
+        "survived": 364.0,
+        "untested": 2.0,
+        "skipped": 0.0,
+        "suspicious": 5.0,
+        "timeout": 0.0,
+        "check_was_interrupted_by_user": 0.0,
+        "segfault": 0.0,
+        "total": 2250.0,
+        "score_percent": 1879 / 2250 * 100,
+    }
+    with pytest.raises(ValueError, match="survivor debt regressed"):
+        HARNESS.enforce_platform_mutation_baseline(
+            observations, operating_system="Linux"
+        )
+    HARNESS.enforce_platform_mutation_baseline(
+        observations, operating_system="Darwin"
+    )
+    assert "advisory" in capsys.readouterr().err
+
+    malformed = {**observations, "total": 2249.0}
+    with pytest.raises(ValueError, match="status counts must equal total"):
+        HARNESS.enforce_platform_mutation_baseline(
+            malformed, operating_system="Darwin"
+        )
+
+
+def test_macos_mutation_rejects_bad_counts_before_measured_receipt(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    monkeypatch.setattr(HARNESS, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr(HARNESS.platform, "system", lambda: "Darwin")
+    monkeypatch.setattr(HARNESS, "run", lambda _command: None)
+    monkeypatch.setattr(
+        HARNESS,
+        "load_mutmut_observations",
+        lambda _path: {
+            "killed": 7.0,
+            "survived": 2.0,
+            "untested": 1.0,
+            "skipped": 0.0,
+            "suspicious": 0.0,
+            "timeout": 0.0,
+            "check_was_interrupted_by_user": 0.0,
+            "segfault": 0.0,
+            "total": 11.0,
+            "score_percent": 70.0,
+        },
+    )
+    monkeypatch.setattr(
+        HARNESS.subprocess,
+        "run",
+        lambda *_args, **_kwargs: SimpleNamespace(returncode=0, stdout=""),
+    )
+    monkeypatch.setattr(
+        HARNESS,
+        "write_quality_receipt",
+        lambda **_kwargs: pytest.fail(
+            "invalid counts wrote a measured receipt"
+        ),
+    )
+
+    with pytest.raises(ValueError, match="status counts must equal total"):
+        HARNESS.mutation()
+
+
 def test_mutmut_observations_reject_missing_or_non_numeric_results(
     tmp_path,
 ) -> None:
