@@ -24,12 +24,15 @@ explicitly remains `structural_storage_candidate_only`, with
 `domain_semantics_qualified=false` and `date_profile=not-selected`. It observed
 2,798 unresolved reference rows and very high unmapped counts in the domain,
 entity, reference and date projections. These are inventories of remaining
-mapping work, not claims that every such field should be mapped. No source
-values were emitted, no derived data was published, and this receipt does not
-establish PBS Silver acceptance, source-era date interpretation, terminology
-rights, or clinical meaning. Any follow-up should qualify the source semantics
-and mappings under their existing evidence and rights boundaries rather than
-repeat the structural corpus run.
+mapping work, not claims that every such field should be mapped. The durable
+aggregate receipt contains no source values, and no derived data was published.
+The workflow's one-day, same-run preparation artifacts do contain entity rows
+with native text and nested source fields; they are transient qualification
+inputs, not durable receipts or published datasets. This qualification does
+not establish PBS Silver acceptance, source-era date interpretation,
+terminology rights, or clinical meaning. Any follow-up should qualify the
+source semantics and mappings under their existing evidence and rights
+boundaries rather than repeat the structural corpus run.
 
 The prepared `pbs-historical-qualification.yml` workflow performs read-only
 structural/storage qualification, not acquisition from a new source, dataset
