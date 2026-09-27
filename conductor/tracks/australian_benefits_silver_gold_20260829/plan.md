@@ -302,6 +302,22 @@
   Frozen local full: 3,194 passed, three failed, one skipped, 96.70% coverage;
   two interpreter-pin failures and product latency failure (one isolated
   rerun passed). No all-green local-full or real-corpus qualification claim.
+- [x] Cover the PBS v3 temporal `<effective>/<date>`,
+  `<supply-only>/<date>`, and `<non-effective>/<date>` structures in date-slot
+  candidates. The official v3.1.9 guide specifies these effectivity states and
+  the mapping specification specifies XSD `YYYY-MM-DD`; this change maps the
+  native date slots only, with conversion still opt-in and no current-status
+  inference. An intended synthetic regression failed because all three rows
+  were previously `unmapped`; after the fix the four PBS date/historical suites
+  pass (103), the date module has 99% branch-aware coverage (24 tests), and
+  Ruff, `ty`, BasedPyright and context validation pass. Full local Test-Goblin:
+  5,114 passed, 2 failed, 1 skipped, 96.72% coverage; both failures are stable
+  release-reproducibility tests unable to find required `uv 0.11.29` (local
+  candidates are 0.12.19). An automated review finding then tightened the
+  mapping to exact documented element ancestry, with a negative unknown-wrapper
+  test; 166 focused PBS/historical tests pass. Exact-main PBS requalification
+  remains pending; no source payload was acquired locally and no dataset was
+  published.
 
 - [x] Bind historical PBS archive B1/B2 to its exact XML member with source
   identity unchanged, required parent receipt digest, archive/member byte
@@ -545,6 +561,12 @@
   `structural_storage_candidate_only`, `domain_semantics_qualified=false`,
   and `date_profile=not-selected`; 2,798 reference rows remain unresolved.
   Source-specific semantic/date mapping and cross-era acceptance remain open.
+- [x] Add value-free PBS date-role and conversion-status counters to the
+  historical date-projection receipt and fail-closed aggregate. Focused
+  historical qualification and aggregate tests pass; details and limits are
+  in `docs/qualification/pbs-public-qualification.md`. These counters are
+  diagnostics only and do not select a profile or qualify source-era grammar.
+  Exact-main hosted requalification remains pending merge of PR #566.
 
 ## Phase 4: Implement Gold graph contracts (AC-04, AC-05)
 

@@ -87,6 +87,96 @@ def test_selected_profile_and_parquet_preserve_exact_field_identity() -> None:
     )
 
 
+def test_v3_temporal_effectivity_dates_are_classified_by_native_parent() -> (
+    None
+):
+    payload = _production_xml().replace(
+        b"<pbs:block-container>",
+        b"""<pbs:effective><pbs:date>2019-03-20</pbs:date></pbs:effective>
+<pbs:supply-only><pbs:date>2026-05-01</pbs:date>
+ <pbs:non-effective><pbs:date>2026-09-01</pbs:date></pbs:non-effective>
+</pbs:supply-only><pbs:block-container>""",
+    )
+    rows = [
+        row
+        for row in table(payload, pbs_dates.CANDIDATE_PROFILE).to_pylist()
+        if row["date_role"].startswith("pbs_")
+    ]
+    assert [row["date_role"] for row in rows] == [
+        "pbs_effective_date",
+        "pbs_supply_only_date",
+        "pbs_non_effective_date",
+    ]
+    assert [row["date_value"] for row in rows] == [
+        date(2019, 3, 20),
+        date(2026, 5, 1),
+        date(2026, 9, 1),
+    ]
+    assert all(row["date_source_field_id"] for row in rows)
+    assert all(row["date_native_value"] for row in rows)
+    assert [row["item_occurrence_id"] for row in rows] == [
+        rows[0]["item_occurrence_id"]
+    ] * 3
+    unselected = [
+        row
+        for row in table(payload).to_pylist()
+        if row["date_role"].startswith("pbs_")
+    ]
+    assert all(row["date_value"] is None for row in unselected)
+    assert all(
+        row["date_conversion_status"] == "profile_not_selected"
+        for row in unselected
+    )
+
+
+def test_contract_classifies_every_supported_native_slot() -> None:
+    payload = _production_xml()
+    rows = table(payload).to_pylist()
+    observed = {
+        pbs_dates._contract(row)[0]  # pyright: ignore[reportPrivateUsage]
+        for row in rows
+    }
+    assert observed == {
+        "unmapped",
+        "schedule_effective_date",
+        "schedule_dct_valid",
+        "restriction_effective_date",
+    }
+    fields_by_role = {
+        role: field
+        for row in rows
+        if (role := pbs_dates._contract(row)[0]) != "unmapped"  # pyright: ignore[reportPrivateUsage]
+        and (field := pbs_dates._contract(row)[1]) is not None  # pyright: ignore[reportPrivateUsage]
+    }
+    assert set(fields_by_role) == {
+        "schedule_dct_valid",
+        "restriction_effective_date",
+    }
+    assert fields_by_role["schedule_dct_valid"]["path"].endswith("/text")
+    assert fields_by_role["restriction_effective_date"]["path"].endswith(
+        "/attributes/effective-date"
+    )
+
+
+def test_v3_temporal_lookalikes_under_unknown_wrappers_remain_unmapped() -> (
+    None
+):
+    payload = _production_xml().replace(
+        b"<pbs:block-container>",
+        b"""<pbs:unknown><pbs:effective><pbs:date>2019-03-20</pbs:date>
+</pbs:effective></pbs:unknown><pbs:block-container>""",
+    )
+    rows = table(payload, pbs_dates.CANDIDATE_PROFILE).to_pylist()
+    lookalikes = [
+        row
+        for row in rows
+        if any(field["value"] == "2019-03-20" for field in row["native_fields"])
+    ]
+    assert len(lookalikes) == 1
+    assert lookalikes[0]["date_role"] == "unmapped"
+    assert lookalikes[0]["date_conversion_status"] == "unmapped"
+
+
 @pytest.mark.parametrize(
     ("literal", "status"),
     [

@@ -44,6 +44,16 @@ def test_all_projections_have_exact_denominators_and_parquet_parity() -> None:
             else report["elements"]
         )
         assert projection["parquet_roundtrip_verified"]
+    date_projection = report["projections"]["dates"]
+    assert (
+        sum(date_projection["date_role_counts"].values()) == report["elements"]
+    )
+    assert (
+        sum(date_projection["date_status_counts"].values())
+        == report["elements"]
+    )
+    assert "001.2300" not in json.dumps(date_projection)
+    assert " Before " not in json.dumps(date_projection)
     assert "001.2300" not in json.dumps(report)
     assert " Before " not in json.dumps(report)
     assert (

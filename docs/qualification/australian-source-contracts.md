@@ -408,20 +408,32 @@ funding/regulatory status, medicine equivalence, public derivatives or v4.
 
 `iter_pbs_date_batches` adds date-slot candidates to complete native entity
 rows, independently joinable to reference candidates by `entity_id`. The
-existing adapter identifies unqualified `effective-date` on the PBS root or
-schedule document element, PBS root/info/DCTERMS valid text, and effective-date
-on mapped PBS restriction elements. Exact expanded names and supported
-ancestry are required; foreign attributes and unknown wrappers stay unmapped.
-The adapter's fallback/first-value selection is deliberately not copied.
-Every observed element survives, including repeated dates or duplicate item
-IDs. Absent elements are not invented; an existing supported element missing
-its date attribute reports missing_field with no fabricated source field ID.
+mapping includes PBS root/schedule `effective-date` attributes, PBS
+root/info/DCTERMS valid text, the fixture-established restriction
+`effective-date` attribute, and PBS v3 `<date>` elements only at these complete
+expanded-name paths: `root/pharmaceutical-items-list/pharmaceutical-item/effective/date`,
+`root/pharmaceutical-items-list/pharmaceutical-item/supply-only/date`, and
+`root/pharmaceutical-items-list/pharmaceutical-item/supply-only/non-effective/date`.
+These three roles preserve the source's effectivity states as separate dates;
+they do not combine them into intervals or infer a current status. Exact
+expanded names and complete ancestry are required; foreign attributes,
+lookalike names and unknown wrappers stay unmapped. The adapter's fallback/first-value
+selection is deliberately not copied. Every observed element survives,
+including repeated dates or duplicate item IDs. Absent elements are not
+invented; a supported container missing its date child creates no synthetic
+date row.
 
-The adapter/native inventory and fixtures establish locations, not a complete
-official date grammar. No dates are converted by default. Selecting
+The official [PBS XML Developers' Guide](https://info.data.pbs.gov.au/xml-schema/doc/html/guide.html)
+describes v3 effectivity dates and the nested effective, supply-only and
+non-effective states. The official [PBS XML Mapping Specification](https://info.data.pbs.gov.au/xml-schema/doc/html/mapping.html)
+states that PBS XML dates use XSD `YYYY-MM-DD` (schema documentation 3.1.9;
+checked 2026-09-28). This grounds the candidate grammar and source slots, but
+does not independently qualify the archived source era. No dates are converted
+by default. Selecting
 `pbs-iso-date-candidate-v1` explicitly requests ASCII `YYYY-MM-DD` calendar
 conversion to Arrow date32, with years 0001–9999 and valid month/day values.
-This named candidate profile does not qualify a PBS source era or real corpus.
+This named candidate profile does not qualify a PBS source era or real corpus;
+the whole-source candidate still requires exact-main hosted qualification.
 The stdlib calendar parser, PyArrow, native entities and receipt metadata are
 reused; the MBS-specific field registry/DMY profile is not imposed on PBS.
 

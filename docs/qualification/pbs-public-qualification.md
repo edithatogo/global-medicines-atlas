@@ -331,3 +331,15 @@ PYTHONPATH=.:src:tests uv run --locked --group test python tests/profile_pbs_ent
 Next: reconcile measured improvements and final-head checks before deciding
 whether a checkpoint-enabled pinned hosted qualification is justified. Neither
 optimization qualifies the real corpus or authorizes new payload publication.
+
+### Value-free date-profile diagnostics
+
+The historical `dates` projection now adds `date_role_counts` and
+`date_status_counts` to its phase receipt. These count only bounded role/status
+labels; source values, record identifiers and field identifiers are excluded.
+The aggregate rejects missing, malformed or denominator-inconsistent
+diagnostics. This makes a future exact-main read-only run useful for identifying
+which date slots and conversion states need schema evidence. It does not select
+a date profile, establish a source-era grammar, infer temporal meaning, qualify
+domain semantics or change the candidate-only status. The revised qualifier
+still requires merge before its result can be treated as exact-main evidence.

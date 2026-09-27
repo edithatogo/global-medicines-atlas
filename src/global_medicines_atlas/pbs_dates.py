@@ -18,6 +18,21 @@ CANDIDATE_PROFILE = "pbs-iso-date-candidate-v1"
 MAX_BATCH_BYTES = 8 * 1024 * 1024
 _PBS = f"{{{PBS_V3_NAMESPACE}}}"
 _DCT = f"{{{DCTERMS_NAMESPACE}}}"
+_ITEM_PATH = (
+    _PBS + "root",
+    _PBS + "pharmaceutical-items-list",
+    _PBS + "pharmaceutical-item",
+)
+_TEMPORAL_PATHS = {
+    (*_ITEM_PATH, _PBS + "effective", _PBS + "date"): "pbs_effective_date",
+    (*_ITEM_PATH, _PBS + "supply-only", _PBS + "date"): "pbs_supply_only_date",
+    (
+        *_ITEM_PATH,
+        _PBS + "supply-only",
+        _PBS + "non-effective",
+        _PBS + "date",
+    ): "pbs_non_effective_date",
+}
 _GRAMMAR = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}\Z")
 
 
@@ -28,7 +43,9 @@ def _contract(row: dict[str, Any]) -> tuple[str, dict[str, Any] | None]:
         for part in record_id.split("/")[1::2]
     )
     role, suffix = "unmapped", ""
-    if names in {(_PBS + "root",), (_PBS + "schedule",)}:
+    if names in _TEMPORAL_PATHS:
+        role, suffix = _TEMPORAL_PATHS[names], "/text"
+    elif names in {(_PBS + "root",), (_PBS + "schedule",)}:
         role, suffix = "schedule_effective_date", "/attributes/effective-date"
     elif names == (_PBS + "root", _PBS + "info", _DCT + "valid"):
         role, suffix = "schedule_dct_valid", "/text"
