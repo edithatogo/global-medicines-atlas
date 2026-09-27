@@ -40,9 +40,13 @@ at `d8114f1a243a057b7497ba1e84601b481720d34d` completed successfully as a
 diagnostic; its retained artifact reports `wall_clock_timeout` for both attempts
 and no publication. Its `workbook_requested=false` field was not independently
 supported because the first probe allowed a same-host redirect to a workbook;
-the timeout artifact retained no redirect chain. The diagnostic now confines
-redirects to the same publication-page path, but a new hosted run is needed to
-establish the stronger no-workbook-request claim.
+the timeout artifact retained no redirect chain. The corrected diagnostic
+confines redirects to the same publication-page path and rejects non-HTML
+responses before reading their bodies. Its [new exact-head hosted run](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36324451674)
+at `a4af1dfe30cd0f43093a541ada0d1198801276dc` again recorded
+`wall_clock_timeout` at both 12 and 30 seconds, with no workbook request or
+publication. This confirms the annual-page transport failure under the
+corrected request boundary.
 The annual-page discovery route therefore remains unavailable from that
 hosted runner; this does not establish whether the other two pages or a
 different authorized transport would succeed.
