@@ -120,7 +120,9 @@ def qualify(  # ruff: ignore[too-many-locals] - hashes two sources in memory
                     "pinned MBS source exceeds the parser byte limit"
                 )
             chunks.append(chunk)
-        with client.stream("GET", OFFICIAL_MBS_V3_URI) as official_response:
+        with client.stream(
+            "GET", OFFICIAL_MBS_V3_URI, follow_redirects=False
+        ) as official_response:
             official_response.raise_for_status()
             for chunk in official_response.iter_bytes():
                 official_byte_count += len(chunk)

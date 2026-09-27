@@ -229,3 +229,31 @@ def test_source_era_verification_is_bound_to_archive_identity() -> None:
         MbsSilverQualification.model_validate(
             values | {"source_byte_count": len(payload) + 1}
         )
+
+    with pytest.raises(ValidationError, match="catalog era"):
+        MbsSilverQualification.model_validate(values | {"schema_era": "other"})
+
+
+@pytest.mark.parametrize(
+    ("change", "message"),
+    [
+        ({"official_source_uri": AnyUrl("https://example.org/mbs.xml")}, "URI"),
+        ({"release_id": "unrelated release"}, "metadata"),
+    ],
+)
+def test_source_era_verification_rejects_unrelated_official_identity(
+    change: dict[str, object], message: str
+) -> None:
+    with pytest.raises(ValidationError, match=message):
+        MbsSourceEraVerification.model_validate(
+            {
+                "official_source_uri": AnyUrl(OFFICIAL_MBS_V3_URI),
+                "release_id": "MBS-XML-20250701 Version 3",
+                "released_at": date(2025, 6, 16),
+                "effective_at": date(2025, 7, 1),
+                "official_source_sha256": "a" * 64,
+                "official_source_byte_count": 1,
+                "compared_at": datetime(2026, 9, 1, tzinfo=UTC),
+            }
+            | change
+        )

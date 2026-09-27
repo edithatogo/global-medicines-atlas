@@ -13,8 +13,9 @@ from scripts import qualify_public_mbs_silver as command
 
 
 class _Response:
-    def __init__(self, payload: bytes) -> None:
+    def __init__(self, payload: bytes, *, fail_status: bool = False) -> None:
         self.payload = payload
+        self.fail_status = fail_status
 
     def __enter__(self) -> _Response:
         return self
@@ -23,7 +24,8 @@ class _Response:
         return None
 
     def raise_for_status(self) -> None:
-        return None
+        if self.fail_status:
+            raise ValueError("unexpected HTTP redirect")
 
     def iter_bytes(self):
         yield self.payload
@@ -34,6 +36,8 @@ class _Client:
         self,
         payload: bytes,
         official_payload: bytes | None = None,
+        *,
+        official_redirect: bool = False,
         **kwargs: object,
     ) -> None:
         assert kwargs["follow_redirects"] is True
@@ -44,6 +48,7 @@ class _Client:
         assert kwargs["transport"] is not None
         self.payload = payload
         self.official_payload = official_payload or payload
+        self.official_redirect = official_redirect
 
     def __enter__(self) -> _Client:
         return self
@@ -51,18 +56,33 @@ class _Client:
     def __exit__(self, *args: object) -> None:
         return None
 
-    def stream(self, method: str, url: str) -> _Response:
+    def stream(self, method: str, url: str, **kwargs: object) -> _Response:
         assert method == "GET"
         if url == command.SOURCE_URI:
+            assert not kwargs
             return _Response(self.payload)
         assert url == command.OFFICIAL_MBS_V3_URI
-        return _Response(self.official_payload)
+        assert kwargs == {"follow_redirects": False}
+        return _Response(
+            self.official_payload, fail_status=self.official_redirect
+        )
 
 
 def _client_factory(
-    payload: bytes, official_payload: bytes | None = None
+    payload: bytes,
+    official_payload: bytes | None = None,
+    *,
+    official_redirect: bool = False,
 ) -> Any:
-    return cast("Any", partial(_Client, payload, official_payload))
+    return cast(
+        "Any",
+        partial(
+            _Client,
+            payload,
+            official_payload,
+            official_redirect=official_redirect,
+        ),
+    )
 
 
 def test_qualifies_only_digest_bound_public_bytes_in_memory(
@@ -244,6 +264,24 @@ def test_official_release_mismatch_keeps_era_blocker_and_hash_only_evidence(
     )
     assert release_check["source_byte_count"] == len(official_payload)
     assert "<MBS_XML>" not in json.dumps(result)
+
+
+def test_official_release_redirect_is_rejected(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = b"<MBS_XML><Data><ItemNum>00123</ItemNum></Data></MBS_XML>"
+    monkeypatch.setattr(command, "LEGACY_MBS_BYTES", len(payload))
+    monkeypatch.setattr(
+        command, "LEGACY_MBS_SHA256", hashlib.sha256(payload).hexdigest()
+    )
+    monkeypatch.setattr(
+        command.httpx,
+        "Client",
+        _client_factory(payload, official_redirect=True),
+    )
+
+    with pytest.raises(ValueError, match="redirect"):
+        command.qualify(exact_commit="a" * 40)
 
 
 @pytest.mark.parametrize("commit", ["", "A" * 40, "a" * 39, "z" * 40])
