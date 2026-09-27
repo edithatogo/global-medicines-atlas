@@ -498,6 +498,7 @@ for credentialed or rights-unresolved sources.
     - [x] Bound Norway's historic anonymous report surface to data through 2020 without claiming current successor coverage
     - [x] Lock Sweden's current annual and monthly aggregate query dimensions, years, measures, and cell/ATC limits
     - [x] Record the Denmark attribution terms, historic Norway attribution requirement, and Sweden CC0/API guidance
+    - [x] Re-verify Sweden's current medicines-statistics scope, CC0 declaration and API attribution guidance against official pages; prepare a bounded decision packet without retrieving result payloads
     - [~] Obtain independent maintainer source-specific decisions before payload acquisition and retention (Denmark internal acquisition and retention approved 2026-09-13; Norway and Sweden remain pending)
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification for each approved source
     - [ ] Keep public release and external publication separately gated

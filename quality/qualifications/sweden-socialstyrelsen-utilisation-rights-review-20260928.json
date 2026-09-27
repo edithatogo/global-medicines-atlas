@@ -1,0 +1,50 @@
+{
+  "schema_id": "global-medicines-atlas.source-specific-rights-decision-packet",
+  "schema_version": 1,
+  "source_id": "se-socialstyrelsen-utilisation",
+  "prompt_id": 33,
+  "observed_at": "2026-09-28T00:38:55+10:00",
+  "official_evidence": [
+    {
+      "url": "https://www.socialstyrelsen.se/statistik-och-data/oppna-data/statistikdatabaser/",
+      "finding": "Socialstyrelsen's statistics database catalogue identifies the database formats as XLSX, CSV, PNG, JPEG and GIF, annual/monthly update frequency, and CC0 terms."
+    },
+    {
+      "url": "https://sdb.socialstyrelsen.se/sdbapi.aspx",
+      "finding": "The official API documentation says results are available in JSON or XML and requires source attribution when using the data."
+    },
+    {
+      "url": "https://sdb.socialstyrelsen.se/if_lak/val.aspx",
+      "finding": "The medicines statistics database covers prescription medicines dispensed at pharmacies from 2006 through 2025, with monthly data from January 2006 through July 2026 shown on the page updated 2026-08-24. It excludes OTC medicines and medicines administered directly to patients, such as in hospitals."
+    },
+    {
+      "url": "https://socialstyrelsen.se/statistik-och-data/statistik/for-utvecklare/",
+      "finding": "The developer page lists medicines CSV files for 2006-2025 totalling 9.10 GB and a year-split archive option. This broad download is not needed for the proposed bounded query."
+    }
+  ],
+  "existing_bounds": {
+    "source_native_aggregate_only": true,
+    "maximum_cells_per_query": 70000,
+    "maximum_atc_codes_per_query": 100,
+    "payloads_acquired": false,
+    "acquisition_authorized": false,
+    "internal_retention_authorized": false,
+    "public_release_authorized": false,
+    "external_publication_authorized": false
+  },
+  "recommended_decision": "approve_bounded_internal_acquisition_and_retention",
+  "maintainer_decision": "pending",
+  "decision_options": [
+    {
+      "option": "approve_bounded_internal_acquisition_and_retention",
+      "label": "Recommended — approve bounded internal acquisition and retention",
+      "scope": "Permit source-generated aggregate API results only, recording exact query parameters, retrieval time, source version, response digest and attribution. Enforce the existing 70000-cell and 100-ATC limits. Exclude person-level records, broad 9.10-GB bulk downloads, public release and external publication."
+    },
+    {
+      "option": "keep_catalogue_only",
+      "scope": "Do not retrieve or retain result payloads; keep the official source links and current metadata evidence until further terms clarification is available."
+    }
+  ],
+  "rights_boundary": "This packet records the source's published CC0 declaration and attribution guidance as evidence. It does not record a project licensing conclusion or grant acquisition, retention, public release or external publication authority.",
+  "coverage_boundary": "The public database describes dispensed prescription medicines. It does not establish complete national utilisation, hospital-administered use, OTC use, regulatory status, formulary inclusion, reimbursement entitlement or clinical appropriateness."
+}
