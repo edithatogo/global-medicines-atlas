@@ -295,6 +295,11 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     output (M-046) was observed through the bot-authored Dependency Dashboard
     in issue #491 on 2026-09-13, restoring the security-and-supply-chain
     maturity dimension to M5.
+  - The 2026-09-27 Bronze refresh binds the approved CMS Part D source-record
+    receipt to the maturity denominator, reducing uncovered in-scope sources
+    from 125 to 124. Seven dimensions remain M5/verified; source coverage
+    remains M4/partial and the M5 release gate stays blocked. See
+    `docs/qualification/stable-v1-m5-maturity-status.md`.
   - `v1.0.0rc1` authority is explicitly prerelease-only. Final stable promotion
     remains blocked pending a distinct maintainer decision after the technical
     blockers pass.

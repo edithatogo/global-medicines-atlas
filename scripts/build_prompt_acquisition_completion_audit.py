@@ -9,6 +9,9 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Any
 
+from global_medicines_atlas.cms_partd_qualification import (
+    qualified_cms_sources,
+)
 from global_medicines_atlas.source_expansion import (
     ExpansionTrack,
     expansion_tracks,
@@ -54,13 +57,6 @@ CMS_RECORDS = (
     ROOT
     / "quality/qualifications/cms-partd-source-record-qualification-20260927.json"
 )
-CMS_SOURCE_IDS = frozenset({"us-cms-partd-formulary", "us-cms-partd-spending"})
-CMS_RECORDS_SHA256 = (
-    "0b363147a625d056b640a9806520abcfb773dec085d6d2c4b8a0878644008f19"
-)
-CMS_FAMILY_COUNTS = {"formulary": 30, "spending": 3}
-CMS_PAYLOAD_COUNT = 33
-CMS_PROJECTION_COUNT = 631
 UNION_REGISTER_QUALIFICATION = (
     ROOT / "quality/qualifications/union-register-live-corpus-20260821.json"
 )
@@ -237,43 +233,7 @@ def _qualified_us_live_sources() -> set[str]:
 
 def _qualified_cms_sources() -> set[str]:
     """Qualify only the approved, published CMS Part D source inventory."""
-    rights = json.loads(CMS_RIGHTS.read_text(encoding="utf-8"))
-    raw = json.loads(CMS_RAW.read_text(encoding="utf-8"))
-    record_bytes = CMS_RECORDS.read_bytes()
-    records = json.loads(record_bytes)
-    checks = (
-        frozenset(rights["source_ids"]) == CMS_SOURCE_IDS,
-        rights["maintainer_decision"] == "approved_public_2026-08-27",
-        all(
-            rights[key]
-            for key in (
-                "acquisition_authorized",
-                "internal_retention_authorized",
-                "public_release_authorized",
-                "external_publication_authorized",
-            )
-        ),
-        raw["immutable_revision"] == records["raw_revision"],
-        raw["payload_count"] == CMS_PAYLOAD_COUNT,
-        raw["formulary_release_count"] == CMS_FAMILY_COUNTS["formulary"],
-        raw["spending_resource_count"] == CMS_FAMILY_COUNTS["spending"],
-        raw["anonymous_digest_match"] is True,
-        raw["clean_room_recovered_payload_count"] == CMS_PAYLOAD_COUNT,
-        sha256(record_bytes).hexdigest() == CMS_RECORDS_SHA256,
-        records["schema_id"]
-        == "global-medicines-atlas.cms-partd-source-record-qualification",
-        records["payload_count"] == CMS_PAYLOAD_COUNT,
-        records["source_record_projection_count"] == CMS_PROJECTION_COUNT,
-        records["source_values_preserved_as_strings"] is True,
-        records["cross_plan_year_schema_equivalence_claimed"] is False,
-        records["runner_source_bytes_retained"] is False,
-        len(records["shards"]) == CMS_PAYLOAD_COUNT,
-        Counter(item["family"] for item in records["shards"])
-        == CMS_FAMILY_COUNTS,
-    )
-    if not all(checks):
-        raise ValueError("CMS Part D rights or public qualification drifted")
-    return set(CMS_SOURCE_IDS)
+    return qualified_cms_sources(CMS_RIGHTS, CMS_RAW, CMS_RECORDS)
 
 
 def _qualified_us_record_sources() -> set[str]:
