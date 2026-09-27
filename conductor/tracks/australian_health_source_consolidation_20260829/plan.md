@@ -189,10 +189,13 @@
   malformed-path and copied-model corrections, then 58 focused/inventory
   passes and 100% new-module coverage. Delivered in PR #401 at reviewed
   `f0799c4`, merged `2543720`, 38 successful checks and matching trees.
-- [ ] Preserve both later donor heads through exact hosted history receipts
+- [x] Preserve both later donor heads through exact hosted history receipts
   before archival; the existing baseline bundles do not contain these commits.
   No raw-data paths changed in the observed deltas. This is not evidence of
-  later history preservation or authorization to archive either repository.
+  later history preservation or authorization to archive either repository
+  at that checkpoint. Hosted run `34005721959` later preserved and anonymously
+  restored both exact heads at public revision `97038008d17a48f620302f04fe6a3156fb8d5d57`;
+  see `quality/qualifications/scraper-archival-20260906.json`.
 - [x] Prepare a separate append-only history contract for those exact heads.
   Implemented `9ca7eca` and review fix `2ebf0c2`: public target, baseline
   prerequisites, head-addressed bundle/manifest metadata, CAS, unchanged prior
@@ -212,7 +215,7 @@
   adds four cases and the same command now reports 91 passed. PR #410 exact
   updated head `e237897` passed all 38 protected checks and auto-merged as
   `6dbb91b`; this delivers only the inert authority envelope, not an append.
-- [ ] Add the hosted append transaction and obtain exact authorization for the
+- [x] Add the hosted append transaction and obtain exact authorization for the
   two newer histories before dispatch. Do not reuse the old replace-all,
   private-target legacy publisher or its dataset-wide privacy rollback.
   Recover an already-completed append from its authenticated durable receipt;
@@ -236,8 +239,10 @@
   Publication/checkpoint reconciliation merged as PR #368 (`c1f51f6`),
   reviewed head `6aafcdd`; required checks passed. Its recording-time review
   finding was corrected before merge. See `review.md` for the AC audit.
-- [ ] Keep archive tasks pending until the exact parity/publication package and
-  maintainer approval are recorded.
+- [x] Keep archive tasks pending until the exact parity/publication package and
+  maintainer approval are recorded. Both separate approvals and completed
+  archive readbacks are recorded in the scraper and graph archival receipts;
+  no further archival action is pending for those exact repositories.
 
 
 ## Scraper archival readiness follow-up (2026-09-06)
