@@ -108,7 +108,16 @@
       "git_object_sha1": "b9d4aef063cc2f1183f30583c928877db593d863",
       "sha256": "ded32b40a7d4861470e38a86491b4f80a3549cb56349afc03af658874e90d138",
       "disposition": "replace-with-equivalent",
-      "acceptance_state": "pending_behavioral_parity"
+      "acceptance_state": "verified_replacement",
+      "parity_evidence": {
+        "source_qualifier": "src/global_medicines_atlas/adapters/au_mbs.py::qualify_legacy_mbs_xml",
+        "behavior_tests": "tests/test_au_mbs_source.py",
+        "source_qualification_record_kind": "denominator_correction",
+        "streamed_qualification_record_kind": "phase_completed",
+        "streamed_qualification_phase": "independent_mbs_source_domain",
+        "ledger": "conductor/tracks/australian_health_source_consolidation_20260829/evidence.jsonl",
+        "finding": "Donor MBSItem tag was absent; replacement parses MBS_XML/Data and verifies 5,989 records, 40 native fields, and exact source digest before donor archival."
+      }
     },
     {
       "repository": "edithatogo/aus_mbs_pbs_graph",

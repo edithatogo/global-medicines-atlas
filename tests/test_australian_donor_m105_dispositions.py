@@ -83,7 +83,7 @@ def test_m105_dispositions_do_not_promote_unproven_behavior() -> None:
             item["acceptance_state"] == "pending_behavioral_parity"
             for item in receipt["baseline"]
         )
-        == 11
+        == 10
     )
     assert (
         sum(
@@ -92,3 +92,56 @@ def test_m105_dispositions_do_not_promote_unproven_behavior() -> None:
         )
         == 5
     )
+
+
+def test_mbs_parser_replacement_binds_exact_pre_archive_qualification() -> None:
+    receipt = json.loads(RECEIPT.read_text())
+    row = next(
+        item
+        for item in receipt["baseline"]
+        if item["repository"] == "edithatogo/aus_mbs_pbs_graph"
+        and item["path"] == "scripts/parsing/parse_mbs_xml.py"
+    )
+    assert row["disposition"] == "replace-with-equivalent"
+    assert row["acceptance_state"] == "verified_replacement"
+    proof = row["parity_evidence"]
+    ledger = [
+        json.loads(line)
+        for line in (ROOT / proof["ledger"]).read_text().splitlines()
+    ]
+    source = next(
+        item
+        for item in ledger
+        if item.get("kind") == proof["source_qualification_record_kind"]
+    )
+    streamed = next(
+        item
+        for item in ledger
+        if item.get("kind") == proof["streamed_qualification_record_kind"]
+        and item.get("phase") == proof["streamed_qualification_phase"]
+    )
+    assert source["source"]["repository"] == row["repository"]
+    assert source["source"]["commit"] == row["commit"]
+    assert (
+        source["source"]["sha256"]
+        == streamed["exact_streamed_qualification"]["mbs_xml"]["sha256"]
+    )
+    assert source["observation"]["records"] == 5989
+    assert source["observation"]["distinct_native_fields"] == 40
+    assert (
+        streamed["exact_streamed_qualification"]["mbs_xml"]["records"] == 5989
+    )
+    scraper_archive = json.loads(
+        (
+            ROOT / "quality/qualifications/scraper-archival-20260906.json"
+        ).read_text()
+    )
+    graph_archive = json.loads(
+        (
+            ROOT / "quality/qualifications/graph-archival-20260906.json"
+        ).read_text()
+    )
+    assert streamed["recorded_at"] < scraper_archive["archival"]["updated_at"]
+    assert streamed["recorded_at"] < graph_archive["updated_at"]
+    assert (ROOT / proof["source_qualifier"].split("::", 1)[0]).is_file()
+    assert (ROOT / proof["behavior_tests"]).is_file()

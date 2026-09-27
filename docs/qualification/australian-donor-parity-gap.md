@@ -14,9 +14,11 @@ uses broad dispositions such as `adapt_or_replace_with_tests` and
 maps all 54 baseline blobs and ten later changed paths to M-105's final
 six-value vocabulary, preserving exact Git identities and baseline payload
 digests. This is a complete **classification**, not a parity qualification.
-Eleven baseline executable files (five graph source files, four scraper
+Ten baseline executable files (four graph source files, four scraper
 source/test files, and two scraper workflows) and five later changed paths
-remain explicitly `pending_behavioral_parity`. The existing [donor assessment](../../conductor/tracks/australian_health_source_consolidation_20260829/donor-assessment.md)
+remain explicitly `pending_behavioral_parity`. The donor's broken MBS parser
+is now bound to the exact pre-archive 5,989-record/40-field qualification of
+its replacement, including the rejected `MBSItem` shape. The existing [donor assessment](../../conductor/tracks/australian_health_source_consolidation_20260829/donor-assessment.md)
 maps their intended functions to successor behavior, but does not bind each
 file/function to a passing parity result. In particular, scraper async caller
 responsiveness is retained as legacy behavior, not proven API parity. The ten
@@ -26,7 +28,7 @@ rows; the earlier delta receipt's
 must not be read as current archival state.
 
 The next acceptance slice is to attach a GMA successor and behavioral test to
-each pending row, and byte-level public receipt to each data/legacy row. Keep roadmap-only work
+each remaining pending row, and byte-level public receipt to each data/legacy row. Keep roadmap-only work
 labelled successor intent, zero-byte placeholders as legacy evidence, and
 restricted terminology outside public data scope. Run the matrix against the
 inventory and delta denominators with missing/duplicate and unsupported-parity
