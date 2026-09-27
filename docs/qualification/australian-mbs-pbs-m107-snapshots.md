@@ -15,3 +15,8 @@ No source payload was downloaded during this audit.
 The [official quarterly](https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26?language=en), [annual](https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en), and [year-to-date](https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26) pages still advertise the three workbook categories. Page presence is discovery evidence, not byte acquisition or a successful snapshot. The annual page describes patients only at its own aggregate geography/time denominator; no item-level count follows from it.
 
 Next acceptance work is to recover those three authorized workbooks through a supported hosted delivery path, retain failures and attempts as B1 evidence, and independently verify their bytes, schema-era labels, periods, and completeness. PBS historical qualification needs its separate transport recovery and schema-era checks. A complete M-107 claim requires an enumerated expected-period/source inventory, checked against actual receipts; the present public archives establish only the exact objects above.
+
+The hosted utilisation publisher now requires discovery of all five authorized
+source/category families before staging. A failed `data.gov.au` package query,
+missing workbook category, or inaccessible publication page cannot yield a
+`complete` run by silently reducing the selected-resource denominator.
