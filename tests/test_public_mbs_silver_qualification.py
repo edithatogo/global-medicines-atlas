@@ -284,6 +284,63 @@ def test_official_release_redirect_is_rejected(
         command.qualify(exact_commit="a" * 40)
 
 
+def test_invalid_amount_decimal_probe_is_value_free(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    native_spellings = (
+        " 12.5 ",
+        "1e2",
+        "1_000",
+        "1,000",
+    )
+    records = b"".join(
+        (
+            f"<Data><ItemNum>{index + 1:05d}</ItemNum>"
+            f"<Benefit85>{spelling}</Benefit85></Data>"
+        ).encode()
+        for index, spelling in enumerate(native_spellings)
+    )
+    payload = b"<MBS_XML>" + records + b"</MBS_XML>"
+    monkeypatch.setattr(command, "LEGACY_MBS_BYTES", len(payload))
+    monkeypatch.setattr(
+        command, "LEGACY_MBS_SHA256", hashlib.sha256(payload).hexdigest()
+    )
+    monkeypatch.setattr(command.httpx, "Client", _client_factory(payload))
+
+    result = command.qualify(exact_commit="a" * 40)
+
+    diagnostics = cast("dict[str, object]", result["quality_diagnostics"])
+    probes = cast(
+        "list[dict[str, object]]",
+        diagnostics["invalid_amount_decimal_probe_source_ordinals"],
+    )
+    assert probes == [
+        {
+            "table": "benefits",
+            "probe": "decimal_constructor_rejected",
+            "source_ordinals": [3],
+        },
+        {
+            "table": "benefits",
+            "probe": "exponent_notation",
+            "source_ordinals": [1],
+        },
+        {
+            "table": "benefits",
+            "probe": "surrounding_whitespace",
+            "source_ordinals": [0],
+        },
+        {
+            "table": "benefits",
+            "probe": "underscore_separator",
+            "source_ordinals": [2],
+        },
+    ]
+    serialized = json.dumps(result)
+    assert all(spelling not in serialized for spelling in native_spellings)
+    assert diagnostics["source_values_included"] is False
+
+
 @pytest.mark.parametrize("commit", ["", "A" * 40, "a" * 39, "z" * 40])
 def test_requires_exact_lowercase_commit(commit: str) -> None:
     with pytest.raises(ValueError, match="exact commit"):

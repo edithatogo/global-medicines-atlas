@@ -1042,10 +1042,17 @@
   `quality_findings_present` blocker and source-faithful
   invalid value. Remaining independent gates include source-era qualification,
   public v4 identity/admission, M-107, and M-109 acceptance.
-- [~] Compare the pinned MBS archive object with the official July 2025 V3
-  release using bounded anonymous hash-only streaming. Remove
-  `real_source_era_unqualified` only on exact URI, release metadata, digest,
-  and byte-count agreement; retain the blocker and value-free mismatch receipt
-  otherwise. Then rerun the exact-main qualification. This is independent of
-  the unresolved Benefit85 quality finding, public v4 admission, M-107, M-109,
-  federation, and Stable v1 gates.
+- [x] Compare the pinned MBS archive object with the official July 2025 V3
+  release using bounded anonymous hash-only streaming. PR #560 merged as
+  `6983504`; exact-main run `36343032231` confirmed the official and pinned
+  archive objects have the same 8,194,522-byte length and SHA-256
+  `db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556`.
+  The report now clears only `real_source_era_unqualified`; one invalid
+  Benefit85 conversion and `public_v4_identity_unverified` remain.
+- [~] Probe the one value-free Benefit85 strict-grammar mismatch without
+  coercion or disclosure. The hosted diagnostic now distinguishes finite
+  Decimal text in surrounding whitespace, exponent, underscore, or other
+  noncanonical spelling from non-finite or Decimal-rejected text. Keep the
+  source invalid until its exact category and an evidence-backed acceptance
+  rule are known. Public v4 identity/admission, M-107, M-109, federation, and
+  Stable v1 remain separate.
