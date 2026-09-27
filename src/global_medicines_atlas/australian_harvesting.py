@@ -20,7 +20,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from http import HTTPStatus
 from pathlib import Path
-from typing import Any, Final
+from typing import Any, Final, cast
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -784,6 +784,7 @@ def build_cumulative_harvest_manifest(
     dataset: str,
     stages: list[HarvestStageResult],
     existing_manifest: dict[str, Any] | None = None,
+    run_coverage: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Merge newly staged harvest files with an existing dataset snapshot manifest."""
     new_manifest = build_harvest_manifest(dataset, stages)
@@ -797,7 +798,7 @@ def build_cumulative_harvest_manifest(
         files_by_path[f["path"]] = f
 
     merged_files = sorted(files_by_path.values(), key=lambda x: str(x["path"]))
-    return {
+    cumulative: dict[str, Any] = {
         "schema_id": "global-medicines-atlas.harvest-manifest",
         "schema_version": 1,
         "dataset": dataset,
@@ -805,6 +806,39 @@ def build_cumulative_harvest_manifest(
         "file_count": len(merged_files),
         "files": merged_files,
     }
+    if run_coverage is not None:
+        status = run_coverage.get("coverage_status")
+        failures_raw = run_coverage.get("failed_resources")
+        failures = (
+            cast("list[object]", failures_raw)
+            if isinstance(failures_raw, list)
+            else None
+        )
+        if (
+            status not in {"complete", "partial"}
+            or failures is None
+            or (status == "complete") != (len(failures) == 0)
+        ):
+            raise ValueError("Invalid latest-run harvest coverage")
+        failed_resources: list[dict[str, str]] = []
+        for failure in failures:
+            if not isinstance(failure, dict):
+                raise TypeError("Invalid latest-run harvest failure")
+            failure_record = cast("dict[str, object]", failure)
+            source_id = failure_record.get("source_id")
+            filename = failure_record.get("filename")
+            if not isinstance(source_id, str) or not isinstance(filename, str):
+                raise TypeError("Invalid latest-run harvest failure")
+            failed_resources.append({
+                "source_id": source_id,
+                "filename": filename,
+            })
+        cumulative["latest_run_coverage"] = {
+            "status": status,
+            "failed_resources": failed_resources,
+            "staged_resource_count": len(stages),
+        }
+    return cumulative
 
 
 def verify_anonymous_restore(

@@ -1097,11 +1097,49 @@ def test_mbs_utilisation_stage_resources_resilient(
     assert len(manifest["failed_resources"]) == 1
     assert manifest["failed_resources"][0]["filename"] == "timeout.xlsx"
 
+    cumulative = build_cumulative_harvest_manifest(
+        "test/mbs-utilisation",
+        stages,
+        run_coverage=manifest,
+    )
+    assert cumulative["latest_run_coverage"] == {
+        "status": "partial",
+        "failed_resources": [
+            {
+                "source_id": "au-health-medicare-statistics",
+                "filename": "timeout.xlsx",
+            }
+        ],
+        "staged_resource_count": 1,
+    }
+    assert cumulative["file_count"] == 2
+
     # All succeed
     stages_good, manifest_good = stage_resources([res_good], stage_dir)
     assert len(stages_good) == 1
     assert manifest_good["coverage_status"] == "complete"
     assert manifest_good["failed_resources"] == []
+    complete = build_cumulative_harvest_manifest(
+        "test/mbs-utilisation",
+        stages_good,
+        run_coverage=manifest_good,
+    )
+    assert complete["latest_run_coverage"]["status"] == "complete"
+
+    with pytest.raises(ValueError, match="Invalid latest-run harvest coverage"):
+        build_cumulative_harvest_manifest(
+            "test/mbs-utilisation",
+            stages,
+            run_coverage={
+                "coverage_status": "complete",
+                "failed_resources": [
+                    {
+                        "source_id": "au-health-medicare-statistics",
+                        "filename": "timeout.xlsx",
+                    }
+                ],
+            },
+        )
 
     with pytest.raises(
         RuntimeError, match=r"No resources were successfully staged"

@@ -236,7 +236,7 @@ def publish_to_huggingface(
             print(f"Notice on create_repo: {exc}", flush=True)
 
     cumulative_manifest = build_cumulative_harvest_manifest(
-        DATASET, stages, existing_manifest
+        DATASET, stages, existing_manifest, run_coverage=manifest
     )
     manifest_path = stage_dir / "manifest.json"
     manifest_path.write_text(
