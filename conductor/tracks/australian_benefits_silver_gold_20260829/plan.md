@@ -1042,3 +1042,10 @@
   `quality_findings_present` blocker and source-faithful
   invalid value. Remaining independent gates include source-era qualification,
   public v4 identity/admission, M-107, and M-109 acceptance.
+- [~] Compare the pinned MBS archive object with the official July 2025 V3
+  release using bounded anonymous hash-only streaming. Remove
+  `real_source_era_unqualified` only on exact URI, release metadata, digest,
+  and byte-count agreement; retain the blocker and value-free mismatch receipt
+  otherwise. Then rerun the exact-main qualification. This is independent of
+  the unresolved Benefit85 quality finding, public v4 admission, M-107, M-109,
+  federation, and Stable v1 gates.

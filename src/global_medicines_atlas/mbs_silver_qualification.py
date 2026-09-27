@@ -9,9 +9,10 @@ from __future__ import annotations
 import hashlib
 import json
 from collections import Counter
+from datetime import date, datetime
 from typing import Literal
 
-from pydantic import Field, model_validator
+from pydantic import AnyUrl, Field, model_validator
 
 from .australian_source_contracts import TargetTable, mbs_field_contracts
 from .mbs_silver import iter_mbs_silver_batches
@@ -25,6 +26,12 @@ _TABLES: tuple[TargetTable, ...] = (
     "fees",
     "benefits",
     "caps",
+)
+OFFICIAL_MBS_V3_URI = (
+    "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/"
+    "650f3eec0dfb990fca25692100069854/"
+    "0b61e1e80b332754ca258c9e0000c7d8/"
+    "$FILE/MBS-XML-20250701%20Version%203.XML"
 )
 _QUALITY_STATUSES = frozenset({
     "blank",
@@ -66,14 +73,41 @@ class MbsSilverQualityCount(FrozenModel):
     count: int = Field(strict=True, ge=1)
 
 
+class MbsSourceEraVerification(FrozenModel):
+    """Digest-bound identity for the official July 2025 MBS XML release."""
+
+    official_source_uri: AnyUrl
+    release_id: str = Field(min_length=1)
+    released_at: date
+    effective_at: date
+    official_source_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    official_source_byte_count: int = Field(strict=True, ge=1, le=9_000_000)
+    compared_at: datetime
+
+    @model_validator(mode="after")
+    def official_release_identity_matches(self) -> MbsSourceEraVerification:
+        """Reject an unrelated object mislabeled as this source era."""
+        if str(self.official_source_uri) != OFFICIAL_MBS_V3_URI:
+            raise ValueError("official MBS release URI differs")
+        if (
+            self.release_id != "MBS-XML-20250701 Version 3"
+            or self.released_at != date(2025, 6, 16)
+            or self.effective_at != date(2025, 7, 1)
+        ):
+            raise ValueError("official MBS release metadata differs")
+        return self
+
+
 class MbsSilverQualification(FrozenModel):
     """Aggregate candidate qualification over all six MBS Silver tables."""
 
     schema_version: Literal[1] = 1
     source_id: Literal["au-mbs"] = "au-mbs"
     source_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    source_byte_count: int = Field(strict=True, ge=1, le=9_000_000)
     receipt_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     schema_era: str = Field(min_length=1)
+    source_era_verification: MbsSourceEraVerification | None = None
     date_format: Literal["iso", "mbs-dmy"] | None
     source_record_count: int = Field(strict=True, ge=1)
     tables: tuple[MbsSilverTableQualification, ...]
@@ -126,6 +160,20 @@ class MbsSilverQualification(FrozenModel):
             item.status not in _CONVERSION_STATUSES for item in self.quality
         ):
             raise ValueError("quality outcome denominator differs")
+        if self.source_era_verification is not None and (
+            self.source_era_verification.official_source_sha256
+            != self.source_sha256
+            or self.source_era_verification.official_source_byte_count
+            != self.source_byte_count
+        ):
+            raise ValueError(
+                "official source identity differs from B2 identity"
+            )
+        if (
+            self.source_era_verification is not None
+            and self.schema_era != "2025-07-version-3"
+        ):
+            raise ValueError("official source era differs from catalog era")
         if tuple(item.status for item in self.quality) != tuple(
             sorted({item.status for item in self.quality})
         ):
@@ -137,7 +185,11 @@ class MbsSilverQualification(FrozenModel):
             raise ValueError("quality outcome denominator differs")
         expected_blockers = (
             "public_v4_identity_unverified",
-            "real_source_era_unqualified",
+            *(
+                ("real_source_era_unqualified",)
+                if self.source_era_verification is None
+                else ()
+            ),
             *(
                 ("quality_findings_present",)
                 if any(
@@ -148,7 +200,7 @@ class MbsSilverQualification(FrozenModel):
         )
         if self.blockers != expected_blockers:
             raise ValueError("candidate blockers differ from evidence")
-        if self.qualification_sha256 != _report_digest(self):
+        if self.qualification_sha256 != report_digest(self):
             raise ValueError("qualification digest differs from report")
         return self
 
@@ -163,7 +215,7 @@ def _canonical(value: object) -> bytes:
     ).encode()
 
 
-def _report_digest(report: MbsSilverQualification) -> str:
+def report_digest(report: MbsSilverQualification) -> str:
     values = report.model_dump(
         exclude={"qualification_sha256"}, exclude_computed_fields=True
     )
@@ -176,6 +228,7 @@ def qualify_mbs_silver(
     *,
     date_format: Literal["iso", "mbs-dmy"] | None = None,
     rows_per_batch: int = 1024,
+    source_era_verification: MbsSourceEraVerification | None = None,
 ) -> MbsSilverQualification:
     """Account for every candidate table row and mapped native field.
 
@@ -238,7 +291,11 @@ def qualify_mbs_silver(
     )
     blockers: tuple[Blocker, ...] = (
         "public_v4_identity_unverified",
-        "real_source_era_unqualified",
+        *(
+            ("real_source_era_unqualified",)
+            if source_era_verification is None
+            else ()
+        ),
         *(
             ("quality_findings_present",)
             if any(item.status in _QUALITY_STATUSES for item in quality)
@@ -247,8 +304,10 @@ def qualify_mbs_silver(
     )
     provisional = MbsSilverQualification.model_construct(
         source_sha256=receipt.payload.sha256,
+        source_byte_count=receipt.payload.byte_count,
         receipt_sha256=receipt.digest(),
         schema_era=receipt.source.catalog_version,
+        source_era_verification=source_era_verification,
         date_format=date_format,
         source_record_count=source_record_count,
         tables=tuple(table_reports),
@@ -258,12 +317,14 @@ def qualify_mbs_silver(
     )
     return MbsSilverQualification(
         source_sha256=receipt.payload.sha256,
+        source_byte_count=receipt.payload.byte_count,
         receipt_sha256=receipt.digest(),
         schema_era=receipt.source.catalog_version,
+        source_era_verification=source_era_verification,
         date_format=date_format,
         source_record_count=source_record_count,
         tables=tuple(table_reports),
         quality=quality,
         blockers=blockers,
-        qualification_sha256=_report_digest(provisional),
+        qualification_sha256=report_digest(provisional),
     )

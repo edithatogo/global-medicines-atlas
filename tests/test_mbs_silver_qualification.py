@@ -1,13 +1,16 @@
 """Aggregate qualification for receipt-bound MBS Silver candidates."""
 
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 
 import pytest
 from pydantic import AnyUrl, ValidationError
 
 from global_medicines_atlas.mbs_silver_qualification import (
+    OFFICIAL_MBS_V3_URI,
     MbsSilverQualification,
+    MbsSourceEraVerification,
     qualify_mbs_silver,
+    report_digest,
 )
 from global_medicines_atlas.receipts import (
     AcquisitionMethod,
@@ -185,3 +188,72 @@ def test_clean_candidate_retains_only_external_identity_blockers() -> None:
         "public_v4_identity_unverified",
         "real_source_era_unqualified",
     )
+
+
+def test_source_era_verification_is_bound_to_archive_identity() -> None:
+    payload = b"<MBS_XML><Data><ItemNum>00123</ItemNum></Data></MBS_XML>"
+    receipt = _receipt(payload)
+    verification = MbsSourceEraVerification(
+        official_source_uri=AnyUrl(OFFICIAL_MBS_V3_URI),
+        release_id="MBS-XML-20250701 Version 3",
+        released_at=date(2025, 6, 16),
+        effective_at=date(2025, 7, 1),
+        official_source_sha256=receipt.payload.sha256,
+        official_source_byte_count=receipt.payload.byte_count,
+        compared_at=datetime(2026, 9, 1, tzinfo=UTC),
+    )
+    report = qualify_mbs_silver(payload, receipt)
+    provisional = MbsSilverQualification.model_construct(
+        source_sha256=report.source_sha256,
+        source_byte_count=report.source_byte_count,
+        receipt_sha256=report.receipt_sha256,
+        schema_era="2025-07-version-3",
+        source_era_verification=verification,
+        date_format=report.date_format,
+        source_record_count=report.source_record_count,
+        tables=report.tables,
+        quality=report.quality,
+        blockers=("public_v4_identity_unverified",),
+        qualification_sha256="0" * 64,
+    )
+    values = provisional.model_dump()
+    values["qualification_sha256"] = report_digest(provisional)
+    validated = MbsSilverQualification.model_validate(values)
+    assert validated.blockers == ("public_v4_identity_unverified",)
+    assert (
+        MbsSilverQualification.model_validate_json(validated.model_dump_json())
+        == validated
+    )
+
+    with pytest.raises(ValidationError, match="differs from B2 identity"):
+        MbsSilverQualification.model_validate(
+            values | {"source_byte_count": len(payload) + 1}
+        )
+
+    with pytest.raises(ValidationError, match="catalog era"):
+        MbsSilverQualification.model_validate(values | {"schema_era": "other"})
+
+
+@pytest.mark.parametrize(
+    ("change", "message"),
+    [
+        ({"official_source_uri": AnyUrl("https://example.org/mbs.xml")}, "URI"),
+        ({"release_id": "unrelated release"}, "metadata"),
+    ],
+)
+def test_source_era_verification_rejects_unrelated_official_identity(
+    change: dict[str, object], message: str
+) -> None:
+    with pytest.raises(ValidationError, match=message):
+        MbsSourceEraVerification.model_validate(
+            {
+                "official_source_uri": AnyUrl(OFFICIAL_MBS_V3_URI),
+                "release_id": "MBS-XML-20250701 Version 3",
+                "released_at": date(2025, 6, 16),
+                "effective_at": date(2025, 7, 1),
+                "official_source_sha256": "a" * 64,
+                "official_source_byte_count": 1,
+                "compared_at": datetime(2026, 9, 1, tzinfo=UTC),
+            }
+            | change
+        )
