@@ -42,7 +42,33 @@ jobs:
           set -euo pipefail
           uv run --locked --python 3.14.6 python scripts/diagnose_mbs_publication_page.py \
             --output build/mbs-page-transport-diagnostic.json
+      - name: Preserve failure-only receipt if probe was interrupted
+        if: always()
+        run: |
+          set -euo pipefail
+          if test -s build/mbs-page-transport-diagnostic.json; then
+            exit 0
+          fi
+          python3 - <<'PY'
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+          path = Path('build/mbs-page-transport-diagnostic.json')
+          path.parent.mkdir(parents=True, exist_ok=True)
+          receipt = {
+              'schema_id': 'global-medicines-atlas.mbs-page-transport-diagnostic',
+              'schema_version': 1,
+              'observed_at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
+              'source_page': 'https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en',
+              'metadata_only': True,
+              'workbook_requested': False,
+              'publication_performed': False,
+              'attempts': [{'outcome': 'interrupted_or_setup_failure'}],
+          }
+          path.write_text(json.dumps(receipt, indent=2) + '\n')
+          PY
       - name: Retain bounded metadata receipt
+        if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: mbs-page-transport-diagnostic

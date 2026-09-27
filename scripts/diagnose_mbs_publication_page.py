@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import asyncio
 import hashlib
 import json
 import re
@@ -53,7 +54,7 @@ def _error_classes(exc: BaseException) -> list[str]:
     return classes
 
 
-def _response_metadata(
+async def _response_metadata(
     response: httpx.Response, url: str, redirect_count: int
 ) -> dict[str, object]:
     result: dict[str, object] = {
@@ -66,7 +67,7 @@ def _response_metadata(
     if response.status_code != HTTPStatus.OK:
         return result
     body = bytearray()
-    for chunk in response.iter_bytes():
+    async for chunk in response.aiter_bytes():
         body.extend(chunk)
         if len(body) > MAX_PAGE_BYTES:
             return {"outcome": "page_too_large", "http_status": HTTPStatus.OK}
@@ -81,10 +82,9 @@ def _response_metadata(
     return result
 
 
-def probe_page(
-    client: httpx.Client, *, timeout_seconds: float
+async def _probe_page_inner(
+    client: httpx.AsyncClient, *, timeout_seconds: float
 ) -> dict[str, object]:
-    """Read only bounded HTML; never request an XLSX link or return page text."""
     url = SOURCE_PAGE
     for redirect_count in range(MAX_REDIRECTS + 1):
         if not _safe_page(url):
@@ -93,7 +93,7 @@ def probe_page(
                 "redirect_count": redirect_count,
             }
         try:  # ruff: ignore[too-many-statements-in-try-clause] -- bounded stream and redirect transaction
-            with client.stream(
+            async with client.stream(
                 "GET",
                 url,
                 headers=DEFAULT_HARVEST_HEADERS,
@@ -109,7 +109,7 @@ def probe_page(
                         }
                     url = urljoin(url, location)
                     continue
-                return _response_metadata(response, url, redirect_count)
+                return await _response_metadata(response, url, redirect_count)
         except httpx.RequestError as exc:
             return {
                 "outcome": "transport_error",
@@ -121,17 +121,35 @@ def probe_page(
     }
 
 
+async def probe_page(
+    client: httpx.AsyncClient, *, timeout_seconds: float
+) -> dict[str, object]:
+    """Read only bounded HTML under a monotonic whole-probe deadline."""
+    try:
+        async with asyncio.timeout(timeout_seconds):
+            return await _probe_page_inner(
+                client, timeout_seconds=timeout_seconds
+            )
+    except TimeoutError:
+        return {"outcome": "wall_clock_timeout"}
+
+
+async def _collect_attempts() -> list[dict[str, object]]:
+    attempts: list[dict[str, object]] = []
+    async with httpx.AsyncClient(trust_env=True) as client:
+        for timeout_seconds in (12.0, 30.0):
+            result = await probe_page(client, timeout_seconds=timeout_seconds)
+            attempts.append({"timeout_seconds": timeout_seconds, **result})
+            if result["outcome"] == "http_response":
+                break
+    return attempts
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    attempts: list[dict[str, object]] = []
-    with httpx.Client(trust_env=True) as client:
-        for timeout_seconds in (12.0, 30.0):
-            result = probe_page(client, timeout_seconds=timeout_seconds)
-            attempts.append({"timeout_seconds": timeout_seconds, **result})
-            if result["outcome"] == "http_response":
-                break
+    attempts = asyncio.run(_collect_attempts())
     receipt = {
         "schema_id": "global-medicines-atlas.mbs-page-transport-diagnostic",
         "schema_version": 1,
