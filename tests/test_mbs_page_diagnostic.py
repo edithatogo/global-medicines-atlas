@@ -74,12 +74,38 @@ def test_probe_rejects_external_redirect_without_requesting_it() -> None:
     assert result["outcome"] == "blocked_redirect"
 
 
+def test_probe_rejects_same_host_workbook_redirect_without_requesting_it() -> (
+    None
+):
+    requested: list[str] = []
+
+    def redirect(request: httpx.Request) -> httpx.Response:
+        requested.append(str(request.url))
+        return httpx.Response(
+            302,
+            headers={
+                "location": "https://www.health.gov.au/sites/default/files/annual.xlsx"
+            },
+        )
+
+    async def run() -> dict[str, object]:
+        async with httpx.AsyncClient(
+            transport=httpx.MockTransport(redirect)
+        ) as client:
+            return await probe_page(client, timeout_seconds=12)
+
+    assert asyncio.run(run())["outcome"] == "blocked_redirect"
+    assert requested == [SOURCE_PAGE]
+
+
 def test_probe_rejects_oversized_page_without_returning_body() -> None:
     async def run() -> dict[str, object]:
         async with httpx.AsyncClient(
             transport=httpx.MockTransport(
                 lambda _request: httpx.Response(
-                    200, content=b"x" * (MAX_PAGE_BYTES + 1)
+                    200,
+                    content=b"x" * (MAX_PAGE_BYTES + 1),
+                    headers={"content-type": "text/html"},
                 )
             )
         ) as client:
@@ -87,6 +113,32 @@ def test_probe_rejects_oversized_page_without_returning_body() -> None:
 
     result = asyncio.run(run())
     assert result == {"outcome": "page_too_large", "http_status": 200}
+
+
+def test_probe_does_not_read_non_html_response() -> None:
+    class UnreadableStream(httpx.AsyncByteStream):
+        async def __aiter__(self) -> AsyncIterator[bytes]:
+            raise AssertionError("binary body must not be read")
+            yield b""
+
+    async def run() -> dict[str, object]:
+        async with httpx.AsyncClient(
+            transport=httpx.MockTransport(
+                lambda _request: httpx.Response(
+                    200,
+                    headers={
+                        "content-type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    },
+                    stream=UnreadableStream(),
+                )
+            )
+        ) as client:
+            return await probe_page(client, timeout_seconds=12)
+
+    assert asyncio.run(run()) == {
+        "outcome": "non_html_response",
+        "http_status": 200,
+    }
 
 
 def test_probe_has_whole_response_deadline_for_slow_drip() -> None:
@@ -99,7 +151,11 @@ def test_probe_has_whole_response_deadline_for_slow_drip() -> None:
     async def run() -> dict[str, object]:
         async with httpx.AsyncClient(
             transport=httpx.MockTransport(
-                lambda _request: httpx.Response(200, stream=SlowStream())
+                lambda _request: httpx.Response(
+                    200,
+                    headers={"content-type": "text/html"},
+                    stream=SlowStream(),
+                )
             )
         ) as client:
             return await probe_page(client, timeout_seconds=0.05)

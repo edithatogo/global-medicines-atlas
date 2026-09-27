@@ -37,8 +37,12 @@ overcome the hosted delivery failure. A [metadata-only Actions diagnostic](../..
 probed only that pinned official publication page with 12- and 30-second
 whole-probe deadlines. The [exact-head hosted run on 2026-09-27](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36323531387)
 at `d8114f1a243a057b7497ba1e84601b481720d34d` completed successfully as a
-diagnostic; its retained metadata-only artifact reports `wall_clock_timeout`
-for both attempts. It requested no workbook and performed no publication.
+diagnostic; its retained artifact reports `wall_clock_timeout` for both attempts
+and no publication. Its `workbook_requested=false` field was not independently
+supported because the first probe allowed a same-host redirect to a workbook;
+the timeout artifact retained no redirect chain. The diagnostic now confines
+redirects to the same publication-page path, but a new hosted run is needed to
+establish the stronger no-workbook-request claim.
 The annual-page discovery route therefore remains unavailable from that
 hosted runner; this does not establish whether the other two pages or a
 different authorized transport would succeed.

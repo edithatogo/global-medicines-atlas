@@ -23,6 +23,7 @@ SOURCE_PAGE = (
     "?language=en"
 )
 ALLOWED_HOSTS = frozenset({"www.health.gov.au", "health.gov.au"})
+SOURCE_PATH = urlparse(SOURCE_PAGE).path
 MAX_PAGE_BYTES = 262_144
 MAX_REDIRECTS = 3
 MAX_CAUSE_DEPTH = 4
@@ -36,6 +37,7 @@ def _safe_page(url: str) -> bool:
         and parsed.username is None
         and parsed.password is None
         and parsed.port is None
+        and parsed.path.rstrip("/") == SOURCE_PATH.rstrip("/")
     )
 
 
@@ -66,6 +68,11 @@ async def _response_metadata(
     }
     if response.status_code != HTTPStatus.OK:
         return result
+    if "text/html" not in response.headers.get("content-type", "").lower():
+        return {
+            "outcome": "non_html_response",
+            "http_status": HTTPStatus.OK,
+        }
     body = bytearray()
     async for chunk in response.aiter_bytes():
         body.extend(chunk)
