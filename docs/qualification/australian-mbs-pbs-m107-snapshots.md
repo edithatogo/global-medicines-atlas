@@ -34,8 +34,20 @@ bounded GET of the page returned its Excel link. The page title ends 2025–26
 while the workbook filename ends 2024–25, so the workbook's period is not
 qualified from page metadata. This local observation does not explain or
 overcome the hosted delivery failure. A [metadata-only Actions diagnostic](../../.github/workflows/mbs-publication-page-diagnostic.yml)
-now probes only that pinned official publication page with 12- and at most
-30-second bounded reads. It records status or transport class, redirect count,
-HTML digest and workbook-link count, but never fetches a workbook or publishes
-data. This is prepared tooling, not a hosted observation; its result must be
-read back before changing the harvest delivery path.
+probed only that pinned official publication page with 12- and 30-second
+whole-probe deadlines. The [exact-head hosted run on 2026-09-27](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36323531387)
+at `d8114f1a243a057b7497ba1e84601b481720d34d` completed successfully as a
+diagnostic; its retained metadata-only artifact reports `wall_clock_timeout`
+for both attempts. It requested no workbook and performed no publication.
+The annual-page discovery route therefore remains unavailable from that
+hosted runner; this does not establish whether the other two pages or a
+different authorized transport would succeed.
+
+A read-only `data.gov.au` CKAN package search for the exact phrases
+`Medicare annual statistics`, `Medicare quarterly statistics`, and
+`Medicare statistics year-to-date` returned zero matching packages on
+2026-09-27. This bounded metadata search found no verified mirror for the
+three workbooks; it does not prove no alternate official distribution exists.
+M-107 remains blocked pending an independently verified, authorized hosted
+delivery path and byte-level receipt for each missing workbook. Do not retry
+the unchanged harvest merely to reproduce the page timeout.
