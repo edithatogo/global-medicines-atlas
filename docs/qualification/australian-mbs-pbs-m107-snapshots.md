@@ -27,9 +27,13 @@ binding and both `data.gov.au` package queries. Its bounded health.gov.au
 publication-page discovery returned zero workbook URLs after about 110 seconds;
 the job failed before staging, publication, or cleanup. The prior public
 utilisation revision is unchanged. A read-only workstation HEAD check returned
-HTTP 200 for the annual publication page and linked workbook, and a separate
-bounded GET of that page returned its Excel link. This local observation does
-not explain or overcome the hosted delivery failure. The next technical step
+HTTP 200 for the annual publication page and its exact linked workbook URL,
+`https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx`;
+the resolved URL was identical and HEAD reported 1,058,479 bytes. A separate
+bounded GET of the page returned its Excel link. The page title ends 2025–26
+while the workbook filename ends 2024–25, so the workbook's period is not
+qualified from page metadata. This local observation does not explain or
+overcome the hosted delivery failure. The next technical step
 is a metadata-only Actions diagnostic that records bounded response/error
 categories for one pinned official publication page, without source bytes or
 another full harvest; only then should the hosted delivery path be changed.
