@@ -44,17 +44,23 @@ Decision: approve rights disposition per source for current payloads and derived
 
 ## D-006-04 — Stable release signing and attestation
 
-**Status:** isolated remaining human gate. `v1.0.0rc1` is tagged and attested.
-This is not a public stable v1 release. Do not invent credentials or cut a
-stable release without maintainer approval.
+**Status:** pending dependent technical qualification and then an explicit
+maintainer decision. `v1.0.0rc1` is tagged and attested, but its authority is
+prerelease-only. See the
+[candidate handoff](../../docs/qualification/stable-v1-release-approval-handoff.md)
+for the evidence and exact-commit binding required before requesting approval.
 
 Decision: authorize signing/attestation of a stable release.
 
 **Recommended:** require a maintainer-controlled signing key or approved OIDC attestation, exact commit binding, and independently verifiable receipts.
 
-- **Option A — Recommended:** sign and attest the qualified commit. Contingency: revoke or withdraw if digest or provenance differs.
-- **Option B:** publish unsigned prerelease only. Contingency: keep stable promotion blocked and label artifacts prerelease.
-- **Option C:** defer release. Contingency: continue qualification without publication claims.
+- **Option A — Recommended after technical gates pass:** approve the named
+  commit, tag, software artifacts, licence scope, and attestation method;
+  release through protected CI and withdraw if identity or provenance differs.
+- **Option B:** defer approval pending more evidence; keep stable promotion
+  blocked while qualification continues.
+- **Option C:** decline stable promotion; retain the existing prerelease and
+  do not publish a stable artifact.
 
 ## D-006-05 — Production deployment and accessibility
 
