@@ -84,15 +84,73 @@ def test_m105_dispositions_do_not_promote_unproven_behavior() -> None:
             item["acceptance_state"] == "pending_behavioral_parity"
             for item in receipt["baseline"]
         )
-        == 6
+        == 4
     )
     assert (
         sum(
             item["acceptance_state"] == "pending_behavioral_parity"
             for item in receipt["post_baseline_delta"]
         )
-        == 5
+        == 3
     )
+
+
+def test_scraper_processor_supersession_maps_every_donor_function() -> None:
+    receipt = json.loads(RECEIPT.read_text())
+    inventory = json.loads(INVENTORY.read_text())
+    donor = next(
+        repo
+        for repo in inventory["denominator"]["repositories"]
+        if repo["repository"] == "edithatogo/aus-health-data-scraper"
+    )
+    donor_functions = {
+        item["path"]: set(item["functions"])
+        for item in donor["files"]
+        if item["path"] in {"src/processor.py", "tests/test_processor.py"}
+    }
+    # Exact later blobs: the processor narrows its HTML exception handler;
+    # the processor test only reorders imports.
+    later_blobs = {
+        "src/processor.py": (
+            "e7cae9b5585a825a197b6c9b850d918a71cfb105",
+            {"process_mbs_xml", "process_html_file", "combine_and_save_data"},
+        ),
+        "tests/test_processor.py": (
+            "d016d0d1484aa1fe3adc6a8cf85965bc111d06d7",
+            {
+                "temp_data_dirs",
+                "test_process_mbs_xml",
+                "test_combine_and_save_data",
+            },
+        ),
+    }
+    for group in ("baseline", "post_baseline_delta"):
+        for row in receipt[group]:
+            if (
+                row["repository"] != donor["repository"]
+                or row["path"] not in donor_functions
+            ):
+                continue
+            expected_functions = donor_functions[row["path"]]
+            if group == "post_baseline_delta":
+                expected_blob, expected_functions = later_blobs[row["path"]]
+                assert row["git_object_sha1"] == expected_blob
+            assert row["acceptance_state"] == "verified_supersession"
+            proof = row["parity_evidence"]
+            assert set(proof["function_dispositions"]) == expected_functions
+            for function in proof["function_dispositions"].values():
+                refs = function.get(
+                    "behavior_tests", [function.get("behavior_test")]
+                )
+                for ref in refs:
+                    test_path, test_name = ref.split("::", 1)
+                    tree = ast.parse((ROOT / test_path).read_text())
+                    assert test_name in {
+                        node.name
+                        for node in ast.walk(tree)
+                        if isinstance(node, ast.FunctionDef)
+                    }
+    assert receipt["qualification_state"] == "partial"
 
 
 def test_mbs_parser_replacement_binds_exact_pre_archive_qualification() -> None:
