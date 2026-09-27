@@ -13,14 +13,10 @@ import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
 from datetime import datetime
 from hashlib import sha256
+from importlib import import_module
 from pathlib import Path
 from typing import Any, cast
 
-from huggingface_hub import (  # pyright: ignore[reportUnknownVariableType]
-    CommitOperationAdd,
-    HfApi,
-    hf_hub_download,  # pyright: ignore[reportUnknownVariableType]
-)
 from pydantic import AnyUrl
 from scripts.qualify_public_mbs_silver import qualify
 
@@ -65,6 +61,11 @@ def main() -> int:  # ruff: ignore[too-many-locals]
         raise RuntimeError(
             "MBS Silver publication requires protected main Actions"
         )
+    hub_client: Any = import_module("huggingface_hub")
+    commit_operation_add = hub_client.CommitOperationAdd
+    hf_api = hub_client.HfApi
+    hf_hub_download = hub_client.hf_hub_download
+
     commit = os.environ["GITHUB_SHA"]
     root = Path.cwd()
     work = root / "build/mbs-silver-publication"
@@ -156,7 +157,7 @@ def main() -> int:  # ruff: ignore[too-many-locals]
         repository_root=root,
     )
 
-    public: Any = HfApi(token=False)
+    public: Any = hf_api(token=False)
     before = public.dataset_info(DESTINATION_DATASET, files_metadata=True)
     if before.private or before.gated:
         raise RuntimeError("MBS destination is not anonymously public")
@@ -178,13 +179,13 @@ def main() -> int:  # ruff: ignore[too-many-locals]
         ],
         check=True,
     )
-    result: Any = HfApi(token=os.environ["HF_TOKEN"]).create_commit(
+    result: Any = hf_api(token=os.environ["HF_TOKEN"]).create_commit(
         repo_id=DESTINATION_DATASET,
         repo_type="dataset",
         parent_commit=before.sha,
         commit_message="Publish qualified July 2025 MBS Silver v4 candidate",
         operations=[
-            CommitOperationAdd(path_in_repo=name, path_or_fileobj=str(path))
+            commit_operation_add(path_in_repo=name, path_or_fileobj=str(path))
             for name, path in sorted(files.items())
         ],
     )
