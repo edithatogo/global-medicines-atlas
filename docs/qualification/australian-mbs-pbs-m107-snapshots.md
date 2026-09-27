@@ -20,3 +20,16 @@ The hosted utilisation publisher now requires discovery of all five authorized
 source/category families before staging. A failed `data.gov.au` package query,
 missing workbook category, or inaccessible publication page cannot yield a
 `complete` run by silently reducing the selected-resource denominator.
+
+The first [exact-head hosted attempt on 2026-09-27](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36321857806)
+at `234f4a44a915877ac95c7668b4445fb368417f3b` passed repository/authority
+binding and both `data.gov.au` package queries. Its bounded health.gov.au
+publication-page discovery returned zero workbook URLs after about 110 seconds;
+the job failed before staging, publication, or cleanup. The prior public
+utilisation revision is unchanged. A read-only workstation HEAD check returned
+HTTP 200 for the annual publication page and linked workbook, and a separate
+bounded GET of that page returned its Excel link. This local observation does
+not explain or overcome the hosted delivery failure. The next technical step
+is a metadata-only Actions diagnostic that records bounded response/error
+categories for one pinned official publication page, without source bytes or
+another full harvest; only then should the hosted delivery path be changed.
