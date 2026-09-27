@@ -206,6 +206,9 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     an attested `v1.0.0rc1` software release. OSF is deprecated. The
     public/no-credential Hugging Face archive is the completed publication path
     for that class. Stable-v1 promotion remains a distinct human gate.
+  - The stable approval handoff now specifies a candidate-bound decision only
+    after Australian federation, Bronze current scope, and M5 pass. No stable
+    approval has been requested or inferred from the prerelease authority.
 - [x] Task: Record stable-v1 evidence and post-release monitoring plan ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
   - Six domain-specific SLO, alert and approval-gated rollback policies bind the
     candidate evidence while post-release observations remain `not_observed`.
