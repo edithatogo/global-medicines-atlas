@@ -87,6 +87,48 @@ def test_selected_profile_and_parquet_preserve_exact_field_identity() -> None:
     )
 
 
+def test_v3_temporal_effectivity_dates_are_classified_by_native_parent() -> (
+    None
+):
+    payload = _production_xml().replace(
+        b"<pbs:block-container>",
+        b"""<pbs:effective><pbs:date>2019-03-20</pbs:date></pbs:effective>
+<pbs:supply-only><pbs:date>2026-05-01</pbs:date>
+ <pbs:non-effective><pbs:date>2026-09-01</pbs:date></pbs:non-effective>
+</pbs:supply-only><pbs:block-container>""",
+    )
+    rows = [
+        row
+        for row in table(payload, pbs_dates.CANDIDATE_PROFILE).to_pylist()
+        if row["date_role"].startswith("pbs_")
+    ]
+    assert [row["date_role"] for row in rows] == [
+        "pbs_effective_date",
+        "pbs_supply_only_date",
+        "pbs_non_effective_date",
+    ]
+    assert [row["date_value"] for row in rows] == [
+        date(2019, 3, 20),
+        date(2026, 5, 1),
+        date(2026, 9, 1),
+    ]
+    assert all(row["date_source_field_id"] for row in rows)
+    assert all(row["date_native_value"] for row in rows)
+    assert [row["item_occurrence_id"] for row in rows] == [
+        rows[0]["item_occurrence_id"]
+    ] * 3
+    unselected = [
+        row
+        for row in table(payload).to_pylist()
+        if row["date_role"].startswith("pbs_")
+    ]
+    assert all(row["date_value"] is None for row in unselected)
+    assert all(
+        row["date_conversion_status"] == "profile_not_selected"
+        for row in unselected
+    )
+
+
 @pytest.mark.parametrize(
     ("literal", "status"),
     [
