@@ -338,6 +338,7 @@ def test_only_executable_local_capabilities_are_marked_implemented() -> None:
         "au-mbs-p7-legacy-workbook",
         "fr-open-medic",
         "global-rxnorm",
+        "us-cms-partd-spending",
         *CURRENT_SCOPE_FIXTURE_SOURCE_IDS,
     }
 
