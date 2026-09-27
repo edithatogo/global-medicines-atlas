@@ -26,6 +26,23 @@ from .pbs_references import (
 )
 
 MAX_REFERENCE_SHARDS = 32
+_REFERENCE_KINDS = frozenset({
+    "unmapped",
+    "item_xml_id",
+    "amt_reference",
+    "atc_reference",
+})
+_REFERENCE_DIAGNOSTICS = frozenset({
+    "unmapped",
+    "missing_value",
+    "empty_value",
+    "duplicate_source_literal",
+    "unique_source_literal",
+    "missing_target",
+    "empty_target",
+    "ambiguous_source_targets",
+    "unresolved",
+})
 
 
 def _encoded(value: object) -> bytes:
@@ -92,6 +109,35 @@ def _counter() -> dict[str, int]:
             "date_unselected_rows",
         ),
         0,
+    )
+
+
+def _reference_diagnostics(
+    batches: Iterable[pa.RecordBatch],
+) -> tuple[Iterator[pa.RecordBatch], Counter[str], Counter[str]]:
+    kinds: Counter[str] = Counter()
+    diagnostics: Counter[str] = Counter()
+
+    def counted() -> Iterator[pa.RecordBatch]:
+        for batch in batches:
+            labels = batch.select(["contract_kind", "diagnostic"]).to_pydict()
+            kinds.update(labels["contract_kind"])
+            diagnostics.update(labels["diagnostic"])
+            yield batch
+
+    return counted(), kinds, diagnostics
+
+
+def _valid_reference_diagnostics(
+    projection: dict[str, Any],
+    kinds: Counter[str],
+    diagnostics: Counter[str],
+) -> bool:
+    return (
+        set(kinds) <= _REFERENCE_KINDS
+        and set(diagnostics) <= _REFERENCE_DIAGNOSTICS
+        and sum(kinds.values()) == projection["rows"]
+        and sum(diagnostics.values()) == projection["rows"]
     )
 
 
@@ -1093,9 +1139,13 @@ def qualify_reference_shard(  # ruff: ignore[too-many-locals]
         for batch in source_batches
         for output in _annotated_batches(batch, index, schema, rows_per_batch)
     )
+    counted, reference_kind_counts, reference_diagnostic_counts = (
+        _reference_diagnostics(annotated)
+    )
+
     window = (partition["start_row"], partition["stop_row"])
     projection = _projection(
-        annotated,
+        counted,
         binding,
         denominator,
         nested=True,
@@ -1111,6 +1161,16 @@ def qualify_reference_shard(  # ruff: ignore[too-many-locals]
         for key in ("rows", "native_fields", "native_digest")
     ):
         raise ValueError("PBS reference shard projection digest changed")
+    if not _valid_reference_diagnostics(
+        projection, reference_kind_counts, reference_diagnostic_counts
+    ):
+        raise ValueError("PBS reference shard diagnostics do not reconcile")
+    projection["reference_kind_counts"] = dict(
+        sorted(reference_kind_counts.items())
+    )
+    projection["reference_diagnostic_counts"] = dict(
+        sorted(reference_diagnostic_counts.items())
+    )
     manifest_sha256 = hashlib.sha256(
         (directory / "reference-manifest.json").read_bytes()
     ).hexdigest()

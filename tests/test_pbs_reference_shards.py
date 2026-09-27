@@ -93,6 +93,22 @@ def test_prepared_reference_shards_reassemble_full_ordered_projection(
         )
         == denominator["native_fields"]
     )
+    assert all(
+        sum(report["projections"]["references"][key].values())
+        == report["projections"]["references"]["rows"]
+        for report in reports
+        for key in (
+            "reference_kind_counts",
+            "reference_diagnostic_counts",
+        )
+    )
+    assert all(
+        not (
+            {"reference_value", "reference_resource", "source_id"}
+            & set(report["projections"]["references"])
+        )
+        for report in reports
+    )
     prepared = pa.concat_tables([
         pa.Table.from_batches(
             list(
