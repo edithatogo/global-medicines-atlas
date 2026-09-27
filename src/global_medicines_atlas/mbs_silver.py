@@ -30,6 +30,7 @@ from .receipts import SourceReceipt
 
 _TABLES = frozenset(field.target_table for field in mbs_field_contracts())
 _DECIMAL_TYPE = pa.decimal128(38, 9)
+MAX_MBS_AMOUNT_INTEGER_DIGITS = 5
 MAX_BATCH_ROWS = 4096
 
 
@@ -111,6 +112,13 @@ def _field_value(
     )
     typed = converted.typed_value
     status: str = converted.status
+    if (
+        contract.value_type == "aud_decimal"
+        and isinstance(value, str)
+        and converted.status == "converted"
+        and _is_outside_mbs_amount_format(value)
+    ):
+        typed, status = None, "invalid"
     if isinstance(typed, Decimal):
         try:
             # Arrow rejects lossy rescaling and precision overflow. The
@@ -124,6 +132,12 @@ def _field_value(
         "conversion_status": status,
         "typed_value": typed,
     }
+
+
+def _is_outside_mbs_amount_format(value: str) -> bool:
+    """Check the official MBS numeric amount width without coercion."""
+    integer = value.lstrip("+-").partition(".")[0]
+    return len(integer) > MAX_MBS_AMOUNT_INTEGER_DIGITS
 
 
 def _row(

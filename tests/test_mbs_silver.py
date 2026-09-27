@@ -214,11 +214,35 @@ def test_null_missing_invalid_and_decimal_precision_are_not_collapsed() -> None:
     assert rows[0]["DerivedFee"]["typed_value"] == "85% of item 00123"
 
 
+@pytest.mark.parametrize("date_format", [None, "iso", "mbs-dmy"])
+def test_mbs_amount_width_contract_is_independent_of_date_profile(
+    date_format: str | None,
+) -> None:
+    payload = _xml("<Benefit85>123456.78</Benefit85>")
+    rows = next(
+        iter_mbs_silver_batches(
+            payload,
+            _receipt(payload),
+            table="benefits",
+            date_format=date_format,
+        )
+    ).to_pylist()
+    amount = rows[0]["Benefit85"]
+    assert amount["native_value"] == "123456.78"
+    assert amount["typed_value"] is None
+    assert amount["conversion_status"] == "invalid"
+
+
 @pytest.mark.parametrize(
-    "value", ["0.1234567891", "123456789012345678901234567890"]
+    ("value", "status"),
+    [
+        ("0.1234567891", "unrepresentable"),
+        ("123456789012345678901234567890", "invalid"),
+    ],
 )
 def test_unrepresentable_decimal_retains_source_without_rounding(
     value: str,
+    status: str,
 ) -> None:
     payload = _xml(f"<ScheduleFee>{value}</ScheduleFee>")
     result = next(
@@ -227,7 +251,7 @@ def test_unrepresentable_decimal_retains_source_without_rounding(
     assert result == {
         "native_value": value,
         "native_state": "value",
-        "conversion_status": "unrepresentable",
+        "conversion_status": status,
         "typed_value": None,
     }
 
@@ -376,7 +400,7 @@ def test_reject_invalid_batch_bounds(size: int) -> None:
         )
 
 
-@given(st.integers(min_value=-1000000000, max_value=1000000000))
+@given(st.integers(min_value=-99999, max_value=99999))
 def test_decimal_arrow_property(value: int) -> None:
     payload = _xml(f"<Benefit75>{value}.012300</Benefit75>")
     result = next(
