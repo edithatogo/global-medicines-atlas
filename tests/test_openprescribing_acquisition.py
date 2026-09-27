@@ -10,6 +10,7 @@ import httpx
 import pytest
 from pydantic import ValidationError
 from scripts import probe_openprescribing_availability as probe_script
+from scripts import probe_openprescribing_head_availability as head_probe_script
 
 from global_medicines_atlas.openprescribing_acquisition import (
     OpenPrescribingAuthorization,
@@ -88,6 +89,62 @@ def test_endpoint_inventory_cannot_drift() -> None:
     raw["endpoints"] = endpoints
     with pytest.raises(ValidationError, match="identity sequence drifted"):
         OpenPrescribingAuthorization.model_validate(raw)
+
+
+def test_head_probe_checks_six_authorized_endpoints_without_reading_bodies() -> (
+    None
+):
+    requested: list[httpx.Request] = []
+
+    def respond(request: httpx.Request) -> httpx.Response:
+        requested.append(request)
+        return httpx.Response(
+            403,
+            headers={
+                "content-type": "text/html",
+                "server": "cloudflare",
+                "cf-mitigated": "challenge",
+            },
+            content=b"challenge body must not be retained",
+        )
+
+    result = head_probe_script.probe(
+        date(2026, 6, 1), transport=httpx.MockTransport(respond)
+    )
+
+    assert len(requested) == 6
+    assert all(request.method == "HEAD" for request in requested)
+    assert all(
+        request.url.host == "openprescribing.net" for request in requested
+    )
+    assert result["response_bodies_read"] is False
+    assert result["payloads_acquired"] is False
+    observations = result["observations"]
+    assert isinstance(observations, list)
+    assert len(observations) == 6
+    assert all(row["http_status"] == 403 for row in observations)
+    assert all(row["cf_mitigated"] == "challenge" for row in observations)
+
+
+def test_head_probe_does_not_follow_redirects_or_record_location() -> None:
+    requested: list[str] = []
+
+    def redirect(request: httpx.Request) -> httpx.Response:
+        requested.append(str(request.url))
+        return httpx.Response(
+            302, headers={"location": "https://example.org/other"}
+        )
+
+    result = head_probe_script.probe(
+        date(2026, 6, 1), transport=httpx.MockTransport(redirect)
+    )
+
+    assert len(requested) == 6
+    assert all("example.org" not in url for url in requested)
+    observations = result["observations"]
+    assert isinstance(observations, list)
+    assert all(row["http_status"] == 302 for row in observations)
+    assert all(row["redirect_location_present"] is True for row in observations)
 
 
 @pytest.mark.parametrize(
