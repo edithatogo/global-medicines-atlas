@@ -82,6 +82,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_mbs_typed_values.py",
         "tests/test_mbs_silver.py",
         "tests/test_mbs_silver_qualification.py",
+        "tests/test_mbs_silver_publication.py",
         "tests/test_public_mbs_silver_qualification.py",
         "tests/test_mbs_field_lineage.py",
         "tests/test_mbs_workbook_lineage.py",

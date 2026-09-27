@@ -1,0 +1,55 @@
+name: Publish qualified MBS Silver v4 candidate
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_contract_commit:
+        description: Exact reviewed main commit containing source and destination authority
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: australian-legacy-hf-publication
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Append, anonymously verify, and record MBS Silver v4
+    runs-on: ubuntu-24.04
+    environment: australian-hf-publication
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: write # Durable intent and anonymous-verification receipts are posted to issue 340.
+    env:
+      HF_HOME: ${{ github.workspace }}/build/mbs-silver-hf-home
+      HF_XET_CACHE: ${{ github.workspace }}/build/mbs-silver-hf-home/xet
+      HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Validate exact main and prepare, append, verify, and receipt
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main
+          test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
+          test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
+          uv run --locked --python 3.14.6 --with huggingface-hub==1.14.0 python -m scripts.publish_australian_mbs_silver_v4
+      - name: Remove verified hosted cache
+        run: |
+          set -euo pipefail
+          rm -rf "$HF_HOME"
+      - name: Report fail-honest outcome
+        if: failure() || cancelled()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment 340 --body "MBS Silver v4 publication workflow did not complete: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID at $GITHUB_SHA. Any published revision is retained. Consult the exact anonymous verification receipt; no candidate promotion is claimed."

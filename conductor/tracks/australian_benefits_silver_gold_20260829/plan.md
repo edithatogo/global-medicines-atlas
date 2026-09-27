@@ -1057,6 +1057,28 @@
   boundary, while preserving parser-native text unchanged and rejecting
   internal/non-XML whitespace, alternate decimal spellings, and amounts
   outside the documented width. The MBS candidate schema now declares this
-  policy as v1.1. Focused tests and static checks pass; exact-main qualification
-  and protected hosted checks remain pending. This does not create public v4
-  identity/admission or complete M-107, M-109, federation, or Stable v1.
+  policy as v1.1. PR #562 merged as `a02daa3` after the review correction,
+  114 affected tests and all protected checks passed. Exact-main run
+  `36345410208` requalified the same 5,989 records, 40 fields, and 239,560
+  occurrences with zero quality findings; the public-v4 blocker remains.
+- [~] Build and publish a deterministic, source-faithful six-table MBS Silver
+  v4 package to the authorized public MBS archive through GitHub Actions only.
+  Bind it to the pinned July 2025 B2 digest, official release identity,
+  maintainer authorization, exact transform commit, and anonymous per-object
+  size/digest verification. The deterministic package builder and protected
+  Actions publication workflow are implemented in PR #563. Mocked hosted
+  transaction tests cover successful append/readback/receipt/cleanup and
+  fail-closed source, privacy, collision, revision, inventory, and digest
+  conditions. The package builder has 100% branch-aware coverage; the combined
+  builder/publisher focused set has 99%. Ruff, BasedPyright, actionlint, and
+  zizmor pass. Full local Test-Goblin completed with 5,088 passed, one
+  skipped, and five failures (one temporary typing-dependency contract, now
+  reverted; four unrelated stable-receipt/datahouse checks). Hosted workflow
+  execution and its durable receipt remain pending. No raw source content may
+  enter logs; remove only hosted temporary bytes after the verification
+  receipt is recorded. Public v4 identity/admission and M-109 acceptance remain
+  pending until that receipt is observed. M-107, federation acceptance, and
+  Stable v1 remain separate. PR review also found the publisher was launched
+  as a file despite importing a sibling helper; the workflow now invokes it as
+  a repository module, with a regression assertion and fresh protected checks
+  pending.
