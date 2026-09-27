@@ -343,6 +343,18 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   latest-run manifest.
 - [x] Focused tests: `tests/test_australian_harvesting.py` (35 passed); affected
   publication/workflow tests (51 passed); Ruff, `ty`, and BasedPyright passed.
-- [ ] Merge the reviewed change, dispatch exact-main under the existing
-  publication authorization, and verify the anonymous receipt and partial
-  coverage record. This does not qualify M-107 or the federation gate by itself.
+- [x] Merge the reviewed change and dispatch exact-main under the existing
+  publication authorization. Run `36330658537` published revision
+  `32ce8741be7f0508dca641a3e397759ec492da02`; all 28 objects were anonymously
+  verified, latest-run coverage was explicitly `partial`, and temporary
+  hosted bytes were removed. Health.gov page discovery returned zero URLs.
+  This does not qualify M-107 or the federation gate.
+
+## M-107 direct workbook fallback follow-up (2026-09-28)
+
+- [x] Read the public harvest receipt and confirm Health.gov families were
+  marked unavailable without making workbook requests.
+- [~] Add exact official current-period quarterly and YTD workbook URLs, plus
+  the actual older annual attachment, as bounded discovery fallbacks. Preserve
+  filename-derived periods so the older annual workbook cannot satisfy the
+  latest annual FY. Verify with a new exact-main run and its anonymous receipt.

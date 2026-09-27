@@ -41,6 +41,11 @@ USER_AGENT = DEFAULT_HARVEST_USER_AGENT
 
 DATA_GOV_MBS_GROUP_API = "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group"
 DATA_GOV_MBS_DEMOGRAPHICS_API = "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group-by-patient-demographics-report"
+HEALTH_GOV_MEDICARE_WORKBOOK_FALLBACKS = (
+    "https://www.health.gov.au/sites/default/files/2026-08/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26.xlsx",
+    "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
+    "https://www.health.gov.au/sites/default/files/2026-08/medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26.xlsx",
+)
 
 
 def fetch_url_bytes(url: str, timeout: int = 120) -> tuple[bytes, str]:
@@ -83,6 +88,7 @@ def discover_selected_resources(
     print("  Discovering Medicare workbooks from health.gov.au...", flush=True)
     health_urls = discover_health_gov_medicare_workbooks(
         subpage_fetcher=fetch_url_text,
+        fallback_urls=list(HEALTH_GOV_MEDICARE_WORKBOOK_FALLBACKS),
     )
     print(
         f"  Discovered {len(health_urls)} Medicare workbook URLs.", flush=True

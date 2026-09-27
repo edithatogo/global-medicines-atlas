@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import urllib.request
+import zipfile
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -15,6 +17,7 @@ from scripts.harvest_australian_mbs_utilisation import (
     stage_resources,
 )
 
+from global_medicines_atlas import australian_harvesting
 from global_medicines_atlas.australian_harvesting import (
     ALLOWED_AUSTRALIAN_HARVEST_DOMAINS,
     ALLOWED_MBS_DOMAINS,
@@ -36,6 +39,50 @@ from global_medicines_atlas.australian_harvesting import (
     validate_resources_against_contract,
     verify_anonymous_restore,
 )
+
+
+def _minimal_xlsx_payload() -> bytes:
+    output = io.BytesIO()
+    with zipfile.ZipFile(output, mode="w") as workbook:
+        workbook.writestr(
+            "[Content_Types].xml",
+            '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>',
+        )
+        workbook.writestr(
+            "xl/workbook.xml",
+            '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"/>',
+        )
+        workbook.writestr(
+            "xl/worksheets/sheet1.xml",
+            '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"/>',
+        )
+    return output.getvalue()
+
+
+def _xlsx_payload(members: list[tuple[str, bytes]]) -> bytes:
+    output = io.BytesIO()
+    with zipfile.ZipFile(output, mode="w") as workbook:
+        for name, content in members:
+            workbook.writestr(name, content)
+    return output.getvalue()
+
+
+def _xlsx_members() -> list[tuple[str, bytes]]:
+    return [
+        (
+            "[Content_Types].xml",
+            b'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>',
+        ),
+        (
+            "xl/workbook.xml",
+            b'<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"/>',
+        ),
+        (
+            "xl/worksheets/sheet1.xml",
+            b'<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"/>',
+        ),
+    ]
+
 
 ROOT = Path(__file__).resolve().parents[1]
 PBS_AUTH_FILE = (
@@ -220,6 +267,97 @@ def test_stage_harvest_payload_success_and_receipt(tmp_path: Path) -> None:
     )
     assert receipt_json["sha256"] == expected_sha
     assert receipt_json["source_id"] == "au-pbs-dos-utilisation"
+
+
+def test_xlsx_staging_requires_a_bounded_ooxml_package(
+    tmp_path: Path,
+) -> None:
+    resource = DiscoveredHarvestResource(
+        source_id="au-health-medicare-statistics",
+        category="medicare_quarterly_statistics_state_territory",
+        url="https://www.health.gov.au/workbook.xlsx",
+        filename="workbook.xlsx",
+        archive_path="raw/mbs/utilisation/quarterly/workbook.xlsx",
+    )
+    valid_payload = _minimal_xlsx_payload()
+    staged = stage_harvest_payload(
+        resource,
+        tmp_path,
+        data_reader=lambda _url: valid_payload,
+        allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+    )
+    assert staged.staged_payload_path.read_bytes() == valid_payload
+
+    with pytest.raises(ValueError, match="valid OOXML ZIP package"):
+        stage_harvest_payload(
+            resource.model_copy(update={"archive_path": "raw/mbs/bad.xlsx"}),
+            tmp_path,
+            data_reader=lambda _url: (
+                b"<html>200 OK but not an Excel workbook</html>"
+            ),
+            allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+        )
+
+
+@pytest.mark.parametrize(
+    ("case", "message"),
+    [
+        ("payload", "payload exceeds"),
+        ("member_count", "too many members"),
+        ("duplicate", "duplicate members"),
+        ("worksheet", "no worksheet member"),
+        ("uncompressed", "uncompressed size limit"),
+        ("required", "required member is missing"),
+        ("metadata", "metadata member exceeds"),
+        ("roots", "unexpected roots"),
+    ],
+)
+def test_xlsx_staging_rejects_invalid_or_oversized_packages(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    case: str,
+    message: str,
+) -> None:
+    members = _xlsx_members()
+    payload = _xlsx_payload(members)
+    if case == "payload":
+        monkeypatch.setattr(australian_harvesting, "MAX_XLSX_PAYLOAD_BYTES", 1)
+    elif case == "member_count":
+        monkeypatch.setattr(australian_harvesting, "MAX_XLSX_MEMBERS", 2)
+    elif case == "duplicate":
+        members.append(members[-1])
+        payload = _xlsx_payload(members)
+    elif case == "worksheet":
+        members = members[:-1]
+        payload = _xlsx_payload(members)
+    elif case == "uncompressed":
+        monkeypatch.setattr(
+            australian_harvesting, "MAX_XLSX_UNCOMPRESSED_BYTES", 1
+        )
+    elif case == "required":
+        members = members[1:]
+        payload = _xlsx_payload(members)
+    elif case == "metadata":
+        monkeypatch.setattr(australian_harvesting, "MAX_XLSX_METADATA_BYTES", 1)
+    elif case == "roots":
+        members[0] = (members[0][0], b"<Wrong/>")
+        members[1] = (members[1][0], b"<Wrong/>")
+        payload = _xlsx_payload(members)
+
+    resource = DiscoveredHarvestResource(
+        source_id="au-health-medicare-statistics",
+        category="medicare_quarterly_statistics_state_territory",
+        url="https://www.health.gov.au/workbook.xlsx",
+        filename="workbook.xlsx",
+        archive_path=f"raw/mbs/{case}.xlsx",
+    )
+    with pytest.raises(ValueError, match=message):
+        stage_harvest_payload(
+            resource,
+            tmp_path,
+            data_reader=lambda _url: payload,
+            allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+        )
 
 
 def test_build_harvest_manifest_and_verify_anonymous_restore(
@@ -641,6 +779,19 @@ def test_discover_health_gov_medicare_workbooks() -> None:
         fallback_urls=fallback,
     )
     assert found_fallback == fallback
+
+    found_with_fallback = discover_health_gov_medicare_workbooks(
+        subpage_fetcher=lambda _u: mock_html,
+        candidate_slugs=["https://www.health.gov.au/page1"],
+        fallback_urls=[
+            "https://www.health.gov.au/sites/default/files/test.xlsx",
+            "https://fallback.com/file.xlsx",
+        ],
+    )
+    assert found_with_fallback == [
+        "https://www.health.gov.au/sites/default/files/test.xlsx",
+        "https://fallback.com/file.xlsx",
+    ]
 
     # Test deduplication of quarter and ytd FY, and subpage exception handling
     fetch_calls: list[str] = []
@@ -1118,12 +1269,25 @@ def test_mbs_utilisation_stage_resources_resilient(
         archive_path="raw/mbs/utilisation/missing/annual.txt",
         period_label="unavailable",
     )
+    res_html = DiscoveredHarvestResource(
+        source_id="au-health-medicare-statistics",
+        category="medicare_quarterly_statistics_state_territory",
+        url="https://www.health.gov.au/fallback.xlsx",
+        filename="medicare-quarterly-june-quarter-2025-26.xlsx",
+        archive_path="raw/mbs/utilisation/quarterly/fallback.xlsx",
+        period_label="2025-26",
+    )
     requested: list[str] = []
 
     def _fake_fetch(url: str, **_kwargs: Any) -> tuple[bytes, str]:
         requested.append(url)
         if "timeout" in url:
             raise TimeoutError("Network timeout on health.gov.au")
+        if "fallback.xlsx" in url:
+            return (
+                b"<html><body>Temporary service unavailable</body></html>",
+                url,
+            )
         return b"CSV_CONTENT", url
 
     monkeypatch.setattr(
@@ -1133,15 +1297,19 @@ def test_mbs_utilisation_stage_resources_resilient(
 
     stage_dir = tmp_path / "stage"
     stages, manifest = stage_resources(
-        [res_good, res_bad, res_missing], stage_dir
+        [res_good, res_bad, res_html, res_missing], stage_dir
     )
     assert len(stages) == 1
     assert stages[0].resource.filename == "mbs-group.csv"
     assert manifest["file_count"] == 2
     assert manifest["coverage_status"] == "partial"
-    assert len(manifest["failed_resources"]) == 2
+    assert len(manifest["failed_resources"]) == 3
     assert manifest["failed_resources"][0]["filename"] == "timeout.xlsx"
     assert manifest["failed_resources"][1]["filename"] == (
+        "medicare-quarterly-june-quarter-2025-26.xlsx"
+    )
+    assert "valid OOXML ZIP package" in manifest["failed_resources"][1]["error"]
+    assert manifest["failed_resources"][2]["filename"] == (
         "unavailable-medicare_annual_statistics_state_territory.txt"
     )
     assert res_missing.url not in requested
@@ -1157,6 +1325,10 @@ def test_mbs_utilisation_stage_resources_resilient(
             {
                 "source_id": "au-health-medicare-statistics",
                 "filename": "timeout.xlsx",
+            },
+            {
+                "source_id": "au-health-medicare-statistics",
+                "filename": "medicare-quarterly-june-quarter-2025-26.xlsx",
             },
             {
                 "source_id": "au-health-medicare-statistics",
