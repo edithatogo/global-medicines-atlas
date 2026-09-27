@@ -1,7 +1,8 @@
 # Australian donor parity gap, 2026-09-27
 
-M-105 remains blocked. The pinned inventory covers 54 tracked blobs (16 graph,
-38 scraper), including every Python function and both workflows. The later
+M-105 remains blocked on its pre-archive parity requirement. The pinned
+inventory covers 54 tracked blobs (16 graph, 38 scraper), including every
+Python function and both workflows. The later
 delta review covers two changed graph paths and eight changed scraper paths.
 The two donor heads and complete histories were subsequently preserved and
 anonymously restored at the exact public revision recorded by the archival
@@ -13,9 +14,18 @@ uses broad dispositions such as `adapt_or_replace_with_tests` and
 `preserve_provenance`. The new [M-105 disposition matrix](../../quality/qualifications/australian-donor-m105-dispositions.json)
 maps all 54 baseline blobs and ten later changed paths to M-105's final
 six-value vocabulary, preserving exact Git identities and baseline payload
-digests. This is a complete **classification**, not a parity qualification.
-One baseline executable file (the monthly workflow) remains explicitly
-`pending_behavioral_parity`. The pinned scraper module has an explicit
+digests. Every matrix row now has a final disposition and evidence, but this
+post-archive reconciliation cannot satisfy M-105's requirement that parity
+precede donor archival. The donor monthly workflow is retained as exact legacy
+history: its scheduled HTML scrape produced six 404s and no Git data commit.
+GMA's separate scheduled workflow acquired and anonymously verified only the
+approved August 2026 XML release on 2 September. Its verified
+`c39dd99ab8a6fcf557aeec391e1891b5fa18754f` revision descends from the
+earlier manual release revision `75f9f20a36ddb829dfe0ca88660664570782be02`;
+the [scheduled receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5515404352)
+records both. This is not parity for item
+or participant HTML coverage and does not authorize future releases. The pinned
+scraper module has an explicit
 legacy-only receipt: `month_range` is adopted with executable checks while
 the async item and participant HTML callers remain in exact archived history.
 Neither caller establishes current participant coverage. The donor's broken MBS parser
@@ -59,14 +69,10 @@ behavior controls and the separately verified April 2026 public archive are
 distinct evidence. No donor PBS payload existed in the pinned repositories,
 and this does not claim all historical or future PBS releases.
 
-The next acceptance slice is to attach a GMA successor and behavioral test to
-each remaining pending row, and byte-level public receipt to each data/legacy
-row. Keep roadmap-only work
-labelled successor intent, zero-byte placeholders as legacy evidence, and
-restricted terminology outside public data scope. Run the matrix against the
-inventory and delta denominators with missing/duplicate and unsupported-parity
-negative controls. Only then reconsider M-105; M-106–M-112 and the federation
-gate remain independent.
+The artifact denominator is reconciled, with exact history and the applicable
+public payload receipts linked. M-105's historical sequence remains an explicit exception
+for maintainer disposition: later proof cannot make earlier parity precede the
+archives. M-106–M-112 and the federation gate remain independent.
 
 The archival chronology cannot be retroactively described as pre-archive M-105
 parity. The separate maintainer approvals and observed archives are recorded in

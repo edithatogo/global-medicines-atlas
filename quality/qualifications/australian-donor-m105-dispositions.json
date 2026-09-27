@@ -292,8 +292,53 @@
       "path": ".github/workflows/monthly_run.yml",
       "git_object_sha1": "8c4a451a118eb87efb04a094d0d6e5c0e4622263",
       "sha256": "0503c7e3595edb0ba9996ec5d7ec283db9b6a228d875cc62eeae9a2087f12d83",
-      "disposition": "replace-with-equivalent",
-      "acceptance_state": "pending_behavioral_parity"
+      "disposition": "retain-legacy",
+      "acceptance_state": "verified_legacy_retention",
+      "parity_evidence": {
+        "legacy_history_receipt": "quality/qualifications/scraper-archival-20260906.json",
+        "pinned_blob_sha256_readback": "0503c7e3595edb0ba9996ec5d7ec283db9b6a228d875cc62eeae9a2087f12d83",
+        "donor_scheduled_run": "https://github.com/edithatogo/aus-health-data-scraper/actions/runs/30677814193",
+        "donor_run_observation": "completed/success workflow; six item and participant URLs returned 404, no files processed, no data commit",
+        "workflow_dispositions": {
+          "test_job": {
+            "disposition": "supersede",
+            "evidence": ".github/workflows/test-goblin.yml",
+            "reason": "Protected CI test/lint behavior is separately verified; the donor monthly test job remains in archived history."
+          },
+          "push_test_trigger": {
+            "disposition": "supersede",
+            "evidence": ".github/workflows/test-goblin.yml",
+            "reason": "Current protected CI runs on main push and pull requests; donor push-triggered test job is retired."
+          },
+          "scheduled_html_scrape_and_git_commit": {
+            "disposition": "retain-legacy",
+            "reason": "Hard-coded item/participant HTML endpoints returned six 404s in the exact donor run, with no acquired bytes or commit. The obsolete Git data-commit path is not an active GMA acquisition or publication channel."
+          },
+          "manual_html_scrape_dispatch": {
+            "disposition": "retain-legacy",
+            "reason": "The donor manual trigger invokes the same obsolete HTML/Git path; its exact workflow remains replayable from archived history, without live source or rights qualification."
+          }
+        },
+        "separate_approved_release_schedule": {
+          "workflow": ".github/workflows/australian-mbs-release.yml",
+          "contract": "quality/qualifications/mbs-current-release-contract.json",
+          "scheduled_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/33675417619",
+          "run_head": "0190183f6b313ad21746c5b15b7cf4bd7153085c",
+          "run_status": "completed/success",
+          "durable_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5515404352",
+          "public_revision": "c39dd99ab8a6fcf557aeec391e1891b5fa18754f",
+          "anonymous_digest_verification": "passed",
+          "public_revision_readback": "HTTP 200; private=false; gated=false; manifest path present",
+          "scope_note": "The scheduled run appended the already approved 1 August 2026 XML release to parent revision 75f9f20a36ddb829dfe0ca88660664570782be02 and anonymously verified its new revision c39dd99ab8a6fcf557aeec391e1891b5fa18754f. These are distinct revisions of the same public archive. No future release, item HTML, participant counts or donor Git commit is authorized by this receipt.",
+          "parent_revision": "75f9f20a36ddb829dfe0ca88660664570782be02",
+          "manifest_path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/manifest.json",
+          "manifest_sha256": "51a9242dc32fa0faaf7a9c35d9d73c995ac6458b065d73c85e67f22d76ee7b61",
+          "verified_objects": 8,
+          "record_count": 6046,
+          "temporary_source_bytes_removed": true
+        },
+        "boundary": "Explicit legacy-only receipt for the donor workflow, not behavioral parity with its obsolete HTML scrape and Git commit. The approved scheduled XML workflow is an independent source-specific capability. M-105 pre-archive parity chronology remains unsatisfied."
+      }
     },
     {
       "repository": "edithatogo/aus-health-data-scraper",
@@ -916,5 +961,5 @@
     "quality/qualifications/scraper-archival-20260906.json",
     "quality/qualifications/graph-archival-20260906.json"
   ],
-  "boundary": "Final dispositions classify every known artifact; pending behavioral parity rows do not pass M-105 or establish pre-archive parity."
+  "boundary": "All known artifact rows now have final dispositions and no pending behavioral-parity row. M-105 remains partial: this post-archive reconciliation cannot establish the requirement to prove parity before donor archival, and legacy-only rows do not establish live item/participant coverage or future-release authority."
 }
