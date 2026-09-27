@@ -1,0 +1,46 @@
+name: Qualify pinned public MBS Silver candidate
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_commit:
+        description: Exact merged main commit containing this qualifier
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: australian-mbs-silver-candidate-qualification
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    name: Verify pinned public MBS and six-table denominator
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Require exact default-branch identity
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+      - name: Verify exact public source and qualify candidate denominator
+        run: |
+          uv run --locked --python 3.14.6 python scripts/qualify_public_mbs_silver.py \
+            --output mbs-silver-candidate-qualification.json
+      - name: Retain only aggregate candidate evidence
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: australian-mbs-silver-candidate-${{ github.run_id }}-${{ github.run_attempt }}
+          path: mbs-silver-candidate-qualification.json
+          if-no-files-found: error
+          retention-days: 90
