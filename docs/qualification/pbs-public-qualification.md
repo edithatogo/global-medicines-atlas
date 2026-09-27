@@ -1,5 +1,36 @@
 # Pinned public historical PBS qualification
 
+## Exact-main structural candidate receipt, 2026-09-13
+
+The disaggregated qualifier later completed on exact main commit
+`8ccc450f0ec26a88d2528349e3fffb4bca4bfd17` in [run
+34749693403](https://github.com/edithatogo/global-medicines-atlas/actions/runs/34749693403).
+Its durable aggregate is [issue #341 comment
+5653049805](https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5653049805),
+with report SHA-256
+`216aec6b96ac439b418d02997e71ac4b04c2ff126d6eb1e537b6e12f0dce5713`.
+Against the already authorized public dataset revision
+`31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7` and manifest SHA-256
+`e6c9abbc62bd44fc47049306a92cc8efc9700031908586262c2b82a907546460`, it
+verified 7,730,684 XML elements and 18,208,758 native fields across native,
+domain, entity, reference and date projections. Every projection reports the
+same native digest
+`890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25` and a
+verified Parquet round-trip; the complete 16-window reference denominator
+also passed.
+
+This closes the earlier *incomplete structural run* blocker only. The report
+explicitly remains `structural_storage_candidate_only`, with
+`domain_semantics_qualified=false` and `date_profile=not-selected`. It observed
+2,798 unresolved reference rows and very high unmapped counts in the domain,
+entity, reference and date projections. These are inventories of remaining
+mapping work, not claims that every such field should be mapped. No source
+values were emitted, no derived data was published, and this receipt does not
+establish PBS Silver acceptance, source-era date interpretation, terminology
+rights, or clinical meaning. Any follow-up should qualify the source semantics
+and mappings under their existing evidence and rights boundaries rather than
+repeat the structural corpus run.
+
 The prepared `pbs-historical-qualification.yml` workflow performs read-only
 structural/storage qualification, not acquisition from a new source, dataset
 publication, date-era qualification or semantic promotion. The first authorized
