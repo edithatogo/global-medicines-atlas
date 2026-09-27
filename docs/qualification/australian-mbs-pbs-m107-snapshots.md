@@ -1,15 +1,16 @@
-# M-107 Australian MBS/PBS snapshot inventory, 2026-09-27
+# M-107 Australian MBS/PBS snapshot inventory, 2026-09-28
 
 M-107 remains **blocked**. An anonymously readable public revision proves an
 object exists at that revision; it does not prove that every historical period
-or source category was acquired. Read-only metadata checks on 2026-09-27
-returned HTTP 200, `private=false`, `gated=false` for the three revisions below.
-No source payload was downloaded during this audit.
+or source category was acquired. Exact public revisions and receipts below are
+immutable archive evidence; the two utilisation follow-up receipts also record
+anonymous digest verification and cleanup. No raw source payload was downloaded
+during this inventory update.
 
 | Source family | Pinned public evidence | Snapshot and completeness boundary |
 | --- | --- | --- |
 | MBS schedule/legacy | [`australian-mbs-source-archive` revision `c39dd99`](https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/tree/c39dd99ab8a6fcf557aeec391e1891b5fa18754f), [donor inventory](../../quality/qualifications/australian-health-donor-inventory.json), and [August release receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5467154799) | Exact July 2025 XML and July 2024 four-sheet P7 workbook are retained as legacy; exact August 2026 XML has 6,046 admitted rows. Donor empty notebook/XML placeholders remain historical artifacts, not data coverage. The scheduled run revalidates only the authorized August release. This is not a complete monthly series. |
-| MBS utilisation | [`australian-mbs-utilisation-archive` revision `7f8f6b7`](https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/tree/7f8f6b7e973a0b5f68d6ddff9dfea6a0db61b697), [hosted run and receipt](https://github.com/edithatogo/global-medicines-atlas/actions/runs/34358783818), [authorization](../../quality/qualifications/australian-mbs-utilisation-publication-authorization.json) | Public manifest lists 14 historical group/demographics raw objects with paired B1 receipts. Three current health.gov.au quarterly, annual, and year-to-date workbooks timed out; the durable run receipt says `coverage_status=partial`. Historical group/demographics objects are not equivalent to the absent current patient workbook. The manifest currently omits the run failure status; the proposed publisher change records a bounded `latest_run_coverage` on future revisions, without rewriting this one. |
+| MBS utilisation | Baseline [`australian-mbs-utilisation-archive` revision `7f8f6b7`](https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/tree/7f8f6b7e973a0b5f68d6ddff9dfea6a0db61b697) and [hosted run](https://github.com/edithatogo/global-medicines-atlas/actions/runs/34358783818); [partial revision `32ce874`](https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/tree/32ce8741be7f0508dca641a3e397759ec492da02) from [run 36330658537](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36330658537) and [receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857370840); latest [partial revision `dee9a5b`](https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/tree/dee9a5b0580dfe394474dc26b372559462e157e7) from [run 36333396964](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964), [receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784415), and [cleanup receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489); [authorization](../../quality/qualifications/australian-mbs-utilisation-publication-authorization.json) | The baseline contains 14 historical group/demographics raw objects with paired B1 receipts. Both later exact-main revisions contain 28 verified objects and explicitly record `coverage_status=partial`. The latest manifest itself records four failed Health.gov resources and four staged resources under `latest_run_coverage`. The three direct official workbook requests—quarterly June 2025–26, YTD July–June 2025–26, and annual 2009–10 to 2024–25—timed out with zero bytes; the annual-family sentinel also remained unavailable. The annual attachment is older than the latest FY stated in its page title. Historical group/demographics objects are not equivalent to the missing Health.gov workbook families. These receipts prove the partial archive and cleanup, not current workbook acquisition or a complete series. |
 | PBS source | [`australian-pbs-source-archive` revision `31ec854`](https://huggingface.co/datasets/edithatogo/australian-pbs-source-archive/tree/31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7), [historical qualification audit](pbs-public-qualification.md) | Exact 1 April 2026 v3 ZIP, XML member, B1 receipt, and source-faithful Parquet are public. Historical qualification has failed at transport or timed out; published object identity is not a qualified historical series or complete schema-era comparison. |
 
 The [official quarterly](https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26?language=en), [annual](https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en), and [year-to-date](https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26) pages still advertise the three workbook categories. Page presence is discovery evidence, not byte acquisition or a successful snapshot. The annual page describes patients only at its own aggregate geography/time denominator; no item-level count follows from it.
@@ -56,6 +57,10 @@ A read-only `data.gov.au` CKAN package search for the exact phrases
 `Medicare statistics year-to-date` returned zero matching packages on
 2026-09-27. This bounded metadata search found no verified mirror for the
 three workbooks; it does not prove no alternate official distribution exists.
-M-107 remains blocked pending an independently verified, authorized hosted
-delivery path and byte-level receipt for each missing workbook. Do not retry
-the unchanged harvest merely to reproduce the page timeout.
+The exact-main direct-fallback run [36333396964](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964)
+later resolved page discovery by selecting the three official file links, but
+all three file requests timed out with zero bytes. Its anonymous receipt and
+cleanup receipt are linked in the table. Do not repeat this unchanged harvest
+merely to reproduce the same file-download timeout. M-107 remains blocked
+pending an independently verified, authorized hosted delivery path and
+byte-level receipt for each missing workbook.
