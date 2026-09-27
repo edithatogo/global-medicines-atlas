@@ -108,6 +108,22 @@ def test_scraper_processor_supersession_maps_every_donor_function() -> None:
         for item in donor["files"]
         if item["path"] in {"src/processor.py", "tests/test_processor.py"}
     }
+    # Exact later blobs: the processor narrows its HTML exception handler;
+    # the processor test only reorders imports.
+    later_blobs = {
+        "src/processor.py": (
+            "e7cae9b5585a825a197b6c9b850d918a71cfb105",
+            {"process_mbs_xml", "process_html_file", "combine_and_save_data"},
+        ),
+        "tests/test_processor.py": (
+            "d016d0d1484aa1fe3adc6a8cf85965bc111d06d7",
+            {
+                "temp_data_dirs",
+                "test_process_mbs_xml",
+                "test_combine_and_save_data",
+            },
+        ),
+    }
     for group in ("baseline", "post_baseline_delta"):
         for row in receipt[group]:
             if (
@@ -115,12 +131,13 @@ def test_scraper_processor_supersession_maps_every_donor_function() -> None:
                 or row["path"] not in donor_functions
             ):
                 continue
+            expected_functions = donor_functions[row["path"]]
+            if group == "post_baseline_delta":
+                expected_blob, expected_functions = later_blobs[row["path"]]
+                assert row["git_object_sha1"] == expected_blob
             assert row["acceptance_state"] == "verified_supersession"
             proof = row["parity_evidence"]
-            assert (
-                set(proof["function_dispositions"])
-                == donor_functions[row["path"]]
-            )
+            assert set(proof["function_dispositions"]) == expected_functions
             for function in proof["function_dispositions"].values():
                 refs = function.get(
                     "behavior_tests", [function.get("behavior_test")]

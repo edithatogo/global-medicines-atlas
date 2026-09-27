@@ -713,7 +713,8 @@
             "disposition": "adapt",
             "behavior_tests": [
               "tests/test_mbs_tables.py::test_heterogeneous_tables_keep_separate_schema_and_source",
-              "tests/test_mbs_tables.py::test_no_data_drift_or_unsupported_layout_fails"
+              "tests/test_mbs_tables.py::test_no_data_drift_or_unsupported_layout_fails",
+              "tests/test_mbs_tables.py::test_malformed_table_nesting_fails"
             ],
             "behavior": "HTML tables remain separate source-bound typed tables; unsupported layouts and no-data fail closed."
           },
@@ -726,7 +727,8 @@
             "behavior": "Separate XML records and HTML table identities supersede a mixed CSV; the donor Path/string output defect and heterogeneous concatenation are not reproduced."
           }
         },
-        "scope_note": "Executable synthetic compatibility proves preserved P7 selection and separate table semantics, while deliberately retiring mixed CSV behavior. This is not a live HTML participant acquisition or pre-archive parity claim."
+        "scope_note": "Executable synthetic compatibility proves preserved P7 selection and separate table semantics, while deliberately retiring mixed CSV behavior. This is not a live HTML participant acquisition or pre-archive parity claim.",
+        "delta_review": "Exact later blob e7cae9b5585a825a197b6c9b850d918a71cfb105 retains all three functions and narrows process_html_file handling from Exception to ValueError, OSError, ParserError and XMLSyntaxError; successor rejects malformed and unsupported tables without admitting data."
       }
     },
     {
@@ -767,7 +769,8 @@
             "behavior": "Separate table identities and schema-bound Parquet replace the mixed CSV assertion."
           }
         },
-        "scope_note": "This maps test intent and does not qualify source acquisition or a mixed CSV output."
+        "scope_note": "This maps test intent and does not qualify source acquisition or a mixed CSV output.",
+        "delta_review": "Exact later blob d016d0d1484aa1fe3adc6a8cf85965bc111d06d7 changes import order only; all three baseline test/fixture functions are unchanged."
       }
     },
     {

@@ -30,9 +30,9 @@ semantics replace the donor's mixed CSV, whose Path/string handling was broken.
 This qualifies replacement behavior, not live participant acquisition or the
 former mixed CSV artifact. The remaining scraper rows still need
 file/function-level parity results. In particular, scraper async caller
-responsiveness is retained as legacy behavior, not proven API parity. The ten
-later changed paths need exact GMA evidence for the five behavior-bearing
-rows; the earlier delta receipt's
+responsiveness is retained as legacy behavior, not proven API parity. Of the
+ten later changed paths, three behavior-bearing rows still need exact GMA
+evidence. The earlier delta receipt's
 `current_head_history_preserved=false` was a pre-publication observation and
 must not be read as current archival state.
 
