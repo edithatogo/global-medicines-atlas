@@ -307,3 +307,13 @@ See [scraper archival readiness](../../../docs/migrations/scraper-archive-readin
   ref to its exact recorded commit before archival; both branches verified.
 
 See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.md).
+
+## M-105 acceptance follow-up
+
+- [~] Bind every pinned donor artifact and later changed path to exact
+  behavioral or byte-level evidence. The
+  [2026-09-27 gap audit](../../../docs/qualification/australian-donor-parity-gap.md)
+  and omission-sensitive matrix classify all 54 baseline blobs and ten later
+  changed paths with exact Git identities. Eleven baseline and five later
+  behavior-bearing rows still need parity proof. Exact history preservation
+  and archive approval are verified separately; M-105 remains blocked.
