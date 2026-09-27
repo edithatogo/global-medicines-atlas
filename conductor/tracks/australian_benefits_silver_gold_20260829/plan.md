@@ -999,6 +999,22 @@
   distinguishes identity-preserving source restore from the separately hashed
   candidate report, binds the exact Git commit, and passes the redirect bound.
   Nineteen focused tests pass after these fixes.
-- [ ] Merge the reviewed workflow and dispatch it on its exact main commit;
-  reconcile the resulting row/field/quality denominators and retain all
-  remaining real-era, v4, M-107 and M-109 gaps.
+- [x] Merge the reviewed workflow and dispatch it on its exact main commit.
+  PR #555 merged as `548d6e1` after every protected lane passed and all three
+  review threads were resolved. Exact-main hosted run `36336688622` completed
+  successfully; its aggregate artifact records all 5,989 rows across six
+  tables and all 40 contracted fields (239,560 field occurrences). One field
+  conversion is `invalid`; the report correctly retains
+  `quality_findings_present`, `real_source_era_unqualified`, and
+  `public_v4_identity_unverified` blockers. No derived data was published.
+- [x] Add value-free field/status counts and source-ordinal diagnostics to the
+  hosted aggregate; the content-bound candidate report now covers diagnostics
+  as well as table qualification. A synthetic invalid-date regression confirms
+  field and ordinal are reported while the source value is omitted. Focused
+  tests: 20 passed; affected MBS tests: 158 passed; Ruff, `ty`, BasedPyright,
+  context and `actionlint` passed.
+- [ ] Merge the diagnostics improvement and rerun on exact `main`; identify the
+  field and ordinal of the hosted invalid conversion, then investigate its
+  documented format without retrieving source bytes locally. Qualify the real
+  schema era and resolve quality findings; M-107, v4 admission, and M-109
+  acceptance remain separate gates.
