@@ -17,6 +17,7 @@ from scripts.harvest_australian_mbs_utilisation import (
     stage_resources,
 )
 
+from global_medicines_atlas import australian_harvesting
 from global_medicines_atlas.australian_harvesting import (
     ALLOWED_AUSTRALIAN_HARVEST_DOMAINS,
     ALLOWED_MBS_DOMAINS,
@@ -56,6 +57,31 @@ def _minimal_xlsx_payload() -> bytes:
             '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"/>',
         )
     return output.getvalue()
+
+
+def _xlsx_payload(members: list[tuple[str, bytes]]) -> bytes:
+    output = io.BytesIO()
+    with zipfile.ZipFile(output, mode="w") as workbook:
+        for name, content in members:
+            workbook.writestr(name, content)
+    return output.getvalue()
+
+
+def _xlsx_members() -> list[tuple[str, bytes]]:
+    return [
+        (
+            "[Content_Types].xml",
+            b'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"/>',
+        ),
+        (
+            "xl/workbook.xml",
+            b'<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"/>',
+        ),
+        (
+            "xl/worksheets/sheet1.xml",
+            b'<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"/>',
+        ),
+    ]
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -269,6 +295,67 @@ def test_xlsx_staging_requires_a_bounded_ooxml_package(
             data_reader=lambda _url: (
                 b"<html>200 OK but not an Excel workbook</html>"
             ),
+            allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
+        )
+
+
+@pytest.mark.parametrize(
+    ("case", "message"),
+    [
+        ("payload", "payload exceeds"),
+        ("member_count", "too many members"),
+        ("duplicate", "duplicate members"),
+        ("worksheet", "no worksheet member"),
+        ("uncompressed", "uncompressed size limit"),
+        ("required", "required member is missing"),
+        ("metadata", "metadata member exceeds"),
+        ("roots", "unexpected roots"),
+    ],
+)
+def test_xlsx_staging_rejects_invalid_or_oversized_packages(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    case: str,
+    message: str,
+) -> None:
+    members = _xlsx_members()
+    payload = _xlsx_payload(members)
+    if case == "payload":
+        monkeypatch.setattr(australian_harvesting, "MAX_XLSX_PAYLOAD_BYTES", 1)
+    elif case == "member_count":
+        monkeypatch.setattr(australian_harvesting, "MAX_XLSX_MEMBERS", 2)
+    elif case == "duplicate":
+        members.append(members[-1])
+        payload = _xlsx_payload(members)
+    elif case == "worksheet":
+        members = members[:-1]
+        payload = _xlsx_payload(members)
+    elif case == "uncompressed":
+        monkeypatch.setattr(
+            australian_harvesting, "MAX_XLSX_UNCOMPRESSED_BYTES", 1
+        )
+    elif case == "required":
+        members = members[1:]
+        payload = _xlsx_payload(members)
+    elif case == "metadata":
+        monkeypatch.setattr(australian_harvesting, "MAX_XLSX_METADATA_BYTES", 1)
+    elif case == "roots":
+        members[0] = (members[0][0], b"<Wrong/>")
+        members[1] = (members[1][0], b"<Wrong/>")
+        payload = _xlsx_payload(members)
+
+    resource = DiscoveredHarvestResource(
+        source_id="au-health-medicare-statistics",
+        category="medicare_quarterly_statistics_state_territory",
+        url="https://www.health.gov.au/workbook.xlsx",
+        filename="workbook.xlsx",
+        archive_path=f"raw/mbs/{case}.xlsx",
+    )
+    with pytest.raises(ValueError, match=message):
+        stage_harvest_payload(
+            resource,
+            tmp_path,
+            data_reader=lambda _url: payload,
             allowed_domains=ALLOWED_MEDICARE_STATISTICS_DOMAINS,
         )
 
