@@ -13,6 +13,7 @@ import json
 import re
 from collections import Counter, defaultdict
 from datetime import UTC, date, datetime
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 import httpx
@@ -245,6 +246,9 @@ def _quality_diagnostics(
     amount_issue_ordinals: defaultdict[tuple[str, str, str], list[int]] = (
         defaultdict(list)
     )
+    amount_decimal_probe_ordinals: defaultdict[tuple[str, str], list[int]] = (
+        defaultdict(list)
+    )
     amount_fields = {
         (contract.target_table, contract.native_name)
         for contract in mbs_field_contracts()
@@ -273,14 +277,19 @@ def _quality_diagnostics(
                     if status in _QUALITY_STATUSES:
                         finding_ordinals[key].append(ordinal)
                     if (
-                        status == "invalid"
-                        and (table, field_name) in amount_fields
+                        status != "invalid"
+                        or (table, field_name) not in amount_fields
                     ):
-                        native_value = value["native_value"]
-                        reason = _amount_invalid_reason(native_value)
-                        amount_issue_ordinals[table, field_name, reason].append(
-                            ordinal
-                        )
+                        continue
+                    native_value = value["native_value"]
+                    reason = _amount_invalid_reason(native_value)
+                    amount_issue_ordinals[table, field_name, reason].append(
+                        ordinal
+                    )
+                    if reason != "strict_numeric_grammar_mismatch":
+                        continue
+                    probe = _amount_decimal_probe(native_value)
+                    amount_decimal_probe_ordinals[table, probe].append(ordinal)
     return {
         "field_status_counts": [
             {
@@ -315,6 +324,16 @@ def _quality_diagnostics(
                 amount_issue_ordinals.items()
             )
         ],
+        "invalid_amount_decimal_probe_source_ordinals": [
+            {
+                "table": table,
+                "probe": probe,
+                "source_ordinals": ordinals,
+            }
+            for (table, probe), ordinals in sorted(
+                amount_decimal_probe_ordinals.items()
+            )
+        ],
         "source_values_included": False,
     }
 
@@ -329,6 +348,23 @@ def _amount_invalid_reason(native_value: object) -> str:
     if len(integer) > MAX_MBS_AMOUNT_INTEGER_DIGITS:
         return "integer_width_exceeded"
     return "other_numeric_validation"
+
+
+def _amount_decimal_probe(native_value: str) -> str:
+    """Classify a strict-grammar mismatch without returning native text."""
+    try:
+        parsed = Decimal(native_value)
+    except InvalidOperation:
+        return "decimal_constructor_rejected"
+    if not parsed.is_finite():
+        return "non_finite_decimal"
+    if native_value != native_value.strip():
+        return "surrounding_whitespace"
+    if "e" in native_value.lower():
+        return "exponent_notation"
+    if "_" in native_value:
+        return "underscore_separator"
+    return "other_finite_decimal_spelling"
 
 
 def main() -> int:
