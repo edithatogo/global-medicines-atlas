@@ -334,6 +334,19 @@ def test_reference_aggregate_rejects_unsafe_diagnostics(
         aggregate_shards(reports)
 
 
+def test_reference_aggregate_rejects_counter_disagreement() -> None:
+    reports = complete()
+    qualification = reports[4]["qualification"]
+    assert isinstance(qualification, dict)
+    projections = qualification["projections"]
+    assert isinstance(projections, dict)
+    references = projections["references"]
+    assert isinstance(references, dict)
+    references["duplicate_literal_rows"] = 1
+    with pytest.raises(ValueError, match="PBS qualification shards"):
+        aggregate_shards(reports)
+
+
 def test_aggregate_rejects_missing_duplicate_and_extra_shards() -> None:
     baseline = complete()
     for candidate in (

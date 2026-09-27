@@ -141,6 +141,18 @@ def _valid_projection_schema(name: str, projection: dict[str, Any]) -> bool:
             )
         )
         and (
+            name != "references"
+            or all(
+                projection["reference_diagnostic_counts"].get(label, 0)
+                == projection[counter]
+                for label, counter in (
+                    ("duplicate_source_literal", "duplicate_literal_rows"),
+                    ("ambiguous_source_targets", "ambiguous_reference_rows"),
+                    ("unresolved", "unresolved_reference_rows"),
+                )
+            )
+        )
+        and (
             name != "dates"
             or all(
                 sum(projection[key].values()) == projection["rows"]
