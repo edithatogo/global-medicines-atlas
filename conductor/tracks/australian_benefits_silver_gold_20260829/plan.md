@@ -980,3 +980,25 @@
   Test-Goblin lanes where supported.
 - [ ] Run Conductor review, repair findings, open scoped pull requests, wait for
   hosted checks, merge, and reconcile all evidence.
+
+## M-109 exact public MBS candidate denominator follow-up (2026-09-28)
+
+- [x] Add an Actions-only qualification for the exact anonymously published
+  July 2025 MBS XML. It pins the public revision, bounds and digest-checks the
+  bytes, processes them in memory with the six-table Silver candidate, and
+  retains only an aggregate candidate report. It does not publish derived
+  data, persist raw source bytes, promote Silver, or claim M-109 acceptance.
+- [x] Add regressions for exact byte/digest identity, candidate-only blockers,
+  no publication, bounded source transport and the exact-main read-only job;
+  include the new tests in the Test-Goblin unit profile. Focused tests: 15
+  passed; Ruff, `ty`, BasedPyright, context, and `actionlint` passed. The first
+  hosted routine result found formatting only; its two file-format findings
+  have been corrected and the formatter check now passes locally. Automated
+  review also identified source-versus-derived output identity, incomplete
+  transformation binding, and the unenforced redirect cap; the receipt now
+  distinguishes identity-preserving source restore from the separately hashed
+  candidate report, binds the exact Git commit, and passes the redirect bound.
+  Nineteen focused tests pass after these fixes.
+- [ ] Merge the reviewed workflow and dispatch it on its exact main commit;
+  reconcile the resulting row/field/quality denominators and retain all
+  remaining real-era, v4, M-107 and M-109 gaps.
