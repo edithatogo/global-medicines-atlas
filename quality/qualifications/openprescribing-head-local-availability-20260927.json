@@ -1,0 +1,20 @@
+{
+  "schema_id": "global-medicines-atlas.openprescribing-head-availability",
+  "schema_version": 1,
+  "observed_at": "2026-09-27T14:09:51.767877+00:00",
+  "source_id": "gb-openprescribing",
+  "date_partition": "2026-06-01",
+  "probe_policy": "one_head_per_authorized_endpoint_no_redirects",
+  "endpoint_count": 6,
+  "observations": [
+    {"endpoint": "spending", "http_status": 403, "content_type": "text/html; charset=UTF-8", "server": "cloudflare", "cf_mitigated": "challenge"},
+    {"endpoint": "spending_by_org", "http_status": 403, "content_type": "text/html; charset=UTF-8", "server": "cloudflare", "cf_mitigated": "challenge"},
+    {"endpoint": "bnf_code", "http_status": 403, "content_type": "text/html; charset=UTF-8", "server": "cloudflare", "cf_mitigated": "challenge"},
+    {"endpoint": "org_code", "http_status": 403, "content_type": "text/html; charset=UTF-8", "server": "cloudflare", "cf_mitigated": "challenge"},
+    {"endpoint": "org_details", "http_status": 403, "content_type": "text/html; charset=UTF-8", "server": "cloudflare", "cf_mitigated": "challenge"},
+    {"endpoint": "org_location", "http_status": 403, "content_type": "text/html; charset=UTF-8", "server": "cloudflare", "cf_mitigated": "challenge"}
+  ],
+  "response_bodies_read": false,
+  "payloads_acquired": false,
+  "external_publication_performed": false
+}

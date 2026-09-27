@@ -1,0 +1,88 @@
+{
+  "date_partition": "2026-06-01",
+  "endpoint_count": 6,
+  "external_publication_performed": false,
+  "observations": [
+    {
+      "cf_mitigated": "challenge",
+      "content_type": "text/html; charset=UTF-8",
+      "endpoint": "spending",
+      "http_status": 403,
+      "query": {
+        "date": "2026-06-01",
+        "format": "json"
+      },
+      "redirect_location_present": false,
+      "role": "utilisation",
+      "server": "cloudflare"
+    },
+    {
+      "cf_mitigated": "challenge",
+      "content_type": "text/html; charset=UTF-8",
+      "endpoint": "spending_by_org",
+      "http_status": 403,
+      "query": {
+        "date": "2026-06-01",
+        "format": "json"
+      },
+      "redirect_location_present": false,
+      "role": "utilisation",
+      "server": "cloudflare"
+    },
+    {
+      "cf_mitigated": "challenge",
+      "content_type": "text/html; charset=UTF-8",
+      "endpoint": "bnf_code",
+      "http_status": 403,
+      "query": {
+        "format": "json"
+      },
+      "redirect_location_present": false,
+      "role": "medicine_reference",
+      "server": "cloudflare"
+    },
+    {
+      "cf_mitigated": "challenge",
+      "content_type": "text/html; charset=UTF-8",
+      "endpoint": "org_code",
+      "http_status": 403,
+      "query": {
+        "format": "json"
+      },
+      "redirect_location_present": false,
+      "role": "organisation_reference",
+      "server": "cloudflare"
+    },
+    {
+      "cf_mitigated": "challenge",
+      "content_type": "text/html; charset=UTF-8",
+      "endpoint": "org_details",
+      "http_status": 403,
+      "query": {
+        "format": "json"
+      },
+      "redirect_location_present": false,
+      "role": "organisation_reference",
+      "server": "cloudflare"
+    },
+    {
+      "cf_mitigated": "challenge",
+      "content_type": "text/html; charset=UTF-8",
+      "endpoint": "org_location",
+      "http_status": 403,
+      "query": {
+        "format": "json"
+      },
+      "redirect_location_present": false,
+      "role": "organisation_reference",
+      "server": "cloudflare"
+    }
+  ],
+  "observed_at": "2026-09-27T14:17:31.224948+00:00",
+  "payloads_acquired": false,
+  "probe_policy": "one_head_per_authorized_endpoint_no_redirects",
+  "response_bodies_read": false,
+  "schema_id": "global-medicines-atlas.openprescribing-head-availability",
+  "schema_version": 1,
+  "source_id": "gb-openprescribing"
+}
