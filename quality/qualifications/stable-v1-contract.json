@@ -824,7 +824,8 @@
       "evidence": [
         "conductor/requirements.md",
         "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md",
-        "conductor/tracks/australian_health_source_consolidation_20260829/spec.md"
+        "conductor/tracks/australian_health_source_consolidation_20260829/spec.md",
+        "docs/qualification/australian-mbs-m106-domain.md"
       ],
       "blocker_ids": [
         "stable-v1-australian-health-federation"
