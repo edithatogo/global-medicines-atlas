@@ -467,8 +467,14 @@ for credentialed or rights-unresolved sources.
             into 22 Parquet files covering 433,095,732 source records. Their
             public digest and size metadata matched the receipt anonymously
             at revision `ef0bbb53bb2c88685cddac8830ab7e602fdad664`.
-            Full 33-shard run `36122136607` is in progress; the canary alone
-            does not satisfy exact-inventory qualification or landing audit.
+            Full run `36122136607` subsequently published all 33 shards, but
+            its finalizer failed before qualification because the job lacked
+            checkout and `uv` setup. The 33 retained JSON receipts pass the
+            exact-inventory qualifier locally (631 projections,
+            11,643,919,491 reported records). A pinned hosted receipt-only
+            recovery is required to publish and anonymously verify the full
+            qualification; the canary and local check alone do not satisfy
+            that gate or the landing audit.
     - [x] Keep public release and external publication separately gated; the maintainer approved attributed public release and external publication on 2026-08-27 subject to the CMS Agreement for Use and fail-closed interpretation boundaries
 - [x] Task: Review Fixes for CMS Part D public qualification
     - [x] Reconcile the preflight recommendation with the maintainer's exact approved-public decision

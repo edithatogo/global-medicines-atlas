@@ -24,6 +24,10 @@ WORKFLOW = (
     Path(__file__).resolve().parents[1]
     / ".github/workflows/cms-partd-record-projection.yml"
 )
+RECOVERY_WORKFLOW = (
+    Path(__file__).resolve().parents[1]
+    / ".github/workflows/cms-partd-record-qualification-recovery.yml"
+)
 
 
 def _zip(members: dict[str, bytes]) -> bytes:
@@ -345,6 +349,30 @@ def test_projection_workflow_is_hosted_public_and_resumable() -> None:
     assert "if: ${{ inputs.payload_identity == '' }}" in workflow
     assert "expected=33" in workflow
     assert 'if [[ -n "$PAYLOAD_IDENTITY" ]]; then expected=1; fi' in workflow
+    finalize = workflow.split("  finalize:", 1)[1]
+    assert finalize.index("actions/checkout@") < finalize.index(
+        "scripts/qualify_cms_partd_records.py"
+    )
+    assert finalize.index("astral-sh/setup-uv@") < finalize.index(
+        "scripts/qualify_cms_partd_records.py"
+    )
+    assert "python3 -m pip install" not in finalize
+
+
+def test_recovery_workflow_uses_exact_successful_receipts() -> None:
+    workflow = RECOVERY_WORKFLOW.read_text(encoding="utf-8")
+    assert 'SOURCE_RUN_ID: "36122136607"' in workflow
+    assert (
+        "SOURCE_HEAD_SHA: 3d60e0513bd63c89905a0cdd69715d9182705be3" in workflow
+    )
+    assert '.conclusion == "failure"' in workflow
+    assert "($project | length) == 33" in workflow
+    assert '($project | all(.conclusion == "success"))' in workflow
+    assert "--pattern 'cms-partd-records-*' --dir receipts" in workflow
+    assert "find receipts -name source-records.json" in workflow
+    assert "scripts/qualify_cms_partd_records.py" in workflow
+    assert "token=False" in workflow
+    assert "work/payload" not in workflow
 
 
 def _qualification_inputs() -> tuple[

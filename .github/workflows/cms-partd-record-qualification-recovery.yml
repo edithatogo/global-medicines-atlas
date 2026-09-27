@@ -1,0 +1,118 @@
+name: Recover CMS Part D source record qualification
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: cms-partd-record-projection
+  cancel-in-progress: false
+
+permissions:
+  actions: read
+  contents: read
+
+env:
+  HF_DATASET: edithatogo/global-medicines-atlas-cms-partd-20260827
+  RAW_REVISION: abcff8ebd1f624c4bbb0a87d903b184388c98254
+  SOURCE_RUN_ID: "36122136607"
+  SOURCE_HEAD_SHA: 3d60e0513bd63c89905a0cdd69715d9182705be3
+
+jobs:
+  finalize:
+    name: Qualify saved CMS Part D receipts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out qualification code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+
+      - name: Verify source run and download only receipt artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          run=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${SOURCE_RUN_ID}")
+          jq -e --arg sha "$SOURCE_HEAD_SHA" '
+            .head_sha == $sha and
+            .name == "Project CMS Part D source records" and
+            .event == "workflow_dispatch" and
+            .status == "completed" and
+            .conclusion == "failure"
+          ' <<<"$run" >/dev/null
+          jobs=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${SOURCE_RUN_ID}/jobs?per_page=100")
+          jq -e '
+            [.jobs[] | select(.name | startswith("Project "))] as $project |
+            ($project | length) == 33 and
+            ($project | all(.conclusion == "success")) and
+            ([.jobs[] | select(.name == "Qualify and anonymously verify source records" and .conclusion == "failure")] | length) == 1
+          ' <<<"$jobs" >/dev/null
+          gh run download "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --pattern 'cms-partd-records-*' --dir receipts
+          test "$(find receipts -name source-records.json | wc -l)" -eq 33
+
+      - name: Publish and verify exact projection manifest
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          set -euo pipefail
+          curl --fail --show-error --silent --location --retry 10 \
+            "https://huggingface.co/datasets/${HF_DATASET}/resolve/${RAW_REVISION}/manifest.json" \
+            --output raw-manifest.json
+          qualified_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          uv run --frozen --python 3.14.6 python scripts/qualify_cms_partd_records.py \
+            --raw-manifest raw-manifest.json --shards-dir receipts \
+            --qualified-at "$qualified_at" --raw-revision "$RAW_REVISION" \
+            --output source-record-qualification.json
+          uv run --python 3.14.6 --with huggingface-hub==1.14.0 python - <<'PY'
+          import json
+          import os
+          from hashlib import sha256
+          from pathlib import Path
+          from huggingface_hub import HfApi, hf_hub_download
+
+          path = Path('source-record-qualification.json')
+          payload = json.loads(path.read_text())
+          shards = payload['shards']
+          api = HfApi(token=os.environ['HF_TOKEN'])
+          result = api.upload_file(
+              repo_id=os.environ['HF_DATASET'], repo_type='dataset',
+              path_or_fileobj=path, path_in_repo='bronze/source-record-qualification.json',
+              commit_message='Qualify CMS Part D source-native records',
+          )
+          public = HfApi().dataset_info(os.environ['HF_DATASET'], files_metadata=True)
+          if public.private or public.sha != result.oid:
+              raise RuntimeError('record qualification revision is not anonymously visible')
+          siblings = {item.rfilename: item for item in public.siblings}
+          names = set(siblings)
+          expected = {'bronze/source-record-qualification.json'}
+          for shard in shards:
+              root = f"bronze/source-records/{shard['family']}/{shard['identity']}"
+              expected.add(f'{root}/source-records.json')
+              expected.update(f"{root}/parquet/{item['parquet_filename']}" for item in shard['projections'])
+          missing = expected - names
+          if missing:
+              raise RuntimeError(f'public source-record paths missing: {sorted(missing)[:10]}')
+          for shard in shards:
+              root = f"bronze/source-records/{shard['family']}/{shard['identity']}/parquet"
+              for projection in shard['projections']:
+                  sibling = siblings[f"{root}/{projection['parquet_filename']}"]
+                  lfs = sibling.lfs
+                  observed = lfs.sha256 if lfs is not None else sha256(Path(hf_hub_download(
+                      repo_id=os.environ['HF_DATASET'], repo_type='dataset', revision=public.sha,
+                      filename=sibling.rfilename, token=False,
+                  )).read_bytes()).hexdigest()
+                  if observed != projection['parquet_sha256']:
+                      raise RuntimeError('anonymous Parquet digest metadata diverged')
+          restored = Path(hf_hub_download(
+              repo_id=os.environ['HF_DATASET'], repo_type='dataset',
+              revision=public.sha, filename='bronze/source-record-qualification.json', token=False,
+          ))
+          if json.loads(restored.read_text()) != payload:
+              raise RuntimeError('anonymous qualification restore diverged')
+          print(public.sha)
+          PY
