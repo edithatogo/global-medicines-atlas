@@ -139,6 +139,16 @@ def _donor_archive_acceptance_observed() -> bool:
         graph["public_history_revision"] == scraper["publication"]["revision"],
         all(item["clean_restore"] is True for item in restored.values()),
         all(restored[name]["head"] == head for name, head in expected.items()),
+        scraper["archival"]["head_before"]
+        == expected["edithatogo/aus-health-data-scraper"],
+        scraper["archival"]["head_after"]
+        == expected["edithatogo/aus-health-data-scraper"],
+        scraper["archival"]["retained_branches"]["main"]
+        == expected["edithatogo/aus-health-data-scraper"],
+        graph["head_before"] == expected["edithatogo/aus_mbs_pbs_graph"],
+        graph["head_after"] == expected["edithatogo/aus_mbs_pbs_graph"],
+        graph["retained_branches"]["main"]
+        == expected["edithatogo/aus_mbs_pbs_graph"],
     )
     return all(checks)
 
@@ -179,17 +189,27 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
             requirement["evidence"] = _append_unique(
                 requirement["evidence"], [BRONZE_PLAN, BRONZE_MATURITY]
             )
-        elif requirement_id == "M-113" and _donor_archive_acceptance_observed():
-            requirement["state"] = "verified"
-            requirement["blocker_ids"] = [
-                blocker
-                for blocker in requirement["blocker_ids"]
-                if blocker != AUSTRALIAN_HEALTH_GATE
-            ]
-            requirement["evidence"] = _append_unique(
-                requirement["evidence"],
-                [SCRAPER_ARCHIVE, GRAPH_ARCHIVE, AUSTRALIAN_ACCEPTANCE],
-            )
+        elif requirement_id == "M-113":
+            adverse = requirement["state"] in {"failed", "unverified"}
+            other_blockers = set(requirement["blocker_ids"]) - {
+                AUSTRALIAN_HEALTH_GATE
+            }
+            if adverse:
+                continue
+            if other_blockers:
+                requirement["state"] = "blocked"
+            elif _donor_archive_acceptance_observed():
+                requirement["state"] = "verified"
+                requirement["blocker_ids"] = []
+                requirement["evidence"] = _append_unique(
+                    requirement["evidence"],
+                    [SCRAPER_ARCHIVE, GRAPH_ARCHIVE, AUSTRALIAN_ACCEPTANCE],
+                )
+            else:
+                requirement["state"] = "blocked"
+                requirement["blocker_ids"] = _append_unique(
+                    requirement["blocker_ids"], [AUSTRALIAN_HEALTH_GATE]
+                )
         elif requirement_id in AUSTRALIAN_HEALTH_REQUIREMENTS:
             requirement["state"] = "blocked"
             requirement["blocker_ids"] = _append_unique(

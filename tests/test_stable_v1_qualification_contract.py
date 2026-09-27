@@ -284,6 +284,32 @@ def test_donor_archival_acceptance_rejects_missing_restore_or_approval(
     with monkeypatch.context() as patch:
         patch.setattr(reconciliation, "GRAPH_ARCHIVE", str(unsafe))
         assert not reconciliation._donor_archive_acceptance_observed()
+    graph = _load(ROOT / reconciliation.GRAPH_ARCHIVE)
+    graph["retained_branches"]["main"] = "different-head"
+    unsafe.write_text(json.dumps(graph), encoding="utf-8")
+    with monkeypatch.context() as patch:
+        patch.setattr(reconciliation, "GRAPH_ARCHIVE", str(unsafe))
+        assert not reconciliation._donor_archive_acceptance_observed()
+
+
+@pytest.mark.parametrize("state", ["failed", "unverified", "blocked"])
+def test_donor_acceptance_preserves_adverse_observations(state: str) -> None:
+    raw = _load(QUALIFICATION)
+    item = next(
+        row for row in raw["requirements"] if row["requirement_id"] == "M-113"
+    )
+    item["state"] = state
+    item["blocker_ids"] = [
+        "stable-v1-australian-health-federation",
+        "new-evidence-required",
+    ]
+    observed = next(
+        row
+        for row in build_contract(raw)["requirements"]
+        if row["requirement_id"] == "M-113"
+    )
+    assert observed["state"] == state
+    assert "new-evidence-required" in observed["blocker_ids"]
 
 
 def test_release_readiness_reconciliation_separates_package_from_release() -> (
