@@ -14,11 +14,14 @@ uses broad dispositions such as `adapt_or_replace_with_tests` and
 maps all 54 baseline blobs and ten later changed paths to M-105's final
 six-value vocabulary, preserving exact Git identities and baseline payload
 digests. This is a complete **classification**, not a parity qualification.
-Ten baseline executable files (four graph source files, four scraper
+Nine baseline executable files (three graph source files, four scraper
 source/test files, and two scraper workflows) and five later changed paths
 remain explicitly `pending_behavioral_parity`. The donor's broken MBS parser
 is now bound to the exact pre-archive 5,989-record/40-field qualification of
-its replacement, including the rejected `MBSItem` shape. The existing [donor assessment](../../conductor/tracks/australian_health_source_consolidation_20260829/donor-assessment.md)
+its replacement, including the rejected `MBSItem` shape. The donor's July XML
+download is bound to exact public legacy bytes and the separately authorized,
+hosted August acquisition. Both pinned revisions remain publicly addressable;
+the dataset's later current head is not substituted for either receipt. The existing [donor assessment](../../conductor/tracks/australian_health_source_consolidation_20260829/donor-assessment.md)
 maps their intended functions to successor behavior, but does not bind each
 file/function to a passing parity result. In particular, scraper async caller
 responsiveness is retained as legacy behavior, not proven API parity. The ten

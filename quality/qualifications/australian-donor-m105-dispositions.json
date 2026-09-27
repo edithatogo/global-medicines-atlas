@@ -90,7 +90,19 @@
       "git_object_sha1": "4ccb5b8ece3900827765bc23fccbc78212dff2ef",
       "sha256": "b60bc567b94959a17ab9e6684703dfcb5839ea5a2c3b5810247b7e6ea9c43b4b",
       "disposition": "adapt",
-      "acceptance_state": "pending_behavioral_parity"
+      "acceptance_state": "verified_adaptation",
+      "parity_evidence": {
+        "legacy_public_receipt": "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
+        "current_release_contract": "quality/qualifications/mbs-current-release-contract.json",
+        "hosted_qualification_record_kind": "hosted_mbs_release_verified",
+        "ledger": "conductor/tracks/australian_health_source_consolidation_20260829/evidence.jsonl",
+        "behavior_tests": [
+          "tests/test_mbs_release.py",
+          "tests/test_mbs_release_workflow.py"
+        ],
+        "replacement": "src/global_medicines_atlas/mbs_release.py::stage_mbs_release",
+        "finding": "Pinned July donor XML bytes were published and anonymously restored; governed hosted acquisition of the exactly authorized August release preserved source-native bytes, recorded failed attempts, and verified publication before cleanup. Future releases remain unqualified."
+      }
     },
     {
       "repository": "edithatogo/aus_mbs_pbs_graph",

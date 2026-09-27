@@ -314,7 +314,7 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   behavioral or byte-level evidence. The
   [2026-09-27 gap audit](../../../docs/qualification/australian-donor-parity-gap.md)
   and omission-sensitive matrix classify all 54 baseline blobs and ten later
-  changed paths with exact Git identities. The MBS XML parser replacement now
-  binds the pre-archive exact-corpus qualification; ten baseline and five later
+  changed paths with exact Git identities. The MBS XML parser and governed
+  downloader now bind pre-archive exact-corpus and hosted receipts; nine baseline and five later
   behavior-bearing rows still need parity proof. Exact history preservation
   and archive approval are verified separately; M-105 remains blocked.

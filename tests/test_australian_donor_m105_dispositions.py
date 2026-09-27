@@ -83,7 +83,7 @@ def test_m105_dispositions_do_not_promote_unproven_behavior() -> None:
             item["acceptance_state"] == "pending_behavioral_parity"
             for item in receipt["baseline"]
         )
-        == 10
+        == 9
     )
     assert (
         sum(
@@ -145,3 +145,61 @@ def test_mbs_parser_replacement_binds_exact_pre_archive_qualification() -> None:
     assert streamed["recorded_at"] < graph_archive["updated_at"]
     assert (ROOT / proof["source_qualifier"].split("::", 1)[0]).is_file()
     assert (ROOT / proof["behavior_tests"]).is_file()
+
+
+def test_mbs_downloader_adaptation_binds_legacy_and_hosted_receipts() -> None:
+    receipt = json.loads(RECEIPT.read_text())
+    row = next(
+        item
+        for item in receipt["baseline"]
+        if item["repository"] == "edithatogo/aus_mbs_pbs_graph"
+        and item["path"] == "scripts/parsing/download_mbs.py"
+    )
+    assert row["disposition"] == "adapt"
+    assert row["acceptance_state"] == "verified_adaptation"
+    proof = row["parity_evidence"]
+    legacy = json.loads((ROOT / proof["legacy_public_receipt"]).read_text())
+    raw = next(
+        item for item in legacy["raw_payloads"] if item["source_id"] == "au-mbs"
+    )
+    assert legacy["donor_commits"][row["repository"]] == row["commit"]
+    assert legacy["publication_performed_by_github_actions"] is True
+    assert legacy["anonymous_clean_room_restore"] is True
+    assert legacy["public"] is True
+    assert legacy["gated"] is False
+    assert raw["sha256"] == (
+        "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+    )
+    contract = json.loads(
+        (ROOT / proof["current_release_contract"]).read_text()
+    )
+    assert contract["source_id"] == "au-mbs"
+    assert contract["dataset"] == legacy["dataset"]
+    assert contract["publication_authorized"] is True
+    assert contract["source_url"].endswith("/MBS-XML-20260801.XML")
+    ledger = [
+        json.loads(line)
+        for line in (ROOT / proof["ledger"]).read_text().splitlines()
+    ]
+    hosted = next(
+        item
+        for item in ledger
+        if item.get("kind") == proof["hosted_qualification_record_kind"]
+    )
+    assert hosted["dataset"] == legacy["dataset"]
+    assert hosted["parent_revision"] == legacy["immutable_revision"]
+    assert hosted["workflow_conclusion"] == "success"
+    assert hosted["raw_bytes"] > 0
+    assert len(hosted["raw_sha256"]) == 64
+    assert hosted["anonymous_digest_verification"] == "passed"
+    assert hosted["temporary_source_bytes_removed"] is True
+    assert (
+        hosted["recorded_at"]
+        < json.loads(
+            (
+                ROOT / "quality/qualifications/scraper-archival-20260906.json"
+            ).read_text()
+        )["archival"]["updated_at"]
+    )
+    assert (ROOT / proof["replacement"].split("::", 1)[0]).is_file()
+    assert all((ROOT / path).is_file() for path in proof["behavior_tests"])
