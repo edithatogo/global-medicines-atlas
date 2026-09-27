@@ -28,9 +28,60 @@ from global_medicines_atlas.bronze_maturity import (
     reject_forbidden_evidence,
     run_adversarial_review,
 )
+from global_medicines_atlas.cms_partd_qualification import (
+    RAW_RELATIVE,
+    RECORDS_RELATIVE,
+    RIGHTS_RELATIVE,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXED_CLOCK = datetime(2026, 8, 20, 6, 48, tzinfo=UTC)
+
+
+def test_cms_source_record_qualification_counts_as_bronze_landing() -> None:
+    evidence = receipt_backed_landing_evidence(
+        ROOT, {"us-cms-partd-formulary", "us-cms-partd-spending"}
+    )
+    assert evidence == {
+        "us-cms-partd-formulary": (
+            "quality/qualifications/cms-partd-source-record-qualification-20260927.json"
+        ),
+        "us-cms-partd-spending": (
+            "quality/qualifications/cms-partd-source-record-qualification-20260927.json"
+        ),
+    }
+
+
+def test_cms_maturity_landing_rejects_rights_drift(tmp_path: Path) -> None:
+    for relative in (RAW_RELATIVE, RECORDS_RELATIVE, RIGHTS_RELATIVE):
+        target = tmp_path / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes((ROOT / relative).read_bytes())
+    overrides = tmp_path / bronze_maturity_mod.LANDING_OVERRIDES_RELATIVE
+    overrides.parent.mkdir(parents=True, exist_ok=True)
+    overrides.write_text(
+        json.dumps({
+            "overrides": [
+                {
+                    "source_id": "us-cms-partd-spending",
+                    "state": "landed_and_evidenced",
+                    "evidence_references": [RECORDS_RELATIVE],
+                }
+            ]
+        }),
+        encoding="utf-8",
+    )
+    rights = json.loads(
+        (tmp_path / RIGHTS_RELATIVE).read_text(encoding="utf-8")
+    )
+    rights["external_publication_authorized"] = False
+    (tmp_path / RIGHTS_RELATIVE).write_text(
+        json.dumps(rights), encoding="utf-8"
+    )
+    assert (
+        receipt_backed_landing_evidence(tmp_path, {"us-cms-partd-spending"})
+        == {}
+    )
 
 
 @pytest.mark.unit

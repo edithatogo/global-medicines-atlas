@@ -2,8 +2,8 @@
   "schema_id": "global-medicines-atlas.bronze-maturity-qualification",
   "schema_version": 1,
   "horizon": "bronze-current-public-scope",
-  "evaluated_at": "2026-09-13T14:23:46.559258+00:00",
-  "git_commit": "d58f73d8812f4f4f0d6aaceea6690c80aa23749a",
+  "evaluated_at": "2026-09-27T08:28:32.697111+00:00",
+  "git_commit": "3c571091f339541d035e53d609823fe42a90037a",
   "authorities": {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -25,6 +25,7 @@
         "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
         "src/global_medicines_atlas/adapters/fixture_contracts.py",
         "src/global_medicines_atlas/data/source_landing_overrides.json",
+        "quality/qualifications/cms-partd-source-record-qualification-20260927.json",
         "quality/qualifications/faers-live-corpus-20260821.json",
         "quality/qualifications/fda-enforcement-live-corpus-20260821.json",
         "quality/qualifications/fda-rems-live-corpus-20260821.json",
@@ -37,7 +38,7 @@
       "blocker_ids": [
         "bronze-ingest-incomplete"
       ],
-      "notes": "125 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
+      "notes": "124 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
     },
     {
       "property_id": "immutability",
@@ -250,7 +251,7 @@
   "residual_risks": [
     {
       "risk_id": "RISK-001",
-      "description": "125 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "124 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "disposition": "unresolved",
       "blocking": true,
       "evidence": [
@@ -258,6 +259,7 @@
         "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
         "src/global_medicines_atlas/adapters/fixture_contracts.py",
         "src/global_medicines_atlas/data/source_landing_overrides.json",
+        "quality/qualifications/cms-partd-source-record-qualification-20260927.json",
         "quality/qualifications/faers-live-corpus-20260821.json",
         "quality/qualifications/fda-enforcement-live-corpus-20260821.json",
         "quality/qualifications/fda-rems-live-corpus-20260821.json",
@@ -320,12 +322,13 @@
     {
       "blocker_id": "bronze-ingest-incomplete",
       "property_id": "completeness",
-      "description": "125 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "124 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "evidence": [
         "src/global_medicines_atlas/data/medicine_source_catalog.json",
         "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
         "src/global_medicines_atlas/adapters/fixture_contracts.py",
         "src/global_medicines_atlas/data/source_landing_overrides.json",
+        "quality/qualifications/cms-partd-source-record-qualification-20260927.json",
         "quality/qualifications/faers-live-corpus-20260821.json",
         "quality/qualifications/fda-enforcement-live-corpus-20260821.json",
         "quality/qualifications/fda-rems-live-corpus-20260821.json",
@@ -368,7 +371,7 @@
     "bronze_in_scope_count": 157,
     "fixture_only_count": 2,
     "excluded_count": 15,
-    "in_scope_without_landing_or_blocker": 125,
+    "in_scope_without_landing_or_blocker": 124,
     "missing_coverage_is_not_negative_evidence": true
   }
 }

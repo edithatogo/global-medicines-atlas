@@ -15,6 +15,21 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Literal, cast
 
+from .cms_partd_qualification import (
+    RAW_RELATIVE as CMS_RAW_RELATIVE,
+)
+from .cms_partd_qualification import (
+    RECORDS_RELATIVE as CMS_RECORDS_RELATIVE,
+)
+from .cms_partd_qualification import (
+    RIGHTS_RELATIVE as CMS_RIGHTS_RELATIVE,
+)
+from .cms_partd_qualification import (
+    SOURCE_IDS as CMS_SOURCE_IDS,
+)
+from .cms_partd_qualification import (
+    qualified_cms_sources,
+)
 from .source_catalog import AccessMode, AuthenticationMode
 
 SCHEMA_ID = "global-medicines-atlas.bronze-maturity-qualification"
@@ -232,6 +247,18 @@ def receipt_backed_landing_evidence(
                 relative
             ):
                 continue
+            if relative == CMS_RECORDS_RELATIVE and source_id in CMS_SOURCE_IDS:
+                try:
+                    qualified = qualified_cms_sources(
+                        root / CMS_RIGHTS_RELATIVE,
+                        root / CMS_RAW_RELATIVE,
+                        root / CMS_RECORDS_RELATIVE,
+                    )
+                except OSError, ValueError, KeyError, TypeError:
+                    continue
+                if source_id in qualified:
+                    evidence[source_id] = relative
+                    break
             receipt_path = root / relative
             if not receipt_path.is_file():
                 continue
