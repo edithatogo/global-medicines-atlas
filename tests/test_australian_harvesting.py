@@ -645,7 +645,10 @@ def test_discover_health_gov_medicare_workbooks() -> None:
     found_with_fallback = discover_health_gov_medicare_workbooks(
         subpage_fetcher=lambda _u: mock_html,
         candidate_slugs=["https://www.health.gov.au/page1"],
-        fallback_urls=fallback,
+        fallback_urls=[
+            "https://www.health.gov.au/sites/default/files/test.xlsx",
+            "https://fallback.com/file.xlsx",
+        ],
     )
     assert found_with_fallback == [
         "https://www.health.gov.au/sites/default/files/test.xlsx",
