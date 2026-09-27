@@ -692,11 +692,35 @@ def test_generate_medicare_candidate_slugs() -> None:
     assert any("2025-26" in s for s in slugs_aug)
     assert not any("2026-27" in s for s in slugs_aug)
 
+    slugs_jul = generate_medicare_candidate_slugs(
+        datetime(2027, 7, 15, 0, 0, tzinfo=UTC)
+    )
+    assert any(
+        "medicare-annual-statistics-state-and-territory-2009-10-to-2025-26"
+        in slug
+        for slug in slugs_jul
+    )
+    assert any(
+        "medicare-quarterly-statistics-state-and-territory-june-quarter-2026-27"
+        in slug
+        for slug in slugs_jul
+    )
+
     # November 2026: after Q1 publication (months 11..12)
     slugs_nov = generate_medicare_candidate_slugs(
         datetime(2026, 11, 20, 0, 0, tzinfo=UTC)
     )
     assert any("2026-27" in s for s in slugs_nov)
+    assert any(
+        "medicare-annual-statistics-state-and-territory-2009-10-to-2025-26"
+        in slug
+        for slug in slugs_nov
+    )
+    assert any(
+        "medicare-quarterly-statistics-state-and-territory-june-quarter-2026-27"
+        in slug
+        for slug in slugs_nov
+    )
 
     # March 2027: in second half of FY (months 1..6)
     slugs_mar = generate_medicare_candidate_slugs(
@@ -1194,6 +1218,10 @@ def test_mbs_utilisation_discovery_preserves_missing_current_period_gaps(
 ) -> None:
     monkeypatch.setattr(
         "scripts.harvest_australian_mbs_utilisation.latest_medicare_publication_fy",
+        lambda _now: "2025-26",
+    )
+    monkeypatch.setattr(
+        "scripts.harvest_australian_mbs_utilisation.latest_medicare_annual_fy",
         lambda _now: "2025-26",
     )
 

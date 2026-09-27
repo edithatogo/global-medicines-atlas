@@ -29,6 +29,7 @@ from global_medicines_atlas.australian_harvesting import (
     discover_health_gov_medicare_workbooks,
     discover_mbs_utilisation_resources,
     fetch_url_bytes_governed,
+    latest_medicare_annual_fy,
     latest_medicare_publication_fy,
     stage_harvest_payload,
     validate_resources_against_contract,
@@ -122,22 +123,26 @@ def discover_selected_resources(
                 for source_id, category in unavailable_non_health
             )
         )
-    latest_period = latest_medicare_publication_fy(datetime.now(UTC))
+    now = datetime.now(UTC)
+    expected_health_periods = {
+        "medicare_annual_statistics_state_territory": latest_medicare_annual_fy(
+            now
+        ),
+        "medicare_quarterly_statistics_state_territory": latest_medicare_publication_fy(
+            now
+        ),
+        "medicare_ytd_summary_tables": latest_medicare_publication_fy(now),
+    }
     unavailable_health_categories = {
         category
         for source_id, category in missing
         if source_id == "au-health-medicare-statistics"
     }
-    latest_health_categories = {
-        category
-        for source_id, category in required
-        if source_id == "au-health-medicare-statistics"
-    }
-    for category in latest_health_categories:
+    for category, expected_period in expected_health_periods.items():
         period_available = any(
             resource.source_id == "au-health-medicare-statistics"
             and resource.category == category
-            and latest_period in resource.period_label
+            and expected_period in resource.period_label
             for resource in resources
         )
         if not period_available:

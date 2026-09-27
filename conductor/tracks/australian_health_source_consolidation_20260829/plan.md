@@ -336,9 +336,11 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 ## M-107 source-family gap preservation follow-up (2026-09-28)
 
 - [x] Add regressions for filename-derived reporting periods and for a stale
-  annual workbook that must not satisfy the currently expected FY. Missing or
-  stale-period Health.gov workbook families are explicit non-fetchable failures;
-  successful resources can produce only a partial latest-run manifest.
+  annual workbook that must not satisfy the currently expected FY. Annual
+  workbooks use the latest completed FY; quarterly/YTD workbooks use the latest
+  published FY. Missing or stale-period Health.gov families are explicit
+  non-fetchable failures; successful resources can produce only a partial
+  latest-run manifest.
 - [x] Focused tests: `tests/test_australian_harvesting.py` (35 passed); affected
   publication/workflow tests (51 passed); Ruff, `ty`, and BasedPyright passed.
 - [ ] Merge the reviewed change, dispatch exact-main under the existing

@@ -485,22 +485,21 @@ def discover_mbs_schedule_resources(
 
 def generate_medicare_candidate_slugs(now: datetime) -> list[str]:
     """Generate prioritized candidate publication URLs on health.gov.au."""
-    fy_list = [latest_medicare_publication_fy(now)]
+    quarterly_fy = latest_medicare_publication_fy(now)
+    annual_fy = latest_medicare_annual_fy(now)
     quarters = ("june", "march", "december", "september")
 
-    slugs: list[str] = []
-    for fy in reversed(fy_list):
-        slugs.append(
-            f"https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-{fy}?language=en"
-        )
-        slugs.extend([
-            f"https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-state-and-territory-{q}-quarter-{fy}?language=en"
-            for q in quarters
-        ])
-        slugs.extend([
-            f"https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-summary-tables-july-to-{m}-{fy}?language=en"
-            for m in quarters
-        ])
+    slugs = [
+        f"https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-{annual_fy}?language=en"
+    ]
+    slugs.extend([
+        f"https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-state-and-territory-{q}-quarter-{quarterly_fy}?language=en"
+        for q in quarters
+    ])
+    slugs.extend([
+        f"https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-summary-tables-july-to-{m}-{quarterly_fy}?language=en"
+        for m in quarters
+    ])
     return slugs
 
 
@@ -514,6 +513,18 @@ def latest_medicare_publication_fy(now: datetime) -> str:
         or now.month >= MEDICARE_Q1_PUBLICATION_MONTH
     )
     fy_end = current_fy_end if is_current_fy_published else current_fy_end - 1
+    return f"{fy_end - 1}-{str(fy_end)[2:]}"
+
+
+def latest_medicare_annual_fy(now: datetime) -> str:
+    """Return the latest completed FY expected in annual Medicare statistics."""
+    current_fy_end = (
+        now.year + 1 if now.month >= AUSTRALIAN_FY_START_MONTH else now.year
+    )
+    fy_end = current_fy_end - 1
+    if now.month == AUSTRALIAN_FY_START_MONTH:
+        # Annual statistics are published in August, after the July FY rollover.
+        fy_end -= 1
     return f"{fy_end - 1}-{str(fy_end)[2:]}"
 
 
