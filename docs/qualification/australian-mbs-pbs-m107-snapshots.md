@@ -33,7 +33,9 @@ the resolved URL was identical and HEAD reported 1,058,479 bytes. A separate
 bounded GET of the page returned its Excel link. The page title ends 2025–26
 while the workbook filename ends 2024–25, so the workbook's period is not
 qualified from page metadata. This local observation does not explain or
-overcome the hosted delivery failure. The next technical step
-is a metadata-only Actions diagnostic that records bounded response/error
-categories for one pinned official publication page, without source bytes or
-another full harvest; only then should the hosted delivery path be changed.
+overcome the hosted delivery failure. A [metadata-only Actions diagnostic](../../.github/workflows/mbs-publication-page-diagnostic.yml)
+now probes only that pinned official publication page with 12- and at most
+30-second bounded reads. It records status or transport class, redirect count,
+HTML digest and workbook-link count, but never fetches a workbook or publishes
+data. This is prepared tooling, not a hosted observation; its result must be
+read back before changing the harvest delivery path.
