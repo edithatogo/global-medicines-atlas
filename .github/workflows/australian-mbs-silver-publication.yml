@@ -42,7 +42,7 @@ jobs:
           test "$GITHUB_REF" = refs/heads/main
           test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
           test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
-          uv run --locked --python 3.14.6 --with huggingface-hub==1.14.0 python scripts/publish_australian_mbs_silver_v4.py
+          uv run --locked --python 3.14.6 --with huggingface-hub==1.14.0 python -m scripts.publish_australian_mbs_silver_v4
       - name: Remove verified hosted cache
         run: |
           set -euo pipefail

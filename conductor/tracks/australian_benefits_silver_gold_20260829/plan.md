@@ -1078,4 +1078,7 @@
   enter logs; remove only hosted temporary bytes after the verification
   receipt is recorded. Public v4 identity/admission and M-109 acceptance remain
   pending until that receipt is observed. M-107, federation acceptance, and
-  Stable v1 remain separate.
+  Stable v1 remain separate. PR review also found the publisher was launched
+  as a file despite importing a sibling helper; the workflow now invokes it as
+  a repository module, with a regression assertion and fresh protected checks
+  pending.

@@ -502,3 +502,11 @@ def test_hosted_publisher_fails_closed_outside_actions(monkeypatch) -> None:
     monkeypatch.delenv("HF_TOKEN", raising=False)
     with pytest.raises(RuntimeError, match="protected main Actions"):
         hosted_publisher.main()
+
+
+def test_publication_workflow_runs_publisher_as_repository_module() -> None:
+    workflow = Path(
+        ".github/workflows/australian-mbs-silver-publication.yml"
+    ).read_text(encoding="utf-8")
+    assert "python -m scripts.publish_australian_mbs_silver_v4" in workflow
+    assert "python scripts/publish_australian_mbs_silver_v4.py" not in workflow
