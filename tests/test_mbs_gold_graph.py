@@ -139,9 +139,7 @@ def test_source_effective_clock_is_preserved_when_no_valid_interval_exists():
 
 
 def test_unrepresentable_silver_values_remain_graph_evidence():
-    payload = _xml(
-        "<Benefit100>123456789012345678901234567890123456789</Benefit100>"
-    )
+    payload = _xml("<Benefit100>0.1234567891</Benefit100>")
     result = build_mbs_gold_graph_candidate(payload, _receipt(payload))
     benefit = next(
         node for node in result.nodes if node.kind == "mbs_benefit_record"
@@ -149,7 +147,7 @@ def test_unrepresentable_silver_values_remain_graph_evidence():
     field = next(
         field for field in benefit.fields if field.native_name == "Benefit100"
     )
-    assert field.native_value == "123456789012345678901234567890123456789"
+    assert field.native_value == "0.1234567891"
     assert field.conversion_status == "unrepresentable"
     assert field.typed_value is None
 

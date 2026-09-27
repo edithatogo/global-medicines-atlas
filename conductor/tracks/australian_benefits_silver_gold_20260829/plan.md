@@ -1013,8 +1013,20 @@
   field and ordinal are reported while the source value is omitted. Focused
   tests: 20 passed; affected MBS tests: 158 passed; Ruff, `ty`, BasedPyright,
   context and `actionlint` passed.
-- [ ] Merge the diagnostics improvement and rerun on exact `main`; identify the
-  field and ordinal of the hosted invalid conversion, then investigate its
-  documented format without retrieving source bytes locally. Qualify the real
-  schema era and resolve quality findings; M-107, v4 admission, and M-109
-  acceptance remain separate gates.
+- [x] Merge the diagnostics improvement and rerun on exact `main`; hosted run
+  `36337277773` identified one invalid value at `benefits.Benefit85`, source
+  ordinal 36, without retaining source text or identifiers in its report. The
+  official MBS XML field description defines this amount as numeric with
+  format `1 to 5.2`; the compact notation's fractional-scale interpretation
+  remains unresolved;
+  source-local inspection remains limited to the hosted
+  runner. The exact native value remains unreported here.
+- [x] Add a fail-closed maximum five-digit integer-width check in the MBS
+  Silver projection, preserving source text as `invalid`; do not constrain
+  fractional precision because the official page's compact `1 to 5.2` notation
+  does not establish a scale interpretation for this archived file. Synthetic
+  checks cover oversized integer text under every date profile, and verify
+  blank values and representability states remain distinct. Focused MBS tests:
+  79 passed; broader affected MBS tests: 106 passed; Ruff, `ty`, BasedPyright,
+  context and diff validation passed. The exact-main rerun is still required
+  to determine whether the real finding is resolved or remains a quality gap.

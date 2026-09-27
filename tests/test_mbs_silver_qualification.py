@@ -31,7 +31,7 @@ def _xml() -> bytes:
     </Data><Data>
       <ItemNum>00456</ItemNum><SubItemNum>00</SubItemNum>
       <ItemStartDate>not-a-date</ItemStartDate>
-      <ScheduleFee>0.1234567891</ScheduleFee>
+      <ScheduleFee>9999999999999999999999999999999.990000000</ScheduleFee>
     </Data></MBS_XML>"""
 
 
@@ -84,8 +84,7 @@ def test_qualification_accounts_for_all_tables_fields_and_source_rows() -> None:
     ]
     assert all(table.row_count == 2 for table in report.tables)
     assert sum(table.field_count for table in report.tables) == 40
-    assert report.quality_counts["unrepresentable"] == 1
-    assert report.quality_counts["invalid"] == 1
+    assert report.quality_counts["invalid"] == 2
     assert report.quality_counts["null"] == 1
     assert report.promotion_status == "candidate_only"
     assert report.blockers == (

@@ -54,7 +54,7 @@ def test_complete_field_addresses_and_denominators() -> None:
     } == {"value": 2}
     assert {
         item.outcome: item.count for item in schedule_fee.conversion_statuses
-    } == {"converted": 1, "unrepresentable": 1}
+    } == {"converted": 1, "invalid": 1}
 
 
 def test_report_is_deterministic_bound_and_contains_no_source_values() -> None:

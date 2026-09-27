@@ -22,6 +22,15 @@ Amounts use exact Python Decimal values with explicit AUD currency;
 percentages retain their source magnitude (85 is not silently changed to
 0.85). The strict decimal grammar accepts signed ASCII digits and an optional
 fraction, not exponents, separators, currency symbols or surrounding spaces.
+MBS XML monetary benefit/fee fields additionally follow the official numeric
+format recorded as `1 to 5.2`. The candidate converter currently rejects
+amounts with more than five integer digits and preserves their source text with
+an `invalid` status in the MBS Silver projection. The reusable scalar converter
+remains an exact decimal parser independent of source-specific policy. The
+Silver profile does not constrain fractional precision: the official
+notation's scale meaning is unresolved for this contract. Synthetic tests
+cover the integer-width check. The documented field contract does not establish
+the profile of any particular archived source era.
 No quantization or rounding occurs, even under a low-precision Decimal context.
 Arrow precision/scale admission remains a separate pending step.
 
