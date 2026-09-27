@@ -146,7 +146,7 @@ def test_quality_diagnostics_locate_field_and_row_without_values(
         {
             "table": "benefits",
             "field": "Benefit85",
-            "reason": "numeric_format_invalid",
+            "reason": "strict_numeric_grammar_mismatch",
             "source_ordinals": [1],
         },
     ]

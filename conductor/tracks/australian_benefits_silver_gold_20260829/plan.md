@@ -1032,8 +1032,13 @@
   run `36339405937` repeated the 5,989-row/40-field denominator and retained
   exactly one invalid `benefits.Benefit85` at ordinal 36. Thus the amount-width
   guard did not resolve the finding.
-- [ ] Add a value-free invalid-amount reason diagnostic distinguishing
-  nonnumeric source text from a numeric value outside the integer-width
-  contract. Requalify on exact `main`; preserve source values and IDs only
-  inside the hosted process. Keep the quality blocker if the cause is not
-  corrected by an evidence-supported transformation.
+- [x] Add a value-free invalid-amount reason diagnostic distinguishing a
+  strict numeric grammar mismatch from a numeric value outside the integer-
+  width contract. PR #558 merged as `486e5ca`; exact-main run `36339904431` classified
+  the single `benefits.Benefit85` finding at source ordinal 36 as a
+  `strict_numeric_grammar_mismatch`. The underlying spelling is unknown and may
+  be numerically interpretable outside the candidate grammar. The raw value
+  and source record identifiers remain absent from the report. Retain the
+  `quality_findings_present` blocker and source-faithful
+  invalid value. Remaining independent gates include source-era qualification,
+  public v4 identity/admission, M-107, and M-109 acceptance.
