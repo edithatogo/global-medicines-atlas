@@ -129,6 +129,35 @@ def test_v3_temporal_effectivity_dates_are_classified_by_native_parent() -> (
     )
 
 
+def test_contract_classifies_every_supported_native_slot() -> None:
+    payload = _production_xml()
+    rows = table(payload).to_pylist()
+    observed = {
+        pbs_dates._contract(row)[0]  # pyright: ignore[reportPrivateUsage]
+        for row in rows
+    }
+    assert observed == {
+        "unmapped",
+        "schedule_effective_date",
+        "schedule_dct_valid",
+        "restriction_effective_date",
+    }
+    fields_by_role = {
+        role: field
+        for row in rows
+        if (role := pbs_dates._contract(row)[0]) != "unmapped"  # pyright: ignore[reportPrivateUsage]
+        and (field := pbs_dates._contract(row)[1]) is not None  # pyright: ignore[reportPrivateUsage]
+    }
+    assert set(fields_by_role) == {
+        "schedule_dct_valid",
+        "restriction_effective_date",
+    }
+    assert fields_by_role["schedule_dct_valid"]["path"].endswith("/text")
+    assert fields_by_role["restriction_effective_date"]["path"].endswith(
+        "/attributes/effective-date"
+    )
+
+
 @pytest.mark.parametrize(
     ("literal", "status"),
     [
