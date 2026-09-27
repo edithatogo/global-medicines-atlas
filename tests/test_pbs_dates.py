@@ -158,6 +158,25 @@ def test_contract_classifies_every_supported_native_slot() -> None:
     )
 
 
+def test_v3_temporal_lookalikes_under_unknown_wrappers_remain_unmapped() -> (
+    None
+):
+    payload = _production_xml().replace(
+        b"<pbs:block-container>",
+        b"""<pbs:unknown><pbs:effective><pbs:date>2019-03-20</pbs:date>
+</pbs:effective></pbs:unknown><pbs:block-container>""",
+    )
+    rows = table(payload, pbs_dates.CANDIDATE_PROFILE).to_pylist()
+    lookalikes = [
+        row
+        for row in rows
+        if any(field["value"] == "2019-03-20" for field in row["native_fields"])
+    ]
+    assert len(lookalikes) == 1
+    assert lookalikes[0]["date_role"] == "unmapped"
+    assert lookalikes[0]["date_conversion_status"] == "unmapped"
+
+
 @pytest.mark.parametrize(
     ("literal", "status"),
     [

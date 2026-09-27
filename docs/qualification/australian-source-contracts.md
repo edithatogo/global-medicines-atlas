@@ -410,12 +410,14 @@ funding/regulatory status, medicine equivalence, public derivatives or v4.
 rows, independently joinable to reference candidates by `entity_id`. The
 mapping includes PBS root/schedule `effective-date` attributes, PBS
 root/info/DCTERMS valid text, the fixture-established restriction
-`effective-date` attribute, and PBS v3 `<date>` elements whose immediate
-expanded-name parent is `<effective>`, `<supply-only>`, or `<non-effective>`.
+`effective-date` attribute, and PBS v3 `<date>` elements only at these complete
+expanded-name paths: `root/pharmaceutical-items-list/pharmaceutical-item/effective/date`,
+`root/pharmaceutical-items-list/pharmaceutical-item/supply-only/date`, and
+`root/pharmaceutical-items-list/pharmaceutical-item/supply-only/non-effective/date`.
 These three roles preserve the source's effectivity states as separate dates;
 they do not combine them into intervals or infer a current status. Exact
-expanded names and parent paths are required; foreign attributes, lookalike
-names and unknown wrappers stay unmapped. The adapter's fallback/first-value
+expanded names and complete ancestry are required; foreign attributes,
+lookalike names and unknown wrappers stay unmapped. The adapter's fallback/first-value
 selection is deliberately not copied. Every observed element survives,
 including repeated dates or duplicate item IDs. Absent elements are not
 invented; a supported container missing its date child creates no synthetic

@@ -302,7 +302,7 @@
   Frozen local full: 3,194 passed, three failed, one skipped, 96.70% coverage;
   two interpreter-pin failures and product latency failure (one isolated
   rerun passed). No all-green local-full or real-corpus qualification claim.
-- [~] Cover the PBS v3 temporal `<effective>/<date>`,
+- [x] Cover the PBS v3 temporal `<effective>/<date>`,
   `<supply-only>/<date>`, and `<non-effective>/<date>` structures in date-slot
   candidates. The official v3.1.9 guide specifies these effectivity states and
   the mapping specification specifies XSD `YYYY-MM-DD`; this change maps the
@@ -311,10 +311,13 @@
   were previously `unmapped`; after the fix the four PBS date/historical suites
   pass (103), the date module has 99% branch-aware coverage (24 tests), and
   Ruff, `ty`, BasedPyright and context validation pass. Full local Test-Goblin:
-  5,110 passed, 2 failed, 1 skipped, 96.72% coverage; both failures are stable
+  5,114 passed, 2 failed, 1 skipped, 96.72% coverage; both failures are stable
   release-reproducibility tests unable to find required `uv 0.11.29` (local
-  candidates are 0.12.19). Exact-main PBS requalification remains pending; no
-  source payload was acquired locally and no dataset was published.
+  candidates are 0.12.19). An automated review finding then tightened the
+  mapping to exact documented element ancestry, with a negative unknown-wrapper
+  test; 166 focused PBS/historical tests pass. Exact-main PBS requalification
+  remains pending; no source payload was acquired locally and no dataset was
+  published.
 
 - [x] Bind historical PBS archive B1/B2 to its exact XML member with source
   identity unchanged, required parent receipt digest, archive/member byte
