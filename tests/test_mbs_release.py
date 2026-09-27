@@ -81,6 +81,28 @@ def test_mock_stage_preserves_raw_and_separates_admission(
     assert (stage.path / raw[0].path).read_bytes() == payload
 
 
+def test_donor_url_filename_is_superseded_by_digest_bound_raw_path(
+    tmp_path: Path,
+) -> None:
+    """An approved source URL cannot choose the published file name."""
+    contract = MbsReleaseContract.model_validate_json(CONTRACT.read_bytes())
+    stage = stage_mbs_release(
+        contract,
+        tmp_path,
+        reuse_decision=acquire_new_decision("au-mbs"),
+        clock=lambda: NOW,
+        transport=httpx.MockTransport(
+            lambda _: httpx.Response(
+                200, content=PAYLOAD, headers={"content-type": "text/xml"}
+            )
+        ),
+    )
+    raw = next(item for item in stage.manifest.objects if item.role == "raw")
+    assert raw.path == f"raw/mbs/releases/2026-08-01/{raw.sha256}.xml"
+    assert "MBS-XML-20260801.XML" not in raw.path
+    assert (stage.path / raw.path).read_bytes() == PAYLOAD
+
+
 def test_retry_budget_retains_failures_without_claiming_data(
     tmp_path: Path,
 ) -> None:
