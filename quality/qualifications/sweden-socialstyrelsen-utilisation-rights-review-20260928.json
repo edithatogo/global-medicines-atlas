@@ -32,11 +32,12 @@
     "public_release_authorized": false,
     "external_publication_authorized": false
   },
-  "recommended_decision": "approve_bounded_internal_acquisition_and_retention_of_source_generated_aggregate_api_results_only",
+  "recommended_decision": "approve_bounded_internal_acquisition_and_retention",
   "maintainer_decision": "pending",
   "decision_options": [
     {
       "option": "approve_bounded_internal_acquisition_and_retention",
+      "label": "Recommended — approve bounded internal acquisition and retention",
       "scope": "Permit source-generated aggregate API results only, recording exact query parameters, retrieval time, source version, response digest and attribution. Enforce the existing 70000-cell and 100-ATC limits. Exclude person-level records, broad 9.10-GB bulk downloads, public release and external publication."
     },
     {
