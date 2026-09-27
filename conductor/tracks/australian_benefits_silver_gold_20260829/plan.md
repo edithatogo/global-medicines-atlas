@@ -533,8 +533,18 @@
 - Hosted run `33549535561` now records a passed PBS aggregate receipt at
   `pbs-aggregate-receipt-20260904.json`; it is structural-storage-candidate
   evidence only and does not close this Silver checkpoint.
-- [ ] Phase Verification & Checkpoint: PBS Silver is complete for the approved
-  denominator without restricted terminology payload publication.
+- [~] Phase Verification & Checkpoint: PBS Silver is complete for the approved
+  denominator without restricted terminology payload publication. The exact-
+  main run `34749693403` at `8ccc450f` completed all five structural/storage
+  projections over 7,730,684 XML elements and 18,208,758 native fields, with
+  common native digest, complete reference windows and verified Parquet
+  round-trips. Durable receipt: issue #341 comment `5653049805`, report SHA-256
+  `216aec6b96ac439b418d02997e71ac4b04c2ff126d6eb1e537b6e12f0dce5713`.
+  This resolves the previous incomplete-run/structural-denominator blocker,
+  not PBS Silver acceptance: the receipt says
+  `structural_storage_candidate_only`, `domain_semantics_qualified=false`,
+  and `date_profile=not-selected`; 2,798 reference rows remain unresolved.
+  Source-specific semantic/date mapping and cross-era acceptance remain open.
 
 ## Phase 4: Implement Gold graph contracts (AC-04, AC-05)
 
