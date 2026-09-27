@@ -123,7 +123,30 @@
       "git_object_sha1": "8a995ca2474fe71d285c052898c5c2111504b800",
       "sha256": "eae546675786e4669ec00a7389c8445fe45f6ed2d22ad73f08d829b4bd590eb2",
       "disposition": "adapt",
-      "acceptance_state": "pending_behavioral_parity"
+      "acceptance_state": "verified_adaptation",
+      "parity_evidence": {
+        "ledger": "conductor/tracks/australian_health_source_consolidation_20260829/evidence.jsonl",
+        "hosted_qualification_record_kind": "hosted_publication_receipt",
+        "successor": "src/global_medicines_atlas/adapters/au_pbs.py",
+        "behavior_tests": "tests/test_au_pbs_v3.py",
+        "publication_tests": "tests/test_australian_pbs_hf_publication.py",
+        "function_dispositions": {
+          "download_and_unzip_pbs": {
+            "disposition": "replace-with-equivalent",
+            "behavior_test": "tests/test_au_pbs_v3.py::test_hosted_qualification_binds_raw_member_and_projection",
+            "behavior": "Retain ZIP and selected XML bytes with exact digests, receipt and admission rather than extracting arbitrary XML filenames."
+          },
+          "get_filename_from_url": {
+            "disposition": "supersede",
+            "behavior": "Versioned source identity and safe member selection replace untrusted URL/member basename output.",
+            "behavior_tests": [
+              "tests/test_au_pbs_v3.py::test_hosted_qualification_binds_raw_member_and_projection",
+              "tests/test_au_pbs_v3.py::test_parse_pbs_v3_archive_rejects_unsafe_or_ambiguous_members"
+            ]
+          }
+        },
+        "scope_note": "Synthetic behavior controls qualify successor semantics; the separate exact hosted receipt proves the approved April 2026 PBS source archive, not all historical or future releases."
+      }
     },
     {
       "repository": "edithatogo/aus_mbs_pbs_graph",
@@ -150,7 +173,22 @@
       "git_object_sha1": "237b532f834a99b4cdbc20c85385a43db590cac4",
       "sha256": "33b15be85249d75eac05ca006b1e60a20f0e53c870150b0b453025a519f83c81",
       "disposition": "replace-with-equivalent",
-      "acceptance_state": "pending_behavioral_parity"
+      "acceptance_state": "verified_replacement",
+      "parity_evidence": {
+        "ledger": "conductor/tracks/australian_health_source_consolidation_20260829/evidence.jsonl",
+        "hosted_qualification_record_kind": "hosted_publication_receipt",
+        "successor": "src/global_medicines_atlas/adapters/au_pbs.py",
+        "behavior_tests": "tests/test_au_pbs_v3.py",
+        "publication_tests": "tests/test_australian_pbs_hf_publication.py",
+        "function_dispositions": {
+          "parse_pbs_xml_initial": {
+            "disposition": "replace-with-equivalent",
+            "behavior_test": "tests/test_au_pbs_v3.py::test_parse_pbs_v3_archive_preserves_identity_and_namespace",
+            "behavior": "Parse PBS v3 item code, product, AMT/ATC references, restrictions, dates and namespaces from a safely selected member; donor file had invalid trailing syntax."
+          }
+        },
+        "scope_note": "Synthetic behavior controls qualify successor semantics; the separate exact hosted receipt proves the approved April 2026 PBS source archive, not all historical or future releases."
+      }
     },
     {
       "repository": "edithatogo/aus_mbs_pbs_graph",
@@ -159,7 +197,26 @@
       "git_object_sha1": "4b6d63f9a77888478caa1d213af1128f135078da",
       "sha256": "7de0c760ae7f39734d4c894e9d31b55f3ca231898b2d0762b7704f29602e56c9",
       "disposition": "adapt",
-      "acceptance_state": "pending_behavioral_parity"
+      "acceptance_state": "verified_adaptation",
+      "parity_evidence": {
+        "ledger": "conductor/tracks/australian_health_source_consolidation_20260829/evidence.jsonl",
+        "hosted_qualification_record_kind": "hosted_publication_receipt",
+        "successor": "scripts/inspect_pbs_v3.py::main",
+        "behavior_tests": "tests/test_au_pbs_v3.py",
+        "publication_tests": "tests/test_australian_pbs_hf_publication.py",
+        "function_dispositions": {
+          "get_first_pharmaceutical_item_xml": {
+            "disposition": "adapt",
+            "behavior_test": "tests/test_au_pbs_v3.py::test_pbs_cli_preserves_bounded_donor_item_views",
+            "behavior": "Expose the first source-native pharmaceutical item and XML projection through an explicit bounded local inspection option, without live network retrieval."
+          }
+        },
+        "scope_note": "Synthetic behavior controls qualify successor semantics; the separate exact hosted receipt proves the approved April 2026 PBS source archive, not all historical or future releases.",
+        "implementation_components": [
+          "scripts/inspect_pbs_v3.py",
+          "src/global_medicines_atlas/adapters/au_pbs.py"
+        ]
+      }
     },
     {
       "repository": "edithatogo/aus_mbs_pbs_graph",

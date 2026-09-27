@@ -1,5 +1,6 @@
 """Keep the M-105 disposition denominator exact without inferring parity."""
 
+import ast
 import json
 from pathlib import Path
 
@@ -83,7 +84,7 @@ def test_m105_dispositions_do_not_promote_unproven_behavior() -> None:
             item["acceptance_state"] == "pending_behavioral_parity"
             for item in receipt["baseline"]
         )
-        == 9
+        == 6
     )
     assert (
         sum(
@@ -219,3 +220,111 @@ def test_mbs_downloader_adaptation_binds_legacy_and_hosted_receipts() -> None:
     )
     assert (ROOT / proof["replacement"].split("::", 1)[0]).is_file()
     assert all((ROOT / path).is_file() for path in proof["behavior_tests"])
+
+
+def test_pbs_donor_functions_bind_successors_and_pre_archive_publication() -> (  # ruff: ignore[too-many-locals] - one receipt binds three donor files and four functions
+    None
+):
+    receipt = json.loads(RECEIPT.read_text())
+    inventory = json.loads(INVENTORY.read_text())
+    paths = {
+        "scripts/parsing/download_pbs.py",
+        "scripts/parsing/parse_pbs_xml.py",
+        "scripts/utils/identify_pbs_tags.py",
+    }
+    rows = {
+        item["path"]: item
+        for item in receipt["baseline"]
+        if item["repository"] == "edithatogo/aus_mbs_pbs_graph"
+        and item["path"] in paths
+    }
+    donor = next(
+        item
+        for item in inventory["denominator"]["repositories"]
+        if item["repository"] == "edithatogo/aus_mbs_pbs_graph"
+    )
+    assert set(rows) == paths
+    ledger = [
+        json.loads(line)
+        for line in (
+            ROOT
+            / "conductor/tracks/australian_health_source_consolidation_20260829/evidence.jsonl"
+        )
+        .read_text()
+        .splitlines()
+    ]
+    hosted = next(
+        item
+        for item in ledger
+        if item.get("kind") == "hosted_publication_receipt"
+        and item.get("phase") == "governed_pbs_v3"
+    )
+    assert hosted["status"] == "passed_public_anonymously_verified"
+    assert hosted["dataset"] == "edithatogo/australian-pbs-source-archive"
+    assert hosted["revision"] == "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
+    assert hosted["visibility"] == {"public": True, "gated": False}
+    assert hosted["verification"]["anonymous_digest_verification"] == "passed"
+    assert "exact source ZIP" in hosted["products"]
+    assert "exact source XML member" in hosted["products"]
+    assert (
+        hosted["source"]["archive_sha256"] != hosted["source"]["member_sha256"]
+    )
+    graph_archive = json.loads(
+        (
+            ROOT / "quality/qualifications/graph-archival-20260906.json"
+        ).read_text()
+    )
+    assert hosted["recorded_at"] < graph_archive["updated_at"]
+
+    for donor_file in donor["files"]:
+        if donor_file["path"] not in paths:
+            continue
+        row = rows[donor_file["path"]]
+        assert row["commit"] == donor["commit"]
+        assert row["git_object_sha1"] == donor_file["git_object_sha1"]
+        assert row["acceptance_state"].startswith("verified_")
+        proof = row["parity_evidence"]
+        assert proof["hosted_qualification_record_kind"] == hosted["kind"]
+        successor_path, _, successor_name = proof["successor"].partition("::")
+        assert (ROOT / successor_path).is_file()
+        if successor_name:
+            successor_tree = ast.parse((ROOT / successor_path).read_text())
+            assert successor_name in {
+                item.name
+                for item in ast.walk(successor_tree)
+                if isinstance(item, ast.FunctionDef)
+            }
+        if donor_file["path"] == "scripts/utils/identify_pbs_tags.py":
+            assert proof["successor"] == "scripts/inspect_pbs_v3.py::main"
+            assert set(proof["implementation_components"]) == {
+                "scripts/inspect_pbs_v3.py",
+                "src/global_medicines_atlas/adapters/au_pbs.py",
+            }
+        assert (ROOT / proof["publication_tests"]).is_file()
+        assert set(proof["function_dispositions"]) == set(
+            donor_file["functions"]
+        )
+        for function in proof["function_dispositions"].values():
+            assert function["disposition"] in FINAL_DISPOSITIONS
+            test_refs = function.get(
+                "behavior_tests", [function.get("behavior_test")]
+            )
+            assert test_refs
+            assert all(isinstance(ref, str) for ref in test_refs)
+            for ref in test_refs:
+                test_path, name = ref.split("::", 1)
+                source = (ROOT / test_path).read_text()
+                declarations = {
+                    item.name
+                    for item in ast.walk(ast.parse(source))
+                    if isinstance(item, ast.FunctionDef)
+                }
+                assert name in declarations
+    assert (
+        next(
+            item
+            for item in donor["files"]
+            if item["path"] == "scripts/parsing/parse_pbs_xml.py"
+        )["implementation_state"]
+        == "invalid_syntax"
+    )
