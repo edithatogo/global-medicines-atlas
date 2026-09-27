@@ -347,6 +347,12 @@ def test_discover_mbs_utilisation_resources() -> None:
     )
     assert (
         by_filename[
+            "medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx"
+        ].period_label
+        == "2009-10_to_2024-25"
+    )
+    assert (
+        by_filename[
             "medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26.xlsx"
         ].category
         == "medicare_ytd_summary_tables"
@@ -686,11 +692,35 @@ def test_generate_medicare_candidate_slugs() -> None:
     assert any("2025-26" in s for s in slugs_aug)
     assert not any("2026-27" in s for s in slugs_aug)
 
+    slugs_jul = generate_medicare_candidate_slugs(
+        datetime(2027, 7, 15, 0, 0, tzinfo=UTC)
+    )
+    assert any(
+        "medicare-annual-statistics-state-and-territory-2009-10-to-2025-26"
+        in slug
+        for slug in slugs_jul
+    )
+    assert any(
+        "medicare-quarterly-statistics-state-and-territory-june-quarter-2026-27"
+        in slug
+        for slug in slugs_jul
+    )
+
     # November 2026: after Q1 publication (months 11..12)
     slugs_nov = generate_medicare_candidate_slugs(
         datetime(2026, 11, 20, 0, 0, tzinfo=UTC)
     )
     assert any("2026-27" in s for s in slugs_nov)
+    assert any(
+        "medicare-annual-statistics-state-and-territory-2009-10-to-2025-26"
+        in slug
+        for slug in slugs_nov
+    )
+    assert any(
+        "medicare-quarterly-statistics-state-and-territory-june-quarter-2026-27"
+        in slug
+        for slug in slugs_nov
+    )
 
     # March 2027: in second half of FY (months 1..6)
     slugs_mar = generate_medicare_candidate_slugs(
@@ -1080,8 +1110,18 @@ def test_mbs_utilisation_stage_resources_resilient(
         filename="timeout.xlsx",
         archive_path="raw/mbs/utilisation/quarterly/timeout.xlsx",
     )
+    res_missing = DiscoveredHarvestResource(
+        source_id="au-health-medicare-statistics",
+        category="medicare_annual_statistics_state_territory",
+        url="https://www.health.gov.au/resources/collections/medicare-statistics-collection",
+        filename="unavailable-medicare_annual_statistics_state_territory.txt",
+        archive_path="raw/mbs/utilisation/missing/annual.txt",
+        period_label="unavailable",
+    )
+    requested: list[str] = []
 
     def _fake_fetch(url: str, **_kwargs: Any) -> tuple[bytes, str]:
+        requested.append(url)
         if "timeout" in url:
             raise TimeoutError("Network timeout on health.gov.au")
         return b"CSV_CONTENT", url
@@ -1092,13 +1132,19 @@ def test_mbs_utilisation_stage_resources_resilient(
     )
 
     stage_dir = tmp_path / "stage"
-    stages, manifest = stage_resources([res_good, res_bad], stage_dir)
+    stages, manifest = stage_resources(
+        [res_good, res_bad, res_missing], stage_dir
+    )
     assert len(stages) == 1
     assert stages[0].resource.filename == "mbs-group.csv"
     assert manifest["file_count"] == 2
     assert manifest["coverage_status"] == "partial"
-    assert len(manifest["failed_resources"]) == 1
+    assert len(manifest["failed_resources"]) == 2
     assert manifest["failed_resources"][0]["filename"] == "timeout.xlsx"
+    assert manifest["failed_resources"][1]["filename"] == (
+        "unavailable-medicare_annual_statistics_state_territory.txt"
+    )
+    assert res_missing.url not in requested
 
     cumulative = build_cumulative_harvest_manifest(
         "test/mbs-utilisation",
@@ -1111,7 +1157,11 @@ def test_mbs_utilisation_stage_resources_resilient(
             {
                 "source_id": "au-health-medicare-statistics",
                 "filename": "timeout.xlsx",
-            }
+            },
+            {
+                "source_id": "au-health-medicare-statistics",
+                "filename": "unavailable-medicare_annual_statistics_state_territory.txt",
+            },
         ],
         "staged_resource_count": 1,
     }
@@ -1163,9 +1213,18 @@ def test_mbs_utilisation_stage_resources_resilient(
         stage_resources([res_bad], stage_dir)
 
 
-def test_mbs_utilisation_discovery_fails_closed_on_missing_source_family(
+def test_mbs_utilisation_discovery_preserves_missing_current_period_gaps(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    monkeypatch.setattr(
+        "scripts.harvest_australian_mbs_utilisation.latest_medicare_publication_fy",
+        lambda _now: "2025-26",
+    )
+    monkeypatch.setattr(
+        "scripts.harvest_australian_mbs_utilisation.latest_medicare_annual_fy",
+        lambda _now: "2025-26",
+    )
+
     def package(url: str) -> dict[str, Any]:
         if "demographics-report" in url:
             return {
@@ -1190,13 +1249,28 @@ def test_mbs_utilisation_discovery_fails_closed_on_missing_source_family(
         }
 
     urls = [
-        "https://www.health.gov.au/medicare-quarterly.xlsx",
-        "https://www.health.gov.au/medicare-annual.xlsx",
-        "https://www.health.gov.au/medicare-year-to-date.xlsx",
+        "https://www.health.gov.au/medicare-quarterly-june-quarter-2025-26.xlsx",
+        "https://www.health.gov.au/medicare-annual-to-2025-26.xlsx",
+        "https://www.health.gov.au/medicare-year-to-date-july-to-june-2025-26.xlsx",
     ]
     monkeypatch.setattr(
         "scripts.harvest_australian_mbs_utilisation.fetch_url_json", package
     )
+    monkeypatch.setattr(
+        "scripts.harvest_australian_mbs_utilisation.discover_health_gov_medicare_workbooks",
+        lambda **_kwargs: [
+            urls[0],
+            "https://www.health.gov.au/medicare-annual-2009-10-to-2024-25.xlsx",
+            urls[2],
+        ],
+    )
+    stale_annual = discover_selected_resources()
+    assert [
+        resource.category
+        for resource in stale_annual
+        if resource.filename.startswith("unavailable-")
+    ] == ["medicare_annual_statistics_state_territory"]
+
     monkeypatch.setattr(
         "scripts.harvest_australian_mbs_utilisation.discover_health_gov_medicare_workbooks",
         lambda **_kwargs: urls,
@@ -1234,10 +1308,13 @@ def test_mbs_utilisation_discovery_fails_closed_on_missing_source_family(
         "scripts.harvest_australian_mbs_utilisation.discover_health_gov_medicare_workbooks",
         lambda **_kwargs: urls[:1],
     )
-    with pytest.raises(
-        RuntimeError, match="MBS utilisation discovery incomplete"
-    ):
-        discover_selected_resources()
+    partial = discover_selected_resources()
+    unavailable = [r for r in partial if r.filename.startswith("unavailable-")]
+    assert len(unavailable) == 2
+    assert {r.category for r in unavailable} == {
+        "medicare_annual_statistics_state_territory",
+        "medicare_ytd_summary_tables",
+    }
 
 
 def test_harvest_default_headers_client_hints() -> None:

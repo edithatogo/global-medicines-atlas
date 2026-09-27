@@ -15,6 +15,7 @@ import os
 import sys
 import time
 import urllib.error
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, cast
 
@@ -28,6 +29,8 @@ from global_medicines_atlas.australian_harvesting import (
     discover_health_gov_medicare_workbooks,
     discover_mbs_utilisation_resources,
     fetch_url_bytes_governed,
+    latest_medicare_annual_fy,
+    latest_medicare_publication_fy,
     stage_harvest_payload,
     validate_resources_against_contract,
     verify_anonymous_restore,
@@ -107,13 +110,54 @@ def discover_selected_resources(
     }
     observed = {(r.source_id, r.category) for r in resources}
     missing = required - observed
-    if missing:
+    unavailable_non_health = sorted(
+        (source_id, category)
+        for source_id, category in missing
+        if source_id != "au-health-medicare-statistics"
+    )
+    if unavailable_non_health:
         raise RuntimeError(
             "MBS utilisation discovery incomplete: "
             + ", ".join(
                 f"{source_id}/{category}"
-                for source_id, category in sorted(missing)
+                for source_id, category in unavailable_non_health
             )
+        )
+    now = datetime.now(UTC)
+    expected_health_periods = {
+        "medicare_annual_statistics_state_territory": latest_medicare_annual_fy(
+            now
+        ),
+        "medicare_quarterly_statistics_state_territory": latest_medicare_publication_fy(
+            now
+        ),
+        "medicare_ytd_summary_tables": latest_medicare_publication_fy(now),
+    }
+    unavailable_health_categories = {
+        category
+        for source_id, category in missing
+        if source_id == "au-health-medicare-statistics"
+    }
+    for category, expected_period in expected_health_periods.items():
+        period_available = any(
+            resource.source_id == "au-health-medicare-statistics"
+            and resource.category == category
+            and expected_period in resource.period_label
+            for resource in resources
+        )
+        if not period_available:
+            unavailable_health_categories.add(category)
+    if unavailable_health_categories:
+        resources.extend(
+            DiscoveredHarvestResource(
+                source_id="au-health-medicare-statistics",
+                category=category,
+                url="https://www.health.gov.au/resources/collections/medicare-statistics-collection",
+                filename=f"unavailable-{category}.txt",
+                archive_path=f"raw/mbs/utilisation/missing/{category}.txt",
+                period_label="unavailable",
+            )
+            for category in sorted(unavailable_health_categories)
         )
     return resources
 
@@ -136,9 +180,17 @@ def stage_resources(
         if idx > 1 and inter_request_delay_seconds > 0:
             time.sleep(inter_request_delay_seconds)
         print(
-            f"  [{idx}/{len(resources)}] Fetching and staging {r.filename} from {r.url}...",
+            f"  [{idx}/{len(resources)}] Processing {r.filename} from {r.url}...",
             flush=True,
         )
+        if r.filename.startswith("unavailable-"):
+            failed_resources.append({
+                "filename": r.filename,
+                "url": r.url,
+                "source_id": r.source_id,
+                "error": "Required workbook family was not discoverable; no payload request was made.",
+            })
+            continue
         try:
             stage = stage_harvest_payload(
                 r,

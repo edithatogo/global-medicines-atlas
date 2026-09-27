@@ -485,36 +485,47 @@ def discover_mbs_schedule_resources(
 
 def generate_medicare_candidate_slugs(now: datetime) -> list[str]:
     """Generate prioritized candidate publication URLs on health.gov.au."""
+    quarterly_fy = latest_medicare_publication_fy(now)
+    annual_fy = latest_medicare_annual_fy(now)
+    quarters = ("june", "march", "december", "september")
+
+    slugs = [
+        f"https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-{annual_fy}?language=en"
+    ]
+    slugs.extend([
+        f"https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-state-and-territory-{q}-quarter-{quarterly_fy}?language=en"
+        for q in quarters
+    ])
+    slugs.extend([
+        f"https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-summary-tables-july-to-{m}-{quarterly_fy}?language=en"
+        for m in quarters
+    ])
+    return slugs
+
+
+def latest_medicare_publication_fy(now: datetime) -> str:
+    """Return the latest FY expected to have a Medicare publication by date."""
     current_fy_end = (
         now.year + 1 if now.month >= AUSTRALIAN_FY_START_MONTH else now.year
     )
-    # In the Australian fiscal calendar (starts in July / month 7):
-    # - Months 7..10 (Jul-Oct): Q1 of current FY in progress, no reports published yet.
-    # - Months 11..12 (Nov-Dec) & Months 1..6 (Jan-Jun): Q1..Q3 reports are published.
     is_current_fy_published = (
         now.month < AUSTRALIAN_FY_START_MONTH
         or now.month >= MEDICARE_Q1_PUBLICATION_MONTH
     )
-    fy_start = current_fy_end if is_current_fy_published else current_fy_end - 1
-    fy_list = [
-        f"{y - 1}-{str(y)[2:]}" for y in range(current_fy_end - 1, fy_start + 1)
-    ]
-    quarters = ("june", "march", "december", "september")
+    fy_end = current_fy_end if is_current_fy_published else current_fy_end - 1
+    return f"{fy_end - 1}-{str(fy_end)[2:]}"
 
-    slugs: list[str] = []
-    for fy in reversed(fy_list):
-        slugs.append(
-            f"https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-{fy}?language=en"
-        )
-        slugs.extend([
-            f"https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-state-and-territory-{q}-quarter-{fy}?language=en"
-            for q in quarters
-        ])
-        slugs.extend([
-            f"https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-summary-tables-july-to-{m}-{fy}?language=en"
-            for m in quarters
-        ])
-    return slugs
+
+def latest_medicare_annual_fy(now: datetime) -> str:
+    """Return the latest completed FY expected in annual Medicare statistics."""
+    current_fy_end = (
+        now.year + 1 if now.month >= AUSTRALIAN_FY_START_MONTH else now.year
+    )
+    fy_end = current_fy_end - 1
+    if now.month == AUSTRALIAN_FY_START_MONTH:
+        # Annual statistics are published in August, after the July FY rollover.
+        fy_end -= 1
+    return f"{fy_end - 1}-{str(fy_end)[2:]}"
 
 
 def discover_health_gov_medicare_workbooks(
@@ -573,6 +584,14 @@ def discover_health_gov_medicare_workbooks(
     return discovered_urls
 
 
+def _medicare_period_from_filename(filename: str) -> str:
+    period_match = re.search(r"(20\d{2}-\d{2}).*?(20\d{2}-\d{2})", filename)
+    if period_match:
+        return f"{period_match.group(1)}_to_{period_match.group(2)}"
+    single_period = re.search(r"20\d{2}-\d{2}", filename)
+    return single_period.group(0) if single_period else "unknown"
+
+
 def discover_mbs_utilisation_resources(
     data_gov_group_json: dict[str, Any] | None = None,
     data_gov_demographics_json: dict[str, Any] | None = None,
@@ -610,7 +629,7 @@ def discover_mbs_utilisation_resources(
                     url=url,
                     filename=filename,
                     archive_path=arch_path,
-                    period_label="current",
+                    period_label=_medicare_period_from_filename(filename),
                 )
             )
 
