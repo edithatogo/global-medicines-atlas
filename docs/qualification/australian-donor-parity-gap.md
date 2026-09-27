@@ -14,9 +14,11 @@ uses broad dispositions such as `adapt_or_replace_with_tests` and
 maps all 54 baseline blobs and ten later changed paths to M-105's final
 six-value vocabulary, preserving exact Git identities and baseline payload
 digests. This is a complete **classification**, not a parity qualification.
-Two baseline executable files (scraper acquisition and the monthly workflow)
-remain explicitly
-`pending_behavioral_parity`. The donor's broken MBS parser
+One baseline executable file (the monthly workflow) remains explicitly
+`pending_behavioral_parity`. The pinned scraper module has an explicit
+legacy-only receipt: `month_range` is adopted with executable checks while
+the async item and participant HTML callers remain in exact archived history.
+Neither caller establishes current participant coverage. The donor's broken MBS parser
 is now bound to the exact pre-archive 5,989-record/40-field qualification of
 its replacement, including the rejected `MBSItem` shape. The donor's July XML
 download is bound to exact public legacy bytes and the separately authorized,
@@ -28,9 +30,8 @@ processor and processor-test rows now bind every donor function to executable
 synthetic successor checks. P7 selection and separate typed HTML table
 semantics replace the donor's mixed CSV, whose Path/string handling was broken.
 This qualifies replacement behavior, not live participant acquisition or the
-former mixed CSV artifact. The remaining scraper rows still need
-file/function-level parity results. In particular, scraper async caller
-responsiveness is retained as legacy behavior, not proven API parity. The
+former mixed CSV artifact. Scraper async caller responsiveness is retained as
+legacy behavior, not proven API parity. The
 baseline and later scraper CI blobs now bind protected Test-Goblin test/lint
 execution at exact PR head `0b006fe7a6fc1738867673ef4ee486668927ff77`.
 This CI supersession does not qualify the donor scrape-and-commit schedule.

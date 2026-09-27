@@ -323,7 +323,9 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   hard-coded demonstration entry point and later async scraper test are
   explicitly excluded with reasons and exact archived-history proof; separate
   synthetic rehearsal and hosted XML release evidence does not replace their
-  omitted HTML and async behavior. The
-  baseline scraper module and monthly workflow remain pending; no later rows
-  remain pending. Exact history preservation
+  omitted HTML and async behavior. The pinned scraper module now has a
+  function-level legacy-only receipt: `month_range` is adopted with tests,
+  while both async HTML callers remain in exact archived history. Only the
+  baseline monthly workflow remains pending; no later rows remain pending.
+  Exact history preservation
   and archive approval are verified separately; M-105 remains blocked.

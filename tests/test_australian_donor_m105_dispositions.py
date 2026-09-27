@@ -86,7 +86,7 @@ def test_m105_dispositions_do_not_promote_unproven_behavior() -> None:
             item["acceptance_state"] == "pending_behavioral_parity"
             for item in receipt["baseline"]
         )
-        == 2
+        == 1
     )
     assert (
         sum(
@@ -169,6 +169,63 @@ def test_scraper_demonstration_exclusion_preserves_exact_history() -> None:
         for item in ast.walk(tree)
         if isinstance(item, ast.FunctionDef)
     }
+
+
+def test_scraper_legacy_row_maps_all_functions_without_live_parity() -> None:
+    receipt = json.loads(RECEIPT.read_text())
+    inventory = json.loads(INVENTORY.read_text())
+    row = next(
+        item
+        for item in receipt["baseline"]
+        if item["repository"] == "edithatogo/aus-health-data-scraper"
+        and item["path"] == "src/scraper.py"
+    )
+    donor = next(
+        item
+        for item in inventory["denominator"]["repositories"]
+        if item["repository"] == row["repository"]
+    )
+    pinned = next(
+        item for item in donor["files"] if item["path"] == row["path"]
+    )
+    assert row["git_object_sha1"] == pinned["git_object_sha1"]
+    assert row["sha256"] == pinned["sha256"]
+    assert row["disposition"] == "retain-legacy"
+    assert row["acceptance_state"] == "verified_legacy_retention"
+    proof = row["parity_evidence"]
+    assert proof["pinned_blob_sha256_readback"] == row["sha256"]
+    assert set(proof["function_dispositions"]) == set(pinned["functions"])
+    assert (
+        proof["function_dispositions"]["month_range"]["disposition"] == "adopt"
+    )
+    for name in ("scrape_items", "scrape_participants"):
+        function = proof["function_dispositions"][name]
+        assert function["disposition"] == "retain-legacy"
+        assert function["reason"]
+        for ref in function["comparison_tests"]:
+            test_path, test_name = ref.split("::", 1)
+            tree = ast.parse((ROOT / test_path).read_text())
+            assert test_name in {
+                node.name
+                for node in ast.walk(tree)
+                if isinstance(node, ast.FunctionDef)
+            }
+    source_path, symbol = proof["function_dispositions"]["month_range"][
+        "successor"
+    ].split("::", 1)
+    source_tree = ast.parse((ROOT / source_path).read_text())
+    assert symbol in {
+        node.name
+        for node in ast.walk(source_tree)
+        if isinstance(node, ast.FunctionDef)
+    }
+    archival = json.loads((ROOT / proof["legacy_history_receipt"]).read_text())
+    assert any(
+        item["repository"] == row["repository"]
+        and item["baseline"] == row["commit"]
+        and item["clean_restore"]
+        for item in archival["publication"]["restored"]
+    )
 
 
 def test_scraper_ci_supersession_binds_exact_blobs_and_executed_lanes() -> None:
