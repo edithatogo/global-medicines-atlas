@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+from collections import Counter, defaultdict
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -24,7 +25,12 @@ from global_medicines_atlas.adapters.au_mbs import (
     LEGACY_MBS_BYTES,
     LEGACY_MBS_SHA256,
 )
+from global_medicines_atlas.australian_source_contracts import (
+    TargetTable,
+    mbs_field_contracts,
+)
 from global_medicines_atlas.federation_reader import HOSTS
+from global_medicines_atlas.mbs_silver import iter_mbs_silver_batches
 from global_medicines_atlas.mbs_silver_qualification import qualify_mbs_silver
 from global_medicines_atlas.receipts import (
     AcquisitionMethod,
@@ -49,6 +55,20 @@ RIGHTS_REFERENCE = (
 )
 MAX_BYTES = 9_000_000
 GIT_SHA1_HEX_LENGTH = 40
+_TABLES: tuple[TargetTable, ...] = (
+    "services",
+    "hierarchy",
+    "descriptions",
+    "fees",
+    "benefits",
+    "caps",
+)
+_QUALITY_STATUSES = frozenset({
+    "blank",
+    "invalid",
+    "unrepresentable",
+    "unsupported_format",
+})
 
 
 def qualify(
@@ -126,15 +146,22 @@ def qualify(
     report = qualify_mbs_silver(
         payload, receipt, date_format="mbs-dmy", rows_per_batch=rows_per_batch
     )
+    quality_diagnostics = _quality_diagnostics(
+        payload, receipt, rows_per_batch=rows_per_batch
+    )
+    candidate_report = {
+        "qualification": report.model_dump(mode="json"),
+        "quality_diagnostics": quality_diagnostics,
+    }
     report_bytes = json.dumps(
-        report.model_dump(mode="json"),
+        candidate_report,
         sort_keys=True,
         separators=(",", ":"),
     ).encode()
     return {
         "schema_id": "global-medicines-atlas.mbs-silver-public-candidate-qualification",
         "schema_version": 1,
-        "qualification": report.model_dump(mode="json"),
+        **candidate_report,
         "candidate_report_sha256": hashlib.sha256(report_bytes).hexdigest(),
         "candidate_report_byte_count": len(report_bytes),
         "exact_commit": exact_commit,
@@ -148,6 +175,63 @@ def qualify(
             "the real schema era, public v4 identity, Silver publication, or "
             "M-109 acceptance."
         ),
+    }
+
+
+def _quality_diagnostics(
+    payload: bytes, receipt: SourceReceipt, *, rows_per_batch: int
+) -> dict[str, object]:
+    """Aggregate field/status counts and bad row ordinals without values."""
+    field_status_counts: Counter[tuple[str, str, str]] = Counter()
+    finding_ordinals: defaultdict[tuple[str, str, str], list[int]] = (
+        defaultdict(list)
+    )
+    for table in _TABLES:
+        field_names = tuple(
+            contract.native_name
+            for contract in mbs_field_contracts()
+            if contract.target_table == table
+        )
+        for batch in iter_mbs_silver_batches(
+            payload,
+            receipt,
+            table=table,
+            date_format="mbs-dmy",
+            rows_per_batch=rows_per_batch,
+        ):
+            for row in batch.to_pylist():
+                ordinal = int(row["source_ordinal"])
+                for field_name in field_names:
+                    value = row[field_name]
+                    status = str(value["conversion_status"])
+                    key = (table, field_name, status)
+                    field_status_counts[key] += 1
+                    if status in _QUALITY_STATUSES:
+                        finding_ordinals[key].append(ordinal)
+    return {
+        "field_status_counts": [
+            {
+                "table": table,
+                "field": field_name,
+                "status": status,
+                "count": count,
+            }
+            for (table, field_name, status), count in sorted(
+                field_status_counts.items()
+            )
+        ],
+        "quality_finding_source_ordinals": [
+            {
+                "table": table,
+                "field": field_name,
+                "status": status,
+                "source_ordinals": ordinals,
+            }
+            for (table, field_name, status), ordinals in sorted(
+                finding_ordinals.items()
+            )
+        ],
+        "source_values_included": False,
     }
 
 

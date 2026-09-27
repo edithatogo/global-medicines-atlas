@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from functools import partial
 from typing import Any, cast
 
@@ -77,9 +78,66 @@ def test_qualifies_only_digest_bound_public_bytes_in_memory(
     ]
     assert result["publication_performed"] is False
     assert result["source_bytes_retained"] is False
-    assert len(cast("str", result["candidate_report_sha256"])) == 64
+    candidate_report = {
+        "qualification": qualification,
+        "quality_diagnostics": result["quality_diagnostics"],
+    }
+    expected_digest = hashlib.sha256(
+        json.dumps(
+            candidate_report, sort_keys=True, separators=(",", ":")
+        ).encode()
+    ).hexdigest()
+    assert result["candidate_report_sha256"] == expected_digest
     assert cast("int", result["candidate_report_byte_count"]) > 0
     assert "payload" not in result
+    diagnostics = cast("dict[str, object]", result["quality_diagnostics"])
+    assert diagnostics["source_values_included"] is False
+
+
+def test_quality_diagnostics_locate_field_and_row_without_values(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = (
+        b"<MBS_XML><Data><ItemNum>00123</ItemNum>"
+        b"<ItemStartDate>not-a-date</ItemStartDate></Data></MBS_XML>"
+    )
+    monkeypatch.setattr(command, "LEGACY_MBS_BYTES", len(payload))
+    monkeypatch.setattr(
+        command, "LEGACY_MBS_SHA256", hashlib.sha256(payload).hexdigest()
+    )
+    monkeypatch.setattr(command.httpx, "Client", _client_factory(payload))
+
+    result = command.qualify(exact_commit="a" * 40)
+
+    diagnostics = cast("dict[str, object]", result["quality_diagnostics"])
+    findings = cast(
+        "list[dict[str, object]]",
+        diagnostics["quality_finding_source_ordinals"],
+    )
+    invalid = [item for item in findings if item["status"] == "invalid"]
+    assert invalid == [
+        {
+            "table": "services",
+            "field": "ItemStartDate",
+            "status": "invalid",
+            "source_ordinals": [0],
+        }
+    ]
+    assert diagnostics["source_values_included"] is False
+    assert "not-a-date" not in json.dumps(result)
+    assert (
+        result["candidate_report_sha256"]
+        == hashlib.sha256(
+            json.dumps(
+                {
+                    "qualification": result["qualification"],
+                    "quality_diagnostics": diagnostics,
+                },
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode()
+        ).hexdigest()
+    )
 
 
 @pytest.mark.parametrize(
