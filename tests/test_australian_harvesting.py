@@ -1141,6 +1141,19 @@ def test_mbs_utilisation_stage_resources_resilient(
             },
         )
 
+    for invalid_failure in ("timeout.xlsx", {"filename": "timeout.xlsx"}):
+        with pytest.raises(
+            TypeError, match="Invalid latest-run harvest failure"
+        ):
+            build_cumulative_harvest_manifest(
+                "test/mbs-utilisation",
+                stages,
+                run_coverage={
+                    "coverage_status": "partial",
+                    "failed_resources": [invalid_failure],
+                },
+            )
+
     with pytest.raises(
         RuntimeError, match=r"No resources were successfully staged"
     ):
