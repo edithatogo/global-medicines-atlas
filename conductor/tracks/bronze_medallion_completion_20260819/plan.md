@@ -475,6 +475,14 @@ for credentialed or rights-unresolved sources.
             recovery is required to publish and anonymously verify the full
             qualification; the canary and local check alone do not satisfy
             that gate or the landing audit.
+          - Hosted recovery run `36302250649` succeeded on merged PR #528.
+            The qualification is anonymously visible at public revision
+            `aa176310b5748d471cec2c36955cac36eacb4ba2`: all 33 shards,
+            631 Parquet projections, and 11,643,919,491 reported source
+            records. Independent readback matched every public Parquet digest
+            to the qualification receipt. The source-record projection
+            subgate is passed; receipt-backed landing overrides and the
+            canonical Prompt 31 completion audit remain open.
     - [x] Keep public release and external publication separately gated; the maintainer approved attributed public release and external publication on 2026-08-27 subject to the CMS Agreement for Use and fail-closed interpretation boundaries
 - [x] Task: Review Fixes for CMS Part D public qualification
     - [x] Reconcile the preflight recommendation with the maintainer's exact approved-public decision

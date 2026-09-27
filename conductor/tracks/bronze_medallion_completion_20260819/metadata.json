@@ -28,7 +28,7 @@
     {
       "id": "cms-partd-record-projection",
       "kind": "hosted-execution",
-      "status": "pending"
+      "status": "passed"
     },
     {
       "id": "nordic-source-decisions",
@@ -108,5 +108,5 @@
   ],
   "track_id": "bronze_medallion_completion_20260819",
   "type": "feature",
-  "updated_at": "2026-09-01T19:37:26Z"
+  "updated_at": "2026-09-27T07:12:49Z"
 }
