@@ -14,8 +14,8 @@ uses broad dispositions such as `adapt_or_replace_with_tests` and
 maps all 54 baseline blobs and ten later changed paths to M-105's final
 six-value vocabulary, preserving exact Git identities and baseline payload
 digests. This is a complete **classification**, not a parity qualification.
-Six baseline executable files (four scraper source/test files and two scraper
-workflows) and five later changed paths remain explicitly
+Four baseline executable files (scraper orchestration, scraper acquisition,
+and two workflows) and three later changed paths remain explicitly
 `pending_behavioral_parity`. The donor's broken MBS parser
 is now bound to the exact pre-archive 5,989-record/40-field qualification of
 its replacement, including the rejected `MBSItem` shape. The donor's July XML
@@ -23,8 +23,13 @@ download is bound to exact public legacy bytes and the separately authorized,
 hosted August acquisition. Both pinned revisions remain publicly addressable;
 the dataset's later current head is not substituted for either receipt. The
 existing [donor assessment](../../conductor/tracks/australian_health_source_consolidation_20260829/donor-assessment.md)
-maps intended functions to successor behavior; the remaining scraper rows
-still need file/function-level parity results. In particular, scraper async caller
+maps intended functions to successor behavior. The baseline and later
+processor and processor-test rows now bind every donor function to executable
+synthetic successor checks. P7 selection and separate typed HTML table
+semantics replace the donor's mixed CSV, whose Path/string handling was broken.
+This qualifies replacement behavior, not live participant acquisition or the
+former mixed CSV artifact. The remaining scraper rows still need
+file/function-level parity results. In particular, scraper async caller
 responsiveness is retained as legacy behavior, not proven API parity. The ten
 later changed paths need exact GMA evidence for the five behavior-bearing
 rows; the earlier delta receipt's

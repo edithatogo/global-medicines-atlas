@@ -512,8 +512,42 @@
       "path": "src/processor.py",
       "git_object_sha1": "e1b976984ca3994981b4d50d014cfefab5e912b9",
       "sha256": "942f7fd9440a48c97497f37ad66724682ec6576e26eb647d4067f63c4e4f45b1",
-      "disposition": "replace-with-equivalent",
-      "acceptance_state": "pending_behavioral_parity"
+      "disposition": "supersede",
+      "acceptance_state": "verified_supersession",
+      "parity_evidence": {
+        "successors": [
+          "src/global_medicines_atlas/mbs_compatibility.py::parse_legacy_mbs_items",
+          "src/global_medicines_atlas/mbs_compatibility.py::select_p7_records",
+          "src/global_medicines_atlas/mbs_tables.py::parse_mbs_html_tables"
+        ],
+        "function_dispositions": {
+          "process_mbs_xml": {
+            "disposition": "adapt",
+            "behavior_tests": [
+              "tests/test_au_mbs_source.py::test_legacy_p7_profile_keeps_extra_source_fields_and_schema_era",
+              "tests/test_au_mbs_source.py::test_p7_selection_preserves_native_records"
+            ],
+            "behavior": "P7 filtering preserves item order and native fields; the donor fixture schema remains explicitly separate from official releases."
+          },
+          "process_html_file": {
+            "disposition": "adapt",
+            "behavior_tests": [
+              "tests/test_mbs_tables.py::test_heterogeneous_tables_keep_separate_schema_and_source",
+              "tests/test_mbs_tables.py::test_no_data_drift_or_unsupported_layout_fails"
+            ],
+            "behavior": "HTML tables remain separate source-bound typed tables; unsupported layouts and no-data fail closed."
+          },
+          "combine_and_save_data": {
+            "disposition": "supersede",
+            "behavior_tests": [
+              "tests/test_mbs_tables.py::test_heterogeneous_tables_keep_separate_schema_and_source",
+              "tests/test_au_mbs_source.py::test_legacy_p7_profile_keeps_extra_source_fields_and_schema_era"
+            ],
+            "behavior": "Separate XML records and HTML table identities supersede a mixed CSV; the donor Path/string output defect and heterogeneous concatenation are not reproduced."
+          }
+        },
+        "scope_note": "Executable synthetic compatibility proves preserved P7 selection and separate table semantics, while deliberately retiring mixed CSV behavior. This is not a live HTML participant acquisition or pre-archive parity claim."
+      }
     },
     {
       "repository": "edithatogo/aus-health-data-scraper",
@@ -567,7 +601,32 @@
       "git_object_sha1": "e3a5c704fb4788b0f6a54df9d30eb449322fd4cf",
       "sha256": "bfb803c47867207205d390f8eecbb77743d9a004f29ece91f156a265fd589b81",
       "disposition": "supersede",
-      "acceptance_state": "pending_behavioral_parity"
+      "acceptance_state": "verified_supersession",
+      "parity_evidence": {
+        "successor_tests": [
+          "tests/test_au_mbs_source.py::test_legacy_p7_profile_keeps_extra_source_fields_and_schema_era",
+          "tests/test_mbs_tables.py::test_heterogeneous_tables_keep_separate_schema_and_source",
+          "tests/test_mbs_tables.py::test_no_data_drift_or_unsupported_layout_fails"
+        ],
+        "function_dispositions": {
+          "temp_data_dirs": {
+            "disposition": "supersede",
+            "behavior_test": "tests/test_mbs_tables.py::test_heterogeneous_tables_keep_separate_schema_and_source",
+            "behavior": "Pytest tmp_path supplies isolated fixture storage."
+          },
+          "test_process_mbs_xml": {
+            "disposition": "adapt",
+            "behavior_test": "tests/test_au_mbs_source.py::test_legacy_p7_profile_keeps_extra_source_fields_and_schema_era",
+            "behavior": "P7 source-native selection and fixture-era identity are checked."
+          },
+          "test_combine_and_save_data": {
+            "disposition": "supersede",
+            "behavior_test": "tests/test_mbs_tables.py::test_heterogeneous_tables_keep_separate_schema_and_source",
+            "behavior": "Separate table identities and schema-bound Parquet replace the mixed CSV assertion."
+          }
+        },
+        "scope_note": "This maps test intent and does not qualify source acquisition or a mixed CSV output."
+      }
     },
     {
       "repository": "edithatogo/aus-health-data-scraper",
@@ -634,7 +693,41 @@
       "path": "src/processor.py",
       "git_object_sha1": "e7cae9b5585a825a197b6c9b850d918a71cfb105",
       "disposition": "supersede",
-      "acceptance_state": "pending_behavioral_parity"
+      "acceptance_state": "verified_supersession",
+      "parity_evidence": {
+        "successors": [
+          "src/global_medicines_atlas/mbs_compatibility.py::parse_legacy_mbs_items",
+          "src/global_medicines_atlas/mbs_compatibility.py::select_p7_records",
+          "src/global_medicines_atlas/mbs_tables.py::parse_mbs_html_tables"
+        ],
+        "function_dispositions": {
+          "process_mbs_xml": {
+            "disposition": "adapt",
+            "behavior_tests": [
+              "tests/test_au_mbs_source.py::test_legacy_p7_profile_keeps_extra_source_fields_and_schema_era",
+              "tests/test_au_mbs_source.py::test_p7_selection_preserves_native_records"
+            ],
+            "behavior": "P7 filtering preserves item order and native fields; the donor fixture schema remains explicitly separate from official releases."
+          },
+          "process_html_file": {
+            "disposition": "adapt",
+            "behavior_tests": [
+              "tests/test_mbs_tables.py::test_heterogeneous_tables_keep_separate_schema_and_source",
+              "tests/test_mbs_tables.py::test_no_data_drift_or_unsupported_layout_fails"
+            ],
+            "behavior": "HTML tables remain separate source-bound typed tables; unsupported layouts and no-data fail closed."
+          },
+          "combine_and_save_data": {
+            "disposition": "supersede",
+            "behavior_tests": [
+              "tests/test_mbs_tables.py::test_heterogeneous_tables_keep_separate_schema_and_source",
+              "tests/test_au_mbs_source.py::test_legacy_p7_profile_keeps_extra_source_fields_and_schema_era"
+            ],
+            "behavior": "Separate XML records and HTML table identities supersede a mixed CSV; the donor Path/string output defect and heterogeneous concatenation are not reproduced."
+          }
+        },
+        "scope_note": "Executable synthetic compatibility proves preserved P7 selection and separate table semantics, while deliberately retiring mixed CSV behavior. This is not a live HTML participant acquisition or pre-archive parity claim."
+      }
     },
     {
       "repository": "edithatogo/aus-health-data-scraper",
@@ -650,7 +743,32 @@
       "path": "tests/test_processor.py",
       "git_object_sha1": "d016d0d1484aa1fe3adc6a8cf85965bc111d06d7",
       "disposition": "supersede",
-      "acceptance_state": "pending_behavioral_parity"
+      "acceptance_state": "verified_supersession",
+      "parity_evidence": {
+        "successor_tests": [
+          "tests/test_au_mbs_source.py::test_legacy_p7_profile_keeps_extra_source_fields_and_schema_era",
+          "tests/test_mbs_tables.py::test_heterogeneous_tables_keep_separate_schema_and_source",
+          "tests/test_mbs_tables.py::test_no_data_drift_or_unsupported_layout_fails"
+        ],
+        "function_dispositions": {
+          "temp_data_dirs": {
+            "disposition": "supersede",
+            "behavior_test": "tests/test_mbs_tables.py::test_heterogeneous_tables_keep_separate_schema_and_source",
+            "behavior": "Pytest tmp_path supplies isolated fixture storage."
+          },
+          "test_process_mbs_xml": {
+            "disposition": "adapt",
+            "behavior_test": "tests/test_au_mbs_source.py::test_legacy_p7_profile_keeps_extra_source_fields_and_schema_era",
+            "behavior": "P7 source-native selection and fixture-era identity are checked."
+          },
+          "test_combine_and_save_data": {
+            "disposition": "supersede",
+            "behavior_test": "tests/test_mbs_tables.py::test_heterogeneous_tables_keep_separate_schema_and_source",
+            "behavior": "Separate table identities and schema-bound Parquet replace the mixed CSV assertion."
+          }
+        },
+        "scope_note": "This maps test intent and does not qualify source acquisition or a mixed CSV output."
+      }
     },
     {
       "repository": "edithatogo/aus-health-data-scraper",
