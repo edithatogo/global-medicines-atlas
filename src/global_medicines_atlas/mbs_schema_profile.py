@@ -80,7 +80,7 @@ def _annotate(
     expected_metadata = {
         b"source_id": b"au-mbs",
         b"schema_name": f"global-medicines-atlas.mbs-silver.{table}".encode(),
-        b"schema_version": b"1.0",
+        b"schema_version": b"1.1",
         b"dimension": b"service_benefit",
         b"subject_kind": b"service",
         b"qualification": b"candidate",

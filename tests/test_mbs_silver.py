@@ -85,6 +85,11 @@ def test_all_forty_fields_have_typed_source_addressed_schemas() -> None:
         assert schema.metadata is not None
         assert schema.metadata[b"dimension"] == b"service_benefit"
         assert schema.metadata[b"absence_interpretation"] == b"unknown"
+        assert schema.metadata[b"schema_version"] == b"1.1"
+        assert (
+            schema.metadata[b"numeric_whitespace_policy"]
+            == b"xml-schema-decimal-collapse-v1"
+        )
         for contract in mbs_field_contracts():
             if contract.target_table != table:
                 continue
@@ -212,6 +217,32 @@ def test_null_missing_invalid_and_decimal_precision_are_not_collapsed() -> None:
     assert rows[0]["FeeType"]["native_state"] == "null"
     assert rows[0]["FeeChange"]["native_state"] == "missing_field"
     assert rows[0]["DerivedFee"]["typed_value"] == "85% of item 00123"
+
+
+@pytest.mark.parametrize("value", [" 42", "42 ", "\t42\r\n"])
+def test_numeric_xml_whitespace_is_normalized_only_in_typed_value(
+    value: str,
+) -> None:
+    payload = _xml(f"<Benefit85>{value}</Benefit85>")
+    result = next(
+        iter_mbs_silver_batches(payload, _receipt(payload), table="benefits")
+    ).to_pylist()[0]["Benefit85"]
+    assert result["native_value"] == value.replace("\r\n", "\n")
+    assert result["typed_value"] == Decimal(42)
+    assert result["conversion_status"] == "converted"
+
+
+@pytest.mark.parametrize("value", ["4 2", "\u00a042", " 123456.78 "])
+def test_numeric_xml_whitespace_does_not_broaden_decimal_or_amount_grammar(
+    value: str,
+) -> None:
+    payload = _xml(f"<Benefit85>{value}</Benefit85>")
+    result = next(
+        iter_mbs_silver_batches(payload, _receipt(payload), table="benefits")
+    ).to_pylist()[0]["Benefit85"]
+    assert result["native_value"] == value
+    assert result["typed_value"] is None
+    assert result["conversion_status"] == "invalid"
 
 
 @pytest.mark.parametrize("date_format", [None, "iso", "mbs-dmy"])

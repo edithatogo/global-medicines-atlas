@@ -30,6 +30,7 @@ from .receipts import SourceReceipt
 
 _TABLES = frozenset(field.target_table for field in mbs_field_contracts())
 _DECIMAL_TYPE = pa.decimal128(38, 9)
+_XML_WHITESPACE = " \t\r\n"
 MAX_MBS_AMOUNT_INTEGER_DIGITS = 5
 MAX_BATCH_ROWS = 4096
 
@@ -78,7 +79,7 @@ def mbs_silver_schema(table: TargetTable) -> pa.Schema:
         fields,
         metadata={
             "schema_name": f"global-medicines-atlas.mbs-silver.{table}",
-            "schema_version": "1.0",
+            "schema_version": "1.1",
             "source_id": "au-mbs",
             "subject_kind": "service",
             "dimension": "service_benefit",
@@ -87,6 +88,7 @@ def mbs_silver_schema(table: TargetTable) -> pa.Schema:
             "qualification": "candidate",
             "conversion_version": CONVERSION_VERSION,
             "decimal_type": "decimal128(38,9)",
+            "numeric_whitespace_policy": "xml-schema-decimal-collapse-v1",
         },
     )
 
@@ -110,13 +112,26 @@ def _field_value(
         state,
         date_format=date_format,
     )
+    if (
+        value is not None
+        and converted.status == "invalid"
+        and contract.value_type in {"aud_decimal", "decimal", "percentage"}
+    ):
+        normalized = value.strip(_XML_WHITESPACE)
+        if normalized != value:
+            converted = convert_mbs_value(
+                contract.native_name,
+                normalized,
+                state,
+                date_format=date_format,
+            )
     typed = converted.typed_value
     status: str = converted.status
     if (
         contract.value_type == "aud_decimal"
         and isinstance(value, str)
         and converted.status == "converted"
-        and _is_outside_mbs_amount_format(value)
+        and _is_outside_mbs_amount_format(value.strip(_XML_WHITESPACE))
     ):
         typed, status = None, "invalid"
     if isinstance(typed, Decimal):
@@ -135,7 +150,7 @@ def _field_value(
 
 
 def _is_outside_mbs_amount_format(value: str) -> bool:
-    """Check the official MBS numeric amount width without coercion."""
+    """Check official MBS amount width after XML whitespace normalization."""
     integer = value.lstrip("+-").partition(".")[0]
     return len(integer) > MAX_MBS_AMOUNT_INTEGER_DIGITS
 

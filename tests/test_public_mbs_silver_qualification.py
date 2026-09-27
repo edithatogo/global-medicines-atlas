@@ -288,7 +288,6 @@ def test_invalid_amount_decimal_probe_is_value_free(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     native_spellings = (
-        " 12.5 ",
         "1e2",
         "1_000",
         "1,000",
@@ -318,22 +317,17 @@ def test_invalid_amount_decimal_probe_is_value_free(
         {
             "table": "benefits",
             "probe": "decimal_constructor_rejected",
-            "source_ordinals": [3],
+            "source_ordinals": [2],
         },
         {
             "table": "benefits",
             "probe": "exponent_notation",
-            "source_ordinals": [1],
-        },
-        {
-            "table": "benefits",
-            "probe": "surrounding_whitespace",
             "source_ordinals": [0],
         },
         {
             "table": "benefits",
             "probe": "underscore_separator",
-            "source_ordinals": [2],
+            "source_ordinals": [1],
         },
     ]
     serialized = json.dumps(result)
