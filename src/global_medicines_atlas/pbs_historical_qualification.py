@@ -40,6 +40,10 @@ _NATIVE_KEYS = (
 )
 QUALIFICATION_ROWS_PER_BATCH = 4096
 MAX_REFERENCE_SHARDS = 64
+_DATE_DIAGNOSTIC_COLUMNS = {
+    "date_role_counts": "date_role",
+    "date_status_counts": "date_conversion_status",
+}
 
 
 def _reference_window(
@@ -108,6 +112,7 @@ def _denominator(
     }
 
 
+# ruff: ignore[too-many-branches] -- bounded accounting keeps parity checks together
 def _projection(
     batches: Iterator[pa.RecordBatch],
     binding: PbsXmlMemberBinding,
@@ -135,7 +140,7 @@ def _projection(
         b"qualification": b"candidate",
         b"conversion": b"none",
     }
-    counts: dict[str, int] = dict.fromkeys(
+    counts: dict[str, Any] = dict.fromkeys(
         (
             "rows",
             "native_fields",
@@ -147,6 +152,8 @@ def _projection(
         ),
         0,
     )
+    if phase == "dates":
+        counts.update({key: {} for key in _DATE_DIAGNOSTIC_COLUMNS})
     digest = hashlib.sha256()
     for batch_number, batch in enumerate(batches, 1):
         metadata = batch.schema.metadata or {}
@@ -221,7 +228,7 @@ def _projection(
 def _account_nested_batch(
     batch: pa.RecordBatch,
     expected: dict[str, str],
-    counts: dict[str, int],
+    counts: dict[str, Any],
     digest: Any,
 ) -> None:
     """Account for an entity batch without materialising nested row dicts."""
@@ -238,6 +245,7 @@ def _account_nested_batch(
             "mapping_target",
             "diagnostic",
             "date_conversion_status",
+            "date_role",
         )
         if name in batch.schema.names
     }
@@ -314,12 +322,25 @@ def _account_nested_batch(
     counts["unresolved_reference_rows"] += columns.get("diagnostic", []).count(
         "unresolved"
     )
-    counts["date_unselected_rows"] += columns.get(
-        "date_conversion_status", []
-    ).count("profile_not_selected")
+    statuses = columns.get("date_conversion_status", [])
+    counts["date_unselected_rows"] += statuses.count("profile_not_selected")
+    _count_labels(counts, columns)
     for values in zip(*(fields[name] for name in _NATIVE_KEYS), strict=True):
         digest.update(_encoded(list(values)))
     counts["native_fields"] += len(fields["record_id"])
+
+
+def _count_labels(
+    counts: dict[str, Any], columns: dict[str, list[Any]]
+) -> None:
+    """Count fixed date labels without retaining source values."""
+    if "date_role" not in columns:
+        return
+    for name, column in _DATE_DIAGNOSTIC_COLUMNS.items():
+        bucket = counts[name]
+        for label in columns.get(column, []):
+            if isinstance(label, str):
+                bucket[label] = bucket.get(label, 0) + 1
 
 
 def qualify_pbs_historical_projections(

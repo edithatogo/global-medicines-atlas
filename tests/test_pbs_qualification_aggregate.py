@@ -84,6 +84,14 @@ def shard(
                     "ambiguous_reference_rows": 0,
                     "unresolved_reference_rows": 0,
                     "date_unselected_rows": 0,
+                    **(
+                        {
+                            "date_role_counts": {"unmapped": 4},
+                            "date_status_counts": {"unmapped": 4},
+                        }
+                        if name == "dates"
+                        else {}
+                    ),
                     "native_digest": f"{start + 4:x}" * 64
                     if window
                     else "3" * 64,
@@ -135,6 +143,9 @@ def test_aggregate_accepts_hosted_sorted_key_receipt_roundtrip() -> None:
     assert list(result["qualification"]["projections"]) == list(PROJECTIONS)
     assert result["qualification"]["native_fields"] == 12
     assert result["qualification"]["native_digest"] == "3" * 64
+    assert result["qualification"]["projections"]["dates"][
+        "date_role_counts"
+    ] == {"unmapped": 4}
     assert result["publication_performed"] is False
 
 
@@ -234,6 +245,27 @@ def test_aggregate_rejects_non_exact_projection_counter_schema(
         projection["invented_rows"] = 7
     else:
         projection["unmapped_rows"] = False
+    with pytest.raises(ValueError, match="PBS qualification shards"):
+        aggregate_shards(reports)
+
+
+@pytest.mark.parametrize("mutation", ["missing", "count-mismatch", "bad-label"])
+def test_aggregate_rejects_incomplete_or_unsafe_date_diagnostics(
+    mutation: str,
+) -> None:
+    reports = complete()
+    qualification = reports[3]["qualification"]
+    assert isinstance(qualification, dict)
+    projections = qualification["projections"]
+    assert isinstance(projections, dict)
+    dates = projections["dates"]
+    assert isinstance(dates, dict)
+    if mutation == "missing":
+        dates.pop("date_role_counts")
+    elif mutation == "count-mismatch":
+        dates["date_status_counts"] = {"unmapped": 3}
+    else:
+        dates["date_role_counts"] = {1: 4}
     with pytest.raises(ValueError, match="PBS qualification shards"):
         aggregate_shards(reports)
 

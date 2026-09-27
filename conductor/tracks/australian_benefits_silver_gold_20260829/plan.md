@@ -558,6 +558,12 @@
   `structural_storage_candidate_only`, `domain_semantics_qualified=false`,
   and `date_profile=not-selected`; 2,798 reference rows remain unresolved.
   Source-specific semantic/date mapping and cross-era acceptance remain open.
+- [x] Add value-free PBS date-role and conversion-status counters to the
+  historical date-projection receipt and fail-closed aggregate. Focused
+  historical qualification and aggregate tests pass; details and limits are
+  in `docs/qualification/pbs-public-qualification.md`. These counters are
+  diagnostics only and do not select a profile or qualify source-era grammar.
+  Exact-main hosted requalification remains pending merge of PR #566.
 
 ## Phase 4: Implement Gold graph contracts (AC-04, AC-05)
 

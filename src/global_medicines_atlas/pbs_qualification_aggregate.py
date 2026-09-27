@@ -41,6 +41,11 @@ _PROJECTION_KEYS = (
     "native_digest",
     "parquet_roundtrip_verified",
 )
+_DATE_PROJECTION_KEYS = (
+    *_PROJECTION_KEYS,
+    "date_role_counts",
+    "date_status_counts",
+)
 _REFERENCE_PROJECTION_KEYS = (*_PROJECTION_KEYS, "native_digest_scope")
 _SHARED_REPORT_KEYS = (
     "workflow_commit",
@@ -63,7 +68,11 @@ def _sha256(value: object) -> bool:
 
 def _valid_projection_schema(name: str, projection: dict[str, Any]) -> bool:
     expected = (
-        _REFERENCE_PROJECTION_KEYS if name == "references" else _PROJECTION_KEYS
+        _REFERENCE_PROJECTION_KEYS
+        if name == "references"
+        else _DATE_PROJECTION_KEYS
+        if name == "dates"
+        else _PROJECTION_KEYS
     )
     return (
         len(projection) == len(expected)
@@ -73,6 +82,24 @@ def _valid_projection_schema(name: str, projection: dict[str, Any]) -> bool:
             for key in _COUNTER_KEYS
         )
         and _sha256(projection["native_digest"])
+        and (
+            name != "dates"
+            or all(
+                isinstance(projection.get(key), dict)
+                and all(
+                    isinstance(label, str) and type(count) is int and count >= 0
+                    for label, count in projection[key].items()
+                )
+                for key in ("date_role_counts", "date_status_counts")
+            )
+        )
+        and (
+            name != "dates"
+            or all(
+                sum(projection[key].values()) == projection["rows"]
+                for key in ("date_role_counts", "date_status_counts")
+            )
+        )
         and projection["parquet_roundtrip_verified"] is True
         and (
             name != "references"
