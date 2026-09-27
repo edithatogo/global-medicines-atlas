@@ -10,7 +10,10 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from scripts.harvest_australian_mbs_utilisation import stage_resources
+from scripts.harvest_australian_mbs_utilisation import (
+    discover_selected_resources,
+    stage_resources,
+)
 
 from global_medicines_atlas.australian_harvesting import (
     ALLOWED_AUSTRALIAN_HARVEST_DOMAINS,
@@ -1097,16 +1100,144 @@ def test_mbs_utilisation_stage_resources_resilient(
     assert len(manifest["failed_resources"]) == 1
     assert manifest["failed_resources"][0]["filename"] == "timeout.xlsx"
 
+    cumulative = build_cumulative_harvest_manifest(
+        "test/mbs-utilisation",
+        stages,
+        run_coverage=manifest,
+    )
+    assert cumulative["latest_run_coverage"] == {
+        "status": "partial",
+        "failed_resources": [
+            {
+                "source_id": "au-health-medicare-statistics",
+                "filename": "timeout.xlsx",
+            }
+        ],
+        "staged_resource_count": 1,
+    }
+    assert cumulative["file_count"] == 2
+
     # All succeed
     stages_good, manifest_good = stage_resources([res_good], stage_dir)
     assert len(stages_good) == 1
     assert manifest_good["coverage_status"] == "complete"
     assert manifest_good["failed_resources"] == []
+    complete = build_cumulative_harvest_manifest(
+        "test/mbs-utilisation",
+        stages_good,
+        run_coverage=manifest_good,
+    )
+    assert complete["latest_run_coverage"]["status"] == "complete"
+
+    with pytest.raises(ValueError, match="Invalid latest-run harvest coverage"):
+        build_cumulative_harvest_manifest(
+            "test/mbs-utilisation",
+            stages,
+            run_coverage={
+                "coverage_status": "complete",
+                "failed_resources": [
+                    {
+                        "source_id": "au-health-medicare-statistics",
+                        "filename": "timeout.xlsx",
+                    }
+                ],
+            },
+        )
+
+    for invalid_failure in ("timeout.xlsx", {"filename": "timeout.xlsx"}):
+        with pytest.raises(
+            TypeError, match="Invalid latest-run harvest failure"
+        ):
+            build_cumulative_harvest_manifest(
+                "test/mbs-utilisation",
+                stages,
+                run_coverage={
+                    "coverage_status": "partial",
+                    "failed_resources": [invalid_failure],
+                },
+            )
 
     with pytest.raises(
         RuntimeError, match=r"No resources were successfully staged"
     ):
         stage_resources([res_bad], stage_dir)
+
+
+def test_mbs_utilisation_discovery_fails_closed_on_missing_source_family(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def package(url: str) -> dict[str, Any]:
+        if "demographics-report" in url:
+            return {
+                "result": {
+                    "resources": [
+                        {
+                            "url": "https://data.gov.au/demographics.csv",
+                            "name": "Demographics",
+                        }
+                    ]
+                }
+            }
+        return {
+            "result": {
+                "resources": [
+                    {
+                        "url": "https://data.gov.au/group.csv",
+                        "name": "Group",
+                    }
+                ]
+            }
+        }
+
+    urls = [
+        "https://www.health.gov.au/medicare-quarterly.xlsx",
+        "https://www.health.gov.au/medicare-annual.xlsx",
+        "https://www.health.gov.au/medicare-year-to-date.xlsx",
+    ]
+    monkeypatch.setattr(
+        "scripts.harvest_australian_mbs_utilisation.fetch_url_json", package
+    )
+    monkeypatch.setattr(
+        "scripts.harvest_australian_mbs_utilisation.discover_health_gov_medicare_workbooks",
+        lambda **_kwargs: urls,
+    )
+    assert len(discover_selected_resources()) == 5
+
+    def failed_group(url: str) -> dict[str, Any]:
+        if "demographics-report" not in url:
+            raise TimeoutError("group source unavailable")
+        return package(url)
+
+    monkeypatch.setattr(
+        "scripts.harvest_australian_mbs_utilisation.fetch_url_json",
+        failed_group,
+    )
+    with pytest.raises(RuntimeError, match="MBS group discovery failed"):
+        discover_selected_resources()
+
+    def failed_demographics(url: str) -> dict[str, Any]:
+        if "demographics-report" in url:
+            raise TimeoutError("demographics source unavailable")
+        return package(url)
+
+    monkeypatch.setattr(
+        "scripts.harvest_australian_mbs_utilisation.fetch_url_json",
+        failed_demographics,
+    )
+    with pytest.raises(RuntimeError, match="MBS demographics discovery failed"):
+        discover_selected_resources()
+
+    monkeypatch.setattr(
+        "scripts.harvest_australian_mbs_utilisation.fetch_url_json", package
+    )
+    monkeypatch.setattr(
+        "scripts.harvest_australian_mbs_utilisation.discover_health_gov_medicare_workbooks",
+        lambda **_kwargs: urls[:1],
+    )
+    with pytest.raises(
+        RuntimeError, match="MBS utilisation discovery incomplete"
+    ):
+        discover_selected_resources()
 
 
 def test_harvest_default_headers_client_hints() -> None:

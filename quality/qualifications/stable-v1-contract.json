@@ -837,7 +837,8 @@
       "evidence": [
         "conductor/requirements.md",
         "conductor/tracks/australian_health_source_consolidation_20260829/spec.md",
-        "conductor/tracks/public_hf_federated_data_plane_20260829/spec.md"
+        "conductor/tracks/public_hf_federated_data_plane_20260829/spec.md",
+        "docs/qualification/australian-mbs-pbs-m107-snapshots.md"
       ],
       "blocker_ids": [
         "stable-v1-australian-health-federation"

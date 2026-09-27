@@ -36,12 +36,6 @@ from global_medicines_atlas.australian_harvesting import (
 DATASET = "edithatogo/australian-mbs-utilisation-archive"
 USER_AGENT = DEFAULT_HARVEST_USER_AGENT
 
-HEALTH_GOV_MEDICARE_FILES = [
-    "https://www.health.gov.au/sites/default/files/2026-08/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26.xlsx",
-    "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
-    "https://www.health.gov.au/sites/default/files/2026-08/medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26.xlsx",
-]
-
 DATA_GOV_MBS_GROUP_API = "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group"
 DATA_GOV_MBS_DEMOGRAPHICS_API = "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group-by-patient-demographics-report"
 
@@ -69,46 +63,59 @@ def discover_selected_resources(
     *, backfill_all: bool = False
 ) -> list[DiscoveredHarvestResource]:
     print("Discovering Australian MBS utilisation resources...", flush=True)
-    group_json = None
-    demographics_json = None
     try:
         print(
             "  Querying data.gov.au MBS group statistics package...", flush=True
         )
         group_json = fetch_url_json(DATA_GOV_MBS_GROUP_API)
     except Exception as exc:
-        print(
-            f"Warning: could not fetch MBS group API from data.gov.au: {exc}",
-            file=sys.stderr,
-            flush=True,
-        )
+        raise RuntimeError("MBS group discovery failed") from exc
 
     try:
         print("  Querying data.gov.au MBS demographics package...", flush=True)
         demographics_json = fetch_url_json(DATA_GOV_MBS_DEMOGRAPHICS_API)
     except Exception as exc:
-        print(
-            f"Warning: could not fetch MBS demographics API: {exc}",
-            file=sys.stderr,
-            flush=True,
-        )
+        raise RuntimeError("MBS demographics discovery failed") from exc
 
     print("  Discovering Medicare workbooks from health.gov.au...", flush=True)
     health_urls = discover_health_gov_medicare_workbooks(
         subpage_fetcher=fetch_url_text,
-        fallback_urls=HEALTH_GOV_MEDICARE_FILES,
     )
     print(
         f"  Discovered {len(health_urls)} Medicare workbook URLs.", flush=True
     )
 
     max_hist = 20 if backfill_all else 2
-    return discover_mbs_utilisation_resources(
+    resources = discover_mbs_utilisation_resources(
         data_gov_group_json=group_json,
         data_gov_demographics_json=demographics_json,
         health_gov_urls=health_urls,
         max_historical_files=max_hist,
     )
+    required = {
+        ("au-data-gov-mbs-group", "mbs_group_statistics"),
+        ("au-data-gov-mbs-demographics", "mbs_demographics_statistics"),
+        (
+            "au-health-medicare-statistics",
+            "medicare_quarterly_statistics_state_territory",
+        ),
+        (
+            "au-health-medicare-statistics",
+            "medicare_annual_statistics_state_territory",
+        ),
+        ("au-health-medicare-statistics", "medicare_ytd_summary_tables"),
+    }
+    observed = {(r.source_id, r.category) for r in resources}
+    missing = required - observed
+    if missing:
+        raise RuntimeError(
+            "MBS utilisation discovery incomplete: "
+            + ", ".join(
+                f"{source_id}/{category}"
+                for source_id, category in sorted(missing)
+            )
+        )
+    return resources
 
 
 def stage_resources(
@@ -236,7 +243,7 @@ def publish_to_huggingface(
             print(f"Notice on create_repo: {exc}", flush=True)
 
     cumulative_manifest = build_cumulative_harvest_manifest(
-        DATASET, stages, existing_manifest
+        DATASET, stages, existing_manifest, run_coverage=manifest
     )
     manifest_path = stage_dir / "manifest.json"
     manifest_path.write_text(
