@@ -8,8 +8,8 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  actions: read
-  contents: read
+  actions: read # Required to download the pinned run's 33 receipt artifacts.
+  contents: read # Required by actions/checkout.
 
 env:
   HF_DATASET: edithatogo/global-medicines-atlas-cms-partd-20260827
