@@ -86,7 +86,7 @@ def test_m105_dispositions_do_not_promote_unproven_behavior() -> None:
             item["acceptance_state"] == "pending_behavioral_parity"
             for item in receipt["baseline"]
         )
-        == 1
+        == 0
     )
     assert (
         sum(
@@ -95,6 +95,67 @@ def test_m105_dispositions_do_not_promote_unproven_behavior() -> None:
         )
         == 0
     )
+    assert "post-archive reconciliation cannot establish" in receipt["boundary"]
+
+
+def test_monthly_workflow_is_legacy_only_with_separate_scheduled_release() -> (
+    None
+):
+    receipt = json.loads(RECEIPT.read_text())
+    inventory = json.loads(INVENTORY.read_text())
+    row = next(
+        item
+        for item in receipt["baseline"]
+        if item["repository"] == "edithatogo/aus-health-data-scraper"
+        and item["path"] == ".github/workflows/monthly_run.yml"
+    )
+    donor = next(
+        item
+        for item in inventory["denominator"]["repositories"]
+        if item["repository"] == row["repository"]
+    )
+    pinned = next(
+        item for item in donor["files"] if item["path"] == row["path"]
+    )
+    assert row["git_object_sha1"] == pinned["git_object_sha1"]
+    assert row["sha256"] == pinned["sha256"]
+    assert row["disposition"] == "retain-legacy"
+    assert row["acceptance_state"] == "verified_legacy_retention"
+    proof = row["parity_evidence"]
+    assert proof["pinned_blob_sha256_readback"] == row["sha256"]
+    assert set(proof["workflow_dispositions"]) == {
+        "test_job",
+        "push_test_trigger",
+        "scheduled_html_scrape_and_git_commit",
+        "manual_html_scrape_dispatch",
+    }
+    assert {
+        proof["workflow_dispositions"][key]["disposition"]
+        for key in (
+            "scheduled_html_scrape_and_git_commit",
+            "manual_html_scrape_dispatch",
+        )
+    } == {"retain-legacy"}
+    archival = json.loads((ROOT / proof["legacy_history_receipt"]).read_text())
+    assert any(
+        item["repository"] == row["repository"]
+        and item["baseline"] == row["commit"]
+        and item["clean_restore"]
+        for item in archival["publication"]["restored"]
+    )
+    release = proof["separate_approved_release_schedule"]
+    workflow_text = (ROOT / release["workflow"]).read_text()
+    workflow = yaml.safe_load(workflow_text)
+    assert set(workflow[True]) == {"workflow_dispatch", "schedule"}
+    assert workflow["jobs"]["release"]["environment"] == (
+        "australian-hf-publication"
+    )
+    assert "require_mbs_hosted_authority(contract)" in workflow_text
+    assert "git add data/" not in workflow_text
+    assert (ROOT / release["contract"]).is_file()
+    assert release["run_status"] == "completed/success"
+    assert release["anonymous_digest_verification"] == "passed"
+    assert "private=false; gated=false" in release["public_revision_readback"]
 
 
 def test_scraper_demonstration_exclusion_preserves_exact_history() -> None:

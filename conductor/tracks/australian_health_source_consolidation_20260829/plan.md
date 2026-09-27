@@ -325,7 +325,10 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   synthetic rehearsal and hosted XML release evidence does not replace their
   omitted HTML and async behavior. The pinned scraper module now has a
   function-level legacy-only receipt: `month_range` is adopted with tests,
-  while both async HTML callers remain in exact archived history. Only the
-  baseline monthly workflow remains pending; no later rows remain pending.
-  Exact history preservation
-  and archive approval are verified separately; M-105 remains blocked.
+  while both async HTML callers remain in exact archived history. The pinned
+  monthly workflow is now a legacy-only row: its failed HTML scrape and Git
+  commit path remain archived, while a separate approved XML release was
+  acquired and anonymously verified by a scheduled GMA run. No matrix row is
+  pending. Exact history preservation and archive approval are verified
+  separately. M-105 remains blocked because its pre-archive parity requirement
+  cannot be established retroactively by this post-archive reconciliation.

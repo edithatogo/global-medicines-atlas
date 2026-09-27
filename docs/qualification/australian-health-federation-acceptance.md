@@ -8,7 +8,7 @@ track plans and observed archive receipts rather than implementation alone.
 
 | Requirement | State | Acceptance evidence still needed |
 | --- | --- | --- |
-| M-105 donor consolidation | Blocked | The [parity gap audit](australian-donor-parity-gap.md) and exact-identity disposition matrix classify 54 baseline blobs and ten later changed paths. The graph donor's MBS and PBS executable rows now bind function-specific successor checks and pre-archive receipts; six baseline scraper files and five later behavior-bearing rows still lack parity proof. Do not infer pre-archive parity from subsequent archival. |
+| M-105 donor consolidation | Blocked | The [parity gap audit](australian-donor-parity-gap.md) and exact-identity disposition matrix now reconcile all 54 baseline blobs and ten later changed paths. The donor monthly workflow is retained as legacy-only; the separate scheduled GMA XML release has a verified public receipt. This post-archive evidence cannot satisfy M-105's requirement that parity be proved before either donor archive. Maintainer disposition of that historical exception remains separate from M-106–M-112. |
 | M-106 independent MBS domain | Blocked | Qualify source-native service, benefit, participant, and temporal denominators without converting them to medicine or PBS assertions. |
 | M-107 historical snapshots | Blocked | Verify the approved current and historical MBS/PBS inventory, schema-era labels, completeness, and recoverability, including unresolved source failures. |
 | M-108 public durable data plane | Blocked | Publish and anonymously restore each admitted Australian derived product with its exact v4 identity, rights, data card, collection and replica evidence. Raw archives alone do not satisfy this. |
