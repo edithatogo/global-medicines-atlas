@@ -4022,12 +4022,15 @@
       "evidence_references": [
         "src/global_medicines_atlas/bronze_fixture_landing.py",
         "tests/test_bronze_fixture_landing.py",
-        "tests/fixtures/us/cms_partd_formulary.csv"
+        "tests/fixtures/us/cms_partd_formulary.csv",
+        "quality/qualifications/cms-partd-rights-preflight-20260821.json",
+        "quality/qualifications/cms-partd-public-huggingface-20260829.json",
+        "quality/qualifications/cms-partd-source-record-qualification-20260927.json"
       ],
-      "evidence_scope": "governed_fixture",
+      "evidence_scope": "live_receipt",
       "next_action": "verify receipt freshness on schedule",
       "priority": 90,
-      "reason": "catalogue implementation claim has committed qualification evidence",
+      "reason": "The exact 30 quarterly formulary releases through Q2 2026 have approved public rights subject to the CMS Agreement for Use, an anonymously verified immutable raw archive, and receipt-qualified source-string record Parquet at public revision aa176310b5748d471cec2c36955cac36eacb4ba2. Plan and population exclusions and release dates remain explicit; complete U.S. formulary coverage is unclaimed.",
       "source_id": "us-cms-partd-formulary",
       "state": "landed_and_evidenced"
     },
@@ -4049,14 +4052,16 @@
         "source_id": "us-cms-partd-spending"
       },
       "evidence_references": [
-        "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-part-d-spending-by-drug"
+        "quality/qualifications/cms-partd-rights-preflight-20260821.json",
+        "quality/qualifications/cms-partd-public-huggingface-20260829.json",
+        "quality/qualifications/cms-partd-source-record-qualification-20260927.json"
       ],
-      "evidence_scope": "none",
-      "next_action": "record source-specific retention and transformation rights",
-      "priority": 20,
-      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "evidence_scope": "live_receipt",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "The exact three-resource 2024 annual Part D spending surface has approved public rights, an anonymously verified immutable raw archive, and receipt-qualified source-string record Parquet at public revision aa176310b5748d471cec2c36955cac36eacb4ba2. Spending is gross, not net, and does not represent total U.S. medicines utilisation.",
       "source_id": "us-cms-partd-spending",
-      "state": "rights_blocked"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4686,10 +4691,10 @@
   "source_count": 174,
   "state_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 33,
+    "landed_and_evidenced": 34,
     "manual_only_documented_acquisition": 92,
     "not_yet_implemented": 0,
-    "rights_blocked": 32,
+    "rights_blocked": 31,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 2
   }

@@ -20,16 +20,21 @@
       ]
     },
     {
-      "source_id": "fr-open-medic",
+      "source_id": "dk-medstat-utilisation",
+      "state": "manual_only_documented_acquisition",
+      "reason": "Medstat is a public aggregate statistics surface with affirmative attribution terms; its bulk download inventory contains supporting ATC, product-name, and population metadata rather than utilisation results.",
+      "manual_instructions": "After source-specific maintainer acceptance, export aggregate utilisation results with recorded query parameters and receipt the source-native result separately from the metadata downloads.",
+      "evidence_references": [
+        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
+      ]
+    },
+    {
+      "source_id": "eu-union-register",
       "state": "landed_and_evidenced",
       "evidence_scope": "live_receipt",
-      "reason": "All 12 official Open Medic annual archives for 2014 through 2025 were acquired as immutable source bytes, checksum verified, and published under the approved Etalab-2.0 decision. The exact public revision was linked through the reuse gate; all 22,148,373 source-native rows were projected and all 12 products were rebuilt byte-for-byte. Complete French medicines coverage remains unclaimed.",
+      "reason": "The official 2026-08-17 Union Register JSON snapshot was acquired under maintainer-approved internal-only CC BY 4.0 handling, projected at source-native record grain, clean-room reconstructed, and privately archived.",
       "evidence_references": [
-        "quality/qualifications/additional-utilisation-rights-preflight-20260821.json",
-        "quality/qualifications/source-publication-queue.json",
-        "quality/qualifications/open-medic-acquisition-success-20260821.json",
-        "quality/qualifications/open-medic-public-huggingface-20260821.json",
-        "quality/qualifications/open-medic-all-release-bronze-20260827.json"
+        "quality/qualifications/union-register-live-corpus-20260821.json"
       ]
     },
     {
@@ -53,12 +58,16 @@
       ]
     },
     {
-      "source_id": "eu-union-register",
+      "source_id": "fr-open-medic",
       "state": "landed_and_evidenced",
       "evidence_scope": "live_receipt",
-      "reason": "The official 2026-08-17 Union Register JSON snapshot was acquired under maintainer-approved internal-only CC BY 4.0 handling, projected at source-native record grain, clean-room reconstructed, and privately archived.",
+      "reason": "All 12 official Open Medic annual archives for 2014 through 2025 were acquired as immutable source bytes, checksum verified, and published under the approved Etalab-2.0 decision. The exact public revision was linked through the reuse gate; all 22,148,373 source-native rows were projected and all 12 products were rebuilt byte-for-byte. Complete French medicines coverage remains unclaimed.",
       "evidence_references": [
-        "quality/qualifications/union-register-live-corpus-20260821.json"
+        "quality/qualifications/additional-utilisation-rights-preflight-20260821.json",
+        "quality/qualifications/source-publication-queue.json",
+        "quality/qualifications/open-medic-acquisition-success-20260821.json",
+        "quality/qualifications/open-medic-public-huggingface-20260821.json",
+        "quality/qualifications/open-medic-all-release-bronze-20260827.json"
       ]
     },
     {
@@ -79,6 +88,37 @@
       "evidence_references": [
         "quality/qualifications/international-public-huggingface-20260821.json",
         "quality/qualifications/international-public-bronze-20260827.json"
+      ]
+    },
+    {
+      "source_id": "gb-openprescribing",
+      "state": "temporarily_unavailable",
+      "reason": "Public acquisition, retention, release, and external publication of successfully retrieved receipt-bound API v1 partitions were approved under the OGL on 2026-08-26. A bounded one-attempt probe of all six documented identities returned Cloudflare HTTP 403 challenges from the current environment; no payload or challenge bytes were retained and no publication occurred.",
+      "failure_receipt": "quality/qualifications/openprescribing-availability-20260826.json",
+      "evidence_references": [
+        "quality/qualifications/openprescribing-rights-preflight-20260821.json",
+        "quality/qualifications/openprescribing-acquisition-authorization.json"
+      ]
+    },
+    {
+      "source_id": "nl-gipdatabank",
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "All 28 exact approved-public GIP Farmacie and Add-on CSV releases were acquired, admitted, projected at source-native grain, reconstructed byte-for-byte, restored from the checksum-verified archive, and anonymously restored from the immutable public Hugging Face revision under the bound CC0 decision.",
+      "evidence_references": [
+        "quality/qualifications/gip-acquisition-authorization.json",
+        "quality/qualifications/gip-publication-authorization-20260821.json",
+        "quality/qualifications/gip-acquisition-success-20260826.json",
+        "quality/qualifications/gip-public-huggingface-20260826.json"
+      ]
+    },
+    {
+      "source_id": "no-norpd-utilisation",
+      "state": "manual_only_documented_acquisition",
+      "reason": "The historic anonymous NorPD report surface is public with attribution and frozen with data through 2020; this is distinct from restricted person-level registry access.",
+      "manual_instructions": "After source-specific maintainer acceptance, preserve only anonymous historic report outputs and parameters through 2020; do not request restricted registry records or infer current successor coverage.",
+      "evidence_references": [
+        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
       ]
     },
     {
@@ -112,14 +152,43 @@
       ]
     },
     {
-      "source_id": "us-fda-orange-book",
-      "state": "temporarily_unavailable",
-      "reason": "Internal historical acquisition was authorized and exercised; 201 of 259 exact release URLs were retained, 58 remain cumulatively unresolved after seven bounded passes, and the latest material-change full-inventory observation still failed on 104 releases.",
-      "failure_receipt": "quality/qualifications/orange-book-historical-corpus-20260821.json",
+      "source_id": "se-socialstyrelsen-utilisation",
+      "state": "manual_only_documented_acquisition",
+      "reason": "Socialstyrelsen exposes a current public aggregate statistics database and API under CC0 with source-attribution guidance; this does not include person-level medicines-register records.",
+      "manual_instructions": "After source-specific maintainer acceptance, execute bounded aggregate database or API queries, preserve every query parameter, and receipt the source-native result without acquiring person-level records.",
       "evidence_references": [
-        "quality/qualifications/orange-book-historical-authorization.json",
-        "quality/qualifications/orange-book-historical-plan.json",
-        "quality/qualifications/orange-book-historical-corpus-20260820.json"
+        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
+      ]
+    },
+    {
+      "source_id": "us-cms-partd-formulary",
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "The exact 30 quarterly formulary releases through Q2 2026 have approved public rights subject to the CMS Agreement for Use, an anonymously verified immutable raw archive, and receipt-qualified source-string record Parquet at public revision aa176310b5748d471cec2c36955cac36eacb4ba2. Plan and population exclusions and release dates remain explicit; complete U.S. formulary coverage is unclaimed.",
+      "evidence_references": [
+        "quality/qualifications/cms-partd-rights-preflight-20260821.json",
+        "quality/qualifications/cms-partd-public-huggingface-20260829.json",
+        "quality/qualifications/cms-partd-source-record-qualification-20260927.json"
+      ]
+    },
+    {
+      "source_id": "us-cms-partd-spending",
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "The exact three-resource 2024 annual Part D spending surface has approved public rights, an anonymously verified immutable raw archive, and receipt-qualified source-string record Parquet at public revision aa176310b5748d471cec2c36955cac36eacb4ba2. Spending is gross, not net, and does not represent total U.S. medicines utilisation.",
+      "evidence_references": [
+        "quality/qualifications/cms-partd-rights-preflight-20260821.json",
+        "quality/qualifications/cms-partd-public-huggingface-20260829.json",
+        "quality/qualifications/cms-partd-source-record-qualification-20260927.json"
+      ]
+    },
+    {
+      "source_id": "us-fda-drug-shortages",
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "The complete current openFDA export, all 129 inventoried monthly FDA list snapshots, and the metadata-only 35,494-capture delegated detail inventory were Bronze-exercised and privately archived. On 2026-08-26 the maintainer approved the monthly lists as the temporal corpus; delegated detail-page completeness remains unclaimed.",
+      "evidence_references": [
+        "quality/qualifications/fda-shortages-live-corpus-20260821.json"
       ]
     },
     {
@@ -141,21 +210,14 @@
       ]
     },
     {
-      "source_id": "us-openfda-ndc",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "The complete current openFDA NDC bulk partition was acquired, projected, reconstructed, and privately archived.",
+      "source_id": "us-fda-orange-book",
+      "state": "temporarily_unavailable",
+      "reason": "Internal historical acquisition was authorized and exercised; 201 of 259 exact release URLs were retained, 58 remain cumulatively unresolved after seven bounded passes, and the latest material-change full-inventory observation still failed on 104 releases.",
+      "failure_receipt": "quality/qualifications/orange-book-historical-corpus-20260821.json",
       "evidence_references": [
-        "quality/qualifications/ndc-directory-live-corpus-20260821.json"
-      ]
-    },
-    {
-      "source_id": "us-openfda-enforcement",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "The complete current openFDA drug-enforcement bulk export was acquired, projected, clean-room reconstructed, and privately archived without linking or deduplicating it against recall notices.",
-      "evidence_references": [
-        "quality/qualifications/fda-enforcement-live-corpus-20260821.json"
+        "quality/qualifications/orange-book-historical-authorization.json",
+        "quality/qualifications/orange-book-historical-plan.json",
+        "quality/qualifications/orange-book-historical-corpus-20260820.json"
       ]
     },
     {
@@ -165,15 +227,6 @@
       "reason": "The current FDA notice workbook and official live, archive-policy, and legacy archive-index documentation were acquired, Bronze-landed, clean-room exercised where admitted, and privately archived separately from the complete structured enforcement export.",
       "evidence_references": [
         "quality/qualifications/fda-enforcement-live-corpus-20260821.json"
-      ]
-    },
-    {
-      "source_id": "us-fda-drug-shortages",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "The complete current openFDA export, all 129 inventoried monthly FDA list snapshots, and the metadata-only 35,494-capture delegated detail inventory were Bronze-exercised and privately archived. On 2026-08-26 the maintainer approved the monthly lists as the temporal corpus; delegated detail-page completeness remains unclaimed.",
-      "evidence_references": [
-        "quality/qualifications/fda-shortages-live-corpus-20260821.json"
       ]
     },
     {
@@ -196,52 +249,21 @@
       ]
     },
     {
-      "source_id": "nl-gipdatabank",
+      "source_id": "us-openfda-enforcement",
       "state": "landed_and_evidenced",
       "evidence_scope": "live_receipt",
-      "reason": "All 28 exact approved-public GIP Farmacie and Add-on CSV releases were acquired, admitted, projected at source-native grain, reconstructed byte-for-byte, restored from the checksum-verified archive, and anonymously restored from the immutable public Hugging Face revision under the bound CC0 decision.",
+      "reason": "The complete current openFDA drug-enforcement bulk export was acquired, projected, clean-room reconstructed, and privately archived without linking or deduplicating it against recall notices.",
       "evidence_references": [
-        "quality/qualifications/gip-acquisition-authorization.json",
-        "quality/qualifications/gip-publication-authorization-20260821.json",
-        "quality/qualifications/gip-acquisition-success-20260826.json",
-        "quality/qualifications/gip-public-huggingface-20260826.json"
+        "quality/qualifications/fda-enforcement-live-corpus-20260821.json"
       ]
     },
     {
-      "source_id": "gb-openprescribing",
-      "state": "temporarily_unavailable",
-      "reason": "Public acquisition, retention, release, and external publication of successfully retrieved receipt-bound API v1 partitions were approved under the OGL on 2026-08-26. A bounded one-attempt probe of all six documented identities returned Cloudflare HTTP 403 challenges from the current environment; no payload or challenge bytes were retained and no publication occurred.",
-      "failure_receipt": "quality/qualifications/openprescribing-availability-20260826.json",
+      "source_id": "us-openfda-ndc",
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "The complete current openFDA NDC bulk partition was acquired, projected, reconstructed, and privately archived.",
       "evidence_references": [
-        "quality/qualifications/openprescribing-rights-preflight-20260821.json",
-        "quality/qualifications/openprescribing-acquisition-authorization.json"
-      ]
-    },
-    {
-      "source_id": "dk-medstat-utilisation",
-      "state": "manual_only_documented_acquisition",
-      "reason": "Medstat is a public aggregate statistics surface with affirmative attribution terms; its bulk download inventory contains supporting ATC, product-name, and population metadata rather than utilisation results.",
-      "manual_instructions": "After source-specific maintainer acceptance, export aggregate utilisation results with recorded query parameters and receipt the source-native result separately from the metadata downloads.",
-      "evidence_references": [
-        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
-      ]
-    },
-    {
-      "source_id": "no-norpd-utilisation",
-      "state": "manual_only_documented_acquisition",
-      "reason": "The historic anonymous NorPD report surface is public with attribution and frozen with data through 2020; this is distinct from restricted person-level registry access.",
-      "manual_instructions": "After source-specific maintainer acceptance, preserve only anonymous historic report outputs and parameters through 2020; do not request restricted registry records or infer current successor coverage.",
-      "evidence_references": [
-        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
-      ]
-    },
-    {
-      "source_id": "se-socialstyrelsen-utilisation",
-      "state": "manual_only_documented_acquisition",
-      "reason": "Socialstyrelsen exposes a current public aggregate statistics database and API under CC0 with source-attribution guidance; this does not include person-level medicines-register records.",
-      "manual_instructions": "After source-specific maintainer acceptance, execute bounded aggregate database or API queries, preserve every query parameter, and receipt the source-native result without acquiring person-level records.",
-      "evidence_references": [
-        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
+        "quality/qualifications/ndc-directory-live-corpus-20260821.json"
       ]
     }
   ]

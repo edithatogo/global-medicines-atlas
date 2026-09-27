@@ -69,8 +69,8 @@ def test_live_qualification_completes_verified_prompts() -> None:
     audit = _audit()
     measured = json.loads(MEASURED.read_text(encoding="utf-8"))["body"]
     assert measured["totals"]["live_qualified_sources"] == 1
-    assert audit["live_qualified_source_count"] == 15
-    assert audit["live_complete_prompt_count"] == 9
+    assert audit["live_qualified_source_count"] == 17
+    assert audit["live_complete_prompt_count"] == 10
     assert audit["program_completion"] == "incomplete_live_acquisition"
     complete = [entry for entry in audit["prompts"] if entry["live_complete"]]
     assert [entry["prompt_id"] for entry in complete] == [
@@ -82,6 +82,7 @@ def test_live_qualification_completes_verified_prompts() -> None:
         18,
         19,
         25,
+        31,
         32,
     ]
     assert complete[0]["live_qualified_source_ids"] == [
@@ -104,14 +105,21 @@ def test_live_qualification_completes_verified_prompts() -> None:
         "us-openfda-nsde",
     ]
     assert complete[7]["live_qualified_source_ids"] == ["eu-union-register"]
-    assert complete[8]["live_qualified_source_ids"] == ["nl-gipdatabank"]
+    assert complete[8]["live_qualified_source_ids"] == [
+        "us-cms-partd-spending",
+        "us-cms-partd-formulary",
+    ]
+    assert complete[9]["live_qualified_source_ids"] == ["nl-gipdatabank"]
     fixture_and_live = {
         source_id
         for entry in audit["prompts"]
         for source_id in set(entry["fixture_qualified_source_ids"])
         & set(entry["live_qualified_source_ids"])
     }
-    assert fixture_and_live == {"eu-union-register"}
+    assert fixture_and_live == {
+        "eu-union-register",
+        "us-cms-partd-formulary",
+    }
     live = {
         source_id
         for entry in audit["prompts"]
@@ -132,6 +140,8 @@ def test_live_qualification_completes_verified_prompts() -> None:
         "us-gsrs-unii",
         "us-fda-drug-shortages",
         "nl-gipdatabank",
+        "us-cms-partd-formulary",
+        "us-cms-partd-spending",
     }
 
     orange = audit["prompts"][15]
@@ -513,10 +523,10 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     audit = _audit()
     assert audit["queue_state_counts"] == {
         "credentialed_and_excluded": 15,
-        "landed_and_evidenced": 33,
+        "landed_and_evidenced": 34,
         "manual_only_documented_acquisition": 92,
         "not_yet_implemented": 0,
-        "rights_blocked": 32,
+        "rights_blocked": 31,
         "superseded_by_reused_source": 0,
         "temporarily_unavailable": 2,
     }
@@ -537,6 +547,30 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     assert reconciliation["completion_state"] == (
         "reconciliation_generated_but_live_program_incomplete"
     )
+
+
+def test_cms_qualification_fails_closed_on_rights_or_receipt_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    assert audit_mod._qualified_cms_sources() == {
+        "us-cms-partd-formulary",
+        "us-cms-partd-spending",
+    }
+    rights = json.loads(audit_mod.CMS_RIGHTS.read_text(encoding="utf-8"))
+    rights["external_publication_authorized"] = False
+    unsafe_rights = tmp_path / "rights.json"
+    unsafe_rights.write_text(json.dumps(rights), encoding="utf-8")
+    with monkeypatch.context() as patch:
+        patch.setattr(audit_mod, "CMS_RIGHTS", unsafe_rights)
+        with pytest.raises(ValueError, match="CMS Part D"):
+            audit_mod._qualified_cms_sources()
+    unsafe_records = tmp_path / "records.json"
+    unsafe_records.write_bytes(audit_mod.CMS_RECORDS.read_bytes() + b" ")
+    with monkeypatch.context() as patch:
+        patch.setattr(audit_mod, "CMS_RECORDS", unsafe_records)
+        with pytest.raises(ValueError, match="CMS Part D"):
+            audit_mod._qualified_cms_sources()
 
 
 def test_nordic_public_aggregate_sources_are_not_credential_or_rights_blocked() -> (
