@@ -1049,10 +1049,14 @@
   `db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556`.
   The report now clears only `real_source_era_unqualified`; one invalid
   Benefit85 conversion and `public_v4_identity_unverified` remain.
-- [~] Probe the one value-free Benefit85 strict-grammar mismatch without
-  coercion or disclosure. The hosted diagnostic now distinguishes finite
-  Decimal text in surrounding whitespace, exponent, underscore, or other
-  noncanonical spelling from non-finite or Decimal-rejected text. Keep the
-  source invalid until its exact category and an evidence-backed acceptance
-  rule are known. Public v4 identity/admission, M-107, M-109, federation, and
-  Stable v1 remain separate.
+- [x] Probe the one value-free Benefit85 strict-grammar mismatch without
+  coercion or disclosure. Exact-main run `36344055256` classified the sole
+  mismatch as decimal text with surrounding XML whitespace; no value or
+  identifier was disclosed. The diagnostic is complete.
+- [~] Normalize only XML Schema decimal whitespace at the MBS typed-projection
+  boundary, while preserving parser-native text unchanged and rejecting
+  internal/non-XML whitespace, alternate decimal spellings, and amounts
+  outside the documented width. The MBS candidate schema now declares this
+  policy as v1.1. Focused tests and static checks pass; exact-main qualification
+  and protected hosted checks remain pending. This does not create public v4
+  identity/admission or complete M-107, M-109, federation, or Stable v1.

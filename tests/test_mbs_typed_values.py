@@ -65,6 +65,8 @@ def test_decimals_are_exact_and_independent_of_context() -> None:
         "\uff11\uff12",
         " 42",
         "42 ",
+        "4 2",
+        "\u00a042",
         "#VALUE!",
     ],
 )
