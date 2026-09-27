@@ -10,12 +10,17 @@ import httpx
 import pytest
 
 from global_medicines_atlas.mbs_compatibility import (
+    PROBE_POLICY,
     ProbeRehearsal,
     historical_targets,
     month_range,
     rehearse_probes,
 )
-from global_medicines_atlas.receipts import EvidenceClass, FailureReceipt
+from global_medicines_atlas.receipts import (
+    EvidenceClass,
+    FailureReceipt,
+    SourceReceipt,
+)
 from global_medicines_atlas.reuse_gate import acquire_new_decision
 
 NOW = datetime(2026, 8, 30, tzinfo=UTC)
@@ -184,3 +189,48 @@ def test_successful_download_is_not_yet_qualified_data(tmp_path: Path) -> None:
     assert not result.data_acquired
     assert result.downloaded_count == 1
     assert result.qualification_status == "table_admission_pending"
+
+
+def test_item_and_participant_probe_bytes_remain_synthetic(
+    tmp_path: Path,
+) -> None:
+    assert PROBE_POLICY.timeout_seconds == 30
+    assert PROBE_POLICY.max_concurrency_per_host == 1
+    payloads = {
+        "item104-202401": b"<html>synthetic item</html>",
+        "participants-202401": b"<html>synthetic participants</html>",
+    }
+
+    def respond(request: httpx.Request) -> httpx.Response:
+        payload = next(
+            data
+            for suffix, data in payloads.items()
+            if str(request.url).endswith(suffix)
+        )
+        return httpx.Response(
+            200, content=payload, headers={"content-type": "text/html"}
+        )
+
+    result = rehearse_probes(
+        historical_targets(("104",), 202401, 202401),
+        tmp_path,
+        transport=httpx.MockTransport(respond),
+        reuse_decision=acquire_new_decision("au-mbs"),
+        clock=lambda: NOW,
+        sleep=lambda _: None,
+    )
+    assert result.downloaded_count == 2
+    assert not result.data_acquired
+    assert result.qualification_status == "table_admission_pending"
+    assert all(
+        isinstance(receipt, SourceReceipt)
+        and receipt.evidence_class is EvidenceClass.SYNTHETIC
+        for receipt in result.attempts
+    )
+    for filename, payload in (
+        ("item_104_202401.html", payloads["item104-202401"]),
+        ("participants_202401.html", payloads["participants-202401"]),
+    ):
+        assert (
+            tmp_path / "artifacts/mbs-compatibility" / filename
+        ).read_bytes() == payload

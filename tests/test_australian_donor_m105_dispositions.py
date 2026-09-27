@@ -86,15 +86,66 @@ def test_m105_dispositions_do_not_promote_unproven_behavior() -> None:
             item["acceptance_state"] == "pending_behavioral_parity"
             for item in receipt["baseline"]
         )
-        == 3
+        == 2
     )
     assert (
         sum(
             item["acceptance_state"] == "pending_behavioral_parity"
             for item in receipt["post_baseline_delta"]
         )
-        == 2
+        == 0
     )
+
+
+def test_scraper_orchestration_supersession_keeps_failures_distinct() -> None:
+    receipt = json.loads(RECEIPT.read_text())
+    expected_blobs = {
+        "baseline": "df0f1725a2cc46aafa6d2565e5faacd848baae72",
+        "post_baseline_delta": "8941cf6865282672a2a2df16f06ebe6690abc90d",
+    }
+    for group, blob in expected_blobs.items():
+        row = next(
+            item
+            for item in receipt[group]
+            if item["repository"] == "edithatogo/aus-health-data-scraper"
+            and item["path"] == "src/main.py"
+        )
+        assert row["git_object_sha1"] == blob
+        assert row["disposition"] == "supersede"
+        assert row["acceptance_state"] == "verified_supersession"
+        proof = row["parity_evidence"]
+        assert set(proof["function_dispositions"]) == {"main"}
+        assert proof["hosted_run_head"] == (
+            "435527a630d055056985372aba1620bcf7340da4"
+        )
+        assert (ROOT / proof["hosted_successor"]).is_file()
+        for ref in proof["function_dispositions"]["main"]["behavior_tests"]:
+            test_path, test_name = ref.split("::", 1)
+            tree = ast.parse((ROOT / test_path).read_text())
+            assert test_name in {
+                item.name
+                for item in ast.walk(tree)
+                if isinstance(item, ast.FunctionDef)
+            }
+    scraper_test = next(
+        item
+        for item in receipt["post_baseline_delta"]
+        if item["repository"] == "edithatogo/aus-health-data-scraper"
+        and item["path"] == "tests/test_scraper.py"
+    )
+    assert scraper_test["git_object_sha1"] == (
+        "5ccfdad1337be621803d402b3ca23d115c31c807"
+    )
+    assert scraper_test["acceptance_state"] == "verified_supersession"
+    test_path, test_name = scraper_test["parity_evidence"]["successor"].split(
+        "::", 1
+    )
+    tree = ast.parse((ROOT / test_path).read_text())
+    assert test_name in {
+        item.name
+        for item in ast.walk(tree)
+        if isinstance(item, ast.FunctionDef)
+    }
 
 
 def test_scraper_ci_supersession_binds_exact_blobs_and_executed_lanes() -> None:
