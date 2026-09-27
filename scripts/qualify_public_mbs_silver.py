@@ -273,7 +273,7 @@ def _amount_invalid_reason(native_value: object) -> str:
     if not isinstance(native_value, str) or not _NUMERIC_TEXT.fullmatch(
         native_value
     ):
-        return "numeric_format_invalid"
+        return "strict_numeric_grammar_mismatch"
     integer = native_value.lstrip("+-").partition(".")[0]
     if len(integer) > MAX_MBS_AMOUNT_INTEGER_DIGITS:
         return "integer_width_exceeded"
