@@ -222,7 +222,7 @@ def test_mbs_downloader_adaptation_binds_legacy_and_hosted_receipts() -> None:
     assert all((ROOT / path).is_file() for path in proof["behavior_tests"])
 
 
-def test_pbs_donor_functions_bind_successors_and_pre_archive_publication() -> (
+def test_pbs_donor_functions_bind_successors_and_pre_archive_publication() -> (  # ruff: ignore[too-many-locals] - one receipt binds three donor files and four functions
     None
 ):
     receipt = json.loads(RECEIPT.read_text())
@@ -285,7 +285,21 @@ def test_pbs_donor_functions_bind_successors_and_pre_archive_publication() -> (
         assert row["acceptance_state"].startswith("verified_")
         proof = row["parity_evidence"]
         assert proof["hosted_qualification_record_kind"] == hosted["kind"]
-        assert (ROOT / proof["successor"]).is_file()
+        successor_path, _, successor_name = proof["successor"].partition("::")
+        assert (ROOT / successor_path).is_file()
+        if successor_name:
+            successor_tree = ast.parse((ROOT / successor_path).read_text())
+            assert successor_name in {
+                item.name
+                for item in ast.walk(successor_tree)
+                if isinstance(item, ast.FunctionDef)
+            }
+        if donor_file["path"] == "scripts/utils/identify_pbs_tags.py":
+            assert proof["successor"] == "scripts/inspect_pbs_v3.py::main"
+            assert set(proof["implementation_components"]) == {
+                "scripts/inspect_pbs_v3.py",
+                "src/global_medicines_atlas/adapters/au_pbs.py",
+            }
         assert (ROOT / proof["publication_tests"]).is_file()
         assert set(proof["function_dispositions"]) == set(
             donor_file["functions"]

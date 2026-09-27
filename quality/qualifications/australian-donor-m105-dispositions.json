@@ -201,7 +201,7 @@
       "parity_evidence": {
         "ledger": "conductor/tracks/australian_health_source_consolidation_20260829/evidence.jsonl",
         "hosted_qualification_record_kind": "hosted_publication_receipt",
-        "successor": "src/global_medicines_atlas/adapters/au_pbs.py",
+        "successor": "scripts/inspect_pbs_v3.py::main",
         "behavior_tests": "tests/test_au_pbs_v3.py",
         "publication_tests": "tests/test_australian_pbs_hf_publication.py",
         "function_dispositions": {
@@ -211,7 +211,11 @@
             "behavior": "Expose the first source-native pharmaceutical item and XML projection through an explicit bounded local inspection option, without live network retrieval."
           }
         },
-        "scope_note": "Synthetic behavior controls qualify successor semantics; the separate exact hosted receipt proves the approved April 2026 PBS source archive, not all historical or future releases."
+        "scope_note": "Synthetic behavior controls qualify successor semantics; the separate exact hosted receipt proves the approved April 2026 PBS source archive, not all historical or future releases.",
+        "implementation_components": [
+          "scripts/inspect_pbs_v3.py",
+          "src/global_medicines_atlas/adapters/au_pbs.py"
+        ]
       }
     },
     {
