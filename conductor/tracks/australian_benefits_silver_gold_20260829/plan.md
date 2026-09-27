@@ -1069,8 +1069,9 @@
   Actions publication workflow are implemented in PR #563. Mocked hosted
   transaction tests cover successful append/readback/receipt/cleanup and
   fail-closed source, privacy, collision, revision, inventory, and digest
-  conditions (98% branch-aware line coverage). Ruff, BasedPyright, actionlint,
-  and zizmor pass. Full local Test-Goblin completed with 5,088 passed, one
+  conditions. The package builder has 100% branch-aware coverage; the combined
+  builder/publisher focused set has 99%. Ruff, BasedPyright, actionlint, and
+  zizmor pass. Full local Test-Goblin completed with 5,088 passed, one
   skipped, and five failures (one temporary typing-dependency contract, now
   reverted; four unrelated stable-receipt/datahouse checks). Hosted workflow
   execution and its durable receipt remain pending. No raw source content may

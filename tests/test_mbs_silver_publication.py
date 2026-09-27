@@ -2,6 +2,7 @@
 
 import json
 import sys
+from dataclasses import replace
 from datetime import UTC, date, datetime
 from hashlib import sha256
 from pathlib import Path
@@ -13,6 +14,7 @@ import pytest
 from pydantic import AnyUrl
 from scripts import publish_australian_mbs_silver_v4 as hosted_publisher
 
+from global_medicines_atlas import mbs_silver_publication
 from global_medicines_atlas.mbs_silver_publication import (
     DESTINATION_PREFIX,
     MBS_SOURCE_URI,
@@ -205,6 +207,163 @@ def test_package_validation_rejects_any_drift(
 
     with pytest.raises(ValueError, match=r"package|object|manifest|receipt"):
         validate_mbs_silver_v4_package(package)
+
+
+def test_static_publication_authority_binds_exact_donor_payload() -> None:
+    authorization = json.loads(
+        Path(
+            "quality/qualifications/"
+            "australian-health-legacy-publication-authorization.json"
+        ).read_text(encoding="utf-8")
+    )
+    authorized = authorization["donors"][0]["payloads"][0]
+    receipt = _authorized_receipt(b"authority probe").model_copy(
+        update={
+            "payload": PayloadEvidence(
+                sha256=authorized["sha256"], byte_count=authorized["bytes"]
+            )
+        }
+    )
+    authorization_hash, decision_hash = (
+        mbs_silver_publication._authorization_identity(Path.cwd(), receipt)
+    )
+    assert len(authorization_hash) == 64
+    assert len(decision_hash) == 64
+
+    mismatched_receipt = receipt.model_copy(
+        update={"payload": PayloadEvidence(sha256="0" * 64, byte_count=0)}
+    )
+    with pytest.raises(ValueError, match="authorization differs"):
+        mbs_silver_publication._authorization_identity(
+            Path.cwd(), mismatched_receipt
+        )
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("commit", "producer commit"),
+        ("payload", "B1 receipt"),
+        ("rights", "not publishable"),
+        ("transform", "bound to this producer commit"),
+        ("source_era", "source era or conversion quality is blocked"),
+        ("qualification_source", "qualification differs from B2"),
+        ("empty_table", "table is empty"),
+    ],
+)
+def test_package_builder_fails_closed_on_receipt_and_qualification_drift(
+    tmp_path, monkeypatch, mutation: str, message: str
+) -> None:
+    monkeypatch.setattr(
+        "global_medicines_atlas.mbs_silver_publication._authorization_identity",
+        lambda *_: ("a" * 64, "b" * 64),
+    )
+    payload = _xml("<ScheduleFee>42.00</ScheduleFee>")
+    receipt = _authorized_receipt(payload, "f" * 40)
+    verification = _verification(payload)
+    call_payload = payload
+    commit = "f" * 40
+    if mutation == "commit":
+        commit = "invalid"
+    elif mutation == "payload":
+        call_payload = payload + b"drift"
+    elif mutation == "rights":
+        receipt = receipt.model_copy(
+            update={"rights_state": RightsState.UNKNOWN}
+        )
+    elif mutation == "transform":
+        receipt = receipt.model_copy(
+            update={
+                "transformation": receipt.transformation.model_copy(
+                    update={"transformation_sha256": "a" * 64}
+                )
+            }
+        )
+    elif mutation == "source_era":
+        monkeypatch.setattr(
+            mbs_silver_publication,
+            "qualify_mbs_silver",
+            lambda *_args, **_kwargs: SimpleNamespace(
+                blockers=("real_source_era_unqualified",),
+                source_sha256=sha256(payload).hexdigest(),
+            ),
+        )
+    elif mutation == "qualification_source":
+        monkeypatch.setattr(
+            mbs_silver_publication,
+            "qualify_mbs_silver",
+            lambda *_args, **_kwargs: SimpleNamespace(
+                blockers=("public_v4_identity_unverified",),
+                source_sha256="0" * 64,
+            ),
+        )
+    else:
+        monkeypatch.setattr(
+            mbs_silver_publication,
+            "iter_mbs_silver_batches",
+            lambda *_args, **_kwargs: iter(()),
+        )
+
+    with pytest.raises(ValueError, match=message):
+        build_mbs_silver_v4_package(
+            call_payload,
+            receipt,
+            exact_commit=commit,
+            source_era_verification=verification,
+            output_dir=tmp_path / mutation,
+        )
+
+
+def test_package_path_and_manifest_validation_rejects_malformed_objects(
+    tmp_path, monkeypatch
+) -> None:
+    monkeypatch.setattr(
+        "global_medicines_atlas.mbs_silver_publication._authorization_identity",
+        lambda *_: ("a" * 64, "b" * 64),
+    )
+    with pytest.raises(ValueError, match="unsafe MBS Silver v4 package path"):
+        mbs_silver_publication._write_object(
+            tmp_path, "../escape.bin", b"x", "unsafe"
+        )
+
+    payload = _xml("<ScheduleFee>42.00</ScheduleFee>")
+    package = build_mbs_silver_v4_package(
+        payload,
+        _authorized_receipt(payload, "e" * 40),
+        exact_commit="e" * 40,
+        source_era_verification=_verification(payload),
+        output_dir=tmp_path / "package",
+    )
+    with pytest.raises(ValueError, match="destination differs"):
+        validate_mbs_silver_v4_package(
+            replace(package, destination_dataset="unexpected/dataset")
+        )
+    with pytest.raises(
+        ValueError, match="duplicate MBS Silver v4 package object"
+    ):
+        validate_mbs_silver_v4_package(
+            replace(package, objects=(*package.objects, package.objects[0]))
+        )
+    valid_manifest = package.manifest_path.read_bytes()
+    package.manifest_path.write_bytes(b"{")
+    with pytest.raises(ValueError, match="manifest is unreadable"):
+        validate_mbs_silver_v4_package(package)
+    package.manifest_path.write_bytes(valid_manifest)
+
+    manifest = json.loads(valid_manifest)
+    manifest["objects"][0]["role"] = "altered-role"
+    changed_manifest = (
+        json.dumps(
+            manifest, ensure_ascii=False, sort_keys=True, indent=2
+        ).encode()
+        + b"\n"
+    )
+    package.manifest_path.write_bytes(changed_manifest)
+    changed_package = replace(
+        package, manifest_sha256=sha256(changed_manifest).hexdigest()
+    )
+    with pytest.raises(ValueError, match="manifest object inventory differs"):
+        validate_mbs_silver_v4_package(changed_package)
 
 
 @pytest.mark.parametrize(
