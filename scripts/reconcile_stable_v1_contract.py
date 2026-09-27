@@ -21,6 +21,12 @@ BRONZE_PLAN = "conductor/tracks/bronze_medallion_completion_20260819/plan.md"
 BRONZE_MATURITY = "quality/qualifications/bronze-maturity.json"
 QUALITY_CLOSURE = "quality/qualifications/quality-hardening-closure.json"
 AUSTRALIAN_HEALTH_GATE = "stable-v1-australian-health-federation"
+SCRAPER_ARCHIVE = "quality/qualifications/scraper-archival-20260906.json"
+GRAPH_ARCHIVE = "quality/qualifications/graph-archival-20260906.json"
+AUSTRALIAN_ACCEPTANCE = (
+    "docs/qualification/australian-health-federation-acceptance.md"
+)
+DONOR_HISTORY_OBJECT_COUNT = 30
 AUSTRALIAN_HEALTH_REQUIREMENTS = {
     "M-105",
     "M-106",
@@ -98,6 +104,45 @@ def _renovate_output_observed() -> bool:
     return closure["renovate"]["dashboard_or_first_pr"] == "observed"
 
 
+def _donor_archive_acceptance_observed() -> bool:
+    """Require both approved archives and exact public history restoration."""
+    scraper = json.loads((ROOT / SCRAPER_ARCHIVE).read_text(encoding="utf-8"))
+    graph = json.loads((ROOT / GRAPH_ARCHIVE).read_text(encoding="utf-8"))
+    restored = {
+        item["repository"]: item for item in scraper["publication"]["restored"]
+    }
+    expected = {
+        "edithatogo/aus_mbs_pbs_graph": (
+            "3993e5e331eb2d3d9e9d354d80e52c684ad26a1e"
+        ),
+        "edithatogo/aus-health-data-scraper": (
+            "009e80544588a956c8922aaab052ee08947e2b30"
+        ),
+    }
+    if set(restored) != set(expected):
+        return False
+    checks = (
+        scraper["repository"] == "edithatogo/aus-health-data-scraper",
+        scraper["approval_reference"]
+        == "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5556212193",
+        scraper["archival"]["after"] is True,
+        scraper["publication"]["run_conclusion"] == "success",
+        scraper["publication"]["current_revision_equals_verified"] is True,
+        scraper["publication"]["verified_objects"]
+        == DONOR_HISTORY_OBJECT_COUNT,
+        graph["repository"] == "edithatogo/aus_mbs_pbs_graph",
+        graph["approval_and_execution_receipt"]
+        == "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5556516869",
+        graph["archive_authorized"] is True,
+        graph["archived_after"] is True,
+        graph["public_revision_current_at_preflight"] is True,
+        graph["public_history_revision"] == scraper["publication"]["revision"],
+        all(item["clean_restore"] is True for item in restored.values()),
+        all(restored[name]["head"] == head for name, head in expected.items()),
+    )
+    return all(checks)
+
+
 def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
     raw: dict[str, Any],
 ) -> dict[str, Any]:
@@ -133,6 +178,17 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
             )
             requirement["evidence"] = _append_unique(
                 requirement["evidence"], [BRONZE_PLAN, BRONZE_MATURITY]
+            )
+        elif requirement_id == "M-113" and _donor_archive_acceptance_observed():
+            requirement["state"] = "verified"
+            requirement["blocker_ids"] = [
+                blocker
+                for blocker in requirement["blocker_ids"]
+                if blocker != AUSTRALIAN_HEALTH_GATE
+            ]
+            requirement["evidence"] = _append_unique(
+                requirement["evidence"],
+                [SCRAPER_ARCHIVE, GRAPH_ARCHIVE, AUSTRALIAN_ACCEPTANCE],
             )
         elif requirement_id in AUSTRALIAN_HEALTH_REQUIREMENTS:
             requirement["state"] = "blocked"
@@ -208,6 +264,10 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
     for gate_id, evidence in TECHNICAL_GATE_EVIDENCE.items():
         gate = gates[gate_id]
         gate["evidence"] = _append_unique(gate["evidence"], evidence)
+    gates[AUSTRALIAN_HEALTH_GATE]["evidence"] = _append_unique(
+        gates[AUSTRALIAN_HEALTH_GATE]["evidence"],
+        [AUSTRALIAN_ACCEPTANCE, SCRAPER_ARCHIVE, GRAPH_ARCHIVE],
+    )
 
     source_gate_id = (
         "stable-v1-source-maturity"

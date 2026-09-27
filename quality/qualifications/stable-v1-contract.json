@@ -906,15 +906,16 @@
     },
     {
       "requirement_id": "M-113",
-      "state": "blocked",
+      "state": "verified",
       "evidence": [
         "conductor/requirements.md",
         "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md",
-        "conductor/tracks/australian_health_source_consolidation_20260829/plan.md"
+        "conductor/tracks/australian_health_source_consolidation_20260829/plan.md",
+        "quality/qualifications/scraper-archival-20260906.json",
+        "quality/qualifications/graph-archival-20260906.json",
+        "docs/qualification/australian-health-federation-acceptance.md"
       ],
-      "blocker_ids": [
-        "stable-v1-australian-health-federation"
-      ]
+      "blocker_ids": []
     }
   ],
   "maturity_dimensions": [
@@ -1239,7 +1240,10 @@
         "conductor/tracks/australian_health_source_consolidation_20260829/plan.md",
         "conductor/tracks/public_hf_federated_data_plane_20260829/plan.md",
         "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md",
-        "conductor/tracks/federated_medicines_platinum_20260829/plan.md"
+        "conductor/tracks/federated_medicines_platinum_20260829/plan.md",
+        "docs/qualification/australian-health-federation-acceptance.md",
+        "quality/qualifications/scraper-archival-20260906.json",
+        "quality/qualifications/graph-archival-20260906.json"
       ]
     },
     {

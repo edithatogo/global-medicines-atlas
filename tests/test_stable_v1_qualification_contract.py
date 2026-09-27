@@ -12,6 +12,7 @@ from typing import Any
 import pytest
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import ValidationError
+from scripts import reconcile_stable_v1_contract as reconciliation
 from scripts.build_stable_v1_source_maturity import build_projection
 from scripts.reconcile_stable_v1_contract import build_contract, build_support
 
@@ -250,8 +251,10 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
         "M-110",
         "M-111",
         "M-112",
-        "M-113",
     }
+    assert requirements["M-113"]["state"] == "verified"
+    assert requirements["M-113"]["blocker_ids"] == []
+    assert gates["stable-v1-australian-health-federation"]["state"] == "blocked"
 
     invalid = copy.deepcopy(projection)
     invalid["qualification_state"] = "qualified"
@@ -261,6 +264,26 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
     invalid["unresolved_gate_ids"] = []
     with pytest.raises(ValidationError):
         _validator(QUALIFICATION_SCHEMA).validate(invalid)
+
+
+def test_donor_archival_acceptance_rejects_missing_restore_or_approval(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    assert reconciliation._donor_archive_acceptance_observed()
+    scraper = _load(ROOT / reconciliation.SCRAPER_ARCHIVE)
+    scraper["publication"]["restored"][0]["clean_restore"] = False
+    unsafe = tmp_path / "scraper.json"
+    unsafe.write_text(json.dumps(scraper), encoding="utf-8")
+    with monkeypatch.context() as patch:
+        patch.setattr(reconciliation, "SCRAPER_ARCHIVE", str(unsafe))
+        assert not reconciliation._donor_archive_acceptance_observed()
+    graph = _load(ROOT / reconciliation.GRAPH_ARCHIVE)
+    graph["archive_authorized"] = False
+    unsafe.write_text(json.dumps(graph), encoding="utf-8")
+    with monkeypatch.context() as patch:
+        patch.setattr(reconciliation, "GRAPH_ARCHIVE", str(unsafe))
+        assert not reconciliation._donor_archive_acceptance_observed()
 
 
 def test_release_readiness_reconciliation_separates_package_from_release() -> (
