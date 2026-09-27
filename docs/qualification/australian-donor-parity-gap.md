@@ -34,13 +34,17 @@ responsiveness is retained as legacy behavior, not proven API parity. The
 baseline and later scraper CI blobs now bind protected Test-Goblin test/lint
 execution at exact PR head `0b006fe7a6fc1738867673ef4ee486668927ff77`.
 This CI supersession does not qualify the donor scrape-and-commit schedule.
-The donor entry point's hard-coded 2024 requests and mixed CSV are superseded
-by fail-closed synthetic rehearsal and the separately authorized hosted XML
-release. The exact donor scheduled run reported six 404s and no data commit;
+The donor entry point's hard-coded 2024 requests, async HTML calls and broken
+mixed CSV orchestration are explicitly excluded as an obsolete demonstration,
+with exact archived history retained. Fail-closed synthetic rehearsal and the
+separately authorized hosted XML release remain independent capabilities, not
+complete replacements for that HTML path. The exact donor scheduled run
+reported six 404s and no data commit;
 its green workflow result was not data success. The later entry-point edit
-changes imports and formatting only, while the added scraper test's synthetic
-item and participant byte intent is covered by bounded serial probes. This
-does not preserve its async API or establish live participant coverage. All
+changes imports and formatting only. The later test for the retired async
+scraper API is also excluded with reason; a separate regression now proves
+synthetic item and participant bytes under bounded serial probes. This does
+not preserve async API parity or establish live participant coverage. All
 ten later changed paths now have dispositions with evidence. The earlier
 delta receipt's
 `current_head_history_preserved=false` was a pre-publication observation and

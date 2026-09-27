@@ -517,29 +517,33 @@
       "path": "src/main.py",
       "git_object_sha1": "df0f1725a2cc46aafa6d2565e5faacd848baae72",
       "sha256": "552ac6b2aab2f7c60af634b61d887290d736c668987b69827a1194d947bf2851",
-      "disposition": "supersede",
-      "acceptance_state": "verified_supersession",
+      "disposition": "exclude-with-reason",
+      "acceptance_state": "verified_exclusion",
       "parity_evidence": {
-        "function_dispositions": {
-          "main": {
-            "disposition": "supersede",
-            "behavior_tests": [
-              "tests/test_mbs_compatibility.py::test_historical_urls_and_filenames_preserve_donor_order",
-              "tests/test_mbs_compatibility.py::test_six_404s_are_failed_data_not_success",
-              "tests/test_mbs_release.py::test_mock_stage_preserves_raw_and_separates_admission",
-              "tests/test_mbs_release_workflow.py::test_hosted_mbs_workflow_preserves_archive_and_verifies_before_cleanup"
-            ],
-            "behavior": "Hard-coded item/participant demonstration and mixed CSV orchestration are superseded by fail-closed historical rehearsal and exact authorized hosted XML release. No participant coverage or mixed CSV output is claimed."
-          }
-        },
-        "historical_successor": "src/global_medicines_atlas/mbs_compatibility.py::historical_targets",
-        "hosted_successor": ".github/workflows/australian-mbs-release.yml",
         "donor_run": "https://github.com/edithatogo/aus-health-data-scraper/actions/runs/30677814193",
         "donor_run_observation": "completed/success workflow; six configured URLs returned 404; no data commit",
         "hosted_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/33296983154",
         "hosted_run_head": "435527a630d055056985372aba1620bcf7340da4",
         "hosted_run_observation": "completed/success; exact approved August XML release anonymously verified",
-        "scope_note": "Supersession of orchestration and no-data classification, not behavioral parity for async HTML scraping or live participant counts. Donor mixed CSV and hard-coded 2024 targets are intentionally retired."
+        "scope_note": "Explicit exclusion of this demonstration entry point; independently implemented compatibility and hosted XML paths do not assert complete replacement of its HTML behavior.",
+        "reason": "Hard-coded 2024 demonstration orchestrator has no independent supported source or data output: exact donor scheduled execution produced six 404s and no commit. Its month/target generation is qualified separately; live HTML participant acquisition, async caller behavior and mixed CSV output are not promoted by this file.",
+        "behavior_dispositions": {
+          "hard_coded_demo_targets": {
+            "disposition": "exclude-with-reason",
+            "reason": "Six observed 404s and no admitted data; compatibility target generation remains separately tested."
+          },
+          "async_html_scrape_calls": {
+            "disposition": "exclude-with-reason",
+            "reason": "The obsolete requests-based HTML caller has no supported current participant surface; original code remains in the exact archived Git history."
+          },
+          "mixed_csv_processing": {
+            "disposition": "exclude-with-reason",
+            "reason": "Donor main passes strings to a Path-based processor and no observed data was processed; typed XML and HTML projections are qualified separately."
+          }
+        },
+        "legacy_history_receipt": "quality/qualifications/scraper-archival-20260906.json",
+        "separate_historical_capability": "src/global_medicines_atlas/mbs_compatibility.py::historical_targets",
+        "separate_hosted_capability": ".github/workflows/australian-mbs-release.yml"
       }
     },
     {
@@ -735,30 +739,34 @@
       "commit": "009e80544588a956c8922aaab052ee08947e2b30",
       "path": "src/main.py",
       "git_object_sha1": "8941cf6865282672a2a2df16f06ebe6690abc90d",
-      "disposition": "supersede",
-      "acceptance_state": "verified_supersession",
+      "disposition": "exclude-with-reason",
+      "acceptance_state": "verified_exclusion",
       "parity_evidence": {
-        "function_dispositions": {
-          "main": {
-            "disposition": "supersede",
-            "behavior_tests": [
-              "tests/test_mbs_compatibility.py::test_historical_urls_and_filenames_preserve_donor_order",
-              "tests/test_mbs_compatibility.py::test_six_404s_are_failed_data_not_success",
-              "tests/test_mbs_release.py::test_mock_stage_preserves_raw_and_separates_admission",
-              "tests/test_mbs_release_workflow.py::test_hosted_mbs_workflow_preserves_archive_and_verifies_before_cleanup"
-            ],
-            "behavior": "Hard-coded item/participant demonstration and mixed CSV orchestration are superseded by fail-closed historical rehearsal and exact authorized hosted XML release. No participant coverage or mixed CSV output is claimed."
-          }
-        },
-        "historical_successor": "src/global_medicines_atlas/mbs_compatibility.py::historical_targets",
-        "hosted_successor": ".github/workflows/australian-mbs-release.yml",
         "donor_run": "https://github.com/edithatogo/aus-health-data-scraper/actions/runs/30677814193",
         "donor_run_observation": "completed/success workflow; six configured URLs returned 404; no data commit",
         "hosted_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/33296983154",
         "hosted_run_head": "435527a630d055056985372aba1620bcf7340da4",
         "hosted_run_observation": "completed/success; exact approved August XML release anonymously verified",
-        "scope_note": "Supersession of orchestration and no-data classification, not behavioral parity for async HTML scraping or live participant counts. Donor mixed CSV and hard-coded 2024 targets are intentionally retired.",
-        "delta_review": "Exact later blob 8941cf6865282672a2a2df16f06ebe6690abc90d removes encoding header, reorders imports and adds a blank line; main body and behavior are unchanged."
+        "scope_note": "Explicit exclusion of this demonstration entry point; independently implemented compatibility and hosted XML paths do not assert complete replacement of its HTML behavior.",
+        "delta_review": "Exact later blob 8941cf6865282672a2a2df16f06ebe6690abc90d removes encoding header, reorders imports and adds a blank line; main body and behavior are unchanged.",
+        "reason": "Hard-coded 2024 demonstration orchestrator has no independent supported source or data output: exact donor scheduled execution produced six 404s and no commit. Its month/target generation is qualified separately; live HTML participant acquisition, async caller behavior and mixed CSV output are not promoted by this file.",
+        "behavior_dispositions": {
+          "hard_coded_demo_targets": {
+            "disposition": "exclude-with-reason",
+            "reason": "Six observed 404s and no admitted data; compatibility target generation remains separately tested."
+          },
+          "async_html_scrape_calls": {
+            "disposition": "exclude-with-reason",
+            "reason": "The obsolete requests-based HTML caller has no supported current participant surface; original code remains in the exact archived Git history."
+          },
+          "mixed_csv_processing": {
+            "disposition": "exclude-with-reason",
+            "reason": "Donor main passes strings to a Path-based processor and no observed data was processed; typed XML and HTML projections are qualified separately."
+          }
+        },
+        "legacy_history_receipt": "quality/qualifications/scraper-archival-20260906.json",
+        "separate_historical_capability": "src/global_medicines_atlas/mbs_compatibility.py::historical_targets",
+        "separate_hosted_capability": ".github/workflows/australian-mbs-release.yml"
       }
     },
     {
@@ -852,17 +860,19 @@
       "commit": "009e80544588a956c8922aaab052ee08947e2b30",
       "path": "tests/test_scraper.py",
       "git_object_sha1": "5ccfdad1337be621803d402b3ca23d115c31c807",
-      "disposition": "supersede",
-      "acceptance_state": "verified_supersession",
+      "disposition": "exclude-with-reason",
+      "acceptance_state": "verified_exclusion",
       "parity_evidence": {
-        "successor": "tests/test_mbs_compatibility.py::test_item_and_participant_probe_bytes_remain_synthetic",
         "source_blob": "5ccfdad1337be621803d402b3ca23d115c31c807",
         "behavior": "Both historical item and participant synthetic responses retain exact bytes and donor-compatible filenames under a bounded 30-second, serial per-host policy. Response transport cannot assert admitted data.",
         "behavior_tests": [
           "tests/test_mbs_compatibility.py::test_item_and_participant_probe_bytes_remain_synthetic",
           "tests/test_mbs_compatibility.py::test_rehearsal_rejects_network_transport"
         ],
-        "scope_note": "The donor test asserted asyncio offload for a requests-based API; GMA intentionally uses serial mock-only probes. This qualifies replacement test intent, not async API parity or live participant source coverage."
+        "scope_note": "Exclusion of donor API-specific test, not proof of live participant coverage or async parity.",
+        "reason": "This synthetic donor test targets the retired requests/async HTML API. Exact original test is retained in archived Git history; GMA synthetic probe tests independently cover byte/name/timeout controls without claiming async API parity.",
+        "legacy_history_receipt": "quality/qualifications/scraper-archival-20260906.json",
+        "separate_regression": "tests/test_mbs_compatibility.py::test_item_and_participant_probe_bytes_remain_synthetic"
       }
     }
   ],
