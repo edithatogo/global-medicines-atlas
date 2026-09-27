@@ -7,6 +7,7 @@ Adheres strictly to the Global Medicines Atlas fail-closed contracts.
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import re
 import shutil
@@ -15,6 +16,7 @@ import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
+import zipfile
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -49,6 +51,10 @@ HTTP_REDIRECT_STATUSES: Final[frozenset[int]] = frozenset({
     HTTPStatus.TEMPORARY_REDIRECT,
     HTTPStatus.PERMANENT_REDIRECT,
 })
+MAX_XLSX_PAYLOAD_BYTES: Final[int] = 32 * 1024 * 1024
+MAX_XLSX_METADATA_BYTES: Final[int] = 8 * 1024 * 1024
+MAX_XLSX_MEMBERS: Final[int] = 20_000
+MAX_XLSX_UNCOMPRESSED_BYTES: Final[int] = 128 * 1024 * 1024
 
 DEFAULT_HARVEST_USER_AGENT: Final[str] = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -698,6 +704,64 @@ def discover_mbs_utilisation_resources(
     return discovered
 
 
+def _open_xlsx_payload(content: bytes) -> zipfile.ZipFile:
+    try:
+        return zipfile.ZipFile(io.BytesIO(content))
+    except (zipfile.BadZipFile, OSError) as exc:
+        raise ValueError("Workbook is not a valid OOXML ZIP package") from exc
+
+
+def _validate_xlsx_payload(filename: str, content: bytes) -> None:
+    if not filename.lower().endswith(".xlsx"):
+        return
+    if len(content) > MAX_XLSX_PAYLOAD_BYTES:
+        raise ValueError(
+            f"Workbook payload exceeds {MAX_XLSX_PAYLOAD_BYTES} byte limit"
+        )
+    with _open_xlsx_payload(content) as archive:
+        members = archive.infolist()
+        names = [member.filename for member in members]
+        if len(names) > MAX_XLSX_MEMBERS:
+            raise ValueError("Workbook ZIP contains too many members")
+        if len(names) != len(set(names)):
+            raise ValueError("Workbook ZIP contains duplicate members")
+        if not any(
+            re.fullmatch(r"xl/worksheets/sheet[1-9]\d*\.xml", name)
+            for name in names
+        ):
+            raise ValueError("Workbook ZIP contains no worksheet member")
+        if (
+            sum(member.file_size for member in members)
+            > MAX_XLSX_UNCOMPRESSED_BYTES
+        ):
+            raise ValueError("Workbook ZIP exceeds uncompressed size limit")
+        try:
+            content_types_info = archive.getinfo("[Content_Types].xml")
+            workbook_info = archive.getinfo("xl/workbook.xml")
+        except KeyError as exc:
+            raise ValueError(
+                "Workbook OOXML required member is missing"
+            ) from exc
+        if (
+            max(content_types_info.file_size, workbook_info.file_size)
+            > MAX_XLSX_METADATA_BYTES
+        ):
+            raise ValueError("Workbook metadata member exceeds size limit")
+        content_types = archive.read(content_types_info)
+        workbook = archive.read(workbook_info)
+    if (
+        b"http://schemas.openxmlformats.org/package/2006/content-types"
+        not in content_types
+        or b"http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+        not in workbook
+        or b"Types" not in content_types[:4096]
+        or b"workbook" not in workbook[:4096]
+    ):
+        raise ValueError(
+            "Workbook OOXML required members have unexpected roots"
+        )
+
+
 def stage_harvest_payload(
     resource: DiscoveredHarvestResource,
     work_dir: Path,
@@ -726,6 +790,7 @@ def stage_harvest_payload(
 
     if not content:
         raise ValueError(f"Payload from {resource.url} was empty")
+    _validate_xlsx_payload(resource.filename, content)
 
     sha256 = hashlib.sha256(content).hexdigest()
     byte_count = len(content)
