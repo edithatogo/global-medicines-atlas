@@ -319,6 +319,11 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   graph PBS executable rows also bind function-specific tests and the pinned
   public April 2026 archive. Scraper processor and processor-test rows now
   bind function-specific synthetic replacement checks. Both pinned scraper CI
-  blobs now bind protected hosted test/lint execution; three baseline scraper
-  and two later behavior-bearing rows still need parity proof. Exact history preservation
+  blobs now bind protected hosted test/lint execution. The donor's unchanged
+  hard-coded demonstration entry point and later async scraper test are
+  explicitly excluded with reasons and exact archived-history proof; separate
+  synthetic rehearsal and hosted XML release evidence does not replace their
+  omitted HTML and async behavior. The
+  baseline scraper module and monthly workflow remain pending; no later rows
+  remain pending. Exact history preservation
   and archive approval are verified separately; M-105 remains blocked.

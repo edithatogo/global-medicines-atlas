@@ -86,15 +86,89 @@ def test_m105_dispositions_do_not_promote_unproven_behavior() -> None:
             item["acceptance_state"] == "pending_behavioral_parity"
             for item in receipt["baseline"]
         )
-        == 3
+        == 2
     )
     assert (
         sum(
             item["acceptance_state"] == "pending_behavioral_parity"
             for item in receipt["post_baseline_delta"]
         )
-        == 2
+        == 0
     )
+
+
+def test_scraper_demonstration_exclusion_preserves_exact_history() -> None:
+    receipt = json.loads(RECEIPT.read_text())
+    expected_blobs = {
+        "baseline": "df0f1725a2cc46aafa6d2565e5faacd848baae72",
+        "post_baseline_delta": "8941cf6865282672a2a2df16f06ebe6690abc90d",
+    }
+    for group, blob in expected_blobs.items():
+        row = next(
+            item
+            for item in receipt[group]
+            if item["repository"] == "edithatogo/aus-health-data-scraper"
+            and item["path"] == "src/main.py"
+        )
+        assert row["git_object_sha1"] == blob
+        assert row["disposition"] == "exclude-with-reason"
+        assert row["acceptance_state"] == "verified_exclusion"
+        proof = row["parity_evidence"]
+        assert set(proof["behavior_dispositions"]) == {
+            "hard_coded_demo_targets",
+            "async_html_scrape_calls",
+            "mixed_csv_processing",
+        }
+        assert all(
+            item["disposition"] == "exclude-with-reason" and item["reason"]
+            for item in proof["behavior_dispositions"].values()
+        )
+        archival = json.loads(
+            (ROOT / proof["legacy_history_receipt"]).read_text()
+        )
+        preserved = next(
+            item
+            for item in archival["publication"]["restored"]
+            if item["repository"] == row["repository"]
+        )
+        assert preserved["clean_restore"]
+        assert row["commit"] in {preserved["baseline"], preserved["head"]}
+        assert proof["hosted_run_head"] == (
+            "435527a630d055056985372aba1620bcf7340da4"
+        )
+        assert (ROOT / proof["separate_hosted_capability"]).is_file()
+    scraper_test = next(
+        item
+        for item in receipt["post_baseline_delta"]
+        if item["repository"] == "edithatogo/aus-health-data-scraper"
+        and item["path"] == "tests/test_scraper.py"
+    )
+    assert scraper_test["git_object_sha1"] == (
+        "5ccfdad1337be621803d402b3ca23d115c31c807"
+    )
+    assert scraper_test["disposition"] == "exclude-with-reason"
+    assert scraper_test["acceptance_state"] == "verified_exclusion"
+    assert scraper_test["parity_evidence"]["reason"]
+    archival = json.loads(
+        (
+            ROOT / scraper_test["parity_evidence"]["legacy_history_receipt"]
+        ).read_text()
+    )
+    assert any(
+        item["repository"] == scraper_test["repository"]
+        and item["head"] == scraper_test["commit"]
+        and item["clean_restore"]
+        for item in archival["publication"]["restored"]
+    )
+    test_path, test_name = scraper_test["parity_evidence"][
+        "separate_regression"
+    ].split("::", 1)
+    tree = ast.parse((ROOT / test_path).read_text())
+    assert test_name in {
+        item.name
+        for item in ast.walk(tree)
+        if isinstance(item, ast.FunctionDef)
+    }
 
 
 def test_scraper_ci_supersession_binds_exact_blobs_and_executed_lanes() -> None:
