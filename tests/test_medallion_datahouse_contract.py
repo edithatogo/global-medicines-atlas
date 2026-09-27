@@ -174,8 +174,26 @@ def test_bronze_track_artifacts_are_complete_and_tdd_shaped() -> None:
     assert gates["cms-partd-record-projection"] == {
         "id": "cms-partd-record-projection",
         "kind": "hosted-execution",
-        "status": "pending",
+        "status": "passed",
     }
+    cms_qualification = next(
+        json.loads(line)
+        for line in (TRACK / "evidence.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+        if '"kind":"cms_partd_source_record_qualification_recovered"' in line
+    )
+    assert cms_qualification["verification"]["qualified_shards"] == 33
+    assert (
+        cms_qualification["verification"]["anonymous_projection_digest_matches"]
+        == 631
+    )
+    assert (
+        cms_qualification["boundaries"][
+            "canonical_landing_overrides_reconciled"
+        ]
+        is False
+    )
     human_gates = {
         "nordic-source-decisions",
         "additional-utilisation-source-decisions",

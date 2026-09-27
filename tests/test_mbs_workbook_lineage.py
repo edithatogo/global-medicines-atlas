@@ -20,6 +20,17 @@ from global_medicines_atlas.mbs_workbook_values import (
 )
 
 
+def _descriptive_report_json(report: WorkbookFieldLineageReport) -> str:
+    """Exclude digests, whose random hex can contain source-value substrings."""
+
+    document = report.model_dump(mode="json")
+    for name in ("source_sha256", "receipt_sha256", "report_sha256"):
+        document.pop(name)
+    for field in document["fields"]:
+        field.pop("lineage_sha256")
+    return json.dumps(document)
+
+
 def test_complete_column_lineage_preserves_sheet_and_unlabelled_denominators():
     payload = fixture()
     receipt = _receipt(payload)
@@ -36,8 +47,9 @@ def test_complete_column_lineage_preserves_sheet_and_unlabelled_denominators():
     ]
     assert len(unlabelled) == 2
     assert all(field.mapping_target == "unmapped" for field in unlabelled)
-    assert "synthetic element" not in report.model_dump_json()
-    assert "00123" not in report.model_dump_json()
+    descriptive = _descriptive_report_json(report)
+    assert "synthetic element" not in descriptive
+    assert "00123" not in descriptive
     assert report.date_profile is None
     assert report.qualification == "candidate_only"
 
@@ -56,8 +68,9 @@ def test_formula_and_date_states_are_counted_without_interpretation():
     )
     assert fields["Sheet1", "V"].formula_count == 1
     assert fields["Sheet1", "V"].statuses == (("converted", 1), ("header", 1))
-    assert "01.07.2024" not in report.model_dump_json()
-    assert "1+1" not in report.model_dump_json()
+    descriptive = _descriptive_report_json(report)
+    assert "01.07.2024" not in descriptive
+    assert "1+1" not in descriptive
 
 
 @pytest.mark.parametrize("drift", [True, False])
