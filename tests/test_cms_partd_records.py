@@ -361,6 +361,9 @@ def test_projection_workflow_is_hosted_public_and_resumable() -> None:
 
 def test_recovery_workflow_uses_exact_successful_receipts() -> None:
     workflow = RECOVERY_WORKFLOW.read_text(encoding="utf-8")
+    assert "if: ${{ github.ref == 'refs/heads/main' }}" in workflow
+    assert "ref: ${{ github.sha }}" in workflow
+    assert 'test "$(git rev-parse HEAD)" = "$GITHUB_SHA"' in workflow
     assert 'SOURCE_RUN_ID: "36122136607"' in workflow
     assert (
         "SOURCE_HEAD_SHA: 3d60e0513bd63c89905a0cdd69715d9182705be3" in workflow
