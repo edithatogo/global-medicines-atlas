@@ -1028,5 +1028,12 @@
   checks cover oversized integer text under every date profile, and verify
   blank values and representability states remain distinct. Focused MBS tests:
   79 passed; broader affected MBS tests: 106 passed; Ruff, `ty`, BasedPyright,
-  context and diff validation passed. The exact-main rerun is still required
-  to determine whether the real finding is resolved or remains a quality gap.
+  context and diff validation passed. PR #557 merged as `f133c82`; exact-main
+  run `36339405937` repeated the 5,989-row/40-field denominator and retained
+  exactly one invalid `benefits.Benefit85` at ordinal 36. Thus the amount-width
+  guard did not resolve the finding.
+- [ ] Add a value-free invalid-amount reason diagnostic distinguishing
+  nonnumeric source text from a numeric value outside the integer-width
+  contract. Requalify on exact `main`; preserve source values and IDs only
+  inside the hosted process. Keep the quality blocker if the cause is not
+  corrected by an evidence-supported transformation.
