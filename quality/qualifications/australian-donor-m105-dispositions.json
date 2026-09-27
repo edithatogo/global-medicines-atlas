@@ -101,7 +101,19 @@
           "tests/test_mbs_release_workflow.py"
         ],
         "replacement": "src/global_medicines_atlas/mbs_release.py::stage_mbs_release",
-        "finding": "Pinned July donor XML bytes were published and anonymously restored; governed hosted acquisition of the exactly authorized August release preserved source-native bytes, recorded failed attempts, and verified publication before cleanup. Future releases remain unqualified."
+        "finding": "Pinned July donor XML bytes were published and anonymously restored; governed hosted acquisition of the exactly authorized August release preserved source-native bytes, recorded failed attempts, and verified publication before cleanup. Future releases remain unqualified.",
+        "function_dispositions": {
+          "download_file": {
+            "disposition": "adapt",
+            "behavior_test": "tests/test_mbs_release.py::test_mock_stage_preserves_raw_and_separates_admission",
+            "behavior": "Successful bounded acquisition preserves exact bytes; failure and quarantine do not become acquired data."
+          },
+          "get_filename_from_url": {
+            "disposition": "supersede",
+            "behavior_test": "tests/test_mbs_release.py::test_donor_url_filename_is_superseded_by_digest_bound_raw_path",
+            "behavior": "Source URL is exact-release validated; the retained raw path is keyed by payload digest, not a decoded URL basename."
+          }
+        }
       }
     },
     {

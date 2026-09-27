@@ -158,6 +158,22 @@ def test_mbs_downloader_adaptation_binds_legacy_and_hosted_receipts() -> None:
     assert row["disposition"] == "adapt"
     assert row["acceptance_state"] == "verified_adaptation"
     proof = row["parity_evidence"]
+    inventory = json.loads(INVENTORY.read_text())
+    donor_file = next(
+        item
+        for repo in inventory["denominator"]["repositories"]
+        if repo["repository"] == row["repository"]
+        for item in repo["files"]
+        if item["path"] == row["path"]
+    )
+    functions = proof["function_dispositions"]
+    assert set(functions) == set(donor_file["functions"])
+    assert functions["download_file"]["disposition"] == "adapt"
+    assert functions["get_filename_from_url"]["disposition"] == "supersede"
+    for item in functions.values():
+        module, test_name = item["behavior_test"].split("::", 1)
+        assert (ROOT / module).is_file()
+        assert test_name.startswith("test_")
     legacy = json.loads((ROOT / proof["legacy_public_receipt"]).read_text())
     raw = next(
         item for item in legacy["raw_payloads"] if item["source_id"] == "au-mbs"
