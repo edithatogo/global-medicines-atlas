@@ -95,9 +95,7 @@ def test_rejects_public_object_identity_drift(
 ) -> None:
     monkeypatch.setattr(command, "LEGACY_MBS_BYTES", expected_bytes)
     monkeypatch.setattr(command, "LEGACY_MBS_SHA256", expected_sha)
-    monkeypatch.setattr(
-        command.httpx, "Client", _client_factory(actual_bytes)
-    )
+    monkeypatch.setattr(command.httpx, "Client", _client_factory(actual_bytes))
 
     with pytest.raises(ValueError, match=message):
         command.qualify()

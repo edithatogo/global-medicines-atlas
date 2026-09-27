@@ -44,7 +44,9 @@ SOURCE_URI = (
     "resolve/4d1dae488ac43522f20e8320a8b2a56bf9138341/"
     "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML"
 )
-RIGHTS_REFERENCE = "https://github.com/edithatogo/global-medicines-atlas/issues/340"
+RIGHTS_REFERENCE = (
+    "https://github.com/edithatogo/global-medicines-atlas/issues/340"
+)
 MAX_BYTES = 9_000_000
 TRANSFORMATION_PATHS = (
     "scripts/qualify_public_mbs_silver.py",
@@ -67,17 +69,22 @@ def qualify(*, rows_per_batch: int = 1024) -> dict[str, object]:
     )
     chunks: list[bytes] = []
     byte_count = 0
-    with httpx.Client(
-        follow_redirects=True,
-        timeout=httpx.Timeout(60),
-        trust_env=False,
-        transport=BoundIPAddressTransport(policy=policy),
-    ) as client, client.stream("GET", SOURCE_URI) as response:
+    with (
+        httpx.Client(
+            follow_redirects=True,
+            timeout=httpx.Timeout(60),
+            trust_env=False,
+            transport=BoundIPAddressTransport(policy=policy),
+        ) as client,
+        client.stream("GET", SOURCE_URI) as response,
+    ):
         response.raise_for_status()
         for chunk in response.iter_bytes():
             byte_count += len(chunk)
             if byte_count > MAX_BYTES:
-                raise ValueError("pinned MBS source exceeds the parser byte limit")
+                raise ValueError(
+                    "pinned MBS source exceeds the parser byte limit"
+                )
             chunks.append(chunk)
     payload = b"".join(chunks)
     if len(payload) != LEGACY_MBS_BYTES:

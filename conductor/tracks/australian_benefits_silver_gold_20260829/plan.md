@@ -991,7 +991,9 @@
 - [x] Add regressions for exact byte/digest identity, candidate-only blockers,
   no publication, bounded source transport and the exact-main read-only job;
   include the new tests in the Test-Goblin unit profile. Focused tests: 15
-  passed; Ruff, `ty`, and diff checks passed.
+  passed; Ruff, `ty`, BasedPyright, context, and `actionlint` passed. The first
+  hosted routine result found formatting only; its two file-format findings
+  have been corrected and the formatter check now passes locally.
 - [ ] Merge the reviewed workflow and dispatch it on its exact main commit;
   reconcile the resulting row/field/quality denominators and retain all
   remaining real-era, v4, M-107 and M-109 gaps.
