@@ -199,8 +199,17 @@ def build_b0_source_index(
                 ),
                 current_landing_disposition=work.state.value,
                 evidence_scope=work.evidence_scope,
-                qualification_state=source.qualification_state.value,
-                qualification_references=source.qualification_references,
+                qualification_state=(
+                    "live_verified"
+                    if work.evidence_scope == "live_receipt"
+                    else source.qualification_state.value
+                ),
+                qualification_references=tuple(
+                    dict.fromkeys((
+                        *source.qualification_references,
+                        *work.evidence_references,
+                    ))
+                ),
                 supersession_or_reuse_reference=relationship,
                 last_reviewed_at=catalog.reviewed_at.isoformat(),
                 last_verified_at=source.last_verified_at.isoformat(),

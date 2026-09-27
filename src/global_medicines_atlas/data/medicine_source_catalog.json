@@ -8098,7 +8098,7 @@
       "authentication": "none",
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
-      "native_identifier": "Socialstyrelsen läkemedelsstatistik ATC + year",
+      "native_identifier": "Socialstyrelsen l\u00e4kemedelsstatistik ATC + year",
       "last_verified_at": "2026-08-20",
       "integration_layer": "acquisition",
       "implemented_ingestion": false,
@@ -8351,7 +8351,7 @@
       "jurisdictions": [
         "SEN"
       ],
-      "authority": "Senegal Direction de la Pharmacie et du Médicament",
+      "authority": "Senegal Direction de la Pharmacie et du M\u00e9dicament",
       "title": "Senegal DPM product register",
       "dimension": "regulatory",
       "access_mode": "web_search",
@@ -8402,8 +8402,8 @@
       "jurisdictions": [
         "SEN"
       ],
-      "authority": "Senegal Direction de la Pharmacie et du Médicament",
-      "title": "Senegal Direction de la Pharmacie et du Médicament public safety/recall notices",
+      "authority": "Senegal Direction de la Pharmacie et du M\u00e9dicament",
+      "title": "Senegal Direction de la Pharmacie et du M\u00e9dicament public safety/recall notices",
       "dimension": "regulatory",
       "access_mode": "web_search",
       "landing_page": "https://www.sante.gouv.sn/",
@@ -8457,7 +8457,7 @@
       "jurisdictions": [
         "SEN"
       ],
-      "authority": "Senegal Direction de la Pharmacie et du Médicament",
+      "authority": "Senegal Direction de la Pharmacie et du M\u00e9dicament",
       "title": "SEN essential medicines / health-supplies list",
       "dimension": "formulary",
       "access_mode": "document",
@@ -9002,7 +9002,7 @@
       "landing_page": "https://data.cms.gov/provider-summary-by-type-of-service/medicare-part-d-prescribers/quarterly-prescription-drug-plan-formulary-pharmacy-network-and-pricing-information",
       "download_url": "https://www.cms.gov/medicare/coverage/prescription-drug-coverage/formulary-guidance",
       "update_cadence": "monthly and quarterly",
-      "rights_status": "CMS agreement_for_use review required",
+      "rights_status": "approved_public_exact_inventory_with_cms_agreement_controls",
       "readiness": "implemented",
       "evidence_limit": "Part D formulary evidence is not total US utilisation or national registration.",
       "interface_status": "documented_download",
@@ -9045,7 +9045,10 @@
       "qualification_references": [
         "src/global_medicines_atlas/bronze_fixture_landing.py",
         "tests/test_bronze_fixture_landing.py",
-        "tests/fixtures/us/cms_partd_formulary.csv"
+        "tests/fixtures/us/cms_partd_formulary.csv",
+        "quality/qualifications/cms-partd-rights-preflight-20260821.json",
+        "quality/qualifications/cms-partd-public-huggingface-20260829.json",
+        "quality/qualifications/cms-partd-source-record-qualification-20260927.json"
       ],
       "discovery_status": "declaration_verified"
     },
@@ -9060,7 +9063,7 @@
       "access_mode": "download",
       "landing_page": "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-part-d-spending-by-drug",
       "update_cadence": "source-declared",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory",
       "readiness": "candidate",
       "evidence_limit": "Part D spending/utilisation is not total US utilisation and is not a national registration or formulary completeness claim.",
       "interface_status": "documented_download",
@@ -9099,7 +9102,11 @@
         "names"
       ],
       "qualification_state": "declared",
-      "qualification_references": [],
+      "qualification_references": [
+        "quality/qualifications/cms-partd-rights-preflight-20260821.json",
+        "quality/qualifications/cms-partd-public-huggingface-20260829.json",
+        "quality/qualifications/cms-partd-source-record-qualification-20260927.json"
+      ],
       "download_url": "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-part-d-spending-by-drug",
       "acquisition_profile": "public-bulk"
     },

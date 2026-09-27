@@ -7,9 +7,9 @@ Silver transformations included: **no**.
 
 ## State summary
 
-- `landed_and_evidenced`: 33
+- `landed_and_evidenced`: 34
 - `temporarily_unavailable`: 2
-- `rights_blocked`: 32
+- `rights_blocked`: 31
 - `credentialed_and_excluded`: 15
 - `manual_only_documented_acquisition`: 92
 - `superseded_by_reused_source`: 0
@@ -52,7 +52,7 @@ Silver transformations included: **no**.
 - [ ] `se-npl-nsl` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `se-socialstyrelsen-utilisation` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [x] `us-cms-partd-formulary` — `landed_and_evidenced`; verify receipt freshness on schedule.
-- [ ] `us-cms-partd-spending` — `rights_blocked`; record source-specific retention and transformation rights.
+- [x] `us-cms-partd-spending` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `za-national-eml` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `za-single-exit-price` — `rights_blocked`; record source-specific retention and transformation rights.
 

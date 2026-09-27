@@ -8,31 +8,31 @@
     "receipt_backed": 1
   },
   "evidence_scope_counts": {
-    "governed_fixture": 12,
-    "live_receipt": 20,
-    "none": 141,
+    "governed_fixture": 11,
+    "live_receipt": 22,
+    "none": 140,
     "parser_contract": 1
   },
   "generated_from": "src/global_medicines_atlas/data/medicine_source_catalog.json",
   "index_presence_implies_coverage": false,
   "landing_disposition_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 33,
+    "landed_and_evidenced": 34,
     "manual_only_documented_acquisition": 92,
-    "rights_blocked": 32,
+    "rights_blocked": 31,
     "temporarily_unavailable": 2
   },
   "missing_source_is_negative_evidence": false,
   "qualification_state_counts": {
-    "declared": 92,
-    "documentation_verified": 64,
-    "fixture_verified": 17,
-    "live_verified": 1
+    "declared": 82,
+    "documentation_verified": 58,
+    "fixture_verified": 12,
+    "live_verified": 22
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:228e271b98cc6be35210919302fb628e6b2c165122e9f9b13f9484e005943a1a",
-  "snapshot_sha256": "228e271b98cc6be35210919302fb628e6b2c165122e9f9b13f9484e005943a1a",
+  "snapshot_id": "sha256:e8dd95ee31d5717969db9efe0b15b4fed1dc29915dbff2bb7cbfd8bbfab242d6",
+  "snapshot_sha256": "e8dd95ee31d5717969db9efe0b15b4fed1dc29915dbff2bb7cbfd8bbfab242d6",
   "source_count": 174,
   "sources": [
     {
@@ -269,9 +269,10 @@
       "qualification_references": [
         "src/global_medicines_atlas/adapters/au_mbs.py",
         "tests/test_au_mbs_source.py",
-        "tests/fixtures/adapters/au_mbs.xml"
+        "tests/fixtures/adapters/au_mbs.xml",
+        "quality/qualifications/australian-mbs-public-huggingface-20260829.json"
       ],
-      "qualification_state": "fixture_verified",
+      "qualification_state": "live_verified",
       "rights_review_state": "maintainer_redistribution_authorized",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -310,9 +311,10 @@
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
         "src/global_medicines_atlas/adapters/au_mbs_workbook.py",
-        "tests/test_au_mbs_workbook.py"
+        "tests/test_au_mbs_workbook.py",
+        "quality/qualifications/australian-mbs-public-huggingface-20260829.json"
       ],
-      "qualification_state": "fixture_verified",
+      "qualification_state": "live_verified",
       "rights_review_state": "maintainer_redistribution_authorized",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -350,7 +352,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://data.pbs.gov.au/data-distribution/data-distribution.html"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "terms_review_required",
       "schema_drift_policy": "monthly",
@@ -636,7 +640,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://consultas.anvisa.gov.br/#/medicamentos/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -716,7 +722,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.gov.br/conitec/pt-br"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -1091,7 +1099,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.spezialitaetenliste.ch/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -1170,7 +1180,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.swissmedic.ch/swissmedic/en/home/services/listen_neu.html"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -1408,7 +1420,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -1446,7 +1460,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.edaegypt.gov.eg/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -1485,7 +1501,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.edaegypt.gov.eg/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -1524,7 +1542,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.edaegypt.gov.eg/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -1604,7 +1624,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.ema.europa.eu/en/medicines/download-medicine-data"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -1726,7 +1748,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.ema.europa.eu/en/human-regulatory-overview/orphan-designation-overview"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -1806,7 +1830,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.ema.europa.eu/en/medicines/download-medicine-data"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -1846,7 +1872,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/pharmacovigilance-post-authorisation/safety-communication"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -1884,7 +1912,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/data-medicines-iso-idmp-standards-post-authorisation"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -1923,7 +1953,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.adrreports.eu/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -1961,7 +1993,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://spor.ema.europa.eu/sporwi/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -2085,9 +2119,11 @@
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
-        "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement"
+        "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement",
+        "quality/qualifications/international-public-huggingface-20260821.json",
+        "quality/qualifications/international-public-bronze-20260827.json"
       ],
-      "qualification_state": "documentation_verified",
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -2125,9 +2161,11 @@
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
-        "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement"
+        "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement",
+        "quality/qualifications/international-public-huggingface-20260821.json",
+        "quality/qualifications/international-public-bronze-20260827.json"
       ],
-      "qualification_state": "documentation_verified",
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -2166,9 +2204,14 @@
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
-        "quality/qualifications/open-medic-parser-qualification-20260821.json"
+        "quality/qualifications/open-medic-parser-qualification-20260821.json",
+        "quality/qualifications/additional-utilisation-rights-preflight-20260821.json",
+        "quality/qualifications/source-publication-queue.json",
+        "quality/qualifications/open-medic-acquisition-success-20260821.json",
+        "quality/qualifications/open-medic-public-huggingface-20260821.json",
+        "quality/qualifications/open-medic-all-release-bronze-20260827.json"
       ],
-      "qualification_state": "declared",
+      "qualification_state": "live_verified",
       "rights_review_state": "Etalab-2.0",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -2207,9 +2250,11 @@
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
-        "https://www.gov.uk/government/publications/drugs-and-pharmaceutical-electronic-market-information-emit"
+        "https://www.gov.uk/government/publications/drugs-and-pharmaceutical-electronic-market-information-emit",
+        "quality/qualifications/international-public-huggingface-20260821.json",
+        "quality/qualifications/international-public-bronze-20260827.json"
       ],
-      "qualification_state": "documentation_verified",
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -2330,7 +2375,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "registration_and_licence_review_required",
       "schema_drift_policy": "monthly",
@@ -2369,9 +2416,11 @@
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
-        "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/drug-tariff"
+        "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/drug-tariff",
+        "quality/qualifications/international-public-huggingface-20260821.json",
+        "quality/qualifications/international-public-bronze-20260827.json"
       ],
-      "qualification_state": "documentation_verified",
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -2410,7 +2459,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://digital.nhs.uk/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -2493,7 +2544,11 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "quality/qualifications/openprescribing-rights-preflight-20260821.json",
+        "quality/qualifications/openprescribing-acquisition-authorization.json",
+        "quality/qualifications/openprescribing-availability-20260826.json"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -2613,7 +2668,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://fdaghana.gov.gh/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -2652,7 +2709,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://fdaghana.gov.gh/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -2691,7 +2750,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://fdaghana.gov.gh/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -2733,7 +2794,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.nlm.nih.gov/research/umls/rxnorm/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "UMLS/RxNorm terms apply",
       "schema_drift_policy": "monthly",
@@ -2815,7 +2878,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.who.int/teams/global-hiv-hepatitis-and-stis-programmes/hiv/treatment/aids-medicines-and-diagnostics-service"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -2854,7 +2919,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -2892,7 +2959,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.who.int/tools/monitoring-and-evaluation/databases"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "dataset_specific_review_required",
       "schema_drift_policy": "monthly",
@@ -2977,7 +3046,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -3018,7 +3089,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -3057,7 +3130,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists/national-essential-medicines-lists"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -3096,7 +3171,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.who.int/teams/regulation-prequalification"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -3134,7 +3211,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.who.int/initiatives/who-listed-authority-reg-authorities"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "WHO terms apply",
       "schema_drift_policy": "monthly",
@@ -3253,7 +3332,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://cdsco.gov.in/opencms/opencms/en/Approval_new/Approved-New-Drugs/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -3291,7 +3372,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://cdsco.gov.in/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -3329,7 +3412,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://main.mohfw.gov.in/newshighlights-104"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -3370,7 +3455,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.nppaindia.nic.in/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -3409,7 +3496,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://gem.gov.in/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -3448,7 +3537,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.ipc.gov.in/PvPI/pv_home.html"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -3696,7 +3787,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.pharmacyboardkenya.org/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -3734,7 +3827,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.pharmacyboardkenya.org/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -3773,7 +3868,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.pharmacyboardkenya.org/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -3852,7 +3949,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.hira.or.kr/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -3930,7 +4029,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://nedrug.mfds.go.kr/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -4009,7 +4110,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://health.govmu.org/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -4047,7 +4150,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://health.govmu.org/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -4085,7 +4190,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://health.govmu.org/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -4124,7 +4231,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://health.govmu.org/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -4162,7 +4271,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.gob.mx/cofepris"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -4200,7 +4311,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.csg.gob.mx/Compendio/CNIS/cnis.html"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -4278,7 +4391,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://greenbook.nafdac.gov.ng/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -4317,7 +4432,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.nafdac.gov.ng/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -4355,7 +4472,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.nhia.gov.ng/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -4395,8 +4514,13 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
-      "qualification_state": "declared",
+      "qualification_references": [
+        "quality/qualifications/gip-acquisition-authorization.json",
+        "quality/qualifications/gip-publication-authorization-20260821.json",
+        "quality/qualifications/gip-acquisition-success-20260826.json",
+        "quality/qualifications/gip-public-huggingface-20260826.json"
+      ],
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -4556,7 +4680,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -4759,9 +4885,11 @@
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
-        "https://schedule.pharmac.govt.nz/pub/HML/archive/"
+        "https://schedule.pharmac.govt.nz/pub/HML/archive/",
+        "quality/qualifications/international-public-huggingface-20260821.json",
+        "quality/qualifications/international-public-bronze-20260827.json"
       ],
-      "qualification_state": "documentation_verified",
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -4798,8 +4926,11 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
-      "qualification_state": "declared",
+      "qualification_references": [
+        "quality/qualifications/international-public-huggingface-20260821.json",
+        "quality/qualifications/international-public-bronze-20260827.json"
+      ],
+      "qualification_state": "live_verified",
       "rights_review_state": "production_terms_and_schema_review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -4839,9 +4970,11 @@
       "qualification_references": [
         "src/global_medicines_atlas/bronze_fixture_landing.py",
         "tests/test_bronze_fixture_landing.py",
-        "tests/fixtures/adapters/nz_pharmac_schedule.xml"
+        "tests/fixtures/adapters/nz_pharmac_schedule.xml",
+        "quality/qualifications/international-public-huggingface-20260821.json",
+        "quality/qualifications/international-public-bronze-20260827.json"
       ],
-      "qualification_state": "fixture_verified",
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -4958,7 +5091,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.dra.gov.pk/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -4997,7 +5132,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.dra.gov.pk/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5036,7 +5173,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.dra.gov.pk/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5115,7 +5254,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://rwandafda.gov.rw/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5153,7 +5294,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://rwandafda.gov.rw/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5192,7 +5335,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://rwandafda.gov.rw/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5230,7 +5375,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.chi.gov.sa/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5268,7 +5415,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.sfda.gov.sa/en/drugs-list"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5348,7 +5497,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5467,7 +5618,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.hsa.gov.sg/therapeutic-products/register"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5505,7 +5658,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/drug-subsidies-schemes"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5543,7 +5698,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.sante.gouv.sn/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5582,7 +5739,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.sante.gouv.sn/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5621,7 +5780,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.sante.gouv.sn/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5700,7 +5861,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.tmda.go.tz/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5738,7 +5901,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.tmda.go.tz/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5777,7 +5942,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.tmda.go.tz/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5816,7 +5983,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.nda.or.ug/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5854,7 +6023,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.nda.or.ug/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5893,7 +6064,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.nda.or.ug/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -5996,7 +6169,7 @@
       "discovery_state": "declaration_verified",
       "documentation_url": "https://data.cms.gov/provider-summary-by-type-of-service/medicare-part-d-prescribers/quarterly-prescription-drug-plan-formulary-pharmacy-network-and-pricing-information",
       "download_url": "https://www.cms.gov/medicare/coverage/prescription-drug-coverage/formulary-guidance",
-      "evidence_scope": "governed_fixture",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "source_native"
       ],
@@ -6017,10 +6190,13 @@
       "qualification_references": [
         "src/global_medicines_atlas/bronze_fixture_landing.py",
         "tests/test_bronze_fixture_landing.py",
-        "tests/fixtures/us/cms_partd_formulary.csv"
+        "tests/fixtures/us/cms_partd_formulary.csv",
+        "quality/qualifications/cms-partd-rights-preflight-20260821.json",
+        "quality/qualifications/cms-partd-public-huggingface-20260829.json",
+        "quality/qualifications/cms-partd-source-record-qualification-20260927.json"
       ],
-      "qualification_state": "fixture_verified",
-      "rights_review_state": "CMS agreement_for_use review required",
+      "qualification_state": "live_verified",
+      "rights_review_state": "approved_public_exact_inventory_with_cms_agreement_controls",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "us-cms-partd-formulary",
@@ -6034,11 +6210,11 @@
       "api_url": "",
       "authentication": "none",
       "authority": "Centers for Medicare & Medicaid Services",
-      "current_landing_disposition": "rights_blocked",
+      "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-part-d-spending-by-drug",
       "download_url": "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-part-d-spending-by-drug",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "csv",
         "xlsx"
@@ -6057,9 +6233,13 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
-      "qualification_state": "declared",
-      "rights_review_state": "review_required",
+      "qualification_references": [
+        "quality/qualifications/cms-partd-rights-preflight-20260821.json",
+        "quality/qualifications/cms-partd-public-huggingface-20260829.json",
+        "quality/qualifications/cms-partd-source-record-qualification-20260927.json"
+      ],
+      "qualification_state": "live_verified",
+      "rights_review_state": "approved_public_exact_inventory",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "us-cms-partd-spending",
@@ -6183,8 +6363,10 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
-      "qualification_state": "declared",
+      "qualification_references": [
+        "quality/qualifications/fda-shortages-live-corpus-20260821.json"
+      ],
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -6227,9 +6409,10 @@
       "qualification_references": [
         "src/global_medicines_atlas/bronze_fixture_landing.py",
         "tests/test_bronze_fixture_landing.py",
-        "tests/fixtures/source_expansion/faers.json"
+        "tests/fixtures/source_expansion/faers.json",
+        "quality/qualifications/faers-live-corpus-20260821.json"
       ],
-      "qualification_state": "fixture_verified",
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -6267,8 +6450,10 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
-      "qualification_state": "declared",
+      "qualification_references": [
+        "quality/qualifications/ndc-directory-live-corpus-20260821.json"
+      ],
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -6306,7 +6491,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.fda.gov/industry/structured-product-labeling-resources/nsde"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -6345,7 +6532,12 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "quality/qualifications/orange-book-historical-authorization.json",
+        "quality/qualifications/orange-book-historical-plan.json",
+        "quality/qualifications/orange-book-historical-corpus-20260820.json",
+        "quality/qualifications/orange-book-historical-corpus-20260821.json"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "US government data; verify endpoint terms",
       "schema_drift_policy": "monthly",
@@ -6384,8 +6576,10 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
-      "qualification_state": "declared",
+      "qualification_references": [
+        "quality/qualifications/fda-enforcement-live-corpus-20260821.json"
+      ],
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -6424,8 +6618,10 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
-      "qualification_state": "declared",
+      "qualification_references": [
+        "quality/qualifications/fda-rems-live-corpus-20260821.json"
+      ],
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -6464,9 +6660,11 @@
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
-        "https://gsrs.ncats.nih.gov/"
+        "https://gsrs.ncats.nih.gov/",
+        "quality/qualifications/gsrs-unii-acquisition-authorization.json",
+        "quality/qualifications/gsrs-unii-acquisition-success-20260826.json"
       ],
-      "qualification_state": "documentation_verified",
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -6544,8 +6742,10 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
-      "qualification_state": "declared",
+      "qualification_references": [
+        "quality/qualifications/fda-enforcement-live-corpus-20260821.json"
+      ],
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -6583,7 +6783,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://open.fda.gov/apis/drug/event/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -6621,8 +6823,10 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
-      "qualification_state": "declared",
+      "qualification_references": [
+        "quality/qualifications/ndc-directory-live-corpus-20260821.json"
+      ],
+      "qualification_state": "live_verified",
       "rights_review_state": "openFDA terms apply",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -6659,7 +6863,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://open.fda.gov/apis/other/nsde/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -6738,7 +6944,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.health.gov.za/national-essential-medicine-list/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -6776,7 +6984,9 @@
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.sahpra.org.za/registered-health-products/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -6815,7 +7025,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.sahpra.org.za/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -6894,7 +7106,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.mcaz.co.zw/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -6933,7 +7147,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.mcaz.co.zw/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
@@ -6972,7 +7188,9 @@
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
-      "qualification_references": [],
+      "qualification_references": [
+        "https://www.mcaz.co.zw/"
+      ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
