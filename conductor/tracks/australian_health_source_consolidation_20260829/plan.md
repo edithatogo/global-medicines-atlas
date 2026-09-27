@@ -354,7 +354,26 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 
 - [x] Read the public harvest receipt and confirm Health.gov families were
   marked unavailable without making workbook requests.
-- [~] Add exact official current-period quarterly and YTD workbook URLs, plus
+- [x] Add exact official current-period quarterly and YTD workbook URLs, plus
   the actual older annual attachment, as bounded discovery fallbacks. Preserve
   filename-derived periods so the older annual workbook cannot satisfy the
-  latest annual FY. Verify with a new exact-main run and its anonymous receipt.
+  latest annual FY. PR #553 merged as `979f806f`; all protected checks and
+  Codecov passed.
+- [x] Run exact-main acquisition and record the anonymous receipt. The first
+  attempt `36332516760` was cancelled during workbook staging after 14 minutes;
+  it had completed two official-download attempts that each returned zero
+  bytes before a third was interrupted, and it never reached publication.
+  Replacement run `36333396964` published immutable revision
+  `dee9a5b0580dfe394474dc26b372559462e157e7`; all 28 objects passed anonymous
+  digest verification and temporary bytes were removed. Coverage remains
+  `partial`: all three official Health.gov workbook requests timed out with
+  zero bytes and the annual-family sentinel remains unavailable. Exact public
+  receipt: issue #340 comment `5857784415`; cleanup receipt: `5857784489`.
+- [~] Resolve the remaining delivery blocker without changing source identity
+  or rights scope: obtain an authorized hosted egress route to the official
+  Health.gov workbook files or an agency-provided mirror authorized under the
+  existing source contract. Then repeat exact-main acquisition and qualify
+  workbook periods, historical denominators, and family coverage. A bounded
+  data.gov.au metadata search found no exact mirror. M-107 and the Australian
+  federation gate remain blocked until those source payloads and dependent
+  acceptance evidence are available.
