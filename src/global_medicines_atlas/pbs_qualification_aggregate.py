@@ -46,7 +46,29 @@ _DATE_PROJECTION_KEYS = (
     "date_role_counts",
     "date_status_counts",
 )
-_REFERENCE_PROJECTION_KEYS = (*_PROJECTION_KEYS, "native_digest_scope")
+_REFERENCE_KINDS = frozenset({
+    "unmapped",
+    "item_xml_id",
+    "amt_reference",
+    "atc_reference",
+})
+_REFERENCE_DIAGNOSTICS = frozenset({
+    "unmapped",
+    "missing_value",
+    "empty_value",
+    "duplicate_source_literal",
+    "unique_source_literal",
+    "missing_target",
+    "empty_target",
+    "ambiguous_source_targets",
+    "unresolved",
+})
+_REFERENCE_PROJECTION_KEYS = (
+    *_PROJECTION_KEYS,
+    "native_digest_scope",
+    "reference_kind_counts",
+    "reference_diagnostic_counts",
+)
 _SHARED_REPORT_KEYS = (
     "workflow_commit",
     "dataset",
@@ -94,6 +116,31 @@ def _valid_projection_schema(name: str, projection: dict[str, Any]) -> bool:
             )
         )
         and (
+            name != "references"
+            or all(
+                isinstance(projection.get(key), dict)
+                and set(projection[key]) <= allowed
+                and all(
+                    isinstance(label, str) and type(count) is int and count >= 0
+                    for label, count in projection[key].items()
+                )
+                for key, allowed in (
+                    ("reference_kind_counts", _REFERENCE_KINDS),
+                    ("reference_diagnostic_counts", _REFERENCE_DIAGNOSTICS),
+                )
+            )
+        )
+        and (
+            name != "references"
+            or all(
+                sum(projection[key].values()) == projection["rows"]
+                for key in (
+                    "reference_kind_counts",
+                    "reference_diagnostic_counts",
+                )
+            )
+        )
+        and (
             name != "dates"
             or all(
                 sum(projection[key].values()) == projection["rows"]
@@ -106,6 +153,19 @@ def _valid_projection_schema(name: str, projection: dict[str, Any]) -> bool:
             or projection["native_digest_scope"] == "ordered-window"
         )
     )
+
+
+def _reference_counter_totals(
+    projection: dict[str, Any],
+    kinds: dict[str, int],
+    diagnostics: dict[str, int],
+) -> None:
+    for key, totals in (
+        ("reference_kind_counts", kinds),
+        ("reference_diagnostic_counts", diagnostics),
+    ):
+        for label, value in projection[key].items():
+            totals[label] = totals.get(label, 0) + value
 
 
 def _valid_public_objects(value: object) -> bool:
@@ -364,6 +424,8 @@ def _aggregate_references(  # ruff: ignore[too-many-locals]
     cursor = native_fields = 0
     digest_manifest: list[dict[str, Any]] = []
     numeric_totals: dict[str, int] = {}
+    reference_kind_totals: dict[str, int] = {}
+    reference_diagnostic_totals: dict[str, int] = {}
     for index, (window, projection) in enumerate(windows):
         start = total * index // count
         stop = total * (index + 1) // count
@@ -388,6 +450,9 @@ def _aggregate_references(  # ruff: ignore[too-many-locals]
         native_fields += fields
         for key in _COUNTER_KEYS[2:]:
             numeric_totals[key] = numeric_totals.get(key, 0) + projection[key]
+        _reference_counter_totals(
+            projection, reference_kind_totals, reference_diagnostic_totals
+        )
         digest_manifest.append({
             "start_row": start,
             "stop_row": stop,
@@ -404,6 +469,12 @@ def _aggregate_references(  # ruff: ignore[too-many-locals]
             "native_fields": native_fields,
             **numeric_totals,
             "native_digest": shared["native_digest"],
+            "reference_kind_counts": dict(
+                sorted(reference_kind_totals.items())
+            ),
+            "reference_diagnostic_counts": dict(
+                sorted(reference_diagnostic_totals.items())
+            ),
             "native_digest_scope": "source-denominator-plus-ordered-windows",
             "reference_window_digest_sha256": hashlib.sha256(
                 manifest_bytes

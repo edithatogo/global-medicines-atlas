@@ -318,6 +318,13 @@
   test; 166 focused PBS/historical tests pass. Exact-main PBS requalification
   remains pending; no source payload was acquired locally and no dataset was
   published.
+- [x] Add value-free reference-kind and diagnostic histograms to each prepared
+  reference shard receipt, then fail closed unless every histogram reconciles
+  with the shard row count and uses only controlled labels. Focused shard and
+  aggregate suites pass (152 tests); Ruff, format and production-source `ty`
+  checks pass. No source literal or resource identifier is emitted. The exact-
+  main run already in progress predates this receipt enhancement; requalify on
+  the next main commit before relying on full-corpus reference histograms.
 
 - [x] Bind historical PBS archive B1/B2 to its exact XML member with source
   identity unchanged, required parent receipt digest, archive/member byte

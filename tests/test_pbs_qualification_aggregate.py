@@ -92,6 +92,16 @@ def shard(
                         if name == "dates"
                         else {}
                     ),
+                    **(
+                        {
+                            "reference_kind_counts": {"item_xml_id": 1},
+                            "reference_diagnostic_counts": {
+                                "unique_source_literal": 1
+                            },
+                        }
+                        if name == "references"
+                        else {}
+                    ),
                     "native_digest": f"{start + 4:x}" * 64
                     if window
                     else "3" * 64,
@@ -146,6 +156,12 @@ def test_aggregate_accepts_hosted_sorted_key_receipt_roundtrip() -> None:
     assert result["qualification"]["projections"]["dates"][
         "date_role_counts"
     ] == {"unmapped": 4}
+    assert result["qualification"]["projections"]["references"][
+        "reference_kind_counts"
+    ] == {"item_xml_id": 4}
+    assert result["qualification"]["projections"]["references"][
+        "reference_diagnostic_counts"
+    ] == {"unique_source_literal": 4}
     assert result["publication_performed"] is False
 
 
@@ -285,7 +301,37 @@ def test_reference_aggregate_sums_only_declared_counters() -> None:
     reference = result["qualification"]["projections"]["references"]
     assert reference["unmapped_rows"] == 10
     assert reference["date_unselected_rows"] == 20
+    assert reference["reference_kind_counts"] == {"item_xml_id": 4}
+    assert reference["reference_diagnostic_counts"] == {
+        "unique_source_literal": 4
+    }
     assert "invented_rows" not in reference
+
+
+@pytest.mark.parametrize(
+    ("mutation", "value"),
+    [
+        ("missing", None),
+        ("count-mismatch", {"item_xml_id": 2}),
+        ("unknown-label", {"source_literal": 1}),
+    ],
+)
+def test_reference_aggregate_rejects_unsafe_diagnostics(
+    mutation: str, value: object
+) -> None:
+    reports = complete()
+    qualification = reports[4]["qualification"]
+    assert isinstance(qualification, dict)
+    projections = qualification["projections"]
+    assert isinstance(projections, dict)
+    references = projections["references"]
+    assert isinstance(references, dict)
+    if mutation == "missing":
+        references.pop("reference_kind_counts")
+    else:
+        references["reference_kind_counts"] = value
+    with pytest.raises(ValueError, match="PBS qualification shards"):
+        aggregate_shards(reports)
 
 
 def test_aggregate_rejects_missing_duplicate_and_extra_shards() -> None:

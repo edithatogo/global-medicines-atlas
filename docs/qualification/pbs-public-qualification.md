@@ -19,6 +19,12 @@ same native digest
 verified Parquet round-trip; the complete 16-window reference denominator
 also passed.
 
+Subsequent reference qualification records counts by finite reference-kind and
+diagnostic labels, with each histogram reconciled to its shard row count. The
+receipts contain no source literals or resource identifiers. These counts
+narrow the unresolved inventory without implying that an unresolved source
+reference is invalid or should be promoted.
+
 This closes the earlier *incomplete structural run* blocker only. The report
 explicitly remains `structural_storage_candidate_only`, with
 `domain_semantics_qualified=false` and `date_profile=not-selected`. It observed
