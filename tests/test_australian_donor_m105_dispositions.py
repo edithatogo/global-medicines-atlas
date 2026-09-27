@@ -155,6 +155,18 @@ def test_monthly_workflow_is_legacy_only_with_separate_scheduled_release() -> (
     assert (ROOT / release["contract"]).is_file()
     assert release["run_status"] == "completed/success"
     assert release["anonymous_digest_verification"] == "passed"
+    assert release["parent_revision"] == (
+        "75f9f20a36ddb829dfe0ca88660664570782be02"
+    )
+    assert release["public_revision"] == (
+        "c39dd99ab8a6fcf557aeec391e1891b5fa18754f"
+    )
+    assert release["manifest_sha256"] == (
+        "51a9242dc32fa0faaf7a9c35d9d73c995ac6458b065d73c85e67f22d76ee7b61"
+    )
+    assert release["verified_objects"] == 8
+    assert release["record_count"] == 6046
+    assert release["temporary_source_bytes_removed"] is True
     assert "private=false; gated=false" in release["public_revision_readback"]
 
 

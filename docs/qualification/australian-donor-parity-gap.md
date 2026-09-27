@@ -19,7 +19,11 @@ post-archive reconciliation cannot satisfy M-105's requirement that parity
 precede donor archival. The donor monthly workflow is retained as exact legacy
 history: its scheduled HTML scrape produced six 404s and no Git data commit.
 GMA's separate scheduled workflow acquired and anonymously verified only the
-approved August 2026 XML release on 2 September; that is not parity for item
+approved August 2026 XML release on 2 September. Its verified
+`c39dd99ab8a6fcf557aeec391e1891b5fa18754f` revision descends from the
+earlier manual release revision `75f9f20a36ddb829dfe0ca88660664570782be02`;
+the [scheduled receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5515404352)
+records both. This is not parity for item
 or participant HTML coverage and does not authorize future releases. The pinned
 scraper module has an explicit
 legacy-only receipt: `month_range` is adopted with executable checks while

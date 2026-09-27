@@ -329,7 +329,13 @@
           "public_revision": "c39dd99ab8a6fcf557aeec391e1891b5fa18754f",
           "anonymous_digest_verification": "passed",
           "public_revision_readback": "HTTP 200; private=false; gated=false; manifest path present",
-          "scope_note": "Only the enumerated and approved 1 August 2026 MBS XML release; no future release, item HTML, participant counts or donor Git commit is authorized by this receipt."
+          "scope_note": "The scheduled run appended the already approved 1 August 2026 XML release to parent revision 75f9f20a36ddb829dfe0ca88660664570782be02 and anonymously verified its new revision c39dd99ab8a6fcf557aeec391e1891b5fa18754f. These are distinct revisions of the same public archive. No future release, item HTML, participant counts or donor Git commit is authorized by this receipt.",
+          "parent_revision": "75f9f20a36ddb829dfe0ca88660664570782be02",
+          "manifest_path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/manifest.json",
+          "manifest_sha256": "51a9242dc32fa0faaf7a9c35d9d73c995ac6458b065d73c85e67f22d76ee7b61",
+          "verified_objects": 8,
+          "record_count": 6046,
+          "temporary_source_bytes_removed": true
         },
         "boundary": "Explicit legacy-only receipt for the donor workflow, not behavioral parity with its obsolete HTML scrape and Git commit. The approved scheduled XML workflow is an independent source-specific capability. M-105 pre-archive parity chronology remains unsatisfied."
       }
