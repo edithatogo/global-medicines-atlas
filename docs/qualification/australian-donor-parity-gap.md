@@ -14,8 +14,8 @@ uses broad dispositions such as `adapt_or_replace_with_tests` and
 maps all 54 baseline blobs and ten later changed paths to M-105's final
 six-value vocabulary, preserving exact Git identities and baseline payload
 digests. This is a complete **classification**, not a parity qualification.
-Four baseline executable files (scraper orchestration, scraper acquisition,
-and two workflows) and three later changed paths remain explicitly
+Three baseline executable files (scraper orchestration, scraper acquisition,
+and the monthly workflow) and two later changed paths remain explicitly
 `pending_behavioral_parity`. The donor's broken MBS parser
 is now bound to the exact pre-archive 5,989-record/40-field qualification of
 its replacement, including the rejected `MBSItem` shape. The donor's July XML
@@ -30,9 +30,12 @@ semantics replace the donor's mixed CSV, whose Path/string handling was broken.
 This qualifies replacement behavior, not live participant acquisition or the
 former mixed CSV artifact. The remaining scraper rows still need
 file/function-level parity results. In particular, scraper async caller
-responsiveness is retained as legacy behavior, not proven API parity. Of the
-ten later changed paths, three behavior-bearing rows still need exact GMA
-evidence. The earlier delta receipt's
+responsiveness is retained as legacy behavior, not proven API parity. The
+baseline and later scraper CI blobs now bind protected Test-Goblin test/lint
+execution at exact PR head `0b006fe7a6fc1738867673ef4ee486668927ff77`.
+This CI supersession does not qualify the donor scrape-and-commit schedule.
+Of the ten later changed paths, two behavior-bearing rows still need exact
+GMA evidence. The earlier delta receipt's
 `current_head_history_preserved=false` was a pre-publication observation and
 must not be read as current archival state.
 

@@ -318,6 +318,7 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   downloader now bind pre-archive exact-corpus and hosted receipts. The three
   graph PBS executable rows also bind function-specific tests and the pinned
   public April 2026 archive. Scraper processor and processor-test rows now
-  bind function-specific synthetic replacement checks; four baseline scraper
-  and three later behavior-bearing rows still need parity proof. Exact history preservation
+  bind function-specific synthetic replacement checks. Both pinned scraper CI
+  blobs now bind protected hosted test/lint execution; three baseline scraper
+  and two later behavior-bearing rows still need parity proof. Exact history preservation
   and archive approval are verified separately; M-105 remains blocked.

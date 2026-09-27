@@ -4,6 +4,8 @@ import ast
 import json
 from pathlib import Path
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[1]
 RECEIPT = (
     ROOT / "quality/qualifications/australian-donor-m105-dispositions.json"
@@ -84,15 +86,54 @@ def test_m105_dispositions_do_not_promote_unproven_behavior() -> None:
             item["acceptance_state"] == "pending_behavioral_parity"
             for item in receipt["baseline"]
         )
-        == 4
+        == 3
     )
     assert (
         sum(
             item["acceptance_state"] == "pending_behavioral_parity"
             for item in receipt["post_baseline_delta"]
         )
-        == 3
+        == 2
     )
+
+
+def test_scraper_ci_supersession_binds_exact_blobs_and_executed_lanes() -> None:
+    receipt = json.loads(RECEIPT.read_text())
+    expected = {
+        "baseline": "6bc00960faaefd159adac31e5a0c16947493b8bd",
+        "post_baseline_delta": "6791c2a6c65e0cc2a04f7b2d6f1973291e1ce875",
+    }
+    for group, blob in expected.items():
+        row = next(
+            item
+            for item in receipt[group]
+            if item["repository"] == "edithatogo/aus-health-data-scraper"
+            and item["path"] == ".github/workflows/ci.yml"
+        )
+        assert row["git_object_sha1"] == blob
+        assert row["acceptance_state"] == "verified_supersession"
+        proof = row["parity_evidence"]
+        assert proof["hosted_head"] == (
+            "0b006fe7a6fc1738867673ef4ee486668927ff77"
+        )
+        assert proof["hosted_status"] == "completed/success"
+        assert proof["hosted_jobs"] == {
+            "Python 3.14 / unit": "success",
+            "Python 3.14 / routine": "success",
+            "Python 3.14 / strict": "success",
+        }
+        workflow = yaml.safe_load((ROOT / proof["successor"]).read_text())
+        # PyYAML's YAML 1.1 resolver reads GitHub's `on` key as True.
+        assert set(workflow[True]) >= {"pull_request", "push"}
+        assert "unit" in workflow["jobs"]["tests"]["strategy"]["matrix"]["lane"]
+        assert {"routine", "strict"} <= set(
+            workflow["jobs"]["quality"]["strategy"]["matrix"]["profile"]
+        )
+        assert (ROOT / proof["policy_successor"]).is_file()
+    harness = (ROOT / "scripts/test_goblin.py").read_text()
+    assert '"ruff", "format"' in harness
+    assert '"ruff", "check"' in harness
+    assert '"pytest"' in harness
 
 
 def test_scraper_processor_supersession_maps_every_donor_function() -> None:

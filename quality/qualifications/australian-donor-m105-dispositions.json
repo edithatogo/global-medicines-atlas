@@ -270,7 +270,21 @@
       "git_object_sha1": "6bc00960faaefd159adac31e5a0c16947493b8bd",
       "sha256": "1e8dd834374491678bad46ded454e8da949da59bcc82561152810823559affd9",
       "disposition": "supersede",
-      "acceptance_state": "pending_behavioral_parity"
+      "acceptance_state": "verified_supersession",
+      "parity_evidence": {
+        "successor": ".github/workflows/test-goblin.yml",
+        "policy_successor": ".github/workflows/security-context.yml",
+        "hosted_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36313856316",
+        "hosted_head": "0b006fe7a6fc1738867673ef4ee486668927ff77",
+        "hosted_status": "completed/success",
+        "hosted_jobs": {
+          "Python 3.14 / unit": "success",
+          "Python 3.14 / routine": "success",
+          "Python 3.14 / strict": "success"
+        },
+        "replacement_behavior": "Protected pull-request and main CI executes locked Python 3.14 tests, Ruff and policy checks; hosted run verifies execution at the exact reviewed head.",
+        "boundary": "CI test/lint semantics only; this does not qualify monthly scraping, source acquisition or publication."
+      }
     },
     {
       "repository": "edithatogo/aus-health-data-scraper",
@@ -661,7 +675,22 @@
       "path": ".github/workflows/ci.yml",
       "git_object_sha1": "6791c2a6c65e0cc2a04f7b2d6f1973291e1ce875",
       "disposition": "supersede",
-      "acceptance_state": "pending_behavioral_parity"
+      "acceptance_state": "verified_supersession",
+      "parity_evidence": {
+        "successor": ".github/workflows/test-goblin.yml",
+        "policy_successor": ".github/workflows/security-context.yml",
+        "hosted_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36313856316",
+        "hosted_head": "0b006fe7a6fc1738867673ef4ee486668927ff77",
+        "hosted_status": "completed/success",
+        "hosted_jobs": {
+          "Python 3.14 / unit": "success",
+          "Python 3.14 / routine": "success",
+          "Python 3.14 / strict": "success"
+        },
+        "replacement_behavior": "Protected pull-request and main CI executes locked Python 3.14 tests, Ruff and policy checks; hosted run verifies execution at the exact reviewed head.",
+        "boundary": "CI test/lint semantics only; this does not qualify monthly scraping, source acquisition or publication.",
+        "delta_review": "Exact later blob 6791c2a6c65e0cc2a04f7b2d6f1973291e1ce875 changes just lint/test aliases to python -m ruff check src tests and PYTHONPATH=. python -m pytest -q; triggers and job graph are otherwise unchanged."
+      }
     },
     {
       "repository": "edithatogo/aus-health-data-scraper",
