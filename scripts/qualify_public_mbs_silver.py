@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from collections import Counter, defaultdict
 from datetime import UTC, datetime
 from pathlib import Path
@@ -30,7 +31,10 @@ from global_medicines_atlas.australian_source_contracts import (
     mbs_field_contracts,
 )
 from global_medicines_atlas.federation_reader import HOSTS
-from global_medicines_atlas.mbs_silver import iter_mbs_silver_batches
+from global_medicines_atlas.mbs_silver import (
+    MAX_MBS_AMOUNT_INTEGER_DIGITS,
+    iter_mbs_silver_batches,
+)
 from global_medicines_atlas.mbs_silver_qualification import qualify_mbs_silver
 from global_medicines_atlas.receipts import (
     AcquisitionMethod,
@@ -69,6 +73,7 @@ _QUALITY_STATUSES = frozenset({
     "unrepresentable",
     "unsupported_format",
 })
+_NUMERIC_TEXT = re.compile(r"[+-]?[0-9]+(?:\.[0-9]+)?\Z")
 
 
 def qualify(
@@ -186,6 +191,14 @@ def _quality_diagnostics(
     finding_ordinals: defaultdict[tuple[str, str, str], list[int]] = (
         defaultdict(list)
     )
+    amount_issue_ordinals: defaultdict[tuple[str, str, str], list[int]] = (
+        defaultdict(list)
+    )
+    amount_fields = {
+        (contract.target_table, contract.native_name)
+        for contract in mbs_field_contracts()
+        if contract.value_type == "aud_decimal"
+    }
     for table in _TABLES:
         field_names = tuple(
             contract.native_name
@@ -208,6 +221,15 @@ def _quality_diagnostics(
                     field_status_counts[key] += 1
                     if status in _QUALITY_STATUSES:
                         finding_ordinals[key].append(ordinal)
+                    if (
+                        status == "invalid"
+                        and (table, field_name) in amount_fields
+                    ):
+                        native_value = value["native_value"]
+                        reason = _amount_invalid_reason(native_value)
+                        amount_issue_ordinals[table, field_name, reason].append(
+                            ordinal
+                        )
     return {
         "field_status_counts": [
             {
@@ -231,8 +253,31 @@ def _quality_diagnostics(
                 finding_ordinals.items()
             )
         ],
+        "invalid_amount_reason_source_ordinals": [
+            {
+                "table": table,
+                "field": field_name,
+                "reason": reason,
+                "source_ordinals": ordinals,
+            }
+            for (table, field_name, reason), ordinals in sorted(
+                amount_issue_ordinals.items()
+            )
+        ],
         "source_values_included": False,
     }
+
+
+def _amount_invalid_reason(native_value: object) -> str:
+    """Classify invalid amount text without retaining or returning its value."""
+    if not isinstance(native_value, str) or not _NUMERIC_TEXT.fullmatch(
+        native_value
+    ):
+        return "numeric_format_invalid"
+    integer = native_value.lstrip("+-").partition(".")[0]
+    if len(integer) > MAX_MBS_AMOUNT_INTEGER_DIGITS:
+        return "integer_width_exceeded"
+    return "other_numeric_validation"
 
 
 def main() -> int:

@@ -99,7 +99,10 @@ def test_quality_diagnostics_locate_field_and_row_without_values(
 ) -> None:
     payload = (
         b"<MBS_XML><Data><ItemNum>00123</ItemNum>"
-        b"<ItemStartDate>not-a-date</ItemStartDate></Data></MBS_XML>"
+        b"<ItemStartDate>not-a-date</ItemStartDate>"
+        b"<Benefit85>123456.78</Benefit85></Data>"
+        b"<Data><ItemNum>00456</ItemNum>"
+        b"<Benefit85>bad-amount</Benefit85></Data></MBS_XML>"
     )
     monkeypatch.setattr(command, "LEGACY_MBS_BYTES", len(payload))
     monkeypatch.setattr(
@@ -117,14 +120,40 @@ def test_quality_diagnostics_locate_field_and_row_without_values(
     invalid = [item for item in findings if item["status"] == "invalid"]
     assert invalid == [
         {
+            "table": "benefits",
+            "field": "Benefit85",
+            "status": "invalid",
+            "source_ordinals": [0, 1],
+        },
+        {
             "table": "services",
             "field": "ItemStartDate",
             "status": "invalid",
             "source_ordinals": [0],
-        }
+        },
+    ]
+    amount_reasons = cast(
+        "list[dict[str, object]]",
+        diagnostics["invalid_amount_reason_source_ordinals"],
+    )
+    assert amount_reasons == [
+        {
+            "table": "benefits",
+            "field": "Benefit85",
+            "reason": "integer_width_exceeded",
+            "source_ordinals": [0],
+        },
+        {
+            "table": "benefits",
+            "field": "Benefit85",
+            "reason": "numeric_format_invalid",
+            "source_ordinals": [1],
+        },
     ]
     assert diagnostics["source_values_included"] is False
     assert "not-a-date" not in json.dumps(result)
+    assert "123456.78" not in json.dumps(result)
+    assert "bad-amount" not in json.dumps(result)
     assert (
         result["candidate_report_sha256"]
         == hashlib.sha256(
