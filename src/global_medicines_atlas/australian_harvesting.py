@@ -528,6 +528,15 @@ def latest_medicare_annual_fy(now: datetime) -> str:
     return f"{fy_end - 1}-{str(fy_end)[2:]}"
 
 
+def _append_unique_urls(
+    urls: list[str], seen: set[str], candidates: list[str]
+) -> None:
+    for candidate in candidates:
+        if candidate not in seen:
+            seen.add(candidate)
+            urls.append(candidate)
+
+
 def discover_health_gov_medicare_workbooks(
     subpage_fetcher: Callable[[str], str] | None = None,
     candidate_slugs: list[str] | None = None,
@@ -579,8 +588,7 @@ def discover_health_gov_medicare_workbooks(
                 if m_ytd:
                     found_ytd_fy.add(m_ytd.group(1))
 
-    if not discovered_urls and fallback_urls:
-        return fallback_urls
+    _append_unique_urls(discovered_urls, seen, fallback_urls or [])
     return discovered_urls
 
 
