@@ -1061,7 +1061,7 @@
   114 affected tests and all protected checks passed. Exact-main run
   `36345410208` requalified the same 5,989 records, 40 fields, and 239,560
   occurrences with zero quality findings; the public-v4 blocker remains.
-- [~] Build and publish a deterministic, source-faithful six-table MBS Silver
+- [x] Build and publish a deterministic, source-faithful six-table MBS Silver
   v4 package to the authorized public MBS archive through GitHub Actions only.
   Bind it to the pinned July 2025 B2 digest, official release identity,
   maintainer authorization, exact transform commit, and anonymous per-object
@@ -1071,14 +1071,18 @@
   fail-closed source, privacy, collision, revision, inventory, and digest
   conditions. The package builder has 100% branch-aware coverage; the combined
   builder/publisher focused set has 99%. Ruff, BasedPyright, actionlint, and
-  zizmor pass. Full local Test-Goblin completed with 5,088 passed, one
+  zizmor pass. PR #563 merged as `decdeca1` after all protected checks passed
+  and its import-path review thread was resolved. Hosted run `36348699885`
+  anonymously verified all nine objects at dataset revision
+  `ba82cd1d0f9b0f28514df431b8da3a6c207d76fa`; the durable receipt is on issue
+  #340 and binds manifest SHA-256
+  `bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59`.
+  Forty pre-existing dataset paths were preserved. Full local Test-Goblin
+  completed with 5,088 passed, one
   skipped, and five failures (one temporary typing-dependency contract, now
-  reverted; four unrelated stable-receipt/datahouse checks). Hosted workflow
-  execution and its durable receipt remain pending. No raw source content may
-  enter logs; remove only hosted temporary bytes after the verification
-  receipt is recorded. Public v4 identity/admission and M-109 acceptance remain
-  pending until that receipt is observed. M-107, federation acceptance, and
-  Stable v1 remain separate. PR review also found the publisher was launched
-  as a file despite importing a sibling helper; the workflow now invokes it as
-  a repository module, with a regression assertion and fresh protected checks
-  pending.
+  reverted; four unrelated stable-receipt/datahouse checks). No raw source
+  content entered logs, and hosted temporary bytes were removed after the
+  verification receipt was recorded. The public v4 identity blocker is
+  cleared. Embedded qualification remains candidate-only; M-107, complete
+  cross-source M-109 acceptance, federation acceptance, and Stable v1 remain
+  independent.
