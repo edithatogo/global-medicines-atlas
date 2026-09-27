@@ -1,6 +1,6 @@
 {
   "schema_version": 5,
-  "reviewed_at": "2026-09-27",
+  "reviewed_at": "2026-08-29",
   "monitoring_contract": {
     "source_health": "weekly",
     "schema_drift": "monthly"
@@ -9013,8 +9013,8 @@
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
       "native_identifier": "CMS Part D formulary/plan identifier",
-      "last_verified_at": "2026-09-27",
-      "integration_layer": "live_receipt",
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "fixture",
       "acquisition_profile": "public-bulk",
       "implemented_ingestion": true,
       "documentation_url": "https://data.cms.gov/provider-summary-by-type-of-service/medicare-part-d-prescribers/quarterly-prescription-drug-plan-formulary-pharmacy-network-and-pricing-information",
@@ -9041,7 +9041,7 @@
         "status_dates",
         "eligibility_criteria"
       ],
-      "qualification_state": "live_verified",
+      "qualification_state": "fixture_verified",
       "qualification_references": [
         "src/global_medicines_atlas/bronze_fixture_landing.py",
         "tests/test_bronze_fixture_landing.py",
@@ -9050,8 +9050,7 @@
         "quality/qualifications/cms-partd-public-huggingface-20260829.json",
         "quality/qualifications/cms-partd-source-record-qualification-20260927.json"
       ],
-      "discovery_status": "receipt_backed",
-      "current_receipt_id": "0b363147a625d056b640a9806520abcfb773dec085d6d2c4b8a0878644008f19"
+      "discovery_status": "declaration_verified"
     },
     {
       "source_id": "us-cms-partd-spending",
@@ -9065,7 +9064,7 @@
       "landing_page": "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-part-d-spending-by-drug",
       "update_cadence": "source-declared",
       "rights_status": "approved_public_exact_inventory",
-      "readiness": "implemented",
+      "readiness": "candidate",
       "evidence_limit": "Part D spending/utilisation is not total US utilisation and is not a national registration or formulary completeness claim.",
       "interface_status": "documented_download",
       "formats": [
@@ -9076,11 +9075,11 @@
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
       "native_identifier": "CMS Part D spending-by-drug brand/generic identifier",
-      "last_verified_at": "2026-09-27",
-      "integration_layer": "live_receipt",
-      "implemented_ingestion": true,
+      "last_verified_at": "2026-08-20",
+      "integration_layer": "acquisition",
+      "implemented_ingestion": false,
       "documentation_url": "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-part-d-spending-by-drug",
-      "discovery_status": "receipt_backed",
+      "discovery_status": "declaration_verified",
       "information_domains": [
         "product_identity",
         "funding_status"
@@ -9102,15 +9101,14 @@
         "identifiers",
         "names"
       ],
-      "qualification_state": "live_verified",
+      "qualification_state": "declared",
       "qualification_references": [
         "quality/qualifications/cms-partd-rights-preflight-20260821.json",
         "quality/qualifications/cms-partd-public-huggingface-20260829.json",
         "quality/qualifications/cms-partd-source-record-qualification-20260927.json"
       ],
       "download_url": "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-part-d-spending-by-drug",
-      "acquisition_profile": "public-bulk",
-      "current_receipt_id": "0b363147a625d056b640a9806520abcfb773dec085d6d2c4b8a0878644008f19"
+      "acquisition_profile": "public-bulk"
     },
     {
       "source_id": "us-dailymed-spl",

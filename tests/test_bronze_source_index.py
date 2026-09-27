@@ -59,8 +59,16 @@ def test_b0_index_is_exhaustive_unique_and_referentially_integral() -> None:
     for source in index.sources:
         catalog_source = catalog_by_id[source.source_id]
         queue_item = queue_by_id[source.source_id]
-        assert source.qualification_references == (
-            catalog_source.qualification_references
+        assert source.qualification_references == tuple(
+            dict.fromkeys((
+                *catalog_source.qualification_references,
+                *queue_item.evidence_references,
+            ))
+        )
+        assert source.qualification_state == (
+            "live_verified"
+            if queue_item.evidence_scope == "live_receipt"
+            else catalog_source.qualification_state.value
         )
         assert source.last_verified_at == (
             catalog_source.last_verified_at.isoformat()
