@@ -34,6 +34,7 @@ class _Client:
         assert kwargs["trust_env"] is False
         assert isinstance(kwargs["timeout"], httpx.Timeout)
         assert kwargs["timeout"].read == 60
+        assert kwargs["max_redirects"] == 3
         assert kwargs["transport"] is not None
         self.payload = payload
 
@@ -63,7 +64,7 @@ def test_qualifies_only_digest_bound_public_bytes_in_memory(
     )
     monkeypatch.setattr(command.httpx, "Client", _client_factory(payload))
 
-    result = command.qualify()
+    result = command.qualify(exact_commit="a" * 40)
 
     qualification = cast("dict[str, object]", result["qualification"])
     assert qualification["source_record_count"] == 1
@@ -76,6 +77,8 @@ def test_qualifies_only_digest_bound_public_bytes_in_memory(
     ]
     assert result["publication_performed"] is False
     assert result["source_bytes_retained"] is False
+    assert len(cast("str", result["candidate_report_sha256"])) == 64
+    assert cast("int", result["candidate_report_byte_count"]) > 0
     assert "payload" not in result
 
 
@@ -98,7 +101,13 @@ def test_rejects_public_object_identity_drift(
     monkeypatch.setattr(command.httpx, "Client", _client_factory(actual_bytes))
 
     with pytest.raises(ValueError, match=message):
-        command.qualify()
+        command.qualify(exact_commit="a" * 40)
+
+
+@pytest.mark.parametrize("commit", ["", "A" * 40, "a" * 39, "z" * 40])
+def test_requires_exact_lowercase_commit(commit: str) -> None:
+    with pytest.raises(ValueError, match="exact commit"):
+        command.qualify(exact_commit=commit)
 
 
 def test_workflow_is_exact_main_read_only_and_never_publishes() -> None:

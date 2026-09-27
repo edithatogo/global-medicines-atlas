@@ -48,18 +48,17 @@ RIGHTS_REFERENCE = (
     "https://github.com/edithatogo/global-medicines-atlas/issues/340"
 )
 MAX_BYTES = 9_000_000
-TRANSFORMATION_PATHS = (
-    "scripts/qualify_public_mbs_silver.py",
-    "src/global_medicines_atlas/adapters/au_mbs.py",
-    "src/global_medicines_atlas/australian_source_contracts.py",
-    "src/global_medicines_atlas/mbs_silver.py",
-    "src/global_medicines_atlas/mbs_silver_qualification.py",
-    "src/global_medicines_atlas/mbs_typed_values.py",
-)
+GIT_SHA1_HEX_LENGTH = 40
 
 
-def qualify(*, rows_per_batch: int = 1024) -> dict[str, object]:
+def qualify(
+    *, exact_commit: str, rows_per_batch: int = 1024
+) -> dict[str, object]:
     """Restore the pinned public bytes anonymously and return safe evidence."""
+    if len(exact_commit) != GIT_SHA1_HEX_LENGTH or any(
+        character not in "0123456789abcdef" for character in exact_commit
+    ):
+        raise ValueError("exact commit must be a lowercase Git SHA-1")
     policy = AcquisitionPolicy(
         allowed_hosts=HOSTS,
         timeout_seconds=60,
@@ -74,6 +73,7 @@ def qualify(*, rows_per_batch: int = 1024) -> dict[str, object]:
             follow_redirects=True,
             timeout=httpx.Timeout(60),
             trust_env=False,
+            max_redirects=policy.max_redirects,
             transport=BoundIPAddressTransport(policy=policy),
         ) as client,
         client.stream("GET", SOURCE_URI) as response,
@@ -94,16 +94,6 @@ def qualify(*, rows_per_batch: int = 1024) -> dict[str, object]:
         raise ValueError("pinned MBS source digest differs")
 
     retrieved_at = datetime.now(UTC)
-    transformation_digest = hashlib.sha256(
-        json.dumps(
-            {
-                path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
-                for path in TRANSFORMATION_PATHS
-            },
-            sort_keys=True,
-            separators=(",", ":"),
-        ).encode()
-    ).hexdigest()
     receipt = SourceReceipt(
         receipt_id=f"public-archive:au-mbs:{evidence.sha256}",
         source=SourceIdentity(
@@ -125,8 +115,10 @@ def qualify(*, rows_per_batch: int = 1024) -> dict[str, object]:
         rights_reference=AnyUrl(RIGHTS_REFERENCE),
         evidence_class=EvidenceClass.LIVE,
         transformation=TransformationEvidence(
-            transformation_id="mbs-silver-candidate-v1",
-            transformation_sha256=transformation_digest,
+            transformation_id="exact-public-source-restore-v1",
+            transformation_sha256=hashlib.sha256(
+                exact_commit.encode("ascii")
+            ).hexdigest(),
             output_sha256=evidence.sha256,
             output_byte_count=evidence.byte_count,
         ),
@@ -134,10 +126,18 @@ def qualify(*, rows_per_batch: int = 1024) -> dict[str, object]:
     report = qualify_mbs_silver(
         payload, receipt, date_format="mbs-dmy", rows_per_batch=rows_per_batch
     )
+    report_bytes = json.dumps(
+        report.model_dump(mode="json"),
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
     return {
         "schema_id": "global-medicines-atlas.mbs-silver-public-candidate-qualification",
         "schema_version": 1,
         "qualification": report.model_dump(mode="json"),
+        "candidate_report_sha256": hashlib.sha256(report_bytes).hexdigest(),
+        "candidate_report_byte_count": len(report_bytes),
+        "exact_commit": exact_commit,
         "source_uri": SOURCE_URI,
         "retrieved_at": retrieved_at.isoformat(),
         "publication_performed": False,
@@ -153,10 +153,14 @@ def qualify(*, rows_per_batch: int = 1024) -> dict[str, object]:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--exact-commit", required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--rows-per-batch", type=int, default=1024)
     args = parser.parse_args()
-    result = qualify(rows_per_batch=args.rows_per_batch)
+    result = qualify(
+        exact_commit=args.exact_commit,
+        rows_per_batch=args.rows_per_batch,
+    )
     args.output.write_text(
         json.dumps(result, sort_keys=True, separators=(",", ":")) + "\n",
         encoding="utf-8",

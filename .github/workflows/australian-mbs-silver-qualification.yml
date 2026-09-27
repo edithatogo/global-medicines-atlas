@@ -34,8 +34,11 @@ jobs:
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
       - name: Verify exact public source and qualify candidate denominator
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
         run: |
           uv run --locked --python 3.14.6 python scripts/qualify_public_mbs_silver.py \
+            --exact-commit "$REQUESTED_COMMIT" \
             --output mbs-silver-candidate-qualification.json
       - name: Retain only aggregate candidate evidence
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
