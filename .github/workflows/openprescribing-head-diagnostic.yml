@@ -1,0 +1,88 @@
+name: Diagnose approved OpenPrescribing API reachability
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_commit:
+        description: Exact reviewed merged main commit containing the diagnostic
+        required: true
+        type: string
+      date_partition:
+        description: Authorized, explicit API date partition
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: openprescribing-head-diagnostic
+  cancel-in-progress: false
+
+jobs:
+  diagnose:
+    name: HEAD approved API endpoints without reading bodies
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Bind exact current main head
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main
+          test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
+          test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
+      - name: Probe only authorized endpoint headers
+        timeout-minutes: 3
+        env:
+          DATE_PARTITION: ${{ inputs.date_partition }}
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.14.6 python scripts/probe_openprescribing_head_availability.py \
+            --date-partition "$DATE_PARTITION" \
+            --output build/openprescribing-head-diagnostic.json
+      - name: Preserve failure-only receipt if probe was interrupted
+        if: always()
+        env:
+          DATE_PARTITION: ${{ inputs.date_partition }}
+        run: |
+          set -euo pipefail
+          if test -s build/openprescribing-head-diagnostic.json; then
+            exit 0
+          fi
+          python3 - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          path = Path('build/openprescribing-head-diagnostic.json')
+          path.parent.mkdir(parents=True, exist_ok=True)
+          receipt = {
+              'schema_id': 'global-medicines-atlas.openprescribing-head-availability',
+              'schema_version': 1,
+              'observed_at': datetime.now(timezone.utc).isoformat(timespec='seconds'),
+              'source_id': 'gb-openprescribing',
+              'date_partition': os.environ['DATE_PARTITION'],
+              'response_bodies_read': False,
+              'payloads_acquired': False,
+              'external_publication_performed': False,
+              'attempts': [{'outcome': 'interrupted_or_setup_failure'}],
+          }
+          path.write_text(json.dumps(receipt, indent=2) + '\n')
+          PY
+      - name: Retain bounded endpoint metadata
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: openprescribing-head-diagnostic
+          path: build/openprescribing-head-diagnostic.json
+          if-no-files-found: error
+          retention-days: 30
