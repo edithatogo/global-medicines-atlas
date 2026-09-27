@@ -12,7 +12,7 @@ import hashlib
 import json
 import re
 from collections import Counter, defaultdict
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 import httpx
@@ -35,7 +35,11 @@ from global_medicines_atlas.mbs_silver import (
     MAX_MBS_AMOUNT_INTEGER_DIGITS,
     iter_mbs_silver_batches,
 )
-from global_medicines_atlas.mbs_silver_qualification import qualify_mbs_silver
+from global_medicines_atlas.mbs_silver_qualification import (
+    OFFICIAL_MBS_V3_URI,
+    MbsSourceEraVerification,
+    qualify_mbs_silver,
+)
 from global_medicines_atlas.receipts import (
     AcquisitionMethod,
     AcquisitionStatus,
@@ -58,6 +62,9 @@ RIGHTS_REFERENCE = (
     "https://github.com/edithatogo/global-medicines-atlas/issues/340"
 )
 MAX_BYTES = 9_000_000
+OFFICIAL_RELEASE_ID = "MBS-XML-20250701 Version 3"
+OFFICIAL_RELEASED_AT = date(2025, 6, 16)
+OFFICIAL_EFFECTIVE_AT = date(2025, 7, 1)
 GIT_SHA1_HEX_LENGTH = 40
 _TABLES: tuple[TargetTable, ...] = (
     "services",
@@ -76,7 +83,7 @@ _QUALITY_STATUSES = frozenset({
 _NUMERIC_TEXT = re.compile(r"[+-]?[0-9]+(?:\.[0-9]+)?\Z")
 
 
-def qualify(
+def qualify(  # ruff: ignore[too-many-locals] - hashes two sources in memory
     *, exact_commit: str, rows_per_batch: int = 1024
 ) -> dict[str, object]:
     """Restore the pinned public bytes anonymously and return safe evidence."""
@@ -85,7 +92,7 @@ def qualify(
     ):
         raise ValueError("exact commit must be a lowercase Git SHA-1")
     policy = AcquisitionPolicy(
-        allowed_hosts=HOSTS,
+        allowed_hosts=(*HOSTS, "www.mbsonline.gov.au"),
         timeout_seconds=60,
         max_bytes=MAX_BYTES,
         max_attempts=1,
@@ -93,6 +100,8 @@ def qualify(
     )
     chunks: list[bytes] = []
     byte_count = 0
+    official_hash = hashlib.sha256()
+    official_byte_count = 0
     with (
         httpx.Client(
             follow_redirects=True,
@@ -111,6 +120,15 @@ def qualify(
                     "pinned MBS source exceeds the parser byte limit"
                 )
             chunks.append(chunk)
+        with client.stream("GET", OFFICIAL_MBS_V3_URI) as official_response:
+            official_response.raise_for_status()
+            for chunk in official_response.iter_bytes():
+                official_byte_count += len(chunk)
+                if official_byte_count > MAX_BYTES:
+                    raise ValueError(
+                        "official MBS source exceeds the parser byte limit"
+                    )
+                official_hash.update(chunk)
     payload = b"".join(chunks)
     if len(payload) != LEGACY_MBS_BYTES:
         raise ValueError("pinned MBS source byte count differs")
@@ -148,8 +166,30 @@ def qualify(
             output_byte_count=evidence.byte_count,
         ),
     )
+    official_sha256 = official_hash.hexdigest()
+    release_matched = (
+        official_byte_count == evidence.byte_count
+        and official_sha256 == evidence.sha256
+    )
+    source_era_verification = (
+        MbsSourceEraVerification(
+            official_source_uri=AnyUrl(OFFICIAL_MBS_V3_URI),
+            release_id=OFFICIAL_RELEASE_ID,
+            released_at=OFFICIAL_RELEASED_AT,
+            effective_at=OFFICIAL_EFFECTIVE_AT,
+            official_source_sha256=official_sha256,
+            official_source_byte_count=official_byte_count,
+            compared_at=datetime.now(UTC),
+        )
+        if release_matched
+        else None
+    )
     report = qualify_mbs_silver(
-        payload, receipt, date_format="mbs-dmy", rows_per_batch=rows_per_batch
+        payload,
+        receipt,
+        date_format="mbs-dmy",
+        rows_per_batch=rows_per_batch,
+        source_era_verification=source_era_verification,
     )
     quality_diagnostics = _quality_diagnostics(
         payload, receipt, rows_per_batch=rows_per_batch
@@ -157,6 +197,15 @@ def qualify(
     candidate_report = {
         "qualification": report.model_dump(mode="json"),
         "quality_diagnostics": quality_diagnostics,
+        "official_release_check": {
+            "source_uri": OFFICIAL_MBS_V3_URI,
+            "release_id": OFFICIAL_RELEASE_ID,
+            "released_at": OFFICIAL_RELEASED_AT.isoformat(),
+            "effective_at": OFFICIAL_EFFECTIVE_AT.isoformat(),
+            "source_sha256": official_sha256,
+            "source_byte_count": official_byte_count,
+            "matched_pinned_archive": release_matched,
+        },
     }
     report_bytes = json.dumps(
         candidate_report,
@@ -177,7 +226,7 @@ def qualify(
         "boundary": (
             "Exact public source bytes were digest-verified and processed in "
             "memory. This aggregate is candidate-only; it does not qualify "
-            "the real schema era, public v4 identity, Silver publication, or "
+            "public v4 identity, Silver publication, or "
             "M-109 acceptance."
         ),
     }

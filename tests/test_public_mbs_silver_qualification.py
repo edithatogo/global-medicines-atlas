@@ -30,7 +30,12 @@ class _Response:
 
 
 class _Client:
-    def __init__(self, payload: bytes, **kwargs: object) -> None:
+    def __init__(
+        self,
+        payload: bytes,
+        official_payload: bytes | None = None,
+        **kwargs: object,
+    ) -> None:
         assert kwargs["follow_redirects"] is True
         assert kwargs["trust_env"] is False
         assert isinstance(kwargs["timeout"], httpx.Timeout)
@@ -38,6 +43,7 @@ class _Client:
         assert kwargs["max_redirects"] == 3
         assert kwargs["transport"] is not None
         self.payload = payload
+        self.official_payload = official_payload or payload
 
     def __enter__(self) -> _Client:
         return self
@@ -47,12 +53,16 @@ class _Client:
 
     def stream(self, method: str, url: str) -> _Response:
         assert method == "GET"
-        assert url == command.SOURCE_URI
-        return _Response(self.payload)
+        if url == command.SOURCE_URI:
+            return _Response(self.payload)
+        assert url == command.OFFICIAL_MBS_V3_URI
+        return _Response(self.official_payload)
 
 
-def _client_factory(payload: bytes) -> Any:
-    return cast("Any", partial(_Client, payload))
+def _client_factory(
+    payload: bytes, official_payload: bytes | None = None
+) -> Any:
+    return cast("Any", partial(_Client, payload, official_payload))
 
 
 def test_qualifies_only_digest_bound_public_bytes_in_memory(
@@ -63,6 +73,9 @@ def test_qualifies_only_digest_bound_public_bytes_in_memory(
     monkeypatch.setattr(
         command, "LEGACY_MBS_SHA256", hashlib.sha256(payload).hexdigest()
     )
+    monkeypatch.setattr(
+        command, "OFFICIAL_RELEASED_AT", command.date(2025, 6, 16)
+    )
     monkeypatch.setattr(command.httpx, "Client", _client_factory(payload))
 
     result = command.qualify(exact_commit="a" * 40)
@@ -72,15 +85,19 @@ def test_qualifies_only_digest_bound_public_bytes_in_memory(
     tables = cast("list[dict[str, object]]", qualification["tables"])
     assert sum(cast("int", table["field_count"]) for table in tables) == 40
     assert qualification["promotion_status"] == "candidate_only"
-    assert qualification["blockers"] == [
-        "public_v4_identity_unverified",
-        "real_source_era_unqualified",
-    ]
+    assert qualification["blockers"] == ["public_v4_identity_unverified"]
+    assert (
+        cast("dict[str, object]", result["official_release_check"])[
+            "matched_pinned_archive"
+        ]
+        is True
+    )
     assert result["publication_performed"] is False
     assert result["source_bytes_retained"] is False
     candidate_report = {
         "qualification": qualification,
         "quality_diagnostics": result["quality_diagnostics"],
+        "official_release_check": result["official_release_check"],
     }
     expected_digest = hashlib.sha256(
         json.dumps(
@@ -108,10 +125,17 @@ def test_quality_diagnostics_locate_field_and_row_without_values(
     monkeypatch.setattr(
         command, "LEGACY_MBS_SHA256", hashlib.sha256(payload).hexdigest()
     )
+    monkeypatch.setattr(
+        command, "OFFICIAL_RELEASED_AT", command.date(2025, 6, 16)
+    )
     monkeypatch.setattr(command.httpx, "Client", _client_factory(payload))
 
     result = command.qualify(exact_commit="a" * 40)
 
+    assert cast("dict[str, object]", result["qualification"])["blockers"] == [
+        "public_v4_identity_unverified",
+        "quality_findings_present",
+    ]
     diagnostics = cast("dict[str, object]", result["quality_diagnostics"])
     findings = cast(
         "list[dict[str, object]]",
@@ -161,6 +185,7 @@ def test_quality_diagnostics_locate_field_and_row_without_values(
                 {
                     "qualification": result["qualification"],
                     "quality_diagnostics": diagnostics,
+                    "official_release_check": result["official_release_check"],
                 },
                 sort_keys=True,
                 separators=(",", ":"),
@@ -189,6 +214,36 @@ def test_rejects_public_object_identity_drift(
 
     with pytest.raises(ValueError, match=message):
         command.qualify(exact_commit="a" * 40)
+
+
+def test_official_release_mismatch_keeps_era_blocker_and_hash_only_evidence(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = b"<MBS_XML><Data><ItemNum>00123</ItemNum></Data></MBS_XML>"
+    official_payload = payload + b" "
+    monkeypatch.setattr(command, "LEGACY_MBS_BYTES", len(payload))
+    monkeypatch.setattr(
+        command, "LEGACY_MBS_SHA256", hashlib.sha256(payload).hexdigest()
+    )
+    monkeypatch.setattr(
+        command.httpx, "Client", _client_factory(payload, official_payload)
+    )
+
+    result = command.qualify(exact_commit="a" * 40)
+
+    qualification = cast("dict[str, object]", result["qualification"])
+    assert qualification["blockers"] == [
+        "public_v4_identity_unverified",
+        "real_source_era_unqualified",
+    ]
+    release_check = cast("dict[str, object]", result["official_release_check"])
+    assert release_check["matched_pinned_archive"] is False
+    assert (
+        release_check["source_sha256"]
+        == hashlib.sha256(official_payload).hexdigest()
+    )
+    assert release_check["source_byte_count"] == len(official_payload)
+    assert "<MBS_XML>" not in json.dumps(result)
 
 
 @pytest.mark.parametrize("commit", ["", "A" * 40, "a" * 39, "z" * 40])
