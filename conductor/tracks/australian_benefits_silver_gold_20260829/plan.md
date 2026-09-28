@@ -497,7 +497,7 @@
   `e7124b7` after all 38 checks passed on final head `e537cda`; reviewed and
   merged trees match. Closure: issue #341 comment `5473211434`. Checkpoint
   implementation is complete; the real-corpus timeout stage remains unknown.
-- [~] Optimize measured redundant projection/serialization work with exact
+- [x] Optimize measured redundant projection/serialization work with exact
   output, lineage, bound and call-count regression tests; preserve independent
   denominator and per-batch Parquet verification. Review/merge before deciding
   whether another pinned hosted qualification run is warranted.
@@ -533,9 +533,12 @@
   No production changes after freeze. PR #400 merged `6550c15` after all 38
   checks passed on final head `8586603`; reviewed/merged trees match.
   Durable closeout: issue #341 comment `5474092117`.
-  Next reconcile one checkpoint-enabled pinned hosted qualification after
-  merge, preserving run33337502925 and55-minute limit. No timeout-recovery
-  claim or repeated automatic dispatch.
+  The post-merge exact-main run `34749693403` completed all five structural/
+  storage projections and all Parquet round-trips on `8ccc450f`, which descends
+  from both optimization merges. This supplies the planned production-path
+  checkpoint without another full-suite repetition. Its receipt remains
+  structural/storage candidate evidence; semantic/date qualification remains
+  a separate M-109 task. No timeout-recovery claim or limit change is made.
 
 - [x] Reconcile the reviewed checkpoint/optimization run and retain its exact
   failure before further diagnostics. Run `33379551308` at `6550c15` failed
