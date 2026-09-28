@@ -306,6 +306,12 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     dimensions remain M5/verified; source coverage remains M4/partial and the
     M5 release gate stays blocked. See
     `docs/qualification/stable-v1-m5-maturity-status.md`.
+    A fresh qualification on exact main `688b318b` preserves the 120 count
+    after the August Orange Book receipt and pinned-PBS evidence merge. The
+    Prompt 14 FDA drug-shortages audit remains distinct from accepted Bronze:
+    the bounded U.S. Bronze corpus receipt identifies restricted rights,
+    quarantined admission, and no source-record Parquet, so it remains outside
+    the accepted landing set.
   - The Australian MBS hosted HEAD-only diagnostic now classifies all three
     authorized Health.gov workbook requests as read timeouts after connection
     setup, with no headers or source bytes received (`36377888606`, exact main
