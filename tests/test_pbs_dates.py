@@ -132,6 +132,15 @@ def test_v3_temporal_effectivity_dates_are_classified_by_native_parent() -> (
 def test_public_date_api_cannot_emit_pinned_era_qualification() -> None:
     with pytest.raises(ValueError, match="unsupported PBS candidate"):
         table(_production_xml(), pbs_dates.PINNED_V3_PROFILE)
+    with pytest.raises(ValueError, match="requires its profile"):
+        list(
+            pbs_dates._date_batches(  # pyright: ignore[reportPrivateUsage]
+                iter(()),
+                pbs_dates.CANDIDATE_PROFILE,
+                1,
+                pinned_source_era_verified=True,
+            )
+        )
 
 
 def test_only_verified_historical_profile_marks_pinned_era_metadata() -> None:
