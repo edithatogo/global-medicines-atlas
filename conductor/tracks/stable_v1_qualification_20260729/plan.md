@@ -376,3 +376,13 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   bound to `f6e7b9e27a642347ee63c5ef3ce391ed16bf212a`. The report remains blocked.
   Current-scope Bronze and M5 remain blocked; Australian federation and separate
   stable-release approval also remain open.
+
+## 2026-09-29 exact-main qualification refresh
+
+- The Bronze maturity report is refreshed against exact main `008d8317` after
+  PR #606. It still records 118 of 157 in-scope public/no-credential sources
+  without landing evidence; completeness is the only blocked Bronze dimension.
+  The other 13 dimensions remain evidenced. Focused maturity/contract tests
+  passed (102), and the routine Test-Goblin profile passed. The Australian
+  federation, current-scope Bronze, M5 and stable-release approval gates remain
+  open; no source or release authority is inferred.
