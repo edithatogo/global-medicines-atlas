@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.provider-outreach-receipts",
   "schema_version": 1,
-  "recorded_at": "2026-09-28T18:07:01Z",
+  "recorded_at": "2026-09-28T18:16:43Z",
   "sender": "d.a.mordaunt@gmail.com",
   "messages": [
     {
@@ -80,6 +80,21 @@
       "cell_values_included": false,
       "date_profile_selected": false,
       "semantic_promotion": false
+    },
+    {
+      "source_id": "au-services-australia-mbs-item-demographics",
+      "purpose": "Clarify whether an existing public source provides distinct-patient counts by MBS item, its coverage and suppression rules, and applicable reuse terms; no custom or restricted data requested.",
+      "recipient": "statistics@servicesaustralia.gov.au",
+      "subject": "Public item-level MBS patient-count statistics and reuse terms",
+      "sent_at": "2026-09-28T18:16:43Z",
+      "gmail_message_id": "1a0e93bc557578ea",
+      "rfc_message_id": "<CA+D7Coy9TZLy5xH3aH5h0g_sR_-x6LaejSMYN+fsFJhMDDdUWA@mail.gmail.com>",
+      "state": "sent_awaiting_source_owner_response",
+      "attachment_count": 0,
+      "patient_data_requested": false,
+      "custom_extraction_requested": false,
+      "restricted_data_requested": false,
+      "project_rights_decision_made": false
     }
   ],
   "verification": {
@@ -89,6 +104,8 @@
     "automated_acknowledgements_observed": true,
     "new_mbs_date_inquiry_sent_label_readback": true,
     "new_mbs_date_inquiry_recipient_subject_and_message_id_readback": true,
+    "new_m106_item_patient_inquiry_sent_label_readback": true,
+    "new_m106_item_patient_inquiry_recipient_subject_and_message_id_readback": true,
     "substantive_provider_responses_observed": false
   },
   "boundary": "These are inquiries only. They do not establish source rights, credentials, a reachable mirror, acquisition permission beyond existing records, dataset qualification, public release, or Stable v1 acceptance."
