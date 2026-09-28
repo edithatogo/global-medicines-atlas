@@ -12,6 +12,7 @@ from typing import Any, cast
 
 import pyarrow as pa
 
+from .pbs_dates import CANDIDATE_PROFILE
 from .pbs_historical_qualification import (
     _account_nested_batch,  # pyright: ignore[reportPrivateUsage]
     _projection,  # pyright: ignore[reportPrivateUsage]
@@ -1093,9 +1094,15 @@ def prepare_reference_shards(  # ruff: ignore[too-many-branches,too-many-locals,
 
 
 def qualify_reference_shard(  # ruff: ignore[too-many-locals]
-    directory: Path, *, shard_index: int, rows_per_batch: int = 4096
+    directory: Path,
+    *,
+    shard_index: int,
+    rows_per_batch: int = 4096,
+    date_profile: str | None = None,
 ) -> dict[str, Any]:
     """Verify and qualify exactly one prepared reference partition."""
+    if date_profile not in {None, CANDIDATE_PROFILE}:
+        raise ValueError("unsupported PBS candidate date profile")
     manifest: object = json.loads(
         (directory / "reference-manifest.json").read_bytes()
     )
@@ -1195,7 +1202,7 @@ def qualify_reference_shard(  # ruff: ignore[too-many-locals]
         "member_binding_sha256": binding.digest(),
         **denominator,
         "projections": {"references": projection},
-        "date_profile": "not-selected",
+        "date_profile": date_profile or "not-selected",
         "domain_semantics_qualified": False,
         "publication_performed": False,
     }

@@ -229,7 +229,6 @@ def _valid_identity(
         "archive_sha256": ARCHIVE.sha256,
         "member_sha256": MEMBER.sha256,
         "member_binding_sha256": MEMBER_BINDING_SHA256,
-        "date_profile": "not-selected",
         "domain_semantics_qualified": False,
     }
     native_fields = qualification.get("native_fields")
@@ -246,6 +245,8 @@ def _valid_identity(
             qualification.get(key) == value
             for key, value in expected_qualification.items()
         ),
+        qualification.get("date_profile")
+        in {"not-selected", "pbs-iso-date-candidate-v1"},
         _valid_public_objects(report.get("public_objects")),
         isinstance(report.get("workflow_commit"), str),
         re.fullmatch(r"[0-9a-f]{40}", report["workflow_commit"]) is not None,

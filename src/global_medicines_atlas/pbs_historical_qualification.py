@@ -14,7 +14,10 @@ import pyarrow as pa
 import pyarrow.compute as pc
 import pyarrow.parquet as pq
 
-from .pbs_dates import _date_batches  # pyright: ignore[reportPrivateUsage]
+from .pbs_dates import (
+    CANDIDATE_PROFILE,
+    _date_batches,  # pyright: ignore[reportPrivateUsage]
+)
 from .pbs_historical_projections import (
     iter_pbs_historical_domain_batches,
     iter_pbs_historical_entity_batches,
@@ -122,6 +125,7 @@ def _projection(
     progress: Callable[[str, int, int], None] | None = None,
     phase: str = "unavailable",
     row_window: tuple[int, int] | None = None,
+    date_profile: str | None = None,
 ) -> dict[str, Any]:
     expected = {
         "source_id": binding.source.source_id,
@@ -138,8 +142,16 @@ def _projection(
         b"member_binding_sha256": binding.digest().encode(),
         b"member_binding": binding.canonical_json(),
         b"qualification": b"candidate",
-        b"conversion": b"none",
+        b"conversion": (
+            b"candidate-date32"
+            if phase == "dates" and date_profile is not None
+            else b"none"
+        ),
     }
+    if phase == "dates":
+        metadata_expected[b"date_profile"] = (
+            date_profile or "not-selected"
+        ).encode()
     counts: dict[str, Any] = dict.fromkeys(
         (
             "rows",
@@ -353,6 +365,7 @@ def qualify_pbs_historical_projections(
     progress: Callable[[str, int, int], None] | None = None,
     projection: str | None = None,
     reference_shard: tuple[int, int] | None = None,
+    date_profile: str | None = None,
 ) -> dict[str, Any]:
     """Account for every XML slot in five candidate projections and Parquet.
 
@@ -375,6 +388,8 @@ def qualify_pbs_historical_projections(
     projection_names = ("native", "domain", "entities", "references", "dates")
     if projection is not None and projection not in projection_names:
         raise ValueError("unknown PBS projection shard")
+    if date_profile not in {None, CANDIDATE_PROFILE}:
+        raise ValueError("unsupported PBS candidate date profile")
     selected: set[str] = set(
         projection_names if projection is None else (projection,)
     )
@@ -427,6 +442,7 @@ def qualify_pbs_historical_projections(
                 projections,
                 spool,
                 reference_window,
+                date_profile,
             )
     report: dict[str, Any] = {
         "schema_version": 1,
@@ -438,7 +454,7 @@ def qualify_pbs_historical_projections(
         "member_binding_sha256": binding.digest(),
         **denominator,
         "projections": projections,
-        "date_profile": "not-selected",
+        "date_profile": date_profile or "not-selected",
         "domain_semantics_qualified": False,
         "publication_performed": False,
     }
@@ -467,6 +483,7 @@ def _qualify_entity_projection_shards(
     projections: dict[str, Any],
     spool: Any,
     reference_window: tuple[int, int] | None,
+    date_profile: str | None,
 ) -> None:
     """Build one bounded entity spool for the selected nested projection."""
     entity_schema: pa.Schema | None = None
@@ -530,7 +547,9 @@ def _qualify_entity_projection_shards(
         ),
         (
             "dates",
-            lambda: _date_batches(replay_entities(), None, rows_per_batch),
+            lambda: _date_batches(
+                replay_entities(), date_profile, rows_per_batch
+            ),
         ),
     )
     for name, batches in replay_routes:
@@ -546,4 +565,5 @@ def _qualify_entity_projection_shards(
             progress=progress,
             phase=name,
             row_window=reference_window if name == "references" else None,
+            date_profile=date_profile if name == "dates" else None,
         )

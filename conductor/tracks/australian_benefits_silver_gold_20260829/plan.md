@@ -1125,3 +1125,24 @@
   cleared. Embedded qualification remains candidate-only; M-107, complete
   cross-source M-109 acceptance, federation acceptance, and Stable v1 remain
   independent.
+- [x] Reconcile the exact-main PBS value-free date and reference diagnostics.
+  Run `36354464731` on merge `b3dbd889` passed all five structural/storage
+  projections, 16 ordered reference windows, matching native digests and
+  Parquet round-trips for 7,730,684 elements and 18,208,758 native fields.
+  Controlled histograms reconcile: 2,798 unique item XML identifiers and
+  2,798 unresolved AMT references; date roles include 2,798 PBS effectivity
+  dates. The date conversion profile remained unselected, so these are not
+  source-era qualification or semantic acceptance. The content-bound safe
+  aggregate is on issue #341, SHA-256
+  `5f6b04781beea329b48ce5add10a565b886a16f54b79e2371aa377d60959d555`.
+- [ ] Qualify the documented `pbs-iso-date-candidate-v1` date grammar on the
+  pinned corpus as an explicit opt-in candidate, preserving source-native
+  literals, with no interval/status inference and with
+  `source_date_era_qualification=not-established`; reconcile candidate status
+  counts before any separate source-era or M-109 acceptance claim.
+- [ ] Add an opt-in exact-main `pbs-iso-date-candidate-v1` run with date profile
+  bound consistently across projection and reference shards. Local implementation
+  and focused tests pass; one full-profile macOS limitation is recorded in
+  `evidence.jsonl`. Merge the scoped workflow change, run exact-main, and
+  reconcile only its value-free candidate conversion counters. A pass remains
+  candidate-only and does not establish source-era semantics.

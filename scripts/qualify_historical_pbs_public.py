@@ -50,6 +50,11 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--reference-shard-index", type=int)
     parser.add_argument("--reference-shard-count", type=int)
+    parser.add_argument(
+        "--date-profile",
+        choices=("pbs-iso-date-candidate-v1",),
+        help="opt into the documented candidate grammar for this read-only run",
+    )
     parser.add_argument("--failure-only", action="store_true")
     parser.add_argument("--metadata-only", action="store_true")
     args = parser.parse_args(argv)
@@ -85,6 +90,7 @@ def main(argv: list[str] | None = None) -> int:
             if not args.metadata_only:
                 runner_kwargs["projection"] = args.projection
                 runner_kwargs["reference_shard"] = reference_shard
+                runner_kwargs["date_profile"] = args.date_profile
             report = runner(args.exact_commit, **runner_kwargs)
         except Exception as error:  # Never log source-bearing exception text.
             report = failure_report(error)

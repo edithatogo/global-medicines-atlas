@@ -6,6 +6,14 @@ on:
         description: Exact merged main commit containing the reviewed qualifier
         required: true
         type: string
+      date_profile:
+        description: Optional read-only candidate date grammar; empty preserves native-only dates
+        required: false
+        type: choice
+        options:
+          - none
+          - pbs-iso-date-candidate-v1
+        default: none
 permissions: {}
 concurrency:
   group: pbs-historical-projection-qualification
@@ -107,11 +115,15 @@ jobs:
         env:
           PROJECTION: ${{ matrix.projection }}
           REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+          DATE_PROFILE: ${{ inputs.date_profile }}
         run: |
           set -euo pipefail
+          args=(--exact-commit "$REQUESTED_COMMIT" --projection "$PROJECTION")
+          if [[ "$DATE_PROFILE" != "none" ]]; then
+            args+=(--date-profile "$DATE_PROFILE")
+          fi
           uv run --locked --python 3.14.6 python scripts/qualify_historical_pbs_public.py \
-            --exact-commit "$REQUESTED_COMMIT" --projection "$PROJECTION" \
-            --output "pbs-$PROJECTION-receipt-$GITHUB_RUN_ATTEMPT.json"
+            "${args[@]}" --output "pbs-$PROJECTION-receipt-$GITHUB_RUN_ATTEMPT.json"
       - name: Retain immutable phase receipt
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
@@ -163,12 +175,15 @@ jobs:
         env:
           REQUESTED_COMMIT: ${{ inputs.exact_commit }}
           SHARD: ${{ matrix.shard }}
+          DATE_PROFILE: ${{ inputs.date_profile }}
         run: |
           set -euo pipefail
+          args=(--exact-commit "$REQUESTED_COMMIT" --input input --reference-shard "$SHARD")
+          if [[ "$DATE_PROFILE" != "none" ]]; then
+            args+=(--date-profile "$DATE_PROFILE")
+          fi
           uv run --locked --python 3.14.6 python scripts/qualify_prepared_pbs_shard.py \
-            --exact-commit "$REQUESTED_COMMIT" --input input \
-            --reference-shard "$SHARD" \
-            --output "pbs-references-$SHARD-receipt-$GITHUB_RUN_ATTEMPT.json"
+            "${args[@]}" --output "pbs-references-$SHARD-receipt-$GITHUB_RUN_ATTEMPT.json"
       - name: Retain immutable reference receipt
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0

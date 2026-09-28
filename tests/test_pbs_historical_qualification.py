@@ -4,7 +4,10 @@ import json
 
 import pyarrow as pa
 import pytest
-from test_au_pbs_v3 import _zip  # ruff: ignore[import-private-name]
+from test_au_pbs_v3 import (
+    _production_xml,  # ruff: ignore[import-private-name]
+    _zip,  # ruff: ignore[import-private-name]
+)
 from test_australian_source_contracts import (
     _receipt,  # ruff: ignore[import-private-name]
 )
@@ -62,6 +65,40 @@ def test_all_projections_have_exact_denominators_and_parquet_parity() -> None:
         )
         == report
     )
+
+
+def test_explicit_iso_candidate_converts_dates_without_promoting_semantics() -> (
+    None
+):
+    payload = _production_xml()
+    archive = _zip([(PATH, payload)])
+    parent = _receipt(archive, SOURCE)
+    binding = build_pbs_xml_member_binding(archive, parent)
+    report = qualifier.qualify_pbs_historical_projections(
+        archive,
+        payload,
+        parent,
+        binding,
+        projection="dates",
+        date_profile="pbs-iso-date-candidate-v1",
+    )
+    dates = report["projections"]["dates"]
+    assert report["date_profile"] == "pbs-iso-date-candidate-v1"
+    assert report["qualification"] == "structural_storage_candidate_only"
+    assert report["domain_semantics_qualified"] is False
+    assert dates["date_status_counts"].get("converted", 0) > 0
+    assert dates["date_status_counts"].get("unsupported_format", 0) == 0
+    assert "2019-03-20" not in json.dumps(report)
+
+
+def test_unknown_date_candidate_profile_fails_closed() -> None:
+    archive = _zip([(PATH, XML)])
+    parent = _receipt(archive, SOURCE)
+    binding = build_pbs_xml_member_binding(archive, parent)
+    with pytest.raises(ValueError, match="candidate date profile"):
+        qualifier.qualify_pbs_historical_projections(
+            archive, XML, parent, binding, date_profile="guessed-profile"
+        )
 
 
 @pytest.mark.parametrize(

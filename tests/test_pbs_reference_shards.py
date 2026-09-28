@@ -137,6 +137,26 @@ def test_prepared_reference_shards_reassemble_full_ordered_projection(
     assert prepared.equals(full, check_metadata=True)
 
 
+def test_reference_shard_binds_selected_date_candidate_profile(
+    tmp_path: Path,
+) -> None:
+    binding, denominator, batches = inputs()
+    prepare_reference_shards(
+        batches(), binding, denominator, tmp_path / "prepared", shard_count=1
+    )
+    report = qualify_reference_shard(
+        tmp_path / "prepared",
+        shard_index=0,
+        rows_per_batch=2,
+        date_profile="pbs-iso-date-candidate-v1",
+    )
+    assert report["date_profile"] == "pbs-iso-date-candidate-v1"
+    with pytest.raises(ValueError, match="unsupported PBS candidate"):
+        qualify_reference_shard(
+            tmp_path / "prepared", shard_index=0, date_profile="guessed"
+        )
+
+
 def test_global_index_preparation_streams_once_with_deterministic_parity(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
