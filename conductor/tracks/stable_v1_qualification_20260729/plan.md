@@ -303,6 +303,17 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     from 125 to 124. Seven dimensions remain M5/verified; source coverage
     remains M4/partial and the M5 release gate stays blocked. See
     `docs/qualification/stable-v1-m5-maturity-status.md`.
+  - The Australian MBS hosted HEAD-only diagnostic now classifies all three
+    authorized Health.gov workbook requests as read timeouts after connection
+    setup, with no headers or source bytes received (`36377888606`, exact main
+    `58cb9e8c`). This narrows the observed failure phase but does not provide an
+    authorized source delivery route or satisfy M-107/federation acceptance.
+  - The pinned PBS `pbs-iso-date-candidate-v1` profile completed exact-main
+    (`36372245263`): 2,799 dates converted, one missing field, and 7,727,884
+    rows unmapped; all five projections and 16 reference windows retained
+    matching native digests and Parquet round-trips. This closes only the
+    candidate-profile workflow. Source-era semantics, M-109 acceptance, current
+    scope Bronze landing, M5 maturity, and Stable v1 approval remain open.
   - `v1.0.0rc1` authority is explicitly prerelease-only. Final stable promotion
     remains blocked pending a distinct maintainer decision after the technical
     blockers pass.

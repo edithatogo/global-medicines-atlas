@@ -377,3 +377,14 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   data.gov.au metadata search found no exact mirror. M-107 and the Australian
   federation gate remain blocked until those source payloads and dependent
   acceptance evidence are available.
+
+## M-107 bounded endpoint diagnostic (2026-09-28)
+
+- [x] Run the authorized exact-main HEAD-only diagnostic after introducing
+  independent operation and whole-request deadlines. Run `36377888606` on
+  `58cb9e8c` classified all three workbook URLs as response-read timeouts after
+  connection setup; no headers or source bytes were received and no redirects
+  were followed. The durable receipt is issue #340 comment `5863375054`.
+- [~] Obtain an authorized reachable delivery path. The phase classification
+  narrows the hosted observation but does not establish a publisher or network
+  cause, provide workbook content, or satisfy M-107/federation acceptance.
