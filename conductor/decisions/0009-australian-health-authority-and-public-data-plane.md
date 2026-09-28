@@ -99,6 +99,16 @@ favor of exact preservation plus tested successors.
 - Donor repository archival is a final human gate after parity, not a first
   migration step.
 
+## M-107 delivery-route resolution (2026-09-28)
+
+The maintainer selected an **agency-hosted mirror** for M-107 workbook
+delivery. This keeps the source publisher responsible for the durable endpoint
+and avoids relying on workstation-only connectivity. The selection does not
+claim that a mirror exists, authorize contacting the department, change source
+rights or publication scope, or qualify any workbook. A request draft and
+metadata-only publication evidence are maintained in the Australian source
+consolidation track.
+
 ## Supersession and compatibility
 
 This decision refines, but does not erase, Decision 0008. Source-specific

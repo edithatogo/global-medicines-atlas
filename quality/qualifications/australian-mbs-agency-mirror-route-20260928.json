@@ -1,0 +1,47 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-agency-mirror-route",
+  "schema_version": 1,
+  "observed_at": "2026-09-28",
+  "maintainer_route_choice": "agency_hosted_mirror",
+  "mirror_identified": false,
+  "agency_contact_performed": false,
+  "payloads_acquired": false,
+  "source_bytes_read": false,
+  "workstation_raw_retention": false,
+  "rights_scope_changed": false,
+  "external_publication_performed": false,
+  "authorization": "quality/qualifications/australian-mbs-utilisation-publication-authorization.json",
+  "authorized_domains": [
+    "www.health.gov.au",
+    "health.gov.au",
+    "data.gov.au"
+  ],
+  "official_metadata_observations": [
+    {
+      "family": "annual_state_and_territory",
+      "publication_page": "https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en",
+      "page_declared_coverage": "2009-10 to 2025-26",
+      "publication_date": "2026-08-10",
+      "attachment_url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
+      "attachment_filename_coverage": "ends in 2024-25",
+      "attachment_body_inspected": false,
+      "interpretation": "Publication metadata and attachment filename disagree; actual workbook coverage is unverified."
+    },
+    {
+      "family": "quarterly_state_and_territory",
+      "publication_page": "https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26?language=en",
+      "page_declared_period": "June quarter 2025-26",
+      "publication_date": "2026-08-10",
+      "attachment_body_inspected": false
+    },
+    {
+      "family": "year_to_date_summary_tables",
+      "publication_page": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26?language=en",
+      "page_declared_period": "July to June 2025-26",
+      "publication_date": "2026-08-10",
+      "attachment_body_inspected": false
+    }
+  ],
+  "next_action": "Request that the Department provide or identify an agency-hosted, automated-retrieval endpoint for the authorized public workbook families, resolve the annual page/attachment period mismatch, and state historical coverage, terms, attribution, and update/correction behavior.",
+  "boundary": "This is a route decision and metadata-only observation. It is not evidence of mirror availability, actual workbook content, acquisition, rights expansion, or M-107 acceptance."
+}
