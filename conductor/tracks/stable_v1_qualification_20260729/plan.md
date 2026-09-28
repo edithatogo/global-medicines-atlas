@@ -341,3 +341,12 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   - All 38 hosted checks passed at aab814c; 4,901 local tests passed with one
     optional skip. Local mutation remains platform-limited as recorded in the
     evidence ledger. Acceptance gates and signed-release task remain open.
+
+## 2026-09-28 M5 source-coverage update
+
+- The authorized internal Orange Book refresh discovered and accepted the newly
+  listed August 2026 FDA monthly release. One bounded pass retained 140 of 260
+  releases; 104 Archive-It requests failed and 16 were quarantined. Historical
+  coverage remains incomplete, public release is not authorized, and the
+  Bronze/M5 gates remain blocked. Value-free receipt:
+  `quality/qualifications/orange-book-historical-refresh-20260928.json`.

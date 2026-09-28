@@ -31,8 +31,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:d3b605c425b288a2395a2c588b82d61545b0a0550191e64275995b102202c60f",
-  "snapshot_sha256": "d3b605c425b288a2395a2c588b82d61545b0a0550191e64275995b102202c60f",
+  "snapshot_id": "sha256:1198635440e3dbd67103b55324870dd089fdff14257d377781ea3c2d9e111024",
+  "snapshot_sha256": "1198635440e3dbd67103b55324870dd089fdff14257d377781ea3c2d9e111024",
   "source_count": 174,
   "sources": [
     {
@@ -6536,7 +6536,8 @@
         "quality/qualifications/orange-book-historical-authorization.json",
         "quality/qualifications/orange-book-historical-plan.json",
         "quality/qualifications/orange-book-historical-corpus-20260820.json",
-        "quality/qualifications/orange-book-historical-corpus-20260821.json"
+        "quality/qualifications/orange-book-historical-corpus-20260821.json",
+        "quality/qualifications/orange-book-historical-refresh-20260928.json"
       ],
       "qualification_state": "declared",
       "rights_review_state": "US government data; verify endpoint terms",

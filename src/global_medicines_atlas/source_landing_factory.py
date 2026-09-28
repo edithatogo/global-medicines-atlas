@@ -82,6 +82,7 @@ class LandingOverride(FrozenModel):
     failure_receipt: str | None = Field(default=None, min_length=1)
     reuse_reference: str | None = Field(default=None, min_length=1)
     manual_instructions: str | None = Field(default=None, min_length=1)
+    next_action: str | None = Field(default=None, min_length=1)
     evidence_references: tuple[str, ...] = ()
 
     @model_validator(mode="after")
@@ -385,7 +386,10 @@ def _evidence_references(
 def _next_action(
     state: LandingDisposition,
     family: LandingAdapterFamily,
+    override: LandingOverride | None,
 ) -> str:
+    if override is not None and override.next_action is not None:
+        return override.next_action
     actions = {
         LandingDisposition.LANDED: "verify receipt freshness on schedule",
         LandingDisposition.TEMPORARILY_UNAVAILABLE: (
@@ -470,7 +474,7 @@ def build_source_landing_queue(
                 evidence_references=_evidence_references(
                     source, state, override
                 ),
-                next_action=_next_action(state, family),
+                next_action=_next_action(state, family, override),
                 priority=_priority(state),
             )
         )

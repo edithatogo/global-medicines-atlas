@@ -691,3 +691,31 @@ for credentialed or rights-unresolved sources.
     - [x] Keep fixture evidence distinct from live evidence; no new rights conclusions; no identity rewrites
     - [x] Update architecture diagram, maturity model documentation, queue projection verification, and hosted merge evidence
     - [x] Record PR [#316](https://github.com/edithatogo/global-medicines-atlas/pull/316) head `9887d51f55a9f83fee9a70d7370ad05125b2324a`, 37 passing hosted checks, and merged SHA `2341475cb0ee75c3ae78a72c9beb94fcdbe0851a`; issue #315 closed, parent #170 remains open
+
+
+## Orange Book official-index refresh (2026-09-28)
+
+- [x] Reopen one bounded internal acquisition after the official FDA
+  additions/deletions index exposed the August 2026 monthly list, a new release
+  beyond the 2026-08-21 inventory. Existing source-specific authorization
+  permits internal acquisition and retention only, up to 320 releases and
+  2 GiB.
+- [x] Acquire the current 260-URL inventory once. The new August 2026 FDA PDF
+  was accepted (276,627 bytes; SHA-256
+  `3a80ae5a22c4a1522e9d1db5159a8fcb69c93b9c14492424e1b6e788509408ea`). The
+  current pass recorded 140 accepted, 16 quarantined, and 104 failed URLs; all
+  104 failures were `http_status` from `wayback.archive-it.org`. The private
+  archive digest is
+  `250613299c6e8038ba00b451cd2980afe97c944a125a472d6245c515261d29d3`
+  (191,621,120 bytes), verified at the retained local evidence path in the
+  qualification receipt.
+- [x] Reconcile the source queue and regenerate all B0 projections from the
+  canonical catalogue and overrides. The Orange Book next action now requires a
+  material official inventory or Archive-It availability change, matching the
+  bounded retry decision. B0 snapshot `1198635440e3dbd67103b55324870dd089fdff14257d377781ea3c2d9e111024`;
+  23 focused tests and 49 broader source-index, acquisition, and Bronze maturity
+  tests pass. Context validation, Ruff, formatting, JSONL, and diff checks pass.
+- [ ] Historical inventory and coverage remain incomplete. The same 104 archive
+  failures and 16 quarantined responses persist; no public release or external
+  publication is authorized. Do not repeat this full acquisition unless the
+  official inventory or source availability changes again.
