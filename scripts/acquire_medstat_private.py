@@ -19,6 +19,7 @@ from global_medicines_atlas.medstat_private_acquisition import (
     SOURCE_ID,
     MedstatQuery,
     exercise_medstat_private_acquisition,
+    require_medstat_workbook,
 )
 from global_medicines_atlas.reuse_gate import (
     ReuseGateDecision,
@@ -32,6 +33,22 @@ AUTHORIZATION = (
     / "quality/qualifications/nordic-utilisation-acquisition-authorization.json"
 )
 _HTTP_OK = 200
+
+
+def validate_browser_download(payload: bytes, suggested_filename: str) -> bytes:
+    """Validate the export and report only bounded file metadata on failure."""
+    try:
+        require_medstat_workbook(payload)
+    except ValueError as error:
+        extension = Path(suggested_filename).suffix.casefold() or "<none>"
+        zip_signature_valid = payload.startswith(bytes((80, 75, 3, 4)))
+        raise RuntimeError(
+            "Medstat browser download failed workbook validation: "
+            f"{error}; filename_extension={extension}; "
+            f"byte_count={len(payload)}; "
+            f"zip_signature_valid={zip_signature_valid}"
+        ) from error
+    return payload
 
 
 def _download(url: str) -> bytes:
@@ -61,10 +78,13 @@ def _download(url: str) -> bytes:
                     raise RuntimeError(
                         f"Medstat export did not start a download: {status}"
                     )
-            path = download_info.value.path()
+            download = download_info.value
+            path = download.path()
             if path is None:
                 raise RuntimeError("Medstat export download has no local path")
-            return Path(path).read_bytes()
+            return validate_browser_download(
+                Path(path).read_bytes(), download.suggested_filename
+            )
         finally:
             browser.close()
 
