@@ -64,3 +64,22 @@ def test_access_request_validation_names_its_direct_contract() -> None:
     assert len(validation) == 1
     assert validation[0]["status"] == "local_pass_protected_ci_pending"
     assert validation[0]["validation"]["artifact_contract_test"] == "passed"
+
+
+def test_access_request_merge_evidence_preserves_external_boundary() -> None:
+    records = _evidence_records()
+    merged = [
+        record
+        for record in records
+        if record.get("kind")
+        == "openprescribing_access_request_validation_merged"
+    ]
+
+    assert len(merged) == 1
+    record = merged[0]
+    assert record["status"] == "merged_protected_ci_passed"
+    assert record["checks"]["hosted_total"] == 37
+    assert record["checks"]["hosted_success"] == 37
+    assert record["boundary"].startswith(
+        "Hosted validation confirms the unsent request"
+    )
