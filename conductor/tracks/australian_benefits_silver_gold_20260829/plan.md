@@ -1172,12 +1172,21 @@
   run `36372245263` passed; see the value-free aggregate recorded above and
   `evidence.jsonl`. This remains candidate-only and does not establish
   source-era semantics.
-- [ ] Qualify the documented ASCII date grammar for the exact pinned PBS V3
+- [x] Qualify the documented ASCII date grammar for the exact pinned PBS V3
   member only, using profile `pbs-v3-pinned-2026-04-01-v1`. The public B1
   receipt and immutable manifest bind the sole source member to this release
   and V3 schema era; other releases, date semantics, AMT resolution and M-109
-  acceptance remain outside this narrow qualification. Await its reviewed
-  exact-main hosted aggregate before updating evidence status.
+  acceptance remain outside this narrow qualification. Exact-main run
+  `36417477472` passed all five projections and 16 reference windows across
+  7,730,684 elements and 18,208,758 native fields; all Parquet round-trips
+  verified and the source-native digest remained
+  `890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25`.
+  The ASCII profile converted 2,799 dates and left one date field missing;
+  7,727,884 rows remain unmapped. The aggregate explicitly remains
+  `structural_storage_candidate_only`, with 2,798 unresolved AMT references,
+  domain semantics unqualified, and publication not performed. The compact,
+  value-free hosted aggregate is committed alongside this track as
+  `pbs-qualification-receipt-20260928.json`.
 - [x] Diagnose M-107's authorized Health.gov workbook download timeouts with a
   separate exact-main, HEAD-only Actions probe. The workstation metadata check
   confirmed all three URLs return the expected XLSX headers, while bounded

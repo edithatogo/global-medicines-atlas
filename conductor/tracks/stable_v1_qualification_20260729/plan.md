@@ -329,6 +329,15 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     matching native digests and Parquet round-trips. This closes only the
     candidate-profile workflow. Source-era semantics, M-109 acceptance, current
     scope Bronze landing, M5 maturity, and Stable v1 approval remain open.
+  - The narrower pinned-V3 ASCII grammar qualification completed on exact main
+    (`36417477472`, commit `95d9583d`). The value-free aggregate records all
+    five projections and 16 reference windows round-tripped across 7,730,684
+    elements and 18,208,758 native fields, with 2,799 converted dates and one
+    missing date field. It remains `structural_storage_candidate_only`:
+    2,798 AMT references are unresolved, domain semantics are unqualified, and
+    no publication was performed. The receipt is retained as
+    `conductor/tracks/australian_benefits_silver_gold_20260829/pbs-qualification-receipt-20260928.json`;
+    this does not close federation, M-109, Bronze, M5, or Stable v1.
   - `v1.0.0rc1` authority is explicitly prerelease-only. Final stable promotion
     remains blocked pending a distinct maintainer decision after the technical
     blockers pass.
