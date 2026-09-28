@@ -764,10 +764,13 @@ for credentialed or rights-unresolved sources.
   restricted payload bytes were read during this reconciliation, and no source
   records, current utilisation coverage, third-party separability, or
   independent archive durability are claimed.
-- [ ] Re-run the qualification against exact merged `main` and record its
-  commit-bound maturity receipt. Bronze completeness and M5 remain blocked by
-  the other 118 in-scope sources.
-- [~] Codecov patch-coverage follow-up: negative controls now exercise missing
-  and malformed NICE authorization, archive, and digest metadata. The affected
-  Bronze tests pass (78 total) and local `bronze_maturity.py` coverage is 98%;
-  refreshed protected Codecov verification is pending.
+- [x] Re-run the qualification against exact merged `main` and record its
+  commit-bound maturity receipt. Commit `f6e7b9e27a642347ee63c5ef3ce391ed16bf212a`
+  reports 118 in-scope sources without qualifying landings. Bronze completeness
+  and M5 remain blocked by those 118 sources.
+- [x] Review follow-up binds the NICE receipt to exactly 15 independently
+  expected payloads and corrects Prompt 29 to request source-record qualification
+  without reacquisition. Focused tests pass (116); the full local profile reports
+  5,207 passed, 2 environment-only uv-version failures, 1 skipped, and 96.71%
+  coverage; both failures pass with isolated uv 0.11.29. Protected CI and Codecov
+  patch coverage pass on PR #595.

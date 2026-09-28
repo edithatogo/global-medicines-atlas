@@ -372,7 +372,7 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   source-specific internal-only acquisition authorization to all 15 admitted
   payloads, four expected releases, and clean-room digest restoration; it keeps
   source-record projection, public release, and external publication false.
-- [ ] Verify the 118-source candidate denominator and updated maturity report
-  against the exact merged `main` commit. Current-scope Bronze and M5 remain
-  blocked; Australian federation and separate stable-release approval also
-  remain open.
+- [x] Verify the 118-source denominator in the exact-main maturity report
+  bound to `f6e7b9e27a642347ee63c5ef3ce391ed16bf212a`. The report remains blocked.
+  Current-scope Bronze and M5 remain blocked; Australian federation and separate
+  stable-release approval also remain open.
