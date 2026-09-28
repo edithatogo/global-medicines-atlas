@@ -782,3 +782,17 @@ for credentialed or rights-unresolved sources.
 
 - [x] Refresh `quality/qualifications/bronze-maturity.json` against exact merged `main` `4dc23b296656895b6d6fc882e007bcbd43e3f9eb` after PR #599. The report still finds 118 of 157 in-scope public/no-credential sources without qualifying landing evidence. All other mandatory Bronze dimensions remain evidenced; current-scope completeness and M5 remain blocked.
 - [x] Verify the previously raised Prompt 31 discrepancy is resolved: the formulary and spending sources are both `landed_and_evidenced`, and the Prompt 31 audit reports `live_acquisition_complete`. This does not change the overall Bronze denominator or Australian federation gates.
+
+## 2026-09-29 Medstat request and acknowledgement merge reconciliation
+
+- [x] PR #611 recorded the sent format inquiry, restored prior evidence rows
+  byte-for-byte, and bound the sent RFC Message-ID. All 37 observed PR checks
+  passed; merged as `e3ba5b76db6cd02cf593e6c23598cdea45983b02`.
+- [x] PR #612 recorded the automatic reply as unbound after its raw
+  `In-Reply-To` failed to match the inquiry RFC Message-ID. The correction
+  supersedes the earlier correlation claim without rewriting the append-only
+  ledger. All 37 observed PR checks passed; merged as
+  `0e69588fd9c8e00fa1eb4201fe2c4a981ef194d0`.
+- [~] Substantive source-owner format guidance remains pending. The returned
+  automatic message does not resolve the export format; continue rejecting the
+  response and make no acquisition, rights, Bronze, or publication claim.
