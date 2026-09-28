@@ -74,6 +74,8 @@ def test_preflight_uses_head_and_returns_only_bounded_headers() -> None:
     assert report["status"] == "passed"
     assert report["request_method"] == "HEAD"
     assert report["source_bytes_read"] is False
+    assert report["request_timeout_seconds"] == 15
+    assert report["operation_timeout_seconds"] == pytest.approx(7.5)
     assert len(requests) == len(WORKBOOKS) == 3
     assert all(request.method == "HEAD" for request in requests)
     assert [item["source"] for item in report["results"]] == [

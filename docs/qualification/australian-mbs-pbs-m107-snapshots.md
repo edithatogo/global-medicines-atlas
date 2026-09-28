@@ -102,3 +102,11 @@ probe deliberately omitted transport exception details, so it cannot yet tell
 whether the timeout occurred during connection setup or response handling. A
 follow-up records only finite timeout-stage labels; it will not retry a byte
 download or infer a DNS/network-policy cause.
+
+The second [classified HEAD run](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36377031967)
+on commit `254cf7c1c66c069daa95153957661c1e15e88452` labeled all three results
+`wall_clock`. Its 15-second HTTP operation timeout equaled the hard deadline,
+so the deadline could mask the underlying HTTP phase. The next bounded probe
+uses shorter operation timeouts (7.5 seconds general, at most 5 seconds to
+connect) beneath the same 15-second request cap; it still reads no body and
+retains no exception detail.
