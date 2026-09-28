@@ -15,13 +15,17 @@ internal Orange Book refresh accepted the newly listed August 2026 FDA monthly
 release, but 104 Archive-It requests still fail and 16 responses remain
 quarantined, so its historical coverage is incomplete. No public release was
 authorized or performed. Prompt 31 remains complete for its two CMS source IDs.
-The separate Prompt 14 audit records the FDA drug-shortages acquisition as
-complete, but the bounded U.S. Bronze corpus record lists that source as rights
-restricted, admission quarantined, and without a source-record Parquet
-projection. The Prompt 14 acquisition result therefore does not count as an
-accepted Bronze landing. The refreshed maturity receipt still finds 120 of 157
-in-scope public/no-credential sources without qualifying landing evidence. Two
-fixture-only and 15 excluded sources remain outside that denominator.
+The separate Prompt 14 audit and its source-specific FDA drug-shortages
+qualification are now reconciled. The source-specific receipt records
+authorized internal retention, the complete current export and 129 monthly FDA
+list snapshots, recovered source-record projection with byte-identical
+Parquet, and verified private archive checksums. The older bounded U.S. Bronze
+corpus row describes a separate quarantined acquisition and does not override
+that later, specifically scoped evidence. The refreshed maturity receipt
+therefore finds 119 of 157 in-scope public/no-credential sources without
+qualifying landing evidence. Two fixture-only and 15 excluded sources remain
+outside that denominator. Delegated detail-page coverage remains incomplete,
+and public release and external publication remain unauthorized.
 Credentialed and licensed feeds remain excluded from this denominator; missing
 evidence is not a negative claim about the source.
 
