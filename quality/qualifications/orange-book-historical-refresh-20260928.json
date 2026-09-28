@@ -1,0 +1,72 @@
+{
+  "attempt": {
+    "accepted_count": 140,
+    "coverage_complete": false,
+    "external_publication_performed": false,
+    "failed_count": 104,
+    "failure_counts_by_host_and_code": {
+      "wayback.archive-it.org:http_status": 104
+    },
+    "historical_inventory_complete": false,
+    "quarantined_count": 16,
+    "received_payload_byte_count": 54110734,
+    "recovered_count": 140,
+    "release_count": 260,
+    "source_record_projection_count": 1,
+    "succeeded_count": 156
+  },
+  "authorization": {
+    "acquisition_authorized": true,
+    "external_publication_authorized": false,
+    "internal_retention_authorized": true,
+    "max_releases": 320,
+    "max_total_bytes": 2147483648,
+    "path": "quality/qualifications/orange-book-historical-authorization.json",
+    "public_release_authorized": false,
+    "sha256": "e84bf23898b580fea231602615d445bad2081a281f9c5395f766850db75551ae"
+  },
+  "latest_comparable_attempt": {
+    "accepted_count": 139,
+    "archive_byte_count": 190760960,
+    "archive_sha256": "0a13d91875a8a7536a043a676a671f67aa61bbe2621fe664512b889a5ec7f808",
+    "failed_count": 104,
+    "interpretation": "One additional FDA-hosted monthly release was discovered and accepted; the 104 failed Archive-It requests and 16 quarantined Archive-It responses are unchanged from the preceding full-inventory pass.",
+    "prior_receipt": "quality/qualifications/orange-book-historical-corpus-20260821.json",
+    "quarantined_count": 16,
+    "release_count": 259,
+    "succeeded_count": 155
+  },
+  "limitations": [
+    "This is an internal-only historical acquisition; it does not authorize public release or external dataset publication.",
+    "The August 2026 FDA monthly release is newly received and accepted; this does not establish a complete historical inventory.",
+    "All 104 failed requests were to wayback.archive-it.org and returned http_status; 16 other Archive-It responses were quarantined.",
+    "Do not repeat the full acquisition against the same inventory unless an official inventory or source-availability change is observed."
+  ],
+  "observed_at": "2026-09-28T12:17:13.542205Z",
+  "private_archive": {
+    "acquisition_manifest_sha256": "052b0a9105b9f9cf019f6718f780ea562b8a1d04b1e8bd664b4f4568b8074310",
+    "byte_count": 191621120,
+    "checksum_verified": true,
+    "external_publication_authorized": false,
+    "path": "/Volumes/PortableSSD/PrivateEvidence/global-medicines-atlas/orange-book-history-20260928/corpus/orange-book-history.private.tar",
+    "redacted_acquisition_results_sha256": "507c7cfde799e54c46e909433f51526db59b2f9a840cf6c30437f21199d1ad39",
+    "release_inventory_sha256": "57a78d3d2c68d92b4afec3357276af96bc5880bd36a648879012ea981cd5b0a3",
+    "sha256": "250613299c6e8038ba00b451cd2980afe97c944a125a472d6245c515261d29d3"
+  },
+  "schema_id": "global-medicines-atlas.orange-book-historical-refresh-receipt",
+  "schema_version": 1,
+  "source_id": "us-fda-orange-book",
+  "source_index": {
+    "newly_observed_release": {
+      "admission_state": "accepted",
+      "payload_byte_count": 276627,
+      "payload_sha256": "3a80ae5a22c4a1522e9d1db5159a8fcb69c93b9c14492424e1b6e788509408ea",
+      "status": "succeeded",
+      "title": "August 2026: Additions and Deletions to the Drug Product List",
+      "url": "https://www.fda.gov/media/194788/download?attachment"
+    },
+    "observed_at": "2026-09-28T12:17:13.542205Z",
+    "release_url_count": 260,
+    "url": "https://www.fda.gov/drugs/drug-approvals-and-databases/additionsdeletions-prescription-and-otc-drug-product-lists"
+  }
+}

@@ -66,7 +66,7 @@ Silver transformations included: **no**.
 - [x] `us-fda-faers` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `us-fda-ndc-directory` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `us-fda-nsde` — `landed_and_evidenced`; verify receipt freshness on schedule.
-- [ ] `us-fda-orange-book` — `temporarily_unavailable`; retry under the failure-receipt schedule.
+- [ ] `us-fda-orange-book` — `temporarily_unavailable`; retry only after a material official inventory or Archive-It availability change.
 
 ## `paginated_rest_api`
 

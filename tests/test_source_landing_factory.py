@@ -220,9 +220,12 @@ def test_generated_queue_schema_and_conductor_projection_are_current() -> None:
         item for item in queue.items if item.source_id == "us-fda-orange-book"
     )
     assert orange.state is LandingDisposition.TEMPORARILY_UNAVAILABLE
-    assert orange.next_action == "retry under the failure-receipt schedule"
     assert (
-        "quality/qualifications/orange-book-historical-corpus-20260821.json"
+        orange.next_action
+        == "retry only after a material official inventory or Archive-It availability change"
+    )
+    assert (
+        "quality/qualifications/orange-book-historical-refresh-20260928.json"
         in orange.evidence_references
     )
     assert MARKDOWN_PATH.read_text(encoding="utf-8") == (

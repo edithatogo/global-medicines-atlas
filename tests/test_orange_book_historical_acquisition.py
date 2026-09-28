@@ -23,6 +23,9 @@ AUTHORIZATION = (
 QUALIFICATION = (
     ROOT / "quality/qualifications/orange-book-historical-corpus-20260821.json"
 )
+REFRESH = (
+    ROOT / "quality/qualifications/orange-book-historical-refresh-20260928.json"
+)
 
 
 def _authorization_payload() -> dict[str, object]:
@@ -94,6 +97,43 @@ def test_committed_live_qualification_is_partial_internal_evidence():
             "explicitly_unavailable_without_complete_official_denominator"
         ),
     }
+
+
+@pytest.mark.unit
+def test_latest_refresh_records_new_month_without_promoting_coverage():
+    refresh = json.loads(REFRESH.read_text(encoding="utf-8"))
+
+    assert refresh["source_id"] == "us-fda-orange-book"
+    assert refresh["source_index"]["release_url_count"] == 260
+    assert refresh["source_index"]["newly_observed_release"] == {
+        "title": "August 2026: Additions and Deletions to the Drug Product List",
+        "url": "https://www.fda.gov/media/194788/download?attachment",
+        "status": "succeeded",
+        "payload_sha256": (
+            "3a80ae5a22c4a1522e9d1db5159a8fcb69c93b9c14492424e1b6e788509408ea"
+        ),
+        "payload_byte_count": 276627,
+        "admission_state": "accepted",
+    }
+    assert refresh["attempt"]["succeeded_count"] == 156
+    assert refresh["attempt"]["accepted_count"] == 140
+    assert refresh["attempt"]["quarantined_count"] == 16
+    assert refresh["attempt"]["failed_count"] == 104
+    assert refresh["attempt"]["failure_counts_by_host_and_code"] == {
+        "wayback.archive-it.org:http_status": 104
+    }
+    assert refresh["attempt"]["historical_inventory_complete"] is False
+    assert refresh["attempt"]["coverage_complete"] is False
+    assert refresh["attempt"]["external_publication_performed"] is False
+    assert refresh["authorization"]["internal_retention_authorized"] is True
+    assert refresh["authorization"]["public_release_authorized"] is False
+    assert refresh["authorization"]["external_publication_authorized"] is False
+    assert refresh["private_archive"]["checksum_verified"] is True
+    assert refresh["private_archive"]["sha256"] == (
+        "250613299c6e8038ba00b451cd2980afe97c944a125a472d6245c515261d29d3"
+    )
+    assert refresh["latest_comparable_attempt"]["release_count"] == 259
+    assert refresh["latest_comparable_attempt"]["failed_count"] == 104
 
 
 @pytest.mark.parametrize(

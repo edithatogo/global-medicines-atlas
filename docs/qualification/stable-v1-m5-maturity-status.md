@@ -1,4 +1,4 @@
-# Stable-v1 M5 maturity status, 2026-09-27
+# Stable-v1 M5 maturity status, 2026-09-28
 
 Seven of the eight blocking dimensions in the stable-v1 contract are M5 and
 verified. **Source coverage remains M4/partial**, so the M5 maturity release
@@ -10,10 +10,13 @@ recognises the exact approved CMS Part D formulary and spending source-record
 qualification and four accepted U.S. source-record products as direct Bronze
 receipt evidence. The U.S. receipt includes an accepted admission, source-record
 projection, and byte-identical clean-room recovery for those products. Its three
-openFDA responses are 100-record canaries, not complete releases; the Orange
-Book remains temporarily unavailable because historical releases are unresolved.
-Prompt 31 remains complete for its two CMS source IDs, and 120 other in-scope
-public/no-credential catalogue sources still lack qualifying landing evidence.
+openFDA responses are 100-record canaries, not complete releases. An authorized
+internal Orange Book refresh accepted the newly listed August 2026 FDA monthly
+release, but 104 Archive-It requests still fail and 16 responses remain
+quarantined, so its historical coverage is incomplete. No public release was
+authorized or performed. Prompt 31 remains complete for its two CMS source IDs,
+and 120 in-scope public/no-credential catalogue sources still lack qualifying
+landing evidence.
 Credentialed and licensed feeds remain excluded from this denominator; missing
 evidence is not a negative claim about the source.
 
