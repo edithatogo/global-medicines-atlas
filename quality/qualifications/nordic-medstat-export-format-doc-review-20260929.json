@@ -45,11 +45,15 @@
     "table_count": 1,
     "row_count": 3,
     "cell_count": 6,
-    "forms_or_interactive_controls_present": false
+    "forms_or_interactive_controls_present": false,
+    "payload_byte_count_read_for_diagnostic": true,
+    "payload_text_emitted": false,
+    "payload_bytes_retained": false
   },
   "disposition": {
     "format_semantics_resolved": false,
-    "result_payload_bytes_read_or_retained": false,
+    "result_payload_bytes_read_for_bounded_diagnostic": true,
+    "result_payload_bytes_retained": false,
     "html_result_parser_implemented": false,
     "next_action": "Request source-owner clarification on whether the exact response is a supported HTML-formatted spreadsheet or an error response, and the documented response media type for the export route."
   }
