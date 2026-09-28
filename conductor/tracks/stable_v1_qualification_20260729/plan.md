@@ -416,3 +416,9 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   This refresh only rebinds the report timestamp and source commit; it adds no
   landing evidence and does not advance Bronze, M5, Australian federation, or
   stable-release approval.
+
+- [x] Correct the status-page provenance identified in PR #610 review. It now
+  cites the same exact-main commit as `quality/qualifications/bronze-maturity.json`;
+  the direct contract test failed against the stale reference before the fix.
+  Focused and routine validation and protected CI are recorded in the evidence
+  ledger. This corrects documentation only and does not advance any gate.
