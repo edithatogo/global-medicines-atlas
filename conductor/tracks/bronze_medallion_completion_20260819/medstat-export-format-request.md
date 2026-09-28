@@ -15,9 +15,10 @@ We are validating the documented Medstat interactive export for a bounded
 aggregate query. For the 2025 national turnover result, requesting the primary
 and hospital sector strata in one source-generated export returned HTTP 200,
 with a suggested `.xls` filename and `text/html;charset=UTF-8` response type.
-A metadata-only diagnostic found one source-titled HTML document containing a
-single table, but no forms or interactive controls. We did not inspect or retain
-the response text or bytes.
+A bounded structural diagnostic transiently read the 4,446-byte response to
+count HTML elements. It did not emit the response text or retain the bytes. It
+found one source-titled HTML document containing a single table, but no forms
+or interactive controls.
 
 Could you confirm whether this response is an intended HTML-formatted
 spreadsheet that Excel is expected to open, or an error/fallback page? Please

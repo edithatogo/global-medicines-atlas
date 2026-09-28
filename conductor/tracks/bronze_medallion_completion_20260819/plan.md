@@ -777,3 +777,8 @@ for credentialed or rights-unresolved sources.
   5,207 passed, 2 environment-only uv-version failures, 1 skipped, and 96.71%
   coverage; both failures pass with isolated uv 0.11.29. Protected CI and Codecov
   patch coverage pass on PR #595.
+
+## 2026-09-29 exact-main Bronze/M5 reconciliation
+
+- [x] Refresh `quality/qualifications/bronze-maturity.json` against exact merged `main` `4dc23b296656895b6d6fc882e007bcbd43e3f9eb` after PR #599. The report still finds 118 of 157 in-scope public/no-credential sources without qualifying landing evidence. All other mandatory Bronze dimensions remain evidenced; current-scope completeness and M5 remain blocked.
+- [x] Verify the previously raised Prompt 31 discrepancy is resolved: the formulary and spending sources are both `landed_and_evidenced`, and the Prompt 31 audit reports `live_acquisition_complete`. This does not change the overall Bronze denominator or Australian federation gates.
