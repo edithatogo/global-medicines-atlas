@@ -116,6 +116,24 @@ def _denominator(
     }
 
 
+def _is_pinned_v3_identity(binding: PbsXmlMemberBinding) -> bool:
+    """Match the exact public archive/member admitted for the V3 date profile."""
+    identity = (
+        binding.source.source_id,
+        binding.source.catalog_version,
+        binding.archive_payload.sha256,
+        binding.member_path,
+        binding.member_payload.sha256,
+    )
+    return identity == (
+        "au-pbs-historical-xml",
+        "2026-04-01",
+        "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+        "bronze/2026-04-01/sch-2026-04-01-r1.xml",
+        "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+    )
+
+
 # ruff: ignore[too-many-branches] -- bounded accounting keeps parity checks together
 def _projection(
     batches: Iterator[pa.RecordBatch],
@@ -399,25 +417,12 @@ def qualify_pbs_historical_projections(
     binding = validate_pbs_xml_member_binding(
         binding, archive_payload, member_payload, parent
     )
-    if date_profile == PINNED_V3_PROFILE:
-        pinned_identity = (
-            binding.source.source_id,
-            binding.source.catalog_version,
-            binding.archive_payload.sha256,
-            binding.member_path,
-            binding.member_payload.sha256,
+    if date_profile == PINNED_V3_PROFILE and not _is_pinned_v3_identity(
+        binding
+    ):
+        raise ValueError(
+            "pinned PBS V3 date profile requires exact source identity"
         )
-        expected_identity = (
-            "au-pbs-historical-xml",
-            "2026-04-01",
-            "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
-            "bronze/2026-04-01/sch-2026-04-01-r1.xml",
-            "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
-        )
-        if pinned_identity != expected_identity:
-            raise ValueError(
-                "pinned PBS V3 date profile requires exact source identity"
-            )
     if progress is not None:
         progress("denominator", 0, 0)
     denominator = _denominator(member_payload, progress)
