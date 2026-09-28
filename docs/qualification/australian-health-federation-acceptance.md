@@ -18,6 +18,11 @@ track plans and observed archive receipts rather than implementation alone.
 | M-112 federation v4 | Blocked | Emit and independently verify live producer v4 contracts for the published derived corpus and downstream compatibility canaries. The schema and synthetic contracts are implementation evidence. |
 | M-113 donor archival | Verified | Both separate maintainer approvals, exact public history preservation, anonymous clean restore and unchanged archived Git heads are recorded in the [scraper receipt](../../quality/qualifications/scraper-archival-20260906.json) and [graph receipt](../../quality/qualifications/graph-archival-20260906.json). |
 
+For M-109, official MBS documentation defines `DD.MM.YYYY` for XML date
+fields, but does not document the date convention for the distinct legacy P7
+workbook. Its date profile remains unselected. See the
+[source-document review](../../quality/qualifications/mbs-workbook-date-source-doc-review-20260929.json).
+
 The donor repositories were read back as archived on 2026-09-27. The scraper
 receipt binds both exact donor heads to 30 anonymously verified public history
 objects at revision `97038008d17a48f620302f04fe6a3156fb8d5d57`. The graph

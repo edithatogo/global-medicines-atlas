@@ -148,6 +148,11 @@
     does not independently establish the workbook's date convention; source-
     specific documentation is still required before conversion. Durable
     value-free receipt: `quality/qualifications/mbs-workbook-date-order-compatibility-20260928.json`.
+  - [x] Review the official MBS XML field specification and July 2024 downloads
+    page. The XML specification defines `DD.MM.YYYY` for XML date fields, but
+    neither source documents the date convention for the distinct legacy P7
+    workbook. Do not transfer the XML rule across source eras. Receipt:
+    `quality/qualifications/mbs-workbook-date-source-doc-review-20260929.json`.
 - [x] Keep native OOXML date storage distinct from ordinary date-shaped text.
   (`43ea70c`; P2 regression failed before correction, then 33 focused tests
   passed with 100% changed-module branch coverage; static checks pass.)

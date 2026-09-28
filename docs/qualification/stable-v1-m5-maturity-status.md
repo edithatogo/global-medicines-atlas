@@ -1,4 +1,4 @@
-# Stable-v1 M5 maturity status, 2026-09-28
+# Stable-v1 M5 maturity status, 2026-09-29
 
 Seven of the eight blocking dimensions in the stable-v1 contract are M5 and
 verified. **Source coverage remains M4/partial**, so the M5 maturity release
@@ -21,8 +21,9 @@ authorized internal retention, the complete current export and 129 monthly FDA
 list snapshots, recovered source-record projection with byte-identical
 Parquet, and verified private archive checksums. The older bounded U.S. Bronze
 corpus row describes a separate quarantined acquisition and does not override
-that later, specifically scoped evidence. The refreshed maturity receipt
-therefore finds 119 of 157 in-scope public/no-credential sources without
+that later, specifically scoped evidence. The latest exact-main maturity
+report, evaluated against `4dc23b296656895b6d6fc882e007bcbd43e3f9eb` and merged
+as PR #600, finds 118 of 157 in-scope public/no-credential sources without
 qualifying landing evidence. Two fixture-only and 15 excluded sources remain
 outside that denominator. Delegated detail-page coverage remains incomplete,
 and public release and external publication remain unauthorized.
