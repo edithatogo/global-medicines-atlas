@@ -13,6 +13,13 @@
       "gmail_message_id": "1a0e8ebbb1c26b2c",
       "rfc_message_id": "<CA+D7Cow=WNZAgYeFHcKRw6NjLvA8J8uvjFGpHHVSYoGZ0bwATg@mail.gmail.com>",
       "state": "sent_awaiting_provider_response",
+      "acknowledgement": {
+        "gmail_message_id": "1a0e8ec858674996",
+        "received_at": "2026-09-28T16:50:06Z",
+        "sender": "bennett@phc.ox.ac.uk",
+        "kind": "automatic_receipt_acknowledgement",
+        "substantive_guidance": false
+      },
       "attachment_count": 0,
       "source_payloads_attached": false,
       "authority_expanded": false
@@ -26,6 +33,13 @@
       "gmail_message_id": "1a0e8ec00959d610",
       "rfc_message_id": "<CA+D7CoxVaGC-c3MzriNujrEWnPA3cE1Yyi63RA5d8xnyNQFJmw@mail.gmail.com>",
       "state": "sent_awaiting_provider_response",
+      "acknowledgement": {
+        "gmail_message_id": "1a0e8ec5493ffcdc",
+        "received_at": "2026-09-28T16:49:48Z",
+        "sender": "HPP.Support@health.gov.au",
+        "kind": "automatic_receipt_acknowledgement",
+        "substantive_guidance": false
+      },
       "attachment_count": 0,
       "source_payloads_attached": false,
       "rights_decision_made": false
@@ -39,6 +53,13 @@
       "gmail_message_id": "1a0e8ec55b28f0e1",
       "rfc_message_id": "<CA+D7CoykCA_S=2XdDsmJ5FuVshXgqJDseQmO=8FpPmLtxUBVLQ@mail.gmail.com>",
       "state": "sent_awaiting_agency_response",
+      "acknowledgement": {
+        "gmail_message_id": "1a0e8eccd26b33f4",
+        "received_at": "2026-09-28T16:50:18Z",
+        "sender": "enquiries@health.gov.au",
+        "kind": "automatic_receipt_acknowledgement",
+        "substantive_guidance": false
+      },
       "attachment_count": 0,
       "workbook_bytes_attached": false,
       "authorization_expanded": false,
@@ -50,7 +71,8 @@
     "authenticated_sender_profile": "Dylan Mordaunt <d.a.mordaunt@gmail.com>",
     "sent_label_readback": true,
     "recipient_subject_and_message_id_readback": true,
-    "external_replies_observed_at_record_time": false
+    "automated_acknowledgements_observed": true,
+    "substantive_provider_responses_observed": false
   },
   "boundary": "These are inquiries only. They do not establish source rights, credentials, a reachable mirror, acquisition permission beyond existing records, dataset qualification, public release, or Stable v1 acceptance."
 }

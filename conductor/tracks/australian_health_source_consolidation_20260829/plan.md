@@ -419,9 +419,12 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   attribution/terms, and machine retrieval requirements:
   `conductor/tracks/australian_health_source_consolidation_20260829/m107-agency-mirror-request.md`.
   Sent to the Department's published general-enquiry address on 2026-09-28;
-  verified receipt: `quality/qualifications/provider-outreach-receipts-20260929.json`.
+  an automatic acknowledgement confirms receipt, with substantive response
+  pending. Sent and acknowledgement evidence:
+  `quality/qualifications/provider-outreach-receipts-20260929.json`.
 - [~] Obtain the agency's response and an approved endpoint within the existing
-  source authorization. No reply was observed at the time of the receipt. Do
+  source authorization. No substantive reply was observed at the time of the
+  receipt. Do
   not GET or retain workbook bytes on the workstation.
   If the endpoint uses a domain outside the current authorization, stop for an
   explicit scope update. Then acquire only through the authorized GitHub Actions

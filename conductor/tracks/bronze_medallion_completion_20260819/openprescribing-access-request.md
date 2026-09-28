@@ -1,8 +1,9 @@
 # OpenPrescribing supported-access inquiry
 
 **Status:** sent 2026-09-28 to `feedback@openprescribing.net` from
-`d.a.mordaunt@gmail.com`; awaiting provider guidance. Gmail message ID:
-`1a0e8ebbb1c26b2c`. The verified Sent receipt is
+`d.a.mordaunt@gmail.com`; an automatic receipt acknowledgement arrived from
+`bennett@phc.ox.ac.uk`, but substantive provider guidance is pending. Sent and
+acknowledgement receipts are recorded in
 `quality/qualifications/provider-outreach-receipts-20260929.json`.
 
 **Subject:** Supported automated access to OpenPrescribing API v1

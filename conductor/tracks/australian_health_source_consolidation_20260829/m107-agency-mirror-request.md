@@ -1,8 +1,9 @@
 # M-107 agency-hosted endpoint inquiry
 
 **Status:** sent 2026-09-28 to `enquiries@health.gov.au` from
-`d.a.mordaunt@gmail.com`; awaiting agency response. Gmail message ID:
-`1a0e8ec55b28f0e1`. The verified Sent receipt is
+`d.a.mordaunt@gmail.com`; the Department acknowledged receipt automatically,
+but no substantive response or endpoint has been supplied. Sent and
+acknowledgement receipts are recorded in
 `quality/qualifications/provider-outreach-receipts-20260929.json`.
 
 The maintainer selected an agency-hosted mirror as the M-107 delivery route.

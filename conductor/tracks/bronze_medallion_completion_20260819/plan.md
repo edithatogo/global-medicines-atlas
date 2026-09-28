@@ -435,9 +435,9 @@ for credentialed or rights-unresolved sources.
     - [x] Select receipt-bound explicit date partitions instead of treating rolling five-year API views as static complete releases
     - [x] Bind the maintainer's 2026-08-26 approved-public Option B decision to successfully retrieved, receipt-bound API v1 partitions under the OGL
     - [x] Identify the provider's official contact route and prepare the supported machine-access request: `openprescribing-access-request.md`
-    - [x] Send the request to `feedback@openprescribing.net` from the recommended maintainer account; Sent readback is bound in `quality/qualifications/provider-outreach-receipts-20260929.json`. Provider guidance remains pending and the existing source/rights scope is unchanged.
+    - [x] Send the request to `feedback@openprescribing.net` from the recommended maintainer account; the automatic acknowledgement and Sent readback are bound in `quality/qualifications/provider-outreach-receipts-20260929.json`. Substantive provider guidance remains pending and the existing source/rights scope is unchanged.
     - [x] Review fix: add a direct artifact contract for the request, plan, and evidence, assign it to Test-Goblin's unit lane, and supersede the unrelated operational-hardening test claim
-    - [x] Reconcile PR #580 after merge `cdde51796355265eecdf25bf558f22dc1a6c5bee`; its exact head passed all 37 hosted checks, including Codecov patch coverage. The request is now sent and awaits provider guidance; this does not qualify new partitions or change rights.
+    - [x] Reconcile PR #580 after merge `cdde51796355265eecdf25bf558f22dc1a6c5bee`; its exact head passed all 37 hosted checks, including Codecov patch coverage. The request is now sent, its automatic acknowledgement is recorded, and substantive provider guidance remains pending; this does not qualify new partitions or change rights.
     - [~] Obtain provider guidance for automated access; do not solve the Cloudflare challenge, widen rights scope, or substitute upstream NHSBSA files
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
     - [x] Permit public release and external publication only for successfully retrieved partitions with OGL/OpenPrescribing attribution; the bounded six-endpoint attempt returned HTTP 403 and published nothing
@@ -749,7 +749,9 @@ for credentialed or rights-unresolved sources.
 
 - [x] Merge the redacted HTML-shape diagnostic in PR [#591](https://github.com/edithatogo/global-medicines-atlas/pull/591), exact head `7415e63d`, merged SHA `76b311d704db443d0f4de11f53d925bec528d641`; all protected checks passed.
 - [x] Run the authorized internal-only acquisition workflow once on exact `main`. It returned HTTP 200, `.xls`, 4,446 bytes, `text/html;charset=UTF-8`, a source-titled HTML document, and one table with three rows and six cells. The page had no forms, controls, frames, scripts, links, or buttons.
-- [ ] Keep the download rejected. The bounded shape does not establish whether this is a valid HTML-formatted spreadsheet or an error response. Resolve export format semantics through official source documentation or provider guidance before implementing an HTML parser or treating this response as source evidence. No response text or bytes were inspected or retained; internal landing, private retention, Bronze acceptance, public release, and external publication remain unclaimed.
+- [x] Review the official landing, data-description, and metadata-download pages. They establish the 1996–2025 sales period and source-defined sector limitations; the metadata-download page lists supporting CSVs, but none documents the interactive export endpoint's response media type. Receipt: `quality/qualifications/nordic-medstat-export-format-doc-review-20260929.json`.
+- [x] Prepare a narrowly scoped source-owner clarification request at `medstat-export-format-request.md`; it remains unsent.
+- [~] Keep the download rejected. The bounded shape and official documentation do not establish whether this is a valid HTML-formatted spreadsheet or an error response. Obtain source-owner guidance before implementing an HTML parser or treating this response as source evidence. No response text or bytes were inspected or retained; internal landing, private retention, Bronze acceptance, public release, and external publication remain unclaimed.
 
 ## NICE private Bronze receipt reconciliation (2026-09-29)
 
