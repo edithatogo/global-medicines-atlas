@@ -260,8 +260,6 @@ def _date_order_compatibility(value: str) -> str:
     records whether the lexical components are calendar-valid as DMY, MDY,
     both, or neither.
     """
-    if re.fullmatch(r"[0-9]{2}\.[0-9]{2}\.[0-9]{4}", value) is None:
-        return "not_two_two_four_dot"
     first, second, year = (int(part) for part in value.split("."))
     valid_orders: set[str] = set()
     for order, month, day in (
