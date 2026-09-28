@@ -1,0 +1,47 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-publication-metadata-observation",
+  "schema_version": 1,
+  "observed_at": "2026-09-28T10:19:24Z",
+  "publisher": "Australian Government Department of Health, Disability and Ageing",
+  "method": "Metadata-only observation of the official HTML publication pages and attachment links. The XLSX links were not fetched; the browser's unsupported-content response confirms only that it did not read the workbook bodies.",
+  "observations": [
+    {
+      "family": "annual_state_and_territory",
+      "page_url": "https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en",
+      "page_title": "Medicare annual statistics – State and territory (2009-10 to 2025-26)",
+      "page_statement": "Annual statistics about the use of Medicare by state and territory from 2009–10 to 2025-26.",
+      "publication_date": "2026-08-10",
+      "attachment_url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
+      "attachment_body_read": false,
+      "metadata_discrepancy": "The page declares coverage through 2025-26 while the linked filename ends in 2024-25. The actual workbook coverage is unverified."
+    },
+    {
+      "family": "quarterly_state_and_territory",
+      "page_url": "https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26?language=en",
+      "page_title": "Medicare quarterly statistics – State and territory (June quarter 2025-26)",
+      "page_statement": "Statistics from September quarter 2009–10 to June quarter 2025-26, by state and territory.",
+      "publication_date": "2026-08-10",
+      "attachment_url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26.xlsx",
+      "attachment_body_read": false
+    },
+    {
+      "family": "year_to_date_summary_tables",
+      "page_url": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26?language=en",
+      "page_title": "Medicare statistics – year-to-date summary tables (July to June 2025-26)",
+      "page_statement": "July to June 2025-26 compared with the previous year by broad type of service, state and territory, and Modified Monash Model location.",
+      "publication_date": "2026-08-10",
+      "attachment_url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26.xlsx",
+      "attachment_body_read": false
+    }
+  ],
+  "limitations": [
+    "This receipt preserves the observed publication metadata, not the mutable source HTML payload.",
+    "No workbook body or source bytes were read, acquired, or retained.",
+    "The receipt does not establish a mirror, rights expansion, historical completeness, or M-107 acceptance."
+  ],
+  "digest": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON with sorted keys, compact separators, ensure_ascii=false; digest field excluded",
+    "value": "8ede9bc61beb3e1cf6c7692233d2d210472647b4008e5edd92fa07de331fc901"
+  }
+}

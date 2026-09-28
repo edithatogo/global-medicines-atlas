@@ -416,3 +416,16 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   explicit scope update. Then acquire only through the authorized GitHub Actions
   publication workflow and qualify each workbook's exact period, denominator,
   and historical family coverage. M-107 and Australian federation remain open.
+
+## M-107 metadata evidence review fixes (2026-09-28)
+
+- [x] Correct the proposed route/contact evidence timestamps to the recorded
+  commit time (`2026-09-28T10:09:08Z`), removing timestamps later than the
+  commit that contains those records. The correction is confined to the
+  unmerged PR evidence additions.
+- [x] Preserve the currently observed publication-page metadata in a minimal
+  content-addressed receipt and link it from the route qualification. The
+  SHA-256 binds the exact extracted page titles, period statements, dates, and
+  attachment URLs; the mutable HTML payload and workbook bytes are not copied.
+  M-107 remains blocked because this receipt does not establish workbook
+  contents, mirror availability, historical completeness, or acquisition.

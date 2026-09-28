@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.australian-mbs-agency-mirror-route",
   "schema_version": 1,
-  "observed_at": "2026-09-28",
+  "observed_at": "2026-09-28T10:19:24Z",
   "maintainer_route_choice": "agency_hosted_mirror",
   "mirror_identified": false,
   "agency_contact_performed": false,
@@ -11,6 +11,11 @@
   "rights_scope_changed": false,
   "external_publication_performed": false,
   "authorization": "quality/qualifications/australian-mbs-utilisation-publication-authorization.json",
+  "metadata_observation_receipt": {
+    "path": "quality/qualifications/australian-mbs-publication-metadata-observation-20260928.json",
+    "sha256": "8ede9bc61beb3e1cf6c7692233d2d210472647b4008e5edd92fa07de331fc901",
+    "scope": "Content-addressed snapshot of the observed page titles, visible period statements, publication dates, and XLSX attachment URLs; source HTML and workbook bytes are not retained."
+  },
   "authorized_domains": [
     "www.health.gov.au",
     "health.gov.au",
