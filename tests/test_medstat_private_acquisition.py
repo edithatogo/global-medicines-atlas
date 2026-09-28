@@ -114,6 +114,9 @@ def test_browser_download_diagnostic_reports_only_bounded_metadata() -> None:
     assert "byte_count=29" in message
     assert "zip_signature_valid=False" in message
     assert "ole_signature_valid=False" in message
+    assert "html_document=True" in message
+    assert "html_table_count=0" in message
+    assert "html_source_title_match=False" in message
     assert "http_status=200" in message
     assert "content_type=text/html" in message
     assert "synthetic-marker" not in message
