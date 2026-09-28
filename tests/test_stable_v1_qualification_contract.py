@@ -177,6 +177,18 @@ def test_all_local_evidence_paths_exist() -> None:
     assert not missing
 
 
+def test_stable_v1_status_page_matches_current_bronze_report_provenance() -> (
+    None
+):
+    maturity = _load(ROOT / "quality/qualifications/bronze-maturity.json")
+    status_page = (
+        ROOT / "docs/qualification/stable-v1-m5-maturity-status.md"
+    ).read_text(encoding="utf-8")
+
+    assert maturity["git_commit"] in status_page
+    assert "8c830ebdc33c4a3b12c8a34d5d8c8d5b4d9d8fa1" not in status_page
+
+
 def test_publication_identities_are_unique_and_non_overlapping() -> None:
     identities = _load(QUALIFICATION)["publication_identities"]
     registry = _load(
