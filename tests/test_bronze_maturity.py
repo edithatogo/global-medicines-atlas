@@ -16,6 +16,7 @@ from scripts.qualify_bronze_maturity import main as qualify_bronze_main
 from global_medicines_atlas import bronze_maturity as bronze_maturity_mod
 from global_medicines_atlas.bronze_maturity import (
     CATALOG_RELATIVE,
+    FDA_SHORTAGES_HISTORICAL_SNAPSHOT_COUNT,
     PROPERTY_IDS,
     SCHEMA_RELATIVE,
     classify_catalog_source,
@@ -50,6 +51,103 @@ def test_cms_source_record_qualification_counts_as_bronze_landing() -> None:
             "quality/qualifications/cms-partd-source-record-qualification-20260927.json"
         ),
     }
+
+
+def test_fda_shortages_scoped_internal_receipt_counts_as_bronze_landing() -> (
+    None
+):
+    evidence = receipt_backed_landing_evidence(ROOT, {"us-fda-drug-shortages"})
+    assert evidence == {
+        "us-fda-drug-shortages": (
+            "quality/qualifications/fda-shortages-live-corpus-20260821.json"
+        )
+    }
+
+
+def test_fda_shortages_success_predicate_accepts_qualified_receipt() -> None:
+    receipt = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/fda-shortages-live-corpus-20260821.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert bronze_maturity_mod._is_successful_fda_shortages_receipt(
+        receipt, "us-fda-drug-shortages"
+    )
+    assert FDA_SHORTAGES_HISTORICAL_SNAPSHOT_COUNT == 129
+
+
+@pytest.mark.parametrize(
+    ("source_id", "field", "value"),
+    [
+        ("us-fda-orange-book", "prompt_complete", True),
+        ("us-fda-drug-shortages", "prompt_complete", False),
+        ("us-fda-drug-shortages", "schema_version", True),
+        ("us-fda-drug-shortages", "current_source_record_rows", 0),
+        ("us-fda-drug-shortages", "archive_checksums_verified", 0),
+    ],
+)
+def test_fda_shortages_success_predicate_rejects_unqualified_receipt(
+    source_id: str, field: str, value: object
+) -> None:
+    receipt = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/fda-shortages-live-corpus-20260821.json"
+        ).read_text(encoding="utf-8")
+    )
+    receipt[field] = value
+    assert not bronze_maturity_mod._is_successful_fda_shortages_receipt(
+        receipt, source_id
+    )
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("internal_retention_authorized", False),
+        ("current_source_record_projection_count", 0),
+        ("current_recovered_source_record_projection_count", 0),
+        ("current_source_record_parquet_pairs_byte_identical", 0),
+        ("unique_historical_list_snapshots_archived", 128),
+        ("external_publication_performed", True),
+        ("historical_detail_snapshot_coverage_complete", True),
+    ],
+)
+def test_fda_shortages_receipt_fails_closed_on_scope_or_evidence_drift(
+    tmp_path: Path, field: str, value: object
+) -> None:
+    qualification = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/fda-shortages-live-corpus-20260821.json"
+        ).read_text(encoding="utf-8")
+    )
+    qualification[field] = value
+    receipt = (
+        tmp_path
+        / "quality/qualifications/fda-shortages-live-corpus-20260821.json"
+    )
+    receipt.parent.mkdir(parents=True)
+    receipt.write_text(json.dumps(qualification), encoding="utf-8")
+    overrides = tmp_path / bronze_maturity_mod.LANDING_OVERRIDES_RELATIVE
+    overrides.parent.mkdir(parents=True)
+    overrides.write_text(
+        json.dumps({
+            "overrides": [
+                {
+                    "source_id": "us-fda-drug-shortages",
+                    "state": "landed_and_evidenced",
+                    "evidence_references": [str(receipt.relative_to(tmp_path))],
+                }
+            ]
+        }),
+        encoding="utf-8",
+    )
+    assert (
+        receipt_backed_landing_evidence(tmp_path, {"us-fda-drug-shortages"})
+        == {}
+    )
 
 
 def test_cms_maturity_landing_rejects_rights_drift(tmp_path: Path) -> None:
@@ -569,13 +667,15 @@ def test_repository_us_live_records_override_scope_is_exact() -> None:
     }
     evidence = receipt_backed_landing_evidence(ROOT, covered_ids)
     assert set(evidence) == {
+        "us-fda-drug-shortages",
         "us-fda-nsde",
         "us-openfda-drugsfda",
         "us-openfda-faers",
         "us-openfda-nsde",
     }
     assert set(evidence.values()) == {
-        "quality/qualifications/us-live-bronze-records-20260820.json"
+        "quality/qualifications/fda-shortages-live-corpus-20260821.json",
+        "quality/qualifications/us-live-bronze-records-20260820.json",
     }
 
 

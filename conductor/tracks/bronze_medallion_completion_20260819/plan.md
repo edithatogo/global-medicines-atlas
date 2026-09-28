@@ -252,7 +252,7 @@ before any hot-path rewrite. Python remains orchestration.
     - [x] Land Medsafe, PHARMAC, ARTG, PBS, DPD/NOC, MHRA/NICE, EMA/Union Register, PMDA/NHI, Drugs@FDA, and CMS Part D fixtures (`53b2671`)
     - [x] Leave NZULM bulk, NZHTS, AMT, embargoed PBS, dm+d/TRUD, EMA PMS, SPOR, and live RxNorm payloads excluded
     - [x] Remove the rights-unresolved `vendor/nzmedicines` snapshot from the current tree and replace its executable qualification dependency with a minimal first-party synthetic FHIR bundle; retain historical inventory metadata and keep NZULM/NZMT coverage unqualified
-    - [ ] Complete source-specific rights receipts and live landing evidence for the remaining 136 public/no-credential sources; a catalogue blocker is not landing completion
+    - [ ] Complete source-specific rights receipts and live landing evidence for the remaining 120 in-scope public/no-credential sources; a catalogue or acquisition-audit status alone is not accepted Bronze landing evidence
         - [x] Implement and exercise the Union Register JSON acquisition, source-record projection, clean-room recovery, and private archive machinery against a representative corpus; keep live acquisition disabled pending the maintainer licence decision
         - [x] Record the maintainer's internal-only Union Register licence decision, acquire the official 2026-08-17 JSON snapshot, exercise Bronze and clean-room recovery over all 6,440 source-native records, and verify the private archive checksum; public release remains prohibited
         - [x] Review fixes: register the receipt-backed JSON parser and live-receipt capability in the source capability census (`d386a66`)
@@ -267,7 +267,7 @@ before any hot-path rewrite. Python remains orchestration.
         - [x] Reconcile prompt 19 as the first live-complete acquisition prompt: the authoritative FDA NSDE comprehensive file and bounded openFDA NSDE projection are both live-qualified; keep Orange Book and other historical families incomplete
         - [x] Inventory the bounded official Orange Book history surfaces without payload retrieval and add a fail-closed maintainer authorization contract; do not equate current ZIP, current PDFs, monthly change pages, and the legacy FDA archive
         - [ ] Acquire complete historical releases for the applicable FDA source families; the bounded canaries and current snapshots do not complete prompt-level coverage
-            - Seventh bounded Orange Book pass followed a material Archive-It HTTP 429-to-200 change, privately archived and recovered 155/259 releases, and increased cumulative unique retention to 201/259; 58 exact URLs remain explicitly unavailable
+            - The 2026-09-28 bounded refresh accepted the newly indexed August 2026 monthly release; 140/260 releases are accepted, 16 are quarantined, and 104 Archive-It URLs fail. Historical coverage remains incomplete and the refresh is internal-only; do not repeat until an official inventory or Archive-It availability change.
 - [x] Task: Review Fixes for bounded U.S. live acquisition (`9a7dc7b`)
     - [x] Prevent bound GET/HEAD requests from gaining a chunked request body and skip compressed-wire Content-Length comparisons against decoded bytes
     - [x] Add authorization drift, fault isolation, excluded-content, private-archive, and transport regression tests; targeted branch coverage reached 93%
