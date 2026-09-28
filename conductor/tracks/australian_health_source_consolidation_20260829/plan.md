@@ -420,7 +420,7 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 ## M-107 metadata evidence review fixes (2026-09-28)
 
 - [x] Correct the proposed route/contact evidence timestamps to the recorded
-  commit time (`2026-09-28T10:09:08Z`), removing timestamps later than the
+  commit time (`2026-09-28T10:10:14Z`), removing timestamps later than the
   commit that contains those records. The correction is confined to the
   unmerged PR evidence additions.
 - [x] Preserve the currently observed publication-page metadata in a minimal
