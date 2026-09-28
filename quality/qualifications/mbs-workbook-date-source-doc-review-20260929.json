@@ -1,0 +1,33 @@
+{
+  "schema_id": "global-medicines-atlas.mbs-workbook-date-source-doc-review",
+  "schema_version": 1,
+  "reviewed_at": "2026-09-28T17:49:56Z",
+  "source_id": "au-mbs-p7-legacy-workbook",
+  "official_documents": [
+    {
+      "url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/FAQ-XML_Help",
+      "scope": "MBS XML field specifications",
+      "finding": "The current MBS XML specification defines DD.MM.YYYY for date fields including BenefitStartDate and FeeStartDate.",
+      "applies_to_legacy_p7_workbook": false
+    },
+    {
+      "url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-240701",
+      "scope": "July 2024 MBS downloads",
+      "finding": "The page documents XML, book, Word/PDF, and text download resources but does not document the date convention of the distinct legacy Group P7 workbook.",
+      "applies_to_legacy_p7_workbook": false
+    }
+  ],
+  "prior_value_free_observation": {
+    "receipt": "quality/qualifications/mbs-workbook-date-order-compatibility-20260928.json",
+    "both_dmy_and_mdy_calendar_valid": 1276,
+    "dmy_only_calendar_valid": 4,
+    "date_profile": null,
+    "semantic_promotion": false
+  },
+  "xml_date_format_documented": "DD.MM.YYYY",
+  "legacy_p7_workbook_date_format_documented": false,
+  "date_profile": null,
+  "semantic_promotion": false,
+  "next_evidence": "Obtain source-specific documentation or source-owner confirmation that applies to the exact legacy P7 workbook before selecting a conversion profile.",
+  "boundary": "The XML specification cannot be transferred to a separate workbook era. This documentation review makes no workbook date-semantic claim and does not authorize conversion, derived admission, or publication."
+}

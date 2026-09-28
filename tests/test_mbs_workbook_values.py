@@ -4,6 +4,7 @@ import json
 from datetime import date
 from decimal import Decimal
 from io import BytesIO
+from pathlib import Path
 from types import SimpleNamespace
 from zipfile import ZipFile
 
@@ -169,6 +170,22 @@ def test_unknown_date_profile_fails_before_output() -> None:
                 payload, _receipt(payload), date_format="guess"
             )
         )
+
+
+def test_official_xml_date_spec_does_not_select_legacy_workbook_profile() -> (
+    None
+):
+    root = Path(__file__).resolve().parents[1]
+    review = json.loads(
+        (
+            root / "quality/qualifications/"
+            "mbs-workbook-date-source-doc-review-20260929.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert review["xml_date_format_documented"] == "DD.MM.YYYY"
+    assert review["legacy_p7_workbook_date_format_documented"] is False
+    assert review["date_profile"] is None
+    assert review["semantic_promotion"] is False
 
 
 def test_null_empty_annotations_and_text_encoded_money() -> None:
