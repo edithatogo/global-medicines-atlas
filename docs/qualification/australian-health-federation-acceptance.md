@@ -18,6 +18,13 @@ track plans and observed archive receipts rather than implementation alone.
 | M-112 federation v4 | Blocked | Emit and independently verify live producer v4 contracts for the published derived corpus and downstream compatibility canaries. The schema and synthetic contracts are implementation evidence. |
 | M-113 donor archival | Verified | Both separate maintainer approvals, exact public history preservation, anonymous clean restore and unchanged archived Git heads are recorded in the [scraper receipt](../../quality/qualifications/scraper-archival-20260906.json) and [graph receipt](../../quality/qualifications/graph-archival-20260906.json). |
 
+The exact-main [July 2024 P7 workbook qualification](../../quality/qualifications/mbs-p7-workbook-field-lineage-20260929.json)
+adds a value-free structural denominator (13,742 cells across four sheets and
+99 field mappings). It remains a candidate with no selected date profile. This
+is distinct from the timed-out aggregate-patient workbook and does not satisfy
+M-106 participation, M-107 complete historical coverage, or M-109 semantic
+acceptance.
+
 For M-109, official MBS documentation defines `DD.MM.YYYY` for XML date
 fields, but does not document the date convention for the distinct legacy P7
 workbook. Its date profile remains unselected. See the

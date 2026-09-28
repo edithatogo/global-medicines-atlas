@@ -21,9 +21,9 @@ authorized internal retention, the complete current export and 129 monthly FDA
 list snapshots, recovered source-record projection with byte-identical
 Parquet, and verified private archive checksums. The older bounded U.S. Bronze
 corpus row describes a separate quarantined acquisition and does not override
-that later, specifically scoped evidence. The latest report refresh, proposed
-in PR #605, was evaluated against exact main commit
-`008d8317a87173e689288ba5460f2c7e97949067` after PR #606 and finds 118 of
+that later, specifically scoped evidence. The latest report refresh was
+evaluated against exact main commit
+`8c830ebdc33c4a3b12c8a34d5d8c8d5b4d9d8fa1` and finds 118 of
 157 in-scope public/no-credential sources without qualifying landing evidence.
 Two fixture-only and 15 excluded sources remain outside that denominator.
 Delegated detail-page coverage remains incomplete, and public release and

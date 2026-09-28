@@ -1,0 +1,2775 @@
+{
+  "bytes": 87727,
+  "domain_value_profile": {
+    "by_field": {
+      "(unmapped)": {
+        "unmapped": 4
+      },
+      "Anaes": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "AnaesChange": {
+        "header": 2,
+        "preserved": 320
+      },
+      "BasicUnits": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "Benefit100": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "Benefit75": {
+        "converted": 320,
+        "header": 2
+      },
+      "Benefit85": {
+        "converted": 308,
+        "header": 2,
+        "unrepresentable": 12
+      },
+      "BenefitStartDate": {
+        "header": 2,
+        "unsupported_format": 320
+      },
+      "BenefitType": {
+        "header": 2,
+        "preserved": 320
+      },
+      "Category": {
+        "header": 2,
+        "preserved": 320
+      },
+      "DerivedFee": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "DerivedFeeStartDate": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "Description": {
+        "header": 3,
+        "preserved": 480
+      },
+      "DescriptionStartDate": {
+        "header": 2,
+        "unsupported_format": 320
+      },
+      "DescriptorChange": {
+        "header": 2,
+        "preserved": 320
+      },
+      "EMSNCap": {
+        "header": 2,
+        "preserved": 320
+      },
+      "EMSNChange": {
+        "header": 2,
+        "preserved": 320
+      },
+      "EMSNChangeDate": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "EMSNDescription": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "EMSNEndDate": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "EMSNFixedCapAmount": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "EMSNMaximumCap": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "EMSNPercentageCap": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "EMSNStartDate": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "FeeChange": {
+        "header": 2,
+        "preserved": 320
+      },
+      "FeeStartDate": {
+        "header": 2,
+        "unsupported_format": 320
+      },
+      "FeeType": {
+        "header": 2,
+        "preserved": 320
+      },
+      "Group": {
+        "header": 2,
+        "preserved": 320
+      },
+      "ItemChange": {
+        "header": 2,
+        "preserved": 320
+      },
+      "ItemEndDate": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "ItemNum": {
+        "header": 3,
+        "preserved": 501
+      },
+      "ItemStartDate": {
+        "header": 2,
+        "unsupported_format": 320
+      },
+      "ItemType": {
+        "header": 2,
+        "preserved": 320
+      },
+      "NewItem": {
+        "header": 2,
+        "preserved": 320
+      },
+      "ProviderType": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "QFEEndDate": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "QFEStartDate": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "ScheduleFee": {
+        "converted": 296,
+        "header": 2,
+        "unrepresentable": 24
+      },
+      "SubGroup": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "SubHeading": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "SubItemNum": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "class": {
+        "header": 2,
+        "preserved": 32
+      },
+      "declining_list_member": {
+        "header": 1,
+        "preserved": 20
+      },
+      "disease": {
+        "header": 2,
+        "preserved": 200
+      },
+      "element": {
+        "header": 2,
+        "preserved": 34
+      },
+      "exome": {
+        "header": 2,
+        "preserved": 58
+      },
+      "prenatal": {
+        "header": 2,
+        "preserved": 16
+      },
+      "technology": {
+        "header": 2,
+        "preserved": 110
+      },
+      "tissue": {
+        "header": 2,
+        "preserved": 30
+      }
+    },
+    "cells": 13742,
+    "conversion_version": "mbs-scalar-v2",
+    "date_encoding_counts": {
+      "header": 22,
+      "missing_value": 2240,
+      "two_two_four_dot": 1280
+    },
+    "date_encoding_interpretation": "lexical_shape_only_not_calendar_or_order",
+    "date_encoding_profile_version": 1,
+    "date_encodings_by_field": {
+      "BenefitStartDate": {
+        "header": 2,
+        "two_two_four_dot": 320
+      },
+      "DerivedFeeStartDate": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "DescriptionStartDate": {
+        "header": 2,
+        "two_two_four_dot": 320
+      },
+      "EMSNChangeDate": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "EMSNEndDate": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "EMSNStartDate": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "FeeStartDate": {
+        "header": 2,
+        "two_two_four_dot": 320
+      },
+      "ItemEndDate": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "ItemStartDate": {
+        "header": 2,
+        "two_two_four_dot": 320
+      },
+      "QFEEndDate": {
+        "header": 2,
+        "missing_value": 320
+      },
+      "QFEStartDate": {
+        "header": 2,
+        "missing_value": 320
+      }
+    },
+    "date_order_compatibility_by_field": {
+      "BenefitStartDate": {
+        "both": 320
+      },
+      "DescriptionStartDate": {
+        "both": 318,
+        "dmy_only": 2
+      },
+      "FeeStartDate": {
+        "both": 318,
+        "dmy_only": 2
+      },
+      "ItemStartDate": {
+        "both": 320
+      }
+    },
+    "date_order_compatibility_counts": {
+      "both": 1276,
+      "dmy_only": 4
+    },
+    "date_order_compatibility_interpretation": "calendar_validity_only_no_date_convention_selected",
+    "date_order_compatibility_profile_version": 1,
+    "date_profile": null,
+    "schema_version": 1,
+    "semantic_promotion": false,
+    "source_error_cells": 2,
+    "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+    "statuses": {
+      "converted": 924,
+      "header": 97,
+      "missing_value": 6080,
+      "preserved": 5321,
+      "unmapped": 4,
+      "unrepresentable": 36,
+      "unsupported_format": 1280
+    }
+  },
+  "header_mapping_profile": {
+    "cells": 13742,
+    "mapping_profile": "mbs-p7-2024-07-headers-v1",
+    "mapping_statuses": {
+      "header": 97,
+      "source_explicit_header": 13641,
+      "unlabelled": 4
+    },
+    "mapping_targets": {
+      "benefits": 1600,
+      "caps": 2880,
+      "descriptions": 1120,
+      "fees": 1920,
+      "hierarchy": 1280,
+      "legacy_annotations": 500,
+      "services": 4341,
+      "source_headers": 97,
+      "unmapped": 4
+    },
+    "semantic_promotion": false,
+    "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
+  },
+  "kind": "p7-workbook",
+  "qualification_artifact_sha256": "c492463f80078f7180f546acdc77e75cc599bea1017ebe5d6737e802f23c2562",
+  "retrieved_at": "2026-09-28T19:36:56+00:00",
+  "schema_id": "global-medicines-atlas.mbs-p7-workbook-qualification",
+  "schema_version": 1,
+  "sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+  "sheets": [
+    {
+      "cells": 6689,
+      "dimension": "A1:AV161",
+      "error_cells": 1,
+      "formula_cells": 2,
+      "name": "Sheet1"
+    },
+    {
+      "cells": 322,
+      "dimension": "A1:B161",
+      "error_cells": 0,
+      "formula_cells": 0,
+      "name": "Sheet2"
+    },
+    {
+      "cells": 6710,
+      "dimension": "A1:AV183",
+      "error_cells": 1,
+      "formula_cells": 2,
+      "name": "Sheet1 (2)"
+    },
+    {
+      "cells": 21,
+      "dimension": "A1:A21",
+      "error_cells": 0,
+      "formula_cells": 0,
+      "name": "Sheet3"
+    }
+  ],
+  "storage_qualification": {
+    "bytes": 87727,
+    "cells": 13742,
+    "domain_mapping_qualified": false,
+    "parquet_roundtrip_verified": true,
+    "publication_performed": false,
+    "qualification": "storage_candidate_only",
+    "schema_version": 1,
+    "sheet_count": 4,
+    "sheets": [
+      {
+        "cells": 6689,
+        "conversion_statuses": {
+          "converted": 782,
+          "error": 1,
+          "missing_value": 3040,
+          "preserved": 2848,
+          "unrepresentable": 18
+        },
+        "dimension": "A1:AV161",
+        "error_cells": 1,
+        "formula_cells": 2,
+        "name": "Sheet1",
+        "path": "xl/worksheets/sheet1.xml",
+        "storage_types": {
+          "e": 1,
+          "implicit_numeric": 3840,
+          "s": 2847,
+          "str": 1
+        }
+      },
+      {
+        "cells": 322,
+        "conversion_statuses": {
+          "converted": 160,
+          "preserved": 162
+        },
+        "dimension": "A1:B161",
+        "error_cells": 0,
+        "formula_cells": 0,
+        "name": "Sheet2",
+        "path": "xl/worksheets/sheet2.xml",
+        "storage_types": {
+          "implicit_numeric": 160,
+          "s": 162
+        }
+      },
+      {
+        "cells": 6710,
+        "conversion_statuses": {
+          "converted": 802,
+          "error": 1,
+          "missing_value": 3040,
+          "preserved": 2849,
+          "unrepresentable": 18
+        },
+        "dimension": "A1:AV183",
+        "error_cells": 1,
+        "formula_cells": 2,
+        "name": "Sheet1 (2)",
+        "path": "xl/worksheets/sheet3.xml",
+        "storage_types": {
+          "e": 1,
+          "implicit_numeric": 3860,
+          "s": 2848,
+          "str": 1
+        }
+      },
+      {
+        "cells": 21,
+        "conversion_statuses": {
+          "converted": 20,
+          "preserved": 1
+        },
+        "dimension": "A1:A21",
+        "error_cells": 0,
+        "formula_cells": 0,
+        "name": "Sheet3",
+        "path": "xl/worksheets/sheet4.xml",
+        "storage_types": {
+          "implicit_numeric": 20,
+          "s": 1
+        }
+      }
+    ],
+    "source_receipt_sha256": "cca97269c0229598ee9bac4070a598fa273353a7b33194a75e0cf14a10e5f1bc",
+    "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
+  },
+  "workbook_field_lineage": {
+    "absence_interpretation": "unknown",
+    "cell_count": 13742,
+    "date_profile": null,
+    "dimension": "service_benefit",
+    "fields": [
+      {
+        "cell_count": 161,
+        "column": "A",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "ed615ac3948558979af5dfcc41e1ddcaa7d4f101b91cf555c87f1634348bd046",
+        "mapping_field": "ItemNum",
+        "mapping_target": "services",
+        "native_header": "ItemNum",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AA",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "3cdfdc0d8d7765854706186760e0497d745dd5168b16513584b5084b1f0fc34a",
+        "mapping_field": "EMSNFixedCapAmount",
+        "mapping_target": "caps",
+        "native_header": "EMSNFixedCapAmount",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AB",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "a21519107e730cc601728ce566fc92254106aa1257223deb2b683a72248bda46",
+        "mapping_field": "EMSNMaximumCap",
+        "mapping_target": "caps",
+        "native_header": "EMSNMaximumCap",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AC",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "306406e311bbe9b3f3accc85e4eb1627f97963f82835e9a819dbf3a73c57d5da",
+        "mapping_field": "EMSNPercentageCap",
+        "mapping_target": "caps",
+        "native_header": "EMSNPercentageCap",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AD",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "d2dc70af7165078271f81513eea02da8cdec415ce1545cb9a31090d2fa576b51",
+        "mapping_field": "EMSNDescription",
+        "mapping_target": "caps",
+        "native_header": "EMSNDescription",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AE",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "6c084c4e9a1f36284b23718f7ce167ca4db84788961035228992bbd9db906234",
+        "mapping_field": "EMSNChangeDate",
+        "mapping_target": "caps",
+        "native_header": "EMSNChangeDate",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AF",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "dc65f92041053b27e44047c6fd8d97eb1d8f268b308387c89c05db5729e7bcfc",
+        "mapping_field": "DescriptionStartDate",
+        "mapping_target": "descriptions",
+        "native_header": "DescriptionStartDate",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "unsupported_format",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AG",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "4e9b481b835adaa290a6a8ae22463beaaacdb6ddbc071d88d42dc75b7587ebf4",
+        "mapping_field": "Description",
+        "mapping_target": "descriptions",
+        "native_header": "Description",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AH",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "b0758246a80f7c9fe0ab4c0ffcf7a888dde06b79f6f22c719de725ae123d85d3",
+        "mapping_field": "QFEStartDate",
+        "mapping_target": "services",
+        "native_header": "QFEStartDate",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AI",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "e27d31fda88315694b7ad4eb875e4b6c2e07c43dddc35f81a63ec10894a68487",
+        "mapping_field": "QFEEndDate",
+        "mapping_target": "services",
+        "native_header": "QFEEndDate",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AJ",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "8afd84abded272c481fba80adc8a7920b298cea91824965d68b17729c44a66d1",
+        "mapping_field": "DerivedFeeStartDate",
+        "mapping_target": "fees",
+        "native_header": "DerivedFeeStartDate",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AK",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "388c30b1d57ecb8a53e0de3f72a63880ad043adef0ea4e147e32f2b1daa9bf94",
+        "mapping_field": "DerivedFee",
+        "mapping_target": "fees",
+        "native_header": "DerivedFee",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AL",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "0ecbaca3944c44eeffd6455eb2cf7e1c59d876ef7e750b6f91a6eb34cfdf1f75",
+        "mapping_field": "Benefit75",
+        "mapping_target": "benefits",
+        "native_header": "Benefit75",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "converted",
+            160
+          ],
+          [
+            "header",
+            1
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AM",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "c74ec36814ab9159d715a9823d8681b001e8df70c4f146b7d572717efd319d11",
+        "mapping_field": "Benefit85",
+        "mapping_target": "benefits",
+        "native_header": "Benefit85",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "converted",
+            154
+          ],
+          [
+            "header",
+            1
+          ],
+          [
+            "unrepresentable",
+            6
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AN",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "48dff2ffcfbefab7b328ffd79ba50ae72384270a3e54af2deb16eb15032533a0",
+        "mapping_field": "Anaes",
+        "mapping_target": "services",
+        "native_header": "Anaes",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 18,
+        "column": "AO",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "76b7d460dfa82566648f8ce2f955cfe445e6a59daa005d7d005f130ddae88fae",
+        "mapping_field": "element",
+        "mapping_target": "legacy_annotations",
+        "native_header": "Element",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            17
+          ]
+        ]
+      },
+      {
+        "cell_count": 17,
+        "column": "AP",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "bdc4ced3ca786c8b098af4b01cc749ba1a7679fbd64b5cb6274b37165ca02985",
+        "mapping_field": "class",
+        "mapping_target": "legacy_annotations",
+        "native_header": "Class",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            16
+          ]
+        ]
+      },
+      {
+        "cell_count": 56,
+        "column": "AQ",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "85d6d5b5d3042388add28825a44dc242f6d5b3069e140ebdb0f5f9e642d458f6",
+        "mapping_field": "technology",
+        "mapping_target": "legacy_annotations",
+        "native_header": "Technology",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            55
+          ]
+        ]
+      },
+      {
+        "cell_count": 101,
+        "column": "AR",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "e38e22b9db6b45a5ce8e67d8054c4d1a17fee349967088354355c70b77730a8c",
+        "mapping_field": "disease",
+        "mapping_target": "legacy_annotations",
+        "native_header": "Disease",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            100
+          ]
+        ]
+      },
+      {
+        "cell_count": 16,
+        "column": "AS",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "5abb37e4f68312bb44b500cc9fe48a1fb5e90a1a761badfb2123d65f9b045405",
+        "mapping_field": "tissue",
+        "mapping_target": "legacy_annotations",
+        "native_header": "Tissue",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            15
+          ]
+        ]
+      },
+      {
+        "cell_count": 30,
+        "column": "AT",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "c22ca692b180be84c5ebcb7ba7dc0caaf9d0b942ec92d231c13f3d137f56c026",
+        "mapping_field": "exome",
+        "mapping_target": "legacy_annotations",
+        "native_header": "Exome",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            29
+          ]
+        ]
+      },
+      {
+        "cell_count": 9,
+        "column": "AU",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "3bc562b685a8714fa744a8b8401ba44f8d9c348bdd08417b009f502999b330b8",
+        "mapping_field": "prenatal",
+        "mapping_target": "legacy_annotations",
+        "native_header": "Prenatal",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            8
+          ]
+        ]
+      },
+      {
+        "cell_count": 2,
+        "column": "AV",
+        "error_count": 1,
+        "formula_count": 2,
+        "header_count": 0,
+        "lineage_sha256": "3926668d2a4f7231fdb30b33f36a921863efc329340cd1c180b6002f4dac5aa7",
+        "mapping_field": null,
+        "mapping_target": "unmapped",
+        "native_header": null,
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "unmapped",
+            2
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "B",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "6a277bab34b435a06b7af80303f4405a3b72b071d427fd9b63a1e15e5165d130",
+        "mapping_field": "SubItemNum",
+        "mapping_target": "services",
+        "native_header": "SubItemNum",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "C",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "31f5d330f3ca147b012d335884aa51ed5c45013628e10c374ece24e08a594985",
+        "mapping_field": "ItemStartDate",
+        "mapping_target": "services",
+        "native_header": "ItemStartDate",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "unsupported_format",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "D",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "9a74781afd3cbd8ca952887fb1daf9c962f64b7e9502cb463293a2d3d6f46d68",
+        "mapping_field": "ItemEndDate",
+        "mapping_target": "services",
+        "native_header": "ItemEndDate",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "E",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "a41e0f560ac51eaef1ae436c9bde231e2c1556e928bbf64c18b05590c76d6023",
+        "mapping_field": "Category",
+        "mapping_target": "hierarchy",
+        "native_header": "Category",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "F",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "b8e0da0c3d401247ed493628eb9242eac76313d0590f0a00ee0df5a472180958",
+        "mapping_field": "Group",
+        "mapping_target": "hierarchy",
+        "native_header": "Group",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "G",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "f94f73999329f2eebeaef8dc10cd689e027cfadefcb39e54aa74545931b617df",
+        "mapping_field": "SubGroup",
+        "mapping_target": "hierarchy",
+        "native_header": "SubGroup",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "H",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "3bf565527cc097279edfc05481276cdedde835141f0916a2c25306f7ee59c8d2",
+        "mapping_field": "SubHeading",
+        "mapping_target": "hierarchy",
+        "native_header": "SubHeading",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "I",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "0e3c549d4b7f5e54723db6e6ff2afc5304ed029ef17ed47c03088dc1099dfd33",
+        "mapping_field": "ItemType",
+        "mapping_target": "services",
+        "native_header": "ItemType",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "J",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "a522cc3fde8f713509b1c95326550c4eee9aee8b0e00978477219a390fbc655d",
+        "mapping_field": "FeeType",
+        "mapping_target": "fees",
+        "native_header": "FeeType",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "K",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "e429aaf4f9e6ffeca0e0dab539d359e0fcb1d5e11b545d04fcb192787aef0b6b",
+        "mapping_field": "ProviderType",
+        "mapping_target": "services",
+        "native_header": "ProviderType",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "L",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "08e029adbe46299509d39e4db3427e321e7e3bc146e6133b37723ac400197be0",
+        "mapping_field": "NewItem",
+        "mapping_target": "services",
+        "native_header": "NewItem",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "M",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "a7f0857d86675f287d9ff1fca60a5e30282413c8a1d43ce198d6b1f597615da2",
+        "mapping_field": "ItemChange",
+        "mapping_target": "services",
+        "native_header": "ItemChange",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "N",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "39fb74c3fb0244c8cb6e21319f06ca6a831b6fe361df8aa92e595c7c00ad0e64",
+        "mapping_field": "AnaesChange",
+        "mapping_target": "services",
+        "native_header": "AnaesChange",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "O",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "094ff284608493f8b0bcba346a4d1c9b98ff205c76b60ce0e1a95430b0dc0f45",
+        "mapping_field": "DescriptorChange",
+        "mapping_target": "descriptions",
+        "native_header": "DescriptorChange",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "P",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "10aae954a3e1ef4319781e03b59c356cb995bb5054991a4cca56e7de1d52a033",
+        "mapping_field": "FeeChange",
+        "mapping_target": "fees",
+        "native_header": "FeeChange",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "Q",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "986861a9b429affa9de9352c808f8957af995577946f8653300740ca6783c035",
+        "mapping_field": "EMSNChange",
+        "mapping_target": "caps",
+        "native_header": "EMSNChange",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "R",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "d333db9066c554560f7624993b7d6a4e0f46898d63cc679c0be4414941bbee4d",
+        "mapping_field": "EMSNCap",
+        "mapping_target": "caps",
+        "native_header": "EMSNCap",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "S",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "e6f0de3a33441103f3b328c404433ebff4f84d31f96b8782bfe60e2a279988c0",
+        "mapping_field": "BenefitType",
+        "mapping_target": "benefits",
+        "native_header": "BenefitType",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "T",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "6bcfcffd1a35de26a2517279ce53e96a4f0fd46472328ae3f062ee23e2e32484",
+        "mapping_field": "BenefitStartDate",
+        "mapping_target": "benefits",
+        "native_header": "BenefitStartDate",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "unsupported_format",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "U",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "84f68d707aa45fc467a8f2a67bcff0fc1a88cb3b6d6beea2ad7ecdf3512831e5",
+        "mapping_field": "FeeStartDate",
+        "mapping_target": "fees",
+        "native_header": "FeeStartDate",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "unsupported_format",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "V",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "2e5ba394a3e36f40f4cb051c27d1bab7321d3fd53cea1f8c06b079ea4f572941",
+        "mapping_field": "ScheduleFee",
+        "mapping_target": "fees",
+        "native_header": "ScheduleFee",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "converted",
+            148
+          ],
+          [
+            "header",
+            1
+          ],
+          [
+            "unrepresentable",
+            12
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "W",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "ad9515d6941e5c7911f9e7b307adda9014e7a93aa118e86d3dfe69c7258173b1",
+        "mapping_field": "Benefit100",
+        "mapping_target": "benefits",
+        "native_header": "Benefit100",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "X",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "511cd72347cd176265b414946e39b02b1de26b311106da16b669f168a1f1fd07",
+        "mapping_field": "BasicUnits",
+        "mapping_target": "services",
+        "native_header": "BasicUnits",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "Y",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "05dc75db850925e407f3274b4bc0f991d47b2f332e0a1b7e44bbe3fe1e185869",
+        "mapping_field": "EMSNStartDate",
+        "mapping_target": "caps",
+        "native_header": "EMSNStartDate",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "Z",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "ac1daa69bee52c56aaaf761b75ba2b3d8c6c59c9fa2ed8b8b7f8c0720cfbe9a3",
+        "mapping_field": "EMSNEndDate",
+        "mapping_target": "caps",
+        "native_header": "EMSNEndDate",
+        "sheet_name": "Sheet1",
+        "sheet_path": "xl/worksheets/sheet1.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 182,
+        "column": "A",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "91e6497f7033157acf86afa9add7e6c2c58dadc6f98e6e050cc80cc90eb7a19d",
+        "mapping_field": "ItemNum",
+        "mapping_target": "services",
+        "native_header": "ItemNum",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            181
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AA",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "50f431aed979564f3335161b3d6424afe1afd916b632dc671509e11dec24cc2f",
+        "mapping_field": "EMSNFixedCapAmount",
+        "mapping_target": "caps",
+        "native_header": "EMSNFixedCapAmount",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AB",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "628f1198a138927341319b869dcbcb623ef5bd7d4caa701d541098afefc1acdf",
+        "mapping_field": "EMSNMaximumCap",
+        "mapping_target": "caps",
+        "native_header": "EMSNMaximumCap",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AC",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "6a1f3686c2b48ee5502bb5cca77ed2cad414f9a9e29532fbb642f6d3ea711303",
+        "mapping_field": "EMSNPercentageCap",
+        "mapping_target": "caps",
+        "native_header": "EMSNPercentageCap",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AD",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "f4ba623b83e74bf0b61182a0688c21a50f2d29662c317ebb2688da3512ff9920",
+        "mapping_field": "EMSNDescription",
+        "mapping_target": "caps",
+        "native_header": "EMSNDescription",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AE",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "24c6b5bda9417bc36ca3b5f79f26039ce31d9f3a5516ed3960fb660550b0051f",
+        "mapping_field": "EMSNChangeDate",
+        "mapping_target": "caps",
+        "native_header": "EMSNChangeDate",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AF",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "118a3b99d159acdc810f60b74b77d39b25ae5e6a50e61ddd0d83501f03447ac9",
+        "mapping_field": "DescriptionStartDate",
+        "mapping_target": "descriptions",
+        "native_header": "DescriptionStartDate",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "unsupported_format",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AG",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "5396892dbc74d844f0d2f3a78611db72cadadb4ebb91446c7f736249b07c8e47",
+        "mapping_field": "Description",
+        "mapping_target": "descriptions",
+        "native_header": "Description",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AH",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "76aad070eda19cba344d1b29a20c87ab337e542f26fd0cc05846ccd92f048ae7",
+        "mapping_field": "QFEStartDate",
+        "mapping_target": "services",
+        "native_header": "QFEStartDate",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AI",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "e374a2de30af7e138612a65ba293a5e0c9014b8537145294c1e28d0200f1e880",
+        "mapping_field": "QFEEndDate",
+        "mapping_target": "services",
+        "native_header": "QFEEndDate",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AJ",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "4788d1f90231eee8da4b07794bf56118e27fb4789beaacfabe10b260895eff73",
+        "mapping_field": "DerivedFeeStartDate",
+        "mapping_target": "fees",
+        "native_header": "DerivedFeeStartDate",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AK",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "8e592fe7c852b15f5093806036e1e175a743245faa03ecf965be961c54b3ff1a",
+        "mapping_field": "DerivedFee",
+        "mapping_target": "fees",
+        "native_header": "DerivedFee",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AL",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "da6161794714b0286b794a26d9a183da32fcdd8928cffd9efccfcd0c8c2828a8",
+        "mapping_field": "Benefit75",
+        "mapping_target": "benefits",
+        "native_header": "Benefit75",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "converted",
+            160
+          ],
+          [
+            "header",
+            1
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AM",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "bd46015d6d7cacf8b01c4da6c7680beadfeaf12b15c72180b70e4cbef7975c98",
+        "mapping_field": "Benefit85",
+        "mapping_target": "benefits",
+        "native_header": "Benefit85",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "converted",
+            154
+          ],
+          [
+            "header",
+            1
+          ],
+          [
+            "unrepresentable",
+            6
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "AN",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "c4b3194f1bca5883f5522a9d461a45d98412cdd06b8bba2e830c8621e2393a01",
+        "mapping_field": "Anaes",
+        "mapping_target": "services",
+        "native_header": "Anaes",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 18,
+        "column": "AO",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "7475f0e46a69b45bd02ffda699b4f8b0a3d02e5ac457257eed750fcbabfd2d58",
+        "mapping_field": "element",
+        "mapping_target": "legacy_annotations",
+        "native_header": "Element",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            17
+          ]
+        ]
+      },
+      {
+        "cell_count": 17,
+        "column": "AP",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "510394d58c29699b354f3cd5040ed88c629a47e089575873e5aa2732511ce2f8",
+        "mapping_field": "class",
+        "mapping_target": "legacy_annotations",
+        "native_header": "Class",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            16
+          ]
+        ]
+      },
+      {
+        "cell_count": 56,
+        "column": "AQ",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "ac1ff7f0b2505b9fcc9e51a339a5a7dca2203c36bab848c762be693ce825044f",
+        "mapping_field": "technology",
+        "mapping_target": "legacy_annotations",
+        "native_header": "Technology",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            55
+          ]
+        ]
+      },
+      {
+        "cell_count": 101,
+        "column": "AR",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "664706c8293f1e65a0070ba1e5765a37bd886b9ecf64dbefb26eb4214e91a708",
+        "mapping_field": "disease",
+        "mapping_target": "legacy_annotations",
+        "native_header": "Disease",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            100
+          ]
+        ]
+      },
+      {
+        "cell_count": 16,
+        "column": "AS",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "dc9e8fd27f54a265f7b249a7d9ad89ea0de849f61c10db24fabc9370127841f1",
+        "mapping_field": "tissue",
+        "mapping_target": "legacy_annotations",
+        "native_header": "Tissue",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            15
+          ]
+        ]
+      },
+      {
+        "cell_count": 30,
+        "column": "AT",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "9236c43274c12f9aec5042c72ce0976b40dbea9909c9fe58274384768498e451",
+        "mapping_field": "exome",
+        "mapping_target": "legacy_annotations",
+        "native_header": "Exome",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            29
+          ]
+        ]
+      },
+      {
+        "cell_count": 9,
+        "column": "AU",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "8a0bfc8953b077d8b52bb3f78d0baa49bd4da8a598231134fd91bdecafbeb133",
+        "mapping_field": "prenatal",
+        "mapping_target": "legacy_annotations",
+        "native_header": "Prenatal",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            8
+          ]
+        ]
+      },
+      {
+        "cell_count": 2,
+        "column": "AV",
+        "error_count": 1,
+        "formula_count": 2,
+        "header_count": 0,
+        "lineage_sha256": "012584feffaa0498abc1b4c0a03c49111e7f3e2e5a5e76a2c7e48b6dd806003e",
+        "mapping_field": null,
+        "mapping_target": "unmapped",
+        "native_header": null,
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "unmapped",
+            2
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "B",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "e15f60dfcd537c86dcda5b05b1e146d2f977dc6ca8e92239070bed8d75765f31",
+        "mapping_field": "SubItemNum",
+        "mapping_target": "services",
+        "native_header": "SubItemNum",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "C",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "d533f6fdd91429ef7d6d616dbf46c9b649b85f7f232319db23f7c3a294c91ec6",
+        "mapping_field": "ItemStartDate",
+        "mapping_target": "services",
+        "native_header": "ItemStartDate",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "unsupported_format",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "D",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "7b190b4ca6bc2382f45602444802800de3eb809f8e45e42c9b0c46909c2d0fa7",
+        "mapping_field": "ItemEndDate",
+        "mapping_target": "services",
+        "native_header": "ItemEndDate",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "E",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "6cc2e3c259186e2c91495c01ede46a18874094f2645a57e865c4e88690c2a9af",
+        "mapping_field": "Category",
+        "mapping_target": "hierarchy",
+        "native_header": "Category",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "F",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "de3e35bc0466f63130033934eb84a847e89b3df4ec27c531244ef0f6d91778e0",
+        "mapping_field": "Group",
+        "mapping_target": "hierarchy",
+        "native_header": "Group",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "G",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "753cf5f0cd0e50aa9379f3d7ef7a826ecc4e1cd4383c6b3629625733850b9210",
+        "mapping_field": "SubGroup",
+        "mapping_target": "hierarchy",
+        "native_header": "SubGroup",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "H",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "4a59f6c2af303720c4d614df16f27954f4cf33e4679ab8e1026d306f92a9043b",
+        "mapping_field": "SubHeading",
+        "mapping_target": "hierarchy",
+        "native_header": "SubHeading",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "I",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "f4620d9f8da368d9f0495f8488eba9a059bbe136ec5b180242c6201b42482fda",
+        "mapping_field": "ItemType",
+        "mapping_target": "services",
+        "native_header": "ItemType",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "J",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "28d64982104614cab3055c3c036eb911574d67a4407847b43f98ae8bcb01abcd",
+        "mapping_field": "FeeType",
+        "mapping_target": "fees",
+        "native_header": "FeeType",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "K",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "133b07fa59e46ee695bdefc4e6e3d4251e4d146f2e687210dffa9d025a6a4c65",
+        "mapping_field": "ProviderType",
+        "mapping_target": "services",
+        "native_header": "ProviderType",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "L",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "f501c1c76d7f9e86064a1768fff223637a7fa9381dd1214917a91b456d95fa06",
+        "mapping_field": "NewItem",
+        "mapping_target": "services",
+        "native_header": "NewItem",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "M",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "217552c559eabd7d470783c90c6890b202b357071534ebc026be90fa5eebcc67",
+        "mapping_field": "ItemChange",
+        "mapping_target": "services",
+        "native_header": "ItemChange",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "N",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "48b125f1f39b3e95d5903a4c1c1d81d476e9d62a10909970a764b9da82182bea",
+        "mapping_field": "AnaesChange",
+        "mapping_target": "services",
+        "native_header": "AnaesChange",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "O",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "f38380b0c7f7bee6d6b0cd1c70b71d41f3fefb15fbe86f94ec6278824ade1ae5",
+        "mapping_field": "DescriptorChange",
+        "mapping_target": "descriptions",
+        "native_header": "DescriptorChange",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "P",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "2cec822780e57c71beedd4ad8306a245e7635f32c13892a52e5e326fd5e2b775",
+        "mapping_field": "FeeChange",
+        "mapping_target": "fees",
+        "native_header": "FeeChange",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "Q",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "a08532cad4c562b7b1af95a489881f3a0c574ef18b08f5795a1d28b372a849a8",
+        "mapping_field": "EMSNChange",
+        "mapping_target": "caps",
+        "native_header": "EMSNChange",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "R",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "951dcb92f2e4d000845d42fb57b24a9a4b41b7791d27010d13d6bb7bfa1e9312",
+        "mapping_field": "EMSNCap",
+        "mapping_target": "caps",
+        "native_header": "EMSNCap",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "S",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "1007471f58906b7e88a341202de338bdc8a99669ff95036a00ba7b882a939cb3",
+        "mapping_field": "BenefitType",
+        "mapping_target": "benefits",
+        "native_header": "BenefitType",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "T",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "309ba4b46ee8b35386fa6db8f8214431ebfe1a354a8ae2b86d58859e6e570f3f",
+        "mapping_field": "BenefitStartDate",
+        "mapping_target": "benefits",
+        "native_header": "BenefitStartDate",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "unsupported_format",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "U",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "e9f71e7a77e7cdf9c3d66ab8cb0cfc9af9babe2adc9d6f035a51beb89e77b2b1",
+        "mapping_field": "FeeStartDate",
+        "mapping_target": "fees",
+        "native_header": "FeeStartDate",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "unsupported_format",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "V",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "8bfad8829da08b09056438eb4cdb074e091097d7ffa65cd12e01a06922075be8",
+        "mapping_field": "ScheduleFee",
+        "mapping_target": "fees",
+        "native_header": "ScheduleFee",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "converted",
+            148
+          ],
+          [
+            "header",
+            1
+          ],
+          [
+            "unrepresentable",
+            12
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "W",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "468a57dc10f8a398b31ed2d8f7f8f6d831687e8f6d9f5c0c8f04c7eff0c4ca63",
+        "mapping_field": "Benefit100",
+        "mapping_target": "benefits",
+        "native_header": "Benefit100",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "X",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "d7dfe17d909ecbe76080f2b16b5531bb02c866c5afb6d1c5cddf44785bcc435b",
+        "mapping_field": "BasicUnits",
+        "mapping_target": "services",
+        "native_header": "BasicUnits",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "Y",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "731334cf9dea508fa06b79bf44aaeaf3ec6dbeade20687db869f5681c6f4f419",
+        "mapping_field": "EMSNStartDate",
+        "mapping_target": "caps",
+        "native_header": "EMSNStartDate",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "Z",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "390ee6df747681bfa17aa077c38c2f1940ae2b0c04baaabc0375af12d0667ec9",
+        "mapping_field": "EMSNEndDate",
+        "mapping_target": "caps",
+        "native_header": "EMSNEndDate",
+        "sheet_name": "Sheet1 (2)",
+        "sheet_path": "xl/worksheets/sheet3.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "missing_value",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "A",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "05983482ade0de46750c650d809c55a93a9eaa9896f52eb7f72126f56773c3ef",
+        "mapping_field": "ItemNum",
+        "mapping_target": "services",
+        "native_header": "ItemNum",
+        "sheet_name": "Sheet2",
+        "sheet_path": "xl/worksheets/sheet2.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 161,
+        "column": "B",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "0894f688482384a7b9cc14169bfb7627af79aafc4664d529e8e416d86c5678a0",
+        "mapping_field": "Description",
+        "mapping_target": "descriptions",
+        "native_header": "Description",
+        "sheet_name": "Sheet2",
+        "sheet_path": "xl/worksheets/sheet2.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            160
+          ]
+        ]
+      },
+      {
+        "cell_count": 21,
+        "column": "A",
+        "error_count": 0,
+        "formula_count": 0,
+        "header_count": 1,
+        "lineage_sha256": "4d3329c16342f6e5b5c66a32ba1f9485d94f957e44c1109087ad1f0d323ed4c8",
+        "mapping_field": "declining_list_member",
+        "mapping_target": "legacy_annotations",
+        "native_header": "Declining List",
+        "sheet_name": "Sheet3",
+        "sheet_path": "xl/worksheets/sheet4.xml",
+        "statuses": [
+          [
+            "header",
+            1
+          ],
+          [
+            "preserved",
+            20
+          ]
+        ]
+      }
+    ],
+    "mapping_profile": "mbs-p7-2024-07-headers-v1",
+    "qualification": "candidate_only",
+    "receipt_sha256": "cca97269c0229598ee9bac4070a598fa273353a7b33194a75e0cf14a10e5f1bc",
+    "report_sha256": "82babb5846a0df573fc4f3206d81c7cf0f53f94e60abe73b36b637dde557fd07",
+    "schema_id": "global-medicines-atlas.mbs-workbook-field-lineage",
+    "schema_version": 1,
+    "sheets": [
+      {
+        "cell_count": 6689,
+        "dimension": "A1:AV161",
+        "name": "Sheet1",
+        "path": "xl/worksheets/sheet1.xml",
+        "relationship_id": "rId1"
+      },
+      {
+        "cell_count": 322,
+        "dimension": "A1:B161",
+        "name": "Sheet2",
+        "path": "xl/worksheets/sheet2.xml",
+        "relationship_id": "rId2"
+      },
+      {
+        "cell_count": 6710,
+        "dimension": "A1:AV183",
+        "name": "Sheet1 (2)",
+        "path": "xl/worksheets/sheet3.xml",
+        "relationship_id": "rId3"
+      },
+      {
+        "cell_count": 21,
+        "dimension": "A1:A21",
+        "name": "Sheet3",
+        "path": "xl/worksheets/sheet4.xml",
+        "relationship_id": "rId4"
+      }
+    ],
+    "source_id": "au-mbs-p7-legacy-workbook",
+    "source_revision": "legacy-donor-20260829",
+    "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
+  },
+  "workflow_commit": "8c830ebdc33c4a3b12c8a34d5d8c8d5b4d9d8fa1",
+  "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36473432952"
+}

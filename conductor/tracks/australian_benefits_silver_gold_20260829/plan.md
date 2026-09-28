@@ -1260,3 +1260,16 @@
 
 - [x] Review the official PBS API overview and FAQ. The public API is available without identity requirements and its documentation expressly describes downloading schedule data to local storage for a user’s own systems/databases; the API contains effective schedules for the most recent 12 months. The documentation does not specify a retention duration or external redistribution licence. Do not apply authenticated HPP portal terms to the distinct public API. This clarifies the documented local-copy operation but makes no legal conclusion or maintainer rights decision.
 - [~] Keep API acquisition pending a source-specific maintainer decision defining permitted internal retention; seek provider clarification for retention duration and external redistribution. No payload request or acquisition was made.
+
+## Exact P7 real-source field-lineage follow-up (2026-09-29)
+
+- [x] Qualify the pinned July 2024 P7 workbook's complete value-free field
+  lineage on exact `main`. PR #607 supplied the candidate-only lineage and PR
+  #608 sanitized its hosted artifact before retention; both merged and all
+  required checks passed. Run `36473432952` verified four sheets, 13,742 cells,
+  and 99 fields in the durable receipt
+  `quality/qualifications/mbs-p7-workbook-field-lineage-20260929.json`.
+  The date profile remains unset and semantic promotion remains false. Focused
+  tests: 81 passed; the one full local profile had two existing pinned-uv
+  reproducibility failures, one optional skip, and 96.71% coverage. This does
+  not establish the distinct aggregate-patient denominator or complete M-107.
