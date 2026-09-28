@@ -73,10 +73,21 @@ def test_pbs_public_access_does_not_promote_rights_or_domain_acceptance() -> (
     assert observed["public_api_available_without_login"] is True
     assert observed["history_months"] == 12
     assert observed["shared_rate_limit_seconds"] == 20
+    assert observed["data_retention_period_specified"] is False
+    assert observed["external_redistribution_terms_specified"] is False
+    assert (
+        "own systems or databases"
+        in observed["documented_local_copy_operation"]
+    )
     assert rights["explicit_public_api_reuse_licence_identified"] is False
     assert rights["internal_long_term_retention_authorized"] is False
     assert rights["source_byte_redistribution_authorized"] is False
     assert rights["derived_data_publication_authorized"] is False
+    assert "expressly supports downloading" in rights["interpretation"]
+    assert (
+        "does not resolve the project's B2 retention period"
+        in rights["interpretation"]
+    )
     assert "does not change acquisition authorization" in preflight["boundary"]
 
 

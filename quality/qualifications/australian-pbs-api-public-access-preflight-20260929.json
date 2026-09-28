@@ -8,7 +8,9 @@
     "api_overview": "https://data.pbs.gov.au/api/pbs-api.html",
     "public_access_guide": "https://data.pbs.gov.au/api/api-public.html",
     "faq": "https://data.pbs.gov.au/api/api-faq.html",
-    "release_notes": "https://data.pbs.gov.au/api/api-release-notes.html"
+    "release_notes": "https://data.pbs.gov.au/api/api-release-notes.html",
+    "api_overview_last_updated": "2025-12-11",
+    "faq_last_updated": "2024-11-19"
   },
   "observed_public_api_contract": {
     "public_api_available_without_login": true,
@@ -21,7 +23,11 @@
     ],
     "legacy_outputs_discontinued": true,
     "current_data_model_version": "3.7.8",
-    "latest_release_note_date": "2026-05-20"
+    "latest_release_note_date": "2026-05-20",
+    "documented_local_copy_operation": "Users may retrieve all data associated with a Schedule and download it to local storage for their own systems or databases.",
+    "api_schedule_scope": "Current effective schedule data; every effective schedule for the most recent 12 months is available.",
+    "data_retention_period_specified": false,
+    "external_redistribution_terms_specified": false
   },
   "rights_observation": {
     "explicit_public_api_reuse_licence_identified": false,
@@ -30,7 +36,7 @@
     "derived_data_publication_authorized": false,
     "maintainer_source_specific_decision_recorded": false,
     "existing_source_rights_review": "quality/qualifications/source-rights-review-ledger.json",
-    "interpretation": "Public unauthenticated access and guidance to download local copies do not by themselves establish the project's long-term retention or redistribution rights."
+    "interpretation": "Official documentation expressly supports downloading schedule data to local storage for a user's own systems or databases. It does not specify a retention duration or external redistribution licence. This supports the documented local-copy workflow but does not resolve the project's B2 retention period, source-byte redistribution, derived public release, or separate source-specific maintainer decision."
   },
   "contact": {
     "published_address": "HPP.Support@Health.gov.au",
@@ -48,6 +54,6 @@
   },
   "payload_requests_made": false,
   "embargo_access_attempted": false,
-  "next_action": "Obtain provider clarification and a separate source-specific maintainer rights decision before any acquisition or retention from au-pbs-api.",
+  "next_action": "Use the documented local-copy workflow only after a source-specific maintainer rights decision defines internal retention; obtain provider clarification for retention duration and external redistribution before retaining beyond that scope or publishing. No API data payload has been requested or acquired.",
   "boundary": "This is a metadata-only rights preflight. It does not change acquisition authorization, qualify PBS domain semantics or M-109, establish Bronze landing, or authorize publication."
 }
