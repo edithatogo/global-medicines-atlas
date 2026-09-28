@@ -2,8 +2,8 @@
   "schema_id": "global-medicines-atlas.bronze-maturity-qualification",
   "schema_version": 1,
   "horizon": "bronze-current-public-scope",
-  "evaluated_at": "2026-09-27T08:28:32.697111+00:00",
-  "git_commit": "3c571091f339541d035e53d609823fe42a90037a",
+  "evaluated_at": "2026-09-28T09:42:07.430546+00:00",
+  "git_commit": "7fcc6faca88ab58ab0dcdad0d8aa48512e99ea4d",
   "authorities": {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -33,12 +33,13 @@
         "quality/qualifications/gsrs-unii-acquisition-success-20260826.json",
         "quality/qualifications/international-public-bronze-20260827.json",
         "quality/qualifications/ndc-directory-live-corpus-20260821.json",
-        "quality/qualifications/union-register-live-corpus-20260821.json"
+        "quality/qualifications/union-register-live-corpus-20260821.json",
+        "quality/qualifications/us-live-bronze-records-20260820.json"
       ],
       "blocker_ids": [
         "bronze-ingest-incomplete"
       ],
-      "notes": "124 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
+      "notes": "120 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
     },
     {
       "property_id": "immutability",
@@ -251,7 +252,7 @@
   "residual_risks": [
     {
       "risk_id": "RISK-001",
-      "description": "124 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "120 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "disposition": "unresolved",
       "blocking": true,
       "evidence": [
@@ -267,7 +268,8 @@
         "quality/qualifications/gsrs-unii-acquisition-success-20260826.json",
         "quality/qualifications/international-public-bronze-20260827.json",
         "quality/qualifications/ndc-directory-live-corpus-20260821.json",
-        "quality/qualifications/union-register-live-corpus-20260821.json"
+        "quality/qualifications/union-register-live-corpus-20260821.json",
+        "quality/qualifications/us-live-bronze-records-20260820.json"
       ]
     },
     {
@@ -322,7 +324,7 @@
     {
       "blocker_id": "bronze-ingest-incomplete",
       "property_id": "completeness",
-      "description": "124 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "120 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "evidence": [
         "src/global_medicines_atlas/data/medicine_source_catalog.json",
         "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
@@ -336,7 +338,8 @@
         "quality/qualifications/gsrs-unii-acquisition-success-20260826.json",
         "quality/qualifications/international-public-bronze-20260827.json",
         "quality/qualifications/ndc-directory-live-corpus-20260821.json",
-        "quality/qualifications/union-register-live-corpus-20260821.json"
+        "quality/qualifications/union-register-live-corpus-20260821.json",
+        "quality/qualifications/us-live-bronze-records-20260820.json"
       ]
     }
   ],
@@ -371,7 +374,7 @@
     "bronze_in_scope_count": 157,
     "fixture_only_count": 2,
     "excluded_count": 15,
-    "in_scope_without_landing_or_blocker": 124,
+    "in_scope_without_landing_or_blocker": 120,
     "missing_coverage_is_not_negative_evidence": true
   }
 }

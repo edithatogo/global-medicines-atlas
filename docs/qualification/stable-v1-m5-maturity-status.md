@@ -7,11 +7,15 @@ Bronze current-scope, or final stable-release gates.
 
 The refreshed [Bronze maturity report](../../quality/qualifications/bronze-maturity.json)
 recognises the exact approved CMS Part D formulary and spending source-record
-qualification as direct Bronze receipt evidence. Prompt 31 is complete for
-those two source IDs, but 124 other in-scope public/no-credential catalogue
-sources still lack qualifying landing evidence. Credentialed and licensed feeds
-remain excluded from this denominator; missing evidence is not a negative
-claim about the source.
+qualification and four accepted U.S. source-record products as direct Bronze
+receipt evidence. The U.S. receipt includes an accepted admission, source-record
+projection, and byte-identical clean-room recovery for those products. Its three
+openFDA responses are 100-record canaries, not complete releases; the Orange
+Book remains temporarily unavailable because historical releases are unresolved.
+Prompt 31 remains complete for its two CMS source IDs, and 120 other in-scope
+public/no-credential catalogue sources still lack qualifying landing evidence.
+Credentialed and licensed feeds remain excluded from this denominator; missing
+evidence is not a negative claim about the source.
 
 The M5 source-coverage dimension can be reconsidered only when the current
 scope's completeness property is evidenced by source-specific rights,
