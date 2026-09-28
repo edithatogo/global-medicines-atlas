@@ -405,3 +405,14 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   passed (102), and the routine Test-Goblin profile passed. The Australian
   federation, current-scope Bronze, M5 and stable-release approval gates remain
   open; no source or release authority is inferred.
+
+## 2026-09-29 post-PR-609 qualification rebind
+
+- [x] Regenerate the Bronze maturity report from the merged `main` tree at
+  `7d8cfe4e1ead4b8693db80d38880982762f37365`. It still reports 174 catalog
+  sources, 157 in-scope sources, 118 without qualifying landing evidence, and
+  13 evidenced dimensions; completeness remains blocked. Focused Bronze and
+  Stable v1 contract suites passed (102), and the routine harness passed.
+  This refresh only rebinds the report timestamp and source commit; it adds no
+  landing evidence and does not advance Bronze, M5, Australian federation, or
+  stable-release approval.
