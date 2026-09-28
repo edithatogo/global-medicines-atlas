@@ -1,0 +1,56 @@
+{
+  "schema_id": "global-medicines-atlas.provider-outreach-receipts",
+  "schema_version": 1,
+  "recorded_at": "2026-09-28T16:51:14Z",
+  "sender": "d.a.mordaunt@gmail.com",
+  "messages": [
+    {
+      "source_id": "gb-openprescribing",
+      "purpose": "Request provider-supported automated access for the already authorized, receipt-bound OpenPrescribing API v1 partitions; no access or rights scope expansion requested.",
+      "recipient": "feedback@openprescribing.net",
+      "subject": "Supported automated access to OpenPrescribing API v1",
+      "sent_at": "2026-09-28T16:49:17Z",
+      "gmail_message_id": "1a0e8ebbb1c26b2c",
+      "rfc_message_id": "<CA+D7Cow=WNZAgYeFHcKRw6NjLvA8J8uvjFGpHHVSYoGZ0bwATg@mail.gmail.com>",
+      "state": "sent_awaiting_provider_response",
+      "attachment_count": 0,
+      "source_payloads_attached": false,
+      "authority_expanded": false
+    },
+    {
+      "source_id": "au-pbs-api",
+      "purpose": "Request current API reuse, retention, attribution, transformation, and redistribution terms; no embargo access, credentials, acquisition, or publication requested.",
+      "recipient": "HPP.Support@health.gov.au",
+      "subject": "Reuse and retention terms for the PBS public data API",
+      "sent_at": "2026-09-28T16:49:36Z",
+      "gmail_message_id": "1a0e8ec00959d610",
+      "rfc_message_id": "<CA+D7CoxVaGC-c3MzriNujrEWnPA3cE1Yyi63RA5d8xnyNQFJmw@mail.gmail.com>",
+      "state": "sent_awaiting_provider_response",
+      "attachment_count": 0,
+      "source_payloads_attached": false,
+      "rights_decision_made": false
+    },
+    {
+      "source_id": "au-mbs-utilisation",
+      "purpose": "Request an agency-hosted automated route, exact workbook periods and historical coverage, reuse terms, and update/correction behavior under existing source scope.",
+      "recipient": "enquiries@health.gov.au",
+      "subject": "Request for an agency-hosted automated retrieval route for Medicare statistics workbooks",
+      "sent_at": "2026-09-28T16:49:57Z",
+      "gmail_message_id": "1a0e8ec55b28f0e1",
+      "rfc_message_id": "<CA+D7CoykCA_S=2XdDsmJ5FuVshXgqJDseQmO=8FpPmLtxUBVLQ@mail.gmail.com>",
+      "state": "sent_awaiting_agency_response",
+      "attachment_count": 0,
+      "workbook_bytes_attached": false,
+      "authorization_expanded": false,
+      "approved_endpoint_identified": false,
+      "agency_response_received": false
+    }
+  ],
+  "verification": {
+    "authenticated_sender_profile": "Dylan Mordaunt <d.a.mordaunt@gmail.com>",
+    "sent_label_readback": true,
+    "recipient_subject_and_message_id_readback": true,
+    "external_replies_observed_at_record_time": false
+  },
+  "boundary": "These are inquiries only. They do not establish source rights, credentials, a reachable mirror, acquisition permission beyond existing records, dataset qualification, public release, or Stable v1 acceptance."
+}
