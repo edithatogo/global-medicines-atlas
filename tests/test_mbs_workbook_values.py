@@ -281,6 +281,11 @@ def test_hosted_workbook_qualifier_does_not_select_xml_date_profile(
     cli.main()
     report = json.loads(capsys.readouterr().out)
     assert report["domain_value_profile"]["date_profile"] is None
+    lineage = report["workbook_field_lineage"]
+    assert lineage["qualification"] == "candidate_only"
+    assert lineage["date_profile"] is None
+    assert len(lineage["sheets"]) == 4
+    assert "01.07.2024" not in json.dumps(lineage)
     assert (
         report["domain_value_profile"]["by_field"]["ItemStartDate"][
             "unsupported_format"
