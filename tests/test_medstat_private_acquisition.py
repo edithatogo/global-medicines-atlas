@@ -206,6 +206,16 @@ def test_medstat_export_review_distinguishes_diagnostic_read_from_retention() ->
     assert disposition["result_payload_bytes_retained"] is False
     assert disposition["format_semantics_resolved"] is False
 
+    request = (
+        ROOT / "conductor/tracks/bronze_medallion_completion_20260819/"
+        "medstat-export-format-request.md"
+    ).read_text(encoding="utf-8")
+    assert "transiently read the 4,446-byte response" in request
+    assert "did not emit the response text or retain the bytes" in request
+    assert (
+        "We did not inspect or retain the response text or bytes" not in request
+    )
+
 
 def test_private_acquisition_lands_recovers_and_archives(
     tmp_path: Path,
