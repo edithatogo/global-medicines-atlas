@@ -311,7 +311,8 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     A workstation-only repeat returned HTTP 200 and the expected XLSX metadata
     for each URL, without reading bodies. The authorization forbids workstation
     raw retention, so only a reachable authorized hosted route can advance
-    workbook acquisition.
+    workbook acquisition. The bounded local observation is retained at
+    `quality/qualifications/australian-mbs-workstation-head-availability-20260928.json`.
   - The pinned PBS `pbs-iso-date-candidate-v1` profile completed exact-main
     (`36372245263`): 2,799 dates converted, one missing field, and 7,727,884
     rows unmapped; all five projections and 16 reference windows retained

@@ -390,7 +390,8 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   length, without following redirects or reading bodies. This establishes a
   route-dependent observation, not its root cause. The source authorization
   forbids workstation raw retention and requires GitHub-Actions-only upload;
-  no payload GET or local retention was attempted.
+  no payload GET or local retention was attempted. Machine-readable metadata
+  receipt: `quality/qualifications/australian-mbs-workstation-head-availability-20260928.json`.
 - [~] Obtain an authorized reachable delivery path. The phase classification
   narrows the hosted observation but does not establish a publisher or network
   cause, provide workbook content, or satisfy M-107/federation acceptance.
