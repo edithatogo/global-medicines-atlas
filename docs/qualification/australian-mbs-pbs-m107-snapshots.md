@@ -92,3 +92,13 @@ cleanup receipt are linked in the table. Do not repeat this unchanged harvest
 merely to reproduce the same file-download timeout. M-107 remains blocked
 pending an independently verified, authorized hosted delivery path and
 byte-level receipt for each missing workbook.
+
+The manual exact-main [HEAD-only egress run](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36376037675)
+at merged commit `fa924f0d7ff31b5009fedf5816b5af1f31523425` timed out on all
+three direct workbook URLs at the 15-second per-request deadline. Its durable
+[bounded receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5863107539)
+records no redirects, no response-body reads, and no publication. The first
+probe deliberately omitted transport exception details, so it cannot yet tell
+whether the timeout occurred during connection setup or response handling. A
+follow-up records only finite timeout-stage labels; it will not retry a byte
+download or infer a DNS/network-policy cause.

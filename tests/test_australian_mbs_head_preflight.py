@@ -86,15 +86,34 @@ def test_preflight_uses_head_and_returns_only_bounded_headers() -> None:
     assert all("etag" not in item for item in report["results"])
 
 
-def test_preflight_records_timeout_without_exception_text() -> None:
-    def timeout(_request: httpx.Request) -> httpx.Response:
-        raise httpx.ReadTimeout("source body or private detail")
+@pytest.mark.parametrize(
+    ("timeout_exception", "timeout_stage"),
+    [
+        (httpx.ConnectTimeout, "connect"),
+        (httpx.ReadTimeout, "read"),
+        (httpx.WriteTimeout, "write"),
+        (httpx.PoolTimeout, "pool"),
+        (httpx.TimeoutException, "other"),
+    ],
+)
+def test_preflight_labels_http_timeout_stage_without_exception_text(
+    timeout_exception: type[httpx.TimeoutException], timeout_stage: str
+) -> None:
+    def timeout(request: httpx.Request) -> httpx.Response:
+        raise timeout_exception(
+            "source body or private detail", request=request
+        )
 
     report = _run(timeout)
 
     assert report["status"] == "incomplete"
     assert report["results"] == [
-        {"source": name, "status": "timeout"} for name, _url in WORKBOOKS
+        {
+            "source": name,
+            "status": "timeout",
+            "timeout_stage": timeout_stage,
+        }
+        for name, _url in WORKBOOKS
     ]
     assert "source body" not in str(report)
 
@@ -224,7 +243,12 @@ def test_preflight_enforces_wall_clock_timeout_on_slow_response() -> None:
 
     assert report["status"] == "incomplete"
     assert report["results"] == [
-        {"source": name, "status": "timeout"} for name, _url in WORKBOOKS
+        {
+            "source": name,
+            "status": "timeout",
+            "timeout_stage": "wall_clock",
+        }
+        for name, _url in WORKBOOKS
     ]
 
 

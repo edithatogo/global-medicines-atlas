@@ -28,6 +28,25 @@ WORKBOOKS = (
 _XLSX_CONTENT_TYPE = (
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 )
+_HTTP_TIMEOUT_STAGES = (
+    (httpx.ConnectTimeout, "connect"),
+    (httpx.ReadTimeout, "read"),
+    (httpx.WriteTimeout, "write"),
+    (httpx.PoolTimeout, "pool"),
+)
+
+
+def _timeout_stage(error: TimeoutError | httpx.TimeoutException) -> str:
+    if isinstance(error, TimeoutError):
+        return "wall_clock"
+    return next(
+        (
+            stage
+            for exception_type, stage in _HTTP_TIMEOUT_STAGES
+            if isinstance(error, exception_type)
+        ),
+        "other",
+    )
 
 
 async def preflight_medicare_workbook_urls(
@@ -66,8 +85,12 @@ async def preflight_medicare_workbook_urls(
             try:
                 async with asyncio.timeout(request_timeout_seconds):
                     response = await client.head(url)
-            except TimeoutError, httpx.TimeoutException:
-                results.append({"source": name, "status": "timeout"})
+            except (TimeoutError, httpx.TimeoutException) as exc:
+                results.append({
+                    "source": name,
+                    "status": "timeout",
+                    "timeout_stage": _timeout_stage(exc),
+                })
                 continue
             except httpx.TransportError:
                 results.append({"source": name, "status": "transport_error"})

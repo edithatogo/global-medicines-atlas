@@ -1150,12 +1150,15 @@
 - [~] Diagnose M-107's authorized Health.gov workbook download timeouts with a
   separate exact-main, HEAD-only Actions probe. The workstation metadata check
   confirmed all three URLs return the expected XLSX headers, while bounded
-  CKAN searches found no matching mirror. PR #569 adds the probe; review found
-  and corrected the need for a whole-request wall-clock deadline in addition
-  to HTTP operation timeouts. Focused regressions, static analysis, routine
-  checks, and local full statement/branch coverage pass. The updated protected
-  CI exposed one brittle value-free test that searched for a short numeric
-  spelling inside the entire JSON receipt, including generated digests. That
-  assertion now compares complete emitted string values; fresh protected CI
-  and the hosted egress result remain pending. The probe reads no source bytes
-  and cannot satisfy workbook acquisition or M-107 acceptance.
+  CKAN searches found no matching mirror. PR #569 merged as `fa924f0d` after
+  all protected checks passed. Review's slow-response finding was fixed with a
+  per-request wall-clock deadline; an unrelated brittle substring assertion
+  in a synthetic privacy test was narrowed to exact emitted string values.
+  Focused regressions and static/routine checks pass. Exact-main HEAD run
+  `36376037675` timed out on all three direct workbook URLs at the 15-second
+  deadline, without redirects or body reads. Because its bounded receipt omits
+  exception details, this follow-up adds safe timeout-stage labels for
+  connection, response, pool, and wall-clock failures. Focused and routine
+  validation passes; protected CI and one exact-main classified rerun remain
+  pending. No source bytes are read, and this cannot satisfy workbook
+  acquisition or M-107 acceptance.
