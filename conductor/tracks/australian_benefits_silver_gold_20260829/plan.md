@@ -1154,5 +1154,8 @@
   and corrected the need for a whole-request wall-clock deadline in addition
   to HTTP operation timeouts. Focused regressions, static analysis, routine
   checks, and local full statement/branch coverage pass. The updated protected
-  CI and hosted egress result remain pending. It reads no source bytes and
-  cannot satisfy workbook acquisition or M-107 acceptance.
+  CI exposed one brittle value-free test that searched for a short numeric
+  spelling inside the entire JSON receipt, including generated digests. That
+  assertion now compares complete emitted string values; fresh protected CI
+  and the hosted egress result remain pending. The probe reads no source bytes
+  and cannot satisfy workbook acquisition or M-107 acceptance.
