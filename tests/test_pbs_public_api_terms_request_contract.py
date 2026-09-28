@@ -91,6 +91,31 @@ def test_pbs_public_access_does_not_promote_rights_or_domain_acceptance() -> (
     assert "does not change acquisition authorization" in preflight["boundary"]
 
 
+def test_pbs_rights_reconciliation_is_appended_after_existing_evidence_tail() -> (
+    None
+):
+    evidence = [
+        cast("dict[str, Any]", json.loads(line))
+        for line in (TRACK / "evidence.jsonl")
+        .read_text(encoding="utf-8")
+        .splitlines()
+    ]
+    positions = {
+        row["kind"]: index
+        for index, row in enumerate(evidence)
+        if row.get("kind")
+        in {
+            "mbs_workbook_official_date_documentation_review",
+            "pbs_terms_preflight_send_receipt_reconciled",
+        }
+    }
+
+    assert (
+        positions["mbs_workbook_official_date_documentation_review"]
+        < positions["pbs_terms_preflight_send_receipt_reconciled"]
+    )
+
+
 def test_mbs_agency_inquiry_is_sent_without_claiming_an_approved_endpoint() -> (
     None
 ):
