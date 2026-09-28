@@ -318,7 +318,8 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     and four valid only as DMY. This is value-free evidence and does not select
     a conversion convention, establish workbook-era semantics, or resolve the
     authorized hosted acquisition route; the Australian federation gate stays
-    blocked.
+    blocked. The durable aggregate is
+    `quality/qualifications/mbs-workbook-date-order-compatibility-20260928.json`.
   - The pinned PBS `pbs-iso-date-candidate-v1` profile completed exact-main
     (`36372245263`): 2,799 dates converted, one missing field, and 7,727,884
     rows unmapped; all five projections and 16 reference windows retained
