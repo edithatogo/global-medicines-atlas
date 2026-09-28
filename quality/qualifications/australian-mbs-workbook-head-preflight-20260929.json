@@ -1,0 +1,36 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-workbook-head-preflight",
+  "schema_version": 1,
+  "observed_at": "2026-09-28T16:36:59.988710Z",
+  "exact_commit": "38566970ff872c38c3312bfb118e5b4ed59777f8",
+  "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36452243269",
+  "issue_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5874364267",
+  "request": {
+    "method": "HEAD",
+    "operation_timeout_seconds": 7.5,
+    "wall_clock_timeout_seconds": 15,
+    "redirects_followed": false
+  },
+  "results": [
+    {
+      "family": "quarterly",
+      "status": "timeout",
+      "timeout_stage": "read"
+    },
+    {
+      "family": "annual",
+      "status": "timeout",
+      "timeout_stage": "read"
+    },
+    {
+      "family": "year_to_date",
+      "status": "timeout",
+      "timeout_stage": "read"
+    }
+  ],
+  "source_bytes_read": false,
+  "headers_received": false,
+  "publication_performed": false,
+  "interpretation": "All three exact authorized workbook URLs timed out while awaiting response headers after connection setup. This narrows the hosted failure stage but does not identify the network or publisher cause, establish a reachable mirror, or qualify workbook contents.",
+  "next_action": "Use the prepared agency-hosted mirror request; do not repeat the same hosted probe until an endpoint or transport condition changes."
+}

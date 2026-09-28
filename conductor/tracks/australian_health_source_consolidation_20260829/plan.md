@@ -392,9 +392,17 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   forbids workstation raw retention and requires GitHub-Actions-only upload;
   no payload GET or local retention was attempted. Machine-readable metadata
   receipt: `quality/qualifications/australian-mbs-workstation-head-availability-20260928.json`.
-- [~] Obtain an authorized reachable delivery path. The phase classification
-  narrows the hosted observation but does not establish a publisher or network
-  cause, provide workbook content, or satisfy M-107/federation acceptance.
+- [x] Repeat the value-free probe once after the timeout-alignment fix on
+  exact main `38566970ff872c38c3312bfb118e5b4ed59777f8`. Run
+  `36452243269` classified all three URLs as response-read timeouts; no
+  headers or workbook bytes were received and no redirects were followed.
+  The issue receipt is `#5874364267`; durable aggregate:
+  `quality/qualifications/australian-mbs-workbook-head-preflight-20260929.json`.
+- [~] Obtain an authorized reachable delivery path. The corrected probe
+  narrows the hosted observation but does not identify a publisher or
+  network cause, provide workbook content, or satisfy M-107/federation
+  acceptance. Do not repeat the same probe until an endpoint or transport
+  condition changes.
 
 ## M-107 agency-hosted mirror route (2026-09-28)
 
