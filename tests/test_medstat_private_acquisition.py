@@ -229,7 +229,12 @@ def test_medstat_format_clarification_sent_receipt_is_bound_and_fail_closed() ->
     message = next(
         item
         for item in receipt["messages"]
-        if item["source_id"] == "dk-medstat-utilisation"
+        if item.get("gmail_message_id") == "1a0e9ad775ff9a95"
+    )
+    acknowledgement = next(
+        item
+        for item in receipt["messages"]
+        if item.get("gmail_message_id") == "1a0e9b780c580bd2"
     )
     review = json.loads(
         (
@@ -251,9 +256,59 @@ def test_medstat_format_clarification_sent_receipt_is_bound_and_fail_closed() ->
     assert message["attachment_count"] == 0
     assert message["source_payloads_attached"] is False
     assert message["rights_scope_changed"] is False
+    assert "acknowledgement" not in message
+    assert acknowledgement["state"] == "automatic_reply_unbound"
+    assert acknowledgement["rfc_message_id"] == (
+        "<fb2defdacec34bf09b97d565714ad56d@VI1P189MB2515.EURP189.PROD.OUTLOOK.COM>"
+    )
+    assert acknowledgement["auto_submitted"] == "auto-generated"
+    assert acknowledgement["substantive_guidance"] is False
+    assert acknowledgement["request_correlation_verified"] is False
+    assert (
+        acknowledgement["in_reply_to_message_id"] != message["rfc_message_id"]
+    )
+    assert (
+        review["disposition"]["provider_acknowledgement"]["gmail_message_id"]
+        == acknowledgement["gmail_message_id"]
+    )
+    assert (
+        review["disposition"]["provider_acknowledgement"][
+            "request_correlation_verified"
+        ]
+        is False
+    )
+    evidence = [
+        json.loads(line)
+        for line in (
+            ROOT / "conductor/tracks/bronze_medallion_completion_20260819/"
+            "evidence.jsonl"
+        )
+        .read_text(encoding="utf-8")
+        .splitlines()
+    ]
+    correction = next(
+        item
+        for item in reversed(evidence)
+        if item["kind"] == "nordic_medstat_auto_reply_correlation_correction"
+    )
+    assert correction["request_correlation_verified"] is False
+    assert (
+        "nordic_medstat_provider_automatic_acknowledgement"
+        in correction["supersedes_evidence_kinds"]
+    )
+    assert (
+        correction["raw_in_reply_to_message_id"]
+        == acknowledgement["in_reply_to_message_id"]
+    )
     assert (
         receipt["verification"][
             "new_medstat_format_inquiry_recipient_subject_and_message_id_readback"
+        ]
+        is True
+    )
+    assert (
+        receipt["verification"][
+            "unbound_medstat_auto_reply_from_official_contact_observed"
         ]
         is True
     )

@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.provider-outreach-receipts",
   "schema_version": 1,
-  "recorded_at": "2026-09-28T20:20:54Z",
+  "recorded_at": "2026-09-28T20:31:49Z",
   "sender": "d.a.mordaunt@gmail.com",
   "messages": [
     {
@@ -109,6 +109,21 @@
       "source_payloads_attached": false,
       "rights_scope_changed": false,
       "source_guidance_received": false
+    },
+    {
+      "source_id": "dk-medstat-utilisation",
+      "purpose": "Record an automatic reply from the official contact mailbox as unbound correspondence because its In-Reply-To identifier does not match the sent inquiry RFC Message-ID.",
+      "sender": "kontakt@sundhedsdata.dk",
+      "recipient": "d.a.mordaunt@gmail.com",
+      "subject": "Automatic reply: Clarification of Medstat interactive Excel export response format",
+      "received_at": "2026-09-28T20:31:49Z",
+      "gmail_message_id": "1a0e9b780c580bd2",
+      "rfc_message_id": "<fb2defdacec34bf09b97d565714ad56d@VI1P189MB2515.EURP189.PROD.OUTLOOK.COM>",
+      "in_reply_to_message_id": "<6cb63491e4f34dc288da5ea0ea1255e0.CA+D7Coz0Q_6qHUQD83HqLZESurDopQw-F6JJNzzokYEDHVy7Uw@mail.gmail.com>",
+      "auto_submitted": "auto-generated",
+      "state": "automatic_reply_unbound",
+      "request_correlation_verified": false,
+      "substantive_guidance": false
     }
   ],
   "verification": {
@@ -122,6 +137,7 @@
     "new_m106_item_patient_inquiry_recipient_subject_and_message_id_readback": true,
     "new_medstat_format_inquiry_sent_label_readback": true,
     "new_medstat_format_inquiry_recipient_subject_and_message_id_readback": true,
+    "unbound_medstat_auto_reply_from_official_contact_observed": true,
     "substantive_provider_responses_observed": false
   },
   "boundary": "These are inquiries only. They do not establish source rights, credentials, a reachable mirror, acquisition permission beyond existing records, dataset qualification, public release, or Stable v1 acceptance."
