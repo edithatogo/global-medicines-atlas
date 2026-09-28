@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.provider-outreach-receipts",
   "schema_version": 1,
-  "recorded_at": "2026-09-28T18:16:43Z",
+  "recorded_at": "2026-09-28T20:20:54Z",
   "sender": "d.a.mordaunt@gmail.com",
   "messages": [
     {
@@ -95,6 +95,20 @@
       "custom_extraction_requested": false,
       "restricted_data_requested": false,
       "project_rights_decision_made": false
+    },
+    {
+      "source_id": "dk-medstat-utilisation",
+      "purpose": "Clarify whether the exact source-generated 2025 aggregate turnover export is an intended HTML-formatted spreadsheet or an error response, and identify the documented response media type; no result data or expanded rights requested.",
+      "recipient": "kontakt@sundhedsdata.dk",
+      "subject": "Clarification of Medstat interactive Excel export response format",
+      "sent_at": "2026-09-28T20:20:54Z",
+      "gmail_message_id": "1a0e9ad775ff9a95",
+      "rfc_message_id": "<CA+D7Coz0Q_6qHUQD83HqLZESurDopQw-F6JJNzzokYEDHVy7Uw@mail.gmail.com>",
+      "state": "sent_awaiting_provider_response",
+      "attachment_count": 0,
+      "source_payloads_attached": false,
+      "rights_scope_changed": false,
+      "source_guidance_received": false
     }
   ],
   "verification": {
@@ -106,6 +120,8 @@
     "new_mbs_date_inquiry_recipient_subject_and_message_id_readback": true,
     "new_m106_item_patient_inquiry_sent_label_readback": true,
     "new_m106_item_patient_inquiry_recipient_subject_and_message_id_readback": true,
+    "new_medstat_format_inquiry_sent_label_readback": true,
+    "new_medstat_format_inquiry_recipient_subject_and_message_id_readback": true,
     "substantive_provider_responses_observed": false
   },
   "boundary": "These are inquiries only. They do not establish source rights, credentials, a reachable mirror, acquisition permission beyond existing records, dataset qualification, public release, or Stable v1 acceptance."
