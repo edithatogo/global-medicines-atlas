@@ -349,3 +349,29 @@ which date slots and conversion states need schema evidence. It does not select
 a date profile, establish a source-era grammar, infer temporal meaning, qualify
 domain semantics or change the candidate-only status. The revised qualifier
 still requires merge before its result can be treated as exact-main evidence.
+
+## Opt-in candidate date grammar
+
+`pbs-iso-date-candidate-v1` is available as an explicit input to the manual
+exact-main qualification workflow. It applies only the documented ASCII
+`YYYY-MM-DD` date32 parser to recognized date slots. It preserves the native
+literal and records a candidate profile identifier; malformed or out-of-range
+values remain classified by bounded conversion-status counters. No interval,
+current status, commencement, or cessation is inferred. Every phase and all 16
+reference receipts bind the same selected profile so the aggregate rejects
+mixed-profile runs.
+
+The candidate profile metadata remains
+`source_date_era_qualification=not-established`; the profile is a parsing
+candidate, not source-era qualification or PBS semantic acceptance. A successful
+hosted run can establish only what proportion of the pinned payload conforms to
+that parser. The official [PBS Mapping Specification](https://info.data.pbs.gov.au/xml-schema/doc/html/mapping.html)
+documents the `YYYY-MM-DD` representation, while the [PBS XML Developers’
+Guide](https://info.data.pbs.gov.au/xml-schema/doc/html/guide.html) explains
+that effective, supply-only, and non-effective states each carry a date. These
+contracts do not establish that the format applies to every historical schema
+era in the pinned corpus.
+
+The next exact-main candidate-profile run is pending merge of the opt-in
+workflow change. Until its safe aggregate is observed, the real-corpus candidate
+conversion counts remain unknown.

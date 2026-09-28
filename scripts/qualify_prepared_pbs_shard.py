@@ -35,6 +35,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--input", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--reference-shard", required=True, type=int)
+    parser.add_argument(
+        "--date-profile", choices=("pbs-iso-date-candidate-v1",)
+    )
     args = parser.parse_args(argv)
     identity = {
         "projection_shard": "references",
@@ -42,7 +45,10 @@ def main(argv: list[str] | None = None) -> int:
     }
     try:
         report = qualify_prepared_reference(
-            args.input, args.exact_commit, args.reference_shard
+            args.input,
+            args.exact_commit,
+            args.reference_shard,
+            date_profile=args.date_profile,
         )
     except Exception:  # Never serialize source-bearing exception text.
         report = {

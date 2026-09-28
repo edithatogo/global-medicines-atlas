@@ -87,7 +87,10 @@ def _report(
 
 
 def qualify_prepared_reference(
-    directory: Path, exact_commit: str, shard_index: int
+    directory: Path,
+    exact_commit: str,
+    shard_index: int,
+    date_profile: str | None = None,
 ) -> dict[str, Any]:
     """Verify same-run identity and qualify one prepared reference window."""
     manifest = _read_manifest(
@@ -95,5 +98,7 @@ def qualify_prepared_reference(
         "transient-same-run-reference-qualification-input",
     )
     context = _context(exact_commit, manifest)
-    qualification = qualify_reference_shard(directory, shard_index=shard_index)
+    qualification = qualify_reference_shard(
+        directory, shard_index=shard_index, date_profile=date_profile
+    )
     return _report(context, qualification)

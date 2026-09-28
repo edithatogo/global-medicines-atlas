@@ -544,7 +544,23 @@ def test_cli_success_and_size_bound(synthetic, tmp_path, monkeypatch) -> None:
         ),
     )
     output = tmp_path / "receipt.json"
-    assert cli.main(["--exact-commit", SHA, "--output", str(output)]) == 0
+    assert (
+        cli.main([
+            "--exact-commit",
+            SHA,
+            "--date-profile",
+            "pbs-iso-date-candidate-v1",
+            "--output",
+            str(output),
+        ])
+        == 0
+    )
+    assert (
+        json.loads(output.read_text())["report"]["qualification"][
+            "date_profile"
+        ]
+        == "pbs-iso-date-candidate-v1"
+    )
     monkeypatch.setattr(cli, "MAX_REPORT_BYTES", 1)
     assert cli.main(["--exact-commit", SHA, "--output", str(output)]) == 1
     assert json.loads(output.read_text())["report"]["status"] == "failed"
@@ -562,6 +578,9 @@ def test_workflow_has_durable_receipt_and_no_dataset_write() -> None:
     assert "HF_TOKEN" not in workflow
     assert "upload_folder" not in workflow
     assert "exact_commit" in workflow
+    assert "pbs-iso-date-candidate-v1" in workflow
+    assert "DATE_PROFILE" in workflow
+    assert 'args+=(--date-profile "$DATE_PROFILE")' in workflow
     assert "fail-fast: false" in workflow
     assert "[native, domain, entities, dates]" in workflow
     assert "--reference-shards 16" in workflow

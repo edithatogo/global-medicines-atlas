@@ -165,6 +165,21 @@ def test_aggregate_accepts_hosted_sorted_key_receipt_roundtrip() -> None:
     assert result["publication_performed"] is False
 
 
+def test_aggregate_accepts_explicit_candidate_date_profile_consistently() -> (
+    None
+):
+    reports = complete()
+    for report in reports:
+        report["qualification"]["date_profile"] = "pbs-iso-date-candidate-v1"
+    result = aggregate_shards(reports)
+    assert (
+        result["qualification"]["date_profile"] == "pbs-iso-date-candidate-v1"
+    )
+    reports[0]["qualification"]["date_profile"] = "not-selected"
+    with pytest.raises(ValueError, match="PBS qualification shards"):
+        aggregate_shards(reports)
+
+
 @pytest.mark.parametrize(
     ("path", "value"),
     [

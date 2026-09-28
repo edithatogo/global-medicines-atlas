@@ -565,6 +565,7 @@ def run_hosted_qualification(
     *,
     projection: str | None = None,
     reference_shard: tuple[int, int] | None = None,
+    date_profile: str | None = None,
     transport: httpx.BaseTransport | None = None,
     progress: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
@@ -586,6 +587,7 @@ def run_hosted_qualification(
             exact_commit,
             projection=projection,
             reference_shard=reference_shard,
+            date_profile=date_profile,
             transport=transport,
             retry=retry,
         )
@@ -1092,6 +1094,7 @@ def _run(
     *,
     projection: str | None,
     reference_shard: tuple[int, int] | None,
+    date_profile: str | None,
     transport: httpx.BaseTransport | None,
     retry: _RetryBudget,
 ) -> dict[str, Any]:
@@ -1104,6 +1107,7 @@ def _run(
             inputs.binding,
             projection=projection,
             reference_shard=reference_shard,
+            date_profile=date_profile,
             progress=lambda phase, batches, rows: retry.checkpoint(
                 "projection-qualification", phase, batches, rows
             ),
