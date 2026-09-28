@@ -783,6 +783,15 @@ for credentialed or rights-unresolved sources.
 - [x] Refresh `quality/qualifications/bronze-maturity.json` against exact merged `main` `4dc23b296656895b6d6fc882e007bcbd43e3f9eb` after PR #599. The report still finds 118 of 157 in-scope public/no-credential sources without qualifying landing evidence. All other mandatory Bronze dimensions remain evidenced; current-scope completeness and M5 remain blocked.
 - [x] Verify the previously raised Prompt 31 discrepancy is resolved: the formulary and spending sources are both `landed_and_evidenced`, and the Prompt 31 audit reports `live_acquisition_complete`. This does not change the overall Bronze denominator or Australian federation gates.
 
+## 2026-09-29 post-PR-613 exact-main refresh
+
+- [x] Re-evaluate the maturity report against exact merged `main`
+  `b5e4302d9b23d3632900d955356fb7eaa7824b4c` after PR #613. The report still
+  finds 118 of 157 in-scope sources without qualifying landing evidence; the
+  other 13 mandatory dimensions remain evidenced. This refresh corrects report
+  provenance only and does not claim new acquisition, Bronze completeness, or
+  M5 maturity.
+
 ## 2026-09-29 Medstat request and acknowledgement merge reconciliation
 
 - [x] PR #611 recorded the sent format inquiry, restored prior evidence rows
