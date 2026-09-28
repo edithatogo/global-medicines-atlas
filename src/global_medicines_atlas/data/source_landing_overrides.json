@@ -101,6 +101,17 @@
       ]
     },
     {
+      "source_id": "gb-nice-medicines-utilisation",
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "The four historic 2008–2012 releases were acquired under explicit internal-only maintainer approval; all 15 payloads were admitted, recorded in acquisition manifests, and clean-room restored by digest. This is bounded private B1/B2 evidence only: no source-record projection, third-party separability conclusion, public release, external publication, or independent durable replication is claimed.",
+      "next_action": "Keep the historical scope and private-only rights boundary explicit; do not publish or infer current utilisation coverage.",
+      "evidence_references": [
+        "quality/qualifications/nice-utilisation-acquisition-authorization.json",
+        "quality/qualifications/nice-utilisation-acquisition-success-20260821.json"
+      ]
+    },
+    {
       "source_id": "nl-gipdatabank",
       "state": "landed_and_evidenced",
       "evidence_scope": "live_receipt",

@@ -59,6 +59,7 @@ PROPERTY_IDS: tuple[str, ...] = (
     "documentation",
 )
 FDA_SHORTAGES_HISTORICAL_SNAPSHOT_COUNT = 129
+SHA256_HEX_LENGTH = 64
 AUTHORITIES = {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -196,7 +197,7 @@ def _is_receipt_reference(relative: str) -> bool:
 
 
 def _is_successful_bronze_receipt(
-    receipt: Mapping[str, Any], source_id: str
+    root: Path, receipt: Mapping[str, Any], source_id: str
 ) -> bool:
     """Require a typed qualification receipt and a positive success outcome."""
 
@@ -211,6 +212,10 @@ def _is_successful_bronze_receipt(
         return _is_successful_us_live_records_receipt(receipt, source_id)
     if schema_id == ("global-medicines-atlas.fda-shortages-live-qualification"):
         return _is_successful_fda_shortages_receipt(receipt, source_id)
+    if schema_id == (
+        "global-medicines-atlas.nice-utilisation-acquisition-success"
+    ):
+        return _is_successful_nice_utilisation_receipt(root, receipt, source_id)
     if not (
         schema_id.endswith(("-live-qualification", "-acquisition-success"))
         or schema_id
@@ -227,6 +232,70 @@ def _is_successful_bronze_receipt(
     return (
         successful_admission or successful_release
     ) and _contains_exact_value(receipt, source_id)
+
+
+def _is_successful_nice_utilisation_receipt(
+    root: Path, receipt: Mapping[str, Any], source_id: str
+) -> bool:
+    """Require approved internal rights and the complete private restore."""
+    authorization_path = (
+        "quality/qualifications/nice-utilisation-acquisition-authorization.json"
+    )
+    try:
+        raw_authorization = json.loads(_read(root, authorization_path))
+    except OSError, json.JSONDecodeError:
+        return False
+    if not isinstance(raw_authorization, Mapping):
+        return False
+    authorization = cast("Mapping[str, Any]", raw_authorization)
+    payload_count = receipt.get("payload_count")
+    admitted_count = receipt.get("accepted_admission_count")
+    manifest_count = receipt.get("acquisition_manifest_count")
+    release_count = receipt.get("release_count")
+    archive = receipt.get("private_archive")
+    hashes = receipt.get("payload_sha256")
+    if not isinstance(archive, Mapping):
+        return False
+    archive = cast("Mapping[str, Any]", archive)
+    if not isinstance(hashes, list):
+        return False
+    hashes = cast("list[object]", hashes)
+    return (
+        source_id == "gb-nice-medicines-utilisation"
+        and receipt.get("source_id") == source_id
+        and receipt.get("schema_version") == 1
+        and receipt.get("evidence_class") == "live_private_acquisition"
+        and receipt.get("rights_state") == "restricted"
+        and receipt.get("publication_authorized") is False
+        and receipt.get("external_publication_authorized") is False
+        and isinstance(payload_count, int)
+        and not isinstance(payload_count, bool)
+        and payload_count > 0
+        and isinstance(admitted_count, int)
+        and not isinstance(admitted_count, bool)
+        and admitted_count == payload_count
+        and isinstance(manifest_count, int)
+        and not isinstance(manifest_count, bool)
+        and manifest_count == payload_count
+        and isinstance(release_count, int)
+        and not isinstance(release_count, bool)
+        and release_count == authorization.get("expected_release_count")
+        and len(hashes) == payload_count
+        and all(
+            isinstance(value, str)
+            and len(value) == SHA256_HEX_LENGTH
+            and all(char in "0123456789abcdef" for char in value)
+            for value in hashes
+        )
+        and archive.get("clean_room_restore_verified") is True
+        and archive.get("restored_payload_digests_match") is True
+        and archive.get("restored_payload_count") == payload_count
+        and authorization.get("decision_status") == "approved_internal"
+        and authorization.get("acquisition_authorized") is True
+        and authorization.get("internal_retention_authorized") is True
+        and authorization.get("public_release_authorized") is False
+        and authorization.get("external_publication_authorized") is False
+    )
 
 
 def _is_successful_fda_shortages_receipt(
@@ -386,7 +455,7 @@ def receipt_backed_landing_evidence(
             except json.JSONDecodeError:
                 continue
             if isinstance(receipt, Mapping) and _is_successful_bronze_receipt(
-                cast("Mapping[str, Any]", receipt), source_id
+                root, cast("Mapping[str, Any]", receipt), source_id
             ):
                 evidence[source_id] = relative
                 break

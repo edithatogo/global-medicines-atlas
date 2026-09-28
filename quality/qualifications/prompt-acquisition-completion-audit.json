@@ -11,8 +11,8 @@
   "program_completion": "incomplete_live_acquisition",
   "queue_state_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 38,
-    "manual_only_documented_acquisition": 92,
+    "landed_and_evidenced": 39,
+    "manual_only_documented_acquisition": 91,
     "not_yet_implemented": 0,
     "rights_blocked": 27,
     "superseded_by_reused_source": 0,
@@ -996,10 +996,10 @@
         "gb-nice-medicines-utilisation"
       ],
       "queue_states": {
-        "gb-nice-medicines-utilisation": "manual_only_documented_acquisition"
+        "gb-nice-medicines-utilisation": "landed_and_evidenced"
       },
       "queue_state_counts": {
-        "manual_only_documented_acquisition": 1
+        "landed_and_evidenced": 1
       },
       "fixture_qualified_source_ids": [],
       "live_qualified_source_ids": [],
@@ -1009,10 +1009,10 @@
       "live_complete": false,
       "completion_state": "live_acquisition_incomplete",
       "blocker_categories": [
-        "documented_manual_acquisition_required"
+        "fixture_only_is_not_live"
       ],
       "next_actions": [
-        "execute the documented reproducible acquisition after source-specific rights confirmation"
+        "replace governed fixture evidence with a receipt-backed live source acquisition"
       ]
     },
     {

@@ -7,11 +7,11 @@ Silver transformations included: **no**.
 
 ## State summary
 
-- `landed_and_evidenced`: 38
+- `landed_and_evidenced`: 39
 - `temporarily_unavailable`: 2
 - `rights_blocked`: 27
 - `credentialed_and_excluded`: 15
-- `manual_only_documented_acquisition`: 92
+- `manual_only_documented_acquisition`: 91
 - `superseded_by_reused_source`: 0
 - `not_yet_implemented`: 0
 
@@ -173,7 +173,7 @@ Silver transformations included: **no**.
 - [ ] `eg-national-eml` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `eu-ema-epar-documents` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `eu-ema-safety-communications` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
-- [ ] `gb-nice-medicines-utilisation` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
+- [x] `gb-nice-medicines-utilisation` — `landed_and_evidenced`; Keep the historical scope and private-only rights boundary explicit; do not publish or infer current utilisation coverage..
 - [x] `gb-nice-ta` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `gh-national-eml` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `global-who-availability-surveys` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.

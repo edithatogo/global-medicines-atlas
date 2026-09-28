@@ -77,6 +77,89 @@ def test_fda_shortages_success_predicate_accepts_qualified_receipt() -> None:
     assert FDA_SHORTAGES_HISTORICAL_SNAPSHOT_COUNT == 129
 
 
+def test_nice_internal_acquisition_receipt_counts_as_bronze_landing() -> None:
+    evidence = receipt_backed_landing_evidence(
+        ROOT, {"gb-nice-medicines-utilisation"}
+    )
+    assert evidence == {
+        "gb-nice-medicines-utilisation": (
+            "quality/qualifications/nice-utilisation-acquisition-success-20260821.json"
+        )
+    }
+    receipt = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/nice-utilisation-acquisition-success-20260821.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert receipt["source_records_projected"] is False
+    assert receipt["external_publication_authorized"] is False
+
+
+@pytest.mark.parametrize(
+    "authorization_field",
+    [
+        "acquisition_authorized",
+        "internal_retention_authorized",
+        "public_release_authorized",
+        "external_publication_authorized",
+    ],
+)
+def test_nice_internal_landing_requires_source_specific_rights(
+    tmp_path: Path, authorization_field: str
+) -> None:
+    receipt = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/nice-utilisation-acquisition-success-20260821.json"
+        ).read_text(encoding="utf-8")
+    )
+    authorization = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/nice-utilisation-acquisition-authorization.json"
+        ).read_text(encoding="utf-8")
+    )
+    authorization[authorization_field] = not authorization[authorization_field]
+    authorization_path = (
+        tmp_path
+        / "quality/qualifications/nice-utilisation-acquisition-authorization.json"
+    )
+    authorization_path.parent.mkdir(parents=True)
+    authorization_path.write_text(json.dumps(authorization), encoding="utf-8")
+    receipt_path = (
+        tmp_path
+        / "quality/qualifications/nice-utilisation-acquisition-success-20260821.json"
+    )
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+    overrides_path = (
+        tmp_path
+        / "src/global_medicines_atlas/data/source_landing_overrides.json"
+    )
+    overrides_path.parent.mkdir(parents=True)
+    overrides_path.write_text(
+        json.dumps({
+            "overrides": [
+                {
+                    "source_id": "gb-nice-medicines-utilisation",
+                    "state": "landed_and_evidenced",
+                    "evidence_references": [
+                        "quality/qualifications/nice-utilisation-acquisition-success-20260821.json"
+                    ],
+                }
+            ]
+        }),
+        encoding="utf-8",
+    )
+
+    assert (
+        receipt_backed_landing_evidence(
+            tmp_path, {"gb-nice-medicines-utilisation"}
+        )
+        == {}
+    )
+
+
 @pytest.mark.parametrize(
     ("source_id", "field", "value"),
     [
