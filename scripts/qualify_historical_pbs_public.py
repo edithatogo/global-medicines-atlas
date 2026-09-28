@@ -52,8 +52,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--reference-shard-count", type=int)
     parser.add_argument(
         "--date-profile",
-        choices=("pbs-iso-date-candidate-v1",),
-        help="opt into the documented candidate grammar for this read-only run",
+        choices=(
+            "pbs-iso-date-candidate-v1",
+            "pbs-v3-pinned-2026-04-01-v1",
+        ),
+        help="opt into a bounded read-only PBS date grammar profile",
     )
     parser.add_argument("--failure-only", action="store_true")
     parser.add_argument("--metadata-only", action="store_true")

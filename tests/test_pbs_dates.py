@@ -129,6 +129,23 @@ def test_v3_temporal_effectivity_dates_are_classified_by_native_parent() -> (
     )
 
 
+def test_pinned_v3_profile_marks_only_the_pinned_era_qualification() -> None:
+    result = table(_production_xml(), pbs_dates.PINNED_V3_PROFILE)
+    metadata = result.schema.metadata
+    assert metadata[b"source_date_era_qualification"] == b"pinned-v3-2026-04-01"
+    assert metadata[b"date_grammar"] == b"pbs-v3-ascii-YYYY-MM-DD-calendar-only"
+    assert metadata[b"temporal_status_inference"] == b"none"
+
+
+def test_candidate_and_unselected_profiles_remain_unqualified() -> None:
+    for profile in (None, pbs_dates.CANDIDATE_PROFILE):
+        result = table(_production_xml(), profile)
+        assert (
+            result.schema.metadata[b"source_date_era_qualification"]
+            == b"not-established"
+        )
+
+
 def test_contract_classifies_every_supported_native_slot() -> None:
     payload = _production_xml()
     rows = table(payload).to_pylist()

@@ -101,6 +101,21 @@ def test_unknown_date_candidate_profile_fails_closed() -> None:
         )
 
 
+def test_pinned_v3_date_profile_rejects_synthetic_or_other_era_source() -> None:
+    archive = _zip([(PATH, XML)])
+    parent = _receipt(archive, SOURCE)
+    binding = build_pbs_xml_member_binding(archive, parent)
+    with pytest.raises(ValueError, match="exact source identity"):
+        qualifier.qualify_pbs_historical_projections(
+            archive,
+            XML,
+            parent,
+            binding,
+            projection="dates",
+            date_profile="pbs-v3-pinned-2026-04-01-v1",
+        )
+
+
 @pytest.mark.parametrize(
     "projection", ["native", "domain", "entities", "references", "dates"]
 )

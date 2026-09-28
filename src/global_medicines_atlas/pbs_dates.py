@@ -15,6 +15,9 @@ from .pbs_entities import iter_pbs_entity_batches
 from .receipts import SourceReceipt
 
 CANDIDATE_PROFILE = "pbs-iso-date-candidate-v1"
+# Narrow qualification bound to the only pinned PBS payload: one publicly
+# digest-verified 2026-04-01 V3 schedule member, not other release eras.
+PINNED_V3_PROFILE = "pbs-v3-pinned-2026-04-01-v1"
 MAX_BATCH_BYTES = 8 * 1024 * 1024
 _PBS = f"{{{PBS_V3_NAMESPACE}}}"
 _DCT = f"{{{DCTERMS_NAMESPACE}}}"
@@ -135,8 +138,16 @@ def _schema(native: pa.Schema, profile: str | None) -> pa.Schema:
     metadata.update({
         b"schema_name": b"global-medicines-atlas.pbs-silver.dates",
         b"date_profile": (profile or "not-selected").encode(),
-        b"source_date_era_qualification": b"not-established",
-        b"date_grammar": b"candidate-ascii-YYYY-MM-DD-calendar-only",
+        b"source_date_era_qualification": (
+            b"pinned-v3-2026-04-01"
+            if profile == PINNED_V3_PROFILE
+            else b"not-established"
+        ),
+        b"date_grammar": (
+            b"pbs-v3-ascii-YYYY-MM-DD-calendar-only"
+            if profile == PINNED_V3_PROFILE
+            else b"candidate-ascii-YYYY-MM-DD-calendar-only"
+        ),
         b"temporal_status_inference": b"none",
         b"conversion": b"candidate-date32" if profile is not None else b"none",
         b"dimension": b"source_temporal_structure",
@@ -178,7 +189,10 @@ def _date_batches(
     rows_per_batch: int,
 ) -> Iterator[pa.RecordBatch]:
     """Annotate an internally validated entity stream without admission."""
-    if date_profile is not None and date_profile != CANDIDATE_PROFILE:
+    if date_profile is not None and date_profile not in {
+        CANDIDATE_PROFILE,
+        PINNED_V3_PROFILE,
+    }:
         raise ValueError("unsupported PBS candidate date profile")
     rows: list[dict[str, Any]] = []
     size = 0

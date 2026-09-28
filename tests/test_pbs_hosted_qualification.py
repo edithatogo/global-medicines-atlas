@@ -579,6 +579,7 @@ def test_workflow_has_durable_receipt_and_no_dataset_write() -> None:
     assert "upload_folder" not in workflow
     assert "exact_commit" in workflow
     assert "pbs-iso-date-candidate-v1" in workflow
+    assert "pbs-v3-pinned-2026-04-01-v1" in workflow
     assert "DATE_PROFILE" in workflow
     assert 'args+=(--date-profile "$DATE_PROFILE")' in workflow
     assert "fail-fast: false" in workflow
