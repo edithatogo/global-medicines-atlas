@@ -414,12 +414,15 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   linked attachment URL filename ends in FY 2024-25. The attachment bytes were
   not read, so the workbook's actual coverage remains unverified. Metadata-only
   evidence: `quality/qualifications/australian-mbs-agency-mirror-route-20260928.json`.
-- [x] Prepare a source-owner request draft covering an agency-controlled
+- [x] Prepare and send the source-owner request for an agency-controlled
   endpoint, workbook period/coverage clarification, historical releases,
   attribution/terms, and machine retrieval requirements:
   `conductor/tracks/australian_health_source_consolidation_20260829/m107-agency-mirror-request.md`.
+  Sent to the Department's published general-enquiry address on 2026-09-28;
+  verified receipt: `quality/qualifications/provider-outreach-receipts-20260929.json`.
 - [~] Obtain the agency's response and an approved endpoint within the existing
-  source authorization. Do not GET or retain workbook bytes on the workstation.
+  source authorization. No reply was observed at the time of the receipt. Do
+  not GET or retain workbook bytes on the workstation.
   If the endpoint uses a domain outside the current authorization, stop for an
   explicit scope update. Then acquire only through the authorized GitHub Actions
   publication workflow and qualify each workbook's exact period, denominator,
@@ -440,5 +443,5 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [x] Reconcile PR #579 after merge `4d880652bcbdb692eaa2a90319ac0270810189d0`.
   Its exact head `8bf354e0128e12169f53a296231668e874d82f5f` passed all 37 hosted
   checks, including Codecov patch coverage. The value-free metadata receipt is
-  now durable on `main`; the source-owner request remains unsent and M-107 and
-  Australian federation remain open.
+  now durable on `main`; the source-owner request was subsequently sent; provider response, an approved
+  endpoint, M-107 qualification, and Australian federation remain open.

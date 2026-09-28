@@ -20,7 +20,7 @@ def _evidence_records() -> list[dict[str, Any]]:
     ]
 
 
-def test_access_request_and_plan_match_prepared_not_sent_evidence() -> None:
+def test_access_request_and_plan_match_sent_request_evidence() -> None:
     request = (TRACK / "openprescribing-access-request.md").read_text(
         encoding="utf-8"
     )
@@ -44,12 +44,19 @@ def test_access_request_and_plan_match_prepared_not_sent_evidence() -> None:
     assert record["scope"]["credentials_requested_or_created"] is False
     assert record["scope"]["challenge_workaround_attempted"] is False
 
-    assert "**Status:** prepared, not sent." in request
-    assert "**To:** `feedback@openprescribing.net`" in request
+    assert "**Status:** sent 2026-09-28" in request
+    sent = [
+        r
+        for r in records
+        if r.get("kind") == "openprescribing_supported_access_request_sent"
+    ]
+    assert len(sent) == 1
+    assert sent[0]["status"] == "sent_awaiting_provider_response"
+    assert sent[0]["source_payloads_attached"] is False
+    assert "provider-outreach-receipts-20260929.json" in request
+    assert "feedback@openprescribing.net" in request
     assert "will not attempt to solve the" in request
-    assert (
-        "prepare an unsent request for a supported machine-access path" in plan
-    )
+    assert "Send the request to `feedback@openprescribing.net`" in plan
     assert "Obtain provider guidance for automated access" in plan
 
 

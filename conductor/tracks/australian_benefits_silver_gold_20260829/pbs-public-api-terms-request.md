@@ -1,12 +1,13 @@
-# Draft request: PBS public API reuse terms
+# PBS public API reuse and retention inquiry
 
-**Status:** prepared, not sent. The current source-rights review for
-`au-pbs-api` remains unresolved. This request concerns the public API only; it
-does not request embargo access, credentials, or a change to any existing
-source authorization.
+**Status:** sent 2026-09-28 to `HPP.Support@Health.gov.au` from
+`d.a.mordaunt@gmail.com`; awaiting provider clarification. Gmail message ID:
+`1a0e8ec00959d610`. The verified Sent receipt is
+`quality/qualifications/provider-outreach-receipts-20260929.json`.
 
-**To:** `HPP.Support@Health.gov.au`, the contact published on the PBS Data
-Distribution Project page.
+This request concerns the public API only; it does not request embargo access,
+credentials, or a change to any existing source authorization. The source-rights
+review for `au-pbs-api` remains unresolved.
 
 **Subject:** Reuse and retention terms for the PBS public data API
 
@@ -15,8 +16,8 @@ Hello PBS Data Distribution team,
 We maintain Global Medicines Atlas, a research project that preserves
 source-identified medicine evidence and its reuse conditions. We are reviewing
 the Department's unauthenticated PBS public data API. The public documentation
-describes access without login, the current schedule plus 12 months of
-history, monthly updates, and a shared limit of one request per 20 seconds.
+describes access without login, the current schedule plus 12 months of history,
+monthly updates, and a shared limit of one request per 20 seconds.
 
 Could you please identify the current terms, licence, or other legal conditions
 that apply to the public API data, including its JSON and CSV responses? In
@@ -32,12 +33,11 @@ decision remains pending, and we will not acquire from this API or publish
 source bytes or derived outputs until the applicable rights and maintainer
 decision are recorded.
 
-Thank you.
+For reference: [PBS Data Distribution Project](https://data.pbs.gov.au/data-distribution/data-distribution.html),
+[API overview](https://data.pbs.gov.au/api/pbs-api.html),
+[public access guide](https://data.pbs.gov.au/api/api-public.html), and
+[API FAQ](https://data.pbs.gov.au/api/api-faq.html).
 
-## Official references
-
-- [PBS Data Distribution Project](https://data.pbs.gov.au/data-distribution/data-distribution.html)
-- [PBS API overview](https://data.pbs.gov.au/api/pbs-api.html)
-- [PBS public API access guide](https://data.pbs.gov.au/api/api-public.html)
-- [PBS API FAQ](https://data.pbs.gov.au/api/api-faq.html)
-- Source rights review: `quality/qualifications/source-rights-review-ledger.json`
+Thank you,
+Dylan Mordaunt
+Global Medicines Atlas

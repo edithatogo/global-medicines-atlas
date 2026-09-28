@@ -1226,7 +1226,8 @@
 - [x] Prepare a provider request to the official HPP.Support address asking
   for the applicable reuse terms, internal retention, attribution, derivative
   and redistribution permissions, without requesting embargo access or
-  credentials: `pbs-public-api-terms-request.md`. The request remains unsent.
+  credentials: `pbs-public-api-terms-request.md`. It was subsequently sent;
+  provider clarification remains pending and rights remain unknown.
 - [ ] Obtain provider clarification and a separate source-specific maintainer
   rights decision before any `au-pbs-api` acquisition. PBS source-era/domain
   qualification, unresolved AMT references, M-109, Australian federation and
