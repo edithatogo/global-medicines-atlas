@@ -47,14 +47,19 @@
   reject unrepresentable decimal precision without rounding. Scalar tests do
   not establish real-source era qualification or publication readiness.
   Six XML Arrow table candidates now retain all 40 native fields, exact B1
-  receipt digests and B2 digests. Public v4 location verification, workbook/PBS
-  tables and real-source date-era qualification remain pending.
-- [~] Add the documented MBS DD.MM.YYYY profile alongside explicit ISO input;
+  receipt digests and B2 digests. The July 2025 XML was source-era qualified
+  against the official release, its `mbs-dmy` profile produced zero quality
+  findings across 5,989 records and 239,560 field occurrences, and all six
+  versioned tables were anonymously verified at public v4 revision
+  `ba82cd1d0f9b0f28514df431b8da3a6c207d76fa` (runs `36345410208` and
+  `36348699885`). Legacy workbook and PBS table bindings remain open.
+- [x] Add the documented MBS DD.MM.YYYY profile alongside explicit ISO input;
   retain source text, reject calendar/format errors and bind conversion v2 to
-  Arrow metadata. Official XML specification checked 2026-08-30; real-corpus
-  hosted qualification remains pending rather than inferred from fixtures.
+  Arrow metadata. Official XML specification checked 2026-08-30. Exact-main
+  run `36345410208` verified the official July 2025 release and qualified the
+  `mbs-dmy` projection over all 5,989 records with zero quality findings.
   (`1619e2b`; 10 intended failing cases followed by 150 combined focused
-  passes, both changed modules at 100% branch coverage; hosted recheck pending.)
+  passes; both changed modules at 100% branch coverage.)
 
 ## Arrow review fixes
 
@@ -1092,14 +1097,19 @@
   coercion or disclosure. Exact-main run `36344055256` classified the sole
   mismatch as decimal text with surrounding XML whitespace; no value or
   identifier was disclosed. The diagnostic is complete.
-- [~] Normalize only XML Schema decimal whitespace at the MBS typed-projection
+- [x] Normalize only XML Schema decimal whitespace at the MBS typed-projection
   boundary, while preserving parser-native text unchanged and rejecting
   internal/non-XML whitespace, alternate decimal spellings, and amounts
   outside the documented width. The MBS candidate schema now declares this
   policy as v1.1. PR #562 merged as `a02daa3` after the review correction,
   114 affected tests and all protected checks passed. Exact-main run
   `36345410208` requalified the same 5,989 records, 40 fields, and 239,560
-  occurrences with zero quality findings; the public-v4 blocker remains.
+  occurrences with zero quality findings. PR #563 and hosted run
+  `36348699885` then anonymously verified the six derived tables at public v4
+  revision `ba82cd1d0f9b0f28514df431b8da3a6c207d76fa`. The normalization and
+  candidate publication tasks are complete; embedded qualification remains
+  candidate-only and M-107, cross-source M-109, federation, and Stable v1 remain
+  independent.
 - [x] Build and publish a deterministic, source-faithful six-table MBS Silver
   v4 package to the authorized public MBS archive through GitHub Actions only.
   Bind it to the pinned July 2025 B2 digest, official release identity,
