@@ -1140,9 +1140,22 @@
   literals, with no interval/status inference and with
   `source_date_era_qualification=not-established`; reconcile candidate status
   counts before any separate source-era or M-109 acceptance claim.
-- [ ] Add an opt-in exact-main `pbs-iso-date-candidate-v1` run with date profile
-  bound consistently across projection and reference shards. Local implementation
-  and focused tests pass; one full-profile macOS limitation is recorded in
-  `evidence.jsonl`. Merge the scoped workflow change, run exact-main, and
-  reconcile only its value-free candidate conversion counters. A pass remains
-  candidate-only and does not establish source-era semantics.
+- [~] Add an opt-in exact-main `pbs-iso-date-candidate-v1` run with date profile
+  bound consistently across projection and reference shards. PR #568 merged as
+  `eddcf896`; protected CI, Codecov, and review passed. Focused tests passed;
+  the full-profile macOS limitation is recorded in `evidence.jsonl`. Exact-main
+  run `36372245263` is in progress. Reconcile only its value-free candidate
+  conversion counters; a pass remains candidate-only and does not establish
+  source-era semantics.
+- [~] Diagnose M-107's authorized Health.gov workbook download timeouts with a
+  separate exact-main, HEAD-only Actions probe. The workstation metadata check
+  confirmed all three URLs return the expected XLSX headers, while bounded
+  CKAN searches found no matching mirror. PR #569 adds the probe; review found
+  and corrected the need for a whole-request wall-clock deadline in addition
+  to HTTP operation timeouts. Focused regressions, static analysis, routine
+  checks, and local full statement/branch coverage pass. The updated protected
+  CI exposed one brittle value-free test that searched for a short numeric
+  spelling inside the entire JSON receipt, including generated digests. That
+  assertion now compares complete emitted string values; fresh protected CI
+  and the hosted egress result remain pending. The probe reads no source bytes
+  and cannot satisfy workbook acquisition or M-107 acceptance.

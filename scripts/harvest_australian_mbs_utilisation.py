@@ -35,17 +35,14 @@ from global_medicines_atlas.australian_harvesting import (
     validate_resources_against_contract,
     verify_anonymous_restore,
 )
+from global_medicines_atlas.australian_mbs_head_preflight import WORKBOOKS
 
 DATASET = "edithatogo/australian-mbs-utilisation-archive"
 USER_AGENT = DEFAULT_HARVEST_USER_AGENT
 
 DATA_GOV_MBS_GROUP_API = "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group"
 DATA_GOV_MBS_DEMOGRAPHICS_API = "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group-by-patient-demographics-report"
-HEALTH_GOV_MEDICARE_WORKBOOK_FALLBACKS = (
-    "https://www.health.gov.au/sites/default/files/2026-08/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26.xlsx",
-    "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
-    "https://www.health.gov.au/sites/default/files/2026-08/medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26.xlsx",
-)
+HEALTH_GOV_MEDICARE_WORKBOOK_FALLBACKS = tuple(url for _name, url in WORKBOOKS)
 
 
 def fetch_url_bytes(url: str, timeout: int = 120) -> tuple[bytes, str]:

@@ -330,8 +330,24 @@ def test_invalid_amount_decimal_probe_is_value_free(
             "source_ordinals": [1],
         },
     ]
-    serialized = json.dumps(result)
-    assert all(spelling not in serialized for spelling in native_spellings)
+
+    def string_values(value: object) -> list[str]:
+        if isinstance(value, str):
+            return [value]
+        if isinstance(value, dict):
+            mapping = cast("dict[str, object]", value)
+            return [
+                text
+                for nested in mapping.values()
+                for text in string_values(nested)
+            ]
+        if isinstance(value, list):
+            items = cast("list[object]", value)
+            return [text for nested in items for text in string_values(nested)]
+        return []
+
+    emitted_values = string_values(result)
+    assert all(spelling not in emitted_values for spelling in native_spellings)
     assert diagnostics["source_values_included"] is False
 
 

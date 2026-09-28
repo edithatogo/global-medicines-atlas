@@ -1,0 +1,74 @@
+name: Read-only Australian MBS workbook egress preflight
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_commit:
+        description: Exact merged main commit containing this read-only probe
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: australian-mbs-workbook-egress-preflight
+  cancel-in-progress: false
+
+jobs:
+  head-preflight:
+    name: Probe authorized workbook endpoints with HEAD only
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write # Durable bounded diagnostic receipt only.
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+
+      - name: Bind exact main commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main
+          test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
+          test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
+
+      - name: Probe the three authorized URLs with HEAD only
+        id: preflight
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          uv run --locked --python 3.14.6 python scripts/preflight_australian_mbs_workbooks.py \
+            --exact-commit "$REQUESTED_COMMIT" \
+            --output build/mbs-workbook-egress-preflight.json
+
+      - name: Require every endpoint to return bounded Excel headers
+        if: steps.preflight.outcome == 'success'
+        run: |
+          set -euo pipefail
+          test "$(jq -r .status build/mbs-workbook-egress-preflight.json)" = passed
+
+      - name: Retain the bounded diagnostic receipt
+        if: always() && hashFiles('build/mbs-workbook-egress-preflight.json') != ''
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: mbs-workbook-egress-preflight-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/mbs-workbook-egress-preflight.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Record the bounded diagnostic receipt
+        if: always() && hashFiles('build/mbs-workbook-egress-preflight.json') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh issue comment 340 --body-file build/mbs-workbook-egress-preflight.json

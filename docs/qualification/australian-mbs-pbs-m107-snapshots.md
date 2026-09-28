@@ -22,6 +22,34 @@ source/category families before staging. A failed `data.gov.au` package query,
 missing workbook category, or inaccessible publication page cannot yield a
 `complete` run by silently reducing the selected-resource denominator.
 
+## Read-only delivery preflight, 2026-09-28
+
+A bounded metadata-only `HEAD` request from the maintainer workstation reached
+the three exact official workbook URLs with HTTP 200 and the expected Excel
+content type. The quarterly workbook returned `Content-Length: 3160065`, the
+year-to-date workbook `85783`, and the annual attachment `1058479` bytes. The
+annual URL still names the 2009–10 to 2024–25 workbook; its publication page is
+titled through 2025–26. No response body was requested, so these headers do
+not establish content digests, workbook integrity, or source-byte acquisition.
+
+Metadata-only CKAN `package_search` queries for each of the three exact
+filenames returned no matching Medicare package/resources on data.gov.au. This
+found no alternate catalogued mirror and confirmed local route availability,
+while the prior hosted harvest still timed out on the same file requests. The
+current failure is therefore narrowed to the hosted-runner delivery path; this
+check does not prove the GitHub Actions route is fixed. Do not repeat the
+unchanged harvest. A dedicated manual exact-main Actions workflow now probes
+these exact URLs using `HEAD` only, with a 15-second request timeout, no
+redirects, no dataset token, and no source-body reads. It records only response
+status, bounded content length and an Excel content-type validity flag. Its
+hosted result must be observed before another authorized byte-acquisition
+attempt. No local workbook bytes were downloaded.
+
+Review hardening wraps each individual request in a 15-second wall-clock
+deadline as well as HTTP operation timeouts, so a slow-drip response is retained
+as a finite timeout result rather than consuming the whole Actions job. A
+synthetic slow-response test and invalid-deadline cases cover that boundary.
+
 The first [exact-head hosted attempt on 2026-09-27](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36321857806)
 at `234f4a44a915877ac95c7668b4445fb368417f3b` passed repository/authority
 binding and both `data.gov.au` package queries. Its bounded health.gov.au
