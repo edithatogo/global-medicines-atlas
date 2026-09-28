@@ -11,6 +11,7 @@ import sys
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 import httpx
 from pydantic import AnyUrl
@@ -45,6 +46,42 @@ ROOT = Path(__file__).resolve().parents[1]
 RIGHTS_REFERENCE = AnyUrl(
     "https://github.com/edithatogo/global-medicines-atlas/issues/340"
 )
+
+
+def _public_workbook_storage_summary(
+    qualification: dict[str, Any],
+) -> dict[str, Any]:
+    """Keep hosted storage evidence aggregate and free of workbook cell values."""
+    sheet_fields = (
+        "name",
+        "path",
+        "dimension",
+        "cells",
+        "formula_cells",
+        "error_cells",
+        "conversion_statuses",
+        "storage_types",
+    )
+    return {
+        key: qualification[key]
+        for key in (
+            "schema_version",
+            "qualification",
+            "source_sha256",
+            "source_receipt_sha256",
+            "bytes",
+            "sheet_count",
+            "cells",
+            "parquet_roundtrip_verified",
+            "domain_mapping_qualified",
+            "publication_performed",
+        )
+    } | {
+        "sheets": [
+            {key: sheet[key] for key in sheet_fields}
+            for sheet in qualification["sheets"]
+        ]
+    }
 
 
 def _arguments() -> argparse.Namespace:
@@ -166,8 +203,8 @@ def main() -> None:
             ],
         }
     if arguments.public_hf_workbook:
-        summary["storage_qualification"] = qualify_workbook_cells(
-            payload, receipt
+        summary["storage_qualification"] = _public_workbook_storage_summary(
+            qualify_workbook_cells(payload, receipt)
         )
         summary["header_mapping_profile"] = profile_workbook_domain(
             payload, receipt
