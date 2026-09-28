@@ -1,6 +1,8 @@
 # Legacy Group P7 workbook date convention inquiry
 
-**Status:** prepared, not sent. The official XML specification documents
+**Status:** sent 2026-09-28 to `enquiries@health.gov.au`; no substantive reply
+has been recorded. The sent-message receipt is in
+`quality/qualifications/provider-outreach-receipts-20260929.json`. The official XML specification documents
 `DD.MM.YYYY` for XML fields but does not establish the convention for the
 separate legacy Group P7 workbook. Keep the workbook date profile unset until
 source-specific evidence is obtained.
@@ -32,6 +34,6 @@ Global Medicines Atlas
 
 ## Boundary
 
-This draft is not sent. It does not change the approved source scope, authorize
-acquisition or publication, select a date profile, or establish semantic
-promotion.
+The inquiry included no source cell values or workbook bytes. Sending it does
+not change the approved source scope, authorize acquisition or publication,
+select a date profile, or establish semantic promotion.

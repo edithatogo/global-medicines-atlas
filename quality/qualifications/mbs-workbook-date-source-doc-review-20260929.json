@@ -28,6 +28,16 @@
   "legacy_p7_workbook_date_format_documented": false,
   "date_profile": null,
   "semantic_promotion": false,
+  "source_owner_contact": {
+    "status": "sent_awaiting_source_owner_response",
+    "recipient": "enquiries@health.gov.au",
+    "subject": "Date convention for July 2024 MBS Group P7 workbook",
+    "sent_at": "2026-09-28T18:07:01Z",
+    "gmail_message_id": "1a0e932e4152a72e",
+    "message_receipt": "quality/qualifications/provider-outreach-receipts-20260929.json",
+    "cell_values_included": false,
+    "source_bytes_attached": false
+  },
   "next_evidence": "Obtain source-specific documentation or source-owner confirmation that applies to the exact legacy P7 workbook before selecting a conversion profile.",
   "boundary": "The XML specification cannot be transferred to a separate workbook era. This documentation review makes no workbook date-semantic claim and does not authorize conversion, derived admission, or publication."
 }

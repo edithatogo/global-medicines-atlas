@@ -437,11 +437,14 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   convention for the exact July 2024 legacy Group P7 workbook. The official XML
   date specification does not establish the separate workbook's convention;
   compatibility evidence found 1,276 cells valid under both orders and four
-  valid only under DMY. The request is explicitly marked prepared, not sent:
+  valid only under DMY. Sent under the existing MBS contact authorization to
+  `enquiries@health.gov.au`; message ID, subject, no-attachment status, and
+  message readback are recorded in
+  `quality/qualifications/provider-outreach-receipts-20260929.json` and
   `mbs-workbook-date-convention-request.md`.
 - [~] Keep the date profile unset and semantic promotion disabled pending
-  source-specific documentation or confirmation. Sending the inquiry requires
-  explicit maintainer authorization; no source bytes or cell values are sent.
+  source-specific documentation or confirmation. No source bytes or cell
+  values were sent; no response has yet been observed.
 
 ## M-107 metadata evidence review fixes (2026-09-28)
 

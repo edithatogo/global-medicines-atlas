@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.provider-outreach-receipts",
   "schema_version": 1,
-  "recorded_at": "2026-09-28T16:51:14Z",
+  "recorded_at": "2026-09-28T18:07:01Z",
   "sender": "d.a.mordaunt@gmail.com",
   "messages": [
     {
@@ -65,6 +65,21 @@
       "authorization_expanded": false,
       "approved_endpoint_identified": false,
       "agency_response_received": false
+    },
+    {
+      "source_id": "au-mbs-p7-legacy-workbook",
+      "purpose": "Ask the source owner to confirm the date convention for the exact July 2024 legacy Group P7 workbook; value-free and no workbook payload requested.",
+      "recipient": "enquiries@health.gov.au",
+      "subject": "Date convention for July 2024 MBS Group P7 workbook",
+      "sent_at": "2026-09-28T18:07:01Z",
+      "gmail_message_id": "1a0e932e4152a72e",
+      "rfc_message_id": "<CA+D7CoxBRvqFBSkrxYiioUXBPgzFELG5g-KbaezZo1-pWTXWyA@mail.gmail.com>",
+      "state": "sent_awaiting_source_owner_response",
+      "attachment_count": 0,
+      "source_payloads_attached": false,
+      "cell_values_included": false,
+      "date_profile_selected": false,
+      "semantic_promotion": false
     }
   ],
   "verification": {
@@ -72,6 +87,8 @@
     "sent_label_readback": true,
     "recipient_subject_and_message_id_readback": true,
     "automated_acknowledgements_observed": true,
+    "new_mbs_date_inquiry_sent_label_readback": true,
+    "new_mbs_date_inquiry_recipient_subject_and_message_id_readback": true,
     "substantive_provider_responses_observed": false
   },
   "boundary": "These are inquiries only. They do not establish source rights, credentials, a reachable mirror, acquisition permission beyond existing records, dataset qualification, public release, or Stable v1 acceptance."
