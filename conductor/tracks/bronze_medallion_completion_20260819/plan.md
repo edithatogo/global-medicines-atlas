@@ -743,3 +743,9 @@ for credentialed or rights-unresolved sources.
   do not infer coverage from indexing, acquisition intent, or unrelated audit
   completions. FDA shortages delegated detail-page coverage remains incomplete
   and publication remains unauthorized.
+
+## Medstat HTML export format diagnosis (2026-09-28)
+
+- [x] Merge the redacted HTML-shape diagnostic in PR [#591](https://github.com/edithatogo/global-medicines-atlas/pull/591), exact head `7415e63d`, merged SHA `76b311d704db443d0f4de11f53d925bec528d641`; all protected checks passed.
+- [x] Run the authorized internal-only acquisition workflow once on exact `main`. It returned HTTP 200, `.xls`, 4,446 bytes, `text/html;charset=UTF-8`, a source-titled HTML document, and one table with three rows and six cells. The page had no forms, controls, frames, scripts, links, or buttons.
+- [ ] Keep the download rejected. The bounded shape does not establish whether this is a valid HTML-formatted spreadsheet or an error response. Resolve export format semantics through official source documentation or provider guidance before implementing an HTML parser or treating this response as source evidence. No response text or bytes were inspected or retained; internal landing, private retention, Bronze acceptance, public release, and external publication remain unclaimed.
