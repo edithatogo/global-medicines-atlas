@@ -164,6 +164,8 @@ def profile_workbook_values(
     source_errors = 0
     date_encodings: Counter[str] = Counter()
     date_fields: defaultdict[str, Counter[str]] = defaultdict(Counter)
+    date_order_compatibility: Counter[str] = Counter()
+    date_order_by_field: defaultdict[str, Counter[str]] = defaultdict(Counter)
     for batch in iter_workbook_value_batches(
         payload, receipt, date_format=date_format
     ):
@@ -177,6 +179,12 @@ def profile_workbook_values(
                 encoding = _date_encoding(row)
                 date_encodings[encoding] += 1
                 date_fields[field.native_name][encoding] += 1
+                if encoding == "two_two_four_dot":
+                    compatibility = _date_order_compatibility(
+                        row["display_value"]
+                    )
+                    date_order_compatibility[compatibility] += 1
+                    date_order_by_field[field.native_name][compatibility] += 1
     return {
         "schema_version": 1,
         "conversion_version": CONVERSION_VERSION,
@@ -195,6 +203,17 @@ def profile_workbook_values(
         "date_encodings_by_field": {
             key: dict(sorted(value.items()))
             for key, value in sorted(date_fields.items())
+        },
+        "date_order_compatibility_profile_version": 1,
+        "date_order_compatibility_interpretation": (
+            "calendar_validity_only_no_date_convention_selected"
+        ),
+        "date_order_compatibility_counts": dict(
+            sorted(date_order_compatibility.items())
+        ),
+        "date_order_compatibility_by_field": {
+            key: dict(sorted(value.items()))
+            for key, value in sorted(date_order_by_field.items())
         },
         "semantic_promotion": False,
     }
@@ -232,3 +251,32 @@ def _text_date_shape(value: str) -> str:
         if re.fullmatch(pattern, value):
             return label
     return "other_text"
+
+
+def _date_order_compatibility(value: str) -> str:
+    """Classify which day/month order forms a real calendar date.
+
+    This value-free aggregate does not select a workbook convention. It only
+    records whether the lexical components are calendar-valid as DMY, MDY,
+    both, or neither.
+    """
+    if re.fullmatch(r"[0-9]{2}\.[0-9]{2}\.[0-9]{4}", value) is None:
+        return "not_two_two_four_dot"
+    first, second, year = (int(part) for part in value.split("."))
+    valid_orders: set[str] = set()
+    for order, month, day in (
+        ("dmy", second, first),
+        ("mdy", first, second),
+    ):
+        try:
+            date(year, month, day)
+        except ValueError:
+            continue
+        valid_orders.add(order)
+    if valid_orders == {"dmy", "mdy"}:
+        return "both"
+    if valid_orders == {"dmy"}:
+        return "dmy_only"
+    if valid_orders == {"mdy"}:
+        return "mdy_only"
+    return "neither"
