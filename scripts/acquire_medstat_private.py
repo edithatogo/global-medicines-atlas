@@ -49,6 +49,13 @@ class _HtmlShape(HTMLParser):
         self.table_count = 0
         self.row_count = 0
         self.cell_count = 0
+        self.form_count = 0
+        self.input_count = 0
+        self.select_count = 0
+        self.iframe_count = 0
+        self.script_count = 0
+        self.link_count = 0
+        self.button_count = 0
         self.in_title = False
         self.source_title_match = False
 
@@ -65,6 +72,20 @@ class _HtmlShape(HTMLParser):
             self.row_count += 1
         elif normalized in {"td", "th"}:
             self.cell_count += 1
+        elif normalized == "form":
+            self.form_count += 1
+        elif normalized == "input":
+            self.input_count += 1
+        elif normalized == "select":
+            self.select_count += 1
+        elif normalized == "iframe":
+            self.iframe_count += 1
+        elif normalized == "script":
+            self.script_count += 1
+        elif normalized == "link":
+            self.link_count += 1
+        elif normalized == "button":
+            self.button_count += 1
         elif normalized == "title":
             self.in_title = True
 
@@ -113,6 +134,13 @@ def validate_browser_download(
             f"html_table_count={html_shape.table_count}; "
             f"html_row_count={html_shape.row_count}; "
             f"html_cell_count={html_shape.cell_count}; "
+            f"html_form_count={html_shape.form_count}; "
+            f"html_input_count={html_shape.input_count}; "
+            f"html_select_count={html_shape.select_count}; "
+            f"html_iframe_count={html_shape.iframe_count}; "
+            f"html_script_count={html_shape.script_count}; "
+            f"html_link_count={html_shape.link_count}; "
+            f"html_button_count={html_shape.button_count}; "
             f"html_source_title_match={html_shape.source_title_match}; "
             f"http_status={metadata.get('http_status', '<unknown>')}; "
             f"content_type={metadata.get('content_type', '<unknown>')}"

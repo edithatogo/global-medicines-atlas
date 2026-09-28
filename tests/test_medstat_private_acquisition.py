@@ -116,10 +116,37 @@ def test_browser_download_diagnostic_reports_only_bounded_metadata() -> None:
     assert "ole_signature_valid=False" in message
     assert "html_document=True" in message
     assert "html_table_count=0" in message
+    assert "html_form_count=0" in message
+    assert "html_input_count=0" in message
     assert "html_source_title_match=False" in message
     assert "http_status=200" in message
     assert "content_type=text/html" in message
     assert "synthetic-marker" not in message
+
+
+def test_browser_download_diagnostic_classifies_html_structure_only() -> None:
+    response = (
+        b"<html><head><title>Medstat</title></head><body>"
+        b"<form><input><select></select><button>do not report</button></form>"
+        b"<table><tr><th>private heading</th></tr></table>"
+        b"<iframe></iframe><script>private script</script><a href='/private'>x</a>"
+        b"</body></html>"
+    )
+    with pytest.raises(RuntimeError) as caught:
+        validate_browser_download(response, "response.xls")
+
+    message = str(caught.value)
+    assert "html_form_count=1" in message
+    assert "html_input_count=1" in message
+    assert "html_select_count=1" in message
+    assert "html_iframe_count=1" in message
+    assert "html_script_count=1" in message
+    assert "html_link_count=0" in message
+    assert "html_button_count=1" in message
+    assert "html_source_title_match=True" in message
+    assert "private heading" not in message
+    assert "private script" not in message
+    assert "/private" not in message
 
 
 def test_browser_download_accepts_a_valid_workbook() -> None:
