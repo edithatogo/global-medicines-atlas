@@ -117,7 +117,12 @@ def _date_row(row: dict[str, Any], profile: str | None) -> dict[str, Any]:
     }
 
 
-def _schema(native: pa.Schema, profile: str | None) -> pa.Schema:
+def _schema(
+    native: pa.Schema,
+    profile: str | None,
+    *,
+    pinned_source_era_verified: bool = False,
+) -> pa.Schema:
     fields: list[pa.Field[pa.DataType]] = list(native)
     fields.extend(
         pa.field(name, pa.string(), nullable=nullable)
@@ -140,12 +145,12 @@ def _schema(native: pa.Schema, profile: str | None) -> pa.Schema:
         b"date_profile": (profile or "not-selected").encode(),
         b"source_date_era_qualification": (
             b"pinned-v3-2026-04-01"
-            if profile == PINNED_V3_PROFILE
+            if profile == PINNED_V3_PROFILE and pinned_source_era_verified
             else b"not-established"
         ),
         b"date_grammar": (
             b"pbs-v3-ascii-YYYY-MM-DD-calendar-only"
-            if profile == PINNED_V3_PROFILE
+            if profile == PINNED_V3_PROFILE and pinned_source_era_verified
             else b"candidate-ascii-YYYY-MM-DD-calendar-only"
         ),
         b"temporal_status_inference": b"none",
@@ -174,6 +179,8 @@ def iter_pbs_date_batches(
     output budget (dates encoded as ISO strings), not a resident-memory cap.
     Discard partial outputs after an iterator error.
     """
+    if date_profile not in {None, CANDIDATE_PROFILE}:
+        raise ValueError("unsupported PBS candidate date profile")
     yield from _date_batches(
         iter_pbs_entity_batches(
             payload, receipt, rows_per_batch=rows_per_batch
@@ -187,6 +194,8 @@ def _date_batches(
     batches: Iterator[pa.RecordBatch],
     date_profile: str | None,
     rows_per_batch: int,
+    *,
+    pinned_source_era_verified: bool = False,
 ) -> Iterator[pa.RecordBatch]:
     """Annotate an internally validated entity stream without admission."""
     if date_profile is not None and date_profile not in {
@@ -194,12 +203,18 @@ def _date_batches(
         PINNED_V3_PROFILE,
     }:
         raise ValueError("unsupported PBS candidate date profile")
+    if pinned_source_era_verified and date_profile != PINNED_V3_PROFILE:
+        raise ValueError("pinned PBS date qualification requires its profile")
     rows: list[dict[str, Any]] = []
     size = 0
     schema: pa.Schema | None = None
     for batch in batches:
         if schema is None:
-            schema = _schema(batch.schema, date_profile)
+            schema = _schema(
+                batch.schema,
+                date_profile,
+                pinned_source_era_verified=pinned_source_era_verified,
+            )
         for entity in batch.to_pylist():
             row = _date_row(entity, date_profile)
             row_size = len(

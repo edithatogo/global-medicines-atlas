@@ -9,7 +9,10 @@ if TYPE_CHECKING:
     import pyarrow as pa
 
 # Private transforms are intentionally not public stream-admission APIs.
-from .pbs_dates import _date_batches  # pyright: ignore[reportPrivateUsage]
+from .pbs_dates import (
+    CANDIDATE_PROFILE,
+    _date_batches,  # pyright: ignore[reportPrivateUsage]
+)
 from .pbs_historical_projections import iter_pbs_historical_entity_batches
 from .pbs_member_identity import PbsXmlMemberBinding
 from .pbs_references import (
@@ -73,6 +76,8 @@ def iter_pbs_historical_date_batches(
     XML/ZIP/entity and encoded-output bounds apply, not total resident memory.
     Discard partial output after errors; no acquisition or publication occurs.
     """
+    if date_profile not in {None, CANDIDATE_PROFILE}:
+        raise ValueError("unsupported PBS candidate date profile")
     yield from _date_batches(
         iter_pbs_historical_entity_batches(
             archive_payload,

@@ -155,6 +155,39 @@ def test_reference_shard_binds_selected_date_candidate_profile(
         qualify_reference_shard(
             tmp_path / "prepared", shard_index=0, date_profile="guessed"
         )
+    with pytest.raises(ValueError, match="exact source identity"):
+        qualify_reference_shard(
+            tmp_path / "prepared",
+            shard_index=0,
+            date_profile="pbs-v3-pinned-2026-04-01-v1",
+        )
+
+
+def test_pinned_v3_binding_match_is_digest_and_member_specific() -> None:
+    binding, _, _ = inputs()
+    pinned = binding.model_copy(
+        update={
+            "source": binding.source.model_copy(
+                update={
+                    "source_id": "au-pbs-historical-xml",
+                    "catalog_version": "2026-04-01",
+                }
+            ),
+            "archive_payload": binding.archive_payload.model_copy(
+                update={
+                    "sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20"
+                }
+            ),
+            "member_path": "sch-2026-04-01-r1.xml",
+            "member_payload": binding.member_payload.model_copy(
+                update={
+                    "sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43"
+                }
+            ),
+        }
+    )
+    assert shards._is_pinned_v3_binding(pinned)  # pyright: ignore[reportPrivateUsage]
+    assert not shards._is_pinned_v3_binding(binding)  # pyright: ignore[reportPrivateUsage]
 
 
 def test_global_index_preparation_streams_once_with_deterministic_parity(

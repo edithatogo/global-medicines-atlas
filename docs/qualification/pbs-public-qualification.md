@@ -380,6 +380,5 @@ status, or establish PBS domain semantics. The previously reconciled
 its own exact-main hosted receipt before it can be recorded as observed corpus
 qualification.
 
-The next exact-main candidate-profile run is pending merge of the opt-in
-workflow change. Until its safe aggregate is observed, the real-corpus candidate
-conversion counts remain unknown.
+The exact-main candidate run `36372245263` has been reconciled in the durable
+aggregate at [issue #341 comment 5863205715](https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5863205715): 2,799 dates converted, one recognized slot was missing, and 7,727,884 rows were unmapped. These counts qualify only the candidate parser and its bounded counters. The new pinned-V3 profile requires a separate exact-main aggregate after merge; until then the source-era metadata qualification remains unobserved.

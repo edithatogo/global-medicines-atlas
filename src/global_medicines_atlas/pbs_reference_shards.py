@@ -12,7 +12,7 @@ from typing import Any, cast
 
 import pyarrow as pa
 
-from .pbs_dates import CANDIDATE_PROFILE
+from .pbs_dates import CANDIDATE_PROFILE, PINNED_V3_PROFILE
 from .pbs_historical_qualification import (
     _account_nested_batch,  # pyright: ignore[reportPrivateUsage]
     _projection,  # pyright: ignore[reportPrivateUsage]
@@ -61,6 +61,23 @@ def _digest(path: Path) -> dict[str, Any]:
         "sha256": digest.hexdigest(),
         "byte_count": byte_count,
     }
+
+
+def _is_pinned_v3_binding(binding: PbsXmlMemberBinding) -> bool:
+    identity = (
+        binding.source.source_id,
+        binding.source.catalog_version,
+        binding.archive_payload.sha256,
+        binding.member_path,
+        binding.member_payload.sha256,
+    )
+    return identity == (
+        "au-pbs-historical-xml",
+        "2026-04-01",
+        "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+        "sch-2026-04-01-r1.xml",
+        "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+    )
 
 
 def _index_payload(index: ReferenceIndex) -> bytes:
@@ -1093,7 +1110,7 @@ def prepare_reference_shards(  # ruff: ignore[too-many-branches,too-many-locals,
     return manifest
 
 
-def qualify_reference_shard(  # ruff: ignore[too-many-locals]
+def qualify_reference_shard(  # ruff: ignore[too-many-locals,too-many-branches] -- all fail-closed prepared-input checks stay in one transaction
     directory: Path,
     *,
     shard_index: int,
@@ -1101,7 +1118,7 @@ def qualify_reference_shard(  # ruff: ignore[too-many-locals]
     date_profile: str | None = None,
 ) -> dict[str, Any]:
     """Verify and qualify exactly one prepared reference partition."""
-    if date_profile not in {None, CANDIDATE_PROFILE}:
+    if date_profile not in {None, CANDIDATE_PROFILE, PINNED_V3_PROFILE}:
         raise ValueError("unsupported PBS candidate date profile")
     manifest: object = json.loads(
         (directory / "reference-manifest.json").read_bytes()
@@ -1139,6 +1156,10 @@ def qualify_reference_shard(  # ruff: ignore[too-many-locals]
             raise ValueError("PBS reference shard input digest changed")
     index = _read_index(index_path.read_bytes())
     binding = PbsXmlMemberBinding.model_validate(manifest.get("binding"))
+    if date_profile == PINNED_V3_PROFILE and not _is_pinned_v3_binding(binding):
+        raise ValueError(
+            "pinned PBS V3 date profile requires exact source identity"
+        )
     source_batches = pa.ipc.open_stream(pa.memory_map(str(partition_path), "r"))
     schema = _schema(source_batches.schema)
     annotated = (

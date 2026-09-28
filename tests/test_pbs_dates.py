@@ -129,12 +129,23 @@ def test_v3_temporal_effectivity_dates_are_classified_by_native_parent() -> (
     )
 
 
-def test_pinned_v3_profile_marks_only_the_pinned_era_qualification() -> None:
-    result = table(_production_xml(), pbs_dates.PINNED_V3_PROFILE)
-    metadata = result.schema.metadata
+def test_public_date_api_cannot_emit_pinned_era_qualification() -> None:
+    with pytest.raises(ValueError, match="unsupported PBS candidate"):
+        table(_production_xml(), pbs_dates.PINNED_V3_PROFILE)
+
+
+def test_only_verified_historical_profile_marks_pinned_era_metadata() -> None:
+    schema = table(_production_xml(), pbs_dates.CANDIDATE_PROFILE).schema
+    metadata = pbs_dates._schema(  # pyright: ignore[reportPrivateUsage]
+        schema, pbs_dates.PINNED_V3_PROFILE, pinned_source_era_verified=True
+    ).metadata
     assert metadata[b"source_date_era_qualification"] == b"pinned-v3-2026-04-01"
     assert metadata[b"date_grammar"] == b"pbs-v3-ascii-YYYY-MM-DD-calendar-only"
     assert metadata[b"temporal_status_inference"] == b"none"
+    unverified = pbs_dates._schema(  # pyright: ignore[reportPrivateUsage]
+        schema, pbs_dates.PINNED_V3_PROFILE
+    ).metadata
+    assert unverified[b"source_date_era_qualification"] == b"not-established"
 
 
 def test_candidate_and_unselected_profiles_remain_unqualified() -> None:

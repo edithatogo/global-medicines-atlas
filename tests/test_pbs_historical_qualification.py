@@ -133,7 +133,7 @@ def test_pinned_v3_date_profile_accepts_only_exact_bound_identity() -> None:
                     "sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20"
                 }
             ),
-            "member_path": "bronze/2026-04-01/sch-2026-04-01-r1.xml",
+            "member_path": "sch-2026-04-01-r1.xml",
             "member_payload": binding.member_payload.model_copy(
                 update={
                     "sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43"

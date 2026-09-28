@@ -129,7 +129,7 @@ def _is_pinned_v3_identity(binding: PbsXmlMemberBinding) -> bool:
         "au-pbs-historical-xml",
         "2026-04-01",
         "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
-        "bronze/2026-04-01/sch-2026-04-01-r1.xml",
+        "sch-2026-04-01-r1.xml",
         "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
     )
 
@@ -573,7 +573,10 @@ def _qualify_entity_projection_shards(
         (
             "dates",
             lambda: _date_batches(
-                replay_entities(), date_profile, rows_per_batch
+                replay_entities(),
+                date_profile,
+                rows_per_batch,
+                pinned_source_era_verified=(date_profile == PINNED_V3_PROFILE),
             ),
         ),
     )
