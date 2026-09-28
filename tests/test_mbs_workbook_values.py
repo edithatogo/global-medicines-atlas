@@ -281,6 +281,17 @@ def test_hosted_workbook_qualifier_does_not_select_xml_date_profile(
     cli.main()
     report = json.loads(capsys.readouterr().out)
     assert report["domain_value_profile"]["date_profile"] is None
+    storage = report["storage_qualification"]
+    assert storage["parquet_roundtrip_verified"] is True
+    assert storage["publication_performed"] is False
+    assert all(
+        "header_candidates" not in sheet
+        and "raw_value" not in json.dumps(sheet)
+        and "display_value" not in json.dumps(sheet)
+        for sheet in storage["sheets"]
+    )
+    assert "raw_value" not in json.dumps(report)
+    assert "display_value" not in json.dumps(report)
     lineage = report["workbook_field_lineage"]
     assert lineage["qualification"] == "candidate_only"
     assert lineage["date_profile"] is None

@@ -328,6 +328,15 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     authorized hosted acquisition route; the Australian federation gate stays
     blocked. The durable aggregate is
     `quality/qualifications/mbs-workbook-date-order-compatibility-20260928.json`.
+  - PR #607 added candidate-only field lineage over the pinned P7 workbook.
+    Review of its prior hosted artifact found per-cell values in the storage
+    summary, so the follow-up now allowlists only sheet/cell denominators,
+    storage and conversion counts, digests, and value-free lineage before the
+    workflow artifact is retained. Focused tests pass (81); the full profile
+    reports 5,212 passed, two clean-clone release reproducibility failures
+    because local `uv` candidates are 0.11.8/0.12.19 rather than pinned 0.11.29,
+    one optional Iceberg skip, and 96.71% coverage. Exact-main qualification
+    remains pending the protected merge of this sanitizer.
   - The pinned PBS `pbs-iso-date-candidate-v1` profile completed exact-main
     (`36372245263`): 2,799 dates converted, one missing field, and 7,727,884
     rows unmapped; all five projections and 16 reference windows retained
