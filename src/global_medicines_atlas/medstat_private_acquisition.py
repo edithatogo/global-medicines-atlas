@@ -53,7 +53,9 @@ _APPROVED_QUERY = {
     "ageGroup": ["A"],
     "searchVariable": ["turnover"],
     "atcCode": ["X"],
-    "sector": ["2"],
+    # Medstat's "Total" sector does not offer turnover. Preserve both
+    # source-defined turnover strata in one export instead of summing them.
+    "sector": ["0", "1"],
 }
 _REQUIRED_XLSX_MEMBERS = frozenset({
     "[Content_Types].xml",
@@ -71,7 +73,7 @@ class MedstatQuery(FrozenModel):
     age_group: tuple[str, ...] = ("A",)
     search_variable: tuple[str, ...] = ("turnover",)
     atc_code: tuple[str, ...] = ("X",)
-    sector: tuple[str, ...] = ("2",)
+    sector: tuple[str, ...] = ("0", "1")
 
     def source_parameters(self) -> dict[str, list[str]]:
         """Return the exact names and values required by the Medstat route."""
@@ -164,7 +166,9 @@ def _receipt(
         retrieved_at=observed_at,
         source_id=SOURCE_ID,
         payload_sha256=evidence.sha256,
-        source_version="annual-2025-national-total-turnover",
+        source_version=(
+            "annual-2025-national-turnover-primary-and-hospital-sectors"
+        ),
         original_uri=export_url,
     )
     return SourceReceipt(
