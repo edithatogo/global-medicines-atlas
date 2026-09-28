@@ -1135,19 +1135,26 @@
   source-era qualification or semantic acceptance. The content-bound safe
   aggregate is on issue #341, SHA-256
   `5f6b04781beea329b48ce5add10a565b886a16f54b79e2371aa377d60959d555`.
-- [ ] Qualify the documented `pbs-iso-date-candidate-v1` date grammar on the
+- [x] Qualify the documented `pbs-iso-date-candidate-v1` date grammar on the
   pinned corpus as an explicit opt-in candidate, preserving source-native
   literals, with no interval/status inference and with
   `source_date_era_qualification=not-established`; reconcile candidate status
-  counts before any separate source-era or M-109 acceptance claim.
-- [~] Add an opt-in exact-main `pbs-iso-date-candidate-v1` run with date profile
+  counts before any separate source-era or M-109 acceptance claim. Exact-main
+  run `36372245263` passed all five projections and 16 ordered reference
+  windows with matching native digests and Parquet round-trips for 7,730,684
+  rows. The dates projection reports 2,799 converted (2,798 PBS effective
+  dates and one schedule date), one missing field, and 7,727,884 unmapped;
+  no ambiguous or duplicate literals. This validates the candidate transform
+  and its counters only; source-era semantics and domain qualification remain
+  unestablished.
+- [x] Add an opt-in exact-main `pbs-iso-date-candidate-v1` run with date profile
   bound consistently across projection and reference shards. PR #568 merged as
   `eddcf896`; protected CI, Codecov, and review passed. Focused tests passed;
   the full-profile macOS limitation is recorded in `evidence.jsonl`. Exact-main
-  run `36372245263` is in progress. Reconcile only its value-free candidate
-  conversion counters; a pass remains candidate-only and does not establish
+  run `36372245263` passed; see the value-free aggregate recorded above and
+  `evidence.jsonl`. This remains candidate-only and does not establish
   source-era semantics.
-- [~] Diagnose M-107's authorized Health.gov workbook download timeouts with a
+- [x] Diagnose M-107's authorized Health.gov workbook download timeouts with a
   separate exact-main, HEAD-only Actions probe. The workstation metadata check
   confirmed all three URLs return the expected XLSX headers, while bounded
   CKAN searches found no matching mirror. PR #569 merged as `fa924f0d` after
@@ -1164,6 +1171,10 @@
   so the outer deadline may have masked the HTTP phase. The follow-up sets the
   general operation timeout to 7.5 seconds and the connect timeout to at most
   5 seconds beneath the same 15-second cap. Local focused and routine
-  validation passes; protected CI and one adjusted exact-main probe remain
-  pending. No source bytes are read, and this cannot satisfy workbook
-  acquisition or M-107 acceptance.
+  validation passes. PR #571 merged as `58cb9e8c` after all protected checks
+  passed. Exact-main run `36377888606` classified all three requests as `read`
+  timeouts after connection setup, with no response headers. The receipt
+  confirms no redirects and no source bytes read. This locates the observed
+  delay to response-read/header delivery on the hosted route, but does not
+  identify the network or publisher cause and does not satisfy workbook
+  acquisition, M-107, or federation acceptance.
