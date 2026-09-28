@@ -8,6 +8,8 @@ source or rights scope.
 
 **Suggested contact:** OpenPrescribing's [official contact page](https://openprescribing.net/contact/).
 
+**To:** `feedback@openprescribing.net` (the address published on the official contact page).
+
 **Subject:** Supported automated access to OpenPrescribing API v1
 
 Hello OpenPrescribing team,
