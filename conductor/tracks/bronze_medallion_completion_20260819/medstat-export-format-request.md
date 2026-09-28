@@ -42,6 +42,8 @@ Global Medicines Atlas
 `kontakt@sundhedsdata.dk`; Sent readback confirmed recipient, subject, and
 message ID. No attachments or source result payloads were included.
 
-**Automatic acknowledgement:** Received 2026-09-28 at 20:31:49 UTC, Gmail
-message `1a0e9b780c580bd2`. The provider confirms receipt and says it will reply
-later; no substantive format guidance has been received.
+**Automatic reply observed:** A generic auto-reply from the official contact
+mailbox arrived 2026-09-28 at 20:31:49 UTC, Gmail message `1a0e9b780c580bd2`.
+Its `In-Reply-To` value does not equal the sent request's RFC Message-ID, and
+no gateway rewrite mapping has been verified. It is recorded separately and
+left unbound to this request; no substantive format guidance has been received.

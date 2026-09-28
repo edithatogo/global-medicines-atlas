@@ -64,14 +64,16 @@
       "rfc_message_id": "<CA+D7Coz0Q_6qHUQD83HqLZESurDopQw-F6JJNzzokYEDHVy7Uw@mail.gmail.com>",
       "attachment_count": 0,
       "source_payloads_attached": false,
-      "substantive_guidance_received": false,
-      "acknowledgement": {
-        "gmail_message_id": "1a0e9b780c580bd2",
-        "rfc_message_id": "<fb2defdacec34bf09b97d565714ad56d@VI1P189MB2515.EURP189.PROD.OUTLOOK.COM>",
-        "received_at": "2026-09-28T20:31:49Z",
-        "kind": "automatic_receipt_acknowledgement",
-        "substantive_guidance": false
-      }
+      "substantive_guidance_received": false
+    },
+    "provider_acknowledgement": {
+      "gmail_message_id": "1a0e9b780c580bd2",
+      "rfc_message_id": "<fb2defdacec34bf09b97d565714ad56d@VI1P189MB2515.EURP189.PROD.OUTLOOK.COM>",
+      "in_reply_to_message_id": "<6cb63491e4f34dc288da5ea0ea1255e0.CA+D7Coz0Q_6qHUQD83HqLZESurDopQw-F6JJNzzokYEDHVy7Uw@mail.gmail.com>",
+      "received_at": "2026-09-28T20:31:49Z",
+      "kind": "automatic_reply_unbound",
+      "request_correlation_verified": false,
+      "substantive_guidance": false
     }
   }
 }
