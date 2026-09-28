@@ -52,6 +52,65 @@ def test_cms_source_record_qualification_counts_as_bronze_landing() -> None:
     }
 
 
+def test_fda_shortages_scoped_internal_receipt_counts_as_bronze_landing() -> (
+    None
+):
+    evidence = receipt_backed_landing_evidence(ROOT, {"us-fda-drug-shortages"})
+    assert evidence == {
+        "us-fda-drug-shortages": (
+            "quality/qualifications/fda-shortages-live-corpus-20260821.json"
+        )
+    }
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("internal_retention_authorized", False),
+        ("current_source_record_projection_count", 0),
+        ("current_recovered_source_record_projection_count", 0),
+        ("current_source_record_parquet_pairs_byte_identical", 0),
+        ("unique_historical_list_snapshots_archived", 128),
+        ("external_publication_performed", True),
+        ("historical_detail_snapshot_coverage_complete", True),
+    ],
+)
+def test_fda_shortages_receipt_fails_closed_on_scope_or_evidence_drift(
+    tmp_path: Path, field: str, value: object
+) -> None:
+    qualification = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/fda-shortages-live-corpus-20260821.json"
+        ).read_text(encoding="utf-8")
+    )
+    qualification[field] = value
+    receipt = (
+        tmp_path
+        / "quality/qualifications/fda-shortages-live-corpus-20260821.json"
+    )
+    receipt.parent.mkdir(parents=True)
+    receipt.write_text(json.dumps(qualification), encoding="utf-8")
+    overrides = tmp_path / bronze_maturity_mod.LANDING_OVERRIDES_RELATIVE
+    overrides.parent.mkdir(parents=True)
+    overrides.write_text(
+        json.dumps({
+            "overrides": [
+                {
+                    "source_id": "us-fda-drug-shortages",
+                    "state": "landed_and_evidenced",
+                    "evidence_references": [str(receipt.relative_to(tmp_path))],
+                }
+            ]
+        }),
+        encoding="utf-8",
+    )
+    assert (
+        receipt_backed_landing_evidence(tmp_path, {"us-fda-drug-shortages"})
+        == {}
+    )
+
+
 def test_cms_maturity_landing_rejects_rights_drift(tmp_path: Path) -> None:
     for relative in (RAW_RELATIVE, RECORDS_RELATIVE, RIGHTS_RELATIVE):
         target = tmp_path / relative
@@ -569,13 +628,15 @@ def test_repository_us_live_records_override_scope_is_exact() -> None:
     }
     evidence = receipt_backed_landing_evidence(ROOT, covered_ids)
     assert set(evidence) == {
+        "us-fda-drug-shortages",
         "us-fda-nsde",
         "us-openfda-drugsfda",
         "us-openfda-faers",
         "us-openfda-nsde",
     }
     assert set(evidence.values()) == {
-        "quality/qualifications/us-live-bronze-records-20260820.json"
+        "quality/qualifications/fda-shortages-live-corpus-20260821.json",
+        "quality/qualifications/us-live-bronze-records-20260820.json",
     }
 
 

@@ -58,6 +58,7 @@ PROPERTY_IDS: tuple[str, ...] = (
     "interoperability",
     "documentation",
 )
+FDA_SHORTAGES_HISTORICAL_SNAPSHOT_COUNT = 129
 AUTHORITIES = {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -208,6 +209,8 @@ def _is_successful_bronze_receipt(
         "global-medicines-atlas.us-live-bronze-records-qualification"
     ):
         return _is_successful_us_live_records_receipt(receipt, source_id)
+    if schema_id == ("global-medicines-atlas.fda-shortages-live-qualification"):
+        return _is_successful_fda_shortages_receipt(receipt, source_id)
     if not (
         schema_id.endswith(("-live-qualification", "-acquisition-success"))
         or schema_id
@@ -224,6 +227,37 @@ def _is_successful_bronze_receipt(
     return (
         successful_admission or successful_release
     ) and _contains_exact_value(receipt, source_id)
+
+
+def _is_successful_fda_shortages_receipt(
+    receipt: Mapping[str, Any], source_id: str
+) -> bool:
+    """Require the bounded FDA shortages internal Bronze receipt contract."""
+    return (
+        source_id == "us-fda-drug-shortages"
+        and receipt.get("schema_version") == 1
+        and receipt.get("evidence_class") == "live_internal_historical"
+        and receipt.get("prompt_complete") is True
+        and receipt.get("current_bulk_export_complete") is True
+        and receipt.get("historical_list_snapshot_inventory_complete") is True
+        and receipt.get("historical_list_snapshot_count")
+        == FDA_SHORTAGES_HISTORICAL_SNAPSHOT_COUNT
+        and receipt.get("qualified_temporal_corpus")
+        == "complete_current_export_and_129_monthly_lists"
+        and receipt.get("internal_retention_authorized") is True
+        and receipt.get("public_release_authorized") is False
+        and receipt.get("external_publication_performed") is False
+        and receipt.get("current_source_record_rows", 0) > 0
+        and receipt.get("current_source_record_projection_count") == 1
+        and receipt.get("current_recovered_source_record_projection_count") == 1
+        and receipt.get("current_source_record_parquet_pairs_byte_identical")
+        == 1
+        and receipt.get("unique_historical_list_snapshots_archived")
+        == FDA_SHORTAGES_HISTORICAL_SNAPSHOT_COUNT
+        and receipt.get("archive_checksums_verified", 0) > 0
+        and receipt.get("historical_detail_snapshot_coverage_complete") is False
+        and _contains_exact_value(receipt, source_id)
+    )
 
 
 def _is_successful_us_live_records_receipt(
