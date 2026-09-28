@@ -749,3 +749,25 @@ for credentialed or rights-unresolved sources.
 - [x] Merge the redacted HTML-shape diagnostic in PR [#591](https://github.com/edithatogo/global-medicines-atlas/pull/591), exact head `7415e63d`, merged SHA `76b311d704db443d0f4de11f53d925bec528d641`; all protected checks passed.
 - [x] Run the authorized internal-only acquisition workflow once on exact `main`. It returned HTTP 200, `.xls`, 4,446 bytes, `text/html;charset=UTF-8`, a source-titled HTML document, and one table with three rows and six cells. The page had no forms, controls, frames, scripts, links, or buttons.
 - [ ] Keep the download rejected. The bounded shape does not establish whether this is a valid HTML-formatted spreadsheet or an error response. Resolve export format semantics through official source documentation or provider guidance before implementing an HTML parser or treating this response as source evidence. No response text or bytes were inspected or retained; internal landing, private retention, Bronze acceptance, public release, and external publication remain unclaimed.
+
+## NICE private Bronze receipt reconciliation (2026-09-29)
+
+- [~] Reconcile the approved Prompt 29 historical acquisition with the current
+  source-landing queue. A receipt-bound recognizer now requires the exact NICE
+  source ID, all 15 accepted admissions and acquisition manifests, four
+  expected releases, complete digest metadata, a successful clean-room restore,
+  and the separate maintainer approval for internal acquisition and retention.
+  Public release and external publication must remain false.
+- [x] Regenerate the source-landing queue and B0 projections. NICE is now
+  `landed_and_evidenced` for its bounded historical private B1/B2 corpus; the
+  current Bronze candidate count moves from 119 to 118 unlanded sources. No
+  restricted payload bytes were read during this reconciliation, and no source
+  records, current utilisation coverage, third-party separability, or
+  independent archive durability are claimed.
+- [ ] Re-run the qualification against exact merged `main` and record its
+  commit-bound maturity receipt. Bronze completeness and M5 remain blocked by
+  the other 118 in-scope sources.
+- [~] Codecov patch-coverage follow-up: negative controls now exercise missing
+  and malformed NICE authorization, archive, and digest metadata. The affected
+  Bronze tests pass (78 total) and local `bronze_maturity.py` coverage is 98%;
+  refreshed protected Codecov verification is pending.

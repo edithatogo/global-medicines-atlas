@@ -1594,14 +1594,15 @@
         "source_id": "gb-nice-medicines-utilisation"
       },
       "evidence_references": [
-        "https://digital.nhs.uk/"
+        "quality/qualifications/nice-utilisation-acquisition-authorization.json",
+        "quality/qualifications/nice-utilisation-acquisition-success-20260821.json"
       ],
-      "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
-      "priority": 30,
-      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "evidence_scope": "live_receipt",
+      "next_action": "Keep the historical scope and private-only rights boundary explicit; do not publish or infer current utilisation coverage.",
+      "priority": 90,
+      "reason": "The four historic 2008\u20132012 releases were acquired under explicit internal-only maintainer approval; all 15 payloads were admitted, recorded in acquisition manifests, and clean-room restored by digest. This is bounded private B1/B2 evidence only: no source-record projection, third-party separability conclusion, public release, external publication, or independent durable replication is claimed.",
       "source_id": "gb-nice-medicines-utilisation",
-      "state": "manual_only_documented_acquisition"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4693,8 +4694,8 @@
   "source_count": 174,
   "state_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 38,
-    "manual_only_documented_acquisition": 92,
+    "landed_and_evidenced": 39,
+    "manual_only_documented_acquisition": 91,
     "not_yet_implemented": 0,
     "rights_blocked": 27,
     "superseded_by_reused_source": 0,

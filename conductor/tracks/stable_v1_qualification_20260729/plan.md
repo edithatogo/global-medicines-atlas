@@ -364,3 +364,15 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   coverage remains incomplete, public release is not authorized, and the
   Bronze/M5 gates remain blocked. Value-free receipt:
   `quality/qualifications/orange-book-historical-refresh-20260928.json`.
+
+## 2026-09-29 NICE private Bronze receipt increment
+
+- [~] Reconcile the approved Prompt 29 private historical acquisition receipt
+  in the current-scope Bronze denominator. The value-free recognizer binds the
+  source-specific internal-only acquisition authorization to all 15 admitted
+  payloads, four expected releases, and clean-room digest restoration; it keeps
+  source-record projection, public release, and external publication false.
+- [ ] Verify the 118-source candidate denominator and updated maturity report
+  against the exact merged `main` commit. Current-scope Bronze and M5 remain
+  blocked; Australian federation and separate stable-release approval also
+  remain open.
