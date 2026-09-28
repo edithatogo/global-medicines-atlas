@@ -9,6 +9,7 @@ from pathlib import Path
 from zipfile import ZipFile
 
 import pytest
+from scripts.acquire_medstat_private import validate_browser_download
 
 import global_medicines_atlas.medstat_private_acquisition as acquisition
 from global_medicines_atlas.medstat_private_acquisition import (
@@ -95,6 +96,24 @@ def test_authorization_rejects_pending_or_public_scope(tmp_path: Path) -> None:
     public.write_text(json.dumps(document), encoding="utf-8")
     with pytest.raises(ValueError, match="publication must remain"):
         require_medstat_authorization(public)
+
+
+def test_browser_download_diagnostic_reports_only_bounded_metadata() -> None:
+    with pytest.raises(RuntimeError) as caught:
+        validate_browser_download(
+            b"<html>synthetic-marker</html>", "response.xlsx"
+        )
+
+    message = str(caught.value)
+    assert "filename_extension=.xlsx" in message
+    assert "byte_count=29" in message
+    assert "zip_signature_valid=False" in message
+    assert "synthetic-marker" not in message
+
+
+def test_browser_download_accepts_a_valid_workbook() -> None:
+    payload = workbook_payload()
+    assert validate_browser_download(payload, "medstat.xlsx") == payload
 
 
 def test_private_acquisition_lands_recovers_and_archives(

@@ -139,7 +139,9 @@ def require_medstat_workbook(payload: bytes) -> None:
         with ZipFile(BytesIO(payload)) as workbook:
             members = set(workbook.namelist())
     except BadZipFile as error:
-        raise ValueError("Medstat export must be an OOXML workbook") from error
+        raise ValueError(
+            "Medstat export is not a valid OOXML ZIP container"
+        ) from error
     if not members >= _REQUIRED_XLSX_MEMBERS or not any(
         name.startswith("xl/worksheets/") and name.endswith(".xml")
         for name in members
