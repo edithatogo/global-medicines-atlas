@@ -1,4 +1,4 @@
-"""Contract for the prepared PBS public API terms request."""
+"""Contract for the sent PBS public API terms request and its limits."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ PREFLIGHT = (
 )
 
 
-def test_pbs_terms_request_is_scoped_and_sent_without_rights_promotion() -> (
+def test_pbs_terms_request_receipt_is_reconciled_without_rights_promotion() -> (
     None
 ):
     request = (TRACK / "pbs-public-api-terms-request.md").read_text(
@@ -48,7 +48,19 @@ def test_pbs_terms_request_is_scoped_and_sent_without_rights_promotion() -> (
     assert preflight["source_id"] == "au-pbs-api"
     assert preflight["payload_requests_made"] is False
     assert preflight["embargo_access_attempted"] is False
-    assert preflight["contact"]["message_sent"] is False
+    assert preflight["contact"]["message_sent"] is True
+    assert (
+        preflight["contact"]["gmail_message_id"]
+        == pbs_message["gmail_message_id"]
+    )
+    assert (
+        preflight["contact"]["acknowledgement"]["gmail_message_id"]
+        == (pbs_message["acknowledgement"]["gmail_message_id"])
+    )
+    assert (
+        preflight["contact"]["acknowledgement"]["substantive_guidance_received"]
+        is False
+    )
 
 
 def test_pbs_public_access_does_not_promote_rights_or_domain_acceptance() -> (
@@ -61,10 +73,21 @@ def test_pbs_public_access_does_not_promote_rights_or_domain_acceptance() -> (
     assert observed["public_api_available_without_login"] is True
     assert observed["history_months"] == 12
     assert observed["shared_rate_limit_seconds"] == 20
+    assert observed["data_retention_period_specified"] is False
+    assert observed["external_redistribution_terms_specified"] is False
+    assert (
+        "own systems or databases"
+        in observed["documented_local_copy_operation"]
+    )
     assert rights["explicit_public_api_reuse_licence_identified"] is False
     assert rights["internal_long_term_retention_authorized"] is False
     assert rights["source_byte_redistribution_authorized"] is False
     assert rights["derived_data_publication_authorized"] is False
+    assert "expressly supports downloading" in rights["interpretation"]
+    assert (
+        "does not resolve the project's B2 retention period"
+        in rights["interpretation"]
+    )
     assert "does not change acquisition authorization" in preflight["boundary"]
 
 

@@ -1234,7 +1234,20 @@
   credentials: `pbs-public-api-terms-request.md`. It was subsequently sent and
   automatically acknowledged; substantive provider clarification remains
   pending and rights remain unknown.
+- [x] Reconcile the preflight's machine-readable contact status with the sent
+  message and automatic acknowledgement in
+  `provider-outreach-receipts-20260929.json`. The corrected receipt records
+  delivery only; it does not promote rights or authorize acquisition.
 - [ ] Obtain provider clarification and a separate source-specific maintainer
   rights decision before any `au-pbs-api` acquisition. PBS source-era/domain
   qualification, unresolved AMT references, M-109, Australian federation and
   Stable v1 remain open.
+
+## Evidence-ledger review repair (2026-09-29)
+
+- [x] Restore append-only ordering for the PBS rights-request send-receipt reconciliation after PR #603 review identified it had been inserted before the prior ledger tail. The record is now appended after the prior tail; the full 205-record JSONL parsed at that checkpoint. Focused tests (3 passed), routine harness, context/ecosystem validation, and `git diff --check` pass. Exact-head hosted revalidation remains pending. The repair changes no source-rights or acceptance state.
+
+## PBS public API rights source review (2026-09-29)
+
+- [x] Review the official PBS API overview and FAQ. The public API is available without identity requirements and its documentation expressly describes downloading schedule data to local storage for a user’s own systems/databases; the API contains effective schedules for the most recent 12 months. The documentation does not specify a retention duration or external redistribution licence. Do not apply authenticated HPP portal terms to the distinct public API. This clarifies the documented local-copy operation but makes no legal conclusion or maintainer rights decision.
+- [~] Keep API acquisition pending a source-specific maintainer decision defining permitted internal retention; seek provider clarification for retention duration and external redistribution. No payload request or acquisition was made.
