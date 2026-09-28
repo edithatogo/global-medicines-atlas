@@ -1,0 +1,38 @@
+{
+  "schema_id": "global-medicines-atlas.mbs-workbook-date-order-compatibility",
+  "schema_version": 1,
+  "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36381100367",
+  "workflow_commit": "bbae70a0bcd4cfb50bdeca0699c3fdf8ba9f8385",
+  "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+  "source_receipt_sha256": "536b3bdd82593879097bc4a2fe12ac46267a609809e5a867d38720746444a736",
+  "date_order_compatibility_profile_version": 1,
+  "date_order_compatibility_interpretation": "calendar_validity_only_no_date_convention_selected",
+  "date_order_compatibility_counts": {
+    "both": 1276,
+    "dmy_only": 4
+  },
+  "date_order_compatibility_by_field": {
+    "BenefitStartDate": {
+      "both": 320
+    },
+    "DescriptionStartDate": {
+      "both": 318,
+      "dmy_only": 2
+    },
+    "FeeStartDate": {
+      "both": 318,
+      "dmy_only": 2
+    },
+    "ItemStartDate": {
+      "both": 320
+    }
+  },
+  "date_profile": null,
+  "semantic_promotion": false,
+  "hosted_artifact": {
+    "id": "10953315457",
+    "sha256": "2830b5e07282835b8dbd70c862d8b5f3b4b1da789eb83246d0760a2699e8ee0c",
+    "expires_at": "2026-10-28T05:15:28Z"
+  },
+  "interpretation_boundary": "This durable aggregate contains no source cell values. Calendar compatibility does not establish the workbook date convention, qualify source-era semantics, select a conversion profile, or authorize semantic promotion."
+}

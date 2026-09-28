@@ -146,7 +146,8 @@
     are recorded in `evidence.jsonl`. The report leaves `date_profile` unset
     and `semantic_promotion` false. This narrows calendar compatibility but
     does not independently establish the workbook's date convention; source-
-    specific documentation is still required before conversion.
+    specific documentation is still required before conversion. Durable
+    value-free receipt: `quality/qualifications/mbs-workbook-date-order-compatibility-20260928.json`.
 - [x] Keep native OOXML date storage distinct from ordinary date-shaped text.
   (`43ea70c`; P2 regression failed before correction, then 33 focused tests
   passed with 100% changed-module branch coverage; static checks pass.)
