@@ -243,6 +243,9 @@ def test_medstat_format_clarification_sent_receipt_is_bound_and_fail_closed() ->
     ).read_text(encoding="utf-8")
 
     assert message["gmail_message_id"] == "1a0e9ad775ff9a95"
+    assert message["rfc_message_id"] == (
+        "<CA+D7Coz0Q_6qHUQD83HqLZESurDopQw-F6JJNzzokYEDHVy7Uw@mail.gmail.com>"
+    )
     assert message["recipient"] == "kontakt@sundhedsdata.dk"
     assert message["state"] == "sent_awaiting_provider_response"
     assert message["attachment_count"] == 0
@@ -259,6 +262,10 @@ def test_medstat_format_clarification_sent_receipt_is_bound_and_fail_closed() ->
     assert (
         review["disposition"]["provider_request"]["gmail_message_id"]
         == message["gmail_message_id"]
+    )
+    assert (
+        review["disposition"]["provider_request"]["rfc_message_id"]
+        == message["rfc_message_id"]
     )
     assert "awaiting substantive provider response" in request
     assert "No attachments or source result payloads" in request
