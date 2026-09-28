@@ -7,9 +7,9 @@ Silver transformations included: **no**.
 
 ## State summary
 
-- `landed_and_evidenced`: 34
+- `landed_and_evidenced`: 38
 - `temporarily_unavailable`: 2
-- `rights_blocked`: 31
+- `rights_blocked`: 27
 - `credentialed_and_excluded`: 15
 - `manual_only_documented_acquisition`: 92
 - `superseded_by_reused_source`: 0
@@ -65,7 +65,7 @@ Silver transformations included: **no**.
 - [ ] `no-fest` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `us-fda-faers` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `us-fda-ndc-directory` — `landed_and_evidenced`; verify receipt freshness on schedule.
-- [ ] `us-fda-nsde` — `rights_blocked`; record source-specific retention and transformation rights.
+- [x] `us-fda-nsde` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `us-fda-orange-book` — `temporarily_unavailable`; retry under the failure-receipt schedule.
 
 ## `paginated_rest_api`
@@ -78,11 +78,11 @@ Silver transformations included: **no**.
 - [x] `nz-nzhts-fhir` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [ ] `us-dailymed-spl` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `us-drugsfda` — `landed_and_evidenced`; verify receipt freshness on schedule.
-- [ ] `us-openfda-drugsfda` — `rights_blocked`; record source-specific retention and transformation rights.
+- [x] `us-openfda-drugsfda` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `us-openfda-enforcement` — `landed_and_evidenced`; verify receipt freshness on schedule.
-- [ ] `us-openfda-faers` — `rights_blocked`; record source-specific retention and transformation rights.
+- [x] `us-openfda-faers` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `us-openfda-ndc` — `landed_and_evidenced`; verify receipt freshness on schedule.
-- [ ] `us-openfda-nsde` — `rights_blocked`; record source-specific retention and transformation rights.
+- [x] `us-openfda-nsde` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `us-rxnorm-api` — `rights_blocked`; record source-specific retention and transformation rights.
 
 ## `regulator_search_export`

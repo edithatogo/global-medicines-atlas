@@ -466,17 +466,50 @@ def test_us_live_records_receipt_counts_only_recovered_source_products(
 
 @pytest.mark.unit
 @pytest.mark.parametrize(
-    ("field", "value"),
+    ("field", "value", "products"),
     [
-        ("recovered_acquisition_count", 0),
-        ("recovered_source_record_projection_count", 0),
-        ("source_record_parquet_pairs_byte_identical", 0),
-        ("external_publication_performed", True),
-        ("coverage_complete", True),
+        ("recovered_acquisition_count", 0, None),
+        ("recovered_source_record_projection_count", 0, None),
+        ("source_record_parquet_pairs_byte_identical", 0, None),
+        ("external_publication_performed", True, None),
+        ("coverage_complete", True, None),
+        ("source_count", 0, None),
+        ("acquisition_failed_count", 1, None),
+        ("accepted_admission_count", 2, None),
+        ("quarantined_admission_count", 1, None),
+        ("source_record_projection_count", 0, None),
+        (
+            "acquisition_succeeded_count",
+            1,
+            [{"source_id": "other", "row_count": 4}],
+        ),
+        (
+            "acquisition_succeeded_count",
+            1,
+            [{"source_id": "us-openfda-faers", "row_count": True}],
+        ),
+        (
+            "acquisition_succeeded_count",
+            1,
+            [{"source_id": "us-openfda-faers", "row_count": 0}],
+        ),
+        (
+            "acquisition_succeeded_count",
+            1,
+            [
+                {"source_id": "us-openfda-faers", "row_count": 4},
+                {"source_id": "us-openfda-faers", "row_count": 3},
+            ],
+        ),
+        ("acquisition_succeeded_count", 1, [None]),
+        ("acquisition_succeeded_count", 1, []),
     ],
 )
 def test_us_live_records_receipt_fails_closed_on_inconsistent_summary(
-    tmp_path: Path, field: str, value: object
+    tmp_path: Path,
+    field: str,
+    value: object,
+    products: list[object] | None,
 ) -> None:
     source_id = "us-openfda-faers"
     overrides = tmp_path / bronze_maturity_mod.LANDING_OVERRIDES_RELATIVE
@@ -508,7 +541,11 @@ def test_us_live_records_receipt_fails_closed_on_inconsistent_summary(
         "source_record_projection_count": 1,
         "recovered_source_record_projection_count": 1,
         "source_record_parquet_pairs_byte_identical": 1,
-        "record_products": [{"source_id": source_id, "row_count": 4}],
+        "record_products": (
+            [{"source_id": source_id, "row_count": 4}]
+            if products is None
+            else products
+        ),
         "coverage_complete": False,
         "external_publication_performed": False,
         "public_release_authorized": False,

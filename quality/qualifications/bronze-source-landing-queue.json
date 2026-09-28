@@ -4223,14 +4223,14 @@
         "source_id": "us-fda-nsde"
       },
       "evidence_references": [
-        "https://www.fda.gov/industry/structured-product-labeling-resources/nsde"
+        "quality/qualifications/us-live-bronze-records-20260820.json"
       ],
-      "evidence_scope": "none",
-      "next_action": "record source-specific retention and transformation rights",
-      "priority": 20,
-      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "evidence_scope": "live_receipt",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "The current official NSDE comprehensive file has an accepted admission, a source-native record projection, and a byte-identical clean-room projection in the bounded internal U.S. Bronze receipt. Public release was not performed by that acquisition.",
       "source_id": "us-fda-nsde",
-      "state": "rights_blocked"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4361,14 +4361,15 @@
         "source_id": "us-openfda-drugsfda"
       },
       "evidence_references": [
-        "https://open.fda.gov/apis/drug/drugsfda/"
+        "https://open.fda.gov/apis/drug/drugsfda/",
+        "quality/qualifications/us-live-bronze-records-20260820.json"
       ],
-      "evidence_scope": "none",
-      "next_action": "record source-specific retention and transformation rights",
-      "priority": 20,
-      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "evidence_scope": "live_receipt",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "The bounded internal U.S. Bronze receipt records an accepted admission, native projection, and byte-identical clean-room recovery for this source. This openFDA response is a 100-record canary, not a complete release; public release was not performed.",
       "source_id": "us-openfda-drugsfda",
-      "state": "rights_blocked"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4413,14 +4414,14 @@
         "source_id": "us-openfda-faers"
       },
       "evidence_references": [
-        "https://open.fda.gov/apis/drug/event/"
+        "quality/qualifications/us-live-bronze-records-20260820.json"
       ],
-      "evidence_scope": "none",
-      "next_action": "record source-specific retention and transformation rights",
-      "priority": 20,
-      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "evidence_scope": "live_receipt",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "The bounded internal U.S. Bronze receipt records an accepted admission, native projection, and byte-identical clean-room recovery for this distinct openFDA-derived source. Its 100-record response is a canary, not a complete release; it is kept separate from the FDA quarterly files without silent deduplication, and no public release was performed.",
       "source_id": "us-openfda-faers",
-      "state": "rights_blocked"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4465,14 +4466,14 @@
         "source_id": "us-openfda-nsde"
       },
       "evidence_references": [
-        "https://open.fda.gov/apis/other/nsde/"
+        "quality/qualifications/us-live-bronze-records-20260820.json"
       ],
-      "evidence_scope": "none",
-      "next_action": "record source-specific retention and transformation rights",
-      "priority": 20,
-      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "evidence_scope": "live_receipt",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "The bounded internal U.S. Bronze receipt records an accepted admission, native projection, and byte-identical clean-room recovery for this source. This openFDA response is a 100-record canary, not a complete release; public release was not performed.",
       "source_id": "us-openfda-nsde",
-      "state": "rights_blocked"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4691,10 +4692,10 @@
   "source_count": 174,
   "state_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 34,
+    "landed_and_evidenced": 38,
     "manual_only_documented_acquisition": 92,
     "not_yet_implemented": 0,
-    "rights_blocked": 31,
+    "rights_blocked": 27,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 2
   }
