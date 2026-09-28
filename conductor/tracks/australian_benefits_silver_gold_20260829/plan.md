@@ -1159,6 +1159,11 @@
   deadline, without redirects or body reads. Because its bounded receipt omits
   exception details, this follow-up adds safe timeout-stage labels for
   connection, response, pool, and wall-clock failures. Focused and routine
-  validation passes; protected CI and one exact-main classified rerun remain
+  validation passes. Classified run `36377031967` reported `wall_clock` for
+  all three URLs. Its per-operation timeout matched the 15-second hard limit,
+  so the outer deadline may have masked the HTTP phase. The follow-up sets the
+  general operation timeout to 7.5 seconds and the connect timeout to at most
+  5 seconds beneath the same 15-second cap. Local focused and routine
+  validation passes; protected CI and one adjusted exact-main probe remain
   pending. No source bytes are read, and this cannot satisfy workbook
   acquisition or M-107 acceptance.

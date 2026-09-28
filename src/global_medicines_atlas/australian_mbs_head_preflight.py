@@ -71,7 +71,11 @@ async def preflight_medicare_workbook_urls(
             "preflight request timeout must be positive and finite"
         )
     results: list[dict[str, Any]] = []
-    timeout = httpx.Timeout(request_timeout_seconds, connect=5.0)
+    operation_timeout_seconds = min(10.0, request_timeout_seconds / 2)
+    timeout = httpx.Timeout(
+        operation_timeout_seconds,
+        connect=min(5.0, operation_timeout_seconds),
+    )
     async with httpx.AsyncClient(
         follow_redirects=False,
         timeout=timeout,
@@ -133,6 +137,7 @@ async def preflight_medicare_workbook_urls(
         "run_id": run_id,
         "request_method": "HEAD",
         "request_timeout_seconds": request_timeout_seconds,
+        "operation_timeout_seconds": operation_timeout_seconds,
         "redirects_followed": False,
         "source_bytes_read": False,
         "results": results,
