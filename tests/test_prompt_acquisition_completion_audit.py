@@ -65,6 +65,23 @@ def test_audit_is_generated_from_all_36_locked_prompts() -> None:
     } == {track.track_id: list(track.source_ids) for track in tracks}
 
 
+def test_nice_private_acquisition_prompts_record_qualification_not_reacquisition() -> (
+    None
+):
+    prompt = next(
+        entry for entry in build()["prompts"] if entry["prompt_id"] == 29
+    )
+    assert prompt["queue_states"] == {
+        "gb-nice-medicines-utilisation": "landed_and_evidenced"
+    }
+    assert prompt["blocker_categories"] == [
+        "private_acquisition_requires_source_record_qualification"
+    ]
+    assert prompt["next_actions"] == [
+        "qualify source-native records from the existing internally authorized receipt; do not reacquire restricted payloads or imply public rights"
+    ]
+
+
 def test_live_qualification_completes_verified_prompts() -> None:
     audit = _audit()
     measured = json.loads(MEASURED.read_text(encoding="utf-8"))["body"]
@@ -541,7 +558,12 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
             for source_id in entry["sources_without_live_evidence"]
         }
         if "landed_and_evidenced" in missing_states:
-            assert "fixture_only_is_not_live" in entry["blocker_categories"]
+            expected_category = (
+                "private_acquisition_requires_source_record_qualification"
+                if entry["prompt_id"] == 29
+                else "fixture_only_is_not_live"
+            )
+            assert expected_category in entry["blocker_categories"]
     reconciliation = audit["prompts"][-1]
     assert reconciliation["prompt_id"] == 36
     assert reconciliation["completion_state"] == (

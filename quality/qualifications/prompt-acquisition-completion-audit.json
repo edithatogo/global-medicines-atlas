@@ -1009,10 +1009,10 @@
       "live_complete": false,
       "completion_state": "live_acquisition_incomplete",
       "blocker_categories": [
-        "fixture_only_is_not_live"
+        "private_acquisition_requires_source_record_qualification"
       ],
       "next_actions": [
-        "replace governed fixture evidence with a receipt-backed live source acquisition"
+        "qualify source-native records from the existing internally authorized receipt; do not reacquire restricted payloads or imply public rights"
       ]
     },
     {

@@ -89,6 +89,7 @@ GSRS_SOURCE_IDS = frozenset({"us-gsrs-unii"})
 SHORTAGES_SOURCE_IDS = frozenset({"us-fda-drug-shortages"})
 GIP_SOURCE_IDS = frozenset({"nl-gipdatabank"})
 OPEN_MEDIC_SOURCE_IDS = frozenset({"fr-open-medic"})
+NICE_PRIVATE_ACQUISITION_SOURCE_ID = "gb-nice-medicines-utilisation"
 OPEN_MEDIC_EXPECTED_RELEASE_COUNT = 12
 GIP_EXPECTED_RELEASE_COUNT = 28
 SHA256_HEX_LENGTH = 64
@@ -140,6 +141,10 @@ def _blocker_categories(states: set[str]) -> list[str]:
         categories.append("reused_source_live_evidence_required")
     if "derived_reconciliation_output" in states:
         categories.append("dependent_on_live_acquisition_program")
+    if "private_acquisition_requires_source_record_qualification" in states:
+        categories.append(
+            "private_acquisition_requires_source_record_qualification"
+        )
     return categories
 
 
@@ -180,6 +185,19 @@ def _prompt_entry(
             "reconciliation_generated_but_live_program_incomplete"
         )
     incomplete_states = {states[source_id] for source_id in missing}
+    next_actions = [NEXT_ACTIONS[state] for state in sorted(incomplete_states)]
+    if (
+        source_ids == [NICE_PRIVATE_ACQUISITION_SOURCE_ID]
+        and states[NICE_PRIVATE_ACQUISITION_SOURCE_ID] == "landed_and_evidenced"
+        and not live_complete
+    ):
+        incomplete_states.discard("landed_and_evidenced")
+        incomplete_states.add(
+            "private_acquisition_requires_source_record_qualification"
+        )
+        next_actions = [
+            "qualify source-native records from the existing internally authorized receipt; do not reacquire restricted payloads or imply public rights"
+        ]
     return {
         "prompt_id": track.track_id,
         "title": track.title,
@@ -195,9 +213,7 @@ def _prompt_entry(
         "live_complete": live_complete,
         "completion_state": completion_state,
         "blocker_categories": _blocker_categories(incomplete_states),
-        "next_actions": [
-            NEXT_ACTIONS[state] for state in sorted(incomplete_states)
-        ],
+        "next_actions": next_actions,
     }
 
 

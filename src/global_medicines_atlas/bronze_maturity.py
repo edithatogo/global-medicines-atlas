@@ -60,6 +60,8 @@ PROPERTY_IDS: tuple[str, ...] = (
 )
 FDA_SHORTAGES_HISTORICAL_SNAPSHOT_COUNT = 129
 SHA256_HEX_LENGTH = 64
+NICE_UTILISATION_EXPECTED_PAYLOAD_COUNT = 15
+NICE_UTILISATION_EXPECTED_RELEASE_COUNT = 4
 AUTHORITIES = {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -270,7 +272,7 @@ def _is_successful_nice_utilisation_receipt(
         and receipt.get("external_publication_authorized") is False
         and isinstance(payload_count, int)
         and not isinstance(payload_count, bool)
-        and payload_count > 0
+        and payload_count == NICE_UTILISATION_EXPECTED_PAYLOAD_COUNT
         and isinstance(admitted_count, int)
         and not isinstance(admitted_count, bool)
         and admitted_count == payload_count
@@ -279,6 +281,7 @@ def _is_successful_nice_utilisation_receipt(
         and manifest_count == payload_count
         and isinstance(release_count, int)
         and not isinstance(release_count, bool)
+        and release_count == NICE_UTILISATION_EXPECTED_RELEASE_COUNT
         and release_count == authorization.get("expected_release_count")
         and len(hashes) == payload_count
         and all(

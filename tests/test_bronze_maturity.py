@@ -162,7 +162,13 @@ def test_nice_internal_landing_requires_source_specific_rights(
 
 @pytest.mark.parametrize(
     "failure",
-    ["missing_authorization", "invalid_authorization", "archive", "hashes"],
+    [
+        "missing_authorization",
+        "invalid_authorization",
+        "archive",
+        "hashes",
+        "truncated_payloads",
+    ],
 )
 def test_nice_internal_landing_rejects_incomplete_receipt_metadata(
     tmp_path: Path, failure: str
@@ -183,6 +189,12 @@ def test_nice_internal_landing_rejects_incomplete_receipt_metadata(
         receipt["private_archive"] = None
     elif failure == "hashes":
         receipt["payload_sha256"] = {}
+    elif failure == "truncated_payloads":
+        receipt["payload_count"] = 1
+        receipt["accepted_admission_count"] = 1
+        receipt["acquisition_manifest_count"] = 1
+        receipt["payload_sha256"] = receipt["payload_sha256"][:1]
+        receipt["private_archive"]["restored_payload_count"] = 1
     receipt_path = (
         tmp_path
         / "quality/qualifications/nice-utilisation-acquisition-success-20260821.json"
