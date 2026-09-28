@@ -251,6 +251,19 @@ def test_medstat_format_clarification_sent_receipt_is_bound_and_fail_closed() ->
     assert message["attachment_count"] == 0
     assert message["source_payloads_attached"] is False
     assert message["rights_scope_changed"] is False
+    acknowledgement = message["acknowledgement"]
+    assert acknowledgement["gmail_message_id"] == "1a0e9b780c580bd2"
+    assert acknowledgement["rfc_message_id"] == (
+        "<fb2defdacec34bf09b97d565714ad56d@VI1P189MB2515.EURP189.PROD.OUTLOOK.COM>"
+    )
+    assert acknowledgement["kind"] == "automatic_receipt_acknowledgement"
+    assert acknowledgement["substantive_guidance"] is False
+    assert (
+        review["disposition"]["provider_request"]["acknowledgement"][
+            "gmail_message_id"
+        ]
+        == acknowledgement["gmail_message_id"]
+    )
     assert (
         receipt["verification"][
             "new_medstat_format_inquiry_recipient_subject_and_message_id_readback"

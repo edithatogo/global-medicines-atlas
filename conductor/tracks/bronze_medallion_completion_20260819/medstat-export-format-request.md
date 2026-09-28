@@ -41,3 +41,7 @@ Global Medicines Atlas
 **Sent receipt:** Gmail message `1a0e9ad775ff9a95` to
 `kontakt@sundhedsdata.dk`; Sent readback confirmed recipient, subject, and
 message ID. No attachments or source result payloads were included.
+
+**Automatic acknowledgement:** Received 2026-09-28 at 20:31:49 UTC, Gmail
+message `1a0e9b780c580bd2`. The provider confirms receipt and says it will reply
+later; no substantive format guidance has been received.
