@@ -1242,3 +1242,7 @@
   rights decision before any `au-pbs-api` acquisition. PBS source-era/domain
   qualification, unresolved AMT references, M-109, Australian federation and
   Stable v1 remain open.
+
+## Evidence-ledger review repair (2026-09-29)
+
+- [x] Restore append-only ordering for the PBS rights-request send-receipt reconciliation after PR #603 review identified it had been inserted before the prior ledger tail. The record is now the final event; the full 205-record JSONL parses. Focused tests (3 passed), routine harness, context/ecosystem validation, and `git diff --check` pass. Exact-head hosted revalidation remains pending. The repair changes no source-rights or acceptance state.
