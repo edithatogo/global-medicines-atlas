@@ -246,7 +246,11 @@ def _valid_identity(
             for key, value in expected_qualification.items()
         ),
         qualification.get("date_profile")
-        in {"not-selected", "pbs-iso-date-candidate-v1"},
+        in {
+            "not-selected",
+            "pbs-iso-date-candidate-v1",
+            "pbs-v3-pinned-2026-04-01-v1",
+        },
         _valid_public_objects(report.get("public_objects")),
         isinstance(report.get("workflow_commit"), str),
         re.fullmatch(r"[0-9a-f]{40}", report["workflow_commit"]) is not None,

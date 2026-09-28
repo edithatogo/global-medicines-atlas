@@ -180,6 +180,19 @@ def test_aggregate_accepts_explicit_candidate_date_profile_consistently() -> (
         aggregate_shards(reports)
 
 
+def test_aggregate_accepts_pinned_v3_profile_consistently() -> None:
+    reports = complete()
+    for report in reports:
+        report["qualification"]["date_profile"] = "pbs-v3-pinned-2026-04-01-v1"
+    result = aggregate_shards(reports)
+    assert (
+        result["qualification"]["date_profile"] == "pbs-v3-pinned-2026-04-01-v1"
+    )
+    reports[0]["qualification"]["date_profile"] = "not-selected"
+    with pytest.raises(ValueError, match="PBS qualification shards"):
+        aggregate_shards(reports)
+
+
 @pytest.mark.parametrize(
     ("path", "value"),
     [
