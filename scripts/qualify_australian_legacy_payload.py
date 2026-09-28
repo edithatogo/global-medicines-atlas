@@ -20,6 +20,9 @@ from global_medicines_atlas.adapters.au_mbs_workbook import (
     qualify_legacy_p7_workbook,
 )
 from global_medicines_atlas.mbs_workbook_domain import profile_workbook_domain
+from global_medicines_atlas.mbs_workbook_lineage import (
+    build_workbook_field_lineage,
+)
 from global_medicines_atlas.mbs_workbook_qualification import (
     PUBLIC_WORKBOOK_URI,
     acquire_hosted_workbook,
@@ -169,6 +172,9 @@ def main() -> None:
         summary["header_mapping_profile"] = profile_workbook_domain(
             payload, receipt
         )
+        summary["workbook_field_lineage"] = build_workbook_field_lineage(
+            payload, receipt
+        ).model_dump(mode="json")
         summary["domain_value_profile"] = profile_workbook_values(
             payload, receipt
         )

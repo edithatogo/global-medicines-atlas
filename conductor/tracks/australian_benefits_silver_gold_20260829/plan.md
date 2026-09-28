@@ -241,8 +241,14 @@
   blockers (`e6abca6`). XML field-addressed lineage now maps all 40 native
   paths to exact Silver table/field/type destinations and records per-field
   state, conversion and occurrence denominators without copying source values.
-  Real-workbook field lineage, real-source execution and public v4 identity
-  verification remain pending; no promotion is inferred.
+  Real-workbook field lineage and real-source execution remain pending. The
+  public v4 identity was subsequently verified at revision
+  `ba82cd1d0f9b0f28514df431b8da3a6c207d76fa` by run `36348699885`; no
+  promotion is inferred.
+  The hosted P7 qualification command now includes the deterministic
+  value-free column-lineage report alongside existing metadata profiles. Its
+  four-sheet result still requires an exact-main source run before this
+  subtask can close; date semantics remain unselected.
 
 ## Aggregate qualification review fixes
 
