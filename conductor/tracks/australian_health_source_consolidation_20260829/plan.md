@@ -385,6 +385,12 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   `58cb9e8c` classified all three workbook URLs as response-read timeouts after
   connection setup; no headers or source bytes were received and no redirects
   were followed. The durable receipt is issue #340 comment `5863375054`.
+- [x] Compare the same metadata-only requests from the workstation. All three
+  returned HTTP 200 with the expected XLSX media type and non-zero content
+  length, without following redirects or reading bodies. This establishes a
+  route-dependent observation, not its root cause. The source authorization
+  forbids workstation raw retention and requires GitHub-Actions-only upload;
+  no payload GET or local retention was attempted.
 - [~] Obtain an authorized reachable delivery path. The phase classification
   narrows the hosted observation but does not establish a publisher or network
   cause, provide workbook content, or satisfy M-107/federation acceptance.

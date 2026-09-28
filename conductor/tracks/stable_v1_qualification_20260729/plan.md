@@ -308,6 +308,10 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     setup, with no headers or source bytes received (`36377888606`, exact main
     `58cb9e8c`). This narrows the observed failure phase but does not provide an
     authorized source delivery route or satisfy M-107/federation acceptance.
+    A workstation-only repeat returned HTTP 200 and the expected XLSX metadata
+    for each URL, without reading bodies. The authorization forbids workstation
+    raw retention, so only a reachable authorized hosted route can advance
+    workbook acquisition.
   - The pinned PBS `pbs-iso-date-candidate-v1` profile completed exact-main
     (`36372245263`): 2,799 dates converted, one missing field, and 7,727,884
     rows unmapped; all five projections and 16 reference windows retained
