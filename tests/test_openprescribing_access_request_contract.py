@@ -45,6 +45,7 @@ def test_access_request_and_plan_match_prepared_not_sent_evidence() -> None:
     assert record["scope"]["challenge_workaround_attempted"] is False
 
     assert "**Status:** prepared, not sent." in request
+    assert "**To:** `feedback@openprescribing.net`" in request
     assert "will not attempt to solve the" in request
     assert (
         "prepare an unsent request for a supported machine-access path" in plan
