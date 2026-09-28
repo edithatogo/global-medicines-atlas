@@ -313,6 +313,12 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     raw retention, so only a reachable authorized hosted route can advance
     workbook acquisition. The bounded local observation is retained at
     `quality/qualifications/australian-mbs-workstation-head-availability-20260928.json`.
+  - The merged-main MBS workbook calendar-compatibility profile (`36381100367`,
+    commit `bbae70a0`) counted 1,276 dates valid under both day/month orders
+    and four valid only as DMY. This is value-free evidence and does not select
+    a conversion convention, establish workbook-era semantics, or resolve the
+    authorized hosted acquisition route; the Australian federation gate stays
+    blocked.
   - The pinned PBS `pbs-iso-date-candidate-v1` profile completed exact-main
     (`36372245263`): 2,799 dates converted, one missing field, and 7,727,884
     rows unmapped; all five projections and 16 reference windows retained
