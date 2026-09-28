@@ -395,3 +395,37 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [~] Obtain an authorized reachable delivery path. The phase classification
   narrows the hosted observation but does not establish a publisher or network
   cause, provide workbook content, or satisfy M-107/federation acceptance.
+
+## M-107 agency-hosted mirror route (2026-09-28)
+
+- [x] Record the maintainer's selected delivery route: an agency-hosted mirror.
+  No mirror is yet identified, and this route choice alone does not authorize
+  external contact or qualify a source payload.
+- [x] Recheck the current official Health.gov publication metadata. The annual
+  State and Territory page describes coverage through FY 2025-26, but its
+  linked attachment URL filename ends in FY 2024-25. The attachment bytes were
+  not read, so the workbook's actual coverage remains unverified. Metadata-only
+  evidence: `quality/qualifications/australian-mbs-agency-mirror-route-20260928.json`.
+- [x] Prepare a source-owner request draft covering an agency-controlled
+  endpoint, workbook period/coverage clarification, historical releases,
+  attribution/terms, and machine retrieval requirements:
+  `conductor/tracks/australian_health_source_consolidation_20260829/m107-agency-mirror-request.md`.
+- [~] Obtain the agency's response and an approved endpoint within the existing
+  source authorization. Do not GET or retain workbook bytes on the workstation.
+  If the endpoint uses a domain outside the current authorization, stop for an
+  explicit scope update. Then acquire only through the authorized GitHub Actions
+  publication workflow and qualify each workbook's exact period, denominator,
+  and historical family coverage. M-107 and Australian federation remain open.
+
+## M-107 metadata evidence review fixes (2026-09-28)
+
+- [x] Correct the proposed route/contact evidence timestamps to the recorded
+  commit time (`2026-09-28T10:10:14Z`), removing timestamps later than the
+  commit that contains those records. The correction is confined to the
+  unmerged PR evidence additions.
+- [x] Preserve the currently observed publication-page metadata in a minimal
+  content-addressed receipt and link it from the route qualification. The
+  SHA-256 binds the exact extracted page titles, period statements, dates, and
+  attachment URLs; the mutable HTML payload and workbook bytes are not copied.
+  M-107 remains blocked because this receipt does not establish workbook
+  contents, mirror availability, historical completeness, or acquisition.
