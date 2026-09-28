@@ -116,8 +116,7 @@ def test_pinned_v3_date_profile_rejects_synthetic_or_other_era_source() -> None:
         )
 
 
-def test_pinned_v3_date_profile_accepts_only_exact_bound_identity(
-) -> None:
+def test_pinned_v3_date_profile_accepts_only_exact_bound_identity() -> None:
     archive = _zip([(PATH, XML)])
     parent = _receipt(archive, SOURCE)
     binding = build_pbs_xml_member_binding(archive, parent)
