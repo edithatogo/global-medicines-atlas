@@ -1,6 +1,6 @@
-# Draft request: Medstat export response format
+# Medstat export response format request
 
-**Status:** prepared, not sent. Denmark's bounded internal acquisition and
+**Status:** sent 2026-09-28; awaiting substantive provider response. Denmark's bounded internal acquisition and
 retention authority remains limited to source-generated aggregate result
 exports with exact query parameters. No result bytes are attached or included.
 
@@ -37,3 +37,7 @@ response format.
 Thank you,
 Dylan Mordaunt
 Global Medicines Atlas
+
+**Sent receipt:** Gmail message `1a0e9ad775ff9a95` to
+`kontakt@sundhedsdata.dk`; Sent readback confirmed recipient, subject, and
+message ID. No attachments or source result payloads were included.

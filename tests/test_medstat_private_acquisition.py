@@ -217,6 +217,53 @@ def test_medstat_export_review_distinguishes_diagnostic_read_from_retention() ->
     )
 
 
+def test_medstat_format_clarification_sent_receipt_is_bound_and_fail_closed() -> (
+    None
+):
+    receipt = json.loads(
+        (
+            ROOT / "quality/qualifications/"
+            "provider-outreach-receipts-20260929.json"
+        ).read_text(encoding="utf-8")
+    )
+    message = next(
+        item
+        for item in receipt["messages"]
+        if item["source_id"] == "dk-medstat-utilisation"
+    )
+    review = json.loads(
+        (
+            ROOT / "quality/qualifications/"
+            "nordic-medstat-export-format-doc-review-20260929.json"
+        ).read_text(encoding="utf-8")
+    )
+    request = (
+        ROOT / "conductor/tracks/bronze_medallion_completion_20260819/"
+        "medstat-export-format-request.md"
+    ).read_text(encoding="utf-8")
+
+    assert message["gmail_message_id"] == "1a0e9ad775ff9a95"
+    assert message["recipient"] == "kontakt@sundhedsdata.dk"
+    assert message["state"] == "sent_awaiting_provider_response"
+    assert message["attachment_count"] == 0
+    assert message["source_payloads_attached"] is False
+    assert message["rights_scope_changed"] is False
+    assert (
+        receipt["verification"][
+            "new_medstat_format_inquiry_recipient_subject_and_message_id_readback"
+        ]
+        is True
+    )
+    assert review["disposition"]["format_semantics_resolved"] is False
+    assert review["disposition"]["html_result_parser_implemented"] is False
+    assert (
+        review["disposition"]["provider_request"]["gmail_message_id"]
+        == message["gmail_message_id"]
+    )
+    assert "awaiting substantive provider response" in request
+    assert "No attachments or source result payloads" in request
+
+
 def test_private_acquisition_lands_recovers_and_archives(
     tmp_path: Path,
 ) -> None:
