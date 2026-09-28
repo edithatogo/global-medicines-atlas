@@ -767,3 +767,7 @@ for credentialed or rights-unresolved sources.
 - [ ] Re-run the qualification against exact merged `main` and record its
   commit-bound maturity receipt. Bronze completeness and M5 remain blocked by
   the other 118 in-scope sources.
+- [~] Codecov patch-coverage follow-up: negative controls now exercise missing
+  and malformed NICE authorization, archive, and digest metadata. The affected
+  Bronze tests pass (78 total) and local `bronze_maturity.py` coverage is 98%;
+  refreshed protected Codecov verification is pending.

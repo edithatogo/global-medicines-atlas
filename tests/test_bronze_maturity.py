@@ -161,6 +161,74 @@ def test_nice_internal_landing_requires_source_specific_rights(
 
 
 @pytest.mark.parametrize(
+    "failure",
+    ["missing_authorization", "invalid_authorization", "archive", "hashes"],
+)
+def test_nice_internal_landing_rejects_incomplete_receipt_metadata(
+    tmp_path: Path, failure: str
+) -> None:
+    receipt = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/nice-utilisation-acquisition-success-20260821.json"
+        ).read_text(encoding="utf-8")
+    )
+    authorization = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/nice-utilisation-acquisition-authorization.json"
+        ).read_text(encoding="utf-8")
+    )
+    if failure == "archive":
+        receipt["private_archive"] = None
+    elif failure == "hashes":
+        receipt["payload_sha256"] = {}
+    receipt_path = (
+        tmp_path
+        / "quality/qualifications/nice-utilisation-acquisition-success-20260821.json"
+    )
+    receipt_path.parent.mkdir(parents=True)
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+    authorization_path = (
+        tmp_path
+        / "quality/qualifications/nice-utilisation-acquisition-authorization.json"
+    )
+    if failure != "missing_authorization":
+        authorization_path.write_text(
+            "[]"
+            if failure == "invalid_authorization"
+            else json.dumps(authorization),
+            encoding="utf-8",
+        )
+    overrides_path = (
+        tmp_path
+        / "src/global_medicines_atlas/data/source_landing_overrides.json"
+    )
+    overrides_path.parent.mkdir(parents=True)
+    overrides_path.write_text(
+        json.dumps({
+            "overrides": [
+                {
+                    "source_id": "gb-nice-medicines-utilisation",
+                    "state": "landed_and_evidenced",
+                    "evidence_references": [
+                        "quality/qualifications/nice-utilisation-acquisition-success-20260821.json"
+                    ],
+                }
+            ]
+        }),
+        encoding="utf-8",
+    )
+
+    assert (
+        receipt_backed_landing_evidence(
+            tmp_path, {"gb-nice-medicines-utilisation"}
+        )
+        == {}
+    )
+
+
+@pytest.mark.parametrize(
     ("source_id", "field", "value"),
     [
         ("us-fda-orange-book", "prompt_complete", True),
