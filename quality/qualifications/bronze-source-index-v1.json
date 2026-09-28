@@ -9,30 +9,30 @@
   },
   "evidence_scope_counts": {
     "governed_fixture": 11,
-    "live_receipt": 22,
-    "none": 140,
+    "live_receipt": 26,
+    "none": 136,
     "parser_contract": 1
   },
   "generated_from": "src/global_medicines_atlas/data/medicine_source_catalog.json",
   "index_presence_implies_coverage": false,
   "landing_disposition_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 34,
+    "landed_and_evidenced": 38,
     "manual_only_documented_acquisition": 92,
-    "rights_blocked": 31,
+    "rights_blocked": 27,
     "temporarily_unavailable": 2
   },
   "missing_source_is_negative_evidence": false,
   "qualification_state_counts": {
-    "declared": 82,
-    "documentation_verified": 58,
+    "declared": 79,
+    "documentation_verified": 57,
     "fixture_verified": 12,
-    "live_verified": 22
+    "live_verified": 26
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:e8dd95ee31d5717969db9efe0b15b4fed1dc29915dbff2bb7cbfd8bbfab242d6",
-  "snapshot_sha256": "e8dd95ee31d5717969db9efe0b15b4fed1dc29915dbff2bb7cbfd8bbfab242d6",
+  "snapshot_id": "sha256:d3b605c425b288a2395a2c588b82d61545b0a0550191e64275995b102202c60f",
+  "snapshot_sha256": "d3b605c425b288a2395a2c588b82d61545b0a0550191e64275995b102202c60f",
   "source_count": 174,
   "sources": [
     {
@@ -6468,11 +6468,11 @@
       "api_url": "",
       "authentication": "none",
       "authority": "US Food and Drug Administration",
-      "current_landing_disposition": "rights_blocked",
+      "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.fda.gov/industry/structured-product-labeling-resources/nsde",
       "download_url": "https://www.fda.gov/industry/structured-product-labeling-resources/nsde",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "zip",
         "txt"
@@ -6492,9 +6492,9 @@
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
-        "https://www.fda.gov/industry/structured-product-labeling-resources/nsde"
+        "quality/qualifications/us-live-bronze-records-20260820.json"
       ],
-      "qualification_state": "declared",
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -6679,11 +6679,11 @@
       "api_url": "https://api.fda.gov/drug/drugsfda.json",
       "authentication": "none",
       "authority": "US Food and Drug Administration",
-      "current_landing_disposition": "rights_blocked",
+      "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://open.fda.gov/apis/drug/drugsfda/",
       "download_url": "",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "json"
       ],
@@ -6702,9 +6702,10 @@
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
-        "https://open.fda.gov/apis/drug/drugsfda/"
+        "https://open.fda.gov/apis/drug/drugsfda/",
+        "quality/qualifications/us-live-bronze-records-20260820.json"
       ],
-      "qualification_state": "documentation_verified",
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -6760,11 +6761,11 @@
       "api_url": "https://api.fda.gov/drug/event.json",
       "authentication": "none",
       "authority": "US Food and Drug Administration",
-      "current_landing_disposition": "rights_blocked",
+      "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://open.fda.gov/apis/drug/event/",
       "download_url": "",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "json"
       ],
@@ -6784,9 +6785,9 @@
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
-        "https://open.fda.gov/apis/drug/event/"
+        "quality/qualifications/us-live-bronze-records-20260820.json"
       ],
-      "qualification_state": "declared",
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
@@ -6841,11 +6842,11 @@
       "api_url": "https://api.fda.gov/other/nsde.json",
       "authentication": "none",
       "authority": "US Food and Drug Administration",
-      "current_landing_disposition": "rights_blocked",
+      "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://open.fda.gov/apis/other/nsde/",
       "download_url": "",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "json"
       ],
@@ -6864,9 +6865,9 @@
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
-        "https://open.fda.gov/apis/other/nsde/"
+        "quality/qualifications/us-live-bronze-records-20260820.json"
       ],
-      "qualification_state": "declared",
+      "qualification_state": "live_verified",
       "rights_review_state": "review_required",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",

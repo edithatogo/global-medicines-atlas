@@ -204,6 +204,10 @@ def _is_successful_bronze_receipt(
         "global-medicines-atlas."
     ):
         return False
+    if schema_id == (
+        "global-medicines-atlas.us-live-bronze-records-qualification"
+    ):
+        return _is_successful_us_live_records_receipt(receipt, source_id)
     if not (
         schema_id.endswith(("-live-qualification", "-acquisition-success"))
         or schema_id
@@ -220,6 +224,84 @@ def _is_successful_bronze_receipt(
     return (
         successful_admission or successful_release
     ) and _contains_exact_value(receipt, source_id)
+
+
+def _is_successful_us_live_records_receipt(
+    receipt: Mapping[str, Any], source_id: str
+) -> bool:
+    """Match only accepted, projected, recovered products in a bounded U.S. run."""
+    if (
+        receipt.get("schema_version") != 1
+        or receipt.get("evidence_class") != "live_bounded_internal"
+        or receipt.get("coverage_complete") is not False
+        or receipt.get("external_publication_performed") is not False
+        or receipt.get("public_release_authorized") is not False
+    ):
+        return False
+    products = receipt.get("record_products")
+    if not isinstance(products, list) or not products:
+        return False
+    raw_products = cast("list[Any]", products)
+    if any(not isinstance(product, Mapping) for product in raw_products):
+        return False
+    typed_products = cast("list[Mapping[str, Any]]", raw_products)
+    product_source_ids = [
+        product.get("source_id") for product in typed_products
+    ]
+    row_counts = [product.get("row_count") for product in typed_products]
+    if (
+        any(
+            not isinstance(product_id, str) or not product_id
+            for product_id in product_source_ids
+        )
+        or any(
+            not isinstance(row_count, int)
+            or isinstance(row_count, bool)
+            or row_count <= 0
+            for row_count in row_counts
+        )
+        or len(set(product_source_ids)) != len(product_source_ids)
+    ):
+        return False
+    product_count = len(product_source_ids)
+    count_fields = (
+        "source_count",
+        "acquisition_succeeded_count",
+        "acquisition_failed_count",
+        "accepted_admission_count",
+        "quarantined_admission_count",
+        "recovered_acquisition_count",
+        "source_record_projection_count",
+        "recovered_source_record_projection_count",
+        "source_record_parquet_pairs_byte_identical",
+    )
+    counts = cast(
+        "dict[str, int | None]",
+        {name: receipt.get(name) for name in count_fields},
+    )
+    if any(
+        not isinstance(value, int) or isinstance(value, bool)
+        for value in counts.values()
+    ):
+        return False
+    valid_counts = cast("dict[str, int]", counts)
+    return (
+        source_id in product_source_ids
+        and valid_counts["source_count"] > 0
+        and valid_counts["acquisition_succeeded_count"]
+        == valid_counts["source_count"]
+        and valid_counts["acquisition_failed_count"] == 0
+        and valid_counts["accepted_admission_count"] == product_count
+        and valid_counts["recovered_acquisition_count"] == product_count
+        and valid_counts["source_record_projection_count"] == product_count
+        and valid_counts["recovered_source_record_projection_count"]
+        == product_count
+        and valid_counts["source_record_parquet_pairs_byte_identical"]
+        == product_count
+        and valid_counts["accepted_admission_count"]
+        + valid_counts["quarantined_admission_count"]
+        <= valid_counts["acquisition_succeeded_count"]
+    )
 
 
 def receipt_backed_landing_evidence(

@@ -416,6 +416,170 @@ def test_receipt_backed_landing_requires_exact_nonpublication_receipt(
 
 
 @pytest.mark.unit
+def test_us_live_records_receipt_counts_only_recovered_source_products(
+    tmp_path: Path,
+) -> None:
+    source_id = "us-openfda-faers"
+    overrides = tmp_path / bronze_maturity_mod.LANDING_OVERRIDES_RELATIVE
+    overrides.parent.mkdir(parents=True)
+    overrides.write_text(
+        json.dumps({
+            "overrides": [
+                {
+                    "source_id": source_id,
+                    "state": "landed_and_evidenced",
+                    "evidence_references": [
+                        "quality/qualifications/us-live-bronze-records.json"
+                    ],
+                }
+            ]
+        }),
+        encoding="utf-8",
+    )
+    receipt = tmp_path / "quality/qualifications/us-live-bronze-records.json"
+    receipt.parent.mkdir(parents=True)
+    receipt.write_text(
+        json.dumps({
+            "schema_id": "global-medicines-atlas.us-live-bronze-records-qualification",
+            "schema_version": 1,
+            "evidence_class": "live_bounded_internal",
+            "source_count": 1,
+            "acquisition_succeeded_count": 1,
+            "acquisition_failed_count": 0,
+            "accepted_admission_count": 1,
+            "quarantined_admission_count": 0,
+            "recovered_acquisition_count": 1,
+            "source_record_projection_count": 1,
+            "recovered_source_record_projection_count": 1,
+            "source_record_parquet_pairs_byte_identical": 1,
+            "record_products": [{"source_id": source_id, "row_count": 4}],
+            "coverage_complete": False,
+            "external_publication_performed": False,
+            "public_release_authorized": False,
+        }),
+        encoding="utf-8",
+    )
+    assert receipt_backed_landing_evidence(tmp_path, {source_id}) == {
+        source_id: "quality/qualifications/us-live-bronze-records.json"
+    }
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("field", "value", "products"),
+    [
+        ("recovered_acquisition_count", 0, None),
+        ("recovered_source_record_projection_count", 0, None),
+        ("source_record_parquet_pairs_byte_identical", 0, None),
+        ("external_publication_performed", True, None),
+        ("coverage_complete", True, None),
+        ("source_count", 0, None),
+        ("acquisition_failed_count", 1, None),
+        ("accepted_admission_count", 2, None),
+        ("quarantined_admission_count", 1, None),
+        ("source_record_projection_count", 0, None),
+        (
+            "acquisition_succeeded_count",
+            1,
+            [{"source_id": "other", "row_count": 4}],
+        ),
+        (
+            "acquisition_succeeded_count",
+            1,
+            [{"source_id": "us-openfda-faers", "row_count": True}],
+        ),
+        (
+            "acquisition_succeeded_count",
+            1,
+            [{"source_id": "us-openfda-faers", "row_count": 0}],
+        ),
+        (
+            "acquisition_succeeded_count",
+            1,
+            [
+                {"source_id": "us-openfda-faers", "row_count": 4},
+                {"source_id": "us-openfda-faers", "row_count": 3},
+            ],
+        ),
+        ("acquisition_succeeded_count", 1, [None]),
+        ("acquisition_succeeded_count", 1, []),
+    ],
+)
+def test_us_live_records_receipt_fails_closed_on_inconsistent_summary(
+    tmp_path: Path,
+    field: str,
+    value: object,
+    products: list[object] | None,
+) -> None:
+    source_id = "us-openfda-faers"
+    overrides = tmp_path / bronze_maturity_mod.LANDING_OVERRIDES_RELATIVE
+    overrides.parent.mkdir(parents=True)
+    overrides.write_text(
+        json.dumps({
+            "overrides": [
+                {
+                    "source_id": source_id,
+                    "state": "landed_and_evidenced",
+                    "evidence_references": [
+                        "quality/qualifications/us-live-bronze-records.json"
+                    ],
+                }
+            ]
+        }),
+        encoding="utf-8",
+    )
+    receipt_data: dict[str, object] = {
+        "schema_id": "global-medicines-atlas.us-live-bronze-records-qualification",
+        "schema_version": 1,
+        "evidence_class": "live_bounded_internal",
+        "source_count": 1,
+        "acquisition_succeeded_count": 1,
+        "acquisition_failed_count": 0,
+        "accepted_admission_count": 1,
+        "quarantined_admission_count": 0,
+        "recovered_acquisition_count": 1,
+        "source_record_projection_count": 1,
+        "recovered_source_record_projection_count": 1,
+        "source_record_parquet_pairs_byte_identical": 1,
+        "record_products": (
+            [{"source_id": source_id, "row_count": 4}]
+            if products is None
+            else products
+        ),
+        "coverage_complete": False,
+        "external_publication_performed": False,
+        "public_release_authorized": False,
+    }
+    receipt_data[field] = value
+    receipt = tmp_path / "quality/qualifications/us-live-bronze-records.json"
+    receipt.parent.mkdir(parents=True)
+    receipt.write_text(json.dumps(receipt_data), encoding="utf-8")
+    assert receipt_backed_landing_evidence(tmp_path, {source_id}) == {}
+
+
+@pytest.mark.integration
+def test_repository_us_live_records_override_scope_is_exact() -> None:
+    covered_ids = {
+        "us-fda-nsde",
+        "us-openfda-drugsfda",
+        "us-openfda-faers",
+        "us-openfda-nsde",
+        "us-fda-orange-book",
+        "us-fda-drug-shortages",
+    }
+    evidence = receipt_backed_landing_evidence(ROOT, covered_ids)
+    assert set(evidence) == {
+        "us-fda-nsde",
+        "us-openfda-drugsfda",
+        "us-openfda-faers",
+        "us-openfda-nsde",
+    }
+    assert set(evidence.values()) == {
+        "quality/qualifications/us-live-bronze-records-20260820.json"
+    }
+
+
+@pytest.mark.unit
 def test_completeness_is_evidenced_when_every_in_scope_source_landed(
     tmp_path: Path,
 ) -> None:

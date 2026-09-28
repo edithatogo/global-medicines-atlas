@@ -298,10 +298,13 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     output (M-046) was observed through the bot-authored Dependency Dashboard
     in issue #491 on 2026-09-13, restoring the security-and-supply-chain
     maturity dimension to M5.
-  - The 2026-09-27 Bronze refresh binds the approved CMS Part D source-record
-    receipt to the maturity denominator, reducing uncovered in-scope sources
-    from 125 to 124. Seven dimensions remain M5/verified; source coverage
-    remains M4/partial and the M5 release gate stays blocked. See
+  - The 2026-09-28 Bronze refresh binds the approved CMS Part D receipt and
+    four accepted U.S. source-record products to the maturity denominator,
+    reducing uncovered in-scope sources from 124 to 120. The bounded U.S.
+    canaries do not claim complete openFDA releases, and the Orange Book remains
+    temporarily unavailable pending historical-release coverage. Seven
+    dimensions remain M5/verified; source coverage remains M4/partial and the
+    M5 release gate stays blocked. See
     `docs/qualification/stable-v1-m5-maturity-status.md`.
   - The Australian MBS hosted HEAD-only diagnostic now classifies all three
     authorized Health.gov workbook requests as read timeouts after connection

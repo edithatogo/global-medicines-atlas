@@ -210,6 +210,15 @@
       ]
     },
     {
+      "source_id": "us-fda-nsde",
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "The current official NSDE comprehensive file has an accepted admission, a source-native record projection, and a byte-identical clean-room projection in the bounded internal U.S. Bronze receipt. Public release was not performed by that acquisition.",
+      "evidence_references": [
+        "quality/qualifications/us-live-bronze-records-20260820.json"
+      ]
+    },
+    {
       "source_id": "us-fda-orange-book",
       "state": "temporarily_unavailable",
       "reason": "Internal historical acquisition was authorized and exercised; 201 of 259 exact release URLs were retained, 58 remain cumulatively unresolved after seven bounded passes, and the latest material-change full-inventory observation still failed on 104 releases.",
@@ -249,6 +258,15 @@
       ]
     },
     {
+      "source_id": "us-openfda-drugsfda",
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "The bounded internal U.S. Bronze receipt records an accepted admission, native projection, and byte-identical clean-room recovery for this source. This openFDA response is a 100-record canary, not a complete release; public release was not performed.",
+      "evidence_references": [
+        "quality/qualifications/us-live-bronze-records-20260820.json"
+      ]
+    },
+    {
       "source_id": "us-openfda-enforcement",
       "state": "landed_and_evidenced",
       "evidence_scope": "live_receipt",
@@ -258,12 +276,30 @@
       ]
     },
     {
+      "source_id": "us-openfda-faers",
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "The bounded internal U.S. Bronze receipt records an accepted admission, native projection, and byte-identical clean-room recovery for this distinct openFDA-derived source. Its 100-record response is a canary, not a complete release; it is kept separate from the FDA quarterly files without silent deduplication, and no public release was performed.",
+      "evidence_references": [
+        "quality/qualifications/us-live-bronze-records-20260820.json"
+      ]
+    },
+    {
       "source_id": "us-openfda-ndc",
       "state": "landed_and_evidenced",
       "evidence_scope": "live_receipt",
       "reason": "The complete current openFDA NDC bulk partition was acquired, projected, reconstructed, and privately archived.",
       "evidence_references": [
         "quality/qualifications/ndc-directory-live-corpus-20260821.json"
+      ]
+    },
+    {
+      "source_id": "us-openfda-nsde",
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "The bounded internal U.S. Bronze receipt records an accepted admission, native projection, and byte-identical clean-room recovery for this source. This openFDA response is a 100-record canary, not a complete release; public release was not performed.",
+      "evidence_references": [
+        "quality/qualifications/us-live-bronze-records-20260820.json"
       ]
     }
   ]
