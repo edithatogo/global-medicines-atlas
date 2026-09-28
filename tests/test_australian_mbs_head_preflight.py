@@ -68,6 +68,20 @@ def test_preflight_records_timeout_without_exception_text() -> None:
     assert "source body" not in str(report)
 
 
+def test_preflight_records_transport_failures_without_exception_text() -> None:
+    def fail_transport(request: httpx.Request) -> httpx.Response:
+        raise httpx.ConnectError("private transport details", request=request)
+
+    report = _run(httpx.MockTransport(fail_transport))
+
+    assert report["status"] == "incomplete"
+    assert report["results"] == [
+        {"source": name, "status": "transport_error"}
+        for name, _url in WORKBOOKS
+    ]
+    assert "private transport" not in str(report)
+
+
 def test_preflight_does_not_follow_redirects() -> None:
     def redirect(request: httpx.Request) -> httpx.Response:
         return httpx.Response(
@@ -117,6 +131,41 @@ def test_preflight_requires_excel_headers() -> None:
         )
 
     report = _run(httpx.MockTransport(wrong_type))
+
+    assert report["status"] == "incomplete"
+    assert all(
+        item["status"] == "unexpected_response" for item in report["results"]
+    )
+
+
+def test_preflight_accepts_excel_content_type_parameters() -> None:
+    def response(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            headers={
+                "content-type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=binary",
+                "content-length": "88",
+            },
+            request=request,
+        )
+
+    report = _run(httpx.MockTransport(response))
+
+    assert report["status"] == "passed"
+
+
+def test_preflight_rejects_non_200_with_valid_excel_headers() -> None:
+    def unavailable(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            503,
+            headers={
+                "content-type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "content-length": "88",
+            },
+            request=request,
+        )
+
+    report = _run(httpx.MockTransport(unavailable))
 
     assert report["status"] == "incomplete"
     assert all(
