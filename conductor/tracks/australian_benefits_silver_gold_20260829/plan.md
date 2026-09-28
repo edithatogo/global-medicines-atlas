@@ -140,6 +140,13 @@
   implementation, 32 focused tests pass with 100% changed-module coverage.
   Hosted observation passed in run `33318355531`; independently qualified
   format selection remains pending.)
+  - [x] Add and run a value-free calendar-compatibility profile on the exact
+    merged main commit. Run `36381100367` observed 1,276 dotted dates valid
+    under both DMY and MDY and four valid only under DMY; the per-field counts
+    are recorded in `evidence.jsonl`. The report leaves `date_profile` unset
+    and `semantic_promotion` false. This narrows calendar compatibility but
+    does not independently establish the workbook's date convention; source-
+    specific documentation is still required before conversion.
 - [x] Keep native OOXML date storage distinct from ordinary date-shaped text.
   (`43ea70c`; P2 regression failed before correction, then 33 focused tests
   passed with 100% changed-module branch coverage; static checks pass.)
