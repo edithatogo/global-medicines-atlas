@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import asyncio
+from collections.abc import Awaitable, Callable
+from typing import Any
+
 import httpx
 import pytest
 
@@ -13,13 +17,40 @@ from global_medicines_atlas.australian_mbs_head_preflight import (
 SHA = "a" * 40
 
 
-def _run(transport: httpx.BaseTransport) -> dict[str, object]:
-    return preflight_medicare_workbook_urls(
-        exact_commit=SHA,
-        workflow_commit=SHA,
-        workflow_ref="refs/heads/main",
-        run_id="12345",
-        transport=transport,
+class _AsyncMockTransport(httpx.AsyncBaseTransport):
+    def __init__(
+        self,
+        handler: Callable[
+            [httpx.Request], httpx.Response | Awaitable[httpx.Response]
+        ],
+    ) -> None:
+        self.handler = handler
+
+    async def handle_async_request(
+        self, request: httpx.Request
+    ) -> httpx.Response:
+        response = self.handler(request)
+        if isinstance(response, httpx.Response):
+            return response
+        return await response
+
+
+def _run(
+    handler: Callable[
+        [httpx.Request], httpx.Response | Awaitable[httpx.Response]
+    ],
+    *,
+    request_timeout_seconds: float = 15,
+) -> dict[str, Any]:
+    return asyncio.run(
+        preflight_medicare_workbook_urls(
+            exact_commit=SHA,
+            workflow_commit=SHA,
+            workflow_ref="refs/heads/main",
+            run_id="12345",
+            transport=_AsyncMockTransport(handler),
+            request_timeout_seconds=request_timeout_seconds,
+        )
     )
 
 
@@ -38,7 +69,7 @@ def test_preflight_uses_head_and_returns_only_bounded_headers() -> None:
             request=request,
         )
 
-    report = _run(httpx.MockTransport(respond))
+    report = _run(respond)
 
     assert report["status"] == "passed"
     assert report["request_method"] == "HEAD"
@@ -59,7 +90,7 @@ def test_preflight_records_timeout_without_exception_text() -> None:
     def timeout(_request: httpx.Request) -> httpx.Response:
         raise httpx.ReadTimeout("source body or private detail")
 
-    report = _run(httpx.MockTransport(timeout))
+    report = _run(timeout)
 
     assert report["status"] == "incomplete"
     assert report["results"] == [
@@ -72,7 +103,7 @@ def test_preflight_records_transport_failures_without_exception_text() -> None:
     def fail_transport(request: httpx.Request) -> httpx.Response:
         raise httpx.ConnectError("private transport details", request=request)
 
-    report = _run(httpx.MockTransport(fail_transport))
+    report = _run(fail_transport)
 
     assert report["status"] == "incomplete"
     assert report["results"] == [
@@ -90,7 +121,7 @@ def test_preflight_does_not_follow_redirects() -> None:
             request=request,
         )
 
-    report = _run(httpx.MockTransport(redirect))
+    report = _run(redirect)
 
     assert report["status"] == "incomplete"
     assert all(
@@ -111,14 +142,18 @@ def test_preflight_fails_closed_on_non_exact_main_context(
     commit: str, workflow_commit: str, workflow_ref: str
 ) -> None:
     with pytest.raises(ValueError, match="preflight"):
-        preflight_medicare_workbook_urls(
-            exact_commit=commit,
-            workflow_commit=workflow_commit,
-            workflow_ref=workflow_ref,
-            run_id="12345",
-            transport=httpx.MockTransport(
-                lambda _request: pytest.fail("invalid context must not request")
-            ),
+        asyncio.run(
+            preflight_medicare_workbook_urls(
+                exact_commit=commit,
+                workflow_commit=workflow_commit,
+                workflow_ref=workflow_ref,
+                run_id="12345",
+                transport=_AsyncMockTransport(
+                    lambda _request: pytest.fail(
+                        "invalid context must not request"
+                    )
+                ),
+            )
         )
 
 
@@ -130,7 +165,7 @@ def test_preflight_requires_excel_headers() -> None:
             request=request,
         )
 
-    report = _run(httpx.MockTransport(wrong_type))
+    report = _run(wrong_type)
 
     assert report["status"] == "incomplete"
     assert all(
@@ -149,7 +184,7 @@ def test_preflight_accepts_excel_content_type_parameters() -> None:
             request=request,
         )
 
-    report = _run(httpx.MockTransport(response))
+    report = _run(response)
 
     assert report["status"] == "passed"
 
@@ -165,9 +200,52 @@ def test_preflight_rejects_non_200_with_valid_excel_headers() -> None:
             request=request,
         )
 
-    report = _run(httpx.MockTransport(unavailable))
+    report = _run(unavailable)
 
     assert report["status"] == "incomplete"
     assert all(
         item["status"] == "unexpected_response" for item in report["results"]
     )
+
+
+def test_preflight_enforces_wall_clock_timeout_on_slow_response() -> None:
+    async def slow_response(request: httpx.Request) -> httpx.Response:
+        await asyncio.sleep(0.05)
+        return httpx.Response(
+            200,
+            headers={
+                "content-type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "content-length": "88",
+            },
+            request=request,
+        )
+
+    report = _run(slow_response, request_timeout_seconds=0.001)
+
+    assert report["status"] == "incomplete"
+    assert report["results"] == [
+        {"source": name, "status": "timeout"} for name, _url in WORKBOOKS
+    ]
+
+
+@pytest.mark.parametrize(
+    "request_timeout_seconds", [0, -1, float("inf"), float("nan")]
+)
+def test_preflight_rejects_invalid_request_deadlines(
+    request_timeout_seconds: float,
+) -> None:
+    with pytest.raises(ValueError, match="timeout"):
+        asyncio.run(
+            preflight_medicare_workbook_urls(
+                exact_commit=SHA,
+                workflow_commit=SHA,
+                workflow_ref="refs/heads/main",
+                run_id="12345",
+                transport=_AsyncMockTransport(
+                    lambda _request: pytest.fail(
+                        "invalid deadline must not request"
+                    )
+                ),
+                request_timeout_seconds=request_timeout_seconds,
+            )
+        )

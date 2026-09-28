@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import asyncio
 import json
 import os
 from pathlib import Path
@@ -21,11 +22,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
     try:
-        report = preflight_medicare_workbook_urls(
-            exact_commit=args.exact_commit,
-            workflow_commit=os.environ.get("GITHUB_SHA", ""),
-            workflow_ref=os.environ.get("GITHUB_REF", ""),
-            run_id=os.environ.get("GITHUB_RUN_ID", "unavailable"),
+        report = asyncio.run(
+            preflight_medicare_workbook_urls(
+                exact_commit=args.exact_commit,
+                workflow_commit=os.environ.get("GITHUB_SHA", ""),
+                workflow_ref=os.environ.get("GITHUB_REF", ""),
+                run_id=os.environ.get("GITHUB_RUN_ID", "unavailable"),
+            )
         )
     except ValueError, httpx.HTTPError:
         report = {

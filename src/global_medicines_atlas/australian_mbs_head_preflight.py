@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import asyncio
+import math
 import re
 from datetime import UTC, datetime
 from http import HTTPStatus
@@ -28,22 +30,30 @@ _XLSX_CONTENT_TYPE = (
 )
 
 
-def preflight_medicare_workbook_urls(
+async def preflight_medicare_workbook_urls(
     *,
     exact_commit: str,
     workflow_commit: str,
     workflow_ref: str,
     run_id: str,
-    transport: httpx.BaseTransport | None = None,
+    transport: httpx.AsyncBaseTransport | None = None,
+    request_timeout_seconds: float = 15,
 ) -> dict[str, Any]:
     """Issue bounded HEAD-only requests and return a value-free receipt."""
     if re.fullmatch(r"[0-9a-f]{40}", exact_commit) is None:
         raise ValueError("preflight exact commit is invalid")
     if workflow_commit != exact_commit or workflow_ref != "refs/heads/main":
         raise ValueError("preflight must run on the exact main commit")
+    if (
+        not math.isfinite(request_timeout_seconds)
+        or request_timeout_seconds <= 0
+    ):
+        raise ValueError(
+            "preflight request timeout must be positive and finite"
+        )
     results: list[dict[str, Any]] = []
-    timeout = httpx.Timeout(15.0, connect=5.0)
-    with httpx.Client(
+    timeout = httpx.Timeout(request_timeout_seconds, connect=5.0)
+    async with httpx.AsyncClient(
         follow_redirects=False,
         timeout=timeout,
         transport=transport,
@@ -54,8 +64,9 @@ def preflight_medicare_workbook_urls(
     ) as client:
         for name, url in WORKBOOKS:
             try:
-                response = client.head(url)
-            except httpx.TimeoutException:
+                async with asyncio.timeout(request_timeout_seconds):
+                    response = await client.head(url)
+            except TimeoutError, httpx.TimeoutException:
                 results.append({"source": name, "status": "timeout"})
                 continue
             except httpx.TransportError:
@@ -98,7 +109,7 @@ def preflight_medicare_workbook_urls(
         "exact_commit": exact_commit,
         "run_id": run_id,
         "request_method": "HEAD",
-        "request_timeout_seconds": 15,
+        "request_timeout_seconds": request_timeout_seconds,
         "redirects_followed": False,
         "source_bytes_read": False,
         "results": results,

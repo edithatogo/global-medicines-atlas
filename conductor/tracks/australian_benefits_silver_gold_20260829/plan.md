@@ -1150,6 +1150,9 @@
 - [~] Diagnose M-107's authorized Health.gov workbook download timeouts with a
   separate exact-main, HEAD-only Actions probe. The workstation metadata check
   confirmed all three URLs return the expected XLSX headers, while bounded
-  CKAN searches found no matching mirror. The new probe has focused and static
-  validation; its protected CI and hosted egress result remain pending. It reads
-  no source bytes and cannot satisfy workbook acquisition or M-107 acceptance.
+  CKAN searches found no matching mirror. PR #569 adds the probe; review found
+  and corrected the need for a whole-request wall-clock deadline in addition
+  to HTTP operation timeouts. Focused regressions, static analysis, routine
+  checks, and local full statement/branch coverage pass. The updated protected
+  CI and hosted egress result remain pending. It reads no source bytes and
+  cannot satisfy workbook acquisition or M-107 acceptance.
