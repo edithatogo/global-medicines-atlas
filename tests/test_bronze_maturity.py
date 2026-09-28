@@ -16,6 +16,7 @@ from scripts.qualify_bronze_maturity import main as qualify_bronze_main
 from global_medicines_atlas import bronze_maturity as bronze_maturity_mod
 from global_medicines_atlas.bronze_maturity import (
     CATALOG_RELATIVE,
+    FDA_SHORTAGES_HISTORICAL_SNAPSHOT_COUNT,
     PROPERTY_IDS,
     SCHEMA_RELATIVE,
     classify_catalog_source,
@@ -61,6 +62,44 @@ def test_fda_shortages_scoped_internal_receipt_counts_as_bronze_landing() -> (
             "quality/qualifications/fda-shortages-live-corpus-20260821.json"
         )
     }
+
+
+def test_fda_shortages_success_predicate_accepts_qualified_receipt() -> None:
+    receipt = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/fda-shortages-live-corpus-20260821.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert bronze_maturity_mod._is_successful_fda_shortages_receipt(
+        receipt, "us-fda-drug-shortages"
+    )
+    assert FDA_SHORTAGES_HISTORICAL_SNAPSHOT_COUNT == 129
+
+
+@pytest.mark.parametrize(
+    ("source_id", "field", "value"),
+    [
+        ("us-fda-orange-book", "prompt_complete", True),
+        ("us-fda-drug-shortages", "prompt_complete", False),
+        ("us-fda-drug-shortages", "schema_version", True),
+        ("us-fda-drug-shortages", "current_source_record_rows", 0),
+        ("us-fda-drug-shortages", "archive_checksums_verified", 0),
+    ],
+)
+def test_fda_shortages_success_predicate_rejects_unqualified_receipt(
+    source_id: str, field: str, value: object
+) -> None:
+    receipt = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/fda-shortages-live-corpus-20260821.json"
+        ).read_text(encoding="utf-8")
+    )
+    receipt[field] = value
+    assert not bronze_maturity_mod._is_successful_fda_shortages_receipt(
+        receipt, source_id
+    )
 
 
 @pytest.mark.parametrize(

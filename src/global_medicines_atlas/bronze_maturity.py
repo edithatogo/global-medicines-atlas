@@ -236,6 +236,7 @@ def _is_successful_fda_shortages_receipt(
     return (
         source_id == "us-fda-drug-shortages"
         and receipt.get("schema_version") == 1
+        and not isinstance(receipt.get("schema_version"), bool)
         and receipt.get("evidence_class") == "live_internal_historical"
         and receipt.get("prompt_complete") is True
         and receipt.get("current_bulk_export_complete") is True
@@ -248,6 +249,7 @@ def _is_successful_fda_shortages_receipt(
         and receipt.get("public_release_authorized") is False
         and receipt.get("external_publication_performed") is False
         and receipt.get("current_source_record_rows", 0) > 0
+        and not isinstance(receipt.get("current_source_record_rows"), bool)
         and receipt.get("current_source_record_projection_count") == 1
         and receipt.get("current_recovered_source_record_projection_count") == 1
         and receipt.get("current_source_record_parquet_pairs_byte_identical")
@@ -255,6 +257,7 @@ def _is_successful_fda_shortages_receipt(
         and receipt.get("unique_historical_list_snapshots_archived")
         == FDA_SHORTAGES_HISTORICAL_SNAPSHOT_COUNT
         and receipt.get("archive_checksums_verified", 0) > 0
+        and not isinstance(receipt.get("archive_checksums_verified"), bool)
         and receipt.get("historical_detail_snapshot_coverage_complete") is False
         and _contains_exact_value(receipt, source_id)
     )
