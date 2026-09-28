@@ -435,7 +435,7 @@ for credentialed or rights-unresolved sources.
     - [x] Select receipt-bound explicit date partitions instead of treating rolling five-year API views as static complete releases
     - [x] Bind the maintainer's 2026-08-26 approved-public Option B decision to successfully retrieved, receipt-bound API v1 partitions under the OGL
     - [x] Identify the provider's official contact route and prepare an unsent request for a supported machine-access path: `openprescribing-access-request.md`
-    - [x] Review fix: add a direct artifact contract for the request, plan, and evidence; supersede the unrelated operational-hardening test claim
+    - [x] Review fix: add a direct artifact contract for the request, plan, and evidence, assign it to Test-Goblin's unit lane, and supersede the unrelated operational-hardening test claim
     - [~] Obtain provider guidance for automated access; do not solve the Cloudflare challenge, widen rights scope, or substitute upstream NHSBSA files
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
     - [x] Permit public release and external publication only for successfully retrieved partitions with OGL/OpenPrescribing attribution; the bounded six-endpoint attempt returned HTTP 403 and published nothing

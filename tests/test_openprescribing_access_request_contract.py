@@ -29,7 +29,8 @@ def test_access_request_and_plan_match_prepared_not_sent_evidence() -> None:
     prepared = [
         record
         for record in records
-        if record.get("kind") == "openprescribing_supported_access_request_prepared"
+        if record.get("kind")
+        == "openprescribing_supported_access_request_prepared"
     ]
 
     assert len(prepared) == 1
@@ -45,7 +46,9 @@ def test_access_request_and_plan_match_prepared_not_sent_evidence() -> None:
 
     assert "**Status:** prepared, not sent." in request
     assert "will not attempt to solve the" in request
-    assert "prepare an unsent request for a supported machine-access path" in plan
+    assert (
+        "prepare an unsent request for a supported machine-access path" in plan
+    )
     assert "Obtain provider guidance for automated access" in plan
 
 
@@ -54,7 +57,8 @@ def test_access_request_validation_names_its_direct_contract() -> None:
     validation = [
         record
         for record in records
-        if record.get("kind") == "openprescribing_access_request_contract_validation"
+        if record.get("kind")
+        == "openprescribing_access_request_contract_validation"
     ]
 
     assert len(validation) == 1
