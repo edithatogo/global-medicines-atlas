@@ -186,6 +186,15 @@ def test_official_xml_date_spec_does_not_select_legacy_workbook_profile() -> (
     assert review["legacy_p7_workbook_date_format_documented"] is False
     assert review["date_profile"] is None
     assert review["semantic_promotion"] is False
+    request = (
+        root
+        / "conductor/tracks/australian_health_source_consolidation_20260829/"
+        "mbs-workbook-date-convention-request.md"
+    ).read_text(encoding="utf-8")
+    assert "Status:** prepared, not sent" in request
+    assert "1,276 date cells" in request
+    assert "four valid only under day-month-year" in request
+    assert "No cell values are included" in request
 
 
 def test_null_empty_annotations_and_text_encoded_money() -> None:

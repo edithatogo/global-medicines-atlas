@@ -431,6 +431,18 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   publication workflow and qualify each workbook's exact period, denominator,
   and historical family coverage. M-107 and Australian federation remain open.
 
+## MBS legacy workbook date convention (2026-09-29)
+
+- [x] Prepare a value-free inquiry asking Health.gov to confirm the date
+  convention for the exact July 2024 legacy Group P7 workbook. The official XML
+  date specification does not establish the separate workbook's convention;
+  compatibility evidence found 1,276 cells valid under both orders and four
+  valid only under DMY. The request is explicitly marked prepared, not sent:
+  `mbs-workbook-date-convention-request.md`.
+- [~] Keep the date profile unset and semantic promotion disabled pending
+  source-specific documentation or confirmation. Sending the inquiry requires
+  explicit maintainer authorization; no source bytes or cell values are sent.
+
 ## M-107 metadata evidence review fixes (2026-09-28)
 
 - [x] Correct the proposed route/contact evidence timestamps to the recorded
