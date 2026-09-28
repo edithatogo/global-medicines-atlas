@@ -423,3 +423,13 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   Focused and routine validation passed; all 38 observed PR checks passed and
   PR #610 merged as `73c074c02950560696073ef77a479c7928f40b06`. This corrects
   documentation only and does not advance any gate.
+
+## 2026-09-29 post-PR-613 qualification refresh
+
+- [x] Regenerate the Bronze maturity receipt from exact merged `main`
+  `b5e4302d9b23d3632900d955356fb7eaa7824b4c` after PR #613. It reports 174
+  catalog sources, 157 in scope, 118 without qualifying landing evidence, and
+  13 evidenced dimensions; completeness remains blocked. The status page now
+  cites the refreshed report commit. This rebind adds no source landing and
+  does not advance Bronze, M5, Australian federation, or stable-release
+  approval.
