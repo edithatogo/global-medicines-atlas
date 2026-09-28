@@ -298,20 +298,19 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     output (M-046) was observed through the bot-authored Dependency Dashboard
     in issue #491 on 2026-09-13, restoring the security-and-supply-chain
     maturity dimension to M5.
-  - The 2026-09-28 Bronze refresh binds the approved CMS Part D receipt and
+- The 2026-09-28 Bronze refresh binds the approved CMS Part D receipt and
     four accepted U.S. source-record products to the maturity denominator,
-    reducing uncovered in-scope sources from 124 to 120. The bounded U.S.
-    canaries do not claim complete openFDA releases, and the Orange Book remains
-    temporarily unavailable pending historical-release coverage. Seven
-    dimensions remain M5/verified; source coverage remains M4/partial and the
-    M5 release gate stays blocked. See
+    reducing uncovered in-scope sources from 124 to 120. A subsequent
+    source-specific FDA drug-shortages receipt reconciliation reduced that
+    denominator to 119. Seven dimensions remain M5/verified; source coverage
+    remains M4/partial and the M5 release gate stays blocked. See
     `docs/qualification/stable-v1-m5-maturity-status.md`.
-    A fresh qualification on exact main `688b318b` preserves the 120 count
-    after the August Orange Book receipt and pinned-PBS evidence merge. The
-    Prompt 14 FDA drug-shortages audit remains distinct from accepted Bronze:
-    the bounded U.S. Bronze corpus receipt identifies restricted rights,
-    quarantined admission, and no source-record Parquet, so it remains outside
-    the accepted landing set.
+    The refreshed exact-merge report on `4667f144` accepts the scoped Prompt 14
+    source-specific receipt for internal Bronze landing evidence. The older
+    generic U.S. corpus row describes a separate quarantined acquisition.
+    Delegated detail-page coverage remains incomplete and public release is
+    unauthorized; this reconciliation does not promote broader source
+    coverage, Australian federation, or Stable v1 approval.
   - The Australian MBS hosted HEAD-only diagnostic now classifies all three
     authorized Health.gov workbook requests as read timeouts after connection
     setup, with no headers or source bytes received (`36377888606`, exact main

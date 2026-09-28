@@ -252,7 +252,7 @@ before any hot-path rewrite. Python remains orchestration.
     - [x] Land Medsafe, PHARMAC, ARTG, PBS, DPD/NOC, MHRA/NICE, EMA/Union Register, PMDA/NHI, Drugs@FDA, and CMS Part D fixtures (`53b2671`)
     - [x] Leave NZULM bulk, NZHTS, AMT, embargoed PBS, dm+d/TRUD, EMA PMS, SPOR, and live RxNorm payloads excluded
     - [x] Remove the rights-unresolved `vendor/nzmedicines` snapshot from the current tree and replace its executable qualification dependency with a minimal first-party synthetic FHIR bundle; retain historical inventory metadata and keep NZULM/NZMT coverage unqualified
-    - [ ] Complete source-specific rights receipts and live landing evidence for the remaining 120 in-scope public/no-credential sources; a catalogue or acquisition-audit status alone is not accepted Bronze landing evidence
+    - [ ] Complete source-specific rights receipts and live landing evidence for the remaining 119 in-scope public/no-credential sources; a catalogue or acquisition-audit status alone is not accepted Bronze landing evidence
         - [x] Implement and exercise the Union Register JSON acquisition, source-record projection, clean-room recovery, and private archive machinery against a representative corpus; keep live acquisition disabled pending the maintainer licence decision
         - [x] Record the maintainer's internal-only Union Register licence decision, acquire the official 2026-08-17 JSON snapshot, exercise Bronze and clean-room recovery over all 6,440 source-native records, and verify the private archive checksum; public release remains prohibited
         - [x] Review fixes: register the receipt-backed JSON parser and live-receipt capability in the source capability census (`d386a66`)
@@ -719,3 +719,26 @@ for credentialed or rights-unresolved sources.
   failures and 16 quarantined responses persist; no public release or external
   publication is authorized. Do not repeat this full acquisition unless the
   official inventory or source availability changes again.
+
+## FDA drug-shortages maturity receipt reconciliation (2026-09-28)
+
+- [x] Reconcile the Codex review finding against both source receipts. The
+  source-specific Prompt 14 qualification records internal retention, the
+  complete current export and 129 monthly-list temporal corpus, recovered
+  source-record projection, byte-identical Parquet, and verified archive
+  checksums. The older generic U.S. Bronze corpus row describes a separate
+  quarantined acquisition and does not supersede the designated receipt.
+- [x] Add a fail-closed maturity recognizer for that exact receipt contract and
+  negative controls for source identity, schema version, authorization,
+  projection/recovery/parity counts, temporal scope, checksum verification, and
+  publication boundaries. The refreshed exact-merge report now counts 119 of
+  157 in-scope sources as lacking accepted landings; overall Bronze maturity
+  remains blocked.
+- [x] Record PR [#586](https://github.com/edithatogo/global-medicines-atlas/pull/586),
+  exact head `91d30793f8f923ab21a506b2dc786ae119157d90`, all required checks
+  passed, and merged SHA `4667f14403ea4f394b17ce3e1a5e221c7095e394`.
+  Focused source/maturity tests passed (127); routine and context checks passed.
+- [ ] Remaining 119 source-specific landings, rights, and receipt evidence;
+  do not infer coverage from indexing, acquisition intent, or unrelated audit
+  completions. FDA shortages delegated detail-page coverage remains incomplete
+  and publication remains unauthorized.
