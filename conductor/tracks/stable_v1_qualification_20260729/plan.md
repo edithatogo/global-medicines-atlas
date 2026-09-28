@@ -420,5 +420,6 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 - [x] Correct the status-page provenance identified in PR #610 review. It now
   cites the same exact-main commit as `quality/qualifications/bronze-maturity.json`;
   the direct contract test failed against the stale reference before the fix.
-  Focused and routine validation and protected CI are recorded in the evidence
-  ledger. This corrects documentation only and does not advance any gate.
+  Focused and routine validation passed; all 38 observed PR checks passed and
+  PR #610 merged as `73c074c02950560696073ef77a479c7928f40b06`. This corrects
+  documentation only and does not advance any gate.
