@@ -8,6 +8,7 @@ import json
 import os
 import shutil
 import tomllib
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import cast
 from urllib.request import Request, urlopen
@@ -39,6 +40,53 @@ _CRITERIA_URL = (
 )
 
 
+class _HtmlShape(HTMLParser):
+    """Collect only structural metadata from an HTML-labelled export."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.has_html_root = False
+        self.table_count = 0
+        self.row_count = 0
+        self.cell_count = 0
+        self.in_title = False
+        self.source_title_match = False
+
+    def handle_starttag(
+        self, tag: str, attrs: list[tuple[str, str | None]]
+    ) -> None:
+        del attrs
+        normalized = tag.casefold()
+        if normalized == "html":
+            self.has_html_root = True
+        elif normalized == "table":
+            self.table_count += 1
+        elif normalized == "tr":
+            self.row_count += 1
+        elif normalized in {"td", "th"}:
+            self.cell_count += 1
+        elif normalized == "title":
+            self.in_title = True
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.casefold() == "title":
+            self.in_title = False
+
+    def handle_data(self, data: str) -> None:
+        if self.in_title and any(
+            marker in data.casefold()
+            for marker in ("medstat", "sundhedsdatastyrelsen")
+        ):
+            self.source_title_match = True
+
+
+def _html_shape(payload: bytes) -> _HtmlShape:
+    parser = _HtmlShape()
+    parser.feed(payload.decode("latin-1"))
+    parser.close()
+    return parser
+
+
 def validate_browser_download(
     payload: bytes,
     suggested_filename: str,
@@ -53,6 +101,7 @@ def validate_browser_download(
         ole_signature_valid = payload.startswith(
             bytes((208, 207, 17, 224, 161, 177, 26, 225))
         )
+        html_shape = _html_shape(payload)
         metadata = response_metadata or {}
         raise RuntimeError(
             "Medstat browser download failed workbook validation: "
@@ -60,6 +109,11 @@ def validate_browser_download(
             f"byte_count={len(payload)}; "
             f"zip_signature_valid={zip_signature_valid}; "
             f"ole_signature_valid={ole_signature_valid}; "
+            f"html_document={html_shape.has_html_root}; "
+            f"html_table_count={html_shape.table_count}; "
+            f"html_row_count={html_shape.row_count}; "
+            f"html_cell_count={html_shape.cell_count}; "
+            f"html_source_title_match={html_shape.source_title_match}; "
             f"http_status={metadata.get('http_status', '<unknown>')}; "
             f"content_type={metadata.get('content_type', '<unknown>')}"
         ) from error
