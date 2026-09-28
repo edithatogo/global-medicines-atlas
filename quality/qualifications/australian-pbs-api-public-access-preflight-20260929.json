@@ -36,7 +36,15 @@
     "published_address": "HPP.Support@Health.gov.au",
     "published_on": "https://data.pbs.gov.au/data-distribution/data-distribution.html",
     "request_draft": "conductor/tracks/australian_benefits_silver_gold_20260829/pbs-public-api-terms-request.md",
-    "message_sent": false
+    "message_sent": true,
+    "sent_at": "2026-09-28T16:49:36Z",
+    "gmail_message_id": "1a0e8ec00959d610",
+    "acknowledgement": {
+      "gmail_message_id": "1a0e8ec5493ffcdc",
+      "received_at": "2026-09-28T16:49:48Z",
+      "kind": "automatic_receipt_acknowledgement",
+      "substantive_guidance_received": false
+    }
   },
   "payload_requests_made": false,
   "embargo_access_attempted": false,

@@ -1234,6 +1234,10 @@
   credentials: `pbs-public-api-terms-request.md`. It was subsequently sent and
   automatically acknowledged; substantive provider clarification remains
   pending and rights remain unknown.
+- [x] Reconcile the preflight's machine-readable contact status with the sent
+  message and automatic acknowledgement in
+  `provider-outreach-receipts-20260929.json`. The corrected receipt records
+  delivery only; it does not promote rights or authorize acquisition.
 - [ ] Obtain provider clarification and a separate source-specific maintainer
   rights decision before any `au-pbs-api` acquisition. PBS source-era/domain
   qualification, unresolved AMT references, M-109, Australian federation and
