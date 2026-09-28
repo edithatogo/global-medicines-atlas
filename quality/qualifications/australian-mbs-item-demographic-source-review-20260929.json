@@ -1,0 +1,52 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-item-demographic-source-review",
+  "schema_version": 1,
+  "observed_at": "2026-09-29",
+  "source_candidate_id": "au-services-australia-mbs-item-demographics",
+  "source_owner": "Services Australia",
+  "official_public_surfaces": {
+    "item_reports": "https://medicarestatistics.humanservices.gov.au/VEA0032/SAS.Web/statistics/mbs_item.html",
+    "dataset_resource": "https://data.gov.au/data/dataset/medicare-benefits-schedule-mbs-group-by-patient-demographics-report/resource/492b39de-8c97-4bbf-880e-e97d933daa9c",
+    "statistics_contact": "https://www.servicesaustralia.gov.au/health-professionals-contact-information?context=20"
+  },
+  "metadata_observations": {
+    "catalogued_resource_id": "492b39de-8c97-4bbf-880e-e97d933daa9c",
+    "catalogued_package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+    "published_fields": [
+      "Year",
+      "Month of Processing",
+      "Item Number",
+      "State",
+      "Age Range",
+      "Gender",
+      "Services",
+      "Benefit"
+    ],
+    "resource_data_last_updated": "2016-08-29",
+    "metadata_last_updated": "2023-08-10",
+    "catalogued_license": "Creative Commons Attribution 3.0 Australia",
+    "report_description": "Item reports provide statistics on requested MBS items; item-by-patient-demographic reports provide age range, gender, per-capita, and percentage statistics.",
+    "reported_privacy_control": "Demographic data below a population threshold is suppressed."
+  },
+  "qualification": {
+    "item_level_service_statistics_candidate": true,
+    "distinct_patient_count_field_observed": false,
+    "patient_denominator_qualified": false,
+    "current_public_series_coverage_qualified": false,
+    "interactive_report_reuse_terms_verified": false,
+    "source_bytes_acquired": false,
+    "date_profile": null,
+    "semantic_promotion": false
+  },
+  "source_owner_contact": {
+    "status": "sent_awaiting_source_owner_response",
+    "recipient": "statistics@servicesaustralia.gov.au",
+    "subject": "Public item-level MBS patient-count statistics and reuse terms",
+    "sent_at": "2026-09-28T18:16:43Z",
+    "gmail_message_id": "1a0e93bc557578ea",
+    "message_receipt": "quality/qualifications/provider-outreach-receipts-20260929.json",
+    "attachment_count": 0
+  },
+  "next_evidence": "Obtain source-owner clarification about a public unique-patient count by item, current coverage, suppression rules, and reuse terms; do not treat service counts as patient counts.",
+  "boundary": "Metadata-only source discovery. The catalogued item report appears relevant to service counts but does not establish distinct patient counts, current coverage, reuse rights for the interactive report, acquisition authority, or M-106 acceptance."
+}

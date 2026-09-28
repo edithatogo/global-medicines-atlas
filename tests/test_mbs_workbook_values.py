@@ -186,6 +186,30 @@ def test_official_xml_date_spec_does_not_select_legacy_workbook_profile() -> (
     assert review["legacy_p7_workbook_date_format_documented"] is False
     assert review["date_profile"] is None
     assert review["semantic_promotion"] is False
+    request = (
+        root
+        / "conductor/tracks/australian_health_source_consolidation_20260829/"
+        "mbs-workbook-date-convention-request.md"
+    ).read_text(encoding="utf-8")
+    assert "**Status:** sent 2026-09-28" in request
+    assert "1,276 date cells" in request
+    assert "four valid only under day-month-year" in request
+    assert "No cell values are included" in request
+    outreach = json.loads(
+        (
+            root
+            / "quality/qualifications/provider-outreach-receipts-20260929.json"
+        ).read_text(encoding="utf-8")
+    )
+    message = next(
+        item
+        for item in outreach["messages"]
+        if item["source_id"] == "au-mbs-p7-legacy-workbook"
+    )
+    assert message["gmail_message_id"] == "1a0e932e4152a72e"
+    assert message["recipient"] == "enquiries@health.gov.au"
+    assert message["source_payloads_attached"] is False
+    assert message["cell_values_included"] is False
 
 
 def test_null_empty_annotations_and_text_encoded_money() -> None:

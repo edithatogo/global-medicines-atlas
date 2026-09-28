@@ -431,6 +431,39 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   publication workflow and qualify each workbook's exact period, denominator,
   and historical family coverage. M-107 and Australian federation remain open.
 
+## MBS legacy workbook date convention (2026-09-29)
+
+- [x] Prepare a value-free inquiry asking Health.gov to confirm the date
+  convention for the exact July 2024 legacy Group P7 workbook. The official XML
+  date specification does not establish the separate workbook's convention;
+  compatibility evidence found 1,276 cells valid under both orders and four
+  valid only under DMY. Sent under the existing MBS contact authorization to
+  `enquiries@health.gov.au`; message ID, subject, no-attachment status, and
+  message readback are recorded in
+  `quality/qualifications/provider-outreach-receipts-20260929.json` and
+  `mbs-workbook-date-convention-request.md`.
+- [~] Keep the date profile unset and semantic promotion disabled pending
+  source-specific documentation or confirmation. No source bytes or cell
+  values were sent; no response has yet been observed.
+
+## M-106 item-demographic source discovery (2026-09-29)
+
+- [x] Review official Services Australia item-report metadata and the
+  data.gov.au item-demographics catalog record. The published fields include
+  item, age range, gender, services, and benefit; no distinct-patient-count
+  field is listed, and the catalogued data was last updated in 2016. Mark this
+  only as a candidate for item-service counts, not a patient denominator:
+  `quality/qualifications/australian-mbs-item-demographic-source-review-20260929.json`.
+- [x] Send a value-free source-owner inquiry about a public item-level
+  unique-patient measure, coverage, suppression and reuse terms:
+  `m106-item-patient-count-inquiry.md`. Sent to the published Services
+  Australia statistics contact. The request asks for existing public sources
+  only and does not request custom or restricted data; the message readback is
+  recorded in `provider-outreach-receipts-20260929.json`.
+- [~] Keep M-106 blocked until the source owner confirms whether an item-level
+  patient count exists, its public period/denominator, and applicable rights.
+  Item service counts must not be relabelled as patients.
+
 ## M-107 metadata evidence review fixes (2026-09-28)
 
 - [x] Correct the proposed route/contact evidence timestamps to the recorded
