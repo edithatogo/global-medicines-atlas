@@ -1211,3 +1211,23 @@
   delay to response-read/header delivery on the hosted route, but does not
   identify the network or publisher cause and does not satisfy workbook
   acquisition, M-107, or federation acceptance.
+
+## PBS public API rights preflight (2026-09-29)
+
+- [x] Refresh the official PBS public API metadata without requesting data
+  payloads. Current docs state no-login public access, current plus 12 months
+  of schedules, monthly refresh, and a shared 20-second request interval.
+  The API data-model version is 3.7.8; release notes date the 3.7.8 release to
+  2026-05-20.
+- [x] Preserve the rights boundary: the public-access and local-download
+  instructions do not themselves grant this project long-term internal raw
+  retention or redistribution rights. The source-rights ledger still records
+  reuse and publication as unknown, and no API data request was made.
+- [x] Prepare a provider request to the official HPP.Support address asking
+  for the applicable reuse terms, internal retention, attribution, derivative
+  and redistribution permissions, without requesting embargo access or
+  credentials: `pbs-public-api-terms-request.md`. The request remains unsent.
+- [ ] Obtain provider clarification and a separate source-specific maintainer
+  rights decision before any `au-pbs-api` acquisition. PBS source-era/domain
+  qualification, unresolved AMT references, M-109, Australian federation and
+  Stable v1 remain open.
