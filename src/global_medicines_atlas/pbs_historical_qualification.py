@@ -16,6 +16,7 @@ import pyarrow.parquet as pq
 
 from .pbs_dates import (
     CANDIDATE_PROFILE,
+    PINNED_V3_PROFILE,
     _date_batches,  # pyright: ignore[reportPrivateUsage]
 )
 from .pbs_historical_projections import (
@@ -113,6 +114,24 @@ def _denominator(
         "elements": elements,
         "native_digest": digest.hexdigest(),
     }
+
+
+def _is_pinned_v3_identity(binding: PbsXmlMemberBinding) -> bool:
+    """Match the exact public archive/member admitted for the V3 date profile."""
+    identity = (
+        binding.source.source_id,
+        binding.source.catalog_version,
+        binding.archive_payload.sha256,
+        binding.member_path,
+        binding.member_payload.sha256,
+    )
+    return identity == (
+        "au-pbs-historical-xml",
+        "2026-04-01",
+        "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+        "sch-2026-04-01-r1.xml",
+        "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+    )
 
 
 # ruff: ignore[too-many-branches] -- bounded accounting keeps parity checks together
@@ -388,7 +407,7 @@ def qualify_pbs_historical_projections(
     projection_names = ("native", "domain", "entities", "references", "dates")
     if projection is not None and projection not in projection_names:
         raise ValueError("unknown PBS projection shard")
-    if date_profile not in {None, CANDIDATE_PROFILE}:
+    if date_profile not in {None, CANDIDATE_PROFILE, PINNED_V3_PROFILE}:
         raise ValueError("unsupported PBS candidate date profile")
     selected: set[str] = set(
         projection_names if projection is None else (projection,)
@@ -398,6 +417,12 @@ def qualify_pbs_historical_projections(
     binding = validate_pbs_xml_member_binding(
         binding, archive_payload, member_payload, parent
     )
+    if date_profile == PINNED_V3_PROFILE and not _is_pinned_v3_identity(
+        binding
+    ):
+        raise ValueError(
+            "pinned PBS V3 date profile requires exact source identity"
+        )
     if progress is not None:
         progress("denominator", 0, 0)
     denominator = _denominator(member_payload, progress)
@@ -548,7 +573,10 @@ def _qualify_entity_projection_shards(
         (
             "dates",
             lambda: _date_batches(
-                replay_entities(), date_profile, rows_per_batch
+                replay_entities(),
+                date_profile,
+                rows_per_batch,
+                pinned_source_era_verified=(date_profile == PINNED_V3_PROFILE),
             ),
         ),
     )

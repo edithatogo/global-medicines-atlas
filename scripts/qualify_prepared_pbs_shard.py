@@ -36,7 +36,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--reference-shard", required=True, type=int)
     parser.add_argument(
-        "--date-profile", choices=("pbs-iso-date-candidate-v1",)
+        "--date-profile",
+        choices=(
+            "pbs-iso-date-candidate-v1",
+            "pbs-v3-pinned-2026-04-01-v1",
+        ),
     )
     args = parser.parse_args(argv)
     identity = {

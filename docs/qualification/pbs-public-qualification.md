@@ -368,10 +368,17 @@ hosted run can establish only what proportion of the pinned payload conforms to
 that parser. The official [PBS Mapping Specification](https://info.data.pbs.gov.au/xml-schema/doc/html/mapping.html)
 documents the `YYYY-MM-DD` representation, while the [PBS XML Developers’
 Guide](https://info.data.pbs.gov.au/xml-schema/doc/html/guide.html) explains
-that effective, supply-only, and non-effective states each carry a date. These
-contracts do not establish that the format applies to every historical schema
-era in the pinned corpus.
+that effective, supply-only, and non-effective states each carry a date.
 
-The next exact-main candidate-profile run is pending merge of the opt-in
-workflow change. Until its safe aggregate is observed, the real-corpus candidate
-conversion counts remain unknown.
+The pinned payload's B1 receipt and immutable manifest bind its sole XML member
+to the 1 April 2026 PBS V3 archive and member digests recorded above. The
+additive `pbs-v3-pinned-2026-04-01-v1` profile therefore qualifies the
+documented ASCII `YYYY-MM-DD` grammar only for this exact source member and V3
+schema era. It does not qualify earlier/later schedules, infer intervals or
+status, or establish PBS domain semantics. The previously reconciled
+`pbs-iso-date-candidate-v1` run remains candidate evidence; this profile needs
+its own exact-main hosted receipt before it can be recorded as observed corpus
+qualification.
+
+The exact-main candidate run `36372245263` has been reconciled in the durable
+aggregate at [issue #341 comment 5863205715](https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5863205715): 2,799 dates converted, one recognized slot was missing, and 7,727,884 rows were unmapped. These counts qualify only the candidate parser and its bounded counters. The new pinned-V3 profile requires a separate exact-main aggregate after merge; until then the source-era metadata qualification remains unobserved.

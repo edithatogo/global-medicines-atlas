@@ -1172,6 +1172,12 @@
   run `36372245263` passed; see the value-free aggregate recorded above and
   `evidence.jsonl`. This remains candidate-only and does not establish
   source-era semantics.
+- [ ] Qualify the documented ASCII date grammar for the exact pinned PBS V3
+  member only, using profile `pbs-v3-pinned-2026-04-01-v1`. The public B1
+  receipt and immutable manifest bind the sole source member to this release
+  and V3 schema era; other releases, date semantics, AMT resolution and M-109
+  acceptance remain outside this narrow qualification. Await its reviewed
+  exact-main hosted aggregate before updating evidence status.
 - [x] Diagnose M-107's authorized Health.gov workbook download timeouts with a
   separate exact-main, HEAD-only Actions probe. The workstation metadata check
   confirmed all three URLs return the expected XLSX headers, while bounded

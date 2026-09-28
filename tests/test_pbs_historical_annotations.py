@@ -171,6 +171,16 @@ def test_opt_in_date_candidate_stays_unqualified() -> None:
                 archive, payload, parent, binding, date_profile="production"
             )
         )
+    with pytest.raises(ValueError, match="profile"):
+        next(
+            historical.iter_pbs_historical_date_batches(
+                archive,
+                payload,
+                parent,
+                binding,
+                date_profile="pbs-v3-pinned-2026-04-01-v1",
+            )
+        )
 
 
 @pytest.mark.parametrize(
