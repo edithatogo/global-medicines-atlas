@@ -379,8 +379,8 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 
 ## 2026-09-29 exact-main qualification refresh
 
-- The Bronze maturity report is refreshed against exact main `e0251603` after
-  PR #604. It still records 118 of 157 in-scope public/no-credential sources
+- The Bronze maturity report is refreshed against exact main `008d8317` after
+  PR #606. It still records 118 of 157 in-scope public/no-credential sources
   without landing evidence; completeness is the only blocked Bronze dimension.
   The other 13 dimensions remain evidenced. Focused maturity/contract tests
   passed (102), and the routine Test-Goblin profile passed. The Australian
