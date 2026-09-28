@@ -1,0 +1,38 @@
+{
+  "schema_id": "global-medicines-atlas.nordic-medstat-query-constraints",
+  "schema_version": 1,
+  "observed_at": "2026-09-28T14:32:23Z",
+  "source_id": "dk-medstat-utilisation",
+  "official_metadata_endpoint": "https://medstat.dk/da/criteriaLists/searchVariables/mms/{sector}",
+  "observed_search_variables": {
+    "0": [
+      "turnover",
+      "paid_health_insurance_contrib",
+      "sold_volume",
+      "sold_volume_1000_day",
+      "people_count",
+      "people_count_1000"
+    ],
+    "1": [
+      "turnover",
+      "sold_volume",
+      "sold_volume_1000_day"
+    ],
+    "2": [
+      "sold_volume",
+      "sold_volume_1000_day"
+    ]
+  },
+  "selected_bounded_query": {
+    "year": ["2025"],
+    "region": ["0"],
+    "gender": ["A"],
+    "ageGroup": ["A"],
+    "searchVariable": ["turnover"],
+    "atcCode": ["X"],
+    "sector": ["0", "1"]
+  },
+  "interpretation": "Turnover is exposed for primary and hospital sectors, but not the source's Total sector. Request both supported strata in one source-generated export and preserve them separately; do not calculate or claim a combined total.",
+  "source_payload_retrieved": false,
+  "acquisition_or_bronze_acceptance_claimed": false
+}

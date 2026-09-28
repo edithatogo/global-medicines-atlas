@@ -9,7 +9,8 @@ import os
 import shutil
 import tomllib
 from pathlib import Path
-from urllib.request import urlopen
+from typing import cast
+from urllib.request import Request, urlopen
 
 from global_medicines_atlas.medstat_private_acquisition import (
     CHECKSUM,
@@ -33,22 +34,81 @@ AUTHORIZATION = (
     / "quality/qualifications/nordic-utilisation-acquisition-authorization.json"
 )
 _HTTP_OK = 200
+_CRITERIA_URL = (
+    "https://medstat.dk/da/criteriaLists/searchVariables/mms/{sector}"
+)
 
 
-def validate_browser_download(payload: bytes, suggested_filename: str) -> bytes:
+def validate_browser_download(
+    payload: bytes,
+    suggested_filename: str,
+    response_metadata: dict[str, str | int] | None = None,
+) -> bytes:
     """Validate the export and report only bounded file metadata on failure."""
     try:
         require_medstat_workbook(payload)
     except ValueError as error:
         extension = Path(suggested_filename).suffix.casefold() or "<none>"
         zip_signature_valid = payload.startswith(bytes((80, 75, 3, 4)))
+        ole_signature_valid = payload.startswith(
+            bytes((208, 207, 17, 224, 161, 177, 26, 225))
+        )
+        metadata = response_metadata or {}
         raise RuntimeError(
             "Medstat browser download failed workbook validation: "
             f"{error}; filename_extension={extension}; "
             f"byte_count={len(payload)}; "
-            f"zip_signature_valid={zip_signature_valid}"
+            f"zip_signature_valid={zip_signature_valid}; "
+            f"ole_signature_valid={ole_signature_valid}; "
+            f"http_status={metadata.get('http_status', '<unknown>')}; "
+            f"content_type={metadata.get('content_type', '<unknown>')}"
         ) from error
     return payload
+
+
+def require_supported_query(
+    query: MedstatQuery,
+    search_variables_by_sector: dict[str, set[str]],
+) -> None:
+    """Fail closed unless the source exposes each requested measure by sector."""
+    for sector in query.sector:
+        available = search_variables_by_sector.get(sector, set())
+        if not set(query.search_variable) <= available:
+            raise ValueError(
+                "Medstat source does not support the requested turnover query "
+                f"for sector code {sector}"
+            )
+
+
+def _source_search_variables(query: MedstatQuery) -> dict[str, set[str]]:
+    """Read only public query-criteria metadata, never result payloads."""
+    result: dict[str, set[str]] = {}
+    for sector in query.sector:
+        request = Request(  # ruff: ignore[suspicious-url-open-usage] - fixed HTTPS host
+            _CRITERIA_URL.format(sector=sector),
+            headers={
+                "Accept": "application/json",
+                "User-Agent": "GlobalMedicinesAtlas/1.0",
+            },
+        )
+        with urlopen(  # ruff: ignore[suspicious-url-open-usage] - fixed HTTPS host
+            request, timeout=30
+        ) as response:
+            raw_document: object = json.load(response)
+        if not isinstance(raw_document, dict):
+            raise TypeError("Medstat criteria metadata must be an object")
+        document = cast("dict[str, object]", raw_document)
+        entries = document.get("results")
+        if not isinstance(entries, list):
+            raise TypeError("Medstat criteria metadata results must be a list")
+        values: set[str] = set()
+        for entry in cast("list[object]", entries):
+            if isinstance(entry, dict):
+                value = cast("dict[str, object]", entry).get("value")
+                if isinstance(value, str):
+                    values.add(value)
+        result[sector] = values
+    return result
 
 
 def _download(url: str) -> bytes:
@@ -63,6 +123,21 @@ def _download(url: str) -> bytes:
                     "Chrome/140.0.0.0 Safari/537.36"
                 )
             )
+            export_metadata: dict[str, str | int] = {}
+
+            def record_export_response(response: object) -> None:
+                response_url = getattr(response, "url", "")
+                if "/exportToExcel/" not in response_url:
+                    return
+                response_headers = getattr(response, "headers", {})
+                export_metadata["http_status"] = getattr(
+                    response, "status", "<unknown>"
+                )
+                export_metadata["content_type"] = response_headers.get(
+                    "content-type", "<missing>"
+                )
+
+            page.on("response", record_export_response)
             with page.expect_download(timeout=180_000) as download_info:
                 try:
                     response = page.goto(url, timeout=180_000)
@@ -83,7 +158,9 @@ def _download(url: str) -> bytes:
             if path is None:
                 raise RuntimeError("Medstat export download has no local path")
             return validate_browser_download(
-                Path(path).read_bytes(), download.suggested_filename
+                Path(path).read_bytes(),
+                download.suggested_filename,
+                export_metadata,
             )
         finally:
             browser.close()
@@ -191,6 +268,7 @@ def main() -> None:
     shutil.rmtree(output, ignore_errors=True)
     query = MedstatQuery()
     reuse_decision = _reuse_decision()
+    require_supported_query(query, _source_search_variables(query))
     payload = _download(query.export_url())
     manifest = exercise_medstat_private_acquisition(
         payload=payload,

@@ -9,7 +9,10 @@ from pathlib import Path
 from zipfile import ZipFile
 
 import pytest
-from scripts.acquire_medstat_private import validate_browser_download
+from scripts.acquire_medstat_private import (
+    require_supported_query,
+    validate_browser_download,
+)
 
 import global_medicines_atlas.medstat_private_acquisition as acquisition
 from global_medicines_atlas.medstat_private_acquisition import (
@@ -62,7 +65,7 @@ def test_query_binds_the_single_approved_aggregate_scope() -> None:
         "ageGroup": ["A"],
         "searchVariable": ["turnover"],
         "atcCode": ["X"],
-        "sector": ["2"],
+        "sector": ["0", "1"],
     }
     assert query.export_url().startswith(
         "https://medstat.dk/da/viewDataTables/medicineAndMedicalGroups/"
@@ -101,19 +104,60 @@ def test_authorization_rejects_pending_or_public_scope(tmp_path: Path) -> None:
 def test_browser_download_diagnostic_reports_only_bounded_metadata() -> None:
     with pytest.raises(RuntimeError) as caught:
         validate_browser_download(
-            b"<html>synthetic-marker</html>", "response.xlsx"
+            b"<html>synthetic-marker</html>",
+            "response.xlsx",
+            {"http_status": 200, "content_type": "text/html"},
         )
 
     message = str(caught.value)
     assert "filename_extension=.xlsx" in message
     assert "byte_count=29" in message
     assert "zip_signature_valid=False" in message
+    assert "ole_signature_valid=False" in message
+    assert "http_status=200" in message
+    assert "content_type=text/html" in message
     assert "synthetic-marker" not in message
 
 
 def test_browser_download_accepts_a_valid_workbook() -> None:
     payload = workbook_payload()
     assert validate_browser_download(payload, "medstat.xlsx") == payload
+
+
+def test_query_preflight_requires_measure_support_in_each_sector() -> None:
+    query = MedstatQuery()
+    require_supported_query(
+        query,
+        {"0": {"turnover", "sold_volume"}, "1": {"turnover"}},
+    )
+    with pytest.raises(ValueError, match="sector code 2"):
+        require_supported_query(
+            MedstatQuery(sector=("0", "2")),
+            {"0": {"turnover"}, "1": {"turnover"}, "2": {"sold_volume"}},
+        )
+
+
+def test_medstat_query_matches_observed_source_constraints() -> None:
+    evidence = json.loads(
+        (
+            ROOT / "quality/qualifications/"
+            "nordic-medstat-query-constraints-20260929.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert (
+        MedstatQuery().source_parameters() == evidence["selected_bounded_query"]
+    )
+    require_supported_query(
+        MedstatQuery(),
+        {
+            sector: set(variables)
+            for sector, variables in evidence[
+                "observed_search_variables"
+            ].items()
+        },
+    )
+    assert evidence["source_payload_retrieved"] is False
+    assert evidence["acquisition_or_bronze_acceptance_claimed"] is False
 
 
 def test_private_acquisition_lands_recovers_and_archives(
