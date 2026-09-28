@@ -112,6 +112,28 @@ def test_date_encoding_observation_does_not_select_profile(
     )
 
 
+@pytest.mark.parametrize(
+    ("value", "compatibility"),
+    [
+        ("15.07.2024", "dmy_only"),
+        ("07.15.2024", "mdy_only"),
+        ("05.06.2024", "both"),
+        ("31.02.2024", "neither"),
+    ],
+)
+def test_dotted_date_calendar_compatibility_is_value_free_and_unselected(
+    value: str, compatibility: str
+) -> None:
+    payload = payload_with(
+        f'<c r="C2" t="inlineStr"><is><t>{value}</t></is></c>'
+    )
+    report = profile_workbook_values(payload, _receipt(payload))
+    assert report["date_order_compatibility_counts"] == {compatibility: 1}
+    assert report["date_profile"] is None
+    assert report["semantic_promotion"] is False
+    assert value not in json.dumps(report)
+
+
 def test_errors_boolean_storage_and_precision_loss_are_explicit() -> None:
     payload = payload_with(
         '<c r="W2" t="e"><v>#VALUE!</v></c><c r="X2" t="b"><v>1</v></c><c r="AL2" t="inlineStr"><is><t>1.0000000001</t></is></c>'
