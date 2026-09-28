@@ -36,6 +36,10 @@ def test_pbs_terms_request_is_scoped_and_sent_without_rights_promotion() -> (
         m for m in receipt["messages"] if m["source_id"] == "au-pbs-api"
     )
     assert pbs_message["state"] == "sent_awaiting_provider_response"
+    assert pbs_message["acknowledgement"]["kind"] == (
+        "automatic_receipt_acknowledgement"
+    )
+    assert pbs_message["acknowledgement"]["substantive_guidance"] is False
     assert pbs_message["rights_decision_made"] is False
     assert pbs_message["source_payloads_attached"] is False
     assert "HPP.Support@Health.gov.au" in request
@@ -86,6 +90,10 @@ def test_mbs_agency_inquiry_is_sent_without_claiming_an_approved_endpoint() -> (
     ).read_text()
 
     assert message["state"] == "sent_awaiting_agency_response"
+    assert message["acknowledgement"]["kind"] == (
+        "automatic_receipt_acknowledgement"
+    )
+    assert message["acknowledgement"]["substantive_guidance"] is False
     assert message["recipient"] == "enquiries@health.gov.au"
     assert message["workbook_bytes_attached"] is False
     assert message["approved_endpoint_identified"] is False

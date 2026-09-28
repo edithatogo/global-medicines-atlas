@@ -1,8 +1,9 @@
 # PBS public API reuse and retention inquiry
 
 **Status:** sent 2026-09-28 to `HPP.Support@Health.gov.au` from
-`d.a.mordaunt@gmail.com`; awaiting provider clarification. Gmail message ID:
-`1a0e8ec00959d610`. The verified Sent receipt is
+`d.a.mordaunt@gmail.com`; HPP acknowledged receipt automatically, but
+substantive terms clarification is pending. Sent and acknowledgement receipts
+are recorded in
 `quality/qualifications/provider-outreach-receipts-20260929.json`.
 
 This request concerns the public API only; it does not request embargo access,

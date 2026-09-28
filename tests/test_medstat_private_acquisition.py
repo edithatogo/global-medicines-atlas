@@ -190,6 +190,23 @@ def test_medstat_query_matches_observed_source_constraints() -> None:
     assert evidence["acquisition_or_bronze_acceptance_claimed"] is False
 
 
+def test_medstat_export_review_distinguishes_diagnostic_read_from_retention() -> (
+    None
+):
+    evidence = json.loads(
+        (
+            ROOT / "quality/qualifications/"
+            "nordic-medstat-export-format-doc-review-20260929.json"
+        ).read_text(encoding="utf-8")
+    )
+    disposition = evidence["disposition"]
+    assert (
+        disposition["result_payload_bytes_read_for_bounded_diagnostic"] is True
+    )
+    assert disposition["result_payload_bytes_retained"] is False
+    assert disposition["format_semantics_resolved"] is False
+
+
 def test_private_acquisition_lands_recovers_and_archives(
     tmp_path: Path,
 ) -> None:

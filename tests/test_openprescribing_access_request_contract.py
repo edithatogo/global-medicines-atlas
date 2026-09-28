@@ -53,6 +53,23 @@ def test_access_request_and_plan_match_sent_request_evidence() -> None:
     assert len(sent) == 1
     assert sent[0]["status"] == "sent_awaiting_provider_response"
     assert sent[0]["source_payloads_attached"] is False
+    receipt = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/provider-outreach-receipts-20260929.json"
+        ).read_text(encoding="utf-8")
+    )
+    message = next(
+        m for m in receipt["messages"] if m["source_id"] == "gb-openprescribing"
+    )
+    assert message["acknowledgement"]["kind"] == (
+        "automatic_receipt_acknowledgement"
+    )
+    assert message["acknowledgement"]["substantive_guidance"] is False
+    assert (
+        receipt["verification"]["substantive_provider_responses_observed"]
+        is False
+    )
     assert "provider-outreach-receipts-20260929.json" in request
     assert "feedback@openprescribing.net" in request
     assert "will not attempt to solve the" in request
