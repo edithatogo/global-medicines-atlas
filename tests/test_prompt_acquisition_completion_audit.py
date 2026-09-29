@@ -100,7 +100,7 @@ def test_live_qualification_completes_verified_prompts() -> None:
     audit = _audit()
     measured = json.loads(MEASURED.read_text(encoding="utf-8"))["body"]
     assert measured["totals"]["live_qualified_sources"] == 1
-    assert audit["live_qualified_source_count"] == 17
+    assert audit["live_qualified_source_count"] == 18
     assert audit["live_complete_prompt_count"] == 10
     assert audit["program_completion"] == "incomplete_live_acquisition"
     complete = [entry for entry in audit["prompts"] if entry["live_complete"]]
@@ -171,6 +171,7 @@ def test_live_qualification_completes_verified_prompts() -> None:
         "us-gsrs-unii",
         "us-fda-drug-shortages",
         "nl-gipdatabank",
+        "se-socialstyrelsen-utilisation",
         "us-cms-partd-formulary",
         "us-cms-partd-spending",
     }
@@ -554,8 +555,8 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     audit = _audit()
     assert audit["queue_state_counts"] == {
         "credentialed_and_excluded": 15,
-        "landed_and_evidenced": 39,
-        "manual_only_documented_acquisition": 91,
+        "landed_and_evidenced": 40,
+        "manual_only_documented_acquisition": 90,
         "not_yet_implemented": 0,
         "rights_blocked": 27,
         "superseded_by_reused_source": 0,
@@ -618,8 +619,53 @@ def test_nordic_public_aggregate_sources_are_not_credential_or_rights_blocked() 
     assert prompt["queue_states"] == {
         "dk-medstat-utilisation": "manual_only_documented_acquisition",
         "no-norpd-utilisation": "manual_only_documented_acquisition",
-        "se-socialstyrelsen-utilisation": "manual_only_documented_acquisition",
+        "se-socialstyrelsen-utilisation": "landed_and_evidenced",
     }
+    assert prompt["live_qualified_source_ids"] == [
+        "se-socialstyrelsen-utilisation"
+    ]
+    assert prompt["sources_without_live_evidence"] == [
+        "dk-medstat-utilisation",
+        "no-norpd-utilisation",
+    ]
+
+
+@pytest.mark.parametrize(
+    ("mutate", "message"),
+    [
+        (
+            lambda raw: raw.update(workflow_conclusion="failure"),
+            "private scope",
+        ),
+        (lambda raw: raw["payload_sha256"].pop(), "private scope"),
+        (
+            lambda raw: raw["rights_boundary"].update(
+                publication_authorized=True
+            ),
+            "private scope",
+        ),
+        (
+            lambda raw: raw["retention"].update(
+                authenticated_pinned_revision_readback_verified=False
+            ),
+            "private scope",
+        ),
+    ],
+)
+def test_sweden_qualification_fails_closed_on_receipt_or_scope_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutate,
+    message: str,
+) -> None:
+    raw = json.loads(audit_mod.SWEDEN_QUALIFICATION.read_bytes())
+    mutate(raw)
+    unsafe = tmp_path / "unsafe-sweden-qualification.json"
+    unsafe.write_text(json.dumps(raw), encoding="utf-8")
+    monkeypatch.setattr(audit_mod, "SWEDEN_QUALIFICATION", unsafe)
+
+    with pytest.raises(ValueError, match=message):
+        audit_mod._qualified_sweden_sources()
 
 
 def test_additional_utilisation_public_surfaces_are_not_credential_blocked() -> (

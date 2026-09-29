@@ -96,6 +96,68 @@ def test_nice_internal_acquisition_receipt_counts_as_bronze_landing() -> None:
     assert receipt["external_publication_authorized"] is False
 
 
+def test_sweden_private_aggregate_receipt_counts_as_bronze_landing() -> None:
+    evidence = receipt_backed_landing_evidence(
+        ROOT, {bronze_maturity_mod.SWEDEN_SOURCE_ID}
+    )
+    assert evidence == {
+        bronze_maturity_mod.SWEDEN_SOURCE_ID: bronze_maturity_mod.SWEDEN_QUALIFICATION_RELATIVE
+    }
+    receipt = json.loads(
+        (ROOT / bronze_maturity_mod.SWEDEN_QUALIFICATION_RELATIVE).read_text(
+            encoding="utf-8"
+        )
+    )
+    assert receipt["rights_boundary"]["coarse_rights_state"] == "unknown"
+    assert receipt["rights_boundary"]["publication_authorized"] is False
+
+
+@pytest.mark.parametrize(
+    "mutate",
+    [
+        lambda receipt: receipt.update(workflow_commit="0" * 40),
+        lambda receipt: receipt["payload_sha256"].pop(),
+        lambda receipt: receipt["retention"].update(archive_sha256="0" * 64),
+        lambda receipt: receipt["rights_boundary"].update(
+            external_publication_authorized=True
+        ),
+    ],
+)
+def test_sweden_landing_rejects_receipt_or_boundary_drift(
+    tmp_path: Path, mutate
+) -> None:
+    receipt = json.loads(
+        (ROOT / bronze_maturity_mod.SWEDEN_QUALIFICATION_RELATIVE).read_text(
+            encoding="utf-8"
+        )
+    )
+    mutate(receipt)
+    relative = bronze_maturity_mod.SWEDEN_QUALIFICATION_RELATIVE
+    receipt_path = tmp_path / relative
+    receipt_path.parent.mkdir(parents=True)
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+    overrides = tmp_path / bronze_maturity_mod.LANDING_OVERRIDES_RELATIVE
+    overrides.parent.mkdir(parents=True)
+    overrides.write_text(
+        json.dumps({
+            "overrides": [
+                {
+                    "source_id": bronze_maturity_mod.SWEDEN_SOURCE_ID,
+                    "state": "landed_and_evidenced",
+                    "evidence_references": [relative],
+                }
+            ]
+        }),
+        encoding="utf-8",
+    )
+    assert (
+        receipt_backed_landing_evidence(
+            tmp_path, {bronze_maturity_mod.SWEDEN_SOURCE_ID}
+        )
+        == {}
+    )
+
+
 @pytest.mark.parametrize(
     "authorization_field",
     [

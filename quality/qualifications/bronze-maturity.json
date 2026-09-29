@@ -2,8 +2,8 @@
   "schema_id": "global-medicines-atlas.bronze-maturity-qualification",
   "schema_version": 1,
   "horizon": "bronze-current-public-scope",
-  "evaluated_at": "2026-09-29T17:13:40.130090+00:00",
-  "git_commit": "baec563d200ccb3dcdf1b5b5ada66dc7ba8c95bc",
+  "evaluated_at": "2026-09-29T18:40:24.993899+00:00",
+  "git_commit": "09d3c8370b04c4b92439b2587e683e92276f3d6b",
   "authorities": {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -35,13 +35,14 @@
         "quality/qualifications/international-public-bronze-20260827.json",
         "quality/qualifications/ndc-directory-live-corpus-20260821.json",
         "quality/qualifications/nice-utilisation-acquisition-success-20260821.json",
+        "quality/qualifications/sweden-socialstyrelsen-live-private-bronze-20260929.json",
         "quality/qualifications/union-register-live-corpus-20260821.json",
         "quality/qualifications/us-live-bronze-records-20260820.json"
       ],
       "blocker_ids": [
         "bronze-ingest-incomplete"
       ],
-      "notes": "118 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
+      "notes": "117 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
     },
     {
       "property_id": "immutability",
@@ -254,7 +255,7 @@
   "residual_risks": [
     {
       "risk_id": "RISK-001",
-      "description": "118 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "117 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "disposition": "unresolved",
       "blocking": true,
       "evidence": [
@@ -272,6 +273,7 @@
         "quality/qualifications/international-public-bronze-20260827.json",
         "quality/qualifications/ndc-directory-live-corpus-20260821.json",
         "quality/qualifications/nice-utilisation-acquisition-success-20260821.json",
+        "quality/qualifications/sweden-socialstyrelsen-live-private-bronze-20260929.json",
         "quality/qualifications/union-register-live-corpus-20260821.json",
         "quality/qualifications/us-live-bronze-records-20260820.json"
       ]
@@ -328,7 +330,7 @@
     {
       "blocker_id": "bronze-ingest-incomplete",
       "property_id": "completeness",
-      "description": "118 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "117 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "evidence": [
         "src/global_medicines_atlas/data/medicine_source_catalog.json",
         "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
@@ -344,6 +346,7 @@
         "quality/qualifications/international-public-bronze-20260827.json",
         "quality/qualifications/ndc-directory-live-corpus-20260821.json",
         "quality/qualifications/nice-utilisation-acquisition-success-20260821.json",
+        "quality/qualifications/sweden-socialstyrelsen-live-private-bronze-20260929.json",
         "quality/qualifications/union-register-live-corpus-20260821.json",
         "quality/qualifications/us-live-bronze-records-20260820.json"
       ]
@@ -380,7 +383,7 @@
     "bronze_in_scope_count": 157,
     "fixture_only_count": 2,
     "excluded_count": 15,
-    "in_scope_without_landing_or_blocker": 118,
+    "in_scope_without_landing_or_blocker": 117,
     "missing_coverage_is_not_negative_evidence": true
   }
 }

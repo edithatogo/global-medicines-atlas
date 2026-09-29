@@ -62,6 +62,21 @@ FDA_SHORTAGES_HISTORICAL_SNAPSHOT_COUNT = 129
 SHA256_HEX_LENGTH = 64
 NICE_UTILISATION_EXPECTED_PAYLOAD_COUNT = 15
 NICE_UTILISATION_EXPECTED_RELEASE_COUNT = 4
+SWEDEN_SOURCE_ID = "se-socialstyrelsen-utilisation"
+SWEDEN_QUALIFICATION_RELATIVE = "quality/qualifications/sweden-socialstyrelsen-live-private-bronze-20260929.json"
+SWEDEN_WORKFLOW_COMMIT = "09d3c8370b04c4b92439b2587e683e92276f3d6b"
+SWEDEN_PAYLOAD_SHA256 = (
+    "2776225df2bae38451747a89dfc211a6f09edc43e1c3584d2855b574f6c061ed",
+    "19ef7f11d3d9cd42307ad54a0c1bb7098b333877cf1e66666d37e7349b4267ef",
+    "dd1887387561be7c1a111ec4ab11ef895b21cd2e0c2a29c40bd50fa9578b0414",
+    "c91a65306745bc80bcac5e599fcd5a540c027a49d9f6bf8c309628e3c747a8fb",
+    "de2f425c74a39f14b59fb0d1da13ae0466f29ad9dc38f9f8048321dda77a8883",
+)
+SWEDEN_PAYLOAD_COUNT = 5
+SWEDEN_CELL_COUNT_UPPER_BOUND = 90
+SWEDEN_MAXIMUM_CELLS = 70000
+SWEDEN_MAXIMUM_ATC_CODES = 100
+SWEDEN_ARCHIVE_BYTE_COUNT = 921600
 AUTHORITIES = {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -208,16 +223,22 @@ def _is_successful_bronze_receipt(
         "global-medicines-atlas."
     ):
         return False
-    if schema_id == (
-        "global-medicines-atlas.us-live-bronze-records-qualification"
-    ):
-        return _is_successful_us_live_records_receipt(receipt, source_id)
-    if schema_id == ("global-medicines-atlas.fda-shortages-live-qualification"):
-        return _is_successful_fda_shortages_receipt(receipt, source_id)
-    if schema_id == (
-        "global-medicines-atlas.nice-utilisation-acquisition-success"
-    ):
-        return _is_successful_nice_utilisation_receipt(root, receipt, source_id)
+    specialized: dict[str, Callable[[], bool]] = {
+        "global-medicines-atlas.us-live-bronze-records-qualification": lambda: (
+            _is_successful_us_live_records_receipt(receipt, source_id)
+        ),
+        "global-medicines-atlas.fda-shortages-live-qualification": lambda: (
+            _is_successful_fda_shortages_receipt(receipt, source_id)
+        ),
+        "global-medicines-atlas.nice-utilisation-acquisition-success": lambda: (
+            _is_successful_nice_utilisation_receipt(root, receipt, source_id)
+        ),
+        "global-medicines-atlas.sweden-socialstyrelsen-live-private-bronze-qualification": lambda: (
+            _is_successful_sweden_receipt(receipt, source_id)
+        ),
+    }
+    if schema_id in specialized:
+        return specialized[schema_id]()
     if not (
         schema_id.endswith(("-live-qualification", "-acquisition-success"))
         or schema_id
@@ -332,6 +353,67 @@ def _is_successful_fda_shortages_receipt(
         and not isinstance(receipt.get("archive_checksums_verified"), bool)
         and receipt.get("historical_detail_snapshot_coverage_complete") is False
         and _contains_exact_value(receipt, source_id)
+    )
+
+
+def _is_successful_sweden_receipt(
+    receipt: Mapping[str, Any], source_id: str
+) -> bool:
+    """Require the exact private aggregate receipt, archive and boundaries."""
+    query = receipt.get("query")
+    retention = receipt.get("retention")
+    rights = receipt.get("rights_boundary")
+    if not all(
+        isinstance(value, Mapping) for value in (query, retention, rights)
+    ):
+        return False
+    query = cast("Mapping[str, Any]", query)
+    retention = cast("Mapping[str, Any]", retention)
+    rights = cast("Mapping[str, Any]", rights)
+    return (
+        source_id == SWEDEN_SOURCE_ID
+        and receipt.get("schema_version") == 1
+        and not isinstance(receipt.get("schema_version"), bool)
+        and receipt.get("source_id") == SWEDEN_SOURCE_ID
+        and receipt.get("workflow_commit") == SWEDEN_WORKFLOW_COMMIT
+        and receipt.get("workflow_conclusion") == "success"
+        and receipt.get("evidence_class")
+        == "live_private_source_generated_aggregate"
+        and receipt.get("payload_count") == SWEDEN_PAYLOAD_COUNT
+        and receipt.get("payload_byte_count") == [1771, 1772, 1795, 1791, 1771]
+        and receipt.get("payload_sha256") == list(SWEDEN_PAYLOAD_SHA256)
+        and query.get("year") == ["2025"]
+        and query.get("measure_ids") == [1, 2, 3, 4, 9]
+        and query.get("atc_codes") == ["TOTALT"]
+        and query.get("regions") == ["0"]
+        and query.get("ages") == [str(value) for value in range(1, 19)]
+        and query.get("sexes") == ["3"]
+        and query.get("cell_count_upper_bound") == SWEDEN_CELL_COUNT_UPPER_BOUND
+        and query.get("maximum_cells_per_query") == SWEDEN_MAXIMUM_CELLS
+        and query.get("maximum_atc_codes_per_query") == SWEDEN_MAXIMUM_ATC_CODES
+        and retention.get("dataset")
+        == "edithatogo/global-medicines-atlas-socialstyrelsen-private"
+        and retention.get("revision")
+        == "f8489957e64b2122d0cc31964addecb5164f65f0"
+        and retention.get("archive_byte_count") == SWEDEN_ARCHIVE_BYTE_COUNT
+        and retention.get("archive_sha256")
+        == "aa9b10dcb0b910d48402ae2f4699cee6730e34e54e9891569790d548ddb6fa48"
+        and retention.get("private") is True
+        and retention.get("authenticated_pinned_revision_readback_verified")
+        is True
+        and retention.get("clean_room_recovered_payload_count")
+        == SWEDEN_PAYLOAD_COUNT
+        and retention.get(
+            "temporary_runner_payload_bytes_removed_after_digest_verification"
+        )
+        is True
+        and rights.get("coarse_rights_state") == "unknown"
+        and rights.get("internal_retention_authorized") is True
+        and rights.get("maintainer_licence_approved") is False
+        and rights.get("publication_authorized") is False
+        and rights.get("external_publication_authorized") is False
+        and rights.get("person_level_data_acquired") is False
+        and rights.get("bulk_download_acquired") is False
     )
 
 
@@ -450,6 +532,16 @@ def receipt_backed_landing_evidence(
                 if source_id in qualified:
                     evidence[source_id] = relative
                     break
+            if (
+                relative == SWEDEN_QUALIFICATION_RELATIVE
+                and source_id == SWEDEN_SOURCE_ID
+                and _is_successful_sweden_receipt(
+                    json.loads((root / relative).read_text(encoding="utf-8")),
+                    source_id,
+                )
+            ):
+                evidence[source_id] = relative
+                break
             receipt_path = root / relative
             if not receipt_path.is_file():
                 continue

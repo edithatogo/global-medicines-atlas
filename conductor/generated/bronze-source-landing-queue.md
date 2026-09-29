@@ -7,11 +7,11 @@ Silver transformations included: **no**.
 
 ## State summary
 
-- `landed_and_evidenced`: 39
+- `landed_and_evidenced`: 40
 - `temporarily_unavailable`: 2
 - `rights_blocked`: 27
 - `credentialed_and_excluded`: 15
-- `manual_only_documented_acquisition`: 91
+- `manual_only_documented_acquisition`: 90
 - `superseded_by_reused_source`: 0
 - `not_yet_implemented`: 0
 
@@ -50,7 +50,7 @@ Silver transformations included: **no**.
 - [x] `nz-pharmac-schedule` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `nz-pharmac-schedule-xml` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `se-npl-nsl` — `rights_blocked`; record source-specific retention and transformation rights.
-- [ ] `se-socialstyrelsen-utilisation` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
+- [x] `se-socialstyrelsen-utilisation` — `landed_and_evidenced`; Characterize the exact source result schema and broader period/geography coverage only under applicable authorization; do not infer OTC or hospital-administered use, complete Swedish utilisation, public release, or project licence approval..
 - [x] `us-cms-partd-formulary` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `us-cms-partd-spending` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `za-national-eml` — `rights_blocked`; record source-specific retention and transformation rights.
