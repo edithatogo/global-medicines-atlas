@@ -25,10 +25,7 @@ is distinct from the timed-out aggregate-patient workbook and does not satisfy
 M-106 participation, M-107 complete historical coverage, or M-109 semantic
 acceptance.
 
-For M-109, official MBS documentation defines `DD.MM.YYYY` for XML date
-fields, but does not document the date convention for the distinct legacy P7
-workbook. Its date profile remains unselected. See the
-[source-document review](../../quality/qualifications/mbs-workbook-date-source-doc-review-20260929.json).
+For M-109, the official MBS XML specification defines `DD.MM.YYYY`. The exact July 2025 v3 MBS XML identity matched the official release; its hosted real-corpus qualification checked all 11 native date fields across 5,989 records: 25,033 converted, 34,857 null, and 5,989 absent, with zero invalid or unsupported date values. This qualifies that exact source-era profile only. The separate legacy P7 workbook date convention remains unselected because its own source documentation does not specify an order and 1,276 dates are ambiguous; see the [P7 source-document review](../../quality/qualifications/mbs-workbook-date-source-doc-review-20260929.json) and [exact XML v3 qualification](../../quality/qualifications/mbs-xml-v3-date-profile-qualification-20260929.json). PBS and other MBS eras remain unqualified, so M-109 remains blocked.
 
 The donor repositories were read back as archived on 2026-09-27. The scraper
 receipt binds both exact donor heads to 30 anonymously verified public history

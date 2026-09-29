@@ -86,8 +86,10 @@ full-corpus throughput and memory profiling remain pending. The fixed-format
 Parquet round trip is deterministic within the locked runtime. Cross-version
 byte equality is not claimed.
 
-Real-source date-profile qualification, all four workbook annotation tables, PBS
-typed tables, comparison events, public v4 qualification and promotion remain
+Real-source date-profile qualification is recorded for the exact July 2025 MBS
+XML v3 source only; legacy workbook and other-era profiles remain open. All four
+workbook annotation tables, PBS typed tables, comparison events, public v4
+qualification and promotion remain
 unfinished. The module does not acquire or publish any source bytes.
 
 ### Legacy workbook cell candidates
