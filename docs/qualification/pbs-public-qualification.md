@@ -25,13 +25,15 @@ receipts contain no source literals or resource identifiers. These counts
 narrow the unresolved inventory without implying that an unresolved source
 reference is invalid or should be promoted.
 
-This closes the earlier *incomplete structural run* blocker only. The report
-explicitly remains `structural_storage_candidate_only`, with
+This closes the earlier *incomplete structural run* blocker only. That
+2026-09-13 report explicitly remained `structural_storage_candidate_only`, with
 `domain_semantics_qualified=false` and `date_profile=not-selected`. It observed
 2,798 unresolved reference rows and very high unmapped counts in the domain,
 entity, reference and date projections. These are inventories of remaining
-mapping work, not claims that every such field should be mapped. The durable
-aggregate receipt contains no source values, and no derived data was published.
+mapping work, not claims that every such field should be mapped. A later run
+qualified the pinned 2026-04-01 V3 date grammar only; the source-semantic status
+is still false. The durable aggregate receipts contain no source values, and no
+derived data was published.
 The workflow's one-day, same-run preparation artifacts do contain entity rows
 with native text and nested source fields; they are transient qualification
 inputs, not durable receipts or published datasets. This qualification does
@@ -376,9 +378,14 @@ additive `pbs-v3-pinned-2026-04-01-v1` profile therefore qualifies the
 documented ASCII `YYYY-MM-DD` grammar only for this exact source member and V3
 schema era. It does not qualify earlier/later schedules, infer intervals or
 status, or establish PBS domain semantics. The previously reconciled
-`pbs-iso-date-candidate-v1` run remains candidate evidence; this profile needs
-its own exact-main hosted receipt before it can be recorded as observed corpus
-qualification.
+`pbs-iso-date-candidate-v1` run remains candidate evidence. The pinned V3
+profile now has its separate exact-main hosted receipt described below.
 
 The exact-main candidate run `36372245263` has been reconciled in the durable
-aggregate at [issue #341 comment 5863205715](https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5863205715): 2,799 dates converted, one recognized slot was missing, and 7,727,884 rows were unmapped. These counts qualify only the candidate parser and its bounded counters. The new pinned-V3 profile requires a separate exact-main aggregate after merge; until then the source-era metadata qualification remains unobserved.
+aggregate at [issue #341 comment 5863205715](https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5863205715): 2,799 dates converted, one recognized slot was missing, and 7,727,884 date-projection elements were outside the generic candidate mapping. These counts qualify only that candidate parser and its bounded counters.
+
+## Pinned V3 date profile receipt, 2026-09-28
+
+The exact-main [run 36417477472](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36417477472) selected `pbs-v3-pinned-2026-04-01-v1` for the archive member pinned at dataset revision `31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7`. The durable aggregate at [issue #341 comment 5870245890](https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5870245890) binds manifest, parent receipt, archive and member digests. It records 2,799 conversions, one missing recognized date slot, and 7,727,884 XML elements outside the recognized date roles. No invalid or unsupported date state was reported; those unmapped elements are not date failures. All five structural/storage projections share the same native digest and verified Parquet round trips.
+
+The [value-free qualification receipt](../../quality/qualifications/pbs-v3-2026-04-01-date-profile-qualification-20260929.json) preserves the run and aggregate hashes. This qualifies only the documented XSD `YYYY-MM-DD` grammar for the exact 1 April 2026 V3 member. It does not infer validity intervals or current status, qualify PBS domain semantics or other eras, confer terminology rights, or authorize derived-data publication. The aggregate continues to state `domain_semantics_qualified=false` and `structural_storage_candidate_only`.
