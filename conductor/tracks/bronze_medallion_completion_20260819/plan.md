@@ -755,7 +755,7 @@ for credentialed or rights-unresolved sources.
 
 ## NICE private Bronze receipt reconciliation (2026-09-29)
 
-- [~] Reconcile the approved Prompt 29 historical acquisition with the current
+- [x] Reconcile the approved Prompt 29 historical acquisition with the current
   source-landing queue. A receipt-bound recognizer now requires the exact NICE
   source ID, all 15 accepted admissions and acquisition manifests, four
   expected releases, complete digest metadata, a successful clean-room restore,
