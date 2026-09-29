@@ -1,0 +1,77 @@
+{
+  "schema_id": "global-medicines-atlas.pbs-source-era-date-profile-qualification",
+  "schema_version": 1,
+  "recorded_at": "2026-09-29T11:39:42Z",
+  "status": "exact_source_date_profile_qualified",
+  "source": {
+    "source_id": "au-pbs-historical-xml",
+    "dataset": "edithatogo/australian-pbs-source-archive",
+    "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+    "manifest_sha256": "e6c9abbc62bd44fc47049306a92cc8efc9700031908586262c2b82a907546460",
+    "archive_path": "raw/2026-04-01/2026-04-01-XML-V3.zip",
+    "archive_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+    "member_path": "bronze/2026-04-01/sch-2026-04-01-r1.xml",
+    "member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+    "parent_receipt_sha256": "3a8dfd676043f39549bff8c8f966814bca70a59245a0038ea287d44e049ff33d",
+    "native_digest": "890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25",
+    "element_count": 7730684,
+    "native_field_count": 18208758
+  },
+  "date_profile": {
+    "profile_id": "pbs-v3-pinned-2026-04-01-v1",
+    "format": "XSD YYYY-MM-DD",
+    "mapping_specification": "https://info.data.pbs.gov.au/xml-schema/doc/html/mapping.html",
+    "developers_guide": "https://info.data.pbs.gov.au/xml-schema/doc/html/guide.html",
+    "schema_documentation_version": "3.1.9",
+    "role_counts": {
+      "pbs_effective_date": 2798,
+      "schedule_dct_valid": 1,
+      "schedule_effective_date": 1,
+      "unmapped": 7727884
+    },
+    "status_counts": {
+      "converted": 2799,
+      "missing_field": 1,
+      "unmapped": 7727884
+    },
+    "date_values_converted": 2799,
+    "recognized_slot_missing": 1,
+    "unmapped_elements": 7727884,
+    "invalid_or_unsupported_dates": 0,
+    "parquet_roundtrip_verified": true
+  },
+  "qualification_run": {
+    "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36417477472",
+    "completed_at": "2026-09-28T12:53:45Z",
+    "event": "workflow_dispatch",
+    "branch": "main",
+    "workflow_commit": "95d9583d77ceb71d979af9b5c8e394efe6712dfd",
+    "projection_set": [
+      "native",
+      "domain",
+      "entities",
+      "references",
+      "dates"
+    ],
+    "reference_shards": 16,
+    "aggregate_issue_comment": "https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5870245890",
+    "aggregate_report_sha256": "5e886c6a6b9abb0e035a75d242182c14d875f68d1e640cf2b84b770786633eca",
+    "artifact_sha256": "89453ba0f2b5c44f92782248ee3832488f93dcea88b776010f58dd1d351754c5",
+    "artifact_byte_count": 6233
+  },
+  "scope": {
+    "source_values_included": false,
+    "new_source_acquisition": false,
+    "new_dataset_publication": false,
+    "domain_semantics_qualified": false,
+    "date_intervals_inferred": false,
+    "earlier_or_later_pbs_eras_qualified": false,
+    "m109_accepted": false,
+    "boundary": "The pinned V3 date grammar is qualified only for this exact 2026-04-01 archive member. The 7,727,884 unmapped elements are outside recognized date roles, not invalid dates. This does not infer intervals/current state, establish PBS domain semantics or qualify other source eras, terminology, derived publication or full M-109 acceptance."
+  },
+  "digest": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON with sorted keys, compact separators, ensure_ascii=false; digest field excluded",
+    "value": "79c0590fbe39e22d7044d12b6522838e8bd32788df762cd3a648eb608f3a0b38"
+  }
+}
