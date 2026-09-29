@@ -504,3 +504,15 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   federation, current-scope Bronze, M5, and separate stable-release approval
   gates remain open; this provenance refresh supplies no new source landing or
   release authority.
+
+
+## 2026-09-30 post-PR-652 exact-main qualification refresh
+
+- [x] Regenerate the Bronze maturity receipt against exact merged `main`
+  `1b191a89b850f46432f91ba4aa0451357e747fe4` after PR #652 and rebind the M5
+  status page to that report. It still finds 117 of 157 in-scope sources
+  without qualifying landing evidence; completeness remains the sole blocked
+  Bronze dimension, with 13 of 14 dimensions evidenced. This provenance refresh
+  adds no landing and does not advance Australian federation, current-scope
+  Bronze, M5, or stable-release approval. The focused Bronze/Stable-v1
+  qualification tests passed (108).
