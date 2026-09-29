@@ -82,7 +82,9 @@ def test_nice_private_acquisition_prompts_record_qualification_not_reacquisition
     ]
 
 
-def test_openprescribing_waits_for_a_material_provider_or_route_change() -> None:
+def test_openprescribing_waits_for_a_material_provider_or_route_change() -> (
+    None
+):
     prompt = next(
         entry for entry in build()["prompts"] if entry["prompt_id"] == 30
     )

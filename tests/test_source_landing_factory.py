@@ -229,9 +229,7 @@ def test_generated_queue_schema_and_conductor_projection_are_current() -> None:
         in orange.evidence_references
     )
     openprescribing = next(
-        item
-        for item in queue.items
-        if item.source_id == "gb-openprescribing"
+        item for item in queue.items if item.source_id == "gb-openprescribing"
     )
     assert openprescribing.state is LandingDisposition.TEMPORARILY_UNAVAILABLE
     assert "provider confirmed" in openprescribing.reason
