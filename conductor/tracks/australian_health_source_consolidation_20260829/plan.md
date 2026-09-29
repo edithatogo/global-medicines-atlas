@@ -543,5 +543,9 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   Keep the approved scope unchanged and wait for a provider-supported route or
   material access-control change before a bounded retry. Do not bypass
   challenges, crawl unboundedly, or substitute upstream files.
+- [x] Regenerate the dependent B0 Source Index JSON, Parquet, schema, dataset
+  metadata, and documentation projections from the updated landing queue.
+  The queue state counts did not change; the source-specific reason and retry
+  evidence now agree across B0 projections.
 - [ ] Acquire and qualify only after an authorized, reachable route exists;
   the current response grants no access, credentials, or rights change.

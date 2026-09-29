@@ -31,8 +31,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:48316c84e1032253015d2e87218634906a03df203ed89c8b74a64ea54fecd0f1",
-  "snapshot_sha256": "48316c84e1032253015d2e87218634906a03df203ed89c8b74a64ea54fecd0f1",
+  "snapshot_id": "sha256:df11cbddd173b2eeec5e2876d04a0e47f1f748a282e1ede09a201f17e0759725",
+  "snapshot_sha256": "df11cbddd173b2eeec5e2876d04a0e47f1f748a282e1ede09a201f17e0759725",
   "source_count": 174,
   "sources": [
     {
@@ -2548,7 +2548,9 @@
       "qualification_references": [
         "quality/qualifications/openprescribing-rights-preflight-20260821.json",
         "quality/qualifications/openprescribing-acquisition-authorization.json",
-        "quality/qualifications/openprescribing-availability-20260826.json"
+        "quality/qualifications/openprescribing-availability-20260826.json",
+        "quality/qualifications/provider-response-thread-check-20260929.json",
+        "quality/qualifications/openprescribing-head-availability-20260927.json"
       ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
