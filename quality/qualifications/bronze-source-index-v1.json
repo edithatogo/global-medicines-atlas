@@ -9,30 +9,30 @@
   },
   "evidence_scope_counts": {
     "governed_fixture": 11,
-    "live_receipt": 28,
-    "none": 134,
+    "live_receipt": 29,
+    "none": 133,
     "parser_contract": 1
   },
   "generated_from": "src/global_medicines_atlas/data/medicine_source_catalog.json",
   "index_presence_implies_coverage": false,
   "landing_disposition_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 40,
+    "landed_and_evidenced": 41,
     "manual_only_documented_acquisition": 90,
     "rights_blocked": 27,
-    "temporarily_unavailable": 2
+    "temporarily_unavailable": 1
   },
   "missing_source_is_negative_evidence": false,
   "qualification_state_counts": {
-    "declared": 77,
+    "declared": 76,
     "documentation_verified": 57,
     "fixture_verified": 12,
-    "live_verified": 28
+    "live_verified": 29
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:91cf35fc0826faf97bff3d33a5b2f71275042275d47b9bebb9777ccb238eebc3",
-  "snapshot_sha256": "91cf35fc0826faf97bff3d33a5b2f71275042275d47b9bebb9777ccb238eebc3",
+  "snapshot_id": "sha256:24849159ae2259e77f268ab1dc30c8b062b5b056c8b5227a82e5b56752ca25b3",
+  "snapshot_sha256": "24849159ae2259e77f268ab1dc30c8b062b5b056c8b5227a82e5b56752ca25b3",
   "source_count": 174,
   "sources": [
     {
@@ -6514,11 +6514,11 @@
       "api_url": "",
       "authentication": "none",
       "authority": "US Food and Drug Administration",
-      "current_landing_disposition": "temporarily_unavailable",
+      "current_landing_disposition": "landed_and_evidenced",
       "discovery_state": "discovery_only",
       "documentation_url": "https://www.fda.gov/drugs/drug-approvals-and-databases/orange-book-data-files",
       "download_url": "https://www.fda.gov/drugs/drug-approvals-and-databases/orange-book-data-files",
-      "evidence_scope": "none",
+      "evidence_scope": "live_receipt",
       "expected_formats": [
         "zip",
         "tilde-delimited-text"
@@ -6538,13 +6538,14 @@
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
+        "quality/qualifications/us-live-bronze-records-20260820.json",
         "quality/qualifications/orange-book-historical-authorization.json",
         "quality/qualifications/orange-book-historical-plan.json",
+        "quality/qualifications/orange-book-historical-refresh-20260928.json",
         "quality/qualifications/orange-book-historical-corpus-20260820.json",
-        "quality/qualifications/orange-book-historical-corpus-20260821.json",
-        "quality/qualifications/orange-book-historical-refresh-20260928.json"
+        "quality/qualifications/orange-book-historical-corpus-20260821.json"
       ],
-      "qualification_state": "declared",
+      "qualification_state": "live_verified",
       "rights_review_state": "US government data; verify endpoint terms",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",

@@ -181,11 +181,11 @@ def test_live_qualification_completes_verified_prompts() -> None:
     assert orange["live_complete"] is False
     assert orange["live_qualified_source_ids"] == []
     assert orange["queue_states"] == {
-        "us-fda-orange-book": "temporarily_unavailable"
+        "us-fda-orange-book": "landed_and_evidenced"
     }
     assert orange["blocker_categories"] == ["temporarily_unavailable"]
     assert orange["next_actions"] == [
-        "record a dated availability observation and retry without treating absence as negative evidence"
+        "retry historical acquisition only after a material official inventory or Archive-It availability change"
     ]
 
 
@@ -555,12 +555,12 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     audit = _audit()
     assert audit["queue_state_counts"] == {
         "credentialed_and_excluded": 15,
-        "landed_and_evidenced": 40,
+        "landed_and_evidenced": 41,
         "manual_only_documented_acquisition": 90,
         "not_yet_implemented": 0,
         "rights_blocked": 27,
         "superseded_by_reused_source": 0,
-        "temporarily_unavailable": 2,
+        "temporarily_unavailable": 1,
     }
     for entry in audit["prompts"]:
         if entry["live_complete"]:
@@ -572,7 +572,10 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
             entry["queue_states"][source_id]
             for source_id in entry["sources_without_live_evidence"]
         }
-        if "landed_and_evidenced" in missing_states:
+        if (
+            "landed_and_evidenced" in missing_states
+            and entry["prompt_id"] != 16
+        ):
             expected_category = (
                 "private_acquisition_requires_source_record_qualification"
                 if entry["prompt_id"] == 29

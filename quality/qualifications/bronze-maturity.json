@@ -2,8 +2,8 @@
   "schema_id": "global-medicines-atlas.bronze-maturity-qualification",
   "schema_version": 1,
   "horizon": "bronze-current-public-scope",
-  "evaluated_at": "2026-09-29T21:38:08.043081+00:00",
-  "git_commit": "1b191a89b850f46432f91ba4aa0451357e747fe4",
+  "evaluated_at": "2026-09-29T22:43:10.813878+00:00",
+  "git_commit": "e7eb12b22ea620efe746f9f4308a61ddc624ce50",
   "authorities": {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -42,7 +42,7 @@
       "blocker_ids": [
         "bronze-ingest-incomplete"
       ],
-      "notes": "117 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
+      "notes": "116 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
     },
     {
       "property_id": "immutability",
@@ -255,7 +255,7 @@
   "residual_risks": [
     {
       "risk_id": "RISK-001",
-      "description": "117 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "116 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "disposition": "unresolved",
       "blocking": true,
       "evidence": [
@@ -330,7 +330,7 @@
     {
       "blocker_id": "bronze-ingest-incomplete",
       "property_id": "completeness",
-      "description": "117 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "116 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "evidence": [
         "src/global_medicines_atlas/data/medicine_source_catalog.json",
         "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
@@ -383,7 +383,7 @@
     "bronze_in_scope_count": 157,
     "fixture_only_count": 2,
     "excluded_count": 15,
-    "in_scope_without_landing_or_blocker": 117,
+    "in_scope_without_landing_or_blocker": 116,
     "missing_coverage_is_not_negative_evidence": true
   }
 }

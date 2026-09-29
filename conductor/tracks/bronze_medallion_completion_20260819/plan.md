@@ -894,3 +894,17 @@ for credentialed or rights-unresolved sources.
   commit. Focused maturity and Stable-v1 provenance tests, routine validation,
   context and ecosystem checks pass. No Bronze, M5, federation, or stable
   release gate is promoted.
+
+## Orange Book current projection reconciliation (2026-09-30)
+
+- [x] Reconcile the bounded current Orange Book source-record projection in
+  `quality/qualifications/us-live-bronze-records-20260820.json` with the source
+  landing queue. Record the source as `landed_and_evidenced` only for its
+  receipt-backed current projection; retain Prompt 16's historical-family
+  blocker and the 2026-09-28 104 Archive-It failures and 16 quarantined
+  responses. Do not infer historical completeness or public-release rights.
+- [x] Regenerate the landing queue, B0 source index, maturity report, and prompt
+  audit. The accepted landing count increases from 40 to 41 and the completeness
+  deficit falls from 117 to 116; Bronze maturity remains blocked.
+- [x] Validate focused maturity, queue, source-index, and prompt-audit tests,
+  routine quality checks, context validation, and generated artifact consistency.

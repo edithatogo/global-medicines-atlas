@@ -219,10 +219,11 @@ def test_generated_queue_schema_and_conductor_projection_are_current() -> None:
     orange = next(
         item for item in queue.items if item.source_id == "us-fda-orange-book"
     )
-    assert orange.state is LandingDisposition.TEMPORARILY_UNAVAILABLE
+    assert orange.state is LandingDisposition.LANDED
+    assert orange.evidence_scope == "live_receipt"
     assert (
-        orange.next_action
-        == "retry only after a material official inventory or Archive-It availability change"
+        "retry historical acquisition only after a material official inventory or Archive-It availability change"
+        in orange.next_action
     )
     assert (
         "quality/qualifications/orange-book-historical-refresh-20260928.json"
