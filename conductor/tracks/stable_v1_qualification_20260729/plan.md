@@ -479,3 +479,16 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   the exact report commit. This provenance refresh adds no source landing and
   does not advance current-scope Bronze, M5, Australian federation, or
   stable-release approval.
+
+
+## 2026-09-29 post-PR-636 exact-main refresh
+
+- [x] Merge PR #636 after all required hosted checks passed. The provider-thread
+  correction reconciles OpenPrescribing's substantive reply and regenerates its
+  queue and B0 projections without claiming a new landing.
+- [x] Rebind the Bronze maturity report and this M5 status page to exact merged
+  `main` `baec563d200ccb3dcdf1b5b5ada66dc7ba8c95bc`. It still reports 174
+  catalogue sources, 157 in scope, 118 without qualifying landing evidence,
+  two fixture-only, 15 excluded, and 13 evidenced maturity dimensions; source
+  completeness remains blocked. The Australian federation, current-scope
+  Bronze, M5, and separate stable-release approval gates remain open.

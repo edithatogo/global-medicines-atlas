@@ -1,0 +1,19 @@
+{
+  "schema_id": "global-medicines-atlas.provider-response-thread-refresh",
+  "schema_version": 1,
+  "recorded_at": "2026-09-29T17:14:18Z",
+  "method": "Read-only subject-scoped Gmail searches of each outstanding inquiry after 2026-09-28; no outbound messages, attachments, or source payloads were accessed.",
+  "account_profile": "d.a.mordaunt@gmail.com",
+  "inquiries": [
+    {"source_id":"gb-openprescribing","subject":"Supported automated access to OpenPrescribing API v1","substantive_response":{"message_id":"1a0edca909c12e32","thread_id":"1a0e8ebbb1c26b2c","received_at":"2026-09-29T15:31:06Z","disposition":"provider_confirms_no_alternative_automated_route_at_present","automated_route_offered":false,"rights_or_attribution_change_confirmed":false}},
+    {"source_id":"au-pbs-api","subject":"Reuse and retention terms for the PBS public data API","new_substantive_response":false,"latest_observed_message_id":"1a0e8ec5493ffcdc","latest_observed_message_kind":"automatic_acknowledgement"},
+    {"source_id":"au-mbs-utilisation","subject":"Request for an agency-hosted automated retrieval route for Medicare statistics workbooks","new_substantive_response":false,"latest_observed_message_id":"1a0e8eccd26b33f4","latest_observed_message_kind":"automatic_acknowledgement"},
+    {"source_id":"au-mbs-p7-legacy-workbook","subject":"Date convention for July 2024 MBS Group P7 workbook","new_substantive_response":false,"latest_observed_message_id":"1a0e9336bdbabce5","latest_observed_message_kind":"automatic_acknowledgement"},
+    {"source_id":"au-services-australia-mbs-item-demographics","subject":"Public item-level MBS patient-count statistics and reuse terms","new_substantive_response":false,"latest_observed_message_id":"1a0e93bc557578ea","latest_observed_message_kind":"original_sent_inquiry_only"},
+    {"source_id":"dk-medstat-utilisation","subject":"Clarification of Medstat interactive Excel export response format","new_substantive_response":false,"latest_observed_message_id":"1a0e9b780c580bd2","latest_observed_message_kind":"automatic_reply_unbound_to_inquiry"}
+  ],
+  "outbound_messages_sent": false,
+  "attachments_read": false,
+  "source_payloads_requested": false,
+  "qualification_boundary": "No rights, endpoint, credential, acquisition, retention, publication, or acceptance authority is created by this readback. Existing provider responses and gate dispositions remain unchanged."
+}
