@@ -833,16 +833,18 @@ for credentialed or rights-unresolved sources.
   [36611480442](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36611480442)
   completed successfully and verified five aggregate response digests in the
   private pinned archive; no source payload bytes were downloaded locally.
-- [~] Reconcile the exact workflow, five payload digests, private archive
+- [x] Reconcile the exact workflow, five payload digests, private archive
   digest/revision, query limits, and retention-only authorization into the
   Prompt 33 audit and M5 completeness recognizer. Regenerated queue, Prompt 33,
   B0, and maturity outputs now count Sweden as one bounded private landing and
   leave 117 of 157 in-scope sources without qualifying landings. Focused
   Prompt 33 and maturity tests pass (126); Ruff, formatting, `ty`, and diff
-  checks pass. Required hosted PR checks remain pending.
-- [~] Refresh the M5 status page and qualification against exact merged main
+  checks pass. PR #639 merged at `fb7947d840835f44316bca54adf4cb48210032c7`
+  after all 39 hosted checks passed, including Codecov and full coverage.
+- [x] Refresh the M5 status page and qualification against exact merged main
   `fb7947d840835f44316bca54adf4cb48210032c7`. The regenerated report still
   finds 117 of 157 in-scope sources without qualifying landings; this provenance
   refresh does not resolve source licensing, publication rights, complete
   Swedish coverage, Australian federation, M5 source-coverage maturity, or
-  Stable v1 approval. Hosted review of this status-page refresh is pending.
+  Stable v1 approval. PR #640 merged at
+  `0bc072cd543924deea8658f9400a37b5b94185d4` after all 37 hosted checks passed.
