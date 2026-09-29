@@ -98,6 +98,16 @@ def execute_metadata_append(  # ruff: ignore[too-many-branches, too-many-locals,
         r"[0-9a-f]{40}", expected_parent_revision
     ):
         raise ValueError("append requires an exact immutable parent revision")
+    if acknowledgement is not None:
+        acknowledged_parent = acknowledgement.get("parent_revision")
+        if type(acknowledged_parent) is not str or not re.fullmatch(
+            r"[0-9a-f]{40}", acknowledged_parent
+        ):
+            raise ValueError("recovery acknowledgement parent revision invalid")
+        if expected_parent_revision != acknowledged_parent:
+            raise ValueError(
+                "recovery parent must match the original CAS parent"
+            )
     before = hub.snapshot(metadata.dataset, expected_parent_revision)
     if (
         before.revision != expected_parent_revision

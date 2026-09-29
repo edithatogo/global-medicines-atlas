@@ -47,7 +47,7 @@ class FakeHub:
     def snapshot(self, dataset, revision):
         self.calls.append("snapshot")
         objects = self.objects
-        if self.plan and revision != self.document["revision"]:
+        if self.plan and revision != self.plan.parent_revision:
             objects += (self.plan.addition,)
         if self.tamper and self.plan:
             objects = objects[1:]
@@ -231,6 +231,8 @@ def test_changed_sibling_cannot_emit_success(setup):
 
 def test_acknowledged_append_recovers_without_second_write(setup):
     document, hub = setup
+    parent = "d" * 40
+    hub.head_revision = parent
     hub.tamper = True
     records = []
 
@@ -240,14 +242,30 @@ def test_acknowledged_append_recovers_without_second_write(setup):
 
     with pytest.raises(ValueError, match="sibling inventory"):
         execute_metadata_append(
-            document, exact_commit="a" * 40, hub=hub, persist=persist
+            document,
+            exact_commit="a" * 40,
+            expected_parent_revision=parent,
+            hub=hub,
+            persist=persist,
         )
     acknowledgement = records[-1]
     hub.tamper = False
     hub.head = lambda _dataset: "f" * 40
+    call_count = len(hub.calls)
+    with pytest.raises(ValueError, match="original CAS parent"):
+        execute_metadata_append(
+            document,
+            exact_commit="a" * 40,
+            expected_parent_revision="f" * 40,
+            hub=hub,
+            persist=persist,
+            acknowledgement=acknowledgement,
+        )
+    assert len(hub.calls) == call_count
     result = execute_metadata_append(
         document,
         exact_commit="a" * 40,
+        expected_parent_revision=parent,
         hub=hub,
         persist=persist,
         acknowledgement=acknowledgement,
@@ -259,6 +277,7 @@ def test_acknowledged_append_recovers_without_second_write(setup):
         execute_metadata_append(
             document,
             exact_commit="a" * 40,
+            expected_parent_revision=parent,
             hub=hub,
             persist=persist,
             acknowledgement=acknowledgement,

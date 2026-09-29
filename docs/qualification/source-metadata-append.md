@@ -83,9 +83,12 @@ immediately after the Hub commit response and before anonymous verification.
 If verification is interrupted, pass that issue-comment ID as
 `recovery_receipt`. Both the acknowledgement and its linked prior intent must
 be bot-authored comments on issue 340 with matching exact plan fields. Recovery
-requires the acknowledged revision still be the dataset head, rehashes the
-original baseline and the complete resulting sibling set, and emits verified
-receipt evidence without another append.
+must pass `expected_parent_revision` equal to the original `parent_revision`
+in the CAS acknowledgement; do not pass the current acknowledged dataset head
+as the parent. The runner rejects a mismatch before reading Hub objects.
+Recovery requires the acknowledged revision still be the dataset head,
+rehashes the original baseline and the complete resulting sibling set, and
+emits verified receipt evidence without another append.
 
 Parent evidence remains the authenticated workflow's recorded successful
 server-enforced CAS response; no independent Git ancestry claim is made.

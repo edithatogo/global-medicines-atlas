@@ -13,7 +13,9 @@ on:
         type: choice
         options: [mbs, pbs]
       expected_parent_revision:
-        description: Exact currently observed public dataset head for append CAS
+        description: >-
+          Exact CAS parent: current public head for a new append, original
+          parent_revision from the CAS acknowledgement during recovery
         required: true
         type: string
       recovery_receipt:
