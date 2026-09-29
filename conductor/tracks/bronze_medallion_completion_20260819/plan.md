@@ -864,3 +864,20 @@ for credentialed or rights-unresolved sources.
   source-specific maintainer decision is recorded. Correct the catalogue's
   funding/product-identity taxonomy before promoting these aggregate
   utilisation semantics.
+
+## 2026-09-30 Japan NDB merge and taxonomy boundary
+
+- [x] Merge the metadata-only current-edition receipt and contract test in PR
+  [#643](https://github.com/edithatogo/global-medicines-atlas/pull/643),
+  commit `1fc84791d1f51ab5fdc72004e420f247eaedbd8a`; all 37 hosted checks
+  passed. The value-free receipt is bound to the 11th NDB Open Data edition;
+  no source data rows or payload bytes were accessed.
+- [x] Trace the NDB taxonomy correction through the source-catalog v5 schema
+  and Stable-v1 measured-coverage contract. The current source model has one
+  required dimension and the Stable-v1 report fixes four counted dimensions;
+  adding utilisation as an independent catalog dimension therefore requires
+  coordinated schema/version compatibility work. Do not relabel utilisation
+  as funding or silently alter the Stable-v1 denominator.
+- [~] Keep NDB acquisition and retention blocked pending the source-specific
+  maintainer rights decision. Track the utilisation taxonomy migration as a
+  separate versioned-contract task before promoting NDB utilisation semantics.
