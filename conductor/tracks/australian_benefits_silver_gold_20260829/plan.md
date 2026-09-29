@@ -670,6 +670,24 @@
 
 ## Phase 5: Historical comparisons and publication (AC-06, AC-07)
 
+### Federated producer v4 acceptance
+
+- [ ] Define and execute an exact-main M-112 qualification over the approved
+  live producer denominator. Require each admitted Bronze/Silver/Gold/Platinum
+  object to bind producer, dataset, immutable revision, path, SHA-256, byte
+  count, source/acquisition identity, B0/B1/B2 stratum where applicable,
+  source receipt, rights authorization, lineage, and anonymous public readback.
+  Independently admit the byte-closed v4 contract and run downstream consumer
+  compatibility canaries against the same pinned identities. Synthetic
+  inventories and fixtures remain implementation evidence only. Do not infer
+  producer coverage from MBS-only publication, archive objects, local outputs,
+  or the presence of v4 schema code; do not acquire or publish PBS/API or
+  restricted terminology payloads before their separate authority gates pass.
+- [ ] Phase Verification & Checkpoint: record the exact producer/object
+  denominator, accepted and missing identities, per-layer receipts, consumer
+  canary results, and remaining rights/publication boundaries. Leave M-112
+  blocked until every approved live producer object is independently verified.
+
 ### Bounded native comparison prerequisite
 
 - [x] Add a source-independent native snapshot comparison candidate contract
