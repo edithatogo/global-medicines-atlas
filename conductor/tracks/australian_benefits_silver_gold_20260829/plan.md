@@ -1309,7 +1309,4 @@
   5,230 passed, 2 failed, 1 skipped, 96.72%; both failures are the existing
   clean-clone release reproducibility checks requiring pinned `uv` 0.11.29,
   unavailable locally (the installed version is 0.12.19).
-- [~] Merge through protected CI and rerun the exact-main candidate qualifier.
-  Confirm the new aggregate reports verified public v4 identity and no stale
-  public-identity blocker while preserving `candidate_only`; no publication
-  or M-109 acceptance is authorized by this task.
+- [x] PR #633 merged through protected CI as `0b062f947d2e641a862ff7d9d8e81439c5718efd`; all required checks passed. Exact-main workflow run `36594992662` passed on that commit. The aggregate confirms the canonical B1 receipt digest, nine public objects, six Parquet LFS identities, and matching six-table denominator; `resolved_blockers` includes `public_v4_identity_unverified`, `current_blockers` is empty, and `promotion_status=candidate_only`. Publication was false and source bytes were not retained. This does not establish M-109 acceptance, federation acceptance, or Stable v1 approval.
