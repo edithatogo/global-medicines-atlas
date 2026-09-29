@@ -1,4 +1,4 @@
-# Stable-v1 M5 maturity status, 2026-09-29
+# Stable-v1 M5 maturity status, 2026-09-30
 
 Seven of the eight blocking dimensions in the stable-v1 contract are M5 and
 verified. **Source coverage remains M4/partial**, so the M5 maturity release
@@ -23,7 +23,7 @@ Parquet, and verified private archive checksums. The older bounded U.S. Bronze
 corpus row describes a separate quarantined acquisition and does not override
 that later, specifically scoped evidence. The latest report snapshot is bound
 to exact merged main commit
-`fb7947d840835f44316bca54adf4cb48210032c7` and finds 117 of
+`1f7e38f962a066d31bcd38e6885c39e1b4b92063` and finds 117 of
 157 in-scope public/no-credential sources without qualifying landing evidence.
 The Sweden count reflects one internally authorized, privately retained 2025
 national aggregate acquisition; its coarse rights state remains unknown, and

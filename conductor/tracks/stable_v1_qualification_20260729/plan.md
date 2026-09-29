@@ -492,3 +492,15 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   two fixture-only, 15 excluded, and 13 evidenced maturity dimensions; source
   completeness remains blocked. The Australian federation, current-scope
   Bronze, M5, and separate stable-release approval gates remain open.
+
+
+## 2026-09-30 post-PR-644 exact-main qualification refresh
+
+- [x] Regenerate the Bronze maturity receipt against exact merged `main`
+  `1f7e38f962a066d31bcd38e6885c39e1b4b92063` after PR #644. The report remains blocked at 117 of 157 in-scope
+  public/no-credential sources without qualifying landing evidence; completeness
+  remains the sole blocked Bronze maturity property, with 13 of 14 evidenced.
+  Rebind the M5 status page to this exact report commit. The Australian
+  federation, current-scope Bronze, M5, and separate stable-release approval
+  gates remain open; this provenance refresh supplies no new source landing or
+  release authority.
