@@ -723,13 +723,15 @@
   coverage. Different declared eras still abstain; revision mismatch rejects
   before parsing. The existing receipt, parser and public metadata are not
   relabelled, and a declared profile is not independent schema qualification.
-- [ ] Version the broader MBS metadata separation: preserve source release
-  revision and immutable B1/B2 identities while adding independently qualified
+- [~] Version the broader MBS metadata separation: preserve source release
+  revision and immutable B1/B2 identities while adding independently named
   schema/profile identities to native bindings, Silver and federated products.
   Existing parser/Bronze/Silver `schema_era` values still carry historical
   catalog labels; do not reinterpret them or rewrite published Parquet/receipts
-  silently. Require compatibility tests and explicit schema/profile evidence
-  before real cross-release qualification or profile migration.
+  silently. Native cohort bindings are implemented as content-addressed,
+  declared-only sidecars. Exact-source schema qualification, Silver and
+  federated product adoption, compatibility evidence, and any profile migration
+  remain open; no real cross-release qualification is claimed.
 - [x] Add an opt-in, versioned MBS schema-profile declaration wrapper around
   existing Silver batches. Bind exact source revision and B1/B2 identities;
   retain every default native value and legacy metadata key unchanged. New

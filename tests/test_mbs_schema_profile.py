@@ -17,9 +17,15 @@ from test_mbs_silver import (
 )
 
 import global_medicines_atlas.mbs_schema_profile as profile_module
+from global_medicines_atlas.mbs_historical_comparison import (
+    MbsNativeKey,
+    build_mbs_comparison_cohort,
+)
 from global_medicines_atlas.mbs_schema_profile import (
     DECLARATION_METADATA_KEY,
+    MbsNativeProfileBinding,
     MbsSchemaProfileDeclaration,
+    bind_mbs_profile_to_native_cohort,
     iter_profiled_mbs_silver_batches,
 )
 from global_medicines_atlas.mbs_silver import iter_mbs_silver_batches
@@ -53,6 +59,96 @@ def parquet(batches):
     stream = BytesIO()
     pq.write_table(pa.Table.from_batches(batches), stream)
     return stream.getvalue()
+
+
+def native_cohort(payload, **changes):
+    return build_mbs_comparison_cohort(
+        payload,
+        _receipt(payload),
+        table="fees",
+        selected_native_keys=(
+            MbsNativeKey(
+                item_num="00123",
+                sub_item_state="value",
+                sub_item_value="00",
+            ),
+        ),
+        schema_era="synthetic-mbs-xml-v1",
+        expected_source_revision="synthetic-iso-v1",
+        **changes,
+    )
+
+
+def test_native_profile_binding_separates_release_identity_from_schema() -> (
+    None
+):
+    payload = _xml("<ScheduleFee>1.00</ScheduleFee>")
+    cohort = native_cohort(payload)
+    binding = bind_mbs_profile_to_native_cohort(declaration(payload), cohort)
+
+    assert isinstance(binding, MbsNativeProfileBinding)
+    assert binding.status == "declared"
+    assert binding.source_revision == "synthetic-iso-v1"
+    assert binding.schema_era == "synthetic-mbs-xml-v1"
+    assert binding.comparison_schema_profile == "synthetic-mbs-xml-v1"
+    assert binding.identity_profile == cohort.snapshot.identity_profile
+    assert binding.b1_sha256 == cohort.snapshot.b1_sha256
+    assert binding.b2_sha256 == cohort.snapshot.b2_sha256
+    assert binding.native_snapshot_sha256
+    assert binding.binding_sha256
+
+
+def test_native_profile_binding_is_content_bound_and_declared_only() -> None:
+    payload = _xml("<ScheduleFee>1.00</ScheduleFee>")
+    first = bind_mbs_profile_to_native_cohort(
+        declaration(payload), native_cohort(payload)
+    )
+    changed = _xml("<ScheduleFee>2.00</ScheduleFee>")
+    second = bind_mbs_profile_to_native_cohort(
+        declaration(changed), native_cohort(changed)
+    )
+
+    assert first.comparison_schema_profile == second.comparison_schema_profile
+    assert first.source_revision == second.source_revision
+    assert first.b1_sha256 != second.b1_sha256
+    assert first.b2_sha256 != second.b2_sha256
+    assert first.native_snapshot_sha256 != second.native_snapshot_sha256
+    assert first.binding_sha256 != second.binding_sha256
+    with pytest.raises(ValidationError):
+        MbsNativeProfileBinding.model_validate({
+            **first.model_dump(),
+            "status": "qualified",
+        })
+
+
+def test_native_profile_binding_hashes_full_cohort_denominators() -> None:
+    payload = _xml("<ScheduleFee>1.00</ScheduleFee>")
+    declaration_value = declaration(payload)
+    cohort = native_cohort(payload)
+    changed_denominator = cohort.model_copy(
+        update={
+            "source_record_count": cohort.source_record_count + 1,
+            "omitted_record_count": cohort.omitted_record_count + 1,
+        }
+    )
+
+    first = bind_mbs_profile_to_native_cohort(declaration_value, cohort)
+    second = bind_mbs_profile_to_native_cohort(
+        declaration_value, changed_denominator
+    )
+
+    assert first.native_snapshot_sha256 == second.native_snapshot_sha256
+    assert first.native_cohort_sha256 != second.native_cohort_sha256
+    assert first.binding_sha256 != second.binding_sha256
+
+
+def test_native_profile_binding_rejects_source_receipt_mismatch() -> None:
+    payload = _xml("<ScheduleFee>1.00</ScheduleFee>")
+    cohort = native_cohort(payload)
+    wrong_payload = _xml("<ScheduleFee>2.00</ScheduleFee>")
+
+    with pytest.raises(ValueError, match="native cohort identity"):
+        bind_mbs_profile_to_native_cohort(declaration(wrong_payload), cohort)
 
 
 @pytest.mark.parametrize("table", TABLES)

@@ -9,9 +9,10 @@ from __future__ import annotations
 
 import json
 from collections.abc import Iterator
-from typing import TYPE_CHECKING, Literal, cast
+from hashlib import sha256
+from typing import TYPE_CHECKING, Any, Literal, cast
 
-from pydantic import ConfigDict
+from pydantic import ConfigDict, Field, model_validator
 
 from .australian_source_contracts import TargetTable
 from .historical_comparison import Digest, ProfileName
@@ -21,6 +22,9 @@ from .receipts import SourceReceipt
 
 if TYPE_CHECKING:
     import pyarrow as pa
+
+    from .mbs_historical_comparison import MbsComparisonCohort
+
 
 DECLARATION_METADATA_KEY = b"gma.mbs.schema_profile.v1"
 MAX_DECLARATION_BYTES = 40 * 1024
@@ -43,6 +47,144 @@ class MbsSchemaProfileDeclaration(FrozenModel):
     legacy_schema_era_meaning: Literal["source_release_revision"] = (
         "source_release_revision"
     )
+
+
+class MbsNativeProfileBinding(FrozenModel):
+    """Content-bound link from a native cohort to a declared schema profile.
+
+    The release label, native comparison era, and schema profile remain
+    separate identities. This sidecar never claims that the profile is
+    qualified and never changes the native snapshot itself.
+    """
+
+    model_config = ConfigDict(revalidate_instances="always")
+    schema_id: Literal["global-medicines-atlas.mbs-native-profile-binding"] = (
+        "global-medicines-atlas.mbs-native-profile-binding"
+    )
+    schema_version: Literal[1] = 1
+    status: Literal["declared"] = "declared"
+    source_id: Literal["au-mbs"] = "au-mbs"
+    source_revision: ProfileName
+    schema_era: ProfileName
+    comparison_schema_profile: ProfileName
+    identity_profile: Literal["mbs-item-subitem-literal-v1"] = (
+        "mbs-item-subitem-literal-v1"
+    )
+    selection_scope: str = Field(pattern=r"^mbs-native-keys-v1:[0-9a-f]{64}$")
+    table: TargetTable
+    cohort: Literal["synthetic", "legacy", "historical", "current"]
+    native_snapshot_sha256: Digest
+    native_cohort_sha256: Digest
+    b1_sha256: Digest
+    b2_sha256: Digest
+    legacy_schema_era_meaning: Literal["comparison_schema_era"] = (
+        "comparison_schema_era"
+    )
+    binding_sha256: Digest
+
+    @model_validator(mode="after")
+    def binding_is_content_bound(self) -> MbsNativeProfileBinding:
+        if self.binding_sha256 != _native_binding_digest(self):
+            raise ValueError("MBS native profile binding digest differs")
+        return self
+
+
+def _canonical_json(value: object) -> bytes:
+    return json.dumps(
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode()
+
+
+def _canonical_sha256(value: object) -> str:
+    encoder = json.JSONEncoder(
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    )
+    digest = sha256()
+    for chunk in encoder.iterencode(value):
+        digest.update(chunk.encode())
+    return digest.hexdigest()
+
+
+def _native_binding_digest(binding: MbsNativeProfileBinding) -> str:
+    return sha256(
+        _canonical_json(binding.model_dump(exclude={"binding_sha256"}))
+    ).hexdigest()
+
+
+def bind_mbs_profile_to_native_cohort(
+    declaration: MbsSchemaProfileDeclaration,
+    cohort: MbsComparisonCohort,
+) -> MbsNativeProfileBinding:
+    """Bind a schema declaration to one exact MBS native comparison cohort.
+
+    The binding contains no native field values. It records exact snapshot and
+    full cohort digests and repeats source release and B1/B2 identities so mismatched inputs
+    fail closed before a candidate can be compared or exported.
+    """
+
+    try:
+        return _bind_mbs_profile_to_native_cohort(declaration, cohort)
+
+    except AttributeError, KeyError, TypeError, ValueError:
+        raise ValueError(
+            "invalid MBS native cohort identity or profile"
+        ) from None
+
+
+def _bind_mbs_profile_to_native_cohort(
+    declaration: MbsSchemaProfileDeclaration,
+    cohort: MbsComparisonCohort,
+) -> MbsNativeProfileBinding:
+    declaration = MbsSchemaProfileDeclaration.model_validate(
+        declaration.model_dump(warnings=False)
+    )
+    cohort = type(cohort).model_validate(cohort.model_dump(warnings=False))
+    snapshot = cohort.snapshot
+    identity = (
+        declaration.source_id,
+        declaration.source_revision,
+        declaration.b1_sha256,
+        declaration.b2_sha256,
+    )
+    observed = (
+        snapshot.source_id,
+        snapshot.source_revision,
+        snapshot.b1_sha256,
+        snapshot.b2_sha256,
+    )
+    if identity != observed:
+        return _invalid_native_binding()
+    snapshot_payload = snapshot.model_dump(mode="json", warnings=False)
+    cohort_payload = cohort.model_dump(mode="json", warnings=False)
+    values: dict[str, Any] = {
+        "source_revision": declaration.source_revision,
+        "schema_era": snapshot.schema_era,
+        "comparison_schema_profile": declaration.comparison_schema_profile,
+        "identity_profile": snapshot.identity_profile,
+        "selection_scope": snapshot.scope_id,
+        "table": snapshot.table,
+        "cohort": snapshot.cohort,
+        "native_snapshot_sha256": _canonical_sha256(snapshot_payload),
+        "native_cohort_sha256": _canonical_sha256(cohort_payload),
+        "b1_sha256": snapshot.b1_sha256,
+        "b2_sha256": snapshot.b2_sha256,
+    }
+    draft = MbsNativeProfileBinding.model_construct(**values)
+    return MbsNativeProfileBinding.model_validate({
+        **values,
+        "binding_sha256": _native_binding_digest(draft),
+    })
+
+
+def _invalid_native_binding() -> MbsNativeProfileBinding:
+    raise ValueError("invalid MBS native cohort identity or profile")
 
 
 def _encoded_declaration(
