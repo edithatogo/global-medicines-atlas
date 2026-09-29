@@ -78,3 +78,7 @@ The archival chronology cannot be retroactively described as pre-archive M-105
 parity. The separate maintainer approvals and observed archives are recorded in
 the [scraper](../../quality/qualifications/scraper-archival-20260906.json) and
 [graph](../../quality/qualifications/graph-archival-20260906.json) receipts.
+On 2026-09-29 the maintainer approved recording this chronology exception
+while keeping M-105 blocked; see decision
+[D-006-07](../../conductor/decisions/0006-external-gate-decision-register.md#d-006-07--m-105-donor-chronology-exception).
+This records no waiver or change to the pre-archive acceptance criterion.

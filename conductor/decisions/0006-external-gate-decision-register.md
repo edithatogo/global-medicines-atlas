@@ -87,6 +87,25 @@ Decision: authorize a production DR rehearsal and accept its scope.
 - **Option B:** execute staging/synthetic rehearsal only. Contingency: keep production DR unqualified.
 - **Option C:** defer. Contingency: retain synthetic local evidence only.
 
+## D-006-07 — M-105 donor chronology exception
+
+**Status:** maintainer disposition recorded (2026-09-29). The complete donor
+artifact parity inventory was reconciled after both compatibility repositories
+were archived. That evidence cannot establish the requirement's original
+pre-archive sequence.
+
+Decision: acknowledge and document the chronology exception, keep M-105
+blocked, and continue M-106–M-112 independently. This is not a waiver, does
+not relabel post-archive evidence as pre-archive parity, and does not change
+the M-105 acceptance criterion.
+
+- **Option A — Recommended and selected:** preserve M-105 as blocked with an
+  explicit chronology exception; continue independent federation evidence.
+- **Option B:** waive or amend the sequence requirement and reconsider M-105
+  only under a separately reviewed qualification change. Not selected.
+- **Option C:** reopen further parity work. This cannot repair the historical
+  ordering and was not selected.
+
 ## Autonomous continuation
 
 While decisions remain open, the agent may validate schemas, run tests, prepare receipts, reconcile documentation, and review hosted state. It must not install Apps, redistribute restricted data, sign or promote a public stable release, or claim production qualification without the relevant decision and durable evidence. OSF is deprecated and must not be treated as an open submission gate.

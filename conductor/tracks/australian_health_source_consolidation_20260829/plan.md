@@ -310,7 +310,7 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 
 ## M-105 acceptance follow-up
 
-- [~] Bind every pinned donor artifact and later changed path to exact
+- [x] Bind every pinned donor artifact and later changed path to exact
   behavioral or byte-level evidence. The
   [2026-09-27 gap audit](../../../docs/qualification/australian-donor-parity-gap.md)
   and omission-sensitive matrix classify all 54 baseline blobs and ten later
@@ -332,6 +332,10 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   pending. Exact history preservation and archive approval are verified
   separately. M-105 remains blocked because its pre-archive parity requirement
   cannot be established retroactively by this post-archive reconciliation.
+- [x] Record the maintainer's chronology-exception disposition in
+  `conductor/decisions/0006-external-gate-decision-register.md` (D-006-07).
+  Keep M-105 blocked without waiving or amending the pre-archive criterion;
+  continue M-106–M-112 independently.
 
 ## M-107 source-family gap preservation follow-up (2026-09-28)
 
