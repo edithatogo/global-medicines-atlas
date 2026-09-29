@@ -65,16 +65,31 @@ receipt. The new revision is
 digests are preserved and the metadata object digest is
 `cb7f9647d77372faa091664a1337e70574a5dee4afe6a55a535fb204ed16f2b8`.
 
+MBS execution is verified from reviewed main commit
+`85ad454850dd43814530f4340fa6247776cb4cfc` in workflow run `36532129354`.
+Issue #340 comments `5885053897`, `5885054280`, and `5885067299` contain the
+durable intent, server-enforced CAS acknowledgement, and anonymous verification
+receipt. The new revision is
+`243f9ff5498816af6e4d9ae4db60528728f01834`; the 49 baseline object digests
+are preserved and the 2,900-byte metadata object at
+`metadata/source/au-mbs/1067278e06e40edc15994dedc9789f5130aea4727c9dcf3be276f475743e896e.json`
+has SHA-256
+`1067278e06e40edc15994dedc9789f5130aea4727c9dcf3be276f475743e896e`.
+The public Hub API reports the archive as public and non-gated, and an
+independent anonymous GET at the exact revision reproduced the recorded byte
+count and digest. The embedded source release remains
+`75f9f20a36ddb829dfe0ca88660664570782be02`; the transaction CAS parent was
+`ba82cd1d0f9b0f28514df431b8da3a6c207d76fa`.
+
 The MBS source release remains pinned to
 `75f9f20a36ddb829dfe0ca88660664570782be02`. Its archive advanced to
 `ba82cd1d0f9b0f28514df431b8da3a6c207d76fa` when candidate-only Silver v4
 objects were appended and anonymously verified (issue #340 comment
 `5859624790`). The MBS metadata append must therefore keep the source release
 revision in the document while using the newer exact archive head as its CAS
-parent. The workflow and append contract now carry these identities separately;
-the MBS append still awaits a reviewed-main dispatch with expected parent
-`ba82cd1d0f9b0f28514df431b8da3a6c207d76fa`. Any head drift fails before intent
-or mutation.
+parent. The workflow and append contract carry these identities separately;
+the append is complete and verified as recorded above. Any head drift fails
+before intent or mutation.
 
 ## Interrupted verification recovery
 

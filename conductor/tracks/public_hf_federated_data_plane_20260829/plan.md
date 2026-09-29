@@ -52,22 +52,22 @@
   Anonymous metadata recheck on 2026-08-31 confirms public/non-gated identity.
 - [ ] Create the Australian benefits medallion dataset from GitHub Actions
   once its non-empty, independently admitted producer manifest exists.
-- [~] Require source-specific data cards, Croissant, citations, provenance,
+- [x] Require source-specific data cards, Croissant, citations, provenance,
   coverage, rights/permission, withdrawal/correction, and version histories.
   The offline MBS/PBS contract, valid/invalid fixtures, and intended-red receipt
   are implemented. PBS metadata was appended and anonymously verified at
   revision `48fd7345fb09277bb5b85644dba72804633a2abb` (run
-  `36520821504`; issue #340 comment `5883538920`). MBS metadata remains pending:
-  its source release identity is `75f9f20a…`, while its current archive CAS
-  parent is `ba82cd1d…`. The append contract and workflow now bind these
-  separately; the source release identity is not rewritten to the newer head.
-  Offline append preparation/readback validation now binds the exact parent,
-  complete preserved sibling inventory and one content-addressed source
-  metadata addition (`federation_metadata_append.py`). The hosted-only CAS
-  adapter and source-specific workflow are now prepared with mocked SDK,
-  preservation, deadline and durable-receipt tests. See
-  `docs/qualification/source-metadata-append.md` for the hosted receipt and
-  remaining MBS step.
+  `36520821504`; issue #340 comment `5883538920`). MBS metadata was appended
+  and anonymously verified at revision
+  `243f9ff5498816af6e4d9ae4db60528728f01834` (run `36532129354`; issue #340
+  comments `5885053897`, `5885054280`, and `5885067299`). The MBS document
+  retains source release `75f9f20a36ddb829dfe0ca88660664570782be02`, with
+  exact CAS parent `ba82cd1d0f9b0f28514df431b8da3a6c207d76fa`; its 2,900-byte
+  object SHA-256 is
+  `1067278e06e40edc15994dedc9789f5130aea4727c9dcf3be276f475743e896e`.
+  The hosted verifier preserved and anonymously rehashed all 49 baseline
+  objects; the archive remains public and non-gated. See
+  `docs/qualification/source-metadata-append.md` for both hosted receipts.
 - [ ] Phase Verification & Checkpoint: datasets exist publicly but contain only
   exact approved manifests; empty repositories are not claimed as data.
 
