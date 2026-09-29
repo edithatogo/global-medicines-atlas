@@ -152,12 +152,33 @@ def test_qualifies_only_digest_bound_public_bytes_in_memory(
     )
     assert result["publication_performed"] is False
     assert result["source_bytes_retained"] is False
+    profile_check = cast(
+        "dict[str, object]", result["profiled_schema_compatibility"]
+    )
+    assert profile_check["status"] == "verified"
+    assert profile_check["profile_status"] == "declared_only"
+    assert profile_check["source_values_included"] is False
+    profile_tables = cast("list[dict[str, object]]", profile_check["tables"])
+    assert {table["table"] for table in profile_tables} == {
+        "services",
+        "hierarchy",
+        "descriptions",
+        "fees",
+        "benefits",
+        "caps",
+    }
+    assert all(
+        table["array_values_match_unprofiled_projection"] is True
+        and table["legacy_metadata_unchanged"] is True
+        for table in profile_tables
+    )
     candidate_report = {
         "qualification": qualification,
         "public_v4_identity": result["public_v4_identity"],
         "resolved_blockers": result["resolved_blockers"],
         "current_blockers": result["current_blockers"],
         "quality_diagnostics": result["quality_diagnostics"],
+        "profiled_schema_compatibility": profile_check,
         "official_release_check": result["official_release_check"],
     }
     expected_digest = hashlib.sha256(
@@ -249,6 +270,9 @@ def test_quality_diagnostics_locate_field_and_row_without_values(
                     "resolved_blockers": result["resolved_blockers"],
                     "current_blockers": result["current_blockers"],
                     "quality_diagnostics": diagnostics,
+                    "profiled_schema_compatibility": result[
+                        "profiled_schema_compatibility"
+                    ],
                     "official_release_check": result["official_release_check"],
                 },
                 sort_keys=True,
@@ -414,6 +438,9 @@ def test_workflow_is_exact_main_read_only_and_never_publishes() -> None:
     assert "issue" not in workflow.lower()
     assert "publish" not in workflow.lower()
     assert "source-retained" not in workflow.lower()
+    assert "profiled_schema_compatibility" in (
+        command.ROOT / "scripts/qualify_public_mbs_silver.py"
+    ).read_text(encoding="utf-8")
 
 
 def _public_v4_fixture(

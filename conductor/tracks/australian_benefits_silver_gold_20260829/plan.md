@@ -1079,6 +1079,18 @@
 
 ## M-109 exact public MBS candidate denominator follow-up (2026-09-28)
 
+- [ ] Extend the exact-main public MBS candidate report with a bounded
+  declared-profile compatibility comparison over the same digest-verified July
+  2025 v3 bytes. The check compares every batch's typed values, columns, and
+  pre-existing metadata for all six tables; it reports only table/field
+  denominators and receipt digests. This is `declared_only` compatibility
+  evidence, not schema-profile qualification, source-era semantics, M-109
+  acceptance, or publication. Focused profile/qualifier tests (92) and strict
+  local checks pass. The full local profile had 5,263 passed, one optional
+  skip, and two unrelated release reproducibility failures because this Mac
+  provides uv 0.11.8/0.12.19 instead of pinned uv 0.11.29; protected CI and
+  exact-main execution remain pending.
+
 - [x] Add an Actions-only qualification for the exact anonymously published
   July 2025 MBS XML. It pins the public revision, bounds and digest-checks the
   bytes, processes them in memory with the six-table Silver candidate, and
