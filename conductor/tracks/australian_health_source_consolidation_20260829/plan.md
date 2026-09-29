@@ -507,3 +507,13 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   checks, including Codecov patch coverage. The value-free metadata receipt is
   now durable on `main`; the source-owner request was subsequently sent; provider response, an approved
   endpoint, M-107 qualification, and Australian federation remain open.
+
+
+## MBS metadata append receipt-link review correction (2026-09-29)
+
+- [x] Preserve the append-only ledger and supersede the incorrect PBS receipt
+  links in the follow-up with the MBS transaction's CAS intent, acknowledgement,
+  and anonymous verification comments `5885053897`, `5885054280`, and
+  `5885067299`, as recorded in `docs/qualification/source-metadata-append.md`.
+  The public metadata object remains verified at its exact revision, size, and
+  digest; no source payload or acceptance claim changed.

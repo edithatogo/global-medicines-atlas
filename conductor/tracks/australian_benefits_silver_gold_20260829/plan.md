@@ -730,11 +730,14 @@
   catalog labels; do not reinterpret them or rewrite published Parquet/receipts
   silently. The content-addressed native cohort binding merged in PR #626;
   this follow-up pairs it with existing v4 federation profile bindings through
-  a second declared-only sidecar. The opt-in Silver declaration and both
-  federation sidecars preserve legacy v4 products without relabelling releases.
-  Exact-source schema qualification, real-source compatibility evidence,
-  product export/adoption, and any profile migration remain open; no real
-  cross-release qualification is claimed.
+  a second declared-only sidecar. PR #628 merged as
+  `a089cc15b7f9ab60f13232ca1f233bcc6df1f890` after all 39 hosted checks passed;
+  its B1 lineage-digest review correction is covered by 116 focused/adjacent
+  tests. The opt-in Silver declaration and both federation sidecars preserve
+  legacy v4 products without relabelling releases. Exact-source schema
+  qualification, real-source compatibility evidence, product export/adoption,
+  and any profile migration remain open; no real cross-release qualification
+  or MBS acceptance is claimed.
 - [x] Add an opt-in, versioned MBS schema-profile declaration wrapper around
   existing Silver batches. Bind exact source revision and B1/B2 identities;
   retain every default native value and legacy metadata key unchanged. New
