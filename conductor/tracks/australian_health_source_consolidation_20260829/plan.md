@@ -549,3 +549,15 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   evidence now agree across B0 projections.
 - [ ] Acquire and qualify only after an authorized, reachable route exists;
   the current response grants no access, credentials, or rights change.
+
+## Provider inquiry refresh after PR #636 (2026-09-29)
+
+- [x] Recheck all six outstanding provider inquiries with read-only,
+  subject-scoped searches. OpenPrescribing's substantive response remains the
+  only observed provider guidance; PBS and MBS agency inquiries remain at
+  automatic acknowledgements, Services Australia has no reply, and the
+  Medstat automatic reply remains unbound to its inquiry. Receipt:
+  `quality/qualifications/provider-response-thread-refresh-20260929.json`.
+- [~] Continue only when a source owner provides substantive guidance or the
+  authorized endpoint/transport materially changes. No follow-ups were sent;
+  rights, acquisition, and acceptance gates remain unchanged.
