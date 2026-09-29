@@ -1,0 +1,39 @@
+name: Retain authorized Socialstyrelsen aggregate privately
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: sweden-socialstyrelsen-private-acquisition
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  acquire:
+    name: Acquire, verify, and privately retain Sweden aggregate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Acquire, land, retain, and verify anonymously
+        env:
+          GITHUB_ACTIONS: "true"
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          set -euo pipefail
+          uv run --python 3.14.6 --with huggingface-hub==1.14.0 \
+            python scripts/acquire_sweden_socialstyrelsen_private.py \
+            | tee socialstyrelsen-private-acquisition-receipt.json
+      - name: Retain value-free acquisition receipt
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: socialstyrelsen-private-acquisition-receipt
+          path: socialstyrelsen-private-acquisition-receipt.json
+          if-no-files-found: error
+          retention-days: 30

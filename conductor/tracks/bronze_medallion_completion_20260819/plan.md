@@ -820,3 +820,21 @@ for credentialed or rights-unresolved sources.
   commit `4cca88d3e13be535643e2408d627837802b82c6c`. The report still finds 118 of 157 in-scope sources
   without landing evidence, so completeness and M5 remain blocked.
   Focused status/provenance tests and context validation passed.
+
+## Sweden Socialstyrelsen bounded aggregate acquisition (2026-09-30)
+
+- [x] Record the maintainer's 2026-09-29 source-specific approval for source-
+  generated aggregate API results retained internally only. The cap is 70,000
+  cells and 100 ATC codes per query; person-level data, bulk downloads, public
+  release, and external publication remain excluded.
+- [~] Implement the bounded source query, receipt, Bronze landing, private
+  archive, and hosted private digest readback. Focused Nordic tests pass (33),
+  the new module has 100% focused statement and branch coverage, typing and
+  routine checks pass. Full Test-Goblin reports 5,250 passed, 1 skipped, and 2
+  existing stable-candidate reproducibility failures because local uv is
+  0.12.19 while those tests require 0.11.29; two runner guard tests were added
+  afterward and passed in the 33-test focused rerun.
+- [ ] After merge, run the approved workflow once, verify the private hosted
+  revision and digest receipt, then regenerate the landing queue and Bronze
+  maturity report from observed evidence. Authorization alone does not qualify
+  a landing or change the current 118-source Bronze gap.
