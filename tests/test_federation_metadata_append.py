@@ -4,6 +4,7 @@ import hashlib
 import json
 from dataclasses import replace
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -76,6 +77,16 @@ def test_transaction_parent_is_separate_from_source_release_revision():
         observed=(*baseline, plan.addition),
         anonymous_payload=plan.payload,
     )
+
+
+@pytest.mark.parametrize("parent_revision", ["not-a-revision", 123])
+def test_rejects_invalid_explicit_parent_revision(parent_revision: Any) -> None:
+    document, baseline = fixture()
+
+    with pytest.raises(ValueError, match="exact immutable revision"):
+        prepare_metadata_append(
+            document, baseline, parent_revision=parent_revision
+        )
 
 
 @pytest.mark.parametrize(
