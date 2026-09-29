@@ -444,3 +444,14 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   the routine Test-Goblin harness passed. No new source receipt or acceptance
   evidence changes the four open gates: Australian federation, current-scope
   Bronze, M5 maturity, and stable-release approval.
+
+
+## 2026-09-29 post-PR-626 qualification refresh
+
+- [x] Regenerate the Bronze maturity receipt from exact merged `main`
+  `2c70f59112280a0d9a137a3b25f5c870061e31e0` after PR #626. It still reports 174
+  catalog sources, 157 in scope, 118 without qualifying landing evidence, and
+  13 evidenced dimensions; completeness remains blocked. The M5 status page now
+  cites the exact report commit. This provenance refresh adds no source landing
+  and does not advance Bronze, M5, Australian federation, or stable-release
+  approval.
