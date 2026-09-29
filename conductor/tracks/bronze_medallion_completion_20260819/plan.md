@@ -840,7 +840,9 @@ for credentialed or rights-unresolved sources.
   leave 117 of 157 in-scope sources without qualifying landings. Focused
   Prompt 33 and maturity tests pass (126); Ruff, formatting, `ty`, and diff
   checks pass. Required hosted PR checks remain pending.
-- [ ] After the reconciliation PR merges, refresh the M5 status page and
-  qualification against that exact main commit. The Sweden receipt does not
-  resolve source licensing, publication rights, complete Swedish coverage,
-  Australian federation, M5 source-coverage maturity, or Stable v1 approval.
+- [~] Refresh the M5 status page and qualification against exact merged main
+  `fb7947d840835f44316bca54adf4cb48210032c7`. The regenerated report still
+  finds 117 of 157 in-scope sources without qualifying landings; this provenance
+  refresh does not resolve source licensing, publication rights, complete
+  Swedish coverage, Australian federation, M5 source-coverage maturity, or
+  Stable v1 approval. Hosted review of this status-page refresh is pending.
