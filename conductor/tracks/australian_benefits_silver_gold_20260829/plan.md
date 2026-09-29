@@ -1087,8 +1087,10 @@
   evidence, not schema-profile qualification, source-era semantics, M-109
   acceptance, or publication. Focused profile/qualifier tests (92) and strict
   local checks pass. The full local profile had 5,263 passed, one optional
-  skip, and two unrelated release reproducibility failures because this Mac
-  provides uv 0.11.8/0.12.19 instead of pinned uv 0.11.29. PR #650 merged as
+  skip, and two release reproducibility failures because the default Mac
+  environment lacked pinned uv 0.11.29. The exact-version tool was then run
+  from an isolated cache and both failed reproducibility tests passed (2); the
+  full profile was not repeated. PR #650 merged as
   `b1d6146b4a09b1b1814e821d11510dc35f05e6e8` after all protected checks passed.
   Exact-main run [36632407007](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36632407007)
   verified all six tables at 5,989 rows each and 64 projected columns/383,296
