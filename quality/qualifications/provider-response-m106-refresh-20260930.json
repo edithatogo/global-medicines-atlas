@@ -1,0 +1,28 @@
+{
+  "schema_id": "global-medicines-atlas.provider-response-m106-refresh",
+  "schema_version": 1,
+  "observed_at": "2026-09-29T19:23:24Z",
+  "source_id": "au-services-australia-mbs-item-demographics",
+  "source_owner": "Services Australia",
+  "query_scope": {
+    "method": "Gmail subject-scoped search in the account that sent the inquiry",
+    "query": "subject:\"Public item-level MBS patient-count statistics and reuse terms\" after:2026/09/28 -in:spam -in:trash",
+    "searched_after": "2026-09-28T18:16:43Z"
+  },
+  "observed": {
+    "matching_messages": 1,
+    "original_sent_message_id": "1a0e93bc557578ea",
+    "original_sent_message_found": true,
+    "inbound_source_owner_response_found": false,
+    "attachments_read": false,
+    "message_body_read": false,
+    "outbound_messages_sent": false
+  },
+  "next_action": "Wait for source-owner clarification; do not infer a patient denominator or rights decision from the absence of a reply.",
+  "boundary": "A subject-scoped metadata search found the original sent inquiry and no matching inbound reply. This readback grants no acquisition, retention, redistribution, or publication authority and does not qualify M-106.",
+  "digest": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON with sorted keys, compact separators, ensure_ascii=false; digest field excluded",
+    "value": "e2c2489d9b86f25565c88dfce215097ad5e7d1c8b3d2fe2d78a30ff0bea3db56"
+  }
+}

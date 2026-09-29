@@ -1,0 +1,95 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-current-item-data-metadata",
+  "schema_version": 1,
+  "observed_at": "2026-09-29T19:14:36Z",
+  "source_owner": "Services Australia",
+  "dataset": {
+    "title": "Medicare Statistics",
+    "package_id": "c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b",
+    "catalog_url": "https://data.gov.au/data/dataset/medicare-statistics",
+    "created_at": "2026-09-23",
+    "updated_at": "2026-09-24"
+  },
+  "resource": {
+    "title": "August 2026 - MBS Item Data",
+    "resource_id": "dbdde899-76ab-4d8d-a05a-46b51088b49e",
+    "format": "CSV",
+    "resource_url": "https://data.gov.au/data/dataset/medicare-statistics/resource/dbdde899-76ab-4d8d-a05a-46b51088b49e",
+    "download_url": "https://data.gov.au/data/dataset/c8cee0b0-7b3a-4555-9bbb-f2acc0e4182b/resource/dbdde899-76ab-4d8d-a05a-46b51088b49e/download/august-2026-mbs-item-data.csv",
+    "catalog_license_notice": "Creative Commons Attribution 3.0 Australia",
+    "catalog_license_url": "https://creativecommons.org/licenses/by/3.0/au/",
+    "cataloged_size_label": "2.2 MiB",
+    "data_last_updated": "2026-09-23",
+    "metadata_last_updated": "2026-09-23",
+    "datastore_active": true,
+    "datastore_contains_all_source_file_records": true
+  },
+  "metadata_observations": {
+    "method": "Official resource page plus CKAN datastore_search with limit=0",
+    "resource_page_url": "https://data.gov.au/data/dataset/medicare-statistics/resource/dbdde899-76ab-4d8d-a05a-46b51088b49e",
+    "metadata_query_url": "https://data.gov.au/data/api/3/action/datastore_search?resource_id=dbdde899-76ab-4d8d-a05a-46b51088b49e&limit=0",
+    "record_count": 26391,
+    "record_count_estimated": false,
+    "total_was_estimated": false,
+    "query_limit": 0,
+    "records_returned_by_metadata_query": 0,
+    "fields": [
+      {
+        "id": "_id",
+        "type": "int"
+      },
+      {
+        "id": "Year",
+        "type": "text"
+      },
+      {
+        "id": "Month of Processing",
+        "type": "text"
+      },
+      {
+        "id": "Group",
+        "type": "text"
+      },
+      {
+        "id": "Sub-Group",
+        "type": "text"
+      },
+      {
+        "id": "Item Number",
+        "type": "text"
+      },
+      {
+        "id": "State",
+        "type": "text"
+      },
+      {
+        "id": "Services",
+        "type": "text"
+      },
+      {
+        "id": "Benefit",
+        "type": "text"
+      }
+    ],
+    "data_dictionary_available": false
+  },
+  "source_bytes_accessed": false,
+  "source_rows_accessed": false,
+  "project_rights_decision_made": false,
+  "qualification": {
+    "item_level_statistics_candidate": true,
+    "distinct_patient_count_field_observed": false,
+    "patient_denominator_qualified": false,
+    "field_semantics_qualified": false,
+    "acquisition_authorized": false,
+    "derived_publication_authorized": false,
+    "public_license_notice": "Creative Commons Attribution 3.0 Australia"
+  },
+  "next_evidence": "Obtain source-owner clarification about whether a current public distinct-patient count by item exists, and secure a separate maintainer decision before acquisition or publication of this resource.",
+  "boundary": "Metadata-only discovery. The source page and zero-row schema query supplied no CSV values. The catalog license notice is not a project-specific rights decision; field semantics, distinct-patient counts, source coverage, acquisition, derived publication, and M-106 acceptance remain unqualified.",
+  "digest": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON with sorted keys, compact separators, ensure_ascii=false; digest field excluded",
+    "value": "47e19d14b1f81309578ddff63f89800527903a0e9ea823d91b781f3206a69806"
+  }
+}
