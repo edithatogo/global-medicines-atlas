@@ -93,18 +93,21 @@
     {
       "source_id": "gb-openprescribing",
       "state": "temporarily_unavailable",
-      "reason": "Public acquisition, retention, release, and external publication of successfully retrieved receipt-bound API v1 partitions were approved under the OGL on 2026-08-26. A bounded one-attempt probe of all six documented identities returned Cloudflare HTTP 403 challenges from the current environment; no payload or challenge bytes were retained and no publication occurred.",
-      "failure_receipt": "quality/qualifications/openprescribing-availability-20260826.json",
+      "reason": "Public acquisition, retention, release, and external publication of successfully retrieved receipt-bound API v1 partitions were approved under the OGL on 2026-08-26. The bounded 2026-09-27 HEAD check of all six documented identities still returned Cloudflare HTTP 403 challenges. On 2026-09-29 the provider confirmed increased Cloudflare protections may challenge or block automation and that it cannot offer an alternative automated route at present. No payload or challenge bytes were retained and no publication occurred.",
+      "failure_receipt": "quality/qualifications/openprescribing-head-availability-20260927.json",
       "evidence_references": [
         "quality/qualifications/openprescribing-rights-preflight-20260821.json",
-        "quality/qualifications/openprescribing-acquisition-authorization.json"
-      ]
+        "quality/qualifications/openprescribing-acquisition-authorization.json",
+        "quality/qualifications/openprescribing-availability-20260826.json",
+        "quality/qualifications/provider-response-thread-check-20260929.json"
+      ],
+      "next_action": "wait for a provider-supported automated route or material access-control change before one bounded retry; do not bypass challenges, crawl unboundedly, or substitute upstream files"
     },
     {
       "source_id": "gb-nice-medicines-utilisation",
       "state": "landed_and_evidenced",
       "evidence_scope": "live_receipt",
-      "reason": "The four historic 2008–2012 releases were acquired under explicit internal-only maintainer approval; all 15 payloads were admitted, recorded in acquisition manifests, and clean-room restored by digest. This is bounded private B1/B2 evidence only: no source-record projection, third-party separability conclusion, public release, external publication, or independent durable replication is claimed.",
+      "reason": "The four historic 2008\u20132012 releases were acquired under explicit internal-only maintainer approval; all 15 payloads were admitted, recorded in acquisition manifests, and clean-room restored by digest. This is bounded private B1/B2 evidence only: no source-record projection, third-party separability conclusion, public release, external publication, or independent durable replication is claimed.",
       "next_action": "Keep the historical scope and private-only rights boundary explicit; do not publish or infer current utilisation coverage.",
       "evidence_references": [
         "quality/qualifications/nice-utilisation-acquisition-authorization.json",

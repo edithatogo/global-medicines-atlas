@@ -1,0 +1,92 @@
+{
+  "schema_id": "global-medicines-atlas.provider-response-thread-check",
+  "schema_version": 1,
+  "recorded_at": "2026-09-29T16:49:48Z",
+  "supersedes_check": "quality/qualifications/provider-response-check-20260929.json",
+  "method": "Read-only Gmail searches by each inquiry's subject after 2026-09-28, excluding messages sent by the maintainer. Message metadata was used for all results; the substantive OpenPrescribing reply was read. No other bodies or attachments were read.",
+  "results": [
+    {
+      "source_id": "gb-openprescribing",
+      "query": "subject:\"Supported automated access to OpenPrescribing API v1\" after:2026/09/28 -from:d.a.mordaunt@gmail.com",
+      "messages": [
+        {
+          "gmail_message_id": "1a0e8ec858674996",
+          "received_at": "2026-09-28T16:50:06Z",
+          "kind": "automated_acknowledgement",
+          "substantive_guidance": false
+        },
+        {
+          "gmail_message_id": "1a0edca909c12e32",
+          "received_at": "2026-09-29T15:31:06Z",
+          "kind": "provider_response",
+          "summary": "The provider reports increased Cloudflare protections that may challenge or block automated requests, has no capacity to offer an alternative automated retrieval route at present, and hopes to implement a solution in future.",
+          "substantive_guidance": true,
+          "automated_route_offered": false,
+          "access_control_bypass_authorized": false,
+          "rights_or_attribution_change_confirmed": false
+        }
+      ],
+      "status": "provider_confirms_no_alternative_automated_route_at_present"
+    },
+    {
+      "source_id": "au-pbs-api",
+      "query": "subject:\"Reuse and retention terms for the PBS public data API\" after:2026/09/28 -from:d.a.mordaunt@gmail.com",
+      "messages": [
+        {
+          "gmail_message_id": "1a0e8ec5493ffcdc",
+          "received_at": "2026-09-28T16:49:48Z",
+          "kind": "automated_acknowledgement",
+          "substantive_guidance": false
+        }
+      ],
+      "status": "automated_acknowledgement_only"
+    },
+    {
+      "source_id": "au-mbs-utilisation",
+      "query": "subject:\"Request for an agency-hosted automated retrieval route for Medicare statistics workbooks\" after:2026/09/28 -from:d.a.mordaunt@gmail.com",
+      "messages": [
+        {
+          "gmail_message_id": "1a0e8eccd26b33f4",
+          "received_at": "2026-09-28T16:50:18Z",
+          "kind": "automated_acknowledgement",
+          "substantive_guidance": false
+        }
+      ],
+      "status": "automated_acknowledgement_only"
+    },
+    {
+      "source_id": "au-mbs-p7-legacy-workbook",
+      "query": "subject:\"Date convention for July 2024 MBS Group P7 workbook\" after:2026/09/28 -from:d.a.mordaunt@gmail.com",
+      "messages": [
+        {
+          "gmail_message_id": "1a0e9336bdbabce5",
+          "received_at": "2026-09-28T18:07:21Z",
+          "kind": "automated_acknowledgement",
+          "substantive_guidance": false
+        }
+      ],
+      "status": "automated_acknowledgement_only"
+    },
+    {
+      "source_id": "au-services-australia-mbs-item-demographics",
+      "query": "subject:\"Public item-level MBS patient-count statistics and reuse terms\" after:2026/09/28 -from:d.a.mordaunt@gmail.com",
+      "messages": [],
+      "status": "no_source_owner_response_observed"
+    },
+    {
+      "source_id": "dk-medstat-utilisation",
+      "query": "subject:\"Clarification of Medstat interactive Excel export response format\" after:2026/09/28 -from:d.a.mordaunt@gmail.com",
+      "messages": [
+        {
+          "gmail_message_id": "1a0e9b780c580bd2",
+          "received_at": "2026-09-28T20:31:49Z",
+          "kind": "automated_acknowledgement_unbound_to_inquiry",
+          "substantive_guidance": false
+        }
+      ],
+      "status": "automated_acknowledgement_only"
+    }
+  ],
+  "supersession_note": "The preceding sender-address-only search missed the OpenPrescribing provider reply because it came from an observed responder address rather than feedback@openprescribing.net. This subject-scoped search finds the reply in the original inquiry thread and supersedes that negative result for OpenPrescribing.",
+  "boundary": "The response explains present access controls and capacity only. It provides no alternative route, credential, access bypass, or changed rights. Existing approved bounded acquisition remains unexercised; do not retry or substitute another source absent a material route change."
+}

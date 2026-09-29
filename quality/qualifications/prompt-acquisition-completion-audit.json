@@ -1041,7 +1041,7 @@
         "temporarily_unavailable"
       ],
       "next_actions": [
-        "record a dated availability observation and retry without treating absence as negative evidence"
+        "wait for a provider-supported automated route or material access-control change before one bounded retry; do not bypass challenges, crawl unboundedly, or substitute upstream files"
       ]
     },
     {

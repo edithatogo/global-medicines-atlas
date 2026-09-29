@@ -82,6 +82,18 @@ def test_nice_private_acquisition_prompts_record_qualification_not_reacquisition
     ]
 
 
+def test_openprescribing_waits_for_a_material_provider_or_route_change() -> None:
+    prompt = next(
+        entry for entry in build()["prompts"] if entry["prompt_id"] == 30
+    )
+    assert prompt["queue_states"] == {
+        "gb-openprescribing": "temporarily_unavailable"
+    }
+    assert prompt["next_actions"] == [
+        audit_mod.OPENPRESCRIBING_UNAVAILABLE_ACTION
+    ]
+
+
 def test_live_qualification_completes_verified_prompts() -> None:
     audit = _audit()
     measured = json.loads(MEASURED.read_text(encoding="utf-8"))["body"]
