@@ -15,10 +15,14 @@
   Loss-aware scalar conversion is being implemented; typed Arrow schemas and
   B1/v4 lineage integration remain pending. Structural coverage is not
   promoted Silver or public data.
-- [~] Add negative tests for MBS-as-medicine, PBS-as-regulatory,
+- [x] Add negative tests for MBS-as-medicine, PBS-as-regulatory,
   terminology-as-funding, candidate-as-reviewed, and absence-as-negative status.
-  Source-table contracts reject these coercions; later typed/graph APIs still
-  require their own negative controls. No candidate promotion API is added.
+  Source-table contracts reject dimension coercions, implicit review promotion,
+  and negative absence interpretation. MBS/PBS Gold candidates preserve only
+  service-benefit or source-structure edges, keep review state `not_reviewed`,
+  and expose no admission, inference, or terminology-resolution path. No
+  candidate promotion API is added. Verified by the focused source-contract,
+  MBS/PBS Gold, and Gold edge-review test suites on current main.
 - [ ] Phase Verification & Checkpoint: field and semantic denominators are
   complete and fail closed.
 
