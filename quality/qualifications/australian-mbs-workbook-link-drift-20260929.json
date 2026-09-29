@@ -1,0 +1,42 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-workbook-link-drift-observation",
+  "schema_version": 1,
+  "observed_at": "2026-09-29T10:23:30Z",
+  "publisher": "Australian Government Department of Health, Disability and Ageing",
+  "method": "Metadata-only read of official publication pages and resolved workbook link targets. Workbook requests from the web reader returned unsupported XLSX content-type; no workbook body was inspected or retained.",
+  "observations": [
+    {
+      "family": "annual_state_and_territory",
+      "page_url": "https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en",
+      "page_title": "Medicare annual statistics – State and territory (2009-10 to 2025-26)",
+      "page_statement": "Annual statistics about the use of Medicare by state and territory from 2009–10 to 2025–26.",
+      "publication_date": "2026-08-10",
+      "attachment_url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
+      "attachment_body_inspected": false,
+      "metadata_discrepancy": "The page declares coverage through 2025–26 while the linked filename ends in 2024–25. Actual workbook coverage is unverified."
+    },
+    {
+      "family": "rolling_12_months",
+      "page_url": "https://www.health.gov.au/resources/publications/medicare-annual-statistics-rolling-12-months-july-2009-to-june-2026?language=en",
+      "page_title": "Medicare annual statistics – Rolling 12 months (July 2009 to June 2026)",
+      "page_statement": "12-month rolling statistics about Medicare use from July 2009 to June 2026.",
+      "publication_date": "2026-08-10",
+      "attachment_url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-rolling-12-months-july-2009-to-march-2026.xlsx",
+      "attachment_body_inspected": false,
+      "publication_authorization_category": "rolling_12_months",
+      "publication_authorization_enumerates_category": false,
+      "metadata_discrepancy": "The page declares coverage through June 2026 while the linked filename ends in March 2026. Actual workbook coverage is unverified."
+    }
+  ],
+  "limitations": [
+    "This receipt preserves observed publication metadata, not a content-addressed copy of mutable source HTML.",
+    "The web reader did not deliver workbook content because of unsupported XLSX media type; no workbook bytes were inspected or retained locally.",
+    "No rights conclusion or authorization-scope change is made by this receipt.",
+    "The receipt does not establish a patient denominator, item-level participant count, mirror, or complete historical coverage."
+  ],
+  "digest": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON with sorted keys, compact separators, ensure_ascii=false; digest field excluded",
+    "value": "d6a56898f06de71776848409943a06b3d3e09c84b06df2ab0c90a69a5983fd0e"
+  }
+}
