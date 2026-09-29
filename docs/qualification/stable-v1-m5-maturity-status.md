@@ -21,10 +21,14 @@ authorized internal retention, the complete current export and 129 monthly FDA
 list snapshots, recovered source-record projection with byte-identical
 Parquet, and verified private archive checksums. The older bounded U.S. Bronze
 corpus row describes a separate quarantined acquisition and does not override
-that later, specifically scoped evidence. The latest report refresh was
-evaluated against exact main commit
-`baec563d200ccb3dcdf1b5b5ada66dc7ba8c95bc` and finds 118 of
+that later, specifically scoped evidence. The latest report snapshot is bound
+to source-acquisition main commit
+`09d3c8370b04c4b92439b2587e683e92276f3d6b` and finds 117 of
 157 in-scope public/no-credential sources without qualifying landing evidence.
+The Sweden count reflects one internally authorized, privately retained 2025
+national aggregate acquisition; its coarse rights state remains unknown, and
+no licensing, public release, redistribution, or complete Swedish coverage is
+claimed. The Prompt 33 audit leaves Denmark and Norway without live receipts.
 Two fixture-only and 15 excluded sources remain outside that denominator.
 Delegated detail-page coverage remains incomplete, and public release and
 external publication remain unauthorized.

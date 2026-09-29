@@ -532,16 +532,6 @@ def receipt_backed_landing_evidence(
                 if source_id in qualified:
                     evidence[source_id] = relative
                     break
-            if (
-                relative == SWEDEN_QUALIFICATION_RELATIVE
-                and source_id == SWEDEN_SOURCE_ID
-                and _is_successful_sweden_receipt(
-                    json.loads((root / relative).read_text(encoding="utf-8")),
-                    source_id,
-                )
-            ):
-                evidence[source_id] = relative
-                break
             receipt_path = root / relative
             if not receipt_path.is_file():
                 continue

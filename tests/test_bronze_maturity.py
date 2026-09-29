@@ -96,6 +96,7 @@ def test_nice_internal_acquisition_receipt_counts_as_bronze_landing() -> None:
     assert receipt["external_publication_authorized"] is False
 
 
+@pytest.mark.unit
 def test_sweden_private_aggregate_receipt_counts_as_bronze_landing() -> None:
     evidence = receipt_backed_landing_evidence(
         ROOT, {bronze_maturity_mod.SWEDEN_SOURCE_ID}
@@ -123,6 +124,7 @@ def test_sweden_private_aggregate_receipt_counts_as_bronze_landing() -> None:
         ),
     ],
 )
+@pytest.mark.unit
 def test_sweden_landing_rejects_receipt_or_boundary_drift(
     tmp_path: Path, mutate
 ) -> None:
