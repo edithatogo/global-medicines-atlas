@@ -1261,6 +1261,13 @@
 - [x] Review the official PBS API overview and FAQ. The public API is available without identity requirements and its documentation expressly describes downloading schedule data to local storage for a user’s own systems/databases; the API contains effective schedules for the most recent 12 months. The documentation does not specify a retention duration or external redistribution licence. Do not apply authenticated HPP portal terms to the distinct public API. This clarifies the documented local-copy operation but makes no legal conclusion or maintainer rights decision.
 - [~] Keep API acquisition pending a source-specific maintainer decision defining permitted internal retention; seek provider clarification for retention duration and external redistribution. No payload request or acquisition was made.
 
+- [x] Reconcile the current API data-model document update date. The official
+  API overview lists the v3.7.8 data-model PDF as updated August 2026; the
+  machine-readable access preflight now records its exact public URL and month
+  separately from the May 2026 API release-note date. This is documentation
+  freshness evidence only; no API payload was requested and source rights,
+  current API semantics, and M-109 remain unresolved.
+
 ## Exact P7 real-source field-lineage follow-up (2026-09-29)
 
 - [x] Qualify the pinned July 2024 P7 workbook's complete value-free field
