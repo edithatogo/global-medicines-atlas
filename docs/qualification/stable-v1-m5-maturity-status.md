@@ -22,8 +22,8 @@ list snapshots, recovered source-record projection with byte-identical
 Parquet, and verified private archive checksums. The older bounded U.S. Bronze
 corpus row describes a separate quarantined acquisition and does not override
 that later, specifically scoped evidence. The latest report snapshot is bound
-to source-acquisition main commit
-`09d3c8370b04c4b92439b2587e683e92276f3d6b` and finds 117 of
+to exact merged main commit
+`fb7947d840835f44316bca54adf4cb48210032c7` and finds 117 of
 157 in-scope public/no-credential sources without qualifying landing evidence.
 The Sweden count reflects one internally authorized, privately retained 2025
 national aggregate acquisition; its coarse rights state remains unknown, and
