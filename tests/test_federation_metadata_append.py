@@ -4,6 +4,7 @@ import hashlib
 import json
 from dataclasses import replace
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -56,6 +57,36 @@ def test_append_preserves_raw_and_existing_card():
         observed=(*baseline, plan.addition),
         anonymous_payload=plan.payload,
     )
+
+
+def test_transaction_parent_is_separate_from_source_release_revision():
+    document, baseline = fixture()
+    parent = "d" * 40
+    plan = prepare_metadata_append(document, baseline, parent_revision=parent)
+
+    assert document["revision"] != parent
+    assert plan.parent_revision == parent
+    assert json.loads(plan.payload)["revision"] == document["revision"]
+    verify_metadata_append(
+        plan,
+        dataset=plan.dataset,
+        parent_revision=parent,
+        revision="f" * 40,
+        private=False,
+        gated=False,
+        observed=(*baseline, plan.addition),
+        anonymous_payload=plan.payload,
+    )
+
+
+@pytest.mark.parametrize("parent_revision", ["not-a-revision", 123])
+def test_rejects_invalid_explicit_parent_revision(parent_revision: Any) -> None:
+    document, baseline = fixture()
+
+    with pytest.raises(ValueError, match="exact immutable revision"):
+        prepare_metadata_append(
+            document, baseline, parent_revision=parent_revision
+        )
 
 
 @pytest.mark.parametrize(

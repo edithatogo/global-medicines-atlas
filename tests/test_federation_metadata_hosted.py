@@ -42,11 +42,12 @@ class FakeHub:
         self.calls = []
         self.drift = False
         self.tamper = False
+        self.head_revision = document["revision"]
 
     def snapshot(self, dataset, revision):
         self.calls.append("snapshot")
         objects = self.objects
-        if self.plan and revision != self.document["revision"]:
+        if self.plan and revision != self.plan.parent_revision:
             objects += (self.plan.addition,)
         if self.tamper and self.plan:
             objects = objects[1:]
@@ -56,7 +57,7 @@ class FakeHub:
 
     def head(self, dataset):
         self.calls.append("head")
-        return "a" * 40 if self.drift else self.document["revision"]
+        return "a" * 40 if self.drift else self.head_revision
 
     def append(self, plan):
         self.calls.append("append")
@@ -112,6 +113,47 @@ def test_intent_before_append_and_verification_after(setup):
     ]
     assert result["revision"] == "f" * 40
     assert records[0]["addition"] == records[2]["addition"]
+
+
+def test_hosted_append_binds_current_parent_without_rewriting_source_revision(
+    setup,
+):
+    document, hub = setup
+    source_revision = document["revision"]
+    parent = "d" * 40
+    hub.head_revision = parent
+    records = []
+
+    def persist(receipt):
+        records.append(receipt)
+        return "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-1"
+
+    result = execute_metadata_append(
+        document,
+        exact_commit="a" * 40,
+        hub=hub,
+        persist=persist,
+        expected_parent_revision=parent,
+    )
+
+    assert result["parent_revision"] == parent
+    assert result["source_revision"] == source_revision
+    assert json.loads(hub.plan.payload)["revision"] == source_revision
+    assert records[0]["parent_revision"] == parent
+    assert records[0]["source_revision"] == source_revision
+
+
+def test_invalid_explicit_parent_rejected_before_network(setup):
+    document, hub = setup
+    with pytest.raises(ValueError, match="exact immutable parent"):
+        execute_metadata_append(
+            document,
+            exact_commit="a" * 40,
+            expected_parent_revision="not-a-revision",
+            hub=hub,
+            persist=lambda _: "",
+        )
+    assert hub.calls == []
 
 
 @pytest.mark.parametrize(
@@ -189,6 +231,8 @@ def test_changed_sibling_cannot_emit_success(setup):
 
 def test_acknowledged_append_recovers_without_second_write(setup):
     document, hub = setup
+    parent = "d" * 40
+    hub.head_revision = parent
     hub.tamper = True
     records = []
 
@@ -198,14 +242,30 @@ def test_acknowledged_append_recovers_without_second_write(setup):
 
     with pytest.raises(ValueError, match="sibling inventory"):
         execute_metadata_append(
-            document, exact_commit="a" * 40, hub=hub, persist=persist
+            document,
+            exact_commit="a" * 40,
+            expected_parent_revision=parent,
+            hub=hub,
+            persist=persist,
         )
     acknowledgement = records[-1]
     hub.tamper = False
     hub.head = lambda _dataset: "f" * 40
+    call_count = len(hub.calls)
+    with pytest.raises(ValueError, match="original CAS parent"):
+        execute_metadata_append(
+            document,
+            exact_commit="a" * 40,
+            expected_parent_revision="f" * 40,
+            hub=hub,
+            persist=persist,
+            acknowledgement=acknowledgement,
+        )
+    assert len(hub.calls) == call_count
     result = execute_metadata_append(
         document,
         exact_commit="a" * 40,
+        expected_parent_revision=parent,
         hub=hub,
         persist=persist,
         acknowledgement=acknowledgement,
@@ -217,6 +277,7 @@ def test_acknowledged_append_recovers_without_second_write(setup):
         execute_metadata_append(
             document,
             exact_commit="a" * 40,
+            expected_parent_revision=parent,
             hub=hub,
             persist=persist,
             acknowledgement=acknowledgement,

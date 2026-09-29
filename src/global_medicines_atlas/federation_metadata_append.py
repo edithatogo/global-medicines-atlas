@@ -81,7 +81,10 @@ class MetadataAppend:
 
 
 def prepare_metadata_append(
-    document: dict[str, Any], baseline: tuple[ObjectDigest, ...]
+    document: dict[str, Any],
+    baseline: tuple[ObjectDigest, ...],
+    *,
+    parent_revision: str | None = None,
 ) -> MetadataAppend:
     """Prepare canonical source metadata without network or filesystem I/O.
 
@@ -117,9 +120,16 @@ def prepare_metadata_append(
     )
     if addition.path in objects:
         raise ValueError("metadata path already exists; append refused")
+    selected_parent = (
+        metadata.revision if parent_revision is None else parent_revision
+    )
+    if type(selected_parent) is not str or not re.fullmatch(
+        r"[0-9a-f]{40}", selected_parent
+    ):
+        raise ValueError("append parent must be an exact immutable revision")
     return MetadataAppend(
         metadata.dataset,
-        metadata.revision,
+        selected_parent,
         tuple(sorted(baseline, key=lambda item: item.path)),
         addition,
         payload,
@@ -145,7 +155,11 @@ def verify_metadata_append(
     """
     if type(plan.payload) is not bytes or len(plan.payload) > 1024 * 1024:
         raise ValueError("invalid metadata payload")
-    rebuilt = prepare_metadata_append(json.loads(plan.payload), plan.baseline)
+    rebuilt = prepare_metadata_append(
+        json.loads(plan.payload),
+        plan.baseline,
+        parent_revision=plan.parent_revision,
+    )
     if rebuilt != plan:
         raise ValueError("transaction differs from validated preparation")
     if dataset != plan.dataset or parent_revision != plan.parent_revision:

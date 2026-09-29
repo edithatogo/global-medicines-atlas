@@ -55,15 +55,19 @@
 - [~] Require source-specific data cards, Croissant, citations, provenance,
   coverage, rights/permission, withdrawal/correction, and version histories.
   The offline MBS/PBS contract, valid/invalid fixtures, and intended-red receipt
-  are implemented; emitting and anonymously verifying the metadata in each
-  hosted source archive remains pending.
+  are implemented. PBS metadata was appended and anonymously verified at
+  revision `48fd7345fb09277bb5b85644dba72804633a2abb` (run
+  `36520821504`; issue #340 comment `5883538920`). MBS metadata remains pending:
+  its source release identity is `75f9f20a…`, while its current archive CAS
+  parent is `ba82cd1d…`. The append contract and workflow now bind these
+  separately; the source release identity is not rewritten to the newer head.
   Offline append preparation/readback validation now binds the exact parent,
   complete preserved sibling inventory and one content-addressed source
   metadata addition (`federation_metadata_append.py`). The hosted-only CAS
   adapter and source-specific workflow are now prepared with mocked SDK,
-  preservation, deadline and durable-receipt tests. Actual dispatch,
-  independent anonymous observation and durable publication receipts remain
-  pending; see `docs/qualification/source-metadata-append.md`.
+  preservation, deadline and durable-receipt tests. See
+  `docs/qualification/source-metadata-append.md` for the hosted receipt and
+  remaining MBS step.
 - [ ] Phase Verification & Checkpoint: datasets exist publicly but contain only
   exact approved manifests; empty repositories are not claimed as data.
 

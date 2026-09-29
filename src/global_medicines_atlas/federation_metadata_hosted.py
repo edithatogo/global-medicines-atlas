@@ -72,10 +72,11 @@ def require_hosted_main(exact_commit: str) -> None:
         raise ValueError("metadata publication requires run identity")
 
 
-def execute_metadata_append(  # ruff: ignore[too-many-branches] -- explicit write/recovery gates
+def execute_metadata_append(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statements] -- linear auditable transaction/recovery gates
     document: dict[str, Any],
     *,
     exact_commit: str,
+    expected_parent_revision: str | None = None,
     hub: MetadataHub,
     persist: Callable[[dict[str, Any]], str],
     acknowledgement: dict[str, Any] | None = None,
@@ -88,16 +89,37 @@ def execute_metadata_append(  # ruff: ignore[too-many-branches] -- explicit writ
     require_hosted_main(exact_commit)
     # Validate before any network call or credential use.
     metadata = validate_source_metadata(document)
-    before = hub.snapshot(metadata.dataset, metadata.revision)
+    expected_parent_revision = (
+        metadata.revision
+        if expected_parent_revision is None
+        else expected_parent_revision
+    )
+    if type(expected_parent_revision) is not str or not re.fullmatch(
+        r"[0-9a-f]{40}", expected_parent_revision
+    ):
+        raise ValueError("append requires an exact immutable parent revision")
+    if acknowledgement is not None:
+        acknowledged_parent = acknowledgement.get("parent_revision")
+        if type(acknowledged_parent) is not str or not re.fullmatch(
+            r"[0-9a-f]{40}", acknowledged_parent
+        ):
+            raise ValueError("recovery acknowledgement parent revision invalid")
+        if expected_parent_revision != acknowledged_parent:
+            raise ValueError(
+                "recovery parent must match the original CAS parent"
+            )
+    before = hub.snapshot(metadata.dataset, expected_parent_revision)
     if (
-        before.revision != metadata.revision
+        before.revision != expected_parent_revision
         or before.private is not False
         or before.gated is not False
     ):
         raise ValueError(
             "source baseline must be exact public non-gated revision"
         )
-    plan = prepare_metadata_append(document, before.objects)
+    plan = prepare_metadata_append(
+        document, before.objects, parent_revision=expected_parent_revision
+    )
     if (
         acknowledgement is None
         and hub.head(plan.dataset) != plan.parent_revision
@@ -109,6 +131,7 @@ def execute_metadata_append(  # ruff: ignore[too-many-branches] -- explicit writ
         "status": "intent",
         "dataset": plan.dataset,
         "parent_revision": plan.parent_revision,
+        "source_revision": metadata.revision,
         "code_commit": exact_commit,
         "run_url": f"https://github.com/{REPOSITORY}/actions/runs/"
         + os.environ["GITHUB_RUN_ID"],
