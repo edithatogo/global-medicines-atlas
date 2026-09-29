@@ -34,6 +34,15 @@ relabeling its payload. The binding preserves the source release in v4
 remains `declared`; it is not admission, qualification, rights evidence or an
 export/publication instruction.
 
+`bind_mbs_native_profile_to_federation` adds a second immutable sidecar that
+pairs this v4 binding with the exact native-cohort profile binding. It checks
+source revision, comparison schema profile, cohort, and B1/B2 digests, and its
+digest covers both component bindings. The native component also binds the
+complete selected cohort, including source/omitted denominators and source
+ordinals. This preserves v4 compatibility while making the native and
+federated profile identities jointly addressable; both sidecars remain
+`declared`.
+
 Native comparisons additionally permit a `historical` cohort, while federation
 v4 accepts only `legacy`, `current` and `synthetic`. The consumer rejects
 `historical` and every other unsupported value rather than silently converting

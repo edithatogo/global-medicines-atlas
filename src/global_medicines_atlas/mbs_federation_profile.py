@@ -10,12 +10,15 @@ import hashlib
 import json
 from typing import Any, Literal, cast
 
-from pydantic import ConfigDict
+from pydantic import ConfigDict, model_validator
 
 from .federation import validate_federation_semantics
 from .federation_reader import SCHEMA_SHA256
 from .historical_comparison import Digest, ProfileName
-from .mbs_schema_profile import MbsSchemaProfileDeclaration
+from .mbs_schema_profile import (
+    MbsNativeProfileBinding,
+    MbsSchemaProfileDeclaration,
+)
 from .models import FrozenModel
 
 MAX_FEDERATION_DOCUMENT_BYTES = 1024 * 1024
@@ -45,6 +48,82 @@ class MbsFederationProfileBinding(FrozenModel):
     legacy_schema_era_meaning: Literal["source_release_revision"] = (
         "source_release_revision"
     )
+
+
+class MbsFederatedNativeProfileBinding(FrozenModel):
+    """Content-bound pairing of a v4 record and its exact native cohort."""
+
+    model_config = ConfigDict(revalidate_instances="always")
+    schema_id: Literal[
+        "global-medicines-atlas.mbs-federated-native-profile-binding"
+    ] = "global-medicines-atlas.mbs-federated-native-profile-binding"
+    schema_version: Literal[1] = 1
+    status: Literal["declared"] = "declared"
+    federation: MbsFederationProfileBinding
+    native: MbsNativeProfileBinding
+    binding_sha256: Digest
+
+    @model_validator(mode="after")
+    def matches_and_is_content_bound(self) -> MbsFederatedNativeProfileBinding:
+        if (
+            self.federation.source_revision != self.native.source_revision
+            or self.federation.comparison_schema_profile
+            != self.native.comparison_schema_profile
+            or self.federation.comparison_cohort != self.native.cohort
+            or self.federation.b1_sha256 != self.native.b1_sha256
+            or self.federation.b2_sha256 != self.native.b2_sha256
+        ):
+            raise ValueError("MBS native and federated identities differ")
+        if self.binding_sha256 != _federated_binding_digest(self):
+            raise ValueError("MBS federated native binding digest differs")
+        return self
+
+
+def _federated_binding_digest(
+    binding: MbsFederatedNativeProfileBinding,
+) -> str:
+    payload = binding.model_dump(mode="json", exclude={"binding_sha256"})
+    encoded = json.dumps(
+        payload,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode()
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def bind_mbs_native_profile_to_federation(
+    declaration: MbsSchemaProfileDeclaration,
+    federation_document: dict[str, Any],
+    native: MbsNativeProfileBinding,
+) -> MbsFederatedNativeProfileBinding:
+    """Bind exact native-cohort identity alongside an observed v4 record.
+
+    This additive sidecar leaves v4 bytes unchanged and rejects any mismatch in
+    source release, schema profile, cohort, or B1/B2 identity. It does not
+    qualify either input or grant admission/publication authority.
+    """
+    try:
+        federation = bind_mbs_profile_to_federation(
+            declaration, federation_document
+        )
+        native = MbsNativeProfileBinding.model_validate(
+            native.model_dump(mode="json", warnings=False)
+        )
+        draft = MbsFederatedNativeProfileBinding.model_construct(
+            federation=federation,
+            native=native,
+        )
+        return MbsFederatedNativeProfileBinding.model_validate({
+            "federation": federation.model_dump(mode="json"),
+            "native": native.model_dump(mode="json"),
+            "binding_sha256": _federated_binding_digest(draft),
+        })
+    except AttributeError, KeyError, TypeError, ValueError:
+        raise ValueError(
+            "invalid MBS federated native profile binding"
+        ) from None
 
 
 def bind_mbs_profile_to_federation(
