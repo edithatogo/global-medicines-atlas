@@ -15,10 +15,13 @@ from collections import Counter, defaultdict
 from datetime import UTC, date, datetime
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import httpx
 from pydantic import AnyUrl
+
+if TYPE_CHECKING:
+    import pyarrow as pa
 
 from global_medicines_atlas.acquisition import (
     AcquisitionPolicy,
@@ -33,6 +36,11 @@ from global_medicines_atlas.australian_source_contracts import (
     mbs_field_contracts,
 )
 from global_medicines_atlas.federation_reader import HOSTS
+from global_medicines_atlas.mbs_schema_profile import (
+    DECLARATION_METADATA_KEY,
+    MbsSchemaProfileDeclaration,
+    iter_profiled_mbs_silver_batches,
+)
 from global_medicines_atlas.mbs_silver import (
     MAX_MBS_AMOUNT_INTEGER_DIGITS,
     iter_mbs_silver_batches,
@@ -626,12 +634,16 @@ def qualify(  # ruff: ignore[too-many-locals] - hashes two sources in memory
     quality_diagnostics = _quality_diagnostics(
         payload, receipt, rows_per_batch=rows_per_batch
     )
+    profiled_schema_compatibility = _profiled_schema_compatibility(
+        payload, receipt, rows_per_batch=rows_per_batch
+    )
     candidate_report = {
         "qualification": report.model_dump(mode="json"),
         "public_v4_identity": public_v4_identity,
         "resolved_blockers": list(resolved_blockers),
         "current_blockers": list(current_blockers),
         "quality_diagnostics": quality_diagnostics,
+        "profiled_schema_compatibility": profiled_schema_compatibility,
         "official_release_check": {
             "source_uri": OFFICIAL_MBS_V3_URI,
             "release_id": OFFICIAL_RELEASE_ID,
@@ -666,6 +678,110 @@ def qualify(  # ruff: ignore[too-many-locals] - hashes two sources in memory
             "it does not establish M-109 acceptance."
         ),
     }
+
+
+def _profiled_schema_compatibility(
+    payload: bytes,
+    receipt: SourceReceipt,
+    *,
+    rows_per_batch: int,
+) -> dict[str, object]:
+    """Verify the declared-only wrapper preserves every exact source row."""
+    declaration = MbsSchemaProfileDeclaration(
+        source_id="au-mbs",
+        source_revision=receipt.source.catalog_version,
+        b1_sha256=receipt.digest(),
+        b2_sha256=receipt.payload.sha256,
+        comparison_schema_profile="mbs-xml-declared-profile-v1",
+    )
+    table_reports: list[dict[str, object]] = []
+    for table in _TABLES:
+        original = iter_mbs_silver_batches(
+            payload,
+            receipt,
+            table=table,
+            date_format="mbs-dmy",
+            rows_per_batch=rows_per_batch,
+        )
+        profiled = iter_profiled_mbs_silver_batches(
+            payload,
+            receipt,
+            table=table,
+            declaration=declaration,
+            date_format="mbs-dmy",
+            rows_per_batch=rows_per_batch,
+        )
+        row_count = 0
+        field_count: int | None = None
+        for base_batch, profiled_batch in zip(original, profiled, strict=True):
+            if not _profiled_batch_matches(base_batch, profiled_batch, receipt):
+                raise ValueError(
+                    "declared MBS schema profile changed source projection"
+                )
+            row_count += profiled_batch.num_rows
+            current_field_count = profiled_batch.num_columns
+            if field_count is not None and field_count != current_field_count:
+                raise ValueError("MBS profile table field denominator changed")
+            field_count = current_field_count
+        if field_count is None or row_count < 1:
+            raise ValueError("MBS profile table denominator is empty")
+        table_reports.append({
+            "table": table,
+            "row_count": row_count,
+            "field_count": field_count,
+            "field_occurrence_count": row_count * field_count,
+            "array_values_match_unprofiled_projection": True,
+            "legacy_metadata_unchanged": True,
+        })
+    return {
+        "status": "verified",
+        "profile_status": "declared_only",
+        "profile_id": declaration.comparison_schema_profile,
+        "source_id": declaration.source_id,
+        "source_revision": declaration.source_revision,
+        "b1_sha256": declaration.b1_sha256,
+        "b2_sha256": declaration.b2_sha256,
+        "table_count": len(table_reports),
+        "tables": table_reports,
+        "source_values_included": False,
+        "publication_performed": False,
+    }
+
+
+def _profiled_batch_matches(
+    base_batch: pa.RecordBatch,
+    profiled_batch: pa.RecordBatch,
+    receipt: SourceReceipt,
+) -> bool:
+    """Check declared metadata and exact native batch preservation."""
+    base_metadata = dict(base_batch.schema.metadata or {})
+    profile_metadata = dict(profiled_batch.schema.metadata or {})
+    encoded_declaration = profile_metadata.pop(DECLARATION_METADATA_KEY, None)
+    if encoded_declaration is None:
+        return False
+    declaration_value = json.loads(encoded_declaration)
+    metadata_matches = profile_metadata == base_metadata
+    schema_matches = base_batch.schema.remove_metadata().equals(
+        profiled_batch.schema.remove_metadata()
+    )
+    field_denominator_matches = (
+        base_batch.num_columns == profiled_batch.num_columns
+    )
+    row_values_match = base_batch.to_pylist() == profiled_batch.to_pylist()
+    declaration_matches = (
+        declaration_value.get("status") == "declared"
+        and declaration_value.get("source_revision")
+        == receipt.source.catalog_version
+        and declaration_value.get("b1_sha256") == receipt.digest()
+        and declaration_value.get("b2_sha256") == receipt.payload.sha256
+    )
+    return all((
+        metadata_matches,
+        schema_matches,
+        field_denominator_matches,
+        row_values_match,
+        declaration_matches,
+    ))
 
 
 def _quality_diagnostics(
