@@ -228,6 +228,16 @@ def test_generated_queue_schema_and_conductor_projection_are_current() -> None:
         "quality/qualifications/orange-book-historical-refresh-20260928.json"
         in orange.evidence_references
     )
+    openprescribing = next(
+        item for item in queue.items if item.source_id == "gb-openprescribing"
+    )
+    assert openprescribing.state is LandingDisposition.TEMPORARILY_UNAVAILABLE
+    assert "provider confirmed" in openprescribing.reason
+    assert "before one bounded retry" in openprescribing.next_action
+    assert (
+        "quality/qualifications/provider-response-thread-check-20260929.json"
+        in openprescribing.evidence_references
+    )
     assert MARKDOWN_PATH.read_text(encoding="utf-8") == (
         render_conductor_queue(queue)
     )

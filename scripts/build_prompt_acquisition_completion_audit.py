@@ -90,6 +90,12 @@ SHORTAGES_SOURCE_IDS = frozenset({"us-fda-drug-shortages"})
 GIP_SOURCE_IDS = frozenset({"nl-gipdatabank"})
 OPEN_MEDIC_SOURCE_IDS = frozenset({"fr-open-medic"})
 NICE_PRIVATE_ACQUISITION_SOURCE_ID = "gb-nice-medicines-utilisation"
+OPENPRESCRIBING_PROMPT_ID = 30
+OPENPRESCRIBING_UNAVAILABLE_ACTION = (
+    "wait for a provider-supported automated route or material access-control "
+    "change before one bounded retry; do not bypass challenges, crawl "
+    "unboundedly, or substitute upstream files"
+)
 OPEN_MEDIC_EXPECTED_RELEASE_COUNT = 12
 GIP_EXPECTED_RELEASE_COUNT = 28
 SHA256_HEX_LENGTH = 64
@@ -186,6 +192,11 @@ def _prompt_entry(
         )
     incomplete_states = {states[source_id] for source_id in missing}
     next_actions = [NEXT_ACTIONS[state] for state in sorted(incomplete_states)]
+    if (
+        track.track_id == OPENPRESCRIBING_PROMPT_ID
+        and states.get("gb-openprescribing") == "temporarily_unavailable"
+    ):
+        next_actions = [OPENPRESCRIBING_UNAVAILABLE_ACTION]
     if (
         source_ids == [NICE_PRIVATE_ACQUISITION_SOURCE_ID]
         and states[NICE_PRIVATE_ACQUISITION_SOURCE_ID] == "landed_and_evidenced"

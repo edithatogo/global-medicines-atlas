@@ -1,0 +1,75 @@
+{
+  "schema_id": "global-medicines-atlas.provider-response-mailbox-check",
+  "schema_version": 1,
+  "recorded_at": "2026-09-29T16:36:32Z",
+  "source_receipt": "quality/qualifications/provider-outreach-receipts-20260929.json",
+  "method": "Read-only Gmail sender searches in the already-used maintainer mailbox for messages after 2026-09-28; message metadata only, no message body or attachments read.",
+  "results": [
+    {
+      "source_id": "gb-openprescribing",
+      "query": "from:feedback@openprescribing.net after:2026/09/28",
+      "matching_messages": [],
+      "status": "no_new_provider_message",
+      "existing_acknowledgement": "quality/qualifications/provider-outreach-receipts-20260929.json"
+    },
+    {
+      "source_id": "au-pbs-api",
+      "query": "from:HPP.Support@health.gov.au after:2026/09/28",
+      "matching_messages": [
+        {
+          "gmail_message_id": "1a0e8ec5493ffcdc",
+          "received_at": "2026-09-28T16:49:48Z",
+          "kind": "automated_acknowledgement",
+          "substantive_guidance": false
+        }
+      ],
+      "status": "automated_acknowledgement_only"
+    },
+    {
+      "source_id": "au-mbs-utilisation",
+      "query": "from:enquiries@health.gov.au after:2026/09/28",
+      "matching_messages": [
+        {
+          "gmail_message_id": "1a0e8eccd26b33f4",
+          "received_at": "2026-09-28T16:50:18Z",
+          "kind": "automated_acknowledgement",
+          "substantive_guidance": false
+        }
+      ],
+      "status": "automated_acknowledgement_only"
+    },
+    {
+      "source_id": "au-mbs-p7-legacy-workbook",
+      "query": "from:enquiries@health.gov.au after:2026/09/28",
+      "matching_messages": [
+        {
+          "gmail_message_id": "1a0e9336bdbabce5",
+          "received_at": "2026-09-28T18:07:21Z",
+          "kind": "automated_acknowledgement",
+          "substantive_guidance": false
+        }
+      ],
+      "status": "automated_acknowledgement_only"
+    },
+    {
+      "source_id": "au-services-australia-mbs-item-demographics",
+      "query": "from:statistics@servicesaustralia.gov.au after:2026/09/28",
+      "matching_messages": [],
+      "status": "no_new_source_owner_message"
+    },
+    {
+      "source_id": "dk-medstat-utilisation",
+      "query": "from:kontakt@sundhedsdata.dk after:2026/09/28",
+      "matching_messages": [
+        {
+          "gmail_message_id": "1a0e9b780c580bd2",
+          "received_at": "2026-09-28T20:31:49Z",
+          "kind": "automated_acknowledgement_unbound_to_inquiry",
+          "substantive_guidance": false
+        }
+      ],
+      "status": "automated_acknowledgement_only"
+    }
+  ],
+  "boundary": "This mailbox check is not source-owner guidance, a rights decision, an endpoint change, or authorization to acquire data. No outbound messages, payload requests, or attachment reads were performed."
+}

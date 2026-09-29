@@ -517,3 +517,35 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   `5885067299`, as recorded in `docs/qualification/source-metadata-append.md`.
   The public metadata object remains verified at its exact revision, size, and
   digest; no source payload or acceptance claim changed.
+
+## Provider-response readback (2026-09-29)
+
+- [x] Check the existing OpenPrescribing, PBS API, Medicare workbook,
+  MBS workbook-date, Services Australia denominator, and Medstat inquiries
+  using read-only mailbox searches. The initial sender-address-only check is
+  retained in `quality/qualifications/provider-response-check-20260929.json`;
+  a review finding showed that sender filters could miss replies from other
+  addresses, so it was superseded by the subject-scoped thread check below.
+- [~] Keep dependent source acquisition and acceptance gates pending. Do not
+  infer approval from automated acknowledgements or repeat unchanged source
+  probes. No follow-up messages were sent.
+
+## OpenPrescribing provider response and thread-search correction (2026-09-29)
+
+- [x] Search each outstanding inquiry by its subject rather than only its
+  destination address. This found OpenPrescribing's substantive reply in the
+  original thread from an observed responder address; record the correction
+  and exact message metadata in
+  `quality/qualifications/provider-response-thread-check-20260929.json`.
+- [x] Reconcile the OpenPrescribing queue reason and next action. The provider
+  says increased Cloudflare protections may challenge or block automation and
+  that no alternative automated retrieval route can be offered at present.
+  Keep the approved scope unchanged and wait for a provider-supported route or
+  material access-control change before a bounded retry. Do not bypass
+  challenges, crawl unboundedly, or substitute upstream files.
+- [x] Regenerate the dependent B0 Source Index JSON, Parquet, schema, dataset
+  metadata, and documentation projections from the updated landing queue.
+  The queue state counts did not change; the source-specific reason and retry
+  evidence now agree across B0 projections.
+- [ ] Acquire and qualify only after an authorized, reachable route exists;
+  the current response grants no access, credentials, or rights change.

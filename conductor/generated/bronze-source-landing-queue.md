@@ -73,7 +73,7 @@ Silver transformations included: **no**.
 - [ ] `au-pbs-api` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `ca-dpd` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `eu-ema-pms-fhir` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
-- [ ] `gb-openprescribing` — `temporarily_unavailable`; retry under the failure-receipt schedule.
+- [ ] `gb-openprescribing` — `temporarily_unavailable`; wait for a provider-supported automated route or material access-control change before one bounded retry; do not bypass challenges, crawl unboundedly, or substitute upstream files.
 - [ ] `global-rxnorm` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `nz-nzhts-fhir` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [ ] `us-dailymed-spl` — `rights_blocked`; record source-specific retention and transformation rights.
