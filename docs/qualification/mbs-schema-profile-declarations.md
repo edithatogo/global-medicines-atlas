@@ -41,7 +41,9 @@ digest covers both component bindings. The native component also binds the
 complete selected cohort, including source/omitted denominators and source
 ordinals. This preserves v4 compatibility while making the native and
 federated profile identities jointly addressable; both sidecars remain
-`declared`.
+`declared`. The federation binding requires one v4 `lineage.inputs` receipt to
+carry the exact declared B1 digest before pairing, so a matching declaration
+cannot stand in for a different receipt in the v4 record.
 
 Native comparisons additionally permit a `historical` cohort, while federation
 v4 accepts only `legacy`, `current` and `synthetic`. The consumer rejects

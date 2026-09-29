@@ -41,7 +41,9 @@ def declaration() -> MbsSchemaProfileDeclaration:
     )
 
 
-def document(source_revision: str = "2026-08-01") -> dict:
+def document(
+    source_revision: str = "2026-08-01", b1_sha256: str = "a" * 64
+) -> dict:
     value = json.loads(FIXTURE.read_text())
     value["source"].update(
         source_id="au-mbs",
@@ -50,7 +52,9 @@ def document(source_revision: str = "2026-08-01") -> dict:
         representation="projection",
         schema_era=source_revision,
     )
-    value["lineage"]["inputs"] = [value["verification"]["receipt"]]
+    b1_receipt = copy.deepcopy(value["verification"]["receipt"])
+    b1_receipt["sha256"] = b1_sha256
+    value["lineage"]["inputs"] = [b1_receipt]
     value["lineage"]["promotion_receipt"] = value["verification"]["receipt"]
     return value
 
@@ -107,7 +111,7 @@ def test_binds_profile_without_changing_v4_or_promoting_status():
 
 def test_pairs_federation_record_with_exact_native_cohort():
     native_declaration, native = native_profile()
-    value = document(native.source_revision)
+    value = document(native.source_revision, native_declaration.b1_sha256)
     federation = subject.bind_mbs_profile_to_federation(
         native_declaration, value
     )
@@ -126,7 +130,7 @@ def test_pairs_federation_record_with_exact_native_cohort():
 
 def test_rejects_federation_to_native_identity_mismatch():
     native_declaration, native = native_profile()
-    value = document(native.source_revision)
+    value = document(native.source_revision, native_declaration.b1_sha256)
     mismatched = native.model_copy(
         update={"comparison_schema_profile": "other-mbs-schema-v1"}
     )
@@ -139,7 +143,7 @@ def test_rejects_federation_to_native_identity_mismatch():
 
 def test_revalidates_federated_native_binding_digest():
     native_declaration, native = native_profile()
-    value = document(native.source_revision)
+    value = document(native.source_revision, native_declaration.b1_sha256)
     result = subject.bind_mbs_native_profile_to_federation(
         native_declaration, value, native
     )
@@ -198,6 +202,14 @@ def test_rejects_wrong_federation_identity(path, value):
     for key in path[:-1]:
         target = target[key]
     target[path[-1]] = value
+    with pytest.raises(ValueError, match="invalid MBS federation"):
+        subject.bind_mbs_profile_to_federation(declaration(), candidate)
+
+
+def test_rejects_lineage_without_declared_b1_receipt():
+    candidate = document()
+    candidate["lineage"]["inputs"][0]["sha256"] = "f" * 64
+
     with pytest.raises(ValueError, match="invalid MBS federation"):
         subject.bind_mbs_profile_to_federation(declaration(), candidate)
 

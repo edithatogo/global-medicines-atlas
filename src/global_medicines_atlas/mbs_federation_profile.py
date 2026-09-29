@@ -186,6 +186,11 @@ def _bind(
     )
     if any(observed != expected for observed, expected in identities):
         raise ValueError
+    if not any(
+        receipt["sha256"] == declaration.b1_sha256
+        for receipt in copied["lineage"]["inputs"]
+    ):
+        raise ValueError
     cohort = source["comparison_cohort"]
     if cohort not in {"legacy", "current", "synthetic"}:
         raise ValueError
