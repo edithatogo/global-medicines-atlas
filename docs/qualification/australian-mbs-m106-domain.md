@@ -37,9 +37,13 @@ response's media type; no workbook bytes were retained or inspected. This is
 metadata-only evidence and does not replace the earlier hosted timeout receipt.
 
 The rolling-series category is not listed in the exact categories of the
-existing `australian-mbs-utilisation-publication-authorization.json`. Do not
-acquire or publish it under that record without a maintainer-approved scope
-extension. Both period/link mismatches remain source questions; neither page
-currently supplies a verified patient denominator or item-level participant
-count. Keep M-106 blocked and do not repeat the previous endpoint probes until
-the source endpoint or approved transport changes.
+existing `australian-mbs-utilisation-publication-authorization.json`. The
+maintainer selected D-006-08 to keep the authorization scope unchanged: do not
+acquire, retain, or publish the rolling-series workbook while awaiting a
+corrected authorized link or substantive source-owner clarification. No scope
+extension or licensing conclusion is made. The independently authorized
+annual-series route remains subject to its current authorization and governed
+transport constraints. Both period/link mismatches remain source questions;
+neither page currently supplies a verified patient denominator or item-level
+participant count. Keep M-106 blocked and do not repeat the previous endpoint
+probes until the source endpoint or approved transport changes.
