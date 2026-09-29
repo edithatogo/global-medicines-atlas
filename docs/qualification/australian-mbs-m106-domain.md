@@ -23,6 +23,9 @@ Next acceptance work is source-specific: recover the authorized annual workbook 
 
 ## Official workbook link recheck, 2026-09-29
 
+The exact observations and direct workbook targets are preserved in the
+[metadata-only receipt](../../quality/qualifications/australian-mbs-workbook-link-drift-20260929.json)
+(SHA-256 `d6a56898f06de71776848409943a06b3d3e09c84b06df2ab0c90a69a5983fd0e`).
 The current official [annual state and territory page](https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en)
 still describes data through 2025-26 but its Excel link targets
 `medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx`.
