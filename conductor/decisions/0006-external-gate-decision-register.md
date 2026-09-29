@@ -106,6 +106,33 @@ the M-105 acceptance criterion.
 - **Option C:** reopen further parity work. This cannot repair the historical
   ordering and was not selected.
 
+## D-006-08 — M-106 rolling-series scope
+
+**Status:** maintainer selected unchanged authorization scope (2026-09-29).
+The official rolling 12-month page and its linked workbook filename disagree
+on the ending period, and the rolling-series category is absent from the
+current Australian MBS utilisation publication authorization.
+
+Decision: keep the existing approved categories unchanged, do not acquire,
+retain, or publish the rolling-series workbook, and wait for a corrected link
+or substantive source-owner clarification before reconsidering source
+qualification. M-106 remains blocked; the independent already-authorized
+annual-series route remains governed by its existing authorization and
+transport constraints.
+
+- **Option A — Recommended and selected:** keep scope unchanged and await a
+  corrected authorized link or agency clarification. Do not acquire or publish
+  rolling-series data under the current approval.
+- **Option B:** seek a separately approved authorization extension for the
+  rolling-series category. Not selected; no scope extension is requested by
+  this decision.
+- **Option C:** treat the page's stated period as conclusive and acquire the
+  linked file under the annual-series category. Not selected because the
+  attachment period is unresolved and the category is not enumerated.
+
+This decision is not a licensing conclusion, does not expand rights, and does
+not establish any workbook contents, period denominator, or patient count.
+
 ## Autonomous continuation
 
 While decisions remain open, the agent may validate schemas, run tests, prepare receipts, reconcile documentation, and review hosted state. It must not install Apps, redistribute restricted data, sign or promote a public stable release, or claim production qualification without the relevant decision and durable evidence. OSF is deprecated and must not be treated as an open submission gate.
