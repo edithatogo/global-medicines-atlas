@@ -483,8 +483,8 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   and the catalog data dictionary is empty. This narrows it to a current
   item-level statistics candidate; field semantics and patient counts remain
   unqualified. The focused metadata contract tests (2), Stable v1 contract
-  tests (43), routine Test-Goblin, context/ecosystem checks, Ruff, and diff
-  checks passed.
+  tests (43), routine Test-Goblin, context/ecosystem checks, Ruff,
+  BasedPyright strict, and diff checks passed.
 - [x] Recheck the already-sent patient-count inquiry using a subject-scoped
   Gmail search. It returned the original sent message and no inbound source-
   owner reply; no follow-up was sent. Receipt:
