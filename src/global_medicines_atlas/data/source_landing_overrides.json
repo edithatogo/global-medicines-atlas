@@ -167,11 +167,14 @@
     },
     {
       "source_id": "se-socialstyrelsen-utilisation",
-      "state": "manual_only_documented_acquisition",
-      "reason": "Socialstyrelsen exposes a current public aggregate statistics database and API under CC0 with source-attribution guidance; this does not include person-level medicines-register records.",
-      "manual_instructions": "After source-specific maintainer acceptance, execute bounded aggregate database or API queries, preserve every query parameter, and receipt the source-native result without acquiring person-level records.",
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "Five source-generated aggregate JSON API responses for annual 2025 (national region, both sexes, all age groups, all ATC) and the five approved measure IDs were admitted as immutable B2 evidence, clean-room reconstructed, and archived at an authenticated, pinned private Hugging Face revision after digest verification. The coarse rights state remains unknown; this maintainer decision authorizes internal retention only and does not approve licensing, publication, or redistribution.",
+      "next_action": "Characterize the exact source result schema and broader period/geography coverage only under applicable authorization; do not infer OTC or hospital-administered use, complete Swedish utilisation, public release, or project licence approval.",
       "evidence_references": [
-        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
+        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json",
+        "quality/qualifications/sweden-socialstyrelsen-acquisition-decision-20260929.json",
+        "quality/qualifications/sweden-socialstyrelsen-live-private-bronze-20260929.json"
       ]
     },
     {

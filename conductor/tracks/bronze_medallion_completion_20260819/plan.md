@@ -827,14 +827,20 @@ for credentialed or rights-unresolved sources.
   generated aggregate API results retained internally only. The cap is 70,000
   cells and 100 ATC codes per query; person-level data, bulk downloads, public
   release, and external publication remain excluded.
-- [~] Implement the bounded source query, receipt, Bronze landing, private
-  archive, and hosted private digest readback. Focused Nordic tests pass (33),
-  the new module has 100% focused statement and branch coverage, typing and
-  routine checks pass. Full Test-Goblin reports 5,250 passed, 1 skipped, and 2
-  existing stable-candidate reproducibility failures because local uv is
-  0.12.19 while those tests require 0.11.29; two runner guard tests were added
-  afterward and passed in the 33-test focused rerun.
-- [ ] After merge, run the approved workflow once, verify the private hosted
-  revision and digest receipt, then regenerate the landing queue and Bronze
-  maturity report from observed evidence. Authorization alone does not qualify
-  a landing or change the current 118-source Bronze gap.
+- [x] Implement and merge the bounded acquisition workflow in PR #638
+  (`09d3c837`), then run the maintainer-authorized hosted acquisition once on
+  exact main `09d3c8370b04c4b92439b2587e683e92276f3d6b`. Run
+  [36611480442](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36611480442)
+  completed successfully and verified five aggregate response digests in the
+  private pinned archive; no source payload bytes were downloaded locally.
+- [~] Reconcile the exact workflow, five payload digests, private archive
+  digest/revision, query limits, and retention-only authorization into the
+  Prompt 33 audit and M5 completeness recognizer. Regenerated queue, Prompt 33,
+  B0, and maturity outputs now count Sweden as one bounded private landing and
+  leave 117 of 157 in-scope sources without qualifying landings. Focused
+  Prompt 33 and maturity tests pass (126); Ruff, formatting, `ty`, and diff
+  checks pass. Required hosted PR checks remain pending.
+- [ ] After the reconciliation PR merges, refresh the M5 status page and
+  qualification against that exact main commit. The Sweden receipt does not
+  resolve source licensing, publication rights, complete Swedish coverage,
+  Australian federation, M5 source-coverage maturity, or Stable v1 approval.

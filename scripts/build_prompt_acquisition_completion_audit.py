@@ -66,6 +66,10 @@ GSRS_AUTHORIZATION = (
 GSRS_QUALIFICATION = (
     ROOT / "quality/qualifications/gsrs-unii-acquisition-success-20260826.json"
 )
+SWEDEN_QUALIFICATION = (
+    ROOT
+    / "quality/qualifications/sweden-socialstyrelsen-live-private-bronze-20260929.json"
+)
 DEFAULT_OUTPUT = (
     ROOT / "quality/qualifications/prompt-acquisition-completion-audit.json"
 )
@@ -104,6 +108,24 @@ GIP_EXPECTED_TITLE_SET_SHA256 = (
 )
 GSRS_EXPECTED_RELEASE_COUNT = 68
 GSRS_EXPECTED_PAIRED_PAYLOAD_COUNT = GSRS_EXPECTED_RELEASE_COUNT * 2
+SWEDEN_SOURCE_ID = "se-socialstyrelsen-utilisation"
+SWEDEN_WORKFLOW_COMMIT = "09d3c8370b04c4b92439b2587e683e92276f3d6b"
+SWEDEN_PAYLOAD_SHA256 = (
+    "2776225df2bae38451747a89dfc211a6f09edc43e1c3584d2855b574f6c061ed",
+    "19ef7f11d3d9cd42307ad54a0c1bb7098b333877cf1e66666d37e7349b4267ef",
+    "dd1887387561be7c1a111ec4ab11ef895b21cd2e0c2a29c40bd50fa9578b0414",
+    "c91a65306745bc80bcac5e599fcd5a540c027a49d9f6bf8c309628e3c747a8fb",
+    "de2f425c74a39f14b59fb0d1da13ae0466f29ad9dc38f9f8048321dda77a8883",
+)
+SWEDEN_PAYLOAD_BYTES = (1771, 1772, 1795, 1791, 1771)
+SWEDEN_ARCHIVE_SHA256 = (
+    "aa9b10dcb0b910d48402ae2f4699cee6730e34e54e9891569790d548ddb6fa48"
+)
+SWEDEN_CELL_COUNT_UPPER_BOUND = 90
+SWEDEN_MAXIMUM_CELLS = 70000
+SWEDEN_MAXIMUM_ATC_CODES = 100
+SWEDEN_PAYLOAD_COUNT = 5
+SWEDEN_ARCHIVE_BYTE_COUNT = 921600
 
 NEXT_ACTIONS = {
     "credentialed_and_excluded": (
@@ -541,6 +563,69 @@ def _qualified_gsrs_sources() -> set[str]:
     return qualified
 
 
+def _qualified_sweden_sources() -> set[str]:
+    """Recognize only the exact approved private aggregate acquisition."""
+    qualification = json.loads(SWEDEN_QUALIFICATION.read_text(encoding="utf-8"))
+    query = qualification["query"]
+    retention = qualification["retention"]
+    rights = qualification["rights_boundary"]
+    boundary = (
+        qualification["schema_id"]
+        == "global-medicines-atlas.sweden-socialstyrelsen-live-private-bronze-qualification",
+        qualification["schema_version"] == 1,
+        qualification["source_id"] == SWEDEN_SOURCE_ID,
+        qualification["workflow_run"]
+        == "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36611480442",
+        qualification["workflow_commit"] == SWEDEN_WORKFLOW_COMMIT,
+        qualification["workflow_conclusion"] == "success",
+        qualification["evidence_class"]
+        == "live_private_source_generated_aggregate",
+        qualification["acquisition_id"]
+        == "07425b8c240b34f98b1da387f88714efa91886e1fd031e89a95335b46eb7d8c3",
+        query["period_resolution"] == "annual",
+        query["year"] == ["2025"],
+        query["measure_ids"] == [1, 2, 3, 4, 9],
+        query["atc_codes"] == ["TOTALT"],
+        query["regions"] == ["0"],
+        query["ages"] == [str(value) for value in range(1, 19)],
+        query["sexes"] == ["3"],
+        query["cell_count_upper_bound"] == SWEDEN_CELL_COUNT_UPPER_BOUND,
+        query["maximum_cells_per_query"] == SWEDEN_MAXIMUM_CELLS,
+        query["maximum_atc_codes_per_query"] == SWEDEN_MAXIMUM_ATC_CODES,
+        query["response_format"] == "JSON",
+        qualification["payload_count"] == SWEDEN_PAYLOAD_COUNT,
+        qualification["payload_byte_count"] == list(SWEDEN_PAYLOAD_BYTES),
+        qualification["payload_sha256"] == list(SWEDEN_PAYLOAD_SHA256),
+        retention["dataset"]
+        == "edithatogo/global-medicines-atlas-socialstyrelsen-private",
+        retention["revision"] == "f8489957e64b2122d0cc31964addecb5164f65f0",
+        retention["path"]
+        == "socialstyrelsen-2025-national-aggregate.private.tar",
+        retention["private"] is True,
+        retention["gated"] is False,
+        retention["archive_byte_count"] == SWEDEN_ARCHIVE_BYTE_COUNT,
+        retention["archive_sha256"] == SWEDEN_ARCHIVE_SHA256,
+        retention["authenticated_pinned_revision_readback_verified"] is True,
+        retention["clean_room_recovered_payload_count"] == SWEDEN_PAYLOAD_COUNT,
+        retention[
+            "temporary_runner_payload_bytes_removed_after_digest_verification"
+        ]
+        is True,
+        rights["coarse_rights_state"] == "unknown",
+        rights["internal_retention_authorized"] is True,
+        rights["maintainer_licence_approved"] is False,
+        rights["publication_authorized"] is False,
+        rights["external_publication_authorized"] is False,
+        rights["person_level_data_acquired"] is False,
+        rights["bulk_download_acquired"] is False,
+    )
+    if not all(boundary):
+        raise ValueError(
+            "Sweden qualification crossed its reviewed private scope"
+        )
+    return {SWEDEN_SOURCE_ID}
+
+
 def _qualified_shortages_sources() -> set[str]:
     qualification = json.loads(
         SHORTAGES_QUALIFICATION.read_text(encoding="utf-8")
@@ -696,6 +781,7 @@ def build() -> dict[str, Any]:
         | _qualified_gip_sources()
         | _qualified_open_medic_sources()
         | _qualified_cms_sources()
+        | _qualified_sweden_sources()
     )
     for source_id in qualified_us_live:
         existing = measured_by_source.get(source_id, {})

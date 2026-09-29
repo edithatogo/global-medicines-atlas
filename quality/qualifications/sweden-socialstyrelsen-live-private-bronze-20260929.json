@@ -1,0 +1,57 @@
+{
+  "schema_id": "global-medicines-atlas.sweden-socialstyrelsen-live-private-bronze-qualification",
+  "schema_version": 1,
+  "source_id": "se-socialstyrelsen-utilisation",
+  "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36611480442",
+  "workflow_commit": "09d3c8370b04c4b92439b2587e683e92276f3d6b",
+  "workflow_conclusion": "success",
+  "observed_receipt_at": "2026-09-29T18:22:06.4738598Z",
+  "evidence_class": "live_private_source_generated_aggregate",
+  "acquisition_id": "07425b8c240b34f98b1da387f88714efa91886e1fd031e89a95335b46eb7d8c3",
+  "query": {
+    "period_resolution": "annual",
+    "year": ["2025"],
+    "measure_ids": [1, 2, 3, 4, 9],
+    "atc_codes": ["TOTALT"],
+    "regions": ["0"],
+    "ages": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18"],
+    "sexes": ["3"],
+    "cell_count_upper_bound": 90,
+    "maximum_cells_per_query": 70000,
+    "maximum_atc_codes_per_query": 100,
+    "response_format": "JSON"
+  },
+  "payload_count": 5,
+  "payload_byte_count": [1771, 1772, 1795, 1791, 1771],
+  "payload_sha256": [
+    "2776225df2bae38451747a89dfc211a6f09edc43e1c3584d2855b574f6c061ed",
+    "19ef7f11d3d9cd42307ad54a0c1bb7098b333877cf1e66666d37e7349b4267ef",
+    "dd1887387561be7c1a111ec4ab11ef895b21cd2e0c2a29c40bd50fa9578b0414",
+    "c91a65306745bc80bcac5e599fcd5a540c027a49d9f6bf8c309628e3c747a8fb",
+    "de2f425c74a39f14b59fb0d1da13ae0466f29ad9dc38f9f8048321dda77a8883"
+  ],
+  "retention": {
+    "dataset": "edithatogo/global-medicines-atlas-socialstyrelsen-private",
+    "revision": "f8489957e64b2122d0cc31964addecb5164f65f0",
+    "path": "socialstyrelsen-2025-national-aggregate.private.tar",
+    "private": true,
+    "gated": false,
+    "archive_byte_count": 921600,
+    "archive_sha256": "aa9b10dcb0b910d48402ae2f4699cee6730e34e54e9891569790d548ddb6fa48",
+    "authenticated_pinned_revision_readback_verified": true,
+    "clean_room_recovered_payload_count": 5,
+    "temporary_runner_payload_bytes_removed_after_digest_verification": true
+  },
+  "attribution": "Socialstyrelsen statistics database; retrieval date and exact timestamp are preserved in the private acquisition manifest.",
+  "rights_boundary": {
+    "coarse_rights_state": "unknown",
+    "internal_retention_authorized": true,
+    "maintainer_licence_approved": false,
+    "publication_authorized": false,
+    "external_publication_authorized": false,
+    "person_level_data_acquired": false,
+    "bulk_download_acquired": false
+  },
+  "coverage_boundary": "This is one source-generated aggregate query for annual 2025, national geography, both sexes, all age groups, all ATC, and five measure IDs. It is not complete Swedish medicines utilisation coverage and excludes OTC and hospital-administered use as described by the source.",
+  "evidence_limit": "This qualifies private B1/B2 acquisition, receipt, bounded source scope, archive integrity, and clean-room recovery only. It does not resolve project licensing, public release, redistribution, source-record projection, Swedish coverage completeness, M5, Australian federation, or Stable v1 approval."
+}
