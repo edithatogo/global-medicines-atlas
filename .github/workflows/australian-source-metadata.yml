@@ -12,6 +12,10 @@ on:
         required: true
         type: choice
         options: [mbs, pbs]
+      expected_parent_revision:
+        description: Exact currently observed public dataset head for append CAS
+        required: true
+        type: string
       recovery_receipt:
         description: Optional bot CAS acknowledgement comment ID for verification-only recovery
         required: false
@@ -43,10 +47,12 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
           REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
+          EXPECTED_PARENT_REVISION: ${{ inputs.expected_parent_revision }}
           SOURCE: ${{ inputs.source }}
           RECOVERY_RECEIPT: ${{ inputs.recovery_receipt }}
         run: |
           uv run --frozen --python 3.14.6 --with huggingface-hub==1.14.0 \
             python scripts/publish_source_metadata.py \
             --source "$SOURCE" --exact-commit "$REQUESTED_COMMIT" \
+            --expected-parent-revision "$EXPECTED_PARENT_REVISION" \
             --recovery-receipt "$RECOVERY_RECEIPT"

@@ -318,6 +318,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", choices=("mbs", "pbs"), required=True)
     parser.add_argument("--exact-commit", required=True)
+    parser.add_argument("--expected-parent-revision", required=True)
     parser.add_argument("--recovery-receipt", default="")
     args = parser.parse_args()
     require_hosted_main(args.exact_commit)
@@ -353,6 +354,7 @@ def main() -> None:
     result = execute_metadata_append(
         document,
         exact_commit=args.exact_commit,
+        expected_parent_revision=args.expected_parent_revision,
         hub=HubTransport(cache),
         persist=lambda receipt: persist_receipt(receipt, receipts),
         acknowledgement=acknowledgement,

@@ -58,6 +58,26 @@ def test_append_preserves_raw_and_existing_card():
     )
 
 
+def test_transaction_parent_is_separate_from_source_release_revision():
+    document, baseline = fixture()
+    parent = "d" * 40
+    plan = prepare_metadata_append(document, baseline, parent_revision=parent)
+
+    assert document["revision"] != parent
+    assert plan.parent_revision == parent
+    assert json.loads(plan.payload)["revision"] == document["revision"]
+    verify_metadata_append(
+        plan,
+        dataset=plan.dataset,
+        parent_revision=parent,
+        revision="f" * 40,
+        private=False,
+        gated=False,
+        observed=(*baseline, plan.addition),
+        anonymous_payload=plan.payload,
+    )
+
+
 @pytest.mark.parametrize(
     "mutation",
     [
