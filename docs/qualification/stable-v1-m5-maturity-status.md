@@ -23,7 +23,7 @@ Parquet, and verified private archive checksums. The older bounded U.S. Bronze
 corpus row describes a separate quarantined acquisition and does not override
 that later, specifically scoped evidence. The latest report refresh was
 evaluated against exact main commit
-`f457dc0dd274ad26e0cedc313c64686d1d888064` and finds 118 of
+`4cca88d3e13be535643e2408d627837802b82c6c` and finds 118 of
 157 in-scope public/no-credential sources without qualifying landing evidence.
 Two fixture-only and 15 excluded sources remain outside that denominator.
 Delegated detail-page coverage remains incomplete, and public release and
