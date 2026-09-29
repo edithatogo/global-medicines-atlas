@@ -20,3 +20,23 @@ The Australian Government [Medicare annual state and territory dataset](https://
 Metadata discovery found the official Services Australia [MBS item reports](https://medicarestatistics.humanservices.gov.au/VEA0032/SAS.Web/statistics/mbs_item.html) and the catalogued [Items by Patient Demographics resource](https://data.gov.au/data/dataset/medicare-benefits-schedule-mbs-group-by-patient-demographics-report/resource/492b39de-8c97-4bbf-880e-e97d933daa9c). The catalogued field list contains item, state, age range, gender, services, and benefit; the resource data was last updated in 2016. The report description says item-level and demographic statistics are available and that small demographic groups are suppressed. This is a candidate for bounded item-service counts, not proof of distinct patient counts, current coverage, or project reuse rights. A [value-free source review](../../quality/qualifications/australian-mbs-item-demographic-source-review-20260929.json) records those limits and the sent inquiry to the published Services Australia statistics contact.
 
 Next acceptance work is source-specific: recover the authorized annual workbook through the governed hosted path, verify its exact identity and native patient, service, geography, and period denominators, and preserve the source-specific rights basis. If item-level participant counts remain required, obtain source-owner clarification on a distinct-patient measure and qualify it separately from item services. Keep M-106 blocked until participant evidence and the remaining real-corpus field denominators have been checked.
+
+## Official workbook link recheck, 2026-09-29
+
+The current official [annual state and territory page](https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en)
+still describes data through 2025-26 but its Excel link targets
+`medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx`.
+The official [rolling 12-month page](https://www.health.gov.au/resources/publications/medicare-annual-statistics-rolling-12-months-july-2009-to-june-2026?language=en)
+describes coverage through June 2026, while its Excel link targets
+`medicare-annual-statistics-rolling-12-months-july-2009-to-march-2026.xlsx`.
+The web reader exposed these link targets but could not parse either Excel
+response's media type; no workbook bytes were retained or inspected. This is
+metadata-only evidence and does not replace the earlier hosted timeout receipt.
+
+The rolling-series category is not listed in the exact categories of the
+existing `australian-mbs-utilisation-publication-authorization.json`. Do not
+acquire or publish it under that record without a maintainer-approved scope
+extension. Both period/link mismatches remain source questions; neither page
+currently supplies a verified patient denominator or item-level participant
+count. Keep M-106 blocked and do not repeat the previous endpoint probes until
+the source endpoint or approved transport changes.
