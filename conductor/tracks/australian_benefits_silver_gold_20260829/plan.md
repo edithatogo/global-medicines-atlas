@@ -1079,7 +1079,7 @@
 
 ## M-109 exact public MBS candidate denominator follow-up (2026-09-28)
 
-- [ ] Extend the exact-main public MBS candidate report with a bounded
+- [x] Extend the exact-main public MBS candidate report with a bounded
   declared-profile compatibility comparison over the same digest-verified July
   2025 v3 bytes. The check compares every batch's typed values, columns, and
   pre-existing metadata for all six tables; it reports only table/field
@@ -1088,8 +1088,13 @@
   acceptance, or publication. Focused profile/qualifier tests (92) and strict
   local checks pass. The full local profile had 5,263 passed, one optional
   skip, and two unrelated release reproducibility failures because this Mac
-  provides uv 0.11.8/0.12.19 instead of pinned uv 0.11.29; protected CI and
-  exact-main execution remain pending.
+  provides uv 0.11.8/0.12.19 instead of pinned uv 0.11.29. PR #650 merged as
+  `b1d6146b4a09b1b1814e821d11510dc35f05e6e8` after all protected checks passed.
+  Exact-main run [36632407007](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36632407007)
+  verified all six tables at 5,989 rows each and 64 projected columns/383,296
+  field occurrences total. Every batch preserved array values and legacy
+  metadata. The aggregate is `declared_only`, contains no source values, and
+  records no publication. This does not qualify source semantics or M-109.
 
 - [x] Add an Actions-only qualification for the exact anonymously published
   July 2025 MBS XML. It pins the public revision, bounds and digest-checks the
