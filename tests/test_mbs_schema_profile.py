@@ -121,6 +121,27 @@ def test_native_profile_binding_is_content_bound_and_declared_only() -> None:
         })
 
 
+def test_native_profile_binding_hashes_full_cohort_denominators() -> None:
+    payload = _xml("<ScheduleFee>1.00</ScheduleFee>")
+    declaration_value = declaration(payload)
+    cohort = native_cohort(payload)
+    changed_denominator = cohort.model_copy(
+        update={
+            "source_record_count": cohort.source_record_count + 1,
+            "omitted_record_count": cohort.omitted_record_count + 1,
+        }
+    )
+
+    first = bind_mbs_profile_to_native_cohort(declaration_value, cohort)
+    second = bind_mbs_profile_to_native_cohort(
+        declaration_value, changed_denominator
+    )
+
+    assert first.native_snapshot_sha256 == second.native_snapshot_sha256
+    assert first.native_cohort_sha256 != second.native_cohort_sha256
+    assert first.binding_sha256 != second.binding_sha256
+
+
 def test_native_profile_binding_rejects_source_receipt_mismatch() -> None:
     payload = _xml("<ScheduleFee>1.00</ScheduleFee>")
     cohort = native_cohort(payload)

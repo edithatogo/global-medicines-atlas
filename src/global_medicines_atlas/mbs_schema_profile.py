@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING, Any, Literal, cast
 from pydantic import ConfigDict, Field, model_validator
 
 from .australian_source_contracts import TargetTable
-from .historical_comparison import MAX_NATIVE_BYTES, Digest, ProfileName
+from .historical_comparison import Digest, ProfileName
 from .mbs_silver import iter_mbs_silver_batches, mbs_silver_schema
 from .models import FrozenModel
 from .receipts import SourceReceipt
@@ -74,6 +74,7 @@ class MbsNativeProfileBinding(FrozenModel):
     table: TargetTable
     cohort: Literal["synthetic", "legacy", "historical", "current"]
     native_snapshot_sha256: Digest
+    native_cohort_sha256: Digest
     b1_sha256: Digest
     b2_sha256: Digest
     legacy_schema_era_meaning: Literal["comparison_schema_era"] = (
@@ -98,6 +99,19 @@ def _canonical_json(value: object) -> bytes:
     ).encode()
 
 
+def _canonical_sha256(value: object) -> str:
+    encoder = json.JSONEncoder(
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    )
+    digest = sha256()
+    for chunk in encoder.iterencode(value):
+        digest.update(chunk.encode())
+    return digest.hexdigest()
+
+
 def _native_binding_digest(binding: MbsNativeProfileBinding) -> str:
     return sha256(
         _canonical_json(binding.model_dump(exclude={"binding_sha256"}))
@@ -110,8 +124,8 @@ def bind_mbs_profile_to_native_cohort(
 ) -> MbsNativeProfileBinding:
     """Bind a schema declaration to one exact MBS native comparison cohort.
 
-    The binding contains no native field values. It records the exact snapshot
-    digest and repeats source release and B1/B2 identities so mismatched inputs
+    The binding contains no native field values. It records exact snapshot and
+    full cohort digests and repeats source release and B1/B2 identities so mismatched inputs
     fail closed before a candidate can be compared or exported.
     """
 
@@ -131,12 +145,7 @@ def _bind_mbs_profile_to_native_cohort(
     declaration = MbsSchemaProfileDeclaration.model_validate(
         declaration.model_dump(warnings=False)
     )
-    cohort_type = __import__(
-        "global_medicines_atlas.mbs_historical_comparison",
-        fromlist=["MbsComparisonCohort"],
-    ).MbsComparisonCohort
-
-    cohort = cohort_type.model_validate(cohort.model_dump(warnings=False))
+    cohort = type(cohort).model_validate(cohort.model_dump(warnings=False))
     snapshot = cohort.snapshot
     identity = (
         declaration.source_id,
@@ -150,11 +159,10 @@ def _bind_mbs_profile_to_native_cohort(
         snapshot.b1_sha256,
         snapshot.b2_sha256,
     )
-    snapshot_bytes = _canonical_json(
-        snapshot.model_dump(mode="json", warnings=False)
-    )
-    if identity != observed or len(snapshot_bytes) > MAX_NATIVE_BYTES:
+    if identity != observed:
         return _invalid_native_binding()
+    snapshot_payload = snapshot.model_dump(mode="json", warnings=False)
+    cohort_payload = cohort.model_dump(mode="json", warnings=False)
     values: dict[str, Any] = {
         "source_revision": declaration.source_revision,
         "schema_era": snapshot.schema_era,
@@ -163,7 +171,8 @@ def _bind_mbs_profile_to_native_cohort(
         "selection_scope": snapshot.scope_id,
         "table": snapshot.table,
         "cohort": snapshot.cohort,
-        "native_snapshot_sha256": sha256(snapshot_bytes).hexdigest(),
+        "native_snapshot_sha256": _canonical_sha256(snapshot_payload),
+        "native_cohort_sha256": _canonical_sha256(cohort_payload),
         "b1_sha256": snapshot.b1_sha256,
         "b2_sha256": snapshot.b2_sha256,
     }
