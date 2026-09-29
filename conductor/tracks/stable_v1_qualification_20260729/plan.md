@@ -433,3 +433,14 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   cites the refreshed report commit. This rebind adds no source landing and
   does not advance Bronze, M5, Australian federation, or stable-release
   approval.
+
+## 2026-09-29 post-PR-623 qualification refresh
+
+- [x] Regenerate the Bronze maturity receipt from exact merged `main`
+  `214e7925735b8c9056806d4ef265976c594036ad` after PR #623. It reports 174
+  catalog sources, 157 in scope, 118 without qualifying landing evidence, and
+  13 evidenced dimensions; completeness remains blocked. The status page now
+  cites the same report commit. Focused qualification tests passed (103), and
+  the routine Test-Goblin harness passed. No new source receipt or acceptance
+  evidence changes the four open gates: Australian federation, current-scope
+  Bronze, M5 maturity, and stable-release approval.
