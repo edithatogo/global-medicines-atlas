@@ -805,3 +805,16 @@ for credentialed or rights-unresolved sources.
 - [~] Substantive source-owner format guidance remains pending. The returned
   automatic message does not resolve the export format; continue rejecting the
   response and make no acquisition, rights, Bronze, or publication claim.
+
+## 2026-09-29 post-PR-622 exact-main Bronze/M5 reconciliation
+
+- [x] Re-evaluate `quality/qualifications/bronze-maturity.json` against exact
+  merged `main` `588efbb99956a09c9678bb21b8550c32905009fe` after PR #622. The
+  report still finds 118 of 157 in-scope sources without qualifying landing
+  evidence; 13 of 14 mandatory dimensions are evidenced and completeness is
+  blocked. This corrects report provenance only; Bronze completeness and M5
+  remain blocked.
+- [x] Run focused qualification tests, routine checks, context and ecosystem
+  validation, then bind their results in append-only evidence.
+- [~] Refresh the stable-v1 M5 status page to bind the same exact-main Bronze
+  report commit; this is required by the repository provenance contract test.
