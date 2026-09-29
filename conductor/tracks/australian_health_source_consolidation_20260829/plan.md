@@ -517,3 +517,15 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   `5885067299`, as recorded in `docs/qualification/source-metadata-append.md`.
   The public metadata object remains verified at its exact revision, size, and
   digest; no source payload or acceptance claim changed.
+
+## Provider-response readback (2026-09-29)
+
+- [x] Check the existing OpenPrescribing, PBS API, Medicare workbook,
+  MBS workbook-date, Services Australia denominator, and Medstat inquiries
+  using read-only mailbox searches. Only automated acknowledgements or no new
+  sender messages were observed; no source guidance or rights decision was
+  received. Record message identifiers and the bounded search scope in
+  `quality/qualifications/provider-response-check-20260929.json`.
+- [~] Keep dependent source acquisition and acceptance gates pending. Do not
+  infer approval from automated acknowledgements or repeat unchanged source
+  probes. No follow-up messages were sent.
