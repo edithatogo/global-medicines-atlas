@@ -816,5 +816,7 @@ for credentialed or rights-unresolved sources.
   remain blocked.
 - [x] Run focused qualification tests, routine checks, context and ecosystem
   validation, then bind their results in append-only evidence.
-- [~] Refresh the stable-v1 M5 status page to bind the same exact-main Bronze
-  report commit; this is required by the repository provenance contract test.
+- [x] Refresh the stable-v1 M5 status page to bind exact-main Bronze report
+  commit `4cca88d3e13be535643e2408d627837802b82c6c`. The report still finds 118 of 157 in-scope sources
+  without landing evidence, so completeness and M5 remain blocked.
+  Focused status/provenance tests and context validation passed.
