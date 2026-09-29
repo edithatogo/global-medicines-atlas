@@ -455,3 +455,16 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   cites the exact report commit. This provenance refresh adds no source landing
   and does not advance Bronze, M5, Australian federation, or stable-release
   approval.
+
+
+## 2026-09-29 post-PR-628 qualification refresh
+
+- [x] Regenerate the Bronze maturity receipt from exact merged `main`
+  `a089cc15b7f9ab60f13232ca1f233bcc6df1f890` after PR #628. It reports 174
+  catalog sources, 157 in scope, 118 without qualifying landing evidence, and
+  13 evidenced dimensions; completeness remains blocked. The M5 status page cites
+  the exact report commit. This provenance refresh adds no source landing and
+  does not advance current-scope Bronze, M5, Australian federation, or
+  stable-release approval. Focused qualification tests (103), the routine
+  Test-Goblin profile, context/ecosystem validators, Ruff, `ty`, and diff checks
+  passed.
