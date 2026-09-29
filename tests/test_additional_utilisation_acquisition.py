@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 from typing import cast
@@ -21,6 +22,10 @@ from global_medicines_atlas.additional_utilisation_acquisition import (
 AUTHORIZATION = (
     Path(__file__).resolve().parents[1]
     / "quality/qualifications/additional-utilisation-acquisition-authorization.json"
+)
+JAPAN_CURRENT_EDITION = (
+    Path(__file__).resolve().parents[1]
+    / "quality/qualifications/japan-ndb-current-release-metadata-20260930.json"
 )
 
 
@@ -177,6 +182,40 @@ def test_japan_public_surface_is_interactive_aggregate() -> None:
 def test_japan_public_surface_rejects_drift() -> None:
     with pytest.raises(ValueError, match="NDB public aggregate surface"):
         parse_japan_ndb_public_surface(_japan(workbook=False))
+
+
+def test_japan_current_edition_receipt_is_metadata_only_and_rights_pending() -> (
+    None
+):
+    receipt = json.loads(JAPAN_CURRENT_EDITION.read_text(encoding="utf-8"))
+    supplied_digest = receipt.pop("receipt_sha256")
+    canonical = json.dumps(
+        receipt, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+
+    assert hashlib.sha256(canonical).hexdigest() == supplied_digest
+    assert receipt["source_id"] == "jp-mhlw-ndb-utilisation"
+    assert receipt["edition"] == 11
+    assert receipt["published_at"] == "2026-06-16"
+    assert receipt["claims_fiscal_year"] == "2024"
+    assert receipt["prescription_tables"]["measures"] == [
+        "pharmacological_class_quantity"
+    ]
+    assert receipt["prescription_tables"]["strata"] == [
+        "sex_age",
+        "prefecture",
+        "service_month",
+    ]
+    assert (
+        receipt["rights"]["mhlw_sitewide_default"]
+        == "PDL-1.0 when no separate rule applies"
+    )
+    assert receipt["rights"]["dataset_specific_rule_observed"] is False
+    assert receipt["rights"]["maintainer_decision"] == "pending"
+    assert receipt["acquisition_authorized"] is False
+    assert receipt["internal_retention_authorized"] is False
+    assert receipt["source_payload_bytes_accessed"] is False
+    assert receipt["data_rows_accessed"] is False
 
 
 def test_cihi_surface_has_drug_and_open_data_workbooks() -> None:

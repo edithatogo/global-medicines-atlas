@@ -848,3 +848,19 @@ for credentialed or rights-unresolved sources.
   Swedish coverage, Australian federation, M5 source-coverage maturity, or
   Stable v1 approval. PR #640 merged at
   `0bc072cd543924deea8658f9400a37b5b94185d4` after all 37 hosted checks passed.
+
+## 2026-09-30 Japan NDB current-edition metadata refresh
+
+- [x] Reconcile the official MHLW catalogue and current edition page. The 11th
+  NDB Open Data was published 2026-06-16 for FY2024 claims and FY2023 health
+  checkups; prescription tables expose aggregate pharmacological-class
+  quantities across sex/age, prefecture, and service-month strata. Only public
+  page metadata was read; no data links, rows, or bytes were accessed. Receipt:
+  `quality/qualifications/japan-ndb-current-release-metadata-20260930.json`.
+- [x] Reconcile MHLW's sitewide PDL 1.0 default against the open edition page.
+  The page does not say whether separate dataset rules or third-party rights
+  apply. No project rights conclusion is made.
+- [~] Keep payload acquisition and retention unauthorized until the
+  source-specific maintainer decision is recorded. Correct the catalogue's
+  funding/product-identity taxonomy before promoting these aggregate
+  utilisation semantics.
