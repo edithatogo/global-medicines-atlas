@@ -881,3 +881,16 @@ for credentialed or rights-unresolved sources.
 - [~] Keep NDB acquisition and retention blocked pending the source-specific
   maintainer rights decision. Track the utilisation taxonomy migration as a
   separate versioned-contract task before promoting NDB utilisation semantics.
+
+## 2026-09-30 post-PR-647 exact-main Bronze/M5 reconciliation
+
+- [x] Regenerate the Bronze maturity report against merged `main`
+  `522f4ff9783cd45ca814e5ccf400e88377ebaaa2`. It reports 174 catalog sources,
+  157 in-scope sources, 117 without qualifying landing evidence, and 13 of 14
+  dimensions evidenced; completeness remains blocked. The NICE private
+  historical corpus is receipt-qualified only for bounded internal B1/B2
+  landing, with no source-record projection or publication claim.
+- [x] Rebind the Stable-v1 M5 status page to the report's exact evaluated
+  commit. Focused maturity and Stable-v1 provenance tests, routine validation,
+  context and ecosystem checks pass. No Bronze, M5, federation, or stable
+  release gate is promoted.
