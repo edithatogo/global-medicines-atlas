@@ -816,3 +816,5 @@ for credentialed or rights-unresolved sources.
   remain blocked.
 - [x] Run focused qualification tests, routine checks, context and ecosystem
   validation, then bind their results in append-only evidence.
+- [~] Refresh the stable-v1 M5 status page to bind the same exact-main Bronze
+  report commit; this is required by the repository provenance contract test.
