@@ -34,8 +34,8 @@ Inventories are capped at 10,000 entries, 512 MiB per object and 2 GiB per
 snapshot (up to 4 GiB across before/after plus metadata); the workflow has a
 30-minute timeout. An issue receipt projection exceeding 60,000 characters is
 rejected before any append. Exact issue receipt readback must succeed before
-temporary source cache cleanup. Tests mock the SDK and transport. PBS hosted
-execution is recorded below; the MBS run remains pending.
+temporary source cache cleanup. Tests mock the SDK and transport. Both PBS and
+MBS hosted executions are recorded below with their durable receipts.
 
 The hosted implementation runs only from the approved GitHub Actions
 environment, bind the reviewed default-branch commit and durable issue intent,
