@@ -444,18 +444,37 @@ def _public_v4_fixture(
     qualification_bytes = json.dumps(
         public_qualification, sort_keys=True, separators=(",", ":")
     ).encode()
-    source_receipt_bytes = json.dumps(
-        {
-            "source": {"source_id": report.source_id},
-            "payload": {
-                "sha256": report.source_sha256,
-                "byte_count": report.source_byte_count,
-            },
-            "rights_state": "permitted",
-        },
-        sort_keys=True,
-        separators=(",", ":"),
-    ).encode()
+    source_receipt = SourceReceipt(
+        receipt_id="synthetic:public-mbs-v4",
+        source=SourceIdentity(
+            catalog_id="au-mbs",
+            source_id=report.source_id,
+            jurisdiction="AUS",
+            authority="Synthetic",
+            dataset_title="Synthetic MBS",
+            catalog_version="synthetic-v1",
+        ),
+        retrieval=RetrievalEvidence(
+            uri=AnyUrl("https://fixtures.invalid/mbs"),
+            retrieved_at=datetime(2026, 9, 1, tzinfo=UTC),
+            acquisition_method=AcquisitionMethod.LOCAL_FIXTURE,
+            status=AcquisitionStatus.SUCCEEDED,
+        ),
+        payload=PayloadEvidence(
+            sha256=report.source_sha256,
+            byte_count=report.source_byte_count,
+        ),
+        rights_state=RightsState.PERMITTED,
+        rights_reference=AnyUrl("https://fixtures.invalid/rights"),
+        evidence_class=EvidenceClass.SYNTHETIC,
+        transformation=TransformationEvidence(
+            transformation_id="synthetic",
+            transformation_sha256="a" * 64,
+            output_sha256=report.source_sha256,
+            output_byte_count=report.source_byte_count,
+        ),
+    )
+    source_receipt_bytes = source_receipt.canonical_json()
     objects: list[dict[str, Any]] = [
         {
             "path": path,
@@ -490,6 +509,7 @@ def _public_v4_fixture(
             "source_id": report.source_id,
             "sha256": report.source_sha256,
             "byte_count": report.source_byte_count,
+            "receipt_sha256": source_receipt.digest(),
         },
         "objects": objects,
     }
@@ -616,6 +636,34 @@ def test_public_v4_readback_rejects_a_promoted_publication_claim() -> None:
             report,
             current_revision="c" * 40,
             manifest_bytes=cast("bytes", fixture[0]),
+            qualification_bytes=cast("bytes", fixture[1]),
+            source_receipt_bytes=cast("bytes", fixture[2]),
+            tree_entries=cast("list[dict[str, Any]]", fixture[3]),
+            publication_receipt=publication_receipt,
+        )
+
+
+def test_public_v4_readback_rejects_unbound_b1_receipt_digest() -> None:
+    report = _candidate_report()
+    fixture = list(_public_v4_fixture(report))
+    manifest = json.loads(cast("bytes", fixture[0]))
+    manifest["source"]["receipt_sha256"] = "0" * 64
+    manifest_bytes = json.dumps(
+        manifest, sort_keys=True, separators=(",", ":")
+    ).encode()
+    fixture[0] = manifest_bytes
+    publication_receipt = cast("dict[str, Any]", fixture[4])
+    publication_receipt["manifest_sha256"] = hashlib.sha256(
+        manifest_bytes
+    ).hexdigest()
+
+    with pytest.raises(
+        ValueError, match="public v4 B1 source or receipt identity differs"
+    ):
+        command.verify_public_v4_identity(
+            report,
+            current_revision="c" * 40,
+            manifest_bytes=manifest_bytes,
             qualification_bytes=cast("bytes", fixture[1]),
             source_receipt_bytes=cast("bytes", fixture[2]),
             tree_entries=cast("list[dict[str, Any]]", fixture[3]),

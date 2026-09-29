@@ -1302,8 +1302,10 @@
   stale `public_v4_identity_unverified` aggregate blocker after all metadata,
   receipt, LFS, and candidate-only checks pass. The embedded published
   qualification and candidate-only status remain unchanged.
-  Focused qualification tests: 29 passed; live metadata readback passed;
-  Ruff, `ty`, BasedPyright, and context validation passed. Full Test-Goblin:
+  Focused qualification tests: 30 passed, including review-driven coverage that
+  binds the manifest's B1 receipt digest to the canonical fetched receipt;
+  Ruff, format, `ty`, BasedPyright, and context validation passed. The updated
+  live exact-main readback remains pending. Full Test-Goblin:
   5,230 passed, 2 failed, 1 skipped, 96.72%; both failures are the existing
   clean-clone release reproducibility checks requiring pinned `uv` 0.11.29,
   unavailable locally (the installed version is 0.12.19).

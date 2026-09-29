@@ -195,17 +195,19 @@ def _validate_public_source(
     source = cast("dict[str, Any]", source)
     payload = cast("dict[str, Any]", payload)
     receipt_source = cast("dict[str, Any]", receipt_source)
+    parsed_receipt = SourceReceipt.model_validate(source_receipt)
     checks = (
         source.get("source_id") != report.source_id,
         source.get("sha256") != report.source_sha256,
         source.get("byte_count") != report.source_byte_count,
+        source.get("receipt_sha256") != parsed_receipt.digest(),
         payload.get("sha256") != report.source_sha256,
         payload.get("byte_count") != report.source_byte_count,
         receipt_source.get("source_id") != report.source_id,
         source_receipt.get("rights_state") != "permitted",
     )
     if any(checks):
-        raise ValueError("public v4 B1 source identity differs")
+        raise ValueError("public v4 B1 source or receipt identity differs")
 
 
 def _validate_public_qualification(
