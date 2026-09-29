@@ -728,10 +728,13 @@
   schema/profile identities to native bindings, Silver and federated products.
   Existing parser/Bronze/Silver `schema_era` values still carry historical
   catalog labels; do not reinterpret them or rewrite published Parquet/receipts
-  silently. Native cohort bindings are implemented as content-addressed,
-  declared-only sidecars. Exact-source schema qualification, Silver and
-  federated product adoption, compatibility evidence, and any profile migration
-  remain open; no real cross-release qualification is claimed.
+  silently. The content-addressed native cohort binding merged in PR #626;
+  this follow-up pairs it with existing v4 federation profile bindings through
+  a second declared-only sidecar. The opt-in Silver declaration and both
+  federation sidecars preserve legacy v4 products without relabelling releases.
+  Exact-source schema qualification, real-source compatibility evidence,
+  product export/adoption, and any profile migration remain open; no real
+  cross-release qualification is claimed.
 - [x] Add an opt-in, versioned MBS schema-profile declaration wrapper around
   existing Silver batches. Bind exact source revision and B1/B2 identities;
   retain every default native value and legacy metadata key unchanged. New
