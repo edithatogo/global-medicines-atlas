@@ -1,0 +1,87 @@
+{
+  "schema_id": "global-medicines-atlas.pbs-source-transition",
+  "schema_version": 1,
+  "observed_at": "2026-09-29T12:24:38Z",
+  "official_sources": {
+    "legacy_schema_history": "https://data.pbs.gov.au/document/87239.html",
+    "distribution_status": "https://data.pbs.gov.au/data-distribution/data-distribution.html",
+    "public_api_access": "https://data.pbs.gov.au/api/api-public.html",
+    "api_release_notes": "https://data.pbs.gov.au/api/api-release-notes.html",
+    "api_overview": "https://data.pbs.gov.au/api/pbs-api.html"
+  },
+  "observed_distribution": {
+    "legacy_outputs_status": "discontinued",
+    "current_distribution": "public PBS Schedule API and monthly API CSV tables",
+    "api_model_version": "3.7.8",
+    "latest_release_note_date": "2026-05-20",
+    "monthly_schedule_updates": true,
+    "public_history_months": 12,
+    "legacy_documentation_redirects_to_current_portal": true,
+    "documented_xml_schema_eras": [
+      {
+        "period": "2006-12 through 2012-10",
+        "format": "G2B XML",
+        "schema_versions": [
+          "1.8"
+        ]
+      },
+      {
+        "period": "2012-12 through 2017-08",
+        "format": "PBS XML",
+        "schema_version_range": "2.8 through 2.12"
+      },
+      {
+        "period": "from 2017-09-01",
+        "format": "PBS XML",
+        "schema_versions": [
+          "3.0 and later"
+        ]
+      },
+      {
+        "period": "2017-09 through 2018-08",
+        "format": "alternate PBS XML",
+        "schema_versions": [
+          "2.12"
+        ]
+      }
+    ]
+  },
+  "qualified_legacy_denominator": {
+    "exact_source": "2026-04-01 PBS XML v3 member",
+    "qualification_record": "quality/qualifications/pbs-v3-2026-04-01-date-profile-qualification-20260929.json",
+    "domain_semantics_qualified": false,
+    "source_era_profile_only": true
+  },
+  "current_api_rights_boundary": {
+    "preflight_record": "quality/qualifications/australian-pbs-api-public-access-preflight-20260929.json",
+    "public_access_without_login": true,
+    "local_copy_for_own_systems_documented": true,
+    "retention_duration_specified": false,
+    "external_redistribution_terms_identified": false,
+    "internal_long_term_retention_authorized": false,
+    "source_byte_redistribution_authorized": false,
+    "derived_publication_authorized": false,
+    "maintainer_source_specific_rights_decision_recorded": false,
+    "provider_response_substantive": false
+  },
+  "scope": {
+    "api_payload_requested": false,
+    "api_payload_acquired": false,
+    "api_payload_retained": false,
+    "external_publication_performed": false,
+    "licensing_conclusion_made": false,
+    "current_api_semantics_qualified": false,
+    "historical_xml_semantics_qualified": false,
+    "m109_accepted": false,
+    "boundary": "The exact April 2026 XML v3 receipt remains a historical source-era qualification only. Current PBS distribution has moved to the public API and API CSV tables; no current API corpus, source semantics, historical denominator, retention authority or redistribution rights are qualified by this metadata observation."
+  },
+  "digest": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON with sorted keys, compact separators, ensure_ascii=false; digest field excluded",
+    "value": "12e015672f203194bf8ebe2a8f269c35df7773a39c4f9392a7a1c381c1cc5e08"
+  },
+  "source_ids": {
+    "historical_xml": "au-pbs-historical-xml",
+    "current_api": "au-pbs-api"
+  }
+}

@@ -468,6 +468,28 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   patient count exists, its public period/denominator, and applicable rights.
   Item service counts must not be relabelled as patients.
 
+## M-109 PBS current-distribution transition (2026-09-29)
+
+- [x] Reconcile current official PBS distribution metadata with the pinned
+  historical XML qualification. The official portal records legacy XML/text
+  outputs as discontinued, identifies the public API/API CSV as the current
+  route, lists API model 3.7.8 with release notes dated 2026-05-20, and exposes
+  the current schedule plus the previous 12 months. Its published XML history
+  names G2B XML 1.8 (Dec 2006–Oct 2012), PBS XML 2.8–2.12 (Dec 2012–Aug 2017),
+  PBS XML 3.0 onward (from Sep 2017), and an alternate 2.12 distribution
+  through Aug 2018. These are documented eras, not a verified acquisition
+  denominator. The metadata-only receipt is
+  `quality/qualifications/pbs-source-transition-20260929.json`; it contains no
+  API payload or source values.
+- [x] Keep the 2026-04-01 PBS XML v3 profile scoped to its exact historical
+  member. The separate API preflight records public read access and permission
+  to download for users' own systems, but no retention duration, external
+  redistribution terms, or source-specific maintainer rights decision.
+- [~] M-109 current PBS coverage remains blocked until the API source contract,
+  retention and publication rights are resolved and a scoped current API
+  corpus is authorized and qualified. Do not reuse the XML profile as current
+  API semantics or exceed its 12-month published history window.
+
 ## M-107 metadata evidence review fixes (2026-09-28)
 
 - [x] Correct the proposed route/contact evidence timestamps to the recorded

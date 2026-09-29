@@ -92,6 +92,17 @@ other-era profiles remain open. All four workbook annotation tables, PBS typed
 tables, comparison events, public v4 qualification and promotion remain
 unfinished. The module does not acquire or publish any source bytes.
 
+The April 2026 PBS XML v3 qualification is historical source-era evidence.
+The official PBS portal now marks legacy XML/text outputs as discontinued and
+directs public use to the API and monthly API CSV tables. The API documentation
+describes the current schedule plus the preceding 12 months, but the public
+access preflight has not established retention duration, external redistribution
+terms, or maintainer authorization. See the metadata-only
+[PBS source-transition receipt](../../quality/qualifications/pbs-source-transition-20260929.json)
+and [API rights preflight](../../quality/qualifications/australian-pbs-api-public-access-preflight-20260929.json).
+Do not treat the XML date profile as current API qualification; API acquisition,
+domain mapping and any derived publication remain separate gates.
+
 ### Legacy workbook cell candidates
 
 `mbs_workbook_silver.iter_workbook_silver_batches` preserves every sheet and
