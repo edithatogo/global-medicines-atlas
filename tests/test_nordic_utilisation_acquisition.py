@@ -90,16 +90,21 @@ def test_authorization_is_independent_and_fail_closed() -> None:
         "no-norpd-utilisation",
         "se-socialstyrelsen-utilisation",
     )
-    denmark, *pending_sources = authorization.sources
+    denmark, norway, sweden = authorization.sources
     denmark.require_payload_authority()
     assert denmark.decision_status == "approved_internal"
     assert denmark.public_release_authorized is False
     assert denmark.external_publication_authorized is False
-    for source in pending_sources:
-        with pytest.raises(
-            PermissionError, match="payload decision is pending"
-        ):
-            source.require_payload_authority()
+    with pytest.raises(PermissionError, match="payload decision is pending"):
+        norway.require_payload_authority()
+    sweden.require_payload_authority()
+    assert sweden.decision_date is not None
+    assert sweden.decision_status == "approved_internal"
+    assert sweden.decision_date.isoformat() == "2026-09-29"
+    assert sweden.acquisition_authorized is True
+    assert sweden.internal_retention_authorized is True
+    assert sweden.public_release_authorized is False
+    assert sweden.external_publication_authorized is False
 
 
 @pytest.mark.parametrize(

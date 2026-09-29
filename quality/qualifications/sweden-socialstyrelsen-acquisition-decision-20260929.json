@@ -1,0 +1,21 @@
+{
+  "schema_id": "global-medicines-atlas.source-specific-acquisition-decision",
+  "schema_version": 1,
+  "source_id": "se-socialstyrelsen-utilisation",
+  "decided_at": "2026-09-29",
+  "decision": "approve_bounded_internal_acquisition_and_retention",
+  "scope": {
+    "source_generated_aggregate_api_results_only": true,
+    "maximum_cells_per_query": 70000,
+    "maximum_atc_codes_per_query": 100,
+    "exact_query_parameters_recorded": true,
+    "retrieval_time_source_version_digest_and_attribution_recorded": true,
+    "person_level_data": false,
+    "bulk_downloads": false,
+    "public_release": false,
+    "external_publication": false
+  },
+  "rights_evidence_reference": "quality/qualifications/sweden-socialstyrelsen-utilisation-rights-review-20260928.json",
+  "authorization_reference": "quality/qualifications/nordic-utilisation-acquisition-authorization.json",
+  "boundary": "This records source-specific maintainer authority for internal acquisition and retention only. It is not a project licensing conclusion, public-release approval, or claim of complete Swedish utilisation coverage."
+}

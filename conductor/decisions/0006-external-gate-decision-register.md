@@ -133,6 +133,21 @@ transport constraints.
 This decision is not a licensing conclusion, does not expand rights, and does
 not establish any workbook contents, period denominator, or patient count.
 
+## D-006-09 — Sweden Socialstyrelsen aggregate acquisition
+
+**Status:** selected (2026-09-29). The maintainer approved source-generated
+aggregate API result acquisition and internal retention under explicit query
+caps. Person-level data, broad bulk downloads, public release, and external
+publication remain excluded.
+
+- **Selected:** acquire and retain only bounded aggregate API responses,
+  preserving exact parameters, retrieval time, source version, digest, and
+  attribution; enforce 70,000 cells and 100 ATC codes per query.
+- Catalogue-only was not selected. This decision is not a project licensing
+  conclusion and does not establish complete Swedish utilisation coverage.
+
+See [the dated decision receipt](../../quality/qualifications/sweden-socialstyrelsen-acquisition-decision-20260929.json).
+
 ## Autonomous continuation
 
 While decisions remain open, the agent may validate schemas, run tests, prepare receipts, reconcile documentation, and review hosted state. It must not install Apps, redistribute restricted data, sign or promote a public stable release, or claim production qualification without the relevant decision and durable evidence. OSF is deprecated and must not be treated as an open submission gate.
