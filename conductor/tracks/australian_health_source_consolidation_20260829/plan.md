@@ -468,6 +468,32 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   patient count exists, its public period/denominator, and applicable rights.
   Item service counts must not be relabelled as patients.
 
+## M-106 current item-data metadata preflight (2026-09-30)
+
+- [x] Inspect the newly catalogued Services Australia August 2026 MBS Item
+  Data resource using its public metadata page and a CKAN `limit=0` schema
+  query. The metadata reports 26,391 records and fields for processing year
+  and month, group, subgroup, item, state, services and benefit; the query
+  returned zero records. The catalog lists CC BY 3.0 Australia, but no
+  project-specific rights decision, source acquisition, or publication
+  authority is recorded. Receipt:
+  `quality/qualifications/australian-mbs-current-item-data-metadata-20260930.json`.
+- [x] Reconcile M-106 documentation and add a digest-bound contract check.
+  The new resource provides no distinct-patient field in its published schema,
+  and the catalog data dictionary is empty. This narrows it to a current
+  item-level statistics candidate; field semantics and patient counts remain
+  unqualified. The focused metadata contract tests (2), Stable v1 contract
+  tests (43), routine Test-Goblin, context/ecosystem checks, Ruff, and diff
+  checks passed.
+- [x] Recheck the already-sent patient-count inquiry using a subject-scoped
+  Gmail search. It returned the original sent message and no inbound source-
+  owner reply; no follow-up was sent. Receipt:
+  `quality/qualifications/provider-response-m106-refresh-20260930.json`.
+- [~] Keep acquisition and M-106 acceptance blocked pending source-owner
+  clarification on a distinct-patient measure and a separate maintainer
+  rights decision for this exact resource. No CSV row or source byte was
+  retrieved.
+
 ## M-109 PBS current-distribution transition (2026-09-29)
 
 - [x] Reconcile current official PBS distribution metadata with the pinned
