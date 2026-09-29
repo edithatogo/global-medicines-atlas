@@ -2,7 +2,6 @@
   "schema_id": "global-medicines-atlas.pbs-source-transition",
   "schema_version": 1,
   "observed_at": "2026-09-29T12:24:38Z",
-  "source_id": "au-pbs",
   "official_sources": {
     "legacy_schema_history": "https://data.pbs.gov.au/document/87239.html",
     "distribution_status": "https://data.pbs.gov.au/data-distribution/data-distribution.html",
@@ -79,6 +78,10 @@
   "digest": {
     "algorithm": "sha256",
     "canonicalization": "UTF-8 JSON with sorted keys, compact separators, ensure_ascii=false; digest field excluded",
-    "value": "9a1f624650b42a96b37d7a59783af6e4888839c67c458893ce9571b2d35d07e8"
+    "value": "12e015672f203194bf8ebe2a8f269c35df7773a39c4f9392a7a1c381c1cc5e08"
+  },
+  "source_ids": {
+    "historical_xml": "au-pbs-historical-xml",
+    "current_api": "au-pbs-api"
   }
 }
