@@ -4,12 +4,48 @@ from __future__ import annotations
 
 import hashlib
 import json
+from datetime import UTC, datetime
 from functools import partial
 from typing import Any, cast
 
 import httpx
 import pytest
+from pydantic import AnyUrl
 from scripts import qualify_public_mbs_silver as command
+
+from global_medicines_atlas.mbs_silver_qualification import (
+    MbsSilverQualification,
+)
+from global_medicines_atlas.receipts import (
+    AcquisitionMethod,
+    AcquisitionStatus,
+    EvidenceClass,
+    PayloadEvidence,
+    RetrievalEvidence,
+    RightsState,
+    SourceIdentity,
+    SourceReceipt,
+    TransformationEvidence,
+)
+
+
+@pytest.fixture(autouse=True)
+def stub_public_v4_network_readback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def verified(_report: MbsSilverQualification) -> dict[str, object]:
+        return {
+            "status": "verified",
+            "current_revision": "c" * 40,
+            "verified_object_count": 9,
+            "candidate_only": True,
+        }
+
+    monkeypatch.setattr(
+        command,
+        "_read_public_v4_identity",
+        verified,
+    )
 
 
 class _Response:
@@ -106,6 +142,8 @@ def test_qualifies_only_digest_bound_public_bytes_in_memory(
     assert sum(cast("int", table["field_count"]) for table in tables) == 40
     assert qualification["promotion_status"] == "candidate_only"
     assert qualification["blockers"] == ["public_v4_identity_unverified"]
+    assert result["resolved_blockers"] == ["public_v4_identity_unverified"]
+    assert result["current_blockers"] == []
     assert (
         cast("dict[str, object]", result["official_release_check"])[
             "matched_pinned_archive"
@@ -116,6 +154,9 @@ def test_qualifies_only_digest_bound_public_bytes_in_memory(
     assert result["source_bytes_retained"] is False
     candidate_report = {
         "qualification": qualification,
+        "public_v4_identity": result["public_v4_identity"],
+        "resolved_blockers": result["resolved_blockers"],
+        "current_blockers": result["current_blockers"],
         "quality_diagnostics": result["quality_diagnostics"],
         "official_release_check": result["official_release_check"],
     }
@@ -204,6 +245,9 @@ def test_quality_diagnostics_locate_field_and_row_without_values(
             json.dumps(
                 {
                     "qualification": result["qualification"],
+                    "public_v4_identity": result["public_v4_identity"],
+                    "resolved_blockers": result["resolved_blockers"],
+                    "current_blockers": result["current_blockers"],
                     "quality_diagnostics": diagnostics,
                     "official_release_check": result["official_release_check"],
                 },
@@ -370,3 +414,258 @@ def test_workflow_is_exact_main_read_only_and_never_publishes() -> None:
     assert "issue" not in workflow.lower()
     assert "publish" not in workflow.lower()
     assert "source-retained" not in workflow.lower()
+
+
+def _public_v4_fixture(
+    report: Any,
+) -> tuple[bytes, bytes, bytes, list[dict[str, Any]], dict[str, Any]]:
+    dataset = "edithatogo/australian-mbs-source-archive"
+    revision = "b" * 40
+    prefix = "silver/mbs/v4/2025-07-v3"
+    table_bytes = {
+        f"{prefix}/{name}.parquet": f"table-{name}".encode()
+        for name in (
+            "services",
+            "hierarchy",
+            "descriptions",
+            "fees",
+            "benefits",
+            "caps",
+        )
+    }
+    public_qualification = {
+        "schema_id": "global-medicines-atlas.mbs-silver-qualification",
+        "schema_version": 1,
+        "candidate_only": True,
+        "field_count": report.field_count,
+        "field_occurrence_count": report.field_occurrence_count,
+        "qualification": report.model_dump(mode="json"),
+    }
+    qualification_bytes = json.dumps(
+        public_qualification, sort_keys=True, separators=(",", ":")
+    ).encode()
+    source_receipt = SourceReceipt(
+        receipt_id="synthetic:public-mbs-v4",
+        source=SourceIdentity(
+            catalog_id="au-mbs",
+            source_id=report.source_id,
+            jurisdiction="AUS",
+            authority="Synthetic",
+            dataset_title="Synthetic MBS",
+            catalog_version="synthetic-v1",
+        ),
+        retrieval=RetrievalEvidence(
+            uri=AnyUrl("https://fixtures.invalid/mbs"),
+            retrieved_at=datetime(2026, 9, 1, tzinfo=UTC),
+            acquisition_method=AcquisitionMethod.LOCAL_FIXTURE,
+            status=AcquisitionStatus.SUCCEEDED,
+        ),
+        payload=PayloadEvidence(
+            sha256=report.source_sha256,
+            byte_count=report.source_byte_count,
+        ),
+        rights_state=RightsState.PERMITTED,
+        rights_reference=AnyUrl("https://fixtures.invalid/rights"),
+        evidence_class=EvidenceClass.SYNTHETIC,
+        transformation=TransformationEvidence(
+            transformation_id="synthetic",
+            transformation_sha256="a" * 64,
+            output_sha256=report.source_sha256,
+            output_byte_count=report.source_byte_count,
+        ),
+    )
+    source_receipt_bytes = source_receipt.canonical_json()
+    objects: list[dict[str, Any]] = [
+        {
+            "path": path,
+            "byte_count": len(data),
+            "sha256": hashlib.sha256(data).hexdigest(),
+            "role": "source_faithful_silver_table",
+        }
+        for path, data in table_bytes.items()
+    ]
+    objects.extend([
+        {
+            "path": f"{prefix}/qualification.json",
+            "byte_count": len(qualification_bytes),
+            "sha256": hashlib.sha256(qualification_bytes).hexdigest(),
+            "role": "value_free_qualification",
+        },
+        {
+            "path": f"{prefix}/source-receipt.json",
+            "byte_count": len(source_receipt_bytes),
+            "sha256": hashlib.sha256(source_receipt_bytes).hexdigest(),
+            "role": "b1_source_receipt",
+        },
+    ])
+    manifest = {
+        "schema_id": "global-medicines-atlas.mbs-silver-v4-manifest",
+        "schema_version": 1,
+        "dataset": dataset,
+        "destination_prefix": prefix,
+        "candidate_only": True,
+        "qualification_sha256": report.qualification_sha256,
+        "source": {
+            "source_id": report.source_id,
+            "sha256": report.source_sha256,
+            "byte_count": report.source_byte_count,
+            "receipt_sha256": source_receipt.digest(),
+        },
+        "objects": objects,
+    }
+    manifest_bytes = json.dumps(
+        manifest, sort_keys=True, separators=(",", ":")
+    ).encode()
+    all_objects = [
+        *objects,
+        {
+            "path": f"{prefix}/manifest.json",
+            "byte_count": len(manifest_bytes),
+            "sha256": hashlib.sha256(manifest_bytes).hexdigest(),
+        },
+    ]
+    tree_entries: list[dict[str, Any]] = []
+    for obj in all_objects:
+        row: dict[str, Any] = {
+            "path": obj["path"],
+            "size": obj["byte_count"],
+        }
+        if str(obj["path"]).endswith(".parquet"):
+            row["lfs"] = {
+                "oid": obj["sha256"],
+                "size": obj["byte_count"],
+            }
+        tree_entries.append(row)
+    publication_receipt = {
+        "dataset": dataset,
+        "revision": revision,
+        "prefix": prefix,
+        "candidate_only": True,
+        "anonymous_digest_verification": "passed",
+        "manifest_sha256": hashlib.sha256(manifest_bytes).hexdigest(),
+        "verified_objects": all_objects,
+    }
+    return (
+        manifest_bytes,
+        qualification_bytes,
+        source_receipt_bytes,
+        tree_entries,
+        publication_receipt,
+    )
+
+
+def _candidate_report() -> Any:
+    payload = b"<MBS_XML><Data><ItemNum>00123</ItemNum></Data></MBS_XML>"
+    evidence = PayloadEvidence.from_bytes(payload)
+    receipt = SourceReceipt(
+        receipt_id="synthetic:public-mbs-v4",
+        source=SourceIdentity(
+            catalog_id="au-mbs",
+            source_id="au-mbs",
+            jurisdiction="AUS",
+            authority="Synthetic",
+            dataset_title="Synthetic MBS",
+            catalog_version="synthetic-v1",
+        ),
+        retrieval=RetrievalEvidence(
+            uri=AnyUrl("https://fixtures.invalid/mbs"),
+            retrieved_at=datetime(2026, 9, 1, tzinfo=UTC),
+            acquisition_method=AcquisitionMethod.LOCAL_FIXTURE,
+            status=AcquisitionStatus.SUCCEEDED,
+        ),
+        payload=evidence,
+        rights_state=RightsState.UNKNOWN,
+        evidence_class=EvidenceClass.SYNTHETIC,
+        transformation=TransformationEvidence(
+            transformation_id="synthetic",
+            transformation_sha256="a" * 64,
+            output_sha256=evidence.sha256,
+            output_byte_count=evidence.byte_count,
+        ),
+    )
+    return command.qualify_mbs_silver(payload, receipt, date_format="mbs-dmy")
+
+
+def test_public_v4_readback_binds_outputs_and_keeps_candidate_only() -> None:
+    report = _candidate_report()
+    fixture = _public_v4_fixture(report)
+
+    evidence = command.verify_public_v4_identity(
+        report,
+        current_revision="c" * 40,
+        manifest_bytes=fixture[0],
+        qualification_bytes=fixture[1],
+        source_receipt_bytes=fixture[2],
+        tree_entries=fixture[3],
+        publication_receipt=fixture[4],
+    )
+
+    assert evidence["status"] == "verified"
+    assert evidence["verified_object_count"] == 9
+    assert evidence["table_count"] == 6
+    assert evidence["projection_denominator_matches_public_v4"] is True
+    assert evidence["candidate_only"] is True
+
+
+def test_public_v4_readback_rejects_lfs_identity_drift() -> None:
+    report = _candidate_report()
+    fixture = list(_public_v4_fixture(report))
+    tree_entries = cast("list[dict[str, Any]]", fixture[3])
+    tree_entries[0]["lfs"]["oid"] = "0" * 64
+
+    with pytest.raises(ValueError, match="public v4 object identity differs"):
+        command.verify_public_v4_identity(
+            report,
+            current_revision="c" * 40,
+            manifest_bytes=cast("bytes", fixture[0]),
+            qualification_bytes=cast("bytes", fixture[1]),
+            source_receipt_bytes=cast("bytes", fixture[2]),
+            tree_entries=tree_entries,
+            publication_receipt=cast("dict[str, Any]", fixture[4]),
+        )
+
+
+def test_public_v4_readback_rejects_a_promoted_publication_claim() -> None:
+    report = _candidate_report()
+    fixture = list(_public_v4_fixture(report))
+    publication_receipt = cast("dict[str, Any]", fixture[4])
+    publication_receipt["candidate_only"] = False
+
+    with pytest.raises(ValueError, match="manifest or publication receipt"):
+        command.verify_public_v4_identity(
+            report,
+            current_revision="c" * 40,
+            manifest_bytes=cast("bytes", fixture[0]),
+            qualification_bytes=cast("bytes", fixture[1]),
+            source_receipt_bytes=cast("bytes", fixture[2]),
+            tree_entries=cast("list[dict[str, Any]]", fixture[3]),
+            publication_receipt=publication_receipt,
+        )
+
+
+def test_public_v4_readback_rejects_unbound_b1_receipt_digest() -> None:
+    report = _candidate_report()
+    fixture = list(_public_v4_fixture(report))
+    manifest = json.loads(cast("bytes", fixture[0]))
+    manifest["source"]["receipt_sha256"] = "0" * 64
+    manifest_bytes = json.dumps(
+        manifest, sort_keys=True, separators=(",", ":")
+    ).encode()
+    fixture[0] = manifest_bytes
+    publication_receipt = cast("dict[str, Any]", fixture[4])
+    publication_receipt["manifest_sha256"] = hashlib.sha256(
+        manifest_bytes
+    ).hexdigest()
+
+    with pytest.raises(
+        ValueError, match="public v4 B1 source or receipt identity differs"
+    ):
+        command.verify_public_v4_identity(
+            report,
+            current_revision="c" * 40,
+            manifest_bytes=manifest_bytes,
+            qualification_bytes=cast("bytes", fixture[1]),
+            source_receipt_bytes=cast("bytes", fixture[2]),
+            tree_entries=cast("list[dict[str, Any]]", fixture[3]),
+            publication_receipt=publication_receipt,
+        )

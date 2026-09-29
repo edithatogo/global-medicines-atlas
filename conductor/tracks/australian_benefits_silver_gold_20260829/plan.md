@@ -1288,3 +1288,28 @@
   tests: 81 passed; the one full local profile had two existing pinned-uv
   reproducibility failures, one optional skip, and 96.71% coverage. This does
   not establish the distinct aggregate-patient denominator or complete M-107.
+
+## MBS v4 current-head candidate identity reconciliation (2026-09-29)
+
+- [x] Re-read the public MBS v4 manifest, qualification, B1 receipt, exact
+  publication receipt, and current dataset tree. The original anonymous
+  publication receipt's nine objects, including all six Parquet LFS SHA-256
+  identities and byte counts, still match at the publication revision and
+  current dataset head. No table or source payload bytes were fetched.
+- [x] Update the Actions-only aggregate qualifier to verify that public identity
+  and compare the current candidate's deterministic source, table, field,
+  lineage, and quality denominators with the public candidate. Resolve only the
+  stale `public_v4_identity_unverified` aggregate blocker after all metadata,
+  receipt, LFS, and candidate-only checks pass. The embedded published
+  qualification and candidate-only status remain unchanged.
+  Focused qualification tests: 30 passed, including review-driven coverage that
+  binds the manifest's B1 receipt digest to the canonical fetched receipt;
+  Ruff, format, `ty`, BasedPyright, and context validation passed. The updated
+  live exact-main readback remains pending. Full Test-Goblin:
+  5,230 passed, 2 failed, 1 skipped, 96.72%; both failures are the existing
+  clean-clone release reproducibility checks requiring pinned `uv` 0.11.29,
+  unavailable locally (the installed version is 0.12.19).
+- [~] Merge through protected CI and rerun the exact-main candidate qualifier.
+  Confirm the new aggregate reports verified public v4 identity and no stale
+  public-identity blocker while preserving `candidate_only`; no publication
+  or M-109 acceptance is authorized by this task.
