@@ -285,7 +285,28 @@
       "path_in_candidate_inventory": true,
       "path_exists_in_pinned_tree": true
     },
-    "interpretation": "The exact manifest and B1 source receipt agree on path, source ID, SHA-256, and byte count. The B1 receipt says permitted, but the GMA source-rights ledger remains catalogue_only with redistribution unknown; the records conflict and need maintainer reconciliation. No rights conclusion is made."
+    "interpretation": "The exact archive manifest and B1 receipt match its current pinned path, source ID, SHA-256, and size. Decision 0009 is referenced by the manifest; issue #340 records exact publication intent and a hosted anonymous digest verification for the same archive digest, which matches the current revision. Thus maintainer authorization and historic verification are established for this exact object. The source-rights ledger review predates that authorization and still records upstream redistribution terms as unknown; no broader licensing conclusion is made, and this audit does not admit the object to v4.",
+    "maintainer_publication_authority": {
+      "decision": "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md",
+      "decision_sha256": "9a8e4dde55e56c04f59035080ce96ad64bfcbafd84bc8580e74a940facd3199f",
+      "authorization_ref_in_dataset_manifest": "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md#rights-and-publication-authority",
+      "issue": "https://github.com/edithatogo/global-medicines-atlas/issues/340",
+      "publication_intent_comment": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5466484158",
+      "publication_intent_exact_commit": "771ca393500165ed57fca64fd5c1c8ac523b98f0",
+      "publication_intent_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/33290449753",
+      "hosted_anonymous_verification_comment": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5466488482",
+      "hosted_verification_revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+      "hosted_verification_source_archive_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+      "hosted_anonymous_digest_verification": "passed",
+      "temporary_source_bytes_removed": true,
+      "current_pinned_revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+      "current_pinned_path_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+      "current_pinned_digest_equals_hosted_verified_digest": true,
+      "exact_object_publication_authorized": true,
+      "source_terms_status": "unresolved in the source-rights ledger; latest recorded review predates Decision 0009",
+      "rights_conclusion_made": false,
+      "hosted_verification_source_member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43"
+    }
   },
   "limitations": [
     "A source receipt marked permitted does not override a conflicting unresolved GMA source-rights ledger.",

@@ -262,8 +262,9 @@
   path/source/category/digest/size and remain within recorded authorization
   bounds; all eight MBS source candidates map to exact receipt/authorization/
   hosted-publication identities. The PBS archive receipt agrees with its
-  manifest, while its `permitted` field conflicts with the unresolved source
-  rights ledger. These joins do not resolve that conflict or admit v4 objects.
+  manifest; Decision 0009 and issue #340 establish maintainer authorization and
+  historic anonymous verification for the same digest. Upstream terms remain
+  unresolved in the older source-rights ledger, and no v4 admission follows.
   See `quality/qualifications/australian-m112-receipt-sidecar-join-audit-20260930.json`
   and `quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json`.
 - [ ] Configure an approved independent public recovery target, checksum
