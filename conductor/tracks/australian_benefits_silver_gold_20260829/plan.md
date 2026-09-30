@@ -1361,6 +1361,12 @@
   and complete tree inventories for 2,834 file paths. It does not read payload
   bytes or source values and is not an exhaustive or approved producer
   denominator. Receipt: `quality/qualifications/federation-v4-public-producer-discovery-20260930.json`.
+- [x] Reconcile the previously stale CMS Part D rights review, disposition,
+  publication queue, and producer-discovery governance join to the explicit
+  2026-08-27 exact-inventory decision and anonymous receipt at pinned revision
+  `abcff8ebd1f624c4bbb0a87d903b184388c98254`. This is limited to 30 formulary
+  releases and 3 spending resources; the later public dataset head is not claimed
+  to have a matching raw digest receipt.
 - [ ] Approve the exact producer/object denominator and independently bind each
   admitted object's source rights, v4 contract, lineage, and anonymous public
   readback. M-112 remains blocked; public visibility and this candidate inventory

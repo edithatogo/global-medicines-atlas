@@ -3585,21 +3585,17 @@
       "authority": "Centers for Medicare & Medicaid Services",
       "dimension": "funding",
       "catalogue_rights_status": "approved_public_exact_inventory_with_cms_agreement_controls",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
-      "rights_policy_family_id": "unresolved-source-specific-terms"
+      "required_evidence": [],
+      "blocker": null,
+      "rights_policy_family_id": "cms-partd-exact-inventory-approval-20260827"
     },
     {
       "source_id": "us-cms-partd-spending",
@@ -3609,21 +3605,17 @@
       "authority": "Centers for Medicare & Medicaid Services",
       "dimension": "funding",
       "catalogue_rights_status": "approved_public_exact_inventory",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
-      "rights_policy_family_id": "unresolved-source-specific-terms"
+      "required_evidence": [],
+      "blocker": null,
+      "rights_policy_family_id": "cms-partd-exact-inventory-approval-20260827"
     },
     {
       "source_id": "us-dailymed-spl",

@@ -5,7 +5,7 @@
   "catalogue_source_count": 174,
   "review_count": 174,
   "publication_gate": "satisfied_for_exact_approved_manifests",
-  "candidate_policy_assignment_count": 28,
+  "candidate_policy_assignment_count": 30,
   "entries": [
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
@@ -4237,59 +4237,83 @@
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "us-cms-partd-formulary",
-      "policy_family_id": "unresolved-source-specific-terms",
+      "policy_family_id": "cms-partd-exact-inventory-approval-20260827",
       "evidence": [
         {
-          "official_url": "https://data.cms.gov/provider-summary-by-type-of-service/medicare-part-d-prescribers/quarterly-prescription-drug-plan-formulary-pharmacy-network-and-pricing-information",
-          "observed_at": "2026-08-20T23:55:38Z",
-          "content_sha256": "fd264fcfa5c2670c68f704698037f3e01abcb6f6e056616aab0bc5515ab93b30",
-          "scope": "endpoint",
-          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+          "official_url": "https://catalog.data.gov/dataset/quarterly-prescription-drug-plan-formulary-pharmacy-network-and-pricing-information",
+          "observed_at": "2026-08-27T00:00:00Z",
+          "content_sha256": "e3098f964bf987ebaaa18e58313decf5f3d161063c98209aad0b3a8bedac6a3f",
+          "scope": "dataset",
+          "reuse_statement": "The sole maintainer approved attributed acquisition, retention, public release, and external publication for the exact 30 formulary releases and 3 spending resources in the inventory-bound Prompt 31 authorization, subject to the CMS Agreement for Use. This is a source-specific exact-inventory decision, not a blanket licence conclusion."
+        },
+        {
+          "official_url": "https://data.cms.gov/sites/default/files/2023-10/4eeb19e1-525b-4a4e-9766-b33ff084fc5c/AGREEMENT-FOR-USE.pdf",
+          "observed_at": "2026-08-21T05:05:00Z",
+          "content_sha256": "e3098f964bf987ebaaa18e58313decf5f3d161063c98209aad0b3a8bedac6a3f",
+          "scope": "dataset",
+          "reuse_statement": "Formulary reuse remains subject to accurate and non-misleading presentation and explicit temporal limitations under the CMS Agreement for Use."
         }
       ],
-      "redistribute": "unknown",
-      "transform": "unknown",
-      "publish_source_bytes": "unknown",
-      "sensitivity": "unknown",
-      "disposition": "catalogue_only",
-      "attribution": null,
-      "field_exclusions": [],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
-      "reviewed_at": "2026-08-21T00:00:00Z",
-      "review_trigger": "capture current official reuse terms",
-      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
+      "disposition": "approved_public_source",
+      "attribution": "Credit the Centers for Medicare & Medicaid Services; link the exact source resource, preserve source date and specification warnings, and identify transformations.",
+      "field_exclusions": [
+        "formulary material outside the exact 30 releases and spending material outside the exact three approved resources",
+        "claims that Part D spending represents net prices or total United States medicine utilisation",
+        "formulary presentation that is inaccurate or misleading or omits temporal limits and Agreement for Use requirements",
+        "suppressed values, population exclusions, source-native grain, and distinctions between preliminary and final spending actions"
+      ],
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
+      "reviewed_at": "2026-08-27T00:00:00Z",
+      "review_trigger": "CMS Agreement for Use, official source terms, approved inventory, source revision, attribution requirements, or interpretation boundaries change",
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",
       "schema_version": 1,
       "source_id": "us-cms-partd-spending",
-      "policy_family_id": "unresolved-source-specific-terms",
+      "policy_family_id": "cms-partd-exact-inventory-approval-20260827",
       "evidence": [
         {
-          "official_url": "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-part-d-spending-by-drug",
-          "observed_at": "2026-08-20T23:55:38Z",
-          "content_sha256": "fd264fcfa5c2670c68f704698037f3e01abcb6f6e056616aab0bc5515ab93b30",
-          "scope": "endpoint",
-          "reuse_statement": "Official landing page observed; no affirmative, source-applicable redistribution grant was established."
+          "official_url": "https://catalog.data.gov/dataset/quarterly-prescription-drug-plan-formulary-pharmacy-network-and-pricing-information",
+          "observed_at": "2026-08-27T00:00:00Z",
+          "content_sha256": "e3098f964bf987ebaaa18e58313decf5f3d161063c98209aad0b3a8bedac6a3f",
+          "scope": "dataset",
+          "reuse_statement": "The sole maintainer approved attributed acquisition, retention, public release, and external publication for the exact 30 formulary releases and 3 spending resources in the inventory-bound Prompt 31 authorization, subject to the CMS Agreement for Use. This is a source-specific exact-inventory decision, not a blanket licence conclusion."
+        },
+        {
+          "official_url": "https://data.cms.gov/sites/default/files/2023-10/4eeb19e1-525b-4a4e-9766-b33ff084fc5c/AGREEMENT-FOR-USE.pdf",
+          "observed_at": "2026-08-21T05:05:00Z",
+          "content_sha256": "e3098f964bf987ebaaa18e58313decf5f3d161063c98209aad0b3a8bedac6a3f",
+          "scope": "dataset",
+          "reuse_statement": "Formulary reuse remains subject to accurate and non-misleading presentation and explicit temporal limitations under the CMS Agreement for Use."
         }
       ],
-      "redistribute": "unknown",
-      "transform": "unknown",
-      "publish_source_bytes": "unknown",
-      "sensitivity": "unknown",
-      "disposition": "catalogue_only",
-      "attribution": null,
-      "field_exclusions": [],
-      "maintainer_licence_approved": false,
-      "maintainer_publication_approved": false,
-      "reviewed_at": "2026-08-21T00:00:00Z",
-      "review_trigger": "capture current official reuse terms",
-      "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
-      "public_source_eligible": false,
-      "public_derived_eligible": false
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
+      "disposition": "approved_public_source",
+      "attribution": "Credit the Centers for Medicare & Medicaid Services; link the exact source resource, preserve source date and specification warnings, and identify transformations.",
+      "field_exclusions": [
+        "formulary material outside the exact 30 releases and spending material outside the exact three approved resources",
+        "claims that Part D spending represents net prices or total United States medicine utilisation",
+        "formulary presentation that is inaccurate or misleading or omits temporal limits and Agreement for Use requirements",
+        "suppressed values, population exclusions, source-native grain, and distinctions between preliminary and final spending actions"
+      ],
+      "maintainer_licence_approved": true,
+      "maintainer_publication_approved": true,
+      "reviewed_at": "2026-08-27T00:00:00Z",
+      "review_trigger": "CMS Agreement for Use, official source terms, approved inventory, source revision, attribution requirements, or interpretation boundaries change",
+      "blocker": null,
+      "public_source_eligible": true,
+      "public_derived_eligible": true
     },
     {
       "schema_id": "global-medicines-atlas.source-rights-review",

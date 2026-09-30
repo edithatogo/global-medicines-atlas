@@ -26,8 +26,13 @@ def build() -> dict[str, object]:
             "catalogue_rights_status": source["rights_status"],
             "recommended_disposition": (
                 reviews[source["source_id"]]["disposition"]
-                if source["rights_status"]
-                == "maintainer_redistribution_authorized"
+                if (
+                    source["rights_status"]
+                    == "maintainer_redistribution_authorized"
+                    or source["rights_status"].startswith(
+                        "approved_public_exact_inventory"
+                    )
+                )
                 and reviews[source["source_id"]]["public_derived_eligible"]
                 else "credentialed_excluded"
                 if reviews[source["source_id"]]["disposition"]
@@ -36,31 +41,57 @@ def build() -> dict[str, object]:
             ),
             "internal_acquisition": (
                 "approved_for_exact_reviewed_scope"
-                if source["rights_status"]
-                == "maintainer_redistribution_authorized"
+                if (
+                    source["rights_status"]
+                    == "maintainer_redistribution_authorized"
+                    or source["rights_status"].startswith(
+                        "approved_public_exact_inventory"
+                    )
+                )
                 and reviews[source["source_id"]]["public_derived_eligible"]
                 else "conditional_on_lawful_access_and_retention_review"
             ),
             "public_derived_release": (
                 "approved_for_exact_manifest"
-                if source["rights_status"]
-                == "maintainer_redistribution_authorized"
+                if (
+                    source["rights_status"]
+                    == "maintainer_redistribution_authorized"
+                    or source["rights_status"].startswith(
+                        "approved_public_exact_inventory"
+                    )
+                )
                 and reviews[source["source_id"]]["public_derived_eligible"]
                 else "not_approved"
             ),
             "approved_surfaces": (
                 ["repository_metadata", "source_bytes", "derived_products"]
-                if source["rights_status"]
-                == "maintainer_redistribution_authorized"
+                if (
+                    source["rights_status"]
+                    == "maintainer_redistribution_authorized"
+                    or source["rights_status"].startswith(
+                        "approved_public_exact_inventory"
+                    )
+                )
                 and reviews[source["source_id"]]["public_source_eligible"]
                 else ["repository_metadata", "derived_products"]
-                if source["rights_status"]
-                == "maintainer_redistribution_authorized"
+                if (
+                    source["rights_status"]
+                    == "maintainer_redistribution_authorized"
+                    or source["rights_status"].startswith(
+                        "approved_public_exact_inventory"
+                    )
+                )
                 and reviews[source["source_id"]]["public_derived_eligible"]
                 else ["repository_metadata"]
             ),
             "required_evidence": []
-            if source["rights_status"] == "maintainer_redistribution_authorized"
+            if (
+                source["rights_status"]
+                == "maintainer_redistribution_authorized"
+                or source["rights_status"].startswith(
+                    "approved_public_exact_inventory"
+                )
+            )
             and reviews[source["source_id"]]["public_derived_eligible"]
             else [
                 "current_terms_or_written_permission",
@@ -71,8 +102,13 @@ def build() -> dict[str, object]:
             ],
             "blocker": (
                 None
-                if source["rights_status"]
-                == "maintainer_redistribution_authorized"
+                if (
+                    source["rights_status"]
+                    == "maintainer_redistribution_authorized"
+                    or source["rights_status"].startswith(
+                        "approved_public_exact_inventory"
+                    )
+                )
                 and reviews[source["source_id"]]["public_derived_eligible"]
                 else "source-specific rights receipt required"
             ),

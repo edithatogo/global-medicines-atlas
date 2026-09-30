@@ -84,8 +84,16 @@ def test_every_unlanded_public_source_has_explicit_noncompletion_blocker() -> (
             ROOT / "quality/qualifications/source-rights-disposition.json"
         ).read_text(encoding="utf-8")
     )
+    landing_document = json.loads(
+        (
+            ROOT / "quality/qualifications/bronze-source-landing-queue.json"
+        ).read_text(encoding="utf-8")
+    )
     blockers = {
         row["source_id"]: row["blocker"] for row in rights_document["entries"]
+    }
+    landing_states = {
+        row["source_id"]: row["state"] for row in landing_document["items"]
     }
     in_scope = {
         row["source_id"]: row
@@ -95,13 +103,16 @@ def test_every_unlanded_public_source_has_explicit_noncompletion_blocker() -> (
 
     assert in_scope
     assert all(
-        row["implemented_ingestion"] is True or blockers.get(source_id)
+        row["implemented_ingestion"] is True
+        or landing_states.get(source_id) == "landed_and_evidenced"
+        or blockers.get(source_id)
         for source_id, row in in_scope.items()
     )
     assert all(
         blockers[source_id] == "source-specific rights receipt required"
         for source_id, row in in_scope.items()
         if row["implemented_ingestion"] is not True
+        and landing_states.get(source_id) != "landed_and_evidenced"
     )
 
 
