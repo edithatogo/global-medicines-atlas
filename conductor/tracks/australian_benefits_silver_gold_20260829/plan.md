@@ -672,7 +672,7 @@
   only for a complete, unambiguous supersession chain ending in accepted,
   rejected, or superseded. Conflicting roots, branches, cycles, and missing
   predecessors fail closed as pending. The regression failed against the old
-  behavior, then all 35 adjacent Gold graph tests passed. Full Test-Goblin:
+  behavior, then all 38 adjacent Gold graph tests passed. Full Test-Goblin:
   5,264 passed, 2 environment-only release reproducibility failures, 1
   optional PyIceberg skip, 96.71% coverage; rerunning only those two tests via
   `uv 0.11.29` passed both. This fixes queue-state derivation only; reviewer
