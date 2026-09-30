@@ -36,12 +36,13 @@
     },
     {
       "dataset": "edithatogo/australian-pbs-source-archive",
-      "lineage_state": "The one raw archive path, manifest identity, and exact B1 source receipt agree on source ID, SHA-256, and byte count. The receipt reports rights_state=permitted, while the current GMA source-rights ledger remains catalogue_only with redistribution unknown; this conflict is not resolved by the metadata join. No v4 admission.",
+      "lineage_state": "The one raw archive path, manifest identity, and B1 source receipt match on source ID, SHA-256, and byte count. Decision 0009 is cited by the manifest and issue #340 records exact publication intent plus hosted anonymous verification for the same archive digest, which matches the current pinned object. The older source-rights ledger still records upstream redistribution terms as unknown; exact-object maintainer authorization is established, while general source-term eligibility and v4 admission remain open.",
       "raw_candidate_path_count": 1,
       "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
       "source_specific_evidence": [
-        "The rights ledger leaves source-byte redistribution unknown and says an affirmative source-applicable grant was not established. Existing public visibility and earlier publication intent do not close this rights-ledger conflict.",
-        "Exact-revision manifest and source-receipt metadata match for the 2026-04-01 archive (path, source ID, digest, and 11,156,706 bytes). Its receipt rights_state is permitted, but source-rights-review-ledger.json records catalogue_only/redistribute unknown. No rights conclusion is made; maintainer reconciliation is required before v4 admission. See quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json."
+        "The exact-revision manifest and B1 receipt match the raw archive path, source ID, SHA-256, and 11,156,706-byte size.",
+        "The manifest authorization_ref cites Decision 0009. Issue #340 comment 5466484158 records exact PBS publication intent under decision-0009 at commit 771ca393500165ed57fca64fd5c1c8ac523b98f0; comment 5466488482 records anonymous digest verification passed at revision 31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7 for archive SHA-256 f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20. The same digest and exact size are present in the current pinned candidate tree.",
+        "The source-rights ledger review is dated 2026-08-21 and retains catalogue_only/redistribute unknown because no official source-applicable license terms were established. Decision 0009 later authorizes the exact public data-plane scope but does not establish general upstream terms. Preserve both facts; do not infer a broader license or admit the object to v4."
       ],
       "sources": {
         "au-pbs-historical-xml": {
@@ -118,12 +119,12 @@
     "The 23 existing data projections have no per-object v4 admission/lineage receipts in the reviewed evidence; the MBS Silver subset remains candidate-only.",
     "Tree metadata SHA-256 comparisons are not anonymous payload readbacks; no new rights conclusion, permission, source payload verification, or publication is made by this audit.",
     "MBS/PBS utilisation sidecars now join all 20 raw objects to existing source/category/domain authorization scope, but these sidecars contain no rights-state claim and are not per-object v4 rights receipts; harvest coverage remains partial for MBS, and v4 admission remains open.",
-    "The PBS source archive exact B1 receipt says permitted but conflicts with the current GMA source-rights ledger (catalogue_only, redistribution unknown); maintainer rights reconciliation is still required. The 2026-08-01 MBS root-manifest omission and duplicate unreviewed acquisitions still require canonical B1 reconciliation."
+    "PBS exact-object maintainer publication authority and historic anonymous digest verification are established and match the current pinned archive digest. The source-rights ledger (last reviewed 2026-08-21) still records upstream terms as unknown; exact public-destination authority does not establish a broader source licence or v4 eligibility."
   ],
   "inventory": "quality/qualifications/australian-m112-object-inventory-20260930.json",
   "inventory_sha256": "ccc0667b1ce8ba19d4bed0a6590e2bc55ab954d7bd6cc51f56e51231cc780460",
   "new_permission_or_licensing_conclusion": false,
-  "observed_at": "2026-09-30T07:26:39Z",
+  "observed_at": "2026-09-30T07:49:04Z",
   "public_collection_or_registry_mutation_performed": false,
   "repo_readback": {
     "current_hub_revision": "8e062578f14e12cf3238700a93946339da9c5d88",
@@ -166,6 +167,17 @@
     "source_rights_ledger": {
       "path": "quality/qualifications/source-rights-review-ledger.json",
       "sha256": "74cd6ffb44111dcbf2a2b2d11dd3be0fc62b4136757a33c61c5a839ed29d63d7"
+    },
+    "decision_0009_australian_health_authority": {
+      "path": "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md",
+      "sha256": "9a8e4dde55e56c04f59035080ce96ad64bfcbafd84bc8580e74a940facd3199f"
+    },
+    "pbs_exact_hosted_publication_receipt": {
+      "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5466488482",
+      "authorization_id": "decision-0009",
+      "verified_revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+      "source_archive_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+      "current_pinned_digest_match": true
     }
   },
   "schema_id": "global-medicines-atlas.australian-m112-source-rights-lineage-crosswalk",
@@ -211,7 +223,7 @@
   },
   "source_archive_receipt_join_audit": {
     "path": "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json",
-    "sha256": "6e8e972d4461f2e5ebf6d4f952cc3ab68a546e7d8c2254f49764a160aa8389ca",
+    "sha256": "f0bbf7987d60e78534c2ee926d6d6c7eb94aca8900328d894024849f714ec6c0",
     "mbs_raw_candidates": 8,
     "mbs_exact_path_digest_size_mappings": 8,
     "mbs_root_manifest_paths": 7,
@@ -221,6 +233,8 @@
     "pbs_ledger_state": "catalogue_only; redistribute unknown",
     "rights_conflict_resolved": false,
     "new_licensing_conclusion": false,
-    "v4_admission_performed": false
+    "v4_admission_performed": false,
+    "pbs_exact_object_authorization": "Decision 0009 plus issue #340 exact publication intent and historic hosted anonymous digest receipt; the same source archive digest matches the current pinned tree",
+    "pbs_source_terms_status": "unresolved in the older source-rights ledger; no broader licensing conclusion"
   }
 }

@@ -701,8 +701,11 @@
   durable anonymous hosted verification receipt. Its path is missing from the
   current root manifest, while two nested accepted but unreviewed acquisition
   records disagree on acquisition identity and source Parquet digest; canonical
-  B1 reconciliation and v4 admission remain open. Rights remain unresolved for
-  `au-pbs-historical-xml` and all 1,707 `au_pbs` reimbursement-atlas payloads.
+  B1 reconciliation and v4 admission remain open. Upstream terms remain
+  unresolved for `au-pbs-historical-xml` and all 1,707 `au_pbs`
+  reimbursement-atlas payloads; for the exact PBS source archive, Decision
+  0009 and its hosted receipt establish maintainer publication authority and
+  historic digest verification, but not a broader source licence.
   See `quality/qualifications/australian-m112-object-inventory-20260930.json`,
   `quality/qualifications/australian-m112-source-rights-lineage-crosswalk-20260930.json`,
   and `quality/qualifications/australian-m112-manifest-join-audit-20260930.json`.
@@ -1381,8 +1384,10 @@
   SHA-256 comparisons, all match manifest checksums; 102 candidate paths have
   no comparable tree digest. The August XML's exact authorization and previous
   anonymous hosted verification are confirmed, but duplicate accepted,
-  unreviewed B1 records remain unreconciled and no v4 admission is made. PBS
-  source-byte rights and the shared reimbursement-atlas rights remain open.
+  unreviewed B1 records remain unreconciled and no v4 admission is made. The
+  PBS archive's exact maintainer authorization and historic anonymous
+  verification are confirmed; broader source terms and the shared
+  reimbursement-atlas rights remain open.
   Audit: `quality/qualifications/australian-m112-manifest-join-audit-20260930.json`;
   updated crosswalk:
   `quality/qualifications/australian-m112-source-rights-lineage-crosswalk-20260930.json`.
@@ -1393,9 +1398,11 @@
   records. All eight MBS source candidates map to exact receipt, legacy
   authorization, or hosted-publication identities; the August XML remains
   missing from the root manifest and duplicated in two unreviewed B1 records.
-  The one PBS source object matches its B1 receipt exactly, whose `permitted`
-  state conflicts with the unresolved GMA rights ledger. No rights conclusion
-  or v4 admission is made. See
+  The one PBS source object matches its B1 receipt exactly. Decision 0009 and
+  issue #340 also establish maintainer authorization and historic anonymous
+  verification for the same archive digest, which matches the current pinned
+  object. The earlier source-rights ledger still has upstream terms as unknown;
+  this does not establish broader source licensing or v4 admission. See
   `quality/qualifications/australian-m112-receipt-sidecar-join-audit-20260930.json`
   and `quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json`.
 
