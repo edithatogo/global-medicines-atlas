@@ -442,7 +442,7 @@ for credentialed or rights-unresolved sources.
     - [ ] Exercise immutable landing, receipts, source-faithful Bronze projection, clean-room recovery, and private archive verification
     - [x] Permit public release and external publication only for successfully retrieved partitions with OGL/OpenPrescribing attribution; the bounded six-endpoint attempt returned HTTP 403 and published nothing
     - [x] Review fixes: make Open Medic ZIP fixtures byte-deterministic and add opt-in hybrid xdist scheduling that keeps resource-sensitive tests serial (`4721359`, `59d77f4`); 137 affected tests, Ruff, ty, and BasedPyright pass
-- [~] Task: Acquire U.S. CMS Medicare Part D utilisation data (Prompt 31)
+- [x] Task: Acquire U.S. CMS Medicare Part D utilisation data (Prompt 31)
     - [x] Resolve the official corpus to 30 quarterly formulary ZIP releases through Q2 2026 and the three-resource 2024 annual spending surface
     - [x] Replace the generic CMS terms gap with the dataset-specific government-works licence record and formulary Agreement for Use
     - [x] Preserve plan/population exclusions, gross-versus-net spending, preliminary-versus-final, suppression, and source-native measure boundaries
@@ -490,7 +490,13 @@ for credentialed or rights-unresolved sources.
             binds both CMS source IDs to approved rights and the immutable raw
             revision. The generated landing queue and Prompt 31 audit report
             both as live-qualified while preserving the formulary fixture
-            history and the incomplete broader Bronze program.
+            history and the incomplete broader Bronze program. PR #599
+            subsequently reconciled the receipt-bound landing overrides and
+            canonical Prompt 31 audit: both exact source IDs are
+            `landed_and_evidenced`, `live_acquisition_complete` is true, and
+            there are no sources without live evidence or pending Prompt 31
+            actions. This closes Prompt 31 only. Part D is not total U.S.
+            utilisation, and broader Bronze completeness remains blocked.
     - [x] Keep public release and external publication separately gated; the maintainer approved attributed public release and external publication on 2026-08-27 subject to the CMS Agreement for Use and fail-closed interpretation boundaries
 - [x] Task: Review Fixes for CMS Part D public qualification
     - [x] Reconcile the preflight recommendation with the maintainer's exact approved-public decision

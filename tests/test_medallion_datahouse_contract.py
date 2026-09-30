@@ -207,7 +207,7 @@ def test_bronze_track_artifacts_are_complete_and_tdd_shaped() -> None:
     assert any(item.endswith("/issues/275") for item in subissues)
     assert any(item.endswith("/issues/281") for item in subissues)
     assert "Write failing tests" in plan
-    assert plan.count("- [~] Task:") == 6
+    assert plan.count("- [~] Task:") == 5
     assert plan.count("Write failing tests") >= 8
     assert plan.count(failure_note) >= 8
     assert "Phase Verification & Checkpoint" in plan
