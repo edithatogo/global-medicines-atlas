@@ -259,6 +259,12 @@
   catalog publication and collection mutation remain behind explicit approval.
   See `quality/qualifications/hf-public-registry-gap-20261001.json` and
   `scripts/qualify_hf_public_registry_gap.py`.
+- [x] Verify the public metadata reader rejects redirects away from the
+  official HTTPS Hub host and responses larger than its 8 MiB bound. Both
+  focused regressions pass; BasedPyright, Ruff, and the 61-test affected set
+  pass locally. Test-only PR #679 passed all 37 protected checks and merged at
+  `9647d2878e0c5ebe101bb01437209e40eaea3080`; the publisher workflow's
+  publish step was skipped. No Hub state or source payload was changed.
 - [ ] Populate and make `Policy AUS` public, update scoped HEOR membership and
   notes, and refresh the public dataset-estate registry after explicit
   maintainer approval for the public collection and registry changes.
