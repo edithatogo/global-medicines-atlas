@@ -31,6 +31,31 @@ def mbs_legacy_edge() -> dict[str, object]:
     return payload
 
 
+def adjudication(
+    candidate_id: str,
+    state: ReviewState,
+    rationale: str,
+    supersedes_event_id: str | None = None,
+) -> AdjudicationEvent:
+    event_id = AdjudicationEvent.content_id(
+        candidate_id=candidate_id,
+        state=state,
+        occurred_at=QUEUED_AT,
+        reviewer_id="maintainer-supplied",
+        rationale=rationale,
+        supersedes_event_id=supersedes_event_id,
+    )
+    return AdjudicationEvent(
+        event_id=event_id,
+        candidate_id=candidate_id,
+        state=state,
+        occurred_at=QUEUED_AT,
+        reviewer_id="maintainer-supplied",
+        rationale=rationale,
+        supersedes_event_id=supersedes_event_id,
+    )
+
+
 def test_queue_adapts_current_pbs_and_legacy_mbs_without_promotion():
     queue = build_gold_edge_review_queue(
         (mbs_legacy_edge(), pbs_edge()), queued_at=QUEUED_AT
@@ -77,6 +102,36 @@ def test_case_digest_binds_complete_edge_and_case_fields():
         GoldEdgeReviewCase.model_validate(forged)
 
 
+@pytest.mark.parametrize(
+    "state", [ReviewState.REJECTED, ReviewState.SUPERSEDED]
+)
+def test_other_terminal_adjudications_remove_only_the_decided_case(
+    state: ReviewState,
+):
+    queue = build_gold_edge_review_queue(
+        (pbs_edge(), mbs_legacy_edge()), queued_at=QUEUED_AT
+    )
+    decided = queue[0]
+    rationale = f"Existing {state.value} event supplied by caller"
+    event_id = AdjudicationEvent.content_id(
+        candidate_id=decided.review_case_id,
+        state=state,
+        occurred_at=QUEUED_AT,
+        reviewer_id="maintainer-supplied",
+        rationale=rationale,
+        supersedes_event_id=None,
+    )
+    event = AdjudicationEvent(
+        event_id=event_id,
+        candidate_id=decided.review_case_id,
+        state=state,
+        occurred_at=QUEUED_AT,
+        reviewer_id="maintainer-supplied",
+        rationale=rationale,
+    )
+    assert regenerate_gold_edge_review_queue(queue, (event,)) == (queue[1],)
+
+
 def test_queue_rejects_duplicate_or_unsupported_edges():
     with pytest.raises(ValueError, match="Duplicate Gold edge"):
         build_gold_edge_review_queue(
@@ -96,27 +151,78 @@ def test_queue_rejects_duplicate_or_unsupported_edges():
         build_gold_edge_review_queue((missing_id,), queued_at=QUEUED_AT)
 
 
-def test_existing_adjudication_only_filters_and_never_creates_decisions():
+def test_needs_information_and_complete_supersession_chain_remain_pending():
     queue = build_gold_edge_review_queue(
         (pbs_edge(), mbs_legacy_edge()), queued_at=QUEUED_AT
     )
-    decided = queue[0]
-    event_id = AdjudicationEvent.content_id(
-        candidate_id=decided.review_case_id,
-        state=ReviewState.NEEDS_INFORMATION,
-        occurred_at=QUEUED_AT,
-        reviewer_id="maintainer-supplied",
-        rationale="Existing event supplied by caller",
-        supersedes_event_id=None,
+    needs_information = adjudication(
+        queue[0].review_case_id,
+        ReviewState.NEEDS_INFORMATION,
+        "Existing event supplied by caller",
     )
-    event = AdjudicationEvent(
-        event_id=event_id,
-        candidate_id=decided.review_case_id,
-        state=ReviewState.NEEDS_INFORMATION,
-        occurred_at=QUEUED_AT,
-        reviewer_id="maintainer-supplied",
-        rationale="Existing event supplied by caller",
+    unresolved = regenerate_gold_edge_review_queue(queue, (needs_information,))
+    assert unresolved == queue
+    assert all(
+        case.review_state is ReviewState.PENDING_REVIEW for case in unresolved
     )
-    remaining = regenerate_gold_edge_review_queue(queue, (event,))
+    accepted = adjudication(
+        queue[0].review_case_id,
+        ReviewState.ACCEPTED,
+        "Existing superseding decision supplied by caller",
+        needs_information.event_id,
+    )
+    remaining = regenerate_gold_edge_review_queue(
+        queue, (needs_information, accepted)
+    )
     assert remaining == (queue[1],)
     assert remaining[0].review_state is ReviewState.PENDING_REVIEW
+
+
+def test_conflicting_adjudication_roots_remain_pending():
+    queue = build_gold_edge_review_queue((pbs_edge(),), queued_at=QUEUED_AT)
+    first = adjudication(
+        queue[0].review_case_id, ReviewState.NEEDS_INFORMATION, "First root"
+    )
+    second = adjudication(
+        queue[0].review_case_id, ReviewState.REJECTED, "Second root"
+    )
+    assert regenerate_gold_edge_review_queue(queue, (first, second)) == queue
+
+
+def test_dangling_adjudication_predecessor_remains_pending():
+    queue = build_gold_edge_review_queue((pbs_edge(),), queued_at=QUEUED_AT)
+    root = adjudication(
+        queue[0].review_case_id, ReviewState.NEEDS_INFORMATION, "Root"
+    )
+    dangling = adjudication(
+        queue[0].review_case_id,
+        ReviewState.ACCEPTED,
+        "Decision refers to an unavailable predecessor",
+        "missing-event",
+    )
+    assert regenerate_gold_edge_review_queue(queue, (root, dangling)) == queue
+
+
+def test_branched_adjudication_history_remains_pending():
+    queue = build_gold_edge_review_queue((pbs_edge(),), queued_at=QUEUED_AT)
+    root = adjudication(
+        queue[0].review_case_id, ReviewState.NEEDS_INFORMATION, "Root"
+    )
+    first_child = adjudication(
+        queue[0].review_case_id,
+        ReviewState.ACCEPTED,
+        "First child",
+        root.event_id,
+    )
+    second_child = adjudication(
+        queue[0].review_case_id,
+        ReviewState.REJECTED,
+        "Second child",
+        root.event_id,
+    )
+    assert (
+        regenerate_gold_edge_review_queue(
+            queue, (root, first_child, second_child)
+        )
+        == queue
+    )

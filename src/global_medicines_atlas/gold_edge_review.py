@@ -157,11 +157,49 @@ def regenerate_gold_edge_review_queue(
     cases: Iterable[GoldEdgeReviewCase],
     adjudications: Iterable[AdjudicationEvent],
 ) -> tuple[GoldEdgeReviewCase, ...]:
-    """Filter caller-supplied decided cases without manufacturing decisions."""
-    decided = {event.candidate_id for event in adjudications}
+    """Filter terminal decisions; keep unresolved or conflicting chains."""
+    events_by_candidate: dict[str, dict[str, AdjudicationEvent]] = {}
+    for event in adjudications:
+        events = events_by_candidate.setdefault(event.candidate_id, {})
+        events[event.event_id] = event
+
+    terminal: set[str] = set()
+    final_states = {
+        ReviewState.ACCEPTED,
+        ReviewState.REJECTED,
+        ReviewState.SUPERSEDED,
+    }
+    for candidate_id, events in events_by_candidate.items():
+        roots = [
+            event
+            for event in events.values()
+            if event.supersedes_event_id is None
+        ]
+        if len(roots) != 1:
+            continue
+        children: dict[str, list[AdjudicationEvent]] = {}
+        for event in events.values():
+            if event.supersedes_event_id is not None:
+                if event.supersedes_event_id not in events:
+                    children.clear()
+                    break
+                children.setdefault(event.supersedes_event_id, []).append(event)
+        if any(len(next_events) != 1 for next_events in children.values()):
+            continue
+        current = roots[0]
+        visited = {current.event_id}
+        while (
+            current.event_id in children
+            and children[current.event_id][0].event_id not in visited
+        ):
+            current = children[current.event_id][0]
+            visited.add(current.event_id)
+        if len(visited) == len(events) and current.state in final_states:
+            terminal.add(candidate_id)
+
     pending = {
         case.review_case_id: case
         for case in cases
-        if case.review_case_id not in decided
+        if case.review_case_id not in terminal
     }
     return tuple(pending[key] for key in sorted(pending))
