@@ -568,3 +568,12 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   without qualifying landing evidence; completeness remains the sole blocked
   Bronze property, with 13 of 14 mandatory properties evidenced. The PR changed
   report provenance only; all four Stable v1 acceptance gates remain open.
+
+## 2026-09-30 post-PR-674 exact-main qualification refresh
+
+- [x] Regenerate the Bronze maturity report against exact merged `main`
+  `58408e87d1c35e1995d6bb789639089e4a2f0599` after PR #674 and bind the M5
+  status page to that commit. It remains blocked at 116 of 157 in-scope sources
+  without qualifying landing evidence, with completeness the sole blocked
+  Bronze property and 13 of 14 mandatory properties evidenced. This is a
+  provenance refresh only; the four Stable v1 acceptance gates remain open.
