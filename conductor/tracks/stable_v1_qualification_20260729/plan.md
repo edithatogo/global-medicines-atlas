@@ -548,3 +548,14 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   terms remain unknown; this does not qualify new acquisition or v4 admission
   and does not alter the denominator. Australian federation, current-scope
   Bronze, M5 and separate stable-release approval remain blocked.
+
+## 2026-09-30 post-PR-672 exact-main qualification refresh
+
+- [x] Regenerate the Bronze maturity receipt against exact merged `main`
+  `74ba22a6fa6aa5ce3939201a6a87d867efc230ec` after PR #672 and bind the M5
+  status page to that report. It remains blocked at 116 of 157 in-scope sources
+  without qualifying landing evidence; completeness is the sole blocked Bronze
+  maturity property, with 13 of 14 mandatory properties evidenced. Prompt 31
+  was already included in this denominator; its closure adds no new landing
+  increment. Australian federation, current-scope Bronze, M5 and stable-release
+  approval remain open.

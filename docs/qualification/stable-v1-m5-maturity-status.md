@@ -24,9 +24,11 @@ corpus row describes a separate quarantined acquisition and does not override
 that later, specifically scoped evidence. A bounded current Orange Book
 record projection is also counted as landed; this does not complete Prompt 16
 or its historical family. The report was refreshed against exact merged
-`main` commit `146a983f87263efd4c8bc19e6fb5b1cd7f6b9268` after PR #666. The
+`main` commit `74ba22a6fa6aa5ce3939201a6a87d867efc230ec` after PR #672. The
 refresh leaves source-specific states unchanged and finds 116 of 157 in-scope
-public/no-credential sources without qualifying landing evidence.
+public/no-credential sources without qualifying landing evidence. CMS Part D
+Prompt 31 was already included in the prior denominator; its reconciled queue
+and source-record evidence do not create another landing increment.
 The Sweden count reflects one internally authorized, privately retained 2025
 national aggregate acquisition; its coarse rights state remains unknown, and
 no licensing, public release, redistribution, or complete Swedish coverage is
