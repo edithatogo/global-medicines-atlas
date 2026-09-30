@@ -668,7 +668,16 @@
   remove cases only when caller-supplied append-only `AdjudicationEvent`
   records already exist. It creates no reviewer identity, adjudication,
   threshold, receipt, authority, admission or promotion; those controls remain
-  pending.
+  pending. The queue now retains `needs_information` cases and removes a case
+  only for a complete, unambiguous supersession chain ending in accepted,
+  rejected, or superseded. Conflicting roots, branches, cycles, and missing
+  predecessors fail closed as pending. The regression failed against the old
+  behavior, then all 35 adjacent Gold graph tests passed. Full Test-Goblin:
+  5,264 passed, 2 environment-only release reproducibility failures, 1
+  optional PyIceberg skip, 96.71% coverage; rerunning only those two tests via
+  `uv 0.11.29` passed both. This fixes queue-state derivation only; reviewer
+  authority, receipts, calibration, candidate promotion, and Gold acceptance
+  remain pending.
 - [ ] Phase Verification & Checkpoint: every edge is evidence-bearing and no
   candidate class can masquerade as an authoritative link.
 

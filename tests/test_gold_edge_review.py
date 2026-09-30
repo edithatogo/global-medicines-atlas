@@ -77,6 +77,36 @@ def test_case_digest_binds_complete_edge_and_case_fields():
         GoldEdgeReviewCase.model_validate(forged)
 
 
+@pytest.mark.parametrize(
+    "state", [ReviewState.REJECTED, ReviewState.SUPERSEDED]
+)
+def test_other_terminal_adjudications_remove_only_the_decided_case(
+    state: ReviewState,
+):
+    queue = build_gold_edge_review_queue(
+        (pbs_edge(), mbs_legacy_edge()), queued_at=QUEUED_AT
+    )
+    decided = queue[0]
+    rationale = f"Existing {state.value} event supplied by caller"
+    event_id = AdjudicationEvent.content_id(
+        candidate_id=decided.review_case_id,
+        state=state,
+        occurred_at=QUEUED_AT,
+        reviewer_id="maintainer-supplied",
+        rationale=rationale,
+        supersedes_event_id=None,
+    )
+    event = AdjudicationEvent(
+        event_id=event_id,
+        candidate_id=decided.review_case_id,
+        state=state,
+        occurred_at=QUEUED_AT,
+        reviewer_id="maintainer-supplied",
+        rationale=rationale,
+    )
+    assert regenerate_gold_edge_review_queue(queue, (event,)) == (queue[1],)
+
+
 def test_queue_rejects_duplicate_or_unsupported_edges():
     with pytest.raises(ValueError, match="Duplicate Gold edge"):
         build_gold_edge_review_queue(
@@ -117,6 +147,71 @@ def test_existing_adjudication_only_filters_and_never_creates_decisions():
         reviewer_id="maintainer-supplied",
         rationale="Existing event supplied by caller",
     )
-    remaining = regenerate_gold_edge_review_queue(queue, (event,))
+    unresolved = regenerate_gold_edge_review_queue(queue, (event,))
+    assert unresolved == queue
+    assert all(
+        case.review_state is ReviewState.PENDING_REVIEW for case in unresolved
+    )
+
+    accepted_event_id = AdjudicationEvent.content_id(
+        candidate_id=decided.review_case_id,
+        state=ReviewState.ACCEPTED,
+        occurred_at=QUEUED_AT,
+        reviewer_id="maintainer-supplied",
+        rationale="Existing superseding decision supplied by caller",
+        supersedes_event_id=event.event_id,
+    )
+    accepted_event = AdjudicationEvent(
+        event_id=accepted_event_id,
+        candidate_id=decided.review_case_id,
+        state=ReviewState.ACCEPTED,
+        occurred_at=QUEUED_AT,
+        reviewer_id="maintainer-supplied",
+        rationale="Existing superseding decision supplied by caller",
+        supersedes_event_id=event.event_id,
+    )
+    remaining = regenerate_gold_edge_review_queue(
+        queue, (event, accepted_event)
+    )
     assert remaining == (queue[1],)
     assert remaining[0].review_state is ReviewState.PENDING_REVIEW
+
+    conflicting_root_id = AdjudicationEvent.content_id(
+        candidate_id=decided.review_case_id,
+        state=ReviewState.REJECTED,
+        occurred_at=QUEUED_AT,
+        reviewer_id="maintainer-supplied",
+        rationale="Conflicting root decision supplied by caller",
+        supersedes_event_id=None,
+    )
+    conflicting_root = AdjudicationEvent(
+        event_id=conflicting_root_id,
+        candidate_id=decided.review_case_id,
+        state=ReviewState.REJECTED,
+        occurred_at=QUEUED_AT,
+        reviewer_id="maintainer-supplied",
+        rationale="Conflicting root decision supplied by caller",
+    )
+    assert (
+        regenerate_gold_edge_review_queue(queue, (event, conflicting_root))
+        == queue
+    )
+
+    dangling_id = AdjudicationEvent.content_id(
+        candidate_id=decided.review_case_id,
+        state=ReviewState.ACCEPTED,
+        occurred_at=QUEUED_AT,
+        reviewer_id="maintainer-supplied",
+        rationale="Decision refers to an unavailable predecessor",
+        supersedes_event_id="missing-event",
+    )
+    dangling = AdjudicationEvent(
+        event_id=dangling_id,
+        candidate_id=decided.review_case_id,
+        state=ReviewState.ACCEPTED,
+        occurred_at=QUEUED_AT,
+        reviewer_id="maintainer-supplied",
+        rationale="Decision refers to an unavailable predecessor",
+        supersedes_event_id="missing-event",
+    )
+    assert regenerate_gold_edge_review_queue(queue, (dangling,)) == queue
