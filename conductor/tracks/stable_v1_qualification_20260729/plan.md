@@ -529,3 +529,16 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   The landing reduces the uncovered count by one but leaves completeness and
   M5 blocked. Focused qualification tests and routine validation passed; this
   does not advance Australian federation or Stable v1 approval.
+
+## 2026-09-30 post-PR-666 exact-main qualification refresh
+
+- [x] Regenerate the Bronze maturity receipt against exact merged `main`
+  `146a983f87263efd4c8bc19e6fb5b1cd7f6b9268` after PR #666 and rebind the M5
+  status page. The report remains blocked at 116 of 157 in-scope public/no-
+  credential sources without qualifying landing evidence, with completeness
+  the sole blocked Bronze property and 13 of 14 mandatory properties
+  evidenced. PR #666 confirms the exact historical PBS publication authority
+  and previously verified raw archive digest, while general upstream reuse
+  terms remain unknown; this does not qualify new acquisition or v4 admission
+  and does not alter the denominator. Australian federation, current-scope
+  Bronze, M5 and separate stable-release approval remain blocked.

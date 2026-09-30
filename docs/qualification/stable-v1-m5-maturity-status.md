@@ -23,9 +23,10 @@ Parquet, and verified private archive checksums. The older bounded U.S. Bronze
 corpus row describes a separate quarantined acquisition and does not override
 that later, specifically scoped evidence. A bounded current Orange Book
 record projection is also counted as landed; this does not complete Prompt 16
-or its historical family. The latest report snapshot is bound to exact commit
-`2a240369d9016717d5d1798b26f5151866b61abc` and finds 116 of
-157 in-scope public/no-credential sources without qualifying landing evidence.
+or its historical family. The report was refreshed against exact merged
+`main` commit `146a983f87263efd4c8bc19e6fb5b1cd7f6b9268` after PR #666. The
+refresh leaves source-specific states unchanged and finds 116 of 157 in-scope
+public/no-credential sources without qualifying landing evidence.
 The Sweden count reflects one internally authorized, privately retained 2025
 national aggregate acquisition; its coarse rights state remains unknown, and
 no licensing, public release, redistribution, or complete Swedish coverage is
@@ -35,6 +36,12 @@ Delegated detail-page coverage remains incomplete, and public release and
 external publication remain unauthorized.
 Credentialed and licensed feeds remain excluded from this denominator; missing
 evidence is not a negative claim about the source.
+
+The M-112 PBS authority reconciliation confirms exact historical publication
+authorization and a prior anonymous digest receipt for the pinned PBS raw
+archive. The broader source-rights ledger still records upstream reuse terms
+as unknown; the finding does not authorize new acquisition, v4 admission, or
+publication and does not reduce the Bronze denominator.
 
 The M5 source-coverage dimension can be reconsidered only when the current
 scope's completeness property is evidenced by source-specific rights,
