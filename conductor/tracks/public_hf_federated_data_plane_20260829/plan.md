@@ -257,6 +257,15 @@
   canonical B1 reconciliation. This does not resolve the unapproved producer
   denominator, remaining source rights, or v4 admission. See the dependent
   track's `quality/qualifications/australian-m112-manifest-join-audit-20260930.json`.
+- [x] Join the MBS/PBS source and utilisation receipt metadata to pinned raw
+  paths and existing authorization scopes. All 20 utilisation sidecars match
+  path/source/category/digest/size and remain within recorded authorization
+  bounds; all eight MBS source candidates map to exact receipt/authorization/
+  hosted-publication identities. The PBS archive receipt agrees with its
+  manifest, while its `permitted` field conflicts with the unresolved source
+  rights ledger. These joins do not resolve that conflict or admit v4 objects.
+  See `quality/qualifications/australian-m112-receipt-sidecar-join-audit-20260930.json`
+  and `quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json`.
 - [ ] Configure an approved independent public recovery target, checksum
   inventory, RPO/RTO, and clean-room restore rehearsal; do not mislabel an HF
   duplicate as independent.
