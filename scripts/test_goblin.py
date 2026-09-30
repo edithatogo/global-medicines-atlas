@@ -147,6 +147,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_federation_metadata_append.py",
         "tests/test_federation_metadata_hosted.py",
         "tests/test_hf_estate.py",
+        "tests/test_hf_public_registry_gap.py",
         "tests/test_federation_reader.py",
         "tests/test_federation_receipt_closure.py",
         "tests/test_federation_compatibility_canary.py",
