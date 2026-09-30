@@ -7,7 +7,7 @@ Bronze current-scope, or final stable-release gates.
 
 The refreshed [Bronze maturity report](../../quality/qualifications/bronze-maturity.json)
 recognises the exact approved CMS Part D formulary and spending source-record
-qualification and four accepted U.S. source-record products as direct Bronze
+qualification and five accepted U.S. source-record products as direct Bronze
 receipt evidence. The U.S. receipt includes an accepted admission, source-record
 projection, and byte-identical clean-room recovery for those products. Its three
 openFDA responses are 100-record canaries, not complete releases. An authorized
@@ -21,9 +21,10 @@ authorized internal retention, the complete current export and 129 monthly FDA
 list snapshots, recovered source-record projection with byte-identical
 Parquet, and verified private archive checksums. The older bounded U.S. Bronze
 corpus row describes a separate quarantined acquisition and does not override
-that later, specifically scoped evidence. The latest report snapshot is bound
-to exact merged main commit
-`1b191a89b850f46432f91ba4aa0451357e747fe4` and finds 117 of
+that later, specifically scoped evidence. A bounded current Orange Book
+record projection is also counted as landed; this does not complete Prompt 16
+or its historical family. The latest report snapshot is bound to exact commit
+`788b28892eb58ae199ad501d5236d144a4bd9e05` and finds 116 of
 157 in-scope public/no-credential sources without qualifying landing evidence.
 The Sweden count reflects one internally authorized, privately retained 2025
 national aggregate acquisition; its coarse rights state remains unknown, and
