@@ -1386,6 +1386,18 @@
   Audit: `quality/qualifications/australian-m112-manifest-join-audit-20260930.json`;
   updated crosswalk:
   `quality/qualifications/australian-m112-source-rights-lineage-crosswalk-20260930.json`.
+- [x] Join available per-object MBS/PBS receipt sidecars to raw manifests and
+  existing authorization records using exact source ID, category, path, digest,
+  size, and hostname metadata. All 20 MBS/PBS utilisation receipts match their
+  manifest rows and the declared bounds in their existing authorization
+  records. All eight MBS source candidates map to exact receipt, legacy
+  authorization, or hosted-publication identities; the August XML remains
+  missing from the root manifest and duplicated in two unreviewed B1 records.
+  The one PBS source object matches its B1 receipt exactly, whose `permitted`
+  state conflicts with the unresolved GMA rights ledger. No rights conclusion
+  or v4 admission is made. See
+  `quality/qualifications/australian-m112-receipt-sidecar-join-audit-20260930.json`
+  and `quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json`.
 
 - [x] Apply the maintainer's direction to keep Australian M-112 limited to
   Australian MBS/PBS producer evidence; track New Zealand health appropriations

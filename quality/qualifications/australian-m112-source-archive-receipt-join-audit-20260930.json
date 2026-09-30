@@ -1,0 +1,295 @@
+{
+  "schema_id": "global-medicines-atlas.australian-m112-source-archive-receipt-join-audit",
+  "schema_version": 1,
+  "recorded_at": "2026-09-30T07:26:39Z",
+  "scope": "Metadata-only joins for pinned MBS/PBS source archive raw candidates.",
+  "source_payload_bytes_read": false,
+  "source_values_read": false,
+  "public_mutation_performed": false,
+  "v4_admission_performed": false,
+  "mbs": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+    "root_manifest_sha256": "a93af23c4019825aab43080e467df29658a2daf9e918276ac35aa3f1a1941b21",
+    "candidate_count": 8,
+    "root_manifest_raw_rows": 7,
+    "objects_with_path_digest_size_receipt_or_authorization_join": 8,
+    "objects": [
+      {
+        "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+        "tree_bytes": 8194522,
+        "tree_lfs_sha256": null,
+        "root_manifest_path_present": true,
+        "receipt_or_authorization_matches": [
+          {
+            "kind": "historic_hosted_publication_receipt",
+            "source_id": "au-mbs",
+            "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+            "bytes": 8194522,
+            "dataset_revision": "4d1dae488ac43522f20e8320a8b2a56bf9138341",
+            "durable_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5461420439",
+            "anonymous_digest_verification": "passed"
+          },
+          {
+            "kind": "exact_legacy_authorization",
+            "source_id": "au-mbs",
+            "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+            "bytes": 8194522,
+            "authorization_record": "quality/qualifications/australian-health-legacy-publication-authorization.json"
+          },
+          {
+            "kind": "silver_source_receipt_same_payload_identity",
+            "receipt_path": "silver/mbs/v4/2025-07-v3/source-receipt.json",
+            "receipt_sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c",
+            "source_id": "au-mbs",
+            "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+            "bytes": 8194522,
+            "rights_state": "permitted"
+          }
+        ],
+        "path_digest_size_joined": true,
+        "digest_matches_tree_when_lfs_available": null
+      },
+      {
+        "path": "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.csv",
+        "tree_bytes": 135983,
+        "tree_lfs_sha256": null,
+        "root_manifest_path_present": true,
+        "receipt_or_authorization_matches": [
+          {
+            "kind": "sidecar",
+            "receipt_path": "bronze/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.csv.receipt.json",
+            "receipt_sha256": "78d31e23a523816c434af921853b7d7bf3ac2eeed6ce92f8ded38a1f2a0fcc49",
+            "source_id": "au-mbs",
+            "category": "basic_service_description",
+            "sha256": "07563bbba8bad0a8e5b51cf383edcf21f347b8dd3880757df6e19ef0ee3eb5b6",
+            "bytes": 135983,
+            "matches_authorization_scope": true
+          }
+        ],
+        "path_digest_size_joined": true,
+        "digest_matches_tree_when_lfs_available": null
+      },
+      {
+        "path": "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.xml",
+        "tree_bytes": 615386,
+        "tree_lfs_sha256": null,
+        "root_manifest_path_present": true,
+        "receipt_or_authorization_matches": [
+          {
+            "kind": "sidecar",
+            "receipt_path": "bronze/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.xml.receipt.json",
+            "receipt_sha256": "c8e5631e97aac6cfd4dc16d3e411273d9b882ae8fb90c0778a2049d35499e320",
+            "source_id": "au-mbs",
+            "category": "basic_service_description",
+            "sha256": "b71f1f540e5441ca18bb93b7ac9b23b4edfa37dcb096d37682e5db936be9f4a3",
+            "bytes": 615386,
+            "matches_authorization_scope": true
+          }
+        ],
+        "path_digest_size_joined": true,
+        "digest_matches_tree_when_lfs_available": null
+      },
+      {
+        "path": "raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx",
+        "tree_bytes": 87727,
+        "tree_lfs_sha256": null,
+        "root_manifest_path_present": true,
+        "receipt_or_authorization_matches": [
+          {
+            "kind": "historic_hosted_publication_receipt",
+            "source_id": "au-mbs-p7-legacy-workbook",
+            "sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+            "bytes": 87727,
+            "dataset_revision": "4d1dae488ac43522f20e8320a8b2a56bf9138341",
+            "durable_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5461420439",
+            "anonymous_digest_verification": "passed"
+          },
+          {
+            "kind": "exact_legacy_authorization",
+            "source_id": "au-mbs-p7-legacy-workbook",
+            "sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+            "bytes": 87727,
+            "authorization_record": "quality/qualifications/australian-health-legacy-publication-authorization.json"
+          }
+        ],
+        "path_digest_size_joined": true,
+        "digest_matches_tree_when_lfs_available": null
+      },
+      {
+        "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+        "tree_bytes": 8293331,
+        "tree_lfs_sha256": null,
+        "root_manifest_path_present": false,
+        "receipt_or_authorization_matches": [
+          {
+            "kind": "nested_source_receipt",
+            "manifest_path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/manifest.json",
+            "receipt_path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/source-receipt.json",
+            "receipt_sha256": "ff916b49a4993b523da2f41952805b4e1e2064e0ce21edc8bd6643c1acda77a8",
+            "source_id": "au-mbs",
+            "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+            "bytes": 8293331,
+            "rights_state": "permitted",
+            "rights_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+            "receipt_id": "mbs-release:a7a43be8b30052c192a00d993d5977e524f79b936e2bcfc2919322b4ffcba6d4"
+          },
+          {
+            "kind": "nested_source_receipt",
+            "manifest_path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/manifest.json",
+            "receipt_path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/source-receipt.json",
+            "receipt_sha256": "4f694fd7364061cd05fee33ea52e6dbeef17d1067b8437f72e726ab168fc2fc7",
+            "source_id": "au-mbs",
+            "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+            "bytes": 8293331,
+            "rights_state": "permitted",
+            "rights_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+            "receipt_id": "mbs-release:d47c71a685b9b31aa0b0b40979a482635c84888e7334a5610f9fa22bee3709c6"
+          }
+        ],
+        "path_digest_size_joined": true,
+        "digest_matches_tree_when_lfs_available": null
+      },
+      {
+        "path": "raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML",
+        "tree_bytes": 8291891,
+        "tree_lfs_sha256": null,
+        "root_manifest_path_present": true,
+        "receipt_or_authorization_matches": [
+          {
+            "kind": "sidecar",
+            "receipt_path": "bronze/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML.receipt.json",
+            "receipt_sha256": "01f052db621eb1a03ec08198cdcafbc04b8a98238fc06c391e788b7ec73112eb",
+            "source_id": "au-mbs",
+            "category": "monthly_schedule_xml",
+            "sha256": "5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805",
+            "bytes": 8291891,
+            "matches_authorization_scope": true
+          }
+        ],
+        "path_digest_size_joined": true,
+        "digest_matches_tree_when_lfs_available": null
+      },
+      {
+        "path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+        "tree_bytes": 8293331,
+        "tree_lfs_sha256": null,
+        "root_manifest_path_present": true,
+        "receipt_or_authorization_matches": [
+          {
+            "kind": "sidecar",
+            "receipt_path": "bronze/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML.receipt.json",
+            "receipt_sha256": "b7a6c705bd9bf2009d203be6e1eb453114b0d9d9df2e44086fb45fe5be848827",
+            "source_id": "au-mbs",
+            "category": "monthly_schedule_xml",
+            "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+            "bytes": 8293331,
+            "matches_authorization_scope": true
+          }
+        ],
+        "path_digest_size_joined": true,
+        "digest_matches_tree_when_lfs_available": null
+      },
+      {
+        "path": "raw/mbs/rvg/Downloads-20260701/RVG file 20260701.TXT",
+        "tree_bytes": 11865,
+        "tree_lfs_sha256": null,
+        "root_manifest_path_present": true,
+        "receipt_or_authorization_matches": [
+          {
+            "kind": "sidecar",
+            "receipt_path": "bronze/mbs/rvg/Downloads-20260701/RVG file 20260701.TXT.receipt.json",
+            "receipt_sha256": "d1a8dfe4898acbcae5eb03e019ede01ad648d10bcf58c47b8d3fcba3e19f48f6",
+            "source_id": "au-mbs",
+            "category": "relative_value_guide",
+            "sha256": "26ded0e092c786d3031c582766cd2734010793072d224bd63b35f3274b8e541f",
+            "bytes": 11865,
+            "matches_authorization_scope": true
+          }
+        ],
+        "path_digest_size_joined": true,
+        "digest_matches_tree_when_lfs_available": null
+      }
+    ],
+    "duplicate_august_receipt_runs": [
+      {
+        "manifest_path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/manifest.json",
+        "manifest_sha256": "51a9242dc32fa0faaf7a9c35d9d73c995ac6458b065d73c85e67f22d76ee7b61",
+        "receipt_path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/source-receipt.json",
+        "receipt_sha256": "ff916b49a4993b523da2f41952805b4e1e2064e0ce21edc8bd6643c1acda77a8",
+        "raw_objects": [
+          {
+            "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+            "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+            "bytes": 8293331,
+            "role": "raw"
+          }
+        ],
+        "source_id": "au-mbs",
+        "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "bytes": 8293331,
+        "rights_state": "permitted",
+        "rights_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+        "receipt_id": "mbs-release:a7a43be8b30052c192a00d993d5977e524f79b936e2bcfc2919322b4ffcba6d4"
+      },
+      {
+        "manifest_path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/manifest.json",
+        "manifest_sha256": "9500325db41ed61c07255cd1afc74c701ab6d561489694fb2caeb28972a78036",
+        "receipt_path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/source-receipt.json",
+        "receipt_sha256": "4f694fd7364061cd05fee33ea52e6dbeef17d1067b8437f72e726ab168fc2fc7",
+        "raw_objects": [
+          {
+            "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+            "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+            "bytes": 8293331,
+            "role": "raw"
+          }
+        ],
+        "source_id": "au-mbs",
+        "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "bytes": 8293331,
+        "rights_state": "permitted",
+        "rights_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+        "receipt_id": "mbs-release:d47c71a685b9b31aa0b0b40979a482635c84888e7334a5610f9fa22bee3709c6"
+      }
+    ]
+  },
+  "pbs": {
+    "dataset": "edithatogo/australian-pbs-source-archive",
+    "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+    "manifest_sha256": "e6c9abbc62bd44fc47049306a92cc8efc9700031908586262c2b82a907546460",
+    "manifest_path": "manifest.json",
+    "source_receipt_path": "bronze/2026-04-01/source-receipt.json",
+    "source_receipt_sha256": "a5eb06cf7e655eb0e0d8fe5d244297721ebede51e96c237333f7dffd76e1ccd1",
+    "raw_candidate_count": 1,
+    "raw_object": {
+      "path": "raw/2026-04-01/2026-04-01-XML-V3.zip",
+      "source_id": "au-pbs-historical-xml",
+      "manifest_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+      "manifest_bytes": 11156706,
+      "receipt_source_id": "au-pbs-historical-xml",
+      "receipt_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+      "receipt_bytes": 11156706,
+      "manifest_receipt_exact_match": true,
+      "receipt_rights_state": "permitted",
+      "rights_ledger_entry_found": true,
+      "rights_ledger_disposition": "catalogue_only",
+      "rights_ledger_redistribute": "unknown",
+      "inventory_path_and_byte_count_match": true,
+      "source_rights_ledger_state": "catalogue_only; redistribute unknown; source-applicable affirmative grant not established",
+      "tree_byte_count": 11156706,
+      "tree_lfs_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+      "candidate_inventory_path": "raw/2026-04-01/2026-04-01-XML-V3.zip",
+      "candidate_inventory_bytes": 11156706,
+      "candidate_inventory_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+      "path_in_candidate_inventory": true,
+      "path_exists_in_pinned_tree": true
+    },
+    "interpretation": "The exact manifest and B1 source receipt agree on path, source ID, SHA-256, and byte count. The B1 receipt says permitted, but the GMA source-rights ledger remains catalogue_only with redistribution unknown; the records conflict and need maintainer reconciliation. No rights conclusion is made."
+  },
+  "limitations": [
+    "A source receipt marked permitted does not override a conflicting unresolved GMA source-rights ledger.",
+    "Authorization-scope matching uses already-recorded maintainer decisions; no new licensing conclusion was made.",
+    "Metadata receipts do not prove anonymous remote payload bytes, do not approve the proposed denominator, and do not establish v4 admission."
+  ]
+}

@@ -2,13 +2,14 @@
   "candidate_rights_and_lineage": [
     {
       "dataset": "edithatogo/australian-mbs-source-archive",
-      "lineage_state": "Source-native authorization and historic anonymous publication verification are established for the exact 2026-08-01 XML digest. The current root manifest omits that path, and two nested accepted but unreviewed B1 acquisition records for the same digest have different acquisition/decision IDs and different source Parquet digests; canonical B1 reconciliation and v4 lineage/admission remain open.",
+      "lineage_state": "All eight candidate raw paths map to path/digest/size receipt or exact authorization/publication evidence. The root manifest has seven raw rows and omits the canonical August 2026 XML, which maps through two nested accepted but unreviewed receipts and a durable historic anonymous publication receipt. No canonical B1 acquisition is selected; v4 lineage/admission remains open.",
       "raw_candidate_path_count": 8,
       "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
       "source_specific_evidence": [
         "The exact 2026-08-01 XML is authorized by the sole-maintainer record at issue #339 comment 5467052330; both nested receipts name source_id au-mbs, rights_state permitted, content SHA-256 c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565, and 8,293,331 bytes.",
         "The exact object has a durable GitHub Actions receipt at run 33296983154 and issue #340 comment 5467154799: anonymous digest verification passed at dataset revision 75f9f20a36ddb829dfe0ca88660664570782be02; temporary source bytes were removed after verification.",
-        "At the current pinned revision, the root manifest has 7 of the 8 candidate raw paths and omits the exact August XML path. Its nested acquisition manifests and receipts contain two accepted, unreviewed records for the same content ID, with distinct acquisition/decision IDs, different source Parquet digests, and data_acquired=false. This is a reconciliation conflict, not new permission or v4 admission."
+        "At the current pinned revision, the root manifest has 7 of the 8 candidate raw paths and omits the exact August XML path. Its nested acquisition manifests and receipts contain two accepted, unreviewed records for the same content ID, with distinct acquisition/decision IDs, different source Parquet digests, and data_acquired=false. This is a reconciliation conflict, not new permission or v4 admission.",
+        "Metadata-only source archive receipt join: 8/8 raw candidate paths map to exact sidecar, nested source receipt, historic publication receipt, or exact legacy authorization by path/digest/size. The five ordinary source sidecars are within the already-recorded MBS source/category/domain bounds. This mapping does not claim anonymous byte verification for each current path. See quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json."
       ],
       "sources": {
         "au-mbs": {
@@ -35,11 +36,12 @@
     },
     {
       "dataset": "edithatogo/australian-pbs-source-archive",
-      "lineage_state": "source-specific rights reconciliation required before v4 admission.",
+      "lineage_state": "The one raw archive path, manifest identity, and exact B1 source receipt agree on source ID, SHA-256, and byte count. The receipt reports rights_state=permitted, while the current GMA source-rights ledger remains catalogue_only with redistribution unknown; this conflict is not resolved by the metadata join. No v4 admission.",
       "raw_candidate_path_count": 1,
       "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
       "source_specific_evidence": [
-        "The rights ledger leaves source-byte redistribution unknown and says an affirmative source-applicable grant was not established. Existing public visibility and earlier publication intent do not close this rights-ledger conflict."
+        "The rights ledger leaves source-byte redistribution unknown and says an affirmative source-applicable grant was not established. Existing public visibility and earlier publication intent do not close this rights-ledger conflict.",
+        "Exact-revision manifest and source-receipt metadata match for the 2026-04-01 archive (path, source ID, digest, and 11,156,706 bytes). Its receipt rights_state is permitted, but source-rights-review-ledger.json records catalogue_only/redistribute unknown. No rights conclusion is made; maintainer reconciliation is required before v4 admission. See quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json."
       ],
       "sources": {
         "au-pbs-historical-xml": {
@@ -56,11 +58,12 @@
     },
     {
       "dataset": "edithatogo/australian-mbs-utilisation-archive",
-      "lineage_state": "authorization family exists; exact current object-to-receipt/source/stratum v4 joins remain open; source family coverage is partial.",
+      "lineage_state": "14/14 raw objects have receipt-sidecar joins on exact path, source ID, category, SHA-256, and byte count; all 14 are within the existing dataset authorization's declared source/category/source-host/final-host bounds. 14/14 also match available tree SHA-256 metadata. The sidecars carry no rights-state field; per-object v4 rights receipts/admission remain open.",
       "raw_candidate_path_count": 14,
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "source_specific_evidence": [
-        "The dataset-specific publication authorization covers these three source IDs and declared categories. A hosted public receipt verified 28 objects (raw objects and receipts) but reported partial coverage; this is transport evidence, not proof each current object has v4 rights and lineage closure."
+        "The dataset-specific publication authorization covers these three source IDs and declared categories. A hosted public receipt verified 28 objects (raw objects and receipts) but reported partial coverage; this is transport evidence, not proof each current object has v4 rights and lineage closure.",
+        "Metadata-only exact-revision receipt-sidecar audit: 14 of 14 raw manifest objects join to one sidecar; source ID, category, digest, and byte count match. All joined objects fall within the existing authorization record's explicit source/category/domain bounds; this is a scope comparison, not a new licensing conclusion. Audit: quality/qualifications/australian-m112-receipt-sidecar-join-audit-20260930.json."
       ],
       "sources": {
         "au-data-gov-mbs-demographics": {
@@ -76,11 +79,12 @@
     },
     {
       "dataset": "edithatogo/australian-pbs-utilisation-archive",
-      "lineage_state": "authorization family exists; exact per-object v4 rights and lineage joins remain open.",
+      "lineage_state": "6/6 raw objects have receipt-sidecar joins on exact path, source ID, category, SHA-256, and byte count; all 6 are within the existing dataset authorization's declared source/category/source-host/final-host bounds. 6/6 also match available tree SHA-256 metadata. The sidecars carry no rights-state field; per-object v4 rights receipts/admission remain open.",
       "raw_candidate_path_count": 6,
       "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
       "source_specific_evidence": [
-        "The dataset-specific publication authorization lists these two sources and declared categories. Individual current path-to-receipt/source/stratum v4 joins were not independently established in this crosswalk."
+        "The dataset-specific publication authorization lists these two sources and declared categories. Individual current path-to-receipt/source/stratum v4 joins were not independently established in this crosswalk.",
+        "Metadata-only exact-revision receipt-sidecar audit: 6 of 6 raw manifest objects join to one sidecar; source ID, category, digest, and byte count match. All joined objects fall within the existing authorization record's explicit source/category/domain bounds; this is a scope comparison, not a new licensing conclusion. Audit: quality/qualifications/australian-m112-receipt-sidecar-join-audit-20260930.json."
       ],
       "sources": {
         "au-pbs-dos-utilisation": {
@@ -111,14 +115,15 @@
     "The MBS source root manifest omits the exact August 2026 XML, while two duplicate nested accepted/unreviewed acquisition records need canonical B1 reconciliation and v4 lineage/admission.",
     "The au-pbs-historical-xml source rights ledger remains unresolved despite an extant public source archive.",
     "The au_pbs reimbursement-atlas corpus has 1,707 public payload candidates and an explicit unresolved rights statement; public visibility and manifest checksums do not resolve this.",
-    "Separate source/category authorization records do not establish each object’s rights and v4 lineage/admission.",
     "The 23 existing data projections have no per-object v4 admission/lineage receipts in the reviewed evidence; the MBS Silver subset remains candidate-only.",
-    "Tree metadata SHA-256 comparisons are not anonymous payload readbacks; no new rights conclusion, permission, source payload verification, or publication is made by this audit."
+    "Tree metadata SHA-256 comparisons are not anonymous payload readbacks; no new rights conclusion, permission, source payload verification, or publication is made by this audit.",
+    "MBS/PBS utilisation sidecars now join all 20 raw objects to existing source/category/domain authorization scope, but these sidecars contain no rights-state claim and are not per-object v4 rights receipts; harvest coverage remains partial for MBS, and v4 admission remains open.",
+    "The PBS source archive exact B1 receipt says permitted but conflicts with the current GMA source-rights ledger (catalogue_only, redistribution unknown); maintainer rights reconciliation is still required. The 2026-08-01 MBS root-manifest omission and duplicate unreviewed acquisitions still require canonical B1 reconciliation."
   ],
   "inventory": "quality/qualifications/australian-m112-object-inventory-20260930.json",
   "inventory_sha256": "ccc0667b1ce8ba19d4bed0a6590e2bc55ab954d7bd6cc51f56e51231cc780460",
   "new_permission_or_licensing_conclusion": false,
-  "observed_at": "2026-09-30T07:03:20Z",
+  "observed_at": "2026-09-30T07:26:39Z",
   "public_collection_or_registry_mutation_performed": false,
   "repo_readback": {
     "current_hub_revision": "8e062578f14e12cf3238700a93946339da9c5d88",
@@ -192,5 +197,30 @@
       "anonymous byte readback for all candidate paths",
       "v4 admission"
     ]
+  },
+  "receipt_sidecar_join_audit": {
+    "path": "quality/qualifications/australian-m112-receipt-sidecar-join-audit-20260930.json",
+    "sha256": "53e7a1659f57f24290dfe08e534131dde59e930ff386655cf0fa047a0dae657b",
+    "metadata_receipt_objects": 20,
+    "exact_path_source_category_digest_size_joins": 20,
+    "within_existing_authorization_scope": 20,
+    "sidecars_with_rights_state": 0,
+    "v4_admission_performed": false,
+    "new_licensing_conclusion": false,
+    "source_host_scope_matches": 20
+  },
+  "source_archive_receipt_join_audit": {
+    "path": "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json",
+    "sha256": "6e8e972d4461f2e5ebf6d4f952cc3ab68a546e7d8c2254f49764a160aa8389ca",
+    "mbs_raw_candidates": 8,
+    "mbs_exact_path_digest_size_mappings": 8,
+    "mbs_root_manifest_paths": 7,
+    "pbs_raw_candidates": 1,
+    "pbs_exact_manifest_to_receipt_matches": 1,
+    "pbs_receipt_rights_state": "permitted",
+    "pbs_ledger_state": "catalogue_only; redistribute unknown",
+    "rights_conflict_resolved": false,
+    "new_licensing_conclusion": false,
+    "v4_admission_performed": false
   }
 }
