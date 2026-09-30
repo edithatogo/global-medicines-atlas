@@ -9,7 +9,7 @@ import json
 from datetime import UTC, datetime
 from operator import itemgetter
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 from urllib.error import URLError
 from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
@@ -36,7 +36,7 @@ def _read_url(url: str) -> bytes:
     request = Request(url, headers={"User-Agent": USER_AGENT})  # ruff: ignore[suspicious-url-open-usage] -- allowlisted HTTPS host and path
     try:
         with urlopen(request, timeout=30) as response:  # ruff: ignore[suspicious-url-open-usage] -- allowlisted HTTPS host and path
-            final_url = urlsplit(response.geturl())
+            final_url = urlsplit(cast("str", response.geturl()))
             if (
                 final_url.scheme != "https"
                 or final_url.hostname != "huggingface.co"
@@ -64,36 +64,50 @@ def _digest(value: object) -> str:
 def _contains_remote_ref(value: object) -> bool:
     """Reject schema references that could trigger unbounded network access."""
     if isinstance(value, dict):
+        mapping = cast("dict[object, object]", value)
         return "$ref" in value or any(
-            _contains_remote_ref(item) for item in value.values()
+            _contains_remote_ref(item) for item in mapping.values()
         )
     if isinstance(value, list):
-        return any(_contains_remote_ref(item) for item in value)
+        return any(
+            _contains_remote_ref(item) for item in cast("list[object]", value)
+        )
     return False
 
 
 def _catalog_validators(
     schema: object,
-) -> tuple[Any, Any]:
+) -> tuple[dict[str, Any], dict[str, Any]]:
     """Build validators for both the catalog document and its entry items."""
-    if not isinstance(schema, dict) or _contains_remote_ref(schema):
+    if not isinstance(schema, dict) or _contains_remote_ref(
+        cast("dict[object, object]", schema)
+    ):
         raise ValueError("pinned registry schema is malformed or referenced")
-    properties = schema.get("properties")
-    datasets = (
-        properties.get("datasets") if isinstance(properties, dict) else None
+    schema_mapping = cast("dict[str, Any]", schema)
+    properties = schema_mapping.get("properties")
+    properties_mapping = (
+        cast("dict[str, Any]", properties)
+        if isinstance(properties, dict)
+        else {}
     )
-    entry_schema = datasets.get("items") if isinstance(datasets, dict) else None
+    datasets = properties_mapping.get("datasets")
+    datasets_mapping = (
+        cast("dict[str, Any]", datasets) if isinstance(datasets, dict) else {}
+    )
+    entry_schema = datasets_mapping.get("items")
     if not isinstance(entry_schema, dict):
         raise TypeError("pinned registry schema has no dataset item schema")
     try:
-        Draft202012Validator.check_schema(schema)
-        Draft202012Validator.check_schema(entry_schema)
+        Draft202012Validator.check_schema(schema_mapping)  # pyright: ignore[reportUnknownMemberType, reportUnknownArgumentType]
+        Draft202012Validator.check_schema(cast("dict[str, Any]", entry_schema))  # pyright: ignore[reportUnknownMemberType, reportUnknownArgumentType]
     except SchemaError:
         raise ValueError("pinned registry schema is invalid") from None
-    return (
-        Draft202012Validator(schema),
-        Draft202012Validator(entry_schema),
-    )
+    return (schema_mapping, cast("dict[str, Any]", entry_schema))
+
+
+def _validate_schema(schema: dict[str, Any], value: object) -> None:
+    """Validate JSON against a checked, local Draft 2020-12 schema."""
+    Draft202012Validator(schema).validate(value)  # pyright: ignore[reportUnknownMemberType]
 
 
 def _public_datasets() -> list[dict[str, Any]]:
@@ -104,12 +118,14 @@ def _public_datasets() -> list[dict[str, Any]]:
     rows = _json(url)
     if not isinstance(rows, list):
         raise TypeError("public dataset listing must be an array")
+    rows = cast("list[object]", rows)
     if len(rows) >= LISTING_LIMIT:
         raise ValueError("public dataset listing is malformed or truncated")
-    result = []
-    for row in rows:
-        if not isinstance(row, dict):
+    result: list[dict[str, Any]] = []
+    for raw_row in rows:
+        if not isinstance(raw_row, dict):
             raise TypeError("public dataset entry must be an object")
+        row = cast("dict[str, Any]", raw_row)
         identity = row.get("id")
         revision = row.get("sha")
         if not isinstance(identity, str) or not identity.startswith(
@@ -141,30 +157,39 @@ def _public_collections() -> list[dict[str, Any]]:
     rows = _json(f"{API_BASE}/collections?owner={OWNER}&limit=100")
     if not isinstance(rows, list):
         raise TypeError("public collection listing must be an array")
+    rows = cast("list[object]", rows)
     if len(rows) >= LISTING_LIMIT:
         raise ValueError("public collection listing is malformed or truncated")
-    result = []
-    for row in rows:
-        if not isinstance(row, dict):
+    result: list[dict[str, Any]] = []
+    for raw_row in rows:
+        if not isinstance(raw_row, dict):
             raise TypeError("public collection entry must be an object")
+        row = cast("dict[str, Any]", raw_row)
         if row.get("private") is not False:
             raise ValueError("anonymous collection listing is not public-only")
         slug = row.get("slug")
         items = row.get("items")
+        items = (
+            cast("list[object]", items) if isinstance(items, list) else items
+        )
         if (
             not isinstance(slug, str)
             or not slug.startswith(f"{OWNER}/")
             or not isinstance(items, list)
         ):
             raise ValueError("public collection metadata is malformed")
-        members = []
-        for item in items:
-            if not isinstance(item, dict):
+        members: list[dict[str, Any]] = []
+        for raw_item in cast("list[object]", items):
+            if not isinstance(raw_item, dict):
                 raise TypeError("public collection member must be an object")
+            item = cast("dict[str, Any]", raw_item)
             item_id = item.get("id")
             item_type = item.get("type")
             note = item.get("note")
-            note_text = note.get("text") if isinstance(note, dict) else None
+            note_mapping = (
+                cast("dict[str, Any]", note) if isinstance(note, dict) else {}
+            )
+            note_text = note_mapping.get("text")
             if (
                 item_type not in {"dataset", "collection"}
                 or not isinstance(item_id, str)
@@ -216,7 +241,7 @@ def _public_access_mismatches(
     datasets: list[dict[str, Any]], by_id: dict[str, dict[str, Any]]
 ) -> list[dict[str, str]]:
     """Return public dataset access states that disagree with the catalog."""
-    result = []
+    result: list[dict[str, str]] = []
     for row in datasets:
         entry = by_id.get(row["repo_id"])
         if entry is None:
@@ -258,7 +283,7 @@ def _draft_public_entries(
     ]
 
 
-def build_gap_record(
+def build_gap_record(  # ruff: ignore[too-many-locals] - one append-only evidence record
     datasets: list[dict[str, Any]],
     collections: list[dict[str, Any]],
     catalog_bytes: bytes,
@@ -269,21 +294,26 @@ def build_gap_record(
 ) -> dict[str, Any]:
     """Compare the public-only live denominator with the pinned catalog."""
     catalog = json.loads(catalog_bytes)
+    if not isinstance(catalog, dict):
+        raise TypeError("estate registry catalog must be an object")
+    catalog_mapping = cast("dict[str, Any]", catalog)
     catalog_schema = json.loads(catalog_schema_bytes)
-    validators = _catalog_validators(catalog_schema)
+    schemas = _catalog_validators(catalog_schema)
     try:
-        validators[0].validate(catalog)
+        _validate_schema(schemas[0], catalog_mapping)
     except ValidationError:
         raise ValueError(
             "pinned registry catalog/schema validation failed"
         ) from None
-    entries = catalog.get("datasets") if isinstance(catalog, dict) else None
+    entries = catalog_mapping.get("datasets")
     if not isinstance(entries, list):
         raise TypeError("estate registry catalog datasets must be an array")
+    entries = cast("list[object]", entries)
     by_id: dict[str, dict[str, Any]] = {}
-    for entry in entries:
-        if not isinstance(entry, dict):
+    for raw_entry in entries:
+        if not isinstance(raw_entry, dict):
             raise TypeError("estate registry entry must be an object")
+        entry = cast("dict[str, Any]", raw_entry)
         repo_id = entry.get("repo_id")
         access = entry.get("access")
         if not isinstance(repo_id, str) or access not in {
@@ -316,7 +346,7 @@ def build_gap_record(
     draft_entries = _draft_public_entries(datasets, missing_id_set)
     try:
         for draft in draft_entries:
-            validators[1].validate(draft["catalog_entry"])
+            _validate_schema(schemas[1], draft["catalog_entry"])
     except ValidationError:
         raise ValueError("draft registry entry failed pinned schema") from None
 

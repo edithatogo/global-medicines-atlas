@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from datetime import UTC, datetime
+from typing import Any, cast
 
 import pytest
 from scripts import qualify_hf_public_registry_gap as audit
@@ -68,7 +70,7 @@ def test_gap_record_excludes_private_registry_identities() -> None:
         {"repo_id": "owner/known", "revision": "a" * 40, "gated": False},
         {"repo_id": "owner/missing", "revision": "b" * 40, "gated": False},
     ]
-    collections = [
+    collections: list[dict[str, Any]] = [
         {
             "slug": "owner/public-collection",
             "title": "Public Collection",
@@ -181,10 +183,14 @@ def test_registry_file_is_bound_to_current_public_head(
             {"repo_id": audit.REGISTRY, "revision": revision, "gated": False}
         ],
     )
-    monkeypatch.setattr(audit, "_read_url", lambda url: url.encode())
+    monkeypatch.setattr(
+        audit,
+        "_read_url",
+        cast("Callable[[str], bytes]", lambda url: url.encode()),  # pyright: ignore[reportUnknownLambdaType, reportUnknownMemberType]
+    )
 
-    catalog, schema = audit._registry_catalog(revision)
+    catalog, schema = audit._registry_catalog(revision)  # pyright: ignore[reportPrivateUsage]
     assert catalog.endswith(f"resolve/{revision}/catalog.json".encode())
     assert schema.endswith(f"resolve/{revision}/catalog.schema.json".encode())
     with pytest.raises(ValueError, match="differs"):
-        audit._registry_catalog("b" * audit.REVISION_LENGTH)
+        audit._registry_catalog("b" * audit.REVISION_LENGTH)  # pyright: ignore[reportPrivateUsage]
