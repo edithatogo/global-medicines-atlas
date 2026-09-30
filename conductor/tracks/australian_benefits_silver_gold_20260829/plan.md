@@ -700,9 +700,12 @@
   payload candidates plus 23 existing projections across five repositories.
   The shared reimbursement-atlas payload paths are included; the global source
   catalogue and New Zealand health appropriations are excluded from the
-  proposed producer set. The exact denominator remains unapproved, source and
-  rights membership is not established per object, and no v4 admission is
-  inferred. A metadata-only audit mapped all 1,736 raw candidate paths to
+  proposed producer set. The maintainer approved this exact candidate
+  denominator of 1,736 raw paths plus 23 existing projections across those
+  five repositories; the decision is recorded in
+  `quality/qualifications/australian-m112-denominator-decision-20260930.json`.
+  This does not establish per-object source or rights membership, and no v4
+  admission is inferred. A metadata-only audit mapped all 1,736 raw candidate paths to
   pinned source manifests or the exact nested MBS receipt; 1,735 appear in the
   dataset root manifests. Of 1,634 comparable tree SHA-256 values, all match
   their manifest digests; 102 candidate paths lack a comparable tree digest.
@@ -1471,13 +1474,19 @@
   Australian M-112 denominator requires explicit scope classification. No
   private identities were copied into the comparison, no rights were inferred,
   and no registry mutation was made.
-- [ ] Approve the exact producer/object denominator, reconcile all owner
-  datasets and collection memberships in the public dataset-estate registry,
-  and make `Policy AUS` public with scoped dataset notes. Public collection and
-  registry mutation requires explicit maintainer approval. Then
-  independently bind each admitted object's source rights, v4 contract,
-  lineage, and anonymous public readback. M-112 remains blocked; public
-  visibility and metadata inventory are not acceptance evidence.
+- [x] Approve the exact producer/object denominator for qualification only:
+  1,736 raw source payload paths plus 23 existing projections across five
+  Australian MBS/PBS candidate repositories. See
+  `quality/qualifications/australian-m112-denominator-decision-20260930.json`.
+- [ ] Reconcile the owner estate and collection memberships in the public
+  dataset-estate registry, and make `Policy AUS` public with scoped dataset
+  notes. Public collection and registry mutation remains a separate explicit
+  maintainer gate; the current proposal is preparatory evidence only.
+- [ ] Independently bind the approved denominator's per-object source
+  membership, rights, v4 contract, lineage, and anonymous public readback, then
+  run consumer compatibility canaries against those pinned identities. M-112
+  remains blocked; denominator approval, public visibility, and metadata
+  inventory are not object-admission evidence.
 - [x] Reconcile the previously stale CMS Part D rights review, disposition,
   publication queue, and producer-discovery governance join to the explicit
   2026-08-27 exact-inventory decision and anonymous receipt at pinned revision

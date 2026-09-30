@@ -1,0 +1,81 @@
+{
+  "schema_id": "global-medicines-atlas.australian-m112-denominator-decision",
+  "schema_version": 1,
+  "decision_id": "australian-m112-object-denominator-20260930",
+  "recorded_at": "2026-09-30T13:13:05Z",
+  "status": "maintainer_approved_exact_candidate_denominator",
+  "decision": {
+    "decider": "sole maintainer",
+    "basis": "The maintainer directed continuation with the recommendation after the exact denominator options were presented.",
+    "selected_option": "Approve 1,736 raw source payload paths plus 23 existing projection paths.",
+    "scope_effect": "Approves the exact candidate denominator for M-112 qualification only."
+  },
+  "denominator": {
+    "jurisdiction_scope": "Australian MBS/PBS evidence",
+    "candidate_producer_dataset_count": 5,
+    "datasets": [
+      "edithatogo/australian-mbs-source-archive",
+      "edithatogo/australian-mbs-utilisation-archive",
+      "edithatogo/australian-pbs-source-archive",
+      "edithatogo/australian-pbs-utilisation-archive",
+      "edithatogo/reimbursement-atlas"
+    ],
+    "raw_source_payload_paths": 1736,
+    "existing_projection_paths": 23,
+    "total_candidate_paths": 1759,
+    "raw_paths_by_dataset": {
+      "edithatogo/australian-mbs-source-archive": 8,
+      "edithatogo/australian-mbs-utilisation-archive": 14,
+      "edithatogo/australian-pbs-source-archive": 1,
+      "edithatogo/australian-pbs-utilisation-archive": 6,
+      "edithatogo/reimbursement-atlas": 1707
+    },
+    "excluded_from_this_denominator": {
+      "edithatogo/global-medicines-atlas-catalogue": "B0 discovery context only; not an MBS/PBS producer in the selected object set, and its Australian source-rights states remain unresolved.",
+      "edithatogo/nz-health-appropriations": "Separate New Zealand health-funding evidence; outside the Australian M-112 scope."
+    }
+  },
+  "basis_evidence": [
+    {
+      "path": "quality/qualifications/australian-m112-object-inventory-20260930.json",
+      "sha256": "ccc0667b1ce8ba19d4bed0a6590e2bc55ab954d7bd6cc51f56e51231cc780460"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-scope-assessment-20260930.json",
+      "sha256": "fc0fa373a9d8f54efaa6de0a5313a1ac9bf8710c4c11cd02a3274603bcf361cb",
+      "observed_at": "2026-09-30T06:13:44.193248Z",
+      "note": "This pre-decision snapshot records the proposal as unapproved at its observation time; this decision supersedes that status prospectively."
+    },
+    {
+      "path": "quality/qualifications/australian-m112-manifest-join-audit-20260930.json",
+      "sha256": "34441cd4d6dcaa3de214ca504b168a98eaa506d8e90164b857f5fd63d7922b3c"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-source-rights-lineage-crosswalk-20260930.json",
+      "sha256": "a6fb05a93168fadecee965079ea3b90e5cdb3e87cd066f9d4b7e9f95060a033a"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-receipt-sidecar-join-audit-20260930.json",
+      "sha256": "53e7a1659f57f24290dfe08e534131dde59e930ff386655cf0fa047a0dae657b"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json",
+      "sha256": "f0bbf7987d60e78534c2ee926d6d6c7eb94aca8900328d894024849f714ec6c0"
+    }
+  ],
+  "boundaries": {
+    "source_payload_bytes_read": false,
+    "licensing_conclusion_made": false,
+    "per_object_rights_accepted": false,
+    "v4_admission_performed": false,
+    "anonymous_object_readback_performed_by_this_decision": false,
+    "consumer_canaries_run_by_this_decision": false,
+    "public_collection_or_registry_mutation_performed": false,
+    "external_dataset_publication_performed": false
+  },
+  "remaining_acceptance_work": [
+    "Resolve per-object source membership, acquisition lineage, rights, content digests, v4 admission, and anonymous readback for the approved candidate denominator.",
+    "Run consumer compatibility canaries against the same pinned admitted identities.",
+    "Obtain any separate explicit maintainer approval required before public collection or registry mutation."
+  ]
+}
