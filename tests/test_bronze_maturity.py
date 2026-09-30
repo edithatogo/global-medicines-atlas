@@ -896,6 +896,7 @@ def test_repository_us_live_records_override_scope_is_exact() -> None:
     assert set(evidence) == {
         "us-fda-drug-shortages",
         "us-fda-nsde",
+        "us-fda-orange-book",
         "us-openfda-drugsfda",
         "us-openfda-faers",
         "us-openfda-nsde",

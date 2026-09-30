@@ -7,8 +7,8 @@ Silver transformations included: **no**.
 
 ## State summary
 
-- `landed_and_evidenced`: 40
-- `temporarily_unavailable`: 2
+- `landed_and_evidenced`: 41
+- `temporarily_unavailable`: 1
 - `rights_blocked`: 27
 - `credentialed_and_excluded`: 15
 - `manual_only_documented_acquisition`: 90
@@ -66,7 +66,7 @@ Silver transformations included: **no**.
 - [x] `us-fda-faers` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `us-fda-ndc-directory` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `us-fda-nsde` — `landed_and_evidenced`; verify receipt freshness on schedule.
-- [ ] `us-fda-orange-book` — `temporarily_unavailable`; retry only after a material official inventory or Archive-It availability change.
+- [x] `us-fda-orange-book` — `landed_and_evidenced`; Keep the landed claim limited to the bounded current projection; retry historical acquisition only after a material official inventory or Archive-It availability change..
 
 ## `paginated_rest_api`
 

@@ -74,6 +74,7 @@ DEFAULT_OUTPUT = (
     ROOT / "quality/qualifications/prompt-acquisition-completion-audit.json"
 )
 RECONCILIATION_PROMPT_ID = 36
+ORANGE_BOOK_HISTORICAL_PROMPT_ID = 16
 PROMPT_AUDIT_RECORD_SOURCE_IDS = frozenset({"us-fda-nsde"})
 NDC_PROMPT_AUDIT_SOURCE_IDS = frozenset({
     "us-fda-ndc-directory",
@@ -219,6 +220,17 @@ def _prompt_entry(
         and states.get("gb-openprescribing") == "temporarily_unavailable"
     ):
         next_actions = [OPENPRESCRIBING_UNAVAILABLE_ACTION]
+    if (
+        track.track_id == ORANGE_BOOK_HISTORICAL_PROMPT_ID
+        and states.get("us-fda-orange-book") == "landed_and_evidenced"
+    ):
+        # Prompt 16 is the historical family; a bounded current projection is
+        # useful landing evidence but cannot close the incomplete archive.
+        incomplete_states.discard("landed_and_evidenced")
+        incomplete_states.add("temporarily_unavailable")
+        next_actions = [
+            "retry historical acquisition only after a material official inventory or Archive-It availability change"
+        ]
     if (
         source_ids == [NICE_PRIVATE_ACQUISITION_SOURCE_ID]
         and states[NICE_PRIVATE_ACQUISITION_SOURCE_ID] == "landed_and_evidenced"

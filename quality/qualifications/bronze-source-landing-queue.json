@@ -4255,18 +4255,19 @@
         "source_id": "us-fda-orange-book"
       },
       "evidence_references": [
+        "quality/qualifications/us-live-bronze-records-20260820.json",
         "quality/qualifications/orange-book-historical-authorization.json",
         "quality/qualifications/orange-book-historical-plan.json",
+        "quality/qualifications/orange-book-historical-refresh-20260928.json",
         "quality/qualifications/orange-book-historical-corpus-20260820.json",
-        "quality/qualifications/orange-book-historical-corpus-20260821.json",
-        "quality/qualifications/orange-book-historical-refresh-20260928.json"
+        "quality/qualifications/orange-book-historical-corpus-20260821.json"
       ],
-      "evidence_scope": "none",
-      "next_action": "retry only after a material official inventory or Archive-It availability change",
-      "priority": 40,
-      "reason": "The 2026-09-28 authorized internal refresh acquired the newly listed August 2026 FDA monthly release and accepted 140 of 260 release URLs. Historical coverage remains incomplete: 104 Archive-It requests failed and 16 responses were quarantined; public release is not authorized.",
+      "evidence_scope": "live_receipt",
+      "next_action": "Keep the landed claim limited to the bounded current projection; retry historical acquisition only after a material official inventory or Archive-It availability change.",
+      "priority": 90,
+      "reason": "The bounded U.S. live-record receipt contains an accepted current Orange Book source-record projection, recovered from immutable payloads and reproduced as byte-identical Parquet. The separate historical family remains incomplete: the 2026-09-28 refresh accepted 140 of 260 release URLs, with 104 Archive-It requests failed and 16 responses quarantined. No public release or external publication is authorized.",
       "source_id": "us-fda-orange-book",
-      "state": "temporarily_unavailable"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4698,11 +4699,11 @@
   "source_count": 174,
   "state_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 40,
+    "landed_and_evidenced": 41,
     "manual_only_documented_acquisition": 90,
     "not_yet_implemented": 0,
     "rights_blocked": 27,
     "superseded_by_reused_source": 0,
-    "temporarily_unavailable": 2
+    "temporarily_unavailable": 1
   }
 }
