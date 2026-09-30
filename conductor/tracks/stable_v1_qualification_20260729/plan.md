@@ -559,3 +559,12 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   was already included in this denominator; its closure adds no new landing
   increment. Australian federation, current-scope Bronze, M5 and stable-release
   approval remain open.
+
+## 2026-09-30 post-PR-673 exact-main qualification refresh
+
+- [x] Regenerate the Bronze maturity report against exact merged `main`
+  `6fe5a8dfd02d9a72bcfe522e621cfbdb4c16ff89` after PR #673 and bind the M5
+  status page to that commit. It remains blocked at 116 of 157 in-scope sources
+  without qualifying landing evidence; completeness remains the sole blocked
+  Bronze property, with 13 of 14 mandatory properties evidenced. The PR changed
+  report provenance only; all four Stable v1 acceptance gates remain open.
