@@ -676,7 +676,7 @@
 
 ### Federated producer v4 acceptance
 
-- [ ] Define and execute an exact-main M-112 qualification over the approved
+- [~] Define and execute an exact-main M-112 qualification over the approved
   live producer denominator. Require each admitted Bronze/Silver/Gold/Platinum
   object to bind producer, dataset, immutable revision, path, SHA-256, byte
   count, source/acquisition identity, B0/B1/B2 stratum where applicable,
@@ -687,6 +687,13 @@
   producer coverage from MBS-only publication, archive objects, local outputs,
   or the presence of v4 schema code; do not acquire or publish PBS/API or
   restricted terminology payloads before their separate authority gates pass.
+  A metadata-only, path-level proposal now inventories 1,736 Australian raw
+  payload candidates plus 23 existing projections across five repositories.
+  The shared reimbursement-atlas payload paths are included; the global source
+  catalogue and New Zealand health appropriations are excluded from the
+  proposed producer set. The exact denominator remains unapproved, source and
+  rights membership is not established per object, and no v4 admission is
+  inferred. See `quality/qualifications/australian-m112-object-inventory-20260930.json`.
 - [ ] Phase Verification & Checkpoint: record the exact producer/object
   denominator, accepted and missing identities, per-layer receipts, consumer
   canary results, and remaining rights/publication boundaries. Leave M-112
