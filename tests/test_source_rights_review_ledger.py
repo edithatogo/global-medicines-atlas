@@ -76,7 +76,7 @@ def test_non_approved_sources_remain_explicitly_fail_closed() -> None:
         for entry in entries
         if entry["disposition"] in {"catalogue_only", "credentialed_excluded"}
     ]
-    assert len(non_public) == 148
+    assert len(non_public) == 146
     assert all(entry["blocker"] for entry in non_public)
     assert all(entry["public_source_eligible"] is False for entry in non_public)
 
@@ -99,6 +99,8 @@ def test_permissive_international_candidates_have_official_evidence() -> None:
         "nz-pharmac-schedule",
         "nz-pharmac-schedule-xml",
         "us-rxnorm-api",
+        "us-cms-partd-formulary",
+        "us-cms-partd-spending",
     }
     candidates = {
         source_id
@@ -111,7 +113,7 @@ def test_permissive_international_candidates_have_official_evidence() -> None:
         }
     }
     assert candidates == expected
-    assert _ledger()["candidate_policy_assignment_count"] == 28
+    assert _ledger()["candidate_policy_assignment_count"] == 30
     approved = expected - {
         "gb-nice-medicines-utilisation",
         "nl-gipdatabank",
@@ -129,6 +131,27 @@ def test_permissive_international_candidates_have_official_evidence() -> None:
         else:
             assert entry["disposition"] == "catalogue_only"
             assert entry["maintainer_publication_approved"] is False
+
+
+def test_cms_approval_is_bound_to_exact_inventory_and_agreement() -> None:
+    entries = {entry["source_id"]: entry for entry in _entries()}
+    for source_id in (
+        "us-cms-partd-formulary",
+        "us-cms-partd-spending",
+    ):
+        entry = entries[source_id]
+        assert entry["policy_family_id"] == (
+            "cms-partd-exact-inventory-approval-20260827"
+        )
+        assert entry["disposition"] == "approved_public_source"
+        assert entry["maintainer_publication_approved"] is True
+        assert entry["public_source_eligible"] is True
+        assert entry["blocker"] is None
+    formulary = entries["us-cms-partd-formulary"]
+    assert any(
+        "Agreement for Use" in item for item in formulary["field_exclusions"]
+    )
+    assert any("net prices" in item for item in formulary["field_exclusions"])
 
 
 def test_every_international_review_has_observation_or_failure_receipt() -> (

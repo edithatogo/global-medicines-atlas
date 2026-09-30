@@ -27,7 +27,13 @@ PUBLICATION_EVIDENCE = {
     / "quality/qualifications/open-medic-public-huggingface-20260821.json",
     "australian-mbs": ROOT
     / "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
+    "cms-partd": ROOT
+    / "quality/qualifications/cms-partd-public-huggingface-20260829.json",
 }
+CMS_SOURCE_IDS = ("us-cms-partd-formulary", "us-cms-partd-spending")
+CMS_PAYLOAD_COUNT = 33
+CMS_FORMULARY_RELEASE_COUNT = 30
+CMS_SPENDING_RESOURCE_COUNT = 3
 FAILURE_EVIDENCE = {
     "fr-open-medic": ROOT
     / "quality/qualifications/open-medic-acquisition-failure-20260821.json",
@@ -66,11 +72,30 @@ def _acquired_sources() -> dict[str, dict[str, str]]:
 
 def _published_sources() -> dict[str, str]:
     published: dict[str, str] = {}
-    for path in PUBLICATION_EVIDENCE.values():
+    for key, path in PUBLICATION_EVIDENCE.items():
         receipt = _load(path)
-        if receipt["repository_private"] or receipt["repository_gated"]:
+        if key == "cms-partd":
+            if not (
+                receipt["dataset_public_from_initialization"]
+                and receipt["anonymous_digest_match"]
+                and receipt["payload_count"] == CMS_PAYLOAD_COUNT
+                and receipt["formulary_release_count"]
+                == CMS_FORMULARY_RELEASE_COUNT
+                and receipt["spending_resource_count"]
+                == CMS_SPENDING_RESOURCE_COUNT
+                and receipt["local_acquisition_removed_after_verification"]
+            ):
+                raise ValueError(
+                    f"CMS publication receipt is incomplete: {path}"
+                )
+            source_ids = CMS_SOURCE_IDS
+        else:
+            if receipt["repository_private"] or receipt["repository_gated"]:
+                raise ValueError(f"publication receipt is not public: {path}")
+            source_ids = tuple(receipt["source_ids"])
+        if not source_ids:
             raise ValueError(f"publication receipt is not public: {path}")
-        for source_id in receipt["source_ids"]:
+        for source_id in source_ids:
             if source_id in published:
                 raise ValueError(f"duplicate published source: {source_id}")
             published[source_id] = str(path.relative_to(ROOT))

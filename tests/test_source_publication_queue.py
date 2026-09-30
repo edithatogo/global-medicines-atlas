@@ -22,13 +22,13 @@ def _queue() -> dict[str, Any]:
 def test_queue_is_deterministic_and_separates_rights_from_acquisition() -> None:
     queue = _queue()
     assert queue == build()
-    assert queue["candidate_count"] == 28
+    assert queue["candidate_count"] == 30
     assert queue["publication_gate"] == (
         "satisfied_exact_manifest_maintainer_approval"
     )
-    assert queue["public_eligible_count"] == 26
-    assert queue["published_count"] == 26
-    assert queue["acquisition_evidenced_count"] == 26
+    assert queue["public_eligible_count"] == 28
+    assert queue["published_count"] == 28
+    assert queue["acquisition_evidenced_count"] == 28
     assert queue["acquisition_pending_count"] == 2
     assert queue["temporarily_unavailable_count"] == 0
 
@@ -38,7 +38,7 @@ def test_published_sources_bind_exact_publication_receipts() -> None:
     evidenced = [
         entry for entry in entries if entry["acquisition_state"] == "evidenced"
     ]
-    assert len(evidenced) == 26
+    assert len(evidenced) == 28
     assert all(entry["acquisition_evidence"] for entry in evidenced)
     assert all(
         entry["next_action"] == "monitor_public_revision" for entry in evidenced
@@ -75,16 +75,32 @@ def test_approved_manifests_match_publication_receipts() -> None:
                     / "quality/qualifications/open-medic-public-huggingface-20260821.json"
                 ).read_text(encoding="utf-8")
             ),
+            json.loads(
+                (
+                    ROOT
+                    / "quality/qualifications/cms-partd-public-huggingface-20260829.json"
+                ).read_text(encoding="utf-8")
+            ),
         )
     }
     manifests = decisions["approved_publication_manifests"]
-    assert {item["repository"] for item in manifests} == set(receipts)
+    receipt_by_repo = {
+        receipt.get("dataset"): receipt for receipt in receipts.values()
+    }
+    assert {item["repository"] for item in manifests} == set(receipt_by_repo)
     for manifest in manifests:
-        receipt = receipts[manifest["repository"]]
+        receipt = receipt_by_repo[manifest["repository"]]
         assert receipt["immutable_revision"] == manifest["revision"]
         assert receipt["manifest_sha256"] == manifest["manifest_sha256"]
-        assert set(receipt["source_ids"]) == set(manifest["source_ids"])
-        assert receipt["repository_private"] is False
+        if "source_ids" in receipt:
+            assert set(receipt["source_ids"]) == set(manifest["source_ids"])
+            assert receipt["repository_private"] is False
+        else:
+            assert set(manifest["source_ids"]) == {
+                "us-cms-partd-formulary",
+                "us-cms-partd-spending",
+            }
+            assert receipt["anonymous_digest_match"] is True
 
 
 def test_open_medic_supersedes_failure_with_publication_receipt() -> None:

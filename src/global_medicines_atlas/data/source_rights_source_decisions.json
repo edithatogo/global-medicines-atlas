@@ -63,11 +63,23 @@
         "au-mbs-p7-legacy-workbook"
       ],
       "derived_only_source_ids": []
+    },
+    {
+      "repository": "edithatogo/global-medicines-atlas-cms-partd-20260827",
+      "revision": "abcff8ebd1f624c4bbb0a87d903b184388c98254",
+      "manifest_sha256": "ed010f65c2f2b03ce6d4c41a008fa87c1f922847df85c9502358d33e8c116739",
+      "source_ids": [
+        "us-cms-partd-formulary",
+        "us-cms-partd-spending"
+      ],
+      "derived_only_source_ids": []
     }
   ],
   "policy_family_assignments": {
     "au-mbs": "au-maintainer-exact-redistribution-permission-20260829",
     "au-mbs-p7-legacy-workbook": "au-maintainer-exact-redistribution-permission-20260829",
+    "us-cms-partd-formulary": "cms-partd-exact-inventory-approval-20260827",
+    "us-cms-partd-spending": "cms-partd-exact-inventory-approval-20260827",
     "us-drugsfda": "fda-website-public-domain",
     "us-fda-drug-shortages": "fda-website-public-domain",
     "us-fda-faers": "fda-website-public-domain",

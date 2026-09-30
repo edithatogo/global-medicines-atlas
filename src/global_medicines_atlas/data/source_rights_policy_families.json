@@ -3,6 +3,37 @@
   "schema_version": 1,
   "observed_at": "2026-08-21T00:00:00Z",
   "families": {
+    "cms-partd-exact-inventory-approval-20260827": {
+      "evidence": [
+        {
+          "official_url": "https://catalog.data.gov/dataset/quarterly-prescription-drug-plan-formulary-pharmacy-network-and-pricing-information",
+          "observed_at": "2026-08-27T00:00:00Z",
+          "content_sha256": "e3098f964bf987ebaaa18e58313decf5f3d161063c98209aad0b3a8bedac6a3f",
+          "scope": "dataset",
+          "reuse_statement": "The sole maintainer approved attributed acquisition, retention, public release, and external publication for the exact 30 formulary releases and 3 spending resources in the inventory-bound Prompt 31 authorization, subject to the CMS Agreement for Use. This is a source-specific exact-inventory decision, not a blanket licence conclusion."
+        },
+        {
+          "official_url": "https://data.cms.gov/sites/default/files/2023-10/4eeb19e1-525b-4a4e-9766-b33ff084fc5c/AGREEMENT-FOR-USE.pdf",
+          "observed_at": "2026-08-21T05:05:00Z",
+          "content_sha256": "e3098f964bf987ebaaa18e58313decf5f3d161063c98209aad0b3a8bedac6a3f",
+          "scope": "dataset",
+          "reuse_statement": "Formulary reuse remains subject to accurate and non-misleading presentation and explicit temporal limitations under the CMS Agreement for Use."
+        }
+      ],
+      "redistribute": "permitted",
+      "transform": "permitted",
+      "publish_source_bytes": "permitted",
+      "sensitivity": "public",
+      "disposition": "catalogue_only",
+      "attribution": "Credit the Centers for Medicare & Medicaid Services; link the exact source resource, preserve source date and specification warnings, and identify transformations.",
+      "field_exclusions": [
+        "formulary material outside the exact 30 releases and spending material outside the exact three approved resources",
+        "claims that Part D spending represents net prices or total United States medicine utilisation",
+        "formulary presentation that is inaccurate or misleading or omits temporal limits and Agreement for Use requirements",
+        "suppressed values, population exclusions, source-native grain, and distinctions between preliminary and final spending actions"
+      ],
+      "review_trigger": "CMS Agreement for Use, official source terms, approved inventory, source revision, attribution requirements, or interpretation boundaries change"
+    },
     "au-maintainer-exact-redistribution-permission-20260829": {
       "evidence": [
         {
