@@ -1,0 +1,170 @@
+{
+  "candidate_rights_and_lineage": [
+    {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "lineage_state": "source-specific authorization exists for exact baseline objects; later raw path-to-receipt and v4 lineage reconciliation remains open.",
+      "raw_candidate_path_count": 8,
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "source_specific_evidence": [
+        "Two exact raw payloads (July 2025 MBS XML and July 2024 P7 workbook) have content-addressed authorization and anonymous publication evidence at the older baseline revision 4d1dae488ac43522f20e8320a8b2a56bf9138341.",
+        "The later MBS harvest authorization allows the MBS source and listed source categories, but this audit did not bind all six other current raw paths to exact receipt digests and the current pinned revision."
+      ],
+      "sources": {
+        "au-mbs": {
+          "blocker": null,
+          "disposition": "approved_public_source",
+          "maintainer_licence_approved": true,
+          "maintainer_publication_approved": true,
+          "public_derived_eligible": true,
+          "public_source_eligible": true,
+          "publish_source_bytes": "permitted",
+          "redistribute": "permitted"
+        },
+        "au-mbs-p7-legacy-workbook": {
+          "blocker": null,
+          "disposition": "approved_public_source",
+          "maintainer_licence_approved": true,
+          "maintainer_publication_approved": true,
+          "public_derived_eligible": true,
+          "public_source_eligible": true,
+          "publish_source_bytes": "permitted",
+          "redistribute": "permitted"
+        }
+      }
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "lineage_state": "source-specific rights reconciliation required before v4 admission.",
+      "raw_candidate_path_count": 1,
+      "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+      "source_specific_evidence": [
+        "The rights ledger leaves source-byte redistribution unknown and says an affirmative source-applicable grant was not established. Existing public visibility and earlier publication intent do not close this rights-ledger conflict."
+      ],
+      "sources": {
+        "au-pbs-historical-xml": {
+          "blocker": "official page observed but no affirmative source-applicable redistribution grant was established",
+          "disposition": "catalogue_only",
+          "maintainer_licence_approved": false,
+          "maintainer_publication_approved": false,
+          "public_derived_eligible": false,
+          "public_source_eligible": false,
+          "publish_source_bytes": "unknown",
+          "redistribute": "unknown"
+        }
+      }
+    },
+    {
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "lineage_state": "authorization family exists; exact current object-to-receipt/source/stratum v4 joins remain open; source family coverage is partial.",
+      "raw_candidate_path_count": 14,
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "source_specific_evidence": [
+        "The dataset-specific publication authorization covers these three source IDs and declared categories. A hosted public receipt verified 28 objects (raw objects and receipts) but reported partial coverage; this is transport evidence, not proof each current object has v4 rights and lineage closure."
+      ],
+      "sources": {
+        "au-data-gov-mbs-demographics": {
+          "present_in_source_rights_review_ledger": false
+        },
+        "au-data-gov-mbs-group": {
+          "present_in_source_rights_review_ledger": false
+        },
+        "au-health-medicare-statistics": {
+          "present_in_source_rights_review_ledger": false
+        }
+      }
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "lineage_state": "authorization family exists; exact per-object v4 rights and lineage joins remain open.",
+      "raw_candidate_path_count": 6,
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "source_specific_evidence": [
+        "The dataset-specific publication authorization lists these two sources and declared categories. Individual current path-to-receipt/source/stratum v4 joins were not independently established in this crosswalk."
+      ],
+      "sources": {
+        "au-pbs-dos-utilisation": {
+          "present_in_source_rights_review_ledger": false
+        },
+        "au-pbs-expenditure": {
+          "present_in_source_rights_review_ledger": false
+        }
+      }
+    },
+    {
+      "dataset": "edithatogo/reimbursement-atlas",
+      "lineage_state": "all 1,707 raw payload candidates remain excluded from v4 admission until record-level source rights and lineage are resolved.",
+      "raw_candidate_path_count": 1707,
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "source_specific_evidence": [
+        "No au_pbs source-rights review entry was found in the GMA source-rights ledger. The exact pinned public repository RIGHTS.md says the registry status is unresolved and requires record-level provenance and applicable source terms."
+      ],
+      "sources": {
+        "au_pbs": {
+          "present_in_source_rights_review_ledger": false
+        }
+      }
+    }
+  ],
+  "gaps": [
+    "Six of the eight dataset-level source IDs in the proposed raw inventory have separate source/category publication-authorization records, but authorization is not per-object v4 rights/lineage closure.",
+    "The au-pbs-historical-xml source rights ledger is unresolved despite an extant public source archive.",
+    "The au_pbs reimbursement-atlas corpus has 1,707 public payload candidates and an explicit unresolved rights statement; public visibility does not resolve this.",
+    "The 23 existing data projections have no per-object v4 admission/lineage receipts in the reviewed evidence; the MBS Silver subset remains candidate-only.",
+    "No rights conclusion, new permission, payload verification, or publication is authorized or inferred by this crosswalk."
+  ],
+  "inventory": "quality/qualifications/australian-m112-object-inventory-20260930.json",
+  "inventory_sha256": "ccc0667b1ce8ba19d4bed0a6590e2bc55ab954d7bd6cc51f56e51231cc780460",
+  "new_permission_or_licensing_conclusion": false,
+  "observed_at": "2026-09-30T06:46:26.776140Z",
+  "public_collection_or_registry_mutation_performed": false,
+  "repo_readback": {
+    "current_hub_revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+    "dataset": "edithatogo/reimbursement-atlas",
+    "gated": false,
+    "last_modified": "2026-08-31T11:23:30Z",
+    "public": true,
+    "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+    "rights_path": "RIGHTS.md",
+    "rights_path_sha256": "abe4bc1c7393f7b6008e37c29b58aeb675cae7155cff25418a3f27e1c6625b0c",
+    "rights_statement": "Registry status unresolved; source material requires record-level provenance and applicable source terms; no broader permission is inferred.",
+    "source_payload_bytes_read": false,
+    "source_values_read": false
+  },
+  "reviewed_evidence": {
+    "mbs_harvest_authorization": {
+      "path": "quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+      "sha256": "0fdc4d147d637c679ba0cc3eb165642974e533bb3ba044c99ee01f86127eb41b"
+    },
+    "mbs_legacy_authorization": {
+      "path": "quality/qualifications/australian-health-legacy-publication-authorization.json",
+      "sha256": "fdda663c78437edc010bc5f2f606c3d716d6b4e0bfc31d27daf910303a7a16da"
+    },
+    "mbs_legacy_public_receipt": {
+      "path": "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
+      "sha256": "0310b97525a01a619ce50230849843b5911ef842379c4e093f630942e9622b2f"
+    },
+    "mbs_utilisation_authorization": {
+      "path": "quality/qualifications/australian-mbs-utilisation-publication-authorization.json",
+      "sha256": "492f754331173916ae565c94d6407eebd6f6ea5e4fad7acb3a14e2518cdfa4a2"
+    },
+    "pbs_api_preflight": {
+      "path": "quality/qualifications/australian-pbs-api-public-access-preflight-20260929.json",
+      "sha256": "f5b9e6f9fcc185dd485f2904a8204f7412b585ba4dadbbb0af46267f0338c5d1"
+    },
+    "pbs_utilisation_authorization": {
+      "path": "quality/qualifications/australian-pbs-utilisation-publication-authorization.json",
+      "sha256": "7d5ac89175fd7635e622da8ca8da1a54b1933ae15766f5f407317107f45ddc19"
+    },
+    "source_rights_ledger": {
+      "path": "quality/qualifications/source-rights-review-ledger.json",
+      "sha256": "74cd6ffb44111dcbf2a2b2d11dd3be0fc62b4136757a33c61c5a839ed29d63d7"
+    }
+  },
+  "schema_id": "global-medicines-atlas.australian-m112-source-rights-lineage-crosswalk",
+  "schema_version": 1,
+  "scope": "Australian MBS/PBS only; New Zealand health appropriations excluded.",
+  "source_payload_bytes_read": false,
+  "source_values_read": false,
+  "status": "blocked_source_specific_rights_and_per_object_lineage",
+  "v4_admission_performed": false
+}
