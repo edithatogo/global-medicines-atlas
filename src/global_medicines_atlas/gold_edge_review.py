@@ -161,9 +161,6 @@ def regenerate_gold_edge_review_queue(
     events_by_candidate: dict[str, dict[str, AdjudicationEvent]] = {}
     for event in adjudications:
         events = events_by_candidate.setdefault(event.candidate_id, {})
-        previous = events.get(event.event_id)
-        if previous is not None and previous != event:
-            continue
         events[event.event_id] = event
 
     terminal: set[str] = set()
@@ -191,14 +188,14 @@ def regenerate_gold_edge_review_queue(
             continue
         current = roots[0]
         visited = {current.event_id}
-        while current.event_id in children:
+        while (
+            current.event_id in children
+            and children[current.event_id][0].event_id not in visited
+        ):
             current = children[current.event_id][0]
-            if current.event_id in visited:
-                break
             visited.add(current.event_id)
-        else:
-            if len(visited) == len(events) and current.state in final_states:
-                terminal.add(candidate_id)
+        if len(visited) == len(events) and current.state in final_states:
+            terminal.add(candidate_id)
 
     pending = {
         case.review_case_id: case
