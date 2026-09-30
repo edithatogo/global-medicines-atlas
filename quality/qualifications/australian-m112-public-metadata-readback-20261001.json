@@ -1,0 +1,74 @@
+{
+  "schema_id": "global-medicines-atlas.australian-m112-public-metadata-readback",
+  "schema_version": 1,
+  "observed_at": "2026-09-30T22:29:38Z",
+  "status": "candidate_heads_stable_collection_still_private_and_empty",
+  "owner_inventory_observed_at": "2026-09-30T22:23:13.515625Z",
+  "method": {
+    "owner_inventory": "scripts/observe_hf_estate.py; two complete metadata-only scans with matching entry digests",
+    "collection_readback": "hf collections info --json for the exact prepared Policy AUS slug",
+    "payload_bytes_read": false,
+    "source_values_read": false
+  },
+  "owner_inventory": {
+    "enumeration_scope": "authenticated_visible_owner_metadata",
+    "dataset_count": 81,
+    "public_dataset_count": 76,
+    "private_dataset_count": 5,
+    "collection_count": 10,
+    "stable_double_scan": true
+  },
+  "candidate_dataset_heads": [
+    {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834"
+    },
+    {
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "revision": "48fd7345fb09277bb5b85644dba72804633a2abb"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a"
+    },
+    {
+      "dataset": "edithatogo/reimbursement-atlas",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    }
+  ],
+  "estate_registry": {
+    "dataset": "edithatogo/dataset-estate-registry",
+    "revision": "8f4c5b03adebdc8cbe19d9f20b18745d4da1b83c",
+    "private": false,
+    "gated": false,
+    "matches_prepared_scope_readback": true
+  },
+  "policy_aus": {
+    "slug": "edithatogo/policy-aus-6a2e99a1ae31ec0fe8895be8",
+    "title": "Policy AUS",
+    "private": true,
+    "dataset_member_count": 0
+  },
+  "prepared_membership_still_matches_live_heads": true,
+  "external_mutations": {
+    "collection_visibility_changed": false,
+    "collection_membership_changed": false,
+    "estate_registry_changed": false
+  },
+  "scope_and_rights_boundaries": {
+    "candidate_denominator": "1,736 raw payload paths plus 23 existing projections across the five pinned Australian datasets",
+    "licensing_conclusion_made": false,
+    "per_object_rights_accepted": false,
+    "v4_admission_performed": false,
+    "public_collection_or_registry_publication_authorized_by_this_readback": false
+  },
+  "basis": {
+    "prepared_scope_assessment": "quality/qualifications/australian-m112-scope-assessment-20260930.json",
+    "prepared_scope_assessment_sha256": "fc0fa373a9d8f54efaa6de0a5313a1ac9bf8710c4c11cd02a3274603bcf361cb",
+    "prepared_denominator_decision": "quality/qualifications/australian-m112-denominator-decision-20260930.json"
+  }
+}

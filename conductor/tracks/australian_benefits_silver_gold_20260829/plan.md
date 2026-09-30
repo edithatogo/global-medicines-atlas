@@ -1478,6 +1478,14 @@
   1,736 raw source payload paths plus 23 existing projections across five
   Australian MBS/PBS candidate repositories. See
   `quality/qualifications/australian-m112-denominator-decision-20260930.json`.
+- [x] Refresh the authenticated-visible candidate metadata immediately before
+  considering the prepared public collection/registry update. The Oct 1
+  Brisbane readback confirmed a stable double scan of 81 datasets (76 public,
+  5 private) and 10 collections; all five proposed producer heads and the
+  dataset-estate-registry revision still match the pinned proposal. Policy AUS
+  remains private and empty. No source bytes were read and no external
+  mutation occurred. See
+  `quality/qualifications/australian-m112-public-metadata-readback-20261001.json`.
 - [ ] Reconcile the owner estate and collection memberships in the public
   dataset-estate registry, and make `Policy AUS` public with scoped dataset
   notes. Public collection and registry mutation remains a separate explicit
