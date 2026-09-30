@@ -2,12 +2,13 @@
   "candidate_rights_and_lineage": [
     {
       "dataset": "edithatogo/australian-mbs-source-archive",
-      "lineage_state": "source-specific authorization exists for exact baseline objects; later raw path-to-receipt and v4 lineage reconciliation remains open.",
+      "lineage_state": "Source-native authorization and historic anonymous publication verification are established for the exact 2026-08-01 XML digest. The current root manifest omits that path, and two nested accepted but unreviewed B1 acquisition records for the same digest have different acquisition/decision IDs and different source Parquet digests; canonical B1 reconciliation and v4 lineage/admission remain open.",
       "raw_candidate_path_count": 8,
       "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
       "source_specific_evidence": [
-        "Two exact raw payloads (July 2025 MBS XML and July 2024 P7 workbook) have content-addressed authorization and anonymous publication evidence at the older baseline revision 4d1dae488ac43522f20e8320a8b2a56bf9138341.",
-        "The later MBS harvest authorization allows the MBS source and listed source categories, but this audit did not bind all six other current raw paths to exact receipt digests and the current pinned revision."
+        "The exact 2026-08-01 XML is authorized by the sole-maintainer record at issue #339 comment 5467052330; both nested receipts name source_id au-mbs, rights_state permitted, content SHA-256 c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565, and 8,293,331 bytes.",
+        "The exact object has a durable GitHub Actions receipt at run 33296983154 and issue #340 comment 5467154799: anonymous digest verification passed at dataset revision 75f9f20a36ddb829dfe0ca88660664570782be02; temporary source bytes were removed after verification.",
+        "At the current pinned revision, the root manifest has 7 of the 8 candidate raw paths and omits the exact August XML path. Its nested acquisition manifests and receipts contain two accepted, unreviewed records for the same content ID, with distinct acquisition/decision IDs, different source Parquet digests, and data_acquired=false. This is a reconciliation conflict, not new permission or v4 admission."
       ],
       "sources": {
         "au-mbs": {
@@ -106,16 +107,18 @@
     }
   ],
   "gaps": [
-    "Six of the eight dataset-level source IDs in the proposed raw inventory have separate source/category publication-authorization records, but authorization is not per-object v4 rights/lineage closure.",
-    "The au-pbs-historical-xml source rights ledger is unresolved despite an extant public source archive.",
-    "The au_pbs reimbursement-atlas corpus has 1,707 public payload candidates and an explicit unresolved rights statement; public visibility does not resolve this.",
+    "The exact proposed producer/object denominator remains unapproved; this metadata join does not resolve it.",
+    "The MBS source root manifest omits the exact August 2026 XML, while two duplicate nested accepted/unreviewed acquisition records need canonical B1 reconciliation and v4 lineage/admission.",
+    "The au-pbs-historical-xml source rights ledger remains unresolved despite an extant public source archive.",
+    "The au_pbs reimbursement-atlas corpus has 1,707 public payload candidates and an explicit unresolved rights statement; public visibility and manifest checksums do not resolve this.",
+    "Separate source/category authorization records do not establish each object’s rights and v4 lineage/admission.",
     "The 23 existing data projections have no per-object v4 admission/lineage receipts in the reviewed evidence; the MBS Silver subset remains candidate-only.",
-    "No rights conclusion, new permission, payload verification, or publication is authorized or inferred by this crosswalk."
+    "Tree metadata SHA-256 comparisons are not anonymous payload readbacks; no new rights conclusion, permission, source payload verification, or publication is made by this audit."
   ],
   "inventory": "quality/qualifications/australian-m112-object-inventory-20260930.json",
   "inventory_sha256": "ccc0667b1ce8ba19d4bed0a6590e2bc55ab954d7bd6cc51f56e51231cc780460",
   "new_permission_or_licensing_conclusion": false,
-  "observed_at": "2026-09-30T06:46:26.776140Z",
+  "observed_at": "2026-09-30T07:03:20Z",
   "public_collection_or_registry_mutation_performed": false,
   "repo_readback": {
     "current_hub_revision": "8e062578f14e12cf3238700a93946339da9c5d88",
@@ -165,6 +168,29 @@
   "scope": "Australian MBS/PBS only; New Zealand health appropriations excluded.",
   "source_payload_bytes_read": false,
   "source_values_read": false,
-  "status": "blocked_source_specific_rights_and_per_object_lineage",
-  "v4_admission_performed": false
+  "status": "metadata_manifest_join_completed_denominator_rights_and_v4_admission_blocked",
+  "v4_admission_performed": false,
+  "manifest_join_audit": {
+    "path": "quality/qualifications/australian-m112-manifest-join-audit-20260930.json",
+    "sha256": "34441cd4d6dcaa3de214ca504b168a98eaa506d8e90164b857f5fd63d7922b3c",
+    "status": "metadata_only_exact_path_join_completed_for_1736_candidate_paths",
+    "summary": {
+      "raw_candidate_paths": 1736,
+      "exact_path_matches_across_pinned_dataset_manifests": 1736,
+      "tree_sha256_comparisons_available": 1634,
+      "tree_sha256_matches": 1634,
+      "tree_sha256_unavailable": 102,
+      "tree_sha256_mismatches": 0,
+      "mbs_august_root_manifest_paths": 7,
+      "mbs_august_candidate_paths": 8,
+      "mbs_august_hosted_historic_verification": "passed",
+      "mbs_august_duplicate_accepted_unreviewed_acquisitions": 2
+    },
+    "does_not_establish": [
+      "approved producer denominator",
+      "complete object-level source rights for all candidates",
+      "anonymous byte readback for all candidate paths",
+      "v4 admission"
+    ]
+  }
 }

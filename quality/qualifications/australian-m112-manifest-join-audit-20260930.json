@@ -1,0 +1,178 @@
+{
+  "schema_id": "global-medicines-atlas.australian-m112-manifest-join-audit",
+  "schema_version": 1,
+  "recorded_at": "2026-09-30T07:03:20Z",
+  "scope": "Australian MBS/PBS candidate paths in the pinned 2026-09-30 inventory; New Zealand and global catalogue excluded.",
+  "source_discovery": "quality/qualifications/federation-v4-public-producer-discovery-20260930.json",
+  "object_inventory": "quality/qualifications/australian-m112-object-inventory-20260930.json",
+  "source_payload_bytes_read": false,
+  "source_values_read": false,
+  "public_mutation_performed": false,
+  "v4_admission_performed": false,
+  "manifest_observations": [
+    {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "manifest_path": "manifest.json",
+      "manifest_bytes": 4973,
+      "manifest_sha256": "a93af23c4019825aab43080e467df29658a2daf9e918276ac35aa3f1a1941b21",
+      "raw_manifest_row_count": 7,
+      "candidate_path_count": 8,
+      "exact_path_matches": 7,
+      "candidate_paths_missing_from_manifest": [
+        "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml"
+      ],
+      "manifest_paths_outside_candidate_inventory": [],
+      "source_id_counts": {
+        "None": 2,
+        "au-mbs": 5
+      },
+      "comparable_tree_sha256_count": 0,
+      "tree_sha256_matches": 0,
+      "tree_sha256_mismatches": 0,
+      "tree_sha256_unavailable_count": 7
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+      "manifest_path": "manifest.json",
+      "manifest_bytes": 7513,
+      "manifest_sha256": "e6c9abbc62bd44fc47049306a92cc8efc9700031908586262c2b82a907546460",
+      "raw_manifest_row_count": 1,
+      "candidate_path_count": 1,
+      "exact_path_matches": 1,
+      "candidate_paths_missing_from_manifest": [],
+      "manifest_paths_outside_candidate_inventory": [],
+      "source_id_counts": {
+        "au-pbs-historical-xml": 1
+      },
+      "comparable_tree_sha256_count": 1,
+      "tree_sha256_matches": 1,
+      "tree_sha256_mismatches": 0,
+      "tree_sha256_unavailable_count": 0
+    },
+    {
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "manifest_path": "manifest.json",
+      "manifest_bytes": 9780,
+      "manifest_sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+      "raw_manifest_row_count": 14,
+      "candidate_path_count": 14,
+      "exact_path_matches": 14,
+      "candidate_paths_missing_from_manifest": [],
+      "manifest_paths_outside_candidate_inventory": [],
+      "source_id_counts": {
+        "au-data-gov-mbs-demographics": 10,
+        "au-data-gov-mbs-group": 4
+      },
+      "comparable_tree_sha256_count": 13,
+      "tree_sha256_matches": 13,
+      "tree_sha256_mismatches": 0,
+      "tree_sha256_unavailable_count": 1
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "manifest_path": "manifest.json",
+      "manifest_bytes": 3920,
+      "manifest_sha256": "965383f30612084fc17f5ee91d4cc4d2f23e9de7b2a735fec5d3321c613495b5",
+      "raw_manifest_row_count": 6,
+      "candidate_path_count": 6,
+      "exact_path_matches": 6,
+      "candidate_paths_missing_from_manifest": [],
+      "manifest_paths_outside_candidate_inventory": [],
+      "source_id_counts": {
+        "au-pbs-dos-utilisation": 4,
+        "au-pbs-expenditure": 2
+      },
+      "comparable_tree_sha256_count": 5,
+      "tree_sha256_matches": 5,
+      "tree_sha256_mismatches": 0,
+      "tree_sha256_unavailable_count": 1
+    },
+    {
+      "dataset": "edithatogo/reimbursement-atlas",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "manifest_path": "raw/pbs/manifest.json",
+      "manifest_bytes": 1252503,
+      "manifest_sha256": "569d18a843791e666be9e878e52859355d48f8cce76cabf1f7b97034c7ae12ff",
+      "raw_manifest_row_count": 1707,
+      "candidate_path_count": 1707,
+      "exact_path_matches": 1707,
+      "candidate_paths_missing_from_manifest": [],
+      "manifest_paths_outside_candidate_inventory": [],
+      "source_id_counts": {
+        "au_pbs": 1707
+      },
+      "comparable_tree_sha256_count": 1615,
+      "tree_sha256_matches": 1615,
+      "tree_sha256_mismatches": 0,
+      "tree_sha256_unavailable_count": 92
+    }
+  ],
+  "mbs_august_2026": {
+    "source_id": "au-mbs",
+    "effective_date": "2026-08-01",
+    "content_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+    "byte_count": 8293331,
+    "source_authorization_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+    "authorized_exact_source": true,
+    "prior_hosted_publication_receipt": {
+      "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/33296983154",
+      "dataset_revision": "75f9f20a36ddb829dfe0ca88660664570782be02",
+      "durable_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5467154799",
+      "manifest_path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/manifest.json",
+      "manifest_sha256": "9500325db41ed61c07255cd1afc74c701ab6d561489694fb2caeb28972a78036",
+      "anonymous_digest_verification": "passed",
+      "temporary_source_bytes_removed": true
+    },
+    "root_manifest_raw_paths": 7,
+    "inventory_raw_paths": 8,
+    "root_manifest_missing_candidate_paths": 1,
+    "nested_receipt_run_count": 2,
+    "duplicate_acquisition_records": [
+      {
+        "run_directory_id": "6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64",
+        "manifest_admission_state": "accepted",
+        "manifest_data_acquired": false,
+        "raw_object_count": 1,
+        "content_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "source_id": "au-mbs",
+        "source_effective_version": "2026-08-01",
+        "receipt_rights_state": "permitted",
+        "receipt_rights_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+        "admission_state": "accepted",
+        "reviewer_status": "unreviewed",
+        "acquisition_id": "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1",
+        "decision_id": "a4c8e7850c664db20b80a9f3e6d5cd09c61ebc1447c121c852438eff24a42dba",
+        "source_parquet_tree_sha256": "80f8e0d3cc67f6f3a22f23cc3bfb0db5da4d44d79741da3ce1c31ee92836627a"
+      },
+      {
+        "run_directory_id": "99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc",
+        "manifest_admission_state": "accepted",
+        "manifest_data_acquired": false,
+        "raw_object_count": 1,
+        "content_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "source_id": "au-mbs",
+        "source_effective_version": "2026-08-01",
+        "receipt_rights_state": "permitted",
+        "receipt_rights_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+        "admission_state": "accepted",
+        "reviewer_status": "unreviewed",
+        "acquisition_id": "783bd12fab14dc8f93cb34b1d87e9c3f7c95543d261b008f4e0da018a3d11e57",
+        "decision_id": "eb05c5b19a731d9009d6fedbfb45b2d56bb742729728f0a54c306835f10d312c",
+        "source_parquet_tree_sha256": "5219094d2ec7f4386380b356cc17f071c97751db43ed367746a6d07ca4ff3eaf",
+        "source_receipt_sha256": "4f694fd7364061cd05fee33ea52e6dbeef17d1067b8437f72e726ab168fc2fc7"
+      }
+    ],
+    "reconciliation": "Exact August source identity, rights receipt, and historic anonymous publication verification are evidenced. Current tree repeats two accepted but unreviewed acquisition records for the same content digest, with different acquisition/decision IDs and derived source Parquet digests. Both manifests state data_acquired=false. The current root manifest omits one of the eight candidate paths; the nested receipt manifest and prior hosted publication receipt bind the exact August XML. These conflicts remain open for canonical B1 reconciliation and v4 admission."
+  },
+  "limitations": [
+    "Manifest and tree metadata joins do not independently verify remote payload bytes.",
+    "Candidate path inventory is not an approved M-112 producer denominator.",
+    "No licensing conclusion, permission expansion, source acquisition, admission, or publication is made by this audit.",
+    "Unresolved au-pbs-historical-xml and au_pbs rights remain open."
+  ],
+  "status": "metadata_manifest_joins_recorded_scope_rights_and_v4_gates_remain_open"
+}

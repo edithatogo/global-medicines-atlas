@@ -249,6 +249,14 @@
 - [ ] Populate and make `Policy AUS` public, update scoped HEOR membership and
   notes, and refresh the public dataset-estate registry after explicit
   maintainer approval for the public collection and registry changes.
+- [x] Reconcile candidate raw paths against pinned public manifests using
+  metadata only. All 1,736 Australian MBS/PBS candidate paths map to pinned
+  manifests or the exact August 2026 MBS hosted receipt; 1,735 appear in root
+  manifests, and available tree SHA-256 values match manifest digests. The MBS root manifest omits
+  that XML and duplicate accepted/unreviewed acquisition records still need
+  canonical B1 reconciliation. This does not resolve the unapproved producer
+  denominator, remaining source rights, or v4 admission. See the dependent
+  track's `quality/qualifications/australian-m112-manifest-join-audit-20260930.json`.
 - [ ] Configure an approved independent public recovery target, checksum
   inventory, RPO/RTO, and clean-room restore rehearsal; do not mislabel an HF
   duplicate as independent.

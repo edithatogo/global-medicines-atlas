@@ -693,11 +693,19 @@
   catalogue and New Zealand health appropriations are excluded from the
   proposed producer set. The exact denominator remains unapproved, source and
   rights membership is not established per object, and no v4 admission is
-  inferred. The current source-rights crosswalk records unresolved rights for
-  `au-pbs-historical-xml` and all 1,707 `au_pbs` reimbursement-atlas payloads;
-  source/category authorizations on other candidates still need path-level
-  joins. See `quality/qualifications/australian-m112-object-inventory-20260930.json`
-  and `quality/qualifications/australian-m112-source-rights-lineage-crosswalk-20260930.json`.
+  inferred. A metadata-only audit mapped all 1,736 raw candidate paths to
+  pinned source manifests or the exact nested MBS receipt; 1,735 appear in the
+  dataset root manifests. Of 1,634 comparable tree SHA-256 values, all match
+  their manifest digests; 102 candidate paths lack a comparable tree digest.
+  The exact August 2026 MBS XML has prior source-specific authorization and a
+  durable anonymous hosted verification receipt. Its path is missing from the
+  current root manifest, while two nested accepted but unreviewed acquisition
+  records disagree on acquisition identity and source Parquet digest; canonical
+  B1 reconciliation and v4 admission remain open. Rights remain unresolved for
+  `au-pbs-historical-xml` and all 1,707 `au_pbs` reimbursement-atlas payloads.
+  See `quality/qualifications/australian-m112-object-inventory-20260930.json`,
+  `quality/qualifications/australian-m112-source-rights-lineage-crosswalk-20260930.json`,
+  and `quality/qualifications/australian-m112-manifest-join-audit-20260930.json`.
 - [ ] Phase Verification & Checkpoint: record the exact producer/object
   denominator, accepted and missing identities, per-layer receipts, consumer
   canary results, and remaining rights/publication boundaries. Leave M-112
@@ -1365,6 +1373,19 @@
 
 
 ## M-112 public producer metadata discovery (2026-09-30)
+
+- [x] Join every candidate raw payload path to its exact pinned dataset
+  manifest using metadata only. All 1,736 paths map when the nested MBS
+  acquisition manifest and durable hosted receipt are included; 1,735 appear
+  in root manifests, and the current MBS root manifest omits the August 2026 XML. Of 1,634 available tree
+  SHA-256 comparisons, all match manifest checksums; 102 candidate paths have
+  no comparable tree digest. The August XML's exact authorization and previous
+  anonymous hosted verification are confirmed, but duplicate accepted,
+  unreviewed B1 records remain unreconciled and no v4 admission is made. PBS
+  source-byte rights and the shared reimbursement-atlas rights remain open.
+  Audit: `quality/qualifications/australian-m112-manifest-join-audit-20260930.json`;
+  updated crosswalk:
+  `quality/qualifications/australian-m112-source-rights-lineage-crosswalk-20260930.json`.
 
 - [x] Apply the maintainer's direction to keep Australian M-112 limited to
   Australian MBS/PBS producer evidence; track New Zealand health appropriations
