@@ -386,11 +386,17 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 
 ## 2026-09-29 NICE private Bronze receipt increment
 
-- [~] Reconcile the approved Prompt 29 private historical acquisition receipt
+- [x] Reconcile the approved Prompt 29 private historical acquisition receipt
   in the current-scope Bronze denominator. The value-free recognizer binds the
   source-specific internal-only acquisition authorization to all 15 admitted
   payloads, four expected releases, and clean-room digest restoration; it keeps
   source-record projection, public release, and external publication false.
+  The current landing queue records `landed_and_evidenced`, and the exact-main
+  Bronze report includes the receipt in its landing evidence while retaining
+  the separate 116-source completeness blocker. This closes historical private
+  receipt reconciliation only; no source-record projection, current utilisation
+  coverage, public release, third-party separability, or independent archive
+  durability is claimed.
 - [x] Verify the 118-source denominator in the exact-main maturity report
   bound to `f6e7b9e27a642347ee63c5ef3ce391ed16bf212a`. The report remains blocked.
   Current-scope Bronze and M5 remain blocked; Australian federation and separate
