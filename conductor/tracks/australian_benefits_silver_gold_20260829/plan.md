@@ -1357,17 +1357,32 @@
 
 - [x] Capture a paginated, public-metadata-only discovery of candidate
   Hugging Face datasets whose names match the GMA, Australian MBS/PBS, or
-  reimbursement-atlas filters. The receipt pins 14 candidate dataset revisions
-  and complete tree inventories for 2,834 file paths. It does not read payload
-  bytes or source values and is not an exhaustive or approved producer
-  denominator. Receipt: `quality/qualifications/federation-v4-public-producer-discovery-20260930.json`.
+  reimbursement-atlas filters, then review owner-visible metadata for adjacent
+  producers. The receipt now pins 15 candidate dataset revisions and complete
+  tree inventories for 2,930 file paths, including New Zealand health
+  appropriations. A stable authenticated double scan records 81 visible owner
+  datasets (76 public and 5 private with identities pseudonymized) and 10
+  collections. No payload bytes or source values were read. This is discovery,
+  not an approved producer denominator. Receipt:
+  `quality/qualifications/federation-v4-public-producer-discovery-20260930.json`;
+  complete owner snapshot: `quality/qualifications/hf-estate-20260930.json`.
+- [x] Compare the current authenticated-visible owner estate and live
+  Health Economics collection with the pinned public dataset-estate registry.
+  The registry has 52 entries, matching 50 public and 2 private current
+  datasets; 26 public and 3 private visible datasets are missing. The collection
+  also includes the New Zealand funding dataset, so its placement in the
+  Australian M-112 denominator requires explicit scope classification. No
+  private identities were copied into the comparison, no rights were inferred,
+  and no registry mutation was made.
+- [ ] Approve the exact producer/object denominator and reconcile all owner
+  datasets and collection memberships in the public dataset-estate registry.
+  Public registry mutation requires explicit maintainer approval. Then
+  independently bind each admitted object's source rights, v4 contract,
+  lineage, and anonymous public readback. M-112 remains blocked; public
+  visibility and metadata inventory are not acceptance evidence.
 - [x] Reconcile the previously stale CMS Part D rights review, disposition,
   publication queue, and producer-discovery governance join to the explicit
   2026-08-27 exact-inventory decision and anonymous receipt at pinned revision
   `abcff8ebd1f624c4bbb0a87d903b184388c98254`. This is limited to 30 formulary
   releases and 3 spending resources; the later public dataset head is not claimed
   to have a matching raw digest receipt.
-- [ ] Approve the exact producer/object denominator and independently bind each
-  admitted object's source rights, v4 contract, lineage, and anonymous public
-  readback. M-112 remains blocked; public visibility and this candidate inventory
-  are not acceptance evidence.

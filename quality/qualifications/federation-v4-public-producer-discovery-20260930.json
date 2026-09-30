@@ -17209,6 +17209,606 @@
       "public": true,
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "tree_entry_count": 40
+    },
+    {
+      "dataset": "edithatogo/nz-health-appropriations",
+      "revision": "9b85bac06597d4435fd078f6bed0f30bb008542b",
+      "complete_tree_readback": true,
+      "file_count": 96,
+      "listed_bytes": 39415798,
+      "file_inventory_sha256": "49b2fb3336f340b738ea9efdccb2302294f0cbff2c38b6bf88cebd27f301e8d4",
+      "files": [
+        {
+          "byte_count": 7871,
+          "hub_git_blob_oid": "c4eccaf3ca0c947322066115659960b5458399de",
+          "lfs_sha256": null,
+          "path": ".gitattributes"
+        },
+        {
+          "byte_count": 17681,
+          "hub_git_blob_oid": "40e4d13ba7013e46b477d0f192c00bd0f84334d1",
+          "lfs_sha256": null,
+          "path": "MANIFEST.json"
+        },
+        {
+          "byte_count": 1926,
+          "hub_git_blob_oid": "a38c82531999a6ea904e315615e33e3d48231d51",
+          "lfs_sha256": null,
+          "path": "README.md"
+        },
+        {
+          "byte_count": 49152,
+          "hub_git_blob_oid": "5e5d2559a7439a7162e3a6d42d1f195bc7a97948",
+          "lfs_sha256": null,
+          "path": "compatibility/health_funding_nz.sqlite"
+        },
+        {
+          "byte_count": 38788,
+          "hub_git_blob_oid": "af32b99a87ed8c0dbeec94a5c4e36fa953d52fda",
+          "lfs_sha256": null,
+          "path": "compatibility/plots/health_spending_vs_gdp.png"
+        },
+        {
+          "byte_count": 35749,
+          "hub_git_blob_oid": "dbd375c04484bd30fb6fb6dc3b07ec0782db2321",
+          "lfs_sha256": null,
+          "path": "compatibility/plots/historical_health_spending_nominal.png"
+        },
+        {
+          "byte_count": 21689,
+          "hub_git_blob_oid": "b6a4ffcd0eee2211e52081f9eeba1308cd146e44",
+          "lfs_sha256": null,
+          "path": "compatibility/plots/historical_health_spending_yoy_growth.png"
+        },
+        {
+          "byte_count": 31218,
+          "hub_git_blob_oid": "5a9f4d299e4d4581da8d99de06b72b360a332be1",
+          "lfs_sha256": null,
+          "path": "compatibility/plots/recent_appropriations_functional_breakdown_2025_Estimated_Actual.png"
+        },
+        {
+          "byte_count": 42287,
+          "hub_git_blob_oid": "d92c8bced64d58bdce39d86994c5ed1b68bcdd3d",
+          "lfs_sha256": null,
+          "path": "compatibility/plots/recent_trends_health_classification.png"
+        },
+        {
+          "byte_count": 47069,
+          "hub_git_blob_oid": "fde840c3f76d102bfe40b40f621483f0e2921ad4",
+          "lfs_sha256": null,
+          "path": "compatibility/plots/recent_trends_no_classification.png"
+        },
+        {
+          "byte_count": 2148,
+          "hub_git_blob_oid": "b98d03fa4fd310f2085f364c4498144d52140f19",
+          "lfs_sha256": null,
+          "path": "data/gold/health_spending_gdp_share.parquet"
+        },
+        {
+          "byte_count": 1108,
+          "hub_git_blob_oid": "b44d54d29a4457bafc3e0c586f7c1121fb8af050",
+          "lfs_sha256": null,
+          "path": "data/gold/historical_nominal.parquet"
+        },
+        {
+          "byte_count": 1633,
+          "hub_git_blob_oid": "a608a9b5078bbbd51599dccb1c211c889cc44862",
+          "lfs_sha256": null,
+          "path": "data/gold/historical_yoy.parquet"
+        },
+        {
+          "byte_count": 1821,
+          "hub_git_blob_oid": "78d93b56e051a1c1b2b3c5a2c017d04c4d0545ea",
+          "lfs_sha256": null,
+          "path": "data/gold/recent_classification_trends.parquet"
+        },
+        {
+          "byte_count": 1703,
+          "hub_git_blob_oid": "2cb7a1e04640ba3b096614d42e8d59d56bfa9168",
+          "lfs_sha256": null,
+          "path": "data/gold/recent_functional_breakdown.parquet"
+        },
+        {
+          "byte_count": 41195,
+          "hub_git_blob_oid": "5d62d56399f076a2143e94888a5221b8516eadbd",
+          "lfs_sha256": null,
+          "path": "data/silver/donor_facts.parquet"
+        },
+        {
+          "byte_count": 42335,
+          "hub_git_blob_oid": "2e6e331db5a0c52f70ae5ec3fef2aaec2afe3a7f",
+          "lfs_sha256": null,
+          "path": "data/silver/field_lineage.parquet"
+        },
+        {
+          "byte_count": 9377,
+          "hub_git_blob_oid": "0dc39c9f3c539d5c68a48245193f61282f349d1b",
+          "lfs_sha256": null,
+          "path": "metadata/croissant.json"
+        },
+        {
+          "byte_count": 657,
+          "hub_git_blob_oid": "ed3b0ef513897d8d32eabe010e29ba734c7ec705",
+          "lfs_sha256": null,
+          "path": "metadata/dcat.json"
+        },
+        {
+          "byte_count": 4427,
+          "hub_git_blob_oid": "b036c0886f38c97cadf7f774f18fe5832bd6e1f8",
+          "lfs_sha256": null,
+          "path": "metadata/prov.json"
+        },
+        {
+          "byte_count": 31905,
+          "hub_git_blob_oid": "eb1b103b651cfe9b2c7d1cdbca046683bd84e46c",
+          "lfs_sha256": null,
+          "path": "metadata/rights.json"
+        },
+        {
+          "byte_count": 96880,
+          "hub_git_blob_oid": "1b5902040aee01916811a167b00f8e1268a6143d",
+          "lfs_sha256": null,
+          "path": "metadata/source-census.json"
+        },
+        {
+          "byte_count": 2126154,
+          "hub_git_blob_oid": "5018d30a5e15b810cad0d31370902a90d8e6411d",
+          "lfs_sha256": null,
+          "path": "original/befu_2026-002.xlsx"
+        },
+        {
+          "byte_count": 193830,
+          "hub_git_blob_oid": "ba78f26f5d562e763a7615d56d7d0155369e2861",
+          "lfs_sha256": null,
+          "path": "original/befu_2026-003.xlsx"
+        },
+        {
+          "byte_count": 48676,
+          "hub_git_blob_oid": "a4db98a35bec9037e792e316c8e953080b5c6d37",
+          "lfs_sha256": null,
+          "path": "original/befu_2026-004.xlsx"
+        },
+        {
+          "byte_count": 918842,
+          "hub_git_blob_oid": "4fd153463277ea5c13b88fdb3dcfb144a6f578a7",
+          "lfs_sha256": null,
+          "path": "original/budget_2026-000.xlsx"
+        },
+        {
+          "byte_count": 104536,
+          "hub_git_blob_oid": "1ef5bd910a3ba95604b8b29a3a3afa7382cc4bb3",
+          "lfs_sha256": null,
+          "path": "original/budget_2026-001.xlsx"
+        },
+        {
+          "byte_count": 116265,
+          "hub_git_blob_oid": "c650a130e65c8a60bff24a197bb85903c1233d56",
+          "lfs_sha256": null,
+          "path": "original/fiscal_time_series-007.xlsx"
+        },
+        {
+          "byte_count": 1949413,
+          "hub_git_blob_oid": "cc67dba0431d730fc1b0f0afb1e6a84cb05c76d0",
+          "lfs_sha256": null,
+          "path": "original/hyefu_2025-005.xlsx"
+        },
+        {
+          "byte_count": 191581,
+          "hub_git_blob_oid": "311b3a6c64d5d2e97b40b0c1150bf0ec728e894d",
+          "lfs_sha256": null,
+          "path": "original/hyefu_2025-006.xlsx"
+        },
+        {
+          "byte_count": 516,
+          "hub_git_blob_oid": "17fab671a113a71ad8571bb2430c826239cdca2c",
+          "lfs_sha256": null,
+          "path": "original/moh_vote_health-008.csv"
+        },
+        {
+          "byte_count": 622,
+          "hub_git_blob_oid": "d26e2daeb4c397c45ac53b6a460239a92cb7837f",
+          "lfs_sha256": null,
+          "path": "original/moh_vote_health-009.csv"
+        },
+        {
+          "byte_count": 548867,
+          "hub_git_blob_oid": "6372818bdd1f1d3152b771f12f84166fc27d3936",
+          "lfs_sha256": null,
+          "path": "original/pharmac_cpb-010"
+        },
+        {
+          "byte_count": 2917074,
+          "hub_git_blob_oid": "89ef34e3cc483740d0c6237be770fef0058f77fe",
+          "lfs_sha256": null,
+          "path": "original/stats_nz_cpi-053a0705526fac8d.csv"
+        },
+        {
+          "byte_count": 49887,
+          "hub_git_blob_oid": "84486463694f288cf5d9b66a4bd90f9c65ba5548",
+          "lfs_sha256": null,
+          "path": "original/stats_nz_gdp-9fc80ed4b7f234b2.xlsx"
+        },
+        {
+          "byte_count": 269401,
+          "hub_git_blob_oid": "355f4669d19401420a54a25c34330864806b68f6",
+          "lfs_sha256": null,
+          "path": "original/stats_nz_population-806dead2a5b8ab69.xlsx"
+        },
+        {
+          "byte_count": 124556,
+          "hub_git_blob_oid": "7afb9c95e6176da75d388e9f3789ebd78dd08cde",
+          "lfs_sha256": null,
+          "path": "original/stats_nz_qes-faab0efe46470af8.xlsx"
+        },
+        {
+          "byte_count": 476767,
+          "hub_git_blob_oid": "7c1956e690846ef62cd582cf6ce1090528a90c30",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-035ffd1ba849d25b.pdf"
+        },
+        {
+          "byte_count": 130451,
+          "hub_git_blob_oid": "b503d43da390a7bc9c51571d1c1a6439fc0f58d7",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-07fb6437f104d1f8.pdf"
+        },
+        {
+          "byte_count": 995851,
+          "hub_git_blob_oid": "d71105370ff404f67f3d4a012d389c58287c5b68",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-0951064262bf028c.pdf"
+        },
+        {
+          "byte_count": 1017191,
+          "hub_git_blob_oid": "0bfd8cae51a6df99d25f6a0e21747cbd567a2acb",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-108f3025b5ec5f8c.pdf"
+        },
+        {
+          "byte_count": 361073,
+          "hub_git_blob_oid": "e47a5dfc12ffa720c8a80cd0322baa3ac7b23cd3",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-10b7f8eb82fd802f.pdf"
+        },
+        {
+          "byte_count": 584476,
+          "hub_git_blob_oid": "9d77f841d59cfe05ada17f6c6a004baa186b5ba0",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-1822d21d12bf27b6.pdf"
+        },
+        {
+          "byte_count": 201019,
+          "hub_git_blob_oid": "b20dc8675acf4206fa463f13f74f5cfb2b6a8acc",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-204e7446a15e64f1.pdf"
+        },
+        {
+          "byte_count": 319930,
+          "hub_git_blob_oid": "a1db08f3c63a7df6d7e1f349b367009559f55ee0",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-28bd7aee2320eb4d.pdf"
+        },
+        {
+          "byte_count": 57379,
+          "hub_git_blob_oid": "5927841ee01e965df5cc9307020b74f13619e72b",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-2fc2f6b518bccd82.pdf"
+        },
+        {
+          "byte_count": 470538,
+          "hub_git_blob_oid": "893590e1d6b24ac11d7eb5ac88ac768735787e95",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-3a6b190885f22e4b.pdf"
+        },
+        {
+          "byte_count": 220155,
+          "hub_git_blob_oid": "e2112a83d041cfa6c7bd44f7f62338cb68d8a634",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-442b6f066441fd35.pdf"
+        },
+        {
+          "byte_count": 980866,
+          "hub_git_blob_oid": "bc35b21bb8b0323f84c4f059712aaca859992f27",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-4cad52281f0c61e6.pdf"
+        },
+        {
+          "byte_count": 1357199,
+          "hub_git_blob_oid": "4a754ab640885b10ab7376304a9e1134167b88a5",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-54029b9e6efd28b4.pdf"
+        },
+        {
+          "byte_count": 559898,
+          "hub_git_blob_oid": "c9652c5bfd993a6ae6ad7d944888b2ba2328a904",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-58d5cc9631f5a755.pdf"
+        },
+        {
+          "byte_count": 1233951,
+          "hub_git_blob_oid": "54e93803f28d1ef51316271d23a6ba269286394d",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-620a8273d0423176.pdf"
+        },
+        {
+          "byte_count": 472226,
+          "hub_git_blob_oid": "d66f5e50eb99eb807ce7b99fb927686f42a8dae4",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-6245cdd071463083.pdf"
+        },
+        {
+          "byte_count": 523148,
+          "hub_git_blob_oid": "2d8b1ec0faa1838e250abefb68117693dfe432f6",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-63d9e750b8f3eab0.pdf"
+        },
+        {
+          "byte_count": 522136,
+          "hub_git_blob_oid": "4fdf256ff1929213488af9f0f8a46033128f83b3",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-6907dd245dbd051f.pdf"
+        },
+        {
+          "byte_count": 1024038,
+          "hub_git_blob_oid": "351ed2e5e067b4df942f84da08caff07b4c45a94",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-6941bba9f5f094ca.pdf"
+        },
+        {
+          "byte_count": 684571,
+          "hub_git_blob_oid": "e0e71aedd20cfd25ccb5ce1a7167255e17982896",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-69c46d1cb70da95c.pdf"
+        },
+        {
+          "byte_count": 1049358,
+          "hub_git_blob_oid": "0cff3cfa64c448dfa9531e10f9c117886c8e368f",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-6c8a449e4c16f435.pdf"
+        },
+        {
+          "byte_count": 743436,
+          "hub_git_blob_oid": "2c1d01dcbe614e276a496f71b647b7fa909f5459",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-6d1e5456f194340a.pdf"
+        },
+        {
+          "byte_count": 90498,
+          "hub_git_blob_oid": "f8f17c58e3b219e9a75c771ef562e41a0751a919",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-76a91f222ef3e3cc.pdf"
+        },
+        {
+          "byte_count": 192519,
+          "hub_git_blob_oid": "d700013192d4147f6425b21dc39878bcf5576be3",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-78e70bb1b77acf05.pdf"
+        },
+        {
+          "byte_count": 322345,
+          "hub_git_blob_oid": "9c36555845a6a441fdd6d1ea52b47f8b73d21dd9",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-7fb489b770848e08.pdf"
+        },
+        {
+          "byte_count": 162634,
+          "hub_git_blob_oid": "46c4477aae7a098ca6b76bb9c3d34eedf85dd857",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-82f7370954cb9c4a.pdf"
+        },
+        {
+          "byte_count": 451691,
+          "hub_git_blob_oid": "1a8da8e4bc8ba0ec91c4fa758ab1bb5471565c97",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-8ea10c8cddf61f5b.pdf"
+        },
+        {
+          "byte_count": 279018,
+          "hub_git_blob_oid": "ad8f015565a9645894d22d5f52f2f32be1540ad3",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-8f1922ba340774db.pdf"
+        },
+        {
+          "byte_count": 867091,
+          "hub_git_blob_oid": "ca09adf7e82c8b44564a77f41a7dece8746de2ec",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-93afa43f588f1cae.pdf"
+        },
+        {
+          "byte_count": 133072,
+          "hub_git_blob_oid": "d7025b25490f38d96799499bb1be472ce4a98148",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-9afbc1fe9dfafb1f.pdf"
+        },
+        {
+          "byte_count": 159357,
+          "hub_git_blob_oid": "2b1457a493d961420fcbfb7dcfddd7bb29368779",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-9c9b8d9ae4a1b6fd.pdf"
+        },
+        {
+          "byte_count": 62550,
+          "hub_git_blob_oid": "d3f16a449f557d8eb357b5055975336629286e29",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-a2c78259b5489074.pdf"
+        },
+        {
+          "byte_count": 187266,
+          "hub_git_blob_oid": "9603384ed8769d19bd3047a33dfbd1a2d2bc4fdf",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-a5f5b96621e51a7c.pdf"
+        },
+        {
+          "byte_count": 588576,
+          "hub_git_blob_oid": "26756aa5261acc7c17abad04cf3a701abc96219f",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-abd3356360cac950.pdf"
+        },
+        {
+          "byte_count": 693999,
+          "hub_git_blob_oid": "550c683a8276dea5d01af7a2bf838025d70954b3",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-b3fb306465d0ad51.pdf"
+        },
+        {
+          "byte_count": 110598,
+          "hub_git_blob_oid": "524595620546fc8acb465bdfe46376be864623ff",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-b402b75c6004b066.pdf"
+        },
+        {
+          "byte_count": 212650,
+          "hub_git_blob_oid": "47b3541613e375c33f95124a695c9179bde8d8e1",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-b84a095804287bc6.pdf"
+        },
+        {
+          "byte_count": 541133,
+          "hub_git_blob_oid": "14ac3f8a2e2d7b5489ca82387fe193f2d1535a3d",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-bac4aa5902dbe98c.pdf"
+        },
+        {
+          "byte_count": 636829,
+          "hub_git_blob_oid": "e9081cce1bdee268cce79b36ce91787811b4b048",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-be263bbceff0e841.pdf"
+        },
+        {
+          "byte_count": 334380,
+          "hub_git_blob_oid": "92e201f846effe02ee3ca37bbcec4ee4395d019f",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-c1badbfe19cec0fa.pdf"
+        },
+        {
+          "byte_count": 69819,
+          "hub_git_blob_oid": "a602f33b25faff73bc92813d76d34732267401f4",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-c819ad222f451478.pdf"
+        },
+        {
+          "byte_count": 1013375,
+          "hub_git_blob_oid": "db1ab586e98f5fbbe0b0a12609618f88254e385b",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-cb06627735366d4e.pdf"
+        },
+        {
+          "byte_count": 600258,
+          "hub_git_blob_oid": "02aec8bd2af49a4417dc83d86c12c1da77cfeb22",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-d08d82adecad984f.pdf"
+        },
+        {
+          "byte_count": 1260848,
+          "hub_git_blob_oid": "b2e1c5125dbc9b44811bb9e175a8afa1a99ccc9e",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-d8d62566dfda18c5.pdf"
+        },
+        {
+          "byte_count": 573823,
+          "hub_git_blob_oid": "c39080ec9db813627cbe36126c0ce86856105d3c",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-d93865418ad7fa0e.pdf"
+        },
+        {
+          "byte_count": 47163,
+          "hub_git_blob_oid": "2032fb9a3e671db3cca7151bd88e5c0fcdf85b75",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-d9a9e1e77c8e340c.pdf"
+        },
+        {
+          "byte_count": 775160,
+          "hub_git_blob_oid": "2dbee51984f6372ac7131f23afd498108aee2b38",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-e321c9ce60f710c3.pdf"
+        },
+        {
+          "byte_count": 613670,
+          "hub_git_blob_oid": "fdec26e0590952001d85ca6b21f77c68148971bb",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-e6e53e9c0c008d22.pdf"
+        },
+        {
+          "byte_count": 752343,
+          "hub_git_blob_oid": "985e59d328d3eeecd4a87370110164e8fafd2570",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-e97c9cbaf558baba.pdf"
+        },
+        {
+          "byte_count": 367397,
+          "hub_git_blob_oid": "d155c19938b1136b3b02af6000cd427cb560b71d",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-ea06fc9587ef04f0.pdf"
+        },
+        {
+          "byte_count": 682887,
+          "hub_git_blob_oid": "6206e404a662f301b298e8875c55ec40df841ea2",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-ef547ad2d9a047c4.pdf"
+        },
+        {
+          "byte_count": 1169732,
+          "hub_git_blob_oid": "774dbc96e26598110c25dda2bcb2a5b0cf4b8a44",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-f0c9dd2e768da2d6.pdf"
+        },
+        {
+          "byte_count": 235897,
+          "hub_git_blob_oid": "f8c73ec917fdd066df34edbe5f0add336dbc2485",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-f1a09322538d8791.pdf"
+        },
+        {
+          "byte_count": 356801,
+          "hub_git_blob_oid": "ffc37cbd1810ef771cc63e67d718b7b9cc94a6db",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-f2dee67a359229eb.pdf"
+        },
+        {
+          "byte_count": 175759,
+          "hub_git_blob_oid": "0c933bc755fe658c96ee3e1fe248e093f96b17a5",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-f6d63e6d47916167.pdf"
+        },
+        {
+          "byte_count": 317126,
+          "hub_git_blob_oid": "0ae4d3e4d1cd98264ba9fa18095ae52a8d5689c1",
+          "lfs_sha256": null,
+          "path": "original/treasury-vote-health-pdf-fd37e5ad2657936d.pdf"
+        },
+        {
+          "byte_count": 224975,
+          "hub_git_blob_oid": "b6e6034778ff6606fb3e7f0ef698ed816a55bf25",
+          "lfs_sha256": null,
+          "path": "original/treasury_vote_health_document-566aface4fa2633a.pdf"
+        },
+        {
+          "byte_count": 68490,
+          "hub_git_blob_oid": "7ebf035ff8b71bb5ad1fd2a4237b855a930fd4cd",
+          "lfs_sha256": null,
+          "path": "original/treasury_vote_health_document-90791173089c47e3.pdf"
+        },
+        {
+          "byte_count": 9573,
+          "hub_git_blob_oid": "7ca4ba634a2fd6f9abcf3c57d7a6f98f685f43a7",
+          "lfs_sha256": null,
+          "path": "ro-crate-metadata.json"
+        }
+      ],
+      "contains_named_federation_v4_contract": false,
+      "metadata_page_count": 2,
+      "metadata_pages": [
+        {
+          "response_sha256": "2292ecee71172b90a3bffecf785f273b1d6c805c7385eba0b3f8f1a4b2e650fd",
+          "entry_count": 100
+        },
+        {
+          "response_sha256": "c013e4e24aacbf4c0582a3c9fd96134f420ab37d04fdad2e598d6d4fe664577d",
+          "entry_count": 3
+        }
+      ],
+      "source_payload_bytes_downloaded": false,
+      "source_values_read": false
     }
   ],
   "manifest_metadata_observations": [
@@ -17553,9 +18153,9 @@
       ]
     }
   ],
-  "observed_at": "2026-09-30T03:50:44+00:00",
+  "observed_at": "2026-09-30T05:55:35.928892Z",
   "query": {
-    "candidate_dataset_count": 14,
+    "candidate_dataset_count": 15,
     "endpoint": "https://huggingface.co/api/datasets?author=edithatogo&limit=100&full=false",
     "metadata_only": true,
     "name_filters": [
@@ -17567,7 +18167,14 @@
     "repository_owner": "edithatogo",
     "returned_owner_dataset_count": 76,
     "tree_page_limit": 100,
-    "tree_pagination_followed_to_completion": true
+    "tree_pagination_followed_to_completion": true,
+    "name_filtered_candidate_dataset_count": 14,
+    "owner_listing_dataset_count": 76,
+    "owner_listing_observed_at_http_date": "Wed, 30 Sep 2026 05:53:14 GMT",
+    "owner_listing_raw_response_sha256": "a11a2b0d173d2678ce68683e076a8fb5006a22dcdcdd06ce0c65c547abc35ca9",
+    "owner_listing_metadata_only": true,
+    "owner_listing_private_assets_visible": false,
+    "owner_listing_page_complete": true
   },
   "schema_id": "global-medicines-atlas.federation-v4-public-producer-discovery",
   "schema_version": 1,
@@ -18006,5 +18613,1850 @@
     "source_payload_bytes_downloaded": false,
     "source_values_read": false
   },
-  "status": "candidate_inventory_only"
+  "status": "candidate_inventory_only",
+  "owner_listing": {
+    "endpoint": "https://huggingface.co/api/datasets?author=edithatogo&limit=100&full=false",
+    "observed_at_http_date": "Wed, 30 Sep 2026 05:53:14 GMT",
+    "raw_response_sha256": "a11a2b0d173d2678ce68683e076a8fb5006a22dcdcdd06ce0c65c547abc35ca9",
+    "returned_public_dataset_count": 76,
+    "limit": 100,
+    "fewer_than_limit_returned": true,
+    "private_assets_visible": false,
+    "metadata_only": true,
+    "datasets": [
+      {
+        "id": "edithatogo/accessinfo-archive-hk",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:33.000Z",
+        "pretty_name": "accessinfo.hk public-information register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:en",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-hk"
+        ],
+        "revision": "1c1ab9c5fc78fd891cfdb3079b4631dbf00bdc24"
+      },
+      {
+        "id": "edithatogo/archive-govt-nz-global",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-27T09:55:32.000Z",
+        "pretty_name": "New Zealand Government Open Data Archive",
+        "license_tag": "cc-by-4.0",
+        "tags": [
+          "language:en",
+          "license:cc-by-4.0",
+          "size_categories:10K<n<100K",
+          "modality:tabular",
+          "region:us",
+          "open-data",
+          "new-zealand",
+          "government-archive",
+          "preservation",
+          "ckan",
+          "tabular"
+        ],
+        "revision": "de6958012dcd4ae18d6255ac1675b329d8eae6e8"
+      },
+      {
+        "id": "edithatogo/archive-govt-nz-treasury",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-08-11T06:55:09.000Z",
+        "pretty_name": null,
+        "license_tag": null,
+        "tags": [
+          "region:us",
+          "new-zealand",
+          "government-data",
+          "treasury",
+          "public-finance",
+          "ckan"
+        ],
+        "revision": "1f148c10687b2c2100659f40d46c6b84de156672"
+      },
+      {
+        "id": "edithatogo/archive-govt-nz-treasury-csv",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-31T08:53:09.000Z",
+        "pretty_name": null,
+        "license_tag": "cc-by-4.0",
+        "tags": [
+          "language:en",
+          "license:cc-by-4.0",
+          "size_categories:n<1K",
+          "format:csv",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "region:us",
+          "new-zealand",
+          "government",
+          "treasury",
+          "public-finance",
+          "ckan",
+          "format:csv"
+        ],
+        "revision": "ee45a8a4377935099b0146671b80e9771022d8c9"
+      },
+      {
+        "id": "edithatogo/archive-govt-nz-treasury-data",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-31T08:45:15.000Z",
+        "pretty_name": null,
+        "license_tag": "other",
+        "tags": [
+          "language:en",
+          "license:other",
+          "size_categories:n<1K",
+          "format:parquet",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "region:us",
+          "new-zealand",
+          "government",
+          "treasury",
+          "public-finance",
+          "ckan",
+          "format:parquet"
+        ],
+        "revision": "dfb18d76aaf66fc770d9555464b87b2af33a036c"
+      },
+      {
+        "id": "edithatogo/arthro5a-archive-gr",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:31.000Z",
+        "pretty_name": "arthro5A public-information register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:el",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-gr"
+        ],
+        "revision": "32be246c72af6f0c1307d888471a74ccceefedd2"
+      },
+      {
+        "id": "edithatogo/askgov-archive-ge",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:02.000Z",
+        "pretty_name": "Ask Gov Georgia public-information register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:ka",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-ge"
+        ],
+        "revision": "843012cdd79460042850472663829c32eec0b465"
+      },
+      {
+        "id": "edithatogo/asktheeu-archive-eu",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:26.000Z",
+        "pretty_name": "AskTheEU public-information register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:en",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-eu"
+        ],
+        "revision": "6b60fd8faa56e1b88e0fa9017944fef93fe46e35"
+      },
+      {
+        "id": "edithatogo/australian-mbs-source-archive",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-29T06:39:53.000Z",
+        "pretty_name": "Australian MBS source archive",
+        "license_tag": "other",
+        "tags": [
+          "license:other",
+          "region:us"
+        ],
+        "revision": "243f9ff5498816af6e4d9ae4db60528728f01834"
+      },
+      {
+        "id": "edithatogo/australian-mbs-utilisation-archive",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-27T16:43:29.000Z",
+        "pretty_name": null,
+        "license_tag": null,
+        "tags": [
+          "region:us"
+        ],
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7"
+      },
+      {
+        "id": "edithatogo/australian-pbs-source-archive",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-29T04:16:08.000Z",
+        "pretty_name": "Australian PBS source archive",
+        "license_tag": "other",
+        "tags": [
+          "license:other",
+          "region:us"
+        ],
+        "revision": "48fd7345fb09277bb5b85644dba72804633a2abb"
+      },
+      {
+        "id": "edithatogo/australian-pbs-utilisation-archive",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-15T19:02:44.000Z",
+        "pretty_name": null,
+        "license_tag": null,
+        "tags": [
+          "region:us"
+        ],
+        "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a"
+      },
+      {
+        "id": "edithatogo/corpus-cases-medilegal-nz",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-08-01T17:32:24.000Z",
+        "pretty_name": "New Zealand Medico-Legal Cases Corpus",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "language:en",
+          "license:other",
+          "region:us",
+          "new-zealand",
+          "legal-corpus",
+          "medico-legal"
+        ],
+        "revision": "69b279fe3a08104ac8b85a89f394bc04a48d8d25"
+      },
+      {
+        "id": "edithatogo/corpus-legislation-nz",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-12T03:26:12.000Z",
+        "pretty_name": null,
+        "license_tag": null,
+        "tags": [
+          "size_categories:n<1K",
+          "format:json",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "region:us"
+        ],
+        "revision": "a92c138fdf6343df7278c94735b868beab03776c"
+      },
+      {
+        "id": "edithatogo/corpus-legislation-nz-historical",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T01:23:23.000Z",
+        "pretty_name": "New Zealand Legislation Corpus - Historical Operational Repository",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "language:en",
+          "license:other",
+          "size_categories:n<1K",
+          "format:json",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "region:us",
+          "new-zealand",
+          "legislation",
+          "historical",
+          "superseded"
+        ],
+        "revision": "ea9e66fb89c3230fc478f7c6f05f1a82f4fa1174"
+      },
+      {
+        "id": "edithatogo/corpus-nz-hathi",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-08-25T06:33:33.000Z",
+        "pretty_name": "Historical New Zealand Parliamentary Debates from HathiTrust",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "language:en",
+          "license:other",
+          "size_categories:n<1K",
+          "format:json",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "region:us",
+          "new-zealand",
+          "hathitrust",
+          "hansard",
+          "historical-texts"
+        ],
+        "revision": "3a01b0fce4633dc92db82ab61dbb529d2a2a3664"
+      },
+      {
+        "id": "edithatogo/corpus-social-media-government-nz",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-08-15T17:42:43.000Z",
+        "pretty_name": "New Zealand Government Social Media Corpus/Archive",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-classification",
+          "task_categories:text-generation",
+          "language:en",
+          "license:other",
+          "region:us",
+          "corpus",
+          "social-media",
+          "government",
+          "new-zealand",
+          "region:nz",
+          "public-records",
+          "rss",
+          "bluesky",
+          "threads",
+          "youtube"
+        ],
+        "revision": "55714d41d1b1191584a2af9cf8dbcc5c8dabe60a"
+      },
+      {
+        "id": "edithatogo/courts-nz-public-notices-archive",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T01:23:50.000Z",
+        "pretty_name": "Courts of New Zealand Public Notices Archive",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "language:en",
+          "license:other",
+          "size_categories:1K<n<10K",
+          "format:parquet",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "region:us",
+          "new-zealand",
+          "courts",
+          "public-notices",
+          "archive"
+        ],
+        "revision": "9184bd8e7fec7d4f6f0e3e179d11502e293adba1"
+      },
+      {
+        "id": "edithatogo/dataset-estate-registry",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-05T13:18:55.000Z",
+        "pretty_name": "Dataset Estate Registry",
+        "license_tag": "cc0-1.0",
+        "tags": [
+          "license:cc0-1.0",
+          "region:us",
+          "metadata",
+          "dataset-catalog",
+          "provenance",
+          "governance"
+        ],
+        "revision": "8f4c5b03adebdc8cbe19d9f20b18745d4da1b83c"
+      },
+      {
+        "id": "edithatogo/digitalnz",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-29T08:32:50.000Z",
+        "pretty_name": "DigitalNZ and RNZ Source Archive",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "language:en",
+          "license:other",
+          "size_categories:n<1K",
+          "modality:tabular",
+          "modality:text",
+          "region:us",
+          "new-zealand",
+          "digitalnz",
+          "rnz",
+          "source-archive",
+          "mixed-rights"
+        ],
+        "revision": "5407bdc28cfc5df75d25f4f1f7d9466dd4ace6a3"
+      },
+      {
+        "id": "edithatogo/dostup-archive-ua",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:10.000Z",
+        "pretty_name": "Доступ до правди public-records register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:uk",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-ua"
+        ],
+        "revision": "36beac089463fdac951adeeaec38070e707d8493"
+      },
+      {
+        "id": "edithatogo/dumedite-archive-xk",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:54.000Z",
+        "pretty_name": "dumeditë public-information register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:sq",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-xk"
+        ],
+        "revision": "466745dea2c843692fd10de920cde99b4c231768"
+      },
+      {
+        "id": "edithatogo/foi-ca-federal-atip",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-05T08:50:48.000Z",
+        "pretty_name": null,
+        "license_tag": null,
+        "tags": [
+          "size_categories:1K<n<10K",
+          "format:json",
+          "modality:tabular",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "region:us"
+        ],
+        "revision": "09346a0bfb2ec7035a5f22e7bb07a3a59ade1526"
+      },
+      {
+        "id": "edithatogo/foi-process-event-logs",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T01:24:08.000Z",
+        "pretty_name": "Synthetic FOI Process Event Logs",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "language:en",
+          "license:other",
+          "size_categories:n<1K",
+          "format:json",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "region:us",
+          "freedom-of-information",
+          "process-mining",
+          "synthetic",
+          "event-log"
+        ],
+        "revision": "a89f4ba2a158b4b3fc771976662de3b5737fd122"
+      },
+      {
+        "id": "edithatogo/foi-process-event-logs-bounded",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-08-01T08:12:54.000Z",
+        "pretty_name": null,
+        "license_tag": null,
+        "tags": [
+          "region:us"
+        ],
+        "revision": "53f37b6d71864bc4d356a052ddf951dfc12e84e0"
+      },
+      {
+        "id": "edithatogo/foi-source-catalogue",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-14T08:54:41.000Z",
+        "pretty_name": null,
+        "license_tag": null,
+        "tags": [
+          "language:en",
+          "size_categories:n<1K",
+          "format:json",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "region:us"
+        ],
+        "revision": "6a5aaef6e0d7645cb2afa9223026884fe3437429"
+      },
+      {
+        "id": "edithatogo/fyi-archive-nz",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-29T19:24:25.000Z",
+        "pretty_name": "fyi-archive-nz",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:en",
+          "license:other",
+          "size_categories:10K<n<100K",
+          "format:parquet",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "region:us",
+          "new-zealand",
+          "oia",
+          "official-information-act",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "legal",
+          "government-transparency"
+        ],
+        "revision": "de0e15f8331bc2ffcab1eab48f958e3988669194"
+      },
+      {
+        "id": "edithatogo/gfjd-extraction-benchmark",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-11T15:49:16.000Z",
+        "pretty_name": "GFJD Extraction Benchmark",
+        "license_tag": null,
+        "tags": [
+          "size_categories:n<1K",
+          "format:json",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "region:us",
+          "gfjd",
+          "benchmark",
+          "private",
+          "reserved"
+        ],
+        "revision": "affe596bbd05787e56cfff6b979fd69da5147ac4"
+      },
+      {
+        "id": "edithatogo/gfjd-observations",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-11T15:49:12.000Z",
+        "pretty_name": "GFJD Observations",
+        "license_tag": null,
+        "tags": [
+          "size_categories:n<1K",
+          "format:json",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "region:us",
+          "gfjd",
+          "observations",
+          "private",
+          "reserved"
+        ],
+        "revision": "5569cedc53dbf317b4d6567943f309b5334a1c15"
+      },
+      {
+        "id": "edithatogo/gfjd-outcomes-evidence",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-11T15:49:14.000Z",
+        "pretty_name": "GFJD Outcomes Evidence",
+        "license_tag": null,
+        "tags": [
+          "size_categories:n<1K",
+          "format:json",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "region:us",
+          "gfjd",
+          "outcomes",
+          "evidence",
+          "private",
+          "reserved"
+        ],
+        "revision": "686c0017c07f322a54e26c0efdfa29cf35b86b88"
+      },
+      {
+        "id": "edithatogo/gfjd-source-catalogue",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-11T15:49:10.000Z",
+        "pretty_name": "GFJD Source Catalogue",
+        "license_tag": null,
+        "tags": [
+          "size_categories:n<1K",
+          "format:json",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "region:us",
+          "gfjd",
+          "source-catalog",
+          "private",
+          "reserved"
+        ],
+        "revision": "fb59f66107d010e3f50d2461a53385064ca93b0d"
+      },
+      {
+        "id": "edithatogo/global-medicines-atlas-catalogue",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-08-20T06:24:12.000Z",
+        "pretty_name": "Global Medicines Atlas source catalogue",
+        "license_tag": "apache-2.0",
+        "tags": [
+          "language:en",
+          "language:mul",
+          "license:apache-2.0",
+          "region:us",
+          "medicines",
+          "regulatory-data",
+          "pharmacovigilance",
+          "data-catalogue",
+          "provenance",
+          "parquet"
+        ],
+        "revision": "a30a649a25c93740109d306f7b7edfd6cd268ac3"
+      },
+      {
+        "id": "edithatogo/global-medicines-atlas-cms-partd-20260827",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-27T07:10:14.000Z",
+        "pretty_name": "Global Medicines Atlas - CMS Part D public source corpus",
+        "license_tag": "other",
+        "tags": [
+          "license:other",
+          "region:us"
+        ],
+        "revision": "aa176310b5748d471cec2c36955cac36eacb4ba2"
+      },
+      {
+        "id": "edithatogo/global-medicines-atlas-datahouse-evidence",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-08-20T22:11:00.000Z",
+        "pretty_name": "Global Medicines Atlas free-tier datahouse evidence",
+        "license_tag": "apache-2.0",
+        "tags": [
+          "license:apache-2.0",
+          "region:us",
+          "synthetic",
+          "data-engineering",
+          "reproducibility"
+        ],
+        "revision": "cc8e6c15af8e8159169a1723b54b990e483d1c1f"
+      },
+      {
+        "id": "edithatogo/global-medicines-atlas-fda-open-20260821",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-08-21T06:30:51.000Z",
+        "pretty_name": "Global Medicines Atlas FDA public source snapshots",
+        "license_tag": "other",
+        "tags": [
+          "language:en",
+          "license:other",
+          "region:us",
+          "medicines",
+          "regulatory",
+          "fda"
+        ],
+        "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417"
+      },
+      {
+        "id": "edithatogo/global-medicines-atlas-fda-public",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-08-21T00:40:28.000Z",
+        "pretty_name": "Global Medicines Atlas FDA public source snapshots",
+        "license_tag": "other",
+        "tags": [
+          "language:en",
+          "license:other",
+          "region:us",
+          "medicines",
+          "regulatory",
+          "fda"
+        ],
+        "revision": "da2e5c9faa7ea9ac84cfed328e776e83af135c3d"
+      },
+      {
+        "id": "edithatogo/global-medicines-atlas-gip-20260826",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-08-26T09:33:14.000Z",
+        "pretty_name": "Global Medicines Atlas - GIP open-data corpus (2026-08-26)",
+        "license_tag": "cc0-1.0",
+        "tags": [
+          "language:nl",
+          "license:cc0-1.0",
+          "region:us",
+          "medicines",
+          "utilisation",
+          "netherlands",
+          "bronze"
+        ],
+        "revision": "4e6395ee5217b0fb140dd7942f67b032039e7bbf"
+      },
+      {
+        "id": "edithatogo/global-medicines-atlas-international-open",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-08-21T07:58:28.000Z",
+        "pretty_name": "Global Medicines Atlas permissive international snapshots",
+        "license_tag": "other",
+        "tags": [
+          "license:other",
+          "modality:text",
+          "region:us",
+          "medicines",
+          "regulatory",
+          "open-data"
+        ],
+        "revision": "654f71c84cdb17b4032396bcbc961bef8757fb19"
+      },
+      {
+        "id": "edithatogo/global-medicines-atlas-international-permissive-20260821",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-08-21T08:22:52.000Z",
+        "pretty_name": "Global Medicines Atlas permissive international snapshots",
+        "license_tag": "other",
+        "tags": [
+          "license:other",
+          "modality:text",
+          "region:us",
+          "medicines",
+          "regulatory",
+          "open-data"
+        ],
+        "revision": "87d3b54ac932018c276a1c50033ac287520cf85e"
+      },
+      {
+        "id": "edithatogo/global-medicines-atlas-open-medic-20260821",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-08-21T09:29:30.000Z",
+        "pretty_name": "Global Medicines Atlas - Open Medic 2014-2025",
+        "license_tag": "etalab-2.0",
+        "tags": [
+          "language:fr",
+          "license:etalab-2.0",
+          "region:us",
+          "medicines",
+          "france",
+          "open-medic",
+          "provenance"
+        ],
+        "revision": "d19f7a66e35c58c557615bffa456856b485b7edc"
+      },
+      {
+        "id": "edithatogo/handlingar-archive-se",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:08.000Z",
+        "pretty_name": "handlingar.se public-records register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:sv",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-se"
+        ],
+        "revision": "2cb1bd17e9206e63839301c3d903a5f916107412"
+      },
+      {
+        "id": "edithatogo/hathitrust-nz-htrc-analytics",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T01:24:45.000Z",
+        "pretty_name": "HathiTrust-NZ HTRC Analytics Outputs",
+        "license_tag": "other",
+        "tags": [
+          "language:en",
+          "license:other",
+          "region:us",
+          "new-zealand",
+          "hathitrust",
+          "htrc",
+          "analytics"
+        ],
+        "revision": "5d95da1567c6337e37fa708986d0bdbda953beb1"
+      },
+      {
+        "id": "edithatogo/hathitrust-nz-htrc-extracted-features",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T01:24:54.000Z",
+        "pretty_name": "HathiTrust-NZ HTRC Extracted Features",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "language:en",
+          "license:other",
+          "region:us",
+          "new-zealand",
+          "hathitrust",
+          "htrc",
+          "extracted-features"
+        ],
+        "revision": "2279d894588341681ae9274a97d7bb42f0d29cf8"
+      },
+      {
+        "id": "edithatogo/hathitrust-nz-inventory",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T01:25:03.000Z",
+        "pretty_name": "HathiTrust-NZ Inventory",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "language:en",
+          "license:other",
+          "region:us",
+          "new-zealand",
+          "hathitrust",
+          "inventory",
+          "metadata"
+        ],
+        "revision": "eef64beba54ad3badbbe4266b4b7fea8c11fed23"
+      },
+      {
+        "id": "edithatogo/hathitrust-nz-research-fulltext",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T01:25:12.000Z",
+        "pretty_name": "HathiTrust-NZ Research Full-Text Plans and Eligible Outputs",
+        "license_tag": "other",
+        "tags": [
+          "language:en",
+          "license:other",
+          "region:us",
+          "new-zealand",
+          "hathitrust",
+          "research-dataset",
+          "controlled-access"
+        ],
+        "revision": "bb3bf93fad2b3c421baf76585c83045eb280c7fc"
+      },
+      {
+        "id": "edithatogo/hermes-benchmark-results",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T01:25:20.000Z",
+        "pretty_name": "Hermes Benchmark Results",
+        "license_tag": null,
+        "tags": [
+          "language:en",
+          "region:us",
+          "hermes",
+          "benchmark",
+          "evaluation"
+        ],
+        "revision": "b44f166c29150410aca2c430d6f0fd5236392d33"
+      },
+      {
+        "id": "edithatogo/hermes-training-artifacts",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T01:25:29.000Z",
+        "pretty_name": "Hermes Training Artifacts",
+        "license_tag": null,
+        "tags": [
+          "size_categories:n<1K",
+          "format:text",
+          "modality:text",
+          "library:datasets",
+          "library:mlcroissant",
+          "region:us",
+          "hermes",
+          "training-artifacts",
+          "private",
+          "reserved"
+        ],
+        "revision": "108010ece9e1e6b2084c9e69fa9ba2c92aa9bf39"
+      },
+      {
+        "id": "edithatogo/iastatullaintrebari-archive-ro",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:49.000Z",
+        "pretty_name": "Ia Statul la Întrebări public-information register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:ro",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-ro"
+        ],
+        "revision": "a279e54174d7066b0d4d3e8163b91ad562a536e0"
+      },
+      {
+        "id": "edithatogo/imamopravoznati-archive-hr",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:36.000Z",
+        "pretty_name": "Imamo pravo znati public-information register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:hr",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-hr"
+        ],
+        "revision": "2a98b31a372113bdddac322677328757c2969a93"
+      },
+      {
+        "id": "edithatogo/infolib-archive-lr",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:41.000Z",
+        "pretty_name": "InfoLib public-information register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:en",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-lr"
+        ],
+        "revision": "d1049e612b633d3589c3fdd9cf3cedc1d30a0789"
+      },
+      {
+        "id": "edithatogo/infoprovsechny-archive-cz",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:23.000Z",
+        "pretty_name": "Info Pro Všechny public-information register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:cs",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-cz"
+        ],
+        "revision": "57a165e454e4ca7936c92a01da80f4a8a55a46d9"
+      },
+      {
+        "id": "edithatogo/kimittud-archive-hu",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:39.000Z",
+        "pretty_name": "Ki Mit Tud public-information register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:hu",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-hu"
+        ],
+        "revision": "dae563f24533fb000b873d7357a482a849a01176"
+      },
+      {
+        "id": "edithatogo/madada-archive-fr",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:28.000Z",
+        "pretty_name": "MaDada public-information register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:fr",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-fr"
+        ],
+        "revision": "02ed9b04d1e912a841863699ee67aa47f62c1a52"
+      },
+      {
+        "id": "edithatogo/mrtk-archive-ie",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:05.000Z",
+        "pretty_name": "mrtk-archive (myrighttoknow.org FOI register)",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:en",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-ie"
+        ],
+        "revision": "78b7870856605cfe8fd61ea07370c7e125fd50f4"
+      },
+      {
+        "id": "edithatogo/nhanes-2021-2023-diabetes",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-06T01:15:53.000Z",
+        "pretty_name": null,
+        "license_tag": "other",
+        "tags": [
+          "language:en",
+          "license:other",
+          "region:us",
+          "NHANES",
+          "diabetes",
+          "public-use-data",
+          "rareburden"
+        ],
+        "revision": "1b5a370cb2e3bca31b9559238817c4eb21b00070"
+      },
+      {
+        "id": "edithatogo/nlp-policy-nz-cloud-ocr-pilots",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T01:25:34.000Z",
+        "pretty_name": "NLP Policy NZ Cloud OCR Pilot Evidence",
+        "license_tag": "other",
+        "tags": [
+          "language:en",
+          "license:other",
+          "region:us",
+          "new-zealand",
+          "ocr",
+          "benchmark",
+          "metadata-only"
+        ],
+        "revision": "3f2cad0fae09936f5613b73446307d07ce4b2c60"
+      },
+      {
+        "id": "edithatogo/nz-hansard-corpus",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T01:37:23.000Z",
+        "pretty_name": "New Zealand Hansard Corpus",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "language:en",
+          "license:other",
+          "size_categories:100K<n<1M",
+          "format:parquet",
+          "modality:tabular",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "doi:10.57967/hf/9086",
+          "region:us",
+          "new-zealand",
+          "hansard",
+          "parliament",
+          "legal-corpus"
+        ],
+        "revision": "effad6dcd72eae5685a5c8977639dfbdaad023ea"
+      },
+      {
+        "id": "edithatogo/nz-hansard-source-archive",
+        "private": false,
+        "gated": "auto",
+        "last_modified": "2026-07-29T01:25:52.000Z",
+        "pretty_name": "New Zealand Hansard Source Archive",
+        "license_tag": "other",
+        "tags": [
+          "language:en",
+          "license:other",
+          "doi:10.57967/hf/9085",
+          "region:us",
+          "new-zealand",
+          "hansard",
+          "source-archive",
+          "gated"
+        ],
+        "revision": "d26f7986906077f4d7a16f3cfe06646f658017dd"
+      },
+      {
+        "id": "edithatogo/nz-health-appropriations",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-08-29T10:43:49.000Z",
+        "pretty_name": "New Zealand Health Appropriations",
+        "license_tag": "cc-by-4.0",
+        "tags": [
+          "task_categories:tabular-classification",
+          "license:cc-by-4.0",
+          "size_categories:n<1K",
+          "modality:document",
+          "library:datasets",
+          "library:mlcroissant",
+          "region:us",
+          "new-zealand",
+          "government",
+          "health-economics",
+          "public-finance",
+          "appropriations"
+        ],
+        "revision": "9b85bac06597d4435fd078f6bed0f30bb008542b"
+      },
+      {
+        "id": "edithatogo/nz-legislation-corpus",
+        "private": false,
+        "gated": "auto",
+        "last_modified": "2026-07-29T01:25:57.000Z",
+        "pretty_name": "New Zealand Legislation Corpus - DOI Snapshot",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "language:en",
+          "license:other",
+          "size_categories:n<1K",
+          "format:json",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "doi:10.57967/hf/9087",
+          "region:us",
+          "new-zealand",
+          "legislation",
+          "doi-snapshot",
+          "frozen"
+        ],
+        "revision": "1dea0c678b419a9c16fe7e363488f91d293391d3"
+      },
+      {
+        "id": "edithatogo/opramachine-archive-us-nj",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:52.000Z",
+        "pretty_name": "OPRA Machine public-information register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:en",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-us-nj"
+        ],
+        "revision": "8b5e71fedbc6cdcf5a71e68dc964147aa1740255"
+      },
+      {
+        "id": "edithatogo/queremosdatos-archive-co",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:21.000Z",
+        "pretty_name": "Queremosdatos public-information register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:es",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-co"
+        ],
+        "revision": "cfca71f00ab38e7c9c0219791a7ce2d52cef6334"
+      },
+      {
+        "id": "edithatogo/quesabes-archive-uy",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:15.000Z",
+        "pretty_name": "Qué Sabés public-information register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:es",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-uy"
+        ],
+        "revision": "5547a88d09d4c7b30827e885483cef07f82421d4"
+      },
+      {
+        "id": "edithatogo/qwen3-hermes-strict-toolcall-synthetic-v4",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T01:26:06.000Z",
+        "pretty_name": "Qwen3 Hermes Strict Tool-Call Synthetic V4",
+        "license_tag": "apache-2.0",
+        "tags": [
+          "task_categories:text-generation",
+          "language:en",
+          "license:apache-2.0",
+          "size_categories:n<1K",
+          "format:json",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "region:us",
+          "hermes",
+          "qwen3",
+          "instruction-tuning",
+          "tool-use",
+          "synthetic-data"
+        ],
+        "revision": "d39d352b557b7b53438de8329996df49a31ee780"
+      },
+      {
+        "id": "edithatogo/qwen3-v4-peft-lm-eval-results",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T01:26:12.000Z",
+        "pretty_name": "Qwen3 V4 PEFT Language-Model Evaluation Results",
+        "license_tag": null,
+        "tags": [
+          "language:en",
+          "region:us",
+          "hermes",
+          "qwen3",
+          "evaluation",
+          "peft"
+        ],
+        "revision": "ca7f499edd85abb5dc84a69d9edee8cbaea7a563"
+      },
+      {
+        "id": "edithatogo/rareburden-commons-open-source-snapshots",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-08-29T04:06:43.000Z",
+        "pretty_name": "RareBurden Commons Open Source Snapshots",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:other",
+          "license:other",
+          "region:us",
+          "rare-disease",
+          "ontology",
+          "public-health",
+          "population"
+        ],
+        "revision": "3ce98671ebbdc75ed4e84b6e3c5b3003ab337558"
+      },
+      {
+        "id": "edithatogo/rareburden-open-sources",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-05T06:51:18.000Z",
+        "pretty_name": "Rare Burden Commons open source intake",
+        "license_tag": "other",
+        "tags": [
+          "license:other",
+          "region:us"
+        ],
+        "revision": "ec51c04d3af04fc0cdb0b15b3fafa7948b2ab048"
+      },
+      {
+        "id": "edithatogo/reimbursement-atlas",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-08-31T11:23:30.000Z",
+        "pretty_name": "Reimbursement Atlas Derived Medallion Dataset",
+        "license_tag": "other",
+        "tags": [
+          "license:other",
+          "size_categories:1K<n<10K",
+          "format:json",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "region:us",
+          "health-economics",
+          "reimbursement",
+          "public-policy",
+          "cms",
+          "mbs",
+          "pbs"
+        ],
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+      },
+      {
+        "id": "edithatogo/riopa-evidence-campaign",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-08-29T06:13:44.000Z",
+        "pretty_name": null,
+        "license_tag": null,
+        "tags": [
+          "region:us"
+        ],
+        "revision": "ebecf6d38084aa459b27ef2bf753505003b08a16"
+      },
+      {
+        "id": "edithatogo/riopa-public-data-archive",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-29T09:58:23.000Z",
+        "pretty_name": "RIOPA Public Data Archive",
+        "license_tag": "other",
+        "tags": [
+          "language:en",
+          "license:other",
+          "modality:geospatial",
+          "region:us",
+          "new-zealand",
+          "geospatial",
+          "public-data",
+          "provenance",
+          "archival"
+        ],
+        "revision": "d25d4e0be47cc17a53c447b1288d2fcccb51349b"
+      },
+      {
+        "id": "edithatogo/rtk-archive-au",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:00.000Z",
+        "pretty_name": "rtk-archive (righttoknow.org.au FOI register)",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:en",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-au"
+        ],
+        "revision": "c7d04f5c59491ecef4370348693cb48adfae17fd"
+      },
+      {
+        "id": "edithatogo/transparencia-archive-be",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:18.000Z",
+        "pretty_name": "Transparencia public-information register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:fr",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-be"
+        ],
+        "revision": "ff0924afab9d824a865552f7567902ea341d1df1"
+      },
+      {
+        "id": "edithatogo/uci-diabetes-130-us-hospitals",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-09-06T01:14:58.000Z",
+        "pretty_name": null,
+        "license_tag": "cc-by-4.0",
+        "tags": [
+          "language:en",
+          "license:cc-by-4.0",
+          "size_categories:100K<n<1M",
+          "format:parquet",
+          "modality:text",
+          "library:datasets",
+          "library:pandas",
+          "library:polars",
+          "library:mlcroissant",
+          "region:us",
+          "diabetes",
+          "public-use-data",
+          "rareburden"
+        ],
+        "revision": "fcaac2a2bc2a5b3c4526bf36a9d59892b3b0633a"
+      },
+      {
+        "id": "edithatogo/vreauinfo-archive-md",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:44.000Z",
+        "pretty_name": "VreauInfo public-information register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:ro",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-md"
+        ],
+        "revision": "7a4765dc1f7f927b9316882010115cb03642583a"
+      },
+      {
+        "id": "edithatogo/wdtk-archive-uk",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:13.000Z",
+        "pretty_name": "wdtk-archive (whatdotheyknow.com FOI register)",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:en",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-gb"
+        ],
+        "revision": "a200cb990f23e834f40bcc6543d184bab174a99e"
+      },
+      {
+        "id": "edithatogo/woo-knop-archive-nl",
+        "private": false,
+        "gated": false,
+        "last_modified": "2026-07-29T00:26:46.000Z",
+        "pretty_name": "de Woo-Knop public-information register",
+        "license_tag": "other",
+        "tags": [
+          "task_categories:text-retrieval",
+          "annotations_creators:no-annotation",
+          "source_datasets:other",
+          "language:nl",
+          "license:other",
+          "region:us",
+          "public-information",
+          "freedom-of-information",
+          "government-transparency",
+          "alaveteli",
+          "web-archive",
+          "warc",
+          "wacz",
+          "archival",
+          "jurisdiction-nl"
+        ],
+        "revision": "8a34942018440b47e2d7800d362edf6fe539abc7"
+      }
+    ],
+    "authenticated_inventory": {
+      "qualification": "quality/qualifications/hf-estate-20260930.json",
+      "sha256": "413795a58dbbbf34d7b0656a9e58f19fcfd7c014eb0c2a186a74af04f5319af3",
+      "observed_at": "2026-09-30T05:55:35.928892Z",
+      "enumeration_scope": "authenticated_visible_owner_metadata",
+      "credential_visibility_attested": false,
+      "stable_double_scan": true,
+      "counts": {
+        "model": 4,
+        "dataset": 81,
+        "space": 6,
+        "collection": 10
+      },
+      "dataset_visibility_counts": {
+        "public": 76,
+        "private_pseudonymized": 5
+      },
+      "private_identities_in_this_report": false
+    },
+    "private_assets_note": "The public author endpoint returns only public repositories. The authenticated double-scan separately observed private dataset metadata and pseudonymized those identities in the referenced estate snapshot."
+  },
+  "scope_review": {
+    "status": "discovery_only_maintainer_scope_decision_pending",
+    "boundary": "The public owner listing is complete for publicly visible dataset repositories at the observation, but it cannot enumerate private repositories and metadata screening does not approve a producer denominator. The Australian benefits track must not absorb cross-jurisdiction health funding or separate RareBurden evidence without an explicit scope decision.",
+    "classifications": [
+      {
+        "class": "existing_name_filtered_metadata_candidates",
+        "count": 14,
+        "datasets": [
+          "edithatogo/australian-mbs-source-archive",
+          "edithatogo/australian-mbs-utilisation-archive",
+          "edithatogo/australian-pbs-source-archive",
+          "edithatogo/australian-pbs-utilisation-archive",
+          "edithatogo/global-medicines-atlas-catalogue",
+          "edithatogo/global-medicines-atlas-cms-partd-20260827",
+          "edithatogo/global-medicines-atlas-datahouse-evidence",
+          "edithatogo/global-medicines-atlas-fda-open-20260821",
+          "edithatogo/global-medicines-atlas-fda-public",
+          "edithatogo/global-medicines-atlas-gip-20260826",
+          "edithatogo/global-medicines-atlas-international-open",
+          "edithatogo/global-medicines-atlas-international-permissive-20260821",
+          "edithatogo/global-medicines-atlas-open-medic-20260821",
+          "edithatogo/reimbursement-atlas"
+        ]
+      },
+      {
+        "class": "new_cross_jurisdiction_health_funding_candidate",
+        "count": 1,
+        "datasets": [
+          "edithatogo/nz-health-appropriations"
+        ],
+        "basis": "Public card name and tags identify New Zealand health appropriations, health economics, and public finance; complete tree metadata includes source-census and rights metadata plus original and derived files. Do not treat the Australian track as including it absent a maintainer scope decision."
+      },
+      {
+        "class": "dataset_estate_registry_control_plane",
+        "count": 1,
+        "datasets": [
+          "edithatogo/dataset-estate-registry"
+        ],
+        "basis": "Governance/catalogue metadata repository required by the federated data-plane track; registration is not source acquisition or producer admission."
+      },
+      {
+        "class": "separate_rareburden_or_diabetes_candidate_assets",
+        "count": 4,
+        "datasets": [
+          "edithatogo/nhanes-2021-2023-diabetes",
+          "edithatogo/rareburden-commons-open-source-snapshots",
+          "edithatogo/rareburden-open-sources",
+          "edithatogo/uci-diabetes-130-us-hospitals"
+        ],
+        "basis": "Public card tags identify rare-disease/diabetes public-use datasets and separate RareBurden product lineage; not Australian MBS/PBS federation evidence."
+      },
+      {
+        "class": "remaining_public_owner_datasets_not_flagged_by_metadata_triage",
+        "count": 56,
+        "basis": "No selected name/card metadata signal for GMA medicines, Australian MBS/PBS, health funding, registry control-plane, or RareBurden. This is a triage result, not proof of irrelevance."
+      }
+    ],
+    "source_payload_bytes_downloaded": false,
+    "source_values_read": false,
+    "licensing_conclusion_made": false,
+    "producer_denominator_approved": false,
+    "classification_counts": {
+      "existing_name_filtered_metadata_candidates": 14,
+      "new_cross_jurisdiction_health_funding_candidate": 1,
+      "dataset_estate_registry_control_plane": 1,
+      "separate_rareburden_or_diabetes_candidate_assets": 4,
+      "remaining_public_owner_datasets_not_flagged_by_metadata_triage": 56
+    },
+    "registry_reconciliation": {
+      "authenticated_visible_dataset_count": 81,
+      "public_dataset_count": 76,
+      "private_pseudonymized_dataset_count": 5,
+      "registered_current_public": 50,
+      "registered_current_private": 2,
+      "unregistered_current_public": 26,
+      "unregistered_current_private": 3,
+      "current_estate_registry_reconciled": false
+    }
+  },
+  "estate_registry_reconciliation": {
+    "status": "current_inventory_not_reconciled",
+    "registry_dataset": "edithatogo/dataset-estate-registry",
+    "registry_revision": "8f4c5b03adebdc8cbe19d9f20b18745d4da1b83c",
+    "catalog_sha256": "001cf4fee54862995e1e513fb6dba6e68fd85a458898e7c52cc2ec6407ab4adb",
+    "catalog_entry_count": 52,
+    "catalog_public_access_entry_count": 47,
+    "catalog_private_access_entry_count": 2,
+    "owner_visible_dataset_count": 81,
+    "owner_visible_public_dataset_count": 76,
+    "owner_visible_private_dataset_count": 5,
+    "matched_public_entry_count": 50,
+    "matched_private_entry_count": 2,
+    "current_public_datasets_missing_from_registry": [
+      "edithatogo/archive-govt-nz-global",
+      "edithatogo/archive-govt-nz-treasury",
+      "edithatogo/archive-govt-nz-treasury-csv",
+      "edithatogo/archive-govt-nz-treasury-data",
+      "edithatogo/australian-mbs-source-archive",
+      "edithatogo/australian-mbs-utilisation-archive",
+      "edithatogo/australian-pbs-source-archive",
+      "edithatogo/australian-pbs-utilisation-archive",
+      "edithatogo/foi-ca-federal-atip",
+      "edithatogo/foi-process-event-logs-bounded",
+      "edithatogo/foi-source-catalogue",
+      "edithatogo/global-medicines-atlas-catalogue",
+      "edithatogo/global-medicines-atlas-cms-partd-20260827",
+      "edithatogo/global-medicines-atlas-datahouse-evidence",
+      "edithatogo/global-medicines-atlas-fda-open-20260821",
+      "edithatogo/global-medicines-atlas-fda-public",
+      "edithatogo/global-medicines-atlas-gip-20260826",
+      "edithatogo/global-medicines-atlas-international-open",
+      "edithatogo/global-medicines-atlas-international-permissive-20260821",
+      "edithatogo/global-medicines-atlas-open-medic-20260821",
+      "edithatogo/nhanes-2021-2023-diabetes",
+      "edithatogo/nz-health-appropriations",
+      "edithatogo/rareburden-open-sources",
+      "edithatogo/riopa-evidence-campaign",
+      "edithatogo/riopa-public-data-archive",
+      "edithatogo/uci-diabetes-130-us-hospitals"
+    ],
+    "current_private_datasets_missing_from_registry_count": 3,
+    "current_visible_datasets_missing_from_registry_count": 29,
+    "registry_entries_not_found_in_current_visible_inventory_count": 0,
+    "reconciliation_report_sha256": "93994efe9b7d6541c7eafe1639e45dda0654d54f888e0658f98321a6f7a305aa",
+    "reconciliation_report_claimed_live_count": 50,
+    "reconciliation_report_claimed_registered_count": 50,
+    "boundary": "All 52 catalog entries match the current authenticated-visible inventory (50 public and 2 private); 26 of 76 public datasets and 3 of 5 private datasets lack registry entries. The public reconciliation report reports a 50/50 match, which does not account for the current 81-dataset denominator. Private repository identities are not copied into this qualification. No registry mutation or rights conclusion performed."
+  },
+  "collection_scope_evidence": {
+    "observed_at": "2026-09-30T05:58:07+00:00",
+    "collection_listing_stable_double_scan": true,
+    "collection_count": 10,
+    "collection": {
+      "slug": "edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+      "item_count": 4,
+      "items": [
+        {
+          "item_id": "edithatogo/australian-mbs-source-archive",
+          "item_type": "dataset"
+        },
+        {
+          "item_id": "edithatogo/australian-pbs-source-archive",
+          "item_type": "dataset"
+        },
+        {
+          "item_id": "edithatogo/nz-health-appropriations",
+          "item_type": "dataset"
+        },
+        {
+          "item_id": "edithatogo/reimbursement-atlas",
+          "item_type": "dataset"
+        }
+      ]
+    },
+    "normalized_membership_sha256": "dba4267ff259a8b0023dbadf2341f9964b4218ede5d0b328c6bc957251496035",
+    "metadata_only": true,
+    "boundary": "The health-economics collection joins reimbursement-atlas, nz-health-appropriations, and the MBS/PBS source archives. Collection membership is discovery metadata, not an approved Australian denominator, rights decision, or producer admission."
+  }
 }
