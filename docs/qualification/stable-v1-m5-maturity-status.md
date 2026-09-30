@@ -24,7 +24,7 @@ corpus row describes a separate quarantined acquisition and does not override
 that later, specifically scoped evidence. A bounded current Orange Book
 record projection is also counted as landed; this does not complete Prompt 16
 or its historical family. The latest report snapshot is bound to exact commit
-`788b28892eb58ae199ad501d5236d144a4bd9e05` and finds 116 of
+`e7eb12b22ea620efe746f9f4308a61ddc624ce50` and finds 116 of
 157 in-scope public/no-credential sources without qualifying landing evidence.
 The Sweden count reflects one internally authorized, privately retained 2025
 national aggregate acquisition; its coarse rights state remains unknown, and
