@@ -1355,6 +1355,26 @@
 
 ## M-112 public producer metadata discovery (2026-09-30)
 
+- [x] Apply the maintainer's direction to keep Australian M-112 limited to
+  Australian MBS/PBS producer evidence; track New Zealand health appropriations
+  separately. This resolves the jurisdiction boundary only, not the exact
+  producer/object denominator or any source-rights decision.
+- [x] Map six Australia-related public repository candidates at exact observed
+  revisions: the GMA source catalogue, MBS/PBS source archives, both utilisation
+  archives, and reimbursement-atlas. None names the required federation v4
+  contract. Reimbursement-atlas has a v1 federation manifest and 1,707 raw PBS
+  manifest entries; MBS Silver remains candidate-only; utilisation coverage
+  includes a partial harvest; Australian source catalogue rows remain marked
+  unapproved for public-derived release. Candidate identities and tree digests
+  are in `quality/qualifications/australian-m112-scope-assessment-20260930.json`.
+- [x] Read back live collection alignment after the scope decision. `Policy AUS`
+  remains private and empty; the public Health Economics collection includes
+  both Australian source archives, reimbursement-atlas, and the separately
+  scoped New Zealand funding dataset. The current registry has no entries for
+  the GMA source catalogue or four Australian source/utilisation archives.
+  A five-dataset Policy AUS membership and cautious collection/item notes are
+  prepared in the scope assessment. No public collection or registry changes
+  were made.
 - [x] Capture a paginated, public-metadata-only discovery of candidate
   Hugging Face datasets whose names match the GMA, Australian MBS/PBS, or
   reimbursement-atlas filters, then review owner-visible metadata for adjacent
@@ -1374,9 +1394,10 @@
   Australian M-112 denominator requires explicit scope classification. No
   private identities were copied into the comparison, no rights were inferred,
   and no registry mutation was made.
-- [ ] Approve the exact producer/object denominator and reconcile all owner
-  datasets and collection memberships in the public dataset-estate registry.
-  Public registry mutation requires explicit maintainer approval. Then
+- [ ] Approve the exact producer/object denominator, reconcile all owner
+  datasets and collection memberships in the public dataset-estate registry,
+  and make `Policy AUS` public with scoped dataset notes. Public collection and
+  registry mutation requires explicit maintainer approval. Then
   independently bind each admitted object's source rights, v4 contract,
   lineage, and anonymous public readback. M-112 remains blocked; public
   visibility and metadata inventory are not acceptance evidence.

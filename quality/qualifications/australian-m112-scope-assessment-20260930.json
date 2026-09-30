@@ -1,0 +1,243 @@
+{
+  "schema_id": "global-medicines-atlas.australian-m112-scope-assessment",
+  "schema_version": 1,
+  "observed_at": "2026-09-30T06:13:44.193248Z",
+  "user_scope_direction": "Proceed with the recommendation to keep M-112 Australian-scoped; New Zealand health appropriations is tracked separately and excluded from the Australian denominator.",
+  "scope_direction_received": true,
+  "exact_producer_object_denominator_approved": false,
+  "producer_candidates": [
+    {
+      "dataset": "edithatogo/global-medicines-atlas-catalogue",
+      "role": "B0 source-index metadata candidate",
+      "source_ids": [
+        "au-amt-rf2",
+        "au-artg",
+        "au-pbs-api",
+        "au-pbs-embargo",
+        "au-pbs-historical-xml",
+        "au-tga-daen",
+        "au-tga-pi-cmi",
+        "au-tga-regulatory-events"
+      ],
+      "tree_file_count": 62,
+      "tree_inventory_sha256": "7476f22c7b5ae563b7747ba0f8b78b51467c290355c322b7b3d49ac0ff21f02d",
+      "registry_entry_present": false,
+      "metadata_status": "8 AU source records; seven catalogue rights states are review_required and one is terms_review_required; public-derived release is not approved for these records in the observed rights disposition.",
+      "revision": "a30a649a25c93740109d306f7b7edfd6cd268ac3",
+      "complete_tree_readback": true,
+      "contains_named_federation_v4_contract": false
+    },
+    {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "role": "Australian MBS source and Silver candidate",
+      "source_ids": [
+        "au-mbs"
+      ],
+      "tree_file_count": 50,
+      "tree_inventory_sha256": "93b8d1801e3392720912b20b21a678851cf8d28df1f21c16346c2095bf083c94",
+      "registry_entry_present": false,
+      "metadata_status": "MBS Silver v4 files are explicitly candidate_only; the dataset tree does not name the federation v4 contract.",
+      "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+      "complete_tree_readback": true,
+      "contains_named_federation_v4_contract": false
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "role": "Australian PBS source archive candidate",
+      "source_ids": [
+        "au-pbs-historical-xml"
+      ],
+      "tree_file_count": 9,
+      "tree_inventory_sha256": "1dcd345b2f342de426c36f4b8fe2ba1ca5ce086f55ae8bfd94ccf9037e4c15c3",
+      "registry_entry_present": false,
+      "metadata_status": "Pinned PBS source and receipt metadata are present; no federation v4 contract is named in the dataset tree.",
+      "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+      "complete_tree_readback": true,
+      "contains_named_federation_v4_contract": false
+    },
+    {
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "role": "Australian MBS utilisation source archive candidate",
+      "source_ids": [
+        "au-data-gov-mbs-demographics",
+        "au-data-gov-mbs-group",
+        "au-health-medicare-statistics"
+      ],
+      "tree_file_count": 30,
+      "tree_inventory_sha256": "4ed7d3ac2ae7347031c7c8a1318d35c2744764588d28aae53983ed3b2a1b0163",
+      "registry_entry_present": false,
+      "metadata_status": "The live harvest manifest records partial latest-run coverage; no federation v4 contract is named in the dataset tree.",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "complete_tree_readback": true,
+      "contains_named_federation_v4_contract": false
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "role": "Australian PBS utilisation source archive candidate",
+      "source_ids": [
+        "au-pbs-dos-utilisation",
+        "au-pbs-expenditure"
+      ],
+      "tree_file_count": 14,
+      "tree_inventory_sha256": "9e5aa3eb893329f043ad5ad45b949bde84fecd07d57c9c346ba2db75ccdf0a91",
+      "registry_entry_present": false,
+      "metadata_status": "Raw-source and receipt paths are present; no federation v4 contract is named in the dataset tree.",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "complete_tree_readback": true,
+      "contains_named_federation_v4_contract": false
+    },
+    {
+      "dataset": "edithatogo/reimbursement-atlas",
+      "role": "Australian-containing shared derived/raw PBS candidate",
+      "source_ids": [
+        "au_pbs"
+      ],
+      "tree_file_count": 1733,
+      "tree_inventory_sha256": "04d932835b95e15ecc95957d7dbc3ac8aeee108e635aef307a0af0b72b36e3eb",
+      "registry_entry_present": true,
+      "metadata_status": "Its raw PBS manifest has 1,707 file entries under source_id au_pbs; the repository has 12 medallion data paths, 270 publication-manifest artifacts, and a medallion-federation-manifest-v1, not the required named federation v4 admission.",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "complete_tree_readback": true,
+      "contains_named_federation_v4_contract": false
+    }
+  ],
+  "excluded_cross_jurisdiction_candidate": {
+    "dataset": "edithatogo/nz-health-appropriations",
+    "revision": "9b85bac06597d4435fd078f6bed0f30bb008542b",
+    "tree_file_count": 96,
+    "tree_inventory_sha256": "49b2fb3336f340b738ea9efdccb2302294f0cbff2c38b6bf88cebd27f301e8d4",
+    "reason": "New Zealand health appropriations and public finance are outside the Australian MBS/PBS acceptance scope; preserve it as a separate health-funding candidate."
+  },
+  "candidate_contract_status": {
+    "candidate_repository_count": 6,
+    "named_federation_v4_contract_count": 0,
+    "live_v4_admission_receipts": 0,
+    "candidate_only_mbs_silver_preserved": true
+  },
+  "collections": {
+    "policy_aus": {
+      "slug": "edithatogo/policy-aus-6a2e99a1ae31ec0fe8895be8",
+      "private": true,
+      "dataset_member_count": 0,
+      "required_state_per_track": "public when first exact Australian dataset is added",
+      "state": "blocked_external_collection_publication"
+    },
+    "health_economics_and_outcomes_research": {
+      "slug": "edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+      "private": false,
+      "dataset_member_count": 4,
+      "dataset_members": [
+        "edithatogo/australian-mbs-source-archive",
+        "edithatogo/australian-pbs-source-archive",
+        "edithatogo/nz-health-appropriations",
+        "edithatogo/reimbursement-atlas"
+      ],
+      "boundary": "Discovery membership only. New Zealand health appropriations remains outside the Australian M-112 denominator."
+    }
+  },
+  "estate_registry": {
+    "dataset": "edithatogo/dataset-estate-registry",
+    "revision": "8f4c5b03adebdc8cbe19d9f20b18745d4da1b83c",
+    "catalog_sha256": "001cf4fee54862995e1e513fb6dba6e68fd85a458898e7c52cc2ec6407ab4adb",
+    "current_public_entries_matched": 50,
+    "current_private_entries_matched": 2,
+    "current_public_datasets_missing": [
+      "edithatogo/archive-govt-nz-global",
+      "edithatogo/archive-govt-nz-treasury",
+      "edithatogo/archive-govt-nz-treasury-csv",
+      "edithatogo/archive-govt-nz-treasury-data",
+      "edithatogo/australian-mbs-source-archive",
+      "edithatogo/australian-mbs-utilisation-archive",
+      "edithatogo/australian-pbs-source-archive",
+      "edithatogo/australian-pbs-utilisation-archive",
+      "edithatogo/foi-ca-federal-atip",
+      "edithatogo/foi-process-event-logs-bounded",
+      "edithatogo/foi-source-catalogue",
+      "edithatogo/global-medicines-atlas-catalogue",
+      "edithatogo/global-medicines-atlas-cms-partd-20260827",
+      "edithatogo/global-medicines-atlas-datahouse-evidence",
+      "edithatogo/global-medicines-atlas-fda-open-20260821",
+      "edithatogo/global-medicines-atlas-fda-public",
+      "edithatogo/global-medicines-atlas-gip-20260826",
+      "edithatogo/global-medicines-atlas-international-open",
+      "edithatogo/global-medicines-atlas-international-permissive-20260821",
+      "edithatogo/global-medicines-atlas-open-medic-20260821",
+      "edithatogo/nhanes-2021-2023-diabetes",
+      "edithatogo/nz-health-appropriations",
+      "edithatogo/rareburden-open-sources",
+      "edithatogo/riopa-evidence-campaign",
+      "edithatogo/riopa-public-data-archive",
+      "edithatogo/uci-diabetes-130-us-hospitals"
+    ],
+    "current_private_datasets_missing_count": 3,
+    "Australian_candidate_entries_missing": [
+      "edithatogo/global-medicines-atlas-catalogue",
+      "edithatogo/australian-mbs-source-archive",
+      "edithatogo/australian-pbs-source-archive",
+      "edithatogo/australian-mbs-utilisation-archive",
+      "edithatogo/australian-pbs-utilisation-archive"
+    ],
+    "reimbursement_atlas_entry_present": true,
+    "public_registry_mutation_performed": false
+  },
+  "latest_owner_snapshot": {
+    "path": "quality/qualifications/hf-estate-20260930-scope-readback.json",
+    "sha256": "1beca7f7b9e366a03f4962cbbffd42d0b3d6c7c18a3d115f758df09578ac4c1a",
+    "stable_double_scan": true,
+    "visible_datasets": 81,
+    "public_datasets": 76,
+    "private_pseudonymized_datasets": 5,
+    "collections": 10,
+    "public_dataset_revision_changes_since_previous_scan": 0
+  },
+  "source_payload_bytes_downloaded": false,
+  "source_values_read": false,
+  "licensing_conclusion_made": false,
+  "public_collection_or_registry_mutation_performed": false,
+  "remaining_m112_gates": [
+    "approve exact producer/object denominator across the six Australia-related repository candidates",
+    "bind each admitted object to source acquisition and B0/B1/B2 stratum where applicable",
+    "independently establish rights authorization and lineage per admitted object",
+    "publish and anonymously verify a byte-closed federation v4 manifest",
+    "run downstream consumer canaries on identical pinned object identities",
+    "obtain explicit maintainer approval before making Policy AUS public or updating the public estate registry"
+  ],
+  "policy_aus_change_proposal": {
+    "approval_state": "not_requested_or_granted",
+    "collection_publication_requires_explicit_maintainer_approval": true,
+    "collection_slug": "edithatogo/policy-aus-6a2e99a1ae31ec0fe8895be8",
+    "proposed_collection_note": "Australian MBS and PBS source and derived evidence. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance. Source scope, rights, and qualification remain recorded per dataset and object.",
+    "proposed_dataset_members": [
+      {
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+        "collection_note": "Australian MBS source archive and Silver candidate. Its published MBS Silver qualification is candidate-only; exact federation v4 admission remains pending."
+      },
+      {
+        "dataset": "edithatogo/australian-pbs-source-archive",
+        "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+        "collection_note": "Australian PBS historical source archive. Current PBS API acquisition and its separate rights and source-era qualification remain open."
+      },
+      {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "collection_note": "Australian MBS utilisation and statistics source archive. Its manifest reports partial coverage for the latest harvest."
+      },
+      {
+        "dataset": "edithatogo/australian-pbs-utilisation-archive",
+        "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+        "collection_note": "Australian PBS utilisation and expenditure source archive. Source-level rights and currency remain governed by each receipt."
+      },
+      {
+        "dataset": "edithatogo/reimbursement-atlas",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "collection_note": "Shared reimbursement product containing an Australian PBS raw archive. Its repository federation manifest is v1; exact v4 object admission remains pending."
+      }
+    ],
+    "dataset_count": 5,
+    "scope_boundary": "New Zealand health appropriations and other cross-jurisdiction funding evidence are excluded from this Australian collection and M-112 denominator."
+  },
+  "candidate_tree_file_total": 1898,
+  "exact_australian_object_file_count_established": false,
+  "exact_australian_object_scope_note": "The candidate trees include multi-jurisdiction catalogue and reimbursement products. Per-object Australian path/source membership must be reconciled before freezing the M-112 denominator; the aggregate candidate tree count is not the Australian object denominator."
+}
