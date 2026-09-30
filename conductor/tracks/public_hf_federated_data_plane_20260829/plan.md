@@ -265,6 +265,12 @@
   pass locally. Test-only PR #679 passed all 37 protected checks and merged at
   `9647d2878e0c5ebe101bb01437209e40eaea3080`; the publisher workflow's
   publish step was skipped. No Hub state or source payload was changed.
+- [x] Reconcile the post-merge evidence for PR #678 and PR #679 on main.
+  PR #680 merged as `3044a3340179820055e279ab58eaa5e87507ee91` after all 37
+  hosted checks passed; its exact-head changes record the two prior merge
+  receipts and their passing check totals. The PR was documentation/evidence
+  only; no Hub state or source payload changed. This entry records PR #680's
+  own exact merge receipt.
 - [ ] Populate and make `Policy AUS` public, update scoped HEOR membership and
   notes, and refresh the public dataset-estate registry after explicit
   maintainer approval for the public collection and registry changes.
