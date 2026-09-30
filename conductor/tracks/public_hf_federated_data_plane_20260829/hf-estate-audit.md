@@ -68,3 +68,32 @@ archives.
 source archive, PBS source archive, Australian benefits medallion dataset, GMA
 catalogue entries, and the reimbursement-atlas consumer where relevant. The
 same datasets may also appear in HEOR with different explanatory notes.
+
+## Anonymous public re-observation: 2026-10-01
+
+Two identical anonymous public Hub API scans observed 76 public datasets and
+eight public collections. The public registry remained at revision
+`8f4c5b03adebdc8cbe19d9f20b18745d4da1b83c`; its `catalog.json` digest is
+`001cf4fee54862995e1e513fb6dba6e68fd85a458898e7c52cc2ec6407ab4adb`.
+
+The catalog contains 52 entries: 47 marked public, three gated, and two
+private. Compared with the anonymous public dataset listing, 26 current public
+datasets are missing from the catalog. Two existing catalog access states
+disagree with current public visibility/gating: `corpus-legislation-nz` is
+currently public and ungated while the catalog says gated, and
+`hermes-training-artifacts` is currently public while the catalog says private.
+One public catalog entry, `gfjd-source-archive`, was not returned in the live
+public dataset listing. It is retained in the catalog pending owner review;
+this audit does not infer deletion or authorize removal. Two catalog rows
+marked private were excluded from identity comparison, and no private dataset
+identities were emitted.
+
+The qualification at
+`quality/qualifications/hf-public-registry-gap-20261001.json` contains exact
+current revisions for the 26 missing public repositories and conservative
+catalog-entry drafts, all validated against the `catalog.schema.json` pinned
+to the observed registry revision. Those drafts leave family, role, origin,
+payload state, rights, and Viewer readiness unassessed. They are proposals only.
+This scan read no source payload bytes or values and made no registry or
+collection mutation. External catalog publication and collection changes remain
+explicit maintainer gates.
