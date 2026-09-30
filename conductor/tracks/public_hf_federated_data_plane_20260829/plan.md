@@ -239,8 +239,16 @@
   before dictionary/set allocation or iteration. (`8015cd4`; hosted P2 review
   correction; 26 focused and 141 affected tests pass.)
 
-- [ ] Populate and make `Policy AUS` public, update HEOR membership/notes, and
-  refresh the public dataset-estate registry.
+- [x] Reobserve live collections and the owner dataset estate on 2026-09-30.
+  `Policy AUS` remains private and empty. The public HEOR collection has four
+  dataset members, including the MBS/PBS source archives, reimbursement-atlas,
+  and a separate New Zealand health-funding dataset. The authenticated owner
+  snapshot contains 81 datasets; the public registry contains 52 entries and
+  omits 26 current public and 3 current private datasets. See the Australian
+  M-112 scope assessment and owner snapshot in the dependent track receipts.
+- [ ] Populate and make `Policy AUS` public, update scoped HEOR membership and
+  notes, and refresh the public dataset-estate registry after explicit
+  maintainer approval for the public collection and registry changes.
 - [ ] Configure an approved independent public recovery target, checksum
   inventory, RPO/RTO, and clean-room restore rehearsal; do not mislabel an HF
   duplicate as independent.

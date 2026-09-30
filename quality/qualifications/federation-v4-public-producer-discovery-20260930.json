@@ -20458,5 +20458,18 @@
     "normalized_membership_sha256": "dba4267ff259a8b0023dbadf2341f9964b4218ede5d0b328c6bc957251496035",
     "metadata_only": true,
     "boundary": "The health-economics collection joins reimbursement-atlas, nz-health-appropriations, and the MBS/PBS source archives. Collection membership is discovery metadata, not an approved Australian denominator, rights decision, or producer admission."
+  },
+  "australian_scope_assessment": {
+    "qualification": "quality/qualifications/australian-m112-scope-assessment-20260930.json",
+    "sha256": "afa009f7c6074adaca883038847111da7124dc74c7f8e5cf995f2a094a65364e",
+    "direction": "Australian MBS/PBS producer evidence only; New Zealand health appropriations is excluded and tracked separately.",
+    "direction_received_at": "2026-09-30T06:13:44.193248Z",
+    "exact_producer_object_denominator_approved": false,
+    "candidate_dataset_count": 6,
+    "named_federation_v4_contract_count": 0,
+    "policy_aus_private_and_empty": true,
+    "registry_public_collection_mutation_performed": false,
+    "policy_aus_change_proposal_prepared": true,
+    "candidate_tree_file_total": 1898
   }
 }
