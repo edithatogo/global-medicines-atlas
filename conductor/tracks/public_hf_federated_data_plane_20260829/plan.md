@@ -246,6 +246,19 @@
   snapshot contains 81 datasets; the public registry contains 52 entries and
   omits 26 current public and 3 current private datasets. See the Australian
   M-112 scope assessment and owner snapshot in the dependent track receipts.
+- [x] Refresh the public registry comparison through anonymous stable Hub API
+  scans on 2026-10-01. The live public denominator is 76 datasets and eight
+  collections. The pinned public catalog has 52 rows (47 public, three gated,
+  two private); 26 live public datasets are absent, two catalog access states
+  conflict with live visibility/gating, and one public catalog row has no
+  matching live public dataset. The unmatched row is preserved for owner review;
+  private registry identities are excluded from this observation. Conservative
+  placeholder entries for the 26 missing public datasets record unknown family,
+  role, source and rights rather than inventing claims; all 26 validate against
+  the schema pinned to the observed registry revision. This is preparation only;
+  catalog publication and collection mutation remain behind explicit approval.
+  See `quality/qualifications/hf-public-registry-gap-20261001.json` and
+  `scripts/qualify_hf_public_registry_gap.py`.
 - [ ] Populate and make `Policy AUS` public, update scoped HEOR membership and
   notes, and refresh the public dataset-estate registry after explicit
   maintainer approval for the public collection and registry changes.

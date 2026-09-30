@@ -1,0 +1,895 @@
+{
+  "schema_id": "global-medicines-atlas.hf-public-registry-gap",
+  "schema_version": 1,
+  "observed_at": "2026-09-30T23:14:52.111751+00:00",
+  "observation": {
+    "endpoint": "https://huggingface.co/api",
+    "anonymous": true,
+    "stable_double_scan": true,
+    "source_payload_bytes_read": false,
+    "source_values_read": false,
+    "public_dataset_count": 76,
+    "public_collection_count": 8,
+    "public_dataset_metadata_sha256": "4ffef792f27d9b1ba765ed8a9559d08ef434e27f6f65c9741bf27688de869bbe",
+    "public_collection_metadata_sha256": "3ccd899aee751cc5ceed93ed8c9eee9102f2caff7199fbf742648eeea019522b"
+  },
+  "registry": {
+    "dataset": "edithatogo/dataset-estate-registry",
+    "revision": "8f4c5b03adebdc8cbe19d9f20b18745d4da1b83c",
+    "catalog_sha256": "001cf4fee54862995e1e513fb6dba6e68fd85a458898e7c52cc2ec6407ab4adb",
+    "catalog_schema_sha256": "92220ad58029e4d21ca3fb5e73c8ea8e45576d9b6ff712292ecbf57ed90b3a6f",
+    "entry_count": 52,
+    "catalog_access_counts": {
+      "public": 47,
+      "gated": 3,
+      "private": 2
+    },
+    "private_entry_count_excluded_from_identity_comparison": 2,
+    "matched_current_public_dataset_count": 50,
+    "public_access_mismatch_count": 2,
+    "public_access_mismatches": [
+      {
+        "repo_id": "edithatogo/corpus-legislation-nz",
+        "registry_access": "gated",
+        "observed_public_access": "public"
+      },
+      {
+        "repo_id": "edithatogo/hermes-training-artifacts",
+        "registry_access": "private",
+        "observed_public_access": "public"
+      }
+    ],
+    "missing_current_public_datasets": [
+      {
+        "repo_id": "edithatogo/archive-govt-nz-global",
+        "revision": "de6958012dcd4ae18d6255ac1675b329d8eae6e8",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/archive-govt-nz-treasury",
+        "revision": "1f148c10687b2c2100659f40d46c6b84de156672",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/archive-govt-nz-treasury-csv",
+        "revision": "ee45a8a4377935099b0146671b80e9771022d8c9",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/archive-govt-nz-treasury-data",
+        "revision": "dfb18d76aaf66fc770d9555464b87b2af33a036c",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/australian-mbs-source-archive",
+        "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/australian-pbs-source-archive",
+        "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/australian-pbs-utilisation-archive",
+        "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/foi-ca-federal-atip",
+        "revision": "09346a0bfb2ec7035a5f22e7bb07a3a59ade1526",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/foi-process-event-logs-bounded",
+        "revision": "53f37b6d71864bc4d356a052ddf951dfc12e84e0",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/foi-source-catalogue",
+        "revision": "6a5aaef6e0d7645cb2afa9223026884fe3437429",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/global-medicines-atlas-catalogue",
+        "revision": "a30a649a25c93740109d306f7b7edfd6cd268ac3",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/global-medicines-atlas-cms-partd-20260827",
+        "revision": "aa176310b5748d471cec2c36955cac36eacb4ba2",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/global-medicines-atlas-datahouse-evidence",
+        "revision": "cc8e6c15af8e8159169a1723b54b990e483d1c1f",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/global-medicines-atlas-fda-open-20260821",
+        "revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/global-medicines-atlas-fda-public",
+        "revision": "da2e5c9faa7ea9ac84cfed328e776e83af135c3d",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/global-medicines-atlas-gip-20260826",
+        "revision": "4e6395ee5217b0fb140dd7942f67b032039e7bbf",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/global-medicines-atlas-international-open",
+        "revision": "654f71c84cdb17b4032396bcbc961bef8757fb19",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/global-medicines-atlas-international-permissive-20260821",
+        "revision": "87d3b54ac932018c276a1c50033ac287520cf85e",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/global-medicines-atlas-open-medic-20260821",
+        "revision": "d19f7a66e35c58c557615bffa456856b485b7edc",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/nhanes-2021-2023-diabetes",
+        "revision": "1b5a370cb2e3bca31b9559238817c4eb21b00070",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/nz-health-appropriations",
+        "revision": "9b85bac06597d4435fd078f6bed0f30bb008542b",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/rareburden-open-sources",
+        "revision": "ec51c04d3af04fc0cdb0b15b3fafa7948b2ab048",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/riopa-evidence-campaign",
+        "revision": "ebecf6d38084aa459b27ef2bf753505003b08a16",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/riopa-public-data-archive",
+        "revision": "b1aca96602bd4101106f9d407924bcc88413aa1f",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      },
+      {
+        "repo_id": "edithatogo/uci-diabetes-130-us-hospitals",
+        "revision": "fcaac2a2bc2a5b3c4526bf36a9d59892b3b0633a",
+        "gated": false,
+        "current_visibility": "public",
+        "rights_and_source_scope": "not_assessed",
+        "registry_metadata_proposal": "draft_unclassified_for_review"
+      }
+    ],
+    "missing_current_public_dataset_count": 26,
+    "conservative_public_registry_draft_entries": [
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/archive-govt-nz-global",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/archive-govt-nz-global",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "de6958012dcd4ae18d6255ac1675b329d8eae6e8"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/archive-govt-nz-treasury",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/archive-govt-nz-treasury",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "1f148c10687b2c2100659f40d46c6b84de156672"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/archive-govt-nz-treasury-csv",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/archive-govt-nz-treasury-csv",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "ee45a8a4377935099b0146671b80e9771022d8c9"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/archive-govt-nz-treasury-data",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/archive-govt-nz-treasury-data",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "dfb18d76aaf66fc770d9555464b87b2af33a036c"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/australian-mbs-source-archive",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/australian-mbs-source-archive",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "243f9ff5498816af6e4d9ae4db60528728f01834"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/australian-mbs-utilisation-archive",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/australian-mbs-utilisation-archive",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "dee9a5b0580dfe394474dc26b372559462e157e7"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/australian-pbs-source-archive",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/australian-pbs-source-archive",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "48fd7345fb09277bb5b85644dba72804633a2abb"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/australian-pbs-utilisation-archive",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/australian-pbs-utilisation-archive",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/foi-ca-federal-atip",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/foi-ca-federal-atip",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "09346a0bfb2ec7035a5f22e7bb07a3a59ade1526"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/foi-process-event-logs-bounded",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/foi-process-event-logs-bounded",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "53f37b6d71864bc4d356a052ddf951dfc12e84e0"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/foi-source-catalogue",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/foi-source-catalogue",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "6a5aaef6e0d7645cb2afa9223026884fe3437429"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/global-medicines-atlas-catalogue",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/global-medicines-atlas-catalogue",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "a30a649a25c93740109d306f7b7edfd6cd268ac3"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/global-medicines-atlas-cms-partd-20260827",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/global-medicines-atlas-cms-partd-20260827",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "aa176310b5748d471cec2c36955cac36eacb4ba2"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/global-medicines-atlas-datahouse-evidence",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/global-medicines-atlas-datahouse-evidence",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "cc8e6c15af8e8159169a1723b54b990e483d1c1f"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/global-medicines-atlas-fda-open-20260821",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/global-medicines-atlas-fda-open-20260821",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "ab3a79a63b5df9f1dca3eb4122d39179c4247417"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/global-medicines-atlas-fda-public",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/global-medicines-atlas-fda-public",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "da2e5c9faa7ea9ac84cfed328e776e83af135c3d"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/global-medicines-atlas-gip-20260826",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/global-medicines-atlas-gip-20260826",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "4e6395ee5217b0fb140dd7942f67b032039e7bbf"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/global-medicines-atlas-international-open",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/global-medicines-atlas-international-open",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "654f71c84cdb17b4032396bcbc961bef8757fb19"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/global-medicines-atlas-international-permissive-20260821",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/global-medicines-atlas-international-permissive-20260821",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "87d3b54ac932018c276a1c50033ac287520cf85e"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/global-medicines-atlas-open-medic-20260821",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/global-medicines-atlas-open-medic-20260821",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "d19f7a66e35c58c557615bffa456856b485b7edc"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/nhanes-2021-2023-diabetes",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/nhanes-2021-2023-diabetes",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "1b5a370cb2e3bca31b9559238817c4eb21b00070"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/nz-health-appropriations",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/nz-health-appropriations",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "9b85bac06597d4435fd078f6bed0f30bb008542b"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/rareburden-open-sources",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/rareburden-open-sources",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "ec51c04d3af04fc0cdb0b15b3fafa7948b2ab048"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/riopa-evidence-campaign",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/riopa-evidence-campaign",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "ebecf6d38084aa459b27ef2bf753505003b08a16"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/riopa-public-data-archive",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/riopa-public-data-archive",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "b1aca96602bd4101106f9d407924bcc88413aa1f"
+      },
+      {
+        "catalog_entry": {
+          "repo_id": "edithatogo/uci-diabetes-130-us-hospitals",
+          "family": "unclassified",
+          "role": "unclassified_public_dataset",
+          "canonical_repo_id": "edithatogo/uci-diabetes-130-us-hospitals",
+          "origin_repository": null,
+          "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+          "status": "not_assessed",
+          "access": "public",
+          "rights_status": "source_specific_review_required",
+          "viewer_status": "not_verified"
+        },
+        "observed_revision": "fcaac2a2bc2a5b3c4526bf36a9d59892b3b0633a"
+      }
+    ],
+    "proposed_entry_count_if_missing_public_rows_are_added": 78,
+    "access_corrections_prepared_for_review": [
+      {
+        "repo_id": "edithatogo/corpus-legislation-nz",
+        "registry_access": "gated",
+        "observed_public_access": "public"
+      },
+      {
+        "repo_id": "edithatogo/hermes-training-artifacts",
+        "registry_access": "private",
+        "observed_public_access": "public"
+      }
+    ],
+    "unmatched_nonprivate_registry_entry_count": 1,
+    "unmatched_nonprivate_registry_entries_pending_review": [
+      {
+        "repo_id": "edithatogo/gfjd-source-archive",
+        "registry_access": "public",
+        "disposition": "preserve_pending_human_review"
+      }
+    ],
+    "private_dataset_identities_emitted": false,
+    "stale_or_private_entry_disposition": "preserve pending owner-visible reconciliation; no removal proposed"
+  },
+  "public_collections": [
+    {
+      "slug": "edithatogo/dataset-estate-catalog-6a695b6dcc338fa1be059d04",
+      "title": "Dataset Estate Catalog",
+      "description": "Authoritative registry, reconciliation process, and registry-driven collection views for the edithatogo dataset estate.",
+      "gated": false,
+      "members": [
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/dataset-estate-registry",
+          "note": "Authoritative machine-readable registry, schema, process, and reconciliation evidence."
+        },
+        {
+          "item_type": "collection",
+          "item_id": "6a6946d45c8cc5852a1d62d4",
+          "note": "Independent public-information request archive family."
+        },
+        {
+          "item_type": "collection",
+          "item_id": "6a2eb7e16d4ee03d87eae247",
+          "note": "NZ legal and parliamentary registry view."
+        },
+        {
+          "item_type": "collection",
+          "item_id": "6a472b1e3de68381856b31f9",
+          "note": "HathiTrust-NZ registry view."
+        }
+      ]
+    },
+    {
+      "slug": "edithatogo/foi-and-public-information-research-6a2e1141d8c6003998146df8",
+      "title": "FOI and Public-Information Research",
+      "description": "Registry-driven view of FOI archives, synthetic process data, government public-web records, and public-information research evidence.",
+      "gated": false,
+      "members": [
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/foi-process-event-logs",
+          "note": "Reviewed synthetic FOI process-mining fixtures."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/corpus-social-media-government-nz",
+          "note": "Government public-information source captures."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/courts-nz-public-notices-archive",
+          "note": "Court public-notice records and source evidence."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/nlp-policy-nz-cloud-ocr-pilots",
+          "note": "Bounded metadata-only OCR research evidence."
+        }
+      ]
+    },
+    {
+      "slug": "edithatogo/fyi-archive-global-public-information-request-archives-6a6946d45c8cc5852a1d62d4",
+      "title": "fyi-archive: global public-information request archives",
+      "description": "Independent, read-only public-information request archives with separate provenance, rights, state, and completeness evidence.",
+      "gated": false,
+      "members": [
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/fyi-archive-nz",
+          "note": "NZ | supported | read-only archive of https://fyi.org.nz."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/rtk-archive-au",
+          "note": "AU | experimental | read-only archive of https://www.righttoknow.org.au."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/askgov-archive-ge",
+          "note": "GE | experimental | read-only archive of https://askgov.ge."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/mrtk-archive-ie",
+          "note": "IE | experimental | read-only archive of https://www.myrighttoknow.org."
+        }
+      ]
+    },
+    {
+      "slug": "edithatogo/hathitrust-nz-6a472b1e3de68381856b31f9",
+      "title": "hathitrust-nz",
+      "description": "Registry-driven HathiTrust-NZ view: inventory, research full-text plans, extracted features, analytics, and the derived historical Hansard corpus.",
+      "gated": false,
+      "members": [
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/corpus-nz-hathi",
+          "note": "Compatibility dataset retained in the HathiTrust-NZ collection."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/hathitrust-nz-inventory",
+          "note": "Inventory, HTID manifests, rights classification, and archive completeness reports."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/hathitrust-nz-research-fulltext",
+          "note": "Research dataset subset metadata and publication manifests."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/hathitrust-nz-htrc-extracted-features",
+          "note": "HTRC Extracted Features subset and derived manifests."
+        }
+      ]
+    },
+    {
+      "slug": "edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+      "title": "Health Economics and Outcomes Research",
+      "description": "Registry-driven view of health-economics, reimbursement, outcomes-research, and related evidence datasets.",
+      "gated": false,
+      "members": [
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/reimbursement-atlas",
+          "note": "Metadata-only reimbursement atlas; origin remains unresolved in the registry."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/nz-health-appropriations",
+          "note": "Checksum-pinned NZ health appropriations medallion dataset; manifest SHA-256 9a33babda857b0aa7c60a6012000cf1e730fed729781cb8ceb6e7a4714cae40e; revision 9b85bac06597d4435fd078f6bed0f30bb008542b."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/australian-mbs-source-archive",
+          "note": null
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/australian-pbs-source-archive",
+          "note": null
+        }
+      ]
+    },
+    {
+      "slug": "edithatogo/hermes-tool-calling-experiments-6a2e124b52702b466be7efed",
+      "title": "Hermes Tool-Calling Experiments",
+      "description": "Synthetic training data, benchmark results, and evaluation outputs for Hermes tool-calling experiments.",
+      "gated": false,
+      "members": [
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/qwen3-hermes-strict-toolcall-synthetic-v4",
+          "note": "Canonical published synthetic training and evaluation splits."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/hermes-benchmark-results",
+          "note": "Benchmark-results repository; currently no published payload."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/qwen3-v4-peft-lm-eval-results",
+          "note": "PEFT evaluation-results repository; currently no published payload."
+        }
+      ]
+    },
+    {
+      "slug": "edithatogo/new-zealand-legal-and-parliamentary-corpora-6a2eb7e16d4ee03d87eae247",
+      "title": "New Zealand Legal and Parliamentary Corpora",
+      "description": "Registry-driven view of canonical NZ legislation, Hansard, historical parliamentary, source-archive, and immutable DOI snapshot datasets.",
+      "gated": false,
+      "members": [
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/corpus-legislation-nz",
+          "note": "Canonical live legislation corpus."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/nz-hansard-corpus",
+          "note": "Canonical document-level Hansard corpus."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/corpus-nz-hathi",
+          "note": "Derived historical parliamentary corpus from HathiTrust."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/nz-legislation-corpus",
+          "note": "Immutable DOI-bearing legislation snapshot."
+        }
+      ]
+    },
+    {
+      "slug": "edithatogo/new-zealand-public-web-archives-6a2eb7d81aa2f5a72444bd5a",
+      "title": "New Zealand Public-Web Archives",
+      "description": "Registry-driven view of NZ government, courts, cultural-heritage, social-media, and bounded OCR public-web archives.",
+      "gated": false,
+      "members": [
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/corpus-social-media-government-nz",
+          "note": "Canonical NZ government social-media and public-web corpus."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/courts-nz-public-notices-archive",
+          "note": "Courts of New Zealand public-notices archive."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/digitalnz",
+          "note": "Mixed DigitalNZ and RNZ source archive; component rights apply."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/nlp-policy-nz-cloud-ocr-pilots",
+          "note": "Metadata-only bounded OCR pilot evidence."
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    "Public membership and repository visibility do not establish source rights or federation acceptance.",
+    "This metadata comparison authorizes no catalog upload, collection mutation, visibility change, deletion, or release.",
+    "Rights, origin, family, role, payload state, and Viewer status remain unassessed for missing registry rows."
+  ]
+}
