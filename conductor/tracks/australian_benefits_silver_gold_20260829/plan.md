@@ -902,7 +902,7 @@
   3,307,650 ms before the unchanged 55-minute timeout. Receipt:
   issue #341 comment `5493802123`. This is incomplete progress, not a
   qualification result.
-- [~] Replace reference-output nested-row reconstruction with Arrow batch
+- [x] Replace reference-output nested-row reconstruction with Arrow batch
   reuse and exact columnar diagnostics. Retain governed JSON encoded-byte
   limits using byte-equivalent `orjson`, exact output flush boundaries,
   item/AMT/ATC diagnostics, lineage, metadata-aware Parquet equality and native
@@ -916,7 +916,7 @@
   records only six batches and 8,358 rows at 3,307,188 ms. This regressed the
   earlier hosted prefix despite the small synthetic result and is incomplete,
   not qualification. No retry or publication occurred.
-- [~] Disaggregate hosted qualification with one anonymous preparation job
+- [x] Disaggregate hosted qualification with one anonymous preparation job
   that verifies the pinned public source and computes the entity denominator
   and complete global literal index exactly once. It emits retention-one-day,
   same-run-only derived inputs marked `evidence_truth=false`: one global index
@@ -931,8 +931,17 @@
   reusable data remains public-Hugging-Face-only under its separate publication
   gate. Preparation outputs expose their exact attempt identity so rerun-failed
   consumers reuse the successful prep; attempt-specific receipts aggregate by
-  deterministic latest success and reject conflicting successes. Hosted dispatch
-  remains pending reviewed merge.
+  deterministic latest success and reject conflicting successes. The changes
+  were reviewed and merged before dispatch; exact-main run `36417477472` passed
+  all 31 jobs on workflow commit `95d9583d77ceb71d979af9b5c8e394efe6712dfd`,
+  an ancestor of current main. Its durable aggregate is issue #341 comment
+  `5870245890`, SHA-256
+  `5e886c6a6b9abb0e035a75d242182c14d875f68d1e640cf2b84b770786633eca`; it used
+  pinned dataset revision `31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7` and recorded
+  five round-trip-verified projections, 16 contiguous reference windows, and
+  7,730,684 element rows with 18,208,758 native fields. The result remains a
+  structural candidate only; it does not qualify domain semantics or complete
+  source-rights, M-109, or M-112 gates.
   Exact merged-main run `33509616416` at `ccf7570` falsified that synthetic
   forecast: after the same 55-minute limit it had emitted only 8,358 reference
   rows in six batches, versus 163,700 rows in 120 batches at `757dc41`.
@@ -950,8 +959,13 @@
   10,005 equal ordered rows in 4.978997 s versus 8.700892 s for the pre-#416
   row-reconstruction baseline in sequential local observations; this is not a
   corpus forecast. Focused reference/historical tests: 53 passed; Ruff and
-  source BasedPyright passed. Hosted validation and a slice-aware composable
-  qualification receipt remain pending; no timeout increase or dispatch.
+  source BasedPyright passed. Exact-main run `36417477472` later passed every
+  phase, index, eight pair-preparation, sixteen reference-shard, and aggregate
+  job; all five projection outputs passed metadata-aware Parquet round-trip and
+  the slice-aware receipt binds sixteen contiguous windows. This validates the
+  implementation only as `structural_storage_candidate_only`: domain semantics
+  are unqualified and 2,798 reference rows remain unresolved. No timeout increase
+  or public publication occurred.
   Review fix `e2de222` closes two P1 fail-closed gaps: only `(0, None)` may
   request unbounded full output, while every explicit window must satisfy
   `0 <= start < stop <= total`; empty and open-ended nonzero windows now fail.
@@ -1034,8 +1048,11 @@
   actionlint and diff checks green. This changes scheduling and retry scope only:
   it does not change source retrieval, qualification semantics, receipts,
   publication, timeouts or human gates. Rebased implementation `751d3d0`
-  supersedes `c10dd41`; hosted elapsed-time evidence remains pending an
-  exact-main qualification run.
+  supersedes `c10dd41`. Exact-main run `36417477472` then completed all 31 jobs
+  successfully in 69m04s wall time, including all eight two-shard preparation
+  groups, sixteen reference workers, and the aggregate. This closes the
+  engineering elapsed-time observation for the structural candidate path; it
+  does not change the unresolved semantic, rights, M-109, or M-112 gates.
 - [x] Correct the unanchored coverage ellipsis exclusion, which could suppress
   functions containing variadic tuple type hints. Preserve the pinned coverage
   library's exact stub exclusion and the 91% threshold. Three regression
