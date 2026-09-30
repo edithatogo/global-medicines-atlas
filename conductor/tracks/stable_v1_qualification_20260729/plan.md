@@ -516,3 +516,16 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   adds no landing and does not advance Australian federation, current-scope
   Bronze, M5, or stable-release approval. The focused Bronze/Stable-v1
   qualification tests passed (108).
+
+## 2026-09-30 post-PR-655 Bronze landing reconciliation
+
+- [x] Reconcile the approved Orange Book current-projection receipt as a
+  source-specific landing and refresh Bronze evidence after PR #654. The
+  current-scope denominator now records 116 of 157 in-scope public/no-credential
+  sources without qualifying landing evidence; historical Orange Book coverage
+  remains incomplete (140 of 260 releases accepted), and public release remains
+  unauthorized. PR #655 refreshed the maturity report and status-page
+  provenance against the exact main state at `2a240369d9016717d5d1798b26f5151866b61abc`.
+  The landing reduces the uncovered count by one but leaves completeness and
+  M5 blocked. Focused qualification tests and routine validation passed; this
+  does not advance Australian federation or Stable v1 approval.
