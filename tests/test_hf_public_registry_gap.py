@@ -4,11 +4,40 @@ from __future__ import annotations
 
 import json
 from collections.abc import Callable
+from contextlib import AbstractContextManager
 from datetime import UTC, datetime
 from typing import Any, cast
 
 import pytest
 from scripts import qualify_hf_public_registry_gap as audit
+
+
+class _Response:
+    def __init__(self, url: str, content: bytes) -> None:
+        self.url = url
+        self.content = content
+
+    def __enter__(self) -> _Response:
+        return self
+
+    def __exit__(self, *exc_info: object) -> None:
+        return None
+
+    def geturl(self) -> str:
+        return self.url
+
+    def read(self, size: int = -1) -> bytes:
+        return self.content[:size]
+
+
+def _response_factory(url: str, content: bytes) -> Callable[..., object]:
+    def open_response(
+        _request: object, *, timeout: float
+    ) -> AbstractContextManager[_Response]:
+        del timeout
+        return _Response(url, content)
+
+    return open_response
 
 
 def _catalog_entry(repo_id: str, access: str) -> dict[str, object]:
@@ -194,3 +223,30 @@ def test_registry_file_is_bound_to_current_public_head(
     assert schema.endswith(f"resolve/{revision}/catalog.schema.json".encode())
     with pytest.raises(ValueError, match="differs"):
         audit._registry_catalog("b" * audit.REVISION_LENGTH)  # pyright: ignore[reportPrivateUsage]
+
+
+def test_read_url_rejects_redirect_outside_official_https_host(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        audit,
+        "urlopen",
+        _response_factory("https://attacker.example/steal", b"metadata"),
+    )
+    with pytest.raises(ValueError, match="left the official host"):
+        audit._read_url(f"{audit.API_BASE}/datasets")  # pyright: ignore[reportPrivateUsage]
+
+
+def test_read_url_rejects_response_over_the_bound(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        audit,
+        "urlopen",
+        _response_factory(
+            f"{audit.API_BASE}/datasets",
+            b"x" * (audit.MAX_RESPONSE_BYTES + 1),
+        ),
+    )
+    with pytest.raises(ValueError, match="exceeded bound"):
+        audit._read_url(f"{audit.API_BASE}/datasets")  # pyright: ignore[reportPrivateUsage]
