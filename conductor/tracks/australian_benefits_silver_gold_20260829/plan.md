@@ -693,7 +693,11 @@
   catalogue and New Zealand health appropriations are excluded from the
   proposed producer set. The exact denominator remains unapproved, source and
   rights membership is not established per object, and no v4 admission is
-  inferred. See `quality/qualifications/australian-m112-object-inventory-20260930.json`.
+  inferred. The current source-rights crosswalk records unresolved rights for
+  `au-pbs-historical-xml` and all 1,707 `au_pbs` reimbursement-atlas payloads;
+  source/category authorizations on other candidates still need path-level
+  joins. See `quality/qualifications/australian-m112-object-inventory-20260930.json`
+  and `quality/qualifications/australian-m112-source-rights-lineage-crosswalk-20260930.json`.
 - [ ] Phase Verification & Checkpoint: record the exact producer/object
   denominator, accepted and missing identities, per-layer receipts, consumer
   canary results, and remaining rights/publication boundaries. Leave M-112
