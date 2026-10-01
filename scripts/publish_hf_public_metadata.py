@@ -176,6 +176,17 @@ def _verify_actions_oidc(
     )
 
 
+def _log_collection_write(
+    operation: str, collection_slug: str, item_id: str | None = None
+) -> None:
+    """Log the bounded metadata operation without notes or credentials."""
+    item = f" item={item_id}" if item_id is not None else ""
+    print(
+        f"metadata publication: {operation} collection={collection_slug}{item}",
+        file=sys.stderr,
+    )
+
+
 def validate_scope_assessment(
     scope_document: dict[str, Any], scope: dict[str, Any]
 ) -> None:
@@ -554,6 +565,7 @@ def _reconcile_collection(
     for repo_id, note in desired_notes.items():
         item = actual.get(repo_id)
         if item is None:
+            _log_collection_write("add-member", slug, repo_id)
             add_collection_item(
                 collection_slug=slug,
                 item_id=repo_id,
@@ -563,6 +575,7 @@ def _reconcile_collection(
                 token=token,
             )
         elif item["note"] != note:
+            _log_collection_write("update-member-note", slug, repo_id)
             update_collection_item(
                 collection_slug=slug,
                 item_object_id=item["object_id"],
@@ -575,6 +588,7 @@ def _reconcile_collection(
             current_description in {previous_description, desired_description},
             "Policy AUS description changed outside the approved transition",
         )
+        _log_collection_write("update-description", slug)
         update_collection_metadata(
             collection_slug=slug,
             description=desired_description,
@@ -892,6 +906,7 @@ def _update_collections(
         description=cast("str", scope["policy_aus_collection_note"]),
         expected_notes=policy_notes,
     )
+    _log_collection_write("set-public", cast("str", scope["policy_aus_slug"]))
     update_collection_metadata(
         collection_slug=cast("str", scope["policy_aus_slug"]),
         description=cast("str", scope["policy_aus_collection_note"]),
