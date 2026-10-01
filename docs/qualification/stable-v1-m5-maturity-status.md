@@ -25,9 +25,11 @@ that later, specifically scoped evidence. A bounded current Orange Book
 record projection is also counted as landed; this does not complete Prompt 16
 or its historical family. The report was refreshed against exact merged
 `main` commit `ab1a4a1ec9d9cc6889c5206f0f7fb2934965a261` after PR #687; the
-source inventory and completeness finding are unchanged. The current NorPD
-qualification snapshot is based on merged `main` commit
-`1c469fa368ef012819c46f820d1bba40ae0621bf`. The refresh leaves source-specific states unchanged and finds 115 of 157 in-scope
+source inventory and completeness finding are unchanged. The NorPD queue and
+maturity reconciliation was merged in PR #697. This report is refreshed
+against exact merged `main` commit
+`981e7bbd2af0604674d083c38bf8d8eecb43f529`; the inventory still finds 115 of
+157 in-scope
 public/no-credential sources without qualifying landing evidence. CMS Part D
 Prompt 31 was already included in the prior denominator; its reconciled queue
 and source-record evidence do not create another landing increment.
