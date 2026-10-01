@@ -62,7 +62,7 @@ jobs:
           python scripts/publish_hf_public_metadata.py
           --apply
           --expected-approval-sha256
-          c5c0965bde2ed66e80da3695c675fea1d54a01a3f2a8ceb6180ec15c39c329fb
+          ebba5ac42ca27307256d001e5386fe3a16a493fbb8c63f33a6c4a9bf49d4e89f
           --receipt build/hf-public-metadata-publication-receipt.json
       - name: Upload public metadata publication receipt
         if: always() && hashFiles('build/hf-public-metadata-publication-receipt.json') != ''

@@ -311,8 +311,56 @@ def test_approval_members_reconcile_scope_assessment_field_names() -> None:
 
     assessment["policy_aus_change_proposal"]["proposed_dataset_members"][0][
         "collection_note"
-    ] = "unexpected note"
+    ] = f"unexpected note {publisher.POLICY_MEMBER_CAVEAT}"
     with pytest.raises(ValueError, match="scope assessment"):
+        publisher.validate_scope_assessment(assessment, scope)
+
+
+def test_policy_aus_approved_description_and_member_caveats_fit_hub_limits() -> (
+    None
+):
+    approval = json.loads(
+        (publisher.ROOT / publisher.APPROVAL_PATH).read_text()
+    )
+    scope = approval["candidate_scope"]
+    caveat = publisher.POLICY_MEMBER_CAVEAT
+    approval_bytes = (publisher.ROOT / publisher.APPROVAL_PATH).read_bytes()
+    approval_digest = hashlib.sha256(approval_bytes).hexdigest()
+    workflow = (
+        publisher.ROOT / ".github/workflows/hf-public-metadata-publication.yml"
+    ).read_text()
+
+    assert scope["policy_aus_collection_note"] == publisher.POLICY_DESCRIPTION
+    assert (
+        len(scope["policy_aus_collection_note"])
+        <= publisher.HUB_COLLECTION_DESCRIPTION_LIMIT
+    )
+    assert len(scope["members"]) == publisher.EXPECTED_AUSTRALIAN_MEMBER_COUNT
+    assert all(
+        caveat in member["note"]
+        and len(member["note"]) <= publisher.HUB_COLLECTION_MEMBER_NOTE_LIMIT
+        for member in scope["members"]
+    )
+    assert (
+        f"--expected-approval-sha256\n          {approval_digest}" in workflow
+    )
+
+
+def test_scope_assessment_requires_explicit_maintainer_approval_record() -> (
+    None
+):
+    approval = json.loads(
+        (publisher.ROOT / publisher.APPROVAL_PATH).read_text()
+    )
+    scope = approval["candidate_scope"]
+    assessment = json.loads(
+        (publisher.ROOT / scope["scope_assessment_path"]).read_text()
+    )
+    assessment["policy_aus_change_proposal"]["approval_state"] = (
+        "not_requested_or_granted"
+    )
+
+    with pytest.raises(ValueError, match="maintainer approval record"):
         publisher.validate_scope_assessment(assessment, scope)
 
 

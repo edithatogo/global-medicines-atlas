@@ -107,39 +107,41 @@
   },
   "observed_at": "2026-09-30T06:13:44.193248Z",
   "policy_aus_change_proposal": {
-    "approval_state": "not_requested_or_granted",
+    "approval_state": "approved",
     "collection_publication_requires_explicit_maintainer_approval": true,
     "collection_slug": "edithatogo/policy-aus-6a2e99a1ae31ec0fe8895be8",
     "dataset_count": 5,
-    "proposed_collection_note": "Australian MBS and PBS source and derived evidence. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance. Source scope, rights, and qualification remain recorded per dataset and object.",
+    "proposed_collection_note": "Australian MBS and PBS evidence for discovery. Membership does not grant source rights, authorize publication, or establish federation acceptance.",
     "proposed_dataset_members": [
       {
-        "collection_note": "Australian MBS source archive and Silver candidate. Its published MBS Silver qualification is candidate-only; exact federation v4 admission remains pending.",
+        "collection_note": "Australian MBS source archive and Silver candidate. Its published MBS Silver qualification is candidate-only; exact federation v4 admission remains pending. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance.",
         "dataset": "edithatogo/australian-mbs-source-archive",
         "revision": "243f9ff5498816af6e4d9ae4db60528728f01834"
       },
       {
-        "collection_note": "Australian PBS historical source archive. Current PBS API acquisition and its separate rights and source-era qualification remain open.",
+        "collection_note": "Australian PBS historical source archive. Current PBS API acquisition and its separate rights and source-era qualification remain open. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance.",
         "dataset": "edithatogo/australian-pbs-source-archive",
         "revision": "48fd7345fb09277bb5b85644dba72804633a2abb"
       },
       {
-        "collection_note": "Australian MBS utilisation and statistics source archive. Its manifest reports partial coverage for the latest harvest.",
+        "collection_note": "Australian MBS utilisation and statistics source archive. Its manifest reports partial coverage for the latest harvest. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance.",
         "dataset": "edithatogo/australian-mbs-utilisation-archive",
         "revision": "dee9a5b0580dfe394474dc26b372559462e157e7"
       },
       {
-        "collection_note": "Australian PBS utilisation and expenditure source archive. Source-level rights and currency remain governed by each receipt.",
+        "collection_note": "Australian PBS utilisation and expenditure source archive. Source-level rights and currency remain governed by each receipt. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance.",
         "dataset": "edithatogo/australian-pbs-utilisation-archive",
         "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a"
       },
       {
-        "collection_note": "Shared reimbursement product containing an Australian PBS raw archive. Its repository federation manifest is v1; exact v4 object admission remains pending.",
+        "collection_note": "Shared reimbursement product containing an Australian PBS raw archive. Its repository federation manifest is v1; exact v4 object admission remains pending. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance.",
         "dataset": "edithatogo/reimbursement-atlas",
         "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
       }
     ],
-    "scope_boundary": "New Zealand health appropriations and other cross-jurisdiction funding evidence are excluded from this Australian collection and M-112 denominator."
+    "scope_boundary": "New Zealand health appropriations and other cross-jurisdiction funding evidence are excluded from this Australian collection and M-112 denominator.",
+    "approval_record_path": "quality/qualifications/hf-public-metadata-publication-approval-20261001.json",
+    "approval_evidence": "The sole maintainer explicitly approved in the active Codex conversation on 2026-10-01 the 146-character Policy AUS description and retaining the full collection caveat in each of the five named member notes."
   },
   "producer_candidates": [
     {
