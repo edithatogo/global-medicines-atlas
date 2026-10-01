@@ -271,9 +271,13 @@
   receipts and their passing check totals. The PR was documentation/evidence
   only; no Hub state or source payload changed. This entry records PR #680's
   own exact merge receipt.
-- [ ] Populate and make `Policy AUS` public, update scoped HEOR membership and
-  notes, and refresh the public dataset-estate registry after explicit
-  maintainer approval for the public collection and registry changes.
+- [~] Apply the approved public registry and HEOR source-note changes; remaining
+  collection changes are stopped at the Hugging Face 150-character collection
+  description limit. Policy AUS is absent from the anonymous public listing,
+  the two utilisation members are not yet in HEOR, and no publication receipt
+  was produced. A proposed 146-character description is awaiting explicit
+  maintainer approval before the approval manifest or pinned digest changes.
+  See the 2026-10-01 partial-publication evidence record.
 - [x] Reconcile candidate raw paths against pinned public manifests using
   metadata only. All 1,736 Australian MBS/PBS candidate paths map to pinned
   manifests or the exact August 2026 MBS hosted receipt; 1,735 appear in root
