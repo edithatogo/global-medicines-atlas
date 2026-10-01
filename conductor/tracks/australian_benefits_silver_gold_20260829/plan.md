@@ -1486,10 +1486,18 @@
   remains private and empty. No source bytes were read and no external
   mutation occurred. See
   `quality/qualifications/australian-m112-public-metadata-readback-20261001.json`.
-- [ ] Reconcile the owner estate and collection memberships in the public
+- [x] Reconcile the owner estate and collection memberships in the public
   dataset-estate registry, and make `Policy AUS` public with scoped dataset
-  notes. Public collection and registry mutation remains a separate explicit
-  maintainer gate; the current proposal is preparatory evidence only.
+  notes. The sole maintainer approved the metadata-only transition; hosted run
+  `36816927372` published registry revision
+  `4802d56a340646043fc91bed218c1e8a958f42c2` and the exact approved 5-member
+  Policy AUS / 6-member HEOR state. The corrected anonymous detail-endpoint
+  scan is stable across two reads and confirms all approved notes. Durable
+  receipt and readback are recorded in the public federation track at
+  `quality/qualifications/hf-public-metadata-publication-receipt-20261001.json`
+  and `quality/qualifications/hf-public-metadata-readback-20261001.json`.
+  This closes only metadata visibility and registry consistency; it does not
+  establish per-object rights, v4 admission, lineage, or M-112 acceptance.
 - [ ] Independently bind the approved denominator's per-object source
   membership, rights, v4 contract, lineage, and anonymous public readback, then
   run consumer compatibility canaries against those pinned identities. M-112
