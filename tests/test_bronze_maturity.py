@@ -113,6 +113,138 @@ def test_sweden_private_aggregate_receipt_counts_as_bronze_landing() -> None:
     assert receipt["rights_boundary"]["publication_authorized"] is False
 
 
+@pytest.mark.unit
+def test_norpd_private_historical_report_counts_as_bronze_landing() -> None:
+    evidence = receipt_backed_landing_evidence(
+        ROOT, {bronze_maturity_mod.NORPD_SOURCE_ID}
+    )
+    assert evidence == {
+        bronze_maturity_mod.NORPD_SOURCE_ID: bronze_maturity_mod.NORPD_QUALIFICATION_RELATIVE
+    }
+    receipt = json.loads(
+        (ROOT / bronze_maturity_mod.NORPD_QUALIFICATION_RELATIVE).read_text(
+            encoding="utf-8"
+        )
+    )
+    assert receipt["report_period"] == "2014-2018"
+    assert receipt["rights_boundary"]["coarse_rights_state"] == "unknown"
+    assert receipt["rights_boundary"]["publication_authorized"] is False
+    assert receipt["rights_boundary"]["post_2020_coverage_asserted"] is False
+
+
+@pytest.mark.parametrize(
+    "mutate",
+    [
+        lambda receipt: receipt.update(workflow_run="https://example.org/run"),
+        lambda receipt: receipt.update(report_period="2021-2025"),
+        lambda receipt: receipt.update(payload_sha256="0"),
+        lambda receipt: receipt["retention"].update(revision="bad-revision"),
+        lambda receipt: receipt["retention"].update(private=False),
+        lambda receipt: receipt["retention"].update(gated=True),
+        lambda receipt: receipt["retention"].update(archive_sha256="0"),
+        lambda receipt: receipt["retention"].update(
+            authenticated_pinned_revision_readback_verified=False
+        ),
+        lambda receipt: receipt["retention"].update(
+            clean_room_recovered_payload_count=0
+        ),
+        lambda receipt: receipt["retention"].update(
+            temporary_runner_payload_bytes_removed_after_digest_verification=False
+        ),
+        lambda receipt: receipt["rights_boundary"].update(
+            external_publication_authorized=True
+        ),
+        lambda receipt: receipt["rights_boundary"].update(
+            post_2020_coverage_asserted=True
+        ),
+    ],
+)
+@pytest.mark.unit
+def test_norpd_landing_rejects_receipt_or_boundary_drift(mutate) -> None:
+    receipt = json.loads(
+        (ROOT / bronze_maturity_mod.NORPD_QUALIFICATION_RELATIVE).read_text(
+            encoding="utf-8"
+        )
+    )
+    mutate(receipt)
+    assert not bronze_maturity_mod._is_successful_norpd_receipt(
+        ROOT, receipt, bronze_maturity_mod.NORPD_SOURCE_ID
+    )
+
+
+@pytest.mark.parametrize("authorization_state", ["missing", "invalid_json"])
+@pytest.mark.unit
+def test_norpd_landing_rejects_unreadable_authorization(
+    tmp_path: Path, authorization_state: str
+) -> None:
+    authorization_path = (
+        tmp_path / bronze_maturity_mod.NORPD_AUTHORIZATION_RELATIVE
+    )
+    authorization_path.parent.mkdir(parents=True)
+    if authorization_state == "invalid_json":
+        authorization_path.write_text("{invalid", encoding="utf-8")
+    receipt = json.loads(
+        (ROOT / bronze_maturity_mod.NORPD_QUALIFICATION_RELATIVE).read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert not bronze_maturity_mod._is_successful_norpd_receipt(
+        tmp_path, receipt, bronze_maturity_mod.NORPD_SOURCE_ID
+    )
+
+
+@pytest.mark.parametrize(
+    "authorization",
+    [
+        None,
+        {"sources": "not-a-list"},
+        {"sources": []},
+    ],
+)
+@pytest.mark.unit
+def test_norpd_landing_rejects_malformed_authorization_structure(
+    tmp_path: Path, authorization: object
+) -> None:
+    authorization_path = (
+        tmp_path / bronze_maturity_mod.NORPD_AUTHORIZATION_RELATIVE
+    )
+    authorization_path.parent.mkdir(parents=True)
+    authorization_path.write_text(json.dumps(authorization), encoding="utf-8")
+    receipt = json.loads(
+        (ROOT / bronze_maturity_mod.NORPD_QUALIFICATION_RELATIVE).read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert not bronze_maturity_mod._is_successful_norpd_receipt(
+        tmp_path, receipt, bronze_maturity_mod.NORPD_SOURCE_ID
+    )
+
+
+@pytest.mark.unit
+def test_norpd_landing_rejects_non_mapping_receipt_substructures(
+    tmp_path: Path,
+) -> None:
+    authorization_path = (
+        tmp_path / bronze_maturity_mod.NORPD_AUTHORIZATION_RELATIVE
+    )
+    authorization_path.parent.mkdir(parents=True)
+    authorization_path.write_bytes(
+        (ROOT / bronze_maturity_mod.NORPD_AUTHORIZATION_RELATIVE).read_bytes()
+    )
+    receipt = json.loads(
+        (ROOT / bronze_maturity_mod.NORPD_QUALIFICATION_RELATIVE).read_text(
+            encoding="utf-8"
+        )
+    )
+    receipt["retention"] = []
+
+    assert not bronze_maturity_mod._is_successful_norpd_receipt(
+        tmp_path, receipt, bronze_maturity_mod.NORPD_SOURCE_ID
+    )
+
+
 @pytest.mark.parametrize(
     "mutate",
     [

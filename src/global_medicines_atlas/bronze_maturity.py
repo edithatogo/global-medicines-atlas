@@ -60,6 +60,7 @@ PROPERTY_IDS: tuple[str, ...] = (
 )
 FDA_SHORTAGES_HISTORICAL_SNAPSHOT_COUNT = 129
 SHA256_HEX_LENGTH = 64
+GIT_SHA_HEX_LENGTH = 40
 NICE_UTILISATION_EXPECTED_PAYLOAD_COUNT = 15
 NICE_UTILISATION_EXPECTED_RELEASE_COUNT = 4
 SWEDEN_SOURCE_ID = "se-socialstyrelsen-utilisation"
@@ -77,6 +78,15 @@ SWEDEN_CELL_COUNT_UPPER_BOUND = 90
 SWEDEN_MAXIMUM_CELLS = 70000
 SWEDEN_MAXIMUM_ATC_CODES = 100
 SWEDEN_ARCHIVE_BYTE_COUNT = 921600
+NORPD_SOURCE_ID = "no-norpd-utilisation"
+NORPD_QUALIFICATION_RELATIVE = (
+    "quality/qualifications/norpd-live-private-bronze-20261001.json"
+)
+NORPD_AUTHORIZATION_RELATIVE = (
+    "quality/qualifications/nordic-utilisation-acquisition-authorization.json"
+)
+NORPD_WORKFLOW_RUN = "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36870401810"
+NORDIC_AUTHORIZED_SOURCE_COUNT = 3
 AUTHORITIES = {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -235,6 +245,9 @@ def _is_successful_bronze_receipt(
         ),
         "global-medicines-atlas.sweden-socialstyrelsen-live-private-bronze-qualification": lambda: (
             _is_successful_sweden_receipt(receipt, source_id)
+        ),
+        "global-medicines-atlas.norpd-live-private-bronze-qualification": lambda: (
+            _is_successful_norpd_receipt(root, receipt, source_id)
         ),
     }
     if schema_id in specialized:
@@ -414,6 +427,106 @@ def _is_successful_sweden_receipt(
         and rights.get("external_publication_authorized") is False
         and rights.get("person_level_data_acquired") is False
         and rights.get("bulk_download_acquired") is False
+    )
+
+
+def _is_successful_norpd_receipt(
+    root: Path, receipt: Mapping[str, Any], source_id: str
+) -> bool:
+    """Require the exact hosted private NorPD report and its decision bounds."""
+    try:
+        authorization_value = json.loads(
+            _read(root, NORPD_AUTHORIZATION_RELATIVE)
+        )
+    except OSError, json.JSONDecodeError:
+        return False
+    if not isinstance(authorization_value, Mapping):
+        return False
+    authorization = cast("Mapping[str, Any]", authorization_value)
+    sources = authorization.get("sources")
+    if not isinstance(sources, list):
+        return False
+    source_entries = cast("list[object]", sources)
+    if len(source_entries) != NORDIC_AUTHORIZED_SOURCE_COUNT:
+        return False
+    norway = cast("Mapping[str, Any]", source_entries[1])
+    retention = receipt.get("retention")
+    rights = receipt.get("rights_boundary")
+    if not isinstance(retention, Mapping) or not isinstance(rights, Mapping):
+        return False
+    retention = cast("Mapping[str, Any]", retention)
+    rights = cast("Mapping[str, Any]", rights)
+    payload_sha256 = receipt.get("payload_sha256")
+    payload_size = receipt.get("payload_byte_count")
+    archive_sha256 = retention.get("archive_sha256")
+    archive_size = retention.get("archive_byte_count")
+    revision = retention.get("revision")
+    workflow_commit = receipt.get("workflow_commit")
+
+    def valid_sha256(value: object) -> bool:
+        return (
+            isinstance(value, str)
+            and len(value) == SHA256_HEX_LENGTH
+            and all(char in "0123456789abcdef" for char in value)
+        )
+
+    def valid_git_sha(value: object) -> bool:
+        return (
+            isinstance(value, str)
+            and len(value) == GIT_SHA_HEX_LENGTH
+            and all(char in "0123456789abcdef" for char in value)
+        )
+
+    return (
+        source_id == NORPD_SOURCE_ID
+        and receipt.get("schema_version") == 1
+        and not isinstance(receipt.get("schema_version"), bool)
+        and receipt.get("source_id") == NORPD_SOURCE_ID
+        and receipt.get("workflow_run") == NORPD_WORKFLOW_RUN
+        and receipt.get("workflow_conclusion") == "success"
+        and valid_git_sha(workflow_commit)
+        and receipt.get("evidence_class")
+        == "live_private_historical_aggregate_report"
+        and receipt.get("report_period") == "2014-2018"
+        and receipt.get("report_url")
+        == "https://www.fhi.no/contentassets/4df2902e8492453bb22c219bf69d8f71/191303_legemiddelstatistikk2019.pdf"
+        and receipt.get("payload_count") == 1
+        and isinstance(payload_size, int)
+        and not isinstance(payload_size, bool)
+        and payload_size > 0
+        and valid_sha256(payload_sha256)
+        and receipt.get("public_release_authorized") is False
+        and receipt.get("external_publication_authorized") is False
+        and retention.get("dataset")
+        == "edithatogo/global-medicines-atlas-norpd-private"
+        and valid_git_sha(revision)
+        and retention.get("private") is True
+        and retention.get("gated") is False
+        and isinstance(archive_size, int)
+        and not isinstance(archive_size, bool)
+        and archive_size > 0
+        and valid_sha256(archive_sha256)
+        and retention.get("authenticated_pinned_revision_readback_verified")
+        is True
+        and retention.get("clean_room_recovered_payload_count") == 1
+        and retention.get(
+            "temporary_runner_payload_bytes_removed_after_digest_verification"
+        )
+        is True
+        and rights.get("coarse_rights_state") == "unknown"
+        and rights.get("internal_retention_authorized") is True
+        and rights.get("maintainer_licence_approved") is False
+        and rights.get("publication_authorized") is False
+        and rights.get("external_publication_authorized") is False
+        and rights.get("person_level_data_acquired") is False
+        and rights.get("post_2020_coverage_asserted") is False
+        and norway.get("source_id") == NORPD_SOURCE_ID
+        and norway.get("decision_date") == "2026-10-01"
+        and norway.get("decision_status") == "approved_internal"
+        and norway.get("acquisition_authorized") is True
+        and norway.get("internal_retention_authorized") is True
+        and norway.get("public_release_authorized") is False
+        and norway.get("external_publication_authorized") is False
     )
 
 

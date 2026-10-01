@@ -1,0 +1,43 @@
+{
+  "schema_id": "global-medicines-atlas.norpd-live-private-bronze-qualification",
+  "schema_version": 1,
+  "source_id": "no-norpd-utilisation",
+  "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36870401810",
+  "workflow_commit": "1c469fa368ef012819c46f820d1bba40ae0621bf",
+  "workflow_conclusion": "success",
+  "observed_receipt_at": "2026-10-01T13:40:50Z",
+  "evidence_class": "live_private_historical_aggregate_report",
+  "acquisition_id": "4b69761f5474353b6de34e17a502c655222b127c1549be19a01ceec577c2b2fd",
+  "report_url": "https://www.fhi.no/contentassets/4df2902e8492453bb22c219bf69d8f71/191303_legemiddelstatistikk2019.pdf",
+  "report_page": "https://www.fhi.no/en/publ/2019/norpd-20142018/",
+  "report_period": "2014-2018",
+  "public_release_authorized": false,
+  "external_publication_authorized": false,
+  "attribution": "Norwegian Prescription Database (NorPD), Norwegian Institute of Public Health (NIPH); report published 2019.",
+  "payload_count": 1,
+  "payload_sha256": "faa1c209ad5e9470dd553d0d959caf29370e2b247824e9a8329b991ee6c76c75",
+  "payload_byte_count": 1536773,
+  "retention": {
+    "dataset": "edithatogo/global-medicines-atlas-norpd-private",
+    "revision": "a8184c740da017f7ae40421c74e67d41a0d567e9",
+    "path": "norpd-2014-2018.private.tar",
+    "private": true,
+    "gated": false,
+    "archive_byte_count": 3276800,
+    "archive_sha256": "4c5c3e619f9426a4e5cc48a32be9b731b341d1ab177a994bf1c7faa328773f38",
+    "authenticated_pinned_revision_readback_verified": true,
+    "clean_room_recovered_payload_count": 1,
+    "temporary_runner_payload_bytes_removed_after_digest_verification": true
+  },
+  "rights_boundary": {
+    "coarse_rights_state": "unknown",
+    "internal_retention_authorized": true,
+    "maintainer_licence_approved": false,
+    "publication_authorized": false,
+    "external_publication_authorized": false,
+    "person_level_data_acquired": false,
+    "post_2020_coverage_asserted": false
+  },
+  "coverage_boundary": "One historic NIPH-published NorPD report for 2014-2018. It is not the current LMR service, does not establish coverage after 2020, and does not include person-level registry records.",
+  "evidence_limit": "This qualifies one private B1/B2 historical aggregate report acquisition, digest-bound receipt, clean-room recovery, private archive integrity, and exact pinned hosted readback only. Project-wide source rights and licensing, public release, external publication, source-record projection, current utilisation coverage, Bronze completeness, and M5 remain separate and unresolved."
+}

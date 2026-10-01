@@ -7,11 +7,11 @@ Silver transformations included: **no**.
 
 ## State summary
 
-- `landed_and_evidenced`: 41
+- `landed_and_evidenced`: 42
 - `temporarily_unavailable`: 1
 - `rights_blocked`: 27
 - `credentialed_and_excluded`: 15
-- `manual_only_documented_acquisition`: 90
+- `manual_only_documented_acquisition`: 89
 - `superseded_by_reused_source`: 0
 - `not_yet_implemented`: 0
 
@@ -135,7 +135,7 @@ Silver transformations included: **no**.
 - [ ] `ng-nafdac-safety` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `ng-nhia-medicines` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `nl-medicijnkosten` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
-- [ ] `no-norpd-utilisation` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
+- [x] `no-norpd-utilisation` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `nz-medsafe-products` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `om-moh-medicines` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `ph-fda-verification` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.

@@ -25,14 +25,18 @@ that later, specifically scoped evidence. A bounded current Orange Book
 record projection is also counted as landed; this does not complete Prompt 16
 or its historical family. The report was refreshed against exact merged
 `main` commit `ab1a4a1ec9d9cc6889c5206f0f7fb2934965a261` after PR #687; the
-source inventory and completeness finding are unchanged. The refresh leaves source-specific states unchanged and finds 116 of 157 in-scope
+source inventory and completeness finding are unchanged. The current NorPD
+qualification snapshot is based on merged `main` commit
+`1c469fa368ef012819c46f820d1bba40ae0621bf`. The refresh leaves source-specific states unchanged and finds 115 of 157 in-scope
 public/no-credential sources without qualifying landing evidence. CMS Part D
 Prompt 31 was already included in the prior denominator; its reconciled queue
 and source-record evidence do not create another landing increment.
 The Sweden count reflects one internally authorized, privately retained 2025
 national aggregate acquisition; its coarse rights state remains unknown, and
 no licensing, public release, redistribution, or complete Swedish coverage is
-claimed. The Prompt 33 audit leaves Denmark and Norway without live receipts.
+claimed. The Prompt 33 audit recognizes the approved private historic NorPD
+2014-2018 aggregate report; it leaves Denmark without a live receipt, and
+Norway's coarse source-rights state remains unknown.
 Two fixture-only and 15 excluded sources remain outside that denominator.
 Delegated detail-page coverage remains incomplete, and public release and
 external publication remain unauthorized.

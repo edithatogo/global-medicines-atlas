@@ -70,9 +70,18 @@ SWEDEN_QUALIFICATION = (
     ROOT
     / "quality/qualifications/sweden-socialstyrelsen-live-private-bronze-20260929.json"
 )
+NORPD_QUALIFICATION = (
+    ROOT / "quality/qualifications/norpd-live-private-bronze-20261001.json"
+)
+NORDIC_AUTHORIZATION = (
+    ROOT
+    / "quality/qualifications/nordic-utilisation-acquisition-authorization.json"
+)
 DEFAULT_OUTPUT = (
     ROOT / "quality/qualifications/prompt-acquisition-completion-audit.json"
 )
+NORPD_PAYLOAD_BYTES = 1_536_773
+NORPD_ARCHIVE_BYTES = 3_276_800
 RECONCILIATION_PROMPT_ID = 36
 ORANGE_BOOK_HISTORICAL_PROMPT_ID = 16
 PROMPT_AUDIT_RECORD_SOURCE_IDS = frozenset({"us-fda-nsde"})
@@ -638,6 +647,74 @@ def _qualified_sweden_sources() -> set[str]:
     return {SWEDEN_SOURCE_ID}
 
 
+def _qualified_norpd_sources() -> set[str]:
+    """Recognize the approved, private historical NorPD report receipt."""
+    qualification = json.loads(NORPD_QUALIFICATION.read_text(encoding="utf-8"))
+    authorization = json.loads(NORDIC_AUTHORIZATION.read_text(encoding="utf-8"))
+    source_decisions = {
+        item["source_id"]: item for item in authorization["sources"]
+    }
+    decision = source_decisions["no-norpd-utilisation"]
+    retention = qualification["retention"]
+    rights = qualification["rights_boundary"]
+    boundary = (
+        qualification["schema_id"]
+        == "global-medicines-atlas.norpd-live-private-bronze-qualification",
+        qualification["schema_version"] == 1,
+        qualification["source_id"] == "no-norpd-utilisation",
+        qualification["workflow_run"]
+        == "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36870401810",
+        qualification["workflow_commit"]
+        == "1c469fa368ef012819c46f820d1bba40ae0621bf",
+        qualification["workflow_conclusion"] == "success",
+        qualification["evidence_class"]
+        == "live_private_historical_aggregate_report",
+        qualification["acquisition_id"]
+        == "4b69761f5474353b6de34e17a502c655222b127c1549be19a01ceec577c2b2fd",
+        qualification["report_period"] == "2014-2018",
+        qualification["report_url"]
+        == "https://www.fhi.no/contentassets/4df2902e8492453bb22c219bf69d8f71/191303_legemiddelstatistikk2019.pdf",
+        qualification["payload_count"] == 1,
+        qualification["payload_byte_count"] == NORPD_PAYLOAD_BYTES,
+        qualification["payload_sha256"]
+        == "faa1c209ad5e9470dd553d0d959caf29370e2b247824e9a8329b991ee6c76c75",
+        qualification["public_release_authorized"] is False,
+        qualification["external_publication_authorized"] is False,
+        retention["dataset"]
+        == "edithatogo/global-medicines-atlas-norpd-private",
+        retention["revision"] == "a8184c740da017f7ae40421c74e67d41a0d567e9",
+        retention["private"] is True,
+        retention["gated"] is False,
+        retention["archive_byte_count"] == NORPD_ARCHIVE_BYTES,
+        retention["archive_sha256"]
+        == "4c5c3e619f9426a4e5cc48a32be9b731b341d1ab177a994bf1c7faa328773f38",
+        retention["authenticated_pinned_revision_readback_verified"] is True,
+        retention["clean_room_recovered_payload_count"] == 1,
+        retention[
+            "temporary_runner_payload_bytes_removed_after_digest_verification"
+        ]
+        is True,
+        rights["coarse_rights_state"] == "unknown",
+        rights["internal_retention_authorized"] is True,
+        rights["maintainer_licence_approved"] is False,
+        rights["publication_authorized"] is False,
+        rights["external_publication_authorized"] is False,
+        rights["person_level_data_acquired"] is False,
+        rights["post_2020_coverage_asserted"] is False,
+        decision["decision_date"] == "2026-10-01",
+        decision["decision_status"] == "approved_internal",
+        decision["acquisition_authorized"] is True,
+        decision["internal_retention_authorized"] is True,
+        decision["public_release_authorized"] is False,
+        decision["external_publication_authorized"] is False,
+    )
+    if not all(boundary):
+        raise ValueError(
+            "NorPD qualification crossed its approved private scope"
+        )
+    return {"no-norpd-utilisation"}
+
+
 def _qualified_shortages_sources() -> set[str]:
     qualification = json.loads(
         SHORTAGES_QUALIFICATION.read_text(encoding="utf-8")
@@ -794,6 +871,7 @@ def build() -> dict[str, Any]:
         | _qualified_open_medic_sources()
         | _qualified_cms_sources()
         | _qualified_sweden_sources()
+        | _qualified_norpd_sources()
     )
     for source_id in qualified_us_live:
         existing = measured_by_source.get(source_id, {})

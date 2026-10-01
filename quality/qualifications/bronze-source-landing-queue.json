@@ -3028,7 +3028,7 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "After source-specific maintainer acceptance, preserve only anonymous historic report outputs and parameters through 2020; do not request restricted registry records or infer current successor coverage.",
+        "acquisition_instructions": "Record the public search filters, export the complete result set, and receipt the source-native export.",
         "acquisition_profile": null,
         "credentials_persisted": false,
         "endpoint": "https://statistikk.fhi.no/lmr/default.aspx",
@@ -3043,14 +3043,15 @@
         "source_id": "no-norpd-utilisation"
       },
       "evidence_references": [
-        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
+        "quality/qualifications/nordic-utilisation-acquisition-authorization.json",
+        "quality/qualifications/norpd-live-private-bronze-20261001.json"
       ],
-      "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
-      "priority": 30,
-      "reason": "The historic anonymous NorPD report surface is public with attribution and frozen with data through 2020; this is distinct from restricted person-level registry access.",
+      "evidence_scope": "live_receipt",
+      "next_action": "verify receipt freshness on schedule",
+      "priority": 90,
+      "reason": "One official NIPH-published NorPD aggregate report for 2014-2018 was acquired under dated internal-only maintainer authority, admitted with a content-addressed receipt, restored in a clean-room exercise, and read back by digest from a pinned private non-gated archive. This does not assert complete historical coverage, rights clearance, public release, or post-2020 coverage.",
       "source_id": "no-norpd-utilisation",
-      "state": "manual_only_documented_acquisition"
+      "state": "landed_and_evidenced"
     },
     {
       "adapter": {
@@ -4699,8 +4700,8 @@
   "source_count": 174,
   "state_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 41,
-    "manual_only_documented_acquisition": 90,
+    "landed_and_evidenced": 42,
+    "manual_only_documented_acquisition": 89,
     "not_yet_implemented": 0,
     "rights_blocked": 27,
     "superseded_by_reused_source": 0,

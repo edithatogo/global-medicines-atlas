@@ -512,7 +512,7 @@ for credentialed or rights-unresolved sources.
     - [x] Re-verify Sweden's current medicines-statistics scope, CC0 declaration and API attribution guidance against official pages; prepare a bounded decision packet without retrieving result payloads
     - [x] Reconcile Medstat's live query criteria: turnover is supported for primary and hospital sectors, not the Total sector; bind one export to both source-defined strata without deriving a sum
     - [x] Obtain independent maintainer source-specific decisions before payload acquisition and retention (Denmark approved 2026-09-13; Norway approved 2026-10-01; Sweden approved 2026-09-29; all internal-only)
-    - [~] Exercise immutable landing, receipts, clean-room recovery, and private archive verification for Norway's official 2014–2018 NorPD report (implementation ready; hosted acquisition and source-specific maturity reconciliation pending)
+    - [~] Exercise immutable landing, receipts, clean-room recovery, and private archive verification for approved Nordic sources (Norway's bounded 2014–2018 NIPH report is reconciled; Sweden's 2025 aggregate run is reconciled; Denmark remains blocked on its ambiguous export format and provider clarification)
     - [x] Keep public release and external publication separately gated for every Nordic source; the model rejects either authorization flag
 - [~] Task: Acquire additional public utilisation sources (Prompt 34)
     - [x] Correct Japan NDB aggregate and CIHI NHEX public access states without weakening microdata or broader licensed-source boundaries
