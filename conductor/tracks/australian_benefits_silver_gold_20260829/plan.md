@@ -711,9 +711,11 @@
   their manifest digests; 102 candidate paths lack a comparable tree digest.
   The exact August 2026 MBS XML has prior source-specific authorization and a
   durable anonymous hosted verification receipt. Its path is missing from the
-  current root manifest, while two nested accepted but unreviewed acquisition
-  records disagree on acquisition identity and source Parquet digest; canonical
-  B1 reconciliation and v4 admission remain open. Upstream terms remain
+  current root manifest. Exact-revision metadata readback reconciles the two
+  accepted but unreviewed records as distinct append-only acquisition events
+  for the same raw source identity; their source-Parquet projection digests
+  differ and still require separate lineage. Root-manifest completeness,
+  projection lineage, and v4 admission remain open. Upstream terms remain
   unresolved for `au-pbs-historical-xml` and all 1,707 `au_pbs`
   reimbursement-atlas payloads; for the exact PBS source archive, Decision
   0009 and its hosted receipt establish maintainer publication authority and

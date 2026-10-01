@@ -301,10 +301,12 @@
 - [x] Reconcile candidate raw paths against pinned public manifests using
   metadata only. All 1,736 Australian MBS/PBS candidate paths map to pinned
   manifests or the exact August 2026 MBS hosted receipt; 1,735 appear in root
-  manifests, and available tree SHA-256 values match manifest digests. The MBS root manifest omits
-  that XML and duplicate accepted/unreviewed acquisition records still need
-  canonical B1 reconciliation. This does not resolve the unapproved producer
-  denominator, remaining source rights, or v4 admission. See the dependent
+  manifests, and available tree SHA-256 values match manifest digests. The MBS
+  root manifest omits the August XML; exact-revision metadata readback confirms
+  its two unreviewed B1 records are distinct append-only events for the same
+  raw source identity. Their different source-Parquet digests still require
+  separate lineage. The approved candidate denominator does not resolve
+  per-object source rights, root-manifest completeness, or v4 admission. See the dependent
   track's `quality/qualifications/australian-m112-manifest-join-audit-20260930.json`.
 - [x] Join the MBS/PBS source and utilisation receipt metadata to pinned raw
   paths and existing authorization scopes. All 20 utilisation sidecars match
