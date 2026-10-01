@@ -33,11 +33,15 @@ APPROVAL_PATH = Path(
 )
 REGISTRY = "edithatogo/dataset-estate-registry"
 POLICY_DESCRIPTION = (
-    "Australian MBS and PBS source and derived evidence. Collection membership "
-    "is for discovery and does not grant source rights, authorize publication, "
-    "or establish federation acceptance. Source scope, rights, and "
-    "qualification remain recorded per dataset and object."
+    "Australian MBS and PBS evidence for discovery. Membership does not grant "
+    "source rights, authorize publication, or establish federation acceptance."
 )
+POLICY_MEMBER_CAVEAT = (
+    "Collection membership is for discovery and does not grant source rights, "
+    "authorize publication, or establish federation acceptance."
+)
+HUB_COLLECTION_DESCRIPTION_LIMIT = 150
+HUB_COLLECTION_MEMBER_NOTE_LIMIT = 500
 HEOR_EXISTING_NOTES = {
     "edithatogo/reimbursement-atlas": (
         "Metadata-only reimbursement atlas; origin remains unresolved in the "
@@ -194,6 +198,11 @@ def validate_scope_assessment(
     proposal = cast(
         "dict[str, Any]", scope_document["policy_aus_change_proposal"]
     )
+    _require(
+        proposal.get("approval_state") == "approved"
+        and proposal.get("approval_record_path") == str(APPROVAL_PATH),
+        "Policy AUS maintainer approval record is missing",
+    )
     proposed_members = [
         {
             "dataset": row["dataset"],
@@ -204,6 +213,24 @@ def validate_scope_assessment(
             "list[dict[str, Any]]", proposal["proposed_dataset_members"]
         )
     ]
+    description = proposal["proposed_collection_note"]
+    _require(
+        description == POLICY_DESCRIPTION,
+        "Policy AUS description differs from the approved wording",
+    )
+    _require(
+        len(description) <= HUB_COLLECTION_DESCRIPTION_LIMIT,
+        "Policy AUS description exceeds the Hub limit",
+    )
+    for member in proposed_members:
+        _require(
+            len(member["note"]) <= HUB_COLLECTION_MEMBER_NOTE_LIMIT,
+            "Policy AUS member note exceeds the Hub limit",
+        )
+        _require(
+            POLICY_MEMBER_CAVEAT in member["note"],
+            "Policy AUS member note omits the full collection caveat",
+        )
     _require(
         proposal["collection_slug"] == scope["policy_aus_slug"]
         and proposal["proposed_collection_note"]

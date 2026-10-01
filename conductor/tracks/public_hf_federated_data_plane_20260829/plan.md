@@ -279,11 +279,13 @@
   own exact merge receipt.
 - [~] Apply the approved public registry and HEOR source-note changes; remaining
   collection changes are stopped at the Hugging Face 150-character collection
-  description limit. Policy AUS is absent from the anonymous public listing,
-  the two utilisation members are not yet in HEOR, and no publication receipt
-  was produced. A proposed 146-character description is awaiting explicit
-  maintainer approval before the approval manifest or pinned digest changes.
-  See the 2026-10-01 partial-publication evidence record.
+  description limit. The maintainer approved the exact 146-character
+  description and full caveat in all five member notes on 2026-10-01. The
+  approval manifest, scope assessment, and workflow-pinned digest now bind that
+  wording; the hosted apply and anonymous readback remain pending. Policy AUS
+  remains absent from the anonymous public listing, the two utilisation
+  members are not yet in HEOR, and no complete publication receipt exists.
+  See the 2026-10-01 partial-publication and approval evidence records.
 - [x] Reconcile candidate raw paths against pinned public manifests using
   metadata only. All 1,736 Australian MBS/PBS candidate paths map to pinned
   manifests or the exact August 2026 MBS hosted receipt; 1,735 appear in root
