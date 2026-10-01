@@ -286,10 +286,11 @@
   was approved, a retry stopped in preflight because Policy AUS still held the
   exact member notes from the prior approved manifest. Those five prior notes
   are now recorded as the only permitted migration baseline; unknown notes
-  still fail closed. Focused tests and the full local Test-Goblin profile pass.
-  The corrected hosted apply, public collection readback, and complete receipt
-  remain pending; the two utilisation members are not yet in HEOR. See the
-  2026-10-01 partial-publication and prior-note-transition evidence records.
+  still fail closed (`5f519609`). Focused tests and the full local Test-Goblin
+  profile pass. The corrected hosted apply, public collection readback, and
+  complete receipt remain pending; the two utilisation members are not yet in
+  HEOR. See the 2026-10-01 partial-publication and prior-note-transition
+  evidence records.
 - [x] Reconcile candidate raw paths against pinned public manifests using
   metadata only. All 1,736 Australian MBS/PBS candidate paths map to pinned
   manifests or the exact August 2026 MBS hosted receipt; 1,735 appear in root
