@@ -7,6 +7,7 @@ from collections.abc import Callable
 from contextlib import AbstractContextManager
 from datetime import UTC, datetime
 from typing import Any, cast
+from urllib.request import Request
 
 import pytest
 from scripts import qualify_hf_public_registry_gap as audit
@@ -225,6 +226,246 @@ def test_registry_file_is_bound_to_current_public_head(
         audit._registry_catalog("b" * audit.REVISION_LENGTH)  # pyright: ignore[reportPrivateUsage]
 
 
+def test_public_dataset_scan_is_complete_sorted_and_revision_pinned(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[str] = []
+    rows = [
+        {
+            "id": "edithatogo/z-dataset",
+            "private": False,
+            "gated": False,
+            "sha": "b" * audit.REVISION_LENGTH,
+        },
+        {
+            "id": "edithatogo/a-dataset",
+            "private": False,
+            "gated": "auto",
+            "sha": "a" * audit.REVISION_LENGTH,
+        },
+    ]
+
+    def observe(url: str) -> list[dict[str, object]]:
+        calls.append(url)
+        return rows
+
+    monkeypatch.setattr(audit, "_json", observe)
+
+    result = audit._public_datasets()  # pyright: ignore[reportPrivateUsage]
+
+    assert calls == [
+        (
+            f"{audit.API_BASE}/datasets?author={audit.OWNER}&limit=100"
+            "&expand[]=sha&expand[]=private&expand[]=gated"
+        )
+    ]
+    assert result == [
+        {
+            "repo_id": "edithatogo/a-dataset",
+            "revision": "a" * audit.REVISION_LENGTH,
+            "gated": "auto",
+        },
+        {
+            "repo_id": "edithatogo/z-dataset",
+            "revision": "b" * audit.REVISION_LENGTH,
+            "gated": False,
+        },
+    ]
+
+
+@pytest.mark.parametrize(
+    ("rows", "message"),
+    [
+        ([{"id": "edithatogo/private", "private": True}], "non-public"),
+        ([{"id": "other/dataset", "private": False}], "identity"),
+        (
+            [
+                {
+                    "id": "edithatogo/dataset",
+                    "private": False,
+                    "sha": "z" * 40,
+                    "gated": False,
+                }
+            ],
+            "revision",
+        ),
+        (
+            [
+                {
+                    "id": "edithatogo/dataset",
+                    "private": False,
+                    "sha": "a" * 40,
+                    "gated": "unknown",
+                }
+            ],
+            "gating state",
+        ),
+        (
+            [
+                {
+                    "id": "edithatogo/dataset",
+                    "private": False,
+                    "sha": "a" * 40,
+                    "gated": False,
+                },
+                {
+                    "id": "edithatogo/dataset",
+                    "private": False,
+                    "sha": "a" * 40,
+                    "gated": False,
+                },
+            ],
+            "duplicate",
+        ),
+        (
+            [
+                {
+                    "id": f"edithatogo/dataset-{index:03d}",
+                    "private": False,
+                    "sha": f"{index:040x}",
+                    "gated": False,
+                }
+                for index in range(audit.LISTING_LIMIT)
+            ],
+            "truncated",
+        ),
+    ],
+)
+def test_public_dataset_scan_rejects_incomplete_or_unsafe_rows(
+    monkeypatch: pytest.MonkeyPatch,
+    rows: list[dict[str, object]],
+    message: str,
+) -> None:
+    monkeypatch.setattr(audit, "_json", lambda _url: rows)
+    with pytest.raises(ValueError, match=message):
+        audit._public_datasets()  # pyright: ignore[reportPrivateUsage]
+
+
+def test_public_collection_scan_is_complete_sorted_and_preserves_notes(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    rows = [
+        {
+            "slug": "edithatogo/z-collection",
+            "title": "Z",
+            "description": "Preserve this public description.",
+            "private": False,
+            "gating": False,
+            "items": [
+                {
+                    "id": "edithatogo/dataset-z",
+                    "type": "dataset",
+                    "note": {"text": "Approved discovery note."},
+                }
+            ],
+        },
+        {
+            "slug": "edithatogo/a-collection",
+            "title": "A",
+            "description": None,
+            "private": False,
+            "gating": False,
+            "items": [
+                {
+                    "id": "edithatogo/dataset-a",
+                    "type": "dataset",
+                    "note": None,
+                }
+            ],
+        },
+    ]
+    monkeypatch.setattr(audit, "_json", lambda _url: rows)
+
+    result = audit._public_collections()  # pyright: ignore[reportPrivateUsage]
+
+    assert result == [
+        {
+            "slug": "edithatogo/a-collection",
+            "title": "A",
+            "description": None,
+            "gated": False,
+            "members": [
+                {
+                    "item_type": "dataset",
+                    "item_id": "edithatogo/dataset-a",
+                    "note": None,
+                }
+            ],
+        },
+        {
+            "slug": "edithatogo/z-collection",
+            "title": "Z",
+            "description": "Preserve this public description.",
+            "gated": False,
+            "members": [
+                {
+                    "item_type": "dataset",
+                    "item_id": "edithatogo/dataset-z",
+                    "note": "Approved discovery note.",
+                }
+            ],
+        },
+    ]
+
+
+@pytest.mark.parametrize(
+    ("row", "message"),
+    [
+        (
+            {"slug": "edithatogo/private", "private": True, "items": []},
+            "not public-only",
+        ),
+        (
+            {"slug": "other/collection", "private": False, "items": []},
+            "malformed",
+        ),
+        (
+            {
+                "slug": "edithatogo/collection",
+                "private": False,
+                "items": [
+                    {"id": "edithatogo/data", "type": "model", "note": None}
+                ],
+            },
+            "member fields",
+        ),
+    ],
+)
+def test_public_collection_scan_rejects_unsafe_or_malformed_rows(
+    monkeypatch: pytest.MonkeyPatch,
+    row: dict[str, object],
+    message: str,
+) -> None:
+    monkeypatch.setattr(audit, "_json", lambda _url: [row])
+    with pytest.raises(ValueError, match=message):
+        audit._public_collections()  # pyright: ignore[reportPrivateUsage]
+
+
+def test_public_collection_scan_rejects_duplicates_and_truncation(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    duplicate = {
+        "slug": "edithatogo/collection",
+        "private": False,
+        "items": [],
+    }
+    monkeypatch.setattr(audit, "_json", lambda _url: [duplicate, duplicate])
+    with pytest.raises(ValueError, match="duplicate"):
+        audit._public_collections()  # pyright: ignore[reportPrivateUsage]
+
+    rows = [
+        {
+            "slug": f"edithatogo/collection-{index:03d}",
+            "private": False,
+            "items": [],
+        }
+        for index in range(audit.LISTING_LIMIT)
+    ]
+    monkeypatch.setattr(audit, "_json", lambda _url: rows)
+    with pytest.raises(ValueError, match="truncated"):
+        audit._public_collections()  # pyright: ignore[reportPrivateUsage]
+
+
 def test_read_url_rejects_redirect_outside_official_https_host(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -235,6 +476,25 @@ def test_read_url_rejects_redirect_outside_official_https_host(
     )
     with pytest.raises(ValueError, match="left the official host"):
         audit._read_url(f"{audit.API_BASE}/datasets")  # pyright: ignore[reportPrivateUsage]
+
+
+def test_public_metadata_reads_send_no_authorization_header(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    observed: list[object] = []
+
+    def open_response(request: object, *, timeout: float) -> _Response:
+        del timeout
+        observed.append(request)
+        return _Response(f"{audit.API_BASE}/datasets", b"[]")
+
+    monkeypatch.setattr(audit, "urlopen", open_response)
+
+    assert audit._read_url(f"{audit.API_BASE}/datasets") == b"[]"  # pyright: ignore[reportPrivateUsage]
+    assert len(observed) == 1
+    request = cast("Request", observed[0])
+    assert request.get_header("Authorization") is None
+    assert request.get_header("Cookie") is None
 
 
 def test_read_url_rejects_response_over_the_bound(
