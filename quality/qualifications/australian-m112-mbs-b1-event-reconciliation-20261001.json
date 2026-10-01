@@ -1,0 +1,102 @@
+{
+  "acquisition_events": [
+    {
+      "acquisition_id": "783bd12fab14dc8f93cb34b1d87e9c3f7c95543d261b008f4e0da018a3d11e57",
+      "decision_id": "eb05c5b19a731d9009d6fedbfb45b2d56bb742729728f0a54c306835f10d312c",
+      "decision_state": "accepted",
+      "hosted_dataset_revision": "75f9f20a36ddb829dfe0ca88660664570782be02",
+      "hosted_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5467154799",
+      "hosted_temporary_source_bytes_removed": true,
+      "hosted_transaction_data_acquired": true,
+      "hosted_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/33296983154",
+      "manifest_data_acquired": false,
+      "receipt_id": "mbs-release:d47c71a685b9b31aa0b0b40979a482635c84888e7334a5610f9fa22bee3709c6",
+      "reviewer_status": "unreviewed",
+      "run_directory_id": "99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc",
+      "source_parquet_bytes": 454247,
+      "source_parquet_sha256": "5219094d2ec7f4386380b356cc17f071c97751db43ed367746a6d07ca4ff3eaf"
+    },
+    {
+      "acquisition_id": "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1",
+      "decision_id": "a4c8e7850c664db20b80a9f3e6d5cd09c61ebc1447c121c852438eff24a42dba",
+      "decision_state": "accepted",
+      "hosted_dataset_revision": "c39dd99ab8a6fcf557aeec391e1891b5fa18754f",
+      "hosted_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5515404352",
+      "hosted_temporary_source_bytes_removed": true,
+      "hosted_transaction_data_acquired": true,
+      "hosted_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/33675417619",
+      "manifest_data_acquired": false,
+      "receipt_id": "mbs-release:a7a43be8b30052c192a00d993d5977e524f79b936e2bcfc2919322b4ffcba6d4",
+      "reviewer_status": "unreviewed",
+      "run_directory_id": "6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64",
+      "source_parquet_bytes": 454247,
+      "source_parquet_sha256": "80f8e0d3cc67f6f3a22f23cc3bfb0db5da4d44d79741da3ce1c31ee92836627a"
+    }
+  ],
+  "boundaries": {
+    "dataset_mutation_performed": false,
+    "full_denominator_acceptance": false,
+    "licensing_conclusion_made": false,
+    "reviewer_status_changed": false,
+    "source_payload_bytes_or_values_read": false,
+    "source_values_read": false,
+    "v4_admission_performed": false
+  },
+  "current_revision_readback": {
+    "gated": false,
+    "http_status": 200,
+    "last_modified": "2026-09-29T06:39:53.000Z",
+    "private": false
+  },
+  "current_tree_metadata": {
+    "both_nested_manifests_list_path": true,
+    "exact_path_present": true,
+    "resolve_head_redirect_followed": false,
+    "resolve_head_response_body_read": false,
+    "resolve_head_status": 307,
+    "resolve_head_x_linked_etag": "025c714ecd1fa69f91fdb4de002d285d47272e40",
+    "resolve_head_x_repo_commit": "243f9ff5498816af6e4d9ae4db60528728f01834",
+    "root_manifest_lists_path": false,
+    "size_matches_manifest_and_receipts": true,
+    "tree_api_http_status": 200,
+    "tree_git_blob_oid_sha1": "025c714ecd1fa69f91fdb4de002d285d47272e40",
+    "tree_lfs_sha256_available": false
+  },
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "digest": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON sorted keys, compact separators; digest field excluded",
+    "value": "70809c1d5118b3ca295e358d8edc9680eca517b1272dd768f16a148cfc4efc5e"
+  },
+  "pinned_current_revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+  "reconciliation": {
+    "distinct_append_only_acquisition_events": true,
+    "events_collapsed_or_superseded": false,
+    "projection_lineage_reconciled": false,
+    "raw_denominator_object_count_for_this_source": 1,
+    "result": "source_identity_reconciled; projection lineage and admission remain open",
+    "root_manifest_completeness_reconciled": false,
+    "same_raw_source_identity": true,
+    "source_parquet_projection_digests_differ": true
+  },
+  "recorded_at": "2026-10-01T10:41:04Z",
+  "remaining": [
+    "The root manifest still omits this raw source path.",
+    "The 102 denominator paths without comparable tree SHA-256 remain open.",
+    "Different source-Parquet digests require per-projection lineage; no Parquet payloads were read.",
+    "Full-denominator per-object rights and v4 eligibility, reviewer status, and consumer canaries remain open; no new rights conclusion is made for this exact XML."
+  ],
+  "schema_id": "global-medicines-atlas.australian-m112-mbs-b1-event-reconciliation",
+  "schema_version": 1,
+  "source_identity": {
+    "authorization_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+    "bytes": 8293331,
+    "effective_date": "2026-08-01",
+    "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+    "receipt_rights_state": "permitted",
+    "receipt_transformation_id": "raw-acquisition-v1",
+    "receipt_transformation_sha256": "03d491288f1530588c8bcf5f703dbc7858725756355e3be76e750d5ae8a7ea27",
+    "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+    "source_id": "au-mbs"
+  }
+}
