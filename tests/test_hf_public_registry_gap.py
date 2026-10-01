@@ -230,7 +230,7 @@ def test_public_dataset_scan_is_complete_sorted_and_revision_pinned(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     calls: list[str] = []
-    rows = [
+    rows: list[dict[str, object]] = [
         {
             "id": "edithatogo/z-dataset",
             "private": False,
@@ -374,7 +374,41 @@ def test_public_collection_scan_is_complete_sorted_and_preserves_notes(
             ],
         },
     ]
-    monkeypatch.setattr(audit, "_json", lambda _url: rows)
+    detail_rows = {
+        "edithatogo/z-collection": {
+            **rows[0],
+            "items": [
+                {
+                    "id": "edithatogo/dataset-z",
+                    "type": "dataset",
+                    "note": {"text": "Approved discovery note."},
+                },
+                {
+                    "id": "edithatogo/dataset-z2",
+                    "type": "dataset",
+                    "note": None,
+                },
+            ],
+        },
+        "edithatogo/a-collection": {
+            **rows[1],
+            "items": [
+                {
+                    "id": "edithatogo/dataset-a",
+                    "type": "dataset",
+                    "note": None,
+                }
+            ],
+        },
+    }
+
+    def read_json(url: str) -> object:
+        if url == f"{audit.API_BASE}/collections?owner={audit.OWNER}&limit=100":
+            return rows
+        slug = url.removeprefix(f"{audit.API_BASE}/collections/")
+        return detail_rows[slug]
+
+    monkeypatch.setattr(audit, "_json", read_json)
 
     result = audit._public_collections()  # pyright: ignore[reportPrivateUsage]
 
@@ -402,7 +436,12 @@ def test_public_collection_scan_is_complete_sorted_and_preserves_notes(
                     "item_type": "dataset",
                     "item_id": "edithatogo/dataset-z",
                     "note": "Approved discovery note.",
-                }
+                },
+                {
+                    "item_type": "dataset",
+                    "item_id": "edithatogo/dataset-z2",
+                    "note": None,
+                },
             ],
         },
     ]
@@ -417,6 +456,22 @@ def test_public_collection_scan_is_complete_sorted_and_preserves_notes(
         ),
         (
             {"slug": "other/collection", "private": False, "items": []},
+            "malformed",
+        ),
+        (
+            {
+                "slug": "edithatogo/collection?token=secret",
+                "private": False,
+                "items": [],
+            },
+            "malformed",
+        ),
+        (
+            {
+                "slug": "edithatogo/nested/collection",
+                "private": False,
+                "items": [],
+            },
             "malformed",
         ),
         (
@@ -436,7 +491,11 @@ def test_public_collection_scan_rejects_unsafe_or_malformed_rows(
     row: dict[str, object],
     message: str,
 ) -> None:
-    monkeypatch.setattr(audit, "_json", lambda _url: [row])
+    monkeypatch.setattr(
+        audit,
+        "_json",
+        lambda _url: [row] if "?owner=" in _url else row,
+    )
     with pytest.raises(ValueError, match=message):
         audit._public_collections()  # pyright: ignore[reportPrivateUsage]
 
@@ -449,7 +508,11 @@ def test_public_collection_scan_rejects_duplicates_and_truncation(
         "private": False,
         "items": [],
     }
-    monkeypatch.setattr(audit, "_json", lambda _url: [duplicate, duplicate])
+    monkeypatch.setattr(
+        audit,
+        "_json",
+        lambda _url: [duplicate, duplicate] if "?owner=" in _url else duplicate,
+    )
     with pytest.raises(ValueError, match="duplicate"):
         audit._public_collections()  # pyright: ignore[reportPrivateUsage]
 
@@ -461,7 +524,11 @@ def test_public_collection_scan_rejects_duplicates_and_truncation(
         }
         for index in range(audit.LISTING_LIMIT)
     ]
-    monkeypatch.setattr(audit, "_json", lambda _url: rows)
+    monkeypatch.setattr(
+        audit,
+        "_json",
+        lambda _url: rows if "?owner=" in _url else duplicate,
+    )
     with pytest.raises(ValueError, match="truncated"):
         audit._public_collections()  # pyright: ignore[reportPrivateUsage]
 

@@ -11,7 +11,7 @@ from operator import itemgetter
 from pathlib import Path
 from typing import Any, cast
 from urllib.error import URLError
-from urllib.parse import urlsplit
+from urllib.parse import quote, urlsplit
 from urllib.request import Request, urlopen
 
 from jsonschema import Draft202012Validator, SchemaError, ValidationError
@@ -153,6 +153,65 @@ def _public_datasets() -> list[dict[str, Any]]:
     return sorted(result, key=itemgetter("repo_id"))
 
 
+def _valid_collection_slug(slug: str) -> bool:
+    """Return whether a collection slug is safe for its detail endpoint."""
+    slug_owner, separator, slug_id = slug.partition("/")
+    return (
+        slug_owner == OWNER
+        and bool(separator)
+        and bool(slug_id)
+        and slug_id.isascii()
+        and all(char.isalnum() or char in "-._~" for char in slug_id)
+    )
+
+
+def _collection_members(items: object) -> list[dict[str, Any]]:
+    """Validate and normalize the complete member list from collection detail."""
+    if not isinstance(items, list):
+        raise TypeError("public collection detail members must be an array")
+    members: list[dict[str, Any]] = []
+    for raw_item in cast("list[object]", items):
+        if not isinstance(raw_item, dict):
+            raise TypeError("public collection member must be an object")
+        item = cast("dict[str, Any]", raw_item)
+        item_id = item.get("id")
+        item_type = item.get("type")
+        note = item.get("note")
+        note_mapping = (
+            cast("dict[str, Any]", note) if isinstance(note, dict) else {}
+        )
+        note_text = note_mapping.get("text")
+        if (
+            item_type not in {"dataset", "collection"}
+            or not isinstance(item_id, str)
+            or not isinstance(note_text, str | None)
+        ):
+            raise ValueError("public collection member fields are invalid")
+        members.append({
+            "item_type": item_type,
+            "item_id": item_id,
+            "note": note_text,
+        })
+    return members
+
+
+def _public_collection_detail(slug: str) -> dict[str, Any]:
+    """Read full public metadata from one canonical collection endpoint."""
+    detail = _json(f"{API_BASE}/collections/{quote(slug, safe='/')}")
+    if not isinstance(detail, dict):
+        raise TypeError("public collection detail must be an object")
+    detail = cast("dict[str, Any]", detail)
+    if detail.get("slug") != slug or detail.get("private") is not False:
+        raise ValueError("public collection detail is malformed or private")
+    return {
+        "slug": slug,
+        "title": detail.get("title"),
+        "description": detail.get("description"),
+        "gated": detail.get("gating"),
+        "members": _collection_members(detail.get("items")),
+    }
+
+
 def _public_collections() -> list[dict[str, Any]]:
     rows = _json(f"{API_BASE}/collections?owner={OWNER}&limit=100")
     if not isinstance(rows, list):
@@ -168,46 +227,12 @@ def _public_collections() -> list[dict[str, Any]]:
         if row.get("private") is not False:
             raise ValueError("anonymous collection listing is not public-only")
         slug = row.get("slug")
-        items = row.get("items")
-        items = (
-            cast("list[object]", items) if isinstance(items, list) else items
-        )
-        if (
-            not isinstance(slug, str)
-            or not slug.startswith(f"{OWNER}/")
-            or not isinstance(items, list)
-        ):
+        if not isinstance(slug, str) or not _valid_collection_slug(slug):
             raise ValueError("public collection metadata is malformed")
-        members: list[dict[str, Any]] = []
-        for raw_item in cast("list[object]", items):
-            if not isinstance(raw_item, dict):
-                raise TypeError("public collection member must be an object")
-            item = cast("dict[str, Any]", raw_item)
-            item_id = item.get("id")
-            item_type = item.get("type")
-            note = item.get("note")
-            note_mapping = (
-                cast("dict[str, Any]", note) if isinstance(note, dict) else {}
-            )
-            note_text = note_mapping.get("text")
-            if (
-                item_type not in {"dataset", "collection"}
-                or not isinstance(item_id, str)
-                or not isinstance(note_text, str | None)
-            ):
-                raise ValueError("public collection member fields are invalid")
-            members.append({
-                "item_type": item_type,
-                "item_id": item_id,
-                "note": note_text,
-            })
-        result.append({
-            "slug": slug,
-            "title": row.get("title"),
-            "description": row.get("description"),
-            "gated": row.get("gating"),
-            "members": members,
-        })
+
+        # The owner listing embeds a short, eventually consistent item preview.
+        # Read each canonical collection endpoint for complete current members.
+        result.append(_public_collection_detail(slug))
     if len({row["slug"] for row in result}) != len(result):
         raise ValueError("duplicate public collection identity")
     return sorted(result, key=itemgetter("slug"))
