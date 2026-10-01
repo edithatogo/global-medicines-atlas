@@ -100,7 +100,7 @@ def test_live_qualification_completes_verified_prompts() -> None:
     audit = _audit()
     measured = json.loads(MEASURED.read_text(encoding="utf-8"))["body"]
     assert measured["totals"]["live_qualified_sources"] == 1
-    assert audit["live_qualified_source_count"] == 18
+    assert audit["live_qualified_source_count"] == 19
     assert audit["live_complete_prompt_count"] == 10
     assert audit["program_completion"] == "incomplete_live_acquisition"
     complete = [entry for entry in audit["prompts"] if entry["live_complete"]]
@@ -171,6 +171,7 @@ def test_live_qualification_completes_verified_prompts() -> None:
         "us-gsrs-unii",
         "us-fda-drug-shortages",
         "nl-gipdatabank",
+        "no-norpd-utilisation",
         "se-socialstyrelsen-utilisation",
         "us-cms-partd-formulary",
         "us-cms-partd-spending",
@@ -555,8 +556,8 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
     audit = _audit()
     assert audit["queue_state_counts"] == {
         "credentialed_and_excluded": 15,
-        "landed_and_evidenced": 41,
-        "manual_only_documented_acquisition": 90,
+        "landed_and_evidenced": 42,
+        "manual_only_documented_acquisition": 89,
         "not_yet_implemented": 0,
         "rights_blocked": 27,
         "superseded_by_reused_source": 0,
@@ -621,16 +622,63 @@ def test_nordic_public_aggregate_sources_are_not_credential_or_rights_blocked() 
     )
     assert prompt["queue_states"] == {
         "dk-medstat-utilisation": "manual_only_documented_acquisition",
-        "no-norpd-utilisation": "manual_only_documented_acquisition",
+        "no-norpd-utilisation": "landed_and_evidenced",
         "se-socialstyrelsen-utilisation": "landed_and_evidenced",
     }
     assert prompt["live_qualified_source_ids"] == [
-        "se-socialstyrelsen-utilisation"
-    ]
-    assert prompt["sources_without_live_evidence"] == [
-        "dk-medstat-utilisation",
         "no-norpd-utilisation",
+        "se-socialstyrelsen-utilisation",
     ]
+    assert prompt["sources_without_live_evidence"] == ["dk-medstat-utilisation"]
+
+
+@pytest.mark.parametrize(
+    ("mutate", "message"),
+    [
+        (
+            lambda raw: raw.update(workflow_conclusion="failure"),
+            "NorPD qualification",
+        ),
+        (
+            lambda raw: raw.update(report_period="2014-2025"),
+            "NorPD qualification",
+        ),
+        (
+            lambda raw: raw.update(payload_sha256="0" * 64),
+            "NorPD qualification",
+        ),
+        (
+            lambda raw: raw["retention"].update(private=False),
+            "NorPD qualification",
+        ),
+        (
+            lambda raw: raw["retention"].update(
+                authenticated_pinned_revision_readback_verified=False
+            ),
+            "NorPD qualification",
+        ),
+        (
+            lambda raw: raw["rights_boundary"].update(
+                post_2020_coverage_asserted=True
+            ),
+            "NorPD qualification",
+        ),
+    ],
+)
+def test_norpd_qualification_fails_closed_on_receipt_or_scope_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutate,
+    message: str,
+) -> None:
+    raw = json.loads(audit_mod.NORPD_QUALIFICATION.read_bytes())
+    mutate(raw)
+    unsafe = tmp_path / "unsafe-norpd-qualification.json"
+    unsafe.write_text(json.dumps(raw), encoding="utf-8")
+    monkeypatch.setattr(audit_mod, "NORPD_QUALIFICATION", unsafe)
+
+    with pytest.raises(ValueError, match=message):
+        audit_mod._qualified_norpd_sources()
 
 
 @pytest.mark.parametrize(

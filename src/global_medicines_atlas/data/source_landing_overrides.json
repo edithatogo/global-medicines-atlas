@@ -128,11 +128,12 @@
     },
     {
       "source_id": "no-norpd-utilisation",
-      "state": "manual_only_documented_acquisition",
-      "reason": "The historic anonymous NorPD report surface is public with attribution and frozen with data through 2020; this is distinct from restricted person-level registry access.",
-      "manual_instructions": "After source-specific maintainer acceptance, preserve only anonymous historic report outputs and parameters through 2020; do not request restricted registry records or infer current successor coverage.",
+      "state": "landed_and_evidenced",
+      "evidence_scope": "live_receipt",
+      "reason": "One official NIPH-published NorPD aggregate report for 2014-2018 was acquired under dated internal-only maintainer authority, admitted with a content-addressed receipt, restored in a clean-room exercise, and read back by digest from a pinned private non-gated archive. This does not assert complete historical coverage, rights clearance, public release, or post-2020 coverage.",
       "evidence_references": [
-        "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
+        "quality/qualifications/nordic-utilisation-acquisition-authorization.json",
+        "quality/qualifications/norpd-live-private-bronze-20261001.json"
       ]
     },
     {

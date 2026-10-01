@@ -3,7 +3,7 @@
   "schema_version": 1,
   "index_id": "global-medicines-data-source-index-2026-08-20",
   "generated_from": "src/global_medicines_atlas/data/medicine_source_catalog.json",
-  "catalog_reviewed_at": "2026-08-20",
+  "catalog_reviewed_at": "2026-08-29",
   "evidentiary_truth": "The immutable source payload and its content-addressed receipt are evidentiary truth; source-faithful Parquet is the portable analytical representation; table/catalogue layers are rebuildable metadata over those artefacts.",
   "hugging_face_role": "archive_output_not_source_of_truth",
   "independent_dimensions": [
@@ -873,7 +873,7 @@
         "us-cms-partd-formulary"
       ],
       "blocked_source_ids": [],
-      "notes": "us-cms-partd-spending:rights_unresolved_fail_closed; us-cms-partd-formulary:reused_existing_catalog_entry"
+      "notes": "us-cms-partd-spending:eligible_public_not_live_acquired; us-cms-partd-formulary:reused_existing_catalog_entry"
     },
     {
       "track_id": 32,
@@ -890,10 +890,8 @@
         "no-norpd-utilisation",
         "se-socialstyrelsen-utilisation"
       ],
-      "blocked_source_ids": [
-        "no-norpd-utilisation"
-      ],
-      "notes": "dk-medstat-utilisation:rights_unresolved_fail_closed; no-norpd-utilisation:credentialed_metadata_only; se-socialstyrelsen-utilisation:rights_unresolved_fail_closed"
+      "blocked_source_ids": [],
+      "notes": "dk-medstat-utilisation:rights_unresolved_fail_closed; no-norpd-utilisation:rights_unresolved_fail_closed; se-socialstyrelsen-utilisation:rights_unresolved_fail_closed"
     },
     {
       "track_id": 34,
@@ -903,10 +901,8 @@
         "ca-cihi-nhex-medicines",
         "ie-pcrs-reimbursement"
       ],
-      "blocked_source_ids": [
-        "jp-mhlw-ndb-utilisation"
-      ],
-      "notes": "fr-open-medic:rights_unresolved_fail_closed; jp-mhlw-ndb-utilisation:credentialed_metadata_only; ca-cihi-nhex-medicines:rights_unresolved_fail_closed; ie-pcrs-reimbursement:rights_unresolved_fail_closed"
+      "blocked_source_ids": [],
+      "notes": "fr-open-medic:eligible_public_not_live_acquired; jp-mhlw-ndb-utilisation:rights_unresolved_fail_closed; ca-cihi-nhex-medicines:rights_unresolved_fail_closed; ie-pcrs-reimbursement:rights_unresolved_fail_closed"
     },
     {
       "track_id": 35,
@@ -1007,10 +1003,42 @@
       "native_identifier": "source-native identifier",
       "rights_status": "review_required",
       "authentication": "none",
-      "readiness": "verified",
+      "readiness": "implemented",
       "information_domains": [
         "product_identity",
         "regulatory_status"
+      ]
+    },
+    {
+      "source_id": "au-mbs",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "authority": "Australian Government Department of Health",
+      "dimension": "service_benefit",
+      "native_identifier": "MBS ItemNum plus SubItemNum and effective dates",
+      "rights_status": "maintainer_redistribution_authorized",
+      "authentication": "none",
+      "readiness": "implemented",
+      "information_domains": [
+        "service_benefit",
+        "pricing"
+      ]
+    },
+    {
+      "source_id": "au-mbs-p7-legacy-workbook",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "authority": "Edith Atogo (legacy derived workbook)",
+      "dimension": "service_benefit",
+      "native_identifier": "sheet name and XLSX cell coordinate, with MBS item numbers where present",
+      "rights_status": "maintainer_redistribution_authorized",
+      "authentication": "none",
+      "readiness": "implemented",
+      "information_domains": [
+        "service_benefit",
+        "pricing"
       ]
     },
     {
@@ -1055,7 +1083,7 @@
       "native_identifier": "source-native identifier",
       "rights_status": "review_required",
       "authentication": "none",
-      "readiness": "verified",
+      "readiness": "implemented",
       "information_domains": [
         "product_identity",
         "funding_status"
@@ -1222,8 +1250,8 @@
       "dimension": "funding",
       "native_identifier": "CIHI NHEX/plan expenditure identifier",
       "rights_status": "review_required",
-      "authentication": "subscription",
-      "readiness": "blocked",
+      "authentication": "none",
+      "readiness": "candidate",
       "information_domains": [
         "product_identity",
         "funding_status"
@@ -1239,7 +1267,7 @@
       "native_identifier": "source-native identifier",
       "rights_status": "terms_review_required",
       "authentication": "none",
-      "readiness": "verified",
+      "readiness": "implemented",
       "information_domains": [
         "product_identity",
         "regulatory_status"
@@ -1255,7 +1283,7 @@
       "native_identifier": "source-native identifier",
       "rights_status": "terms_review_required",
       "authentication": "none",
-      "readiness": "verified",
+      "readiness": "implemented",
       "information_domains": [
         "product_identity",
         "regulatory_status"
@@ -1563,7 +1591,7 @@
       "native_identifier": "EMA medicine / product number / EU number",
       "rights_status": "review_required",
       "authentication": "none",
-      "readiness": "verified",
+      "readiness": "implemented",
       "information_domains": [
         "product_identity",
         "regulatory_status"
@@ -1709,7 +1737,7 @@
       "native_identifier": "EU Union Register EU number",
       "rights_status": "CC-BY-4.0 dataset; verify per release",
       "authentication": "none",
-      "readiness": "verified",
+      "readiness": "implemented",
       "information_domains": [
         "product_identity",
         "regulatory_status"
@@ -1755,9 +1783,9 @@
       "authority": "Assurance Maladie",
       "dimension": "funding",
       "native_identifier": "Open Medic CIP/ATC + year + regime",
-      "rights_status": "review_required",
+      "rights_status": "Etalab-2.0",
       "authentication": "none",
-      "readiness": "candidate",
+      "readiness": "implemented",
       "information_domains": [
         "product_identity",
         "funding_status"
@@ -1790,7 +1818,7 @@
       "native_identifier": "source-native identifier",
       "rights_status": "review_required",
       "authentication": "none",
-      "readiness": "verified",
+      "readiness": "implemented",
       "information_domains": [
         "product_identity",
         "regulatory_status"
@@ -1871,7 +1899,7 @@
       "native_identifier": "NICE TA identifier including superseded guidance",
       "rights_status": "syndication_terms_review_required",
       "authentication": "none",
-      "readiness": "verified",
+      "readiness": "implemented",
       "information_domains": [
         "product_identity",
         "funding_status",
@@ -2068,7 +2096,7 @@
       "native_identifier": "WHO EML medicine/section identifier + list year",
       "rights_status": "review_required",
       "authentication": "none",
-      "readiness": "candidate",
+      "readiness": "implemented",
       "information_domains": [
         "product_identity",
         "formulary_status"
@@ -2297,8 +2325,8 @@
       "dimension": "funding",
       "native_identifier": "MHLW NDB tabulated identifier",
       "rights_status": "review_required",
-      "authentication": "manual_approval",
-      "readiness": "blocked",
+      "authentication": "none",
+      "readiness": "candidate",
       "information_domains": [
         "product_identity",
         "funding_status"
@@ -2314,7 +2342,7 @@
       "native_identifier": "source-native identifier",
       "rights_status": "review_required",
       "authentication": "none",
-      "readiness": "verified",
+      "readiness": "implemented",
       "information_domains": [
         "product_identity",
         "funding_status",
@@ -2331,7 +2359,7 @@
       "native_identifier": "source-native identifier",
       "rights_status": "review_required",
       "authentication": "none",
-      "readiness": "verified",
+      "readiness": "implemented",
       "information_domains": [
         "product_identity",
         "regulatory_status"
@@ -2737,8 +2765,8 @@
       "dimension": "funding",
       "native_identifier": "NorPD product/ATC identifier",
       "rights_status": "review_required",
-      "authentication": "manual_approval",
-      "readiness": "blocked",
+      "authentication": "none",
+      "readiness": "candidate",
       "information_domains": [
         "product_identity",
         "funding_status"
@@ -2771,7 +2799,7 @@
       "native_identifier": "source-native identifier",
       "rights_status": "review_required",
       "authentication": "none",
-      "readiness": "verified",
+      "readiness": "implemented",
       "information_domains": [
         "product_identity",
         "regulatory_status"
@@ -2851,7 +2879,7 @@
       "native_identifier": "source-native identifier",
       "rights_status": "review_required",
       "authentication": "none",
-      "readiness": "verified",
+      "readiness": "implemented",
       "information_domains": [
         "product_identity",
         "funding_status"
@@ -3337,9 +3365,9 @@
       "authority": "Centers for Medicare & Medicaid Services",
       "dimension": "funding",
       "native_identifier": "CMS Part D formulary/plan identifier",
-      "rights_status": "CMS agreement_for_use review required",
+      "rights_status": "approved_public_exact_inventory_with_cms_agreement_controls",
       "authentication": "none",
-      "readiness": "verified",
+      "readiness": "implemented",
       "information_domains": [
         "product_identity",
         "funding_status"
@@ -3353,7 +3381,7 @@
       "authority": "Centers for Medicare & Medicaid Services",
       "dimension": "funding",
       "native_identifier": "CMS Part D spending-by-drug brand/generic identifier",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory",
       "authentication": "none",
       "readiness": "candidate",
       "information_domains": [
@@ -3421,7 +3449,7 @@
       "native_identifier": "FAERS primaryid / caseid (case-version retained)",
       "rights_status": "review_required",
       "authentication": "none",
-      "readiness": "candidate",
+      "readiness": "implemented",
       "information_domains": [
         "product_identity",
         "regulatory_status",
@@ -4193,7 +4221,7 @@
         "ca-cihi-nhex-medicines"
       ],
       "state": "catalogued",
-      "evidence_limit": "CIHI extracts are often licensed. Metadata-only until rights are resolved; not a provincial formulary."
+      "evidence_limit": "Current NHEX Series G and open-data workbooks are public macro expenditure tables, not medicine-level utilisation or a formulary."
     },
     {
       "jurisdiction": "CAN",
@@ -5440,7 +5468,7 @@
         "jp-mhlw-ndb-utilisation"
       ],
       "state": "catalogued",
-      "evidence_limit": "NDB microdata are credentialed. This row inventories public tables if published; it is not NHI price or PMDA approval."
+      "evidence_limit": "Public aggregate NDB open-data tables are distinct from credentialed microdata; neither is NHI price or PMDA approval."
     },
     {
       "jurisdiction": "JPN",
@@ -6177,7 +6205,7 @@
         "no-norpd-utilisation"
       ],
       "state": "catalogued",
-      "evidence_limit": "NorPD is credentialed/restricted; metadata-only until lawful access. Not comparable by default to DK/SE."
+      "evidence_limit": "Historic anonymous reports are frozen through 2020; do not infer successor coverage or person-level access. Not comparable by default to DK/SE."
     },
     {
       "jurisdiction": "NOR",
@@ -8540,8 +8568,6 @@
     "track 21 blocked eu-eudravigilance-public",
     "track 26 blocked eu-ema-xevmpd-credentialed",
     "track 27 blocked eu-spor-rms-oms, eu-ema-pms-fhir",
-    "track 33 blocked no-norpd-utilisation",
-    "track 34 blocked jp-mhlw-ndb-utilisation",
     "track 35 blocked global-umc-vigibase"
   ],
   "silver_gold_implemented": false

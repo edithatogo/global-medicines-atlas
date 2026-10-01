@@ -2,8 +2,8 @@
   "schema_id": "global-medicines-atlas.bronze-maturity-qualification",
   "schema_version": 1,
   "horizon": "bronze-current-public-scope",
-  "evaluated_at": "2026-10-01T02:29:49.559211+00:00",
-  "git_commit": "ab1a4a1ec9d9cc6889c5206f0f7fb2934965a261",
+  "evaluated_at": "2026-10-01T14:03:45.699131+00:00",
+  "git_commit": "1c469fa368ef012819c46f820d1bba40ae0621bf",
   "authorities": {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -35,6 +35,7 @@
         "quality/qualifications/international-public-bronze-20260827.json",
         "quality/qualifications/ndc-directory-live-corpus-20260821.json",
         "quality/qualifications/nice-utilisation-acquisition-success-20260821.json",
+        "quality/qualifications/norpd-live-private-bronze-20261001.json",
         "quality/qualifications/sweden-socialstyrelsen-live-private-bronze-20260929.json",
         "quality/qualifications/union-register-live-corpus-20260821.json",
         "quality/qualifications/us-live-bronze-records-20260820.json"
@@ -42,7 +43,7 @@
       "blocker_ids": [
         "bronze-ingest-incomplete"
       ],
-      "notes": "116 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
+      "notes": "115 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
     },
     {
       "property_id": "immutability",
@@ -255,7 +256,7 @@
   "residual_risks": [
     {
       "risk_id": "RISK-001",
-      "description": "116 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "115 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "disposition": "unresolved",
       "blocking": true,
       "evidence": [
@@ -273,6 +274,7 @@
         "quality/qualifications/international-public-bronze-20260827.json",
         "quality/qualifications/ndc-directory-live-corpus-20260821.json",
         "quality/qualifications/nice-utilisation-acquisition-success-20260821.json",
+        "quality/qualifications/norpd-live-private-bronze-20261001.json",
         "quality/qualifications/sweden-socialstyrelsen-live-private-bronze-20260929.json",
         "quality/qualifications/union-register-live-corpus-20260821.json",
         "quality/qualifications/us-live-bronze-records-20260820.json"
@@ -330,7 +332,7 @@
     {
       "blocker_id": "bronze-ingest-incomplete",
       "property_id": "completeness",
-      "description": "116 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
+      "description": "115 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
       "evidence": [
         "src/global_medicines_atlas/data/medicine_source_catalog.json",
         "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
@@ -346,6 +348,7 @@
         "quality/qualifications/international-public-bronze-20260827.json",
         "quality/qualifications/ndc-directory-live-corpus-20260821.json",
         "quality/qualifications/nice-utilisation-acquisition-success-20260821.json",
+        "quality/qualifications/norpd-live-private-bronze-20261001.json",
         "quality/qualifications/sweden-socialstyrelsen-live-private-bronze-20260929.json",
         "quality/qualifications/union-register-live-corpus-20260821.json",
         "quality/qualifications/us-live-bronze-records-20260820.json"
@@ -383,7 +386,7 @@
     "bronze_in_scope_count": 157,
     "fixture_only_count": 2,
     "excluded_count": 15,
-    "in_scope_without_landing_or_blocker": 116,
+    "in_scope_without_landing_or_blocker": 115,
     "missing_coverage_is_not_negative_evidence": true
   }
 }
