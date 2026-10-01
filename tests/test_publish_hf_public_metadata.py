@@ -434,6 +434,44 @@ def test_collection_transition_rejects_unrecognized_policy_note() -> None:
         publisher.validate_collection_transitions(policy, heor, approval)
 
 
+def test_collection_transition_accepts_prior_approved_heor_notes() -> None:
+    approval = json.loads(
+        (publisher.ROOT / publisher.APPROVAL_PATH).read_text()
+    )
+    scope = approval["candidate_scope"]
+    prior_notes = {
+        row["dataset"]: row["previous_note"] for row in scope["members"]
+    }
+    policy, heor = _transition_collections(
+        approval, prior_notes[scope["members"][0]["dataset"]]
+    )
+    for item in heor.items:
+        if item.item_id in prior_notes:
+            item.note = prior_notes[item.item_id]
+    heor.items.extend(
+        _collection_item(dataset, prior_notes[dataset])
+        for dataset in (
+            "edithatogo/australian-mbs-utilisation-archive",
+            "edithatogo/australian-pbs-utilisation-archive",
+        )
+    )
+
+    publisher.validate_collection_transitions(policy, heor, approval)
+
+
+def test_collection_transition_rejects_unrecognized_heor_note() -> None:
+    approval = json.loads(
+        (publisher.ROOT / publisher.APPROVAL_PATH).read_text()
+    )
+    policy, heor = _transition_collections(
+        approval, approval["candidate_scope"]["members"][0]["previous_note"]
+    )
+    heor.items[0].note = "unrecognized HEOR note"
+
+    with pytest.raises(ValueError, match="HEOR item note"):
+        publisher.validate_collection_transitions(policy, heor, approval)
+
+
 def test_collection_reconciler_updates_exact_approved_prior_note(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -476,7 +514,7 @@ def test_collection_reconciler_updates_exact_approved_prior_note(
         slug="owner/collection",
         desired_notes={repo_id: "new approved note"},
         expected_members=set(),
-        baseline_notes={repo_id: prior_note},
+        baseline_notes={repo_id: {None, prior_note}},
     )
 
     assert result.items[0].note == "new approved note"

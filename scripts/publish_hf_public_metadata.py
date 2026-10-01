@@ -548,7 +548,7 @@ def _reconcile_collection(
     slug: str,
     desired_notes: dict[str, str],
     expected_members: set[str],
-    baseline_notes: dict[str, str | None],
+    baseline_notes: dict[str, str | set[str | None] | None],
     desired_description: str | None = None,
     previous_description: str | None = None,
 ) -> Any:
@@ -569,8 +569,12 @@ def _reconcile_collection(
     for repo_id, item in actual.items():
         _require(item["type"] == "dataset", "collection has a non-dataset item")
         if repo_id in desired_notes and item["note"] != desired_notes[repo_id]:
+            baseline = baseline_notes.get(repo_id)
+            allowed_baselines = (
+                baseline if isinstance(baseline, set) else {baseline}
+            )
             _require(
-                item["note"] == baseline_notes.get(repo_id),
+                item["note"] in allowed_baselines,
                 "collection note differs from both approved baseline and target",
             )
     if slug.endswith(
@@ -809,15 +813,16 @@ def validate_collection_transitions(
         "HEOR New Zealand member or note changed",
     )
     old_notes = {
-        **HEOR_EXISTING_NOTES,
-        "edithatogo/australian-mbs-source-archive": None,
-        "edithatogo/australian-pbs-source-archive": None,
+        row["dataset"]: {None, row["previous_note"]} for row in members
     }
+    old_notes["edithatogo/reimbursement-atlas"].add(
+        HEOR_EXISTING_NOTES["edithatogo/reimbursement-atlas"]
+    )
     for dataset, item in heor_items.items():
         _require(item["type"] == "dataset", "HEOR contains a non-dataset")
         if dataset in policy_notes:
             _require(
-                item["note"] in {old_notes.get(dataset), policy_notes[dataset]},
+                item["note"] in old_notes[dataset] | {policy_notes[dataset]},
                 "HEOR item note differs from the approved transition",
             )
         else:
@@ -898,12 +903,17 @@ def _update_collections(
     members = cast("list[dict[str, str]]", scope["members"])
     policy_notes = {row["dataset"]: row["note"] for row in members}
     heor_notes = dict(policy_notes)
-    baseline_heor_notes = {
-        "edithatogo/reimbursement-atlas": HEOR_EXISTING_NOTES[
-            "edithatogo/reimbursement-atlas"
-        ],
-        "edithatogo/australian-mbs-source-archive": None,
-        "edithatogo/australian-pbs-source-archive": None,
+    baseline_heor_notes: dict[str, str | set[str | None] | None] = {
+        row["dataset"]: {None, row["previous_note"]} for row in members
+    }
+    baseline_heor_notes["edithatogo/reimbursement-atlas"] = {
+        None,
+        cast("str", HEOR_EXISTING_NOTES["edithatogo/reimbursement-atlas"]),
+        next(
+            row["previous_note"]
+            for row in members
+            if row["dataset"] == "edithatogo/reimbursement-atlas"
+        ),
     }
     existing_heor = set(
         cast("list[str]", scope["expected_heor_existing_dataset_members"])

@@ -283,14 +283,16 @@
   description and full caveat in all five member notes on 2026-10-01. The first
   hosted run applied the approved registry and HEOR metadata, then the Hub
   rejected the over-limit Policy AUS description. After the revised wording
-  was approved, a retry stopped in preflight because Policy AUS still held the
-  exact member notes from the prior approved manifest. Those five prior notes
-  are now recorded as the only permitted migration baseline; unknown notes
-  still fail closed (`5f519609`). Focused tests and the full local Test-Goblin
-  profile pass. The corrected hosted apply, public collection readback, and
-  complete receipt remain pending; the two utilisation members are not yet in
-  HEOR. See the 2026-10-01 partial-publication and prior-note-transition
-  evidence records.
+  was approved, one retry stopped in Policy AUS preflight; PR #690 added the
+  exact previous Policy AUS notes as the only permitted migration baseline and
+  merged as `3f68b58e`. Its hosted retry then stopped in HEOR preflight because
+  HEOR also retains the exact previous approved notes. That retry made no
+  writes. The same narrowly scoped previous-note baseline now covers both
+  collections, including the prior HEOR reimbursement note; unrecognized notes
+  still fail closed (`932a4ccf`). The full local Test-Goblin profile passes.
+  PR #691, corrected hosted apply, public collection readback, and complete
+  receipt remain pending; the two utilisation members are not yet in HEOR. See
+  the 2026-10-01 partial-publication and prior-note-transition evidence.
 - [x] Reconcile candidate raw paths against pinned public manifests using
   metadata only. All 1,736 Australian MBS/PBS candidate paths map to pinned
   manifests or the exact August 2026 MBS hosted receipt; 1,735 appear in root
