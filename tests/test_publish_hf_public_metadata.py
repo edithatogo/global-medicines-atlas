@@ -185,6 +185,37 @@ def test_local_publication_fails_closed_before_accessing_hub() -> None:
         })
 
 
+def test_actions_environment_flags_without_oidc_proof_fail_closed() -> None:
+    env = {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REF": "refs/heads/main",
+        "GMA_MAINTAINER_PUBLICATION_APPROVED": "yes-i-approve-publication",
+        "GITHUB_RUN_ID": "12345",
+        "GITHUB_RUN_ATTEMPT": "1",
+        "HF_TOKEN": "test-only-placeholder",
+    }
+    with pytest.raises(ValueError, match="OIDC request credentials"):
+        publisher.validate_actions_context(env)
+
+
+def test_approval_members_reconcile_scope_assessment_field_names() -> None:
+    approval = json.loads(
+        (publisher.ROOT / publisher.APPROVAL_PATH).read_text()
+    )
+    scope = approval["candidate_scope"]
+    assessment = json.loads(
+        (publisher.ROOT / scope["scope_assessment_path"]).read_text()
+    )
+
+    publisher.validate_scope_assessment(assessment, scope)
+
+    assessment["policy_aus_change_proposal"]["proposed_dataset_members"][0][
+        "collection_note"
+    ] = "unexpected note"
+    with pytest.raises(ValueError, match="scope assessment"):
+        publisher.validate_scope_assessment(assessment, scope)
+
+
 def test_non_main_or_unapproved_actions_run_fails_closed() -> None:
     base = {
         "GITHUB_ACTIONS": "true",
