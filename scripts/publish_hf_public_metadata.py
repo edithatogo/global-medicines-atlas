@@ -14,7 +14,6 @@ from datetime import UTC, datetime
 from operator import itemgetter
 from pathlib import Path
 from typing import Any, cast
-from urllib.error import HTTPError, URLError
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
@@ -141,7 +140,7 @@ def _decode_jwt_payload(token: str) -> dict[str, Any]:
     padded = parts[1] + "=" * (-len(parts[1]) % 4)
     try:
         payload = json.loads(base64.urlsafe_b64decode(padded))
-    except ValueError, json.JSONDecodeError:
+    except ValueError:
         raise ValueError("Actions OIDC payload is malformed") from None
     _require(isinstance(payload, dict), "Actions OIDC payload is not an object")
     return cast("dict[str, Any]", payload)
@@ -184,14 +183,14 @@ def _verify_actions_oidc(  # ruff: ignore[too-many-locals] -- verify fixed GitHu
                 "GitHub Actions OIDC endpoint changed during request",
             )
             body = response.read(256 * 1024 + 1)
-    except HTTPError, URLError, OSError:
+    except OSError:
         raise ValueError("GitHub Actions OIDC token request failed") from None
     _require(
         len(body) <= 256 * 1024, "GitHub Actions OIDC response exceeded bound"
     )
     try:
         envelope = json.loads(body)
-    except ValueError, json.JSONDecodeError:
+    except ValueError:
         raise ValueError("GitHub Actions OIDC response is malformed") from None
     _require(
         isinstance(envelope, dict), "GitHub Actions OIDC response is invalid"
