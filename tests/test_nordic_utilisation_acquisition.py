@@ -95,8 +95,14 @@ def test_authorization_is_independent_and_fail_closed() -> None:
     assert denmark.decision_status == "approved_internal"
     assert denmark.public_release_authorized is False
     assert denmark.external_publication_authorized is False
-    with pytest.raises(PermissionError, match="payload decision is pending"):
-        norway.require_payload_authority()
+    norway.require_payload_authority()
+    assert norway.decision_date is not None
+    assert norway.decision_date.isoformat() == "2026-10-01"
+    assert norway.decision_status == "approved_internal"
+    assert norway.acquisition_authorized is True
+    assert norway.internal_retention_authorized is True
+    assert norway.public_release_authorized is False
+    assert norway.external_publication_authorized is False
     sweden.require_payload_authority()
     assert sweden.decision_date is not None
     assert sweden.decision_status == "approved_internal"
@@ -119,6 +125,12 @@ def test_pending_source_rejects_scope_widening(
 ) -> None:
     raw = _raw()
     sources = _sources(raw)
+    sources[1].update(
+        decision_date=None,
+        decision_status="pending",
+        acquisition_authorized=False,
+        internal_retention_authorized=False,
+    )
     sources[1].update(update)
     with pytest.raises(ValidationError, match=message):
         NordicAuthorization.model_validate(raw)
