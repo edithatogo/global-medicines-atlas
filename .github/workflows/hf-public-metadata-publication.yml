@@ -44,6 +44,13 @@ jobs:
           enable-cache: true
       - name: Synchronize Python 3.14 environment
         run: uv sync --python 3.14.6 --locked --group dev
+      - name: Request short-lived GitHub Actions identity
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        with:
+          script: |
+            const token = await core.getIDToken("global-medicines-atlas-publication");
+            core.setSecret(token);
+            core.exportVariable("GMA_ACTIONS_OIDC_TOKEN", token);
       - name: Publish and anonymously verify exact metadata scope
         env:
           GMA_MAINTAINER_PUBLICATION_APPROVED: yes-i-approve-publication
@@ -51,6 +58,7 @@ jobs:
         run: >
           uv run --locked --python 3.14.6
           --with huggingface-hub==1.19.0
+          --with 'PyJWT[crypto]==2.15.1'
           python scripts/publish_hf_public_metadata.py
           --apply
           --expected-approval-sha256

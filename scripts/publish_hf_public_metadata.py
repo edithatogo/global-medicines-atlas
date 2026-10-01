@@ -4,18 +4,16 @@
 from __future__ import annotations
 
 import argparse
-import base64
 import hashlib
 import json
 import os
 import sys
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from importlib import import_module
 from operator import itemgetter
 from pathlib import Path
 from typing import Any, cast
-from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
-from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from jsonschema import Draft202012Validator, SchemaError, ValidationError
 
@@ -59,8 +57,7 @@ POLICY_OLD_DESCRIPTION = (
 EXPECTED_PUBLIC_GAP_COUNT = 26
 EXPECTED_AUSTRALIAN_MEMBER_COUNT = 5
 OIDC_AUDIENCE = "global-medicines-atlas-publication"
-OIDC_ENDPOINT_HOST = "pipelines.actions.githubusercontent.com"
-JWT_PART_COUNT = 3
+OIDC_JWKS_URL = "https://token.actions.githubusercontent.com/.well-known/jwks"
 EXPECTED_WORKFLOW_REF = (
     "edithatogo/global-medicines-atlas/"
     ".github/workflows/hf-public-metadata-publication.yml@refs/heads/main"
@@ -121,91 +118,38 @@ class PublicationGuardError(ValueError):
     """A safe, repository-authored reason for a fail-closed publication gate."""
 
 
-class _RejectRedirects(HTTPRedirectHandler):
-    def redirect_request(
-        self,
-        req: Request,  # ruff: ignore[unused-method-argument] -- required urllib override signature
-        fp: Any,  # ruff: ignore[unused-method-argument] -- required urllib override signature
-        code: int,  # ruff: ignore[unused-method-argument] -- required urllib override signature
-        msg: str,  # ruff: ignore[unused-method-argument] -- required urllib override signature
-        headers: Any,  # ruff: ignore[unused-method-argument] -- required urllib override signature
-        newurl: str,  # ruff: ignore[unused-method-argument] -- required urllib override signature
-    ) -> None:
-        raise ValueError("Actions OIDC endpoint redirected")
-
-
-def _decode_jwt_payload(token: str) -> dict[str, Any]:
-    parts = token.split(".")
-    _require(len(parts) == JWT_PART_COUNT, "Actions OIDC response is not a JWT")
-    padded = parts[1] + "=" * (-len(parts[1]) % 4)
-    try:
-        payload = json.loads(base64.urlsafe_b64decode(padded))
-    except ValueError:
-        raise ValueError("Actions OIDC payload is malformed") from None
-    _require(isinstance(payload, dict), "Actions OIDC payload is not an object")
-    return cast("dict[str, Any]", payload)
-
-
-def _verify_actions_oidc(  # ruff: ignore[too-many-locals] -- verify fixed GitHub OIDC claim set
+def _verify_actions_oidc(
     env: dict[str, str],
 ) -> None:
-    """Require a short-lived identity token issued inside the real Actions job."""
-    endpoint = env.get("ACTIONS_ID_TOKEN_REQUEST_URL", "")
-    request_token = env.get("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "")
-    parsed = urlsplit(endpoint)
-    _require(
-        parsed.scheme == "https"
-        and parsed.hostname == OIDC_ENDPOINT_HOST
-        and parsed.port in {None, 443}
-        and not parsed.username
-        and not parsed.password
-        and bool(parsed.path)
-        and bool(request_token),
-        "GitHub Actions OIDC request credentials are unavailable",
-    )
-    query = parse_qsl(parsed.query, keep_blank_values=True)
-    query = [(key, value) for key, value in query if key != "audience"]
-    query.append(("audience", OIDC_AUDIENCE))
-    token_url = urlunsplit(parsed._replace(query=urlencode(query)))
-    request = Request(  # ruff: ignore[suspicious-url-open-usage] -- host restricted to GitHub Actions OIDC over HTTPS
-        token_url,
-        headers={
-            "Authorization": f"Bearer {request_token}",
-            "Accept": "application/json",
-        },
-    )
+    """Require a short-lived GitHub-signed token for this exact Actions job."""
+    token = env.get("GMA_ACTIONS_OIDC_TOKEN", "")
+    _require(bool(token), "GitHub Actions OIDC identity token is unavailable")
     try:
-        with build_opener(_RejectRedirects).open(
-            request, timeout=15
-        ) as response:
-            _require(
-                response.geturl() == token_url,
-                "GitHub Actions OIDC endpoint changed during request",
-            )
-            body = response.read(256 * 1024 + 1)
-    except OSError:
-        raise ValueError("GitHub Actions OIDC token request failed") from None
-    _require(
-        len(body) <= 256 * 1024, "GitHub Actions OIDC response exceeded bound"
-    )
+        jwt = cast("Any", import_module("jwt"))
+    except ImportError:
+        raise PublicationGuardError(
+            "GitHub Actions OIDC signature verification is unavailable"
+        ) from None
+
     try:
-        envelope = json.loads(body)
-    except ValueError:
-        raise ValueError("GitHub Actions OIDC response is malformed") from None
+        signing_key = jwt.PyJWKClient(
+            OIDC_JWKS_URL, timeout=15
+        ).get_signing_key_from_jwt(token)
+        claims = jwt.decode(
+            token,
+            signing_key.key,
+            algorithms=["RS256"],
+            audience=OIDC_AUDIENCE,
+            issuer="https://token.actions.githubusercontent.com",
+            options={"require": ["iat", "exp", "nbf", "iss", "aud"]},
+            leeway=60,
+        )
+    except jwt.PyJWTError:
+        raise PublicationGuardError(
+            "GitHub Actions OIDC token signature or claims are invalid"
+        ) from None
     _require(
-        isinstance(envelope, dict), "GitHub Actions OIDC response is invalid"
-    )
-    token_value = envelope.get("value")
-    _require(
-        isinstance(token_value, str), "GitHub Actions OIDC token is missing"
-    )
-    claims = _decode_jwt_payload(token_value)
-    aud = claims.get("aud")
-    audiences = {aud} if isinstance(aud, str) else set(aud or [])
-    _require(
-        claims.get("iss") == "https://token.actions.githubusercontent.com"
-        and OIDC_AUDIENCE in audiences
-        and claims.get("repository") == "edithatogo/global-medicines-atlas"
+        claims.get("repository") == "edithatogo/global-medicines-atlas"
         and claims.get("repository_owner") == "edithatogo"
         and claims.get("ref") == "refs/heads/main"
         and claims.get("workflow_ref") == EXPECTED_WORKFLOW_REF
