@@ -1,0 +1,451 @@
+{
+  "schema_id": "global-medicines-atlas.hf-public-registry-gap",
+  "schema_version": 1,
+  "observed_at": "2026-10-01T05:12:13.468915+00:00",
+  "observation": {
+    "endpoint": "https://huggingface.co/api",
+    "anonymous": true,
+    "stable_double_scan": true,
+    "source_payload_bytes_read": false,
+    "source_values_read": false,
+    "public_dataset_count": 76,
+    "public_collection_count": 9,
+    "public_dataset_metadata_sha256": "a1ec68c2d9b5eb17dd6d3740e8ae0c34cb530a765c981836f620b825ce9ac915",
+    "public_collection_metadata_sha256": "e6f7be4c441c36094d149d135b60b12981c87b7419e05e17e5195f22fced14b4"
+  },
+  "registry": {
+    "dataset": "edithatogo/dataset-estate-registry",
+    "revision": "4802d56a340646043fc91bed218c1e8a958f42c2",
+    "catalog_sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+    "catalog_schema_sha256": "92220ad58029e4d21ca3fb5e73c8ea8e45576d9b6ff712292ecbf57ed90b3a6f",
+    "entry_count": 78,
+    "catalog_access_counts": {
+      "public": 75,
+      "gated": 2,
+      "private": 1
+    },
+    "private_entry_count_excluded_from_identity_comparison": 1,
+    "matched_current_public_dataset_count": 76,
+    "public_access_mismatch_count": 0,
+    "public_access_mismatches": [],
+    "missing_current_public_datasets": [],
+    "missing_current_public_dataset_count": 0,
+    "conservative_public_registry_draft_entries": [],
+    "proposed_entry_count_if_missing_public_rows_are_added": 78,
+    "access_corrections_prepared_for_review": [],
+    "unmatched_nonprivate_registry_entry_count": 1,
+    "unmatched_nonprivate_registry_entries_pending_review": [
+      {
+        "repo_id": "edithatogo/gfjd-source-archive",
+        "registry_access": "public",
+        "disposition": "preserve_pending_human_review"
+      }
+    ],
+    "private_dataset_identities_emitted": false,
+    "stale_or_private_entry_disposition": "preserve pending owner-visible reconciliation; no removal proposed"
+  },
+  "public_collections": [
+    {
+      "slug": "edithatogo/dataset-estate-catalog-6a695b6dcc338fa1be059d04",
+      "title": "Dataset Estate Catalog",
+      "description": "Authoritative registry, reconciliation process, and registry-driven collection views for the edithatogo dataset estate.",
+      "gated": false,
+      "members": [
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/dataset-estate-registry",
+          "note": "Authoritative machine-readable registry, schema, process, and reconciliation evidence."
+        },
+        {
+          "item_type": "collection",
+          "item_id": "6a6946d45c8cc5852a1d62d4",
+          "note": "Independent public-information request archive family."
+        },
+        {
+          "item_type": "collection",
+          "item_id": "6a2eb7e16d4ee03d87eae247",
+          "note": "NZ legal and parliamentary registry view."
+        },
+        {
+          "item_type": "collection",
+          "item_id": "6a472b1e3de68381856b31f9",
+          "note": "HathiTrust-NZ registry view."
+        },
+        {
+          "item_type": "collection",
+          "item_id": "6a2eb7d81aa2f5a72444bd5a",
+          "note": "NZ public-web archive registry view."
+        },
+        {
+          "item_type": "collection",
+          "item_id": "6a2e1141d8c6003998146df8",
+          "note": "FOI and public-information registry view."
+        },
+        {
+          "item_type": "collection",
+          "item_id": "6a2e124b52702b466be7efed",
+          "note": "Hermes experiment registry view."
+        },
+        {
+          "item_type": "collection",
+          "item_id": "6a2e9986698340a8c8f4e4b4",
+          "note": "Health economics registry view."
+        }
+      ]
+    },
+    {
+      "slug": "edithatogo/foi-and-public-information-research-6a2e1141d8c6003998146df8",
+      "title": "FOI and Public-Information Research",
+      "description": "Registry-driven view of FOI archives, synthetic process data, government public-web records, and public-information research evidence.",
+      "gated": false,
+      "members": [
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/foi-process-event-logs",
+          "note": "Reviewed synthetic FOI process-mining fixtures."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/corpus-social-media-government-nz",
+          "note": "Government public-information source captures."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/courts-nz-public-notices-archive",
+          "note": "Court public-notice records and source evidence."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/nlp-policy-nz-cloud-ocr-pilots",
+          "note": "Bounded metadata-only OCR research evidence."
+        }
+      ]
+    },
+    {
+      "slug": "edithatogo/fyi-archive-global-public-information-request-archives-6a6946d45c8cc5852a1d62d4",
+      "title": "fyi-archive: global public-information request archives",
+      "description": "Independent, read-only public-information request archives with separate provenance, rights, state, and completeness evidence.",
+      "gated": false,
+      "members": [
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/fyi-archive-nz",
+          "note": "NZ | supported | read-only archive of https://fyi.org.nz."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/rtk-archive-au",
+          "note": "AU | experimental | read-only archive of https://www.righttoknow.org.au."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/askgov-archive-ge",
+          "note": "GE | experimental | read-only archive of https://askgov.ge."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/mrtk-archive-ie",
+          "note": "IE | experimental | read-only archive of https://www.myrighttoknow.org."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/handlingar-archive-se",
+          "note": "SE | experimental | read-only archive of https://handlingar.se."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/dostup-archive-ua",
+          "note": "UA | experimental | read-only archive of https://dostup.org.ua."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/wdtk-archive-uk",
+          "note": "GB | experimental | read-only archive of https://www.whatdotheyknow.com."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/quesabes-archive-uy",
+          "note": "UY | experimental | read-only archive of https://quesabes.org."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/transparencia-archive-be",
+          "note": "BE | historical-only | read-only archive of https://transparencia.be."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/queremosdatos-archive-co",
+          "note": "CO | historical-only | read-only archive of https://www.queremosdatos.co."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/infoprovsechny-archive-cz",
+          "note": "CZ | historical-only | read-only archive of https://www.infoprovsechny.cz."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/asktheeu-archive-eu",
+          "note": "EU | historical-only | read-only archive of https://www.asktheeu.org."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/madada-archive-fr",
+          "note": "FR | historical-only | read-only archive of https://madada.fr."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/arthro5a-archive-gr",
+          "note": "GR | historical-only | read-only archive of https://www.arthro5a.gr."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/accessinfo-archive-hk",
+          "note": "HK | historical-only | read-only archive of https://accessinfo.hk."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/imamopravoznati-archive-hr",
+          "note": "HR | historical-only | read-only archive of https://imamopravoznati.org."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/kimittud-archive-hu",
+          "note": "HU | historical-only | read-only archive of https://kimittud.hu."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/infolib-archive-lr",
+          "note": "LR | historical-only | read-only archive of https://infolib.org.lr."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/vreauinfo-archive-md",
+          "note": "MD | historical-only | read-only archive of https://www.vreauinfo.md."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/woo-knop-archive-nl",
+          "note": "NL | historical-only | read-only archive of https://www.woo-knop.nl."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/iastatullaintrebari-archive-ro",
+          "note": "RO | historical-only | read-only archive of https://iastatullaintrebari.ro."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/opramachine-archive-us-nj",
+          "note": "US-NJ | historical-only | read-only archive of https://opramachine.com."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/dumedite-archive-xk",
+          "note": "XK | historical-only | read-only archive of https://dumedite.org."
+        }
+      ]
+    },
+    {
+      "slug": "edithatogo/hathitrust-nz-6a472b1e3de68381856b31f9",
+      "title": "hathitrust-nz",
+      "description": "Registry-driven HathiTrust-NZ view: inventory, research full-text plans, extracted features, analytics, and the derived historical Hansard corpus.",
+      "gated": false,
+      "members": [
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/corpus-nz-hathi",
+          "note": "Compatibility dataset retained in the HathiTrust-NZ collection."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/hathitrust-nz-inventory",
+          "note": "Inventory, HTID manifests, rights classification, and archive completeness reports."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/hathitrust-nz-research-fulltext",
+          "note": "Research dataset subset metadata and publication manifests."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/hathitrust-nz-htrc-extracted-features",
+          "note": "HTRC Extracted Features subset and derived manifests."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/hathitrust-nz-htrc-analytics",
+          "note": "HTRC Analytics scripts, workset definitions, aggregate outputs, and reproducibility metadata."
+        }
+      ]
+    },
+    {
+      "slug": "edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+      "title": "Health Economics and Outcomes Research",
+      "description": "Registry-driven view of health-economics, reimbursement, outcomes-research, and related evidence datasets.",
+      "gated": false,
+      "members": [
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/reimbursement-atlas",
+          "note": "Shared reimbursement product containing an Australian PBS raw archive. Its repository federation manifest is v1; exact v4 object admission remains pending. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/nz-health-appropriations",
+          "note": "Checksum-pinned NZ health appropriations medallion dataset; manifest SHA-256 9a33babda857b0aa7c60a6012000cf1e730fed729781cb8ceb6e7a4714cae40e; revision 9b85bac06597d4435fd078f6bed0f30bb008542b."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/australian-mbs-source-archive",
+          "note": "Australian MBS source archive and Silver candidate. Its published MBS Silver qualification is candidate-only; exact federation v4 admission remains pending. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/australian-pbs-source-archive",
+          "note": "Australian PBS historical source archive. Current PBS API acquisition and its separate rights and source-era qualification remain open. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/australian-mbs-utilisation-archive",
+          "note": "Australian MBS utilisation and statistics source archive. Its manifest reports partial coverage for the latest harvest. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/australian-pbs-utilisation-archive",
+          "note": "Australian PBS utilisation and expenditure source archive. Source-level rights and currency remain governed by each receipt. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance."
+        }
+      ]
+    },
+    {
+      "slug": "edithatogo/hermes-tool-calling-experiments-6a2e124b52702b466be7efed",
+      "title": "Hermes Tool-Calling Experiments",
+      "description": "Synthetic training data, benchmark results, and evaluation outputs for Hermes tool-calling experiments.",
+      "gated": false,
+      "members": [
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/qwen3-hermes-strict-toolcall-synthetic-v4",
+          "note": "Canonical published synthetic training and evaluation splits."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/hermes-benchmark-results",
+          "note": "Benchmark-results repository; currently no published payload."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/qwen3-v4-peft-lm-eval-results",
+          "note": "PEFT evaluation-results repository; currently no published payload."
+        }
+      ]
+    },
+    {
+      "slug": "edithatogo/new-zealand-legal-and-parliamentary-corpora-6a2eb7e16d4ee03d87eae247",
+      "title": "New Zealand Legal and Parliamentary Corpora",
+      "description": "Registry-driven view of canonical NZ legislation, Hansard, historical parliamentary, source-archive, and immutable DOI snapshot datasets.",
+      "gated": false,
+      "members": [
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/corpus-legislation-nz",
+          "note": "Canonical live legislation corpus."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/nz-hansard-corpus",
+          "note": "Canonical document-level Hansard corpus."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/corpus-nz-hathi",
+          "note": "Derived historical parliamentary corpus from HathiTrust."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/nz-legislation-corpus",
+          "note": "Immutable DOI-bearing legislation snapshot."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/nz-hansard-source-archive",
+          "note": "Gated source ZIP archive supporting the Hansard corpus."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/corpus-legislation-nz-historical",
+          "note": "Superseded historical operational legislation repository."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/corpus-cases-medilegal-nz",
+          "note": "Medico-legal cases release and evidence bundle."
+        }
+      ]
+    },
+    {
+      "slug": "edithatogo/new-zealand-public-web-archives-6a2eb7d81aa2f5a72444bd5a",
+      "title": "New Zealand Public-Web Archives",
+      "description": "Registry-driven view of NZ government, courts, cultural-heritage, social-media, and bounded OCR public-web archives.",
+      "gated": false,
+      "members": [
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/corpus-social-media-government-nz",
+          "note": "Canonical NZ government social-media and public-web corpus."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/courts-nz-public-notices-archive",
+          "note": "Courts of New Zealand public-notices archive."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/digitalnz",
+          "note": "Mixed DigitalNZ and RNZ source archive; component rights apply."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/nlp-policy-nz-cloud-ocr-pilots",
+          "note": "Metadata-only bounded OCR pilot evidence."
+        }
+      ]
+    },
+    {
+      "slug": "edithatogo/policy-aus-6a2e99a1ae31ec0fe8895be8",
+      "title": "Policy AUS",
+      "description": "Australian MBS and PBS evidence for discovery. Membership does not grant source rights, authorize publication, or establish federation acceptance.",
+      "gated": false,
+      "members": [
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/australian-mbs-source-archive",
+          "note": "Australian MBS source archive and Silver candidate. Its published MBS Silver qualification is candidate-only; exact federation v4 admission remains pending. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/australian-pbs-source-archive",
+          "note": "Australian PBS historical source archive. Current PBS API acquisition and its separate rights and source-era qualification remain open. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/australian-mbs-utilisation-archive",
+          "note": "Australian MBS utilisation and statistics source archive. Its manifest reports partial coverage for the latest harvest. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/australian-pbs-utilisation-archive",
+          "note": "Australian PBS utilisation and expenditure source archive. Source-level rights and currency remain governed by each receipt. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance."
+        },
+        {
+          "item_type": "dataset",
+          "item_id": "edithatogo/reimbursement-atlas",
+          "note": "Shared reimbursement product containing an Australian PBS raw archive. Its repository federation manifest is v1; exact v4 object admission remains pending. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance."
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    "Public membership and repository visibility do not establish source rights or federation acceptance.",
+    "This metadata comparison authorizes no catalog upload, collection mutation, visibility change, deletion, or release.",
+    "Rights, origin, family, role, payload state, and Viewer status remain unassessed for missing registry rows."
+  ]
+}
