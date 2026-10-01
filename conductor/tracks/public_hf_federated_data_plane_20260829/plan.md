@@ -289,10 +289,10 @@
   HEOR also retains the exact previous approved notes. That retry made no
   writes. The same narrowly scoped previous-note baseline now covers both
   collections, including the prior HEOR reimbursement note; unrecognized notes
-  still fail closed. The full local Test-Goblin profile passes. PR #691 and the
-  corrected hosted apply, public collection readback, and complete receipt
-  remain pending; the two utilisation members are not yet in HEOR. See the
-  2026-10-01 partial-publication and prior-note-transition evidence records.
+  still fail closed (`932a4ccf`). The full local Test-Goblin profile passes.
+  PR #691, corrected hosted apply, public collection readback, and complete
+  receipt remain pending; the two utilisation members are not yet in HEOR. See
+  the 2026-10-01 partial-publication and prior-note-transition evidence.
 - [x] Reconcile candidate raw paths against pinned public manifests using
   metadata only. All 1,736 Australian MBS/PBS candidate paths map to pinned
   manifests or the exact August 2026 MBS hosted receipt; 1,735 appear in root
