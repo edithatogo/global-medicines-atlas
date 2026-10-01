@@ -24,8 +24,8 @@ corpus row describes a separate quarantined acquisition and does not override
 that later, specifically scoped evidence. A bounded current Orange Book
 record projection is also counted as landed; this does not complete Prompt 16
 or its historical family. The report was refreshed against exact merged
-`main` commit `58408e87d1c35e1995d6bb789639089e4a2f0599` after PR #674. The
-refresh leaves source-specific states unchanged and finds 116 of 157 in-scope
+`main` commit `ab1a4a1ec9d9cc6889c5206f0f7fb2934965a261` after PR #687; the
+source inventory and completeness finding are unchanged. The refresh leaves source-specific states unchanged and finds 116 of 157 in-scope
 public/no-credential sources without qualifying landing evidence. CMS Part D
 Prompt 31 was already included in the prior denominator; its reconciled queue
 and source-record evidence do not create another landing increment.
