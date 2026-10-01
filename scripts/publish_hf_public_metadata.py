@@ -208,6 +208,7 @@ def validate_scope_assessment(
             "dataset": row["dataset"],
             "revision": row["revision"],
             "note": row["collection_note"],
+            "previous_note": row["previous_collection_note"],
         }
         for row in cast(
             "list[dict[str, Any]]", proposal["proposed_dataset_members"]
@@ -763,7 +764,15 @@ def validate_collection_transitions(
     for dataset, item in policy_items.items():
         _require(item["type"] == "dataset", "Policy AUS contains a non-dataset")
         _require(
-            item["note"] in {None, policy_notes[dataset]},
+            item["note"]
+            in {
+                next(
+                    row["previous_note"]
+                    for row in members
+                    if row["dataset"] == dataset
+                ),
+                policy_notes[dataset],
+            },
             "Policy AUS item note differs from the approved transition",
         )
     if not policy.private:
@@ -922,7 +931,9 @@ def _update_collections(
         slug=cast("str", scope["policy_aus_slug"]),
         desired_notes=policy_notes,
         expected_members=set(),
-        baseline_notes=dict.fromkeys(policy_notes),
+        baseline_notes={
+            row["dataset"]: row["previous_note"] for row in members
+        },
         desired_description=cast("str", scope["policy_aus_collection_note"]),
         previous_description=POLICY_OLD_DESCRIPTION,
     )
