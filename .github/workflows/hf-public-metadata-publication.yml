@@ -1,0 +1,64 @@
+name: Publish approved public Hugging Face metadata
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Apply the exact reviewed metadata-only transaction
+        required: true
+        type: boolean
+        default: false
+      confirmation:
+        description: Type PUBLISH-APPROVED-METADATA-ONLY to run the transaction
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hf-public-metadata-publication
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main' &&
+      inputs.publish &&
+      inputs.confirmation == 'PUBLISH-APPROVED-METADATA-ONLY'
+    environment: production
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.29"
+          enable-cache: true
+      - name: Synchronize Python 3.14 environment
+        run: uv sync --python 3.14.6 --locked --group dev
+      - name: Publish and anonymously verify exact metadata scope
+        env:
+          GMA_MAINTAINER_PUBLICATION_APPROVED: yes-i-approve-publication
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: >
+          uv run --locked --python 3.14.6
+          --with huggingface-hub==1.19.0
+          python scripts/publish_hf_public_metadata.py
+          --apply
+          --expected-approval-sha256
+          c5c0965bde2ed66e80da3695c675fea1d54a01a3f2a8ceb6180ec15c39c329fb
+          --receipt build/hf-public-metadata-publication-receipt.json
+      - name: Upload public metadata publication receipt
+        if: always() && hashFiles('build/hf-public-metadata-publication-receipt.json') != ''
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: hf-public-metadata-publication-receipt
+          path: build/hf-public-metadata-publication-receipt.json
+          if-no-files-found: error
+          retention-days: 30
