@@ -21,7 +21,9 @@ class CommitInfo:
     oid: str
 
 class CommitOperationAdd:
-    def __init__(self, *, path_in_repo: str, path_or_fileobj: bytes | str) -> None: ...
+    def __init__(
+        self, *, path_in_repo: str, path_or_fileobj: bytes | str
+    ) -> None: ...
 
 class HfApi:
     def __init__(self, *, token: str | bool | None = ...) -> None: ...
@@ -48,11 +50,9 @@ def add_collection_item(
     exists_ok: bool = ...,
     token: str | bool | None = ...,
 ) -> Collection: ...
-
 def get_collection(
     collection_slug: str, *, token: str | bool | None = ...
 ) -> Collection: ...
-
 def hf_hub_download(
     repo_id: str,
     filename: str,
@@ -61,7 +61,6 @@ def hf_hub_download(
     revision: str | None = ...,
     token: str | bool | None = ...,
 ) -> str: ...
-
 def update_collection_item(
     collection_slug: str,
     item_object_id: str,
@@ -70,7 +69,6 @@ def update_collection_item(
     position: int | None = ...,
     token: str | bool | None = ...,
 ) -> None: ...
-
 def update_collection_metadata(
     collection_slug: str,
     *,
@@ -81,5 +79,4 @@ def update_collection_metadata(
     theme: str | None = ...,
     token: str | bool | None = ...,
 ) -> Collection: ...
-
 def whoami(*, token: str | bool | None = ...) -> dict[str, Any]: ...
