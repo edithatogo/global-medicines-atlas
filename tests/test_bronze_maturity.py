@@ -172,6 +172,79 @@ def test_norpd_landing_rejects_receipt_or_boundary_drift(mutate) -> None:
     )
 
 
+@pytest.mark.parametrize("authorization_state", ["missing", "invalid_json"])
+@pytest.mark.unit
+def test_norpd_landing_rejects_unreadable_authorization(
+    tmp_path: Path, authorization_state: str
+) -> None:
+    authorization_path = (
+        tmp_path / bronze_maturity_mod.NORPD_AUTHORIZATION_RELATIVE
+    )
+    authorization_path.parent.mkdir(parents=True)
+    if authorization_state == "invalid_json":
+        authorization_path.write_text("{invalid", encoding="utf-8")
+    receipt = json.loads(
+        (ROOT / bronze_maturity_mod.NORPD_QUALIFICATION_RELATIVE).read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert not bronze_maturity_mod._is_successful_norpd_receipt(
+        tmp_path, receipt, bronze_maturity_mod.NORPD_SOURCE_ID
+    )
+
+
+@pytest.mark.parametrize(
+    "authorization",
+    [
+        None,
+        {"sources": "not-a-list"},
+        {"sources": []},
+    ],
+)
+@pytest.mark.unit
+def test_norpd_landing_rejects_malformed_authorization_structure(
+    tmp_path: Path, authorization: object
+) -> None:
+    authorization_path = (
+        tmp_path / bronze_maturity_mod.NORPD_AUTHORIZATION_RELATIVE
+    )
+    authorization_path.parent.mkdir(parents=True)
+    authorization_path.write_text(json.dumps(authorization), encoding="utf-8")
+    receipt = json.loads(
+        (ROOT / bronze_maturity_mod.NORPD_QUALIFICATION_RELATIVE).read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert not bronze_maturity_mod._is_successful_norpd_receipt(
+        tmp_path, receipt, bronze_maturity_mod.NORPD_SOURCE_ID
+    )
+
+
+@pytest.mark.unit
+def test_norpd_landing_rejects_non_mapping_receipt_substructures(
+    tmp_path: Path,
+) -> None:
+    authorization_path = (
+        tmp_path / bronze_maturity_mod.NORPD_AUTHORIZATION_RELATIVE
+    )
+    authorization_path.parent.mkdir(parents=True)
+    authorization_path.write_bytes(
+        (ROOT / bronze_maturity_mod.NORPD_AUTHORIZATION_RELATIVE).read_bytes()
+    )
+    receipt = json.loads(
+        (ROOT / bronze_maturity_mod.NORPD_QUALIFICATION_RELATIVE).read_text(
+            encoding="utf-8"
+        )
+    )
+    receipt["retention"] = []
+
+    assert not bronze_maturity_mod._is_successful_norpd_receipt(
+        tmp_path, receipt, bronze_maturity_mod.NORPD_SOURCE_ID
+    )
+
+
 @pytest.mark.parametrize(
     "mutate",
     [
