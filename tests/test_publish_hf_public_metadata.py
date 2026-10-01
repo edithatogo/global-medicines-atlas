@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import sys
 from datetime import UTC, datetime
-from typing import Any
+from types import ModuleType, SimpleNamespace
+from typing import Any, cast
 
 import pytest
 from scripts import publish_hf_public_metadata as publisher
@@ -194,8 +196,106 @@ def test_actions_environment_flags_without_oidc_proof_fail_closed() -> None:
         "GITHUB_RUN_ATTEMPT": "1",
         "HF_TOKEN": "test-only-placeholder",
     }
-    with pytest.raises(ValueError, match="OIDC request credentials"):
+    with pytest.raises(ValueError, match="OIDC identity token"):
         publisher.validate_actions_context(env)
+
+
+def _actions_claims(
+    env: dict[str, str],
+    **claim_overrides: object,
+) -> dict[str, object]:
+    now = int(datetime.now(UTC).timestamp())
+    claims: dict[str, object] = {
+        "iss": "https://token.actions.githubusercontent.com",
+        "aud": publisher.OIDC_AUDIENCE,
+        "sub": "repo:edithatogo/global-medicines-atlas:environment:production",
+        "repository": "edithatogo/global-medicines-atlas",
+        "repository_owner": "edithatogo",
+        "ref": "refs/heads/main",
+        "workflow_ref": publisher.EXPECTED_WORKFLOW_REF,
+        "environment": "production",
+        "event_name": "workflow_dispatch",
+        "runner_environment": "github-hosted",
+        "run_id": int(env["GITHUB_RUN_ID"]),
+        "run_attempt": int(env["GITHUB_RUN_ATTEMPT"]),
+        "iat": now,
+        "nbf": now,
+        "exp": now + 300,
+        **claim_overrides,
+    }
+    return claims
+
+
+def _oidc_test_environment() -> dict[str, str]:
+    return {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REF": "refs/heads/main",
+        "GITHUB_RUN_ID": "12345",
+        "GITHUB_RUN_ATTEMPT": "1",
+        "GMA_MAINTAINER_PUBLICATION_APPROVED": "yes-i-approve-publication",
+        "HF_TOKEN": "test-only-placeholder",
+    }
+
+
+def test_oidc_identity_requires_github_signature_and_exact_workflow(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    env = _oidc_test_environment()
+    claims_by_token = {
+        "valid": _actions_claims(env),
+        "wrong-workflow": _actions_claims(
+            env, workflow_ref="attacker.yml@refs/heads/main"
+        ),
+    }
+
+    class FakePyJWTError(Exception):
+        pass
+
+    class FakeJwkClient:
+        def __init__(self, uri: str, *, timeout: int) -> None:
+            assert uri == publisher.OIDC_JWKS_URL
+            assert timeout == 15
+
+        def get_signing_key_from_jwt(self, token: str) -> SimpleNamespace:
+            assert token
+            return SimpleNamespace(key="trusted-github-key")
+
+    def fake_decode(
+        token: str,
+        key: str,
+        *,
+        algorithms: list[str],
+        audience: str,
+        issuer: str,
+        options: dict[str, object],
+        leeway: int,
+    ) -> dict[str, object]:
+        assert key == "trusted-github-key"
+        assert algorithms == ["RS256"]
+        assert audience == publisher.OIDC_AUDIENCE
+        assert issuer == "https://token.actions.githubusercontent.com"
+        assert options == {"require": ["iat", "exp", "nbf", "iss", "aud"]}
+        assert leeway == 60
+        if token not in claims_by_token:
+            raise FakePyJWTError
+        return claims_by_token[token]
+
+    jwt_stub = cast("Any", ModuleType("jwt"))
+    jwt_stub.PyJWKClient = FakeJwkClient
+    jwt_stub.decode = fake_decode
+    jwt_stub.PyJWTError = FakePyJWTError
+    monkeypatch.setitem(sys.modules, "jwt", jwt_stub)
+
+    env["GMA_ACTIONS_OIDC_TOKEN"] = "valid"  # ruff: ignore[hardcoded-password-string] -- mocked JWT fixture, not a credential.
+    publisher._verify_actions_oidc(env)
+
+    env["GMA_ACTIONS_OIDC_TOKEN"] = "invalid"  # ruff: ignore[hardcoded-password-string] -- mocked JWT fixture, not a credential.
+    with pytest.raises(ValueError, match="signature or claims"):
+        publisher._verify_actions_oidc(env)
+
+    env["GMA_ACTIONS_OIDC_TOKEN"] = "wrong-workflow"  # ruff: ignore[hardcoded-password-string] -- mocked JWT fixture, not a credential.
+    with pytest.raises(ValueError, match="claims do not match"):
+        publisher._verify_actions_oidc(env)
 
 
 def test_approval_members_reconcile_scope_assessment_field_names() -> None:
