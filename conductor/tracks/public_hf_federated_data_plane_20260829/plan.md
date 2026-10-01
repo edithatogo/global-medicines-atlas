@@ -277,22 +277,27 @@
   receipts and their passing check totals. The PR was documentation/evidence
   only; no Hub state or source payload changed. This entry records PR #680's
   own exact merge receipt.
-- [~] Apply the approved public registry and HEOR source-note changes; remaining
-  collection changes are stopped at the Hugging Face 150-character collection
-  description limit. The maintainer approved the exact 146-character
-  description and full caveat in all five member notes on 2026-10-01. The first
-  hosted run applied the approved registry and HEOR metadata, then the Hub
-  rejected the over-limit Policy AUS description. After the revised wording
-  was approved, one retry stopped in Policy AUS preflight; PR #690 added the
-  exact previous Policy AUS notes as the only permitted migration baseline and
-  merged as `3f68b58e`. Its hosted retry then stopped in HEOR preflight because
-  HEOR also retains the exact previous approved notes. That retry made no
-  writes. The same narrowly scoped previous-note baseline now covers both
-  collections, including the prior HEOR reimbursement note; unrecognized notes
-  still fail closed (`932a4ccf`). The full local Test-Goblin profile passes.
-  PR #691, corrected hosted apply, public collection readback, and complete
-  receipt remain pending; the two utilisation members are not yet in HEOR. See
-  the 2026-10-01 partial-publication and prior-note-transition evidence.
+- [x] Apply the approved public registry and HEOR source-note changes, then
+  verify the complete public state anonymously. The maintainer approved the
+  exact 146-character Policy AUS description and full caveat in all five
+  member notes on 2026-10-01. After PR #691 merged as
+  `aaa181938f8cf7b4f9ef790fc93ac86b41988e1a`, hosted run
+  `36816927372` applied the registry and collection metadata and produced a
+  receipt. PR #692 (`1b64c9bb`) corrected the independent scanner to dereference
+  each public collection's canonical detail endpoint because the owner-list
+  endpoint embedded a stale four-member preview. A stable anonymous double
+  scan from the merged scanner confirms 76 public datasets, 9 public
+  collections, all five approved Policy AUS members/notes, and all six HEOR
+  members with the five approved notes and the pre-existing NZ member
+  preserved. The owner-list and detail-endpoint collection digests differ
+  because they represent the stale preview and complete current detail
+  respectively; the direct detail readback matches the approved target.
+  Durable hosted receipt and full anonymous readback are preserved in
+  `quality/qualifications/hf-public-metadata-publication-receipt-20261001.json`
+  and `quality/qualifications/hf-public-metadata-readback-20261001.json`.
+  No source payload bytes or values were read; no rights conclusion, v4
+  admission, or federation acceptance is claimed. See the append-only evidence
+  record for exact digests and run/commit identities.
 - [x] Reconcile candidate raw paths against pinned public manifests using
   metadata only. All 1,736 Australian MBS/PBS candidate paths map to pinned
   manifests or the exact August 2026 MBS hosted receipt; 1,735 appear in root
