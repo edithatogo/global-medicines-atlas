@@ -79,19 +79,23 @@ def _schema_validators(schema_value: object) -> tuple[Any, Any]:
     properties_value = schema.get("properties")
     if not isinstance(properties_value, dict):
         raise TypeError("registry schema properties are missing")
-    datasets_value = properties_value.get("datasets")
+    properties = cast("dict[str, Any]", properties_value)
+    datasets_value = properties.get("datasets")
     if not isinstance(datasets_value, dict):
         raise TypeError("registry datasets schema is missing")
     datasets = cast("dict[str, Any]", datasets_value)
     entry_schema = datasets.get("items")
     if not isinstance(entry_schema, dict):
         raise TypeError("registry entry schema is missing")
+    entry_schema_mapping = cast("dict[str, Any]", entry_schema)
     try:
         Draft202012Validator.check_schema(schema)
-        Draft202012Validator.check_schema(entry_schema)
+        Draft202012Validator.check_schema(entry_schema_mapping)
     except SchemaError:
         raise ValueError("pinned registry schema is invalid") from None
-    return Draft202012Validator(schema), Draft202012Validator(entry_schema)
+    return Draft202012Validator(schema), Draft202012Validator(
+        entry_schema_mapping
+    )
 
 
 def _validate_schema(schema: Any, value: object) -> None:

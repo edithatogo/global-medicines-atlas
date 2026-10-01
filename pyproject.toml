@@ -216,12 +216,14 @@ output = "coverage.xml"
 
 [tool.basedpyright]
 include = ["src", "sources", "scripts"]
+stubPath = "typing_stubs"
 pythonVersion = "3.14"
 typeCheckingMode = "strict"
 reportMissingTypeStubs = "warning"
 
 [tool.ty.environment]
 python-version = "3.14"
+extra-paths = ["typing_stubs"]
 
 [tool.ty.src]
 include = ["src", "sources"]
