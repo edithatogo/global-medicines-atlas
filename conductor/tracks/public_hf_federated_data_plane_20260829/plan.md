@@ -2,8 +2,14 @@
 
 ## Phase 1: Freeze and remediate the current estate (AC-01, AC-02, AC-08)
 
-- [~] Write failing tests for complete estate enumeration, exact revision and
+- [x] Add regression tests for complete estate enumeration, exact revision and
   manifest allowlists, public/non-gated state, and anonymous restoration.
+  Direct public dataset/collection scan tests now cover complete-list bounds,
+  duplicate and malformed identities, exact immutable revisions, visibility,
+  member-note preservation, deterministic order, and credential-free reads.
+  `tests/test_hf_estate_visibility_workflow.py` retains exact manifest,
+  anonymous restoration, and visibility containment checks. See the
+  2026-10-01 estate scan test evidence record.
 - [x] Record that the original Phase 1 intended-failure output was not retained
   and is irrecoverable; do not fabricate it from later green tests. The
   source-metadata slice retains its own reproducible collection failure and
