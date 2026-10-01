@@ -280,12 +280,16 @@
 - [~] Apply the approved public registry and HEOR source-note changes; remaining
   collection changes are stopped at the Hugging Face 150-character collection
   description limit. The maintainer approved the exact 146-character
-  description and full caveat in all five member notes on 2026-10-01. The
-  approval manifest, scope assessment, and workflow-pinned digest now bind that
-  wording; the hosted apply and anonymous readback remain pending. Policy AUS
-  remains absent from the anonymous public listing, the two utilisation
-  members are not yet in HEOR, and no complete publication receipt exists.
-  See the 2026-10-01 partial-publication and approval evidence records.
+  description and full caveat in all five member notes on 2026-10-01. The first
+  hosted run applied the approved registry and HEOR metadata, then the Hub
+  rejected the over-limit Policy AUS description. After the revised wording
+  was approved, a retry stopped in preflight because Policy AUS still held the
+  exact member notes from the prior approved manifest. Those five prior notes
+  are now recorded as the only permitted migration baseline; unknown notes
+  still fail closed. Focused tests and the full local Test-Goblin profile pass.
+  The corrected hosted apply, public collection readback, and complete receipt
+  remain pending; the two utilisation members are not yet in HEOR. See the
+  2026-10-01 partial-publication and prior-note-transition evidence records.
 - [x] Reconcile candidate raw paths against pinned public manifests using
   metadata only. All 1,736 Australian MBS/PBS candidate paths map to pinned
   manifests or the exact August 2026 MBS hosted receipt; 1,735 appear in root

@@ -42,34 +42,39 @@
   },
   "candidate_scope": {
     "scope_assessment_path": "quality/qualifications/australian-m112-scope-assessment-20260930.json",
-    "scope_assessment_sha256": "4515e4e56932995c1ac406de52962d49943ee9118d7b5bf27e7ea6ea8a00ebf0",
+    "scope_assessment_sha256": "53a2c801c220a8056bb5ac2cbd8a1e15caae80f98c18379272cf1af644aed972",
     "policy_aus_slug": "edithatogo/policy-aus-6a2e99a1ae31ec0fe8895be8",
     "policy_aus_collection_note": "Australian MBS and PBS evidence for discovery. Membership does not grant source rights, authorize publication, or establish federation acceptance.",
     "members": [
       {
         "dataset": "edithatogo/australian-mbs-source-archive",
         "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
-        "note": "Australian MBS source archive and Silver candidate. Its published MBS Silver qualification is candidate-only; exact federation v4 admission remains pending. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance."
+        "note": "Australian MBS source archive and Silver candidate. Its published MBS Silver qualification is candidate-only; exact federation v4 admission remains pending. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance.",
+        "previous_note": "Australian MBS source archive and Silver candidate. Its published MBS Silver qualification is candidate-only; exact federation v4 admission remains pending."
       },
       {
         "dataset": "edithatogo/australian-pbs-source-archive",
         "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
-        "note": "Australian PBS historical source archive. Current PBS API acquisition and its separate rights and source-era qualification remain open. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance."
+        "note": "Australian PBS historical source archive. Current PBS API acquisition and its separate rights and source-era qualification remain open. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance.",
+        "previous_note": "Australian PBS historical source archive. Current PBS API acquisition and its separate rights and source-era qualification remain open."
       },
       {
         "dataset": "edithatogo/australian-mbs-utilisation-archive",
         "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
-        "note": "Australian MBS utilisation and statistics source archive. Its manifest reports partial coverage for the latest harvest. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance."
+        "note": "Australian MBS utilisation and statistics source archive. Its manifest reports partial coverage for the latest harvest. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance.",
+        "previous_note": "Australian MBS utilisation and statistics source archive. Its manifest reports partial coverage for the latest harvest."
       },
       {
         "dataset": "edithatogo/australian-pbs-utilisation-archive",
         "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
-        "note": "Australian PBS utilisation and expenditure source archive. Source-level rights and currency remain governed by each receipt. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance."
+        "note": "Australian PBS utilisation and expenditure source archive. Source-level rights and currency remain governed by each receipt. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance.",
+        "previous_note": "Australian PBS utilisation and expenditure source archive. Source-level rights and currency remain governed by each receipt."
       },
       {
         "dataset": "edithatogo/reimbursement-atlas",
         "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
-        "note": "Shared reimbursement product containing an Australian PBS raw archive. Its repository federation manifest is v1; exact v4 object admission remains pending. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance."
+        "note": "Shared reimbursement product containing an Australian PBS raw archive. Its repository federation manifest is v1; exact v4 object admission remains pending. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance.",
+        "previous_note": "Shared reimbursement product containing an Australian PBS raw archive. Its repository federation manifest is v1; exact v4 object admission remains pending."
       }
     ],
     "heor_slug": "edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",

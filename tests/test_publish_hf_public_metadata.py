@@ -1,5 +1,7 @@
 """Fail-closed tests for the approved metadata-only Hub transaction."""
 
+# pyright: reportPrivateUsage=false
+
 from __future__ import annotations
 
 import hashlib
@@ -361,6 +363,138 @@ def test_scope_assessment_requires_explicit_maintainer_approval_record() -> (
     )
 
     with pytest.raises(ValueError, match="maintainer approval record"):
+        publisher.validate_scope_assessment(assessment, scope)
+
+
+def _collection_item(repo_id: str, note: str | None) -> SimpleNamespace:
+    return SimpleNamespace(
+        item_id=repo_id,
+        item_object_id=f"object-{repo_id}",
+        item_type="dataset",
+        note=note,
+    )
+
+
+def _transition_collections(
+    approval: dict[str, Any], policy_note: str | None
+) -> tuple[SimpleNamespace, SimpleNamespace]:
+    scope = approval["candidate_scope"]
+    first = scope["members"][0]["dataset"]
+    policy = SimpleNamespace(
+        slug=scope["policy_aus_slug"],
+        title="Policy AUS",
+        private=True,
+        description=publisher.POLICY_OLD_DESCRIPTION,
+        items=[_collection_item(first, policy_note)],
+    )
+    heor_slug = scope["heor_slug"]
+    heor = SimpleNamespace(
+        slug=heor_slug,
+        private=False,
+        description=(
+            "Registry-driven view of health-economics, reimbursement, "
+            "outcomes-research, and related evidence datasets."
+        ),
+        items=[
+            _collection_item("edithatogo/australian-mbs-source-archive", None),
+            _collection_item("edithatogo/australian-pbs-source-archive", None),
+            _collection_item(
+                "edithatogo/nz-health-appropriations", publisher.HEOR_NZ_NOTE
+            ),
+            _collection_item(
+                "edithatogo/reimbursement-atlas",
+                publisher.HEOR_EXISTING_NOTES["edithatogo/reimbursement-atlas"],
+            ),
+        ],
+    )
+    return policy, heor
+
+
+def test_collection_transition_accepts_only_approved_prior_policy_note() -> (
+    None
+):
+    approval = json.loads(
+        (publisher.ROOT / publisher.APPROVAL_PATH).read_text()
+    )
+    previous_note = approval["candidate_scope"]["members"][0]["previous_note"]
+    policy, heor = _transition_collections(approval, previous_note)
+
+    publisher.validate_collection_transitions(policy, heor, approval)
+
+
+def test_collection_transition_rejects_unrecognized_policy_note() -> None:
+    approval = json.loads(
+        (publisher.ROOT / publisher.APPROVAL_PATH).read_text()
+    )
+    policy, heor = _transition_collections(
+        approval, "unrecognized note from an outside change"
+    )
+
+    with pytest.raises(ValueError, match="approved transition"):
+        publisher.validate_collection_transitions(policy, heor, approval)
+
+
+def test_collection_reconciler_updates_exact_approved_prior_note(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    repo_id = "edithatogo/australian-mbs-source-archive"
+    prior_note = "exact previously approved note"
+    collection = SimpleNamespace(
+        items=[_collection_item(repo_id, prior_note)],
+        description="existing description",
+        private=True,
+    )
+    test_token = "t" * 24
+    hub = cast("Any", ModuleType("huggingface_hub"))
+
+    def add_collection_item(**_kwargs: Any) -> None:
+        return None
+
+    def update_collection_metadata(**_kwargs: Any) -> None:
+        return None
+
+    def get_collection(_slug: str, *, token: str) -> SimpleNamespace:
+        assert token == test_token
+        return collection
+
+    def update_collection_item(
+        *, collection_slug: str, item_object_id: str, note: str, token: str
+    ) -> None:
+        assert collection_slug == "owner/collection"
+        assert item_object_id == f"object-{repo_id}"
+        assert token == test_token
+        collection.items[0].note = note
+
+    hub.add_collection_item = add_collection_item
+    hub.get_collection = get_collection
+    hub.update_collection_item = update_collection_item
+    hub.update_collection_metadata = update_collection_metadata
+    monkeypatch.setitem(sys.modules, "huggingface_hub", hub)
+
+    result = publisher._reconcile_collection(
+        test_token,
+        slug="owner/collection",
+        desired_notes={repo_id: "new approved note"},
+        expected_members=set(),
+        baseline_notes={repo_id: prior_note},
+    )
+
+    assert result.items[0].note == "new approved note"
+
+
+def test_scope_assessment_binds_each_prior_policy_note() -> None:
+    approval = json.loads(
+        (publisher.ROOT / publisher.APPROVAL_PATH).read_text()
+    )
+    scope = approval["candidate_scope"]
+    assessment = json.loads(
+        (publisher.ROOT / scope["scope_assessment_path"]).read_text()
+    )
+    assessment["policy_aus_change_proposal"]["proposed_dataset_members"][0][
+        "previous_collection_note"
+    ] = "unrecognized prior note"
+
+    with pytest.raises(ValueError, match="scope assessment"):
         publisher.validate_scope_assessment(assessment, scope)
 
 
