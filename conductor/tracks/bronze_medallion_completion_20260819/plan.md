@@ -938,3 +938,25 @@ for credentialed or rights-unresolved sources.
   `9f32b2a798745dd6db88f56a2833753830fe3bca`. The 174/157/42/115 source counts
   and the 13-evidenced, one-blocked dimension result are unchanged. This
   corrects report provenance only.
+
+## 2026-10-03 versioned receipt cohort and future-source ledger
+
+- [~] Add a supplemental, versioned receipt-backed source cohort without
+  changing the current-scope Bronze or Stable v1 M5 acceptance gates.
+  - [x] Write failing tests proving direct receipts, rather than queue labels,
+    determine cohort membership and current-scope sources partition cleanly.
+  - [x] Bind each selected source ID to its validated receipt reference and
+    digest; preserve the source catalogue and queue input digests.
+  - [x] List every other current-scope source with its queue state, reason,
+    next action, and explicit re-entry trigger. Keep fixture-only and excluded
+    source classes separate.
+  - [x] Regenerate the full-scope maturity report against exact merged `main`
+    `12e5ca4678e077f8e6bf954aaa780aac83040994`; preserve the 174/157/42/115
+    source counts, 13 evidenced dimensions, and blocked completeness state.
+  - [x] Run focused and affected checks, record evidence, and reconcile this
+    task marker.
+  - The supplemental cohort contains 27 direct receipt-qualified source IDs.
+    Its future list contains the remaining 130 current-scope IDs: 115 that the
+    full-scope evaluator still reports without landing evidence, plus 15 with
+    other/queue-level landing evidence that does not satisfy direct-receipt
+    cohort membership. No M-095 denominator change or M5 promotion is claimed.

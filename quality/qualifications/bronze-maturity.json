@@ -2,8 +2,8 @@
   "schema_id": "global-medicines-atlas.bronze-maturity-qualification",
   "schema_version": 1,
   "horizon": "bronze-current-public-scope",
-  "evaluated_at": "2026-10-02T11:07:01.978829+00:00",
-  "git_commit": "9f32b2a798745dd6db88f56a2833753830fe3bca",
+  "evaluated_at": "2026-10-02T23:25:12.158660+00:00",
+  "git_commit": "12e5ca4678e077f8e6bf954aaa780aac83040994",
   "authorities": {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
