@@ -28,6 +28,17 @@
       ]
     },
     {
+      "source_id": "global-who-national-eml-index",
+      "state": "manual_only_documented_acquisition",
+      "reason": "The current WHO nEML repository index is publicly discoverable, but its linked national documents have varied upstream sources and this review did not establish their per-document reuse rights. The source remains unacquired and unqualified.",
+      "manual_instructions": "Use the current official WHO nEML repository page for source discovery. For each candidate, record only the official item URL, country/list title, language, and displayed date. Do not fetch, retain, or publish linked national document bytes until the specific document's rights and acquisition authority are established. Record unavailable entries as unknown coverage, not negative evidence.",
+      "next_action": "complete a metadata-only source inventory where permissible, then resolve source-specific rights and acquisition authority before any linked-document landing",
+      "evidence_references": [
+        "https://www.who.int/teams/health-product-policy-and-standards/assistive-and-medical-technology/essential-medicines/national-emls",
+        "quality/qualifications/who-national-eml-index-discovery-20261002.json"
+      ]
+    },
+    {
       "source_id": "au-mbs",
       "state": "landed_and_evidenced",
       "evidence_scope": "live_receipt",

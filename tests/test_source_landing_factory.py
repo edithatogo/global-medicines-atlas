@@ -263,6 +263,22 @@ def test_generated_queue_schema_and_conductor_projection_are_current() -> None:
             rxnorm.adapter.acquisition_instructions
         )
         assert "external-reference-only B2 evidence" in rxnorm.next_action
+    who_index = next(
+        item
+        for item in queue.items
+        if item.source_id == "global-who-national-eml-index"
+    )
+    assert who_index.state is LandingDisposition.MANUAL_ONLY
+    assert (
+        "Do not fetch, retain, or publish linked national document bytes"
+        in (who_index.adapter.acquisition_instructions)
+    )
+    assert "per-document reuse rights" in who_index.reason
+    assert "source-specific rights" in who_index.next_action
+    assert (
+        "quality/qualifications/who-national-eml-index-discovery-20261002.json"
+        in who_index.evidence_references
+    )
     assert MARKDOWN_PATH.read_text(encoding="utf-8") == (
         render_conductor_queue(queue)
     )

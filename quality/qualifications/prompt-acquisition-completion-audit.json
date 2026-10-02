@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.prompt-acquisition-completion-audit",
   "schema_version": 1,
-  "generated_at": "2026-08-29",
+  "generated_at": "2026-10-02",
   "prompt_count": 36,
   "unique_prompt_source_count": 94,
   "catalog_source_count": 174,

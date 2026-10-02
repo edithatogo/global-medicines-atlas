@@ -1,6 +1,6 @@
 {
   "schema_version": 5,
-  "reviewed_at": "2026-08-29",
+  "reviewed_at": "2026-10-02",
   "monitoring_contract": {
     "source_health": "weekly",
     "schema_drift": "monthly"
@@ -4909,7 +4909,7 @@
       "title": "WHO index of national essential medicines lists",
       "dimension": "formulary",
       "access_mode": "document",
-      "landing_page": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists/national-essential-medicines-lists",
+      "landing_page": "https://www.who.int/teams/health-product-policy-and-standards/assistive-and-medical-technology/essential-medicines/national-emls",
       "update_cadence": "source-declared",
       "rights_status": "review_required",
       "readiness": "candidate",
@@ -4923,10 +4923,10 @@
       "product_grain": "source-defined medicine, product, package, decision, or document",
       "historical_scope": "source-declared current and historical scope",
       "native_identifier": "WHO national EML country/list edition",
-      "last_verified_at": "2026-08-20",
+      "last_verified_at": "2026-10-02",
       "integration_layer": "catalogued",
       "implemented_ingestion": false,
-      "documentation_url": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists/national-essential-medicines-lists",
+      "documentation_url": "https://www.who.int/teams/health-product-policy-and-standards/assistive-and-medical-technology/essential-medicines/national-emls",
       "discovery_status": "declaration_verified",
       "information_domains": [
         "product_identity",

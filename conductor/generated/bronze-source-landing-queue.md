@@ -178,7 +178,7 @@ Silver transformations included: **no**.
 - [x] `global-who-eml` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `global-who-medicine-prices` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `global-who-mi4a` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
-- [ ] `global-who-national-eml-index` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
+- [ ] `global-who-national-eml-index` — `manual_only_documented_acquisition`; complete a metadata-only source inventory where permissible, then resolve source-specific rights and acquisition authority before any linked-document landing.
 - [ ] `ie-pcrs-reimbursement` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `in-nppa-ceiling-prices` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
 - [ ] `jp-pmda-safety` — `manual_only_documented_acquisition`; execute and receipt the documented public manual acquisition.
