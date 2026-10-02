@@ -28,7 +28,7 @@ or its historical family. The report was refreshed against exact merged
 source inventory and completeness finding are unchanged. The NorPD queue and
 maturity reconciliation was merged in PR #697. This report is refreshed
 against exact merged `main` commit
-`3cd30375aae578c4abd99a72f4048c39deed1596`; the inventory still finds 115 of
+`9f32b2a798745dd6db88f56a2833753830fe3bca`; the inventory still finds 115 of
 157 in-scope public/no-credential sources without qualifying landing evidence.
 The report evaluates 13 of 14 mandatory Bronze properties as evidenced and
 leaves completeness blocked. CMS Part D

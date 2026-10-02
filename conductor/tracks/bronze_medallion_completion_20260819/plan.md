@@ -931,3 +931,10 @@ for credentialed or rights-unresolved sources.
   a separate non-acceptance gate.
 - [x] Record the reassessment without promoting Bronze maturity or changing
   source rights, acquisition, coverage, publication, or any acceptance gate.
+
+## 2026-10-02 post-PR-702 exact-main report refresh
+
+- [x] Rebind the qualification and M5 status page to exact merged `main`
+  `9f32b2a798745dd6db88f56a2833753830fe3bca`. The 174/157/42/115 source counts
+  and the 13-evidenced, one-blocked dimension result are unchanged. This
+  corrects report provenance only.
