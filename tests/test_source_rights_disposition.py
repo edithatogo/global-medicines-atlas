@@ -12,6 +12,7 @@ MATRIX = ROOT / "quality/qualifications/source-rights-disposition.json"
 SOURCE_DECISIONS = (
     ROOT / "src/global_medicines_atlas/data/source_rights_source_decisions.json"
 )
+CATALOG = ROOT / "src/global_medicines_atlas/data/medicine_source_catalog.json"
 
 
 def test_every_catalogue_source_has_a_fail_closed_disposition() -> None:
@@ -41,6 +42,14 @@ def test_every_catalogue_source_has_a_fail_closed_disposition() -> None:
         for source_id in manifest["source_ids"]
     }
     assert {entry["source_id"] for entry in approved} == exact_approved
+    catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+    catalogue_approved = {
+        source["source_id"]
+        for source in catalog["sources"]
+        if source["rights_status"] == "maintainer_redistribution_authorized"
+        or source["rights_status"].startswith("approved_public_exact_inventory")
+    }
+    assert catalogue_approved == exact_approved
 
 
 def test_public_surfaces_require_source_specific_ledger_approval() -> None:

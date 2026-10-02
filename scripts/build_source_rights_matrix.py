@@ -19,9 +19,15 @@ def build() -> dict[str, object]:
     reviews = {entry["source_id"]: entry for entry in ledger["entries"]}
     sources = catalog["sources"]
 
-    def approved(review: dict[str, Any]) -> bool:
+    def approved(source: dict[str, Any], review: dict[str, Any]) -> bool:
+        rights_status = str(source["rights_status"])
+        catalogue_approved = (
+            rights_status == "maintainer_redistribution_authorized"
+            or rights_status.startswith("approved_public_exact_inventory")
+        )
         return (
-            review["public_derived_eligible"]
+            catalogue_approved
+            and review["public_derived_eligible"]
             and review["maintainer_licence_approved"]
             and review["maintainer_publication_approved"]
         )
@@ -35,7 +41,7 @@ def build() -> dict[str, object]:
             "catalogue_rights_status": source["rights_status"],
             "recommended_disposition": (
                 reviews[source["source_id"]]["disposition"]
-                if approved(reviews[source["source_id"]])
+                if approved(source, reviews[source["source_id"]])
                 else "credentialed_excluded"
                 if reviews[source["source_id"]]["disposition"]
                 == "credentialed_excluded"
@@ -43,24 +49,24 @@ def build() -> dict[str, object]:
             ),
             "internal_acquisition": (
                 "approved_for_exact_reviewed_scope"
-                if approved(reviews[source["source_id"]])
+                if approved(source, reviews[source["source_id"]])
                 else "conditional_on_lawful_access_and_retention_review"
             ),
             "public_derived_release": (
                 "approved_for_exact_manifest"
-                if approved(reviews[source["source_id"]])
+                if approved(source, reviews[source["source_id"]])
                 else "not_approved"
             ),
             "approved_surfaces": (
                 ["repository_metadata", "source_bytes", "derived_products"]
-                if approved(reviews[source["source_id"]])
+                if approved(source, reviews[source["source_id"]])
                 and reviews[source["source_id"]]["public_source_eligible"]
                 else ["repository_metadata", "derived_products"]
-                if approved(reviews[source["source_id"]])
+                if approved(source, reviews[source["source_id"]])
                 else ["repository_metadata"]
             ),
             "required_evidence": []
-            if approved(reviews[source["source_id"]])
+            if approved(source, reviews[source["source_id"]])
             else [
                 "current_terms_or_written_permission",
                 "field_level_redistribution_decision",
@@ -70,7 +76,7 @@ def build() -> dict[str, object]:
             ],
             "blocker": (
                 None
-                if approved(reviews[source["source_id"]])
+                if approved(source, reviews[source["source_id"]])
                 else "source-specific rights receipt required"
             ),
             "rights_policy_family_id": reviews[source["source_id"]][
