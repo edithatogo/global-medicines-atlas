@@ -82,6 +82,7 @@ class LandingOverride(FrozenModel):
     failure_receipt: str | None = Field(default=None, min_length=1)
     reuse_reference: str | None = Field(default=None, min_length=1)
     manual_instructions: str | None = Field(default=None, min_length=1)
+    preserves_source_bytes: bool = True
     next_action: str | None = Field(default=None, min_length=1)
     evidence_references: tuple[str, ...] = ()
 
@@ -114,6 +115,13 @@ class LandingOverride(FrozenModel):
             and not self.evidence_references
         ):
             raise ValueError("landed override requires evidence references")
+        if (
+            not self.preserves_source_bytes
+            and self.state is not LandingDisposition.MANUAL_ONLY
+        ):
+            raise ValueError(
+                "reference-only acquisition must remain manual-only"
+            )
         return self
 
 
@@ -147,7 +155,7 @@ class LandingAdapterConfig(FrozenModel):
     acquisition_profile: str | None = None
     acquisition_instructions: str = Field(min_length=1)
     pagination: Literal["none", "source_config_required", "manual"]
-    preserves_source_bytes: Literal[True] = True
+    preserves_source_bytes: bool = True
     requires_reuse_gate: Literal[True] = True
     requires_rights_gate: Literal[True] = True
     credentials_persisted: Literal[False] = False
@@ -290,6 +298,9 @@ def _adapter(
         acquisition_profile=source.acquisition_profile,
         acquisition_instructions=instructions,
         pagination=pagination,
+        preserves_source_bytes=(
+            True if override is None else override.preserves_source_bytes
+        ),
     )
 
 

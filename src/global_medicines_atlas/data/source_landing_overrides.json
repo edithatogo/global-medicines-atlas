@@ -2,6 +2,32 @@
   "schema_version": 1,
   "overrides": [
     {
+      "source_id": "global-rxnorm",
+      "family": "manual_reproducible_export",
+      "state": "manual_only_documented_acquisition",
+      "preserves_source_bytes": false,
+      "reason": "Source-specific maintainer approval permits public redistribution of NLM-created RxCUI identifiers only; full RxNorm source bytes and third-party vocabulary terms remain excluded.",
+      "manual_instructions": "Acquire only the allowlisted NLM-created RxCUI identifier fields from a documented release/API response; record exact endpoint, release, retrieval time, and field allowlist. Do not retain or publish full response bytes, source vocabulary terms, or other third-party content. Qualify only after a rights-constrained external-reference B2 record and receipt-bound identifier projection are implemented.",
+      "next_action": "implement and test the allowlisted derived-identifier acquisition with external-reference-only B2 evidence; do not claim live acquisition until receipt-bound evidence exists",
+      "evidence_references": [
+        "quality/qualifications/source-rights-review-ledger.json",
+        "src/global_medicines_atlas/data/source_rights_policy_families.json"
+      ]
+    },
+    {
+      "source_id": "us-rxnorm-api",
+      "family": "manual_reproducible_export",
+      "state": "manual_only_documented_acquisition",
+      "preserves_source_bytes": false,
+      "reason": "Source-specific maintainer approval permits public redistribution of NLM-created RxCUI identifiers only; full RxNorm source bytes and third-party vocabulary terms remain excluded.",
+      "manual_instructions": "Acquire only the allowlisted NLM-created RxCUI identifier fields from a documented release/API response; record exact endpoint, release, retrieval time, and field allowlist. Do not retain or publish full response bytes, source vocabulary terms, or other third-party content. Qualify only after a rights-constrained external-reference B2 record and receipt-bound identifier projection are implemented.",
+      "next_action": "implement and test the allowlisted derived-identifier acquisition with external-reference-only B2 evidence; do not claim live acquisition until receipt-bound evidence exists",
+      "evidence_references": [
+        "quality/qualifications/source-rights-review-ledger.json",
+        "src/global_medicines_atlas/data/source_rights_policy_families.json"
+      ]
+    },
+    {
       "source_id": "au-mbs",
       "state": "landed_and_evidenced",
       "evidence_scope": "live_receipt",

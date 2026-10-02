@@ -171,6 +171,14 @@ def test_exception_states_require_machine_readable_evidence() -> None:
             state=LandingDisposition.LANDED,
             reason="landed",
         )
+    with pytest.raises(ValidationError, match="remain manual-only"):
+        LandingOverride(
+            source_id="example",
+            state=LandingDisposition.LANDED,
+            reason="reference-only cannot claim landing",
+            evidence_references=("receipt:example",),
+            preserves_source_bytes=False,
+        )
 
 
 @pytest.mark.unit
@@ -239,6 +247,20 @@ def test_generated_queue_schema_and_conductor_projection_are_current() -> None:
         "quality/qualifications/provider-response-thread-check-20260929.json"
         in openprescribing.evidence_references
     )
+    for source_id in ("global-rxnorm", "us-rxnorm-api"):
+        rxnorm = next(item for item in queue.items if item.source_id == source_id)
+        assert rxnorm.state is LandingDisposition.MANUAL_ONLY
+        assert rxnorm.adapter.preserves_source_bytes is False
+        assert rxnorm.adapter.family is (
+            LandingAdapterFamily.MANUAL_REPRODUCIBLE_EXPORT
+        )
+        assert "NLM-created RxCUI identifier fields" in (
+            rxnorm.adapter.acquisition_instructions
+        )
+        assert "Do not retain or publish full response bytes" in (
+            rxnorm.adapter.acquisition_instructions
+        )
+        assert "external-reference-only B2 evidence" in rxnorm.next_action
     assert MARKDOWN_PATH.read_text(encoding="utf-8") == (
         render_conductor_queue(queue)
     )

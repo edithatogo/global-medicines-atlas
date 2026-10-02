@@ -9,9 +9,9 @@ Silver transformations included: **no**.
 
 - `landed_and_evidenced`: 42
 - `temporarily_unavailable`: 1
-- `rights_blocked`: 27
+- `rights_blocked`: 25
 - `credentialed_and_excluded`: 15
-- `manual_only_documented_acquisition`: 89
+- `manual_only_documented_acquisition`: 91
 - `superseded_by_reused_source`: 0
 - `not_yet_implemented`: 0
 
@@ -74,7 +74,6 @@ Silver transformations included: **no**.
 - [x] `ca-dpd` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `eu-ema-pms-fhir` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [ ] `gb-openprescribing` — `temporarily_unavailable`; wait for a provider-supported automated route or material access-control change before one bounded retry; do not bypass challenges, crawl unboundedly, or substitute upstream files.
-- [ ] `global-rxnorm` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `nz-nzhts-fhir` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [ ] `us-dailymed-spl` — `rights_blocked`; record source-specific retention and transformation rights.
 - [x] `us-drugsfda` — `landed_and_evidenced`; verify receipt freshness on schedule.
@@ -83,7 +82,6 @@ Silver transformations included: **no**.
 - [x] `us-openfda-faers` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `us-openfda-ndc` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [x] `us-openfda-nsde` — `landed_and_evidenced`; verify receipt freshness on schedule.
-- [ ] `us-rxnorm-api` — `rights_blocked`; record source-specific retention and transformation rights.
 
 ## `regulator_search_export`
 
@@ -204,5 +202,7 @@ Silver transformations included: **no**.
 - [x] `eu-ema-xevmpd-credentialed` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [x] `eu-spor-rms-oms` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [x] `gb-nhs-dmd` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
+- [ ] `global-rxnorm` — `manual_only_documented_acquisition`; implement and test the allowlisted derived-identifier acquisition with external-reference-only B2 evidence; do not claim live acquisition until receipt-bound evidence exists.
 - [x] `global-umc-vigibase` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
 - [x] `nz-nzulm-bulk` — `credentialed_and_excluded`; retain exclusion until credentials are explicitly authorised.
+- [ ] `us-rxnorm-api` — `manual_only_documented_acquisition`; implement and test the allowlisted derived-identifier acquisition with external-reference-only B2 evidence; do not claim live acquisition until receipt-bound evidence exists.
