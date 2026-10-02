@@ -32,7 +32,8 @@
         "cohort_schema",
         "source_catalog",
         "source_landing_queue",
-        "landing_overrides"
+        "landing_overrides",
+        "qualification_dependencies"
       ],
       "properties": {
         "receipt_validator": { "$ref": "#/$defs/input" },
@@ -40,7 +41,10 @@
         "cohort_schema": { "$ref": "#/$defs/input" },
         "source_catalog": { "$ref": "#/$defs/input" },
         "source_landing_queue": { "$ref": "#/$defs/input" },
-        "landing_overrides": { "$ref": "#/$defs/input" }
+        "landing_overrides": { "$ref": "#/$defs/input" },
+        "qualification_dependencies": {
+          "$ref": "#/$defs/dependency_manifest"
+        }
       },
       "additionalProperties": false
     },
@@ -181,6 +185,45 @@
     }
   },
   "$defs": {
+    "dependency_manifest": {
+      "type": "object",
+      "required": ["algorithm", "sha256", "file_count", "files"],
+      "properties": {
+        "algorithm": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "file_count": { "type": "integer", "minimum": 0 },
+        "files": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/dependency_file" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "dependency_file": {
+      "type": "object",
+      "required": ["path", "exists", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "exists": { "type": "boolean" },
+        "sha256": {
+          "oneOf": [
+            { "$ref": "#/$defs/sha256" },
+            { "type": "null" }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "exists": { "const": true } } },
+          "then": { "properties": { "sha256": { "$ref": "#/$defs/sha256" } } }
+        },
+        {
+          "if": { "properties": { "exists": { "const": false } } },
+          "then": { "properties": { "sha256": { "type": "null" } } }
+        }
+      ],
+      "additionalProperties": false
+    },
     "input": {
       "type": "object",
       "required": ["path", "sha256"],

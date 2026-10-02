@@ -328,6 +328,100 @@ def test_markdown_source_metadata_is_escaped() -> None:
 
 
 @pytest.mark.unit
+def test_qualification_manifest_binds_transitive_receipt_inputs(
+    tmp_path: Path,
+) -> None:
+    _minimal_root(tmp_path)
+
+    before = build_bronze_receipt_cohort(tmp_path)["inputs"][
+        "qualification_dependencies"
+    ]
+    before_files = {item["path"]: item for item in before["files"]}
+    receipt_path = "quality/qualifications/test-live-receipt.json"
+    rights_path = (
+        "quality/qualifications/nice-utilisation-acquisition-authorization.json"
+    )
+    assert before_files[receipt_path]["exists"] is True
+    for authorization_input in cohort_module.QUALIFICATION_AUTHORIZATION_INPUTS:
+        assert before_files[authorization_input]["exists"] is False
+    assert (
+        before_files["src/global_medicines_atlas/source_catalog.py"]["exists"]
+        is False
+    )
+    assert (
+        before_files["src/global_medicines_atlas/bronze_maturity.py"]["exists"]
+        is False
+    )
+
+    authorization_file = tmp_path / rights_path
+    _write_json(authorization_file, {"decision_status": "review_required"})
+    fixture_file = tmp_path / "tests/fixtures/qualification-input.json"
+    _write_json(fixture_file, {"synthetic": True})
+    adapter_file = (
+        tmp_path / "src/global_medicines_atlas/adapters/qualification_input.py"
+    )
+    adapter_file.parent.mkdir(parents=True, exist_ok=True)
+    adapter_file.write_text("SOURCE = 'synthetic'\n", encoding="utf-8")
+    after = build_bronze_receipt_cohort(tmp_path)["inputs"][
+        "qualification_dependencies"
+    ]
+    after_files = {item["path"]: item for item in after["files"]}
+
+    assert after["sha256"] != before["sha256"]
+    assert after_files[rights_path]["exists"] is True
+    assert after_files[rights_path]["sha256"] is not None
+    assert after_files["tests/fixtures/qualification-input.json"]["exists"]
+    assert after_files[
+        "src/global_medicines_atlas/adapters/qualification_input.py"
+    ]["exists"]
+
+    authorization_file.write_text(
+        '{"decision_status":"approved_internal"}\n', encoding="utf-8"
+    )
+    changed = build_bronze_receipt_cohort(tmp_path)["inputs"][
+        "qualification_dependencies"
+    ]
+    assert changed["sha256"] != after["sha256"]
+
+
+@pytest.mark.unit
+def test_dependency_manifest_filters_receipt_paths_like_validator(
+    tmp_path: Path,
+) -> None:
+    _minimal_root(tmp_path)
+    overrides_path = (
+        tmp_path
+        / "src/global_medicines_atlas/data/source_landing_overrides.json"
+    )
+    overrides = json.loads(overrides_path.read_text(encoding="utf-8"))
+    overrides["overrides"][0]["evidence_references"].extend([
+        "not-a-receipt.txt",
+        "../outside.json",
+        "https://example.invalid/receipt.json",
+        "/outside/receipt.json",
+        "quality/qualifications/publication-receipt.json",
+        "quality/qualifications/huggingface-receipt.json",
+        "quality/qualifications/unavailable-receipt.json",
+        None,
+    ])
+    _write_json(overrides_path, overrides)
+
+    dependencies = build_bronze_receipt_cohort(tmp_path)["inputs"][
+        "qualification_dependencies"
+    ]
+    paths = {item["path"] for item in dependencies["files"]}
+
+    assert "quality/qualifications/test-live-receipt.json" in paths
+    assert "quality/qualifications/unavailable-receipt.json" in paths
+    assert not paths.intersection({
+        "outside.json",
+        "outside/receipt.json",
+        "quality/qualifications/publication-receipt.json",
+        "quality/qualifications/huggingface-receipt.json",
+    })
+
+
+@pytest.mark.unit
 def test_report_and_future_list_regenerate_and_validate(
     tmp_path: Path,
 ) -> None:

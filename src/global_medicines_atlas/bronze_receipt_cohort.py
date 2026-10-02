@@ -17,6 +17,9 @@ from .bronze_maturity import (
     receipt_backed_landing_evidence,
 )
 from .bronze_maturity import HORIZON as CURRENT_SCOPE_HORIZON
+from .cms_partd_qualification import RAW_RELATIVE as CMS_RAW_RELATIVE
+from .cms_partd_qualification import RECORDS_RELATIVE as CMS_RECORDS_RELATIVE
+from .cms_partd_qualification import RIGHTS_RELATIVE as CMS_RIGHTS_RELATIVE
 
 QUEUE_RELATIVE = "quality/qualifications/bronze-source-landing-queue.json"
 REPORT_RELATIVE = "quality/qualifications/bronze-receipt-cohort-v1.json"
@@ -27,6 +30,18 @@ REENTRY_TRIGGER = (
     "Re-evaluate after a source-specific successful Bronze receipt is "
     "validated under the existing rights, credential, reuse, admission, "
     "and provenance gates. This ledger does not authorize acquisition."
+)
+QUALIFICATION_AUTHORIZATION_INPUTS = (
+    CMS_RIGHTS_RELATIVE,
+    CMS_RAW_RELATIVE,
+    CMS_RECORDS_RELATIVE,
+    "quality/qualifications/nice-utilisation-acquisition-authorization.json",
+    "quality/qualifications/nordic-utilisation-acquisition-authorization.json",
+)
+QUALIFICATION_CODE_INPUTS = (
+    "src/global_medicines_atlas/bronze_maturity.py",
+    "src/global_medicines_atlas/cms_partd_qualification.py",
+    "src/global_medicines_atlas/source_catalog.py",
 )
 
 
@@ -40,6 +55,140 @@ def _sha256(path: Path) -> str:
     """Return the SHA-256 digest of a file."""
 
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _receipt_candidate_path(reference: str) -> str | None:
+    """Return a local, non-publication JSON receipt path, if eligible."""
+
+    normalized = reference.replace("\\", "/")
+    candidate = Path(normalized)
+    if not normalized.endswith(".json"):
+        return None
+    if candidate.is_absolute() or ".." in candidate.parts:
+        return None
+    if "://" in normalized:
+        return None
+    name = candidate.name.casefold()
+    if "publication" in name or "huggingface" in name:
+        return None
+    return candidate.as_posix()
+
+
+def _receipt_candidate_inputs(root: Path, source_ids: set[str]) -> set[str]:
+    """Collect every local receipt path evaluated for current-scope IDs."""
+
+    overrides_path = root / LANDING_OVERRIDES_RELATIVE
+    if not overrides_path.is_file():
+        return set()
+    overrides_doc = _read_json(root, LANDING_OVERRIDES_RELATIVE)
+    overrides = overrides_doc.get("overrides", [])
+    if not isinstance(overrides, list):
+        return set()
+    paths: set[str] = set()
+    for raw_override in cast("list[Any]", overrides):
+        if not isinstance(raw_override, Mapping):
+            continue
+        override = cast("Mapping[str, Any]", raw_override)
+        if override.get("source_id") not in source_ids:
+            continue
+        if override.get("state") != "landed_and_evidenced":
+            continue
+        references = override.get("evidence_references", [])
+        if not isinstance(references, list):
+            continue
+        for reference in cast("list[Any]", references):
+            if isinstance(reference, str):
+                candidate = _receipt_candidate_path(reference)
+                if candidate is not None:
+                    paths.add(candidate)
+    return paths
+
+
+def _scanned_evaluator_inputs(root: Path) -> set[str]:
+    """Collect adapter and fixture paths read by completeness evaluation."""
+
+    paths: set[str] = set()
+    for relative_root, pattern, recursive in (
+        ("src/global_medicines_atlas/adapters", "*.py", False),
+        ("tests/fixtures", "*", True),
+    ):
+        directory = root / relative_root
+        if not directory.is_dir():
+            continue
+        candidates = (
+            directory.rglob(pattern) if recursive else directory.glob(pattern)
+        )
+        paths.update(
+            path.relative_to(root).as_posix()
+            for path in candidates
+            if path.is_file()
+        )
+    return paths
+
+
+def _qualification_dependency_manifest(
+    root: Path,
+    current_scope_ids: set[str],
+    evaluator: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Hash every repository file that can affect qualification results.
+
+    Dependencies include evaluator evidence, all direct receipt references
+    considered for current-scope sources, authorization inputs read by
+    specialized receipt validators, and the adapter/fixture files scanned by
+    the full-scope completeness evaluator. Missing evidence paths are retained
+    with a null digest so their later arrival changes the manifest.
+    """
+
+    paths: set[str] = set(QUALIFICATION_AUTHORIZATION_INPUTS)
+    paths.update(QUALIFICATION_CODE_INPUTS)
+    paths.update(_receipt_candidate_inputs(root, current_scope_ids))
+    paths.update(_scanned_evaluator_inputs(root))
+    property_rows = evaluator.get("properties", [])
+    if isinstance(property_rows, list):
+        for raw_property in cast("list[Any]", property_rows):
+            if not isinstance(raw_property, Mapping):
+                continue
+            property_row = cast("Mapping[str, Any]", raw_property)
+            evidence_paths = property_row.get("evidence", [])
+            if not isinstance(evidence_paths, list):
+                continue
+            paths.update(
+                value
+                for value in cast("list[Any]", evidence_paths)
+                if isinstance(value, str)
+            )
+
+    files: list[dict[str, Any]] = []
+    for relative in sorted(paths):
+        path = root / relative
+        if path.is_symlink():
+            raise ValueError(
+                f"qualification dependency must not be a symlink: {relative}"
+            )
+        exists = path.is_file()
+        files.append({
+            "path": relative,
+            "exists": exists,
+            "sha256": _sha256(path) if exists else None,
+        })
+    canonical = json.dumps(
+        files,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+    ).encode("utf-8")
+    return {
+        "algorithm": (
+            "sha256 of the ordered path/existence/content-digest manifest; "
+            "covers full-scope evaluator evidence, direct current-scope "
+            "receipt candidates, specialized authorization metadata, and "
+            "adapter/fixture scan inputs"
+        ),
+        "sha256": hashlib.sha256(canonical).hexdigest(),
+        "file_count": len(files),
+        "files": files,
+    }
 
 
 def _defer_reason_code(queue_item: Mapping[str, Any]) -> str:
@@ -182,10 +331,10 @@ def _scope_accounting(
     }
 
 
-def _preserved_current_scope(root: Path) -> dict[str, Any]:
+def _preserved_current_scope(
+    maturity: Mapping[str, Any],
+) -> dict[str, Any]:
     """Evaluate the original full-scope maturity gate independently."""
-
-    maturity = evaluate_repository(root)
     completeness = next(
         row
         for row in maturity["properties"]
@@ -245,7 +394,8 @@ def build_bronze_receipt_cohort(root: Path) -> dict[str, Any]:
     members = _build_members(root, catalog, receipt_evidence)
     deferred_ids = current_scope_ids - set(receipt_evidence)
     deferred = _build_deferred_sources(catalog, queue, deferred_ids)
-    preserved_scope = _preserved_current_scope(root)
+    evaluator = evaluate_repository(root)
+    preserved_scope = _preserved_current_scope(evaluator)
     deferred_queue_landed_count = sum(
         item["queue_state"] == "landed_and_evidenced" for item in deferred
     )
@@ -300,6 +450,11 @@ def build_bronze_receipt_cohort(root: Path) -> dict[str, Any]:
                 "path": LANDING_OVERRIDES_RELATIVE,
                 "sha256": _sha256(root / LANDING_OVERRIDES_RELATIVE),
             },
+            "qualification_dependencies": _qualification_dependency_manifest(
+                root,
+                current_scope_ids,
+                evaluator,
+            ),
         },
         "qualified_cohort": {
             "state": "qualified",
