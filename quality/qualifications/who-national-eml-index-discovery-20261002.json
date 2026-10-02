@@ -1,0 +1,36 @@
+{
+  "schema_id": "global-medicines-atlas.who-national-eml-index-discovery",
+  "schema_version": 1,
+  "observed_at": "2026-10-02T06:58:27Z",
+  "source_id": "global-who-national-eml-index",
+  "official_index_url": "https://www.who.int/teams/health-product-policy-and-standards/assistive-and-medical-technology/essential-medicines/national-emls",
+  "observation": {
+    "page_title": "Repository of National Essential Medicines Lists (nEMLs)",
+    "collection_scope": [
+      "national essential medicines lists",
+      "national formularies",
+      "national reimbursed lists"
+    ],
+    "collection_sources_as_described_by_who": [
+      "official government websites and databases",
+      "grey and academic literature"
+    ],
+    "visible_item_actions": [
+      "Read More",
+      "Download"
+    ],
+    "current_page_sample": [
+      "Nigeria: Essential Medicines list 2024 (English)",
+      "United Republic of Tanzania: National Essential Medicines List (NEMLIT) 2026 (English)"
+    ]
+  },
+  "evidence_scope": "source_index_discovery_only",
+  "source_payload_downloaded": false,
+  "source_payload_retained": false,
+  "source_payload_digest_recorded": false,
+  "per_document_rights_reviewed": false,
+  "maintainer_acquisition_authorization": false,
+  "live_qualification_claimed": false,
+  "coverage_claimed": false,
+  "boundary": "This observation refreshes the official index location and documents its discovery scope. WHO describes a collection assembled from multiple upstream sources; this implies linked documents may have distinct rights holders, but that was not checked per document. Do not fetch, retain, publish, or qualify linked national documents until source-specific rights and acquisition authority are established."
+}

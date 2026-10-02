@@ -126,6 +126,25 @@ def test_api_and_download_modes_have_declared_endpoints() -> None:
             assert source.download_url is not None
 
 
+def test_who_neml_catalog_points_to_current_index_without_qualifying_lists() -> (
+    None
+):
+    source = next(
+        item
+        for item in load_source_catalog()
+        if item.source_id == "global-who-national-eml-index"
+    )
+
+    assert str(source.landing_page) == (
+        "https://www.who.int/teams/health-product-policy-and-standards/"
+        "assistive-and-medical-technology/essential-medicines/national-emls"
+    )
+    assert source.last_verified_at.isoformat() == "2026-10-02"
+    assert source.rights_status == "review_required"
+    assert source.implemented_ingestion is False
+    assert source.qualification_references == ()
+
+
 def test_supported_apis_use_operational_endpoints_not_documentation() -> None:
     documentation_markers = {
         "/about/",

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "index_id": "global-medicines-data-source-index-2026-08-20",
   "generated_from": "src/global_medicines_atlas/data/medicine_source_catalog.json",
-  "catalog_reviewed_at": "2026-08-29",
+  "catalog_reviewed_at": "2026-10-02",
   "evidentiary_truth": "The immutable source payload and its content-addressed receipt are evidentiary truth; source-faithful Parquet is the portable analytical representation; table/catalogue layers are rebuildable metadata over those artefacts.",
   "hugging_face_role": "archive_output_not_source_of_truth",
   "independent_dimensions": [

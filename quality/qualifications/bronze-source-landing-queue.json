@@ -1,5 +1,5 @@
 {
-  "catalog_reviewed_at": "2026-08-29",
+  "catalog_reviewed_at": "2026-10-02",
   "catalog_schema_version": 5,
   "family_counts": {
     "archive_release": 9,
@@ -2022,10 +2022,10 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Enumerate the public collection, preserve each document unchanged, and receipt the collection manifest.",
+        "acquisition_instructions": "Use the current official WHO nEML repository page for source discovery. For each candidate, record only the official item URL, country/list title, language, and displayed date. Do not fetch, retain, or publish linked national document bytes until the specific document's rights and acquisition authority are established. Record unavailable entries as unknown coverage, not negative evidence.",
         "acquisition_profile": null,
         "credentials_persisted": false,
-        "endpoint": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists/national-essential-medicines-lists",
+        "endpoint": "https://www.who.int/teams/health-product-policy-and-standards/assistive-and-medical-technology/essential-medicines/national-emls",
         "family": "document_collection",
         "formats": [
           "html",
@@ -2038,12 +2038,13 @@
         "source_id": "global-who-national-eml-index"
       },
       "evidence_references": [
-        "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists/national-essential-medicines-lists"
+        "https://www.who.int/teams/health-product-policy-and-standards/assistive-and-medical-technology/essential-medicines/national-emls",
+        "quality/qualifications/who-national-eml-index-discovery-20261002.json"
       ],
       "evidence_scope": "none",
-      "next_action": "execute and receipt the documented public manual acquisition",
+      "next_action": "complete a metadata-only source inventory where permissible, then resolve source-specific rights and acquisition authority before any linked-document landing",
       "priority": 30,
-      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "reason": "The current WHO nEML repository index is publicly discoverable, but its linked national documents have varied upstream sources and this review did not establish their per-document reuse rights. The source remains unacquired and unqualified.",
       "source_id": "global-who-national-eml-index",
       "state": "manual_only_documented_acquisition"
     },
